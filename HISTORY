@@ -4309,3 +4309,5 @@ Video Disk Recorder Revision History
   to Ville Skyttä).
 - Fixed handling the "Blue" key in the "Schedule" menu for the current channel
   (thanks to Rolf Ahrenberg).
+- Renamed the Makefile target 'plugins-clean' to 'clean-plugins' (suggested by
+  Sebastian Frei).

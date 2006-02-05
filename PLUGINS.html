@@ -175,7 +175,7 @@ is not used, the path to the plugin directory has be be given to VDR through the
 <p>
 The VDR <tt>Makefile</tt> contains the target <tt>plugins</tt>, which calls
 <tt>make all</tt> in every directory found under <tt>VDR/PLUGINS/src</tt>,
-plus the target <tt>plugins-clean</tt>, which calls <tt>make clean</tt> in
+plus the target <tt>clean-plugins</tt>, which calls <tt>make clean</tt> in
 each of these directories.
 <p>
 If you download a plugin <a href="#Building the distribution package">package</a>
@@ -187,7 +187,7 @@ and will unpack into a directory named
 <p>
 <tt>hello-0.0.1</tt>
 <p>
-To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
+To use the <tt>plugins</tt> and <tt>clean-plugins</tt> targets from the VDR <tt>Makefile</tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
