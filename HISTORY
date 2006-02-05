@@ -4312,3 +4312,5 @@ Video Disk Recorder Revision History
 - Renamed the Makefile target 'plugins-clean' to 'clean-plugins' (suggested by
   Sebastian Frei).
 - Made all font and image data 'const' (thanks to Darren Salt).
+- Fixed scrolling with Up/Down in case there are non-selectable items at the
+  beginning or end of the menu (reported by Helmut Auer).

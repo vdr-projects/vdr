@@ -550,6 +550,8 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to give a message when an instant recording is started
  fpr suggesting to retry a shutdown after a while
  for separating the 'install' target into several individual targets
+ for reporting a problem with scrolling with Up/Down in case there are non-selectable
+ items at the beginning of the menu
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
