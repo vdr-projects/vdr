@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.407 2006/01/29 14:04:37 kls Exp $
+ * $Id: menu.c 1.410 2006/02/05 13:31:08 kls Exp $
  */
 
 #include "menu.h"
@@ -1437,7 +1437,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kYellow: if (schedules)
                         return AddSubMenu(new cMenuWhatsOn(schedules, false, cMenuWhatsOn::CurrentChannel()));
                      break;
-       case kBlue:   if (Count())
+       case kBlue:   if (Count() && otherChannel)
                         return Switch();
                      break;
        case kOk:     if (Count())
@@ -3083,7 +3083,7 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
   if (Direction) {
      while (Channel) {
            Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
-           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, 0))
+           if (Channel && !Channel->GroupSep() && (cDevice::PrimaryDevice()->ProvidesChannel(Channel, Setup.PrimaryLimit) || cDevice::GetDevice(Channel, 0)))
               return Channel;
            }
      }
@@ -3326,7 +3326,7 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   cDevice::PrimaryDevice()->EnsureAudioTrack();
-  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice() ? cDevice::CurrentChannel() : 0);
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring() ? cDevice::CurrentChannel() : 0);
   currentDisplayTracks = this;
   numTracks = track = 0;
   audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();

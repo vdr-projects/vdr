@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.10 2006/01/08 11:40:21 kls Exp $
+ * $Id: skins.h 1.11 2006/02/05 14:59:57 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -160,6 +160,19 @@ public:
        ///< the Scroll() function will be called to drive scrolling that text if
        ///< necessary.
   //XXX ??? virtual void SetHelp(const char *Help) = 0;
+  virtual int GetTextAreaWidth(void) const;
+       ///< Returns the width in pixel of the area which is used to display text
+       ///< with SetText(). The width of the area is the width of the central area
+       ///< minus the width of any possibly displayed scroll-bar or other decoration.
+       ///< The default implementation returns 0. Therefore a caller of this method
+       ///< must be prepared to receive 0 if the plugin doesn't implement this method.
+  virtual const cFont *GetTextAreaFont(bool FixedFont) const;
+       ///< Returns a pointer to the font which is used to display text with SetText().
+       ///< The parameter FixedFont has the same meaning as in SetText(). The default
+       ///< implementation returns NULL. Therefore a caller of this method must be
+       ///< prepared to receive NULL if the plugin doesn't implement this method.
+       ///< The returned pointer is valid a long as the instance of cSkinDisplayMenu
+       ///< exists.
   };
 
 class cSkinDisplayReplay : public cSkinDisplay {

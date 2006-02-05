@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.112 2006/01/20 14:01:28 kls Exp $
+ * $Id: tools.c 1.114 2006/02/05 11:05:56 kls Exp $
  */
 
 #include "tools.h"
@@ -1054,10 +1054,9 @@ bool cSafeFile::Close(void)
 
 // --- cUnbufferedFile -------------------------------------------------------
 
-//#define USE_FADVISE
+#define USE_FADVISE
 
-#define READ_AHEAD MEGABYTE(2)
-#define WRITE_BUFFER MEGABYTE(10)
+#define WRITE_BUFFER KILOBYTE(800)
 
 cUnbufferedFile::cUnbufferedFile(void)
 {
@@ -1073,8 +1072,17 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
 {
   Close();
   fd = open(FileName, Flags, Mode);
-  begin = end = ahead = -1;
+  curpos = 0;
+#ifdef USE_FADVISE
+  begin = lastpos = ahead = 0;
+  cachedstart = 0;
+  cachedend = 0;
+  readahead = KILOBYTE(128);
   written = 0;
+  totwritten = 0;
+  if (fd >= 0)
+     posix_fadvise(fd, 0, 0, POSIX_FADV_RANDOM); // we could use POSIX_FADV_SEQUENTIAL, but we do our own readahead, disabling the kernel one.
+#endif
   return fd;
 }
 
@@ -1082,16 +1090,9 @@ int cUnbufferedFile::Close(void)
 {
 #ifdef USE_FADVISE
   if (fd >= 0) {
-     if (ahead > end)
-        end = ahead;
-     if (begin >= 0 && end > begin) {
-        //dsyslog("close buffer: %d (flush: %d bytes, %ld-%ld)", fd, written, begin, end);
-        if (written)
-           fdatasync(fd);
-        posix_fadvise(fd, begin, end - begin, POSIX_FADV_DONTNEED);
-        }
-     begin = end = ahead = -1;
-     written = 0;
+     if (totwritten)    // if we wrote anything make sure the data has hit the disk before
+        fdatasync(fd);  // calling fadvise, as this is our last chance to un-cache it.
+     posix_fadvise(fd, 0, 0, POSIX_FADV_DONTNEED);
      }
 #endif
   int OldFd = fd;
@@ -1099,45 +1100,84 @@ int cUnbufferedFile::Close(void)
   return close(OldFd);
 }
 
+// When replaying and going e.g. FF->PLAY the position jumps back 2..8M
+// hence we do not want to drop recently accessed data at once.
+// We try to handle the common cases such as PLAY->FF->PLAY, small
+// jumps, moving editing marks etc.
+
+#define FADVGRAN   KILOBYTE(4) // AKA fadvise-chunk-size; PAGE_SIZE or getpagesize(2) would also work.
+#define READCHUNK  MEGABYTE(8)
+
+void cUnbufferedFile::SetReadAhead(size_t ra)
+{
+  readahead = ra;
+}
+
+int cUnbufferedFile::FadviseDrop(off_t Offset, off_t Len)
+{
+  // rounding up the window to make sure that not PAGE_SIZE-aligned data gets freed.
+  return posix_fadvise(fd, Offset - (FADVGRAN - 1), Len + (FADVGRAN - 1) * 2, POSIX_FADV_DONTNEED);
+}
+
 off_t cUnbufferedFile::Seek(off_t Offset, int Whence)
 {
-  if (fd >= 0)
-     return lseek(fd, Offset, Whence);
-  return -1;
+  if (Whence == SEEK_SET && Offset == curpos)
+     return curpos;
+  curpos = lseek(fd, Offset, Whence);
+  return curpos;
 }
 
 ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 {
   if (fd >= 0) {
 #ifdef USE_FADVISE
-     off_t pos = lseek(fd, 0, SEEK_CUR);
-     // jump forward - adjust end position
-     if (pos > end)
-        end = pos;
-     // after adjusting end - don't clear more than previously requested
-     if (end > ahead)
-        end = ahead;
-     // jump backward - drop read ahead of previous run
-     if (pos < begin)
-        end = ahead;
-     if (begin >= 0 && end > begin)
-        posix_fadvise(fd, begin - KILOBYTE(200), end - begin + KILOBYTE(200), POSIX_FADV_DONTNEED);//XXX macros/parameters???
-     begin = pos;
+     off_t jumped = curpos-lastpos; // nonzero means we're not at the last offset
+     if ((cachedstart < cachedend) && (curpos < cachedstart || curpos > cachedend)) {
+        // current position is outside the cached window -- invalidate it.
+        FadviseDrop(cachedstart, cachedend-cachedstart);
+        cachedstart = curpos;
+        cachedend = curpos;
+        }
+     cachedstart = min(cachedstart, curpos);
 #endif
      ssize_t bytesRead = safe_read(fd, Data, Size);
 #ifdef USE_FADVISE
      if (bytesRead > 0) {
-        pos += bytesRead;
-        end = pos;
-        // this seems to trigger a non blocking read - this
-        // may or may not have been finished when we will be called next time.
-        // If it is not finished we can't release the not yet filled buffers.
-        // So this is commented out till we find a better solution.
-        //posix_fadvise(fd, pos, READ_AHEAD, POSIX_FADV_WILLNEED);
-        ahead = pos + READ_AHEAD;
+        curpos += bytesRead;
+        cachedend = max(cachedend, curpos);
+
+        // Read ahead:
+        // no jump? (allow small forward jump still inside readahead window).
+        if (jumped >= 0 && jumped <= (off_t)readahead) {
+           // Trigger the readahead IO, but only if we've used at least
+           // 1/2 of the previously requested area. This avoids calling
+           // fadvise() after every read() call.
+           if (ahead - curpos < (off_t)(readahead / 2)) {
+              posix_fadvise(fd, curpos, readahead, POSIX_FADV_WILLNEED);
+              ahead = curpos + readahead;
+              cachedend = max(cachedend, ahead);
+              }
+           if (readahead < Size * 32) { // automagically tune readahead size.
+              readahead = Size * 32;
+              }
+           }
+        else
+           ahead = curpos; // jumped -> we really don't want any readahead, otherwise e.g. fast-rewind gets in trouble.
         }
-     else
-        end = pos;
+
+     if (cachedstart < cachedend) {
+        if (curpos - cachedstart > READCHUNK * 2) {
+           // current position has moved forward enough, shrink tail window.
+           FadviseDrop(cachedstart, curpos - READCHUNK - cachedstart);
+           cachedstart = curpos - READCHUNK;
+           }
+        else if (cachedend > ahead && cachedend - curpos > READCHUNK * 2) {
+           // current position has moved back enough, shrink head window.
+           FadviseDrop(curpos + READCHUNK, cachedend - curpos + READCHUNK);
+           cachedend = curpos + READCHUNK;
+           }
+        }
+     lastpos = curpos;
 #endif
      return bytesRead;
      }
@@ -1147,28 +1187,46 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
 {
   if (fd >=0) {
-#ifdef USE_FADVISE
-     off_t pos = lseek(fd, 0, SEEK_CUR);
-#endif
      ssize_t bytesWritten = safe_write(fd, Data, Size);
 #ifdef USE_FADVISE
-     if (bytesWritten >= 0) {
+     if (bytesWritten > 0) {
+        begin = min(begin, curpos);
+        curpos += bytesWritten;
         written += bytesWritten;
-        if (begin >= 0) {
-           if (pos < begin)
-              begin = pos;
-           }
-        else
-           begin = pos;
-        if (pos + bytesWritten > end)
-           end = pos + bytesWritten;
+        lastpos = max(lastpos, curpos);
         if (written > WRITE_BUFFER) {
-           //dsyslog("flush buffer: %d (%d bytes, %ld-%ld)", fd, written, begin, end);
-           fdatasync(fd);
-           if (begin >= 0 && end > begin)
-              posix_fadvise(fd, begin, end - begin, POSIX_FADV_DONTNEED);
-           begin = end = -1;
+           if (lastpos > begin) {
+              // Now do three things:
+              // 1) Start writeback of begin..lastpos range
+              // 2) Drop the already written range (by the previous fadvise call)
+              // 3) Handle nonpagealigned data.
+              //    This is why we double the WRITE_BUFFER; the first time around the
+              //    last (partial) page might be skipped, writeback will start only after
+              //    second call; the third call will still include this page and finally
+              //    drop it from cache.
+              off_t headdrop = min(begin, WRITE_BUFFER * 2L);
+              posix_fadvise(fd, begin - headdrop, lastpos - begin + headdrop, POSIX_FADV_DONTNEED);
+              }
+           begin = lastpos = curpos;
+           totwritten += written;
            written = 0;
+           // The above fadvise() works when writing slowly (recording), but could
+           // leave cached data around when writing at a high rate, e.g. when cutting,
+           // because by the time we try to flush the cached pages (above) the data
+           // can still be dirty - we are faster than the disk I/O.
+           // So we do another round of flushing, just like above, but at larger
+           // intervals -- this should catch any pages that couldn't be released
+           // earlier.
+           if (totwritten > MEGABYTE(32)) {
+              // It seems in some setups, fadvise() does not trigger any I/O and
+              // a fdatasync() call would be required do all the work (reiserfs with some
+              // kind of write gathering enabled), but the syncs cause (io) load..
+              // Uncomment the next line if you think you need them.
+              //fdatasync(fd);
+              off_t headdrop = min(curpos - totwritten, totwritten * 2L);
+              posix_fadvise(fd, curpos - totwritten - headdrop, totwritten + headdrop, POSIX_FADV_DONTNEED);
+              totwritten = 0;
+              }
            }
         }
 #endif

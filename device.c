@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.121 2006/01/08 11:39:37 kls Exp $
+ * $Id: device.c 1.123 2006/02/04 14:58:24 kls Exp $
  */
 
 #include "device.h"
@@ -924,12 +924,17 @@ bool cDevice::Replaying(void) const
   return player != NULL;
 }
 
+bool cDevice::Transferring(void) const
+{
+  return dynamic_cast<cTransfer *>(player) != NULL;
+}
+
 bool cDevice::AttachPlayer(cPlayer *Player)
 {
   if (CanReplay()) {
      if (player)
         Detach(player);
-     if (!dynamic_cast<cTransfer *>(Player))
+     if (!Transferring())
         ClrAvailableTracks();
      pesAssembler->Reset();
      player = Player;
@@ -977,7 +982,7 @@ int cDevice::PlayVideo(const uchar *Data, int Length)
   return -1;
 }
 
-int cDevice::PlayAudio(const uchar *Data, int Length)
+int cDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 {
   return -1;
 }
@@ -1000,7 +1005,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
           case 0xC0 ... 0xDF: // audio
                SetAvailableTrack(ttAudio, c - 0xC0, c);
                if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
-                  w = PlayAudio(Start, d);
+                  w = PlayAudio(Start, d, c);
                   if (FirstLoop)
                      Audios.PlayAudio(Data, Length, c);
                   }
@@ -1026,7 +1031,7 @@ pre_1_3_19_PrivateStreamDeteced:
                       if (Setup.UseDolbyDigital) {
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
                          if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
-                            w = PlayAudio(Start, d);
+                            w = PlayAudio(Start, d, SubStreamId);
                             if (FirstLoop)
                                Audios.PlayAudio(Data, Length, SubStreamId);
                             }
@@ -1035,7 +1040,7 @@ pre_1_3_19_PrivateStreamDeteced:
                  case 0xA0: // LPCM
                       SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
                       if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
-                         w = PlayAudio(Start, d);
+                         w = PlayAudio(Start, d, SubStreamId);
                          if (FirstLoop)
                             Audios.PlayAudio(Data, Length, SubStreamId);
                          }

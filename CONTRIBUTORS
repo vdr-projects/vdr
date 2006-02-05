@@ -215,6 +215,7 @@ Stefan Huelswitt <huels@iname.com>
  path names
  for suggesting that the SVDRP command GRAB should allow file names without extension
  again
+ for reporting a problem with channel up/down switching on single card systems
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -270,6 +271,7 @@ Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
  for pointing out a problem with the ERR macro defined by ncurses.h
  for a patch that contained a fix for checking toFile in cCuttingThread::Action()
+ for improving cUnbufferedFile
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
@@ -548,6 +550,8 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to give a message when an instant recording is started
  fpr suggesting to retry a shutdown after a while
  for separating the 'install' target into several individual targets
+ for reporting a problem with scrolling with Up/Down in case there are non-selectable
+ items at the beginning of the menu
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -843,6 +847,8 @@ Ludwig Nussel <ludwig.nussel@web.de>
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
  for implementing the SVDRP command STAT
+ for reporting a problem with "pending" timers that blocked others that actually
+ could record
 
 Stefan Hußfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date
@@ -880,6 +886,8 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem in case a station defines all 32 audio PIDs
  for suggestions and experiments regarding the buffer reserve in cTransfer
  for reporting a problem with 'summary.vdr' files with more than two empty lines
+ for reporting a problem with multiple entries of the same subdirectory in the
+ "Recordings" menu
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
@@ -944,6 +952,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for a patch that was used to implement automatic cursor advance when entering text
  via the numeric keys
  for reporting a problem with expired timers when shutting down via the Power key
+ for fixing handling the "Blue" key in the "Schedule" menu for the current channel
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1040,6 +1049,7 @@ Reinhard Nissl <rnissl@gmx.de>
  DiSEqC data) if the lock is lost
  for fixing handling TS packets in cTS2PES
  for adding a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
+ for a suggestion that lead to implementing cDevice::Transferring()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1061,6 +1071,7 @@ Robert Bartl <robert@bartl.priv.at>
 
 Sebastian Frei <sebastian@schnapsleichen.de>
  for his support in keeping 'channels.conf' up-to-date.
+ for suggesting to rename the Makefile target 'plugins-clean' to 'clean-plugins'
 
 Rene Bartsch <ml@bartschnet.de>
  for reporting a bug in setting the primary device in case none of the devices
@@ -1292,6 +1303,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for figuring out some obscure length bytes the the CA PMT Reply data of AlphaCrypt CAMs
  for fixing handling OSD areas that have invalid sizes
  for removing unused variables in skinclassic.c and skinsttng.c
+ for removing leftover 'needsBufferReserve' variable from cTransfer
+ for adding an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
+ process the audio data
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1330,6 +1344,7 @@ Kimmo Tykkala <tykkala@iki.fi>
 Arthur Konovalov <kasjas@hot.ee>
  for translating OSD texts to the Estonian language
  for fixing a missing ',' in the Greek OSD texts
+ for fixing a missing ',' in the Swedish OSD texts
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -1351,6 +1366,10 @@ Udo Richter <udo_richter@gmx.de>
  for making the Makefile report a summary of failed plugins
  for reporting a problem with the new handling of k_Repeat keypresses in channel
  switching
+ for reporting a problem with auto advance in string entry fields when pressing
+ Up/Down in insert mode
+ for fixing handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
+ case a replay is active
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1414,6 +1433,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  for suggesting to write grabbed images to the SVDRP connection encoded in base64
  for suggesting to open the file handle in the SVDRP GRAB command in a way that
  it won't follow symbolic links, and to canonicalize the file name
+ for making all font and image data 'const'
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
@@ -1494,6 +1514,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for removing the obsolete "ca.conf" section from vdr.1
  for making the cLircRemote try to reestablish the connection to the LIRC daemon
  in case it breaks
+ for enabling generating a core dump if VDR is run with a different user id
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1590,6 +1611,7 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing handling color buttons in cMenuEditStrItem
  for making the '.update' file in the video directory be touched when a recording is
  added or deleted, so that other VDR instances can update their lists
+ for adding cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont()
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
@@ -1710,3 +1732,9 @@ Daniel Karsubka <dkar@gmx.de>
 Suur Karu <suurkaru@fastmail.fm>
  for reporting a problem with the tuning timeout for channels that have low symbol
  rates
+
+Ronny Kornexl <ronny.kornexl@online.de>
+ for reporting a problem with setting "No title" for broken event data
+
+Bárta Vladimír <vladimir.barta@k2atmitec.cz>
+ for translating OSD texts to the Czech language

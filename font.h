@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.11 2005/03/19 15:51:19 kls Exp $
+ * $Id: font.h 1.12 2006/02/05 13:46:36 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -43,9 +43,9 @@ private:
   const tCharData *data[NUMCHARS];
   int height;
 public:
-  cFont(void *Data);
+  cFont(const void *Data);
   virtual ~cFont() {}
-  void SetData(void *Data);
+  void SetData(const void *Data);
   virtual int Width(unsigned char c) const { return data[c]->width; }
       ///< Returns the width of the given character.
   virtual int Width(const char *s) const;
@@ -59,7 +59,7 @@ public:
   const tCharData *CharData(unsigned char c) const { return data[c]; }
   static bool SetCode(const char *Code);
   static void SetCode(eDvbCode Code);
-  static void SetFont(eDvbFont Font, void *Data = NULL);
+  static void SetFont(eDvbFont Font, const void *Data = NULL);
   static const cFont *GetFont(eDvbFont Font);
   };
 

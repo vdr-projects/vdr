@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.84 2006/01/29 14:50:34 kls Exp $
+# $Id: Makefile 1.85 2006/02/05 13:37:11 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -193,7 +193,7 @@ plugins: include-dir
 	    done;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; fi
 
-plugins-clean:
+clean-plugins:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/libvdr-*.so.$(VDRVERSION)
 

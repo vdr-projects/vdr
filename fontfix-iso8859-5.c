@@ -1,4 +1,4 @@
-cFont::tPixelData FontFix_iso8859_5[][26] = {
+static const cFont::tPixelData FontFix_iso8859_5[][26] = {
   {             // 32
      15, 24,
      0x00000000,  // ...............

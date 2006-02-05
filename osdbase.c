@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.28 2006/01/08 11:40:02 kls Exp $
+ * $Id: osdbase.c 1.29 2006/02/05 14:37:03 kls Exp $
  */
 
 #include "osdbase.h"
@@ -280,6 +280,12 @@ void cOsdMenu::CursorUp(void)
      return;
   while (--tmpCurrent != current) {
         if (tmpCurrent < 0) {
+           if (first > 0) {
+              // make non-selectable items at the beginning visible:
+              first = 0;
+              Display();
+              return;
+              }
            if (Setup.MenuScrollWrap)
               tmpCurrent = last + 1;
            else
@@ -312,6 +318,12 @@ void cOsdMenu::CursorDown(void)
      return;
   while (++tmpCurrent != current) {
         if (tmpCurrent > last) {
+           if (first < last - displayMenuItems) {
+              // make non-selectable items at the end visible:
+              first = last - displayMenuItems + 1;
+              Display();
+              return;
+              }
            if (Setup.MenuScrollWrap)
               tmpCurrent = -1;
            else

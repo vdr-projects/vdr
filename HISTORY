@@ -4270,3 +4270,49 @@ Video Disk Recorder Revision History
   system, it is now tried again after 5 minutes (suggested by Helmut Auer).
 - Separated the 'install' target into several individual targets; renamed the
   'plugins-install' target to 'install-plugins' (thanks to Helmut Auer).
+
+2006-02-05: Version 1.3.42
+
+- Removed leftover 'needsBufferReserve' variable from cTransfer (thanks to Marco
+  Schlüßler).
+- Fixed setting "No title" for broken event data (reported by Ronny Kornexl).
+- Fixed channel up/down switching on single card systems (reported by Stefan
+  Huelswitt).
+- Fixed handling "pending" timers that blocked others that actually could record
+  (reported by Thomas Koch).
+- Speeded up cVideoRepacker (thanks to Reinhard Nissl).
+- Added an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
+  process the audio data (thanks to Marco Schlüßler).
+- Added Czech language texts (thanks to Bárta Vladimír).
+  Plugin authors may want to add the new entries to their I18N texts and contact
+  the translators to have their texts translated. Note that there are now 21
+  different OSD languages, so please make sure you have 21 versions for each of
+  your texts.
+- Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
+- Fixed auto advance in string entry fields when pressing Up/Down in insert mode
+  (reported by Udo Richter).
+- Fixed handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
+  case a replay is active (thanks to Udo Richter).
+- Improved cUnbufferedFile; USE_FADVISE is now defined in tools.c by default, so
+  if you don't want to use "fadvise" you need to comment out that line (thanks to
+  Artur Skawina).
+- Fixed a missing ',' in the Swedish OSD texts (thanks to Arthur Konovalov).
+- cDevice::Transferring() can now be used to determine whether the (primary)
+  device is currently playing in Transfer Mode (based on a suggestion by
+  Reinhard Nissl).
+- The 'runvdr' script no longer uses the $VDRUSR environment variable to set
+  the user id under which 'vdr' shall run. Just add the '-u username' option
+  when you call 'runvdr'.
+- Fixed multiple entries of the same subdirectory in the "Recordings" menu
+  (reported by Christian Jacobsen).
+- Enabled generating a core dump if VDR is run with a different user id (thanks
+  to Ville Skyttä).
+- Fixed handling the "Blue" key in the "Schedule" menu for the current channel
+  (thanks to Rolf Ahrenberg).
+- Renamed the Makefile target 'plugins-clean' to 'clean-plugins' (suggested by
+  Sebastian Frei).
+- Made all font and image data 'const' (thanks to Darren Salt).
+- Fixed scrolling with Up/Down in case there are non-selectable items at the
+  beginning or end of the menu (reported by Helmut Auer).
+- Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
+  that wants to do special text formatting can do so (thanks to Alexander Rieger).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.90 2006/01/15 16:19:56 kls Exp $
+ * $Id: tools.h 1.92 2006/02/04 14:27:05 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -242,15 +242,22 @@ public:
 class cUnbufferedFile {
 private:
   int fd;
+  off_t curpos;
+  off_t cachedstart;
+  off_t cachedend;
   off_t begin;
-  off_t end;
+  off_t lastpos;
   off_t ahead;
-  ssize_t written;
+  size_t readahead;
+  size_t written;
+  size_t totwritten;
+  int FadviseDrop(off_t Offset, off_t Len);
 public:
   cUnbufferedFile(void);
   ~cUnbufferedFile();
   int Open(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
   int Close(void);
+  void SetReadAhead(size_t ra);
   off_t Seek(off_t Offset, int Whence);
   ssize_t Read(void *Data, size_t Size);
   ssize_t Write(const void *Data, size_t Size);

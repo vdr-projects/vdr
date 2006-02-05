@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.50 2005/12/18 12:56:21 kls Exp $
+ * $Id: osd.h 1.51 2006/02/05 13:46:37 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -112,7 +112,7 @@ public:
        ///< this offset (unless specified otherwise).
   cBitmap(const char *FileName);
        ///< Creates a bitmap and loads an XPM image from the given file.
-  cBitmap(char *Xpm[]);
+  cBitmap(const char *const Xpm[]);
        ///< Creates a bitmap from the given XPM data.
   virtual ~cBitmap();
   int X0(void) const { return x0; }
@@ -140,7 +140,7 @@ public:
   bool LoadXpm(const char *FileName);
        ///< Calls SetXpm() with the data from the file FileName.
        ///< Returns true if the operation was successful.
-  bool SetXpm(char *Xpm[], bool IgnoreNone = false);
+  bool SetXpm(const char *const Xpm[], bool IgnoreNone = false);
        ///< Sets this bitmap to the given XPM data. Any previous bitmap or
        ///< palette data will be overwritten with the new data.
        ///< If IgnoreNone is true, a "none" color entry will be ignored.

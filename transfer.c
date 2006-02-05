@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.32 2006/01/28 14:23:38 kls Exp $
+ * $Id: transfer.c 1.33 2006/01/29 17:24:39 kls Exp $
  */
 
 #include "transfer.h"
@@ -20,7 +20,6 @@ cTransfer::cTransfer(int VPid, const int *APids, const int *DPids, const int *SP
 {
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
   remux = new cRemux(VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids);
-  needsBufferReserve = Setup.UseDolbyDigital && VPid != 0 && DPids && DPids[0] != 0;
 }
 
 cTransfer::~cTransfer()

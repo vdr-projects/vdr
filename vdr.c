@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.246 2006/01/29 14:35:31 kls Exp $
+ * $Id: vdr.c 1.249 2006/02/05 12:57:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -96,6 +96,10 @@ static bool SetUser(const char *UserName)
      if (setuid(user->pw_uid) < 0) {
         fprintf(stderr, "vdr: cannot set user id %u: %s\n", (unsigned int)user->pw_uid, strerror(errno));
         return false;
+        }
+     if (prctl(PR_SET_DUMPABLE, 2, 0, 0, 0) < 0) {
+        fprintf(stderr, "vdr: warning - cannot set dumpable: %s\n", strerror(errno));
+        // always non-fatal, and will not work with kernel < 2.6.13
         }
      }
   return true;
@@ -709,7 +713,7 @@ int main(int argc, char *argv[])
                   if (Channel->Modification(CHANNELMOD_RETUNE)) {
                      cRecordControls::ChannelDataModified(Channel);
                      if (Channel->Number() == cDevice::CurrentChannel()) {
-                        if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
+                        if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring()) {
                            if (cDevice::ActualDevice()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
                               isyslog("retuning due to modification of channel %d", Channel->Number());
                               Channels.SwitchTo(Channel->Number());
@@ -796,8 +800,12 @@ int main(int argc, char *argv[])
                bool WasMenu = Interact && Interact->IsMenu();
                if (Menu)
                   DELETE_MENU;
-               else if (cControl::Control() && cOsd::IsOpen())
-                  cControl::Control()->Hide();
+               else if (cControl::Control()) {
+                  if (cOsd::IsOpen())
+                     cControl::Control()->Hide();
+                  else
+                     WasOpen = false;
+                  }
                if (!WasOpen || !WasMenu && !Setup.MenuButtonCloses)
                   Menu = new cMenuMain;
                }

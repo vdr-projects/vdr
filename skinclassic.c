@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.13 2006/01/01 14:37:58 kls Exp $
+ * $Id: skinclassic.c 1.14 2006/02/05 14:51:39 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -169,6 +169,8 @@ public:
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
+  virtual int GetTextAreaWidth(void) const;
+  virtual const cFont *GetTextAreaFont(bool FixedFont) const;
   virtual void Flush(void);
   };
 
@@ -357,9 +359,18 @@ void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
 
 void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
-  const cFont *font = cFont::GetFont(FixedFont ? fontFix : fontOsd);
-  textScroller.Set(osd, x0, y2, x1 - x0 - 2 * ScrollWidth, y3 - y2, Text, font, Theme.Color(clrMenuText), Theme.Color(clrBackground));
+  textScroller.Set(osd, x0, y2, GetTextAreaWidth(), y3 - y2, Text, GetTextAreaFont(FixedFont), Theme.Color(clrMenuText), Theme.Color(clrBackground));
   SetScrollbar();
+}
+
+int cSkinClassicDisplayMenu::GetTextAreaWidth(void) const
+{
+  return x1 - x0 - 2 * ScrollWidth;
+}
+
+const cFont *cSkinClassicDisplayMenu::GetTextAreaFont(bool FixedFont) const
+{
+  return cFont::GetFont(FixedFont ? fontFix : fontOsd);
 }
 
 void cSkinClassicDisplayMenu::Flush(void)

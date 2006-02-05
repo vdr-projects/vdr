@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.70 2006/01/08 10:10:26 kls Exp $
+ * $Id: device.h 1.72 2006/02/04 14:22:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -424,9 +424,10 @@ protected:
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
        ///< \return Returns the number of bytes actually taken from Data, or -1
        ///< in case of an error.
-  virtual int PlayAudio(const uchar *Data, int Length);
+  virtual int PlayAudio(const uchar *Data, int Length, uchar Id);
        ///< Plays the given data block as audio.
        ///< Data points to exactly one complete PES packet of the given Length.
+       ///< Id indicates the type of audio data this packet holds.
        ///< PlayAudio() shall process the packet either as a whole (returning
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
        ///< \return Returns the number of bytes actually taken from Data, or -1
@@ -483,6 +484,8 @@ public:
        ///< guaranteed to always receive complete PES packets.
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
+  bool Transferring(void) const;
+       ///< Returns true if we are currently in Transfer Mode.
   void StopReplay(void);
        ///< Stops the current replay session (if any).
   bool AttachPlayer(cPlayer *Player);
