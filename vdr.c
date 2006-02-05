@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.248 2006/02/04 14:49:12 kls Exp $
+ * $Id: vdr.c 1.249 2006/02/05 12:57:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -96,6 +96,10 @@ static bool SetUser(const char *UserName)
      if (setuid(user->pw_uid) < 0) {
         fprintf(stderr, "vdr: cannot set user id %u: %s\n", (unsigned int)user->pw_uid, strerror(errno));
         return false;
+        }
+     if (prctl(PR_SET_DUMPABLE, 2, 0, 0, 0) < 0) {
+        fprintf(stderr, "vdr: warning - cannot set dumpable: %s\n", strerror(errno));
+        // always non-fatal, and will not work with kernel < 2.6.13
         }
      }
   return true;

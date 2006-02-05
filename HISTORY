@@ -4305,3 +4305,5 @@ Video Disk Recorder Revision History
   when you call 'runvdr'.
 - Fixed multiple entries of the same subdirectory in the "Recordings" menu
   (reported by Christian Jacobsen).
+- Enabled generating a core dump if VDR is run with a different user id (thanks
+  to Ville Skyttä).

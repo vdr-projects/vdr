@@ -1509,6 +1509,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for removing the obsolete "ca.conf" section from vdr.1
  for making the cLircRemote try to reestablish the connection to the LIRC daemon
  in case it breaks
+ for enabling generating a core dump if VDR is run with a different user id
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
