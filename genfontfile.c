@@ -371,7 +371,7 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  printf("%s[][%d] = {\n", varname, fontinfo->max_ascent + fontinfo->max_descent + 2);
+  printf("static const %s[][%d] = {\n", varname, fontinfo->max_ascent + fontinfo->max_descent + 2);
   for (c = 32; c < 256; c++) {
       getMetric(fontinfo, c, &tgi);
       printGlyph(fontinfo, c);

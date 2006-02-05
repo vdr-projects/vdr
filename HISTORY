@@ -4311,3 +4311,4 @@ Video Disk Recorder Revision History
   (thanks to Rolf Ahrenberg).
 - Renamed the Makefile target 'plugins-clean' to 'clean-plugins' (suggested by
   Sebastian Frei).
+- Made all font and image data 'const' (thanks to Darren Salt).

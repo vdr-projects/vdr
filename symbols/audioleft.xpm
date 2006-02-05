@@ -1,5 +1,5 @@
 /* XPM */
-static char * audioleft_xpm[] = {
+static const char *const audioleft_xpm[] = {
 "27 18 2 1",
 ".	c #FFFFFF",
 "+	c #000000",

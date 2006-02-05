@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.16 2006/01/01 14:38:14 kls Exp $
+ * $Id: skinsttng.c 1.17 2006/02/05 13:46:37 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -721,7 +721,7 @@ void cSkinSTTNGDisplayReplay::SetTitle(const char *Title)
   osd->DrawText(x3 + 5, y0, Title, Theme.Color(clrReplayTitle), frameColor, cFont::GetFont(fontSml), x4 - x3 - 5);
 }
 
-static char **ReplaySymbols[2][2][5] = {
+static const char *const *ReplaySymbols[2][2][5] = {
   { { pause_xpm, srew_xpm, srew1_xpm, srew2_xpm, srew3_xpm },
     { pause_xpm, sfwd_xpm, sfwd1_xpm, sfwd2_xpm, sfwd3_xpm }, },
   { { play_xpm,  frew_xpm, frew1_xpm, frew2_xpm, frew3_xpm },

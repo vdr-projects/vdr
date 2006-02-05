@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.11 2005/01/14 13:25:35 kls Exp $
+ * $Id: font.c 1.12 2006/02/05 13:49:10 kls Exp $
  */
 
 #include "config.h"
@@ -35,9 +35,10 @@
 #include "fontfix-iso8859-15.c"
 #include "fontosd-iso8859-15.c"
 #include "fontsml-iso8859-15.c"
+
 // --- cFont -----------------------------------------------------------------
 
-static void *FontData[eDvbCodeSize][eDvbFontSize] = {
+static const void *const FontData[eDvbCodeSize][eDvbFontSize] = {
   { FontOsd_iso8859_1,  FontFix_iso8859_1,  FontSml_iso8859_1 },
   { FontOsd_iso8859_2,  FontFix_iso8859_2,  FontSml_iso8859_2 },
   { FontOsd_iso8859_5,  FontFix_iso8859_5,  FontSml_iso8859_5 },
@@ -58,12 +59,12 @@ static const char *FontCode[eDvbCodeSize] = {
 eDvbCode cFont::code = code_iso8859_1;
 cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
-cFont::cFont(void *Data)
+cFont::cFont(const void *Data)
 {
   SetData(Data);
 }
 
-void cFont::SetData(void *Data)
+void cFont::SetData(const void *Data)
 {
   if (Data) {
      height = ((tCharData *)Data)->height;
@@ -112,7 +113,7 @@ void cFont::SetCode(eDvbCode Code)
      }
 }
 
-void cFont::SetFont(eDvbFont Font, void *Data)
+void cFont::SetFont(eDvbFont Font, const void *Data)
 {
   delete fonts[Font];
   fonts[Font] = new cFont(Data ? Data : FontData[code][Font]);

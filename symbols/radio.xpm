@@ -1,5 +1,5 @@
 /* XPM */
-static char * radio_xpm[] = {
+static const char *const radio_xpm[] = {
 "27 18 2 1",
 ".	c #FFFFFF",
 "+	c #000000",

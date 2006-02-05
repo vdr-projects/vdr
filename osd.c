@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.65 2005/12/30 15:42:04 kls Exp $
+ * $Id: osd.c 1.66 2006/02/05 13:46:37 kls Exp $
  */
 
 #include "osd.h"
@@ -112,7 +112,7 @@ cBitmap::cBitmap(const char *FileName)
   LoadXpm(FileName);
 }
 
-cBitmap::cBitmap(char *Xpm[])
+cBitmap::cBitmap(const char *const Xpm[])
 {
   bitmap = NULL;
   x0 = 0;
@@ -251,9 +251,9 @@ bool cBitmap::LoadXpm(const char *FileName)
   return Result;
 }
 
-bool cBitmap::SetXpm(char *Xpm[], bool IgnoreNone)
+bool cBitmap::SetXpm(const char *const Xpm[], bool IgnoreNone)
 {
-  char **p = Xpm;
+  const char *const *p = Xpm;
   int w, h, n, c;
   if (4 != sscanf(*p, "%d %d %d %d", &w, &h, &n, &c)) {
      esyslog("ERROR: faulty 'values' line in XPM: '%s'", *p);

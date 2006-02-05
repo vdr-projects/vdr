@@ -1431,6 +1431,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  for suggesting to write grabbed images to the SVDRP connection encoded in base64
  for suggesting to open the file handle in the SVDRP GRAB command in a way that
  it won't follow symbolic links, and to canonicalize the file name
+ for making all font and image data 'const'
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language

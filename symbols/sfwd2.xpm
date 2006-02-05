@@ -1,5 +1,5 @@
 /* XPM */
-static char * sfwd2_xpm[] = {
+static const char *const sfwd2_xpm[] = {
 "28 26 2 1",
 ".	c #FFFFFF",
 "+	c #000000",

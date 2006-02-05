@@ -1,4 +1,4 @@
-cFont::tPixelData FontSml_iso8859_1[][24] = {
+static const cFont::tPixelData FontSml_iso8859_1[][24] = {
   {             // 32
      5, 22,
      0x00000000,  // .....

@@ -1,4 +1,3 @@
-
 /*
  * iso8859-2 modified iso8859-1 (Drazen Dupor 23.05.2004).
  *
@@ -10,7 +9,7 @@
  *
  */
 
-cFont::tPixelData FontOsd_iso8859_2[][29] = {
+static const cFont::tPixelData FontOsd_iso8859_2[][29] = {
   {             // 32
      6, 27,
      0x00000000,  // ......
