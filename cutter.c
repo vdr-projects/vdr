@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.13 2006/02/04 13:40:20 kls Exp $
+ * $Id: cutter.c 1.14 2006/02/05 11:06:47 kls Exp $
  */
 
 #include "cutter.h"
@@ -125,7 +125,6 @@ void cCuttingThread::Action(void)
                     error = "toFile 1";
                     break;
                     }
-                 toFile->SetReadAhead(MEGABYTE(20));
                  FileSize = 0;
                  }
               LastIFrame = 0;
@@ -166,7 +165,6 @@ void cCuttingThread::Action(void)
                        error = "toFile 2";
                        break;
                        }
-                    toFile->SetReadAhead(MEGABYTE(20));
                     FileSize = 0;
                     }
                  }
