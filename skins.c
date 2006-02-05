@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.7 2006/01/08 11:40:18 kls Exp $
+ * $Id: skins.c 1.8 2006/02/05 14:53:04 kls Exp $
  */
 
 #include "skins.h"
@@ -106,6 +106,16 @@ const char *cSkinDisplayMenu::GetTabbedText(const char *s, int Tab)
   strncpy(buffer, a, n);
   buffer[n] = 0;
   return buffer;
+}
+
+int cSkinDisplayMenu::GetTextAreaWidth(void) const
+{
+  return 0;
+}
+
+const cFont *cSkinDisplayMenu::GetTextAreaFont(bool) const
+{
+  return NULL;
 }
 
 // --- cSkinDisplayReplay::cProgressBar --------------------------------------

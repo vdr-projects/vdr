@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.17 2006/02/05 13:46:37 kls Exp $
+ * $Id: skinsttng.c 1.18 2006/02/05 14:51:39 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -347,6 +347,8 @@ public:
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
+  virtual int GetTextAreaWidth(void) const;
+  virtual const cFont *GetTextAreaFont(bool FixedFont) const;
   virtual void Flush(void);
   };
 
@@ -618,10 +620,20 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
 
 void cSkinSTTNGDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
+  textScroller.Set(osd, x3, y3, GetTextAreaWidth(), y4 - y3, Text, GetTextAreaFont(FixedFont), Theme.Color(clrMenuText), Theme.Color(clrBackground));
+  SetScrollbar();
+}
+
+int cSkinSTTNGDisplayMenu::GetTextAreaWidth(void) const
+{
+  return x4 - x3;
+}
+
+const cFont *cSkinSTTNGDisplayMenu::GetTextAreaFont(bool FixedFont) const
+{
   const cFont *font = cFont::GetFont(FixedFont ? fontFix : fontOsd);
   font = cFont::GetFont(fontSml);//XXX -> make a way to let the text define which font to use
-  textScroller.Set(osd, x3, y3, x4 - x3, y4 - y3, Text, font, Theme.Color(clrMenuText), Theme.Color(clrBackground));
-  SetScrollbar();
+  return font;
 }
 
 void cSkinSTTNGDisplayMenu::Flush(void)

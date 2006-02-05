@@ -4314,3 +4314,5 @@ Video Disk Recorder Revision History
 - Made all font and image data 'const' (thanks to Darren Salt).
 - Fixed scrolling with Up/Down in case there are non-selectable items at the
   beginning or end of the menu (reported by Helmut Auer).
+- Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
+  that wants to do special text formatting can do so (thanks to Alexander Rieger).
