@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.409 2006/02/04 14:47:27 kls Exp $
+ * $Id: menu.c 1.410 2006/02/05 13:31:08 kls Exp $
  */
 
 #include "menu.h"
@@ -1437,7 +1437,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kYellow: if (schedules)
                         return AddSubMenu(new cMenuWhatsOn(schedules, false, cMenuWhatsOn::CurrentChannel()));
                      break;
-       case kBlue:   if (Count())
+       case kBlue:   if (Count() && otherChannel)
                         return Switch();
                      break;
        case kOk:     if (Count())

@@ -4307,3 +4307,5 @@ Video Disk Recorder Revision History
   (reported by Christian Jacobsen).
 - Enabled generating a core dump if VDR is run with a different user id (thanks
   to Ville Skyttä).
+- Fixed handling the "Blue" key in the "Schedule" menu for the current channel
+  (thanks to Rolf Ahrenberg).
