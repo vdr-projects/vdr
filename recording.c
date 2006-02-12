@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.134 2006/02/05 12:34:08 kls Exp $
+ * $Id: recording.c 1.135 2006/02/12 11:34:19 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,8 @@
 #define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MAX_SUBTITLE_LENGTH  40
+
+#define MAX_LINK_LEVEL  6
 
 bool VfatFileSystem = false;
 
@@ -811,7 +813,7 @@ void cRecordings::Refresh(bool Foreground)
   ScanVideoDir(VideoDirectory, Foreground);
 }
 
-void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
+void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
 {
   cReadDir d(DirName);
   struct dirent *e;
@@ -821,7 +823,13 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
            asprintf(&buffer, "%s/%s", DirName, e->d_name);
            struct stat st;
            if (stat(buffer, &st) == 0) {
+              int Link = 0;
               if (S_ISLNK(st.st_mode)) {
+                 if (LinkLevel > MAX_LINK_LEVEL) {
+                    isyslog("max link level exceeded - not scanning %s", buffer);
+                    continue;
+                    }
+                 Link = 1;
                  char *old = buffer;
                  buffer = ReadLink(old);
                  free(old);
@@ -849,7 +857,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
                        delete r;
                     }
                  else
-                    ScanVideoDir(buffer, Foreground);
+                    ScanVideoDir(buffer, Foreground, LinkLevel + Link);
                  }
               }
            free(buffer);

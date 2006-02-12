@@ -4323,3 +4323,6 @@ Video Disk Recorder Revision History
   Skawina).
 - The "Back" key now restores the original string when pressed while editing a
   string item (suggested by Markus Hahn).
+- Now stopping scanning the video directory if there are too many levels of
+  symbolic links, which might indicate a recursive link loop (based on a patch
+  from Helmut Auer).

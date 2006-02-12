@@ -552,6 +552,8 @@ Helmut Auer <vdr@helmutauer.de>
  for separating the 'install' target into several individual targets
  for reporting a problem with scrolling with Up/Down in case there are non-selectable
  items at the beginning of the menu
+ for a patch that was used to implement stopping scanning the video directory if
+ there are too many levels of symbolic links
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
