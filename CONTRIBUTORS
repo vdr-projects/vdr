@@ -1309,6 +1309,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for adding an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
  process the audio data
  for improving OSD area handling in cDvbSpuDecoder
+ for suggesting to log the description (if present) in case a thread is canceled
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

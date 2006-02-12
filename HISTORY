@@ -4327,3 +4327,5 @@ Video Disk Recorder Revision History
   symbolic links, which might indicate a recursive link loop (based on a patch
   from Helmut Auer).
 - Improved OSD area handling in cDvbSpuDecoder (thanks to Marco Schlüßler).
+- Now logging the description (if present) in case a thread is canceled (suggested
+  by Marco Schlüßler).
