@@ -1718,6 +1718,8 @@ Malte Schröder <MalteSch@gmx.de>
 
 Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting to only start recordings if there is at least 300MB free disk space
+ for suggesting that the "Back" key should restore the original string when pressed
+ while editing a string item
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file

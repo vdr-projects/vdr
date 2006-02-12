@@ -4321,3 +4321,5 @@ Video Disk Recorder Revision History
 
 - Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
   Skawina).
+- The "Back" key now restores the original string when pressed while editing a
+  string item (suggested by Markus Hahn).
