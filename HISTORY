@@ -4316,3 +4316,8 @@ Video Disk Recorder Revision History
   beginning or end of the menu (reported by Helmut Auer).
 - Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
   that wants to do special text formatting can do so (thanks to Alexander Rieger).
+
+2006-02-12: Version 1.3.43
+
+- Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
+  Skawina).
