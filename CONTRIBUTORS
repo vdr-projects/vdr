@@ -1308,6 +1308,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for removing leftover 'needsBufferReserve' variable from cTransfer
  for adding an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
  process the audio data
+ for improving OSD area handling in cDvbSpuDecoder
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -4326,3 +4326,4 @@ Video Disk Recorder Revision History
 - Now stopping scanning the video directory if there are too many levels of
   symbolic links, which might indicate a recursive link loop (based on a patch
   from Helmut Auer).
+- Improved OSD area handling in cDvbSpuDecoder (thanks to Marco Schlüßler).

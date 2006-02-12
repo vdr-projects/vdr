@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.19 2006/01/08 11:39:46 kls Exp $
+ * $Id: dvbspu.c 1.20 2006/02/12 11:50:20 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -368,11 +368,11 @@ void cDvbSpuDecoder::Draw(void)
     if (bg || fg) {
         if (osd == NULL) {
            osd = cOsdProvider::NewOsd(0, 0);
-           int x2 = areaSize.x2;
-           while ((x2 - areaSize.x1 + 1) & 0x03)
-                 x2++;
-           tArea Area = { areaSize.x1, areaSize.y1, x2, areaSize.y2, (fg && bg) ? 4 : 2 };
-           osd->SetAreas(&Area, 1);
+           if ((areaSize.width() & 3) != 0)
+              areaSize.x2 += 4 - (areaSize.width() & 3);
+           tArea Area = { areaSize.x1, areaSize.y1, areaSize.x2, areaSize.y2, (fg && bg) ? 4 : 2 };
+           if (osd->SetAreas(&Area, 1) != oeOk)
+              dsyslog("dvbspu: AreaSize (%d, %d) (%d, %d) Bpp %d", areaSize.x1, areaSize.y1, areaSize.x2, areaSize.y2, (fg && bg) ? 4 : 2 );
            }
 
         if (bg)
