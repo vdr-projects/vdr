@@ -548,7 +548,7 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
  for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
  for suggesting to give a message when an instant recording is started
- fpr suggesting to retry a shutdown after a while
+ for suggesting to retry a shutdown after a while
  for separating the 'install' target into several individual targets
  for reporting a problem with scrolling with Up/Down in case there are non-selectable
  items at the beginning of the menu
@@ -1573,6 +1573,7 @@ Frank Krömmelbein <kroemmelbein@gmx.de>
  for adding missing storing of the MenuScrollPage parameter
  for reporting a problem with channel switching with the Down (Up) key in case the
  current channel is already the first (last) in the list
+ for fixing some typos in the CONTRIBUTORS file
 
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
@@ -1730,7 +1731,7 @@ Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
 
 Alexander Hans <cleditor@arcor.de>
- fpr reporting a crash when pressing '0' in the "Schedule" menu on a channel that
+ for reporting a crash when pressing '0' in the "Schedule" menu on a channel that
  doesn't have any EPG data 
 
 Daniel Karsubka <dkar@gmx.de>
