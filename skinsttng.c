@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.18 2006/02/05 14:51:39 kls Exp $
+ * $Id: skinsttng.c 1.19 2006/02/17 15:57:37 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -632,7 +632,7 @@ int cSkinSTTNGDisplayMenu::GetTextAreaWidth(void) const
 const cFont *cSkinSTTNGDisplayMenu::GetTextAreaFont(bool FixedFont) const
 {
   const cFont *font = cFont::GetFont(FixedFont ? fontFix : fontOsd);
-  font = cFont::GetFont(fontSml);//XXX -> make a way to let the text define which font to use
+  //XXX -> make a way to let the text define which font to use
   return font;
 }
 

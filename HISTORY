@@ -4330,3 +4330,4 @@ Video Disk Recorder Revision History
 - Now logging the description (if present) in case a thread is canceled (suggested
   by Marco Schlüßler).
 - cMenuText now uses the given font (thanks to Rolf Ahrenberg).
+- The ST:TNG skin now uses the fixed font if requested when displaying texts.
