@@ -4317,7 +4317,7 @@ Video Disk Recorder Revision History
 - Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
   that wants to do special text formatting can do so (thanks to Alexander Rieger).
 
-2006-02-12: Version 1.3.43
+2006-02-17: Version 1.3.43
 
 - Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
   Skawina).
@@ -4329,3 +4329,4 @@ Video Disk Recorder Revision History
 - Improved OSD area handling in cDvbSpuDecoder (thanks to Marco Schlüßler).
 - Now logging the description (if present) in case a thread is canceled (suggested
   by Marco Schlüßler).
+- cMenuText now uses the given font (thanks to Rolf Ahrenberg).

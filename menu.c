@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.410 2006/02/05 13:31:08 kls Exp $
+ * $Id: menu.c 1.411 2006/02/17 15:38:46 kls Exp $
  */
 
 #include "menu.h"
@@ -572,6 +572,7 @@ cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
   text = NULL;
+  font = Font;
   SetText(Text);
 }
 
@@ -589,7 +590,7 @@ void cMenuText::SetText(const char *Text)
 void cMenuText::Display(void)
 {
   cOsdMenu::Display();
-  DisplayMenu()->SetText(text, true);//XXX define control character in text to choose the font???
+  DisplayMenu()->SetText(text, font == fontFix); //XXX define control character in text to choose the font???
   cStatus::MsgOsdTextItem(text);
 }
 

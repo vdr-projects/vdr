@@ -955,6 +955,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  via the numeric keys
  for reporting a problem with expired timers when shutting down via the Power key
  for fixing handling the "Blue" key in the "Schedule" menu for the current channel
+ for making cMenuText use the given font
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
