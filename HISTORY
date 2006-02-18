@@ -4339,3 +4339,5 @@ Video Disk Recorder Revision History
 - Made CharArray::DataOwnData::assign() in 'libsi' more robust against invalid
   data (suggested by Oliver Endriss). Also changed CharArray::DataOwnData::Delete()
   so that it sets 'size' and 'data' to 0.
+- Now resetting the channel number if the number entered through the numeric keys
+  exceeds the maximum channel number (thanks to Rolf Ahrenberg).

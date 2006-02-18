@@ -958,6 +958,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a problem with expired timers when shutting down via the Power key
  for fixing handling the "Blue" key in the "Schedule" menu for the current channel
  for making cMenuText use the given font
+ for making the channel number be reset if the number entered through the numeric keys
+ exceeds the maximum channel number
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
