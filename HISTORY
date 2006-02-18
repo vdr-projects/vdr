@@ -4343,3 +4343,6 @@ Video Disk Recorder Revision History
   exceeds the maximum channel number (thanks to Rolf Ahrenberg).
 - The language code in the 'X' component records of EPG data can now consist of
   two codes, separated by '+'.
+- If a recording starts and there is no EPG data available for the recorded channel,
+  the 'X' audio component records for the 'info.vdr' file are now generated from the
+  channel's PID data.

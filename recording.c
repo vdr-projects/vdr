@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.135 2006/02/12 11:34:19 kls Exp $
+ * $Id: recording.c 1.136 2006/02/18 16:03:40 kls Exp $
  */
 
 #include "recording.h"
@@ -256,15 +256,34 @@ void cResumeFile::Delete(void)
 
 // --- cRecordingInfo --------------------------------------------------------
 
-cRecordingInfo::cRecordingInfo(tChannelID ChannelID, const cEvent *Event)
+cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 {
-  channelID = ChannelID;
+  channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
   if (Event) {
      event = Event;
      ownEvent = NULL;
      }
-  else
+  else {
      event = ownEvent = new cEvent(0);
+     if (Channel) {
+        cComponents *Components = NULL;
+        for (int i = 0; i < MAXAPIDS; i++) {
+            if (*Channel->Alang(i)) {
+               if (!Components)
+                  Components = new cComponents;
+               Components->SetComponent(Components->NumComponents(), 2, 3, Channel->Alang(i), NULL);
+               }
+            }
+        for (int i = 0; i < MAXDPIDS; i++) {
+            if (*Channel->Dlang(i)) {
+               if (!Components)
+                  Components = new cComponents;
+               Components->SetComponent(Components->NumComponents(), 2, 5, Channel->Dlang(i), NULL);
+               }
+            }
+        ownEvent->SetComponents(Components);
+        }
+     }
 }
 
 cRecordingInfo::~cRecordingInfo()
@@ -467,7 +486,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   priority = Timer->Priority();
   lifetime = Timer->Lifetime();
   // handle info:
-  info = new cRecordingInfo(Timer->Channel()->GetChannelID(), Event);
+  info = new cRecordingInfo(Timer->Channel(), Event);
   // this is a somewhat ugly hack to get the 'summary' information from the
   // timer into the recording info, but it saves us from having to actually
   // copy the entire event data:
