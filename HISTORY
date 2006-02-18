@@ -4334,3 +4334,5 @@ Video Disk Recorder Revision History
 - Fixed some typos in the CONTRIBUTORS file (thanks to Frank Krömmelbein).
 - Changed offset and size handling in 'libsi' from 'unsigned' to 'signed', so that
   overflows can be better detected (thanks to Marcel Wiesweg).
+- Checking data size in CaDescriptor::Parse() and LinkageDescriptor::Parse() of
+  'libsi' to avoid crashes with invalid data (thanks to Marcel Wiesweg).
