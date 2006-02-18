@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.30 2006/01/29 14:03:13 kls Exp $
+ * $Id: epg.h 1.31 2006/02/18 14:42:25 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -24,7 +24,7 @@ enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 struct tComponent {
   uchar stream;
   uchar type;
-  char language[4];
+  char language[MAXLANGCODE2];
   char *description;
   cString ToString(void);
   bool FromString(const char *s);

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.58 2006/02/03 13:16:54 kls Exp $
+ * $Id: epg.c 1.59 2006/02/18 15:01:59 kls Exp $
  */
 
 #include "epg.h"
@@ -23,14 +23,14 @@
 cString tComponent::ToString(void)
 {
   char buffer[256];
-  snprintf(buffer, sizeof(buffer), "%X %02X %-3s %s", stream, type, language, description ? description : "");
+  snprintf(buffer, sizeof(buffer), "%X %02X %s %s", stream, type, language, description ? description : "");
   return buffer;
 }
 
 bool tComponent::FromString(const char *s)
 {
   unsigned int Stream, Type;
-  int n = sscanf(s, "%X %02X %3c %a[^\n]", &Stream, &Type, language, &description);
+  int n = sscanf(s, "%X %02X %7s %a[^\n]", &Stream, &Type, language, &description); // 7 = MAXLANGCODE2 - 1
   if (n != 4 || isempty(description)) {
      free(description);
      description = NULL;

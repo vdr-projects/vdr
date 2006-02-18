@@ -4341,3 +4341,5 @@ Video Disk Recorder Revision History
   so that it sets 'size' and 'data' to 0.
 - Now resetting the channel number if the number entered through the numeric keys
   exceeds the maximum channel number (thanks to Rolf Ahrenberg).
+- The language code in the 'X' component records of EPG data can now consist of
+  two codes, separated by '+'.

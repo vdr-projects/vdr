@@ -8,9 +8,9 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.48 2006/01/29 11:31:58 kls Exp $
+.\" $Id: vdr.5 1.49 2006/02/18 15:59:00 kls Exp $
 .\"
-.TH vdr 5 "08 Jan 2006" "1.3.38" "Video Disk Recorder Files"
+.TH vdr 5 "19 Feb 2006" "1.3.43" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -641,7 +641,7 @@ l l.
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
 <stream>       @is the stream content (1 = video, 2 = audio)
 <type>         @is the stream type according to ETSI EN 300 468
-<language>     @is the three letter language code
+<language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component
 <vps time>     @is the Video Programming Service time of this event
 .TE
