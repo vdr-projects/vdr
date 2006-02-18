@@ -4336,3 +4336,6 @@ Video Disk Recorder Revision History
   overflows can be better detected (thanks to Marcel Wiesweg).
 - Checking data size in CaDescriptor::Parse() and LinkageDescriptor::Parse() of
   'libsi' to avoid crashes with invalid data (thanks to Marcel Wiesweg).
+- Made CharArray::DataOwnData::assign() in 'libsi' more robust against invalid
+  data (suggested by Oliver Endriss). Also changed CharArray::DataOwnData::Delete()
+  so that it sets 'size' and 'data' to 0.

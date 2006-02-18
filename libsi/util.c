@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 1.6 2006/02/18 10:38:20 kls Exp $
+ *   $Id: util.c 1.7 2006/02/18 11:17:50 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -119,6 +119,8 @@ CharArray::DataOwnData::~DataOwnData() {
 
 void CharArray::DataOwnData::assign(const unsigned char*d, int s) {
    Delete();
+   if (!d || s > 100000 || s <= 0) // ultimate plausibility check
+      return;
    size=s;
    unsigned char *newdata=new unsigned char[size];
    memcpy(newdata, d, size);
@@ -127,6 +129,8 @@ void CharArray::DataOwnData::assign(const unsigned char*d, int s) {
 
 void CharArray::DataOwnData::Delete() {
    delete[] data;
+   size=0;
+   data=0;
 }
 
 CharArray::DataForeignData::~DataForeignData() {
