@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.c 1.3 2004/02/20 13:44:59 kls Exp $
+ *   $Id: section.c 1.4 2006/02/18 10:38:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -18,7 +18,7 @@ namespace SI {
 /*********************** PAT ***********************/
 
 void PAT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const pat>(s, offset);
    associationLoop.setData(data+offset, getLength()-offset-4);
 }
@@ -48,7 +48,7 @@ void CAT::Parse() {
 /*********************** PMT ***********************/
 
 void PMT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const pmt>(s, offset);
    commonDescriptors.setDataAndOffset(data+offset, HILO(s->program_info_length), offset);
    streamLoop.setData(data+offset, getLength()-offset-4);
@@ -71,7 +71,7 @@ int PMT::Stream::getStreamType() const {
 }
 
 void PMT::Stream::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const pmt_info>(s, offset);
    streamDescriptors.setData(data+offset, HILO(s->ES_info_length));
 }
@@ -79,7 +79,7 @@ void PMT::Stream::Parse() {
 /*********************** TSDT ***********************/
 
 void TSDT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const tsdt>(s, offset);
    transportStreamDescriptors.setDataAndOffset(data+offset, getLength()-offset-4, offset);
 }
@@ -91,7 +91,7 @@ int NIT::getNetworkId() const {
 }
 
 void NIT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const nit>(s, offset);
    commonDescriptors.setDataAndOffset(data+offset, HILO(s->network_descriptor_length), offset);
    const nit_mid *mid;
@@ -108,7 +108,7 @@ int NIT::TransportStream::getOriginalNetworkId() const {
 }
 
 void NIT::TransportStream::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const ni_ts>(s, offset);
    transportStreamDescriptors.setData(data+offset, HILO(s->transport_descriptors_length));
 }
@@ -116,7 +116,7 @@ void NIT::TransportStream::Parse() {
 /*********************** SDT ***********************/
 
 void SDT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const sdt>(s, offset);
    serviceLoop.setData(data+offset, getLength()-offset-4); //4 is for CRC
 }
@@ -150,7 +150,7 @@ int SDT::Service::getFreeCaMode() const {
 }
 
 void SDT::Service::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const sdt_descr>(s, offset);
    serviceDescriptors.setData(data+offset, HILO(s->descriptors_loop_length));
 }
@@ -188,7 +188,7 @@ bool EIT::isActualTS() const {
 }
 
 void EIT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const eit>(s, offset);
    //printf("%d %d %d %d %d\n", getServiceId(), getTransportStreamId(), getOriginalNetworkId(), isPresentFollowing(), isActualTS());
    eventLoop.setData(data+offset, getLength()-offset-4); //4 is for CRC
@@ -243,7 +243,7 @@ int EIT::Event::getFreeCaMode() const {
 }
 
 void EIT::Event::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const eit_event>(s, offset);
    //printf("%d %d %d\n", getStartTime(), getDuration(), getRunningStatus());
    eventDescriptors.setData(data+offset, HILO(s->descriptors_loop_length));
@@ -266,7 +266,7 @@ time_t TOT::getTime() const {
 }
 
 void TOT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const tot>(s, offset);
    descriptorLoop.setData(data+offset, getLength()-offset-4);
 }
@@ -274,7 +274,7 @@ void TOT::Parse() {
 /*********************** RST ***********************/
 
 void RST::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const rst *s;
    data.setPointerAndOffset<const rst>(s, offset);
    infoLoop.setData(data+offset, getLength()-offset);
@@ -315,7 +315,7 @@ int AIT::getAITVersion() const {
 }
 
 void AIT::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const ait>(first, offset);
    commonDescriptors.setDataAndOffset(data+offset, HILO(first->common_descriptors_length), offset);
    const ait_mid *mid;
@@ -336,7 +336,7 @@ int AIT::Application::getControlCode() const {
 }
 
 void AIT::Application::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const ait_app>(s, offset);
    applicationDescriptors.setData(data+offset, HILO(s->application_descriptors_length));
 }

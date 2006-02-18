@@ -4317,7 +4317,7 @@ Video Disk Recorder Revision History
 - Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
   that wants to do special text formatting can do so (thanks to Alexander Rieger).
 
-2006-02-17: Version 1.3.43
+2006-02-18: Version 1.3.43
 
 - Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
   Skawina).
@@ -4332,3 +4332,5 @@ Video Disk Recorder Revision History
 - cMenuText now uses the given font (thanks to Rolf Ahrenberg).
 - The ST:TNG skin now uses the fixed font if requested when displaying texts.
 - Fixed some typos in the CONTRIBUTORS file (thanks to Frank Krömmelbein).
+- Changed offset and size handling in 'libsi' from 'unsigned' to 'signed', so that
+  overflows can be better detected (thanks to Marcel Wiesweg).

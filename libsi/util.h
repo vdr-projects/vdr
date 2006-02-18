@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.5 2004/10/23 14:22:40 kls Exp $
+ *   $Id: util.h 1.6 2006/02/18 10:38:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -37,14 +37,14 @@ public:
    ~CharArray();
 
    //can be called exactly once
-   void assign(const unsigned char*data, unsigned int size, bool doCopy=true);
+   void assign(const unsigned char*data, int size, bool doCopy=true);
    //compares to a null-terminated string
    bool operator==(const char *string) const;
    //compares to another CharArray (data not necessarily null-terminated)
    bool operator==(const CharArray &other) const;
 
    //returns another CharArray with its offset incremented by offset
-   CharArray operator+(const unsigned int offset) const;
+   CharArray operator+(const int offset) const;
 
    //access and convenience methods
    const unsigned char* getData() const { return data_->data+off; }
@@ -52,28 +52,28 @@ public:
    template <typename T> const T* getData() const { return (T*)(data_->data+off); }
    template <typename T> const T* getData(int offset) const { return (T*)(data_->data+offset+off); }
       //sets p to point to data+offset, increments offset
-   template <typename T> void setPointerAndOffset(const T* &p, unsigned int &offset) const { p=(T*)getData(offset); offset+=sizeof(T); }
-   unsigned char operator[](const unsigned int index) const { return data_->data ? data_->data[off+index] : 0; }
+   template <typename T> void setPointerAndOffset(const T* &p, int &offset) const { p=(T*)getData(offset); offset+=sizeof(T); }
+   unsigned char operator[](const int index) const { return data_->data ? data_->data[off+index] : 0; }
    int getLength() const { return data_->size; }
-   u_int16_t TwoBytes(const unsigned int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
-   u_int32_t FourBytes(const unsigned int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
+   u_int16_t TwoBytes(const int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
+   u_int32_t FourBytes(const int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
 
    bool isValid() const { return data_->valid; }
-   bool checkSize(unsigned int offset) { return (data_->valid && (data_->valid=(off+offset < data_->size))); }
+   bool checkSize(int offset) { return (data_->valid && offset>=0 && (data_->valid=(off+offset < data_->size))); }
 
-   void addOffset(unsigned int offset) { off+=offset; }
+   void addOffset(int offset) { off+=offset; }
 private:
    class Data {
    public:
       Data();
       virtual ~Data();
 
-      virtual void assign(const unsigned char*data, unsigned int size) = 0;
+      virtual void assign(const unsigned char*data, int size) = 0;
       virtual void Delete() = 0;
 
-      u_int16_t TwoBytes(const unsigned int index) const
+      u_int16_t TwoBytes(const int index) const
          { return (data[index] << 8) | data[index+1]; }
-      u_int32_t FourBytes(const unsigned int index) const
+      u_int32_t FourBytes(const int index) const
          { return (data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | data[index+3]; }
       /*#ifdef CHARARRAY_THREADSAFE
       void Lock();
@@ -83,11 +83,11 @@ private:
       void Unlock() {}
       #endif
       Data(const Data& d);
-      void assign(unsigned int size);
+      void assign(int size);
       */
 
       const unsigned char*data;
-      unsigned int size;
+      int size;
 
       // count_ is the number of CharArray objects that point at this
       // count_ must be initialized to 1 by all constructors
@@ -106,18 +106,18 @@ private:
    public:
       DataOwnData() {}
       virtual ~DataOwnData();
-      virtual void assign(const unsigned char*data, unsigned int size);
+      virtual void assign(const unsigned char*data, int size);
       virtual void Delete();
    };
    class DataForeignData : public Data {
    public:
       DataForeignData() {}
       virtual ~DataForeignData();
-      virtual void assign(const unsigned char*data, unsigned int size);
+      virtual void assign(const unsigned char*data, int size);
       virtual void Delete();
    };
    Data* data_;
-   unsigned int off;
+   int off;
 };
 
 

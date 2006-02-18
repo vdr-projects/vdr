@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.14 2005/05/28 14:11:16 kls Exp $
+ *   $Id: si.c 1.15 2006/02/18 10:38:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -22,7 +22,7 @@ Object::Object() {
 Object::Object(CharArray &d) : data(d) {
 }
 
-void Object::setData(const unsigned char*d, unsigned int size, bool doCopy) {
+void Object::setData(const unsigned char*d, int size, bool doCopy) {
    data.assign(d, size, doCopy);
 }
 
@@ -30,7 +30,7 @@ void Object::setData(CharArray &d) {
    data=d;
 }
 
-bool Object::checkSize(unsigned int offset) {
+bool Object::checkSize(int offset) {
    return data.checkSize(offset);
 }
 

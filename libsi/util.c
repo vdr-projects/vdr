@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 1.5 2005/05/28 14:15:29 kls Exp $
+ *   $Id: util.c 1.6 2006/02/18 10:38:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -47,7 +47,7 @@ CharArray& CharArray::operator=(const CharArray &f) {
     return *this;
 }
 
-void CharArray::assign(const unsigned char*data, unsigned int size, bool doCopy) {
+void CharArray::assign(const unsigned char*data, int size, bool doCopy) {
     //immutable
     if (!data_)
       data_= doCopy ? (Data*)new DataOwnData() : (Data*)new DataForeignData();
@@ -76,13 +76,13 @@ bool CharArray::operator==(const CharArray &other) const {
       return false;
 
    //do _not_ use strcmp! Data is not necessarily null-terminated.
-   for (unsigned int i=0;i<data_->size;i++)
+   for (int i=0;i<data_->size;i++)
       if (data_->data[i] != other.data_->data[i])
          return false;
    return true;
 }
 
-CharArray CharArray::operator+(const unsigned int offset) const {
+CharArray CharArray::operator+(const int offset) const {
    CharArray f(*this);
    f.off+=offset;
    return f;
@@ -117,7 +117,7 @@ CharArray::DataOwnData::~DataOwnData() {
    Delete();
 }
 
-void CharArray::DataOwnData::assign(const unsigned char*d, unsigned int s) {
+void CharArray::DataOwnData::assign(const unsigned char*d, int s) {
    Delete();
    size=s;
    unsigned char *newdata=new unsigned char[size];
@@ -133,7 +133,7 @@ CharArray::DataForeignData::~DataForeignData() {
    Delete();
 }
 
-void CharArray::DataForeignData::assign(const unsigned char*d, unsigned int s) {
+void CharArray::DataForeignData::assign(const unsigned char*d, int s) {
    size=s;
    data=d;
 }
@@ -143,7 +143,7 @@ void CharArray::DataForeignData::Delete() {
 }
 
 /*
-void CharArray::Data::assign(unsigned int s) {
+void CharArray::Data::assign(int s) {
    if (data)
       delete[] data;
    size=s;
