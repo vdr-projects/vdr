@@ -1316,6 +1316,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  process the audio data
  for improving OSD area handling in cDvbSpuDecoder
  for suggesting to log the description (if present) in case a thread is canceled
+ for fixing handling DPID when deciding whether to switch to 'Transfer Mode'
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

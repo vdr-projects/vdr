@@ -4353,3 +4353,5 @@ Video Disk Recorder Revision History
   in case this is a replay session (based on a patch from Rolf Ahrenberg).
 - If a recording starts and the channel's audio PID data has more language code
   information than the EPG's component data, the code from the channel is taken.
+- Fixed handling DPID when deciding whether to switch to 'Transfer Mode' (thanks
+  to Marco Schlüßler).
