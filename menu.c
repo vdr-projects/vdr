@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.412 2006/02/18 12:42:24 kls Exp $
+ * $Id: menu.c 1.413 2006/02/19 10:18:28 kls Exp $
  */
 
 #include "menu.h"
@@ -2989,9 +2989,9 @@ static void SetTrackDescriptions(int LiveChannel)
          const tComponent *p = Components->Component(i);
          if (p->stream == 2) {
             if (p->type == 0x05)
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
             else
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
             }
          }
      }

@@ -4317,7 +4317,7 @@ Video Disk Recorder Revision History
 - Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
   that wants to do special text formatting can do so (thanks to Alexander Rieger).
 
-2006-02-18: Version 1.3.43
+2006-02-19: Version 1.3.43
 
 - Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
   Skawina).
@@ -4349,3 +4349,5 @@ Video Disk Recorder Revision History
 - Externally provided EPG data (with table ID 0x00) now gets its component
   descriptors set from the broadcast data, so that language codes and descriptions
   are available (suggested by Andreas Brugger).
+- When setting the audio track descriptions, the language codes are now also set
+  in case this is a replay session (based on a patch from Rolf Ahrenberg).

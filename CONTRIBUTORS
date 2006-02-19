@@ -960,6 +960,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making cMenuText use the given font
  for making the channel number be reset if the number entered through the numeric keys
  exceeds the maximum channel number
+ for suggesting to also set the language codes when setting the audio track descriptions
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
