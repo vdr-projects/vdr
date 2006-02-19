@@ -4355,3 +4355,5 @@ Video Disk Recorder Revision History
   information than the EPG's component data, the code from the channel is taken.
 - Fixed handling DPID when deciding whether to switch to 'Transfer Mode' (thanks
   to Marco Schlüßler).
+- Fixed replaying recordings of radio channels with many audio tracks (thanks to
+  Reinhard Nissl).

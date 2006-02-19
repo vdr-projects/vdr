@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.42 2006/01/08 11:39:41 kls Exp $
+ * $Id: dvbplayer.c 1.43 2006/02/19 14:20:15 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -80,6 +80,8 @@ private:
   int length;
   bool hasData;
   cCondWait newSet;
+  cCondVar newDataCond;
+  cMutex newDataMutex;
 protected:
   void Action(void);
 public:
@@ -88,6 +90,7 @@ public:
   void Clear(void);
   int Read(cUnbufferedFile *File, uchar *Buffer, int Length);
   bool Reading(void) { return buffer; }
+  bool WaitForDataMs(int msToWait);
   };
 
 cNonBlockingFileReader::cNonBlockingFileReader(void)
@@ -150,8 +153,11 @@ void cNonBlockingFileReader::Action(void)
            int r = f->Read(buffer + length, wanted - length);
            if (r >= 0) {
               length += r;
-              if (!r || length == wanted) // r == 0 means EOF
+              if (!r || length == wanted) { // r == 0 means EOF
+                 cMutexLock NewDataLock(&newDataMutex);
                  hasData = true;
+                 newDataCond.Broadcast();
+                 }
               }
            else if (r < 0 && FATALERRNO) {
               LOG_ERROR;
@@ -162,6 +168,14 @@ void cNonBlockingFileReader::Action(void)
         Unlock();
         newSet.Wait(1000);
         }
+}
+
+bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
+{
+  cMutexLock NewDataLock(&newDataMutex);
+  if (hasData)
+     return true;
+  return newDataCond.TimedWait(newDataMutex, msToWait);
 }
 
 // --- cDvbPlayer ------------------------------------------------------------
@@ -362,10 +376,14 @@ void cDvbPlayer::Action(void)
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;
   bool Sleep = false;
+  bool WaitingForData = false;
 
   while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
         if (Sleep) {
-           cCondWait::SleepMs(3); // this keeps the CPU load low
+           if (WaitingForData)
+              nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
+           else
+              cCondWait::SleepMs(3); // this keeps the CPU load low
            Sleep = false;
            }
         cPoller Poller;
@@ -423,11 +441,14 @@ void cDvbPlayer::Action(void)
                     }
                  int r = nonBlockingFileReader->Read(replayFile, b, Length);
                  if (r > 0) {
+                    WaitingForData = false;
                     readFrame = new cFrame(b, -r, ftUnknown, readIndex); // hands over b to the ringBuffer
                     b = NULL;
                     }
                  else if (r == 0)
                     eof = true;
+                 else if (r < 0 && errno == EAGAIN)
+                    WaitingForData = true;
                  else if (r < 0 && FATALERRNO) {
                     LOG_ERROR;
                     break;
