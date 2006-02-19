@@ -4357,3 +4357,5 @@ Video Disk Recorder Revision History
   to Marco Schlüßler).
 - Fixed replaying recordings of radio channels with many audio tracks (thanks to
   Reinhard Nissl).
+- Added a comment to tChannelID::nid, explaining that is is actually the "original"
+  network id.
