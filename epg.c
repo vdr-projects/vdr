@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.59 2006/02/18 15:01:59 kls Exp $
+ * $Id: epg.c 1.60 2006/02/19 11:15:44 kls Exp $
  */
 
 #include "epg.h"
@@ -78,6 +78,9 @@ void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *
   p->stream = Stream;
   p->type = Type;
   strn0cpy(p->language, Language, sizeof(p->language));
+  char *q = strchr(p->language, ',');
+  if (q)
+     *q = 0; // strips rest of "normalized" language codes
   p->description = strcpyrealloc(p->description, !isempty(Description) ? Description : NULL);
 }
 
