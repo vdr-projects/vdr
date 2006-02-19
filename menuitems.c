@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.31 2006/02/04 12:47:08 kls Exp $
+ * $Id: menuitems.c 1.32 2006/02/12 10:31:08 kls Exp $
  */
 
 #include "menuitems.h"
@@ -239,6 +239,7 @@ eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
 cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed)
 :cMenuEditItem(Name)
 {
+  orgValue = NULL;
   value = Value;
   length = Length;
   allowed = strdup(Allowed);
@@ -253,6 +254,7 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
 
 cMenuEditStrItem::~cMenuEditStrItem()
 {
+  free(orgValue);
   free(allowed);
 }
 
@@ -409,8 +411,10 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kRight|k_Repeat:
     case kRight: AdvancePos();
-                 if (pos == 0)
+                 if (pos == 0) {
+                    orgValue = strdup(value);
                     SetHelpKeys();
+                    }
                  break;
     case kUp|k_Repeat:
     case kUp:
@@ -469,7 +473,13 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return cMenuEditItem::ProcessKey(Key);
                  }
                  break;
+    case kBack:
     case kOk:    if (InEditMode()) {
+                    if (Key == kBack && orgValue) {
+                       strcpy(value, orgValue);
+                       free(orgValue);
+                       orgValue = NULL;
+                       }
                     pos = -1;
                     newchar = true;
                     stripspace(value);

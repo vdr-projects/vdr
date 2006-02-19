@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.152 2006/02/04 10:21:51 kls Exp $
+ * $Id: dvbdevice.c 1.153 2006/02/19 13:52:04 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -811,7 +811,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
                             );
 
   bool StartTransferMode = IsPrimaryDevice() && !DoTune
-                           && (LiveView && HasPid(Channel->Vpid() ? Channel->Vpid() : Channel->Apid(0)) && (pidHandles[ptVideo].pid != Channel->Vpid() || pidHandles[ptAudio].pid != Channel->Apid(0))// the PID is already set as DMX_PES_OTHER
+                           && (LiveView && HasPid(Channel->Vpid() ? Channel->Vpid() : Channel->Apid(0)) && (pidHandles[ptVideo].pid != Channel->Vpid() || (pidHandles[ptAudio].pid != Channel->Apid(0) && (Channel->Dpid(0) ? pidHandles[ptAudio].pid != Channel->Dpid(0) : true)))// the PID is already set as DMX_PES_OTHER
                               || !LiveView && (pidHandles[ptVideo].pid == Channel->Vpid() || pidHandles[ptAudio].pid == Channel->Apid(0)) // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
 

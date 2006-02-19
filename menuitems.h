@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.16 2006/01/21 10:45:55 kls Exp $
+ * $Id: menuitems.h 1.17 2006/02/12 10:22:03 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -77,6 +77,7 @@ public:
 
 class cMenuEditStrItem : public cMenuEditItem {
 private:
+  char *orgValue;
   char *value;
   int length;
   char *allowed;

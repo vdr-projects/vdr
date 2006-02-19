@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.15 2005/09/03 15:16:49 kls Exp $
+ *   $Id: descriptor.c 1.17 2006/02/18 11:02:25 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -16,7 +16,7 @@
 namespace SI {
 
 void ShortEventDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const descr_short_event *s;
    data.setPointerAndOffset<const descr_short_event>(s, offset);
    languageCode[0]=s->lang_code1;
@@ -38,7 +38,7 @@ int ExtendedEventDescriptor::getLastDescriptorNumber() {
 }
 
 void ExtendedEventDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_extended_event>(s, offset);
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
@@ -51,7 +51,7 @@ void ExtendedEventDescriptor::Parse() {
 }
 
 void ExtendedEventDescriptor::Item::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const item_extended_event *first;
    data.setPointerAndOffset<const item_extended_event>(first, offset);
    itemDescription.setDataAndOffset(data+offset, first->item_description_length, offset);
@@ -327,9 +327,12 @@ int CaDescriptor::getCaPid() const {
 }
 
 void CaDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_ca>(s, offset);
-   privateData.assign(data.getData(offset), getLength()-offset);
+   if (checkSize(getLength()-offset))
+      privateData.assign(data.getData(offset), getLength()-offset);
+   else
+      privateData.assign(NULL, 0);
 }
 
 int StreamIdentifierDescriptor::getComponentTag() const {
@@ -477,7 +480,7 @@ int ServiceDescriptor::getServiceType() const {
 }
 
 void ServiceDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_service>(s, offset);
    providerName.setDataAndOffset(data+offset, s->provider_name_length, offset);
    const descr_service_mid *mid;
@@ -526,7 +529,7 @@ int ComponentDescriptor::getComponentTag() const {
 }
 
 void ComponentDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_component>(s, offset);
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
@@ -580,7 +583,7 @@ int FrequencyListDescriptor::getCodingType() const {
 }
 
 void FrequencyListDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_frequency_list>(s, offset);
    frequencies.setData(data+offset, getLength()-offset);
 }
@@ -594,7 +597,7 @@ void MultilingualNameDescriptor::Parse() {
 }
 
 void MultilingualNameDescriptor::Name::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const entry_multilingual_name *s;
    data.setPointerAndOffset<const entry_multilingual_name>(s, offset);
    languageCode[0]=s->lang_code1;
@@ -609,7 +612,7 @@ int MultilingualComponentDescriptor::getComponentTag() const {
 }
 
 void MultilingualComponentDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_multilingual_component>(s, offset);
    nameLoop.setData(data+sizeof(descr_multilingual_component), getLength()-sizeof(descr_multilingual_component));
 }
@@ -619,7 +622,7 @@ void MultilingualServiceNameDescriptor::Parse() {
 }
 
 void MultilingualServiceNameDescriptor::Name::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const entry_multilingual_name *s;
    data.setPointerAndOffset<const entry_multilingual_name>(s, offset);
    languageCode[0]=s->lang_code1;
@@ -633,9 +636,12 @@ void MultilingualServiceNameDescriptor::Name::Parse() {
 }
 
 void LinkageDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_linkage>(s, offset);
-   privateData.assign(data.getData(offset), getLength()-offset);
+   if (checkSize(getLength()-offset))
+      privateData.assign(data.getData(offset), getLength()-offset);
+   else
+      privateData.assign(NULL, 0);
 }
 
 int LinkageDescriptor::getTransportStreamId() const {
@@ -682,7 +688,7 @@ AudioType ISO639LanguageDescriptor::Language::getAudioType() {
 }
 
 void PDCDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_pdc>(s, offset);
 }
 
@@ -731,7 +737,7 @@ int MHP_ApplicationDescriptor::getApplicationPriority() const {
 }
 
 void MHP_ApplicationDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const descr_application *dapp;
    data.setPointerAndOffset<const descr_application>(dapp, offset);
    profileLoop.setDataAndOffset(data+offset, dapp->application_profiles_length, offset);
@@ -790,7 +796,7 @@ int MHP_TransportProtocolDescriptor::getComponentTag() const {
 }
 
 void MHP_TransportProtocolDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    data.setPointerAndOffset<const descr_transport_protocol>(s, offset);
    if (getProtocolId() == ObjectCarousel) {
       const transport_via_oc *oc;
@@ -821,7 +827,7 @@ void MHP_DVBJApplicationDescriptor::ApplicationEntry::Parse() {
 }
 
 void MHP_DVBJApplicationLocationDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const descr_dvbj_application_location *first;
    data.setPointerAndOffset<const descr_dvbj_application_location>(first, offset);
    baseDirectory.setDataAndOffset(data+offset, first->base_directory_length, offset);
@@ -836,7 +842,7 @@ int MHP_ApplicationIconsDescriptor::getIconFlags() const {
 }
 
 void MHP_ApplicationIconsDescriptor::Parse() {
-   unsigned int offset=0;
+   int offset=0;
    const descr_application_icons_descriptor *first;
    data.setPointerAndOffset<const descr_application_icons_descriptor>(first, offset);
    iconLocator.setDataAndOffset(data+offset, first->icon_locator_length, offset);

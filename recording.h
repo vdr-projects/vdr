@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.49 2006/01/20 17:18:28 kls Exp $
+ * $Id: recording.h 1.51 2006/02/18 14:08:09 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -44,7 +44,7 @@ private:
   tChannelID channelID;
   const cEvent *event;
   cEvent *ownEvent;
-  cRecordingInfo(tChannelID ChannelID = tChannelID::InvalidID, const cEvent *Event = NULL);
+  cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
   void SetData(const char *Title, const char *ShortText, const char *Description);
 public:
   ~cRecordingInfo();
@@ -104,7 +104,7 @@ private:
   int state;
   const char *UpdateFileName(void);
   void Refresh(bool Foreground = false);
-  void ScanVideoDir(const char *DirName, bool Foreground = false);
+  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0);
 protected:
   void Action(void);
 public:

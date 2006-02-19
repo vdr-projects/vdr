@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.38 2006/01/14 15:51:26 kls Exp $
+ * $Id: channels.h 1.39 2006/02/19 14:39:43 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -69,7 +69,7 @@ extern const tChannelParameterMap HierarchyValues[];
 struct tChannelID {
 private:
   int source;
-  int nid;
+  int nid; ///< actually the "original" network id
   int tid;
   int sid;
   int rid;

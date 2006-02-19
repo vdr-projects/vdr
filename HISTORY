@@ -4316,3 +4316,46 @@ Video Disk Recorder Revision History
   beginning or end of the menu (reported by Helmut Auer).
 - Added cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont(), so that a plugin
   that wants to do special text formatting can do so (thanks to Alexander Rieger).
+
+2006-02-19: Version 1.3.43
+
+- Removed an unnecessary toFile->SetReadAhead() from cutter.c (thanks to Artur
+  Skawina).
+- The "Back" key now restores the original string when pressed while editing a
+  string item (suggested by Markus Hahn).
+- Now stopping scanning the video directory if there are too many levels of
+  symbolic links, which might indicate a recursive link loop (based on a patch
+  from Helmut Auer).
+- Improved OSD area handling in cDvbSpuDecoder (thanks to Marco Schlüßler).
+- Now logging the description (if present) in case a thread is canceled (suggested
+  by Marco Schlüßler).
+- cMenuText now uses the given font (thanks to Rolf Ahrenberg).
+- The ST:TNG skin now uses the fixed font if requested when displaying texts.
+- Fixed some typos in the CONTRIBUTORS file (thanks to Frank Krömmelbein).
+- Changed offset and size handling in 'libsi' from 'unsigned' to 'signed', so that
+  overflows can be better detected (thanks to Marcel Wiesweg).
+- Checking data size in CaDescriptor::Parse() and LinkageDescriptor::Parse() of
+  'libsi' to avoid crashes with invalid data (thanks to Marcel Wiesweg).
+- Made CharArray::DataOwnData::assign() in 'libsi' more robust against invalid
+  data (suggested by Oliver Endriss). Also changed CharArray::DataOwnData::Delete()
+  so that it sets 'size' and 'data' to 0.
+- Now resetting the channel number if the number entered through the numeric keys
+  exceeds the maximum channel number (thanks to Rolf Ahrenberg).
+- The language code in the 'X' component records of EPG data can now consist of
+  two codes, separated by '+'.
+- If a recording starts and there is no EPG data available for the recorded channel,
+  the 'X' audio component records for the 'info.vdr' file are now generated from the
+  channel's PID data.
+- Externally provided EPG data (with table ID 0x00) now gets its component
+  descriptors set from the broadcast data, so that language codes and descriptions
+  are available (suggested by Andreas Brugger).
+- When setting the audio track descriptions, the language codes are now also set
+  in case this is a replay session (based on a patch from Rolf Ahrenberg).
+- If a recording starts and the channel's audio PID data has more language code
+  information than the EPG's component data, the code from the channel is taken.
+- Fixed handling DPID when deciding whether to switch to 'Transfer Mode' (thanks
+  to Marco Schlüßler).
+- Fixed replaying recordings of radio channels with many audio tracks (thanks to
+  Reinhard Nissl).
+- Added a comment to tChannelID::nid, explaining that is is actually the "original"
+  network id.

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.12 2005/09/03 15:19:00 kls Exp $
+ *   $Id: si.h 1.13 2006/02/18 10:38:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -184,7 +184,7 @@ public:
    Object();
    Object(CharArray &d);
    //can only be called once since data is immutable
-   void setData(const unsigned char*data, unsigned int size, bool doCopy=true);
+   void setData(const unsigned char*data, int size, bool doCopy=true);
    CharArray getData() { return data; }
    //returns the valid flag which indicates if data is all right or errors have been encountered
    bool isValid() { return data.isValid(); }
@@ -196,7 +196,7 @@ protected:
    void setData(CharArray &d);
    //returns whether the given offset fits within the limits of the actual data
    //The valid flag will be set accordingly
-   bool checkSize(unsigned int offset);
+   bool checkSize(int offset);
 };
 
 class Section : public Object {
@@ -242,7 +242,7 @@ public:
    //never forget to call this
    void setData(CharArray d, int l) { Object::setData(d); checkSize(l); length=l; }
    //convenience method
-   void setDataAndOffset(CharArray d, int l, unsigned int &offset) { Object::setData(d); checkSize(l); length=l; offset+=l; }
+   void setDataAndOffset(CharArray d, int l, int &offset) { Object::setData(d); checkSize(l); length=l; offset+=l; }
    virtual int getLength() { return length; }
 private:
    int length;
@@ -384,7 +384,7 @@ typedef uint64_t  SixtyFourBit;
 template <typename T> class TypeLoop : public Loop {
 public:
    int getCount() { return getLength()/sizeof(T); }
-   T operator[](const unsigned int index) const
+   T operator[](const int index) const
       {
          switch (sizeof(T)) {
          case 1:

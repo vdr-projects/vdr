@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.114 2006/01/14 15:41:21 kls Exp $
+ * $Id: eit.c 1.115 2006/02/19 09:51:02 kls Exp $
  */
 
 #include "eit.h"
@@ -39,11 +39,13 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
   bool Empty = true;
   bool Modified = false;
+  bool HasExternalData = false;
   time_t SegmentStart = 0;
   time_t SegmentEnd = 0;
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
+      bool ExternalData = false;
       // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
       if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getStartTime() > 0 && SiEitEvent.getDuration() == 0)
          continue;
@@ -66,11 +68,14 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          pEvent->SetSeen();
          // If the existing event has a zero table ID it was defined externally and shall
          // not be overwritten.
-         if (pEvent->TableID() == 0x00)
-            continue;
+         if (pEvent->TableID() == 0x00) {
+            if (pEvent->Version() == getVersionNumber())
+               continue;
+            HasExternalData = ExternalData = true;
+            }
          // If the new event has a higher table ID, let's skip it.
          // The lower the table ID, the more "current" the information.
-         if (Tid > pEvent->TableID())
+         else if (Tid > pEvent->TableID())
             continue;
          // If the new event comes from the same table and has the same version number
          // as the existing one, let's skip it to avoid unnecessary work.
@@ -78,15 +83,16 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          // the actual Premiere transponder and the Sat.1/Pro7 transponder), but use different version numbers on
          // each of them :-( So if one DVB card is tuned to the Premiere transponder, while an other one is tuned
          // to the Sat.1/Pro7 transponder, events will keep toggling because of the bogus version numbers.
-         if (Tid == pEvent->TableID() && pEvent->Version() == getVersionNumber())
+         else if (Tid == pEvent->TableID() && pEvent->Version() == getVersionNumber())
             continue;
          }
-      // XXX TODO log different (non-zero) event IDs for the same event???
-      pEvent->SetEventID(SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
-      pEvent->SetTableID(Tid);
+      if (!ExternalData) {
+         pEvent->SetEventID(SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
+         pEvent->SetTableID(Tid);
+         pEvent->SetStartTime(SiEitEvent.getStartTime());
+         pEvent->SetDuration(SiEitEvent.getDuration());
+         }
       pEvent->SetVersion(getVersionNumber());
-      pEvent->SetStartTime(SiEitEvent.getStartTime());
-      pEvent->SetDuration(SiEitEvent.getDuration());
 
       int LanguagePreferenceShort = -1;
       int LanguagePreferenceExt = -1;
@@ -97,6 +103,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       cLinkChannels *LinkChannels = NULL;
       cComponents *Components = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
+          if (ExternalData && d->getDescriptorTag() != SI::ComponentDescriptorTag)
+             continue;
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
                  SI::ExtendedEventDescriptor *eed = (SI::ExtendedEventDescriptor *)d;
@@ -243,7 +251,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
      pSchedule->SetPresentSeen();
   if (Modified) {
      pSchedule->Sort();
-     pSchedule->DropOutdated(SegmentStart, SegmentEnd, Tid, getVersionNumber());
+     if (!HasExternalData)
+        pSchedule->DropOutdated(SegmentStart, SegmentEnd, Tid, getVersionNumber());
      Schedules->SetModified(pSchedule);
      }
 }

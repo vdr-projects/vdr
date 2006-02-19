@@ -548,10 +548,12 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
  for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
  for suggesting to give a message when an instant recording is started
- fpr suggesting to retry a shutdown after a while
+ for suggesting to retry a shutdown after a while
  for separating the 'install' target into several individual targets
  for reporting a problem with scrolling with Up/Down in case there are non-selectable
  items at the beginning of the menu
+ for a patch that was used to implement stopping scanning the video directory if
+ there are too many levels of symbolic links
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -604,6 +606,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for making cEIT::cEIT() drop EPG events that have a zero start time or duration
  for reporting an unnecessary OSD draw operation caused by the audio track description
  display in the ST:TNG skin's channel display
+ for suggesting to make CharArray::DataOwnData::assign() in 'libsi' more robust
+ against invalid data
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -953,6 +957,10 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  via the numeric keys
  for reporting a problem with expired timers when shutting down via the Power key
  for fixing handling the "Blue" key in the "Schedule" menu for the current channel
+ for making cMenuText use the given font
+ for making the channel number be reset if the number entered through the numeric keys
+ exceeds the maximum channel number
+ for suggesting to also set the language codes when setting the audio track descriptions
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1050,6 +1058,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing handling TS packets in cTS2PES
  for adding a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
  for a suggestion that lead to implementing cDevice::Transferring()
+ for fixing replaying recordings of radio channels with many audio tracks
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1306,6 +1315,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for removing leftover 'needsBufferReserve' variable from cTransfer
  for adding an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
  process the audio data
+ for improving OSD area handling in cDvbSpuDecoder
+ for suggesting to log the description (if present) in case a thread is canceled
+ for fixing handling DPID when deciding whether to switch to 'Transfer Mode'
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1412,6 +1424,8 @@ Andreas Brugger <brougs78@gmx.net>
  are being edited via the menu
  for suggesting to change the API of the functions cStatus::Recording() and
  cStatus::Replaying(), so that they can provide the full file name of the recording
+ for suggesting that externally provided EPG data (with table ID 0x00) shall get its
+ component descriptors set from the broadcast data
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1568,6 +1582,7 @@ Frank Krömmelbein <kroemmelbein@gmx.de>
  for adding missing storing of the MenuScrollPage parameter
  for reporting a problem with channel switching with the Down (Up) key in case the
  current channel is already the first (last) in the list
+ for fixing some typos in the CONTRIBUTORS file
 
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
@@ -1718,12 +1733,14 @@ Malte Schröder <MalteSch@gmx.de>
 
 Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting to only start recordings if there is at least 300MB free disk space
+ for suggesting that the "Back" key should restore the original string when pressed
+ while editing a string item
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
 
 Alexander Hans <cleditor@arcor.de>
- fpr reporting a crash when pressing '0' in the "Schedule" menu on a channel that
+ for reporting a crash when pressing '0' in the "Schedule" menu on a channel that
  doesn't have any EPG data 
 
 Daniel Karsubka <dkar@gmx.de>

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.30 2006/01/29 14:03:13 kls Exp $
+ * $Id: epg.h 1.32 2006/02/19 12:51:41 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -24,7 +24,7 @@ enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 struct tComponent {
   uchar stream;
   uchar type;
-  char language[4];
+  char language[MAXLANGCODE2];
   char *description;
   cString ToString(void);
   bool FromString(const char *s);
@@ -42,6 +42,7 @@ public:
   void SetComponent(int Index, const char *s);
   void SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
   tComponent *Component(int Index) const { return (Index < numComponents) ? &components[Index] : NULL; }
+  tComponent *GetComponent(int Index, uchar Stream, uchar Type); // Gets the Index'th component of Stream and Type, skipping other components
   };
 
 class cSchedule;

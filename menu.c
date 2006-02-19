@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.410 2006/02/05 13:31:08 kls Exp $
+ * $Id: menu.c 1.413 2006/02/19 10:18:28 kls Exp $
  */
 
 #include "menu.h"
@@ -572,6 +572,7 @@ cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
   text = NULL;
+  font = Font;
   SetText(Text);
 }
 
@@ -589,7 +590,7 @@ void cMenuText::SetText(const char *Text)
 void cMenuText::Display(void)
 {
   cOsdMenu::Display();
-  DisplayMenu()->SetText(text, true);//XXX define control character in text to choose the font???
+  DisplayMenu()->SetText(text, font == fontFix); //XXX define control character in text to choose the font???
   cStatus::MsgOsdTextItem(text);
 }
 
@@ -2988,9 +2989,9 @@ static void SetTrackDescriptions(int LiveChannel)
          const tComponent *p = Components->Component(i);
          if (p->stream == 2) {
             if (p->type == 0x05)
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
             else
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
             }
          }
      }
@@ -3104,7 +3105,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
     case k1 ... k9:
          if (number >= 0) {
-            number = number * 10 + Key - k0;
+            if (number > Channels.MaxNumber())
+               number = Key - k0;
+            else
+               number = number * 10 + Key - k0;
             channel = Channels.GetByNumber(number);
             displayChannel->SetEvents(NULL, NULL);
             withInfo = false;

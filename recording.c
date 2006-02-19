@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.134 2006/02/05 12:34:08 kls Exp $
+ * $Id: recording.c 1.137 2006/02/19 13:09:29 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,8 @@
 #define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MAX_SUBTITLE_LENGTH  40
+
+#define MAX_LINK_LEVEL  6
 
 bool VfatFileSystem = false;
 
@@ -254,15 +256,44 @@ void cResumeFile::Delete(void)
 
 // --- cRecordingInfo --------------------------------------------------------
 
-cRecordingInfo::cRecordingInfo(tChannelID ChannelID, const cEvent *Event)
+cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 {
-  channelID = ChannelID;
-  if (Event) {
-     event = Event;
-     ownEvent = NULL;
+  channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
+  ownEvent = Event ? NULL : new cEvent(0);
+  event = ownEvent ? ownEvent : Event;
+  if (Channel) {
+     // Since the EPG data's component records can carry only a single
+     // language code, let's see whether the channel's PID data has
+     // more information:
+     cComponents *Components = (cComponents *)event->Components();
+     if (!Components)
+        Components = new cComponents;
+     for (int i = 0; i < MAXAPIDS; i++) {
+         const char *s = Channel->Alang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 2, 3);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 2, 3, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
+            }
+         }
+     // There's no "multiple languages" for Dolby Digital tracks, but
+     // we do the same procedure here, too, in case there is no component
+     // information at all:
+     for (int i = 0; i < MAXDPIDS; i++) {
+         const char *s = Channel->Dlang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 2, 5);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
+            }
+         }
+     if (Components != event->Components())
+        ((cEvent *)event)->SetComponents(Components);
      }
-  else
-     event = ownEvent = new cEvent(0);
 }
 
 cRecordingInfo::~cRecordingInfo()
@@ -465,7 +496,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   priority = Timer->Priority();
   lifetime = Timer->Lifetime();
   // handle info:
-  info = new cRecordingInfo(Timer->Channel()->GetChannelID(), Event);
+  info = new cRecordingInfo(Timer->Channel(), Event);
   // this is a somewhat ugly hack to get the 'summary' information from the
   // timer into the recording info, but it saves us from having to actually
   // copy the entire event data:
@@ -811,7 +842,7 @@ void cRecordings::Refresh(bool Foreground)
   ScanVideoDir(VideoDirectory, Foreground);
 }
 
-void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
+void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
 {
   cReadDir d(DirName);
   struct dirent *e;
@@ -821,7 +852,13 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
            asprintf(&buffer, "%s/%s", DirName, e->d_name);
            struct stat st;
            if (stat(buffer, &st) == 0) {
+              int Link = 0;
               if (S_ISLNK(st.st_mode)) {
+                 if (LinkLevel > MAX_LINK_LEVEL) {
+                    isyslog("max link level exceeded - not scanning %s", buffer);
+                    continue;
+                    }
+                 Link = 1;
                  char *old = buffer;
                  buffer = ReadLink(old);
                  free(old);
@@ -849,7 +886,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
                        delete r;
                     }
                  else
-                    ScanVideoDir(buffer, Foreground);
+                    ScanVideoDir(buffer, Foreground, LinkLevel + Link);
                  }
               }
            free(buffer);
