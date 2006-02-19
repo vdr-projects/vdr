@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.136 2006/02/18 16:03:40 kls Exp $
+ * $Id: recording.c 1.137 2006/02/19 13:09:29 kls Exp $
  */
 
 #include "recording.h"
@@ -259,30 +259,40 @@ void cResumeFile::Delete(void)
 cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 {
   channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
-  if (Event) {
-     event = Event;
-     ownEvent = NULL;
-     }
-  else {
-     event = ownEvent = new cEvent(0);
-     if (Channel) {
-        cComponents *Components = NULL;
-        for (int i = 0; i < MAXAPIDS; i++) {
-            if (*Channel->Alang(i)) {
-               if (!Components)
-                  Components = new cComponents;
-               Components->SetComponent(Components->NumComponents(), 2, 3, Channel->Alang(i), NULL);
-               }
+  ownEvent = Event ? NULL : new cEvent(0);
+  event = ownEvent ? ownEvent : Event;
+  if (Channel) {
+     // Since the EPG data's component records can carry only a single
+     // language code, let's see whether the channel's PID data has
+     // more information:
+     cComponents *Components = (cComponents *)event->Components();
+     if (!Components)
+        Components = new cComponents;
+     for (int i = 0; i < MAXAPIDS; i++) {
+         const char *s = Channel->Alang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 2, 3);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 2, 3, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
             }
-        for (int i = 0; i < MAXDPIDS; i++) {
-            if (*Channel->Dlang(i)) {
-               if (!Components)
-                  Components = new cComponents;
-               Components->SetComponent(Components->NumComponents(), 2, 5, Channel->Dlang(i), NULL);
-               }
+         }
+     // There's no "multiple languages" for Dolby Digital tracks, but
+     // we do the same procedure here, too, in case there is no component
+     // information at all:
+     for (int i = 0; i < MAXDPIDS; i++) {
+         const char *s = Channel->Dlang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 2, 5);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
             }
-        ownEvent->SetComponents(Components);
-        }
+         }
+     if (Components != event->Components())
+        ((cEvent *)event)->SetComponents(Components);
      }
 }
 

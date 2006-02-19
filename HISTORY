@@ -4351,3 +4351,5 @@ Video Disk Recorder Revision History
   are available (suggested by Andreas Brugger).
 - When setting the audio track descriptions, the language codes are now also set
   in case this is a replay session (based on a patch from Rolf Ahrenberg).
+- If a recording starts and the channel's audio PID data has more language code
+  information than the EPG's component data, the code from the channel is taken.

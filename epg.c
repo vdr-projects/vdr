@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.60 2006/02/19 11:15:44 kls Exp $
+ * $Id: epg.c 1.61 2006/02/19 12:50:26 kls Exp $
  */
 
 #include "epg.h"
@@ -82,6 +82,17 @@ void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *
   if (q)
      *q = 0; // strips rest of "normalized" language codes
   p->description = strcpyrealloc(p->description, !isempty(Description) ? Description : NULL);
+}
+
+tComponent *cComponents::GetComponent(int Index, uchar Stream, uchar Type)
+{
+  for (int i = 0; i < numComponents; i++) {
+      if (components[i].stream == Stream && components[i].type == Type) {
+         if (!Index--)
+            return &components[i];
+         }
+      }
+  return NULL;
 }
 
 // --- cEvent ----------------------------------------------------------------
