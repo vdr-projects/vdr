@@ -4346,3 +4346,6 @@ Video Disk Recorder Revision History
 - If a recording starts and there is no EPG data available for the recorded channel,
   the 'X' audio component records for the 'info.vdr' file are now generated from the
   channel's PID data.
+- Externally provided EPG data (with table ID 0x00) now gets its component
+  descriptors set from the broadcast data, so that language codes and descriptions
+  are available (suggested by Andreas Brugger).
