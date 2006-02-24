@@ -4359,3 +4359,9 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Added a comment to tChannelID::nid, explaining that is is actually the "original"
   network id.
+
+2006-02-24: Version 1.3.44
+
+- Fixed setting the audio language codes in 'Transfer-Mode' (reported by Rolf
+  Ahrenberg). The actual problem was the call to the Transferring() function in
+  cDevice::AttachPlayer() before assigning the player.

@@ -961,6 +961,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making the channel number be reset if the number entered through the numeric keys
  exceeds the maximum channel number
  for suggesting to also set the language codes when setting the audio track descriptions
+ for reporting a problem in setting the audio language codes in 'Transfer-Mode'
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
