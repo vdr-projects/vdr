@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.413 2006/02/19 10:18:28 kls Exp $
+ * $Id: menu.c 1.414 2006/02/24 14:55:10 kls Exp $
  */
 
 #include "menu.h"
@@ -3131,10 +3131,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                   }
             if (n > 0) {
                // This channel is the only one that fits the input, so let's take it right away:
-               displayChannel->Flush(); // makes sure the user sees his last input
                NewChannel = channel;
                withInfo = true;
                number = 0;
+               Refresh();
                }
             }
          break;

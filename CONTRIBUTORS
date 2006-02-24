@@ -1413,6 +1413,8 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
  for fixing a NULL pointer access with the cUnbufferedFile when a replay session
  runs all the way until the end of the recording
+ for fixing removing the '-' when entering a channel number where there is no other
+ one that fits the input
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu

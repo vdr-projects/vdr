@@ -4365,3 +4365,5 @@ Video Disk Recorder Revision History
 - Fixed setting the audio language codes in 'Transfer-Mode' (reported by Rolf
   Ahrenberg). The actual problem was the call to the Transferring() function in
   cDevice::AttachPlayer() before assigning the player.
+- Fixed removing the '-' when entering a channel number where there is no other
+  one that fits the input (thanks to Joachim Wilke).
