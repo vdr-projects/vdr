@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.414 2006/02/24 14:55:10 kls Exp $
+ * $Id: menu.c 1.415 2006/02/24 14:56:18 kls Exp $
  */
 
 #include "menu.h"
@@ -3110,9 +3110,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             else
                number = number * 10 + Key - k0;
             channel = Channels.GetByNumber(number);
-            displayChannel->SetEvents(NULL, NULL);
+            Refresh();
             withInfo = false;
-            DisplayChannel();
             // Lets see if there can be any useful further input:
             int n = channel ? number * 10 : 0;
             int m = 10;
@@ -3159,8 +3158,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                group = SaveGroup;
             channel = Channels.Get(group);
             if (channel) {
-               displayChannel->SetEvents(NULL, NULL);
-               DisplayChannel();
+               Refresh();
                if (!channel->GroupSep())
                   group = -1;
                }
