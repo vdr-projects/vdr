@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.17 2006/02/18 11:02:25 kls Exp $
+ *   $Id: descriptor.c 1.18 2006/02/25 10:06:05 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -331,8 +331,6 @@ void CaDescriptor::Parse() {
    data.setPointerAndOffset<const descr_ca>(s, offset);
    if (checkSize(getLength()-offset))
       privateData.assign(data.getData(offset), getLength()-offset);
-   else
-      privateData.assign(NULL, 0);
 }
 
 int StreamIdentifierDescriptor::getComponentTag() const {
@@ -640,8 +638,6 @@ void LinkageDescriptor::Parse() {
    data.setPointerAndOffset<const descr_linkage>(s, offset);
    if (checkSize(getLength()-offset))
       privateData.assign(data.getData(offset), getLength()-offset);
-   else
-      privateData.assign(NULL, 0);
 }
 
 int LinkageDescriptor::getTransportStreamId() const {
