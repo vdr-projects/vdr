@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.420 2006/02/25 14:39:29 kls Exp $
+ * $Id: menu.c 1.421 2006/02/25 15:00:09 kls Exp $
  */
 
 #include "menu.h"
@@ -773,7 +773,6 @@ private:
   eOSState New(void);
   eOSState Delete(void);
   eOSState OnOff(void);
-  virtual void Move(int From, int To);
   eOSState Info(void);
   cTimer *CurrentTimer(void);
   void SetHelpKeys(void);
@@ -877,15 +876,6 @@ eOSState cMenuTimers::Delete(void)
         }
      }
   return osContinue;
-}
-
-void cMenuTimers::Move(int From, int To)
-{
-  Timers.Move(From, To);
-  cOsdMenu::Move(From, To);
-  Timers.SetModified();
-  Display();
-  isyslog("timer %d moved to %d", From + 1, To + 1);
 }
 
 eOSState cMenuTimers::Info(void)
