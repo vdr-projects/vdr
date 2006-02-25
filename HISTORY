@@ -4395,3 +4395,9 @@ Video Disk Recorder Revision History
 - The "Blue" key in the "Timers" menu now displays the EPG info of the event the
   selected timer will record (if available). The "On/Off" function has been shifted
   to the "Red" button. Editing a timer is done by pressing "Ok".
+- When determining which event a timer is going to record, all available events
+  in the future are now taken into account (no more limit to 4 hours in the
+  future). This has been done so that the event info is available in the "Timers"
+  menu when pressing the "Blue" button. In order to avoid unnecessary work, each
+  timer now has its own timestamp to control whether its schedule has changed
+  since the last time its event has been set.

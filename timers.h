@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.25 2006/02/25 10:42:10 kls Exp $
+ * $Id: timers.h 1.26 2006/02/25 15:05:09 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -28,6 +28,7 @@ class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
   mutable time_t startTime, stopTime;
+  time_t lastSetEvent;
   bool recording, pending, inVpsMargin;
   uint flags;
   cChannel *channel;
@@ -77,6 +78,7 @@ public:
   bool Expired(void) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
+  void SetEventFromSchedule(const cSchedules *Schedules = NULL);
   void SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);

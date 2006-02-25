@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.47 2006/02/25 10:44:50 kls Exp $
+ * $Id: timers.c 1.48 2006/02/25 15:57:56 kls Exp $
  */
 
 #include "timers.h"
@@ -23,6 +23,7 @@
 cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 {
   startTime = stopTime = 0;
+  lastSetEvent = 0;
   recording = pending = inVpsMargin = false;
   flags = tfNone;
   if (Instant)
@@ -50,6 +51,7 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 cTimer::cTimer(const cEvent *Event)
 {
   startTime = stopTime = 0;
+  lastSetEvent = event->Schedule() ? event->Schedule()->Modified() : 0;
   recording = pending = inVpsMargin = false;
   flags = tfActive;
   if (Event->Vps() && Setup.UseVps)
@@ -91,6 +93,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   if (aux)
      aux = strdup(aux);
   event = NULL;
+  lastSetEvent = 0;
   return *this;
 }
 
@@ -423,6 +426,55 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
+#define EPGLIMITPAST   (2 * 3600) // time in seconds in the past within which EPG events will be taken into consideration
+
+void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
+{
+  cSchedulesLock SchedulesLock;
+  if (!Schedules) {
+     lastSetEvent = 0; // forces setting the event, even if the schedule hasn't been modified
+     if (!(Schedules = cSchedules::Schedules(SchedulesLock)))
+        return;
+     }
+  const cSchedule *Schedule = Schedules->GetSchedule(Channel());
+  if (Schedule) {
+     if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
+        const cEvent *Event = NULL;
+        int Overlap = 0;
+        int Distance = INT_MIN;
+        time_t now = time(NULL);
+        for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+            if (e->EndTime() < now - EPGLIMITPAST)
+               continue; // skip old events
+            int overlap = 0;
+            Matches(e, &overlap);
+            if (overlap && overlap >= Overlap) {
+               int distance = 0;
+               if (now < e->StartTime())
+                  distance = e->StartTime() - now;
+               else if (now > e->EndTime())
+                  distance = e->EndTime() - now;
+               if (Event && overlap == Overlap) {
+                  if (Overlap > FULLMATCH) { // this means VPS
+                     if (abs(Distance) < abs(distance))
+                        break; // we've already found the closest VPS event
+                     }
+                  else if (e->Duration() <= Event->Duration())
+                     continue; // if overlap is the same, we take the longer event
+                  }
+               Overlap = overlap;
+               Distance = distance;
+               Event = e;
+               }
+            }
+        if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
+           Event = NULL;
+        SetEvent(Event);
+        }
+     }
+  lastSetEvent = time(NULL);
+}
+
 void cTimer::SetEvent(const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
@@ -488,7 +540,7 @@ bool cTimer::HasFlags(uint Flags) const
 void cTimer::Skip(void)
 {
   day = IncDay(SetTime(StartTime(), 0), 1);
-  event = NULL;
+  SetEvent(NULL);
 }
 
 void cTimer::OnOff(void)
@@ -503,7 +555,7 @@ void cTimer::OnOff(void)
      Skip();
   else
      SetFlags(tfActive);
-  event = NULL;
+  SetEvent(NULL);
   Matches(); // refresh start and end time
 }
 
@@ -591,9 +643,6 @@ bool cTimers::Modified(int &State)
   return Result;
 }
 
-#define EPGLIMITPAST   (2 * 3600) // time in seconds around now, within which EPG events will be taken into consideration
-#define EPGLIMITFUTURE (4 * 3600)
-
 void cTimers::SetEvents(void)
 {
   if (time(NULL) - lastSetEvents < 5)
@@ -603,46 +652,9 @@ void cTimers::SetEvents(void)
   if (Schedules) {
      if (!lastSetEvents || Schedules->Modified() >= lastSetEvents) {
         for (cTimer *ti = First(); ti; ti = Next(ti)) {
-            const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel());
-            if (Schedule) {
-               if (!lastSetEvents || Schedule->Modified() >= lastSetEvents) {
-                  const cEvent *Event = NULL;
-                  int Overlap = 0;
-                  int Distance = INT_MIN;
-                  time_t now = time(NULL);
-                  for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-                      if (cRemote::HasKeys())
-                         return; // react immediately on user input
-                      if (e->EndTime() < now - EPGLIMITPAST)
-                         continue; // skip old events
-                      if (e->StartTime() > now + EPGLIMITFUTURE)
-                         break; // no need to process events too far in the future
-                      int overlap = 0;
-                      ti->Matches(e, &overlap);
-                      if (overlap && overlap >= Overlap) {
-                         int distance = 0;
-                         if (now < e->StartTime())
-                            distance = e->StartTime() - now;
-                         else if (now > e->EndTime())
-                            distance = e->EndTime() - now;
-                         if (Event && overlap == Overlap) {
-                            if (Overlap > FULLMATCH) { // this means VPS
-                               if (abs(Distance) < abs(distance))
-                                  break; // we've already found the closest VPS event
-                               }
-                            else if (e->Duration() <= Event->Duration())
-                               continue; // if overlap is the same, we take the longer event
-                            }
-                         Overlap = overlap;
-                         Distance = distance;
-                         Event = e;
-                         }
-                      }
-                  if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
-                     Event = NULL;
-                  ti->SetEvent(Event);
-                  }
-               }
+            if (cRemote::HasKeys())
+               return; // react immediately on user input
+            ti->SetEventFromSchedule(Schedules);
             }
         }
      }
