@@ -20,10 +20,10 @@ Version 1.3
   Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.   Switch & Close
   Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu off         Menu off
   Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu  Close
-  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(1)  Jump             -
+  Red     -           Record       Edit       On/Off     ABC/abc       Play/Commands(1)  Jump             -
   Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
-  Blue    -           Stop/Resume  Mark       On/Off     -             Info              Stop             -
+  Blue    -           Stop/Resume  Mark       Info       -             Info              Stop             -
   0..9    Ch select   -            Sort(2)    Day(3)     Numeric inp.  Exec cmd(1)       Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
@@ -98,12 +98,10 @@ Version 1.3
   any changes that might have been made in the current menu.
 
   In the "Timers" menu, the current timer can be enabled or disabled with
-  the "Blue" key (this is only possible if the "Timers" list is sorted,
-  otherwise the "Blue" key is used to mark a timer in order to move it to
-  another position in the list). Enabled timers are marked with '>', timers
+  the "Red" key. Enabled timers are marked with '>', timers
   that are currently recording are marked with '#'. If a timer has the
   "First day" set so that it will start recording only on the given date,
-  it is marked with '!'. The "Blue" key toggles through the "enabled" and
+  it is marked with '!'. The "Red" key toggles through the "enabled" and
   "disabled" states, and for repeating timers that are currently recording
   also a state that ends this recording prematurely and sets the "First day"
   date so that it will record again the next time the timer hits.

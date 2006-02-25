@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.419 2006/02/25 14:13:29 kls Exp $
+ * $Id: menu.c 1.420 2006/02/25 14:39:29 kls Exp $
  */
 
 #include "menu.h"
@@ -768,12 +768,15 @@ void cMenuTimerItem::Set(void)
 
 class cMenuTimers : public cOsdMenu {
 private:
+  int helpKeys;
   eOSState Edit(void);
   eOSState New(void);
   eOSState Delete(void);
   eOSState OnOff(void);
   virtual void Move(int From, int To);
+  eOSState Info(void);
   cTimer *CurrentTimer(void);
+  void SetHelpKeys(void);
 public:
   cMenuTimers(void);
   virtual ~cMenuTimers();
@@ -783,10 +786,12 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
+  helpKeys = -1;
   for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
       Add(new cMenuTimerItem(timer));
   Sort();
-  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), tr("Button$On/Off"));
+  SetCurrent(First());
+  SetHelpKeys();
   Timers.IncBeingEdited();
 }
 
@@ -801,8 +806,26 @@ cTimer *cMenuTimers::CurrentTimer(void)
   return item ? item->Timer() : NULL;
 }
 
+void cMenuTimers::SetHelpKeys(void)
+{
+  int NewHelpKeys = 0;
+  cTimer *timer = CurrentTimer();
+  if (timer) {
+     if (timer->Event())
+        NewHelpKeys = 2;
+     else
+        NewHelpKeys = 1;
+     }
+  if (NewHelpKeys != helpKeys) {
+     helpKeys = NewHelpKeys;
+     SetHelp(helpKeys > 0 ? tr("Button$On/Off") : NULL, tr("Button$New"), helpKeys > 0 ? tr("Button$Delete") : NULL, helpKeys == 2 ? tr("Button$Info") : NULL);
+     }
+}
+
 eOSState cMenuTimers::OnOff(void)
 {
+  if (HasSubMenu())
+     return osContinue;
   cTimer *timer = CurrentTimer();
   if (timer) {
      timer->OnOff();
@@ -865,6 +888,16 @@ void cMenuTimers::Move(int From, int To)
   isyslog("timer %d moved to %d", From + 1, To + 1);
 }
 
+eOSState cMenuTimers::Info(void)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  cTimer *ti = CurrentTimer();
+  if (ti && ti->Event())
+     return AddSubMenu(new cMenuEvent(ti->Event()));
+  return osContinue;
+}
+
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
   int TimerNumber = HasSubMenu() ? Count() : -1;
@@ -873,10 +906,11 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      switch (Key) {
        case kOk:     return Edit();
-       case kRed:    return Edit();//XXX
+       case kRed:    return OnOff();
        case kGreen:  return New();
        case kYellow: return Delete();
-       case kBlue:   return OnOff();
+       case kBlue:   return Info();
+                     break;
        default: break;
        }
      }
@@ -885,12 +919,14 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
      Add(new cMenuTimerItem(Timers.Get(TimerNumber)), true);
      Display();
      }
+  if (Key != kNone)
+     SetHelpKeys();
   return state;
 }
 
 // --- cMenuEvent ------------------------------------------------------------
 
-cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
+cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch, bool Buttons)
 :cOsdMenu(tr("Event"))
 {
   event = Event;
@@ -900,7 +936,8 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
         SetTitle(channel->Name());
         int TimerMatch = tmNone;
         Timers.GetMatch(event, &TimerMatch);
-        SetHelp(TimerMatch == tmFull ? tr("Button$Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
+        if (Buttons)
+           SetHelp(TimerMatch == tmFull ? tr("Button$Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
         }
      }
 }
@@ -1154,7 +1191,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      break;
        case kBlue:   return Switch();
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true, true));
                      break;
        default:      break;
        }
@@ -1423,7 +1460,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                         return Switch();
                      break;
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel, true));
                      break;
        default:      break;
        }
@@ -1831,7 +1868,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 0: SetHelp(NULL); break;
        case 1: SetHelp(tr("Button$Open")); break;
        case 2:
-       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Info") : NULL);
+       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Button$Info") : NULL);
        }
      helpKeys = NewHelpKeys;
      }

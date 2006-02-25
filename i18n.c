@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.249 2006/02/25 14:13:41 kls Exp $
+ * $Id: i18n.c 1.250 2006/02/25 14:21:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -723,6 +723,28 @@ const tI18nPhrase Phrases[] = {
     "Salvesta",
     "Optag",
     "Nahrát",
+  },
+  { "Button$Info",
+    "Info",
+    "Info",
+    "",//TODO
+    "Info",
+    "",//TODO
+    "Info",
+    "",//TODO
+    "Tiedot",
+    "Info",
+    "Info",
+    "Ðëçñïöïñßåò",
+    "Info",
+    "Info",
+    "",//TODO
+    "",//TODO
+    "¸ÝäÞ",
+    "Info",
+    "Info",
+    "Info",
+    "Info",
   },
   { "Button$Play",
     "Wiedergabe",

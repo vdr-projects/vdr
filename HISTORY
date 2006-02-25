@@ -4392,3 +4392,6 @@ Video Disk Recorder Revision History
   the EPG event used when creating it.
 - The option "Setup/OSD/Sort timers" has been removed. Timers are always sorted
   by their start time and priority.
+- The "Blue" key in the "Timers" menu now displays the EPG info of the event the
+  selected timer will record (if available). The "On/Off" function has been shifted
+  to the "Red" button. Editing a timer is done by pressing "Ok".
