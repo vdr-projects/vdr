@@ -4386,3 +4386,5 @@ Video Disk Recorder Revision History
   is modified in the "Edit timer" menu. If an external application needs to know if
   a timer was modified, it has to keep a copy of the timer's data and compare that
   to the actual data.
+- The new function cRecordingInfo::ChannelID() can be used to retrieve the ID of
+  the channel a recording was made from.
