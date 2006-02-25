@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.248 2006/02/25 12:07:27 kls Exp $
+ * $Id: i18n.c 1.249 2006/02/25 14:13:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -3281,28 +3281,6 @@ const tI18nPhrase Phrases[] = {
     "Sulgemine Menüü klahviga",
     "Menu taste lukker",
     "Klávesa Menu zavírá",
-  },
-  { "Setup.OSD$Sort timers",
-    "Timer sortieren",
-    "Sortiraj termine",
-    "Ordinamento timer",
-    "Timers sorteren",
-    "Ordenar os timers",
-    "Trier les programmations",
-    "Sorter timere",
-    "Järjestä ajastimet",
-    "Sortuj timery",
-    "Ordenar programas de grabación",
-    "ÏñãÜíùóç ÷ñïíïğñïãñáììáôéóìşí",
-    "Sortera timers",
-    "Sortare timer-e",
-    "A beprogramozott felvételek elrendezése",
-    "Ordenar gravacions programades",
-    "ÁŞàâØàŞÒÚĞ âĞÙÜÕàŞÒ",
-    "Sortiraj termine",
-    "Taimeri sorteerimine",
-    "Sorter timere",
-    "Tøídìní èasovaèù",
   },
   { "Setup.OSD$Recording directories",
     "Aufnahmeverzeichnisse",

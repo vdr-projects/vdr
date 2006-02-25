@@ -20,11 +20,11 @@ Version 1.3
   Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.   Switch & Close
   Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu off         Menu off
   Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu  Close
-  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump             -
+  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(1)  Jump             -
   Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
-  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Info              Stop             -
-  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing          -
+  Blue    -           Stop/Resume  Mark       On/Off     -             Info              Stop             -
+  0..9    Ch select   -            Sort(2)    Day(3)     Numeric inp.  Exec cmd(1)       Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -75,18 +75,15 @@ Version 1.3
   Yellow    Info
   Blue      Timers menu
 
-  (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
-      has been enabled in the "Setup" menu. Otherwise the Blue button is used
-      to "mark" a timer for moving.
-  (2) See "Processing Recordings" below.
-  (3) In the "Channels" menu the '0' key switches the sort mode through "by number",
+  (1) See "Processing Recordings" below.
+  (2) In the "Channels" menu the '0' key switches the sort mode through "by number",
       "by name" and "by provider". Other numeric input positions the cursor to
       the channel with the number entered so far. If there is no channel with that
       number, nothing happens. While entering a channel number, the '0' key will
       be treated as part of that number, not as a sort mode toggle. If no numeric
       key has been pressed for more than one second, the number is reset and '0'
       functions as sort mode toggle again.
-  (4) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
+  (3) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
       a single shot and a repeating timer. If "Day" indicates a repeating timer,
       the keys '1'...'7' can be used to toggle the individual days ('1' is Monday).
 
@@ -538,10 +535,6 @@ Version 1.3
                          to "no", the "Menu" button will open the main menu after
                          closing a temporary display, like, for instance, the channel
                          display.
-
-  Sort timers = yes      Turns sorting the timers in the "Timers" menu on/off.
-                         Timers are sorted by ascending start times, with the
-                         first one being the next timer that will start.
 
   Recording directories = yes
                          Turns displaying the Recordings menu as a hierarchical

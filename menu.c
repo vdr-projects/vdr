@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.418 2006/02/25 12:16:34 kls Exp $
+ * $Id: menu.c 1.419 2006/02/25 14:13:29 kls Exp $
  */
 
 #include "menu.h"
@@ -785,9 +785,8 @@ cMenuTimers::cMenuTimers(void)
 {
   for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
       Add(new cMenuTimerItem(timer));
-  if (Setup.SortTimers)
-     Sort();
-  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), Setup.SortTimers ? tr("Button$On/Off") : tr("Button$Mark"));
+  Sort();
+  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), tr("Button$On/Off"));
   Timers.IncBeingEdited();
 }
 
@@ -877,11 +876,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kRed:    return Edit();//XXX
        case kGreen:  return New();
        case kYellow: return Delete();
-       case kBlue:   if (Setup.SortTimers)
-                        OnOff();
-                     else
-                        Mark();
-                     break;
+       case kBlue:   return OnOff();
        default: break;
        }
      }
@@ -2128,7 +2123,6 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll wraps"),           &data.MenuScrollWrap));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu button closes"),     &data.MenuButtonCloses));
-  Add(new cMenuEditBoolItem(tr("Setup.OSD$Sort timers"),            &data.SortTimers));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   SetCurrent(Get(current));
   Display();
