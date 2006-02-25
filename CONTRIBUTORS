@@ -1758,3 +1758,7 @@ Ronny Kornexl <ronny.kornexl@online.de>
 
 Bárta Vladimír <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
+
+Christoph Haubrich <christoph1.haubrich@arcor.de>
+ for making the "Ok" key in the "Jump" mode of the replay progress display confirm
+ the jump instead of closing the display

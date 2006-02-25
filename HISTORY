@@ -4369,3 +4369,5 @@ Video Disk Recorder Revision History
   one that fits the input (thanks to Joachim Wilke).
 - Fixed the 'libsi' function CharArray::checkSize(), which made a previous workaround
   in libsi/descriptor.c obsolete (thanks to Marcel Wiesweg).
+- The "Ok" key in the "Jump" mode of the replay progress display now confirms the
+  jump instead of closing the display (thanks to Christoph Haubrich).
