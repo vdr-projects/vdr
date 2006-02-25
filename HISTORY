@@ -4371,3 +4371,14 @@ Video Disk Recorder Revision History
   in libsi/descriptor.c obsolete (thanks to Marcel Wiesweg).
 - The "Ok" key in the "Jump" mode of the replay progress display now confirms the
   jump instead of closing the display (thanks to Christoph Haubrich).
+- The 'summary' field of a timer definition has been renamed to 'aux', and is now
+  only used for external applications to store auxiliary information with a timer,
+  which has no meaning whatsoever to VDR itself.
+  The contents of the 'aux' field of a timer is copied into the recording's
+  'info.vdr' file, using the tag character '@'.
+- The description of a recording is now taken exclusively from its related EPG
+  data. If an application wants to use a different description it needs to set
+  it with SVDRP/PUTE and use table ID 0x00, so that it won't be overwritten (as
+  a side effect, however, this also disables VPS for such an event).
+- There is no more "Summary" menu when pressing "Ok" in the "Timers" menu.
+  The "Ok" key now always opens the "Edit timer" menu.

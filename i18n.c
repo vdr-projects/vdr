@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.247 2006/02/04 14:17:54 kls Exp $
+ * $Id: i18n.c 1.248 2006/02/25 12:07:27 kls Exp $
  *
  * Translations provided by:
  *
@@ -568,28 +568,6 @@ const tI18nPhrase Phrases[] = {
     "Järgmisena eetris",
     "Hvad vises som det næste?",
     "Následující program",
-  },
-  { "Summary",
-    "Inhalt",
-    "Vsebina",
-    "Sommario",
-    "Inhoud",
-    "Resumo",
-    "Résumé",
-    "Sammendrag",
-    "Yhteenveto",
-    "Podsumowanie",
-    "Resumen",
-    "Ðåñéå÷üìåíï",
-    "Sammanfattning",
-    "Cuprins",
-    "Tartalom",
-    "Resum",
-    "¾ßØáÐÝØÕ",
-    "Sadr¾aj",
-    "Ülevaade",
-    "Omtale",
-    "Obsah",
   },
   // Button texts (should not be more than 10 characters!):
   { "Button$Edit",

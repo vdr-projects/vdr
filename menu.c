@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.416 2006/02/25 10:27:03 kls Exp $
+ * $Id: menu.c 1.417 2006/02/25 12:09:22 kls Exp $
  */
 
 #include "menu.h"
@@ -776,7 +776,6 @@ private:
   eOSState Delete(void);
   eOSState OnOff(void);
   virtual void Move(int From, int To);
-  eOSState Summary(void);
   cTimer *CurrentTimer(void);
 public:
   cMenuTimers(void);
@@ -870,16 +869,6 @@ void cMenuTimers::Move(int From, int To)
   isyslog("timer %d moved to %d", From + 1, To + 1);
 }
 
-eOSState cMenuTimers::Summary(void)
-{
-  if (HasSubMenu() || Count() == 0)
-     return osContinue;
-  cTimer *ti = CurrentTimer();
-  if (ti && !isempty(ti->Summary()))
-     return AddSubMenu(new cMenuText(tr("Summary"), ti->Summary()));
-  return Edit(); // convenience for people not using the Summary feature ;-)
-}
-
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
   int TimerNumber = HasSubMenu() ? Count() : -1;
@@ -887,8 +876,8 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk:     return Summary();
-       case kRed:    return Edit();
+       case kOk:     return Edit();
+       case kRed:    return Edit();//XXX
        case kGreen:  return New();
        case kYellow: return Delete();
        case kBlue:   if (Setup.SortTimers)

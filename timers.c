@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.46 2006/02/03 15:20:14 kls Exp $
+ * $Id: timers.c 1.47 2006/02/25 10:44:50 kls Exp $
  */
 
 #include "timers.h"
@@ -41,7 +41,7 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
   *file = 0;
-  summary = NULL;
+  aux = NULL;
   event = NULL;
   if (Instant && channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
@@ -76,20 +76,20 @@ cTimer::cTimer(const cEvent *Event)
   const char *Title = Event->Title();
   if (!isempty(Title))
      strn0cpy(file, Event->Title(), sizeof(file));
-  summary = NULL;
+  aux = NULL;
   event = Event;
 }
 
 cTimer::~cTimer()
 {
-  free(summary);
+  free(aux);
 }
 
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
   memcpy(this, &Timer, sizeof(*this));
-  if (summary)
-     summary = strdup(summary);
+  if (aux)
+     aux = strdup(aux);
   event = NULL;
   return *this;
 }
@@ -109,9 +109,7 @@ cString cTimer::ToText(bool UseChannelID)
 {
   char *buffer;
   strreplace(file, ':', '|');
-  strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
-  strreplace(summary, '|', '\n');
+  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, aux ? aux : "");
   strreplace(file, '|', ':');
   return cString(buffer, true);
 }
@@ -226,8 +224,8 @@ bool cTimer::Parse(const char *s)
   char *channelbuffer = NULL;
   char *daybuffer = NULL;
   char *filebuffer = NULL;
-  free(summary);
-  summary = NULL;
+  free(aux);
+  aux = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
   //XXX results in an empty string (this first occured when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
@@ -244,17 +242,16 @@ bool cTimer::Parse(const char *s)
      s = s2;
      }
   bool result = false;
-  if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
+  if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &aux)) {
      ClrFlags(tfRecording);
-     if (summary && !*skipspace(summary)) {
-        free(summary);
-        summary = NULL;
+     if (aux && !*skipspace(aux)) {
+        free(aux);
+        aux = NULL;
         }
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
      strn0cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
-     strreplace(summary, '|', '\n');
      if (isnumber(channelbuffer))
         channel = Channels.GetByNumber(atoi(channelbuffer));
      else
