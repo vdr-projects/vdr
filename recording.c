@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.138 2006/02/25 11:49:48 kls Exp $
+ * $Id: recording.c 1.139 2006/02/25 17:05:48 kls Exp $
  */
 
 #include "recording.h"
@@ -335,6 +335,22 @@ bool cRecordingInfo::Read(FILE *f)
                             *p = 0; // strips optional channel name
                          if (*t)
                             channelID = tChannelID::FromString(t);
+                       }
+                       break;
+             case 'E': {
+                         unsigned int EventID;
+                         time_t StartTime;
+                         int Duration;
+                         unsigned int TableID = 0;
+                         unsigned int Version = 0xFF;
+                         int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                         if (n >= 3 && n <= 5) {
+                            ownEvent->SetEventID(EventID);
+                            ownEvent->SetStartTime(StartTime);
+                            ownEvent->SetDuration(Duration);
+                            ownEvent->SetTableID(TableID);
+                            ownEvent->SetVersion(Version);
+                            }
                        }
                        break;
              case '@': free(aux);
