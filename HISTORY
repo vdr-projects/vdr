@@ -4388,3 +4388,5 @@ Video Disk Recorder Revision History
   to the actual data.
 - The new function cRecordingInfo::ChannelID() can be used to retrieve the ID of
   the channel a recording was made from.
+- The 'info.vdr' file of a recording now also contains the 'E' and 'V' records of
+  the EPG event used when creating it.
