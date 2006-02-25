@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.417 2006/02/25 12:09:22 kls Exp $
+ * $Id: menu.c 1.418 2006/02/25 12:16:34 kls Exp $
  */
 
 #include "menu.h"
@@ -686,11 +686,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                        if (!*data.file)
                           strcpy(data.file, data.Channel()->ShortName(true));
                        if (timer) {
-                          if (memcmp(timer, &data, sizeof(data)) != 0) {
+                          if (memcmp(timer, &data, sizeof(data)) != 0)
                              *timer = data;
-                             if (timer->HasFlags(tfActive))
-                                timer->ClrFlags(~tfAll); // allows external programs to mark active timers with values > 0xFFFF and recognize if the user has modified them
-                             }
                           if (addIfConfirmed)
                              Timers.Add(timer);
                           timer->Matches();

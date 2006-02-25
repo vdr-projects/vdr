@@ -4382,3 +4382,7 @@ Video Disk Recorder Revision History
   a side effect, however, this also disables VPS for such an event).
 - There is no more "Summary" menu when pressing "Ok" in the "Timers" menu.
   The "Ok" key now always opens the "Edit timer" menu.
+- The upper 16 bit of a timer's "flags" are no longer treated specially when a timer
+  is modified in the "Edit timer" menu. If an external application needs to know if
+  a timer was modified, it has to keep a copy of the timer's data and compare that
+  to the actual data.
