@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.49 2006/02/26 10:17:38 kls Exp $
+ * $Id: timers.c 1.50 2006/02/26 10:50:47 kls Exp $
  */
 
 #include "timers.h"
@@ -51,7 +51,7 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 cTimer::cTimer(const cEvent *Event)
 {
   startTime = stopTime = 0;
-  lastSetEvent = event->Schedule() ? event->Schedule()->Modified() : 0;
+  lastSetEvent = 0;
   recording = pending = inVpsMargin = false;
   flags = tfActive;
   if (Event->Vps() && Setup.UseVps)
@@ -79,7 +79,7 @@ cTimer::cTimer(const cEvent *Event)
   if (!isempty(Title))
      strn0cpy(file, Event->Title(), sizeof(file));
   aux = NULL;
-  event = Event;
+  event = NULL; // let SetEvent() be called to get a log message
 }
 
 cTimer::~cTimer()
