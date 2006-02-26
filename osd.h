@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.52 2006/02/26 14:35:19 kls Exp $
+ * $Id: osd.h 1.53 2006/02/26 14:45:05 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -163,7 +163,8 @@ public:
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
        ///< will be mapped to ColorBg and the second palette entry will be mapped to
        ///< ColorFg (palette indexes are defined so that 0 is the background and
-       ///< 1 is the foreground color).
+       ///< 1 is the foreground color). ReplacePalette controls whether the target
+       ///< area shall have its palette replaced with the one from Bitmap.
        ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
        ///< not overwrite the corresponding pixel in the target area.
   void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
@@ -286,7 +287,8 @@ public:
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
        ///< will be mapped to ColorBg and the second palette entry will be mapped to
        ///< ColorFg (palette indexes are defined so that 0 is the background and
-       ///< 1 is the foreground color).
+       ///< 1 is the foreground color). ReplacePalette controls whether the target
+       ///< area shall have its palette replaced with the one from Bitmap.
        ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
        ///< not overwrite the corresponding pixel in the target area.
   virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
