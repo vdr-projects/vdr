@@ -4359,3 +4359,58 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Added a comment to tChannelID::nid, explaining that is is actually the "original"
   network id.
+
+2006-02-26: Version 1.3.44
+
+- Fixed setting the audio language codes in 'Transfer-Mode' (reported by Rolf
+  Ahrenberg). The actual problem was the call to the Transferring() function in
+  cDevice::AttachPlayer() before assigning the player.
+- Fixed removing the '-' when entering a channel number where there is no other
+  one that fits the input (thanks to Joachim Wilke).
+- Fixed the 'libsi' function CharArray::checkSize(), which made a previous workaround
+  in libsi/descriptor.c obsolete (thanks to Marcel Wiesweg).
+- The "Ok" key in the "Jump" mode of the replay progress display now confirms the
+  jump instead of closing the display (thanks to Christoph Haubrich).
+- The 'summary' field of a timer definition has been renamed to 'aux', and is now
+  only used for external applications to store auxiliary information with a timer,
+  which has no meaning whatsoever to VDR itself.
+  The contents of the 'aux' field of a timer is copied into the recording's
+  'info.vdr' file, using the tag character '@'.
+- The description of a recording is now taken exclusively from its related EPG
+  data. If an application wants to use a different description it needs to set
+  it with SVDRP/PUTE and use table ID 0x00, so that it won't be overwritten (as
+  a side effect, however, this also disables VPS for such an event).
+- There is no more "Summary" menu when pressing "Ok" in the "Timers" menu.
+  The "Ok" key now always opens the "Edit timer" menu.
+- The upper 16 bit of a timer's "flags" are no longer treated specially when a timer
+  is modified in the "Edit timer" menu. If an external application needs to know if
+  a timer was modified, it has to keep a copy of the timer's data and compare that
+  to the actual data.
+- The new function cRecordingInfo::ChannelID() can be used to retrieve the ID of
+  the channel a recording was made from.
+- The 'info.vdr' file of a recording now also contains the 'E' and 'V' records of
+  the EPG event used when creating it.
+- The option "Setup/OSD/Sort timers" has been removed. Timers are always sorted
+  by their start time and priority.
+- The "Blue" key in the "Timers" menu now displays the EPG info of the event the
+  selected timer will record (if available). The "On/Off" function has been shifted
+  to the "Red" button. Editing a timer is done by pressing "Ok".
+- When determining which event a timer is going to record, all available events
+  in the future are now taken into account (no more limit to 4 hours in the
+  future). This has been done so that the event info is available in the "Timers"
+  menu when pressing the "Blue" button. In order to avoid unnecessary work, each
+  timer now has its own timestamp to control whether its schedule has changed
+  since the last time its event has been set.
+- Fixed setting events to timers in case a non-VPS event has expired.
+- There is now a log message "timer ... set to event ..." when defining a timer
+  from the EPG menu.
+- Lines tagged with '#' in the 'info.vdr' file of a recording are now silently
+  ignored when reading that file (suggested by Peter Bieringer). Such lines can
+  be used by external tools to store arbitrary information.
+- The 'event id' in EPG data has been extended to 32 bit, so that external tools
+  can generate ids that don't collide with those from the DVB data stream
+  (suggested by Matthias Schniedermeyer).
+- The DrawBitmap() function now has a new parameter 'Overlay' that allows a bitmap
+  to be drawn with a transparent background (thanks to Alexander Hans).
+- Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
+  running (thanks to Pekka Mauno).

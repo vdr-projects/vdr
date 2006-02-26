@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.32 2006/02/19 12:51:41 kls Exp $
+ * $Id: epg.h 1.33 2006/02/26 13:58:57 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -47,11 +47,13 @@ public:
 
 class cSchedule;
 
+typedef u_int32_t tEventID;
+
 class cEvent : public cListObject {
   friend class cSchedule;
 private:
   cSchedule *schedule;     // The Schedule this event belongs to
-  u_int16_t eventID;       // Event ID of this event
+  tEventID eventID;        // Event ID of this event
   uchar tableID;           // Table ID this event came from
   uchar version;           // Version number of section this event came from
   int runningStatus;       // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
@@ -64,12 +66,12 @@ private:
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
 public:
-  cEvent(u_int16_t EventID);
+  cEvent(tEventID EventID);
   ~cEvent();
   virtual int Compare(const cListObject &ListObject) const;
   tChannelID ChannelID(void) const;
   const cSchedule *Schedule(void) const { return schedule; }
-  u_int16_t EventID(void) const { return eventID; }
+  tEventID EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
   int RunningStatus(void) const { return runningStatus; }
@@ -89,7 +91,7 @@ public:
   cString GetTimeString(void) const;
   cString GetEndTimeString(void) const;
   cString GetVpsString(void) const;
-  void SetEventID(u_int16_t EventID);
+  void SetEventID(tEventID EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
   void SetRunningStatus(int RunningStatus, cChannel *Channel = NULL);
@@ -140,7 +142,7 @@ public:
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(void) const;
   const cEvent *GetFollowingEvent(void) const;
-  const cEvent *GetEvent(u_int16_t EventID, time_t StartTime = 0) const;
+  const cEvent *GetEvent(tEventID EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
   void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);

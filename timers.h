@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.24 2006/01/15 13:29:44 kls Exp $
+ * $Id: timers.h 1.26 2006/02/25 15:05:09 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -28,6 +28,7 @@ class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
   mutable time_t startTime, stopTime;
+  time_t lastSetEvent;
   bool recording, pending, inVpsMargin;
   uint flags;
   cChannel *channel;
@@ -38,7 +39,7 @@ private:
   int priority;
   int lifetime;
   char file[MaxFileName];
-  char *summary;
+  char *aux;
   const cEvent *event;
 public:
   cTimer(bool Instant = false, bool Pause = false, cChannel *Channel = NULL);
@@ -59,7 +60,7 @@ public:
   int Lifetime(void) const { return lifetime; }
   const char *File(void) const { return file; }
   time_t FirstDay(void) const { return weekdays ? day : 0; }
-  const char *Summary(void) const { return summary; }
+  const char *Aux(void) const { return aux; }
   cString ToText(bool UseChannelID = false);
   cString ToDescr(void) const;
   const cEvent *Event(void) const { return event; }
@@ -77,6 +78,7 @@ public:
   bool Expired(void) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
+  void SetEventFromSchedule(const cSchedules *Schedules = NULL);
   void SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);

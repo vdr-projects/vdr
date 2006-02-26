@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.6 2006/02/18 10:38:20 kls Exp $
+ *   $Id: util.h 1.7 2006/02/25 10:13:28 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -59,7 +59,7 @@ public:
    u_int32_t FourBytes(const int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
 
    bool isValid() const { return data_->valid; }
-   bool checkSize(int offset) { return (data_->valid && offset>=0 && (data_->valid=(off+offset < data_->size))); }
+   bool checkSize(int offset) { return (data_->valid && (data_->valid=(offset>=0 && off+offset < data_->size))); }
 
    void addOffset(int offset) { off+=offset; }
 private:

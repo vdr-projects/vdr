@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.137 2006/02/19 13:09:29 kls Exp $
+ * $Id: recording.c 1.140 2006/02/26 11:59:59 kls Exp $
  */
 
 #include "recording.h"
@@ -261,6 +261,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
   channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
   ownEvent = Event ? NULL : new cEvent(0);
   event = ownEvent ? ownEvent : Event;
+  aux = NULL;
   if (Channel) {
      // Since the EPG data's component records can carry only a single
      // language code, let's see whether the channel's PID data has
@@ -299,6 +300,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 cRecordingInfo::~cRecordingInfo()
 {
   delete ownEvent;
+  free(aux);
 }
 
 void cRecordingInfo::SetData(const char *Title, const char *ShortText, const char *Description)
@@ -309,6 +311,12 @@ void cRecordingInfo::SetData(const char *Title, const char *ShortText, const cha
      ((cEvent *)event)->SetShortText(ShortText);
   if (!isempty(Description))
      ((cEvent *)event)->SetDescription(Description);
+}
+
+void cRecordingInfo::SetAux(const char *Aux)
+{
+  free(aux);
+  aux = Aux ? strdup(Aux) : NULL;
 }
 
 bool cRecordingInfo::Read(FILE *f)
@@ -329,6 +337,26 @@ bool cRecordingInfo::Read(FILE *f)
                             channelID = tChannelID::FromString(t);
                        }
                        break;
+             case 'E': {
+                         unsigned int EventID;
+                         time_t StartTime;
+                         int Duration;
+                         unsigned int TableID = 0;
+                         unsigned int Version = 0xFF;
+                         int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                         if (n >= 3 && n <= 5) {
+                            ownEvent->SetEventID(EventID);
+                            ownEvent->SetStartTime(StartTime);
+                            ownEvent->SetDuration(Duration);
+                            ownEvent->SetTableID(TableID);
+                            ownEvent->SetVersion(Version);
+                            }
+                       }
+                       break;
+             case '@': free(aux);
+                       aux = strdup(t);
+                       break;
+             case '#': break; // comments are ignored
              default: if (!ownEvent->Parse(s)) {
                          esyslog("ERROR: EPG data problem in line %d", line);
                          return false;
@@ -346,6 +374,8 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   if (channelID.Valid())
      fprintf(f, "%sC %s\n", Prefix, *channelID.ToString());
   event->Dump(f, Prefix, true);
+  if (aux)
+     fprintf(f, "%s@ %s\n", Prefix, aux);
   return true;
 }
 
@@ -497,11 +527,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   lifetime = Timer->Lifetime();
   // handle info:
   info = new cRecordingInfo(Timer->Channel(), Event);
-  // this is a somewhat ugly hack to get the 'summary' information from the
-  // timer into the recording info, but it saves us from having to actually
-  // copy the entire event data:
-  if (!isempty(Timer->Summary()))
-     info->SetData(isempty(info->Title()) ? Timer->File() : NULL, NULL, Timer->Summary());
+  info->SetAux(Timer->Aux());
 }
 
 cRecording::cRecording(const char *FileName)

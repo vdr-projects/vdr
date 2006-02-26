@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.83 2006/02/17 15:38:40 kls Exp $
+ * $Id: menu.h 1.84 2006/02/25 13:41:21 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -49,7 +49,7 @@ class cMenuEvent : public cOsdMenu {
 private:
   const cEvent *event;
 public:
-  cMenuEvent(const cEvent *Event, bool CanSwitch = false);
+  cMenuEvent(const cEvent *Event, bool CanSwitch = false, bool Buttons = false);
   virtual void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
   };

@@ -73,6 +73,8 @@ Matthias Schniedermeyer <ms@citd.de>
  is currently recording
  for suggesting to make the SVDRP command LSTT optionally list the channels
  of the timers with their unique channel ids instead of their numbers
+ for suggesting to extend the 'event id' in EPG data to 32 bit, so that external tools
+ can generate ids that don't collide with those from the DVB data stream
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language
@@ -961,6 +963,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making the channel number be reset if the number entered through the numeric keys
  exceeds the maximum channel number
  for suggesting to also set the language codes when setting the audio track descriptions
+ for reporting a problem in setting the audio language codes in 'Transfer-Mode'
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -977,6 +980,7 @@ Peter Bieringer <pb@bieringer.de>
  for reporting a leftover 'summary.vdr' in vdr.5
  for adding more error messages and line numbers when reading EPG data and info.vdr
  for fixing handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
+ for suggesting to ignore lines tagged with '#' in the 'info.vdr' file of a recording
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -1412,6 +1416,8 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
  for fixing a NULL pointer access with the cUnbufferedFile when a replay session
  runs all the way until the end of the recording
+ for fixing removing the '-' when entering a channel number where there is no other
+ one that fits the input
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -1742,6 +1748,8 @@ Jaroslaw Swierczynski <swiergot@gmail.com>
 Alexander Hans <cleditor@arcor.de>
  for reporting a crash when pressing '0' in the "Schedule" menu on a channel that
  doesn't have any EPG data 
+ for giving the DrawBitmap() function a new parameter 'Overlay' that allows a bitmap
+ to be drawn with a transparent background
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits
@@ -1755,3 +1763,11 @@ Ronny Kornexl <ronny.kornexl@online.de>
 
 Bárta Vladimír <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
+
+Christoph Haubrich <christoph1.haubrich@arcor.de>
+ for making the "Ok" key in the "Jump" mode of the replay progress display confirm
+ the jump instead of closing the display
+
+Pekka Mauno <pekka.mauno@iki.fi>
+ for fixing cSchedule::GetFollowingEvent() in case there is currently no present
+ event running

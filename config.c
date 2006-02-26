@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.141 2006/01/13 15:19:37 kls Exp $
+ * $Id: config.c 1.142 2006/02/25 14:12:16 kls Exp $
  */
 
 #include "config.h"
@@ -240,7 +240,6 @@ cSetup::cSetup(void)
   EPGLinger = 0;
   SVDRPTimeout = 300;
   ZapTimeout = 3;
-  SortTimers = 1;
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 99;
@@ -400,7 +399,6 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
-  else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
@@ -467,7 +465,6 @@ bool cSetup::Save(void)
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
-  Store("SortTimers",         SortTimers);
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);

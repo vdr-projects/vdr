@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.413 2006/02/19 10:18:28 kls Exp $
+ * $Id: menu.c 1.422 2006/02/25 15:41:40 kls Exp $
  */
 
 #include "menu.h"
@@ -686,14 +686,12 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                        if (!*data.file)
                           strcpy(data.file, data.Channel()->ShortName(true));
                        if (timer) {
-                          if (memcmp(timer, &data, sizeof(data)) != 0) {
+                          if (memcmp(timer, &data, sizeof(data)) != 0)
                              *timer = data;
-                             if (timer->HasFlags(tfActive))
-                                timer->ClrFlags(~tfAll); // allows external programs to mark active timers with values > 0xFFFF and recognize if the user has modified them
-                             }
                           if (addIfConfirmed)
                              Timers.Add(timer);
                           timer->Matches();
+                          timer->SetEventFromSchedule();
                           Timers.SetModified();
                           isyslog("timer %s %s (%s)", *timer->ToDescr(), addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
@@ -771,13 +769,14 @@ void cMenuTimerItem::Set(void)
 
 class cMenuTimers : public cOsdMenu {
 private:
+  int helpKeys;
   eOSState Edit(void);
   eOSState New(void);
   eOSState Delete(void);
   eOSState OnOff(void);
-  virtual void Move(int From, int To);
-  eOSState Summary(void);
+  eOSState Info(void);
   cTimer *CurrentTimer(void);
+  void SetHelpKeys(void);
 public:
   cMenuTimers(void);
   virtual ~cMenuTimers();
@@ -787,11 +786,12 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
+  helpKeys = -1;
   for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
       Add(new cMenuTimerItem(timer));
-  if (Setup.SortTimers)
-     Sort();
-  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), Setup.SortTimers ? tr("Button$On/Off") : tr("Button$Mark"));
+  Sort();
+  SetCurrent(First());
+  SetHelpKeys();
   Timers.IncBeingEdited();
 }
 
@@ -806,11 +806,30 @@ cTimer *cMenuTimers::CurrentTimer(void)
   return item ? item->Timer() : NULL;
 }
 
+void cMenuTimers::SetHelpKeys(void)
+{
+  int NewHelpKeys = 0;
+  cTimer *timer = CurrentTimer();
+  if (timer) {
+     if (timer->Event())
+        NewHelpKeys = 2;
+     else
+        NewHelpKeys = 1;
+     }
+  if (NewHelpKeys != helpKeys) {
+     helpKeys = NewHelpKeys;
+     SetHelp(helpKeys > 0 ? tr("Button$On/Off") : NULL, tr("Button$New"), helpKeys > 0 ? tr("Button$Delete") : NULL, helpKeys == 2 ? tr("Button$Info") : NULL);
+     }
+}
+
 eOSState cMenuTimers::OnOff(void)
 {
+  if (HasSubMenu())
+     return osContinue;
   cTimer *timer = CurrentTimer();
   if (timer) {
      timer->OnOff();
+     timer->SetEventFromSchedule();
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->FirstDay())
@@ -861,23 +880,14 @@ eOSState cMenuTimers::Delete(void)
   return osContinue;
 }
 
-void cMenuTimers::Move(int From, int To)
-{
-  Timers.Move(From, To);
-  cOsdMenu::Move(From, To);
-  Timers.SetModified();
-  Display();
-  isyslog("timer %d moved to %d", From + 1, To + 1);
-}
-
-eOSState cMenuTimers::Summary(void)
+eOSState cMenuTimers::Info(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
   cTimer *ti = CurrentTimer();
-  if (ti && !isempty(ti->Summary()))
-     return AddSubMenu(new cMenuText(tr("Summary"), ti->Summary()));
-  return Edit(); // convenience for people not using the Summary feature ;-)
+  if (ti && ti->Event())
+     return AddSubMenu(new cMenuEvent(ti->Event()));
+  return osContinue;
 }
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
@@ -887,14 +897,11 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk:     return Summary();
-       case kRed:    return Edit();
+       case kOk:     return Edit();
+       case kRed:    state = OnOff(); break; // must go through SetHelpKeys()!
        case kGreen:  return New();
        case kYellow: return Delete();
-       case kBlue:   if (Setup.SortTimers)
-                        OnOff();
-                     else
-                        Mark();
+       case kBlue:   return Info();
                      break;
        default: break;
        }
@@ -904,12 +911,14 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
      Add(new cMenuTimerItem(Timers.Get(TimerNumber)), true);
      Display();
      }
+  if (Key != kNone)
+     SetHelpKeys();
   return state;
 }
 
 // --- cMenuEvent ------------------------------------------------------------
 
-cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
+cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch, bool Buttons)
 :cOsdMenu(tr("Event"))
 {
   event = Event;
@@ -919,7 +928,8 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
         SetTitle(channel->Name());
         int TimerMatch = tmNone;
         Timers.GetMatch(event, &TimerMatch);
-        SetHelp(TimerMatch == tmFull ? tr("Button$Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
+        if (Buttons)
+           SetHelp(TimerMatch == tmFull ? tr("Button$Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
         }
      }
 }
@@ -1173,7 +1183,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      break;
        case kBlue:   return Switch();
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true, true));
                      break;
        default:      break;
        }
@@ -1442,7 +1452,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                         return Switch();
                      break;
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel, true));
                      break;
        default:      break;
        }
@@ -1850,7 +1860,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 0: SetHelp(NULL); break;
        case 1: SetHelp(tr("Button$Open")); break;
        case 2:
-       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Info") : NULL);
+       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Button$Info") : NULL);
        }
      helpKeys = NewHelpKeys;
      }
@@ -2142,7 +2152,6 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll wraps"),           &data.MenuScrollWrap));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu button closes"),     &data.MenuButtonCloses));
-  Add(new cMenuEditBoolItem(tr("Setup.OSD$Sort timers"),            &data.SortTimers));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   SetCurrent(Get(current));
   Display();
@@ -3110,9 +3119,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             else
                number = number * 10 + Key - k0;
             channel = Channels.GetByNumber(number);
-            displayChannel->SetEvents(NULL, NULL);
+            Refresh();
             withInfo = false;
-            DisplayChannel();
             // Lets see if there can be any useful further input:
             int n = channel ? number * 10 : 0;
             int m = 10;
@@ -3131,10 +3139,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                   }
             if (n > 0) {
                // This channel is the only one that fits the input, so let's take it right away:
-               displayChannel->Flush(); // makes sure the user sees his last input
                NewChannel = channel;
                withInfo = true;
                number = 0;
+               Refresh();
                }
             }
          break;
@@ -3159,8 +3167,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                group = SaveGroup;
             channel = Channels.Get(group);
             if (channel) {
-               displayChannel->SetEvents(NULL, NULL);
-               DisplayChannel();
+               Refresh();
                if (!channel->GroupSep())
                   group = -1;
                }
@@ -3940,8 +3947,9 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kUp:
     case kPause:
     case kDown:
+    case kOk:
          Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-         Goto(Seconds * FRAMESPERSEC, Key == kDown || Key == kPause);
+         Goto(Seconds * FRAMESPERSEC, Key == kDown || Key == kPause || Key == kOk);
          timeSearchActive = false;
          break;
     default:

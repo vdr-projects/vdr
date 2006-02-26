@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.61 2006/02/19 12:50:26 kls Exp $
+ * $Id: epg.c 1.64 2006/02/26 15:07:17 kls Exp $
  */
 
 #include "epg.h"
@@ -97,7 +97,7 @@ tComponent *cComponents::GetComponent(int Index, uchar Stream, uchar Type)
 
 // --- cEvent ----------------------------------------------------------------
 
-cEvent::cEvent(u_int16_t EventID)
+cEvent::cEvent(tEventID EventID)
 {
   schedule = NULL;
   eventID = EventID;
@@ -133,7 +133,7 @@ tChannelID cEvent::ChannelID(void) const
   return schedule ? schedule->ChannelID() : tChannelID();
 }
 
-void cEvent::SetEventID(u_int16_t EventID)
+void cEvent::SetEventID(tEventID EventID)
 {
   if (eventID != EventID) {
      if (schedule)
@@ -249,8 +249,7 @@ cString cEvent::GetVpsString(void) const
 void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
 {
   if (InfoOnly || startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
-     if (!InfoOnly)
-        fprintf(f, "%sE %u %ld %d %X %X\n", Prefix, eventID, startTime, duration, tableID, version);
+     fprintf(f, "%sE %u %ld %d %X %X\n", Prefix, eventID, startTime, duration, tableID, version);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
@@ -268,7 +267,7 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
             fprintf(f, "%sX %s\n", Prefix, *p->ToString());
             }
         }
-     if (!InfoOnly && vps)
+     if (vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
      if (!InfoOnly)
         fprintf(f, "%se\n", Prefix);
@@ -692,10 +691,17 @@ const cEvent *cSchedule::GetFollowingEvent(void) const
   const cEvent *p = GetPresentEvent();
   if (p)
      p = events.Next(p);
+  else { 
+     time_t now = time(NULL);
+     for (p = events.First(); p; p = events.Next(p)) {
+         if (p->StartTime() >= now)
+            break;
+         }
+     }
   return p;
 }
 
-const cEvent *cSchedule::GetEvent(u_int16_t EventID, time_t StartTime) const
+const cEvent *cSchedule::GetEvent(tEventID EventID, time_t StartTime) const
 {
   // Returns either the event info with the given EventID or, if that one can't
   // be found, the one with the given StartTime (or NULL if neither can be found)
