@@ -4412,3 +4412,5 @@ Video Disk Recorder Revision History
   (suggested by Matthias Schniedermeyer).
 - The DrawBitmap() function now has a new parameter 'Overlay' that allows a bitmap
   to be drawn with a transparent background (thanks to Alexander Hans).
+- Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
+  running (thanks to Pekka Mauno).

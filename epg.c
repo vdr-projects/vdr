@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.63 2006/02/26 13:54:44 kls Exp $
+ * $Id: epg.c 1.64 2006/02/26 15:07:17 kls Exp $
  */
 
 #include "epg.h"
@@ -691,6 +691,13 @@ const cEvent *cSchedule::GetFollowingEvent(void) const
   const cEvent *p = GetPresentEvent();
   if (p)
      p = events.Next(p);
+  else { 
+     time_t now = time(NULL);
+     for (p = events.First(); p; p = events.Next(p)) {
+         if (p->StartTime() >= now)
+            break;
+         }
+     }
   return p;
 }
 
