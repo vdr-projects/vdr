@@ -4407,3 +4407,6 @@ Video Disk Recorder Revision History
 - Lines tagged with '#' in the 'info.vdr' file of a recording are now silently
   ignored when reading that file (suggested by Peter Bieringer). Such lines can
   be used by external tools to store arbitrary information.
+- The 'event id' in EPG data has been extended to 32 bit, so that external tools
+  can generate ids that don't collide with those from the DVB data stream
+  (suggested by Matthias Schniedermeyer).

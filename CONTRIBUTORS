@@ -73,6 +73,8 @@ Matthias Schniedermeyer <ms@citd.de>
  is currently recording
  for suggesting to make the SVDRP command LSTT optionally list the channels
  of the timers with their unique channel ids instead of their numbers
+ for suggesting to extend the 'event id' in EPG data to 32 bit, so that external tools
+ can generate ids that don't collide with those from the DVB data stream
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language

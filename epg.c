@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.62 2006/02/25 12:30:27 kls Exp $
+ * $Id: epg.c 1.63 2006/02/26 13:54:44 kls Exp $
  */
 
 #include "epg.h"
@@ -97,7 +97,7 @@ tComponent *cComponents::GetComponent(int Index, uchar Stream, uchar Type)
 
 // --- cEvent ----------------------------------------------------------------
 
-cEvent::cEvent(u_int16_t EventID)
+cEvent::cEvent(tEventID EventID)
 {
   schedule = NULL;
   eventID = EventID;
@@ -133,7 +133,7 @@ tChannelID cEvent::ChannelID(void) const
   return schedule ? schedule->ChannelID() : tChannelID();
 }
 
-void cEvent::SetEventID(u_int16_t EventID)
+void cEvent::SetEventID(tEventID EventID)
 {
   if (eventID != EventID) {
      if (schedule)
@@ -694,7 +694,7 @@ const cEvent *cSchedule::GetFollowingEvent(void) const
   return p;
 }
 
-const cEvent *cSchedule::GetEvent(u_int16_t EventID, time_t StartTime) const
+const cEvent *cSchedule::GetEvent(tEventID EventID, time_t StartTime) const
 {
   // Returns either the event info with the given EventID or, if that one can't
   // be found, the one with the given StartTime (or NULL if neither can be found)
