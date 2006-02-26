@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.51 2006/02/05 13:46:37 kls Exp $
+ * $Id: osd.h 1.52 2006/02/26 14:35:19 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -157,13 +157,15 @@ public:
        ///< Sets the pixel at the given coordinates to the given Color, which is
        ///< a full 32 bit ARGB value.
        ///< If the coordinates are outside the bitmap area, no pixel will be set.
-  void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false);
+  void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false, bool Overlay = false);
        ///< Sets the pixels in this bitmap with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
        ///< will be mapped to ColorBg and the second palette entry will be mapped to
        ///< ColorFg (palette indexes are defined so that 0 is the background and
        ///< 1 is the foreground color).
+       ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
+       ///< not overwrite the corresponding pixel in the target area.
   void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
@@ -278,13 +280,15 @@ public:
        ///< If the OSD area has been divided into separate sub-areas, and the
        ///< given coordinates don't fall into any of these sub-areas, no pixel will
        ///< be set.
-  virtual void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false);
+  virtual void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false, bool Overlay = false);
        ///< Sets the pixels in the OSD with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
        ///< will be mapped to ColorBg and the second palette entry will be mapped to
        ///< ColorFg (palette indexes are defined so that 0 is the background and
        ///< 1 is the foreground color).
+       ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
+       ///< not overwrite the corresponding pixel in the target area.
   virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text

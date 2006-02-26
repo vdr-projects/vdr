@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.66 2006/02/05 13:46:37 kls Exp $
+ * $Id: osd.c 1.67 2006/02/26 14:31:31 kls Exp $
  */
 
 #include "osd.h"
@@ -344,7 +344,7 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
      SetIndex(x, y, Index(Color));
 }
 
-void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette)
+void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette, bool Overlay)
 {
   if (bitmap && Bitmap.bitmap && Intersects(x, y, x + Bitmap.Width() - 1, y + Bitmap.Height() - 1)) {
      if (Covers(x, y, x + Bitmap.Width() - 1, y + Bitmap.Height() - 1))
@@ -354,16 +354,20 @@ void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tC
      if (ReplacePalette && Covers(x + x0, y + y0, x + x0 + Bitmap.Width() - 1, y + y0 + Bitmap.Height() - 1)) {
         Replace(Bitmap);
         for (int ix = 0; ix < Bitmap.width; ix++) {
-            for (int iy = 0; iy < Bitmap.height; iy++)
-                SetIndex(x + ix, y + iy, Bitmap.bitmap[Bitmap.width * iy + ix]);
+            for (int iy = 0; iy < Bitmap.height; iy++) {
+                if (!Overlay || Bitmap.bitmap[Bitmap.width * iy + ix] != 0)
+                   SetIndex(x + ix, y + iy, Bitmap.bitmap[Bitmap.width * iy + ix]);
+                }
             }
         }
      else {
         tIndexes Indexes;
         Take(Bitmap, &Indexes, ColorFg, ColorBg);
         for (int ix = 0; ix < Bitmap.width; ix++) {
-            for (int iy = 0; iy < Bitmap.height; iy++)
-                SetIndex(x + ix, y + iy, Indexes[int(Bitmap.bitmap[Bitmap.width * iy + ix])]);
+            for (int iy = 0; iy < Bitmap.height; iy++) {
+                if (!Overlay || Bitmap.bitmap[Bitmap.width * iy + ix] != 0)
+                   SetIndex(x + ix, y + iy, Indexes[int(Bitmap.bitmap[Bitmap.width * iy + ix])]);
+                }
             }
         }
      }
@@ -683,10 +687,10 @@ void cOsd::DrawPixel(int x, int y, tColor Color)
       bitmaps[i]->DrawPixel(x, y, Color);
 }
 
-void cOsd::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette)
+void cOsd::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette, bool Overlay)
 {
   for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg, ReplacePalette);
+      bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg, ReplacePalette, Overlay);
 }
 
 void cOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)

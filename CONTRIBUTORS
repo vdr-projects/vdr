@@ -1748,6 +1748,8 @@ Jaroslaw Swierczynski <swiergot@gmail.com>
 Alexander Hans <cleditor@arcor.de>
  for reporting a crash when pressing '0' in the "Schedule" menu on a channel that
  doesn't have any EPG data 
+ for giving the DrawBitmap() function a new parameter 'Overlay' that allows a bitmap
+ to be drawn with a transparent background
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits

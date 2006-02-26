@@ -4410,3 +4410,5 @@ Video Disk Recorder Revision History
 - The 'event id' in EPG data has been extended to 32 bit, so that external tools
   can generate ids that don't collide with those from the DVB data stream
   (suggested by Matthias Schniedermeyer).
+- The DrawBitmap() function now has a new parameter 'Overlay' that allows a bitmap
+  to be drawn with a transparent background (thanks to Alexander Hans).
