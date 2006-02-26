@@ -4404,3 +4404,6 @@ Video Disk Recorder Revision History
 - Fixed setting events to timers in case a non-VPS event has expired.
 - There is now a log message "timer ... set to event ..." when defining a timer
   from the EPG menu.
+- Lines tagged with '#' in the 'info.vdr' file of a recording are now silently
+  ignored when reading that file (suggested by Peter Bieringer). Such lines can
+  be used by external tools to store arbitrary information.

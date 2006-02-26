@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.139 2006/02/25 17:05:48 kls Exp $
+ * $Id: recording.c 1.140 2006/02/26 11:59:59 kls Exp $
  */
 
 #include "recording.h"
@@ -356,6 +356,7 @@ bool cRecordingInfo::Read(FILE *f)
              case '@': free(aux);
                        aux = strdup(t);
                        break;
+             case '#': break; // comments are ignored
              default: if (!ownEvent->Parse(s)) {
                          esyslog("ERROR: EPG data problem in line %d", line);
                          return false;
