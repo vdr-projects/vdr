@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.48 2006/02/25 15:57:56 kls Exp $
+ * $Id: timers.c 1.49 2006/02/26 10:17:38 kls Exp $
  */
 
 #include "timers.h"
@@ -467,7 +467,7 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
                Event = e;
                }
             }
-        if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
+        if (Event && Event->EndTime() < now - EXPIRELATENCY && Overlap > FULLMATCH && !Event->IsRunning())
            Event = NULL;
         SetEvent(Event);
         }
