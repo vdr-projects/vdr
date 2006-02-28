@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.50 2006/02/26 10:50:47 kls Exp $
+ * $Id: timers.c 1.51 2006/02/28 12:40:33 kls Exp $
  */
 
 #include "timers.h"
@@ -426,7 +426,10 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-#define EPGLIMITPAST   (2 * 3600) // time in seconds in the past within which EPG events will be taken into consideration
+#define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and
+#define EPGLIMITAFTER    (1 * 3600) // after its stop time within which EPG events will be taken into consideration.
+#define VPSLIMITBEFORE   (2 * 3600) // Same for VPS timers, which need to
+#define VPSLIMITAFTER   (24 * 3600) // look further into the future to catch shifted broadcasts.
 
 void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
@@ -438,14 +441,20 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
      }
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule) {
+     time_t now = time(NULL);
      if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
         const cEvent *Event = NULL;
         int Overlap = 0;
         int Distance = INT_MIN;
-        time_t now = time(NULL);
+        // Set up the time frame within which to check events:
+        Matches(0, true);
+        time_t TimeFrameBegin = StartTime() - (HasFlags(tfVps) ? VPSLIMITBEFORE : EPGLIMITBEFORE);
+        time_t TimeFrameEnd   = StopTime()  + (HasFlags(tfVps) ? VPSLIMITAFTER  : EPGLIMITAFTER);
         for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-            if (e->EndTime() < now - EPGLIMITPAST)
-               continue; // skip old events
+            if (e->EndTime() < TimeFrameBegin)
+               continue; // skip events way before the timer starts
+            if (e->StartTime() > TimeFrameEnd)
+               break; // the rest is way after the timer ends
             int overlap = 0;
             Matches(e, &overlap);
             if (overlap && overlap >= Overlap) {
@@ -470,9 +479,9 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         if (Event && Event->EndTime() < now - EXPIRELATENCY && Overlap > FULLMATCH && !Event->IsRunning())
            Event = NULL;
         SetEvent(Event);
+        lastSetEvent = now;
         }
      }
-  lastSetEvent = time(NULL);
 }
 
 void cTimer::SetEvent(const cEvent *Event)

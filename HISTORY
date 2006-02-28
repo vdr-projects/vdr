@@ -4418,3 +4418,4 @@ Video Disk Recorder Revision History
 2006-02-28: Version 1.3.45
 
 - Fixed updating the "Info" button in the "Timers" menu.
+- Reduced the number of events to actually check when setting events to timers.
