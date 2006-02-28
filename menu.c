@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.422 2006/02/25 15:41:40 kls Exp $
+ * $Id: menu.c 1.423 2006/02/28 12:15:43 kls Exp $
  */
 
 #include "menu.h"
@@ -690,8 +690,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                              *timer = data;
                           if (addIfConfirmed)
                              Timers.Add(timer);
-                          timer->Matches();
                           timer->SetEventFromSchedule();
+                          timer->Matches();
                           Timers.SetModified();
                           isyslog("timer %s %s (%s)", *timer->ToDescr(), addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
@@ -787,8 +787,10 @@ cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
   helpKeys = -1;
-  for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
+  for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
+      timer->SetEventFromSchedule(); // make sure the event is current
       Add(new cMenuTimerItem(timer));
+      }
   Sort();
   SetCurrent(First());
   SetHelpKeys();
@@ -900,7 +902,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kOk:     return Edit();
        case kRed:    state = OnOff(); break; // must go through SetHelpKeys()!
        case kGreen:  return New();
-       case kYellow: return Delete();
+       case kYellow: state = Delete(); break;
        case kBlue:   return Info();
                      break;
        default: break;

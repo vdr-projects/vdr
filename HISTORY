@@ -4414,3 +4414,7 @@ Video Disk Recorder Revision History
   to be drawn with a transparent background (thanks to Alexander Hans).
 - Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
   running (thanks to Pekka Mauno).
+
+2006-02-28: Version 1.3.45
+
+- Fixed updating the "Info" button in the "Timers" menu.
