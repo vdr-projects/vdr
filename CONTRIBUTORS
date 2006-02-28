@@ -1767,6 +1767,8 @@ Bárta Vladimír <vladimir.barta@k2atmitec.cz>
 Christoph Haubrich <christoph1.haubrich@arcor.de>
  for making the "Ok" key in the "Jump" mode of the replay progress display confirm
  the jump instead of closing the display
+ for reporting that the log message "deleting plugin: ..." is irritating when
+ calling "vdr --help"
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

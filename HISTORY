@@ -4422,3 +4422,5 @@ Video Disk Recorder Revision History
 - cMenuEditIntItem now checks the given value and forces it to be between the
   given min and max limits.
 - The status changes of EPG events are now logged for all channels that have timers.
+- Removed the log message "deleting plugin: ..." when shutting down VDR (thanks to
+  Christoph Haubrich for reporting that this is irritating when calling "vdr --help").
