@@ -4419,3 +4419,5 @@ Video Disk Recorder Revision History
 
 - Fixed updating the "Info" button in the "Timers" menu.
 - Reduced the number of events to actually check when setting events to timers.
+- cMenuEditIntItem now checks the given value and forces it to be between the
+  given min and max limits.

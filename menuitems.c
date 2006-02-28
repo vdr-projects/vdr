@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.32 2006/02/12 10:31:08 kls Exp $
+ * $Id: menuitems.c 1.33 2006/02/28 12:53:37 kls Exp $
  */
 
 #include "menuitems.h"
@@ -51,6 +51,10 @@ cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Ma
   value = Value;
   min = Min;
   max = Max;
+  if (*value < min)
+     *value = min;
+  else if (*value > max)
+     *value = max;
   Set();
 }
 
