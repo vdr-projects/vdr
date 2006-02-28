@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.64 2006/02/26 15:07:17 kls Exp $
+ * $Id: epg.c 1.65 2006/02/28 13:56:05 kls Exp $
  */
 
 #include "epg.h"
@@ -156,8 +156,7 @@ void cEvent::SetVersion(uchar Version)
 
 void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
 {
-  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined))
-     if (Channel->Number() <= 30)//XXX maybe log only those that have timers???
+  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && Channel->HasTimer())
      isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), *GetTimeString(), Title(), RunningStatus);
   runningStatus = RunningStatus;
 }

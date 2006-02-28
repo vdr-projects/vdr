@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.48 2006/01/14 15:51:02 kls Exp $
+ * $Id: channels.c 1.49 2006/02/28 13:54:34 kls Exp $
  */
 
 #include "channels.h"
@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include "device.h"
 #include "epg.h"
+#include "timers.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -246,6 +247,15 @@ int cChannel::Transponder(void) const
   if (IsSat())
      tf = Transponder(tf, polarization);
   return tf;
+}
+
+bool cChannel::HasTimer(void) const
+{
+  for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
+      if (Timer->Channel() == this)
+         return true;
+      }
+  return false;
 }
 
 int cChannel::Modification(int Mask)

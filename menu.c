@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.423 2006/02/28 12:15:43 kls Exp $
+ * $Id: menu.c 1.424 2006/02/28 13:58:00 kls Exp $
  */
 
 #include "menu.h"
@@ -500,12 +500,10 @@ eOSState cMenuChannels::Delete(void)
      cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
      // Check if there is a timer using this channel:
-     for (cTimer *ti = Timers.First(); ti; ti = Timers.Next(ti)) {
-         if (ti->Channel() == channel) {
-            Skins.Message(mtError, tr("Channel is being used by a timer!"));
-            return osContinue;
-            }
-         }
+     if (channel->HasTimer()) {
+        Skins.Message(mtError, tr("Channel is being used by a timer!"));
+        return osContinue;
+        }
      if (Interface->Confirm(tr("Delete channel?"))) {
         Channels.Del(channel);
         cOsdMenu::Del(Index);

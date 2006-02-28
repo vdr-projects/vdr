@@ -4421,3 +4421,4 @@ Video Disk Recorder Revision History
 - Reduced the number of events to actually check when setting events to timers.
 - cMenuEditIntItem now checks the given value and forces it to be between the
   given min and max limits.
+- The status changes of EPG events are now logged for all channels that have timers.
