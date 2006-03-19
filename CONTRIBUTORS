@@ -307,6 +307,8 @@ Werner Fink <werner@suse.de>
  for enabling a device to detach all receivers for a given PID
  for modifying switching to Dolby Digital audio in live mode, if the driver
  and firmware can handle live DD without the need of a Transfer Mode
+ for fixing cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is
+ false
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

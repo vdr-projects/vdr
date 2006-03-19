@@ -4426,3 +4426,5 @@ Video Disk Recorder Revision History
   Christoph Haubrich for reporting that this is irritating when calling "vdr --help").
 - Fixed cReadLine::Read() for lines that end with the infamous "\r\n" (thanks to
   Rolf Ahrenberg).
+- Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
+  (thanks to Werner Fink).

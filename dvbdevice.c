@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.153 2006/02/19 13:52:04 kls Exp $
+ * $Id: dvbdevice.c 1.154 2006/03/19 12:34:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -653,6 +653,8 @@ eVideoSystem cDvbDevice::GetVideoSystem(void)
 
 bool cDvbDevice::SetAudioBypass(bool On)
 {
+  if (!setTransferModeForDolbyDigital)
+     return false;
   return ioctl(fd_audio, AUDIO_SET_BYPASS_MODE, On) == 0;
 }
 
