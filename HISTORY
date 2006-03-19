@@ -4415,7 +4415,7 @@ Video Disk Recorder Revision History
 - Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
   running (thanks to Pekka Mauno).
 
-2006-02-28: Version 1.3.45
+2006-03-19: Version 1.3.45
 
 - Fixed updating the "Info" button in the "Timers" menu.
 - Reduced the number of events to actually check when setting events to timers.
@@ -4424,3 +4424,5 @@ Video Disk Recorder Revision History
 - The status changes of EPG events are now logged for all channels that have timers.
 - Removed the log message "deleting plugin: ..." when shutting down VDR (thanks to
   Christoph Haubrich for reporting that this is irritating when calling "vdr --help").
+- Fixed cReadLine::Read() for lines that end with the infamous "\r\n" (thanks to
+  Rolf Ahrenberg).

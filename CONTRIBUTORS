@@ -964,6 +964,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  exceeds the maximum channel number
  for suggesting to also set the language codes when setting the audio track descriptions
  for reporting a problem in setting the audio language codes in 'Transfer-Mode'
+ for fixing cReadLine::Read() for lines that end with the infamous "\r\n"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
