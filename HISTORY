@@ -4428,3 +4428,4 @@ Video Disk Recorder Revision History
   Rolf Ahrenberg).
 - Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
   (thanks to Werner Fink).
+- Updated 'sources.conf'.
