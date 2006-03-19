@@ -1781,3 +1781,7 @@ Pekka Mauno <pekka.mauno@iki.fi>
 
 Alexander Wenzel <hondansx@gmx.de>
  for fixing the shutdown timeout
+
+Jan Lenz <email@JanLenz.de>
+ for reporting a bug in deleting recordings that have been removed externally when
+ running out of disk space

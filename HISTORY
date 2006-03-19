@@ -4432,3 +4432,5 @@ Video Disk Recorder Revision History
 - Fixed the shutdown timeout (thanks to Alexander Wenzel).
 - Only calling RemoveEmptyVideoDirectories() once in case a recording has been
   deleted (reported by Hardy Flor).
+- Fixed deleting recordings that have been removed externally when running out of
+  disk space (reported by Jan Lenz).

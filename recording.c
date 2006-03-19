@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.141 2006/03/19 14:08:58 kls Exp $
+ * $Id: recording.c 1.142 2006/03/19 14:33:18 kls Exp $
  */
 
 #include "recording.h"
@@ -804,11 +804,16 @@ bool cRecording::Delete(void)
      strncpy(ext, DELEXT, strlen(ext));
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
-        isyslog("removing recording %s", NewName);
+        isyslog("removing recording '%s'", NewName);
         RemoveVideoFile(NewName);
         }
-     isyslog("deleting recording %s", FileName());
-     result = RenameVideoFile(FileName(), NewName);
+     isyslog("deleting recording '%s'", FileName());
+     if (access(FileName(), F_OK) == 0)
+        result = RenameVideoFile(FileName(), NewName);
+     else {
+        isyslog("recording '%s' vanished", FileName());
+        result = true; // well, we were going to delete it, anyway
+        }
      }
   free(NewName);
   return result;
