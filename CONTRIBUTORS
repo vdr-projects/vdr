@@ -1776,3 +1776,6 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
  event running
+
+Alexander Wenzel <hondansx@gmx.de>
+ for fixing the shutdown timeout

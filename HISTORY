@@ -4429,3 +4429,4 @@ Video Disk Recorder Revision History
 - Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
   (thanks to Werner Fink).
 - Updated 'sources.conf'.
+- Fixed the shutdown timeout (thanks to Alexander Wenzel).
