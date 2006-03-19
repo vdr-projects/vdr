@@ -1619,6 +1619,8 @@ Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
 Hardy Flor <HFlor@web.de>
  for a patch that was used as a base to implement SVDRP commands for plugins
  for implementing the SVDRP command PLAY
+ for reporting that RemoveEmptyVideoDirectories() was called for every single
+ recording that has been deleted
 
 Harald Milz <hm@seneca.muc.de>
  for his CUTR patch, which was used as a base to implement the SVDRP command EDIT

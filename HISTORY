@@ -4430,3 +4430,5 @@ Video Disk Recorder Revision History
   (thanks to Werner Fink).
 - Updated 'sources.conf'.
 - Fixed the shutdown timeout (thanks to Alexander Wenzel).
+- Only calling RemoveEmptyVideoDirectories() once in case a recording has been
+  deleted (reported by Hardy Flor).
