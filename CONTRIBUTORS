@@ -1790,3 +1790,6 @@ Jan Lenz <email@JanLenz.de>
 
 Oleg Roitburd <oleg@roitburd.de>
  for translating OSD texts to the Russian language
+
+Marius Heidenstecker <marius@heidenstecker.de>
+ for suggesting to make cMenuRecordings::GetRecording() 'protected'

@@ -4441,3 +4441,4 @@ Video Disk Recorder Revision History
 - Fixed calling a plugin's main menu function while a message is being displayed
   (reported by Helmut Auer).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Made cMenuRecordings::GetRecording() 'protected' (suggested by Marius Heidenstecker).
