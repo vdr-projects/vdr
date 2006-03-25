@@ -4436,3 +4436,5 @@ Video Disk Recorder Revision History
   disk space (reported by Jan Lenz).
 - Fixed handling repeating VPS timers (they stopped recording too early).
 - Timer log messages now show "VPS" if this is a VPS timer.
+- Fixed getting the present EPG event in case none is currently 'running' (it
+  then returns the one that just ended).

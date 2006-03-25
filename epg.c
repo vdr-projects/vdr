@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.65 2006/02/28 13:56:05 kls Exp $
+ * $Id: epg.c 1.66 2006/03/25 11:43:00 kls Exp $
  */
 
 #include "epg.h"
@@ -677,8 +677,10 @@ const cEvent *cSchedule::GetPresentEvent(void) const
   const cEvent *pe = NULL;
   time_t now = time(NULL);
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p->StartTime() <= now && now < p->EndTime())
+      if (p->StartTime() <= now)
          pe = p;
+      else if (p->StartTime() > now + 3600)
+         break;
       if (p->SeenWithin(RUNNINGSTATUSTIMEOUT) && p->RunningStatus() >= SI::RunningStatusPausing)
          return p;
       }
