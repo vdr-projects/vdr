@@ -4443,3 +4443,4 @@ Video Disk Recorder Revision History
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Made cMenuRecordings::GetRecording() 'protected' (suggested by Marius Heidenstecker).
 - Speeded up cRemux::ScanVideoPacket() (thanks to Reinhard Nissl).
+- Enhanced logging EPG event data.

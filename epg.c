@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.66 2006/03/25 11:43:00 kls Exp $
+ * $Id: epg.c 1.67 2006/03/25 12:48:34 kls Exp $
  */
 
 #include "epg.h"
@@ -157,7 +157,7 @@ void cEvent::SetVersion(uchar Version)
 void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
 {
   if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && Channel->HasTimer())
-     isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), *GetTimeString(), Title(), RunningStatus);
+     isyslog("channel %d (%s) event %s status %d", Channel->Number(), Channel->Name(), *ToDescr(), RunningStatus);
   runningStatus = RunningStatus;
 }
 
@@ -206,6 +206,14 @@ void cEvent::SetVps(time_t Vps)
 void cEvent::SetSeen(void)
 {
   seen = time(NULL);
+}
+
+cString cEvent::ToDescr(void) const
+{
+  char vpsbuf[64] = "";
+  if (Vps())
+     sprintf(vpsbuf, "(VPS: %s) ", *GetVpsString());
+  return cString::sprintf("%s %s-%s %s'%s'", *GetDateString(), *GetTimeString(), *GetEndTimeString(), vpsbuf, Title());
 }
 
 bool cEvent::HasTimer(void) const

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.53 2006/03/25 11:41:24 kls Exp $
+ * $Id: timers.c 1.54 2006/03/25 12:43:59 kls Exp $
  */
 
 #include "timers.h"
@@ -492,12 +492,8 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 void cTimer::SetEvent(const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
-     if (Event) {
-        char vpsbuf[64] = "";
-        if (Event->Vps())
-           sprintf(vpsbuf, "(VPS: %s) ", *Event->GetVpsString());
-        isyslog("timer %s set to event %s %s-%s %s'%s'", *ToDescr(), *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
-        }
+     if (Event)
+        isyslog("timer %s set to event %s", *ToDescr(), *Event->ToDescr());
      else
         isyslog("timer %s set to no event", *ToDescr());
      event = Event;
