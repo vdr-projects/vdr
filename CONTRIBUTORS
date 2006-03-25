@@ -1787,3 +1787,6 @@ Alexander Wenzel <hondansx@gmx.de>
 Jan Lenz <email@JanLenz.de>
  for reporting a bug in deleting recordings that have been removed externally when
  running out of disk space
+
+Oleg Roitburd <oleg@roitburd.de>
+ for translating OSD texts to the Russian language

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.250 2006/02/25 14:21:28 kls Exp $
+ * $Id: i18n.c 1.251 2006/03/25 11:56:35 kls Exp $
  *
  * Translations provided by:
  *
@@ -22,7 +22,7 @@
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>, Lucian Muresan <lucianm@users.sourceforge.net>
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>
  * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com>, Jordi Vilр <jvila@tinet.org>
- * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>
+ * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>, Oleg Roitburd <oleg@roitburd.de>
  * Croatian    Drazen Dupor <drazen.dupor@dupor.com>, Dino Ravnic <dino.ravnic@fer.hr>
  * Estonian    Arthur Konovalov <kasjas@hot.ee>
  * Danish      Mogens Elneff <mogens@elneff.dk>
@@ -475,7 +475,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Эта передача - %s",
     "",//TODO
     "See sќndmus - %s",
     "Denne udsendelse - %s",
@@ -497,7 +497,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Эта передача - все каналы",
     "",//TODO
     "See sќndmus - kѕik kanalid",
     "Denne udsendelse - alle kanaler",
@@ -519,7 +519,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Все передачи - все каналы",
     "",//TODO
     "Kѕik sќndmused - kѕik kanalid",
     "Alle udsendelser - alle kanaler",
@@ -696,7 +696,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Таймер",
     "",// TODO
     "Taimer",
     "Timer",
@@ -1666,7 +1666,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "FTA (незакодировано)",
     "",//TODO
     "FTA",
     "Free To Air",
@@ -1688,7 +1688,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "закодировано",
     "",//TODO
     "krќptitud",
     "kodet",
@@ -2460,7 +2460,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Недостаточно места на диске для начала записи",
     "",//TODO
     "Ebapiisavalt kettaruumi salvestamise alustamiseks!",
     "For lidt harddisk plads til optagelse!",
@@ -2504,7 +2504,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Открываю меню модуля условного доступа (CAM)",
     "",//TODO
     "CAM-menќќ avamine...",
     "Хbner CAM menu...",
@@ -2548,7 +2548,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Перегрузка CAM...",
     "",//TODO
     "CAM mooduli taaskфivitus...",
     "Nulstiller CAM...",
@@ -2614,7 +2614,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Нажмите %d цифры",
     "",//TODO
     "Palun sisesta %d numbrit!",
     "Indtast venligst %d cifre!",
@@ -3232,7 +3232,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Информацию о канале закрыть",
     "", // TODO
     "Kanaliinfo kuvamise ajapiirang",
     "Timeout ved anmodet kanal info",
@@ -3298,7 +3298,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Кнопку Меню закрыть",
     "",// TODO
     "Sulgemine Menќќ klahviga",
     "Menu taste lukker",
@@ -4399,7 +4399,7 @@ const tI18nPhrase Phrases[] = {
     "LMMJVSD",
     "HKSCPSV",
     "LMCJVSG",
-    "ПВСЧПВС",
+    "ПВСЧПСВ",
     "PUSШPSN", // hrv
     "ETKNRLP",
     "MTOTFLS",
@@ -5151,7 +5151,7 @@ const tI18nPhrase Phrases[] = {
     "Derulare юnainte",
     "Elіre pіrgetni",
     "Endavant rрpidament",
-    "Вперёд",
+    "Прокрутка вперёд",
     "Naprijed",
     "Edasikerimine",
     "Spol fremad",
@@ -5173,7 +5173,7 @@ const tI18nPhrase Phrases[] = {
     "Derulare юnapoi",
     "Vissza pіrgetni",
     "Enrera rрpidament",
-    "Назад",
+    "Прокрутка назад",
     "Nazad",
     "Tagasikerimine",
     "Spol tilbage",
@@ -5768,7 +5768,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Запись начата",
     "",//TODO
     "Salvestamine algas",
     "Optagelse startet",
