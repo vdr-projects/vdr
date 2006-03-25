@@ -4435,3 +4435,4 @@ Video Disk Recorder Revision History
 - Fixed deleting recordings that have been removed externally when running out of
   disk space (reported by Jan Lenz).
 - Fixed handling repeating VPS timers (they stopped recording too early).
+- Timer log messages now show "VPS" if this is a VPS timer.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.52 2006/03/25 11:39:50 kls Exp $
+ * $Id: timers.c 1.53 2006/03/25 11:41:24 kls Exp $
  */
 
 #include "timers.h"
@@ -120,7 +120,7 @@ cString cTimer::ToText(bool UseChannelID)
 cString cTimer::ToDescr(void) const
 {
   char *buffer;
-  asprintf(&buffer, "%d (%d %04d-%04d '%s')", Index() + 1, Channel()->Number(), start, stop, file);
+  asprintf(&buffer, "%d (%d %04d-%04d %s'%s')", Index() + 1, Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
   return cString(buffer, true);
 }
 
