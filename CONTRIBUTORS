@@ -1068,6 +1068,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for adding a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
  for a suggestion that lead to implementing cDevice::Transferring()
  for fixing replaying recordings of radio channels with many audio tracks
+ for speeding up cRemux::ScanVideoPacket()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

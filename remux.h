@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.15 2005/08/26 13:22:19 kls Exp $
+ * $Id: remux.h 1.16 2006/03/25 12:27:30 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -46,8 +46,6 @@ private:
   cRingBufferLinear *resultBuffer;
   int resultSkipped;
   int GetPid(const uchar *Data);
-  int GetPacketLength(const uchar *Data, int Count, int Offset);
-  int ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType);
 public:
   cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, bool ExitOnFailure = false);
        ///< Creates a new remuxer for the given PIDs. VPid is the video PID, while
@@ -79,6 +77,8 @@ public:
        ///< Clears the remuxer of all data it might still contain, keeping the PID
        ///< settings as they are.
   static void SetBrokenLink(uchar *Data, int Length);
+  static int GetPacketLength(const uchar *Data, int Count, int Offset);
+  static int ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType);
   };
 
 #endif // __REMUX_H
