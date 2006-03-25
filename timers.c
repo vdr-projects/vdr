@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.51 2006/02/28 12:40:33 kls Exp $
+ * $Id: timers.c 1.52 2006/03/25 11:39:50 kls Exp $
  */
 
 #include "timers.h"
@@ -446,15 +446,20 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         const cEvent *Event = NULL;
         int Overlap = 0;
         int Distance = INT_MIN;
+        bool UseVps = HasFlags(tfVps);
+        const cEvent *PresentEvent = UseVps ? Schedule->GetPresentEvent() : NULL;
+        const cEvent *FollowingEvent = UseVps ? Schedule->GetFollowingEvent() : NULL;
         // Set up the time frame within which to check events:
         Matches(0, true);
-        time_t TimeFrameBegin = StartTime() - (HasFlags(tfVps) ? VPSLIMITBEFORE : EPGLIMITBEFORE);
-        time_t TimeFrameEnd   = StopTime()  + (HasFlags(tfVps) ? VPSLIMITAFTER  : EPGLIMITAFTER);
+        time_t TimeFrameBegin = StartTime() - (UseVps ? VPSLIMITBEFORE : EPGLIMITBEFORE);
+        time_t TimeFrameEnd   = StopTime()  + (UseVps ? VPSLIMITAFTER  : EPGLIMITAFTER);
         for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-            if (e->EndTime() < TimeFrameBegin)
-               continue; // skip events way before the timer starts
-            if (e->StartTime() > TimeFrameEnd)
-               break; // the rest is way after the timer ends
+            if (!UseVps || e != event && e != PresentEvent && e != FollowingEvent) { // always check these if this is a VPS timer
+               if (e->EndTime() < TimeFrameBegin)
+                  continue; // skip events way before the timer starts
+               if (e->StartTime() > TimeFrameEnd)
+                  break; // the rest is way after the timer ends
+               }
             int overlap = 0;
             Matches(e, &overlap);
             if (overlap && overlap >= Overlap) {

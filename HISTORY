@@ -4415,7 +4415,7 @@ Video Disk Recorder Revision History
 - Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
   running (thanks to Pekka Mauno).
 
-2006-03-19: Version 1.3.45
+2006-03-25: Version 1.3.45
 
 - Fixed updating the "Info" button in the "Timers" menu.
 - Reduced the number of events to actually check when setting events to timers.
@@ -4434,3 +4434,4 @@ Video Disk Recorder Revision History
   deleted (reported by Hardy Flor).
 - Fixed deleting recordings that have been removed externally when running out of
   disk space (reported by Jan Lenz).
+- Fixed handling repeating VPS timers (they stopped recording too early).
