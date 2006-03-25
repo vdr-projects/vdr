@@ -4438,3 +4438,5 @@ Video Disk Recorder Revision History
 - Timer log messages now show "VPS" if this is a VPS timer.
 - Fixed getting the present EPG event in case none is currently 'running' (it
   then returns the one that just ended).
+- Fixed calling a plugin's main menu function while a message is being displayed
+  (reported by Helmut Auer).

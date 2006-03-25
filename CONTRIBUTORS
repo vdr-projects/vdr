@@ -558,6 +558,8 @@ Helmut Auer <vdr@helmutauer.de>
  items at the beginning of the menu
  for a patch that was used to implement stopping scanning the video directory if
  there are too many levels of symbolic links
+ for reporting that an attempt to call a plugin's main menu function while a
+ message is being displayed didn't work
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
