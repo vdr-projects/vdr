@@ -4447,3 +4447,5 @@ Video Disk Recorder Revision History
 - Fixed format string handling (thanks to Darren Salt).
 - The new function cDevice::ForceTransferMode() can be used to force the primary
   device into transfer mode (thanks to Reinhard Nissl).
+- The 'version' of EPG events is now ignored when reading EPG data from 'epg.data'
+  or via SVDRP/PUTE to avoid problems with double EPG events.

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.67 2006/03/25 12:48:34 kls Exp $
+ * $Id: epg.c 1.68 2006/03/26 13:44:23 kls Exp $
  */
 
 #include "epg.h"
@@ -320,7 +320,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           time_t StartTime;
                           int Duration;
                           unsigned int TableID = 0;
-                          unsigned int Version = 0xFF;
+                          unsigned int Version = 0xFF; // actual value is ignored
                           int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
                           if (n >= 3 && n <= 5) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
@@ -331,8 +331,6 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
-                                if (TableID >= 0x50) // makes sure the running status flag is set from the actual data stream
-                                   Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)
