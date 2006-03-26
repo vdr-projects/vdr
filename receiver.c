@@ -4,12 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 1.4 2005/01/16 14:03:01 kls Exp $
+ * $Id: receiver.c 1.5 2006/03/26 14:07:21 kls Exp $
  */
 
+#include "receiver.h"
 #include <stdarg.h>
 #include <stdio.h>
-#include "receiver.h"
 #include "tools.h"
 
 cReceiver::cReceiver(int Ca, int Priority, int Pid, const int *Pids1, const int *Pids2, const int *Pids3)

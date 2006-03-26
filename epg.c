@@ -7,14 +7,14 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.69 2006/03/26 13:47:29 kls Exp $
+ * $Id: epg.c 1.70 2006/03/26 14:06:11 kls Exp $
  */
 
 #include "epg.h"
-#include "libsi/si.h"
-#include "timers.h"
 #include <ctype.h>
 #include <time.h>
+#include "libsi/si.h"
+#include "timers.h"
 
 #define RUNNINGSTATUSTIMEOUT 30 // seconds before the running status is considered unknown
 
