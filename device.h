@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.72 2006/02/04 14:22:08 kls Exp $
+ * $Id: device.h 1.73 2006/03/26 09:42:40 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -236,6 +236,8 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
+  void ForceTransferMode(void);
+         ///< Forces the device into transfermode for the current channel.
   virtual bool HasLock(int TimeoutMs = 0);//XXX PLUGINS.html
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false

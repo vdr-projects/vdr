@@ -4445,3 +4445,5 @@ Video Disk Recorder Revision History
 - Speeded up cRemux::ScanVideoPacket() (thanks to Reinhard Nissl).
 - Enhanced logging EPG event data.
 - Fixed format string handling (thanks to Darren Salt).
+- The new function cDevice::ForceTransferMode() can be used to force the primary
+  device into transfer mode (thanks to Reinhard Nissl).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.154 2006/03/19 12:34:24 kls Exp $
+ * $Id: dvbdevice.c 1.155 2006/03/26 09:42:54 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -930,9 +930,7 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
         if (!setTransferModeForDolbyDigital)
            return;
         // Currently this works only in Transfer Mode
-        cChannel *Channel = Channels.GetByNumber(CurrentChannel());
-        if (Channel)
-           SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
+        ForceTransferMode();
         }
      }
 }
