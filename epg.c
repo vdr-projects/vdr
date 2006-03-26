@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.68 2006/03/26 13:44:23 kls Exp $
+ * $Id: epg.c 1.69 2006/03/26 13:47:29 kls Exp $
  */
 
 #include "epg.h"
@@ -103,7 +103,7 @@ cEvent::cEvent(tEventID EventID)
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
-  runningStatus = 0;
+  runningStatus = SI::RunningStatusUndefined;
   title = NULL;
   shortText = NULL;
   description = NULL;
@@ -735,9 +735,11 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
 void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
 {
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p == Event)
-         p->SetRunningStatus(RunningStatus, Channel);
-      else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
+      if (p == Event) {
+         if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning)
+            p->SetRunningStatus(RunningStatus, Channel);
+         }
+      else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
          p->SetRunningStatus(SI::RunningStatusNotRunning);
       }
   if (RunningStatus >= SI::RunningStatusPausing)

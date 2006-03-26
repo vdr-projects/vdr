@@ -4449,3 +4449,5 @@ Video Disk Recorder Revision History
   device into transfer mode (thanks to Reinhard Nissl).
 - The 'version' of EPG events is now ignored when reading EPG data from 'epg.data'
   or via SVDRP/PUTE to avoid problems with double EPG events.
+- The 'running status' of EPG events is now only set to SI::RunningStatusNotRunning
+  for events before the present event.
