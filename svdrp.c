@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.93 2006/01/14 16:08:20 kls Exp $
+ * $Id: svdrp.c 1.94 2006/03/26 09:14:13 kls Exp $
  */
 
 #include "svdrp.h"
@@ -461,7 +461,7 @@ void cSVDRP::PrintHelpTopics(const char **hp)
              q += sprintf(q, "%*s", -MAXHELPTOPIC, topic);
           }
       x = 0;
-      Reply(-214, buffer);
+      Reply(-214, "%s", buffer);
       }
 }
 
@@ -782,7 +782,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            cBase64Encoder Base64(Image, ImageSize);
            const char *s;
            while ((s = Base64.NextLine()) != NULL)
-                 Reply(-216, s);
+                 Reply(-216, "%s", s);
            Reply(216, "Grabbed image %s", Option);
            }
         free(Image);
@@ -799,7 +799,7 @@ void cSVDRP::CmdHELP(const char *Option)
   if (*Option) {
      const char *hp = GetHelpPage(Option, HelpPages);
      if (hp)
-        Reply(214, hp);
+        Reply(214, "%s", hp);
      else {
         Reply(504, "HELP topic \"%s\" unknown", Option);
         return;
@@ -1332,7 +1332,7 @@ void cSVDRP::CmdPLUG(const char *Option)
            if (*cmd && *option) {
               const char *hp = GetHelpPage(option, plugin->SVDRPHelpPages());
               if (hp) {
-                 Reply(-214, hp);
+                 Reply(-214, "%s", hp);
                  Reply(214, "End of HELP info");
                  }
               else
@@ -1358,7 +1358,7 @@ void cSVDRP::CmdPLUG(const char *Option)
            int ReplyCode = 900;
            cString s = plugin->SVDRPCommand(cmd, option, ReplyCode);
            if (s)
-              Reply(abs(ReplyCode), *s);
+              Reply(abs(ReplyCode), "%s", *s);
            else
               Reply(500, "Command unrecognized: \"%s\"", cmd);
            }
@@ -1380,7 +1380,7 @@ void cSVDRP::CmdPUTE(const char *Option)
 {
   delete PUTEhandler;
   PUTEhandler = new cPUTEhandler;
-  Reply(PUTEhandler->Status(), PUTEhandler->Message());
+  Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
   if (PUTEhandler->Status() != 354)
      DELETENULL(PUTEhandler);
 }
@@ -1467,7 +1467,7 @@ void cSVDRP::Execute(char *Cmd)
   // handle PUTE data:
   if (PUTEhandler) {
      if (!PUTEhandler->Process(Cmd)) {
-        Reply(PUTEhandler->Status(), PUTEhandler->Message());
+        Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
         DELETENULL(PUTEhandler);
         }
      return;

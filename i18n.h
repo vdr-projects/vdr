@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.17 2006/02/04 10:41:16 kls Exp $
+ * $Id: i18n.h 1.18 2006/03/26 09:08:00 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -18,7 +18,7 @@ typedef const char *tI18nPhrase[I18nNumLanguages];
 
 void I18nRegister(const tI18nPhrase * const Phrases, const char *Plugin);
 
-const char *I18nTranslate(const char *s, const char *Plugin = NULL);
+const char *I18nTranslate(const char *s, const char *Plugin = NULL) __attribute_format_arg__(1);
 
 const char * const * I18nLanguages(void);
 const char * const * I18nCharSets(void);

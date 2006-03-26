@@ -4415,7 +4415,7 @@ Video Disk Recorder Revision History
 - Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
   running (thanks to Pekka Mauno).
 
-2006-03-25: Version 1.3.45
+2006-03-26: Version 1.3.45
 
 - Fixed updating the "Info" button in the "Timers" menu.
 - Reduced the number of events to actually check when setting events to timers.
@@ -4444,3 +4444,4 @@ Video Disk Recorder Revision History
 - Made cMenuRecordings::GetRecording() 'protected' (suggested by Marius Heidenstecker).
 - Speeded up cRemux::ScanVideoPacket() (thanks to Reinhard Nissl).
 - Enhanced logging EPG event data.
+- Fixed format string handling (thanks to Darren Salt).

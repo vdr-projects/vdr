@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.12 2005/09/17 10:39:35 kls Exp $
+ * $Id: sky.c 1.13 2006/03/26 09:21:10 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -15,7 +15,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.4";
+static const char *VERSION        = "0.3.5";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -108,9 +108,8 @@ cDigiboxDevice::~cDigiboxDevice()
 
 void cDigiboxDevice::LircSend(const char *s)
 {
-  const char *c = "SEND_ONCE SKY %s\n";
   char buf[100];
-  sprintf(buf, c, s);
+  snprintf(buf, sizeof(buf), "SEND_ONCE SKY %s\n", s);
   dsyslog(buf);//XXX
   if (write(fd_lirc, buf, strlen(buf)) < 0)
      LOG_ERROR;//XXX _STR

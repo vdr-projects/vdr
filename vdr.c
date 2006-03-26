@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.250 2006/03/19 13:29:49 kls Exp $
+ * $Id: vdr.c 1.251 2006/03/26 09:16:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -1067,7 +1067,7 @@ int main(int argc, char *argv[])
                     }
                  if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
                     char *buf;
-                    asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
+                    asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
                     if (Interface->Confirm(buf))
                        ForceShutdown = true;
                     else
