@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.33 2006/02/26 13:58:57 kls Exp $
+ * $Id: epg.h 1.34 2006/03/25 12:39:39 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -103,6 +103,7 @@ public:
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
   void SetSeen(void);
+  cString ToDescr(void) const;
   void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
   bool Parse(char *s);
   static bool Read(FILE *f, cSchedule *Schedule);

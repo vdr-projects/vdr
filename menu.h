@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.84 2006/02/25 13:41:21 kls Exp $
+ * $Id: menu.h 1.85 2006/03/25 12:15:19 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -165,13 +165,14 @@ private:
   int helpKeys;
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
-  cRecording *GetRecording(cMenuRecordingItem *Item);
   bool Open(bool OpenSubMenus = false);
   eOSState Play(void);
   eOSState Rewind(void);
   eOSState Delete(void);
   eOSState Info(void);
   eOSState Commands(eKeys Key = kNone);
+protected:
+  cRecording *GetRecording(cMenuRecordingItem *Item);
 public:
   cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false);
   ~cMenuRecordings();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.124 2006/02/24 14:05:26 kls Exp $
+ * $Id: device.c 1.125 2006/03/26 09:42:48 kls Exp $
  */
 
 #include "device.h"
@@ -695,6 +695,15 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
 
   return Result;
+}
+
+void cDevice::ForceTransferMode(void)
+{
+  if (!cTransferControl::ReceiverDevice()) {
+     cChannel *Channel = Channels.GetByNumber(CurrentChannel());
+     if (Channel)
+        SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
+     }
 }
 
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)

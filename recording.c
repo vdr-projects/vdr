@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.140 2006/02/26 11:59:59 kls Exp $
+ * $Id: recording.c 1.143 2006/03/26 09:11:00 kls Exp $
  */
 
 #include "recording.h"
@@ -83,6 +83,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
   // Make sure only one instance of VDR does this:
   cLockFile LockFile(VideoDirectory);
   if (LockFile.Lock()) {
+     bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
          if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
@@ -90,11 +91,13 @@ void cRemoveDeletedRecordingsThread::Action(void)
             r->Remove();
             DeletedRecordings.Del(r);
             r = next;
-            RemoveEmptyVideoDirectories();
+            deleted = true;
             continue;
             }
          r = DeletedRecordings.Next(r);
          }
+     if (deleted)
+        RemoveEmptyVideoDirectories();
      }
 }
 
@@ -801,11 +804,16 @@ bool cRecording::Delete(void)
      strncpy(ext, DELEXT, strlen(ext));
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
-        isyslog("removing recording %s", NewName);
+        isyslog("removing recording '%s'", NewName);
         RemoveVideoFile(NewName);
         }
-     isyslog("deleting recording %s", FileName());
-     result = RenameVideoFile(FileName(), NewName);
+     isyslog("deleting recording '%s'", FileName());
+     if (access(FileName(), F_OK) == 0)
+        result = RenameVideoFile(FileName(), NewName);
+     else {
+        isyslog("recording '%s' vanished", FileName());
+        result = true; // well, we were going to delete it, anyway
+        }
      }
   free(NewName);
   return result;
@@ -1049,7 +1057,7 @@ bool cMark::Parse(const char *s)
 
 bool cMark::Save(FILE *f)
 {
-  return fprintf(f, ToText()) > 0;
+  return fprintf(f, "%s", *ToText()) > 0;
 }
 
 // --- cMarks ----------------------------------------------------------------

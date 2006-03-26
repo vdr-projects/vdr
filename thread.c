@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.53 2006/02/12 12:24:39 kls Exp $
+ * $Id: thread.c 1.54 2006/03/26 09:22:27 kls Exp $
  */
 
 #include "thread.h"
@@ -208,7 +208,8 @@ cThread::cThread(const char *Description)
   childTid = 0;
   childThreadId = 0;
   description = NULL;
-  SetDescription(Description);
+  if (Description)
+     SetDescription("%s", Description);
 }
 
 cThread::~cThread()

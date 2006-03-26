@@ -307,6 +307,8 @@ Werner Fink <werner@suse.de>
  for enabling a device to detach all receivers for a given PID
  for modifying switching to Dolby Digital audio in live mode, if the driver
  and firmware can handle live DD without the need of a Transfer Mode
+ for fixing cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is
+ false
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -556,6 +558,8 @@ Helmut Auer <vdr@helmutauer.de>
  items at the beginning of the menu
  for a patch that was used to implement stopping scanning the video directory if
  there are too many levels of symbolic links
+ for reporting that an attempt to call a plugin's main menu function while a
+ message is being displayed didn't work
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -964,6 +968,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  exceeds the maximum channel number
  for suggesting to also set the language codes when setting the audio track descriptions
  for reporting a problem in setting the audio language codes in 'Transfer-Mode'
+ for fixing cReadLine::Read() for lines that end with the infamous "\r\n"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1063,6 +1068,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for adding a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
  for a suggestion that lead to implementing cDevice::Transferring()
  for fixing replaying recordings of radio channels with many audio tracks
+ for speeding up cRemux::ScanVideoPacket()
+ for implementing cDevice::ForceTransferMode()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1454,6 +1461,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  for suggesting to open the file handle in the SVDRP GRAB command in a way that
  it won't follow symbolic links, and to canonicalize the file name
  for making all font and image data 'const'
+ for fixing format string handling
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
@@ -1616,6 +1624,8 @@ Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
 Hardy Flor <HFlor@web.de>
  for a patch that was used as a base to implement SVDRP commands for plugins
  for implementing the SVDRP command PLAY
+ for reporting that RemoveEmptyVideoDirectories() was called for every single
+ recording that has been deleted
 
 Harald Milz <hm@seneca.muc.de>
  for his CUTR patch, which was used as a base to implement the SVDRP command EDIT
@@ -1767,7 +1777,22 @@ Bárta Vladimír <vladimir.barta@k2atmitec.cz>
 Christoph Haubrich <christoph1.haubrich@arcor.de>
  for making the "Ok" key in the "Jump" mode of the replay progress display confirm
  the jump instead of closing the display
+ for reporting that the log message "deleting plugin: ..." is irritating when
+ calling "vdr --help"
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
  event running
+
+Alexander Wenzel <hondansx@gmx.de>
+ for fixing the shutdown timeout
+
+Jan Lenz <email@JanLenz.de>
+ for reporting a bug in deleting recordings that have been removed externally when
+ running out of disk space
+
+Oleg Roitburd <oleg@roitburd.de>
+ for translating OSD texts to the Russian language
+
+Marius Heidenstecker <marius@heidenstecker.de>
+ for suggesting to make cMenuRecordings::GetRecording() 'protected'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.50 2006/02/26 10:50:47 kls Exp $
+ * $Id: timers.c 1.55 2006/03/26 14:08:57 kls Exp $
  */
 
 #include "timers.h"
@@ -12,6 +12,7 @@
 #include "channels.h"
 #include "device.h"
 #include "i18n.h"
+#include "libsi/si.h"
 #include "remote.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
@@ -120,7 +121,7 @@ cString cTimer::ToText(bool UseChannelID)
 cString cTimer::ToDescr(void) const
 {
   char *buffer;
-  asprintf(&buffer, "%d (%d %04d-%04d '%s')", Index() + 1, Channel()->Number(), start, stop, file);
+  asprintf(&buffer, "%d (%d %04d-%04d %s'%s')", Index() + 1, Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
   return cString(buffer, true);
 }
 
@@ -409,7 +410,13 @@ int cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL);
+  if (IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL)) {
+     if (HasFlags(tfVps) && event && event->Vps())
+        return event->RunningStatus() == SI::RunningStatusNotRunning;
+     else
+        return true;
+     }
+  return false;
 }
 
 time_t cTimer::StartTime(void) const
@@ -426,7 +433,10 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-#define EPGLIMITPAST   (2 * 3600) // time in seconds in the past within which EPG events will be taken into consideration
+#define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and
+#define EPGLIMITAFTER    (1 * 3600) // after its stop time within which EPG events will be taken into consideration.
+#define VPSLIMITBEFORE   (2 * 3600) // Same for VPS timers, which need to
+#define VPSLIMITAFTER   (24 * 3600) // look further into the future to catch shifted broadcasts.
 
 void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
@@ -438,14 +448,25 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
      }
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule) {
+     time_t now = time(NULL);
      if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
         const cEvent *Event = NULL;
         int Overlap = 0;
         int Distance = INT_MIN;
-        time_t now = time(NULL);
+        bool UseVps = HasFlags(tfVps);
+        const cEvent *PresentEvent = UseVps ? Schedule->GetPresentEvent() : NULL;
+        const cEvent *FollowingEvent = UseVps ? Schedule->GetFollowingEvent() : NULL;
+        // Set up the time frame within which to check events:
+        Matches(0, true);
+        time_t TimeFrameBegin = StartTime() - (UseVps ? VPSLIMITBEFORE : EPGLIMITBEFORE);
+        time_t TimeFrameEnd   = StopTime()  + (UseVps ? VPSLIMITAFTER  : EPGLIMITAFTER);
         for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-            if (e->EndTime() < now - EPGLIMITPAST)
-               continue; // skip old events
+            if (!UseVps || e != event && e != PresentEvent && e != FollowingEvent) { // always check these if this is a VPS timer
+               if (e->EndTime() < TimeFrameBegin)
+                  continue; // skip events way before the timer starts
+               if (e->StartTime() > TimeFrameEnd)
+                  break; // the rest is way after the timer ends
+               }
             int overlap = 0;
             Matches(e, &overlap);
             if (overlap && overlap >= Overlap) {
@@ -470,20 +491,16 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         if (Event && Event->EndTime() < now - EXPIRELATENCY && Overlap > FULLMATCH && !Event->IsRunning())
            Event = NULL;
         SetEvent(Event);
+        lastSetEvent = now;
         }
      }
-  lastSetEvent = time(NULL);
 }
 
 void cTimer::SetEvent(const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
-     if (Event) {
-        char vpsbuf[64] = "";
-        if (Event->Vps())
-           sprintf(vpsbuf, "(VPS: %s) ", *Event->GetVpsString());
-        isyslog("timer %s set to event %s %s-%s %s'%s'", *ToDescr(), *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
-        }
+     if (Event)
+        isyslog("timer %s set to event %s", *ToDescr(), *Event->ToDescr());
      else
         isyslog("timer %s set to no event", *ToDescr());
      event = Event;
@@ -568,6 +585,7 @@ cTimers::cTimers(void)
   state = 0;
   beingEdited = 0;;
   lastSetEvents = 0;
+  lastDeleteExpired = 0;
 }
 
 cTimer *cTimers::GetTimer(cTimer *Timer)
@@ -663,6 +681,8 @@ void cTimers::SetEvents(void)
 
 void cTimers::DeleteExpired(void)
 {
+  if (time(NULL) - lastDeleteExpired < 30)
+     return;
   cTimer *ti = First();
   while (ti) {
         cTimer *next = Next(ti);
@@ -673,4 +693,5 @@ void cTimers::DeleteExpired(void)
            }
         ti = next;
         }
+  lastDeleteExpired = time(NULL);
 }

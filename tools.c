@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.114 2006/02/05 11:05:56 kls Exp $
+ * $Id: tools.c 1.115 2006/03/19 12:28:16 kls Exp $
  */
 
 #include "tools.h"
@@ -829,8 +829,14 @@ char *cReadLine::Read(FILE *f)
   int n = getline(&buffer, &size, f);
   if (n > 0) {
      n--;
-     if (buffer[n] == '\n')
+     if (buffer[n] == '\n') {
         buffer[n] = 0;
+        if (n > 0) {
+           n--;
+           if (buffer[n] == '\r')
+              buffer[n] = 0;
+           }
+        }
      return buffer;
      }
   return NULL;

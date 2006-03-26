@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.250 2006/02/25 14:21:28 kls Exp $
+ * $Id: i18n.c 1.252 2006/03/26 09:17:58 kls Exp $
  *
  * Translations provided by:
  *
@@ -22,7 +22,7 @@
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>, Lucian Muresan <lucianm@users.sourceforge.net>
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>
  * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com>, Jordi Vilà <jvila@tinet.org>
- * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>
+ * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>, Oleg Roitburd <oleg@roitburd.de>
  * Croatian    Drazen Dupor <drazen.dupor@dupor.com>, Dino Ravnic <dino.ravnic@fer.hr>
  * Estonian    Arthur Konovalov <kasjas@hot.ee>
  * Danish      Mogens Elneff <mogens@elneff.dk>
@@ -475,7 +475,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "ÍâĞ ßÕàÕÔĞçĞ - %s",
     "",//TODO
     "See sündmus - %s",
     "Denne udsendelse - %s",
@@ -497,7 +497,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "ÍâĞ ßÕàÕÔĞçĞ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
     "See sündmus - kõik kanalid",
     "Denne udsendelse - alle kanaler",
@@ -519,7 +519,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "²áÕ ßÕàÕÔĞçØ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
     "Kõik sündmused - kõik kanalid",
     "Alle udsendelser - alle kanaler",
@@ -696,7 +696,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ÂĞÙÜÕà",
     "",// TODO
     "Taimer",
     "Timer",
@@ -1319,27 +1319,27 @@ const tI18nPhrase Phrases[] = {
     "Optagelse igang - sluk alligevel?",
     "Systém je zaneprázdnìn - pøesto vypnout?",
   },
-  { "Recording in %d minutes, shut down anyway?",
-    "Aufnahme in %d Minuten - trotzdem ausschalten?",
-    "Snemanje èez %d minut, zares izklopi?",
-    "Registrazione fra %d minuti - spengo comunque?",
-    "Opname in %d minuten - toch uitschakelen?",
-    "Em gravação dentro de %d minutos - quer mesmo desligar?",
-    "Enregistrement dans %d minutes - confirmez l'arrêt",
-    "Skal gjøre opptak om %d minutter - slå av likevel?",
-    "Tallennus alkaa %d min kuluttua - sammutetaanko?",
-    "Nagrywanie za %d minut - wy³±czyæ mimo to?",
-    "Grabación dentro de %d minutos, ¿apagar realmente?",
-    "Áíáìİíåôáé åããñáöŞ óİ %d ëåğôÜ - ÔåëéêÜ íá ôåñìáôéóôåß?",
-    "Inspelning startar om %d minuter, vill du avsluta?",
-    "Înregistrez peste %d minute - închid, totuºi?",
-    "Felvétel %d perc mulva kezdödik - mégis kikapcsolni?",
-    "Hi ha una gravació en %d minuts - Apagar de totes maneres?",
-    "ÇÕàÕ× %d ÜØİãâ İĞçİñâáï ×ĞßØáì - ÔÕÙáâÒØâÕÛìİŞ ÒëÚÛîçØâì?",
-    "Snimanje za %d minuta - svejedno iskljuèiti?",
-    "Salvestamine algab %d minuti pärast - lülitan välja?",
-    "Optagelse om %d minutter - sluk alligevel?",
-    "Nahrávání zaène za %d minut - pøesto vypnout?",
+  { "Recording in %ld minutes, shut down anyway?",
+    "Aufnahme in %ld Minuten - trotzdem ausschalten?",
+    "Snemanje èez %ld minut, zares izklopi?",
+    "Registrazione fra %ld minuti - spengo comunque?",
+    "Opname in %ld minuten - toch uitschakelen?",
+    "Em gravação dentro de %ld minutos - quer mesmo desligar?",
+    "Enregistrement dans %ld minutes - confirmez l'arrêt",
+    "Skal gjøre opptak om %ld minutter - slå av likevel?",
+    "Tallennus alkaa %ld min kuluttua - sammutetaanko?",
+    "Nagrywanie za %ld minut - wy³±czyæ mimo to?",
+    "Grabación dentro de %ld minutos, ¿apagar realmente?",
+    "Áíáìİíåôáé åããñáöŞ óİ %ld ëåğôÜ - ÔåëéêÜ íá ôåñìáôéóôåß?",
+    "Inspelning startar om %ld minuter, vill du avsluta?",
+    "Înregistrez peste %ld minute - închid, totuºi?",
+    "Felvétel %ld perc mulva kezdödik - mégis kikapcsolni?",
+    "Hi ha una gravació en %ld minuts - Apagar de totes maneres?",
+    "ÇÕàÕ× %ld ÜØİãâ İĞçİñâáï ×ĞßØáì - ÔÕÙáâÒØâÕÛìİŞ ÒëÚÛîçØâì?",
+    "Snimanje za %ld minuta - svejedno iskljuèiti?",
+    "Salvestamine algab %ld minuti pärast - lülitan välja?",
+    "Optagelse om %ld minutter - sluk alligevel?",
+    "Nahrávání zaène za %ld minut - pøesto vypnout?",
   },
   { "Press any key to cancel shutdown",
     "Taste drücken, um Shutdown abzubrechen",
@@ -1666,7 +1666,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "FTA (İÕ×ĞÚŞÔØàŞÒĞİŞ)",
     "",//TODO
     "FTA",
     "Free To Air",
@@ -1688,7 +1688,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "×ĞÚŞÔØàŞÒĞİŞ",
     "",//TODO
     "krüptitud",
     "kodet",
@@ -2460,7 +2460,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "½ÕÔŞáâĞâŞçİŞ ÜÕáâĞ İĞ ÔØáÚÕ ÔÛï İĞçĞÛĞ ×ĞßØáØ",
     "",//TODO
     "Ebapiisavalt kettaruumi salvestamise alustamiseks!",
     "For lidt harddisk plads til optagelse!",
@@ -2504,7 +2504,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "¾âÚàëÒĞî ÜÕİî ÜŞÔãÛï ãáÛŞÒİŞÓŞ ÔŞáâãßĞ (CAM)",
     "",//TODO
     "CAM-menüü avamine...",
     "Åbner CAM menu...",
@@ -2548,7 +2548,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "¿ÕàÕÓàã×ÚĞ CAM...",
     "",//TODO
     "CAM mooduli taaskäivitus...",
     "Nulstiller CAM...",
@@ -2614,7 +2614,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "½ĞÖÜØâÕ %d æØäàë",
     "",//TODO
     "Palun sisesta %d numbrit!",
     "Indtast venligst %d cifre!",
@@ -3232,7 +3232,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "¸İäŞàÜĞæØî Ş ÚĞİĞÛÕ ×ĞÚàëâì",
     "", // TODO
     "Kanaliinfo kuvamise ajapiirang",
     "Timeout ved anmodet kanal info",
@@ -3298,7 +3298,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ºİŞßÚã ¼Õİî ×ĞÚàëâì",
     "",// TODO
     "Sulgemine Menüü klahviga",
     "Menu taste lukker",
@@ -4399,7 +4399,7 @@ const tI18nPhrase Phrases[] = {
     "LMMJVSD",
     "HKSCPSV",
     "LMCJVSG",
-    "¿²ÁÇ¿²Á",
+    "¿²ÁÇ¿Á²",
     "PUSÈPSN", // hrv
     "ETKNRLP",
     "MTOTFLS",
@@ -5151,7 +5151,7 @@ const tI18nPhrase Phrases[] = {
     "Derulare înainte",
     "Elöre pörgetni",
     "Endavant ràpidament",
-    "²ßÕàñÔ",
+    "¿àŞÚàãâÚĞ ÒßÕàñÔ",
     "Naprijed",
     "Edasikerimine",
     "Spol fremad",
@@ -5173,7 +5173,7 @@ const tI18nPhrase Phrases[] = {
     "Derulare înapoi",
     "Vissza pörgetni",
     "Enrera ràpidament",
-    "½Ğ×ĞÔ",
+    "¿àŞÚàãâÚĞ İĞ×ĞÔ",
     "Nazad",
     "Tagasikerimine",
     "Spol tilbage",
@@ -5768,7 +5768,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "·ĞßØáì İĞçĞâĞ",
     "",//TODO
     "Salvestamine algas",
     "Optagelse startet",

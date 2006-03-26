@@ -3838,7 +3838,7 @@ Video Disk Recorder Revision History
 - The 'new' indicator in the Recordings menu is now kept up-to-date (thanks to
   Thomas Günther).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
-- Updated the Russian OSD texts (thanks to Oleg ???).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - The '.update' file in the video directory is now touched when a recording is
   added or deleted, so that other VDR instances can update their lists (thanks to
   Alexander Rieger).
@@ -4414,3 +4414,44 @@ Video Disk Recorder Revision History
   to be drawn with a transparent background (thanks to Alexander Hans).
 - Fixed cSchedule::GetFollowingEvent() in case there is currently no present event
   running (thanks to Pekka Mauno).
+
+2006-03-26: Version 1.3.45
+
+- Fixed updating the "Info" button in the "Timers" menu.
+- Reduced the number of events to actually check when setting events to timers.
+- cMenuEditIntItem now checks the given value and forces it to be between the
+  given min and max limits.
+- The status changes of EPG events are now logged for all channels that have timers.
+- Removed the log message "deleting plugin: ..." when shutting down VDR (thanks to
+  Christoph Haubrich for reporting that this is irritating when calling "vdr --help").
+- Fixed cReadLine::Read() for lines that end with the infamous "\r\n" (thanks to
+  Rolf Ahrenberg).
+- Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
+  (thanks to Werner Fink).
+- Updated 'sources.conf'.
+- Fixed the shutdown timeout (thanks to Alexander Wenzel).
+- Only calling RemoveEmptyVideoDirectories() once in case a recording has been
+  deleted (reported by Hardy Flor).
+- Fixed deleting recordings that have been removed externally when running out of
+  disk space (reported by Jan Lenz).
+- Fixed handling repeating VPS timers (they stopped recording too early).
+- Timer log messages now show "VPS" if this is a VPS timer.
+- Fixed getting the present EPG event in case none is currently 'running' (it
+  then returns the one that just ended).
+- Fixed calling a plugin's main menu function while a message is being displayed
+  (reported by Helmut Auer).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Made cMenuRecordings::GetRecording() 'protected' (suggested by Marius Heidenstecker).
+- Speeded up cRemux::ScanVideoPacket() (thanks to Reinhard Nissl).
+- Enhanced logging EPG event data.
+- Fixed format string handling (thanks to Darren Salt).
+- The new function cDevice::ForceTransferMode() can be used to force the primary
+  device into transfer mode (thanks to Reinhard Nissl).
+- The 'version' of EPG events is now ignored when reading EPG data from 'epg.data'
+  or via SVDRP/PUTE to avoid problems with double EPG events.
+- The 'running status' of EPG events is now only set to SI::RunningStatusNotRunning
+  for events before the present event.
+- Fixed some #include sequences.
+- Single shot VPS timers are now only considered 'expired' if their associated
+  EPG event has been explicitly set to SI::RunningStatusNotRunning.
+- The check for timers to be deleted is now done only every 30 seconds.

@@ -7,14 +7,14 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.64 2006/02/26 15:07:17 kls Exp $
+ * $Id: epg.c 1.70 2006/03/26 14:06:11 kls Exp $
  */
 
 #include "epg.h"
-#include "libsi/si.h"
-#include "timers.h"
 #include <ctype.h>
 #include <time.h>
+#include "libsi/si.h"
+#include "timers.h"
 
 #define RUNNINGSTATUSTIMEOUT 30 // seconds before the running status is considered unknown
 
@@ -103,7 +103,7 @@ cEvent::cEvent(tEventID EventID)
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
-  runningStatus = 0;
+  runningStatus = SI::RunningStatusUndefined;
   title = NULL;
   shortText = NULL;
   description = NULL;
@@ -156,9 +156,8 @@ void cEvent::SetVersion(uchar Version)
 
 void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
 {
-  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined))
-     if (Channel->Number() <= 30)//XXX maybe log only those that have timers???
-     isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), *GetTimeString(), Title(), RunningStatus);
+  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && Channel->HasTimer())
+     isyslog("channel %d (%s) event %s status %d", Channel->Number(), Channel->Name(), *ToDescr(), RunningStatus);
   runningStatus = RunningStatus;
 }
 
@@ -207,6 +206,14 @@ void cEvent::SetVps(time_t Vps)
 void cEvent::SetSeen(void)
 {
   seen = time(NULL);
+}
+
+cString cEvent::ToDescr(void) const
+{
+  char vpsbuf[64] = "";
+  if (Vps())
+     sprintf(vpsbuf, "(VPS: %s) ", *GetVpsString());
+  return cString::sprintf("%s %s-%s %s'%s'", *GetDateString(), *GetTimeString(), *GetEndTimeString(), vpsbuf, Title());
 }
 
 bool cEvent::HasTimer(void) const
@@ -313,7 +320,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           time_t StartTime;
                           int Duration;
                           unsigned int TableID = 0;
-                          unsigned int Version = 0xFF;
+                          unsigned int Version = 0xFF; // actual value is ignored
                           int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
                           if (n >= 3 && n <= 5) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
@@ -324,8 +331,6 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
-                                if (TableID >= 0x50) // makes sure the running status flag is set from the actual data stream
-                                   Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)
@@ -678,8 +683,10 @@ const cEvent *cSchedule::GetPresentEvent(void) const
   const cEvent *pe = NULL;
   time_t now = time(NULL);
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p->StartTime() <= now && now < p->EndTime())
+      if (p->StartTime() <= now)
          pe = p;
+      else if (p->StartTime() > now + 3600)
+         break;
       if (p->SeenWithin(RUNNINGSTATUSTIMEOUT) && p->RunningStatus() >= SI::RunningStatusPausing)
          return p;
       }
@@ -728,9 +735,11 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
 void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
 {
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p == Event)
-         p->SetRunningStatus(RunningStatus, Channel);
-      else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
+      if (p == Event) {
+         if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning)
+            p->SetRunningStatus(RunningStatus, Channel);
+         }
+      else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
          p->SetRunningStatus(SI::RunningStatusNotRunning);
       }
   if (RunningStatus >= SI::RunningStatusPausing)

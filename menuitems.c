@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.32 2006/02/12 10:31:08 kls Exp $
+ * $Id: menuitems.c 1.34 2006/03/26 09:10:17 kls Exp $
  */
 
 #include "menuitems.h"
@@ -51,6 +51,10 @@ cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Ma
   value = Value;
   min = Min;
   max = Max;
+  if (*value < min)
+     *value = min;
+  else if (*value > max)
+     *value = max;
   Set();
 }
 
@@ -286,12 +290,11 @@ void cMenuEditStrItem::AdvancePos(void)
 void cMenuEditStrItem::Set(void)
 {
   char buf[1000];
-  const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
   if (InEditMode()) {
      const cFont *font = cFont::GetFont(fontOsd);
      strncpy(buf, value, pos);
-     snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
+     snprintf(buf + pos, sizeof(buf) - pos - 2, insert && newchar ? "[]%c%s" : "[%c]%s", *(value + pos), value + pos + 1);
      int width = cSkinDisplay::Current()->EditableWidth();
      if (font->Width(buf) <= width) {
         // the whole buffer fits on the screen

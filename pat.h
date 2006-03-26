@@ -4,14 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.4 2004/03/07 16:22:01 kls Exp $
+ * $Id: pat.h 1.5 2006/03/26 14:09:43 kls Exp $
  */
 
 #ifndef __PAT_H
 #define __PAT_H
 
-#include "filter.h"
 #include <stdint.h>
+#include "filter.h"
 
 #define MAXPMTENTRIES 64
 

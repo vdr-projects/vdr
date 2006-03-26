@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.249 2006/02/05 12:57:10 kls Exp $
+ * $Id: vdr.c 1.251 2006/03/26 09:16:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -1067,7 +1067,7 @@ int main(int argc, char *argv[])
                     }
                  if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
                     char *buf;
-                    asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
+                    asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
                     if (Interface->Confirm(buf))
                        ForceShutdown = true;
                     else
@@ -1090,13 +1090,16 @@ int main(int argc, char *argv[])
                        isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
                        free(cmd);
+                       LastActivity = time(NULL) - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
                        }
-                    else if (WatchdogTimeout > 0) {
-                       alarm(WatchdogTimeout);
-                       if (signal(SIGALRM, Watchdog) == SIG_IGN)
-                          signal(SIGALRM, SIG_IGN);
-                       }
-                    LastActivity = time(NULL) - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
+                    else {
+                      LastActivity = Now;
+                      if (WatchdogTimeout > 0) {
+                         alarm(WatchdogTimeout);
+                         if (signal(SIGALRM, Watchdog) == SIG_IGN)
+                            signal(SIGALRM, SIG_IGN);
+                         }
+                      }
                     UserShutdown = false;
                     continue; // skip the rest of the housekeeping for now
                     }

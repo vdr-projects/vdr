@@ -41,3 +41,7 @@ VDR Plugin 'sky' Revision History
 2005-09-17: Version 0.3.4
 
 - Added a missing include statement.
+
+2006-03-26: Version 0.3.5
+
+- Fixed format string handling.

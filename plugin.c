@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.16 2006/01/08 11:40:05 kls Exp $
+ * $Id: plugin.c 1.17 2006/02/28 14:16:54 kls Exp $
  */
 
 #include "plugin.h"
@@ -427,10 +427,6 @@ void cPluginManager::StopPlugins(void)
 void cPluginManager::Shutdown(void)
 {
   cDll *dll;
-  while ((dll = dlls.Last()) != NULL) {
-        cPlugin *p = dll->Plugin();
-        if (p)
-           isyslog("deleting plugin: %s", p->Name());
+  while ((dll = dlls.Last()) != NULL)
         dlls.Del(dll);
-        }
 }

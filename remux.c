@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.54 2006/02/03 16:19:02 kls Exp $
+ * $Id: remux.c 1.55 2006/03/25 12:27:30 kls Exp $
  */
 
 #include "remux.h"
@@ -1429,7 +1429,9 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define IPACKS 2048
 
 // Start codes:
-#define SC_PICTURE 0x00  // "picture header"
+#define SC_SEQUENCE 0xB3  // "sequence header code"
+#define SC_GROUP    0xB8  // "group start code"
+#define SC_PICTURE  0x00  // "picture start code"
 
 #define MAXNONUSEFULDATA (10*1024*1024)
 #define MAXNUMUPTERRORS  10
@@ -1925,14 +1927,38 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
   if (Length > 0) {
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(Data + Offset, Length, PesPayloadOffset) >= phMPEG1) {
-        for (int i = Offset + PesPayloadOffset; i < Offset + Length - 5; i++) {
-            if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1) {
-               switch (Data[i + 3]) {
-                 case SC_PICTURE: PictureType = (Data[i + 5] >> 3) & 0x07;
-                                  return Length;
+        const uchar *p = Data + Offset + PesPayloadOffset + 2;
+        const uchar *pLimit = Data + Offset + Length - 3;
+#ifdef TEST_cVideoRepacker
+        // cVideoRepacker ensures that a new PES packet is started for a new sequence,
+        // group or picture which allows us to easily skip scanning through a huge
+        // amount of video data.
+        if (p < pLimit) {
+           if (p[-2] || p[-1] || p[0] != 0x01)
+              pLimit = 0; // skip scanning: packet doesn't start with 0x000001
+           else {
+              switch (p[1]) {
+                case SC_SEQUENCE:
+                case SC_GROUP:
+                case SC_PICTURE:
+                     break;
+                default: // skip scanning: packet doesn't start a new sequence, group or picture
+                     pLimit = 0;
+                }
+              }
+           }
+#endif
+        while (p < pLimit && (p = (const uchar *)memchr(p, 0x01, pLimit - p))) {
+              if (!p[-2] && !p[-1]) { // found 0x000001
+                 switch (p[1]) {
+                   case SC_PICTURE: PictureType = (p[3] >> 3) & 0x07;
+                                    return Length;
+                   }
+                 p += 4; // continue scanning after 0x01ssxxyy
                  }
-               }
-            }
+              else
+                 p += 3; // continue scanning after 0x01xxyy
+              }
         }
      PictureType = NO_PICTURE;
      return Length;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.73 2006/01/29 12:35:50 kls Exp $
+ * $Id: interface.c 1.74 2006/03/25 11:50:55 kls Exp $
  */
 
 #include "interface.h"
@@ -52,7 +52,7 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
       if (ISRAWKEY(Key) || time(NULL) > timeout || interrupted)
          break;
       }
-  if (KeepChar && ISRAWKEY(Key))
+  if (KeepChar && ISRAWKEY(Key) || Key == k_Plugin)
      cRemote::Put(Key);
   interrupted = false;
   return Key;
