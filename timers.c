@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.54 2006/03/25 12:43:59 kls Exp $
+ * $Id: timers.c 1.55 2006/03/26 14:38:46 kls Exp $
  */
 
 #include "timers.h"
@@ -12,6 +12,7 @@
 #include "channels.h"
 #include "device.h"
 #include "i18n.h"
+#include "libsi/si.h"
 #include "remote.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
@@ -409,7 +410,13 @@ int cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL);
+  if (IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL)) {
+     if (HasFlags(tfVps) && event && event->Vps())
+        return event->RunningStatus() == SI::RunningStatusNotRunning;
+     else
+        return true;
+     }
+  return false;
 }
 
 time_t cTimer::StartTime(void) const
@@ -578,6 +585,7 @@ cTimers::cTimers(void)
   state = 0;
   beingEdited = 0;;
   lastSetEvents = 0;
+  lastDeleteExpired = 0;
 }
 
 cTimer *cTimers::GetTimer(cTimer *Timer)
@@ -673,6 +681,8 @@ void cTimers::SetEvents(void)
 
 void cTimers::DeleteExpired(void)
 {
+  if (time(NULL) - lastDeleteExpired < 30)
+     return;
   cTimer *ti = First();
   while (ti) {
         cTimer *next = Next(ti);
@@ -683,4 +693,5 @@ void cTimers::DeleteExpired(void)
            }
         ti = next;
         }
+  lastDeleteExpired = time(NULL);
 }

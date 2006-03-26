@@ -4452,3 +4452,6 @@ Video Disk Recorder Revision History
 - The 'running status' of EPG events is now only set to SI::RunningStatusNotRunning
   for events before the present event.
 - Fixed some #include sequences.
+- Single shot VPS timers are now only considered 'expired' if their associated
+  EPG event has been explicitly set to SI::RunningStatusNotRunning.
+- The check for timers to be deleted is now done only every 30 seconds.

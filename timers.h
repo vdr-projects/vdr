@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.26 2006/02/25 15:05:09 kls Exp $
+ * $Id: timers.h 1.27 2006/03/26 14:38:46 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -101,6 +101,7 @@ private:
   int state;
   int beingEdited;
   time_t lastSetEvents;
+  time_t lastDeleteExpired;
 public:
   cTimers(void);
   cTimer *GetTimer(cTimer *Timer);
