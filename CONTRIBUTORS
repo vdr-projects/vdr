@@ -1519,6 +1519,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to make the "Menu" key behave consistently
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
+ for reporting a broken entry 'A111.1W' in sources.conf
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -1545,6 +1546,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for making the cLircRemote try to reestablish the connection to the LIRC daemon
  in case it breaks
  for enabling generating a core dump if VDR is run with a different user id
+ for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1795,6 +1797,7 @@ Jan Lenz <email@JanLenz.de>
 
 Oleg Roitburd <oleg@roitburd.de>
  for translating OSD texts to the Russian language
+ for updating 'sources.conf'
 
 Marius Heidenstecker <marius@heidenstecker.de>
  for suggesting to make cMenuRecordings::GetRecording() 'protected'

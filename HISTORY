@@ -4428,7 +4428,7 @@ Video Disk Recorder Revision History
   Rolf Ahrenberg).
 - Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
   (thanks to Werner Fink).
-- Updated 'sources.conf'.
+- Updated 'sources.conf' (thanks to Oleg Roitburd).
 - Fixed the shutdown timeout (thanks to Alexander Wenzel).
 - Only calling RemoveEmptyVideoDirectories() once in case a recording has been
   deleted (reported by Hardy Flor).
@@ -4462,3 +4462,6 @@ Video Disk Recorder Revision History
   to detect these).
 - Added a missing "Button$" for the Timer button and "Key$" in skinclassic.c
   (thanks to Rolf Ahrenberg).
+- Fixed broken entry 'A111.1W' in sources.conf (reported by Luca Olivetti).
+- Replaced the obsolete entry 'S21.5E' in the default 'diseqc.conf' with 'S13.0E'
+  (reported by Ville Skyttä).
