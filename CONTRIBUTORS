@@ -780,6 +780,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing a possible crash with inconsistent SI data
  for pointing out a problem with the cChannel copy constructor
  for fixing cDvbTuner to avoid lockups on NPTL systems
+ for pointing out how to detect broken PMT records
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu

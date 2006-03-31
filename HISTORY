@@ -4455,3 +4455,8 @@ Video Disk Recorder Revision History
 - Single shot VPS timers are now only considered 'expired' if their associated
   EPG event has been explicitly set to SI::RunningStatusNotRunning.
 - The check for timers to be deleted is now done only every 30 seconds.
+
+2006-03-31: Version 1.3.46
+
+- Fixed handling broken PMT records (thanks to Marcel Wiesweg for pointing out how
+  to detect these).
