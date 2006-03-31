@@ -1801,3 +1801,6 @@ Oleg Roitburd <oleg@roitburd.de>
 
 Marius Heidenstecker <marius@heidenstecker.de>
  for suggesting to make cMenuRecordings::GetRecording() 'protected'
+
+Jurij Retzlaff <jurij@topofweb.de>
+ for fixing learning keys when VDR is already running

@@ -4465,3 +4465,4 @@ Video Disk Recorder Revision History
 - Fixed broken entry 'A111.1W' in sources.conf (reported by Luca Olivetti).
 - Replaced the obsolete entry 'S21.5E' in the default 'diseqc.conf' with 'S13.0E'
   (reported by Ville Skyttä).
+- Fixed learning keys when VDR is already running (thanks to Jurij Retzlaff).
