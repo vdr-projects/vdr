@@ -970,6 +970,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to also set the language codes when setting the audio track descriptions
  for reporting a problem in setting the audio language codes in 'Transfer-Mode'
  for fixing cReadLine::Read() for lines that end with the infamous "\r\n"
+ for adding a missing "Button$" for the Timer button
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

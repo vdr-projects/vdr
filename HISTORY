@@ -4460,3 +4460,4 @@ Video Disk Recorder Revision History
 
 - Fixed handling broken PMT records (thanks to Marcel Wiesweg for pointing out how
   to detect these).
+- Added a missing "Button$" for the Timer button (thanks to Rolf Ahrenberg).

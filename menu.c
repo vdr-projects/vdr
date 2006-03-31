@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.424 2006/02/28 13:58:00 kls Exp $
+ * $Id: menu.c 1.425 2006/03/31 12:58:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1105,7 +1105,7 @@ void cMenuWhatsOn::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
      SetHelp(Red[NewHelpKeys], now ? tr("Button$Next") : tr("Button$Now"), tr("Button$Schedule"), tr("Button$Switch"));
      helpKeys = NewHelpKeys;
      }
@@ -1347,7 +1347,7 @@ void cMenuSchedule::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
      SetHelp(Red[NewHelpKeys], tr("Button$Now"), tr("Button$Next"));
      helpKeys = NewHelpKeys;
      }
