@@ -4468,3 +4468,6 @@ Video Disk Recorder Revision History
 - Fixed learning keys when VDR is already running (thanks to Jurij Retzlaff).
 - Fixed handling the system time transponder setting in the Setup/EPG menu, which
   was broken by the min/max fix in cMenuEditIntItem.
+- VPS timers now record only events that have exactly the given start time.
+  This fix also implements recording several subsequent events that have the
+  same VPS time (like a sports event with intermittent news breaks).

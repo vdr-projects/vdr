@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.55 2006/03/26 14:38:46 kls Exp $
+ * $Id: timers.c 1.56 2006/04/01 13:27:14 kls Exp $
  */
 
 #include "timers.h"
@@ -401,7 +401,9 @@ int cTimer::Matches(const cEvent *Event, int *Overlap) const
      startTime = stopTime = 0;
      if (Overlap)
         *Overlap = overlap;
-     return overlap >= 1000 ? tmFull : overlap > 0 ? tmPartial : tmNone;
+     if (UseVps)
+        return overlap > FULLMATCH ? tmFull : tmNone;
+     return overlap >= FULLMATCH ? tmFull : overlap > 0 ? tmPartial : tmNone;
      }
   return tmNone;
 }
@@ -435,8 +437,6 @@ time_t cTimer::StopTime(void) const
 
 #define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and
 #define EPGLIMITAFTER    (1 * 3600) // after its stop time within which EPG events will be taken into consideration.
-#define VPSLIMITBEFORE   (2 * 3600) // Same for VPS timers, which need to
-#define VPSLIMITAFTER   (24 * 3600) // look further into the future to catch shifted broadcasts.
 
 void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
@@ -447,49 +447,45 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         return;
      }
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
-  if (Schedule) {
+  if (Schedule && Schedule->Events()->First()) {
      time_t now = time(NULL);
      if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
         const cEvent *Event = NULL;
-        int Overlap = 0;
-        int Distance = INT_MIN;
-        bool UseVps = HasFlags(tfVps);
-        const cEvent *PresentEvent = UseVps ? Schedule->GetPresentEvent() : NULL;
-        const cEvent *FollowingEvent = UseVps ? Schedule->GetFollowingEvent() : NULL;
-        // Set up the time frame within which to check events:
-        Matches(0, true);
-        time_t TimeFrameBegin = StartTime() - (UseVps ? VPSLIMITBEFORE : EPGLIMITBEFORE);
-        time_t TimeFrameEnd   = StopTime()  + (UseVps ? VPSLIMITAFTER  : EPGLIMITAFTER);
-        for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-            if (!UseVps || e != event && e != PresentEvent && e != FollowingEvent) { // always check these if this is a VPS timer
+        if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
+           // VPS timers only match if their start time exactly matches the event's VPS time:
+           for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+               if (e->RunningStatus() == SI::RunningStatusNotRunning)
+                  continue; // skip events that have already stopped
+               int overlap = 0;
+               Matches(e, &overlap);
+               if (overlap > FULLMATCH) {
+                  Event = e;
+                  break; // take the first matching event
+                  }
+               }
+           }
+        else {
+           // Normal timers match the event they have the most overlap with:
+           int Overlap = 0;
+           // Set up the time frame within which to check events:
+           Matches(0, true);
+           time_t TimeFrameBegin = StartTime() - EPGLIMITBEFORE;
+           time_t TimeFrameEnd   = StopTime()  + EPGLIMITAFTER;
+           for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                if (e->EndTime() < TimeFrameBegin)
                   continue; // skip events way before the timer starts
                if (e->StartTime() > TimeFrameEnd)
                   break; // the rest is way after the timer ends
-               }
-            int overlap = 0;
-            Matches(e, &overlap);
-            if (overlap && overlap >= Overlap) {
-               int distance = 0;
-               if (now < e->StartTime())
-                  distance = e->StartTime() - now;
-               else if (now > e->EndTime())
-                  distance = e->EndTime() - now;
-               if (Event && overlap == Overlap) {
-                  if (Overlap > FULLMATCH) { // this means VPS
-                     if (abs(Distance) < abs(distance))
-                        break; // we've already found the closest VPS event
-                     }
-                  else if (e->Duration() <= Event->Duration())
+               int overlap = 0;
+               Matches(e, &overlap);
+               if (overlap && overlap >= Overlap) {
+                  if (Event && overlap == Overlap && e->Duration() <= Event->Duration())
                      continue; // if overlap is the same, we take the longer event
+                  Overlap = overlap;
+                  Event = e;
                   }
-               Overlap = overlap;
-               Distance = distance;
-               Event = e;
                }
-            }
-        if (Event && Event->EndTime() < now - EXPIRELATENCY && Overlap > FULLMATCH && !Event->IsRunning())
-           Event = NULL;
+           }
         SetEvent(Event);
         lastSetEvent = now;
         }
