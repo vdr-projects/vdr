@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.17 2006/02/12 10:22:03 kls Exp $
+ * $Id: menuitems.h 1.18 2006/03/31 15:12:42 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -120,7 +120,7 @@ class cMenuEditTranItem : public cMenuEditChanItem {
 private:
   int number;
   int *source;
-  int transponder;
+  int *transponder;
 public:
   cMenuEditTranItem(const char *Name, int *Value, int *Source);
   virtual eOSState ProcessKey(eKeys Key);

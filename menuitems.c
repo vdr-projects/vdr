@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.34 2006/03/26 09:10:17 kls Exp $
+ * $Id: menuitems.c 1.35 2006/03/31 15:17:21 kls Exp $
  */
 
 #include "menuitems.h"
@@ -588,11 +588,11 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 // --- cMenuEditTranItem -----------------------------------------------------
 
 cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
-:cMenuEditChanItem(Name, Value)
+:cMenuEditChanItem(Name, &number)
 {
   number = 0;
   source = Source;
-  transponder = *Value;
+  transponder = Value;
   cChannel *channel = Channels.First();
   while (channel) {
         if (!channel->GroupSep() && *source == channel->Source() && ISTRANSPONDER(channel->Transponder(), *Value)) {
@@ -601,22 +601,17 @@ cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
            }
         channel = (cChannel *)channel->Next();
         }
-  *Value = number;
   Set();
-  *Value = transponder;
 }
 
 eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
 {
-  *value = number;
   eOSState state = cMenuEditChanItem::ProcessKey(Key);
-  number = *value;
-  cChannel *channel = Channels.GetByNumber(*value);
+  cChannel *channel = Channels.GetByNumber(number);
   if (channel) {
      *source = channel->Source();
-     transponder = channel->Transponder();
+     *transponder = channel->Transponder();
      }
-  *value = transponder;
   return state;
 }
 
