@@ -4484,3 +4484,6 @@ Video Disk Recorder Revision History
 - cSkins::QueueMessage() called from a background thread with an empty message
   now clears all messages that have been previously queued by that thread and have
   not yet beed displayed (thanks to Alexander Rieger).
+- Fixed handling the color button texts when switching from the 'Schedule' menu of
+  a channel without EPG info to the 'What's on now' menu (reported by Rolf
+  Ahrenberg).

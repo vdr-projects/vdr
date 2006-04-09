@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.425 2006/03/31 12:58:26 kls Exp $
+ * $Id: menu.c 1.426 2006/04/09 12:00:15 kls Exp $
  */
 
 #include "menu.h"
@@ -1079,6 +1079,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
          }
       }
   currentChannel = CurrentChannelNr;
+  Display();
   SetHelpKeys();
 }
 
