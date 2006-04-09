@@ -1434,6 +1434,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  runs all the way until the end of the recording
  for fixing removing the '-' when entering a channel number where there is no other
  one that fits the input
+ for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu

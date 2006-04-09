@@ -4497,3 +4497,5 @@ Video Disk Recorder Revision History
   Nissl).
 - No longer calling cPlugin::ProcessArgs() if VDR is run with the --help or
   --version option, to avoid error messages from plugins (reported by Udo Richter).
+- Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
+  (reported by Joachim Wilke).

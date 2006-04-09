@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.427 2006/04/09 13:13:33 kls Exp $
+ * $Id: menu.c 1.428 2006/04/09 14:29:24 kls Exp $
  */
 
 #include "menu.h"
@@ -589,7 +589,8 @@ void cMenuText::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetText(text, font == fontFix); //XXX define control character in text to choose the font???
-  cStatus::MsgOsdTextItem(text);
+  if (text)
+     cStatus::MsgOsdTextItem(text);
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -938,7 +939,8 @@ void cMenuEvent::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetEvent(event);
-  cStatus::MsgOsdTextItem(event->Description());
+  if (event->Description())
+     cStatus::MsgOsdTextItem(event->Description());
 }
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
@@ -1738,7 +1740,8 @@ void cMenuRecording::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetRecording(recording);
-  cStatus::MsgOsdTextItem(recording->Info()->Description());
+  if (recording->Info()->Description())
+     cStatus::MsgOsdTextItem(recording->Info()->Description());
 }
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
