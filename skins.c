@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.8 2006/02/05 14:53:04 kls Exp $
+ * $Id: skins.c 1.9 2006/04/09 11:25:30 kls Exp $
  */
 
 #include "skins.h"
@@ -255,7 +255,16 @@ int cSkins::QueueMessage(eMessageType Type, const char *s, int Seconds, int Time
      return kNone;
      }
   if (isempty(s)) {
-     dsyslog("cSkins::QueueMessage() called with empty message - ignored!");
+     if (!cThread::IsMainThread()) {
+        queueMessageMutex.Lock();
+        for (cSkinQueuedMessage *m = SkinQueuedMessages.Last(); m; m = SkinQueuedMessages.Prev(m)) {
+            if (m->threadId == cThread::ThreadId() && m->state == 0)
+               m->state = 2; // done
+            }
+        queueMessageMutex.Unlock();
+        }
+     else
+        dsyslog("cSkins::QueueMessage() called with empty message from main thread - ignored!");
      return kNone;
      }
   int k = kNone;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.12 2006/04/09 11:15:24 kls Exp $
+ * $Id: skins.h 1.13 2006/04/09 11:23:35 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -353,7 +353,9 @@ public:
        ///< progress displays, where only the most recent message is actually
        ///< important.
        ///< Type may only be mtInfo, mtWarning or mtError. A call with mtStatus
-       ///< will be ignored, as will be one with an empty message.
+       ///< will be ignored. A call with an empty message from a background thread
+       ///< removes all queued messages from the calling thread. A call with
+       ///< an empty message from the main thread will be ignored.
   void ProcessQueuedMessages(void);
        ///< Processes the first queued message, if any.
   void Flush(void);

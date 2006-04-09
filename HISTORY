@@ -4481,3 +4481,6 @@ Video Disk Recorder Revision History
 - Now avoiding the 'actual' device when starting a recording, so that a Transfer
   Mode for live tv isn't interrupted.
 - Fixed a typo in skins.h (thanks to Alexander Rieger).
+- cSkins::QueueMessage() called from a background thread with an empty message
+  now clears all messages that have been previously queued by that thread and have
+  not yet beed displayed (thanks to Alexander Rieger).
