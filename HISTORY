@@ -4492,3 +4492,6 @@ Video Disk Recorder Revision History
   respectively.
 - The initial channel and volume can now be defined in the "Setup/Miscellaneous"
   menu (based on a patch from Thomas Keil).
+- When hitting the end of a recording in fast forward mode, VDR no longer switches
+  back to normal speed if the recording is already finished (thanks to Reinhard
+  Nissl).
