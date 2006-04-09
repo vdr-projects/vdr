@@ -4478,3 +4478,5 @@ Video Disk Recorder Revision History
   margin.
 - Fixed handling VPS timers in case the primary device needs to switch to the
   timer's transponder.
+- Now avoiding the 'actual' device when starting a recording, so that a Transfer
+  Mode for live tv isn't interrupted.
