@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.74 2006/03/25 11:50:55 kls Exp $
+ * $Id: interface.c 1.75 2006/03/31 14:20:04 kls Exp $
  */
 
 #include "interface.h"
@@ -37,7 +37,10 @@ eKeys cInterface::GetKey(bool Wait)
      if (SVDRP->Process())
         Wait = false;
      }
-  return cRemote::Get(Wait ? 1000 : 10);
+  if (!cRemote::IsLearning())
+     return cRemote::Get(Wait ? 1000 : 10);
+  else
+     return kNone;
 }
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)

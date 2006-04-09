@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.5 2006/03/26 14:09:43 kls Exp $
+ * $Id: pat.h 1.6 2006/03/29 15:18:38 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -20,6 +20,7 @@ private:
   time_t lastPmtScan;
   int pmtIndex;
   int pmtPid;
+  int pmtSid;
   uint64_t pmtVersion[MAXPMTENTRIES];
   int numPmtEntries;
   bool PmtVersionChanged(int PmtPid, int Sid, int Version);

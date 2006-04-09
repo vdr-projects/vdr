@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.251 2006/03/26 09:16:53 kls Exp $
+ * $Id: vdr.c 1.254 2006/04/09 12:22:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -72,6 +72,8 @@
 #define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
 #define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
 #define SHUTDOWNRETRY     300 // seconds before trying again to shut down
+#define VPSCHECKDELTA      10 // seconds between checks for timers that have entered the VPS margin
+#define VPSDEVICETIMEOUT    8 // seconds before a device used for VPS may be reused
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -630,6 +632,10 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
+  if (Setup.InitialChannel > 0)
+     Setup.CurrentChannel = Setup.InitialChannel;
+  if (Setup.InitialVolume >= 0)
+     Setup.CurrentVolume = Setup.InitialVolume;
   Channels.SwitchTo(Setup.CurrentChannel);
   if (MuteAudio)
      cDevice::PrimaryDevice()->ToggleMute();
@@ -736,8 +742,6 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
-           // Delete expired timers:
-           Timers.DeleteExpired();
            // Assign events to timers:
            Timers.SetEvents();
            // Must do all following calls with the exact same time!
@@ -753,21 +757,63 @@ int main(int argc, char *argv[])
                  LastTimerChannel = Timer->Channel()->Number();
               }
            // Make sure VPS timers "see" their channel early enough:
-           TimerInVpsMargin = false;
-           for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
-               if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && !Timer->Pending() && Timer->Matches(Now + Setup.VpsMargin, true)) {
-                  if (!Timer->InVpsMargin()) {
+           static time_t LastVpsCheck = 0;
+           if (Now - LastVpsCheck > VPSCHECKDELTA) { // don't do this too often
+              TimerInVpsMargin = false;
+              static time_t DeviceUsed[MAXDEVICES] = { 0 };
+              for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
+                  if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && Timer->Matches(Now, true, Setup.VpsMargin)) {
                      Timer->SetInVpsMargin(true);
-                     //XXX if not primary device has TP???
-                     LastTimerChannel = Timer->Channel()->Number();
-                     cRecordControls::Start(Timer); // will only switch the device
+                     // Find a device that provides the required transponder:
+                     cDevice *Device = NULL;
+                     for (int i = 0; i < cDevice::NumDevices(); i++) {
+                         cDevice *d = cDevice::GetDevice(i);
+                         if (d && d->ProvidesTransponder(Timer->Channel())) {
+                            if (d->IsTunedToTransponder(Timer->Channel())) {
+                               // if any device is tuned to the transponder, we're done
+                               Device = d;
+                               break;
+                               }
+                            else if (Now - DeviceUsed[d->DeviceNumber()] > VPSDEVICETIMEOUT) {
+                               // only check other devices if they have been left alone for a while
+                               if (d->MaySwitchTransponder())
+                                  // this one can be switched without disturbing anything else
+                                  Device = d;
+                               else if (!Device && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                                  // use this one only if no other with less impact can be found
+                                  Device = d;
+                               }
+                            }
+                         }
+                     if (!Device) {
+                        cDevice *d = cDevice::ActualDevice();
+                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && Now - DeviceUsed[d->DeviceNumber()] > VPSDEVICETIMEOUT)
+                           Device = d; // use the actual device as a last resort
+                        }
+                     // Switch the device to the transponder:
+                     if (Device) {
+                        if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
+                           cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
+                        if (!Device->IsTunedToTransponder(Timer->Channel())) {
+                           dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
+                           Device->SwitchChannel(Timer->Channel(), false);
+                           DeviceUsed[Device->DeviceNumber()] = Now;
+                           }
+                        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
+                           // the previous SwitchChannel() has switched away the current live channel
+                           Channels.SwitchTo(Timer->Channel()->Number()); // avoids toggling between old channel and black screen
+                           Skins.Message(mtInfo, tr("Upcoming VPS recording!"));
+                           }
+                        }
+                     TimerInVpsMargin = true;
                      }
+                  else
+                     Timer->SetInVpsMargin(false);
                   }
-               else
-                  Timer->SetInVpsMargin(false);
-               if (Timer->InVpsMargin())
-                  TimerInVpsMargin = true;
-               }
+              LastVpsCheck = time(NULL);
+              }
+           // Delete expired timers:
+           Timers.DeleteExpired();
            }
         if (!Menu && Recordings.NeedsUpdate()) {
            Recordings.Update();

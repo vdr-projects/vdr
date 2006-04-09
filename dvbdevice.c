@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.155 2006/03/26 09:42:54 kls Exp $
+ * $Id: dvbdevice.c 1.156 2006/04/01 14:19:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -799,6 +799,11 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   if (NeedsDetachReceivers)
      *NeedsDetachReceivers = needsDetachReceivers;
   return result;
+}
+
+bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel)
+{
+  return dvbTuner->IsTunedTo(Channel);
 }
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)

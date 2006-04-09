@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.17 2006/02/12 10:22:03 kls Exp $
+ * $Id: menuitems.h 1.19 2006/04/09 12:56:48 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -28,9 +28,10 @@ class cMenuEditIntItem : public cMenuEditItem {
 protected:
   int *value;
   int min, max;
+  const char *minString, *maxString;
   virtual void Set(void);
 public:
-  cMenuEditIntItem(const char *Name, int *Value, int Min = 0, int Max = INT_MAX);
+  cMenuEditIntItem(const char *Name, int *Value, int Min = 0, int Max = INT_MAX, const char *MinString = NULL, const char *MaxString = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -110,9 +111,10 @@ public:
 
 class cMenuEditChanItem : public cMenuEditIntItem {
 protected:
+  const char *noneString;
   virtual void Set(void);
 public:
-  cMenuEditChanItem(const char *Name, int *Value);
+  cMenuEditChanItem(const char *Name, int *Value, const char *NoneString = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -120,7 +122,7 @@ class cMenuEditTranItem : public cMenuEditChanItem {
 private:
   int number;
   int *source;
-  int transponder;
+  int *transponder;
 public:
   cMenuEditTranItem(const char *Name, int *Value, int *Source);
   virtual eOSState ProcessKey(eKeys Key);

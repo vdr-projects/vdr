@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.53 2006/02/25 12:24:46 kls Exp $
+ * $Id: recording.h 1.54 2006/04/09 13:47:11 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -210,6 +210,7 @@ public:
   int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
+  bool IsStillRecording(void);
   };
 
 class cFileName {

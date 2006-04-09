@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.252 2006/03/26 09:17:58 kls Exp $
+ * $Id: i18n.c 1.255 2006/04/09 13:04:50 kls Exp $
  *
  * Translations provided by:
  *
@@ -680,7 +680,7 @@ const tI18nPhrase Phrases[] = {
     "Til/Fra",
     "Zap./Vyp.",
   },
-  { "Timer",
+  { "Button$Timer",
     "Timer",
     "",// TODO
     "",// TODO
@@ -2245,6 +2245,28 @@ const tI18nPhrase Phrases[] = {
     "*** Vigane kanal ***",
     "*** Ugyldig kanal! ***",
     "*** Neplatný kanál ***",
+  },
+  { "Upcoming VPS recording!",
+    "VPS-Aufnahme beginnt in Kürze!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "No free DVB device to record!",
     "Keine freie DVB-Karte zum Aufnehmen!",
@@ -4381,6 +4403,72 @@ const tI18nPhrase Phrases[] = {
     "Kanalivahetuse ooteaeg (s)",
     "Zap timeout (s)",
     "Èasový limit Zap (s)",
+  },
+  { "Setup.Miscellaneous$Initial channel",
+    "Kanal beim Einschalten",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Miscellaneous$Initial volume",
+    "Lautstärke beim Einschalten",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Miscellaneous$as before",
+    "wie vorher",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   // The days of the week:
   { "MTWTFSS",

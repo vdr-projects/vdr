@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.143 2006/03/26 09:11:00 kls Exp $
+ * $Id: recording.c 1.144 2006/04/09 13:49:51 kls Exp $
  */
 
 #include "recording.h"
@@ -1366,6 +1366,11 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
      return i;
      }
   return -1;
+}
+
+bool cIndexFile::IsStillRecording()
+{
+  return f >= 0;
 }
 
 // --- cFileName -------------------------------------------------------------

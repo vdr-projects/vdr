@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.142 2006/02/25 14:12:16 kls Exp $
+ * $Id: config.c 1.143 2006/04/09 12:12:01 kls Exp $
  */
 
 #include "config.h"
@@ -271,6 +271,8 @@ cSetup::cSetup(void)
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
   CurrentDolby = 0;
+  InitialChannel = 0;
+  InitialVolume = -1;
 }
 
 cSetup& cSetup::operator= (const cSetup &s)
@@ -430,6 +432,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
+  else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = atoi(Value);
+  else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else
      return false;
   return true;
@@ -496,6 +500,8 @@ bool cSetup::Save(void)
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
   Store("CurrentDolby",       CurrentDolby);
+  Store("InitialChannel",     InitialChannel);
+  Store("InitialVolume",      InitialVolume);
 
   Sort();
 

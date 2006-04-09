@@ -4428,7 +4428,7 @@ Video Disk Recorder Revision History
   Rolf Ahrenberg).
 - Fixed cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is false
   (thanks to Werner Fink).
-- Updated 'sources.conf'.
+- Updated 'sources.conf' (thanks to Oleg Roitburd).
 - Fixed the shutdown timeout (thanks to Alexander Wenzel).
 - Only calling RemoveEmptyVideoDirectories() once in case a recording has been
   deleted (reported by Hardy Flor).
@@ -4455,3 +4455,47 @@ Video Disk Recorder Revision History
 - Single shot VPS timers are now only considered 'expired' if their associated
   EPG event has been explicitly set to SI::RunningStatusNotRunning.
 - The check for timers to be deleted is now done only every 30 seconds.
+
+2006-04-09: Version 1.3.46
+
+- Fixed handling broken PMT records (thanks to Marcel Wiesweg for pointing out how
+  to detect these).
+- Added a missing "Button$" for the Timer button and "Key$" in skinclassic.c
+  (thanks to Rolf Ahrenberg).
+- Fixed broken entry 'A111.1W' in sources.conf (reported by Luca Olivetti).
+- Replaced the obsolete entry 'S21.5E' in the default 'diseqc.conf' with 'S13.0E'
+  (reported by Ville Skyttä).
+- Fixed learning keys when VDR is already running (thanks to Jurij Retzlaff).
+- Fixed handling the system time transponder setting in the Setup/EPG menu, which
+  was broken by the min/max fix in cMenuEditIntItem.
+- VPS timers now record only events that have exactly the given start time.
+  This fix also implements recording several subsequent events that have the
+  same VPS time (like a sports event with intermittent news breaks).
+- When checking for timers that have entered the "VPS margin", any free devices are
+  now used to switch to the needed transponder. This improves cases where more than
+  one VPS timer is about to start.
+- Fixed handling the VPS margin in case the event's duration is shorter than the
+  margin.
+- Fixed handling VPS timers in case the primary device needs to switch to the
+  timer's transponder.
+- Now avoiding the 'actual' device when starting a recording, so that a Transfer
+  Mode for live tv isn't interrupted.
+- Fixed a typo in skins.h (thanks to Alexander Rieger).
+- cSkins::QueueMessage() called from a background thread with an empty message
+  now clears all messages that have been previously queued by that thread and have
+  not yet beed displayed (thanks to Alexander Rieger).
+- Fixed handling the color button texts when switching from the 'Schedule' menu of
+  a channel without EPG info to the 'What's on now' menu (reported by Rolf
+  Ahrenberg).
+- cMenuEditIntItem and cMenuEditChanItem can now be given strings to label the
+  minimum and maximum values, and the case that no channel has been selected,
+  respectively.
+- The initial channel and volume can now be defined in the "Setup/Miscellaneous"
+  menu (based on a patch from Thomas Keil).
+- When hitting the end of a recording in fast forward mode, VDR no longer switches
+  back to normal speed if the recording is already finished (thanks to Reinhard
+  Nissl).
+- No longer calling cPlugin::ProcessArgs() if VDR is run with the --help or
+  --version option, to avoid error messages from plugins (reported by Udo Richter).
+- Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
+  (reported by Joachim Wilke).

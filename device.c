@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.125 2006/03/26 09:42:48 kls Exp $
+ * $Id: device.c 1.127 2006/04/09 10:46:36 kls Exp $
  */
 
 #include "device.h"
@@ -281,27 +281,30 @@ cDevice *cDevice::GetDevice(int Index)
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   cDevice *d = NULL;
-  int select = 8, pri;
+  int select = INT_MAX;
 
   for (int i = 0; i < numDevices; i++) {
       bool ndr;
       if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+         int pri;
          if (device[i]->Receiving() && !ndr)
             pri = 0; // receiving and allows additional receivers
-         else if (d && !device[i]->Receiving() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
+         else if (!device[i]->Receiving(true) && d && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
             pri = 1; // free and fewer Ca's
          else if (!device[i]->Receiving() && !device[i]->HasDecoder())
             pri = 2; // free and not a full featured card
+         else if (!device[i]->Receiving() && device[i] != ActualDevice())
+            pri = 3; // free and not the actual device
          else if (!device[i]->Receiving() && !device[i]->IsPrimaryDevice())
-            pri = 3; // free and not the primary device
+            pri = 4; // free and not the primary device
          else if (!device[i]->Receiving())
-            pri = 4; // free
+            pri = 5; // free
          else if (d && device[i]->Priority() < d->Priority())
-            pri = 5; // receiving but priority is lower
+            pri = 6; // receiving but priority is lower
          else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
-            pri = 6; // receiving with same priority but fewer Ca's
+            pri = 7; // receiving with same priority but fewer Ca's
          else
-            pri = 7; // all others
+            pri = 8; // all others
          if (pri <= select) {
             select = pri;
             d = device[i];
@@ -543,6 +546,11 @@ bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
 }
 
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
+{
+  return false;
+}
+
+bool cDevice::IsTunedToTransponder(const cChannel *Channel)
 {
   return false;
 }

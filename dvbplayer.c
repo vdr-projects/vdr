@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.43 2006/02/19 14:20:15 kls Exp $
+ * $Id: dvbplayer.c 1.44 2006/04/09 13:47:11 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -399,12 +399,19 @@ void cDvbPlayer::Action(void)
                     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
                        uchar FileNumber;
                        int FileOffset;
-                       int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
+                       bool TimeShiftMode = index->IsStillRecording();
+                       int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
                        if (Index >= 0) {
                           if (!NextFile(FileNumber, FileOffset))
                              continue;
                           }
                        else {
+                          if (!TimeShiftMode && playDir == pdForward) {
+                             // hit end of recording: signal end of file but don't change playMode
+                             readIndex = -1;
+                             eof = true;
+                             continue;
+                             }
                           // hit begin of recording: wait for device buffers to drain
                           // before changing play mode:
                           if (!DeviceFlush(100))

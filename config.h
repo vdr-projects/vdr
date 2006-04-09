@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.247 2006/02/28 12:23:28 kls Exp $
+ * $Id: config.h 1.249 2006/04/09 12:09:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,8 +19,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.45"
-#define VDRVERSNUM   10345  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.46"
+#define VDRVERSNUM   10346  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -237,6 +237,8 @@ public:
   int CurrentChannel;
   int CurrentVolume;
   int CurrentDolby;
+  int InitialChannel;
+  int InitialVolume;
   int __EndData__;
   cSetup(void);
   cSetup& operator= (const cSetup &s);

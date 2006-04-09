@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.424 2006/02/28 13:58:00 kls Exp $
+ * $Id: menu.c 1.428 2006/04/09 14:29:24 kls Exp $
  */
 
 #include "menu.h"
@@ -589,7 +589,8 @@ void cMenuText::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetText(text, font == fontFix); //XXX define control character in text to choose the font???
-  cStatus::MsgOsdTextItem(text);
+  if (text)
+     cStatus::MsgOsdTextItem(text);
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -938,7 +939,8 @@ void cMenuEvent::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetEvent(event);
-  cStatus::MsgOsdTextItem(event->Description());
+  if (event->Description())
+     cStatus::MsgOsdTextItem(event->Description());
 }
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
@@ -1079,6 +1081,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
          }
       }
   currentChannel = CurrentChannelNr;
+  Display();
   SetHelpKeys();
 }
 
@@ -1105,7 +1108,7 @@ void cMenuWhatsOn::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
      SetHelp(Red[NewHelpKeys], now ? tr("Button$Next") : tr("Button$Now"), tr("Button$Schedule"), tr("Button$Switch"));
      helpKeys = NewHelpKeys;
      }
@@ -1347,7 +1350,7 @@ void cMenuSchedule::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
      SetHelp(Red[NewHelpKeys], tr("Button$Now"), tr("Button$Next"));
      helpKeys = NewHelpKeys;
      }
@@ -1737,7 +1740,8 @@ void cMenuRecording::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetRecording(recording);
-  cStatus::MsgOsdTextItem(recording->Info()->Description());
+  if (recording->Info()->Description())
+     cStatus::MsgOsdTextItem(recording->Info()->Description());
 }
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
@@ -2583,6 +2587,8 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
+  Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
 }
 
 // --- cMenuSetupPluginItem --------------------------------------------------

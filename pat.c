@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.15 2006/01/27 15:48:29 kls Exp $
+ * $Id: pat.c 1.16 2006/03/31 12:39:34 kls Exp $
  */
 
 #include "pat.h"
@@ -232,6 +232,7 @@ cPatFilter::cPatFilter(void)
 {
   pmtIndex = 0;
   pmtPid = 0;
+  pmtSid = 0;
   lastPmtScan = 0;
   numPmtEntries = 0;
   Set(0x00, 0x00);  // PAT
@@ -242,6 +243,7 @@ void cPatFilter::SetStatus(bool On)
   cFilter::SetStatus(On);
   pmtIndex = 0;
   pmtPid = 0;
+  pmtSid = 0;
   lastPmtScan = 0;
   numPmtEntries = 0;
 }
@@ -289,6 +291,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                if (!assoc.isNITPid()) {
                   if (Index++ >= pmtIndex && Channels.GetByServiceID(Source(), Transponder(), assoc.getServiceId())) {
                      pmtPid = assoc.getPid();
+                     pmtSid = assoc.getServiceId();
                      Add(pmtPid, 0x02);
                      break;
                      }
@@ -303,6 +306,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      SI::PMT pmt(Data, false);
      if (!pmt.CheckCRCAndParse())
         return;
+     if (pmt.getServiceId() != pmtSid)
+        return; // skip broken PMT records
      if (!PmtVersionChanged(pmtPid, pmt.getTableIdExtension(), pmt.getVersionNumber())) {
         lastPmtScan = 0; // this triggers the next scan
         return;

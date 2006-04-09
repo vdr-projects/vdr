@@ -780,6 +780,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing a possible crash with inconsistent SI data
  for pointing out a problem with the cChannel copy constructor
  for fixing cDvbTuner to avoid lockups on NPTL systems
+ for pointing out how to detect broken PMT records
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -969,6 +970,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to also set the language codes when setting the audio track descriptions
  for reporting a problem in setting the audio language codes in 'Transfer-Mode'
  for fixing cReadLine::Read() for lines that end with the infamous "\r\n"
+ for adding a missing "Button$" for the Timer button and "Key$" in skinclassic.c
+ for reporting a bug in handling the color button texts when switching from the
+ 'Schedule' menu of a channel without EPG info to the 'What's on now' menu
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1011,12 +1015,14 @@ Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
 Michael Walle <michael.walle@web.de>
  for reporting a bug in channel switching after Left/Right has been pressed
 
-Thomas Keil <tk@commedia-group.com>
+Thomas Keil <tkeil@datacrystal.de>
  for suggesting to change the behaviour of the '0' key in normal viewing mode so
  that a channel only qualifies as "previous" if it has been selected for at least
  3 seconds
  for reporting a bug in handling the color buttons in the "Edit channel" menu
  for adding a note about the config files of plugins to INSTALL
+ for a patch that was used as a base to implement setting the initial channel and
+ volume
 
 Kenneth Aafløy <ke-aa@frisurf.no>
  for fixing checking CA capabilities with the dvb-kernel driver
@@ -1070,6 +1076,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing replaying recordings of radio channels with many audio tracks
  for speeding up cRemux::ScanVideoPacket()
  for implementing cDevice::ForceTransferMode()
+ for changing the behaviour when hitting the end of a recording in fast forward mode
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1393,6 +1400,8 @@ Udo Richter <udo_richter@gmx.de>
  Up/Down in insert mode
  for fixing handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
  case a replay is active
+ for reporting a problem with plugins that report errors when VDR is run with the
+ --help or --version option
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1425,6 +1434,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  runs all the way until the end of the recording
  for fixing removing the '-' when entering a channel number where there is no other
  one that fits the input
+ for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -1517,6 +1527,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to make the "Menu" key behave consistently
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
+ for reporting a broken entry 'A111.1W' in sources.conf
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -1543,6 +1554,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for making the cLircRemote try to reestablish the connection to the LIRC daemon
  in case it breaks
  for enabling generating a core dump if VDR is run with a different user id
+ for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1643,6 +1655,9 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for making the '.update' file in the video directory be touched when a recording is
  added or deleted, so that other VDR instances can update their lists
  for adding cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont()
+ for fixing a typo in skins.h
+ for making cSkins::QueueMessage() called from a background thread with an empty
+ message clears all messages that have been previously queued by that thread
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
@@ -1793,6 +1808,10 @@ Jan Lenz <email@JanLenz.de>
 
 Oleg Roitburd <oleg@roitburd.de>
  for translating OSD texts to the Russian language
+ for updating 'sources.conf'
 
 Marius Heidenstecker <marius@heidenstecker.de>
  for suggesting to make cMenuRecordings::GetRecording() 'protected'
+
+Jurij Retzlaff <jurij@topofweb.de>
+ for fixing learning keys when VDR is already running

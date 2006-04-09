@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.14 2006/02/05 14:51:39 kls Exp $
+ * $Id: skinclassic.c 1.15 2006/03/31 13:59:50 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -517,7 +517,7 @@ void cSkinClassicDisplayVolume::SetVolume(int Current, int Total, bool Mute)
   const cFont *font = cFont::GetFont(fontOsd);
   if (Mute) {
      osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, clrTransparent);
-     osd->DrawText(0, 0, tr("Mute"), Theme.Color(clrVolumePrompt), Theme.Color(clrBackground), font);
+     osd->DrawText(0, 0, tr("Key$Mute"), Theme.Color(clrVolumePrompt), Theme.Color(clrBackground), font);
      }
   else {
      const char *Prompt = tr("Volume ");
