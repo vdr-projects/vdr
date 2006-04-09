@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.11 2006/02/05 14:59:57 kls Exp $
+ * $Id: skins.h 1.12 2006/04/09 11:15:24 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -329,7 +329,7 @@ public:
        ///< temporary cSkinDisplayMessage object.
        ///< The return value is the key pressed by the user. If no user input
        ///< has been received within Seconds (the default value of 0 results
-       ///< in the ///< value defined for "Message time" in the setup), kNone
+       ///< in the value defined for "Message time" in the setup), kNone
        ///< will be returned.
   int QueueMessage(eMessageType Type, const char *s, int Seconds = 0, int Timeout = 0);
        ///< Like Message(), but this function may be called from a background

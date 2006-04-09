@@ -1647,6 +1647,7 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for making the '.update' file in the video directory be touched when a recording is
  added or deleted, so that other VDR instances can update their lists
  for adding cSkin::GetTextAreaWidth() and cSkin::GetTextAreaFont()
+ for fixing a typo in skins.h
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'

@@ -4480,3 +4480,4 @@ Video Disk Recorder Revision History
   timer's transponder.
 - Now avoiding the 'actual' device when starting a recording, so that a Transfer
   Mode for live tv isn't interrupted.
+- Fixed a typo in skins.h (thanks to Alexander Rieger).
