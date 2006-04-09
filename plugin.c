@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.17 2006/02/28 14:16:54 kls Exp $
+ * $Id: plugin.c 1.18 2006/04/09 14:16:17 kls Exp $
  */
 
 #include "plugin.h"
@@ -232,7 +232,7 @@ bool cDll::Load(bool Log)
         if (argc)
            plugin->SetName(argv[0]);
         optind = 0; // to reset the getopt() data
-        return !argc || plugin->ProcessArgs(argc, argv);
+        return !Log || !argc || plugin->ProcessArgs(argc, argv);
         }
      }
   else {

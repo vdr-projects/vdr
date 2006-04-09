@@ -4495,3 +4495,5 @@ Video Disk Recorder Revision History
 - When hitting the end of a recording in fast forward mode, VDR no longer switches
   back to normal speed if the recording is already finished (thanks to Reinhard
   Nissl).
+- No longer calling cPlugin::ProcessArgs() if VDR is run with the --help or
+  --version option, to avoid error messages from plugins (reported by Udo Richter).

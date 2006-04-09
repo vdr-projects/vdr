@@ -1400,6 +1400,8 @@ Udo Richter <udo_richter@gmx.de>
  Up/Down in insert mode
  for fixing handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
  case a replay is active
+ for reporting a problem with plugins that report errors when VDR is run with the
+ --help or --version option
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
