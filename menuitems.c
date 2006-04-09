@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.35 2006/03/31 15:17:21 kls Exp $
+ * $Id: menuitems.c 1.36 2006/04/09 12:05:05 kls Exp $
  */
 
 #include "menuitems.h"
@@ -45,12 +45,14 @@ void cMenuEditItem::SetValue(const char *Value)
 
 // --- cMenuEditIntItem ------------------------------------------------------
 
-cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Max)
+cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Max, const char *MinString, const char *MaxString)
 :cMenuEditItem(Name)
 {
   value = Value;
   min = Min;
   max = Max;
+  minString = MinString;
+  maxString = MaxString;
   if (*value < min)
      *value = min;
   else if (*value > max)
@@ -60,9 +62,15 @@ cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Ma
 
 void cMenuEditIntItem::Set(void)
 {
-  char buf[16];
-  snprintf(buf, sizeof(buf), "%d", *value);
-  SetValue(buf);
+  if (minString && *value == min)
+     SetValue(minString);
+  else if (maxString && *value == max)
+     SetValue(maxString);
+  else {
+     char buf[16];
+     snprintf(buf, sizeof(buf), "%d", *value);
+     SetValue(buf);
+     }
 }
 
 eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
@@ -549,18 +557,23 @@ void cMenuEditStraItem::Set(void)
 
 // --- cMenuEditChanItem -----------------------------------------------------
 
-cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value)
-:cMenuEditIntItem(Name, Value, 1, Channels.MaxNumber())
+cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value, const char *NoneString)
+:cMenuEditIntItem(Name, Value, NoneString ? 0 : 1, Channels.MaxNumber())
 {
+  noneString = NoneString;
   Set();
 }
 
 void cMenuEditChanItem::Set(void)
 {
-  char buf[255];
-  cChannel *channel = Channels.GetByNumber(*value);
-  snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
-  SetValue(buf);
+  if (*value > 0) {
+     char buf[255];
+     cChannel *channel = Channels.GetByNumber(*value);
+     snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
+     SetValue(buf);
+     }
+  else
+     SetValue(noneString);
 }
 
 eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
@@ -574,10 +587,11 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
     case kRight:
                  {
                    cChannel *channel = Channels.GetByNumber(*value + delta, delta);
-                   if (channel) {
+                   if (channel)
                       *value = channel->Number();
-                      Set();
-                      }
+                   else if (delta < 0 && noneString)
+                      *value = 0;
+                   Set();
                  }
                  break;
     default: return cMenuEditIntItem::ProcessKey(Key);
