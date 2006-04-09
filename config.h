@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.248 2006/03/31 12:41:50 kls Exp $
+ * $Id: config.h 1.249 2006/04/09 12:09:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -237,6 +237,8 @@ public:
   int CurrentChannel;
   int CurrentVolume;
   int CurrentDolby;
+  int InitialChannel;
+  int InitialVolume;
   int __EndData__;
   cSetup(void);
   cSetup& operator= (const cSetup &s);

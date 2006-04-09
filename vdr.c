@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.253 2006/04/09 09:10:41 kls Exp $
+ * $Id: vdr.c 1.254 2006/04/09 12:22:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -632,6 +632,10 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
+  if (Setup.InitialChannel > 0)
+     Setup.CurrentChannel = Setup.InitialChannel;
+  if (Setup.InitialVolume >= 0)
+     Setup.CurrentVolume = Setup.InitialVolume;
   Channels.SwitchTo(Setup.CurrentChannel);
   if (MuteAudio)
      cDevice::PrimaryDevice()->ToggleMute();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.254 2006/04/08 13:52:28 kls Exp $
+ * $Id: i18n.c 1.255 2006/04/09 13:04:50 kls Exp $
  *
  * Translations provided by:
  *
@@ -4403,6 +4403,72 @@ const tI18nPhrase Phrases[] = {
     "Kanalivahetuse ooteaeg (s)",
     "Zap timeout (s)",
     "Èasový limit Zap (s)",
+  },
+  { "Setup.Miscellaneous$Initial channel",
+    "Kanal beim Einschalten",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Miscellaneous$Initial volume",
+    "Lautstärke beim Einschalten",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Miscellaneous$as before",
+    "wie vorher",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   // The days of the week:
   { "MTWTFSS",

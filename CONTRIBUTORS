@@ -1021,6 +1021,8 @@ Thomas Keil <tk@commedia-group.com>
  3 seconds
  for reporting a bug in handling the color buttons in the "Edit channel" menu
  for adding a note about the config files of plugins to INSTALL
+ for a patch that was used as a base to implement setting the initial channel and
+ volume
 
 Kenneth Aafløy <ke-aa@frisurf.no>
  for fixing checking CA capabilities with the dvb-kernel driver

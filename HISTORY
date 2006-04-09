@@ -4490,3 +4490,5 @@ Video Disk Recorder Revision History
 - cMenuEditIntItem and cMenuEditChanItem can now be given strings to label the
   minimum and maximum values, and the case that no channel has been selected,
   respectively.
+- The initial channel and volume can now be defined in the "Setup/Miscellaneous"
+  menu (based on a patch from Thomas Keil).
