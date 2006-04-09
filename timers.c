@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.56 2006/04/01 13:27:14 kls Exp $
+ * $Id: timers.c 1.57 2006/04/09 09:10:08 kls Exp $
  */
 
 #include "timers.h"
@@ -330,7 +330,7 @@ char *cTimer::SetFile(const char *File)
   return file;
 }
 
-bool cTimer::Matches(time_t t, bool Directly) const
+bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 {
   startTime = stopTime = 0;
   if (t == 0)
@@ -370,7 +370,7 @@ bool cTimer::Matches(time_t t, bool Directly) const
         stopTime = event->EndTime();
         return event->IsRunning(true);
         }
-     return startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
+     return startTime <= t + Margin && t < stopTime; // must stop *before* stopTime to allow adjacent timers
      }
   return false;
 }
@@ -450,19 +450,24 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
   if (Schedule && Schedule->Events()->First()) {
      time_t now = time(NULL);
      if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
+        lastSetEvent = now;
         const cEvent *Event = NULL;
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
+           if (event && Recording())
+              return; // let the recording end first
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-               if (e->RunningStatus() == SI::RunningStatusNotRunning)
-                  continue; // skip events that have already stopped
-               int overlap = 0;
-               Matches(e, &overlap);
-               if (overlap > FULLMATCH) {
-                  Event = e;
-                  break; // take the first matching event
+               if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
+                  int overlap = 0;
+                  Matches(e, &overlap);
+                  if (overlap > FULLMATCH) {
+                     Event = e;
+                     break; // take the first matching event
+                     }
                   }
                }
+           if (!Event && event && (now <= event->EndTime() || Matches(0, true)))
+              return; // stay with the old event until the timer has completely expired
            }
         else {
            // Normal timers match the event they have the most overlap with:
@@ -487,7 +492,6 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
                }
            }
         SetEvent(Event);
-        lastSetEvent = now;
         }
      }
 }

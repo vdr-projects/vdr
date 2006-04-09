@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.253 2006/03/31 12:58:26 kls Exp $
+ * $Id: i18n.c 1.254 2006/04/08 13:52:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -2245,6 +2245,28 @@ const tI18nPhrase Phrases[] = {
     "*** Vigane kanal ***",
     "*** Ugyldig kanal! ***",
     "*** Neplatný kanál ***",
+  },
+  { "Upcoming VPS recording!",
+    "VPS-Aufnahme beginnt in Kürze!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "No free DVB device to record!",
     "Keine freie DVB-Karte zum Aufnehmen!",
