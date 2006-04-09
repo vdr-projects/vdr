@@ -1015,7 +1015,7 @@ Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
 Michael Walle <michael.walle@web.de>
  for reporting a bug in channel switching after Left/Right has been pressed
 
-Thomas Keil <tk@commedia-group.com>
+Thomas Keil <tkeil@datacrystal.de>
  for suggesting to change the behaviour of the '0' key in normal viewing mode so
  that a channel only qualifies as "previous" if it has been selected for at least
  3 seconds
