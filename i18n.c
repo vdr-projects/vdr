@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.255 2006/04/09 13:04:50 kls Exp $
+ * $Id: i18n.c 1.256 2006/04/14 09:45:10 kls Exp $
  *
  * Translations provided by:
  *
@@ -2254,7 +2254,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VPS-tallennus on alkamassa!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -4412,7 +4412,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanava käynnistettäessä",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4434,7 +4434,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Äänenvoimakkuus käynnistettäessä",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4456,7 +4456,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "edellinen",
     "",// TODO
     "",// TODO
     "",// TODO

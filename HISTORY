@@ -4499,3 +4499,7 @@ Video Disk Recorder Revision History
   --version option, to avoid error messages from plugins (reported by Udo Richter).
 - Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
   (reported by Joachim Wilke).
+
+2006-04-14: Version 1.3.47
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
