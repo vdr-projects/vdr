@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.255 2006/04/14 11:01:18 kls Exp $
+ * $Id: vdr.c 1.256 2006/04/14 11:45:05 kls Exp $
  */
 
 #include <getopt.h>
@@ -1179,7 +1179,7 @@ Exit:
      Setup.Save();
      }
   cDevice::Shutdown();
-  PluginManager.Shutdown();
+  PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);
   ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)

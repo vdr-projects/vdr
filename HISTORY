@@ -4518,3 +4518,5 @@ Video Disk Recorder Revision History
 - Using geteuid() to check whether VDR is running as user 'root' (suggested by
   Tobias Grimm).
 - Added a missing "Key$" in skincurses.c (reported by Darren Salt).
+- Reintroduced the log message "deleting plugin: ..." when shutting down VDR (upon
+  request by Ville Skyttä, as in the initial patch from Christoph Haubrich).

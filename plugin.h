@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.10 2005/08/27 16:13:17 kls Exp $
+ * $Id: plugin.h 1.11 2006/04/14 11:42:48 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -95,7 +95,7 @@ public:
   static cPlugin *CallFirstService(const char *Id, void *Data = NULL);
   static bool CallAllServices(const char *Id, void *Data = NULL);
   void StopPlugins(void);
-  void Shutdown(void);
+  void Shutdown(bool Log = false);
   };
 
 #endif //__PLUGIN_H
