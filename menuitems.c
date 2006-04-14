@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.41 2006/04/14 10:39:40 kls Exp $
+ * $Id: menuitems.c 1.42 2006/04/14 10:41:28 kls Exp $
  */
 
 #include "menuitems.h"
@@ -621,6 +621,10 @@ eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
   if (channel) {
      *source = channel->Source();
      *transponder = channel->Transponder();
+     }
+  else {
+     *source = 0;
+     *transponder = 0;
      }
   return state;
 }
