@@ -4521,3 +4521,4 @@ Video Disk Recorder Revision History
 - Reintroduced the log message "deleting plugin: ..." when shutting down VDR (upon
   request by Ville Skyttä, as in the initial patch from Christoph Haubrich).
 - Fixed the vdr.1 man page (a single DVB card can record and do live tv).
+- The preferred audio language is now automatically selected when starting replay.

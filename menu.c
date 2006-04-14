@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.428 2006/04/09 14:29:24 kls Exp $
+ * $Id: menu.c 1.429 2006/04/14 14:28:34 kls Exp $
  */
 
 #include "menu.h"
@@ -3788,6 +3788,7 @@ cReplayControl::cReplayControl(void)
   marks.Load(fileName);
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
+  SetTrackDescriptions(false);
 }
 
 cReplayControl::~cReplayControl()
