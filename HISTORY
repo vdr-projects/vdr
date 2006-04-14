@@ -4520,3 +4520,4 @@ Video Disk Recorder Revision History
 - Added a missing "Key$" in skincurses.c (reported by Darren Salt).
 - Reintroduced the log message "deleting plugin: ..." when shutting down VDR (upon
   request by Ville Skyttä, as in the initial patch from Christoph Haubrich).
+- Fixed the vdr.1 man page (a single DVB card can record and do live tv).
