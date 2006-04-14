@@ -1624,6 +1624,7 @@ Thomas Günther <tom1@toms-cafe.de>
  can use it
  for fixing converting arbitrarily formatted summary.vdr files
  for making the 'new' indicator in the Recordings menu kept up-to-date
+ for reporting a crash when setting the time transponder in the Setup menu
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
