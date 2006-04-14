@@ -1823,3 +1823,6 @@ Jurij Retzlaff <jurij@topofweb.de>
 
 Richard Lithvall <richard@lithvall.se>
  for adding a tolerance for symbol rate values that are off by one
+
+Tobias Grimm <listaccount@e-tobi.net>
+ for suggesting to use geteuid() to check whether VDR is running as user 'root'

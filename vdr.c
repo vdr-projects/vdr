@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.254 2006/04/09 12:22:46 kls Exp $
+ * $Id: vdr.c 1.255 2006/04/14 11:01:18 kls Exp $
  */
 
 #include <getopt.h>
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 
   // Set user id in case we were started as root:
 
-  if (VdrUser && getuid() == 0) {
+  if (VdrUser && geteuid() == 0) {
      StartedAsRoot = true;
      if (strcmp(VdrUser, "root")) {
         if (!SetKeepCaps(true))
