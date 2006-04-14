@@ -4510,3 +4510,4 @@ Video Disk Recorder Revision History
 - Removed the unnecessary 'value' member from cMenuEditItem.
 - Fixed the initial setting of the time transponder setup parameter (reported
   by Thomas Günther).
+- Fixed unnecessary Set() calls in cMenuEditIntItem::ProcessKey().

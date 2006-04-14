@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.40 2006/04/14 10:23:54 kls Exp $
+ * $Id: menuitems.c 1.41 2006/04/14 10:39:40 kls Exp $
  */
 
 #include "menuitems.h"
@@ -98,7 +98,7 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
             if (*value > max) { *value = max; Set(); }
             return state;
        }
-     if ((!fresh || min <= newValue) && newValue <= max) {
+     if (newValue != *value && (!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();
         }
