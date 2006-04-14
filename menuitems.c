@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.39 2006/04/14 10:02:18 kls Exp $
+ * $Id: menuitems.c 1.40 2006/04/14 10:23:54 kls Exp $
  */
 
 #include "menuitems.h"
@@ -598,7 +598,7 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 // --- cMenuEditTranItem -----------------------------------------------------
 
 cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
-:cMenuEditChanItem(Name, &number)
+:cMenuEditChanItem(Name, &number, "-")
 {
   number = 0;
   source = Source;

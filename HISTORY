@@ -4508,3 +4508,5 @@ Video Disk Recorder Revision History
 - Added NULL checks to some strdup() calls in menuitems.c (suggested by Darren
   Salt).
 - Removed the unnecessary 'value' member from cMenuEditItem.
+- Fixed the initial setting of the time transponder setup parameter (reported
+  by Thomas Günther).
