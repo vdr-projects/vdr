@@ -4517,3 +4517,4 @@ Video Disk Recorder Revision History
   and PremiereContentTransmissionDescriptor to 'libsi' (thanks to Marco Schlüßler).
 - Using geteuid() to check whether VDR is running as user 'root' (suggested by
   Tobias Grimm).
+- Added a missing "Key$" in skincurses.c (reported by Darren Salt).
