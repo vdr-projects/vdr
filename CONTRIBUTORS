@@ -1818,3 +1818,6 @@ Marius Heidenstecker <marius@heidenstecker.de>
 
 Jurij Retzlaff <jurij@topofweb.de>
  for fixing learning keys when VDR is already running
+
+Richard Lithvall <richard@lithvall.se>
+ for adding a tolerance for symbol rate values that are off by one

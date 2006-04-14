@@ -4511,3 +4511,5 @@ Video Disk Recorder Revision History
 - Fixed the initial setting of the time transponder setup parameter (reported
   by Thomas Günther).
 - Fixed unnecessary Set() calls in cMenuEditIntItem::ProcessKey().
+- Allowing a tolerance for symbol rate values that are off by one (thanks to
+  Richard Lithvall).
