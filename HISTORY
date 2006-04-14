@@ -4505,3 +4505,5 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed a crash when setting the time transponder in the Setup menu, caused by the
   new 'noneString' in cMenuEditChanItem (reported by Thomas Günther). 
+- Added NULL checks to some strdup() calls in menuitems.c (suggested by Darren
+  Salt).

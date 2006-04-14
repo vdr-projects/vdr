@@ -1472,6 +1472,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  it won't follow symbolic links, and to canonicalize the file name
  for making all font and image data 'const'
  for fixing format string handling
+ for suggesting to add NULL checks to some strdup() calls in menuitems.c
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
