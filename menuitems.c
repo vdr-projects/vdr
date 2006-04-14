@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.38 2006/04/14 09:59:16 kls Exp $
+ * $Id: menuitems.c 1.39 2006/04/14 10:02:18 kls Exp $
  */
 
 #include "menuitems.h"
@@ -24,21 +24,17 @@ const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
 cMenuEditItem::cMenuEditItem(const char *Name)
 {
   name = strdup(Name ? Name : "???");
-  value = NULL;
 }
 
 cMenuEditItem::~cMenuEditItem()
 {
   free(name);
-  free(value);
 }
 
 void cMenuEditItem::SetValue(const char *Value)
 {
-  free(value);
-  value = strdup(Value);
   char *buffer = NULL;
-  asprintf(&buffer, "%s:\t%s", name, value);
+  asprintf(&buffer, "%s:\t%s", name, Value);
   SetText(buffer, false);
   cStatus::MsgOsdCurrentItem(buffer);
 }

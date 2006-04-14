@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.19 2006/04/09 12:05:05 kls Exp $
+ * $Id: menuitems.h 1.20 2006/04/14 10:01:47 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -17,7 +17,6 @@ extern const char *FileNameChars;
 class cMenuEditItem : public cOsdItem {
 private:
   char *name;
-  char *value;
 public:
   cMenuEditItem(const char *Name);
   ~cMenuEditItem();
