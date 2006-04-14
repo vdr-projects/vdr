@@ -4513,3 +4513,5 @@ Video Disk Recorder Revision History
 - Fixed unnecessary Set() calls in cMenuEditIntItem::ProcessKey().
 - Allowing a tolerance for symbol rate values that are off by one (thanks to
   Richard Lithvall).
+- Added VBITeletextDescriptorTag, TeletextDescriptorTag, LocalTimeOffsetDescriptorTag
+  and PremiereContentTransmissionDescriptor to 'libsi' (thanks to Marco Schlüßler).

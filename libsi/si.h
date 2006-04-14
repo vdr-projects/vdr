@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.13 2006/02/18 10:38:20 kls Exp $
+ *   $Id: si.h 1.14 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -43,7 +43,8 @@ enum TableId { TableIdPAT = 0x00, //program association section
                TableIdTOT = 0x73, //time offset section
                TableIdDIT = 0x7E, //discontinuity information section
                TableIdSIT = 0x7F, //service information section
-               TableIdAIT = 0x74  //application information section
+               TableIdAIT = 0x74, //application information section
+               TableIdPremiereCIT = 0xA0 //premiere content information section
              };
 
 
@@ -139,13 +140,15 @@ enum DescriptorTag {
                MHP_PrefetchDescriptorTag = 0x0C,
                MHP_DelegatedApplicationDescriptorTag = 0x0E,
                MHP_ApplicationStorageDescriptorTag = 0x10,
+  // Premiere private Descriptor Tags
+               PremiereContentTransmissionDescriptorTag = 0xF2,
 
                //a descriptor currently unimplemented in this library
                //the actual value 0xFF is "forbidden" according to the spec.
                UnimplementedDescriptorTag = 0xFF
 };
 
-enum DescriptorTagDomain { SI, MHP };
+enum DescriptorTagDomain { SI, MHP, PCIT };
 
 enum RunningStatus { RunningStatusUndefined = 0,
                      RunningStatusNotRunning = 1,
@@ -409,6 +412,12 @@ public:
 class MHP_DescriptorLoop : public DescriptorLoop {
 public:
    MHP_DescriptorLoop() { domain=MHP; }
+};
+
+//Premiere Content Information Table
+class PCIT_DescriptorLoop : public DescriptorLoop {
+public:
+   PCIT_DescriptorLoop() { domain=PCIT; }
 };
 
 //The content of the ExtendedEventDescriptor may be split over several

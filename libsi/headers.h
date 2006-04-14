@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.5 2005/09/03 15:18:16 kls Exp $
+ *   $Id: headers.h 1.6 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -769,6 +769,57 @@ struct ait_app {
    /* descriptors  */
 };
 
+/* Premiere Content Information Table */
+
+#define PCIT_LEN 17
+
+struct pcit {
+   u_char table_id                               :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char section_syntax_indicator               :1;
+   u_char dummy                                  :1; // has to be 0
+   u_char                                        :2;
+   u_char section_length_hi                      :4;
+#else
+   u_char section_length_hi                      :4;
+   u_char                                        :2;
+   u_char dummy                                  :1; // has to be 0
+   u_char section_syntax_indicator               :1;
+#endif
+   u_char section_length_lo                      :8;
+   u_char                                        :8;
+   u_char                                        :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char                                        :2;
+   u_char version_number                         :5;
+   u_char current_next_indicator                 :1;
+#else
+   u_char current_next_indicator                 :1;
+   u_char version_number                         :5;
+   u_char                                        :2;
+#endif
+   u_char section_number                         :8;
+   u_char last_section_number                    :8;
+
+   u_char contentId_hi_hi                        :8;
+   u_char contentId_hi_lo                        :8;
+   u_char contentId_lo_hi                        :8;
+   u_char contentId_lo_lo                        :8;
+
+   u_char duration_h                             :8;
+   u_char duration_m                             :8;
+   u_char duration_s                             :8;
+
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char                                        :4;
+   u_char descriptors_loop_length_hi             :4;
+#else
+   u_char descriptors_loop_length_hi             :4;
+   u_char                                        :4;
+#endif
+   u_char descriptors_loop_length_lo             :8;
+};
+
 /*
  *
  *    The following describes the different descriptors that can be used within
@@ -1008,6 +1059,21 @@ struct descr_linkage {
    u_char service_id_hi                          :8;
    u_char service_id_lo                          :8;
    u_char linkage_type                           :8;
+};
+
+#define DESCR_LINKAGE_8_LEN 3
+struct descr_linkage_8 {
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char hand_over_type                         :4;
+   u_char reserved                               :3;
+   u_char origin_type                            :1;
+#else
+   u_char origin_type                            :1;
+   u_char reserved                               :3;
+   u_char hand_over_type                         :4;
+#endif
+   u_char id_hi                                  :8;
+   u_char id_lo                                  :8;
 };
 
 /* 0x4B nvod_reference_descriptor */
@@ -1364,7 +1430,10 @@ struct descr_multilingual_component {
 struct descr_private_data_specifier {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
+   u_char private_data_specifier_hi_hi           :8;
+   u_char private_data_specifier_hi_lo           :8;
+   u_char private_data_specifier_lo_hi           :8;
+   u_char private_data_specifier_lo_lo           :8;
 };
 
 /* 0x60 service_move_descriptor */
@@ -1715,6 +1784,34 @@ struct descr_application_icons_descriptor {
 struct descr_application_icons_descriptor_end {
    u_char icon_flags_hi                          :8;
    u_char icon_flags_lo                          :8;
+};
+
+// Private DVB Descriptor  Premiere.de
+// 0xF2  Content Transmission Descriptor
+// http://dvbsnoop.sourceforge.net/examples/example-private-section.html
+
+#define DESCR_PREMIERE_CONTENT_TRANSMISSION_LEN 11
+
+struct descr_premiere_content_transmission {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char transport_stream_id_hi                 :8;
+   u_char transport_stream_id_lo                 :8;
+   u_char original_network_id_hi                 :8;
+   u_char original_network_id_lo                 :8;
+   u_char service_id_hi                          :8;
+   u_char service_id_lo                          :8;
+   u_char mjd_hi                                 :8;
+   u_char mjd_lo                                 :8;
+   u_char start_time_loop                        :8;
+};
+
+#define ITEM_PREMIERE_CONTENT_TRANSMISSION_LEN 3
+
+struct item_premiere_content_transmission_reference {
+   u_char start_time_h                           :8;
+   u_char start_time_m                           :8;
+   u_char start_time_s                           :8;
 };
 
 } //end of namespace

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.13 2005/09/03 15:17:35 kls Exp $
+ *   $Id: descriptor.h 1.14 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -117,6 +117,25 @@ public:
       const parental_rating *s;
    };
    StructureLoop<Rating> ratingLoop;
+protected:
+   virtual void Parse();
+};
+
+class TeletextDescriptor : public Descriptor {
+public:
+   class Teletext : public LoopElement {
+   public:
+      char languageCode[4];
+      int getTeletextType() const;
+      int getTeletextMagazineNumber() const;
+      int getTeletextPageNumber() const;
+      virtual int getLength() { return sizeof(item_teletext); }
+   protected:
+      virtual void Parse();
+   private:
+      const item_teletext *s;
+   };
+   StructureLoop<Teletext> teletextLoop;
 protected:
    virtual void Parse();
 };
@@ -281,6 +300,15 @@ private:
    const descr_component *s;
 };
 
+class PrivateDataSpecifierDescriptor : public Descriptor {
+public:
+   int getPrivateDataSpecifier() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_private_data_specifier *s;
+};
+
 class SubtitlingDescriptor : public Descriptor {
 public:
    class Subtitling : public LoopElement {
@@ -377,17 +405,42 @@ protected:
    virtual void Parse();
 };
 
+class LocalTimeOffsetDescriptor : public Descriptor {
+public:
+   class LocalTimeOffset : public LoopElement {
+   public:
+      char countryCode[4];
+      virtual int getLength() { return sizeof(local_time_offset_entry); }
+      int getCountryId() const;
+      int getLocalTimeOffsetPolarity() const;
+      int getLocalTimeOffset() const;
+      time_t getTimeOfChange() const;
+      int getNextTimeOffset() const;
+   protected:
+      virtual void Parse();
+   private:
+      const local_time_offset_entry *s;
+   };
+   StructureLoop<LocalTimeOffset> localTimeOffsetLoop;
+protected:
+   virtual void Parse();
+};
+
 class LinkageDescriptor : public Descriptor {
 public:
    int getTransportStreamId() const;
    int getOriginalNetworkId() const;
    int getServiceId() const;
    LinkageType getLinkageType() const;
+   int getHandOverType() const;
+   int getOriginType() const;
+   int getId() const;
    CharArray privateData;
 protected:
    virtual void Parse();
 private:
    const descr_linkage *s;
+   const descr_linkage_8 *s1;
 };
 
 class ISO639LanguageDescriptor : public Descriptor {
@@ -420,6 +473,41 @@ protected:
    virtual void Parse();
 private:
    const descr_pdc *s;
+};
+
+class AncillaryDataDescriptor : public Descriptor {
+public:
+   int getAncillaryDataIdentifier() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_ancillary_data *s;
+};
+
+// Private DVB Descriptor  Premiere.de
+// 0xF2  Content Transmission Descriptor
+// http://dvbsnoop.sourceforge.net/examples/example-private-section.html
+
+class PremiereContentTransmissionDescriptor : public Descriptor {
+public:
+   class StartTimeEntry : public LoopElement {
+   public:
+      virtual int getLength() { return sizeof(item_premiere_content_transmission_reference); }
+      time_t getStartTime(int mjd) const; //UTC
+   protected:
+      virtual void Parse();
+   private:
+      const item_premiere_content_transmission_reference *s;
+   };
+   StructureLoop<StartTimeEntry> startTimeLoop;
+   int getOriginalNetworkId() const;
+   int getTransportStreamId() const;
+   int getServiceId() const;
+   int getMJD() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_premiere_content_transmission *s;
 };
 
 //a descriptor currently unimplemented in this library
