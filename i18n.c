@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.257 2006/04/15 09:22:37 kls Exp $
+ * $Id: i18n.c 1.258 2006/04/15 11:05:27 kls Exp $
  *
  * Translations provided by:
  *
@@ -1274,6 +1274,28 @@ const tI18nPhrase Phrases[] = {
     "Restart?",
     "Vil du virkelig genstarte?",
     "Opravdu restartovat?",
+  },
+  { "shut down anyway?",
+    "trotzdem ausschalten?",
+    "zares izklopi?",
+    "spengo comunque?",
+    "toch uitschakelen?",
+    "quer mesmo desligar?",
+    "confirmez l'arrêt",
+    "slå av likevel?",
+    "sammutetaanko?",
+    "wy³±czyæ mimo to?",
+    "¿apagar igualmente?",
+    "ÔåëéêÜ íá ãßíåé ôåñìáôéóìüò?",
+    "vill du ändå avbryta?",
+    "închid, totuºi?",
+    "mégis kikapcsolni?",
+    "Apagar de totes maneres?",
+    "ÔÕÙáâÒØâÕÛìİŞ ÒëÚÛîçØâì?",
+    "svejedno iskljuèiti?",
+    "lülitan välja?",
+    "sluk alligevel?",
+    "pøesto vypnout?",
   },
   { "Recording - restart anyway?",
     "Aufnahme läuft - trotzdem neu starten?",

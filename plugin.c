@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.19 2006/04/14 11:45:43 kls Exp $
+ * $Id: plugin.c 1.20 2006/04/15 11:17:03 kls Exp $
  */
 
 #include "plugin.h"
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "config.h"
+#include "interface.h"
 
 #define LIBVDR_PREFIX  "libvdr-"
 #define SO_INDICATOR   ".so."
@@ -67,6 +68,11 @@ void cPlugin::Stop(void)
 
 void cPlugin::Housekeeping(void)
 {
+}
+
+cString cPlugin::Active(void)
+{
+  return NULL;
 }
 
 const char *cPlugin::MainMenuEntry(void)
@@ -362,6 +368,23 @@ void cPluginManager::Housekeeping(void)
         }
      lastHousekeeping = time(NULL);
      }
+}
+
+bool cPluginManager::Active(const char *Prompt)
+{
+  if (pluginManager) {
+     for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
+         cPlugin *p = dll->Plugin();
+         if (p) {
+            cString s = p->Active();
+            if (!isempty(*s)) {
+               if (!Prompt || !Interface->Confirm(cString::sprintf("%s - %s", *s, Prompt)))
+                  return true;
+               }
+            }
+         }
+     }
+  return false;
 }
 
 bool cPluginManager::HasPlugins(void)

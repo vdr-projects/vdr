@@ -1827,3 +1827,6 @@ Richard Lithvall <richard@lithvall.se>
 
 Tobias Grimm <listaccount@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
+
+Peter Dittmann <peter.dittmann@philips.com>
+ for a patch that was used as a base to implement cPlugin::Active()

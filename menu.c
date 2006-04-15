@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.429 2006/04/14 14:28:34 kls Exp $
+ * $Id: menu.c 1.430 2006/04/15 10:30:52 kls Exp $
  */
 
 #include "menu.h"
@@ -2696,7 +2696,9 @@ void cMenuSetup::Set(void)
 
 eOSState cMenuSetup::Restart(void)
 {
-  if (Interface->Confirm(cRecordControls::Active() ? tr("Recording - restart anyway?") : tr("Really restart?"))) {
+  if (Interface->Confirm(tr("Really restart?"))
+     && (!cRecordControls::Active() || Interface->Confirm(tr("Recording - restart anyway?")))
+     && !cPluginManager::Active(tr("Really restart?"))) {
      cThread::EmergencyExit(true);
      return osEnd;
      }

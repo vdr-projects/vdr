@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.22 2005/11/11 13:20:14 kls Exp $
+# $Id: newplugin 1.23 2006/04/15 11:18:36 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -166,6 +166,7 @@ public:
   virtual bool Start(void);
   virtual void Stop(void);
   virtual void Housekeeping(void);
+  virtual cString Active(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
   virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -219,6 +220,12 @@ void cPlugin${PLUGIN_CLASS}::Stop(void)
 void cPlugin${PLUGIN_CLASS}::Housekeeping(void)
 {
   // Perform any cleanup or other regular tasks.
+}
+
+cString cPlugin${PLUGIN_CLASS}::Active(void)
+{
+  // Return a message string if shutdown should be postponed
+  return NULL;
 }
 
 cOsdObject *cPlugin${PLUGIN_CLASS}::MainMenuAction(void)

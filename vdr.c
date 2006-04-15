@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.256 2006/04/14 11:45:05 kls Exp $
+ * $Id: vdr.c 1.257 2006/04/15 11:05:49 kls Exp $
  */
 
 #include <getopt.h>
@@ -980,6 +980,8 @@ int main(int argc, char *argv[])
                           if (Interface->Confirm(tr("Recording - shut down anyway?")))
                              ForceShutdown = true;
                           }
+                       if (cPluginManager::Active(tr("shut down anyway?")))
+                          ForceShutdown = true;
                        LastActivity = 1; // not 0, see below!
                        UserShutdown = true;
                        break;
@@ -1093,7 +1095,7 @@ int main(int argc, char *argv[])
                  Skins.Message(mtInfo, tr("Editing process finished"));
               }
            }
-        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && !cPluginManager::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
