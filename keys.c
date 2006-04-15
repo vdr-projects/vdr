@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.12 2006/04/15 13:35:07 kls Exp $
+ * $Id: keys.c 1.13 2006/04/15 13:50:43 kls Exp $
  */
 
 #include "keys.h"
@@ -44,6 +44,7 @@ static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { kPower,         "Power"      },
                     { kChanUp,        "Channel+"   },
                     { kChanDn,        "Channel-"   },
+                    { kChanPrev,      "PrevChannel"},
                     { kVolUp,         "Volume+"    },
                     { kVolDn,         "Volume-"    },
                     { kMute,          "Mute"       },

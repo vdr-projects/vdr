@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.259 2006/04/15 13:35:40 kls Exp $
+ * $Id: vdr.c 1.260 2006/04/15 13:51:52 kls Exp $
  */
 
 #include <getopt.h>
@@ -1053,6 +1053,7 @@ int main(int argc, char *argv[])
               }
            switch (key) {
              // Toggle channels:
+             case kChanPrev:
              case k0: {
                   if (PreviousChannel[PreviousChannelIndex ^ 1] == LastChannel || LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
                      PreviousChannelIndex ^= 1;

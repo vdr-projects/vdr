@@ -50,6 +50,7 @@ Version 1.3
 
   Channel+    channel up
   Channel-    channel down
+  PrevChannel previous channel
 
   Power       shutdown
 

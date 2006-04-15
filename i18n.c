@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.259 2006/04/15 13:39:35 kls Exp $
+ * $Id: i18n.c 1.260 2006/04/15 13:53:23 kls Exp $
  *
  * Translations provided by:
  *
@@ -5398,6 +5398,28 @@ const tI18nPhrase Phrases[] = {
     "Kanal-",
     "Kanal-",
     "Kanál-",
+  },
+  { "Key$PrevChannel",
+    "Vorheriger Kanal",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Key$Volume+",
     "Lautstärke+",

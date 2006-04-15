@@ -4536,3 +4536,4 @@ Video Disk Recorder Revision History
   plugins' Makefiles. Thanks to Marco Schlüßler for pointing out this problem.
 - Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
   See MANUAL for details.
+- Implemented kChanPrev (from a patch from Darren Salt).
