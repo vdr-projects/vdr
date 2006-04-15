@@ -4526,3 +4526,5 @@ Video Disk Recorder Revision History
 - The new function cPlugin::Active() can be used by a plugin to indicate that it
   is still busy and the system should not shut down or restart (based on a patch
   from Peter Dittmann). See PLUGINS.html for details.
+- Fixed setting the 'Delta' parameter when calling the shutdown script with
+  no active timer (reported by Helge Lenz).

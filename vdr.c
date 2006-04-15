@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.257 2006/04/15 11:05:49 kls Exp $
+ * $Id: vdr.c 1.258 2006/04/15 11:29:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -1132,7 +1132,8 @@ int main(int argc, char *argv[])
                        cControl::Shutdown();
                        int Channel = timer ? timer->Channel()->Number() : 0;
                        const char *File = timer ? timer->File() : "";
-                       Delta = Next - time(NULL); // compensates for Confirm() timeout
+                       if (timer)
+                          Delta = Next - time(NULL); // compensates for Confirm() timeout
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, *strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
