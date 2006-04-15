@@ -4528,3 +4528,10 @@ Video Disk Recorder Revision History
   from Peter Dittmann). See PLUGINS.html for details.
 - Fixed setting the 'Delta' parameter when calling the shutdown script with
   no active timer (reported by Helge Lenz).
+- In order to make sure that plugins are compiled with the same DVB driver header
+  files as VDR itself, the definition of DVBDIR has been removed from the VDR
+  Makefile. If you are using a driver version that has its header files at a location
+  other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
+  file (see also INSTALL). Any reference to DVBDIR should be removed from all
+  plugins' Makefiles. Thanks to Marco Schlüßler for pointing out this problem.
+  

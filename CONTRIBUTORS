@@ -1338,6 +1338,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling DPID when deciding whether to switch to 'Transfer Mode'
  for adding VBITeletextDescriptorTag, TeletextDescriptorTag, LocalTimeOffsetDescriptorTag
  and PremiereContentTransmissionDescriptor to 'libsi'
+ for pointing out that plugins might be compiled with different DVB driver header
+ files than VDR itself
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.23 2006/04/15 11:18:36 kls Exp $
+# $Id: newplugin 1.24 2006/04/15 11:59:43 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -75,7 +75,6 @@ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
 
 ### The directory environment:
 
-DVBDIR = ../../../../DVB
 VDRDIR = ../../..
 LIBDIR = ../../lib
 TMPDIR = /tmp
@@ -95,7 +94,7 @@ PACKAGE = vdr-\$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I\$(VDRDIR)/include -I\$(DVBDIR)/include
+INCLUDES += -I\$(VDRDIR)/include
 
 DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
 

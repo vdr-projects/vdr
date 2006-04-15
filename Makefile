@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.85 2006/02/05 13:37:11 kls Exp $
+# $Id: Makefile 1.86 2006/04/15 12:24:28 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -13,16 +13,6 @@ CFLAGS   ?= -O2
 
 CXX      ?= g++
 CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
-
-LINUX_VERSION := $(shell uname -r | cut -c-3)
-LINUX         := $(shell uname -r)
-DVBDIR        := /lib/modules/$(LINUX)/build
-ifeq ($(LINUX_VERSION), 2.4)
-   DVBDIR = ../DVB
-endif
-ifeq ($(LINUX_VERSION), 2.2)
-   DVBDIR = ../DVB
-endif
 
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
@@ -39,8 +29,6 @@ DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile
 
 -include Make.config
-
-INCLUDES += -I$(DVBDIR)/include
 
 SILIB    = $(LSIDIR)/libsi.a
 
