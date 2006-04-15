@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.258 2006/04/15 11:05:27 kls Exp $
+ * $Id: i18n.c 1.259 2006/04/15 13:39:35 kls Exp $
  *
  * Translations provided by:
  *
@@ -5288,6 +5288,50 @@ const tI18nPhrase Phrases[] = {
     "Tagasikerimine",
     "Spol tilbage",
     "Dozadu",
+  },
+  { "Key$Next",
+    "Vorwärts",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Key$Prev",
+    "Zurück",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Key$Power",
     "Ausschalten",

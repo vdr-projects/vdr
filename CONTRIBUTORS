@@ -1836,3 +1836,6 @@ Peter Dittmann <peter.dittmann@philips.com>
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
  script with no active timer
+
+Peter Juszack <vdr@unterbrecher.de>
+ for a patch that was used as a base to implement kNext and kPrev

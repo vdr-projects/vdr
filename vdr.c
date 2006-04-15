@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.258 2006/04/15 11:29:13 kls Exp $
+ * $Id: vdr.c 1.259 2006/04/15 13:35:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -1061,11 +1061,16 @@ int main(int argc, char *argv[])
                   }
              // Direct Channel Select:
              case k1 ... k9:
-             // Left/Right rotates trough channel groups:
+             // Left/Right rotates through channel groups:
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
              case kRight:
+             // Previous/Next rotates through channel groups:
+             case kPrev|k_Repeat:
+             case kPrev:
+             case kNext|k_Repeat:
+             case kNext:
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:

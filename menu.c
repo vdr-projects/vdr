@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.430 2006/04/15 10:30:52 kls Exp $
+ * $Id: menu.c 1.431 2006/04/15 13:37:09 kls Exp $
  */
 
 #include "menu.h"
@@ -3158,6 +3158,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kLeft:
     case kRight|k_Repeat:
     case kRight:
+    case kNext|k_Repeat:
+    case kNext:
+    case kPrev|k_Repeat:
+    case kPrev:
          withInfo = false;
          number = 0;
          if (group < 0) {
@@ -3167,7 +3171,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
          if (group >= 0) {
             int SaveGroup = group;
-            if (NORMALKEY(Key) == kRight)
+            if (NORMALKEY(Key) == kRight || NORMALKEY(Key) == kNext)
                group = Channels.GetNextGroup(group) ;
             else
                group = Channels.GetPrevGroup(group < 1 ? 1 : group);
@@ -3201,6 +3205,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kDown|k_Release:
     case kChanUp|k_Release:
     case kChanDn|k_Release:
+    case kNext|k_Release:
+    case kPrev|k_Release:
          if (!(Key & k_Repeat) && channel && channel->Number() != cDevice::CurrentChannel())
             NewChannel = channel;
          withInfo = true;
@@ -4146,8 +4152,12 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       switch (Key) {
         // Editing:
         case kMarkToggle:      MarkToggle(); break;
+        case kPrev|k_Repeat:
+        case kPrev:
         case kMarkJumpBack|k_Repeat:
         case kMarkJumpBack:    MarkJump(false); break;
+        case kNext|k_Repeat:
+        case kNext:
         case kMarkJumpForward|k_Repeat:
         case kMarkJumpForward: MarkJump(true); break;
         case kMarkMoveBack|k_Repeat:

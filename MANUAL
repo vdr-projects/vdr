@@ -45,6 +45,9 @@ Version 1.3
   FastFwd     fast forward
   FastRew     fast rewind
 
+  Next        Next/previous channel group (in live tv mode)
+  Prev        or next/previous editing mark (in replay mode)
+
   Channel+    channel up
   Channel-    channel down
 

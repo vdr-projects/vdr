@@ -4534,4 +4534,5 @@ Video Disk Recorder Revision History
   other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
   file (see also INSTALL). Any reference to DVBDIR should be removed from all
   plugins' Makefiles. Thanks to Marco Schlüßler for pointing out this problem.
-  
+- Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
+  See MANUAL for details.
