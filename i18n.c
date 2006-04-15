@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.256 2006/04/14 09:45:10 kls Exp $
+ * $Id: i18n.c 1.257 2006/04/15 09:22:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -2265,7 +2265,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VPS optagelse starter snart!",
     "",//TODO
   },
   { "No free DVB device to record!",
@@ -4423,7 +4423,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal ved opstart",
     "",// TODO
   },
   { "Setup.Miscellaneous$Initial volume",
@@ -4445,7 +4445,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Lydstyrke ved opstart",
     "",// TODO
   },
   { "Setup.Miscellaneous$as before",
@@ -4467,7 +4467,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "som før",
     "",// TODO
   },
   // The days of the week:

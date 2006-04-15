@@ -4500,7 +4500,7 @@ Video Disk Recorder Revision History
 - Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
   (reported by Joachim Wilke).
 
-2006-04-14: Version 1.3.47
+2006-04-15: Version 1.3.47
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed a crash when setting the time transponder in the Setup menu, caused by the
@@ -4522,3 +4522,4 @@ Video Disk Recorder Revision History
   request by Ville Skyttä, as in the initial patch from Christoph Haubrich).
 - Fixed the vdr.1 man page (a single DVB card can record and do live tv).
 - The preferred audio language is now automatically selected when starting replay.
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
