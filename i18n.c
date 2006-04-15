@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.260 2006/04/15 13:53:23 kls Exp $
+ * $Id: i18n.c 1.261 2006/04/15 14:13:45 kls Exp $
  *
  * Translations provided by:
  *
@@ -3721,6 +3721,28 @@ const tI18nPhrase Phrases[] = {
     "ainult nimed",
     "kun navne",
     "jen názvy",
+  },
+  { "PIDs only",
+    "nur PIDs",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "names and PIDs",
     "Namen und PIDs",

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.115 2006/02/19 09:51:02 kls Exp $
+ * $Id: eit.c 1.116 2006/04/15 14:11:52 kls Exp $
  */
 
 #include "eit.h"
@@ -180,10 +180,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                        if (link != channel) { // only link to other channels, not the same one
                           //fprintf(stderr, "Linkage %s %4d %4d %5d %5d %5d %5d  %02X  '%s'\n", hit ? "*" : "", channel->Number(), link ? link->Number() : -1, SiEitEvent.getEventId(), ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId(), ld->getLinkageType(), linkName);//XXX
                           if (link) {
-                             if (Setup.UpdateChannels >= 1)
+                             if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
                                 link->SetName(linkName, "", "");
                              }
-                          else if (Setup.UpdateChannels >= 3) {
+                          else if (Setup.UpdateChannels >= 4) {
                              link = Channels.NewChannel(channel, linkName, "", "", ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
                              //XXX patFilter->Trigger();
                              }

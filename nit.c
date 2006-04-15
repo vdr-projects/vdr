@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.10 2004/10/17 12:00:54 kls Exp $
+ * $Id: nit.c 1.11 2006/04/15 14:10:42 kls Exp $
  */
 
 #include "nit.h"
@@ -116,12 +116,12 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  bool found = false;
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                        if (Setup.UpdateChannels >= 4)
+                        if (Setup.UpdateChannels >= 5)
                            Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate);
                         found = true;
                         }
                      }
-                 if (!found && Setup.UpdateChannels >= 4) {
+                 if (!found && Setup.UpdateChannels >= 5) {
                     cChannel *Channel = new cChannel;
                     Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                     if (Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate))
@@ -151,12 +151,12 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  bool found = false;
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                        if (Setup.UpdateChannels >= 4)
+                        if (Setup.UpdateChannels >= 5)
                            Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate);
                         found = true;
                         }
                      }
-                 if (!found && Setup.UpdateChannels >= 4) {
+                 if (!found && Setup.UpdateChannels >= 5) {
                     cChannel *Channel = new cChannel;
                     Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                     if (Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate))
@@ -193,12 +193,12 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  bool found = false;
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                        if (Setup.UpdateChannels >= 4)
+                        if (Setup.UpdateChannels >= 5)
                            Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
                         found = true;
                         }
                      }
-                 if (!found && Setup.UpdateChannels >= 4) {
+                 if (!found && Setup.UpdateChannels >= 5) {
                     cChannel *Channel = new cChannel;
                     Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                     if (Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode))

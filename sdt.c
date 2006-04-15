@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.15 2005/08/27 09:27:47 kls Exp $
+ * $Id: sdt.c 1.16 2006/04/15 14:12:21 kls Exp $
  */
 
 #include "sdt.h"
@@ -78,7 +78,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         char *pp = compactspace(ProviderNameBuf);
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
-                           if (Setup.UpdateChannels >= 1)
+                           if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
                               channel->SetName(pn, ps, pp);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
                            // tv stations set this flag even for non-encrypted channels :-(
@@ -86,7 +86,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            // and would have been overwritten with real CA values later:
                            // channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
-                        else if (*pn && Setup.UpdateChannels >= 3) {
+                        else if (*pn && Setup.UpdateChannels >= 4) {
                            channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            patFilter->Trigger();
                            }
@@ -111,7 +111,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::NVODReferenceDescriptor::Service Service;
                  for (SI::Loop::Iterator it; nrd->serviceLoop.getNext(Service, it); ) {
                      cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
-                     if (!link && Setup.UpdateChannels >= 3) {
+                     if (!link && Setup.UpdateChannels >= 4) {
                         link = Channels.NewChannel(Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
                         patFilter->Trigger();
                         }

@@ -639,11 +639,11 @@ Version 1.3
                          If turned off, Dolby Digital tracks also don't appear in the
                          "Audio" menu.
 
-  Update channels = 4    Controls the automatic channel update function. '0' means
+  Update channels = 5    Controls the automatic channel update function. '0' means
                          no update, '1' will only update channel names, '2' will
-                         update channel names and PIDs, '3' will perform all
-                         updates and also add newly found channels, and '4' will
-                         also add newly found transponders.
+                         only update PIDs, '3' will update channel names and PIDs,
+                         '4' will perform all updates and also add newly found channels,
+                         and '5' will also add newly found transponders.
 
   Audio languages = 0    Some tv stations broadcast various audio tracks in different
                          languages. This option allows you to define which language(s)

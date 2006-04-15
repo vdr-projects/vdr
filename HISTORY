@@ -4537,3 +4537,7 @@ Video Disk Recorder Revision History
 - Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
   See MANUAL for details.
 - Implemented kChanPrev (from a patch from Darren Salt).
+- The "Update channels" parameter in the "Setup/DVB" menu has been extended to
+  allow updating only the PIDs (see MANUAL for details). When updating to this
+  version of VDR, please verify that the setting is as you want it to be, because
+  the values have been shifted.
