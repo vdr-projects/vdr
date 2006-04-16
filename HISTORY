@@ -4603,3 +4603,6 @@ Video Disk Recorder Revision History
 - Updated the INSTALL file's section about non-VDR files in the video directory
   (since version 1.3.38 disk access is done in a separate thread, so the watchdog
   timer won't hit).
+- Changed the behaviour of the "Use small font" setup option to *always* use the small
+  font if set to '3' - even if it would have been a fixed font (suggested by Ronny
+  Kornexl).
