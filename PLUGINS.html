@@ -165,10 +165,19 @@ loadable library file for that plugin (we'll get to the details later).
 The <tt>lib</tt> directory contains the dynamically loadable libraries of all
 available plugins. Note that the names of these files are created by concatenating
 <p>
+<!--X1.3.47--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <table border=2>
 <tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>hello</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
-<tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>VDR version number<br>this plugin was<br>compiled for</font></td></tr>
+<tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>API version number<br>this plugin was<br>compiled for</font></td></tr>
 </table>
+<p>
+The <i>API version number</i> refers to the plugin API version number of the VDR
+version this plugin was compiled with. Compiled plugins can run with newer versions
+of VDR as long as their plugin API version number is still the same as that of
+the current VDR version. That way minor fixes to VDR, that don't require changes
+to the VDR header files, can be made without requiring all plugins to be
+recompiled.
+<!--X1.3.47--></td></tr></table>
 <p>
 The plugin library files can be stored in any directory. If the default organization
 is not used, the path to the plugin directory has be be given to VDR through the

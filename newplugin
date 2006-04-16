@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.24 2006/04/15 11:59:43 kls Exp $
+# $Id: newplugin 1.25 2006/04/16 09:04:21 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -83,9 +83,9 @@ TMPDIR = /tmp
 
 -include \$(VDRDIR)/Make.config
 
-### The version number of VDR (taken from VDR's "config.h"):
+### The version number of VDR's plugin API (taken from VDR's "config.h"):
 
-VDRVERSION = \$(shell grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g')
+APIVERSION = \$(shell grep 'define APIVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g')
 
 ### The name of the distribution archive:
 
@@ -122,7 +122,7 @@ all: libvdr-\$(PLUGIN).so
 
 libvdr-\$(PLUGIN).so: \$(OBJS)
 	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@
-	\@cp \$\@ \$(LIBDIR)/\$\@.\$(VDRVERSION)
+	\@cp \$\@ \$(LIBDIR)/\$\@.\$(APIVERSION)
 
 dist: clean
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)

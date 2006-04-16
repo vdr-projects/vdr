@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.20 2006/04/15 11:17:03 kls Exp $
+ * $Id: plugin.c 1.21 2006/04/16 09:23:30 kls Exp $
  */
 
 #include "plugin.h"
@@ -290,7 +290,7 @@ void cPluginManager::AddPlugin(const char *Args)
               if (p) {
                  *p = 0;
                  p += strlen(SO_INDICATOR);
-                 if (strcmp(p, VDRVERSION) == 0) {
+                 if (strcmp(p, APIVERSION) == 0) {
                     char *name = e->d_name + strlen(LIBVDR_PREFIX);
                     if (strcmp(name, "*") != 0) { // let's not get into a loop!
                        AddPlugin(e->d_name + strlen(LIBVDR_PREFIX));
@@ -306,7 +306,7 @@ void cPluginManager::AddPlugin(const char *Args)
   if (p)
      *p = 0;
   char *buffer = NULL;
-  asprintf(&buffer, "%s/%s%s%s%s", directory, LIBVDR_PREFIX, s, SO_INDICATOR, VDRVERSION);
+  asprintf(&buffer, "%s/%s%s%s%s", directory, LIBVDR_PREFIX, s, SO_INDICATOR, APIVERSION);
   dlls.Add(new cDll(buffer, Args));
   free(buffer);
   free(s);

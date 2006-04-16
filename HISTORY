@@ -4534,6 +4534,8 @@ Video Disk Recorder Revision History
   other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
   file (see also INSTALL). Any reference to DVBDIR should be removed from all
   plugins' Makefiles, like this:
+
+  ------------------------------------------------------------
   --- PLUGINS/src/hello/Makefile  2005/11/11 13:20:14     1.10
   +++ PLUGINS/src/hello/Makefile  2006/04/15 11:58:46     1.11
   @@ -20,7 +20,6 @@
@@ -4552,6 +4554,7 @@ Video Disk Recorder Revision History
   +INCLUDES += -I$(VDRDIR)/include
 
    DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+  ------------------------------------------------------------
 
   Thanks to Marco Schlüßler for pointing out this problem.
 - Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
@@ -4561,3 +4564,33 @@ Video Disk Recorder Revision History
   allow updating only the PIDs (see MANUAL for details). When updating to this
   version of VDR, please verify that the setting is as you want it to be, because
   the values have been shifted.
+- The new APIVERSION (see config.h) now allows existing compiled plugins to be
+  used with newer versions of VDR, as long as there have been no changes to the
+  VDR header files since the last APIVERSION. Existing plugins' Makefiles should
+  have all references to VDRVERSION changed to APIVERSION, like this:
+
+  ------------------------------------------------------------
+  --- PLUGINS/src/hello/Makefile  2006/04/15 11:58:46     1.11
+  +++ PLUGINS/src/hello/Makefile  2006/04/16 09:03:50     1.12
+  @@ -28,9 +28,9 @@
+
+   -include $(VDRDIR)/Make.config
+
+  -### The version number of VDR (taken from VDR's "config.h"):
+  +### The version number of VDR's plugin API (taken from VDR's "config.h"):
+
+  -VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+  +APIVERSION = $(shell grep 'define APIVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+
+   ### The name of the distribution archive:
+
+  @@ -67,7 +67,7 @@
+
+   libvdr-$(PLUGIN).so: $(OBJS)
+          $(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+  -       @cp $@ $(LIBDIR)/$@.$(VDRVERSION)
+  +       @cp $@ $(LIBDIR)/$@.$(APIVERSION)
+
+   dist: clean
+          @-rm -rf $(TMPDIR)/$(ARCHIVE)
+  ------------------------------------------------------------
