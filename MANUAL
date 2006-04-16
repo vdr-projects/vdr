@@ -162,6 +162,10 @@ Version 1.3
   default margin values will be sufficient, so in case this recording is
   really important you may want to add an extra margin ;-). VPS recordings
   will use the exact Start (or VPS) and Stop times as given in the event.
+  If a timer is newly created from within the "Schedule" menu, and its event is
+  already running or has its start time within the next two minutes, it goes
+  directly into the "Edit timer" menu in order to allow the user to make further
+  changes to timer parameters before the actual recording starts.
 
   The "Blue" button can be pressed to switch to the channel with the selected
   programme.

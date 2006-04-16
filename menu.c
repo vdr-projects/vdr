@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.432 2006/04/15 14:09:40 kls Exp $
+ * $Id: menu.c 1.433 2006/04/16 10:09:21 kls Exp $
  */
 
 #include "menu.h"
@@ -32,6 +32,9 @@
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
 #define DISKSPACECHEK     5 // seconds between disk space checks in the main menu
+#define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
+                            // within which it will go directly into the "Edit timer" menu to allow
+                            // further parameter settings
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
@@ -1152,9 +1155,10 @@ eOSState cMenuWhatsOn::Record(void)
         }
      else {
         Timers.Add(timer);
-        timer->Matches();
         Timers.SetModified();
         isyslog("timer %s added (active)", *timer->ToDescr());
+        if (timer->Matches(0, false, NEWTIMERLIMIT))
+           return AddSubMenu(new cMenuEditTimer(timer));
         if (HasSubMenu())
            CloseSubMenu();
         if (Update())
@@ -1400,9 +1404,10 @@ eOSState cMenuSchedule::Record(void)
         }
      else {
         Timers.Add(timer);
-        timer->Matches();
         Timers.SetModified();
         isyslog("timer %s added (active)", *timer->ToDescr());
+        if (timer->Matches(0, false, NEWTIMERLIMIT))
+           return AddSubMenu(new cMenuEditTimer(timer));
         if (HasSubMenu())
            CloseSubMenu();
         if (Update())
