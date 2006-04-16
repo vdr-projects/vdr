@@ -4600,3 +4600,6 @@ Video Disk Recorder Revision History
   changes to timer parameters before the actual recording starts (inspired by
   Christian Wieninger's "epgsearch" plugin).
 - Added format check to syslog_with_tid().
+- Updated the INSTALL file's section about non-VDR files in the video directory
+  (since version 1.3.38 disk access is done in a separate thread, so the watchdog
+  timer won't hit).
