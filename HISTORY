@@ -4599,3 +4599,4 @@ Video Disk Recorder Revision History
   directly into the "Edit timer" menu in order to allow the user to make further
   changes to timer parameters before the actual recording starts (inspired by
   Christian Wieninger's "epgsearch" plugin).
+- Added format check to syslog_with_tid().

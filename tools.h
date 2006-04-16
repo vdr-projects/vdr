@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.92 2006/02/04 14:21:08 kls Exp $
+ * $Id: tools.h 1.93 2006/04/16 10:40:45 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -52,7 +52,7 @@ template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
 
-void syslog_with_tid(int priority, const char *format, ...);
+void syslog_with_tid(int priority, const char *format, ...) __attribute__ ((format (printf, 2, 3)));
 
 #define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
 int BCD2INT(int x);
