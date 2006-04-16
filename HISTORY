@@ -4533,7 +4533,27 @@ Video Disk Recorder Revision History
   Makefile. If you are using a driver version that has its header files at a location
   other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
   file (see also INSTALL). Any reference to DVBDIR should be removed from all
-  plugins' Makefiles. Thanks to Marco Schlüßler for pointing out this problem.
+  plugins' Makefiles, like this:
+  --- PLUGINS/src/hello/Makefile  2005/11/11 13:20:14     1.10
+  +++ PLUGINS/src/hello/Makefile  2006/04/15 11:58:46     1.11
+  @@ -20,7 +20,6 @@
+
+   ### The directory environment:
+
+  -DVBDIR = ../../../../DVB
+   VDRDIR = ../../..
+   LIBDIR = ../../lib
+   TMPDIR = /tmp
+  @@ -40,7 +39,7 @@
+
+   ### Includes and Defines (add further entries here):
+
+  -INCLUDES += -I$(VDRDIR)/include -I$(DVBDIR)/include
+  +INCLUDES += -I$(VDRDIR)/include
+
+   DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+
+  Thanks to Marco Schlüßler for pointing out this problem.
 - Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
   See MANUAL for details.
 - Implemented kChanPrev (from a patch from Darren Salt).
