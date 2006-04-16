@@ -1685,6 +1685,8 @@ Patrick Fischer <patrick_fischer@gmx.de>
  for suggesting that the cTimer constructor should take an optional cChannel
  for suggesting that any cReceivers still attached to a cDevice when that device
  switches to a different transponder shall be automatically detached
+ for reporting that characters 0x01 and 0x02 in recording names were a problem
+ with XML
 
 Ralf Müller <ralf@bj-ig.de>
  for a patch that was used to implement cUnbufferedFile

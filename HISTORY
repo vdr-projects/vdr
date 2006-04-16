@@ -4606,3 +4606,8 @@ Video Disk Recorder Revision History
 - Changed the behaviour of the "Use small font" setup option to *always* use the small
   font if set to '3' - even if it would have been a fixed font (suggested by Ronny
   Kornexl).
+- No longer using characters 0x01 and 0x02 for mapping single quote and slash in
+  recording names (thanks to Patrick Fischer for reporting that this was a problem
+  with XML). The single quote is not mapped at all, and the slash is interchanged
+  with the tilde. Existing recordings will be handled like before, so there is
+  no need to actually rename them.

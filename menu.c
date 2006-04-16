@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.433 2006/04/16 10:09:21 kls Exp $
+ * $Id: menu.c 1.434 2006/04/16 12:20:46 kls Exp $
  */
 
 #include "menu.h"
@@ -2036,7 +2036,7 @@ eOSState cMenuRecordings::Commands(eKeys Key)
      cRecording *recording = GetRecording(ri);
      if (recording) {
         char *parameter = NULL;
-        asprintf(&parameter, "'%s'", recording->FileName());
+        asprintf(&parameter, "\"%s\"", *strescape(recording->FileName(), "\"$"));
         cMenuCommands *menu;
         eOSState state = AddSubMenu(menu = new cMenuCommands(tr("Recording commands"), &RecordingCommands, parameter));
         free(parameter);
