@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.55 2006/03/25 12:27:30 kls Exp $
+ * $Id: remux.c 1.56 2006/04/17 11:00:00 kls Exp $
  */
 
 #include "remux.h"
@@ -148,7 +148,7 @@ int cRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count
   return n;
 }
 
-// --- cCommonRepacker --------------------------------------------------------
+// --- cCommonRepacker -------------------------------------------------------
 
 class cCommonRepacker : public cRepacker {
 protected:

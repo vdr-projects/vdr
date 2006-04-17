@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.144 2006/04/15 14:05:41 kls Exp $
+ * $Id: config.c 1.145 2006/04/17 11:00:00 kls Exp $
  */
 
 #include "config.h"
@@ -20,7 +20,7 @@
 // format characters in order to allow any number of blanks after a numeric
 // value!
 
-// --- cCommand -------------------------------------------------------------
+// --- cCommand --------------------------------------------------------------
 
 char *cCommand::result = NULL;
 

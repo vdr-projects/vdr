@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.145 2006/04/16 12:43:58 kls Exp $
+ * $Id: recording.c 1.146 2006/04/17 11:00:00 kls Exp $
  */
 
 #include "recording.h"
@@ -192,7 +192,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
      }
 }
 
-// --- cResumeFile ------------------------------------------------------------
+// --- cResumeFile -----------------------------------------------------------
 
 cResumeFile::cResumeFile(const char *FileName)
 {
