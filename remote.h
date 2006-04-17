@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.34 2006/03/31 14:18:44 kls Exp $
+ * $Id: remote.h 1.35 2006/04/17 08:59:48 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -46,11 +46,18 @@ public:
   static void Clear(void);
   static bool Put(eKeys Key, bool AtFront = false);
   static bool PutMacro(eKeys Key);
-  static void CallPlugin(const char *Plugin);
+  static bool CallPlugin(const char *Plugin);
       ///< Initiates calling the given plugin's main menu function.
       ///< The Plugin parameter is the name of the plugin, and must be
-      ///< a static string.
-  static const char *GetPlugin(void) { return plugin; }
+      ///< a static string. Returns true if the plugin call was successfully
+      ///< initiated (the actual call to the plugin's main menu function
+      ///< will take place some time later, during the next execution
+      ///< of VDR's main loop). If there is already a plugin call pending
+      ///< false will be returned and the caller should try again later.
+  static const char *GetPlugin(void);
+      ///< Returns the name of the plugin that was set with a previous
+      ///< call to CallPlugin(). The internally stored pointer to the
+      ///< plugin name will be reset to NULL by this call.
   static bool HasKeys(void);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
   };

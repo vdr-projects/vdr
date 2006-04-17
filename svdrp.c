@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.94 2006/03/26 09:14:13 kls Exp $
+ * $Id: svdrp.c 1.95 2006/04/17 09:02:23 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1351,8 +1351,10 @@ void cSVDRP::CmdPLUG(const char *Option)
               }
            }
         else if (strcasecmp(cmd, "MAIN") == 0) {
-           cRemote::CallPlugin(plugin->Name());
-           Reply(250, "Initiated call to main menu function of plugin \"%s\"", plugin->Name());
+           if (cRemote::CallPlugin(plugin->Name()))
+              Reply(250, "Initiated call to main menu function of plugin \"%s\"", plugin->Name());
+           else
+              Reply(550, "A plugin call is already pending - please try again later");
            }
         else {
            int ReplyCode = 900;

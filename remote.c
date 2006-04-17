@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.49 2006/01/29 12:27:08 kls Exp $
+ * $Id: remote.c 1.50 2006/04/17 08:58:28 kls Exp $
  */
 
 #include "remote.h"
@@ -145,10 +145,23 @@ bool cRemote::Put(const char *Code, bool Repeat, bool Release)
   return false;
 }
 
-void cRemote::CallPlugin(const char *Plugin)
+bool cRemote::CallPlugin(const char *Plugin)
 {
-  plugin = Plugin;
-  Put(k_Plugin);
+  cMutexLock MutexLock(&mutex);
+  if (!plugin) {
+     plugin = Plugin;
+     Put(k_Plugin);
+     return true;
+     }
+  return false;
+}
+
+const char *cRemote::GetPlugin(void)
+{
+  cMutexLock MutexLock(&mutex);
+  const char *p = plugin;
+  plugin = NULL;
+  return p;
 }
 
 bool cRemote::HasKeys(void)

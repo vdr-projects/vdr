@@ -4500,7 +4500,7 @@ Video Disk Recorder Revision History
 - Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
   (reported by Joachim Wilke).
 
-2006-04-15: Version 1.3.47
+2006-04-17: Version 1.3.47
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed a crash when setting the time transponder in the Setup menu, caused by the
@@ -4611,3 +4611,8 @@ Video Disk Recorder Revision History
   with XML). The single quote is not mapped at all, and the slash is interchanged
   with the tilde. Existing recordings will be handled like before, so there is
   no need to actually rename them.
+- The cRemote::CallPlugin() function now has a boolean return value that tells
+  the caller whether initiating the plugin call was successful (suggested by
+  Reinhard Nissl). If it returns false, another plugin call is currently pending
+  and the caller should try again later. This also means that the SVDRP command
+  PLUG can now return an error code is the call fails.

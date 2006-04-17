@@ -1077,6 +1077,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for speeding up cRemux::ScanVideoPacket()
  for implementing cDevice::ForceTransferMode()
  for changing the behaviour when hitting the end of a recording in fast forward mode
+ for suggesting to give the cRemote::CallPlugin() function a boolean return value
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
