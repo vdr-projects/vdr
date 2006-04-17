@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.19 2006/04/14 10:53:44 kls Exp $
+ *   $Id: descriptor.c 1.20 2006/04/17 12:19:15 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -739,7 +739,7 @@ int LinkageDescriptor::getId() const {
 
 void ISO639LanguageDescriptor::Parse() {
    languageLoop.setData(data+sizeof(descr_iso_639_language), getLength()-sizeof(descr_iso_639_language));
-   
+
    //all this is for backwards compatibility only
    Loop::Iterator it;
    Language first;

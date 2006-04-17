@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 1.6 2004/03/28 11:15:01 kls Exp $
+# $Id: epg2html.pl 1.7 2006/04/17 12:19:08 kls Exp $
 
 @Index = ();
 
@@ -95,4 +95,3 @@ print INDEX "<html>\n<head><title>EPG Index</title><head>\n<body>\n";
 print INDEX sort { lc($a) cmp lc($b) } @Index;
 print INDEX "</body>\n</html>\n";
 close(INDEX);
-   

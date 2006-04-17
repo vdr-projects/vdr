@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.50 2006/04/14 10:44:57 kls Exp $
+ * $Id: channels.c 1.51 2006/04/17 12:18:57 kls Exp $
  */
 
 #include "channels.h"
@@ -295,7 +295,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
      return false;
   // Sometimes the symbol rate is off by one
   if (abs(srate - Srate) <= 1)
-     Srate = srate; 
+     Srate = srate;
 
   if (source != Source || frequency != Frequency || polarization != Polarization || srate != Srate || coderateH != CoderateH) {
      if (Number()) {
