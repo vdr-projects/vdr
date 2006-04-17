@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.127 2006/04/09 10:46:36 kls Exp $
+ * $Id: device.c 1.128 2006/04/14 14:34:43 kls Exp $
  */
 
 #include "device.h"
@@ -790,14 +790,19 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      }
 }
 
-void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
+void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
 {
   if (DescriptionsOnly) {
      for (int i = ttNone; i < ttMaxTrackTypes; i++)
          *availableTracks[i].description = 0;
      }
   else {
-     memset(availableTracks, 0, sizeof(availableTracks));
+     if (IdsOnly) {
+        for (int i = ttNone; i < ttMaxTrackTypes; i++)
+            availableTracks[i].id = 0;
+        }
+     else
+        memset(availableTracks, 0, sizeof(availableTracks));
      pre_1_3_19_PrivateStream = false;
      SetAudioChannel(0); // fall back to stereo
      currentAudioTrackMissingCount = 0;
@@ -954,7 +959,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
      pesAssembler->Reset();
      player = Player;
      if (!Transferring())
-        ClrAvailableTracks();
+        ClrAvailableTracks(false, true);
      SetPlayMode(player->playMode);
      player->device = this;
      player->Activate(true);

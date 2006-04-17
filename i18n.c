@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.255 2006/04/09 13:04:50 kls Exp $
+ * $Id: i18n.c 1.261 2006/04/15 14:13:45 kls Exp $
  *
  * Translations provided by:
  *
@@ -1275,6 +1275,28 @@ const tI18nPhrase Phrases[] = {
     "Vil du virkelig genstarte?",
     "Opravdu restartovat?",
   },
+  { "shut down anyway?",
+    "trotzdem ausschalten?",
+    "zares izklopi?",
+    "spengo comunque?",
+    "toch uitschakelen?",
+    "quer mesmo desligar?",
+    "confirmez l'arrÍt",
+    "slÂ av likevel?",
+    "sammutetaanko?",
+    "wy≥±czyÊ mimo to?",
+    "øapagar igualmente?",
+    "‘ÂÎÈÍ‹ Ì· „ﬂÌÂÈ ÙÂÒÏ·ÙÈÛÏ¸Ú?",
+    "vill du ‰ndÂ avbryta?",
+    "Ónchid, totu∫i?",
+    "mÈgis kikapcsolni?",
+    "Apagar de totes maneres?",
+    "‘’Ÿ·‚“ÿ‚’€Ï›ﬁ “Î⁄€ÓÁÿ‚Ï?",
+    "svejedno iskljuËiti?",
+    "l¸litan v‰lja?",
+    "sluk alligevel?",
+    "p¯esto vypnout?",
+  },
   { "Recording - restart anyway?",
     "Aufnahme l‰uft - trotzdem neu starten?",
     "Snemanje - zares ponoven zagon?",
@@ -2254,6 +2276,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "VPS-tallennus on alkamassa!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2264,8 +2287,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
+    "VPS optagelse starter snart!",
     "",//TODO
   },
   { "No free DVB device to record!",
@@ -3700,6 +3722,28 @@ const tI18nPhrase Phrases[] = {
     "kun navne",
     "jen n·zvy",
   },
+  { "PIDs only",
+    "nur PIDs",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "names and PIDs",
     "Namen und PIDs",
     "imena in PIDe",
@@ -4412,6 +4456,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "Kanava k‰ynnistett‰ess‰",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4422,8 +4467,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Kanal ved opstart",
     "",// TODO
   },
   { "Setup.Miscellaneous$Initial volume",
@@ -4434,6 +4478,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "ƒ‰nenvoimakkuus k‰ynnistett‰ess‰",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4444,8 +4489,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Lydstyrke ved opstart",
     "",// TODO
   },
   { "Setup.Miscellaneous$as before",
@@ -4456,6 +4500,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "edellinen",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4466,8 +4511,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "som f√∏r",
     "",// TODO
   },
   // The days of the week:
@@ -5267,6 +5311,50 @@ const tI18nPhrase Phrases[] = {
     "Spol tilbage",
     "Dozadu",
   },
+  { "Key$Next",
+    "Vorw‰rts",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Key$Prev",
+    "Zur¸ck",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Key$Power",
     "Ausschalten",
     "Izklop",
@@ -5332,6 +5420,28 @@ const tI18nPhrase Phrases[] = {
     "Kanal-",
     "Kanal-",
     "Kan·l-",
+  },
+  { "Key$PrevChannel",
+    "Vorheriger Kanal",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Key$Volume+",
     "Lautst‰rke+",

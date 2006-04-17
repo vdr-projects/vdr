@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.85 2006/02/05 13:37:11 kls Exp $
+# $Id: Makefile 1.87 2006/04/16 09:00:30 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -13,16 +13,6 @@ CFLAGS   ?= -O2
 
 CXX      ?= g++
 CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
-
-LINUX_VERSION := $(shell uname -r | cut -c-3)
-LINUX         := $(shell uname -r)
-DVBDIR        := /lib/modules/$(LINUX)/build
-ifeq ($(LINUX_VERSION), 2.4)
-   DVBDIR = ../DVB
-endif
-ifeq ($(LINUX_VERSION), 2.2)
-   DVBDIR = ../DVB
-endif
 
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
@@ -39,8 +29,6 @@ DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile
 
 -include Make.config
-
-INCLUDES += -I$(DVBDIR)/include
 
 SILIB    = $(LSIDIR)/libsi.a
 
@@ -91,9 +79,10 @@ DEFINES += -D_GNU_SOURCE
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 
-# The version number of VDR (taken from VDR's "config.h"):
+# The version numbers of VDR and the plugin API (taken from VDR's "config.h"):
 
 VDRVERSION = $(shell grep 'define VDRVERSION ' config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+APIVERSION = $(shell grep 'define APIVERSION ' config.h | awk '{ print $$3 }' | sed -e 's/"//g')
 
 ifdef VFAT
 # for people who want their video directory on a VFAT partition
@@ -195,7 +184,7 @@ plugins: include-dir
 
 clean-plugins:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-	@-rm -f $(PLUGINDIR)/lib/libvdr-*.so.$(VDRVERSION)
+	@-rm -f $(PLUGINDIR)/lib/libvdr-*.so.$(APIVERSION)
 
 # Install the files:
 
@@ -227,7 +216,7 @@ install-doc:
 
 install-plugins: plugins
 	@mkdir -p $(PLUGINLIBDIR)
-	@cp $(PLUGINDIR)/lib/libvdr-*.so.$(VDRVERSION) $(PLUGINLIBDIR)
+	@cp $(PLUGINDIR)/lib/libvdr-*.so.$(APIVERSION) $(PLUGINLIBDIR)
 
 # Source documentation:
 

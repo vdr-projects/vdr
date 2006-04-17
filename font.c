@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.12 2006/02/05 13:49:10 kls Exp $
+ * $Id: font.c 1.13 2006/04/16 10:59:15 kls Exp $
  */
 
 #include "config.h"
@@ -123,7 +123,7 @@ const cFont *cFont::GetFont(eDvbFont Font)
 {
   if (Setup.UseSmallFont == 0 && Font == fontSml)
      Font = fontOsd;
-  else if (Setup.UseSmallFont == 2 && Font == fontOsd)
+  else if (Setup.UseSmallFont == 2)
      Font = fontSml;
   if (!fonts[Font])
      SetFont(Font);

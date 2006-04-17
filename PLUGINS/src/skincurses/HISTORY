@@ -25,3 +25,7 @@ VDR Plugin 'skincurses' Revision History
 2005-11-26: Version 0.0.5
 
 - Fixed SetProgress() in case Total is 0.
+
+2006-04-14: Version 0.0.6
+
+- Added a missing "Key$" in skincurses.c.

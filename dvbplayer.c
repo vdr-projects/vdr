@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.44 2006/04/09 13:47:11 kls Exp $
+ * $Id: dvbplayer.c 1.45 2006/04/17 12:45:48 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -15,7 +15,7 @@
 #include "thread.h"
 #include "tools.h"
 
-// --- cBackTrace ----------------------------------------------------------
+// --- cBackTrace ------------------------------------------------------------
 
 #define AVG_FRAME_SIZE 15000         // an assumption about the average frame size
 #define DVB_BUF_SIZE   (256 * 1024)  // an assumption about the dvb firmware buffer size

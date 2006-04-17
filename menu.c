@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.428 2006/04/09 14:29:24 kls Exp $
+ * $Id: menu.c 1.434 2006/04/16 12:20:46 kls Exp $
  */
 
 #include "menu.h"
@@ -32,6 +32,9 @@
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
 #define DISKSPACECHEK     5 // seconds between disk space checks in the main menu
+#define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
+                            // within which it will go directly into the "Edit timer" menu to allow
+                            // further parameter settings
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
@@ -1152,9 +1155,10 @@ eOSState cMenuWhatsOn::Record(void)
         }
      else {
         Timers.Add(timer);
-        timer->Matches();
         Timers.SetModified();
         isyslog("timer %s added (active)", *timer->ToDescr());
+        if (timer->Matches(0, false, NEWTIMERLIMIT))
+           return AddSubMenu(new cMenuEditTimer(timer));
         if (HasSubMenu())
            CloseSubMenu();
         if (Update())
@@ -1400,9 +1404,10 @@ eOSState cMenuSchedule::Record(void)
         }
      else {
         Timers.Add(timer);
-        timer->Matches();
         Timers.SetModified();
         isyslog("timer %s added (active)", *timer->ToDescr());
+        if (timer->Matches(0, false, NEWTIMERLIMIT))
+           return AddSubMenu(new cMenuEditTimer(timer));
         if (HasSubMenu())
            CloseSubMenu();
         if (Update())
@@ -2031,7 +2036,7 @@ eOSState cMenuRecordings::Commands(eKeys Key)
      cRecording *recording = GetRecording(ri);
      if (recording) {
         char *parameter = NULL;
-        asprintf(&parameter, "'%s'", recording->FileName());
+        asprintf(&parameter, "\"%s\"", *strescape(recording->FileName(), "\"$"));
         cMenuCommands *menu;
         eOSState state = AddSubMenu(menu = new cMenuCommands(tr("Recording commands"), &RecordingCommands, parameter));
         free(parameter);
@@ -2299,7 +2304,7 @@ private:
   int numAudioLanguages;
   void Setup(void);
   const char *videoDisplayFormatTexts[3];
-  const char *updateChannelsTexts[5];
+  const char *updateChannelsTexts[6];
 public:
   cMenuSetupDVB(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -2315,9 +2320,10 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   videoDisplayFormatTexts[2] = tr("center cut out");
   updateChannelsTexts[0] = tr("no");
   updateChannelsTexts[1] = tr("names only");
-  updateChannelsTexts[2] = tr("names and PIDs");
-  updateChannelsTexts[3] = tr("add new channels");
-  updateChannelsTexts[4] = tr("add new transponders");
+  updateChannelsTexts[2] = tr("PIDs only");
+  updateChannelsTexts[3] = tr("names and PIDs");
+  updateChannelsTexts[4] = tr("add new channels");
+  updateChannelsTexts[5] = tr("add new transponders");
 
   SetSection(tr("DVB"));
   Setup();
@@ -2334,7 +2340,7 @@ void cMenuSetupDVB::Setup(void)
   if (data.VideoFormat == 0)
      Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
-  Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 6, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
   for (int i = 0; i < numAudioLanguages; i++)
       Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
@@ -2696,7 +2702,9 @@ void cMenuSetup::Set(void)
 
 eOSState cMenuSetup::Restart(void)
 {
-  if (Interface->Confirm(cRecordControls::Active() ? tr("Recording - restart anyway?") : tr("Really restart?"))) {
+  if (Interface->Confirm(tr("Really restart?"))
+     && (!cRecordControls::Active() || Interface->Confirm(tr("Recording - restart anyway?")))
+     && !cPluginManager::Active(tr("Really restart?"))) {
      cThread::EmergencyExit(true);
      return osEnd;
      }
@@ -3156,6 +3164,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kLeft:
     case kRight|k_Repeat:
     case kRight:
+    case kNext|k_Repeat:
+    case kNext:
+    case kPrev|k_Repeat:
+    case kPrev:
          withInfo = false;
          number = 0;
          if (group < 0) {
@@ -3165,7 +3177,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
          if (group >= 0) {
             int SaveGroup = group;
-            if (NORMALKEY(Key) == kRight)
+            if (NORMALKEY(Key) == kRight || NORMALKEY(Key) == kNext)
                group = Channels.GetNextGroup(group) ;
             else
                group = Channels.GetPrevGroup(group < 1 ? 1 : group);
@@ -3199,6 +3211,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kDown|k_Release:
     case kChanUp|k_Release:
     case kChanDn|k_Release:
+    case kNext|k_Release:
+    case kPrev|k_Release:
          if (!(Key & k_Repeat) && channel && channel->Number() != cDevice::CurrentChannel())
             NewChannel = channel;
          withInfo = true;
@@ -3788,6 +3802,7 @@ cReplayControl::cReplayControl(void)
   marks.Load(fileName);
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
+  SetTrackDescriptions(false);
 }
 
 cReplayControl::~cReplayControl()
@@ -4143,8 +4158,12 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       switch (Key) {
         // Editing:
         case kMarkToggle:      MarkToggle(); break;
+        case kPrev|k_Repeat:
+        case kPrev:
         case kMarkJumpBack|k_Repeat:
         case kMarkJumpBack:    MarkJump(false); break;
+        case kNext|k_Repeat:
+        case kNext:
         case kMarkJumpForward|k_Repeat:
         case kMarkJumpForward: MarkJump(true); break;
         case kMarkMoveBack|k_Repeat:

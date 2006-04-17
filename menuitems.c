@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.36 2006/04/09 13:10:02 kls Exp $
+ * $Id: menuitems.c 1.42 2006/04/14 10:41:28 kls Exp $
  */
 
 #include "menuitems.h"
@@ -23,22 +23,18 @@ const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
 
 cMenuEditItem::cMenuEditItem(const char *Name)
 {
-  name = strdup(Name);
-  value = NULL;
+  name = strdup(Name ? Name : "???");
 }
 
 cMenuEditItem::~cMenuEditItem()
 {
   free(name);
-  free(value);
 }
 
 void cMenuEditItem::SetValue(const char *Value)
 {
-  free(value);
-  value = strdup(Value);
   char *buffer = NULL;
-  asprintf(&buffer, "%s:\t%s", name, value);
+  asprintf(&buffer, "%s:\t%s", name, Value);
   SetText(buffer, false);
   cStatus::MsgOsdCurrentItem(buffer);
 }
@@ -102,7 +98,7 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
             if (*value > max) { *value = max; Set(); }
             return state;
        }
-     if ((!fresh || min <= newValue) && newValue <= max) {
+     if (newValue != *value && (!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();
         }
@@ -205,7 +201,7 @@ cMenuEditChrItem::cMenuEditChrItem(const char *Name, char *Value, const char *Al
 :cMenuEditItem(Name)
 {
   value = Value;
-  allowed = strdup(Allowed);
+  allowed = strdup(Allowed ? Allowed : "");
   current = strchr(allowed, *Value);
   if (!current)
      current = allowed;
@@ -254,7 +250,7 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
   orgValue = NULL;
   value = Value;
   length = Length;
-  allowed = strdup(Allowed);
+  allowed = strdup(Allowed ? Allowed : "");
   pos = -1;
   insert = uppercase = false;
   newchar = true;
@@ -572,7 +568,7 @@ void cMenuEditChanItem::Set(void)
      snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
      SetValue(buf);
      }
-  else
+  else if (noneString)
      SetValue(noneString);
 }
 
@@ -602,7 +598,7 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 // --- cMenuEditTranItem -----------------------------------------------------
 
 cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
-:cMenuEditChanItem(Name, &number)
+:cMenuEditChanItem(Name, &number, "-")
 {
   number = 0;
   source = Source;
@@ -625,6 +621,10 @@ eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
   if (channel) {
      *source = channel->Source();
      *transponder = channel->Transponder();
+     }
+  else {
+     *source = 0;
+     *transponder = 0;
      }
   return state;
 }

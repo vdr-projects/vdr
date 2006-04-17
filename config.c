@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.143 2006/04/09 12:12:01 kls Exp $
+ * $Id: config.c 1.145 2006/04/17 12:43:57 kls Exp $
  */
 
 #include "config.h"
@@ -20,7 +20,7 @@
 // format characters in order to allow any number of blanks after a numeric
 // value!
 
-// --- cCommand -------------------------------------------------------------
+// --- cCommand --------------------------------------------------------------
 
 char *cCommand::result = NULL;
 
@@ -251,7 +251,7 @@ cSetup::cSetup(void)
   RecordingDirs = 1;
   VideoDisplayFormat = 1;
   VideoFormat = 0;
-  UpdateChannels = 4;
+  UpdateChannels = 5;
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;

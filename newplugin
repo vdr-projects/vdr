@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.22 2005/11/11 13:20:14 kls Exp $
+# $Id: newplugin 1.26 2006/04/17 09:49:13 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -75,7 +75,6 @@ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
 
 ### The directory environment:
 
-DVBDIR = ../../../../DVB
 VDRDIR = ../../..
 LIBDIR = ../../lib
 TMPDIR = /tmp
@@ -84,9 +83,9 @@ TMPDIR = /tmp
 
 -include \$(VDRDIR)/Make.config
 
-### The version number of VDR (taken from VDR's "config.h"):
+### The version number of VDR's plugin API (taken from VDR's "config.h"):
 
-VDRVERSION = \$(shell grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g')
+APIVERSION = \$(shell grep 'define APIVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g')
 
 ### The name of the distribution archive:
 
@@ -95,7 +94,7 @@ PACKAGE = vdr-\$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I\$(VDRDIR)/include -I\$(DVBDIR)/include
+INCLUDES += -I\$(VDRDIR)/include
 
 DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
 
@@ -123,7 +122,7 @@ all: libvdr-\$(PLUGIN).so
 
 libvdr-\$(PLUGIN).so: \$(OBJS)
 	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@
-	\@cp \$\@ \$(LIBDIR)/\$\@.\$(VDRVERSION)
+	\@cp \$\@ \$(LIBDIR)/\$\@.\$(APIVERSION)
 
 dist: clean
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
@@ -166,6 +165,8 @@ public:
   virtual bool Start(void);
   virtual void Stop(void);
   virtual void Housekeeping(void);
+  virtual void MainThreadHook(void);
+  virtual cString Active(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
   virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -219,6 +220,18 @@ void cPlugin${PLUGIN_CLASS}::Stop(void)
 void cPlugin${PLUGIN_CLASS}::Housekeeping(void)
 {
   // Perform any cleanup or other regular tasks.
+}
+
+void cPlugin${PLUGIN_CLASS}::MainThreadHook(void)
+{
+  // Perform actions in the context of the main program thread.
+  // WARNING: Use with great care - see PLUGINS.html!
+}
+
+cString cPlugin${PLUGIN_CLASS}::Active(void)
+{
+  // Return a message string if shutdown should be postponed
+  return NULL;
 }
 
 cOsdObject *cPlugin${PLUGIN_CLASS}::MainMenuAction(void)

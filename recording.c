@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.144 2006/04/09 13:49:51 kls Exp $
+ * $Id: recording.c 1.146 2006/04/17 12:47:59 kls Exp $
  */
 
 #include "recording.h"
@@ -192,7 +192,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
      }
 }
 
-// --- cResumeFile ------------------------------------------------------------
+// --- cResumeFile -----------------------------------------------------------
 
 cResumeFile::cResumeFile(const char *FileName)
 {
@@ -389,7 +389,10 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
 struct tCharExchange { char a; char b; };
 tCharExchange CharExchange[] = {
   { '~',  '/'    },
+  { '/',  '~'    },
   { ' ',  '_'    },
+  // backwards compatibility:
+  { '\'', '\''   },
   { '\'', '\x01' },
   { '/',  '\x02' },
   { 0, 0 }

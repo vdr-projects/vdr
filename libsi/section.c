@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.c 1.4 2006/02/18 10:38:20 kls Exp $
+ *   $Id: section.c 1.5 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -339,6 +339,22 @@ void AIT::Application::Parse() {
    int offset=0;
    data.setPointerAndOffset<const ait_app>(s, offset);
    applicationDescriptors.setData(data+offset, HILO(s->application_descriptors_length));
+}
+
+/******************* PremiereCIT *******************/
+
+void PremiereCIT::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const pcit>(s, offset);
+   eventDescriptors.setData(data+offset, HILO(s->descriptors_loop_length));
+}
+
+int PremiereCIT::getContentId() const {
+   return (HILO(s->contentId_hi) << 16) | HILO(s->contentId_lo);
+}
+
+time_t PremiereCIT::getDuration() const {
+   return DVBTime::getDuration(s->duration_h, s->duration_m, s->duration_s);
 }
 
 } //end of namespace

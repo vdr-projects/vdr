@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.7 2006/01/13 16:06:11 kls Exp $
+# $Id: Make.config.template 1.8 2006/04/15 12:28:03 kls Exp $
 
 ### The C compiler and options:
 
@@ -18,7 +18,7 @@ CXXFLAGS = -fPIC -g -O2 -Wall -Woverloaded-virtual
 
 ### The directory environment:
 
-#DVBDIR   = ../DVB
+#DVBDIR   = /usr/src/v4l-dvb/linux
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
 
@@ -33,3 +33,9 @@ RCU_DEVICE  = /dev/ttyS1
 
 ## Define if you want vdr to not run as root
 #VDR_USER = vdr
+
+### You don't need to touch the following:
+
+ifdef DVBDIR
+INCLUDES += -I$(DVBDIR)/include
+endif

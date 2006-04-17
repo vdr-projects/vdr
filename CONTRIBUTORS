@@ -1077,6 +1077,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for speeding up cRemux::ScanVideoPacket()
  for implementing cDevice::ForceTransferMode()
  for changing the behaviour when hitting the end of a recording in fast forward mode
+ for suggesting to give the cRemote::CallPlugin() function a boolean return value
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1336,6 +1337,10 @@ Marco Schlüßler <marco@lordzodiac.de>
  for improving OSD area handling in cDvbSpuDecoder
  for suggesting to log the description (if present) in case a thread is canceled
  for fixing handling DPID when deciding whether to switch to 'Transfer Mode'
+ for adding VBITeletextDescriptorTag, TeletextDescriptorTag, LocalTimeOffsetDescriptorTag
+ and PremiereContentTransmissionDescriptor to 'libsi'
+ for pointing out that plugins might be compiled with different DVB driver header
+ files than VDR itself
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1472,6 +1477,9 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  it won't follow symbolic links, and to canonicalize the file name
  for making all font and image data 'const'
  for fixing format string handling
+ for suggesting to add NULL checks to some strdup() calls in menuitems.c
+ for reporting a missing "Key$" in skincurses.c
+ for a patch that was used to implement kChanPrev
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
@@ -1624,6 +1632,8 @@ Thomas Günther <tom1@toms-cafe.de>
  can use it
  for fixing converting arbitrarily formatted summary.vdr files
  for making the 'new' indicator in the Recordings menu kept up-to-date
+ for reporting a crash when setting the time transponder in the Setup menu
+ for reporting a bug in the initial setting of the time transponder setup parameter
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1676,6 +1686,8 @@ Patrick Fischer <patrick_fischer@gmx.de>
  for suggesting that the cTimer constructor should take an optional cChannel
  for suggesting that any cReceivers still attached to a cDevice when that device
  switches to a different transponder shall be automatically detached
+ for reporting that characters 0x01 and 0x02 in recording names were a problem
+ with XML
 
 Ralf Müller <ralf@bj-ig.de>
  for a patch that was used to implement cUnbufferedFile
@@ -1713,6 +1725,8 @@ Jürgen Schneider <ivory7@gmx.de>
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
+ for his idea of going directly into the "Edit timer" menu for a timer created
+ from the "Schedule" menu in case it starts withing the next two minutes
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -1772,7 +1786,7 @@ Jaroslaw Swierczynski <swiergot@gmail.com>
 
 Alexander Hans <cleditor@arcor.de>
  for reporting a crash when pressing '0' in the "Schedule" menu on a channel that
- doesn't have any EPG data 
+ doesn't have any EPG data
  for giving the DrawBitmap() function a new parameter 'Overlay' that allows a bitmap
  to be drawn with a transparent background
 
@@ -1785,6 +1799,8 @@ Suur Karu <suurkaru@fastmail.fm>
 
 Ronny Kornexl <ronny.kornexl@online.de>
  for reporting a problem with setting "No title" for broken event data
+ for suggesting to make the "Use small font" setup option *always* use the small
+ font if set to '3' - even if it would have been a fixed font
 
 Bárta Vladimír <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
@@ -1815,3 +1831,19 @@ Marius Heidenstecker <marius@heidenstecker.de>
 
 Jurij Retzlaff <jurij@topofweb.de>
  for fixing learning keys when VDR is already running
+
+Richard Lithvall <richard@lithvall.se>
+ for adding a tolerance for symbol rate values that are off by one
+
+Tobias Grimm <listaccount@e-tobi.net>
+ for suggesting to use geteuid() to check whether VDR is running as user 'root'
+
+Peter Dittmann <peter.dittmann@philips.com>
+ for a patch that was used as a base to implement cPlugin::Active()
+
+Helge Lenz <h.lenz@gmx.de>
+ for reporting a bug in setting the 'Delta' parameter when calling the shutdown
+ script with no active timer
+
+Peter Juszack <vdr@unterbrecher.de>
+ for a patch that was used as a base to implement kNext and kPrev

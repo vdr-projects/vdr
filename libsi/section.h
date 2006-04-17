@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.h 1.3 2004/02/20 13:45:45 kls Exp $
+ *   $Id: section.h 1.4 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -258,6 +258,21 @@ public:
 protected:
    const ait *first;
    virtual void Parse();
+};
+
+/* Premiere Content Information Table */
+
+class PremiereCIT : public NumberedSection {
+public:
+   PremiereCIT(const unsigned char *data, bool doCopy=true) : NumberedSection(data, doCopy) {}
+   PremiereCIT() {}
+   int getContentId() const;
+   time_t getDuration() const;
+   PCIT_DescriptorLoop eventDescriptors;
+protected:
+   virtual void Parse();
+private:
+   const pcit *s;
 };
 
 } //end of namespace

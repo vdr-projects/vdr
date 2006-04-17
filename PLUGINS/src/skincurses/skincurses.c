@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.7 2005/11/26 13:52:39 kls Exp $
+ * $Id: skincurses.c 1.8 2006/04/14 11:35:59 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.5";
+static const char *VERSION        = "0.0.6";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -564,7 +564,7 @@ void cSkinCursesDisplayVolume::SetVolume(int Current, int Total, bool Mute)
 {
   if (Mute) {
      osd->DrawRectangle(0, 0, OsdWidth - 1, 0, clrTransparent);
-     osd->DrawText(0, 0, tr("Mute"), clrGreen, clrBackground, &Font);
+     osd->DrawText(0, 0, tr("Key$Mute"), clrGreen, clrBackground, &Font);
      }
   else {
      const char *Prompt = tr("Volume ");

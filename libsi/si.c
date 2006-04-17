@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.15 2006/02/18 10:38:20 kls Exp $
+ *   $Id: si.c 1.16 2006/04/14 10:53:44 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -373,6 +373,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case MultilingualComponentDescriptorTag:
             d=new MultilingualComponentDescriptor();
             break;
+         case PrivateDataSpecifierDescriptorTag:
+            d=new PrivateDataSpecifierDescriptor();
+            break;
          case ServiceMoveDescriptorTag:
             d=new ServiceMoveDescriptor();
             break;
@@ -400,8 +403,15 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case ParentalRatingDescriptorTag:
             d=new ParentalRatingDescriptor();
             break;
+         case TeletextDescriptorTag:
+         case VBITeletextDescriptorTag:
+            d=new TeletextDescriptor();
+            break;
          case ApplicationSignallingDescriptorTag:
             d=new ApplicationSignallingDescriptor();
+            break;
+         case LocalTimeOffsetDescriptorTag:
+            d=new LocalTimeOffsetDescriptor();
             break;
          case LinkageDescriptorTag:
             d=new LinkageDescriptor();
@@ -411,6 +421,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
             break;
          case PDCDescriptorTag:
             d=new PDCDescriptor();
+            break;
+         case AncillaryDataDescriptorTag:
+            d=new AncillaryDataDescriptor();
             break;
 
          //note that it is no problem to implement one
@@ -436,13 +449,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          //defined in ETSI EN 300 468
          case StuffingDescriptorTag:
          case VBIDataDescriptorTag:
-         case VBITeletextDescriptorTag:
          case CountryAvailabilityDescriptorTag:
          case MocaicDescriptorTag:
-         case TeletextDescriptorTag:
          case TelephoneDescriptorTag:
-         case LocalTimeOffsetDescriptorTag:
-         case PrivateDataSpecifierDescriptorTag:
          case CellListDescriptorTag:
          case CellFrequencyLinkDescriptorTag:
          case ServiceAvailabilityDescriptorTag:
@@ -453,7 +462,6 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case CaSystemDescriptorTag:
          case AC3DescriptorTag:
          case DSNGDescriptorTag:
-         case AncillaryDataDescriptorTag:
          case AnnouncementSupportDescriptorTag:
          case AdaptationFieldDataDescriptorTag:
          case TransportStreamDescriptorTag:
@@ -493,6 +501,27 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case MHP_PrefetchDescriptorTag:
          case MHP_DelegatedApplicationDescriptorTag:
          case MHP_ApplicationStorageDescriptorTag:
+         default:
+            if (!returnUnimplemetedDescriptor)
+               return 0;
+            d=new UnimplementedDescriptor();
+            break;
+      }
+      break;
+   case PCIT:
+      switch ((DescriptorTag)da.getData<DescriptorHeader>()->descriptor_tag) {
+         case ContentDescriptorTag:
+            d=new ContentDescriptor();
+            break;
+         case ShortEventDescriptorTag:
+            d=new ShortEventDescriptor();
+            break;
+         case ExtendedEventDescriptorTag:
+            d=new ExtendedEventDescriptor();
+            break;
+         case PremiereContentTransmissionDescriptorTag:
+            d=new PremiereContentTransmissionDescriptor();
+            break;
          default:
             if (!returnUnimplemetedDescriptor)
                return 0;

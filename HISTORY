@@ -4499,3 +4499,123 @@ Video Disk Recorder Revision History
   --version option, to avoid error messages from plugins (reported by Udo Richter).
 - Now checking whether there is any text before calling cStatus::MsgOsdTextItem()
   (reported by Joachim Wilke).
+
+2006-04-17: Version 1.3.47
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed a crash when setting the time transponder in the Setup menu, caused by the
+  new 'noneString' in cMenuEditChanItem (reported by Thomas Günther).
+- Added NULL checks to some strdup() calls in menuitems.c (suggested by Darren
+  Salt).
+- Removed the unnecessary 'value' member from cMenuEditItem.
+- Fixed the initial setting of the time transponder setup parameter (reported
+  by Thomas Günther).
+- Fixed unnecessary Set() calls in cMenuEditIntItem::ProcessKey().
+- Allowing a tolerance for symbol rate values that are off by one (thanks to
+  Richard Lithvall).
+- Added VBITeletextDescriptorTag, TeletextDescriptorTag, LocalTimeOffsetDescriptorTag
+  and PremiereContentTransmissionDescriptor to 'libsi' (thanks to Marco Schlüßler).
+- Using geteuid() to check whether VDR is running as user 'root' (suggested by
+  Tobias Grimm).
+- Added a missing "Key$" in skincurses.c (reported by Darren Salt).
+- Reintroduced the log message "deleting plugin: ..." when shutting down VDR (upon
+  request by Ville Skyttä, as in the initial patch from Christoph Haubrich).
+- Fixed the vdr.1 man page (a single DVB card can record and do live tv).
+- The preferred audio language is now automatically selected when starting replay.
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- The new function cPlugin::Active() can be used by a plugin to indicate that it
+  is still busy and the system should not shut down or restart (based on a patch
+  from Peter Dittmann). See PLUGINS.html for details.
+- Fixed setting the 'Delta' parameter when calling the shutdown script with
+  no active timer (reported by Helge Lenz).
+- In order to make sure that plugins are compiled with the same DVB driver header
+  files as VDR itself, the definition of DVBDIR has been removed from the VDR
+  Makefile. If you are using a driver version that has its header files at a location
+  other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
+  file (see also INSTALL). Any reference to DVBDIR should be removed from all
+  plugins' Makefiles, like this:
+
+  ------------------------------------------------------------
+  --- PLUGINS/src/hello/Makefile  2005/11/11 13:20:14     1.10
+  +++ PLUGINS/src/hello/Makefile  2006/04/15 11:58:46     1.11
+  @@ -20,7 +20,6 @@
+
+   ### The directory environment:
+
+  -DVBDIR = ../../../../DVB
+   VDRDIR = ../../..
+   LIBDIR = ../../lib
+   TMPDIR = /tmp
+  @@ -40,7 +39,7 @@
+
+   ### Includes and Defines (add further entries here):
+
+  -INCLUDES += -I$(VDRDIR)/include -I$(DVBDIR)/include
+  +INCLUDES += -I$(VDRDIR)/include
+
+   DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+  ------------------------------------------------------------
+
+  Thanks to Marco Schlüßler for pointing out this problem.
+- Implemented kNext and kPrev keys (based on a patch from Peter Juszack).
+  See MANUAL for details.
+- Implemented kChanPrev (from a patch from Darren Salt).
+- The "Update channels" parameter in the "Setup/DVB" menu has been extended to
+  allow updating only the PIDs (see MANUAL for details). When updating to this
+  version of VDR, please verify that the setting is as you want it to be, because
+  the values have been shifted.
+- The new APIVERSION (see config.h) now allows existing compiled plugins to be
+  used with newer versions of VDR, as long as there have been no changes to the
+  VDR header files since the last APIVERSION. Existing plugins' Makefiles should
+  have all references to VDRVERSION changed to APIVERSION, like this:
+
+  ------------------------------------------------------------
+  --- PLUGINS/src/hello/Makefile  2006/04/15 11:58:46     1.11
+  +++ PLUGINS/src/hello/Makefile  2006/04/16 09:03:50     1.12
+  @@ -28,9 +28,9 @@
+
+   -include $(VDRDIR)/Make.config
+
+  -### The version number of VDR (taken from VDR's "config.h"):
+  +### The version number of VDR's plugin API (taken from VDR's "config.h"):
+
+  -VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+  +APIVERSION = $(shell grep 'define APIVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+
+   ### The name of the distribution archive:
+
+  @@ -67,7 +67,7 @@
+
+   libvdr-$(PLUGIN).so: $(OBJS)
+          $(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+  -       @cp $@ $(LIBDIR)/$@.$(VDRVERSION)
+  +       @cp $@ $(LIBDIR)/$@.$(APIVERSION)
+
+   dist: clean
+          @-rm -rf $(TMPDIR)/$(ARCHIVE)
+  ------------------------------------------------------------
+- If a timer is newly created from within the "Schedule" menu, and its event is
+  already running or has its start time within the next two minutes, it now goes
+  directly into the "Edit timer" menu in order to allow the user to make further
+  changes to timer parameters before the actual recording starts (inspired by
+  Christian Wieninger's "epgsearch" plugin).
+- Added format check to syslog_with_tid().
+- Updated the INSTALL file's section about non-VDR files in the video directory
+  (since version 1.3.38 disk access is done in a separate thread, so the watchdog
+  timer won't hit).
+- Changed the behaviour of the "Use small font" setup option to *always* use the small
+  font if set to '3' - even if it would have been a fixed font (suggested by Ronny
+  Kornexl).
+- No longer using characters 0x01 and 0x02 for mapping single quote and slash in
+  recording names (thanks to Patrick Fischer for reporting that this was a problem
+  with XML). The single quote is not mapped at all, and the slash is interchanged
+  with the tilde. Existing recordings will be handled like before, so there is
+  no need to actually rename them.
+- The cRemote::CallPlugin() function now has a boolean return value that tells
+  the caller whether initiating the plugin call was successful (suggested by
+  Reinhard Nissl). If it returns false, another plugin call is currently pending
+  and the caller should try again later. This also means that the SVDRP command
+  PLUG can now return an error code is the call fails.
+- The new function cPlugin::MainThreadHook() can be used by plugins to perform
+  actions in the context of the main program thread. Use this function with great
+  care and only of you absolutely have to! See also PLUGINS.html.

@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.11 2006/01/05 10:18:31 kls Exp $
+ * $Id: dvbspu.h 1.12 2006/04/17 12:47:29 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -46,7 +46,7 @@ typedef struct sDvbSpuRect {
 
 sDvbSpuRect;
 
-// --- cDvbSpuPalette----------------------------------
+// --- cDvbSpuPalette---------------------------------------------------------
 
 class cDvbSpuPalette {
   private:
@@ -60,7 +60,7 @@ class cDvbSpuPalette {
     uint32_t getColor(uint8_t idx, uint8_t trans) const;
 };
 
-// --- cDvbSpuBitmap----------------------------------
+// --- cDvbSpuBitmap----------------------------------------------------------
 
 class cDvbSpuBitmap {
 
@@ -87,7 +87,7 @@ class cDvbSpuBitmap {
                        sDvbSpuRect & size) const;
 };
 
-// --- cDvbSpuDecoder------------------------------------
+// --- cDvbSpuDecoder---------------------------------------------------------
 
 class cDvbSpuDecoder:public cSpuDecoder {
   private:
@@ -151,7 +151,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
     void processSPU(uint32_t pts, uint8_t * buf, bool AllowedShow);
 };
 
-// --- cDvbSpuPalette -------------------------------------------
+// --- cDvbSpuPalette --------------------------------------------------------
 
 inline uint32_t cDvbSpuPalette::yuv2rgb(uint32_t yuv_color)
 {

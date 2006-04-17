@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.20 2006/02/12 11:50:20 kls Exp $
+ * $Id: dvbspu.c 1.21 2006/04/17 12:45:05 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -42,7 +42,7 @@
 #define DEBUG(format, args...)
 #endif
 
-// --- cDvbSpuPalette----------------------------------
+// --- cDvbSpuPalette---------------------------------------------------------
 
 void cDvbSpuPalette::setPalette(const uint32_t * pal)
 {
@@ -50,7 +50,7 @@ void cDvbSpuPalette::setPalette(const uint32_t * pal)
         palette[i] = yuv2rgb(pal[i]);
 }
 
-// --- cDvbSpuBitmap --------------------------------------------
+// --- cDvbSpuBitmap ---------------------------------------------------------
 
 #define setMin(a, b) if (a > b) a = b
 #define setMax(a, b) if (a < b) a = b
@@ -208,7 +208,7 @@ void cDvbSpuBitmap::putFieldData(int field, uint8_t * data, uint8_t * endp)
     }
 }
 
-// --- cDvbSpuDecoder-----------------------------
+// --- cDvbSpuDecoder---------------------------------------------------------
 
 #define CMD_SPU_MENU            0x00
 #define CMD_SPU_SHOW            0x01

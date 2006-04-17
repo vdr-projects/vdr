@@ -14,18 +14,18 @@ Copyright &copy; 2006 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.30 are marked like this.
-<!--X1.3.30--></td></tr></table>
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.31 are marked like this.
 <!--X1.3.31--></td></tr></table>
-<!--X1.3.37--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.37--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.37 are marked like this.
 <!--X1.3.37--></td></tr></table>
-<!--X1.3.38--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.38--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.38 are marked like this.
 <!--X1.3.38--></td></tr></table>
+<!--X1.3.47--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.46 are marked like this.
+<!--X1.3.47--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -62,14 +62,16 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
+<!--X1.3.47--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#Main thread hook">Main thread hook</a>
+<li><a href="#Activity">Activity</a>
+<!--X1.3.47--></td></tr></table>
 <li><a href="#Setup parameters">Setup parameters</a>
 <li><a href="#The Setup menu">The Setup menu</a>
 <li><a href="#Configuration files">Configuration files</a>
 <li><a href="#Internationalization">Internationalization</a>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Custom services">Custom services</a>
-<!--X1.3.30--></td></tr></table>
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#SVDRP commands">SVDRP commands</a>
 <!--X1.3.31--></td></tr></table>
 <li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
@@ -164,10 +166,19 @@ loadable library file for that plugin (we'll get to the details later).
 The <tt>lib</tt> directory contains the dynamically loadable libraries of all
 available plugins. Note that the names of these files are created by concatenating
 <p>
+<!--X1.3.47--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <table border=2>
 <tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>hello</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
-<tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>VDR version number<br>this plugin was<br>compiled for</font></td></tr>
+<tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>API version number<br>this plugin was<br>compiled for</font></td></tr>
 </table>
+<p>
+The <i>API version number</i> refers to the plugin API version number of the VDR
+version this plugin was compiled with. Compiled plugins can run with newer versions
+of VDR as long as their plugin API version number is still the same as that of
+the current VDR version. That way minor fixes to VDR, that don't require changes
+to the VDR header files, can be made without requiring all plugins to be
+recompiled.
+<!--X1.3.47--></td></tr></table>
 <p>
 The plugin library files can be stored in any directory. If the default organization
 is not used, the path to the plugin directory has be be given to VDR through the
@@ -609,6 +620,65 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
+<!--X1.3.47--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a name="Main thread hook"><hr><h2>Main thread hook</h2>
+
+<center><i><b>Pushing in...</b></i></center><p>
+
+Normally a plugin only reacts on user input if directly called through its
+<a href="#Main menu entry">main menu entry</a>, or performs some background
+activity in a separate thread. However, sometimes a plugin may need to do
+something in the context of the main program thread, without being explicitly
+called up by the user. In such a case it can implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+virtual void MainThreadHook(void);
+</pre></td></tr></table><p>
+
+in which it can do this. This function is called for every plugin once during
+every cycle of VDR's main program loop, which typically happens once every
+second.
+<b>Be very careful when using this function, and make sure you return from it
+as soon as possible! If you spend too much time in this function, the user
+interface performance will become sluggish!</b>
+
+<a name="Activity"><hr><h2>Activity</h2>
+
+<center><i><b>Now is not a good time!</b></i></center><p>
+
+If a plugin is running a background task that should be finished before shutting
+down the system, it can implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+virtual cString Active(void);
+</pre></td></tr></table><p>
+
+which shall return an empty string if it is ok to shut down, and a proper message
+if not:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+cString cDoSomethingPlugin::Active(void)
+{
+  if (busy)
+     return tr("Doing something");
+  return NULL;
+}
+</pre></td></tr></table><p>
+
+The message should be short and should indicate what is currently going on.
+It will be presented to the user as a confirmation message, followed by a
+hyphen and a "shut down anyway?" prompt, as in
+<p>
+<b>Doing something - shut down anyway?</b>
+<p>
+All plugins will be queried, and the first one that returns a non empty
+string will cause the confirmation message to be shown. If the user confirms
+the prompt by pressing the "Ok" button, the rest of the plugins will also
+be queried, and further prompts may show up. If all prompts have been confirmed,
+the shutdown will take place. As soon as one prompt is not confirmed, no
+further plugins will be queried and no shutdown will be done.
+<!--X1.3.47--></td></tr></table>
+
 <a name="Setup parameters"><hr><h2>Setup parameters</h2>
 
 <center><i><b>Remember me...</b></i></center><p>
@@ -864,7 +934,6 @@ Texts are first searched for in the <i>Phrases</i> registered for this plugin (i
 and then in the global VDR texts. So a plugin can make use of texts defined by the
 core VDR code.
 
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Custom services"><hr><h2>Custom services</h2>
 
 <center><i><b>What can I do for you?</b></i></center><p>
@@ -933,9 +1002,7 @@ To send a message to all plugins, a plugin can call the function
 <tt>cPluginManager::CallAllServices()</tt>. This function returns <tt>true</tt> if
 any plugin handled the request, or <tt>false</tt> if no plugin handled the request.
 
-<!--X1.3.30--></td></tr></table>
-
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="SVDRP commands"><hr><h2>SVDRP commands</h2>
 
 <center><i><b>Infinite Diversity in Infinite Combinations</b></i></center><p>
@@ -1262,7 +1329,7 @@ public:
   cMyControl(void);
   virtual ~cMyControl();
   virtual void Hide(void);
-<!--X1.3.38--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.38--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
   virtual cOsdObject *GetInfo(void);
 <!--X1.3.38--></td></tr></table>
   virtual eOSState ProcessKey(eKeys Key);
@@ -1294,7 +1361,7 @@ A derived <tt>cControl</tt> <b>must</b> implement the <tt>Hide()</tt> function, 
 it has to hide itself from the OSD, in case it uses it. <tt>Hide()</tt> may be called at
 any time, and it may be called even if the <tt>cControl</tt> is not visible at the moment.
 <p>
-<!--X1.3.38--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.38--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 The <tt>GetInfo()</tt> function is called when the user presses the <tt>Info</tt> button,
 and shall return a pointer to a <tt>cOsdObject</tt> that contains information
 about the currently played programme. The caller takes ownership of the returned
@@ -1522,7 +1589,7 @@ with the full required resolution. Only if this fails shall it use alternate
 areas. Drawing areas are always rectangular and may not overlap (but do not need
 to be adjacent).
 
-<!--X1.3.37--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.37--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p>
 Directly accessing the OSD is only allowed from the foreground thread, which
 restricts this to a <tt>cOsdObject</tt> returned from the plugin's <tt>MainMenuAction()</tt>

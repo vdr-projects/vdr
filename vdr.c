@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.254 2006/04/09 12:22:46 kls Exp $
+ * $Id: vdr.c 1.262 2006/04/17 14:43:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 
   // Set user id in case we were started as root:
 
-  if (VdrUser && getuid() == 0) {
+  if (VdrUser && geteuid() == 0) {
      StartedAsRoot = true;
      if (strcmp(VdrUser, "root")) {
         if (!SetKeepCaps(true))
@@ -980,6 +980,8 @@ int main(int argc, char *argv[])
                           if (Interface->Confirm(tr("Recording - shut down anyway?")))
                              ForceShutdown = true;
                           }
+                       if (cPluginManager::Active(tr("shut down anyway?")))
+                          ForceShutdown = true;
                        LastActivity = 1; // not 0, see below!
                        UserShutdown = true;
                        break;
@@ -1051,6 +1053,7 @@ int main(int argc, char *argv[])
               }
            switch (key) {
              // Toggle channels:
+             case kChanPrev:
              case k0: {
                   if (PreviousChannel[PreviousChannelIndex ^ 1] == LastChannel || LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
                      PreviousChannelIndex ^= 1;
@@ -1059,11 +1062,16 @@ int main(int argc, char *argv[])
                   }
              // Direct Channel Select:
              case k1 ... k9:
-             // Left/Right rotates trough channel groups:
+             // Left/Right rotates through channel groups:
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
              case kRight:
+             // Previous/Next rotates through channel groups:
+             case kPrev|k_Repeat:
+             case kPrev:
+             case kNext|k_Repeat:
+             case kNext:
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:
@@ -1093,7 +1101,7 @@ int main(int argc, char *argv[])
                  Skins.Message(mtInfo, tr("Editing process finished"));
               }
            }
-        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && !cPluginManager::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -1130,7 +1138,8 @@ int main(int argc, char *argv[])
                        cControl::Shutdown();
                        int Channel = timer ? timer->Channel()->Number() : 0;
                        const char *File = timer ? timer->File() : "";
-                       Delta = Next - time(NULL); // compensates for Confirm() timeout
+                       if (timer)
+                          Delta = Next - time(NULL); // compensates for Confirm() timeout
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, *strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
@@ -1157,6 +1166,8 @@ int main(int argc, char *argv[])
               PluginManager.Housekeeping();
               }
            }
+        // Main thread hooks of plugins:
+        PluginManager.MainThreadHook();
         }
   if (Interrupted)
      isyslog("caught signal %d", Interrupted);
@@ -1179,7 +1190,7 @@ Exit:
      Setup.Save();
      }
   cDevice::Shutdown();
-  PluginManager.Shutdown();
+  PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);
   ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)

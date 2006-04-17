@@ -6,7 +6,7 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.h 1.4 2005/02/20 11:21:31 kls Exp $
+ * $Id: spu.h 1.5 2006/04/17 12:48:55 kls Exp $
  */
 
 #ifndef __SPU_VDR_H
@@ -14,7 +14,7 @@
 
 #include <inttypes.h>
 
-// --- cSpuDecoder -------------------------------------------
+// --- cSpuDecoder -----------------------------------------------------------
 
 class cSpuDecoder {
   public:

@@ -1,0 +1,334 @@
+This is a summary of the changes in VDR 1.4.0 since the last stable
+version 1.2.6. It only contains things that are of actual importance
+to the user and doesn't mention the many fixes and improvements that
+have been made "behind the scenes".
+
+See the file HISTORY for a detailed list of all changes.
+
+Plugins:
+
+- The new function cPlugin::Stop() shall be used to stop any background activities
+  of a plugin. Previously this was done in the plugin's desctructor, but it is
+  better to do this in a dedicated function that can be called early when shutting
+  down.
+- Added 'Service' functions to the plugin interface.
+  See PLUGINS.html, section "Custom services" for details.
+- Plugins can now implement their own SVDRP commands.
+  See PLUGINS.html, section "SVDRP commands" for details. The SVDRP commands
+  of a plugin are accessed through the new SVDRP command PLUG.
+- The main menu function of a plugin can now be activated through a key macro of
+  the form "@plugin" even if that plugin doesn't have a main menu entry.
+- The main menu function of a plugin can now be called programmatically through
+  the static function cRemote::CallPlugin().
+- The new function cPlugin::Active() can be used by a plugin to indicate that it
+  is still busy and the system should not shut down or restart.
+- The new APIVERSION (see config.h) now allows existing compiled plugins to be
+  used with newer versions of VDR, as long as there have been no changes to the
+  VDR header files since the last APIVERSION.
+- The new function cPlugin::MainThreadHook() can be used by plugins to perform
+  actions in the context of the main program thread.
+
+Skins:
+
+- The entire OSD display can now be implemented via "skins". See VDR/skins.[hc],
+  VDR/skinclassic.[hc], VDR/skinsttng.[hc] and PLUGINS.html for information on how
+  a plugin can implement its own skin. By default VDR comes with a "Classic" skin
+  that implements the OSD display known from previous versions, and the new skin
+  named "ST:TNG Panels", which is also the default skin now. The actual skin can
+  be selected through "Setup/OSD/Skin".
+- The colors used in a skin can now be configured using "themes". See PLUGINS.html
+  for information on how a skin can make use of themes, and man vdr(5) for the
+  structure of a theme file. The actual theme to use can be selected through
+  "Setup/OSD/Theme".
+
+Remote control:
+
+- Pressing the "Play" key in live viewing mode now resumes a previous replay
+  session (thanks to Mirko Dölle).
+- The new "Info" key brings up information on the currently viewed programme
+  or recording.
+- In string entry fields (like, e.g., the file name of a recording) the characters
+  can now be entered by pressing the numeric keys, the same way as on a
+  telephone keypad.
+- Key macros can now be defined for all non-modeless keys.
+- Switching channels with the Up/Down or Channel+/Channel- keys now works a lot
+  faster when the repeat function kicks in, by not actually switching the
+  channel every time, but rather only displaying the channel info and doing
+  the final switch when the key is released.
+- The "Back" key now restores the original string when pressed while editing a
+  string item.
+- The "Ok" key in the "Jump" mode of the replay progress display now confirms the
+  jump instead of closing the display.
+- Implemented kNext and kPrev keys.
+- Implemented kChanPrev.
+
+Devices:
+
+- Now waiting at startup until all DVB devices are ready. This includes having
+  all CAMs initialized and ready to decrypt, so that no more "channel not
+  available" happens if VDR is started with the current channel being an encrypted
+  one, or a timer on such a channel hits right after starting VDR.
+- The DVB devices now retune (and, if applicable, resend the DiSEqC data) if
+  the lock is lost.
+
+EPG:
+
+- Added support for selecting preferred EPG languages.
+- The "Red" button in the "Setup/EPG" menu can now be used to force an EPG
+  scan on a single DVB card system.
+- Implemented an "EPG linger time", which can be set to have older EPG information
+  still displayed in the "Schedule" menu.
+- The "Schedule" and "What's on now/next?" menus now have an additional column
+  which displays information on whether there is a timer defined for an event,
+  whether an event has a VPS time that's different than its start time, and
+  whether an event is currently running.
+- The format of the 'epg.data' files has been extended by the new tag 'X', which
+  contains the stream components of an event.
+- Modified the EPG scan so that it uses the primary device if it is
+  replaying and is the only device that provides the given transponder, and that
+  a forced EPG scan works even if EPG scan timeout is set to 0.
+- Removed EPG bugfix #0, because it removed actually important data.
+- No longer removing superfluous hyphens in EPG data - would become too
+  language dependent to handle all kinds of exceptions.
+- EPG events that are no longer in the currently broadcasted data stream are
+  now automatically deleted.
+- Schedules are now cleaned up once every hour (not only at 05:00).
+- The "Red" button in the "Schedule", "What's on now/next?" and "Event" menus
+  now immediately creates a timer for the selected event and marks it with 'T'.
+  If the event is already marked with 'T', the "Red" button opens the "Edit
+  timer" menu for that timer.
+- Pressing '0' in the "Schedule" menu now rotates through displaying "This event on
+  this channel", "This event on all channels" and "All events on all channels".
+  This can be used to find reruns of a given show, or the episodes of a series.
+  Note that if there are many channels in your channels.conf, displaying the
+  "All events on all channels" page may take a while.
+- The epg.data file is now written when VDR exits.
+- The 'event id' in EPG data has been extended to 32 bit, so that external tools
+  can generate ids that don't collide with those from the DVB data stream.
+- The status changes of EPG events are now logged for all channels that have timers.
+
+OSD:
+
+- Changed font handling to allow language specific character sets.
+- Adopted the small font character set from the "Elchi" patch
+- Increased the maximum number of possible OSD colors to 256.
+- Now using the 'running status' in the channel display, so that a programme
+  that has an end time that is before the current time, but is still running,
+  will still be shown in the display (provided the broadcasters handle the
+  'running status' flag correctly). This also applies to programmes that have
+  a start time that is in the future, but are already running.
+- The new setup option "OSD/Use small font" can be used to control the use of
+  the small font.
+- The new OSD setup parameters "Left" and "Top" can be used to define the top left
+  corner of the OSD.
+- The OSD size prameters are now in pixel (as opposed to formerly characters).
+  When reading a 'setup.conf' file from an older version of VDR, the OSDwidth
+  and OSDheight values will be converted to pixel automatically.
+- The OSD is now fully device independent. See the comments in VDR/osd.h and the
+  description in PLUGINS.html for information on how a plugin can implement an OSD
+  display on arbitrary hardware.
+- The OSD (actually its cBitmap class) can now handle XPM files. There are several
+  XPM files in the VDR/symbols directory which can be used by skins (some of these
+  have been taken from the "elchi" patch).
+- Due to the changes in the OSD handling the DEBUG_OSD option for a textual OSD
+  has been dropped. A textual OSD can now be displayed with the "skincurses"
+  plugin.
+- Single shot timers and events now show the day of week.
+- The new setup option "OSD/Channel info time" can be used to define the time after
+  which the channel display is removed if no key has been pressed.
+- The "Summary" button in the "Recordings" menu has been renamed to "Info", and
+  the page it brings up now shows the recording's information, much like the EPG
+  event page.
+- The new setup option "OSD/Scroll wraps" can be used to activate wrapping around
+  in menu lists.
+- The main menu now dynamically updates its contents in case an instant
+  recording or replay stops, etc.
+- The new option "Setup/OSD/Timeout requested channel info" can be used to turn
+  off the automatic timeout of the channel display in case it was invoked by
+  a press of the "Ok" key.
+
+Channels:
+
+- Channel data is now automatically derived from the DVB data stream
+- Channel names in 'channels.conf' can now have a short form, as provided
+  by some tv stations.
+- There can now be up to 32 audio and 16 Dolby PIDs.
+- The audio and Dolby PIDs in 'channels.conf' now can have an optional language
+  code.
+- Fixed transponder handling to make it work with satellites that provide two
+  transponders on the same frequency, with different polarization.
+- Now storing the name of the service provider (aka "bouquet") in the channel
+  name, separated by a semicolon.
+- The "Channels" menu can now be sorted "by number" (default), "by name" and
+  "by provider". While in the "Channels" menu, pressing the '0' key switches
+  through these modes.
+- Added support for circular polarization.
+- When reading the channels.conf file, duplicate channels (i.e. ones that have
+  the same channel ID) are now automatically deleted and only the first one is
+  actually stored.
+- In the "Channels" menu the numeric keys now position the cursor to the channel
+  with the given number.
+- The "Mark/Move" function in the "Channels" menu now also works in the non-numeric
+  sort modes.
+- The "Update channels" parameter in the "Setup/DVB" menu has been extended to
+  allow updating only the PIDs.
+
+Timers:
+
+- The '0' key now toggles the "Day" item in the "Timers" menu between "single
+  shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
+  days ('1' is monday).
+- The day of a timer is now stored as a full date in ISO notation ("YYYY-MM-DD") in
+  'timers.conf' and for the result of the SVDRP command LSTT
+- The timer status now has a new bit that is set when that timer is currently
+  recording.
+- The 'summary' field of a timer definition has been renamed to 'aux', and is now
+  only used for external applications to store auxiliary information with a timer,
+  which has no meaning whatsoever to VDR itself.
+  The contents of the 'aux' field of a timer is copied into the recording's
+  'info.vdr' file, using the tag character '@'.
+- The description of a recording is now taken exclusively from its related EPG
+  data. If an application wants to use a different description it needs to set
+  it with SVDRP/PUTE and use table ID 0x00, so that it won't be overwritten (as
+  a side effect, however, this also disables VPS for such an event).
+- There is no more "Summary" menu when pressing "Ok" in the "Timers" menu.
+  The "Ok" key now always opens the "Edit timer" menu.
+- The upper 16 bit of a timer's "flags" are no longer treated specially when a timer
+  is modified in the "Edit timer" menu. If an external application needs to know if
+  a timer was modified, it has to keep a copy of the timer's data and compare that
+  to the actual data.
+- The option "Setup/OSD/Sort timers" has been removed. Timers are always sorted
+  by their start time and priority.
+- The "Blue" key in the "Timers" menu now displays the EPG info of the event the
+  selected timer will record (if available). The "On/Off" function has been shifted
+  to the "Red" button. Editing a timer is done by pressing "Ok".
+
+Recording:
+
+- Implemented handling the VPS timestamps (aka "Programme Identification Label")
+  for full VPS support for timers (provided the tv stations actually broadcast
+  this information). The VPS time is displayed in the event info page if it exists
+  and is different than the event's start time.
+- Timers can now be set to use the VPS information to control recording a programme.
+  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
+  the "VPS" option in the individual timers, can be used to control this feature
+- Now preferring budget cards when selecting a DVB device for recording.
+- The file 'summary.vdr' has been replaced with 'info.vdr' and now contains the
+  information about a recording, in the same format as the events are stored in
+  'epg.data'.
+- Recordings are now only started if there is at least 300MB free disk space.
+- No longer using characters 0x01 and 0x02 for mapping single quote and slash in
+  recording names.
+  The single quote is not mapped at all, and the slash is interchanged
+  with the tilde. Existing recordings will be handled like before, so there is
+  no need to actually rename them.
+
+SVDRP:
+
+- The new SVDRP command 'SCAN' can be used to force  an EPG scan on a single
+  DVB card system.
+- Extended the SVDRP command LSTE to allow limiting the listed data to a given
+  channel, the present or following events, or events at a given time.
+- The SVDRP command LSTR now lists the recording information in the same tagged
+  format as the LSTE command lists the EPG data.
+- The new SVDRP command PLAY can be used to start replaying a recording.
+- The new SVDRP command EDIT can be used to start the editing process of a recording.
+- The new SVDRP command PLUG can be used to call a plugin's main menu function.
+- Implemented the SVDRP command MOVC.
+- The SVDRP command GRAB now determines the image type (JPEG or PNM) from the
+  extension (".jpg", ".jpeg" or ".pnm") of the given file name. The explicit
+  'jpeg' or 'pnm' parameter is still accepted for backward compatibility, but
+  has no meaning any more.
+- The SVDRP command GRAB now writes the image data to the SVDRP connection
+  (encoded in base64) if the given file name consists of only the file
+  extension (".jpg", ".jpeg" or ".pnm"), or if only "-" is given as file
+  name.
+- The new command line option '-g' must be given if the SVDRP command GRAB
+  shall be allowed to write image files to disk. The parameter to this option
+  must be the full path name of an existing directory, without any "..", double
+  '/' or symlinks. By default, or if "-g- is given, grabbing to files is
+  not allowed any more because of potential security risks.
+- The SVDRP command LSTT now accepts the new option 'id' to have the channels
+  of the timers listed with their unique channel ids instead of their numbers.
+
+Audio:
+
+- AC3 audio can now be output directly over the full featured DVB cards.
+- The new remote control button "Audio" can be used to switch between different
+  audio tracks. The "Green" button in the "Main" menu has been changed from "Language"
+  to "Audio", since it now also controls switching between normal and Dolby Digital
+  audio tracks.
+- The description of the audio tracks is now taken from the "component descriptors"
+  that are broadcast in the EPG data. However (as no big surprise), not all channels
+  actually provide useful data here, so there are now some additional EPG bugfixes,
+  which can be activated by setting the "EPG bugfix level" to 3.
+- The new setup option "DVB/Audio languages" can be used to control which audio
+  language shall be selected in case a channel broadcasts in different languages.
+- The "Left" and "Right" keys in the "Audio" menu can be used to switch between
+  the left and right stereo channels in case there are different audio tracks
+  in these channels.
+- The setup option "Recording/Record Dobly Digital" has been renamed and moved to
+  "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
+  whether an available DD audio track will appear in the "Audio" menu.
+- Recording and Transfer Mode now handle more than 2 audio PIDs.
+
+Conditional Access:
+
+- Improved CAM handling.
+- The file 'ca.conf' has been removed. VDR now automatically detects which
+  device contains a CAM that can decode a channel.
+- Removed the now obsolete CaCaps stuff. The Setup/CICAM menu now displays the
+  actual CAM type as reported by the CAM.
+- The Setup/CICAM menu now only contains the devices that actually have a CI and
+  dynamically detects the number of slots a CI provides.
+- The CAM menu now automatically updates itself in case of a progress display (as
+  used, for instance, when updating the firmware via satellite).
+- Improved the CAM enquiry menu.
+
+Internationalization:
+
+- Added Russian language texts.
+- Added Croatian language texts.
+- Added Estonian language texts.
+- Added Danish language texts.
+- Added Czech language texts.
+
+Misc:
+
+- Changed thread handling to make it work with NPTL ("Native Posix Thread Library").
+- The list of recordings is now kept statically in memory to avoid long delays
+  when opening the "Recordings" menu. As a side effect, external modifications to
+  the video directory are no longer immediately reflected in the "Recordings" menu.
+  If a plugin manipulates the video directory in any way, it can call the function
+  Recordings.TriggerUpdate() to trigger an update of the list of recordings.
+  If some external tool manipulates the video directory, it can touch the file
+  '.update' in the video directory to trigger an update of the list of recordings.
+- The new setup option "DVB/Video display format" can be used to define which display
+  format to use for playing wide screen video on a 4:3 tv set.
+- Added the command line options '--lirc', '--rcu' and '--no-kbd' to allow setting
+  the remote control at runtime.
+- Pressing Ok while entering a channel number now immediately switches to that
+  channel, without waiting for further input.
+- The new command line option '--vfat' can be used to make VDR encode special
+  characters in recording file names, even if it wasn't compiled with VFAT=1
+  The compile time option VFAT still exists and creates a VDR that always behaves
+  as if it were called with '--vfat'.
+- Replaced the ':' delimiter between hour and minute in recording file names with
+  a '.' under Linux, too. Existing recordings with ':' as delimiter will still work.
+- The list of recordings is now read in a separate thread, resulting in a faster
+  startup if there are a great many of recordings, or the disk(s) have to spin up.
+- When displaying the amount of free disk space, the space consumed by
+  recordings that have been "deleted" but not yet actually "removed" is now
+  taken into account.
+- Removing deleted recordings is now done in a separate thread.
+- When started as user 'root' VDR can now switch to a lesser privileged user id,
+  keeping the capability to set the system time. The 'runvdr' script has been
+  changed to use the new '-u' option.
+- The Makefile now reports a summary of failed plugins.
+- Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
+  recent driver/firmware versions.
+- The initial channel and volume can now be defined in the "Setup/Miscellaneous"
+  menu.
+- In order to make sure that plugins are compiled with the same DVB driver header
+  files as VDR itself, the definition of DVBDIR has been removed from the VDR
+  Makefile. It can now be defined, if necessary, in Make.config.

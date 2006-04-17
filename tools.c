@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.115 2006/03/19 12:28:16 kls Exp $
+ * $Id: tools.c 1.116 2006/04/17 12:19:31 kls Exp $
  */
 
 #include "tools.h"
@@ -39,7 +39,7 @@ void syslog_with_tid(int priority, const char *format, ...)
   snprintf(fmt, sizeof(fmt), "[%d] %s", cThread::ThreadId(), format);
   va_start(ap, format);
   vsyslog(priority, fmt, ap);
-  va_end(ap); 
+  va_end(ap);
 }
 
 int BCD2INT(int x)

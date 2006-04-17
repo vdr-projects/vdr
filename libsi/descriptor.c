@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.18 2006/02/25 10:06:05 kls Exp $
+ *   $Id: descriptor.c 1.20 2006/04/17 12:19:15 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -318,6 +318,31 @@ void ParentalRatingDescriptor::Rating::Parse() {
    languageCode[3]=0;
 }
 
+void TeletextDescriptor::Parse() {
+   //this descriptor is only a header and a loop
+   teletextLoop.setData(data+sizeof(descr_teletext), getLength()-sizeof(descr_teletext));
+}
+
+void TeletextDescriptor::Teletext::Parse() {
+   s=data.getData<const item_teletext>();
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
+}
+
+int TeletextDescriptor::Teletext::getTeletextType() const {
+   return s->type;
+}
+
+int TeletextDescriptor::Teletext::getTeletextMagazineNumber() const {
+   return s->magazine_number;
+}
+
+int TeletextDescriptor::Teletext::getTeletextPageNumber() const {
+   return s->page_number;
+}
+
 int CaDescriptor::getCaType() const {
    return HILO(s->CA_type);
 }
@@ -536,6 +561,14 @@ void ComponentDescriptor::Parse() {
    description.setData(data+offset, getLength()-offset);
 }
 
+void PrivateDataSpecifierDescriptor::Parse() {
+   s=data.getData<const descr_private_data_specifier>();
+}
+
+int PrivateDataSpecifierDescriptor::getPrivateDataSpecifier() const {
+   return (HILO(s->private_data_specifier_hi) << 16) | HILO(s->private_data_specifier_lo);
+}
+
 void SubtitlingDescriptor::Parse() {
    subtitlingLoop.setData(data+sizeof(descr_subtitling), getLength()-sizeof(descr_subtitling));
 }
@@ -633,11 +666,47 @@ void MultilingualServiceNameDescriptor::Name::Parse() {
    name.setData(data+offset, mid->service_name_length);
 }
 
+void LocalTimeOffsetDescriptor::Parse() {
+   localTimeOffsetLoop.setData(data+sizeof(descr_local_time_offset), getLength()-sizeof(descr_local_time_offset));
+}
+
+int LocalTimeOffsetDescriptor::LocalTimeOffset::getCountryId() const {
+   return s->country_region_id;
+}
+
+int LocalTimeOffsetDescriptor::LocalTimeOffset::getLocalTimeOffsetPolarity() const {
+   return s->local_time_offset_polarity;
+}
+
+int LocalTimeOffsetDescriptor::LocalTimeOffset::getLocalTimeOffset() const {
+   return (s->local_time_offset_h << 8) | s->local_time_offset_m;
+}
+
+time_t LocalTimeOffsetDescriptor::LocalTimeOffset::getTimeOfChange() const {
+   return DVBTime::getTime(s->time_of_change_mjd_hi, s->time_of_change_mjd_lo, s->time_of_change_time_h, s->time_of_change_time_m, s->time_of_change_time_s);
+}
+
+int LocalTimeOffsetDescriptor::LocalTimeOffset::getNextTimeOffset() const {
+   return (s->next_time_offset_h << 8) | s->next_time_offset_m;
+}
+
+void LocalTimeOffsetDescriptor::LocalTimeOffset::Parse() {
+   s=data.getData<const local_time_offset_entry>();
+   countryCode[0]=s->country_code1;
+   countryCode[1]=s->country_code2;
+   countryCode[2]=s->country_code3;
+   countryCode[3]=0;
+}
+
 void LinkageDescriptor::Parse() {
    int offset=0;
+   s1 = NULL;
    data.setPointerAndOffset<const descr_linkage>(s, offset);
-   if (checkSize(getLength()-offset))
+   if (checkSize(getLength()-offset)) {
+      if (getLinkageType() == LinkageTypeMobileHandover)
+         data.setPointerAndOffset<const descr_linkage_8>(s1, offset);
       privateData.assign(data.getData(offset), getLength()-offset);
+      }
 }
 
 int LinkageDescriptor::getTransportStreamId() const {
@@ -656,9 +725,21 @@ LinkageType LinkageDescriptor::getLinkageType() const {
    return (LinkageType)s->linkage_type;
 }
 
+int LinkageDescriptor::getHandOverType() const {
+   return s1 == NULL ? 0 : s1->hand_over_type;
+}
+
+int LinkageDescriptor::getOriginType() const {
+   return s1 == NULL ? 0 : s1->origin_type;
+}
+
+int LinkageDescriptor::getId() const {
+   return s1 == NULL ? 0 : HILO(s1->id);
+}
+
 void ISO639LanguageDescriptor::Parse() {
    languageLoop.setData(data+sizeof(descr_iso_639_language), getLength()-sizeof(descr_iso_639_language));
-   
+
    //all this is for backwards compatibility only
    Loop::Iterator it;
    Language first;
@@ -702,6 +783,44 @@ int PDCDescriptor::getHour() const {
 
 int PDCDescriptor::getMinute() const {
    return s->pil2 & 0x3F;
+}
+
+void AncillaryDataDescriptor::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const descr_ancillary_data>(s, offset);
+}
+
+int AncillaryDataDescriptor::getAncillaryDataIdentifier() const {
+   return s->ancillary_data_identifier;
+}
+
+int PremiereContentTransmissionDescriptor::getOriginalNetworkId() const {
+   return HILO(s->original_network_id);
+}
+
+int PremiereContentTransmissionDescriptor::getTransportStreamId() const {
+   return HILO(s->transport_stream_id);
+}
+
+int PremiereContentTransmissionDescriptor::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+int PremiereContentTransmissionDescriptor::getMJD() const {
+   return HILO(s->mjd);
+}
+
+void PremiereContentTransmissionDescriptor::Parse() {
+   s=data.getData<const descr_premiere_content_transmission>();
+   startTimeLoop.setData(data+sizeof(descr_premiere_content_transmission), getLength()-sizeof(descr_premiere_content_transmission));
+}
+
+time_t PremiereContentTransmissionDescriptor::StartTimeEntry::getStartTime(int mjd) const {
+   return DVBTime::getTime(mjd >> 8, mjd & 0xff, s->start_time_h, s->start_time_m, s->start_time_s);
+}
+
+void PremiereContentTransmissionDescriptor::StartTimeEntry::Parse() {
+   s=data.getData<const item_premiere_content_transmission_reference>();
 }
 
 void ApplicationSignallingDescriptor::Parse() {

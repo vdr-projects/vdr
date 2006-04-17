@@ -25,17 +25,12 @@ Compiling and running the program:
 
 VDR requires the Linux-DVB driver header files to compile.
 As of kernel 2.6 these are part of the official Linux kernel
-distribution, and VDR's Makefile will automatically locate
-them. If you are using kernel 2.4 or earlier, you should
-install the files from this package in a directory that is
-"parallel" to the DVB directory of the driver source (refer to
-http://linuxtv.org for more information about that driver).
-For example, if the DVB driver was extracted into the directory
-/home/kls/vdr/DVB, then this package should be extracted into
-/home/kls/vdr/VDR.
-If you have the DVB driver source in a different location
-you can rename the file Make.config.template to Make.config and
-adjust the definition of DVBDIR in that file.
+distribution, and so they should be automatically found in
+/usr/include/linux/dvb. If your DVB driver header files are
+in a different location, you can rename the file Make.config.template
+to Make.config and adjust the definition of DVBDIR in that file.
+
+Refer to http://linuxtv.org for more information about the Linux-DVB driver.
 
 VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
 to work properly.
@@ -325,7 +320,7 @@ with the name of the basic directory when running 'vdr':
    vdr -v /video0
 
 Note that you should not copy any non-VDR files into the /videoX directories,
-since this might cause the watchdog timer to expire when VDR cleans up those
+since this might cause a lot of unnecessary disk access when VDR cleans up those
 directories and there is a large number of files and/or subdirectories in
 there.
 
