@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.21 2006/04/16 09:23:30 kls Exp $
+ * $Id: plugin.c 1.22 2006/04/17 09:20:05 kls Exp $
  */
 
 #include "plugin.h"
@@ -67,6 +67,10 @@ void cPlugin::Stop(void)
 }
 
 void cPlugin::Housekeeping(void)
+{
+}
+
+void cPlugin::MainThreadHook(void)
 {
 }
 
@@ -368,6 +372,15 @@ void cPluginManager::Housekeeping(void)
         }
      lastHousekeeping = time(NULL);
      }
+}
+
+void cPluginManager::MainThreadHook(void)
+{
+  for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
+      cPlugin *p = dll->Plugin();
+      if (p)
+         p->MainThreadHook();
+      }
 }
 
 bool cPluginManager::Active(const char *Prompt)

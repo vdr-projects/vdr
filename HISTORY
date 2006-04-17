@@ -4616,3 +4616,6 @@ Video Disk Recorder Revision History
   Reinhard Nissl). If it returns false, another plugin call is currently pending
   and the caller should try again later. This also means that the SVDRP command
   PLUG can now return an error code is the call fails.
+- The new function cPlugin::MainThreadHook() can be used by plugins to perform
+  actions in the context of the main program thread. Use this function with great
+  care and only of you absolutely have to! See also PLUGINS.html.

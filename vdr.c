@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.260 2006/04/15 13:51:52 kls Exp $
+ * $Id: vdr.c 1.261 2006/04/17 09:23:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -830,6 +830,8 @@ int main(int argc, char *argv[])
         // Queued messages:
         if (!Skins.IsOpen())
            Skins.ProcessQueuedMessages();
+        // Main thread hooks of plugins:
+        PluginManager.MainThreadHook();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
         eKeys key = Interface->GetKey((!Interact || !Interact->NeedsFastResponse()) && time(NULL) - LastCamMenu > LASTCAMMENUTIMEOUT);
