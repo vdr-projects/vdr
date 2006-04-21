@@ -1563,6 +1563,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  in case it breaks
  for enabling generating a core dump if VDR is run with a different user id
  for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
+ for updating the GPL copies.
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

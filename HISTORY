@@ -4619,3 +4619,7 @@ Video Disk Recorder Revision History
 - The new function cPlugin::MainThreadHook() can be used by plugins to perform
   actions in the context of the main program thread. Use this function with great
   care and only of you absolutely have to! See also PLUGINS.html.
+
+2006-04-21: Version 1.3.48
+
+- Updated the GPL copies (thanks to Ville Skyttä).
