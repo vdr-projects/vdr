@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.116 2006/04/17 12:19:31 kls Exp $
+ * $Id: tools.c 1.117 2006/04/21 15:12:47 kls Exp $
  */
 
 #include "tools.h"
@@ -615,7 +615,7 @@ cString cString::sprintf(const char *fmt, ...)
 cString WeekDayName(int WeekDay)
 {
   char buffer[4];
-  WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with monday==0!
+  WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with Monday==0!
   if (0 <= WeekDay && WeekDay <= 6) {
      const char *day = tr("MonTueWedThuFriSatSun");
      day += WeekDay * 3;

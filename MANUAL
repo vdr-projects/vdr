@@ -787,7 +787,7 @@ Version 1.3
   Zap Timeout = 3        The time (in seconds) until a channel counts as "previous"
                          for switching with '0'
 
-  Inital channel = 0     The number of the channel that shall be tuned to when
+  Initial channel = 0    The number of the channel that shall be tuned to when
                          VDR starts. Default is 0, which means that it will
                          tune to the channel that was on before VDR was stopped.
 
