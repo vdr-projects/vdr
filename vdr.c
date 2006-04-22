@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.263 2006/04/21 14:51:21 kls Exp $
+ * $Id: vdr.c 1.264 2006/04/22 11:26:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -422,7 +422,7 @@ int main(int argc, char *argv[])
                );
         }
      if (DisplayVersion)
-        printf("vdr (%s) - The Video Disk Recorder\n", VDRVERSION);
+        printf("vdr (%s/%s) - The Video Disk Recorder\n", VDRVERSION, APIVERSION);
      if (PluginManager.HasPlugins()) {
         if (DisplayHelp)
            printf("Plugins: vdr -P\"name [OPTIONS]\"\n\n");
