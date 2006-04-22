@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.262 2006/04/22 09:00:16 kls Exp $
+ * $Id: i18n.c 1.263 2006/04/22 09:04:40 kls Exp $
  *
  * Translations provided by:
  *
@@ -3730,7 +3730,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "vain PID:it",
     "Tylko PID-y",
     "",// TODO
     "",// TODO
@@ -5319,7 +5319,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Seuraava",
     "Dalej",
     "",// TODO
     "",// TODO
@@ -5341,7 +5341,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Edellinen",
     "Wstecz",
     "",// TODO
     "",// TODO
@@ -5429,7 +5429,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Edellinen kanava",
     "Poprzedni kana³",
     "",// TODO
     "",// TODO
