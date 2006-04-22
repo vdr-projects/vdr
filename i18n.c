@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.264 2006/04/22 09:12:36 kls Exp $
+ * $Id: i18n.c 1.265 2006/04/22 09:15:11 kls Exp $
  *
  * Translations provided by:
  *
@@ -2286,7 +2286,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VPS salvestamine tulekul!",
     "VPS optagelse starter snart!",
     "",//TODO
   },
@@ -3740,7 +3740,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ainult PID-id",
     "",// TODO
     "",// TODO
   },
@@ -4466,7 +4466,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal k‰ivitamisel",
     "Kanal ved opstart",
     "",// TODO
   },
@@ -4488,7 +4488,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Helitugevus k‰ivitamisel",
     "Lydstyrke ved opstart",
     "",// TODO
   },
@@ -4510,7 +4510,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "nagu enne",
     "som f√∏r",
     "",// TODO
   },
@@ -5329,7 +5329,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "J‰rgmine",
     "",// TODO
     "",// TODO
   },
@@ -5351,7 +5351,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Eelmine",
     "",// TODO
     "",// TODO
   },
@@ -5439,7 +5439,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Eelmine kanal",
     "",// TODO
     "",// TODO
   },
