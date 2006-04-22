@@ -4633,3 +4633,5 @@ Video Disk Recorder Revision History
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
 - Fixed wrong credits for the patch that was used to implement cPlugin::Active().
+- Simplified the 'grep|awk|sed' command to retrieve the VDR/APIVERSION to a single
+  'sed' call.

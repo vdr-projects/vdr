@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.87 2006/04/16 09:00:30 kls Exp $
+# $Id: Makefile 1.88 2006/04/22 09:58:44 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -81,8 +81,8 @@ DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 
 # The version numbers of VDR and the plugin API (taken from VDR's "config.h"):
 
-VDRVERSION = $(shell grep 'define VDRVERSION ' config.h | awk '{ print $$3 }' | sed -e 's/"//g')
-APIVERSION = $(shell grep 'define APIVERSION ' config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+VDRVERSION = $(shell sed -ne '/define VDRVERSION/ { s/^.*"\(.*\)".*$$/\1/; p }' config.h)
+APIVERSION = $(shell sed -ne '/define APIVERSION/ { s/^.*"\(.*\)".*$$/\1/; p }' config.h)
 
 ifdef VFAT
 # for people who want their video directory on a VFAT partition
