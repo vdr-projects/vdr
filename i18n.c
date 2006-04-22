@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.266 2006/04/22 09:18:16 kls Exp $
+ * $Id: i18n.c 1.267 2006/04/22 09:21:25 kls Exp $
  *
  * Translations provided by:
  *
@@ -124,7 +124,7 @@ const tI18nPhrase Phrases[] = {
     "iso8859-5",
     "iso8859-2",
     "iso8859-13",
-    "iso8859-1",
+    "iso8859-15",
     "iso8859-2",
   },
   // The 3-letter names of the language (this MUST be the third phrase!):
@@ -3741,7 +3741,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "ainult PID-id",
-    "",// TODO
+    "kun PIDs",
     "",// TODO
   },
   { "names and PIDs",
@@ -4511,7 +4511,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "nagu enne",
-    "som fÃ¸r",
+    "som før",
     "",// TODO
   },
   // The days of the week:
@@ -5330,7 +5330,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Järgmine",
-    "",// TODO
+    "Fremad",
     "",// TODO
   },
   { "Key$Prev",
@@ -5352,7 +5352,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Eelmine",
-    "",// TODO
+    "Tilbage",
     "",// TODO
   },
   { "Key$Power",
@@ -5440,7 +5440,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Eelmine kanal",
-    "",// TODO
+    "Foregående kanal",
     "",// TODO
   },
   { "Key$Volume+",
