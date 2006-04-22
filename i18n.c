@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.263 2006/04/22 09:04:40 kls Exp $
+ * $Id: i18n.c 1.264 2006/04/22 09:12:36 kls Exp $
  *
  * Translations provided by:
  *
@@ -12,7 +12,7 @@
  * Italian     Alberto Carraro <bertocar@tin.it>, Antonio Ospite <ospite@studenti.unina.it>, Sean Carlos <seanc@libero.it>
  * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>, Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>, Nicolas Huillard <nhuillard@e-dition.fr>
+ * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>, Nicolas Huillard <nhuillard@e-dition.fr>, Pierre Briec <pbriec@free.fr>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no>, Truls Slevigen <truls@slevigen.no>
  * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi>, Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>, Jaroslaw Swierczynski <swiergot@gmail.com>
@@ -465,7 +465,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Cet événement",
     "",//TODO
     "Tämä tapahtuma - %s",
     "Ta audycja - %s",
@@ -487,7 +487,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Cet événement - toutes les chaînes",
     "",//TODO
     "Tämä tapahtuma - kaikki kanavat",
     "",//TODO
@@ -509,7 +509,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tous les événements - toutes chaînes",
     "",//TODO
     "Kaikki tapahtumat - kaikki kanavat",
     "",//TODO
@@ -686,7 +686,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Programmation",
     "",// TODO
     "Ajastin",
     "Timer",
@@ -1678,7 +1678,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Aucun cryptage",
     "",//TODO
     "vapaa",
     "",//TODO
@@ -1700,7 +1700,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Crypté",
     "",//TODO
     "salattu",
     "",//TODO
@@ -2274,7 +2274,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Enregistrement VPS commence prochaînement",
     "",//TODO
     "VPS-tallennus on alkamassa!",
     "Wkrótce nagranie VPS!",
@@ -2494,7 +2494,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Espace disque insuffisant pour démarrer l'enregistrement!",
     "",//TODO
     "Tallennustilan puute estää tallennuksen!",
     "Brak miejsca na dysku do nagrywania!",
@@ -2538,7 +2538,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM-menu wordt geopend...",
     "",//TODO
-    "",//TODO
+    "Ouverture du menu CAM",
     "",//TODO
     "Avataan CA-moduulin valikkoa...",
     "Otwieram menu CAM...",
@@ -2582,7 +2582,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM wordt herstart...",
     "",//TODO
-    "",//TODO
+    "Réinitialisation du CAM",
     "",//TODO
     "CA-moduuli palautetaan alkutilaan...",
     "Resetujê CAM...",
@@ -2648,7 +2648,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Vul %d cijfers in!",
     "",//TODO
-    "",//TODO
+    "Veuillez entrer %d chiffres!",
     "",//TODO
     "Syötä %d numeroa!",
     "Proszê podaæ %d cyfr!",
@@ -3266,7 +3266,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Demande d'infos de chaîne terminée",
     "", // TODO
     "Sulje kanavatieto pyydettäessä",
     "Czas oczekiwania na informacje",
@@ -3332,7 +3332,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Menu bouton fermé",
     "",// TODO
     "Sulje valikkonäppäimellä",
     "",// TODO
@@ -3728,7 +3728,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "PIDs uniquement",
     "",// TODO
     "vain PID:it",
     "Tylko PID-y",
@@ -4454,7 +4454,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Chaîne initiale",
     "",// TODO
     "Kanava käynnistettäessä",
     "Pocz±tkowy kana³",
@@ -4476,7 +4476,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Volume initial",
     "",// TODO
     "Äänenvoimakkuus käynnistettäessä",
     "Pocz±tkowa g³o¶no¶æ",
@@ -4498,7 +4498,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "comme avant",
     "",// TODO
     "edellinen",
     "jak ostatnio",
@@ -4589,7 +4589,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcàâç2\tdeféèê3\tghiîï4\tjkl5\tmnoô6\tpqrs7\ttuvù8\twxyz9",
     "",//TODO
     " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz9",
     " 0\t-.#~,/_@1\tabc2±æ\tdef3ê\tghi4\tjkl5³\tmno6ñó\tpqrs7¶\ttuv8\twxyz9¼¿",
@@ -5317,7 +5317,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Suivant",
     "",// TODO
     "Seuraava",
     "Dalej",
@@ -5339,7 +5339,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Précédent",
     "",// TODO
     "Edellinen",
     "Wstecz",
@@ -5361,7 +5361,7 @@ const tI18nPhrase Phrases[] = {
     "Power",
     "Uitschakelen",
     "Ligar",
-    "Veille", // This one caused some bug reports ;)
+    "Arrêt",
     "Power",
     "Virtakytkin",
     "Wy³±cz",
@@ -5427,7 +5427,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Chaîne précédente",
     "",// TODO
     "Edellinen kanava",
     "Poprzedni kana³",
@@ -5956,7 +5956,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Enregistrement a commencé",
     "",//TODO
     "Tallennus aloitettu",
     "Rozpoczêto nagrywanie",
