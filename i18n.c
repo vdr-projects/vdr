@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.261 2006/04/15 14:13:45 kls Exp $
+ * $Id: i18n.c 1.262 2006/04/22 09:00:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -468,10 +468,10 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Tämä tapahtuma - %s",
-    "",//TODO
+    "Ta audycja - %s",
     "Este evento - %s",
     "",//TODO
-    "Ta audycja - %s",
+    "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2277,7 +2277,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "VPS-tallennus on alkamassa!",
-    "",//TODO
+    "Wkrótce nagranie VPS!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3731,7 +3731,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tylko PID-y",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4457,7 +4457,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Kanava käynnistettäessä",
-    "",// TODO
+    "Pocz±tkowy kana³",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4479,7 +4479,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Äänenvoimakkuus käynnistettäessä",
-    "",// TODO
+    "Pocz±tkowa g³o¶no¶æ",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4501,7 +4501,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "edellinen",
-    "",// TODO
+    "jak ostatnio",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5320,7 +5320,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Dalej",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5342,7 +5342,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Wstecz",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5430,7 +5430,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Poprzedni kana³",
     "",// TODO
     "",// TODO
     "",// TODO
