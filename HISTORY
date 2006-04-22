@@ -4635,3 +4635,4 @@ Video Disk Recorder Revision History
 - Fixed wrong credits for the patch that was used to implement cPlugin::Active().
 - Simplified the 'grep|awk|sed' command to retrieve the VDR/APIVERSION to a single
   'sed' call.
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).

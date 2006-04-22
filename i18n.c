@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.269 2006/04/22 09:44:32 kls Exp $
+ * $Id: i18n.c 1.270 2006/04/22 10:48:42 kls Exp $
  *
  * Translations provided by:
  *
@@ -468,7 +468,7 @@ const tI18nPhrase Phrases[] = {
     "Cet événement",
     "",//TODO
     "Tämä tapahtuma - %s",
-    "Ta audycja - %s",
+    "Den här sändningen - %s",
     "Este evento - %s",
     "",//TODO
     "",//TODO
@@ -493,7 +493,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Este evento - todos los canales",
     "",//TODO
-    "Ta audycja - wszystkie kana³y",
+    "Den här sändningen - alla kanaler",
     "Aceastã emisiune - toate canalele",
     "",//TODO
     "",//TODO
@@ -515,7 +515,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Todos los eventos - todos los canales",
     "",//TODO
-    "Wszystkie audycje - wszystkie kana³y",
+    "Alla tillfällen - alla kanaler",
     "Toate emisiunile - toate canalele",
     "",//TODO
     "",//TODO
@@ -692,7 +692,7 @@ const tI18nPhrase Phrases[] = {
     "Timer",
     "Programa",
     "",// TODO
-    "",// TODO
+    "Timer",
     "Timer",
     "",// TODO
     "",// TODO
@@ -1684,7 +1684,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "en abierto",
     "",//TODO
-    "otwarty przekaz",
+    "Okodad",
     "FTA (necriptat)",
     "",//TODO
     "",//TODO
@@ -1706,7 +1706,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "cifrado",
     "",//TODO
-    "szyfrowany",
+    "krypterad",
     "criptat",
     "",//TODO
     "",//TODO
@@ -2280,7 +2280,7 @@ const tI18nPhrase Phrases[] = {
     "Wkrótce nagranie VPS!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "strax VPS inspelning...",
     "Urmeazã o înregistrare VPS!",
     "",//TODO
     "",//TODO
@@ -2412,9 +2412,9 @@ const tI18nPhrase Phrases[] = {
     "Nie zdefiniowano znaczników monta¿u!",
     "¡No se definieron marcas de edición!",
     "ÄÝí Ý÷ïõí ïñéóôåß óçìåßá åðåîåñãáóßáò",
-    "Det finns inga redigeringsmärken",//TODO
+    "Det finns inga redigeringsmärken",
     "Nu s-au pus marcaje de montaj pentru aceastã înregistrare",
-    "A vágópont nincs kijelölve",//TODO
+    "A vágópont nincs kijelölve",
     "No hi ha marques d'edició definides",
     "½Õ ×ÐÔÐÝë ÜÕâÚØ ÔÛï ÜÞÝâÐÖÐ!",
     "Nijedna prekidna toèka nije postavljena!",
@@ -2500,7 +2500,7 @@ const tI18nPhrase Phrases[] = {
     "Brak miejsca na dysku do nagrywania!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Otillräcklingt diskutrymme för inspelning!",
     "Insuficient spaþiul pe disc pentru înregistrare!",
     "",//TODO
     "",//TODO
@@ -2544,7 +2544,7 @@ const tI18nPhrase Phrases[] = {
     "Otwieram menu CAM...",
     "Abriendo el menú CAM...",
     "",//TODO
-    "Åßóïäïò CAM Ìåíïý",
+    "Öppnar CAM menyn...",
     "Deschid meniul CAM...",
     "",//TODO
     "",//TODO
@@ -2588,7 +2588,7 @@ const tI18nPhrase Phrases[] = {
     "Resetujê CAM...",
     "Reiniciando CAM...",
     "",//TODO
-    "ÅðáíáöïñÜ CAM",
+    "Återställer CAM ...",
     "Se reseteazã CAM...",
     "",//TODO
     "",//TODO
@@ -2654,7 +2654,7 @@ const tI18nPhrase Phrases[] = {
     "Proszê podaæ %d cyfr!",
     "¡Escriba %d dígitos!",
     "",//TODO
-    "Ðáñáêáëü ðëçêôñïëïãÞóåôå %d íïýìåñá",
+    "Mata in %d siffror!",
     "Vã rog introduceþi %d cifre!",
     "",//TODO
     "",//TODO
@@ -3272,7 +3272,7 @@ const tI18nPhrase Phrases[] = {
     "Czas oczekiwania na informacje",
     "Auto-cerrar al solicitar info de canal",
     "", // TODO
-    "", // TODO
+    "Timeout för kanalinformation",
     "Durata afiºãrii informaþii canal",
     "", // TODO
     "", // TODO
@@ -3338,7 +3338,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Cerrar al pulsar botón de menú",
     "",// TODO
-    "Klawisz Menu zamyka",
+    "Menyknappen stänger",
     "Tasta 'Meniu' închide",
     "",// TODO
     "",// TODO
@@ -3734,7 +3734,7 @@ const tI18nPhrase Phrases[] = {
     "Tylko PID-y",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "bara PIDs",
     "Numai PID-uri",
     "",// TODO
     "",// TODO
@@ -4460,7 +4460,7 @@ const tI18nPhrase Phrases[] = {
     "Pocz±tkowy kana³",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal vid uppstart",
     "Canalul de pornire",
     "",// TODO
     "",// TODO
@@ -4482,7 +4482,7 @@ const tI18nPhrase Phrases[] = {
     "Pocz±tkowa g³o¶no¶æ",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ljudstyrka vid uppstart",
     "Volumul la pornire",
     "",// TODO
     "",// TODO
@@ -4504,7 +4504,7 @@ const tI18nPhrase Phrases[] = {
     "jak ostatnio",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "som förut",
     "ca mai înainte",
     "",// TODO
     "",// TODO
@@ -4595,7 +4595,7 @@ const tI18nPhrase Phrases[] = {
     " 0\t-.#~,/_@1\tabc2±æ\tdef3ê\tghi4\tjkl5³\tmno6ñó\tpqrs7¶\ttuv8\twxyz9¼¿",
     " 0\t-.#~,/_@1\tabcáç2\tdefé3\tghií4\tjkl5\tmnoñó6\tpqrs7\ttuvú8\twxyz9",
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcåä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz",
     " 0\t-.#~,/_@1\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttþuv8\twxyz9",
     "",//TODO
     "",//TODO
@@ -5323,7 +5323,7 @@ const tI18nPhrase Phrases[] = {
     "Dalej",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Nästa",
     "Urmãtor",
     "",// TODO
     "",// TODO
@@ -5345,7 +5345,7 @@ const tI18nPhrase Phrases[] = {
     "Wstecz",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Bakåt",
     "Anterior",
     "",// TODO
     "",// TODO
@@ -5433,7 +5433,7 @@ const tI18nPhrase Phrases[] = {
     "Poprzedni kana³",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Förra kanalen",
     "Canal anterior",
     "",// TODO
     "",// TODO
@@ -5962,7 +5962,7 @@ const tI18nPhrase Phrases[] = {
     "Rozpoczêto nagrywanie",
     "Iniciando grabación",
     "",//TODO
-    "",//TODO
+    "Inspelningen har startat",
     "A început înregistrarea",
     "",//TODO
     "",//TODO
@@ -6072,7 +6072,7 @@ const tI18nPhrase Phrases[] = {
     "Panel ST:TNG",
     "Paneles ST:TNG",
     "ÌïñöÝò ST:TNG",
-    "ST:TNG konsoll",
+    "ST:TNG konsol",
     "Cons. ST:TNG",
     "",// TODO
     "",// TODO
