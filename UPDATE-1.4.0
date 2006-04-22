@@ -5,6 +5,16 @@ have been made "behind the scenes".
 
 See the file HISTORY for a detailed list of all changes.
 
+Video Programming System (VPS):
+
+- Implemented handling the VPS timestamps (aka "Programme Identification Label")
+  for full VPS support for timers (provided the tv stations actually broadcast
+  this information). The VPS time is displayed in the event info page if it exists
+  and is different than the event's start time.
+- Timers can now be set to use the VPS information to control recording a programme.
+  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
+  the "VPS" option in the individual timers, can be used to control this feature
+
 Plugins:
 
 - The new function cPlugin::Stop() shall be used to stop any background activities
@@ -205,13 +215,6 @@ Timers:
 
 Recording:
 
-- Implemented handling the VPS timestamps (aka "Programme Identification Label")
-  for full VPS support for timers (provided the tv stations actually broadcast
-  this information). The VPS time is displayed in the event info page if it exists
-  and is different than the event's start time.
-- Timers can now be set to use the VPS information to control recording a programme.
-  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
-  the "VPS" option in the individual timers, can be used to control this feature
 - Now preferring budget cards when selecting a DVB device for recording.
 - The file 'summary.vdr' has been replaced with 'info.vdr' and now contains the
   information about a recording, in the same format as the events are stored in
