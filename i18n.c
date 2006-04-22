@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.268 2006/04/22 09:27:55 kls Exp $
+ * $Id: i18n.c 1.269 2006/04/22 09:44:32 kls Exp $
  *
  * Translations provided by:
  *
@@ -461,7 +461,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "This event - %s",
     "Diese Sendung - %s",
-    "",//TODO
+    "Ta oddaja - %s",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -483,7 +483,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "This event - all channels",
     "Diese Sendung - alle Kanäle",
-    "",//TODO
+    "Ta oddaja - vsi kanali",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -505,7 +505,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "All events - all channels",
     "Alle Sendungen - alle Kanäle",
-    "",//TODO
+    "Vse oddaje - vsi kanali",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -682,7 +682,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Button$Timer",
     "Timer",
-    "",// TODO
+    "Termini",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -1365,7 +1365,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Press any key to cancel shutdown",
     "Taste drücken, um Shutdown abzubrechen",
-    "Pritisni katerikoli gumb za preklic izklopa",
+    "Pritisnite katerikoli gumb za preklic izklopa",
     "Un tasto per annullare lo spegnimento",
     "Druk een toets om shutdown af te breken",
     "Pressione qualquer tecla para cancelar",
@@ -1674,7 +1674,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Free To Air",
     "frei empfangbar",
-    "",//TODO
+    "nekodiran",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1696,7 +1696,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "encrypted",
     "verschlüsselt",
-    "",//TODO
+    "kodiran",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2270,7 +2270,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Upcoming VPS recording!",
     "VPS-Aufnahme beginnt in Kürze!",
-    "",//TODO
+    "Sledi VPS snemanje!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2380,7 +2380,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't start Transfer Mode!",
     "Transfer-Mode kann nicht gestartet werden!",
-    "Ne morem zaèeti s prenosnim naèinom",
+    "Ne morem zaèeti s prenosnim naèinom!",
     "Impossibile iniziare la modalita' di trasferimento!",
     "Kan Transfer-Mode niet starten",
     "Impossível iniciar modo de transferência!",
@@ -2490,7 +2490,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Not enough disk space to start recording!",
     "Nicht genügend Plattenplatz für Aufnahme!",
-    "",//TODO
+    "Premalo prostora na disku za snemanje!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2534,7 +2534,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Opening CAM menu...",
     "CAM-Menü wird geöffnet...",
-    "",//TODO
+    "Odpiram CAM meni...",
     "",//TODO
     "CAM-menu wordt geopend...",
     "",//TODO
@@ -2578,7 +2578,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Resetting CAM...",
     "CAM wird zurückgesetzt...",
-    "",//TODO
+    "Resetiram CAM...",
     "",//TODO
     "CAM wordt herstart...",
     "",//TODO
@@ -2600,7 +2600,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
-    "Ne morem resetirati CAM-a",
+    "Ne morem resetirati CAM-a!",
     "Impossibile reimpostare il modulo CAM!",
     "Kan CAM niet herstarten!",
     "",//TODO
@@ -2644,7 +2644,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Please enter %d digits!",
     "Bitte geben Sie %d Ziffern ein!",
-    "",//TODO
+    "Prosim vnesite %d ¹tevilk!",
     "",//TODO
     "Vul %d cijfers in!",
     "",//TODO
@@ -2666,7 +2666,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "No audio available!",
     "Kein Audio verfügbar!",
-    "Zvok ni dosegljiv",
+    "Zvok ni dosegljiv!",
     "",//TODO
     "Geen audio beschikbaar!",
     "",//TODO
@@ -2865,7 +2865,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Plugins",
     "Plugins",
-    "Plugins",
+    "Vstavki",
     "Plugins",
     "Plugins",
     "Plugins",
@@ -2887,7 +2887,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Plugin",
     "Plugin",
-    "Plugin",
+    "Vstavek",
     "Plugin",
     "Plugin",
     "Plugin",
@@ -3218,7 +3218,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Channel info time (s)",
     "Anzeigedauer für Kanal-Info (s)",
-    "Èas prikaza podatka o programu (s)",
+    "Èas prikaza podatka o kanalu (s)",
     "",// TODO
     "Duur tonen kanaal-informatie (s)",
     "",// TODO
@@ -3262,7 +3262,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Timeout requested channel info",
     "Angeforderte Kanalinfo schließen",
-    "", // TODO
+    "Èas prikaza informacije o kanalu",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -3328,7 +3328,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Menu button closes",
     "Menu-Taste schließt",
-    "",// TODO
+    "Meni gumb zapre meni",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3724,7 +3724,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "PIDs only",
     "nur PIDs",
-    "",// TODO
+    "samo PIDe",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4450,7 +4450,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$Initial channel",
     "Kanal beim Einschalten",
-    "",// TODO
+    "Privzeti kanal",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4472,7 +4472,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$Initial volume",
     "Lautstärke beim Einschalten",
-    "",// TODO
+    "Privzeta glasnost",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4494,7 +4494,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$as before",
     "wie vorher",
-    "",// TODO
+    "kot prej",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4585,7 +4585,7 @@ const tI18nPhrase Phrases[] = {
   // The character maps for entering letters via the numeric keys:
   { " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9",
     " 0\t-.#~,/_@1\tabcä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuvü8\twxyz9",
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcè2\tdef3\tghi4\tjkl5\tmno6\tpqrs¹7\ttuv8\twxyz¾9",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -5313,7 +5313,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Key$Next",
     "Vorwärts",
-    "",// TODO
+    "Naprej",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5335,7 +5335,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Key$Prev",
     "Zurück",
-    "",// TODO
+    "Nazaj",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5423,7 +5423,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Key$PrevChannel",
     "Vorheriger Kanal",
-    "",// TODO
+    "Prej¹nji kanal",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5952,7 +5952,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Recording started",
     "Aufzeichnung gestartet",
-    "",//TODO
+    "Snemanje se je prièelo",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -6018,7 +6018,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",
-    "Ta plugin nima nastavitvenih parametrov!",
+    "Ta vstavek nima nastavitvenih parametrov!",
     "Questo plugin non ha parametri di setup!",
     "Deze plugin heeft geen instelparameters",
     "",// TODO
