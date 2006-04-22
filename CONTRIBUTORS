@@ -884,6 +884,7 @@ Andreas Brachold <vdr04@deltab.de>
  for fixing the "plugins-clean" and "plugins-install" targets in the Makefile
  for suggesting to make the log messages regarding lost lock of devices "info"
  instead of "error"
+ for modifying the German OSD texts to be "less technical"
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers

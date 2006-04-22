@@ -4636,3 +4636,4 @@ Video Disk Recorder Revision History
 - Simplified the 'grep|awk|sed' command to retrieve the VDR/APIVERSION to a single
   'sed' call.
 - Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Modified the German OSD texts to be "less technical" (thanks to Andreas Brachold).
