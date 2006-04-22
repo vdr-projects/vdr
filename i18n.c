@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.265 2006/04/22 09:15:11 kls Exp $
+ * $Id: i18n.c 1.266 2006/04/22 09:18:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -472,7 +472,7 @@ const tI18nPhrase Phrases[] = {
     "Este evento - %s",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Aceastу emisiune - %s",
     "",//TODO
     "",//TODO
     "Эта передача - %s",
@@ -494,7 +494,7 @@ const tI18nPhrase Phrases[] = {
     "Este evento - todos los canales",
     "",//TODO
     "Ta audycja - wszystkie kanaГy",
-    "",//TODO
+    "Aceastу emisiune - toate canalele",
     "",//TODO
     "",//TODO
     "Эта передача - все каналы",
@@ -516,7 +516,7 @@ const tI18nPhrase Phrases[] = {
     "Todos los eventos - todos los canales",
     "",//TODO
     "Wszystkie audycje - wszystkie kanaГy",
-    "",//TODO
+    "Toate emisiunile - toate canalele",
     "",//TODO
     "",//TODO
     "Все передачи - все каналы",
@@ -693,7 +693,7 @@ const tI18nPhrase Phrases[] = {
     "Programa",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Timer",
     "",// TODO
     "",// TODO
     "Таймер",
@@ -847,7 +847,7 @@ const tI18nPhrase Phrases[] = {
     "Continuar",
     "Х№сэсіяём",
     "Fortsфtt",
-    "Revenire",
+    "Continuare",
     "Tovсbb",
     "Continuar",
     "Продолжить",
@@ -1685,7 +1685,7 @@ const tI18nPhrase Phrases[] = {
     "en abierto",
     "",//TODO
     "otwarty przekaz",
-    "",//TODO
+    "FTA (necriptat)",
     "",//TODO
     "",//TODO
     "FTA (незакодировано)",
@@ -1707,7 +1707,7 @@ const tI18nPhrase Phrases[] = {
     "cifrado",
     "",//TODO
     "szyfrowany",
-    "",//TODO
+    "criptat",
     "",//TODO
     "",//TODO
     "закодировано",
@@ -1861,7 +1861,7 @@ const tI18nPhrase Phrases[] = {
     "Transmisiѓn",
     "Ьхємфяѓч",
     "Transmission",
-    "Transmisiune",
+    "Transmisie",
     "Transmission",
     "Transmissiѓ",
     "Передача",
@@ -2281,7 +2281,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Urmeazу o юnregistrare VPS!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2501,7 +2501,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Insuficient spaўiul pe disc pentru юnregistrare!",
     "",//TODO
     "",//TODO
     "Недостаточно места на диске для начала записи",
@@ -2545,7 +2545,7 @@ const tI18nPhrase Phrases[] = {
     "Abriendo el menњ CAM...",
     "",//TODO
     "Хпѓяфяђ CAM Ьхэя§",
-    "",//TODO
+    "Deschid meniul CAM...",
     "",//TODO
     "",//TODO
     "Открываю меню модуля условного доступа (CAM)",
@@ -2589,7 +2589,7 @@ const tI18nPhrase Phrases[] = {
     "Reiniciando CAM...",
     "",//TODO
     "Х№сэсіяём CAM",
-    "",//TODO
+    "Se reseteazу CAM...",
     "",//TODO
     "",//TODO
     "Перегрузка CAM...",
@@ -2655,7 +2655,7 @@ const tI18nPhrase Phrases[] = {
     "ЁEscriba %d dэgitos!",
     "",//TODO
     "асёсъсыќ №ычъєёяыяуоѓхєх %d эя§ьхёс",
-    "",//TODO
+    "Vу rog introduceўi %d cifre!",
     "",//TODO
     "",//TODO
     "Нажмите %d цифры",
@@ -3273,7 +3273,7 @@ const tI18nPhrase Phrases[] = {
     "Auto-cerrar al solicitar info de canal",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Durata afiКуrii informaўii canal",
     "", // TODO
     "", // TODO
     "Информацию о канале закрыть",
@@ -3339,7 +3339,7 @@ const tI18nPhrase Phrases[] = {
     "Cerrar al pulsar botѓn de menњ",
     "",// TODO
     "Klawisz Menu zamyka",
-    "",// TODO
+    "Tasta 'Meniu' юnchide",
     "",// TODO
     "",// TODO
     "Кнопку Меню закрыть",
@@ -3735,7 +3735,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Numai PID-uri",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4461,7 +4461,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Canalul de pornire",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4483,7 +4483,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Volumul la pornire",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4505,7 +4505,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ca mai юnainte",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4596,7 +4596,7 @@ const tI18nPhrase Phrases[] = {
     " 0\t-.#~,/_@1\tabcсч2\tdefщ3\tghiэ4\tjkl5\tmnoёѓ6\tpqrs7\ttuvњ8\twxyz9",
     "",//TODO
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\taутbc2\tdef3\tghiю4\tjkl5\tmno6\tpqrsК7\ttўuv8\twxyz9",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -5324,7 +5324,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Urmуtor",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5346,7 +5346,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Anterior",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5434,7 +5434,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Canal anterior",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5963,7 +5963,7 @@ const tI18nPhrase Phrases[] = {
     "Iniciando grabaciѓn",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "A юnceput юnregistrarea",
     "",//TODO
     "",//TODO
     "Запись начата",
