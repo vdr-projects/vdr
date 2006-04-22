@@ -4525,7 +4525,7 @@ Video Disk Recorder Revision History
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - The new function cPlugin::Active() can be used by a plugin to indicate that it
   is still busy and the system should not shut down or restart (based on a patch
-  from Peter Dittmann). See PLUGINS.html for details.
+  from Sascha Volkenandt). See PLUGINS.html for details.
 - Fixed setting the 'Delta' parameter when calling the shutdown script with
   no active timer (reported by Helge Lenz).
 - In order to make sure that plugins are compiled with the same DVB driver header
@@ -4632,3 +4632,4 @@ Video Disk Recorder Revision History
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Fixed wrong credits for the patch that was used to implement cPlugin::Active().

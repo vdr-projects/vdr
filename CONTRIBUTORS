@@ -833,6 +833,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting '\n' in an esyslog() call in osd.c
  for reporting missing '&' in the SetAreas() example in PLUGINS.html
  for reporting a memory leak in cString::operator=()
+ for a patch that was used as a base to implement cPlugin::Active()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -1839,9 +1840,6 @@ Richard Lithvall <richard@lithvall.se>
 
 Tobias Grimm <listaccount@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
-
-Peter Dittmann <peter.dittmann@philips.com>
- for a patch that was used as a base to implement cPlugin::Active()
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
