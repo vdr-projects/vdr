@@ -45,3 +45,7 @@ VDR Plugin 'hello' Revision History
 2002-12-13: Version 0.1.0
 
 - Changed setting of CXX and CXXFLAGS variables in Makefile.
+
+2006-04-22: Version 0.1.1
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

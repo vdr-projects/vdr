@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: i18n.c 1.5 2006/02/04 10:51:41 kls Exp $
+ * $Id: i18n.c 1.6 2006/04/22 09:30:57 kls Exp $
  */
 
 #include "i18n.h"
@@ -17,7 +17,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Hei",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -39,7 +39,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Hei maailma!",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -61,7 +61,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Mitä kuuluu?",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -83,7 +83,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ystävällisin terveisin",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -105,7 +105,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tervehdysaika (s)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -127,7 +127,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Käytä vaihtoehtoista tervehdystä",
     "",// TODO
     "",// TODO
     "",// TODO
