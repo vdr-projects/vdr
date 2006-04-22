@@ -4620,7 +4620,7 @@ Video Disk Recorder Revision History
   actions in the context of the main program thread. Use this function with great
   care and only of you absolutely have to! See also PLUGINS.html.
 
-2006-04-21: Version 1.3.48
+2006-04-22: Version 1.3.48
 
 - Updated the GPL copies (thanks to Ville Skyttä).
 - Fixed several spelling errors (thanks to Ville Skyttä).
@@ -4639,3 +4639,4 @@ Video Disk Recorder Revision History
 - Modified the German OSD texts to be "less technical" (thanks to Andreas Brachold).
 - Extended the version number reported with the '-V' option to also show the
   current APIVERSION (suggested by Thomas Günther).
+- Fixed handling empty titles in cEvent::FixEpgBugs() (reported by Rolf Ahrenberg).

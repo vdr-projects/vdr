@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.71 2006/04/17 12:18:59 kls Exp $
+ * $Id: epg.c 1.72 2006/04/22 12:02:47 kls Exp $
  */
 
 #include "epg.h"
@@ -445,7 +445,7 @@ void cEvent::FixEpgBugs(void)
   strreplace(description, '\x86', ' ');
   strreplace(description, '\x87', ' ');
 
-  if (!title) {
+  if (isempty(title)) {
      // we don't want any "(null)" titles
      title = strcpyrealloc(title, tr("No title"));
      EpgBugFixStat(12, ChannelID());

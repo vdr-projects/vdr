@@ -975,6 +975,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding a missing "Button$" for the Timer button and "Key$" in skinclassic.c
  for reporting a bug in handling the color button texts when switching from the
  'Schedule' menu of a channel without EPG info to the 'What's on now' menu
+ for reporting a bug in handling empty titles in cEvent::FixEpgBugs()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
