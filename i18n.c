@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.267 2006/04/22 09:21:25 kls Exp $
+ * $Id: i18n.c 1.268 2006/04/22 09:27:55 kls Exp $
  *
  * Translations provided by:
  *
@@ -2284,7 +2284,7 @@ const tI18nPhrase Phrases[] = {
     "Urmeazу o юnregistrare VPS!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VPS-Запись скоро начнется",
     "",//TODO
     "VPS salvestamine tulekul!",
     "VPS optagelse starter snart!",
@@ -3738,7 +3738,7 @@ const tI18nPhrase Phrases[] = {
     "Numai PID-uri",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Только PIDы",
     "",// TODO
     "ainult PID-id",
     "kun PIDs",
@@ -4464,7 +4464,7 @@ const tI18nPhrase Phrases[] = {
     "Canalul de pornire",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Канал при включении",
     "",// TODO
     "Kanal kфivitamisel",
     "Kanal ved opstart",
@@ -4486,7 +4486,7 @@ const tI18nPhrase Phrases[] = {
     "Volumul la pornire",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Громкость при включении",
     "",// TODO
     "Helitugevus kфivitamisel",
     "Lydstyrke ved opstart",
@@ -4508,7 +4508,7 @@ const tI18nPhrase Phrases[] = {
     "ca mai юnainte",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "как раньше",
     "",// TODO
     "nagu enne",
     "som fјr",
@@ -5327,7 +5327,7 @@ const tI18nPhrase Phrases[] = {
     "Urmуtor",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Вперед",
     "",// TODO
     "Jфrgmine",
     "Fremad",
@@ -5349,7 +5349,7 @@ const tI18nPhrase Phrases[] = {
     "Anterior",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Назад",
     "",// TODO
     "Eelmine",
     "Tilbage",
@@ -5437,7 +5437,7 @@ const tI18nPhrase Phrases[] = {
     "Canal anterior",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Предыдущий канал",
     "",// TODO
     "Eelmine kanal",
     "Foregхende kanal",
