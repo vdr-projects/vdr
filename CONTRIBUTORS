@@ -1508,6 +1508,7 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
 
 Walter Koch <koch@u32.de>
  for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+ for fixing some missing '-' in the German OSD texts
 
 Rolf Groppe <rolf@groppe.de>
  for suggesting to fall back to 'stereo' when switching channels in case the user
