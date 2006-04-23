@@ -4643,3 +4643,6 @@ Video Disk Recorder Revision History
 - Fixed some missing '-' in the German OSD texts (thanks to Walter Koch).
 - Added an error message about plugins that don't honor APIVERSION in their Makefile
   (based on a suggestion by Udo Richter).
+- Fixed a format string in recording.c to avoid a compiler warning on 64bit systems
+  (thanks to Christian Wieninger for reporting, and Werner Schweer for pointing out
+  that the 'z' modifier should be used here).
