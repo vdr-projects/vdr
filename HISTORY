@@ -4646,3 +4646,5 @@ Video Disk Recorder Revision History
 - Fixed a format string in recording.c to avoid a compiler warning on 64bit systems
   (thanks to Christian Wieninger for reporting, and Werner Schweer for pointing out
   that the 'z' modifier should be used here).
+- Ignoring k_Repeat when deciding whether the same key has been pressed in string
+  input fields (based on a patch from Marko Mäkelä).

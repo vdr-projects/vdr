@@ -1665,6 +1665,8 @@ Harald Milz <hm@seneca.muc.de>
 Marko Mäkelä <marko.makela@hut.fi>
  for making repeat keys be ignored when waiting for a keypress to cancel an operation
  for reporting that a menu was automatically closed when a replay ends
+ for suggesting to ignore k_Repeat when deciding whether the same key has been
+ pressed in string input fields
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
