@@ -1410,6 +1410,8 @@ Udo Richter <udo_richter@gmx.de>
  case a replay is active
  for reporting a problem with plugins that report errors when VDR is run with the
  --help or --version option
+ for suggesting to add a warning about plugins that don't honor APIVERSION in their
+ Makefile
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

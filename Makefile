@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.88 2006/04/22 09:58:44 kls Exp $
+# $Id: Makefile 1.89 2006/04/23 09:01:17 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -176,10 +176,17 @@ include-dir:
 
 plugins: include-dir
 	@failed="";\
+	@noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
 	    echo "Plugin $$i:";\
+	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
+	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
+	       noapiv="$$noapiv $$i";\
+	       continue;\
+	       fi;\
 	    $(MAKE) -C "$(PLUGINDIR)/src/$$i" all || failed="$$failed $$i";\
 	    done;\
+	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; fi
 
 clean-plugins:

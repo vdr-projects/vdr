@@ -4641,3 +4641,5 @@ Video Disk Recorder Revision History
   current APIVERSION (suggested by Thomas Günther).
 - Fixed handling empty titles in cEvent::FixEpgBugs() (reported by Rolf Ahrenberg).
 - Fixed some missing '-' in the German OSD texts (thanks to Walter Koch).
+- Added an error message about plugins that don't honor APIVERSION in their Makefile
+  (based on a suggestion by Udo Richter).
