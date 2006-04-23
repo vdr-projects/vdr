@@ -2768,7 +2768,7 @@ Video Disk Recorder Revision History
   driver, together with the endian problem).
 - The new OSD setup parameters "Left" and "Top" can be used to define the top left
   corner of the OSD.
-- The OSD size prameters are now in pixel (as opposed to formerly characters).
+- The OSD size parameters are now in pixel (as opposed to formerly characters).
   When reading a 'setup.conf' file from an older version of VDR, the OSDwidth
   and OSDheight values will be converted to pixel automatically.
 - The OSD is now fully device independent. See the comments in VDR/osd.h and the
@@ -3046,7 +3046,7 @@ Video Disk Recorder Revision History
 - Added some missing 'const' to cChannel.
 - Added a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
   (thanks to Oliver Endriss).
-- Fixed attaching a cPlayer to a cDevice, so that 'Operation not permited'
+- Fixed attaching a cPlayer to a cDevice, so that 'Operation not permitted'
   errors don't occur any more (thanks to Marco Schlüßler).
 - Fixed a case where the resultBuffer in cRemux ran full before getting a sync.
 - Removed the usleep() call from cDvbPlayer::Action() to make VDR run on NPTL
@@ -3089,7 +3089,7 @@ Video Disk Recorder Revision History
 - Immediately displaying the new channel info when switching channel groups.
 - Moved the main program loop variables further up to allow compilation with
   older compiler versions (thanks to Marco Schlüßler for reporting this one).
-- Now calling pthread_cond_broadcast() in the desctructor of cCondWait and
+- Now calling pthread_cond_broadcast() in the destructor of cCondWait and
   cCondVar to make sure any sleepers will wake up (suggested by Werner Fink).
   Also using pthread_cond_broadcast() instead of pthread_cond_signal() in
   cCondWait, in case there is more than one sleeper.
@@ -3136,7 +3136,7 @@ Video Disk Recorder Revision History
   funny characters. Invalid language codes will be stored as "???".
 - The '0' key now toggles the "Day" item in the "Timers" menu between "single
   shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
-  days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
+  days ('1' is Monday). Thanks to Sascha Klek for reporting a problem with the
   '0' key in the "Day" item of the "Timers" menu.
 
 2004-11-21: Version 1.3.17
@@ -3281,7 +3281,7 @@ Video Disk Recorder Revision History
   Dino Ravnic).
 - Implemented displaying mandatory subtitles in the SPU decoder (thanks to Marco
   Schlüßler).
-- The setup option "Recording/Record Dobly Digital" has been renamed and moved to
+- The setup option "Recording/Record Dolby Digital" has been renamed and moved to
   "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
   whether an available DD audio track will appear in the "Audio" menu.
 - Added support for circular polarization (thanks to Jonan Santiago).
@@ -3346,7 +3346,7 @@ Video Disk Recorder Revision History
 - Fixed masking SubStreamType in cDevice::PlayPesPacket() (thanks to Werner Fink
   for pointing out this one).
 - The new function cPlugin::Stop() shall be used to stop any background activities
-  of a plugin. Previously this was done in the plugin's desctructor, but it is
+  of a plugin. Previously this was done in the plugin's destructor, but it is
   better to do this in a dedicated function that can be called early when shutting
   down.
 - Moved the call to SetAudioChannel(0) into cDevice::ClrAvailableTracks() to have it
@@ -3505,7 +3505,7 @@ Video Disk Recorder Revision History
 - Removed scaling coordinates in letterbox mode from cDvbSpu - the DVD plugin, which
   was the only one needing this, doesn't need it any more (thanks to Marco Schlüßler).
 - No longer retuning or restarting a recording if only the language code of an
-  audio or dolby PID changes.
+  audio or Dolby PID changes.
 - Now preferring budget cards when selecting a DVB device for recording.
 - Recordings now avoid zero sized video data files (thanks to Wolfgang Fitz).
 - Some rearrangements in cDvbPlayer::Action() to avoid lockups on NPTL systems
@@ -4525,7 +4525,7 @@ Video Disk Recorder Revision History
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - The new function cPlugin::Active() can be used by a plugin to indicate that it
   is still busy and the system should not shut down or restart (based on a patch
-  from Peter Dittmann). See PLUGINS.html for details.
+  from Sascha Volkenandt). See PLUGINS.html for details.
 - Fixed setting the 'Delta' parameter when calling the shutdown script with
   no active timer (reported by Helge Lenz).
 - In order to make sure that plugins are compiled with the same DVB driver header
@@ -4619,3 +4619,32 @@ Video Disk Recorder Revision History
 - The new function cPlugin::MainThreadHook() can be used by plugins to perform
   actions in the context of the main program thread. Use this function with great
   care and only of you absolutely have to! See also PLUGINS.html.
+
+2006-04-23: Version 1.3.48
+
+- Updated the GPL copies (thanks to Ville Skyttä).
+- Fixed several spelling errors (thanks to Ville Skyttä).
+- Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the French OSD texts (thanks to Pierre Briec).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Fixed wrong credits for the patch that was used to implement cPlugin::Active().
+- Simplified the 'grep|awk|sed' command to retrieve the VDR/APIVERSION to a single
+  'sed' call.
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Modified the German OSD texts to be "less technical" (thanks to Andreas Brachold).
+- Extended the version number reported with the '-V' option to also show the
+  current APIVERSION (suggested by Thomas Günther).
+- Fixed handling empty titles in cEvent::FixEpgBugs() (reported by Rolf Ahrenberg).
+- Fixed some missing '-' in the German OSD texts (thanks to Walter Koch).
+- Added an error message about plugins that don't honor APIVERSION in their Makefile
+  (based on a suggestion by Udo Richter).
+- Fixed a format string in recording.c to avoid a compiler warning on 64bit systems
+  (thanks to Christian Wieninger for reporting, and Werner Schweer for pointing out
+  that the 'z' modifier should be used here).
+- Ignoring k_Repeat when deciding whether the same key has been pressed in string
+  input fields (based on a patch from Marko Mäkelä).

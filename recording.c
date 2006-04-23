@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.146 2006/04/17 12:47:59 kls Exp $
+ * $Id: recording.c 1.147 2006/04/23 10:43:06 kls Exp $
  */
 
 #include "recording.h"
@@ -1197,7 +1197,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                        LOG_ERROR_STR(fileName);
                     }
                  else
-                    esyslog("ERROR: can't allocate %d bytes for index '%s'", size * sizeof(tIndex), fileName);
+                    esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndex), fileName);
                  }
               }
            else

@@ -64,7 +64,7 @@ the default:
 
 Alternatively you can use the '--rcu' or '--lirc' options at runtime.
 These options accept an optional path to the remote control device,
-which's defaults can be set via the RCU_DEVICE and LIRC_DEVICE macros,
+the defaults of which can be set via the RCU_DEVICE and LIRC_DEVICE macros,
 respectively.
 
 If your video directory will be on a VFAT partition, add the compile
@@ -130,7 +130,7 @@ If you run VDR using the 'runvdr' shell script it will use the built-in
 watchdog timer to restart the program in case something happens that
 causes a program hangup. If you change the command line options for the
 call to the VDR program, be sure to NOT use the '-d' option! Otherwise
-VDR will go into 'deamon' mode and the initial program call will return
+VDR will go into 'daemon' mode and the initial program call will return
 immediately! 'runvdr' needs to be started as user 'root'. Use the '-u'
 option to run the actual 'vdr' program under a different user id.
 

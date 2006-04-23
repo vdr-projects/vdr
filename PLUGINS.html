@@ -219,7 +219,7 @@ have several different versions of a plugin source (like <tt>hello-0.0.1</tt> an
 Call the Perl script <tt>newplugin</tt> from the VDR source directory to create
 a new plugin directory with a <tt>Makefile</tt> and a main source file implementing
 the basic derived plugin class.
-You will also find a <tt>README</tt> file there with some inital text, where you
+You will also find a <tt>README</tt> file there with some initial text, where you
 should fill in actual information about your project.
 A <tt>HISTORY</tt> file is set up with an "Initial revision" entry. As your project
 evolves, you should add the changes here with date and version number.
@@ -284,7 +284,7 @@ dot with an underline and precedes the whole thing with two underlines.
 The GNU library header files do this pretty much the same way, except that they
 usually precede the name with only one underline (there are exceptions, though).
 <p>
-As long as you make shure that none of your plugin's header files will be named
+As long as you make sure that none of your plugin's header files will be named
 like one of VDR's header files, you can use the same method as VDR. However,
 if you want to name a header file like one that is already existing in VDR's
 source (<tt>i18n.h</tt> would be a possible candidate for this), you may want
@@ -794,7 +794,7 @@ The constructor initializes two private members with the values of these paramet
 that the <i>Setup</i> menu can work with temporary copies (in order to discard any changes
 if the user doesn't confirm them by pressing the "Ok" button).
 After this the constructor adds the appropriate menu items, using internationalized texts
-and the addresses of the temporary variables. That's all there is to inizialize a <i>Setup</i>
+and the addresses of the temporary variables. That's all there is to initialize a <i>Setup</i>
 menu - the rest will be done by the core VDR code.
 <p>
 Once the user has pressed the "Ok" button to confirm the changes, the <tt>Store()</tt> function will
@@ -957,7 +957,7 @@ structure, and any change to the format should  be reflected by a change
 of the id string.
 <p>
 The function shall return <i>true</i> for any service id string it handles, and <i>false</i>
-otherwise. The plugins have to agreee in which situations the service
+otherwise. The plugins have to agree in which situations the service
 may be called, for example whether the service may be called from every thread, or
 just from the main thread. A possible implementation could look like this:
 
@@ -1040,7 +1040,7 @@ by exactly 4 blanks (no tabs), and none of them shall be longer than 79 characte
 (to avoid messy output on 80 character wide terminals). The last entry in the
 list must be NULL.
 <p>
-The command names <tt>HELP</tt> and <tt>MAIN</tt> are reserverd and cannot
+The command names <tt>HELP</tt> and <tt>MAIN</tt> are reserved and cannot
 be used by a plugin.
 <p>
 The actual processing of SVDRP commands for a plugin is done in its
@@ -1283,8 +1283,8 @@ int PlayPes(const uchar *Data, int Length, bool VideoOnly);
 </pre></td></tr></table><p>
 
 where <tt>Data</tt> points to a block of <tt>Length</tt> bytes of a PES data
-stream containing any combination of video, audio or dolby tracks. Which audio
-or dolby track will actually be played is controlled by the device the player
+stream containing any combination of video, audio or Dolby tracks. Which audio
+or Dolby track will actually be played is controlled by the device the player
 is attached to. There are no prerequisites regarding the length or alignment of an
 individual block of data. The sum of all blocks must simply result in the
 desired data stream, and it must be delivered fast enough so that the
@@ -1473,7 +1473,7 @@ cMyReceiver *Receiver = new cMyReceiver(123);
 cDevice::ActualDevice()-&gt;AttachReceiver(Receiver);
 </pre></td></tr></table><p>
 
-Noteh the use of <tt>cDevice::ActualDevice()</tt> here, which makes sure that
+Note the use of <tt>cDevice::ActualDevice()</tt> here, which makes sure that
 the receiver is attached to the device that actually receives the current live
 video stream (this may be different from the primary device in case of <i>Transfer
 Mode</i>).
@@ -1483,7 +1483,7 @@ and will automatically detach itself from the <tt>cDevice</tt>.
 
 <a name="Filters"><hr><h2>Filters</h2>
 
-<center><i><b>A Fistful of Datas</b></i></center><p>
+<center><i><b>A Fistful of Data</b></i></center><p>
 
 If you want to receive section data you have to implement a derived <tt>cFilter</tt>
 class which at least implements the <tt>Process()</tt> function and a constructor
@@ -1556,7 +1556,7 @@ depth. However, the actual OSD device in use may not be able to provide the
 full area or color depth, maybe because of lack of OSD memory or other restrictions.
 A plugin that uses the OSD should therefore test whether the OSD is able to
 provide the requested functionality, and should offer alternate color depths
-to allow a less powerfull OSD implementation to still work reasonably.
+to allow a less powerful OSD implementation to still work reasonably.
 Since it is often not really necessary to have hundreds or thousands of colors
 all over the OSD area, a plugin can divide the total drawing area into several
 sub-areas with different color depths and separate color palettes, as in
@@ -1753,7 +1753,7 @@ virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 
 These functions will be called with the desired source or channel and shall return whether
 this device can provide the requested source or channel and whether tuning to it was successful,
-repectively.
+respectively.
 <p>
 <b>Audio selection</b>
 <p>
@@ -1786,7 +1786,7 @@ must deliver exactly one such packet (if one is currently available).
 <p>
 <b>Replaying</b>
 <p>
-The functions to implement replaying capabilites are
+The functions to implement replaying capabilities are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual bool HasDecoder(void) const;

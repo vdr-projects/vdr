@@ -15,14 +15,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * Or, point your browser to http://www.gnu.org/copyleft/gpl.html
  *
  * The author can be reached at kls@cadsoft.de
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.262 2006/04/17 14:43:46 kls Exp $
+ * $Id: vdr.c 1.264 2006/04/22 11:26:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -422,7 +422,7 @@ int main(int argc, char *argv[])
                );
         }
      if (DisplayVersion)
-        printf("vdr (%s) - The Video Disk Recorder\n", VDRVERSION);
+        printf("vdr (%s/%s) - The Video Disk Recorder\n", VDRVERSION, APIVERSION);
      if (PluginManager.HasPlugins()) {
         if (DisplayHelp)
            printf("Plugins: vdr -P\"name [OPTIONS]\"\n\n");

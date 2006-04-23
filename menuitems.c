@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.42 2006/04/14 10:41:28 kls Exp $
+ * $Id: menuitems.c 1.43 2006/04/23 11:39:48 kls Exp $
  */
 
 #include "menuitems.h"
@@ -351,10 +351,10 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
-  bool SameKey = Key == lastKey;
+  bool SameKey = NORMALKEY(Key) == lastKey;
   if (Key != kNone)
-     lastKey = Key;
-  else if (!newchar && k0 <= NORMALKEY(lastKey) && NORMALKEY(lastKey) <= k9 && autoAdvanceTimeout.TimedOut()) {
+     lastKey = NORMALKEY(Key);
+  else if (!newchar && k0 <= lastKey && lastKey <= k9 && autoAdvanceTimeout.TimedOut()) {
      AdvancePos();
      newchar = true;
      currentChar = NULL;
@@ -460,7 +460,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        }
                     if (!currentChar || !*currentChar || *currentChar == '\t') {
                        // find the beginning of the character map entry for Key
-                       int n = Key - k0;
+                       int n = NORMALKEY(Key) - k0;
                        currentChar = charMap;
                        while (n > 0 && *currentChar) {
                              if (*currentChar++ == '\t')

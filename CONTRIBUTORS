@@ -1,5 +1,5 @@
 Tons of suggestions, bugreports, patches and other contributions have been
-provided by the people on the 'linux-dvb' and 'vdr' mailing lists.
+provided by the people on the 'linux-dvb' and 'vdr' mailing lists
 Special thanks go to the following individuals (if your name is missing here,
 please send an email to kls@cadsoft.de):
 
@@ -48,7 +48,7 @@ Niels de Carpentier <niels@casema.net>
 Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
  for suggesting to use the "Blue" button in the main menu to resume replay
- for implementing pege up/down with the "Left" and "Right" keys
+ for implementing page up/down with the "Left" and "Right" keys
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
  for adding a missing #include to ringbuffer.c
  for adding a missing 'public' keyword in device.h
@@ -300,7 +300,7 @@ Werner Fink <werner@suse.de>
  recordings can be triggered in the default branch
  for pointing out that pesAssembler->Reset() needs to be called between subsequent
  Transfer Modes
- for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play()
  for pointing out that MAXDPIDS needs to be to 16 (8xAC3 + 8xDTS)
  for reporting a problem with ensuring there is a current audio track in case there
  is only one track
@@ -377,7 +377,7 @@ Hannu Savolainen <hannu@opensound.com>
  for translating OSD texts to the Finnish language
 
 Jürgen Schmidt <ju@ct.heise.de>
- for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
+ for fixing a problem with 'in_addr_t' on systems with glibc < 2.2
  for suggesting to optionally allow logging to LOG_LOCALn (n=0..7)
 
 Uwe Freese <mail@uwe-freese.de>
@@ -444,7 +444,7 @@ Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
 
 Michael Moster <dvb@juelich-gmbh.de>
- for initally reporting the problem with wrong EPG data in the Schedules menu
+ for initially reporting the problem with wrong EPG data in the Schedules menu
  (somehow I had misplaced his message...)
 
 Tobias Kerner <tobschle@gmx.de>
@@ -833,6 +833,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting '\n' in an esyslog() call in osd.c
  for reporting missing '&' in the SetAreas() example in PLUGINS.html
  for reporting a memory leak in cString::operator=()
+ for a patch that was used as a base to implement cPlugin::Active()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -883,6 +884,7 @@ Andreas Brachold <vdr04@deltab.de>
  for fixing the "plugins-clean" and "plugins-install" targets in the Makefile
  for suggesting to make the log messages regarding lost lock of devices "info"
  instead of "error"
+ for modifying the German OSD texts to be "less technical"
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -944,7 +946,7 @@ Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and 
  for translating OSD texts to the Catalanian language
 
 Lars Bläser <LBlaeser@hofheim.de>
- for reporting a bug in EPG bugfix statistics which made log entires for undefined
+ for reporting a bug in EPG bugfix statistics which made log entries for undefined
  channels
 
 Niko Tarnanen <niko.tarnanen@hut.fi>
@@ -973,6 +975,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding a missing "Button$" for the Timer button and "Key$" in skinclassic.c
  for reporting a bug in handling the color button texts when switching from the
  'Schedule' menu of a channel without EPG info to the 'What's on now' menu
+ for reporting a bug in handling empty titles in cEvent::FixEpgBugs()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1084,7 +1087,7 @@ Richard Robson <richard_robson@beeb.net>
  device used by the timer, and the timer needs a different transponder
 
 Manfred Schmidt-Voigt <manfred.schmidt-voigt@mannitec.de>
- for reporting a problem with runnign out of disk space while cutting in case
+ for reporting a problem with running out of disk space while cutting in case
  there are still deleted recordings to remove
 
 Javier Marcet <lists@marcet.info>
@@ -1098,7 +1101,7 @@ Robert Bartl <robert@bartl.priv.at>
  for reporting a hangup in SVDRP when the client disappears without sending QUIT
 
 Sebastian Frei <sebastian@schnapsleichen.de>
- for his support in keeping 'channels.conf' up-to-date.
+ for his support in keeping 'channels.conf' up-to-date
  for suggesting to rename the Makefile target 'plugins-clean' to 'clean-plugins'
 
 Rene Bartsch <ml@bartschnet.de>
@@ -1278,7 +1281,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for avoiding unnecessary section filter start/stops
  for pointing out that if one PID can't be added, the whole cDevice::AttachReceiver()
  should fail and all PIDs added so far should be deleted
- for fixing attaching a cPlayer to a cDevice, so that 'Operation not permited'
+ for fixing attaching a cPlayer to a cDevice, so that 'Operation not permitted'
  errors don't occur any more
  for reporting a problem with initialization of the main program loop variables
  with older compiler versions
@@ -1297,7 +1300,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  when clearing the transfer buffer to avoid overflows
  for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
  for suggesting to force a new resync after a call to cRemux::Clear()
- for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play()
  for removing the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since
  this is now done when attaching the player to the device
  for adding DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
@@ -1407,6 +1410,8 @@ Udo Richter <udo_richter@gmx.de>
  case a replay is active
  for reporting a problem with plugins that report errors when VDR is run with the
  --help or --version option
+ for suggesting to add a warning about plugins that don't honor APIVERSION in their
+ Makefile
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1489,7 +1494,7 @@ Laurence Abbott <laz@club-burniston.co.uk>
 
 Patrick Gleichmann <patrick@feedface.com>
  for fixing the default quality value when grabbing a JPEG image
- for suggestiong a modified page scrolling behaviour
+ for suggesting a modified page scrolling behaviour
  for suggesting wrapping around in menu lists
 
 Achim Tuffentsammer <a.tuffentsammer@web.de>
@@ -1505,6 +1510,7 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
 
 Walter Koch <koch@u32.de>
  for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+ for fixing some missing '-' in the German OSD texts
 
 Rolf Groppe <rolf@groppe.de>
  for suggesting to fall back to 'stereo' when switching channels in case the user
@@ -1563,6 +1569,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  in case it breaks
  for enabling generating a core dump if VDR is run with a different user id
  for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
+ for updating the GPL copies
+ for fixing several spelling errors
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1623,7 +1631,7 @@ Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  scan timeout is set to 0
 
 Klaus Heppenheimer <klaus@reel-multimedia.com>
- for reporting a race condition in cTransfer.
+ for reporting a race condition in cTransfer
 
 Thomas Günther <tom1@toms-cafe.de>
  for fixing handling the frame number display if '7' is pressed before the first
@@ -1634,6 +1642,8 @@ Thomas Günther <tom1@toms-cafe.de>
  for making the 'new' indicator in the Recordings menu kept up-to-date
  for reporting a crash when setting the time transponder in the Setup menu
  for reporting a bug in the initial setting of the time transponder setup parameter
+ for suggesting to extend the version number reported with the '-V' option to also
+ show the current APIVERSION
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1655,6 +1665,8 @@ Harald Milz <hm@seneca.muc.de>
 Marko Mäkelä <marko.makela@hut.fi>
  for making repeat keys be ignored when waiting for a keypress to cancel an operation
  for reporting that a menu was automatically closed when a replay ends
+ for suggesting to ignore k_Repeat when deciding whether the same key has been
+ pressed in string input fields
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -1675,7 +1687,7 @@ Philip Prindeville <philipp_subx@redfish-solutions.com>
 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
  for making VDR use use daemon() instead of fork() to run in daemon mode
  for fixing a possible endless loop in a menu with no selectable items if
- Setup.MenuScrollWrap is true (thanks to Enrico Scholz).
+ Setup.MenuScrollWrap is true (thanks to Enrico Scholz)
 
 Nicolas Huillard <nhuillard@e-dition.fr>
  for translating OSD texts to the French language
@@ -1727,6 +1739,7 @@ Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
  for his idea of going directly into the "Edit timer" menu for a timer created
  from the "Schedule" menu in case it starts withing the next two minutes
+ for reporting a problem with a format string in recording.c on 64bit systems
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -1838,12 +1851,16 @@ Richard Lithvall <richard@lithvall.se>
 Tobias Grimm <listaccount@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
 
-Peter Dittmann <peter.dittmann@philips.com>
- for a patch that was used as a base to implement cPlugin::Active()
-
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
  script with no active timer
 
 Peter Juszack <vdr@unterbrecher.de>
  for a patch that was used as a base to implement kNext and kPrev
+
+Pierre Briec <pbriec@free.fr>
+ for translating OSD texts to the French language
+
+Werner Schweer <ws@seh.de>
+ for pointing out that the 'z' printf modifier should be used for 'size_t' type
+ arguments

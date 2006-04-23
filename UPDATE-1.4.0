@@ -5,10 +5,20 @@ have been made "behind the scenes".
 
 See the file HISTORY for a detailed list of all changes.
 
+Video Programming System (VPS):
+
+- Implemented handling the VPS timestamps (aka "Programme Identification Label")
+  for full VPS support for timers (provided the tv stations actually broadcast
+  this information). The VPS time is displayed in the event info page if it exists
+  and is different than the event's start time.
+- Timers can now be set to use the VPS information to control recording a programme.
+  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
+  the "VPS" option in the individual timers, can be used to control this feature
+
 Plugins:
 
 - The new function cPlugin::Stop() shall be used to stop any background activities
-  of a plugin. Previously this was done in the plugin's desctructor, but it is
+  of a plugin. Previously this was done in the plugin's destructor, but it is
   better to do this in a dedicated function that can be called early when shutting
   down.
 - Added 'Service' functions to the plugin interface.
@@ -121,7 +131,7 @@ OSD:
   the small font.
 - The new OSD setup parameters "Left" and "Top" can be used to define the top left
   corner of the OSD.
-- The OSD size prameters are now in pixel (as opposed to formerly characters).
+- The OSD size parameters are now in pixel (as opposed to formerly characters).
   When reading a 'setup.conf' file from an older version of VDR, the OSDwidth
   and OSDheight values will be converted to pixel automatically.
 - The OSD is now fully device independent. See the comments in VDR/osd.h and the
@@ -177,7 +187,7 @@ Timers:
 
 - The '0' key now toggles the "Day" item in the "Timers" menu between "single
   shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
-  days ('1' is monday).
+  days ('1' is Monday).
 - The day of a timer is now stored as a full date in ISO notation ("YYYY-MM-DD") in
   'timers.conf' and for the result of the SVDRP command LSTT
 - The timer status now has a new bit that is set when that timer is currently
@@ -205,13 +215,6 @@ Timers:
 
 Recording:
 
-- Implemented handling the VPS timestamps (aka "Programme Identification Label")
-  for full VPS support for timers (provided the tv stations actually broadcast
-  this information). The VPS time is displayed in the event info page if it exists
-  and is different than the event's start time.
-- Timers can now be set to use the VPS information to control recording a programme.
-  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
-  the "VPS" option in the individual timers, can be used to control this feature
 - Now preferring budget cards when selecting a DVB device for recording.
 - The file 'summary.vdr' has been replaced with 'info.vdr' and now contains the
   information about a recording, in the same format as the events are stored in
@@ -267,7 +270,7 @@ Audio:
 - The "Left" and "Right" keys in the "Audio" menu can be used to switch between
   the left and right stereo channels in case there are different audio tracks
   in these channels.
-- The setup option "Recording/Record Dobly Digital" has been renamed and moved to
+- The setup option "Recording/Record Dolby Digital" has been renamed and moved to
   "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
   whether an available DD audio track will appear in the "Audio" menu.
 - Recording and Transfer Mode now handle more than 2 audio PIDs.
