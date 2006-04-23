@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.271 2006/04/22 10:57:22 kls Exp $
+ * $Id: i18n.c 1.272 2006/04/23 08:35:58 kls Exp $
  *
  * Translations provided by:
  *
@@ -3268,7 +3268,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "Demande d'infos de chaîne terminée",
     "", // TODO
-    "Sulje kanavatieto pyydettäessä",
+    "Sulje erikseen avattu kanavatieto",
     "Czas oczekiwania na informacje",
     "Auto-cerrar al solicitar info de canal",
     "", // TODO
