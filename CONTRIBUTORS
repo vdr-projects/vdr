@@ -614,6 +614,8 @@ Oliver Endriss <o.endriss@gmx.de>
  display in the ST:TNG skin's channel display
  for suggesting to make CharArray::DataOwnData::assign() in 'libsi' more robust
  against invalid data
+ for reporting a problem in extracting APIVERSION with older versions of 'sed'
+ for fixing broken APIVERSION extraction line in 'newplugin'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1412,6 +1414,7 @@ Udo Richter <udo_richter@gmx.de>
  --help or --version option
  for suggesting to add a warning about plugins that don't honor APIVERSION in their
  Makefile
+ for providing a shorter version of the 'sed' expression for extracting APIVERSION
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
