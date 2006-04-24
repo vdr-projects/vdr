@@ -4648,3 +4648,7 @@ Video Disk Recorder Revision History
   that the 'z' modifier should be used here).
 - Ignoring k_Repeat when deciding whether the same key has been pressed in string
   input fields (based on a patch from Marko Mäkelä).
+
+2006-04-24: Version 1.4.0
+
+- Fixed initializing 'noapiv' in the Makefile (reported by Ronny Kornexl).

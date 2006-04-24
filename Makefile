@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.89 2006/04/23 09:01:17 kls Exp $
+# $Id: Makefile 1.90 2006/04/24 17:06:48 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -176,7 +176,7 @@ include-dir:
 
 plugins: include-dir
 	@failed="";\
-	@noapiv="";\
+	noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
 	    echo "Plugin $$i:";\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
