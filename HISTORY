@@ -4656,3 +4656,4 @@ Video Disk Recorder Revision History
   Oliver Endriss; thanks also to Udo Richter for a shorter version of the 'sed'
   expression).
 - Fixed broken APIVERSION extraction line in 'newplugin' (thanks to Oliver Endriss).
+- Fixed entering '0' in a cMenuEditIntItem (reported by Mirko Dölle).

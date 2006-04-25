@@ -439,6 +439,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for reporting a problem with inconsistent channel and timer lists
  for making the "Play" key in live viewing mode resume a previous replay session
  for suggesting to allow defining key macros for all non-modeless keys
+ for reporting a bug in entering '0' in a cMenuEditIntItem
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
