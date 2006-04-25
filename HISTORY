@@ -4649,7 +4649,7 @@ Video Disk Recorder Revision History
 - Ignoring k_Repeat when deciding whether the same key has been pressed in string
   input fields (based on a patch from Marko Mäkelä).
 
-2006-04-24: Version 1.4.0
+2006-04-25: Version 1.4.0
 
 - Fixed initializing 'noapiv' in the Makefile (reported by Ronny Kornexl).
 - Fixed extracting APIVERSION to work with older versions of 'sed' (reported by
@@ -4657,3 +4657,4 @@ Video Disk Recorder Revision History
   expression).
 - Fixed broken APIVERSION extraction line in 'newplugin' (thanks to Oliver Endriss).
 - Fixed entering '0' in a cMenuEditIntItem (reported by Mirko Dölle).
+- Updated the Italian OSD texts (thanks to Nino Gerbino).
