@@ -1872,3 +1872,7 @@ Werner Schweer <ws@seh.de>
 
 Nino Gerbino <ngerb@interfree.it>
  for translating OSD texts to the Italian language
+
+Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
+ for reporting a problem with missing 'INCLUDES += -I$(DVBDIR)/include' in an existing
+ Make.config

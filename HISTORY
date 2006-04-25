@@ -4532,8 +4532,15 @@ Video Disk Recorder Revision History
   files as VDR itself, the definition of DVBDIR has been removed from the VDR
   Makefile. If you are using a driver version that has its header files at a location
   other than /usr/include/linux/dvb, you can define DVBDIR in the Make.config
-  file (see also INSTALL). Any reference to DVBDIR should be removed from all
-  plugins' Makefiles, like this:
+  file (see also INSTALL). Note that if you already have a Make.config file of your
+  own, you should add the lines
+
+  ifdef DVBDIR
+  INCLUDES += -I$(DVBDIR)/include
+  endif
+
+  to its end, as in the new Make.config.template.
+  Any reference to DVBDIR should be removed from all plugins' Makefiles, like this:
 
   ------------------------------------------------------------
   --- PLUGINS/src/hello/Makefile  2005/11/11 13:20:14     1.10
@@ -4658,3 +4665,5 @@ Video Disk Recorder Revision History
 - Fixed broken APIVERSION extraction line in 'newplugin' (thanks to Oliver Endriss).
 - Fixed entering '0' in a cMenuEditIntItem (reported by Mirko Dölle).
 - Updated the Italian OSD texts (thanks to Nino Gerbino).
+- Added a note about adding 'INCLUDES += -I$(DVBDIR)/include' to an existing
+  Make.config (problem reported by Markus Ehrnsperger).
