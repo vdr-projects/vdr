@@ -4669,3 +4669,6 @@ Video Disk Recorder Revision History
   Make.config (problem reported by Markus Ehrnsperger).
 - Fixed handling the cPluginManager::Active() result when pressing the "Power" key
   (reported by Werner Färber).
+- Added a hint about commenting out the line '#define USE_FADVISE' in tools.c in
+  case of problems with replaying in fast forward mode if the video directory is
+  mounted via a Samba share (reported by Andy Grobb).

@@ -324,6 +324,13 @@ since this might cause a lot of unnecessary disk access when VDR cleans up those
 directories and there is a large number of files and/or subdirectories in
 there.
 
+If your video directory is mounted via a Samba share, and you are experiencing
+problems with replaying in fast forward mode, you can comment out the line
+
+#define USE_FADVISE
+
+in the file tools.c, which may lead to better results.
+
 Configuration files:
 --------------------
 

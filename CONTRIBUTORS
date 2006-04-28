@@ -334,6 +334,8 @@ Andy Grobb <Charly98@01019freenet.de>
  for completing storing the current audio volume in the setup.conf file
  for fixing the EPG display in case Setup.ShowInfoOnChSwitch is set to "no"
  for reporting a bug in handling min/max borders when entering integer values
+ for reporting a problem with replaying in fast forward mode if the video directory
+ is mounted via a Samba share
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
