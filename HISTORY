@@ -4676,3 +4676,4 @@ Video Disk Recorder Revision History
   menu.c to "restart anyway?" (suggested by Rolf Ahrenberg).
 - Removed the obsolete "'1' for encrypted radio channels" part from the description
   of the VPID in vdr.5 (reported by Alexander Hans).
+- Fixed tuning to the channel of a VPS timer if the device is the actual device.
