@@ -4674,3 +4674,5 @@ Video Disk Recorder Revision History
   mounted via a Samba share (reported by Andy Grobb).
 - Changed the "Really restart?" prompt in the call to cPluginManager::Active() in
   menu.c to "restart anyway?" (suggested by Rolf Ahrenberg).
+- Removed the obsolete "'1' for encrypted radio channels" part from the description
+  of the VPID in vdr.5 (reported by Alexander Hans).

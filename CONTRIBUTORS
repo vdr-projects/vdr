@@ -1810,6 +1810,8 @@ Alexander Hans <cleditor@arcor.de>
  doesn't have any EPG data
  for giving the DrawBitmap() function a new parameter 'Overlay' that allows a bitmap
  to be drawn with a transparent background
+ for reporting that the "'1' for encrypted radio channels" part in the description
+ of the VPID in vdr.5 is obsolete
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits
