@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.274 2006/04/25 21:24:33 kls Exp $
+ * $Id: i18n.c 1.275 2006/04/28 12:50:04 kls Exp $
  *
  * Translations provided by:
  *
@@ -1274,6 +1274,28 @@ const tI18nPhrase Phrases[] = {
     "Restart?",
     "Vil du virkelig genstarte?",
     "Opravdu restartovat?",
+  },
+  { "restart anyway?",
+    "trotzdem neu starten?",
+    "zares ponoven zagon?",
+    "riavvio comunque?",
+    "toch opnieuw starten?",
+    "quer mesmo reiniciar?",
+    "redémarrer?",
+    "starte på nytt likevel?",
+    "käynnistetäänkö uudelleen?",
+    "zrestartowaæ mimo to?",
+    "¿reiniciar igualmente?",
+    "ÔåëéêÜ íá ãßíåé åğáíåêêßíçóç?",
+    "vill du ändå starta om?",
+    "repornesc, totuºi?",
+    "mégis újraindítani?",
+    "Reiniciar de totes maneres?",
+    "ÔÕÙáâÒØâÕÛìİŞ ßÕàÕ×ĞßãáâØâì?",
+    "svejedno restart sistema?",
+    "restart?",
+    "genstart alligevel?",
+    "pøesto restartovat?",
   },
   { "shut down anyway?",
     "trotzdem ausschalten?",

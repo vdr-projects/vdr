@@ -4672,3 +4672,5 @@ Video Disk Recorder Revision History
 - Added a hint about commenting out the line '#define USE_FADVISE' in tools.c in
   case of problems with replaying in fast forward mode if the video directory is
   mounted via a Samba share (reported by Andy Grobb).
+- Changed the "Really restart?" prompt in the call to cPluginManager::Active() in
+  menu.c to "restart anyway?" (suggested by Rolf Ahrenberg).
