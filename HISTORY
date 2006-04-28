@@ -4656,7 +4656,7 @@ Video Disk Recorder Revision History
 - Ignoring k_Repeat when deciding whether the same key has been pressed in string
   input fields (based on a patch from Marko Mäkelä).
 
-2006-04-25: Version 1.4.0
+2006-04-28: Version 1.3.49
 
 - Fixed initializing 'noapiv' in the Makefile (reported by Ronny Kornexl).
 - Fixed extracting APIVERSION to work with older versions of 'sed' (reported by
@@ -4667,3 +4667,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Nino Gerbino).
 - Added a note about adding 'INCLUDES += -I$(DVBDIR)/include' to an existing
   Make.config (problem reported by Markus Ehrnsperger).
+- Fixed handling the cPluginManager::Active() result when pressing the "Power" key
+  (reported by Werner Färber).

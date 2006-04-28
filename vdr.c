@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.264 2006/04/22 11:26:04 kls Exp $
+ * $Id: vdr.c 1.265 2006/04/28 12:24:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -980,7 +980,7 @@ int main(int argc, char *argv[])
                           if (Interface->Confirm(tr("Recording - shut down anyway?")))
                              ForceShutdown = true;
                           }
-                       if (cPluginManager::Active(tr("shut down anyway?")))
+                       if (!cPluginManager::Active(tr("shut down anyway?")))
                           ForceShutdown = true;
                        LastActivity = 1; // not 0, see below!
                        UserShutdown = true;
