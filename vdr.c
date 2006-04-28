@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.264 2006/04/22 11:26:04 kls Exp $
+ * $Id: vdr.c 1.266 2006/04/28 13:23:55 kls Exp $
  */
 
 #include <getopt.h>
@@ -792,9 +792,9 @@ int main(int argc, char *argv[])
                         }
                      // Switch the device to the transponder:
                      if (Device) {
-                        if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
-                           cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                         if (!Device->IsTunedToTransponder(Timer->Channel())) {
+                           if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
+                              cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                            dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
                            Device->SwitchChannel(Timer->Channel(), false);
                            DeviceUsed[Device->DeviceNumber()] = Now;
@@ -980,7 +980,7 @@ int main(int argc, char *argv[])
                           if (Interface->Confirm(tr("Recording - shut down anyway?")))
                              ForceShutdown = true;
                           }
-                       if (cPluginManager::Active(tr("shut down anyway?")))
+                       if (!cPluginManager::Active(tr("shut down anyway?")))
                           ForceShutdown = true;
                        LastActivity = 1; // not 0, see below!
                        UserShutdown = true;

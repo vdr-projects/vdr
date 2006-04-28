@@ -334,6 +334,8 @@ Andy Grobb <Charly98@01019freenet.de>
  for completing storing the current audio volume in the setup.conf file
  for fixing the EPG display in case Setup.ShowInfoOnChSwitch is set to "no"
  for reporting a bug in handling min/max borders when entering integer values
+ for reporting a problem with replaying in fast forward mode if the video directory
+ is mounted via a Samba share
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
@@ -439,6 +441,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for reporting a problem with inconsistent channel and timer lists
  for making the "Play" key in live viewing mode resume a previous replay session
  for suggesting to allow defining key macros for all non-modeless keys
+ for reporting a bug in entering '0' in a cMenuEditIntItem
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -614,6 +617,8 @@ Oliver Endriss <o.endriss@gmx.de>
  display in the ST:TNG skin's channel display
  for suggesting to make CharArray::DataOwnData::assign() in 'libsi' more robust
  against invalid data
+ for reporting a problem in extracting APIVERSION with older versions of 'sed'
+ for fixing broken APIVERSION extraction line in 'newplugin'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -976,6 +981,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a bug in handling the color button texts when switching from the
  'Schedule' menu of a channel without EPG info to the 'What's on now' menu
  for reporting a bug in handling empty titles in cEvent::FixEpgBugs()
+ for suggesting to replace the "Really restart?" prompt in the call to
+ cPluginManager::Active() in menu.c to "restart anyway?"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1412,6 +1419,7 @@ Udo Richter <udo_richter@gmx.de>
  --help or --version option
  for suggesting to add a warning about plugins that don't honor APIVERSION in their
  Makefile
+ for providing a shorter version of the 'sed' expression for extracting APIVERSION
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1802,6 +1810,8 @@ Alexander Hans <cleditor@arcor.de>
  doesn't have any EPG data
  for giving the DrawBitmap() function a new parameter 'Overlay' that allows a bitmap
  to be drawn with a transparent background
+ for reporting that the "'1' for encrypted radio channels" part in the description
+ of the VPID in vdr.5 is obsolete
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits
@@ -1814,6 +1824,7 @@ Ronny Kornexl <ronny.kornexl@online.de>
  for reporting a problem with setting "No title" for broken event data
  for suggesting to make the "Use small font" setup option *always* use the small
  font if set to '3' - even if it would have been a fixed font
+ for reporting a bug in initializing 'noapiv' in the Makefile
 
 Bárta Vladimír <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
@@ -1864,3 +1875,14 @@ Pierre Briec <pbriec@free.fr>
 Werner Schweer <ws@seh.de>
  for pointing out that the 'z' printf modifier should be used for 'size_t' type
  arguments
+
+Nino Gerbino <ngerb@interfree.it>
+ for translating OSD texts to the Italian language
+
+Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
+ for reporting a problem with missing 'INCLUDES += -I$(DVBDIR)/include' in an existing
+ Make.config
+
+Werner Färber <w.faerber@gmx.de>
+ for reporting a bug in handling the cPluginManager::Active() result when pressing
+ the "Power" key

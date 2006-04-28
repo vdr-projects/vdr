@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.27 2006/04/22 10:04:10 kls Exp $
+# $Id: newplugin 1.28 2006/04/24 17:18:41 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -85,7 +85,7 @@ TMPDIR = /tmp
 
 ### The version number of VDR's plugin API (taken from VDR's "config.h"):
 
-APIVERSION = \$(shell sed -ne '/define VDRVERSION/ { s/^.*"\(.*\)".*\$\$/\\1/; p }' \$(VDRDIR)/config.h)
+APIVERSION = \$(shell sed -ne '/define APIVERSION/s/^.*"\\(.*\\)".*\$\$/\\1/p' \$(VDRDIR)/config.h)
 
 ### The name of the distribution archive:
 

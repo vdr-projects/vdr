@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.43 2006/04/23 11:39:48 kls Exp $
+ * $Id: menuitems.c 1.44 2006/04/25 15:59:02 kls Exp $
  */
 
 #include "menuitems.h"
@@ -80,10 +80,10 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
        case kNone: break;
        case k0 ... k9:
             if (fresh) {
-               *value = 0;
+               newValue = 0;
                fresh = false;
                }
-            newValue = *value * 10 + (Key - k0);
+            newValue = newValue * 10 + (Key - k0);
             break;
        case kLeft: // TODO might want to increase the delta if repeated quickly?
             newValue = *value - 1;
