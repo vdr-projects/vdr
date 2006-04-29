@@ -1863,6 +1863,7 @@ Richard Lithvall <richard@lithvall.se>
 
 Tobias Grimm <listaccount@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
+ for fixing a memory leak in handling external EPG data
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
