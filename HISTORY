@@ -4685,3 +4685,4 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
 - Fixed a memory leak in handling external EPG data (thanks to Tobias Grimm).
 - Fixed a memory leak in closing the video file during replay (thanks to Tobias Grimm).
+- Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
