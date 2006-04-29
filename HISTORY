@@ -4684,3 +4684,4 @@ Video Disk Recorder Revision History
   is active (thanks to Udo Richter; bug reported by Dominique Simon).
 - Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
 - Fixed a memory leak in handling external EPG data (thanks to Tobias Grimm).
+- Fixed a memory leak in closing the video file during replay (thanks to Tobias Grimm).
