@@ -1420,6 +1420,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to add a warning about plugins that don't honor APIVERSION in their
  Makefile
  for providing a shorter version of the 'sed' expression for extracting APIVERSION
+ for fixing a bug in handling the "Power" key in case a recording is going on and
+ no plugin is active
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1886,3 +1888,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
  the "Power" key
+
+Dominique Simon <d.simon@gmx.net>
+ for reporting a bug in handling the "Power" key in case a recording is going on and
+ no plugin is active
