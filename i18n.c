@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.275 2006/04/28 12:50:04 kls Exp $
+ * $Id: i18n.c 1.276 2006/04/29 10:04:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -468,10 +468,10 @@ const tI18nPhrase Phrases[] = {
     "Cet événement",
     "",//TODO
     "Tämä tapahtuma - %s",
-    "Den här sändningen - %s",
+    "Ta audycja - %s",
     "Este evento - %s",
     "",//TODO
-    "",//TODO
+    "Den här sändningen - %s",
     "Aceastã emisiune - %s",
     "",//TODO
     "",//TODO
@@ -490,7 +490,7 @@ const tI18nPhrase Phrases[] = {
     "Cet événement - toutes les chaînes",
     "",//TODO
     "Tämä tapahtuma - kaikki kanavat",
-    "",//TODO
+    "Ta audycja - wszystkie kana³y",
     "Este evento - todos los canales",
     "",//TODO
     "Den här sändningen - alla kanaler",
@@ -512,7 +512,7 @@ const tI18nPhrase Phrases[] = {
     "Tous les événements - toutes chaînes",
     "",//TODO
     "Kaikki tapahtumat - kaikki kanavat",
-    "",//TODO
+    "Wszystkie audycje - wszystkie kana³y",
     "Todos los eventos - todos los canales",
     "",//TODO
     "Alla tillfällen - alla kanaler",
@@ -1703,7 +1703,7 @@ const tI18nPhrase Phrases[] = {
     "Aucun cryptage",
     "",//TODO
     "vapaa",
-    "",//TODO
+    "nieszyfrowany"
     "en abierto",
     "",//TODO
     "Okodad",
@@ -1725,7 +1725,7 @@ const tI18nPhrase Phrases[] = {
     "Crypté",
     "",//TODO
     "salattu",
-    "",//TODO
+    "szyfrowany",
     "cifrado",
     "",//TODO
     "krypterad",
@@ -3357,7 +3357,7 @@ const tI18nPhrase Phrases[] = {
     "Menu bouton fermé",
     "",// TODO
     "Sulje valikkonäppäimellä",
-    "",// TODO
+    "Przycisk Menu zamyka",
     "Cerrar al pulsar botón de menú",
     "",// TODO
     "Menyknappen stänger",
@@ -3753,7 +3753,7 @@ const tI18nPhrase Phrases[] = {
     "PIDs uniquement",
     "",// TODO
     "vain PID:it",
-    "Tylko PID-y",
+    "tylko PID-y",
     "",// TODO
     "",// TODO
     "bara PIDs",

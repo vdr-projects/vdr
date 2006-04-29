@@ -4682,3 +4682,4 @@ Video Disk Recorder Revision History
 
 - Fixed handling the "Power" key in case a recording is going on and no plugin
   is active (thanks to Udo Richter; bug reported by Dominique Simon).
+- Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
