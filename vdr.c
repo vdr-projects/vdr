@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.266 2006/04/28 13:23:55 kls Exp $
+ * $Id: vdr.c 1.267 2006/04/29 09:14:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -970,21 +970,23 @@ int main(int argc, char *argv[])
                   }
                break;
           // Power off:
-          case kPower: isyslog("Power button pressed");
-                       DELETE_MENU;
-                       if (!Shutdown) {
-                          Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
-                          break;
-                          }
-                       if (cRecordControls::Active()) {
-                          if (Interface->Confirm(tr("Recording - shut down anyway?")))
-                             ForceShutdown = true;
-                          }
-                       if (!cPluginManager::Active(tr("shut down anyway?")))
-                          ForceShutdown = true;
-                       LastActivity = 1; // not 0, see below!
-                       UserShutdown = true;
-                       break;
+          case kPower:
+               isyslog("Power button pressed");
+               DELETE_MENU;
+               if (!Shutdown) {
+                  Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
+                  break;
+                  }
+               LastActivity = 1; // not 0, see below!
+               UserShutdown = true;
+               if (cRecordControls::Active()) {
+                  if (!Interface->Confirm(tr("Recording - shut down anyway?")))
+                     break;
+                  }
+               if (cPluginManager::Active(tr("shut down anyway?")))
+                  break;
+               ForceShutdown = true;
+               break;
           default: break;
           }
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time

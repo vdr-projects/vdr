@@ -4677,3 +4677,13 @@ Video Disk Recorder Revision History
 - Removed the obsolete "'1' for encrypted radio channels" part from the description
   of the VPID in vdr.5 (reported by Alexander Hans).
 - Fixed tuning to the channel of a VPS timer if the device is the actual device.
+
+2006-04-30: Version 1.4.0
+
+- Fixed handling the "Power" key in case a recording is going on and no plugin
+  is active (thanks to Udo Richter; bug reported by Dominique Simon).
+- Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
+- Fixed a memory leak in handling external EPG data (thanks to Tobias Grimm).
+- Fixed a memory leak in closing the video file during replay (thanks to Tobias Grimm).
+- Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

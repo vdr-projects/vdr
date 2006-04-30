@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.147 2006/04/23 10:43:06 kls Exp $
+ * $Id: recording.c 1.148 2006/04/29 13:22:20 kls Exp $
  */
 
 #include "recording.h"
@@ -1436,7 +1436,7 @@ cUnbufferedFile *cFileName::Open(void)
 void cFileName::Close(void)
 {
   if (file) {
-     if ((record && CloseVideoFile(file) < 0) || (!record && file->Close() < 0))
+     if (CloseVideoFile(file) < 0)
         LOG_ERROR_STR(fileName);
      file = NULL;
      }

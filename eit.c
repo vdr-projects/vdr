@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.116 2006/04/15 14:11:52 kls Exp $
+ * $Id: eit.c 1.117 2006/04/29 11:38:37 kls Exp $
  */
 
 #include "eit.h"
@@ -103,8 +103,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       cLinkChannels *LinkChannels = NULL;
       cComponents *Components = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
-          if (ExternalData && d->getDescriptorTag() != SI::ComponentDescriptorTag)
+          if (ExternalData && d->getDescriptorTag() != SI::ComponentDescriptorTag) {
+             delete d;
              continue;
+             }
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
                  SI::ExtendedEventDescriptor *eed = (SI::ExtendedEventDescriptor *)d;
