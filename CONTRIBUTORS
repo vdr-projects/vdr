@@ -1894,3 +1894,6 @@ Werner Färber <w.faerber@gmx.de>
 Dominique Simon <d.simon@gmx.net>
  for reporting a bug in handling the "Power" key in case a recording is going on and
  no plugin is active
+
+M. Kiesel <vdr@continuity.cjb.net>
+ for reporting that the 'runvdr' script still used DVBDIR

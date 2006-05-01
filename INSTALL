@@ -133,6 +133,9 @@ call to the VDR program, be sure to NOT use the '-d' option! Otherwise
 VDR will go into 'daemon' mode and the initial program call will return
 immediately! 'runvdr' needs to be started as user 'root'. Use the '-u'
 option to run the actual 'vdr' program under a different user id.
+Note that the 'runvdr' script needs to be adjusted to your particular
+requirements before you can actually use it. See the comments inside
+the script for more information.
 
 Setting the system time:
 ------------------------
