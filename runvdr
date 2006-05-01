@@ -20,7 +20,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.17 2006/05/01 13:33:31 kls Exp $
+# $Id: runvdr 1.18 2006/05/01 14:51:00 kls Exp $
 
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
@@ -51,7 +51,7 @@ if ! DriverLoaded; then
    fi
 
 while (true) do
-      $VDRCMD
+      eval "$VDRCMD"
       if test $? -eq 0 -o $? -eq 2; then exit; fi
       echo "`date` reloading DVB driver"
       $KILL $VDRPRG

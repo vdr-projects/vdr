@@ -4694,3 +4694,5 @@ Video Disk Recorder Revision History
 - Adjusted the 'runvdr' script so that the user can fill in the functions to
   detect, load and unload the necessary driver modules (thanks to M. Kiesel for
   reporting that it still used DVBDIR).
+- Added 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with quoting
+  (suggested by Udo Richter).

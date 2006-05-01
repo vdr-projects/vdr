@@ -1422,6 +1422,8 @@ Udo Richter <udo_richter@gmx.de>
  for providing a shorter version of the 'sed' expression for extracting APIVERSION
  for fixing a bug in handling the "Power" key in case a recording is going on and
  no plugin is active
+ for suggesting to add 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with
+ quoting
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
