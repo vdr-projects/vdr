@@ -4687,3 +4687,7 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in closing the video file during replay (thanks to Tobias Grimm).
 - Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+
+2006-05-01: Version 1.4.0-1
+
+- Updated 'S110W' in 'sources.conf'.
