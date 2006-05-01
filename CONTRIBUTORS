@@ -1679,6 +1679,7 @@ Marko Mäkelä <marko.makela@hut.fi>
  for reporting that a menu was automatically closed when a replay ends
  for suggesting to ignore k_Repeat when deciding whether the same key has been
  pressed in string input fields
+ for fixing missing ',' in the Italian and Polish OSD texts
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week

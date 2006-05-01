@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.279 2006/04/30 08:51:10 kls Exp $
+ * $Id: i18n.c 1.280 2006/05/01 21:01:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -484,7 +484,7 @@ const tI18nPhrase Phrases[] = {
   { "This event - all channels",
     "Diese Sendung - alle Kanäle",
     "Ta oddaja - vsi kanali",
-    "Questo evento - tutti i canali"
+    "Questo evento - tutti i canali",
     "",//TODO
     "",//TODO
     "Cet événement - toutes les chaînes",
@@ -1703,7 +1703,7 @@ const tI18nPhrase Phrases[] = {
     "Aucun cryptage",
     "",//TODO
     "vapaa",
-    "nieszyfrowany"
+    "nieszyfrowany",
     "en abierto",
     "",//TODO
     "Okodad",

@@ -4696,3 +4696,4 @@ Video Disk Recorder Revision History
   reporting that it still used DVBDIR).
 - Added 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with quoting
   (suggested by Udo Richter).
+- Fixed missing ',' in the Italian and Polish OSD texts (thanks to Marko Mäkelä).
