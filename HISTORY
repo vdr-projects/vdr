@@ -4698,3 +4698,5 @@ Video Disk Recorder Revision History
   (suggested by Udo Richter).
 - Fixed missing ',' in the Italian and Polish OSD texts (thanks to Marko Mäkelä).
 - Updated the Czech OSD texts (thanks to Vladimír Bárta).
+- Fixed handling the "Power" key in case a timer is about to start recording
+  (thanks to Udo Richter).

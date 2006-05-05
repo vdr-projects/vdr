@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.267 2006/04/29 09:14:06 kls Exp $
+ * $Id: vdr.c 1.268 2006/05/05 13:43:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -970,7 +970,7 @@ int main(int argc, char *argv[])
                   }
                break;
           // Power off:
-          case kPower:
+          case kPower: {
                isyslog("Power button pressed");
                DELETE_MENU;
                if (!Shutdown) {
@@ -985,8 +985,20 @@ int main(int argc, char *argv[])
                   }
                if (cPluginManager::Active(tr("shut down anyway?")))
                   break;
+               cTimer *timer = Timers.GetNextActiveTimer();
+               time_t Next  = timer ? timer->StartTime() : 0;
+               time_t Delta = timer ? Next - time(NULL) : 0;
+               if (Next && Delta <= Setup.MinEventTimeout * 60) {
+                  char *buf;
+                  asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
+                  bool confirm = Interface->Confirm(buf);
+                  free(buf);
+                  if (!confirm)
+                     break;
+                  }
                ForceShutdown = true;
                break;
+               }
           default: break;
           }
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
@@ -1120,15 +1132,6 @@ int main(int argc, char *argv[])
                        }
                     else
                        LastActivity = 1;
-                    }
-                 if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
-                    char *buf;
-                    asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
-                    if (Interface->Confirm(buf))
-                       ForceShutdown = true;
-                    else
-                       UserShutdown = false;
-                    free(buf);
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;

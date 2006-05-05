@@ -1424,6 +1424,7 @@ Udo Richter <udo_richter@gmx.de>
  no plugin is active
  for suggesting to add 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with
  quoting
+ for fixing handling the "Power" key in case a timer is about to start recording
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
