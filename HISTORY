@@ -4700,3 +4700,5 @@ Video Disk Recorder Revision History
 - Updated the Czech OSD texts (thanks to Vladimír Bárta).
 - Fixed handling the "Power" key in case a timer is about to start recording
   (thanks to Udo Richter).
+- Fixed the character 'r' in fontosd and fontsml for iso8859-2 (thanks to Vladimír
+  Bárta).
