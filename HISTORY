@@ -4283,7 +4283,7 @@ Video Disk Recorder Revision History
 - Speeded up cVideoRepacker (thanks to Reinhard Nissl).
 - Added an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
   process the audio data (thanks to Marco Schlüßler).
-- Added Czech language texts (thanks to Bárta Vladimír).
+- Added Czech language texts (thanks to Vladimír Bárta).
   Plugin authors may want to add the new entries to their I18N texts and contact
   the translators to have their texts translated. Note that there are now 21
   different OSD languages, so please make sure you have 21 versions for each of
@@ -4688,7 +4688,7 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 
-2006-05-01: Version 1.4.0-1
+2006-05-05: Version 1.4.0-1
 
 - Updated 'S110W' in 'sources.conf'.
 - Adjusted the 'runvdr' script so that the user can fill in the functions to
@@ -4697,3 +4697,4 @@ Video Disk Recorder Revision History
 - Added 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with quoting
   (suggested by Udo Richter).
 - Fixed missing ',' in the Italian and Polish OSD texts (thanks to Marko Mäkelä).
+- Updated the Czech OSD texts (thanks to Vladimír Bárta).

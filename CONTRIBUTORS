@@ -1831,7 +1831,7 @@ Ronny Kornexl <ronny.kornexl@online.de>
  font if set to '3' - even if it would have been a fixed font
  for reporting a bug in initializing 'noapiv' in the Makefile
 
-Bárta Vladimír <vladimir.barta@k2atmitec.cz>
+Vladimír Bárta <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
 
 Christoph Haubrich <christoph1.haubrich@arcor.de>
