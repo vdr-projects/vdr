@@ -4688,7 +4688,7 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 
-2006-05-05: Version 1.4.0-1
+2006-05-06: Version 1.4.0-1
 
 - Updated 'S110W' in 'sources.conf'.
 - Adjusted the 'runvdr' script so that the user can fill in the functions to
@@ -4702,3 +4702,6 @@ Video Disk Recorder Revision History
   (thanks to Udo Richter).
 - Fixed the character 'r' in fontosd and fontsml for iso8859-2 (thanks to Vladimír
   Bárta).
+- When checking whether a VPS timer has entered the "VPS margin", the event's start
+  time is now used instead of the timer's start time, because otherwise events that
+  start way off of their VPS time wouldn't be recorded correctly.

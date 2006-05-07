@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.58 2006/04/21 15:12:49 kls Exp $
+ * $Id: timers.c 1.59 2006/05/07 09:01:00 kls Exp $
  */
 
 #include "timers.h"
@@ -365,10 +365,13 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
      }
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && !Directly && event && event->Vps() && event->Schedule() && event->Schedule()->PresentSeenWithin(30)) {
-        startTime = event->StartTime();
-        stopTime = event->EndTime();
-        return event->IsRunning(true);
+     if (HasFlags(tfVps) && event && event->Vps()) {
+        if (Margin || !Directly) {
+           startTime = event->StartTime();
+           stopTime = event->EndTime();
+           if (!Margin)
+              return event->IsRunning(true);
+           }
         }
      return startTime <= t + Margin && t < stopTime; // must stop *before* stopTime to allow adjacent timers
      }
