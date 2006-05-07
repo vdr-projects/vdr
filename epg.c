@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.72 2006/04/22 12:02:47 kls Exp $
+ * $Id: epg.c 1.73 2006/05/07 09:13:36 kls Exp $
  */
 
 #include "epg.h"
@@ -327,8 +327,10 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                              cEvent *newEvent = NULL;
                              if (Event)
                                 DELETENULL(Event->components);
-                             if (!Event)
+                             if (!Event) {
                                 Event = newEvent = new cEvent(EventID);
+                                Event->seen = 0;
+                                }
                              if (Event) {
                                 Event->SetTableID(TableID);
                                 Event->SetStartTime(StartTime);
