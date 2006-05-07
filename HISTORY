@@ -4707,3 +4707,4 @@ Video Disk Recorder Revision History
   start way off of their VPS time wouldn't be recorded correctly.
 - If VPS timers are active, their events are now being kept up to date if there
   are any free devices available.
+- Fixed the character #207 in fontosd for iso8859-2 (thanks to Vladimír Bárta).
