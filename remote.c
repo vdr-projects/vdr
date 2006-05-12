@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.50 2006/04/17 08:58:28 kls Exp $
+ * $Id: remote.c 1.51 2006/05/12 12:40:15 kls Exp $
  */
 
 #include "remote.h"
@@ -182,11 +182,11 @@ eKeys cRemote::Get(int WaitMs, char **UnknownCode)
             repeatTimeout.Set(REPEATTIMEOUT);
          return k;
          }
-      else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs) && repeatTimeout.TimedOut()) {
-         if (learning && UnknownCode) {
-            *UnknownCode = unknownCode;
-            unknownCode = NULL;
-            }
+      else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs) && repeatTimeout.TimedOut())
+         return kNone;
+      else if (learning && UnknownCode && unknownCode) {
+         *UnknownCode = unknownCode;
+         unknownCode = NULL;
          return kNone;
          }
       }
