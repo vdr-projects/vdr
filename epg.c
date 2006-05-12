@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.73 2006/05/07 09:13:36 kls Exp $
+ * $Id: epg.c 1.74 2006/05/12 13:25:44 kls Exp $
  */
 
 #include "epg.h"
@@ -712,12 +712,12 @@ const cEvent *cSchedule::GetFollowingEvent(void) const
 
 const cEvent *cSchedule::GetEvent(tEventID EventID, time_t StartTime) const
 {
-  // Returns either the event info with the given EventID or, if that one can't
-  // be found, the one with the given StartTime (or NULL if neither can be found)
-  cEvent *pt = eventsHashID.Get(EventID);
-  if (!pt && StartTime > 0) // 'StartTime < 0' is apparently used with NVOD channels
-     pt = eventsHashStartTime.Get(StartTime);
-  return pt;
+  // Returns the event info with the given StartTime or, if no actual StartTime
+  // is given, the one with the given EventID.
+  if (StartTime > 0) // 'StartTime < 0' is apparently used with NVOD channels
+     return eventsHashStartTime.Get(StartTime);
+  else
+     return eventsHashID.Get(EventID);
 }
 
 const cEvent *cSchedule::GetEventAround(time_t Time) const

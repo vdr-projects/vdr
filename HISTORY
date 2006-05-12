@@ -4710,3 +4710,6 @@ Video Disk Recorder Revision History
 - Fixed the character #207 in fontosd for iso8859-2 (thanks to Vladimír Bárta).
 - Fixed handling unknown codes when learning LIRC remote control codes (reported
   by Helmut Auer).
+- Since some channels (especially the Austrian ORF) randomly change the ids of their
+  EPG events, VDR now gives the start time precedence when searching for existing
+  events.
