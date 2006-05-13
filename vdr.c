@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.269 2006/05/07 09:13:36 kls Exp $
+ * $Id: vdr.c 1.270 2006/05/13 09:09:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -768,7 +768,7 @@ int main(int argc, char *argv[])
                   bool NeedsTransponder = false;
                   if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording()) {
                      if (Timer->Matches(Now, true, Setup.VpsMargin))
-                        TimerInVpsMargin = InVpsMargin = true;
+                        InVpsMargin = true;
                      else if (Timer->Event())
                         NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
                      else {
@@ -779,6 +779,7 @@ int main(int argc, char *argv[])
                            NeedsTransponder = Schedule && !Schedule->PresentSeenWithin(VPSUPTODATETIME);
                            }
                         }
+                     TimerInVpsMargin |= InVpsMargin | NeedsTransponder;
                      }
                   Timer->SetInVpsMargin(InVpsMargin);
                   if (NeedsTransponder || InVpsMargin) {
