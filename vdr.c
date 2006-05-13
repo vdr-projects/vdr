@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.270 2006/05/13 09:09:34 kls Exp $
+ * $Id: vdr.c 1.271 2006/05/13 09:10:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -798,7 +798,7 @@ int main(int argc, char *argv[])
                                if (d->MaySwitchTransponder())
                                   // this one can be switched without disturbing anything else
                                   Device = d;
-                               else if (!Device && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                               else if (!Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
                                   // use this one only if no other with less impact can be found
                                   Device = d;
                                }
