@@ -4688,7 +4688,7 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Nino Gerbino and Antonio Ospite).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 
-2006-05-12: Version 1.4.0-1
+2006-05-14: Version 1.4.0-1
 
 - Updated 'S110W' in 'sources.conf'.
 - Adjusted the 'runvdr' script so that the user can fill in the functions to
@@ -4713,3 +4713,5 @@ Video Disk Recorder Revision History
 - Since some channels (especially the Austrian ORF) randomly change the ids of their
   EPG events, VDR now gives the start time precedence when searching for existing
   events.
+- Fixed automatically updating the CAM menu in case the whole operation (for
+  instance a firmware update) takes longer than the menu timeout.

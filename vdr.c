@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.271 2006/05/13 09:10:56 kls Exp $
+ * $Id: vdr.c 1.272 2006/05/14 09:23:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -1032,6 +1032,9 @@ int main(int argc, char *argv[])
               else if (time(NULL) - LastActivity > MENUTIMEOUT)
                  state = osEnd;
               }
+           // TODO make the CAM menu stay open in case of automatic updates and have it return osContinue; then the following two lines can be removed again
+           else if (state == osEnd && LastActivity > 1)
+              LastActivity = time(NULL);
            switch (state) {
              case osPause:  DELETE_MENU;
                             cControl::Shutdown(); // just in case
