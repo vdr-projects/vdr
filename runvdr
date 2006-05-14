@@ -5,6 +5,11 @@
 # If VDR exits abnormally, the driver will be reloaded
 # and VDR restarted.
 #
+# In order to actually use this script you need to implement
+# the functions DriverLoaded(), LoadDriver() and UnloadDriver()
+# and maybe adjust the VDRPRG and VDRCMD to your particular
+# requirements.
+#
 # Since this script loads the DVB driver, it must be started
 # as user 'root'. Add the option "-u username" to run VDR
 # under the given user name.
@@ -15,27 +20,43 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.16 2006/02/04 15:20:48 kls Exp $
+# $Id: runvdr 1.18 2006/05/01 14:51:00 kls Exp $
 
-DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
 
 LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
 KILL="/usr/bin/killall -q -TERM"
 
+# Detect whether the DVB driver is already loaded
+# and return 0 if it *is* loaded, 1 if not:
+function DriverLoaded()
+{
+  return 1
+}
+
+# Load all DVB driver modules needed for your hardware:
+function LoadDriver()
+{
+}
+
+# Unload all DVB driver modules loaded in LoadDriver():
+function UnloadDriver()
+{
+}
+
 # Load driver if it hasn't been loaded already:
-if [ $LSMOD -eq 0 ] ; then
-   (cd $DVBDIR; make insmod)
+if ! DriverLoaded; then
+   LoadDriver
    fi
 
 while (true) do
-      $VDRCMD
+      eval "$VDRCMD"
       if test $? -eq 0 -o $? -eq 2; then exit; fi
-      date
-      echo "restarting VDR"
+      echo "`date` reloading DVB driver"
       $KILL $VDRPRG
       sleep 10
-      (cd $DVBDIR; make rmmod; make insmod)
-      date
+      UnloadDriver
+      LoadDriver
+      echo "`date` restarting VDR"
       done

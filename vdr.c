@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.267 2006/04/29 09:14:06 kls Exp $
+ * $Id: vdr.c 1.272 2006/05/14 09:23:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -74,6 +74,8 @@
 #define SHUTDOWNRETRY     300 // seconds before trying again to shut down
 #define VPSCHECKDELTA      10 // seconds between checks for timers that have entered the VPS margin
 #define VPSDEVICETIMEOUT    8 // seconds before a device used for VPS may be reused
+#define VPSLOOKAHEADTIME   24 // hours within which VPS timers will make sure their events are up to date
+#define VPSUPTODATETIME  3600 // seconds before the event or schedule of a VPS timer needs to be refreshed
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -762,8 +764,25 @@ int main(int argc, char *argv[])
               TimerInVpsMargin = false;
               static time_t DeviceUsed[MAXDEVICES] = { 0 };
               for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
-                  if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && Timer->Matches(Now, true, Setup.VpsMargin)) {
-                     Timer->SetInVpsMargin(true);
+                  bool InVpsMargin = false;
+                  bool NeedsTransponder = false;
+                  if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording()) {
+                     if (Timer->Matches(Now, true, Setup.VpsMargin))
+                        InVpsMargin = true;
+                     else if (Timer->Event())
+                        NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
+                     else {
+                        cSchedulesLock SchedulesLock;
+                        const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+                        if (Schedules) {
+                           const cSchedule *Schedule = Schedules->GetSchedule(Timer->Channel());
+                           NeedsTransponder = Schedule && !Schedule->PresentSeenWithin(VPSUPTODATETIME);
+                           }
+                        }
+                     TimerInVpsMargin |= InVpsMargin | NeedsTransponder;
+                     }
+                  Timer->SetInVpsMargin(InVpsMargin);
+                  if (NeedsTransponder || InVpsMargin) {
                      // Find a device that provides the required transponder:
                      cDevice *Device = NULL;
                      for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -779,13 +798,13 @@ int main(int argc, char *argv[])
                                if (d->MaySwitchTransponder())
                                   // this one can be switched without disturbing anything else
                                   Device = d;
-                               else if (!Device && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                               else if (!Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
                                   // use this one only if no other with less impact can be found
                                   Device = d;
                                }
                             }
                          }
-                     if (!Device) {
+                     if (!Device && InVpsMargin) {
                         cDevice *d = cDevice::ActualDevice();
                         if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && Now - DeviceUsed[d->DeviceNumber()] > VPSDEVICETIMEOUT)
                            Device = d; // use the actual device as a last resort
@@ -805,10 +824,7 @@ int main(int argc, char *argv[])
                            Skins.Message(mtInfo, tr("Upcoming VPS recording!"));
                            }
                         }
-                     TimerInVpsMargin = true;
                      }
-                  else
-                     Timer->SetInVpsMargin(false);
                   }
               LastVpsCheck = time(NULL);
               }
@@ -970,7 +986,7 @@ int main(int argc, char *argv[])
                   }
                break;
           // Power off:
-          case kPower:
+          case kPower: {
                isyslog("Power button pressed");
                DELETE_MENU;
                if (!Shutdown) {
@@ -985,8 +1001,20 @@ int main(int argc, char *argv[])
                   }
                if (cPluginManager::Active(tr("shut down anyway?")))
                   break;
+               cTimer *timer = Timers.GetNextActiveTimer();
+               time_t Next  = timer ? timer->StartTime() : 0;
+               time_t Delta = timer ? Next - time(NULL) : 0;
+               if (Next && Delta <= Setup.MinEventTimeout * 60) {
+                  char *buf;
+                  asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
+                  bool confirm = Interface->Confirm(buf);
+                  free(buf);
+                  if (!confirm)
+                     break;
+                  }
                ForceShutdown = true;
                break;
+               }
           default: break;
           }
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
@@ -1004,6 +1032,9 @@ int main(int argc, char *argv[])
               else if (time(NULL) - LastActivity > MENUTIMEOUT)
                  state = osEnd;
               }
+           // TODO make the CAM menu stay open in case of automatic updates and have it return osContinue; then the following two lines can be removed again
+           else if (state == osEnd && LastActivity > 1)
+              LastActivity = time(NULL);
            switch (state) {
              case osPause:  DELETE_MENU;
                             cControl::Shutdown(); // just in case
@@ -1120,15 +1151,6 @@ int main(int argc, char *argv[])
                        }
                     else
                        LastActivity = 1;
-                    }
-                 if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
-                    char *buf;
-                    asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
-                    if (Interface->Confirm(buf))
-                       ForceShutdown = true;
-                    else
-                       UserShutdown = false;
-                    free(buf);
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;

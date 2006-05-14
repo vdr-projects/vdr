@@ -563,6 +563,8 @@ Helmut Auer <vdr@helmutauer.de>
  there are too many levels of symbolic links
  for reporting that an attempt to call a plugin's main menu function while a
  message is being displayed didn't work
+ for reporting a problem with the "Press any key on the RC unit" step when learning
+ LIRC remote control codes
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1422,6 +1424,9 @@ Udo Richter <udo_richter@gmx.de>
  for providing a shorter version of the 'sed' expression for extracting APIVERSION
  for fixing a bug in handling the "Power" key in case a recording is going on and
  no plugin is active
+ for suggesting to add 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with
+ quoting
+ for fixing handling the "Power" key in case a timer is about to start recording
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1677,6 +1682,7 @@ Marko Mäkelä <marko.makela@hut.fi>
  for reporting that a menu was automatically closed when a replay ends
  for suggesting to ignore k_Repeat when deciding whether the same key has been
  pressed in string input fields
+ for fixing missing ',' in the Italian and Polish OSD texts
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -1828,8 +1834,10 @@ Ronny Kornexl <ronny.kornexl@online.de>
  font if set to '3' - even if it would have been a fixed font
  for reporting a bug in initializing 'noapiv' in the Makefile
 
-Bárta Vladimír <vladimir.barta@k2atmitec.cz>
+Vladimír Bárta <vladimir.barta@k2atmitec.cz>
  for translating OSD texts to the Czech language
+ for fixing the character 'r' in fontosd and fontsml for iso8859-2
+ for fixing the character #207 in fontosd for iso8859-2
 
 Christoph Haubrich <christoph1.haubrich@arcor.de>
  for making the "Ok" key in the "Jump" mode of the replay progress display confirm
@@ -1894,3 +1902,6 @@ Werner Färber <w.faerber@gmx.de>
 Dominique Simon <d.simon@gmx.net>
  for reporting a bug in handling the "Power" key in case a recording is going on and
  no plugin is active
+
+M. Kiesel <vdr@continuity.cjb.net>
+ for reporting that the 'runvdr' script still used DVBDIR

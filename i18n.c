@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.279 2006/04/30 08:51:10 kls Exp $
+ * $Id: i18n.c 1.281 2006/05/05 13:26:09 kls Exp $
  *
  * Translations provided by:
  *
@@ -484,7 +484,7 @@ const tI18nPhrase Phrases[] = {
   { "This event - all channels",
     "Diese Sendung - alle Kanäle",
     "Ta oddaja - vsi kanali",
-    "Questo evento - tutti i canali"
+    "Questo evento - tutti i canali",
     "",//TODO
     "",//TODO
     "Cet événement - toutes les chaînes",
@@ -1703,7 +1703,7 @@ const tI18nPhrase Phrases[] = {
     "Aucun cryptage",
     "",//TODO
     "vapaa",
-    "nieszyfrowany"
+    "nieszyfrowany",
     "en abierto",
     "",//TODO
     "Okodad",
@@ -2310,7 +2310,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "VPS salvestamine tulekul!",
     "VPS optagelse starter snart!",
-    "",//TODO
+    "Brzo zaène nahrávání VPS!",
   },
   { "No free DVB device to record!",
     "Keine freie DVB-Karte zum Aufnehmen!",
@@ -3764,7 +3764,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ainult PID-id",
     "kun PIDs",
-    "",// TODO
+    "jen PIDs",
   },
   { "names and PIDs",
     "Namen und PIDs",
@@ -4490,7 +4490,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Kanal käivitamisel",
     "Kanal ved opstart",
-    "",// TODO
+    "Kanál po spu¹tìní",
   },
   { "Setup.Miscellaneous$Initial volume",
     "Lautstärke beim Einschalten",
@@ -4512,7 +4512,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Helitugevus käivitamisel",
     "Lydstyrke ved opstart",
-    "",// TODO
+    "Hlasitost po spu¹tìní",
   },
   { "Setup.Miscellaneous$as before",
     "wie vorher",
@@ -4534,7 +4534,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "nagu enne",
     "som før",
-    "",// TODO
+    "jako naposledy",
   },
   // The days of the week:
   { "MTWTFSS",
@@ -5353,7 +5353,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Järgmine",
     "Fremad",
-    "",// TODO
+    "Dále",
   },
   { "Key$Prev",
     "Zurück",
@@ -5375,7 +5375,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Eelmine",
     "Tilbage",
-    "",// TODO
+    "Zpìt",
   },
   { "Key$Power",
     "Ausschalten",
@@ -5463,7 +5463,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Eelmine kanal",
     "Foregående kanal",
-    "",// TODO
+    "Pøedcházející kanál",
   },
   { "Key$Volume+",
     "Lautstärke+",
