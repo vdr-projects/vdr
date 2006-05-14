@@ -4715,3 +4715,7 @@ Video Disk Recorder Revision History
   events.
 - Fixed automatically updating the CAM menu in case the whole operation (for
   instance a firmware update) takes longer than the menu timeout.
+
+2006-05-14: Version 1.4.0-2
+
+- Removed leftover LSMOD=... line from 'runvdr'.
