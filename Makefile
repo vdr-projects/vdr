@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.91 2006/04/24 17:18:06 kls Exp $
+# $Id: Makefile 1.92 2006/05/19 12:00:32 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -223,7 +223,7 @@ install-doc:
 
 install-plugins: plugins
 	@mkdir -p $(PLUGINLIBDIR)
-	@cp $(PLUGINDIR)/lib/libvdr-*.so.$(APIVERSION) $(PLUGINLIBDIR)
+	@cp $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(PLUGINLIBDIR)
 
 # Source documentation:
 

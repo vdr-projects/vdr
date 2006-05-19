@@ -6,7 +6,7 @@
 
 <center><h1>The VDR Plugin System</h1></center>
 
-<center><b>Version 1.4</b></center>
+<center><b>Version 1.4.1</b></center>
 <p>
 <center>
 Copyright &copy; 2006 Klaus Schmidinger<br>
@@ -192,6 +192,16 @@ of only lowercase characters and digits, it will only follow the symbolic links,
 should lead to the current version of the plugin you want to use. This way you can
 have several different versions of a plugin source (like <tt>hello-0.0.1</tt> and
 <tt>hello-0.0.2</tt>) and define which one to actually use through the symbolic link.
+<p>
+If a plugin needs library files of its own, it can copy them to the <tt>lib</tt>
+directory following the naming convention <tt>lib<i>name</i>-<i>library</i>.so.0.0.1</tt>,
+where <i>name</i> is the name of the plugin, and <i>library</i> identifies the
+plugin's additional library. If the plugin <tt>hello</tt> would require the two
+additional libraries <tt>foo</tt> and <tt>bar</tt>, the  names would be
+<p>
+<tt>libhello-foo.so.0.0.1</tt><br>
+<tt>libhello-bar.so.0.0.1</tt>
+<p>
 
 <a name="Initializing a new plugin directory"><hr><h2>Initializing a new plugin directory</h2>
 
