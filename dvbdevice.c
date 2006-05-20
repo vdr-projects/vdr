@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.156 2006/04/01 14:19:43 kls Exp $
+ * $Id: dvbdevice.c 1.157 2006/05/20 09:52:23 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -356,7 +356,12 @@ void cDvbTuner::Action(void)
 // --- cDvbDevice ------------------------------------------------------------
 
 int cDvbDevice::devVideoOffset = -1;
-bool cDvbDevice::setTransferModeForDolbyDigital = true;
+int cDvbDevice::setTransferModeForDolbyDigital = 1;
+#if APIVERSNUM == 10400
+int cDvbDevice__setTransferModeForDolbyDigital = -1;
+#else
+#warning ******* API version changed - remove old stuff
+#endif
 
 cDvbDevice::cDvbDevice(int n)
 {
@@ -653,7 +658,7 @@ eVideoSystem cDvbDevice::GetVideoSystem(void)
 
 bool cDvbDevice::SetAudioBypass(bool On)
 {
-  if (!setTransferModeForDolbyDigital)
+  if (setTransferModeForDolbyDigital != 1)
      return false;
   return ioctl(fd_audio, AUDIO_SET_BYPASS_MODE, On) == 0;
 }
@@ -914,10 +919,23 @@ void cDvbDevice::SetDigitalAudioDevice(bool On)
      }
 }
 
+#if APIVERSNUM == 10400
 void cDvbDevice::SetTransferModeForDolbyDigital(bool On)
 {
-  setTransferModeForDolbyDigital = On;
+  if (cDvbDevice__setTransferModeForDolbyDigital >= 0) {
+     setTransferModeForDolbyDigital = cDvbDevice__setTransferModeForDolbyDigital;
+     cDvbDevice__setTransferModeForDolbyDigital = -1;
+     }
+  else
+     setTransferModeForDolbyDigital = On;
 }
+#else
+#warning ******* API version changed - remove old stuff
+void cDvbDevice::SetTransferModeForDolbyDigital(int Mode)
+{
+  setTransferModeForDolbyDigital = Mode;
+}
+#endif
 
 void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
 {
@@ -932,7 +950,7 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
            }
         }
      else if (IS_DOLBY_TRACK(Type)) {
-        if (!setTransferModeForDolbyDigital)
+        if (setTransferModeForDolbyDigital == 0)
            return;
         // Currently this works only in Transfer Mode
         ForceTransferMode();

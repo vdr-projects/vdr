@@ -4716,8 +4716,12 @@ Video Disk Recorder Revision History
 - Fixed automatically updating the CAM menu in case the whole operation (for
   instance a firmware update) takes longer than the menu timeout.
 
-2006-05-19: Version 1.4.0-2
+2006-05-20: Version 1.4.0-2
 
 - Removed leftover LSMOD=... line from 'runvdr'.
 - Modified the Makefile to copy additional libraries a plugin might provide (suggested
   by Wayne Keer). See PLUGINS.html for details.
+- Fixed handling Transfer Mode when replaying Dolby Digital audio and the option
+  '-a' was given (based on a patch from Werner Fink). To avoid having to increment
+  the API version, several #if checks have been introduced around this. These will
+  be removed once the API version actually needs to be incremented.

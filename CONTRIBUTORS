@@ -309,6 +309,8 @@ Werner Fink <werner@suse.de>
  and firmware can handle live DD without the need of a Transfer Mode
  for fixing cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is
  false
+ for a patch that was used as a base to fix handling Transfer Mode when replaying
+ Dolby Digital audio and the option '-a' was given
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
