@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.74 2006/05/12 13:25:44 kls Exp $
+ * $Id: epg.c 1.75 2006/05/25 14:55:36 kls Exp $
  */
 
 #include "epg.h"
@@ -227,7 +227,7 @@ bool cEvent::HasTimer(void) const
 
 bool cEvent::IsRunning(bool OrAboutToStart) const
 {
-  return SeenWithin(RUNNINGSTATUSTIMEOUT) && runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
+  return runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
 }
 
 cString cEvent::GetDateString(void) const
