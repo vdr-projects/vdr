@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.435 2006/04/28 12:48:01 kls Exp $
+ * $Id: menu.c 1.436 2006/05/25 12:24:53 kls Exp $
  */
 
 #include "menu.h"
@@ -2131,7 +2131,7 @@ cMenuSetupOSD::cMenuSetupOSD(void)
 cMenuSetupOSD::~cMenuSetupOSD()
 {
   cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
-  delete skinDescriptions;
+  delete[] skinDescriptions;
 }
 
 void cMenuSetupOSD::Set(void)
