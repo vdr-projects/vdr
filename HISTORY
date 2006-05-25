@@ -4731,3 +4731,5 @@ Video Disk Recorder Revision History
   Udo Richter).
 - Now setting a timer's cached start time to 0 after a call to Skip() (thanks to
   Udo Richter).
+- Fixed handling the running status of EPG events in case the "Schedule" menu is
+  currently open (i.e. a write lock on the schedules data can't be achieved).
