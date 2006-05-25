@@ -4727,3 +4727,5 @@ Video Disk Recorder Revision History
   be removed once the API version actually needs to be incremented.
 - Fixed deleting the 'skinDescriptions' in cMenuSetupOSD::~cMenuSetupOSD() (thanks
   to Tobias Grimm).
+- Fixed calculating the start time of repeated timers with "first day" (thanks to
+  Udo Richter).
