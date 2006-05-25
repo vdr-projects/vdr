@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.60 2006/05/25 12:32:11 kls Exp $
+ * $Id: timers.c 1.61 2006/05/25 14:36:37 kls Exp $
  */
 
 #include "timers.h"
@@ -560,6 +560,7 @@ bool cTimer::HasFlags(uint Flags) const
 void cTimer::Skip(void)
 {
   day = IncDay(SetTime(StartTime(), 0), 1);
+  startTime = 0;
   SetEvent(NULL);
 }
 

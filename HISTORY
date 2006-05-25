@@ -4729,3 +4729,5 @@ Video Disk Recorder Revision History
   to Tobias Grimm).
 - Fixed calculating the start time of repeated timers with "first day" (thanks to
   Udo Richter).
+- Now setting a timer's cached start time to 0 after a call to Skip() (thanks to
+  Udo Richter).

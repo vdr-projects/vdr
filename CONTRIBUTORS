@@ -1432,6 +1432,7 @@ Udo Richter <udo_richter@gmx.de>
  quoting
  for fixing handling the "Power" key in case a timer is about to start recording
  for fixing calculating the start time of repeated timers with "first day"
+ for setting a timer's cached start time to 0 after a call to Skip()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
