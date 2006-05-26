@@ -274,6 +274,7 @@ Artur Skawina <skawina@geocities.com>
  for pointing out a problem with the ERR macro defined by ncurses.h
  for a patch that contained a fix for checking toFile in cCuttingThread::Action()
  for improving cUnbufferedFile
+ for fixing calculating the cache size in cUnbufferedFile::Read()
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR

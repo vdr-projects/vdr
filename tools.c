@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.117 2006/04/21 15:12:47 kls Exp $
+ * $Id: tools.c 1.118 2006/05/26 10:10:31 kls Exp $
  */
 
 #include "tools.h"
@@ -1179,7 +1179,7 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
            }
         else if (cachedend > ahead && cachedend - curpos > READCHUNK * 2) {
            // current position has moved back enough, shrink head window.
-           FadviseDrop(curpos + READCHUNK, cachedend - curpos + READCHUNK);
+           FadviseDrop(curpos + READCHUNK, cachedend - (curpos + READCHUNK));
            cachedend = curpos + READCHUNK;
            }
         }

@@ -4716,7 +4716,7 @@ Video Disk Recorder Revision History
 - Fixed automatically updating the CAM menu in case the whole operation (for
   instance a firmware update) takes longer than the menu timeout.
 
-2006-05-25: Version 1.4.0-2
+2006-05-26: Version 1.4.0-2
 
 - Removed leftover LSMOD=... line from 'runvdr'.
 - Modified the Makefile to copy additional libraries a plugin might provide (suggested
@@ -4734,3 +4734,4 @@ Video Disk Recorder Revision History
 - Fixed handling the running status of EPG events in case the "Schedule" menu is
   currently open (i.e. a write lock on the schedules data can't be achieved).
 - Fixed handling VPS timers in case the EPG event hasn't been 'seen' in a while.
+- Fixed calculating the cache size in cUnbufferedFile::Read() (thanks to Artur Skawina).
