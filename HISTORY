@@ -4735,3 +4735,4 @@ Video Disk Recorder Revision History
   currently open (i.e. a write lock on the schedules data can't be achieved).
 - Fixed handling VPS timers in case the EPG event hasn't been 'seen' in a while.
 - Fixed calculating the cache size in cUnbufferedFile::Read() (thanks to Artur Skawina).
+- Removed -fPIC from VDR's and libsi's Makefile (suggested by Prakash Punnoor).

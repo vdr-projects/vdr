@@ -1913,3 +1913,6 @@ Dominique Simon <d.simon@gmx.net>
 
 M. Kiesel <vdr@continuity.cjb.net>
  for reporting that the 'runvdr' script still used DVBDIR
+
+Prakash Punnoor <prakash@punnoor.de>
+ for suggesting to remove -fPIC from VDR's and libsi's Makefile
