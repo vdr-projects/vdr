@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.75 2006/04/14 14:35:13 kls Exp $
+ * $Id: device.h 1.76 2006/05/26 12:46:59 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -169,7 +169,7 @@ public:
   int CardIndex(void) const { return cardIndex; }
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
-         ///< Returns the number of this device (0 ... MAXDEVICES - 1).
+         ///< Returns the number of this device (0 ... numDevices).
   virtual int ProvidesCa(const cChannel *Channel) const;
          ///< Checks whether this device provides the conditional access
          ///< facilities to decrypt the given Channel.
