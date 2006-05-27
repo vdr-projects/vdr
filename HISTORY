@@ -4716,7 +4716,7 @@ Video Disk Recorder Revision History
 - Fixed automatically updating the CAM menu in case the whole operation (for
   instance a firmware update) takes longer than the menu timeout.
 
-2006-05-26: Version 1.4.0-2
+2006-05-27: Version 1.4.0-2
 
 - Removed leftover LSMOD=... line from 'runvdr'.
 - Modified the Makefile to copy additional libraries a plugin might provide (suggested
@@ -4738,3 +4738,4 @@ Video Disk Recorder Revision History
 - Removed -fPIC from VDR's and libsi's Makefile (suggested by Prakash Punnoor).
 - Modifed the device selection to better handle timer conflicts (reported by
   Christian Wieninger).
+- Avoiding a compiler warning in libsi's TypeLoop::operator[].
