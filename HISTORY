@@ -4739,3 +4739,4 @@ Video Disk Recorder Revision History
 - Modifed the device selection to better handle timer conflicts (reported by
   Christian Wieninger).
 - Avoiding a compiler warning in libsi's TypeLoop::operator[].
+- Now processing the "frequency list descriptor" (based on a patch from Anssi Hannula).
