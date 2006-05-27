@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.129 2006/05/27 09:43:37 kls Exp $
+ * $Id: device.c 1.130 2006/05/27 11:14:42 kls Exp $
  */
 
 #include "device.h"
@@ -601,7 +601,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      StopReplay();
 
   // If this card is switched to an other transponder, any receivers still
-  // attached to it ineed to be automatically detached:
+  // attached to it need to be automatically detached:
   bool NeedsDetachReceivers = false;
 
   // If this card can't receive this channel, we must not actually switch
