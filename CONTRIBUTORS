@@ -1763,6 +1763,7 @@ Christian Wieninger <cwieninger@gmx.de>
  for his idea of going directly into the "Edit timer" menu for a timer created
  from the "Schedule" menu in case it starts withing the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
+ for reporting a problem with the device selection in case of timer conflicts
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the

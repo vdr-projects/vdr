@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 1.3 2005/01/16 14:05:10 kls Exp $
+ * $Id: receiver.h 1.4 2006/05/27 09:04:22 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -44,7 +44,7 @@ public:
                ///< Pids1...Pids3 are pointers to zero terminated lists of PIDs.
                ///< If any of these PIDs are 0, they will be silently ignored.
                ///< The total number of non-zero PIDs must not exceed MAXRECEIVEPIDS.
-               ///< Priority may be any value in the range 0..99. Negative values indicate
+               ///< Priority may be any value in the range -99..99. Negative values indicate
                ///< that this cReceiver may be detached at any time (without blocking the
                ///< cDevice it is attached to).
   virtual ~cReceiver();
