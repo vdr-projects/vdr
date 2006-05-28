@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.20 2006/04/17 12:19:15 kls Exp $
+ *   $Id: descriptor.c 1.21 2006/05/28 14:25:30 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -806,21 +806,34 @@ int PremiereContentTransmissionDescriptor::getServiceId() const {
    return HILO(s->service_id);
 }
 
-int PremiereContentTransmissionDescriptor::getMJD() const {
+void PremiereContentTransmissionDescriptor::Parse() {
+   s=data.getData<const descr_premiere_content_transmission>();
+   startDayLoop.setData(data+sizeof(descr_premiere_content_transmission), getLength()-sizeof(descr_premiere_content_transmission));
+}
+
+int PremiereContentTransmissionDescriptor::StartDayEntry::getMJD() const {
    return HILO(s->mjd);
 }
 
-void PremiereContentTransmissionDescriptor::Parse() {
-   s=data.getData<const descr_premiere_content_transmission>();
-   startTimeLoop.setData(data+sizeof(descr_premiere_content_transmission), getLength()-sizeof(descr_premiere_content_transmission));
+int PremiereContentTransmissionDescriptor::StartDayEntry::getLoopLength() const {
+   return s->start_time_loop;
 }
 
-time_t PremiereContentTransmissionDescriptor::StartTimeEntry::getStartTime(int mjd) const {
+int PremiereContentTransmissionDescriptor::StartDayEntry::getLength() {
+   return sizeof(item_premiere_content_transmission_day)+getLoopLength();
+}
+
+void PremiereContentTransmissionDescriptor::StartDayEntry::Parse() {
+   s=data.getData<const item_premiere_content_transmission_day>();
+   startTimeLoop.setData(data+sizeof(item_premiere_content_transmission_day), getLoopLength());
+}
+
+time_t PremiereContentTransmissionDescriptor::StartDayEntry::StartTimeEntry::getStartTime(int mjd) const {
    return DVBTime::getTime(mjd >> 8, mjd & 0xff, s->start_time_h, s->start_time_m, s->start_time_s);
 }
 
-void PremiereContentTransmissionDescriptor::StartTimeEntry::Parse() {
-   s=data.getData<const item_premiere_content_transmission_reference>();
+void PremiereContentTransmissionDescriptor::StartDayEntry::StartTimeEntry::Parse() {
+   s=data.getData<const item_premiere_content_transmission_time>();
 }
 
 void ApplicationSignallingDescriptor::Parse() {
