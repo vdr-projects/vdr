@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.157 2006/05/20 09:52:23 kls Exp $
+ * $Id: dvbdevice.c 1.158 2006/05/28 15:05:03 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -357,11 +357,6 @@ void cDvbTuner::Action(void)
 
 int cDvbDevice::devVideoOffset = -1;
 int cDvbDevice::setTransferModeForDolbyDigital = 1;
-#if APIVERSNUM == 10400
-int cDvbDevice__setTransferModeForDolbyDigital = -1;
-#else
-#warning ******* API version changed - remove old stuff
-#endif
 
 cDvbDevice::cDvbDevice(int n)
 {
@@ -919,23 +914,10 @@ void cDvbDevice::SetDigitalAudioDevice(bool On)
      }
 }
 
-#if APIVERSNUM == 10400
-void cDvbDevice::SetTransferModeForDolbyDigital(bool On)
-{
-  if (cDvbDevice__setTransferModeForDolbyDigital >= 0) {
-     setTransferModeForDolbyDigital = cDvbDevice__setTransferModeForDolbyDigital;
-     cDvbDevice__setTransferModeForDolbyDigital = -1;
-     }
-  else
-     setTransferModeForDolbyDigital = On;
-}
-#else
-#warning ******* API version changed - remove old stuff
 void cDvbDevice::SetTransferModeForDolbyDigital(int Mode)
 {
   setTransferModeForDolbyDigital = Mode;
 }
-#endif
 
 void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
 {

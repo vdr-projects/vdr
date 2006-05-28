@@ -4750,3 +4750,5 @@ Video Disk Recorder Revision History
 
 - Fixed the PremiereContentTransmissionDescriptor in 'libsi' (thanks to Stefan
   Huelswitt).
+- Removed all the compatibility '#if APIVERSNUM...' stuff and instead increased
+  the API version number - plugins will have to be recompiled.

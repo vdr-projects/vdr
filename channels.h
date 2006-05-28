@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.41 2006/05/28 10:13:21 kls Exp $
+ * $Id: channels.h 1.42 2006/05/28 15:03:56 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -233,10 +233,7 @@ public:
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
-#if APIVERSNUM != 10400
-#warning ******* API version changed - activate new code
   int GetPrevNormal(int Idx);  // Get previous normal channel (not group)
-#endif
   void ReNumber(void);         // Recalculate 'number' based on channel type
   cChannel *GetByNumber(int Number, int SkipGap = 0);
   cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID);
