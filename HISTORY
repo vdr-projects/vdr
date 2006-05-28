@@ -4741,3 +4741,5 @@ Video Disk Recorder Revision History
 - Avoiding a compiler warning in libsi's TypeLoop::operator[].
 - Now processing the "frequency list descriptor" (based on a patch from Anssi Hannula).
 - Improved the repeat function for LIRC remote controls (thanks to Joerg Riechardt).
+- Fixed moving channels, which sometimes stopped the current replay session
+  (reported by Mirko Dölle).

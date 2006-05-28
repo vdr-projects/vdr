@@ -445,6 +445,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for making the "Play" key in live viewing mode resume a previous replay session
  for suggesting to allow defining key macros for all non-modeless keys
  for reporting a bug in entering '0' in a cMenuEditIntItem
+ for reporting that moving channels sometimes stopped the current replay session
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language

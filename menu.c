@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.436 2006/05/25 12:24:53 kls Exp $
+ * $Id: menu.c 1.437 2006/05/28 09:17:25 kls Exp $
  */
 
 #include "menu.h"
@@ -530,8 +530,15 @@ void cMenuChannels::Move(int From, int To)
      cOsdMenu::Move(From, To);
      Propagate();
      isyslog("channel %d moved to %d", FromNumber, ToNumber);
-     if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr)
-        Channels.SwitchTo(CurrentChannel->Number());
+     if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
+        if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
+           Channels.SwitchTo(CurrentChannel->Number());
+#if APIVERSNUM != 10400
+#warning ******* API version changed - activate new code
+        else
+           cDevice::SetCurrentChannel(CurrentChannel);
+#endif
+        }
      }
 }
 
