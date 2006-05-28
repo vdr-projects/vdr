@@ -541,6 +541,7 @@ Christian Rienecker <C.Rienecker@gmx.net>
 
 Joerg Riechardt <J.Riechardt@gmx.de>
  for filling in some missing teletext PIDs
+ for improving the repeat function for LIRC remote controls
 
 Holger Wächtler <holger@qanu.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
