@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.59 2006/05/13 09:03:59 kls Exp $
+ * $Id: timers.c 1.61 2006/05/25 14:36:37 kls Exp $
  */
 
 #include "timers.h"
@@ -347,7 +347,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
      }
   else {
      for (int i = -1; i <= 7; i++) {
-         time_t t0 = IncDay(t, i);
+         time_t t0 = IncDay(day ? max(day, t) : t, i);
          if (DayMatches(t0)) {
             time_t a = SetTime(t0, begin);
             time_t b = a + length;
@@ -359,7 +359,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
             }
          }
      if (!startTime)
-        startTime = day; // just to have something that's more than a week in the future
+        startTime = IncDay(t, 7); // just to have something that's more than a week in the future
      else if (!Directly && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
         day = 0;
      }
@@ -560,6 +560,7 @@ bool cTimer::HasFlags(uint Flags) const
 void cTimer::Skip(void)
 {
   day = IncDay(SetTime(StartTime(), 0), 1);
+  startTime = 0;
   SetEvent(NULL);
 }
 

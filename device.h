@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.75 2006/04/14 14:35:13 kls Exp $
+ * $Id: device.h 1.77 2006/05/28 09:19:30 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -169,7 +169,7 @@ public:
   int CardIndex(void) const { return cardIndex; }
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
-         ///< Returns the number of this device (0 ... MAXDEVICES - 1).
+         ///< Returns the number of this device (0 ... numDevices).
   virtual int ProvidesCa(const cChannel *Channel) const;
          ///< Checks whether this device provides the conditional access
          ///< facilities to decrypt the given Channel.
@@ -239,6 +239,13 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
+#if APIVERSNUM != 10400
+#warning ******* API version changed - activate new code
+  static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }
+         ///< Sets the number of the current channel on the primary device, without
+         ///< actually switching to it. This can be used to correct the current
+         ///< channel number while replaying.
+#endif
   void ForceTransferMode(void);
          ///< Forces the device into transfermode for the current channel.
   virtual bool HasLock(int TimeoutMs = 0);//XXX PLUGINS.html

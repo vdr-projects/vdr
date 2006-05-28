@@ -274,6 +274,7 @@ Artur Skawina <skawina@geocities.com>
  for pointing out a problem with the ERR macro defined by ncurses.h
  for a patch that contained a fix for checking toFile in cCuttingThread::Action()
  for improving cUnbufferedFile
+ for fixing calculating the cache size in cUnbufferedFile::Read()
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
@@ -309,6 +310,8 @@ Werner Fink <werner@suse.de>
  and firmware can handle live DD without the need of a Transfer Mode
  for fixing cDvbDevice::SetAudioBypass() in case setTransferModeForDolbyDigital is
  false
+ for a patch that was used as a base to fix handling Transfer Mode when replaying
+ Dolby Digital audio and the option '-a' was given
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -442,6 +445,9 @@ Mirko Dölle <mdoelle@linux-user.de>
  for making the "Play" key in live viewing mode resume a previous replay session
  for suggesting to allow defining key macros for all non-modeless keys
  for reporting a bug in entering '0' in a cMenuEditIntItem
+ for reporting that moving channels sometimes stopped the current replay session
+ for reporting a problem with deleting channels in case the current channel's
+ number changes
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -538,6 +544,7 @@ Christian Rienecker <C.Rienecker@gmx.net>
 
 Joerg Riechardt <J.Riechardt@gmx.de>
  for filling in some missing teletext PIDs
+ for improving the repeat function for LIRC remote controls
 
 Holger Wächtler <holger@qanu.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
@@ -1273,6 +1280,8 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
  for reporting some missing braces in remux.c
+ for suggesting to modifiy the Makefile to copy additional libraries a plugin might
+ provide
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1427,6 +1436,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to add 'eval' to the $VDRCMD call in 'runvdr' to avoid problems with
  quoting
  for fixing handling the "Power" key in case a timer is about to start recording
+ for fixing calculating the start time of repeated timers with "first day"
+ for setting a timer's cached start time to 0 after a call to Skip()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1756,6 +1767,7 @@ Christian Wieninger <cwieninger@gmx.de>
  for his idea of going directly into the "Edit timer" menu for a timer created
  from the "Schedule" menu in case it starts withing the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
+ for reporting a problem with the device selection in case of timer conflicts
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -1873,6 +1885,7 @@ Tobias Grimm <listaccount@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
  for fixing a memory leak in handling external EPG data
  for fixing a memory leak in closing the video file during replay
+ for fixing deleting the 'skinDescriptions' in cMenuSetupOSD::~cMenuSetupOSD()
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -1905,3 +1918,9 @@ Dominique Simon <d.simon@gmx.net>
 
 M. Kiesel <vdr@continuity.cjb.net>
  for reporting that the 'runvdr' script still used DVBDIR
+
+Prakash Punnoor <prakash@punnoor.de>
+ for suggesting to remove -fPIC from VDR's and libsi's Makefile
+
+Anssi Hannula <anssi.hannula@gmail.com>
+ for a patch that was used to implement processing the "frequency list descriptor"

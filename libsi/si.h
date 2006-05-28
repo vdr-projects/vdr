@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.14 2006/04/14 10:53:44 kls Exp $
+ *   $Id: si.h 1.15 2006/05/27 13:07:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -399,6 +399,7 @@ public:
          case 8:
             return (SixtyFourBit(data.FourBytes(index)) << 32) | data.FourBytes(index+4);
          }
+         return 0; // just to avoid a compiler warning
       }
    T getNext(Iterator &it) const
       {

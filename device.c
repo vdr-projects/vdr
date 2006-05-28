@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.128 2006/04/14 14:34:43 kls Exp $
+ * $Id: device.c 1.130 2006/05/27 11:14:42 kls Exp $
  */
 
 #include "device.h"
@@ -281,32 +281,20 @@ cDevice *cDevice::GetDevice(int Index)
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   cDevice *d = NULL;
-  int select = INT_MAX;
-
+  uint Impact = 0xFFFFFFFF;
   for (int i = 0; i < numDevices; i++) {
       bool ndr;
       if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
-         int pri;
-         if (device[i]->Receiving() && !ndr)
-            pri = 0; // receiving and allows additional receivers
-         else if (!device[i]->Receiving(true) && d && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
-            pri = 1; // free and fewer Ca's
-         else if (!device[i]->Receiving() && !device[i]->HasDecoder())
-            pri = 2; // free and not a full featured card
-         else if (!device[i]->Receiving() && device[i] != ActualDevice())
-            pri = 3; // free and not the actual device
-         else if (!device[i]->Receiving() && !device[i]->IsPrimaryDevice())
-            pri = 4; // free and not the primary device
-         else if (!device[i]->Receiving())
-            pri = 5; // free
-         else if (d && device[i]->Priority() < d->Priority())
-            pri = 6; // receiving but priority is lower
-         else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
-            pri = 7; // receiving with same priority but fewer Ca's
-         else
-            pri = 8; // all others
-         if (pri <= select) {
-            select = pri;
+         uint imp = 0;
+         imp <<= 1; imp |= !device[i]->Receiving() || ndr;
+         imp <<= 1; imp |= device[i]->Receiving();
+         imp <<= 1; imp |= device[i] == ActualDevice();
+         imp <<= 1; imp |= device[i]->IsPrimaryDevice();
+         imp <<= 1; imp |= device[i]->HasDecoder();
+         imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);
+         imp <<= 8; imp |= min(max(device[i]->ProvidesCa(Channel), 0), 0xFF);
+         if (imp < Impact) {
+            Impact = imp;
             d = device[i];
             if (NeedsDetachReceivers)
                *NeedsDetachReceivers = ndr;
@@ -613,7 +601,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      StopReplay();
 
   // If this card is switched to an other transponder, any receivers still
-  // attached to it ineed to be automatically detached:
+  // attached to it need to be automatically detached:
   bool NeedsDetachReceivers = false;
 
   // If this card can't receive this channel, we must not actually switch

@@ -20,12 +20,11 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.18 2006/05/01 14:51:00 kls Exp $
+# $Id: runvdr 1.19 2006/05/14 16:02:05 kls Exp $
 
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
 
-LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
 KILL="/usr/bin/killall -q -TERM"
 
 # Detect whether the DVB driver is already loaded

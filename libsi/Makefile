@@ -1,12 +1,12 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 1.5 2005/05/29 11:47:12 kls Exp $
+# $Id: Makefile 1.6 2006/05/26 10:40:19 kls Exp $
 
 ### The C++ compiler and options:
 
 CXX      ?= g++
-CXXFLAGS ?= -fPIC -O2 -g -Wall -Woverloaded-virtual
+CXXFLAGS ?= -O2 -g -Wall -Woverloaded-virtual
 AR = ar
 ARFLAGS = ru
 RANLIB = ranlib

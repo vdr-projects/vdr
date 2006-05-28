@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.117 2006/04/29 11:38:37 kls Exp $
+ * $Id: eit.c 1.118 2006/05/25 14:35:19 kls Exp $
  */
 
 #include "eit.h"
@@ -21,10 +21,10 @@
 
 class cEIT : public SI::EIT {
 public:
-  cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data);
+  cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bool OnlyRunningStatus = false);
   };
 
-cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
+cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bool OnlyRunningStatus)
 :SI::EIT(Data, false)
 {
   if (!CheckCRCAndParse())
@@ -57,6 +57,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       cEvent *rEvent = NULL;
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
       if (!pEvent) {
+         if (OnlyRunningStatus)
+            continue;
          // If we don't have that event yet, we create a new one.
          // Otherwise we copy the information into the existing event anyway, because the data might have changed.
          pEvent = newEvent = new cEvent(SiEitEvent.getEventId());
@@ -92,6 +94,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          pEvent->SetStartTime(SiEitEvent.getStartTime());
          pEvent->SetDuration(SiEitEvent.getDuration());
          }
+      if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
+         if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
+            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
+         }
+      if (OnlyRunningStatus)
+         continue; // do this before setting the version, so that the full update can be done later
       pEvent->SetVersion(getVersionNumber());
 
       int LanguagePreferenceShort = -1;
@@ -240,15 +248,13 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       pEvent->FixEpgBugs();
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
-      if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
-         if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
-            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
-         }
       Modified = true;
       }
   if (Empty && Tid == 0x4E && getSectionNumber() == 0)
      // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
      pSchedule->ClrRunningStatus(channel);
+  if (OnlyRunningStatus)
+     return;
   if (Tid == 0x4E)
      pSchedule->SetPresentSeen();
   if (Modified) {
@@ -312,6 +318,16 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
          if (Schedules)
             cEIT EIT(Schedules, Source(), Tid, Data);
+         else {
+            // If we don't get a write lock, let's at least get a read lock, so
+            // that we can set the running status and 'seen' timestamp (well, actually
+            // with a read lock we shouldn't be doing that, but it's only integers that
+            // get changed, so it should be ok)
+            cSchedulesLock SchedulesLock;
+            cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
+            if (Schedules)
+               cEIT EIT(Schedules, Source(), Tid, Data, true);
+            }
          }
          break;
     case 0x14: {
