@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.437 2006/05/28 09:17:25 kls Exp $
+ * $Id: menu.c 1.438 2006/05/28 10:47:40 kls Exp $
  */
 
 #include "menu.h"
@@ -499,6 +499,8 @@ eOSState cMenuChannels::New(void)
 eOSState cMenuChannels::Delete(void)
 {
   if (!HasSubMenu() && Count() > 0) {
+     int CurrentChannelNr = cDevice::CurrentChannel();
+     cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
      int Index = Current();
      cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
@@ -508,10 +510,38 @@ eOSState cMenuChannels::Delete(void)
         return osContinue;
         }
      if (Interface->Confirm(tr("Delete channel?"))) {
+        if (CurrentChannel && channel == CurrentChannel) {
+           int n = Channels.GetNextNormal(CurrentChannel->Index());
+#if APIVERSNUM == 10400
+           if (n < 0) {
+              int Idx = CurrentChannel->Index();
+              cChannel *channel = Channels.Get(--Idx);
+              while (channel && channel->GroupSep())
+                    channel = Channels.Get(--Idx);
+              if (channel)
+                 n = Idx;
+              }
+#else
+#warning ******* API version changed - remove old stuff
+           if (n < 0)
+              n = Channels.GetPrevNormal(CurrentChannel->Index());
+#endif
+           CurrentChannel = Channels.Get(n);
+           CurrentChannelNr = 0; // triggers channel switch below
+           }
         Channels.Del(channel);
         cOsdMenu::Del(Index);
         Propagate();
         isyslog("channel %d deleted", DeletedChannel);
+        if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
+           if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
+              Channels.SwitchTo(CurrentChannel->Number());
+#if APIVERSNUM != 10400
+#warning ******* API version changed - activate new code
+           else
+              cDevice::SetCurrentChannel(CurrentChannel);
+#endif
+           }
         }
      }
   return osContinue;

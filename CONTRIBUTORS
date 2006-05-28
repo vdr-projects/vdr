@@ -446,6 +446,8 @@ Mirko Dölle <mdoelle@linux-user.de>
  for suggesting to allow defining key macros for all non-modeless keys
  for reporting a bug in entering '0' in a cMenuEditIntItem
  for reporting that moving channels sometimes stopped the current replay session
+ for reporting a problem with deleting channels in case the current channel's
+ number changes
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
