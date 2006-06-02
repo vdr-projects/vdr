@@ -1281,8 +1281,8 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
  for reporting some missing braces in remux.c
- for suggesting to modifiy the Makefile to copy additional libraries a plugin might
- provide
+ for suggesting to modifiy the Makefile to copy and clean up additional libraries
+ a plugin might provide
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()

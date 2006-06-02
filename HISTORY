@@ -4756,3 +4756,5 @@ Video Disk Recorder Revision History
   because it caused a compiler warning with g++ 4.1.1 (reported by Ville Skyttä).
   Since the third parameter has to be non-null to have any effect, the call was
   presumably a NOP, anyway.
+- Fixed the 'clean-plugins' target in the Makefile to also remove additional
+  plugin libraries (thanks to Wayne Keer).
