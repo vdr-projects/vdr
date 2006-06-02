@@ -1598,6 +1598,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
  for updating the GPL copies
  for fixing several spelling errors
+ for reporting that the call to pthread_setschedparam(childTid, SCHED_RR, 0) in
+ thread.c caused a compiler warning with g++ 4.1.1
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

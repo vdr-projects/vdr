@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.54 2006/03/26 09:22:27 kls Exp $
+ * $Id: thread.c 1.55 2006/06/02 13:51:39 kls Exp $
  */
 
 #include "thread.h"
@@ -255,7 +255,6 @@ bool cThread::Start(void)
      active = running = true;
      if (pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this) == 0) {
         pthread_detach(childTid); // auto-reap
-        pthread_setschedparam(childTid, SCHED_RR, 0);
         }
      else {
         LOG_ERROR;
