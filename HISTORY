@@ -4764,3 +4764,5 @@ Video Disk Recorder Revision History
   menu, so that events that haven't been "seen" in the data stream within 30
   seconds won't be shown as "running".
 - Fixed handling tabbed item display in 'skincurses'.
+- Increased the column spacing in the "Recordings" menu (was too small for the
+  'skincurses' plugin).

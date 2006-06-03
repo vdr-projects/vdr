@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.440 2006/06/03 09:34:49 kls Exp $
+ * $Id: menu.c 1.441 2006/06/03 13:32:42 kls Exp $
  */
 
 #include "menu.h"
@@ -1847,7 +1847,7 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 // --- cMenuRecordings -------------------------------------------------------
 
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
-:cOsdMenu(Base ? Base : tr("Recordings"), 8, 6)
+:cOsdMenu(Base ? Base : tr("Recordings"), 9, 7)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
