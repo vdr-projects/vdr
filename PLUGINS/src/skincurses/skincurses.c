@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.9 2006/06/03 13:21:33 kls Exp $
+ * $Id: skincurses.c 1.10 2006/06/03 14:20:39 kls Exp $
  */
 
 #include <ncurses.h>
@@ -787,7 +787,9 @@ bool cPluginSkinCurses::Initialize(void)
 bool cPluginSkinCurses::Start(void)
 {
   // Start any background activities the plugin shall perform.
-  new cSkinCurses;
+  cSkin *Skin = new cSkinCurses;
+  // This skin is normally used for debugging, so let's make it the current one:
+  Skins.SetCurrent(Skin->Name());
   return true;
 }
 

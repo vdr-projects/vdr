@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.272 2006/05/14 09:23:46 kls Exp $
+ * $Id: vdr.c 1.273 2006/06/03 14:46:36 kls Exp $
  */
 
 #include <getopt.h>
@@ -504,6 +504,7 @@ int main(int argc, char *argv[])
   bool UserShutdown = false;
   bool TimerInVpsMargin = false;
   bool IsInfoMenu = false;
+  cSkin *CurrentSkin = NULL;
 
   // Load plugins:
 
@@ -605,6 +606,7 @@ int main(int argc, char *argv[])
   new cSkinSTTNG;
   Skins.SetCurrent(Setup.OSDSkin);
   cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
+  CurrentSkin = Skins.Current();
 
   // Start plugins:
 
@@ -613,8 +615,10 @@ int main(int argc, char *argv[])
 
   // Set skin and theme in case they're implemented by a plugin:
 
-  Skins.SetCurrent(Setup.OSDSkin);
-  cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
+  if (!CurrentSkin || CurrentSkin == Skins.Current() && strcmp(Skins.Current()->Name(), Setup.OSDSkin) != 0) {
+     Skins.SetCurrent(Setup.OSDSkin);
+     cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
+     }
 
   // Remote Controls:
   if (RcuDevice)

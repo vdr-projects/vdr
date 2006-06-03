@@ -4766,3 +4766,10 @@ Video Disk Recorder Revision History
 - Fixed handling tabbed item display in 'skincurses'.
 - Increased the column spacing in the "Recordings" menu (was too small for the
   'skincurses' plugin).
+- When the 'skincurses' plugin is loaded, it automatically sets the 'curses'
+  skin as the current one. This doesn't modify the Setup.OSDSkin parameter, so
+  that after using 'skincurses' (for instance for debugging) the previously
+  selected skin will be used again.
+- Added some log messages when setting the current skin.
+- Only making a second attempt to set the current skin at startup if the first
+  attempt has failed.

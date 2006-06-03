@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.10 2006/06/03 10:18:07 kls Exp $
+ * $Id: skins.c 1.11 2006/06/03 14:39:14 kls Exp $
  */
 
 #include "skins.h"
@@ -176,7 +176,6 @@ cSkin::cSkin(const char *Name, cTheme *Theme)
   if (theme)
      cThemes::Save(name, theme);
   Skins.Add(this);
-  Skins.SetCurrent(Name);
 }
 
 cSkin::~cSkin()
@@ -203,12 +202,17 @@ bool cSkins::SetCurrent(const char *Name)
   if (Name) {
      for (cSkin *Skin = First(); Skin; Skin = Next(Skin)) {
          if (strcmp(Skin->Name(), Name) == 0) {
+            isyslog("setting current skin to \"%s\"", Name);
             current = Skin;
             return true;
             }
          }
      }
   current = First();
+  if (current)
+     isyslog("skin \"%s\" not available - using \"%s\" instead", Name, current->Name());
+  else
+     esyslog("ERROR: no skin available");
   return current != NULL;
 }
 
