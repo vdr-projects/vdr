@@ -4746,7 +4746,7 @@ Video Disk Recorder Revision History
 - Fixed deleting channels in case the current channel's number changes (reported
   by Mirko Dölle).
 
-2006-06-02: Version 1.4.0-3
+2006-06-03: Version 1.4.0-3
 
 - Fixed the PremiereContentTransmissionDescriptor in 'libsi' (thanks to Stefan
   Huelswitt).
@@ -4758,3 +4758,5 @@ Video Disk Recorder Revision History
   presumably a NOP, anyway.
 - Fixed the 'clean-plugins' target in the Makefile to also remove additional
   plugin libraries (thanks to Wayne Keer).
+- Applied the fixes to moving and deleting channels from version 1.4.0-2 to the
+  SVDRP commands MOVC and DELC as well.
