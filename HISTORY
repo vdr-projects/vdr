@@ -4760,3 +4760,6 @@ Video Disk Recorder Revision History
   plugin libraries (thanks to Wayne Keer).
 - Applied the fixes to moving and deleting channels from version 1.4.0-2 to the
   SVDRP commands MOVC and DELC as well.
+- Fixed handling the display of the '*' indicator in the "What's on now/next?"
+  menu, so that events that haven't been "seen" in the data stream within 30
+  seconds won't be shown as "running".

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.439 2006/05/28 15:05:42 kls Exp $
+ * $Id: menu.c 1.440 2006/06/03 09:34:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1048,7 +1048,7 @@ bool cMenuScheduleItem::Update(bool Force)
      char *buffer = NULL;
      char t = TimerMatchChars[timerMatch];
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-     char r = event->IsRunning() ? '*' : ' ';
+     char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      if (channel && withDate)
         asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
