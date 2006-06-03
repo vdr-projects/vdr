@@ -29,3 +29,7 @@ VDR Plugin 'skincurses' Revision History
 2006-04-14: Version 0.0.6
 
 - Added a missing "Key$" in skincurses.c.
+
+2006-06-03: Version 0.0.7
+
+- Fixed handling tabbed item display.

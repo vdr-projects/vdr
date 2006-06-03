@@ -4763,3 +4763,4 @@ Video Disk Recorder Revision History
 - Fixed handling the display of the '*' indicator in the "What's on now/next?"
   menu, so that events that haven't been "seen" in the data stream within 30
   seconds won't be shown as "running".
+- Fixed handling tabbed item display in 'skincurses'.
