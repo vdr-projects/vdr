@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.438 2006/05/28 10:47:40 kls Exp $
+ * $Id: menu.c 1.441 2006/06/03 13:32:42 kls Exp $
  */
 
 #include "menu.h"
@@ -512,20 +512,8 @@ eOSState cMenuChannels::Delete(void)
      if (Interface->Confirm(tr("Delete channel?"))) {
         if (CurrentChannel && channel == CurrentChannel) {
            int n = Channels.GetNextNormal(CurrentChannel->Index());
-#if APIVERSNUM == 10400
-           if (n < 0) {
-              int Idx = CurrentChannel->Index();
-              cChannel *channel = Channels.Get(--Idx);
-              while (channel && channel->GroupSep())
-                    channel = Channels.Get(--Idx);
-              if (channel)
-                 n = Idx;
-              }
-#else
-#warning ******* API version changed - remove old stuff
            if (n < 0)
               n = Channels.GetPrevNormal(CurrentChannel->Index());
-#endif
            CurrentChannel = Channels.Get(n);
            CurrentChannelNr = 0; // triggers channel switch below
            }
@@ -536,11 +524,8 @@ eOSState cMenuChannels::Delete(void)
         if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
               Channels.SwitchTo(CurrentChannel->Number());
-#if APIVERSNUM != 10400
-#warning ******* API version changed - activate new code
            else
               cDevice::SetCurrentChannel(CurrentChannel);
-#endif
            }
         }
      }
@@ -563,11 +548,8 @@ void cMenuChannels::Move(int From, int To)
      if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
         if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
            Channels.SwitchTo(CurrentChannel->Number());
-#if APIVERSNUM != 10400
-#warning ******* API version changed - activate new code
         else
            cDevice::SetCurrentChannel(CurrentChannel);
-#endif
         }
      }
 }
@@ -1066,7 +1048,7 @@ bool cMenuScheduleItem::Update(bool Force)
      char *buffer = NULL;
      char t = TimerMatchChars[timerMatch];
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-     char r = event->IsRunning() ? '*' : ' ';
+     char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      if (channel && withDate)
         asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
@@ -1865,7 +1847,7 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 // --- cMenuRecordings -------------------------------------------------------
 
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
-:cOsdMenu(Base ? Base : tr("Recordings"), 8, 6)
+:cOsdMenu(Base ? Base : tr("Recordings"), 9, 7)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;

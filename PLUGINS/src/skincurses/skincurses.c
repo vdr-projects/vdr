@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.8 2006/04/14 11:35:59 kls Exp $
+ * $Id: skincurses.c 1.10 2006/06/03 14:20:39 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.6";
+static const char *VERSION        = "0.0.7";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -277,6 +277,7 @@ public:
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
+  virtual const cFont *GetTextAreaFont(bool FixedFont) const { return &Font; }
   virtual void Flush(void);
   };
 
@@ -366,13 +367,13 @@ void cSkinCursesDisplayMenu::SetItem(const char *Text, int Index, bool Current, 
   for (int i = 0; i < MaxTabs; i++) {
       const char *s = GetTabbedText(Text, i);
       if (s) {
-         int xt = Tab(i);
+         int xt = Tab(i) / 12;// Tab() is in "pixel" - see also skins.c!!!
          osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, OsdWidth - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(OsdWidth - Tab(1));
+  SetEditableWidth(OsdWidth - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
 }
 
 void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
@@ -786,7 +787,9 @@ bool cPluginSkinCurses::Initialize(void)
 bool cPluginSkinCurses::Start(void)
 {
   // Start any background activities the plugin shall perform.
-  new cSkinCurses;
+  cSkin *Skin = new cSkinCurses;
+  // This skin is normally used for debugging, so let's make it the current one:
+  Skins.SetCurrent(Skin->Name());
   return true;
 }
 

@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.6 2006/04/14 10:53:44 kls Exp $
+ *   $Id: headers.h 1.7 2006/05/28 14:25:30 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1790,7 +1790,7 @@ struct descr_application_icons_descriptor_end {
 // 0xF2  Content Transmission Descriptor
 // http://dvbsnoop.sourceforge.net/examples/example-private-section.html
 
-#define DESCR_PREMIERE_CONTENT_TRANSMISSION_LEN 11
+#define DESCR_PREMIERE_CONTENT_TRANSMISSION_LEN 8
 
 struct descr_premiere_content_transmission {
    u_char descriptor_tag                         :8;
@@ -1801,14 +1801,19 @@ struct descr_premiere_content_transmission {
    u_char original_network_id_lo                 :8;
    u_char service_id_hi                          :8;
    u_char service_id_lo                          :8;
+};
+
+#define ITEM_PREMIERE_CONTENT_TRANSMISSION_DAY_LEN 3
+
+struct item_premiere_content_transmission_day {
    u_char mjd_hi                                 :8;
    u_char mjd_lo                                 :8;
    u_char start_time_loop                        :8;
 };
 
-#define ITEM_PREMIERE_CONTENT_TRANSMISSION_LEN 3
+#define ITEM_PREMIERE_CONTENT_TRANSMISSION_TIME_LEN 3
 
-struct item_premiere_content_transmission_reference {
+struct item_premiere_content_transmission_time {
    u_char start_time_h                           :8;
    u_char start_time_m                           :8;
    u_char start_time_s                           :8;

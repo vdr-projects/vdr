@@ -4745,3 +4745,34 @@ Video Disk Recorder Revision History
   (reported by Mirko Dölle).
 - Fixed deleting channels in case the current channel's number changes (reported
   by Mirko Dölle).
+
+2006-06-04: Version 1.4.0-3
+
+- Fixed the PremiereContentTransmissionDescriptor in 'libsi' (thanks to Stefan
+  Huelswitt).
+- Removed all the compatibility '#if APIVERSNUM...' stuff and instead increased
+  the API version number - plugins will have to be recompiled.
+- Removed the call to pthread_setschedparam(childTid, SCHED_RR, 0) in thread.c,
+  because it caused a compiler warning with g++ 4.1.1 (reported by Ville Skyttä).
+  Since the third parameter has to be non-null to have any effect, the call was
+  presumably a NOP, anyway.
+- Fixed the 'clean-plugins' target in the Makefile to also remove additional
+  plugin libraries (thanks to Wayne Keer).
+- Applied the fixes to moving and deleting channels from version 1.4.0-2 to the
+  SVDRP commands MOVC and DELC as well.
+- Fixed handling the display of the '*' indicator in the "What's on now/next?"
+  menu, so that events that haven't been "seen" in the data stream within 30
+  seconds won't be shown as "running".
+- Fixed handling tabbed item display in 'skincurses'.
+- Increased the column spacing in the "Recordings" menu (was too small for the
+  'skincurses' plugin).
+- When the 'skincurses' plugin is loaded, it automatically sets the 'curses'
+  skin as the current one. This doesn't modify the Setup.OSDSkin parameter, so
+  that after using 'skincurses' (for instance for debugging) the previously
+  selected skin will be used again.
+- Added some log messages when setting the current skin.
+- Only making a second attempt to set the current skin at startup if the first
+  attempt has failed.
+- Now switching to non-VPS timers' channels 60 seconds before the timer starts
+  (if a free device is available), to allow for the updating of EPG data and CA
+  descriptors before the actual recording starts.

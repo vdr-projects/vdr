@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.14 2006/04/14 10:53:44 kls Exp $
+ *   $Id: descriptor.h 1.15 2006/05/28 14:25:30 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -490,20 +490,30 @@ private:
 
 class PremiereContentTransmissionDescriptor : public Descriptor {
 public:
-   class StartTimeEntry : public LoopElement {
+   class StartDayEntry : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(item_premiere_content_transmission_reference); }
-      time_t getStartTime(int mjd) const; //UTC
+      class StartTimeEntry : public LoopElement {
+      public:
+         virtual int getLength() { return sizeof(item_premiere_content_transmission_time); }
+         time_t getStartTime(int mjd) const; //UTC
+      protected:
+         virtual void Parse();
+      private:
+         const item_premiere_content_transmission_time *s;
+      };
+      StructureLoop<StartTimeEntry> startTimeLoop;
+      virtual int getLength();
+      int getMJD() const;
+      int getLoopLength() const;
    protected:
       virtual void Parse();
    private:
-      const item_premiere_content_transmission_reference *s;
+      const item_premiere_content_transmission_day *s;
    };
-   StructureLoop<StartTimeEntry> startTimeLoop;
+   StructureLoop<StartDayEntry> startDayLoop;
    int getOriginalNetworkId() const;
    int getTransportStreamId() const;
    int getServiceId() const;
-   int getMJD() const;
 protected:
    virtual void Parse();
 private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.13 2006/04/09 11:23:35 kls Exp $
+ * $Id: skins.h 1.14 2006/06/03 10:21:45 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -95,7 +95,7 @@ protected:
   cTextScroller textScroller;
   int Tab(int n) { return (n >= 0 && n < MaxTabs) ? tabs[n] : 0; }
        ///< Returns the offset of the given tab from the left border of the
-       ///< item display area. The value returned is in pixel.//XXX ncurses???
+       ///< item display area. The value returned is in pixel.
   const char *GetTabbedText(const char *s, int Tab);
        ///< Returns the part of the given string that follows the given
        ///< Tab (where 0 indicates the beginning of the string). If no such
@@ -104,7 +104,7 @@ public:
   cSkinDisplayMenu(void);
   virtual void SetTabs(int Tab1, int Tab2 = 0, int Tab3 = 0, int Tab4 = 0, int Tab5 = 0);
        ///< Sets the tab columns to the given values, which are the number of
-       ///< characters in each column.//XXX ncurses???
+       ///< characters in each column.
   virtual void Scroll(bool Up, bool Page);
        ///< If this menu contains a text area that can be scrolled, this function
        ///< will be called to actually scroll the text. Up indicates whether the

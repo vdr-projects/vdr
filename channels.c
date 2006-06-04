@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.52 2006/05/28 10:14:18 kls Exp $
+ * $Id: channels.c 1.53 2006/05/28 15:03:40 kls Exp $
  */
 
 #include "channels.h"
@@ -925,8 +925,6 @@ int cChannels::GetNextNormal(int Idx)
   return channel ? Idx : -1;
 }
 
-#if APIVERSNUM != 10400
-#warning ******* API version changed - activate new code
 int cChannels::GetPrevNormal(int Idx)
 {
   cChannel *channel = Get(--Idx);
@@ -934,7 +932,6 @@ int cChannels::GetPrevNormal(int Idx)
         channel = Get(--Idx);
   return channel ? Idx : -1;
 }
-#endif
 
 void cChannels::ReNumber( void )
 {

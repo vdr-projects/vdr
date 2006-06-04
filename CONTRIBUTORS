@@ -218,6 +218,7 @@ Stefan Huelswitt <huels@iname.com>
  for suggesting that the SVDRP command GRAB should allow file names without extension
  again
  for reporting a problem with channel up/down switching on single card systems
+ for fixing the PremiereContentTransmissionDescriptor in 'libsi'
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -1280,8 +1281,8 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
  for reporting some missing braces in remux.c
- for suggesting to modifiy the Makefile to copy additional libraries a plugin might
- provide
+ for suggesting to modifiy the Makefile to copy and clean up additional libraries
+ a plugin might provide
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1597,6 +1598,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting an obsolete entry 'S21.5E' in the default 'diseqc.conf'
  for updating the GPL copies
  for fixing several spelling errors
+ for reporting that the call to pthread_setschedparam(childTid, SCHED_RR, 0) in
+ thread.c caused a compiler warning with g++ 4.1.1
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

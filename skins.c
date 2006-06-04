@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.9 2006/04/09 11:25:30 kls Exp $
+ * $Id: skins.c 1.11 2006/06/03 14:39:14 kls Exp $
  */
 
 #include "skins.h"
@@ -79,7 +79,7 @@ void cSkinDisplayMenu::SetTabs(int Tab1, int Tab2, int Tab3, int Tab4, int Tab5)
   tabs[4] = Tab4 ? tabs[3] + Tab4 : 0;
   tabs[5] = Tab5 ? tabs[4] + Tab5 : 0;
   for (int i = 1; i < MaxTabs; i++)
-      tabs[i] *= 12;//XXX average character width of font used for items!!!
+      tabs[i] *= 12;//XXX average character width of font used for items - see also skincurses.c!!!
 }
 
 void cSkinDisplayMenu::Scroll(bool Up, bool Page)
@@ -176,7 +176,6 @@ cSkin::cSkin(const char *Name, cTheme *Theme)
   if (theme)
      cThemes::Save(name, theme);
   Skins.Add(this);
-  Skins.SetCurrent(Name);
 }
 
 cSkin::~cSkin()
@@ -203,12 +202,17 @@ bool cSkins::SetCurrent(const char *Name)
   if (Name) {
      for (cSkin *Skin = First(); Skin; Skin = Next(Skin)) {
          if (strcmp(Skin->Name(), Name) == 0) {
+            isyslog("setting current skin to \"%s\"", Name);
             current = Skin;
             return true;
             }
          }
      }
   current = First();
+  if (current)
+     isyslog("skin \"%s\" not available - using \"%s\" instead", Name, current->Name());
+  else
+     esyslog("ERROR: no skin available");
   return current != NULL;
 }
 
