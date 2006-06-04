@@ -4746,7 +4746,7 @@ Video Disk Recorder Revision History
 - Fixed deleting channels in case the current channel's number changes (reported
   by Mirko Dölle).
 
-2006-06-03: Version 1.4.0-3
+2006-06-04: Version 1.4.0-3
 
 - Fixed the PremiereContentTransmissionDescriptor in 'libsi' (thanks to Stefan
   Huelswitt).
@@ -4773,3 +4773,6 @@ Video Disk Recorder Revision History
 - Added some log messages when setting the current skin.
 - Only making a second attempt to set the current skin at startup if the first
   attempt has failed.
+- Now switching to non-VPS timers' channels 60 seconds before the timer starts
+  (if a free device is available), to allow for the updating of EPG data and CA
+  descriptors before the actual recording starts.
