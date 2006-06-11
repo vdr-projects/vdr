@@ -4753,7 +4753,7 @@ Video Disk Recorder Revision History
 - Removed all the compatibility '#if APIVERSNUM...' stuff and instead increased
   the API version number - plugins will have to be recompiled.
 - Removed the call to pthread_setschedparam(childTid, SCHED_RR, 0) in thread.c,
-  because it caused a compiler warning with g++ 4.1.1 (reported by Ville Skyttä).
+  because it caused a compiler warning with post-2.4 glibc (reported by Ville Skyttä).
   Since the third parameter has to be non-null to have any effect, the call was
   presumably a NOP, anyway.
 - Fixed the 'clean-plugins' target in the Makefile to also remove additional
@@ -4776,3 +4776,9 @@ Video Disk Recorder Revision History
 - Now switching to non-VPS timers' channels 60 seconds before the timer starts
   (if a free device is available), to allow for the updating of EPG data and CA
   descriptors before the actual recording starts.
+
+2006-06-11: Version 1.4.1
+
+- Changed the log messages when grabbing an image from 'isyslog()' to 'dsyslog()'
+  so that they can be suppressed in normal operation mode to avoid clogging the
+  log file in case this function is used frequently (suggested by Helmut Auer).

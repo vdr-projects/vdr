@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.96 2006/06/03 09:17:17 kls Exp $
+ * $Id: svdrp.c 1.97 2006/06/11 09:04:36 kls Exp $
  */
 
 #include "svdrp.h"
@@ -779,7 +779,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
            if (fd >= 0) {
               if (safe_write(fd, Image, ImageSize) == ImageSize) {
-                 isyslog("grabbed image to %s", FileName);
+                 dsyslog("grabbed image to %s", FileName);
                  Reply(250, "Grabbed image %s", Option);
                  }
               else {
