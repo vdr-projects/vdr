@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.158 2006/05/28 15:05:03 kls Exp $
+ * $Id: dvbdevice.c 1.159 2006/06/11 09:03:55 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -570,7 +570,7 @@ uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int S
                  if (Quality < 0)
                     Quality = 100;
 
-                 isyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+                 dsyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
                  if (Jpeg) {
                     // convert to JPEG:
                     result = RgbToJpeg(mem, vm.width, vm.height, Size, Quality);

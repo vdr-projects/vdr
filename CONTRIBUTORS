@@ -573,6 +573,7 @@ Helmut Auer <vdr@helmutauer.de>
  message is being displayed didn't work
  for reporting a problem with the "Press any key on the RC unit" step when learning
  LIRC remote control codes
+ for suggesting to reduce the logging for the SVDRP GRAB command
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

@@ -4776,3 +4776,9 @@ Video Disk Recorder Revision History
 - Now switching to non-VPS timers' channels 60 seconds before the timer starts
   (if a free device is available), to allow for the updating of EPG data and CA
   descriptors before the actual recording starts.
+
+2006-06-11: Version 1.4.1
+
+- Changed the log messages when grabbing an image from 'isyslog()' to 'dsyslog()'
+  so that they can be suppressed in normal operation mode to avoid clogging the
+  log file in case this function is used frequently (suggested by Helmut Auer).
