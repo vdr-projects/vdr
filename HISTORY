@@ -4782,3 +4782,9 @@ Video Disk Recorder Revision History
 - Changed the log messages when grabbing an image from 'isyslog()' to 'dsyslog()'
   so that they can be suppressed in normal operation mode to avoid clogging the
   log file in case this function is used frequently (suggested by Helmut Auer).
+
+2006-06-15: Version 1.4.1-1
+
+- Added "-fPIC" to the compiler options in Make.config.template when compiling
+  plugins (thanks to Udo Richter). If you use your own Make.config file, you may
+  want to add these lines there, too.
