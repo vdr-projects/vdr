@@ -4790,3 +4790,4 @@ Video Disk Recorder Revision History
   want to add these lines there, too.
 - Added some comment to cDevice::GetDevice() to explain how the individual
   conditions are put together to make a decision on which device to use.
+- Updated 'S13E' in 'sources.conf' (thanks to Antti Hartikainen).

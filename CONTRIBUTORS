@@ -1930,3 +1930,6 @@ Prakash Punnoor <prakash@punnoor.de>
 
 Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
+
+Antti Hartikainen <ami+vdr@ah.fi>
+ for updating 'S13E' in 'sources.conf'
