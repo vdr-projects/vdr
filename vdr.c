@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.274 2006/06/04 09:04:47 kls Exp $
+ * $Id: vdr.c 1.275 2006/06/16 09:17:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -47,6 +47,7 @@
 #include "i18n.h"
 #include "interface.h"
 #include "keys.h"
+#include "libsi/si.h"
 #include "lirc.h"
 #include "menu.h"
 #include "osdbase.h"
@@ -773,10 +774,14 @@ int main(int argc, char *argv[])
                   bool NeedsTransponder = false;
                   if (Timer->HasFlags(tfActive) && !Timer->Recording()) {
                      if (Timer->HasFlags(tfVps)) {
-                        if (Timer->Matches(Now, true, Setup.VpsMargin))
+                        if (Timer->Matches(Now, true, Setup.VpsMargin)) {
                            InVpsMargin = true;
-                        else if (Timer->Event())
+                           Timer->SetInVpsMargin(InVpsMargin);
+                           }
+                        else if (Timer->Event()) {
+                           InVpsMargin = Timer->Event()->StartTime() <= Now && Timer->Event()->RunningStatus() == SI::RunningStatusUndefined;
                            NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
+                           }
                         else {
                            cSchedulesLock SchedulesLock;
                            const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
@@ -790,10 +795,10 @@ int main(int argc, char *argv[])
                      else
                         NeedsTransponder = Timer->Matches(Now, true, TIMERLOOKAHEADTIME);
                      }
-                  Timer->SetInVpsMargin(InVpsMargin);
                   if (NeedsTransponder || InVpsMargin) {
                      // Find a device that provides the required transponder:
                      cDevice *Device = NULL;
+                     bool DeviceAvailable = false;
                      for (int i = 0; i < cDevice::NumDevices(); i++) {
                          cDevice *d = cDevice::GetDevice(i);
                          if (d && d->ProvidesTransponder(Timer->Channel())) {
@@ -802,18 +807,17 @@ int main(int argc, char *argv[])
                                Device = d;
                                break;
                                }
-                            else if (Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT) {
-                               // only check other devices if they have been left alone for a while
-                               if (d->MaySwitchTransponder())
-                                  // this one can be switched without disturbing anything else
-                                  Device = d;
-                               else if (!Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
-                                  // use this one only if no other with less impact can be found
-                                  Device = d;
+                            bool timeout = Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT; // only check other devices if they have been left alone for a while
+                            if (d->MaySwitchTransponder()) {
+                               DeviceAvailable = true; // avoids using the actual device below
+                               if (timeout)
+                                  Device = d; // only check other devices if they have been left alone for a while
                                }
+                            else if (timeout && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                               Device = d; // use this one only if no other with less impact can be found
                             }
                          }
-                     if (!Device && InVpsMargin) {
+                     if (!Device && InVpsMargin && !DeviceAvailable) {
                         cDevice *d = cDevice::ActualDevice();
                         if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT)
                            Device = d; // use the actual device as a last resort
