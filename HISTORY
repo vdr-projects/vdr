@@ -4794,3 +4794,4 @@ Video Disk Recorder Revision History
 - Now making sure VPS timers don't get stuck with outdated events, and that the
   actual device isn't used for updating a VPS timer's event as long as other
   free devices are available.
+- Modified rcu.c to better handle RC5 codes.
