@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.23 2005/12/30 15:42:08 kls Exp $
+ * $Id: ringbuffer.c 1.24 2006/06/16 09:32:13 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -156,6 +156,7 @@ cRingBufferLinear::cRingBufferLinear(int Size, int Margin, bool Statistics, cons
 {
   description = Description ? strdup(Description) : NULL;
   tail = head = margin = Margin;
+  gotten = 0;
   buffer = NULL;
   if (Size > 1) { // 'Size - 1' must not be 0!
      if (Margin <= Size / 2) {

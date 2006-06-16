@@ -4795,3 +4795,5 @@ Video Disk Recorder Revision History
   actual device isn't used for updating a VPS timer's event as long as other
   free devices are available.
 - Modified rcu.c to better handle RC5 codes.
+- Added a missing variable initialization in cRingBufferLinear::cRingBufferLinear()
+  (thanks to Prakash Punnoor).

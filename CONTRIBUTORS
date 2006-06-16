@@ -1927,6 +1927,7 @@ M. Kiesel <vdr@continuity.cjb.net>
 
 Prakash Punnoor <prakash@punnoor.de>
  for suggesting to remove -fPIC from VDR's and libsi's Makefile
+ for adding a missing variable initialization in cRingBufferLinear::cRingBufferLinear()
 
 Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
