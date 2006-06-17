@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.118 2006/05/26 10:10:31 kls Exp $
+ * $Id: tools.c 1.119 2006/06/17 09:45:32 kls Exp $
  */
 
 #include "tools.h"
@@ -480,22 +480,16 @@ int DirSizeMB(const char *DirName)
 
 char *ReadLink(const char *FileName)
 {
-  char RealName[PATH_MAX];
-  const char *TargetName = NULL;
-  int n = readlink(FileName, RealName, sizeof(RealName) - 1);
-  if (n < 0) {
-     if (errno == ENOENT || errno == EINVAL) // file doesn't exist or is not a symlink
-        TargetName = FileName;
+  if (!FileName)
+     return NULL;
+  char *TargetName = canonicalize_file_name(FileName);
+  if (!TargetName) {
+     if (errno == ENOENT) // file doesn't exist
+        TargetName = strdup(FileName);
      else // some other error occurred
         LOG_ERROR_STR(FileName);
      }
-  else if (n < int(sizeof(RealName))) { // got it!
-     RealName[n] = 0;
-     TargetName = RealName;
-     }
-  else
-     esyslog("ERROR: symlink's target name too long: %s", FileName);
-  return TargetName ? strdup(TargetName) : NULL;
+  return TargetName;
 }
 
 bool SpinUpDisk(const char *FileName)

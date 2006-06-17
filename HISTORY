@@ -4783,7 +4783,7 @@ Video Disk Recorder Revision History
   so that they can be suppressed in normal operation mode to avoid clogging the
   log file in case this function is used frequently (suggested by Helmut Auer).
 
-2006-06-16: Version 1.4.1-1
+2006-06-17: Version 1.4.1-1
 
 - Added "-fPIC" to the compiler options in Make.config.template when compiling
   plugins (thanks to Udo Richter). If you use your own Make.config file, you may
@@ -4797,3 +4797,5 @@ Video Disk Recorder Revision History
 - Modified rcu.c to better handle RC5 codes.
 - Added a missing variable initialization in cRingBufferLinear::cRingBufferLinear()
   (thanks to Prakash Punnoor).
+- Fixed handling relative link targets in the ReadLink() function (reported by
+  Patrick Cernko).
