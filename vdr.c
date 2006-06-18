@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.275 2006/06/16 09:17:24 kls Exp $
+ * $Id: vdr.c 1.276 2006/06/18 08:49:20 kls Exp $
  */
 
 #include <getopt.h>
@@ -787,6 +787,7 @@ int main(int argc, char *argv[])
                            const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
                            if (Schedules) {
                               const cSchedule *Schedule = Schedules->GetSchedule(Timer->Channel());
+                              InVpsMargin = !Schedule; // we must make sure we have the schedule
                               NeedsTransponder = Schedule && !Schedule->PresentSeenWithin(VPSUPTODATETIME);
                               }
                            }
