@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.13 2006/01/08 11:40:09 kls Exp $
+ * $Id: rcu.c 1.14 2006/06/16 09:29:24 kls Exp $
  */
 
 #include "rcu.h"
@@ -13,8 +13,9 @@
 #include <unistd.h>
 #include "tools.h"
 
-#define REPEATLIMIT  20 // ms
-#define REPEATDELAY 350 // ms
+#define REPEATLIMIT      150 // ms
+#define REPEATDELAY      350 // ms
+#define HANDSHAKETIMEOUT  20 // ms
 
 cRcuRemote::cRcuRemote(const char *DeviceName)
 :cRemote("RCU")
@@ -96,7 +97,7 @@ void cRcuRemote::Action(void)
   time_t LastCodeRefresh = 0;
   cTimeMs FirstTime;
   unsigned char LastCode = 0, LastMode = 0;
-  uint64 LastCommand = 0;
+  uint64 LastCommand = ~0; // 0x00 might be a valid command
   unsigned int LastData = 0;
   bool repeat = false;
 
@@ -136,7 +137,7 @@ void cRcuRemote::Action(void)
         else if (repeat) { // the last one was a repeat, so let's generate a release
            Put(LastCommand, false, true);
            repeat = false;
-           LastCommand = 0;
+           LastCommand = ~0;
            }
         else {
            unsigned int d = data;
@@ -154,9 +155,9 @@ void cRcuRemote::Action(void)
               SendCommand(m);
               LastMode = m;
               }
-           LastCommand = 0;
+           LastCommand = ~0;
            }
-        if (code && time(NULL) - LastCodeRefresh > 60) {
+        if (!repeat && code && time(NULL) - LastCodeRefresh > 60) {
            SendCommand(code); // in case the PIC listens to the wrong code
            LastCodeRefresh = time(NULL);
            }
@@ -181,7 +182,7 @@ bool cRcuRemote::SendByteHandshake(unsigned char c)
   if (f >= 0) {
      int w = write(f, &c, 1);
      if (w == 1) {
-        for (int reply = ReceiveByte(REPEATLIMIT); reply >= 0;) {
+        for (int reply = ReceiveByte(HANDSHAKETIMEOUT); reply >= 0;) {
             if (reply == c)
                return true;
             else if (reply == 'X') {

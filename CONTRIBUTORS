@@ -1440,6 +1440,8 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling the "Power" key in case a timer is about to start recording
  for fixing calculating the start time of repeated timers with "first day"
  for setting a timer's cached start time to 0 after a call to Skip()
+ for adding "-fPIC" to the compiler options in Make.config.template when compiling
+ plugins
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1792,6 +1794,7 @@ Ingo Schneider <mail@ingo-schneider.de>
 
 Patrick Cernko <errror@errror.org>
  for suggesting to add a note about "modprobe capability" to INSTALL
+ for reporting a problem with relative link targets in the ReadLink() function
 
 Philippe Gramoullé <philippe@gramoulle.com>
  for reporting a a missing '-' in the example for viewing a grabbed image on a remote
@@ -1925,6 +1928,10 @@ M. Kiesel <vdr@continuity.cjb.net>
 
 Prakash Punnoor <prakash@punnoor.de>
  for suggesting to remove -fPIC from VDR's and libsi's Makefile
+ for adding a missing variable initialization in cRingBufferLinear::cRingBufferLinear()
 
 Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
+
+Antti Hartikainen <ami+vdr@ah.fi>
+ for updating 'S13E' in 'sources.conf'

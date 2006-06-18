@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.78 2006/05/28 15:04:24 kls Exp $
+ * $Id: device.h 1.79 2006/06/15 09:32:48 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -130,7 +130,8 @@ public:
          ///< \return A pointer to the device, or NULL if the Index was invalid.
   static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
          ///< Returns a device that is able to receive the given Channel at the
-         ///< given Priority.
+         ///< given Priority, with the least impact on active recordings and
+         ///< live viewing.
          ///< See ProvidesChannel() for more information on how
          ///< priorities are handled, and the meaning of NeedsDetachReceivers.
   static void Shutdown(void);

@@ -4782,3 +4782,22 @@ Video Disk Recorder Revision History
 - Changed the log messages when grabbing an image from 'isyslog()' to 'dsyslog()'
   so that they can be suppressed in normal operation mode to avoid clogging the
   log file in case this function is used frequently (suggested by Helmut Auer).
+
+2006-06-18: Version 1.4.1-1
+
+- Added "-fPIC" to the compiler options in Make.config.template when compiling
+  plugins (thanks to Udo Richter). If you use your own Make.config file, you may
+  want to add these lines there, too.
+- Added some comment to cDevice::GetDevice() to explain how the individual
+  conditions are put together to make a decision on which device to use.
+- Updated 'S13E' in 'sources.conf' (thanks to Antti Hartikainen).
+- Now making sure VPS timers don't get stuck with outdated events, and that the
+  actual device isn't used for updating a VPS timer's event as long as other
+  free devices are available.
+- Modified rcu.c to better handle RC5 codes.
+- Added a missing variable initialization in cRingBufferLinear::cRingBufferLinear()
+  (thanks to Prakash Punnoor).
+- Fixed handling relative link targets in the ReadLink() function (reported by
+  Patrick Cernko).
+- Now making sure a VPS timer has a schedule in case the epg.data file didn't
+  contain one when VDR was started.
