@@ -4811,3 +4811,4 @@ Video Disk Recorder Revision History
   macro, even if it doesn't use it itself!
 - Added a comment regarding the PLUGIN macro to the 'newplugin' script.
 - Added '--vfat' to the vdr.1 man page (reported by Udo Richter).
+- Removed a double fdopen() in cPipe::Open() (reported by Stefan Huelswitt).
