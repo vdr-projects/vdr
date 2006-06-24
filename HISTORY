@@ -4810,3 +4810,4 @@ Video Disk Recorder Revision History
   Note to all plugin developers: a plugin's Makefile *must* define the PLUGIN
   macro, even if it doesn't use it itself!
 - Added a comment regarding the PLUGIN macro to the 'newplugin' script.
+- Added '--vfat' to the vdr.1 man page (reported by Udo Richter).

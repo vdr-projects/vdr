@@ -1442,6 +1442,7 @@ Udo Richter <udo_richter@gmx.de>
  for setting a timer's cached start time to 0 after a call to Skip()
  for adding "-fPIC" to the compiler options in Make.config.template when compiling
  plugins
+ for reporting a missing '--vfat' in the vdr.1 man page
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
