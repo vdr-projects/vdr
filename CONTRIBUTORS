@@ -1946,3 +1946,6 @@ Patrick Maier <maierp@informatik.tu-muenchen.de>
 Norbert Wentz <norbert.wentz@online.de>
  for reporting a bug in handling relative volume settings in the call to
  cStatus::MsgSetVolume()
+
+Frank Schmirler <vdr@schmirler.de>
+ for fixing handling client side termination of SVDRP connections
