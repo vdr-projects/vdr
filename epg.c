@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.75 2006/05/25 14:55:36 kls Exp $
+ * $Id: epg.c 1.76 2006/07/22 09:13:15 kls Exp $
  */
 
 #include "epg.h"
@@ -770,6 +770,14 @@ void cSchedule::ResetVersions(void)
 void cSchedule::Sort(void)
 {
   events.Sort();
+  // Make sure there are no RunningStatusUndefined before the currently running event:
+  if (hasRunning) {
+     for (cEvent *p = events.First(); p; p = events.Next(p)) {
+         if (p->RunningStatus() > SI::RunningStatusNotRunning)
+            break;
+         p->SetRunningStatus(SI::RunningStatusNotRunning);
+         }
+     }
 }
 
 void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
