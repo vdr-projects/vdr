@@ -4814,3 +4814,5 @@ Video Disk Recorder Revision History
 - Removed a double fdopen() in cPipe::Open() (reported by Stefan Huelswitt).
 - Fixed handling the running status of EPG events before the currently running one,
   in case they are added after the current event.
+- cEIT::cEIT() now calls pSchedule->SetPresentSeen() even if OnlyRunningStatus is
+  true.
