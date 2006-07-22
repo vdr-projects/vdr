@@ -4826,3 +4826,5 @@ Video Disk Recorder Revision History
   some superfluous semicolons in ci.c (thanks to Marco Schlüßler).
 - Fixed handling client side termination of SVDRP connections (thanks to Frank
   Schmirler).
+- cDevice::GetDevice() now prefers any device that's already receiving and doesn't
+  require detatching receivers (suggested by Anssi Hannula).
