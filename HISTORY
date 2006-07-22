@@ -4818,3 +4818,5 @@ Video Disk Recorder Revision History
   true.
 - Newlines in title and short text of an EPG event are now changed into blanks only
   after all other fixes, because a short text might become a description.
+- Fixed handling network masks in the svdrphosts.conf file (thanks to Patrick
+  Maier).
