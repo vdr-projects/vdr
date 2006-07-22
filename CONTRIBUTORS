@@ -1940,3 +1940,7 @@ Antti Hartikainen <ami+vdr@ah.fi>
 
 Patrick Maier <maierp@informatik.tu-muenchen.de>
  for fixing handling network masks in the svdrphosts.conf file
+
+Norbert Wentz <norbert.wentz@online.de>
+ for reporting a bug in handling relative volume settings in the call to
+ cStatus::MsgSetVolume()

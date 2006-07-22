@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.131 2006/06/15 09:59:40 kls Exp $
+ * $Id: device.c 1.132 2006/07/22 13:18:34 kls Exp $
  */
 
 #include "device.h"
@@ -776,9 +776,10 @@ void cDevice::SetAudioChannel(int AudioChannel)
 
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
+  int OldVolume = volume;
   volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
   SetVolumeDevice(volume);
-  cStatus::MsgSetVolume(volume, Absolute);
+  cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);
   if (volume > 0) {
      mute = false;
      Audios.MuteAudio(mute);

@@ -4820,3 +4820,5 @@ Video Disk Recorder Revision History
   after all other fixes, because a short text might become a description.
 - Fixed handling network masks in the svdrphosts.conf file (thanks to Patrick
   Maier).
+- Fixed handling relative volume settings in the call to cStatus::MsgSetVolume()
+  (reported by Norbert Wentz).
