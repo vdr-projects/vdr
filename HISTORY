@@ -4822,3 +4822,5 @@ Video Disk Recorder Revision History
   Maier).
 - Fixed handling relative volume settings in the call to cStatus::MsgSetVolume()
   (reported by Norbert Wentz).
+- Added a missing initialization of 'mutex' in cCiMenu::cCiMenu() and removed
+  some superfluous semicolons in ci.c (thanks to Marco Schlüßler).

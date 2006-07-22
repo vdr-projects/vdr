@@ -1365,6 +1365,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  and PremiereContentTransmissionDescriptor to 'libsi'
  for pointing out that plugins might be compiled with different DVB driver header
  files than VDR itself
+ for adding a missing initialization of 'mutex' in cCiMenu::cCiMenu() and removing
+ some superfluous semicolons in ci.c
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
