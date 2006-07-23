@@ -1222,6 +1222,8 @@ Andreas Regel <andreas.regel@gmx.de>
  for reporting a problem in handling Transfer Mode for radio channels
  for reporting a problem with messages when a cOsdObject uses the raw OSD
  for implementing palette replace mode in the OSD bitmaps
+ for fixing handling numeric keys in the channel display after switching channel
+ groups
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

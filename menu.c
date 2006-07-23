@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.442 2006/06/24 10:22:57 kls Exp $
+ * $Id: menu.c 1.443 2006/07/23 09:23:11 kls Exp $
  */
 
 #include "menu.h"
@@ -3146,6 +3146,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             return osEnd;
             }
     case k1 ... k9:
+         group = -1;
          if (number >= 0) {
             if (number > Channels.MaxNumber())
                number = Key - k0;
