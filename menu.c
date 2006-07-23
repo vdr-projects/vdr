@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.441 2006/06/03 13:32:42 kls Exp $
+ * $Id: menu.c 1.443 2006/07/23 09:23:11 kls Exp $
  */
 
 #include "menu.h"
@@ -39,7 +39,7 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 #define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
-#define MINFREEDISK       300 // minimum free disk space required to start recording
+#define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
@@ -3146,6 +3146,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             return osEnd;
             }
     case k1 ... k9:
+         group = -1;
          if (number >= 0) {
             if (number > Channels.MaxNumber())
                number = Key - k0;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.45 2006/06/03 13:20:01 kls Exp $
+ * $Id: menuitems.c 1.46 2006/07/23 09:42:17 kls Exp $
  */
 
 #include "menuitems.h"
@@ -75,6 +75,7 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      int newValue = *value;
+     bool IsRepeat = Key & k_Repeat;
      Key = NORMALKEY(Key);
      switch (Key) {
        case kNone: break;
@@ -88,10 +89,14 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
        case kLeft: // TODO might want to increase the delta if repeated quickly?
             newValue = *value - 1;
             fresh = true;
+            if (!IsRepeat && newValue < min && max != INT_MAX)
+               newValue = max;
             break;
        case kRight:
             newValue = *value + 1;
             fresh = true;
+            if (!IsRepeat && newValue > max && min != INT_MIN)
+               newValue = min;
             break;
        default:
             if (*value < min) { *value = min; Set(); }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.131 2006/06/15 09:59:40 kls Exp $
+ * $Id: device.c 1.133 2006/07/22 14:06:11 kls Exp $
  */
 
 #include "device.h"
@@ -292,7 +292,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
          // to their individual severity, where the one listed first will make the most
          // difference, because it results in the most significant bit of the result.
          uint imp = 0;
-         imp <<= 1; imp |= !device[i]->Receiving() || ndr;                         // use receiving devices if we don't need to detach existing receivers
+         imp <<= 1; imp |= !device[i]->Receiving(true) || ndr;                     // use receiving devices if we don't need to detach existing receivers
          imp <<= 1; imp |= device[i]->Receiving();                                 // avoid devices that are receiving
          imp <<= 1; imp |= device[i] == ActualDevice();                            // avoid the actual device (in case of Transfer Mode)
          imp <<= 1; imp |= device[i]->IsPrimaryDevice();                           // avoid the primary device
@@ -776,9 +776,10 @@ void cDevice::SetAudioChannel(int AudioChannel)
 
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
+  int OldVolume = volume;
   volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
   SetVolumeDevice(volume);
-  cStatus::MsgSetVolume(volume, Absolute);
+  cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);
   if (volume > 0) {
      mute = false;
      Audios.MuteAudio(mute);

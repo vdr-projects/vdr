@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.55 2006/06/02 13:51:39 kls Exp $
+ * $Id: thread.c 1.56 2006/06/24 10:10:58 kls Exp $
  */
 
 #include "thread.h"
@@ -423,7 +423,6 @@ bool cPipe::Open(const char *Command, const char *Mode)
         iopipe = 1;
         }
      close(fd[iopipe]);
-     f = fdopen(fd[1 - iopipe], mode);
      if ((f = fdopen(fd[1 - iopipe], mode)) == NULL) {
         LOG_ERROR;
         close(fd[1 - iopipe]);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.145 2006/04/17 12:43:57 kls Exp $
+ * $Id: config.c 1.146 2006/07/22 11:57:51 kls Exp $
  */
 
 #include "config.h"
@@ -106,8 +106,10 @@ bool cSVDRPhost::Parse(const char *s)
      *(char *)p = 0; // yes, we know it's 'const' - will be restored!
      if (m == 0)
         mask = 0;
-     else
-        mask >>= (32 - m);
+     else {
+        mask <<= (32 - m);
+        mask = htonl(mask);
+        }
      }
   int result = inet_aton(s, &addr);
   if (p)

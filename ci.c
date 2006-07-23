@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.42 2006/01/07 15:07:16 kls Exp $
+ * $Id: ci.c 1.43 2006/07/22 13:40:30 kls Exp $
  */
 
 #include "ci.h"
@@ -1387,6 +1387,7 @@ bool cCiMMI::SendCloseMMI(void)
 cCiMenu::cCiMenu(cCiMMI *MMI, bool Selectable)
 {
   mmi = MMI;
+  mutex = NULL;
   selectable = Selectable;
   titleText = subTitleText = bottomText = NULL;
   numEntries = 0;
@@ -1445,8 +1446,8 @@ cCiEnquiry::cCiEnquiry(cCiMMI *MMI)
 {
   mmi = MMI;
   text = NULL;
-  blind = false;;
-  expectedLength = 0;;
+  blind = false;
+  expectedLength = 0;
 }
 
 cCiEnquiry::~cCiEnquiry()

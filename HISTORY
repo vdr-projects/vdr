@@ -4801,3 +4801,36 @@ Video Disk Recorder Revision History
   Patrick Cernko).
 - Now making sure a VPS timer has a schedule in case the epg.data file didn't
   contain one when VDR was started.
+
+2006-07-23: Version 1.4.1-2
+
+- Fixed the Makefile of the 'servicedemo' plugin, so that it defines the
+  PLUGIN macro, which allows the Make.config file to react properly when
+  compiling the plugin (reported by Bernd Melcher).
+  Note to all plugin developers: a plugin's Makefile *must* define the PLUGIN
+  macro, even if it doesn't use it itself!
+- Added a comment regarding the PLUGIN macro to the 'newplugin' script.
+- Added '--vfat' to the vdr.1 man page (reported by Udo Richter).
+- Removed a double fdopen() in cPipe::Open() (reported by Stefan Huelswitt).
+- Fixed handling the running status of EPG events before the currently running one,
+  in case they are added after the current event.
+- cEIT::cEIT() now calls pSchedule->SetPresentSeen() even if OnlyRunningStatus is
+  true.
+- Newlines in title and short text of an EPG event are now changed into blanks only
+  after all other fixes, because a short text might become a description.
+- Fixed handling network masks in the svdrphosts.conf file (thanks to Patrick
+  Maier).
+- Fixed handling relative volume settings in the call to cStatus::MsgSetVolume()
+  (reported by Norbert Wentz).
+- Added a missing initialization of 'mutex' in cCiMenu::cCiMenu() and removed
+  some superfluous semicolons in ci.c (thanks to Marco Schlüßler).
+- Fixed handling client side termination of SVDRP connections (thanks to Frank
+  Schmirler).
+- cDevice::GetDevice() now prefers any device that's already receiving and doesn't
+  require detatching receivers (suggested by Anssi Hannula).
+- Fixed handling numeric keys in the channel display after switching channel groups
+  (thanks to Andreas Regel).
+- Menu items derived from cMenuEditIntItem now loop though their values if they
+  have a dedicated minimum or maximum limit (suggested by Andy Grobb). Looping is
+  only done for normal keypresses, not for repeated ones. This allows the user to
+  scroll the value all the way to the limit by keeping the key pressed.

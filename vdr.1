@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.25 2006/04/30 08:55:12 kls Exp $
+.\" $Id: vdr.1 1.26 2006/06/24 10:07:16 kls Exp $
 .\"
 .TH vdr 1 "30 Apr 2006" "1.4.0" "Video Disk Recorder"
 .SH NAME
@@ -136,6 +136,10 @@ Starting vdr as 'root' is necessary if the system time shall
 be set from the transponder data, but for security reasons
 vdr can switch to a lesser privileged user id during normal
 operation.
+.TP
+.BI \-\-vfat
+Encode special characters in recording names to avoid problems
+with VFAT file systems.
 .TP
 .BI \-v\  dir ,\ \-\-video= dir
 Use \fIdir\fR as video directory.

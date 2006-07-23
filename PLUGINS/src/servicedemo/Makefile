@@ -1,12 +1,13 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.6 2006/04/24 17:21:01 kls Exp $
+# $Id: Makefile 1.7 2006/06/24 09:09:54 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
 # By default the main source file also carries this name.
 #
+PLUGIN  = servicedemo # dummy name for Make.config
 PLUGIN1 = svccli
 PLUGIN2 = svcsvr
 
