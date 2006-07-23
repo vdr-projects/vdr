@@ -4830,3 +4830,7 @@ Video Disk Recorder Revision History
   require detatching receivers (suggested by Anssi Hannula).
 - Fixed handling numeric keys in the channel display after switching channel groups
   (thanks to Andreas Regel).
+- Menu items derived from cMenuEditIntItem now loop though their values if they
+  have a dedicated minimum or maximum limit (suggested by Andy Grobb). Looping is
+  only done for normal keypresses, not for repeated ones. This allows the user to
+  scroll the value all the way to the limit by keeping the key pressed.
