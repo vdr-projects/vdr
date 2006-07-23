@@ -4806,7 +4806,7 @@ Video Disk Recorder Revision History
 
 - Fixed the Makefile of the 'servicedemo' plugin, so that it defines the
   PLUGIN macro, which allows the Make.config file to react properly when
-  compiling the plugin.
+  compiling the plugin (reported by Bernd Melcher).
   Note to all plugin developers: a plugin's Makefile *must* define the PLUGIN
   macro, even if it doesn't use it itself!
 - Added a comment regarding the PLUGIN macro to the 'newplugin' script.

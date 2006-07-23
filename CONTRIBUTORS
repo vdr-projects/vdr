@@ -1944,6 +1944,9 @@ Anssi Hannula <anssi.hannula@gmail.com>
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
 
+Bernd Melcher <bernd@bernd-melcher.de>
+ for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro
+
 Patrick Maier <maierp@informatik.tu-muenchen.de>
  for fixing handling network masks in the svdrphosts.conf file
 
