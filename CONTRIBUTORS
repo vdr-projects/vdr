@@ -1873,6 +1873,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  the jump instead of closing the display
  for reporting that the log message "deleting plugin: ..." is irritating when
  calling "vdr --help"
+ for fixing cDevice::ToggleMute()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

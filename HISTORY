@@ -4841,3 +4841,4 @@ Video Disk Recorder Revision History
   (thanks to Frank Schmirler).
 - Increased the APIVERSION to allow plugins that relied on the cStatus::MsgSetVolume()
   bug to react properly (suggested by Stefan Huelswitt).
+- Fixed cDevice::ToggleMute() (thanks to Christoph Haubrich).
