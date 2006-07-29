@@ -4834,3 +4834,8 @@ Video Disk Recorder Revision History
   have a dedicated minimum or maximum limit (suggested by Andy Grobb). Looping is
   only done for normal keypresses, not for repeated ones. This allows the user to
   scroll the value all the way to the limit by keeping the key pressed.
+
+2006-07-29: Version 1.4.1-3
+
+- Fixed assigning schedules to channels in case there is no initial EPG information
+  (thanks to Frank Schmirler).

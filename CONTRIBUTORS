@@ -1958,3 +1958,4 @@ Norbert Wentz <norbert.wentz@online.de>
 
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
+ for fixing assigning schedules to channels in case there is no initial EPG information

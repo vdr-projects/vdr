@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.77 2006/07/22 10:13:34 kls Exp $
+ * $Id: epg.c 1.78 2006/07/29 09:38:55 kls Exp $
  */
 
 #include "epg.h"
@@ -1035,6 +1035,9 @@ cSchedule *cSchedules::AddSchedule(tChannelID ChannelID)
   if (!p) {
      p = new cSchedule(ChannelID);
      Add(p);
+     cChannel *channel = Channels.GetByChannelID(ChannelID);
+     if (channel)
+        channel->schedule = p;
      }
   return p;
 }
