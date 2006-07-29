@@ -4839,3 +4839,5 @@ Video Disk Recorder Revision History
 
 - Fixed assigning schedules to channels in case there is no initial EPG information
   (thanks to Frank Schmirler).
+- Increased the APIVERSION to allow plugins that relied on the cStatus::MsgSetVolume()
+  bug to react properly (suggested by Stefan Huelswitt).
