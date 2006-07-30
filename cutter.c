@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.15 2006/02/12 10:07:23 kls Exp $
+ * $Id: cutter.c 1.16 2006/07/30 10:22:08 kls Exp $
  */
 
 #include "cutter.h"
@@ -171,6 +171,7 @@ void cCuttingThread::Action(void)
                  LastMark = true;
               }
            }
+     Recordings.TouchUpdate();
      }
   else
      esyslog("no editing marks found!");
@@ -205,7 +206,7 @@ bool cCutter::Start(const char *FileName)
         // XXX
         editedVersionName = strdup(evn);
         Recording.WriteInfo();
-        Recordings.AddByName(editedVersionName);
+        Recordings.AddByName(editedVersionName, false);
         cuttingThread = new cCuttingThread(FileName, editedVersionName);
         return true;
         }

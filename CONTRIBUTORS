@@ -279,6 +279,8 @@ Artur Skawina <skawina@geocities.com>
  for a patch that contained a fix for checking toFile in cCuttingThread::Action()
  for improving cUnbufferedFile
  for fixing calculating the cache size in cUnbufferedFile::Read()
+ for making the /video/.update file be touched _after_ an editing process is finished
+ in order to avoid excessive disk access
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR

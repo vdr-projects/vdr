@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.148 2006/04/29 13:22:20 kls Exp $
+ * $Id: recording.c 1.149 2006/07/30 10:23:46 kls Exp $
  */
 
 #include "recording.h"
@@ -970,7 +970,7 @@ cRecording *cRecordings::GetByName(const char *FileName)
   return NULL;
 }
 
-void cRecordings::AddByName(const char *FileName)
+void cRecordings::AddByName(const char *FileName, bool TriggerUpdate)
 {
   LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
@@ -978,7 +978,8 @@ void cRecordings::AddByName(const char *FileName)
      recording = new cRecording(FileName);
      Add(recording);
      ChangeState();
-     TouchUpdate();
+     if (TriggerUpdate)
+        TouchUpdate();
      }
 }
 
