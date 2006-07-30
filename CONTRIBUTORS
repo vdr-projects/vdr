@@ -1452,6 +1452,7 @@ Udo Richter <udo_richter@gmx.de>
  for adding "-fPIC" to the compiler options in Make.config.template when compiling
  plugins
  for reporting a missing '--vfat' in the vdr.1 man page
+ for fixing deleting the last character of a string menu item in insert mode
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
