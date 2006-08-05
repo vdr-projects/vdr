@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.78 2006/07/29 09:38:55 kls Exp $
+ * $Id: epg.c 1.79 2006/08/05 10:04:17 kls Exp $
  */
 
 #include "epg.h"
@@ -647,7 +647,7 @@ Final:
 cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
-  hasRunning = false;;
+  hasRunning = false;
   modified = 0;
   presentSeen = 0;
 }
@@ -738,6 +738,7 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
 
 void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
 {
+  hasRunning = false;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
       if (p == Event) {
          if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning)
@@ -745,9 +746,9 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Cha
          }
       else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
          p->SetRunningStatus(SI::RunningStatusNotRunning);
+      if (p->RunningStatus() >= SI::RunningStatusPausing)
+         hasRunning = true;
       }
-  if (RunningStatus >= SI::RunningStatusPausing)
-     hasRunning = true;
 }
 
 void cSchedule::ClrRunningStatus(cChannel *Channel)
@@ -775,7 +776,7 @@ void cSchedule::Sort(void)
   // Make sure there are no RunningStatusUndefined before the currently running event:
   if (hasRunning) {
      for (cEvent *p = events.First(); p; p = events.Next(p)) {
-         if (p->RunningStatus() > SI::RunningStatusNotRunning)
+         if (p->RunningStatus() >= SI::RunningStatusPausing)
             break;
          p->SetRunningStatus(SI::RunningStatusNotRunning);
          }

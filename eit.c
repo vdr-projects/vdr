@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.119 2006/07/22 09:21:59 kls Exp $
+ * $Id: eit.c 1.120 2006/08/05 10:01:21 kls Exp $
  */
 
 #include "eit.h"
@@ -94,6 +94,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          pEvent->SetStartTime(SiEitEvent.getStartTime());
          pEvent->SetDuration(SiEitEvent.getDuration());
          }
+      if (newEvent)
+         pSchedule->AddEvent(newEvent);
       if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
          if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
             pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
@@ -239,9 +241,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          }
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
-
-      if (newEvent)
-         pSchedule->AddEvent(newEvent);
 
       pEvent->SetComponents(Components);
 
