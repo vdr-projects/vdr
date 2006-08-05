@@ -4848,3 +4848,9 @@ Video Disk Recorder Revision History
   in order to avoid excessive disk access (thanks to Artur Skawina).
 - Fixed handling the running status of EPG events before the currently running one,
   in case they are added after the current event (cont'd from version 1.4.1-2).
+- Modified the shutdown mechanism, so that the shutdown script is never given a
+  time in the past (reported by Helmut Auer). If a timer is currently recording,
+  or a recording would start within the next 30 minutes (default for the "Min.
+  event timeout" setup parameter), and the user insists in shutting down now, the
+  reboot time given to the shutdown script will correspond to a time that is
+  "Min. event timeout" minutes (default is 30) in the future.

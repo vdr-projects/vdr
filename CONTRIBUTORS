@@ -581,6 +581,8 @@ Helmut Auer <vdr@helmutauer.de>
  for reporting a problem with the "Press any key on the RC unit" step when learning
  LIRC remote control codes
  for suggesting to reduce the logging for the SVDRP GRAB command
+ for reporting that the shutdown script is given a reboot time in the past if there
+ is a recording going on or about to start, and the user insists in shutting down now
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

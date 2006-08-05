@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.276 2006/06/18 08:49:20 kls Exp $
+ * $Id: vdr.c 1.277 2006/08/05 10:40:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -1165,6 +1165,12 @@ int main(int argc, char *argv[])
                        }
                     else
                        LastActivity = 1;
+                    }
+                 if (timer && Delta < Setup.MinEventTimeout * 60 && ForceShutdown) {
+                    Delta = Setup.MinEventTimeout * 60;
+                    Next = Now + Delta;
+                    timer = NULL;
+                    dsyslog("reboot at %s", *TimeToString(Next));
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
