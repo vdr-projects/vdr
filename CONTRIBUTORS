@@ -1457,6 +1457,8 @@ Udo Richter <udo_richter@gmx.de>
  plugins
  for reporting a missing '--vfat' in the vdr.1 man page
  for fixing deleting the last character of a string menu item in insert mode
+ for reporting that the shutdown message "Recording in ... minutes, shut down anyway?"
+ may have been given with a negative number of minutes
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

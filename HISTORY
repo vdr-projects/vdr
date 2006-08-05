@@ -4854,3 +4854,5 @@ Video Disk Recorder Revision History
   event timeout" setup parameter), and the user insists in shutting down now, the
   reboot time given to the shutdown script will correspond to a time that is
   "Min. event timeout" minutes (default is 30) in the future.
+- Avoiding shutdown message "Recording in ... minutes, shut down anyway?" with
+  a negative number of minutes (reported by Udo Richter).

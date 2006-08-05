@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.277 2006/08/05 10:40:57 kls Exp $
+ * $Id: vdr.c 1.278 2006/08/05 10:46:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -1015,16 +1015,18 @@ int main(int argc, char *argv[])
                   }
                if (cPluginManager::Active(tr("shut down anyway?")))
                   break;
-               cTimer *timer = Timers.GetNextActiveTimer();
-               time_t Next  = timer ? timer->StartTime() : 0;
-               time_t Delta = timer ? Next - time(NULL) : 0;
-               if (Next && Delta <= Setup.MinEventTimeout * 60) {
-                  char *buf;
-                  asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
-                  bool confirm = Interface->Confirm(buf);
-                  free(buf);
-                  if (!confirm)
-                     break;
+               if (!cRecordControls::Active()) {
+                  cTimer *timer = Timers.GetNextActiveTimer();
+                  time_t Next  = timer ? timer->StartTime() : 0;
+                  time_t Delta = timer ? Next - time(NULL) : 0;
+                  if (Next && Delta <= Setup.MinEventTimeout * 60) {
+                     char *buf;
+                     asprintf(&buf, tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
+                     bool confirm = Interface->Confirm(buf);
+                     free(buf);
+                     if (!confirm)
+                        break;
+                     }
                   }
                ForceShutdown = true;
                break;
