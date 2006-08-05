@@ -4856,3 +4856,4 @@ Video Disk Recorder Revision History
   "Min. event timeout" minutes (default is 30) in the future.
 - Avoiding shutdown message "Recording in ... minutes, shut down anyway?" with
   a negative number of minutes (reported by Udo Richter).
+- Fixed getting the next active timer when shutting down (thanks to Udo Richter).

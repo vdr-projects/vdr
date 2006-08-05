@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.61 2006/05/25 14:36:37 kls Exp $
+ * $Id: timers.c 1.62 2006/08/05 12:03:36 kls Exp $
  */
 
 #include "timers.h"
@@ -351,7 +351,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
          if (DayMatches(t0)) {
             time_t a = SetTime(t0, begin);
             time_t b = a + length;
-            if ((!day || a >= day) && t <= b) {
+            if ((!day || a >= day) && t < b) {
                startTime = a;
                stopTime = b;
                break;
@@ -647,6 +647,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 {
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      ti->Matches();
       if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
          t0 = ti;
       }

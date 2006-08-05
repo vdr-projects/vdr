@@ -1459,6 +1459,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing deleting the last character of a string menu item in insert mode
  for reporting that the shutdown message "Recording in ... minutes, shut down anyway?"
  may have been given with a negative number of minutes
+ for fixing getting the next active timer when shutting down
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
