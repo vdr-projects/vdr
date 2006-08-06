@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.27 2005/12/30 14:46:38 kls Exp $
+ * $Id: svdrp.h 1.28 2006/08/06 08:51:09 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -50,7 +50,7 @@ private:
   char *cmdLine;
   time_t lastActivity;
   static char *grabImageDir;
-  void Close(bool Timeout = false);
+  void Close(bool SendReply = false, bool Timeout = false);
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
   void PrintHelpTopics(const char **hp);
