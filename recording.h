@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.54 2006/04/09 13:47:11 kls Exp $
+ * $Id: recording.h 1.55 2006/07/30 10:24:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -133,7 +133,7 @@ public:
   bool StateChanged(int &State);
   void ResetResume(const char *ResumeFileName = NULL);
   cRecording *GetByName(const char *FileName);
-  void AddByName(const char *FileName);
+  void AddByName(const char *FileName, bool TriggerUpdate = true);
   void DelByName(const char *FileName);
   int TotalFileSizeMB(void); ///< Only for deleted recordings!
   };

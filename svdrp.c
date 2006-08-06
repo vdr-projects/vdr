@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.98 2006/07/22 13:59:43 kls Exp $
+ * $Id: svdrp.c 1.99 2006/08/06 09:17:58 kls Exp $
  */
 
 #include "svdrp.h"
@@ -378,17 +378,19 @@ cSVDRP::cSVDRP(int Port)
 
 cSVDRP::~cSVDRP()
 {
-  Close();
+  Close(true);
   free(cmdLine);
 }
 
-void cSVDRP::Close(bool Timeout)
+void cSVDRP::Close(bool SendReply, bool Timeout)
 {
   if (file.IsOpen()) {
-     //TODO how can we get the *full* hostname?
-     char buffer[BUFSIZ];
-     gethostname(buffer, sizeof(buffer));
-     Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
+     if (SendReply) {
+        //TODO how can we get the *full* hostname?
+        char buffer[BUFSIZ];
+        gethostname(buffer, sizeof(buffer));
+        Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
+        }
      isyslog("closing SVDRP connection"); //TODO store IP#???
      file.Close();
      DELETENULL(PUTEhandler);
@@ -401,7 +403,7 @@ bool cSVDRP::Send(const char *s, int length)
      length = strlen(s);
   if (safe_write(file, s, length) < 0) {
      LOG_ERROR;
-     file.Close();
+     Close();
      return false;
      }
   return true;
@@ -423,10 +425,8 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
                  cont = '-';
               char number[16];
               sprintf(number, "%03d%c", abs(Code), cont);
-              if (!(Send(number) && Send(s, n ? n - s : -1) && Send("\r\n"))) {
-                 Close();
+              if (!(Send(number) && Send(s, n ? n - s : -1) && Send("\r\n")))
                  break;
-                 }
               s = n ? n + 1 : NULL;
               }
         free(buffer);
@@ -1530,7 +1530,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("STAT"))  CmdSTAT(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("VOLU"))  CmdVOLU(s);
-  else if (CMD("QUIT"))  Close();
+  else if (CMD("QUIT"))  Close(true);
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }
 
@@ -1570,7 +1570,7 @@ bool cSVDRP::Process(void)
                  }
               else if (c == 0x04 && numChars == 0) {
                  // end of file (only at beginning of line)
-                 Close();
+                 Close(true);
                  }
               else if (c == 0x08 || c == 0x7F) {
                  // backspace or delete (last character)
@@ -1590,20 +1590,14 @@ bool cSVDRP::Process(void)
                  }
               lastActivity = time(NULL);
               }
-           else if (r < 0) {
+           else if (r <= 0) {
               isyslog("lost connection to SVDRP client");
               Close();
-              }
-           else {
-              isyslog("SVDRP client closed connection");
-              //TODO give cSVDRP::Close() an extra parameter to avoid this code duplication
-              file.Close();
-              DELETENULL(PUTEhandler);
               }
            }
      if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
         isyslog("timeout on SVDRP connection");
-        Close(true);
+        Close(true, true);
         }
      return true;
      }

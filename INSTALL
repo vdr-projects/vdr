@@ -171,7 +171,7 @@ calling the shutdown program, but will rather continue normally until it
 receives a SIGTERM when the computer is actually shut down. So in case
 the shutdown fails, or the shutdown program for some reason decides not to
 perform a shutdown, VDR will stay up and running and will call the shutdown
-program again after another MinUserInactivity minutes.
+program again after another five minutes.
 
 If there are currently no timers active, both parameters will be '0'.
 In that case the program shall not set the hardware for automatic restart
@@ -191,11 +191,10 @@ that this is a user requested shutdown (resulting from pressing the "Power"
 key). The shutdown program may use this information to decide whether or
 not to actually perform the system shutdown.
 
-If a timer is currently recording, the parameters will reflect the start
-time of that timer. This means that the first parameter will be a time in
-the past, and the second parameter will be a negative number. This only
-happens if the user presses the "Power" key while a timer is currently
-recording.
+If a timer is currently recording, or a recording would start within the
+next 30 minutes (default for the "Min. event timeout" setup parameter), and
+the user insists in shutting down now, the first and second parameter will
+correspond to a time that is "Min. event timeout" minutes in the future.
 
 Before the shutdown program is called, the user will be prompted to inform
 him that the system is about to shut down. If any remote control key is

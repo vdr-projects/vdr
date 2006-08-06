@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.133 2006/07/22 14:06:11 kls Exp $
+ * $Id: device.c 1.134 2006/07/29 10:03:56 kls Exp $
  */
 
 #include "device.h"
@@ -751,12 +751,12 @@ bool cDevice::ToggleMute(void)
   mute = !mute;
   //XXX why is it necessary to use different sequences???
   if (mute) {
-     SetVolume(0, mute);
+     SetVolume(0, true);
      Audios.MuteAudio(mute); // Mute external audio after analog audio
      }
   else {
      Audios.MuteAudio(mute); // Enable external audio before analog audio
-     SetVolume(0, mute);
+     SetVolume(OldVolume, true);
      }
   volume = OldVolume;
   return mute;

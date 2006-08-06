@@ -220,6 +220,8 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a problem with channel up/down switching on single card systems
  for fixing the PremiereContentTransmissionDescriptor in 'libsi'
  for reporting a double fdopen() in cPipe::Open()
+ for suggesting to increase the APIVERSION to allow plugins that relied on the
+ cStatus::MsgSetVolume() bug to react properly
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -277,6 +279,8 @@ Artur Skawina <skawina@geocities.com>
  for a patch that contained a fix for checking toFile in cCuttingThread::Action()
  for improving cUnbufferedFile
  for fixing calculating the cache size in cUnbufferedFile::Read()
+ for making the /video/.update file be touched _after_ an editing process is finished
+ in order to avoid excessive disk access
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
@@ -577,6 +581,8 @@ Helmut Auer <vdr@helmutauer.de>
  for reporting a problem with the "Press any key on the RC unit" step when learning
  LIRC remote control codes
  for suggesting to reduce the logging for the SVDRP GRAB command
+ for reporting that the shutdown script is given a reboot time in the past if there
+ is a recording going on or about to start, and the user insists in shutting down now
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1450,6 +1456,10 @@ Udo Richter <udo_richter@gmx.de>
  for adding "-fPIC" to the compiler options in Make.config.template when compiling
  plugins
  for reporting a missing '--vfat' in the vdr.1 man page
+ for fixing deleting the last character of a string menu item in insert mode
+ for reporting that the shutdown message "Recording in ... minutes, shut down anyway?"
+ may have been given with a negative number of minutes
+ for fixing getting the next active timer when shutting down
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1871,6 +1881,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  the jump instead of closing the display
  for reporting that the log message "deleting plugin: ..." is irritating when
  calling "vdr --help"
+ for fixing cDevice::ToggleMute()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -1958,3 +1969,4 @@ Norbert Wentz <norbert.wentz@online.de>
 
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
+ for fixing assigning schedules to channels in case there is no initial EPG information
