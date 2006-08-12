@@ -1955,6 +1955,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
  for suggesting that cDevice::GetDevice() should prefer any device that's already
  receiving and doesn't require detatching receivers
+ for improving handling Transfer Mode devices when selecting a device to receive
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -1972,3 +1973,7 @@ Norbert Wentz <norbert.wentz@online.de>
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
  for fixing assigning schedules to channels in case there is no initial EPG information
+
+Jörn Reder <joern@zyn.de>
+ for reporting that a recording may unnecessarily block a device with a CAM, while
+ it could record on the primary device as well

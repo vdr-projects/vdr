@@ -4866,3 +4866,7 @@ Video Disk Recorder Revision History
 - Made the cCiSession members sessionId and resourceId uint16_t and uint32_t,
   respectively, to match their types in the CI session data (thanks to Ville Skyttä
   for reporting that there are places where ntohs() is assigned to different types).
+- Changed the way a device is selected for receiving in order to keep devices with
+  CAMs better available, even if this means recording on the primary device (reported
+  by Jörn Reder; thanks to Anssi Hannula for improving handling Transfer Mode devices
+  in this).
