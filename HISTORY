@@ -4858,3 +4858,8 @@ Video Disk Recorder Revision History
   a negative number of minutes (reported by Udo Richter).
 - Fixed getting the next active timer when shutting down (thanks to Udo Richter).
 - Modified the cSVDRP::Close() function to avoid code duplication.
+
+2006-08-12: Version 1.4.1-4
+
+- Fixed converting the port number in the "connect from..." log message of SVDRP
+  (thanks to Ville Skyttä).
