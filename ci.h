@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.21 2006/01/07 15:03:05 kls Exp $
+ * $Id: ci.h 1.22 2006/08/12 09:43:31 kls Exp $
  */
 
 #ifndef __CI_H
@@ -110,14 +110,14 @@ private:
   int source;
   int transponder;
   cList<cCiCaProgramData> caProgramList;
-  int ResourceIdToInt(const uint8_t *Data);
-  bool Send(uint8_t Tag, int SessionId, int ResourceId = 0, int Status = -1);
+  uint32_t ResourceIdToInt(const uint8_t *Data);
+  bool Send(uint8_t Tag, uint16_t SessionId, uint32_t ResourceId = 0, int Status = -1);
   const unsigned short *GetCaSystemIds(int Slot);
-  cCiSession *GetSessionBySessionId(int SessionId);
-  cCiSession *GetSessionByResourceId(int ResourceId, int Slot);
-  cCiSession *CreateSession(int ResourceId);
+  cCiSession *GetSessionBySessionId(uint16_t SessionId);
+  cCiSession *GetSessionByResourceId(uint32_t ResourceId, int Slot);
+  cCiSession *CreateSession(uint32_t ResourceId);
   bool OpenSession(int Length, const uint8_t *Data);
-  bool CloseSession(int SessionId);
+  bool CloseSession(uint16_t SessionId);
   int CloseAllSessions(int Slot);
   cCiHandler(int Fd, int NumSlots);
   void SendCaPmt(void);

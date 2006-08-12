@@ -4863,3 +4863,6 @@ Video Disk Recorder Revision History
 
 - Fixed converting the port number in the "connect from..." log message of SVDRP
   (thanks to Ville Skyttä).
+- Made the cCiSession members sessionId and resourceId uint16_t and uint32_t,
+  respectively, to match their types in the CI session data (thanks to Ville Skyttä
+  for reporting that there are places where ntohs() is assigned to different types).

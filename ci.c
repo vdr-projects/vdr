@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.43 2006/07/22 13:40:30 kls Exp $
+ * $Id: ci.c 1.44 2006/08/12 10:14:27 kls Exp $
  */
 
 #include "ci.h"
@@ -630,24 +630,24 @@ cCiTransportConnection *cCiTransportLayer::Process(int Slot)
 
 class cCiSession {
 private:
-  int sessionId;
-  int resourceId;
+  uint16_t sessionId;
+  uint32_t resourceId;
   cCiTransportConnection *tc;
 protected:
   int GetTag(int &Length, const uint8_t **Data);
   const uint8_t *GetData(const uint8_t *Data, int &Length);
   int SendData(int Tag, int Length = 0, const uint8_t *Data = NULL);
 public:
-  cCiSession(int SessionId, int ResourceId, cCiTransportConnection *Tc);
+  cCiSession(uint16_t SessionId, uint32_t ResourceId, cCiTransportConnection *Tc);
   virtual ~cCiSession();
   const cCiTransportConnection *Tc(void) { return tc; }
-  int SessionId(void) { return sessionId; }
-  int ResourceId(void) { return resourceId; }
+  uint16_t SessionId(void) { return sessionId; }
+  uint32_t ResourceId(void) { return resourceId; }
   virtual bool HasUserIO(void) { return false; }
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   };
 
-cCiSession::cCiSession(int SessionId, int ResourceId, cCiTransportConnection *Tc)
+cCiSession::cCiSession(uint16_t SessionId, uint32_t ResourceId, cCiTransportConnection *Tc)
 {
   sessionId = SessionId;
   resourceId = ResourceId;
@@ -711,11 +711,11 @@ class cCiResourceManager : public cCiSession {
 private:
   int state;
 public:
-  cCiResourceManager(int SessionId, cCiTransportConnection *Tc);
+  cCiResourceManager(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   };
 
-cCiResourceManager::cCiResourceManager(int SessionId, cCiTransportConnection *Tc)
+cCiResourceManager::cCiResourceManager(uint16_t SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_RESOURCE_MANAGER, Tc)
 {
   dbgprotocol("New Resource Manager (session id %d)\n", SessionId);
@@ -729,12 +729,12 @@ bool cCiResourceManager::Process(int Length, const uint8_t *Data)
      switch (Tag) {
        case AOT_PROFILE_ENQ: {
             dbgprotocol("%d: <== Profile Enquiry\n", SessionId());
-            int resources[] = { htonl(RI_RESOURCE_MANAGER),
-                                htonl(RI_APPLICATION_INFORMATION),
-                                htonl(RI_CONDITIONAL_ACCESS_SUPPORT),
-                                htonl(RI_DATE_TIME),
-                                htonl(RI_MMI)
-                              };
+            uint32_t resources[] = { htonl(RI_RESOURCE_MANAGER),
+                                     htonl(RI_APPLICATION_INFORMATION),
+                                     htonl(RI_CONDITIONAL_ACCESS_SUPPORT),
+                                     htonl(RI_DATE_TIME),
+                                     htonl(RI_MMI)
+                                   };
             dbgprotocol("%d: ==> Profile\n", SessionId());
             SendData(AOT_PROFILE, sizeof(resources), (uint8_t*)resources);
             state = 3;
@@ -779,14 +779,14 @@ private:
   uint16_t manufacturerCode;
   char *menuString;
 public:
-  cCiApplicationInformation(int SessionId, cCiTransportConnection *Tc);
+  cCiApplicationInformation(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual ~cCiApplicationInformation();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   bool EnterMenu(void);
   const char *GetMenuString(void) { return menuString; }
   };
 
-cCiApplicationInformation::cCiApplicationInformation(int SessionId, cCiTransportConnection *Tc)
+cCiApplicationInformation::cCiApplicationInformation(uint16_t SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_APPLICATION_INFORMATION, Tc)
 {
   dbgprotocol("New Application Information (session id %d)\n", SessionId);
@@ -963,14 +963,14 @@ private:
   int numCaSystemIds;
   unsigned short caSystemIds[MAXCASYSTEMIDS + 1]; // list is zero terminated!
 public:
-  cCiConditionalAccessSupport(int SessionId, cCiTransportConnection *Tc);
+  cCiConditionalAccessSupport(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   const unsigned short *GetCaSystemIds(void) { return caSystemIds; }
   bool SendPMT(cCiCaPmt *CaPmt);
   bool ReceivedReply(bool CanDescramble = false);
   };
 
-cCiConditionalAccessSupport::cCiConditionalAccessSupport(int SessionId, cCiTransportConnection *Tc)
+cCiConditionalAccessSupport::cCiConditionalAccessSupport(uint16_t SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_CONDITIONAL_ACCESS_SUPPORT, Tc)
 {
   dbgprotocol("New Conditional Access Support (session id %d)\n", SessionId);
@@ -1090,11 +1090,11 @@ private:
   time_t lastTime;
   bool SendDateTime(void);
 public:
-  cCiDateTime(int SessionId, cCiTransportConnection *Tc);
+  cCiDateTime(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   };
 
-cCiDateTime::cCiDateTime(int SessionId, cCiTransportConnection *Tc)
+cCiDateTime::cCiDateTime(uint16_t SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_DATE_TIME, Tc)
 {
   interval = 0;
@@ -1193,7 +1193,7 @@ private:
   cCiMenu *menu, *fetchedMenu;
   cCiEnquiry *enquiry, *fetchedEnquiry;
 public:
-  cCiMMI(int SessionId, cCiTransportConnection *Tc);
+  cCiMMI(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual ~cCiMMI();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   virtual bool HasUserIO(void) { return menu || enquiry; }
@@ -1204,7 +1204,7 @@ public:
   bool SendCloseMMI(void);
   };
 
-cCiMMI::cCiMMI(int SessionId, cCiTransportConnection *Tc)
+cCiMMI::cCiMMI(uint16_t SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_MMI, Tc)
 {
   dbgprotocol("New MMI (session id %d)\n", SessionId);
@@ -1524,12 +1524,12 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
   return NULL;
 }
 
-int cCiHandler::ResourceIdToInt(const uint8_t *Data)
+uint32_t cCiHandler::ResourceIdToInt(const uint8_t *Data)
 {
-  return (ntohl(get_unaligned((int32_t *)Data)));
+  return (ntohl(get_unaligned((uint32_t *)Data)));
 }
 
-bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
+bool cCiHandler::Send(uint8_t Tag, uint16_t SessionId, uint32_t ResourceId, int Status)
 {
   uint8_t buffer[16];
   uint8_t *p = buffer;
@@ -1538,7 +1538,7 @@ bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
   if (Status >= 0)
      *p++ = Status;
   if (ResourceId) {
-     put_unaligned(htonl(ResourceId), (int32_t *)p);
+     put_unaligned(htonl(ResourceId), (uint32_t *)p);
      p += 4;
      }
   put_unaligned(htons(SessionId), (uint16_t *)p);
@@ -1547,7 +1547,7 @@ bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
   return tc && tc->SendData(p - buffer, buffer) == OK;
 }
 
-cCiSession *cCiHandler::GetSessionBySessionId(int SessionId)
+cCiSession *cCiHandler::GetSessionBySessionId(uint16_t SessionId)
 {
   for (int i = 0; i < MAX_CI_SESSION; i++) {
       if (sessions[i] && sessions[i]->SessionId() == SessionId)
@@ -1556,7 +1556,7 @@ cCiSession *cCiHandler::GetSessionBySessionId(int SessionId)
   return NULL;
 }
 
-cCiSession *cCiHandler::GetSessionByResourceId(int ResourceId, int Slot)
+cCiSession *cCiHandler::GetSessionByResourceId(uint32_t ResourceId, int Slot)
 {
   for (int i = 0; i < MAX_CI_SESSION; i++) {
       if (sessions[i] && sessions[i]->Tc()->Slot() == Slot && sessions[i]->ResourceId() == ResourceId)
@@ -1565,7 +1565,7 @@ cCiSession *cCiHandler::GetSessionByResourceId(int ResourceId, int Slot)
   return NULL;
 }
 
-cCiSession *cCiHandler::CreateSession(int ResourceId)
+cCiSession *cCiHandler::CreateSession(uint32_t ResourceId)
 {
   if (!GetSessionByResourceId(ResourceId, tc->Slot())) {
      for (int i = 0; i < MAX_CI_SESSION; i++) {
@@ -1588,7 +1588,7 @@ cCiSession *cCiHandler::CreateSession(int ResourceId)
 bool cCiHandler::OpenSession(int Length, const uint8_t *Data)
 {
   if (Length == 6 && *(Data + 1) == 0x04) {
-     int ResourceId = ResourceIdToInt(Data + 2);
+     uint32_t ResourceId = ResourceIdToInt(Data + 2);
      dbgprotocol("OpenSession %08X\n", ResourceId);
      switch (ResourceId) {
        case RI_RESOURCE_MANAGER:
@@ -1611,9 +1611,9 @@ bool cCiHandler::OpenSession(int Length, const uint8_t *Data)
   return false;
 }
 
-bool cCiHandler::CloseSession(int SessionId)
+bool cCiHandler::CloseSession(uint16_t SessionId)
 {
-  dbgprotocol("CloseSession %08X\n", SessionId);
+  dbgprotocol("CloseSession %d\n", SessionId);
   cCiSession *Session = GetSessionBySessionId(SessionId);
   if (Session && sessions[SessionId - 1] == Session) {
      delete Session;
@@ -1675,7 +1675,7 @@ bool cCiHandler::Process(int Slot)
             if (Data && Length > 1) {
                switch (*Data) {
                  case ST_SESSION_NUMBER:          if (Length > 4) {
-                                                     int SessionId = ntohs(get_unaligned((uint16_t *)&Data[2]));
+                                                     uint16_t SessionId = ntohs(get_unaligned((uint16_t *)&Data[2]));
                                                      cCiSession *Session = GetSessionBySessionId(SessionId);
                                                      if (Session)
                                                         Session->Process(Length - 4, Data + 4);
