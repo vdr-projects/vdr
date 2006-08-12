@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.119 2006/06/17 09:45:32 kls Exp $
+ * $Id: tools.c 1.120 2006/08/12 13:30:07 kls Exp $
  */
 
 #include "tools.h"
@@ -422,8 +422,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
                  }
               else {
                  LOG_ERROR_STR(buffer);
-                 free(buffer);
-                 return false;
+                 empty = false;
                  }
               free(buffer);
               }

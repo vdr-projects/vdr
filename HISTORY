@@ -4870,3 +4870,5 @@ Video Disk Recorder Revision History
   CAMs better available, even if this means recording on the primary device (reported
   by Jörn Reder; thanks to Anssi Hannula for improving handling Transfer Mode devices
   in this).
+- No longer stopping removing empty directories if an error occurs (thanks to
+  Oliver Endriss).

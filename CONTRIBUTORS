@@ -639,6 +639,7 @@ Oliver Endriss <o.endriss@gmx.de>
  against invalid data
  for reporting a problem in extracting APIVERSION with older versions of 'sed'
  for fixing broken APIVERSION extraction line in 'newplugin'
+ for making VDR no longer stop removing empty directories if an error occurs
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
