@@ -4859,7 +4859,7 @@ Video Disk Recorder Revision History
 - Fixed getting the next active timer when shutting down (thanks to Udo Richter).
 - Modified the cSVDRP::Close() function to avoid code duplication.
 
-2006-08-12: Version 1.4.1-4
+2006-08-13: Version 1.4.1-4
 
 - Fixed converting the port number in the "connect from..." log message of SVDRP
   (thanks to Ville Skyttä).
@@ -4872,3 +4872,5 @@ Video Disk Recorder Revision History
   in this).
 - No longer stopping removing empty directories if an error occurs (thanks to
   Oliver Endriss).
+- Added a log error message to cPlugin::ConfigDirectory() in case a plugin calls it
+  from a separate thread (reported by Udo Richter).

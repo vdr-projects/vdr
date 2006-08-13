@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.22 2006/04/17 09:20:05 kls Exp $
+ * $Id: plugin.c 1.23 2006/08/13 08:51:44 kls Exp $
  */
 
 #include "plugin.h"
@@ -15,6 +15,7 @@
 #include <time.h>
 #include "config.h"
 #include "interface.h"
+#include "thread.h"
 
 #define LIBVDR_PREFIX  "libvdr-"
 #define SO_INDICATOR   ".so."
@@ -137,6 +138,8 @@ void cPlugin::SetConfigDirectory(const char *Dir)
 const char *cPlugin::ConfigDirectory(const char *PluginName)
 {
   static char *buffer = NULL;
+  if (!cThread::IsMainThread())
+     esyslog("ERROR: plugin '%s' called cPlugin::ConfigDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
   free(buffer);
   asprintf(&buffer, "%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
   return MakeDirs(buffer, true) ? buffer : NULL;
