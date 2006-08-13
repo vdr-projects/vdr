@@ -4858,3 +4858,19 @@ Video Disk Recorder Revision History
   a negative number of minutes (reported by Udo Richter).
 - Fixed getting the next active timer when shutting down (thanks to Udo Richter).
 - Modified the cSVDRP::Close() function to avoid code duplication.
+
+2006-08-13: Version 1.4.1-4
+
+- Fixed converting the port number in the "connect from..." log message of SVDRP
+  (thanks to Ville Skyttä).
+- Made the cCiSession members sessionId and resourceId uint16_t and uint32_t,
+  respectively, to match their types in the CI session data (thanks to Ville Skyttä
+  for reporting that there are places where ntohs() is assigned to different types).
+- Changed the way a device is selected for receiving in order to keep devices with
+  CAMs better available, even if this means recording on the primary device (reported
+  by Jörn Reder; thanks to Anssi Hannula for improving handling Transfer Mode devices
+  in this).
+- No longer stopping removing empty directories if an error occurs (thanks to
+  Oliver Endriss).
+- Added a log error message to cPlugin::ConfigDirectory() in case a plugin calls it
+  from a separate thread (reported by Udo Richter).

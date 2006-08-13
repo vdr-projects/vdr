@@ -639,6 +639,7 @@ Oliver Endriss <o.endriss@gmx.de>
  against invalid data
  for reporting a problem in extracting APIVERSION with older versions of 'sed'
  for fixing broken APIVERSION extraction line in 'newplugin'
+ for making VDR no longer stop removing empty directories if an error occurs
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1460,6 +1461,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting that the shutdown message "Recording in ... minutes, shut down anyway?"
  may have been given with a negative number of minutes
  for fixing getting the next active timer when shutting down
+ for reporting a problem with cPlugin::ConfigDirectory() in case a plugin calls it
+ from a separate thread
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1621,6 +1624,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing several spelling errors
  for reporting that the call to pthread_setschedparam(childTid, SCHED_RR, 0) in
  thread.c caused a compiler warning with g++ 4.1.1
+ for fixing converting the port number in the "connect from..." log message of SVDRP
+ for reporting that there are places where ntohs() is assigned to different types
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1953,6 +1958,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
  for suggesting that cDevice::GetDevice() should prefer any device that's already
  receiving and doesn't require detatching receivers
+ for improving handling Transfer Mode devices when selecting a device to receive
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -1970,3 +1976,7 @@ Norbert Wentz <norbert.wentz@online.de>
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
  for fixing assigning schedules to channels in case there is no initial EPG information
+
+Jörn Reder <joern@zyn.de>
+ for reporting that a recording may unnecessarily block a device with a CAM, while
+ it could record on the primary device as well

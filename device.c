@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.134 2006/07/29 10:03:56 kls Exp $
+ * $Id: device.c 1.135 2006/08/12 11:33:34 kls Exp $
  */
 
 #include "device.h"
@@ -294,11 +294,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
          uint imp = 0;
          imp <<= 1; imp |= !device[i]->Receiving(true) || ndr;                     // use receiving devices if we don't need to detach existing receivers
          imp <<= 1; imp |= device[i]->Receiving();                                 // avoid devices that are receiving
-         imp <<= 1; imp |= device[i] == ActualDevice();                            // avoid the actual device (in case of Transfer Mode)
-         imp <<= 1; imp |= device[i]->IsPrimaryDevice();                           // avoid the primary device
-         imp <<= 1; imp |= device[i]->HasDecoder();                                // avoid full featured cards
+         imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();        // avoid the Transfer Mode receiver device
          imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF); // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
          imp <<= 8; imp |= min(max(device[i]->ProvidesCa(Channel), 0), 0xFF);      // use the device that provides the lowest number of conditional access methods
+         imp <<= 1; imp |= device[i]->IsPrimaryDevice();                           // avoid the primary device
+         imp <<= 1; imp |= device[i]->HasDecoder();                                // avoid full featured cards
          if (imp < Impact) {
             // This device has less impact than any previous one, so we take it.
             Impact = imp;
