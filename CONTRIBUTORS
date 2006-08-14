@@ -1980,3 +1980,7 @@ Frank Schmirler <vdr@schmirler.de>
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
  it could record on the primary device as well
+
+Tomas Berglund <tomber@telia.com>
+ for reporting a problem with sticky PIDs in CAMs when switching between encrypted
+ channels on the same transponder

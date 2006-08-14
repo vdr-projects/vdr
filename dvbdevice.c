@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.159 2006/06/11 09:03:55 kls Exp $
+ * $Id: dvbdevice.c 1.160 2006/08/14 09:38:32 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -853,11 +853,6 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
-     //XXX quick workaround for additional live audio PIDs:
-     if (ciHandler) {
-        ciHandler->SetPid(Channel->Apid(1), true);
-        ciHandler->SetPid(Channel->Dpid(0), true);
-        }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true)); // actually one would expect 'false' here, but according to Marco Schlüßler <marco@lordzodiac.de> this works
@@ -927,8 +922,14 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
      if (IS_AUDIO_TRACK(Type) || (IS_DOLBY_TRACK(Type) && SetAudioBypass(true))) {
         if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
            DetachAll(pidHandles[ptAudio].pid);
+           if (ciHandler)
+              ciHandler->SetPid(pidHandles[ptAudio].pid, false);
            pidHandles[ptAudio].pid = TrackId->id;
            SetPid(&pidHandles[ptAudio], ptAudio, true);
+           if (ciHandler) {
+              ciHandler->SetPid(pidHandles[ptAudio].pid, true);
+              ciHandler->StartDecrypting();
+              }
            }
         }
      else if (IS_DOLBY_TRACK(Type)) {
