@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.56 2006/06/24 10:10:58 kls Exp $
+ * $Id: thread.c 1.57 2006/08/20 10:20:44 kls Exp $
  */
 
 #include "thread.h"
@@ -316,11 +316,9 @@ bool cThread::EmergencyExit(bool Request)
   return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
 }
 
-_syscall0(pid_t, gettid)
-
 tThreadId cThread::ThreadId(void)
 {
-  return gettid();
+  return syscall(__NR_gettid);
 }
 
 void cThread::SetMainThreadId(void)

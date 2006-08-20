@@ -1626,6 +1626,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  thread.c caused a compiler warning with g++ 4.1.1
  for fixing converting the port number in the "connect from..." log message of SVDRP
  for reporting that there are places where ntohs() is assigned to different types
+ for adapting cThread::ThreadId() to recent kernels
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
