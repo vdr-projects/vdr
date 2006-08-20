@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.44 2006/08/12 10:14:27 kls Exp $
+ * $Id: ci.c 1.45 2006/08/20 11:38:33 kls Exp $
  */
 
 #include "ci.h"
@@ -985,6 +985,7 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
      switch (Tag) {
        case AOT_CA_INFO: {
             dbgprotocol("%d: <== Ca Info", SessionId());
+            numCaSystemIds = 0;
             int l = 0;
             const uint8_t *d = GetData(Data, l);
             while (l > 1) {
@@ -992,13 +993,14 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
                   dbgprotocol(" %04X", id);
                   d += 2;
                   l -= 2;
-                  if (numCaSystemIds < MAXCASYSTEMIDS) {
+                  if (numCaSystemIds < MAXCASYSTEMIDS)
                      caSystemIds[numCaSystemIds++] = id;
-                     caSystemIds[numCaSystemIds] = 0;
-                     }
-                  else
+                  else {
                      esyslog("ERROR: too many CA system IDs!");
+                     break;
+                     }
                   }
+            caSystemIds[numCaSystemIds] = 0;
             dbgprotocol("\n");
             }
             state = 2; // got ca info
