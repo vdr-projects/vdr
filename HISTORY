@@ -4874,3 +4874,17 @@ Video Disk Recorder Revision History
   Oliver Endriss).
 - Added a log error message to cPlugin::ConfigDirectory() in case a plugin calls it
   from a separate thread (reported by Udo Richter).
+
+2006-08-20: Version 1.4.1-5
+
+- Replaced the "quick workaround for additional live audio PIDs" in
+  cDvbDevice::SetChannelDevice() with an actual solution in
+  cDvbDevice::SetAudioTrackDevice() in order to prevent sticky PIDs in CAMs,
+  which caused long switching times or completely blank screens when switching
+  between encrypted channels on the same transponder (reported by Tomas Berglund).
+- Adapted cThread::ThreadId() to recent kernels (thanks to Ville Skyttä).
+- Added --remove-destination to the 'cp' command for binaries in the Makefile to
+  avoid a crash in case a new version is installed on a running system (suggested
+  by Petri Hintukainen).
+- Fixed handling "Ca Info" in case the CAM sends this again if the smart card is
+  replaced with a different one.

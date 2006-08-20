@@ -1626,6 +1626,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  thread.c caused a compiler warning with g++ 4.1.1
  for fixing converting the port number in the "connect from..." log message of SVDRP
  for reporting that there are places where ntohs() is assigned to different types
+ for adapting cThread::ThreadId() to recent kernels
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1808,6 +1809,8 @@ Gavin Hamill <gdh@acentral.co.uk>
 Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for suggesting to disable the use of "fadvise" in cUnbufferedFile because there
  have been several reports that it causes more problems than it solves
+ for suggesting to add --remove-destination to the 'cp' command for binaries in
+ the Makefile to avoid a crash in case a new version is installed on a running system
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
@@ -1980,3 +1983,7 @@ Frank Schmirler <vdr@schmirler.de>
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
  it could record on the primary device as well
+
+Tomas Berglund <tomber@telia.com>
+ for reporting a problem with sticky PIDs in CAMs when switching between encrypted
+ channels on the same transponder
