@@ -1809,6 +1809,8 @@ Gavin Hamill <gdh@acentral.co.uk>
 Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for suggesting to disable the use of "fadvise" in cUnbufferedFile because there
  have been several reports that it causes more problems than it solves
+ for suggesting to add --remove-destination to the 'cp' command for binaries in
+ the Makefile to avoid a crash in case a new version is installed on a running system
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch

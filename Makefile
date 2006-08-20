@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.94 2006/06/02 14:45:33 kls Exp $
+# $Id: Makefile 1.95 2006/08/20 10:44:22 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -201,7 +201,7 @@ install: install-bin install-conf install-doc install-plugins
 
 install-bin: vdr
 	@mkdir -p $(BINDIR)
-	@cp vdr runvdr $(BINDIR)
+	@cp --remove-destination vdr runvdr $(BINDIR)
 
 # Configuration files:
 
@@ -223,7 +223,7 @@ install-doc:
 
 install-plugins: plugins
 	@mkdir -p $(PLUGINLIBDIR)
-	@cp $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(PLUGINLIBDIR)
+	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(PLUGINLIBDIR)
 
 # Source documentation:
 

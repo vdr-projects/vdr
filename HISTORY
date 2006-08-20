@@ -4883,3 +4883,6 @@ Video Disk Recorder Revision History
   which caused long switching times or completely blank screens when switching
   between encrypted channels on the same transponder (reported by Tomas Berglund).
 - Adapted cThread::ThreadId() to recent kernels (thanks to Ville Skyttä).
+- Added --remove-destination to the 'cp' command for binaries in the Makefile to
+  avoid a crash in case a new version is installed on a running system (suggested
+  by Petri Hintukainen).
