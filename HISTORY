@@ -4888,3 +4888,10 @@ Video Disk Recorder Revision History
   by Petri Hintukainen).
 - Fixed handling "Ca Info" in case the CAM sends this again if the smart card is
   replaced with a different one.
+
+2006-08-27: Version 1.4.2
+
+- Revoked the change to cDevice::GetDevice() that was introduced in version 1.4.1-2,
+  which made it prefer any device that's already receiving and doesn't require
+  detatching receivers. This change has caused some unwanted behavior, so further
+  testing is necessary.

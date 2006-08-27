@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.135 2006/08/12 11:33:34 kls Exp $
+ * $Id: device.c 1.136 2006/08/26 14:11:03 kls Exp $
  */
 
 #include "device.h"
@@ -292,7 +292,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
          // to their individual severity, where the one listed first will make the most
          // difference, because it results in the most significant bit of the result.
          uint imp = 0;
-         imp <<= 1; imp |= !device[i]->Receiving(true) || ndr;                     // use receiving devices if we don't need to detach existing receivers
+         imp <<= 1; imp |= !device[i]->Receiving() || ndr;                         // use receiving devices if we don't need to detach existing receivers
          imp <<= 1; imp |= device[i]->Receiving();                                 // avoid devices that are receiving
          imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();        // avoid the Transfer Mode receiver device
          imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF); // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
