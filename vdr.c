@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.278 2006/08/05 10:46:38 kls Exp $
+ * $Id: vdr.c 1.279 2006/09/01 12:57:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -450,6 +450,7 @@ int main(int argc, char *argv[])
   // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
   char *LangEnv;
   if ((LangEnv = getenv("LANG"))     != NULL && strcasestr(LangEnv, "utf") ||
+      (LangEnv = getenv("LC_ALL"))   != NULL && strcasestr(LangEnv, "utf") ||
       (LangEnv = getenv("LC_CTYPE")) != NULL && strcasestr(LangEnv, "utf")) {
      fprintf(stderr, "vdr: please turn off UTF-8 before starting VDR\n");
      return 2;

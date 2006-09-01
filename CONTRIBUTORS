@@ -1987,3 +1987,6 @@ Jörn Reder <joern@zyn.de>
 Tomas Berglund <tomber@telia.com>
  for reporting a problem with sticky PIDs in CAMs when switching between encrypted
  channels on the same transponder
+
+Matthias Schwarzott <zzam@gentoo.org>
+ for suggesting to add LC_ALL to the checks for UTF-8 at startup
