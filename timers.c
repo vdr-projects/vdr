@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.62 2006/08/05 12:03:36 kls Exp $
+ * $Id: timers.c 1.63 2006/09/02 10:20:36 kls Exp $
  */
 
 #include "timers.h"
@@ -90,11 +90,24 @@ cTimer::~cTimer()
 
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
-  memcpy(this, &Timer, sizeof(*this));
-  if (aux)
-     aux = strdup(aux);
-  event = NULL;
+  startTime    = Timer.startTime;
+  stopTime     = Timer.stopTime;
   lastSetEvent = 0;
+  recording    = Timer.recording;
+  pending      = Timer.pending;
+  inVpsMargin  = Timer.inVpsMargin;
+  flags        = Timer.flags;
+  channel      = Timer.channel;
+  day          = Timer.day;
+  weekdays     = Timer.weekdays;
+  start        = Timer.start;
+  stop         = Timer.stop;
+  priority     = Timer.priority;
+  lifetime     = Timer.lifetime;
+  strncpy(file, Timer.file, sizeof(file));
+  free(aux);
+  aux = Timer.aux ? strdup(Timer.aux) : NULL;
+  event = NULL;
   return *this;
 }
 

@@ -1737,6 +1737,8 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing a typo in skins.h
  for making cSkins::QueueMessage() called from a background thread with an empty
  message clears all messages that have been previously queued by that thread
+ for reporting that the cTimer::operator=() messes up the cListObject's pointers
+ for reporting a memory leak in the cTimer::operator=() when using the 'aux' string
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
