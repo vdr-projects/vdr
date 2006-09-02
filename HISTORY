@@ -4903,3 +4903,5 @@ Video Disk Recorder Revision History
   (reported by Alexander Rieger).
 - Fixed a memory leak in the cTimer::operator=() when using the 'aux' string
   (reported by Alexander Rieger).
+- Fixed processing the PDCDescriptor in 'libsi' on big endian systems (thanks to
+  Martin Ostermann).
