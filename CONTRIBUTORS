@@ -640,6 +640,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem in extracting APIVERSION with older versions of 'sed'
  for fixing broken APIVERSION extraction line in 'newplugin'
  for making VDR no longer stop removing empty directories if an error occurs
+ for reporting a bug in handling relative volume settings that unmute the audio in
+ the call to cStatus::MsgSetVolume()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1737,6 +1739,8 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing a typo in skins.h
  for making cSkins::QueueMessage() called from a background thread with an empty
  message clears all messages that have been previously queued by that thread
+ for reporting that the cTimer::operator=() messes up the cListObject's pointers
+ for reporting a memory leak in the cTimer::operator=() when using the 'aux' string
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
@@ -1987,3 +1991,9 @@ Jörn Reder <joern@zyn.de>
 Tomas Berglund <tomber@telia.com>
  for reporting a problem with sticky PIDs in CAMs when switching between encrypted
  channels on the same transponder
+
+Matthias Schwarzott <zzam@gentoo.org>
+ for suggesting to add LC_ALL to the checks for UTF-8 at startup
+
+Martin Ostermann <martin@familie-ostermann.de>
+ for fixing processing the PDCDescriptor in 'libsi' on big endian systems
