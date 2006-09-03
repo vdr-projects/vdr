@@ -640,6 +640,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem in extracting APIVERSION with older versions of 'sed'
  for fixing broken APIVERSION extraction line in 'newplugin'
  for making VDR no longer stop removing empty directories if an error occurs
+ for reporting a bug in handling relative volume settings that unmute the audio in
+ the call to cStatus::MsgSetVolume()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

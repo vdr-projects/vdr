@@ -4896,7 +4896,7 @@ Video Disk Recorder Revision History
   detatching receivers. This change has caused some unwanted behavior, so further
   testing is necessary.
 
-2006-09-02: Version 1.4.2-1
+2006-09-03: Version 1.4.2-1
 
 - Added LC_ALL to the checks for UTF-8 at startup (suggested by Matthias Schwarzott).
 - Fixed the cTimer::operator=() so that it won't mess up the cListObject's pointers
@@ -4905,3 +4905,5 @@ Video Disk Recorder Revision History
   (reported by Alexander Rieger).
 - Fixed processing the PDCDescriptor in 'libsi' on big endian systems (thanks to
   Martin Ostermann).
+- Fixed handling relative volume settings that unmute the audio in the call to
+  cStatus::MsgSetVolume() (reported by Oliver Endriss).
