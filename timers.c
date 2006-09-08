@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.63 2006/09/02 10:20:36 kls Exp $
+ * $Id: timers.c 1.64 2006/09/08 15:06:09 kls Exp $
  */
 
 #include "timers.h"
@@ -83,6 +83,14 @@ cTimer::cTimer(const cEvent *Event)
   event = NULL; // let SetEvent() be called to get a log message
 }
 
+cTimer::cTimer(const cTimer &Timer)
+{
+  channel = NULL;
+  aux = NULL;
+  event = NULL;
+  *this = Timer;
+}
+
 cTimer::~cTimer()
 {
   free(aux);
@@ -90,24 +98,26 @@ cTimer::~cTimer()
 
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
-  startTime    = Timer.startTime;
-  stopTime     = Timer.stopTime;
-  lastSetEvent = 0;
-  recording    = Timer.recording;
-  pending      = Timer.pending;
-  inVpsMargin  = Timer.inVpsMargin;
-  flags        = Timer.flags;
-  channel      = Timer.channel;
-  day          = Timer.day;
-  weekdays     = Timer.weekdays;
-  start        = Timer.start;
-  stop         = Timer.stop;
-  priority     = Timer.priority;
-  lifetime     = Timer.lifetime;
-  strncpy(file, Timer.file, sizeof(file));
-  free(aux);
-  aux = Timer.aux ? strdup(Timer.aux) : NULL;
-  event = NULL;
+  if (&Timer != this) {
+     startTime    = Timer.startTime;
+     stopTime     = Timer.stopTime;
+     lastSetEvent = 0;
+     recording    = Timer.recording;
+     pending      = Timer.pending;
+     inVpsMargin  = Timer.inVpsMargin;
+     flags        = Timer.flags;
+     channel      = Timer.channel;
+     day          = Timer.day;
+     weekdays     = Timer.weekdays;
+     start        = Timer.start;
+     stop         = Timer.stop;
+     priority     = Timer.priority;
+     lifetime     = Timer.lifetime;
+     strncpy(file, Timer.file, sizeof(file));
+     free(aux);
+     aux = Timer.aux ? strdup(Timer.aux) : NULL;
+     event = NULL;
+     }
   return *this;
 }
 
