@@ -4907,3 +4907,10 @@ Video Disk Recorder Revision History
   Martin Ostermann).
 - Fixed handling relative volume settings that unmute the audio in the call to
   cStatus::MsgSetVolume() (reported by Oliver Endriss).
+
+2006-09-09: Version 1.4.2-2
+
+- Fixed cTimer::operator=() in case a cTimer variable is assigned to itself (thanks
+  to Alexander Rieger).
+- Implemented a copy constructor for cTimer (thanks to Udo Richter for reporting that
+  an assignment in svdrp.c didn't use the cTimer::operator=()).

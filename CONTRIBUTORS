@@ -1465,6 +1465,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing getting the next active timer when shutting down
  for reporting a problem with cPlugin::ConfigDirectory() in case a plugin calls it
  from a separate thread
+ for reporting that an assignment in svdrp.c didn't use the cTimer::operator=())
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1741,6 +1742,7 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  message clears all messages that have been previously queued by that thread
  for reporting that the cTimer::operator=() messes up the cListObject's pointers
  for reporting a memory leak in the cTimer::operator=() when using the 'aux' string
+ for fixing cTimer::operator=() in case a cTimer variable is assigned to itself
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
