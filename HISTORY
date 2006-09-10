@@ -4919,3 +4919,5 @@ Video Disk Recorder Revision History
 
 - Added --remove-destination to the 'cp' command for binaries in the Makefiles of
   the plugins (thanks to Rolf Ahrenberg).
+- The 'skincurses' plugin now adjusts the size of the OSD to the size of the console
+  window.
