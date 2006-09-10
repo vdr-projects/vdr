@@ -1006,6 +1006,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a bug in handling empty titles in cEvent::FixEpgBugs()
  for suggesting to replace the "Really restart?" prompt in the call to
  cPluginManager::Active() in menu.c to "restart anyway?"
+ for adding --remove-destination to the 'cp' command for binaries in the Makefiles of
+ the plugins
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

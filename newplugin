@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.29 2006/06/24 09:15:17 kls Exp $
+# $Id: newplugin 1.30 2006/09/09 12:38:35 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -124,7 +124,7 @@ all: libvdr-\$(PLUGIN).so
 
 libvdr-\$(PLUGIN).so: \$(OBJS)
 	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@
-	\@cp \$\@ \$(LIBDIR)/\$\@.\$(APIVERSION)
+	\@cp --remove-destination \$\@ \$(LIBDIR)/\$\@.\$(APIVERSION)
 
 dist: clean
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
