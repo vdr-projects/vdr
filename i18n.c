@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.281 2006/05/05 13:26:09 kls Exp $
+ * $Id: i18n.c 1.282 2006/09/16 09:08:30 kls Exp $
  *
  * Translations provided by:
  *
@@ -20,7 +20,7 @@
  * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
  * Swedish     Tomas Prybil <tomas@prybil.se>, Jan Ekholm <chakie@infa.abo.fi>
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>, Lucian Muresan <lucianm@users.sourceforge.net>
- * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>
+ * Hungarian   Istvan & Silvia Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>
  * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com>, Jordi Vilà <jvila@tinet.org>
  * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>, Oleg Roitburd <oleg@roitburd.de>
  * Croatian    Drazen Dupor <drazen.dupor@dupor.com>, Dino Ravnic <dino.ravnic@fer.hr>
@@ -231,7 +231,7 @@ const tI18nPhrase Phrases[] = {
     "×ñïíïğñïãñáììáôéóìïß",
     "Timers",
     "Timer-e",
-    "Felvétel beprogramozása",
+    "Idözítö",
     "Temporitzadors",
     "ÂĞÙÜÕàë",
     "Termini",
@@ -275,7 +275,7 @@ const tI18nPhrase Phrases[] = {
     "Ğëçñïöïñßåò EããñáöŞò",
     "Inspelning",
     "Detaliile înregistrãrii",
-    "",// TODO
+    "Felvétel",
     "",// TODO
     "¸İäŞ Ş ×ĞßØáØ",
     "",// TODO
@@ -385,7 +385,7 @@ const tI18nPhrase Phrases[] = {
     "Ôñïğïğïßçóç ÷ñïíïğñïãñáììáôéóìïı",
     "Ändra timer",
     "Modificare timer",
-    "Felvétel beprogramozásának megváltoztatása",
+    "Idözítö megváltoztatása",
     "Editar temporitzador",
     "ÃáâĞİŞÒÚĞ âĞÙÜÕàĞ",
     "Ureğivanje termina",
@@ -429,7 +429,7 @@ const tI18nPhrase Phrases[] = {
     "Ğëçñïöïñßåò",
     "Info",
     "Info",
-    "",//TODO
+    "Információ",
     "",//TODO
     "¸İäŞ",
     "Info",
@@ -473,7 +473,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Den här sändningen - %s",
     "Aceastã emisiune - %s",
-    "",//TODO
+    "Ez az adás - %s",
     "",//TODO
     "ÍâĞ ßÕàÕÔĞçĞ - %s",
     "",//TODO
@@ -495,7 +495,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Den här sändningen - alla kanaler",
     "Aceastã emisiune - toate canalele",
-    "",//TODO
+    "Ez az adás - összes adó",
     "",//TODO
     "ÍâĞ ßÕàÕÔĞçĞ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
@@ -517,7 +517,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Alla tillfällen - alla kanaler",
     "Toate emisiunile - toate canalele",
-    "",//TODO
+    "Az összes adás - az összes adó",
     "",//TODO
     "²áÕ ßÕàÕÔĞçØ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
@@ -694,7 +694,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Timer",
     "Timer",
-    "",// TODO
+    "Idözítö",
     "",// TODO
     "ÂĞÙÜÕà",
     "",// TODO
@@ -738,7 +738,7 @@ const tI18nPhrase Phrases[] = {
     "Ğëçñïöïñßåò",
     "Info",
     "Info",
-    "",//TODO
+    "Információ",
     "",//TODO
     "¸İäŞ",
     "Info",
@@ -1090,7 +1090,7 @@ const tI18nPhrase Phrases[] = {
     "ÓÜñùóç",
     "Skanna",
     "Cãutare canale",
-    "",//TODO
+    "Adáskeresés",
     "",//TODO
     "ÁÚĞİØàŞÒĞâì",
     "Pretra¾i",
@@ -1112,7 +1112,7 @@ const tI18nPhrase Phrases[] = {
     "¹÷ïò",
     "Ljud",
     "Sunet",
-    "",// TODO
+    "Hang",
     "",// TODO
     "Ï×ëÚ",
     "",// TODO
@@ -1157,7 +1157,7 @@ const tI18nPhrase Phrases[] = {
     "ÄéáãñáöŞ ÷ñïíïğñïãñáììáôéóìïı;?",
     "Ta bort timern?",
     "ªterg timer-ul?",
-    "Felvétel beprogramozásának törlése?",
+    "Idözítö törlése?",
     "Esborrar el temporitzador?",
     "ÃÔĞÛØâì âĞÙÜÕà?",
     "Obrisati termin?",
@@ -1708,7 +1708,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Okodad",
     "FTA (necriptat)",
-    "",//TODO
+    "Kódolatlan",
     "",//TODO
     "FTA (İÕ×ĞÚŞÔØàŞÒĞİŞ)",
     "",//TODO
@@ -1730,7 +1730,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "krypterad",
     "criptat",
-    "",//TODO
+    "Kódolt",
     "",//TODO
     "×ĞÚŞÔØàŞÒĞİŞ",
     "",//TODO
@@ -2061,7 +2061,7 @@ const tI18nPhrase Phrases[] = {
     "VPS",
     "VPS",
     "VPS",
-    "",// TODO
+    "VPS",
     "",// TODO
     "VPS ßŞßàĞÒÚĞ",
     "VPS", // hrv
@@ -2172,7 +2172,7 @@ const tI18nPhrase Phrases[] = {
     "Ôï êáíÜëç ÷ñéóéìïğïéåßôáé áğü ÷ñïíïğñïãñáììáôéóìü!",
     "Kanalen används av en timer!",
     "Canalul este utilizat de un timer!",
-    "Csatornát más használja!",
+    "Az adót az idözítö használja!",
     "Canal en ús per un temporitzador!",
     "ºĞİĞÛ ×Ğİïâ âĞÙÜÕàŞÜ!",
     "Program je trenutno zauzet terminom za snimanje",
@@ -2194,7 +2194,7 @@ const tI18nPhrase Phrases[] = {
     "ÁëëáãŞ êáíáëéïı áäıíáôç!",
     "Omöjligt att byta kanal!",
     "Nu pot comuta canalul!",
-    "Csatornát nem lehet átkapcsolni!",
+    "Az adót nem lehet elkapcsolni",
     "No puc canviar de canal!",
     "½ÕÒŞ×ÜŞÖİŞ ßÕàÕÚÛîçØâì ÚĞİĞÛ!",
     "Ne mogu prebaciti program!",
@@ -2304,7 +2304,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "strax VPS inspelning...",
     "Urmeazã o înregistrare VPS!",
-    "",//TODO
+    "VPS-felvétel rögtön kezdödik!",
     "",//TODO
     "VPS-·ĞßØáì áÚŞàŞ İĞçİÕâáï",
     "",//TODO
@@ -2348,7 +2348,7 @@ const tI18nPhrase Phrases[] = {
     "Ôï êáíÜëç äİí åßíáé äéáèİóéìï!",
     "Kanalen är inte tillgänglig!",
     "Canal indisponibil",
-    "A csatorna nem elérhetö",
+    "Az adó nem elérhetö",
     "Canal no disponible!",
     "ºĞİĞÛ İÕÔŞáâãßÕİ!",
     "Program nije dostupan!",
@@ -2370,7 +2370,7 @@ const tI18nPhrase Phrases[] = {
     "Ïé ñéèìıóåéò ôïí êáíáëéşí áëëõëïóõìğßğôïõí!",
     "Kanalinställningarna är ej unika!",
     "Parametrii canalului nu sunt univoci!",
-    "A csatornabeállítások nem egyértelmüek",
+    "Az adóbeállítások nem egyértelmüek",
     "Propietats del canal duplicades!",
     "½ĞáâàŞÙÚØ ÚĞİĞÛĞ İÕ ãİØÚĞÛìİë!",
     "Parametri programa nisu jednoznaèni!",
@@ -2392,7 +2392,7 @@ const tI18nPhrase Phrases[] = {
     "Ôï êáíÜëé åßíáé áğïó÷ïëéìİíï (Ãßíåôå åããñáöŞ)!",
     "Kanalen är låst (inspelning pågår)!",
     "Canal blocat (înregistrare)!",
-    "Csatorna hozzáférhetetlen (felvétel)!",
+    "Az adó blokkolva (felvétel)!",
     "Canal bloquejat (gravant)!",
     "ºĞİĞÛ ×ĞÑÛŞÚØàŞÒĞİ (ØÔñâ ×ĞßØáì)!",
     "Program blokiran (snimanje)!",
@@ -2524,7 +2524,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Otillräcklingt diskutrymme för inspelning!",
     "Insuficient spaşiul pe disc pentru înregistrare!",
-    "",//TODO
+    "Nincs elegendö hely a felvételre",
     "",//TODO
     "½ÕÔŞáâĞâŞçİŞ ÜÕáâĞ İĞ ÔØáÚÕ ÔÛï İĞçĞÛĞ ×ĞßØáØ",
     "",//TODO
@@ -2568,7 +2568,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Öppnar CAM menyn...",
     "Deschid meniul CAM...",
-    "",//TODO
+    "A CAM-menü nyitás alatt...",
     "",//TODO
     "¾âÚàëÒĞî ÜÕİî ÜŞÔãÛï ãáÛŞÒİŞÓŞ ÔŞáâãßĞ (CAM)",
     "",//TODO
@@ -2612,7 +2612,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Återställer CAM ...",
     "Se reseteazã CAM...",
-    "",//TODO
+    "A CAM újra indul...",
     "",//TODO
     "¿ÕàÕÓàã×ÚĞ CAM...",
     "",//TODO
@@ -2678,7 +2678,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Mata in %d siffror!",
     "Vã rog introduceşi %d cifre!",
-    "",//TODO
+    "Üssön be %d számot!",
     "",//TODO
     "½ĞÖÜØâÕ %d æØäàë",
     "",//TODO
@@ -2700,7 +2700,7 @@ const tI18nPhrase Phrases[] = {
     "Ìç äéáèİóéìïò Ş÷ïò",
     "Ljud saknas!",
     "Lipseºte sunetul!",
-    "",//TODO
+    "Hang nem lehetséges!",
     "",//TODO
     "¾âáãâáâÒãÕâ ×ÒãÚ!",
     "Audio nedostupan",
@@ -2988,7 +2988,7 @@ const tI18nPhrase Phrases[] = {
     "ÅğéöÜíåéá",
     "Skin",
     "Skin",
-    "",// TODO
+    "Menü nézet",
     "",// TODO
     "ÁâØÛì",
     "Povr¹ina",
@@ -3010,7 +3010,7 @@ const tI18nPhrase Phrases[] = {
     "Èİìá",
     "Tema",
     "Temã",
-    "",// TODO
+    "Téma",
     "",// TODO
     "¿ĞÛØâàĞ",
     "Tema",
@@ -3032,7 +3032,7 @@ const tI18nPhrase Phrases[] = {
     "ÁñéóôåñÜ",
     "Vänster",
     "Stânga",
-    "",// TODO
+    "Balra",
     "",// TODO
     "¾âáâãß áÛÕÒĞ",
     "Lijevo",
@@ -3054,7 +3054,7 @@ const tI18nPhrase Phrases[] = {
     "ÅğÜíù",
     "Övre",
     "Sus",
-    "",// TODO
+    "Fent",
     "",// TODO
     "¾âáâãß áÒÕàåã",
     "Gore",
@@ -3142,7 +3142,7 @@ const tI18nPhrase Phrases[] = {
     "×ñéóçìïğïßçóç ìéêñüí ãñáììáôïóåéñşí",
     "Använd liten font",
     "Utilizare fonturi mici",
-    "",// TODO
+    "Kisbetüt használni",
     "",// TODO
     "¸áßŞÛì×ŞÒĞâì ÜÕÛÚØÙ èàØäâ",
     "Koristi mala slova",
@@ -3164,7 +3164,7 @@ const tI18nPhrase Phrases[] = {
     "Ğïôİ",
     "aldrig",
     "niciodatã",
-    "",// TODO
+    "soha",
     "",// TODO
     "İØÚŞÓÔĞ",
     "nikada",
@@ -3186,7 +3186,7 @@ const tI18nPhrase Phrases[] = {
     "ÅîáñôÜôå áğü ôŞí åğéöÜíåéá",
     "skin beroende",
     "dep. de skin",
-    "",// TODO
+    "Menü nézetétöl függöen",
     "",// TODO
     "áŞÓÛĞáİŞ âÕÜÕ",
     "ovisno o povr¹ini",
@@ -3208,7 +3208,7 @@ const tI18nPhrase Phrases[] = {
     "ğÜíôá",
     "alltid",
     "întotdeauna",
-    "",// TODO
+    "mindig",
     "",// TODO
     "ÒáÕÓÔĞ",
     "uvijek",
@@ -3230,7 +3230,7 @@ const tI18nPhrase Phrases[] = {
     "Èİóç ğëçñïöïñßáò êáíáëéşí",
     "Placering av kanalinformation",
     "Pozişia informaşiilor despre canal",
-    "Csatorna-Infó poziciója",
+    "Adásinformáció poziciója",
     "Posició de la informació del canal",
     "¿ŞÛŞÖÕİØÕ ŞÚİĞ ØİäŞàÜĞæØØ Ş ÚĞİĞÛÕ",
     "Pozicija informacije o programu",
@@ -3252,7 +3252,7 @@ const tI18nPhrase Phrases[] = {
     "÷ñüíïò İíäåéêóçò ğëçñïöïñßùí êáíáëéïı óå (ä)",
     "Kanal information (s)",
     "Durata afiºãrii info-canal (s)",
-    "",// TODO
+    "Adásinformáció feltüntetésének idötartama (s)",
     "",// TODO
     "¿ŞÚĞ× ØİäŞàÜĞæØØ Ş ÚĞİĞÛÕ (áÕÚ)",
     "Vrijeme prikaza informacije o programu (s)",
@@ -3274,7 +3274,7 @@ const tI18nPhrase Phrases[] = {
     "Ğëçñïöïñßåò óôŞí áëëáãŞ êáíáëéïı",
     "Information vid kanalbyte",
     "Informaşii la comutarea canalului",
-    "Infó a csatorna váltásánál",
+    "Információ az adó váltásánál",
     "Informació del canvi de canal",
     "¿ŞÚĞ×ëÒĞâì ØİäŞàÜĞæØî Ş ÚĞİĞÛÕ",
     "Informacije kod promjene kanala",
@@ -3296,7 +3296,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "Timeout för kanalinformation",
     "Durata afiºãrii informaşii canal",
-    "", // TODO
+    "A lekérdezett adásinformáció bezárása",
     "", // TODO
     "¸İäŞàÜĞæØî Ş ÚĞİĞÛÕ ×ĞÚàëâì",
     "", // TODO
@@ -3340,7 +3340,7 @@ const tI18nPhrase Phrases[] = {
     "Êıëéóç ãıñù-ãıñù",
     "Rulla texten",
     "Derulare circularã",
-    "",// TODO
+    "Korlátlan léptetés",
     "",// TODO
     "ÆØÚÛØçÕáÚĞï ßàŞÚàãâÚĞ",
     "S kraja skoèi na poèetak",
@@ -3362,7 +3362,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Menyknappen stänger",
     "Tasta 'Meniu' închide",
-    "",// TODO
+    "A menü gomb zár",
     "",// TODO
     "ºİŞßÚã ¼Õİî ×ĞÚàëâì",
     "",// TODO
@@ -3406,7 +3406,7 @@ const tI18nPhrase Phrases[] = {
     "×ñüíïò äéÜñêåéáò åîİôáóçò EPG óå şñåò",
     "EPG sökning timeout",
     "Interval achizişie EPG (h)",
-    "Fennmaradt idö az EPG-g (h)",
+    "Fennmaradt idö az EPG-újításig (h)",
     "Màxim d'Hores a cercar per la Guia",
     "·ĞÔÕàÖÚĞ áÚĞİØàŞÒĞİØï âÕÛÕÓØÔĞ (ç)",
     "Vrijeme do EPG pregleda (h)",
@@ -3450,7 +3450,7 @@ const tI18nPhrase Phrases[] = {
     "¸íäåéîç îåğåñáóìİíùí ğëçñïöïñéşí (ëåğôÜ)",
     "Visa gammal information (min)",
     "Date EPG expirate cel mult (min)",
-    "",// TODO
+    "Régi EPG adatok megmutatása (perc)",
     "",// TODO
     "ÅàĞİÕİØÕ ãáâĞàÕÒèØå ÔĞİİëå (ÜØİ)",
     "Prika¾i stare EPG podatke (min)",
@@ -3516,7 +3516,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñïôåéíüìåíåò ãëşóóåò",
     "Önskade språk",
     "Limbi preferate",
-    "",// TODO
+    "Kedvenc nyelvek",
     "",// TODO
     "¿àÕÔßŞçØâĞÕÜëÕ ï×ëÚØ (âÕÛÕÓØÔ)",
     "Preferirani jezici",
@@ -3538,7 +3538,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñïôåéíüìåíç ãëşóóá",
     "Önskat språk",
     "Limba preferatã",
-    "",// TODO
+    "Kedvenc nyelv",
     "",// TODO
     "²ëÑàĞİ",
     "Preferirani jezik",
@@ -3692,7 +3692,7 @@ const tI18nPhrase Phrases[] = {
     "×ñŞóç Ş÷ïõ Dolby Digital",
     "Använd Dolby Digital",
     "Sunet Dolby Digital",
-    "",//TODO
+    "Dolby-Digital hangot használni",
     "",//TODO
     "²ÚÛîçØâì Dolby Digital",
     "Koristi Dolby Digital",
@@ -3714,7 +3714,7 @@ const tI18nPhrase Phrases[] = {
     "Åíçìİñùóç êáíáëéşí",
     "Uppdatera kanaler",
     "Actualizare canale",
-    "",// TODO
+    "Adók aktualizálása",
     "",// TODO
     "¾ÑİŞÒÛïâì İĞáâàŞÙÚØ ÚĞİĞÛŞÒ",
     "Aktualiziraj programe",
@@ -3736,7 +3736,7 @@ const tI18nPhrase Phrases[] = {
     "ìüíï ïíüìáôá",
     "bara namn",
     "doar numele",
-    "",// TODO
+    "kizárólag nevek",
     "",// TODO
     "âŞÛìÚŞ İĞ×ÒĞİØï",
     "samo imena",
@@ -3758,7 +3758,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "bara PIDs",
     "Numai PID-uri",
-    "",// TODO
+    "kizárólag PID-k",
     "",// TODO
     "ÂŞÛìÚŞ PIDë",
     "",// TODO
@@ -3780,7 +3780,7 @@ const tI18nPhrase Phrases[] = {
     "Ïíüìáôá êáß PIDs",
     "namn och PID",
     "nume si PID-uri",
-    "",// TODO
+    "nevek és PID-k",
     "",// TODO
     "İĞ×ÒĞİØï Ø PIDë",
     "imena i identifikatore (PIDs)",
@@ -3802,7 +3802,7 @@ const tI18nPhrase Phrases[] = {
     "ğñïóèŞêç íİùí êáíáëéşí",
     "lägg till nya kanaler",
     "adãugare canale noi",
-    "",// TODO
+    "új adók hozzáadása",
     "",// TODO
     "İŞÒëÕ ÚĞİĞÛë",
     "dodaj nove programe",
@@ -3824,7 +3824,7 @@ const tI18nPhrase Phrases[] = {
     "ğñïóèŞêç íİïõ áíáìåôáäüôç",
     "lägg till nya transponders",
     "adãugare transpondere noi",
-    "",// TODO
+    "új transponder hozzáadása",
     "",// TODO
     "İŞÒ. âàĞİáßŞİÔÕàë",
     "dodaj nove transpondere", // hrv TODO transponderi == odasiljaèi?
@@ -3846,7 +3846,7 @@ const tI18nPhrase Phrases[] = {
     "Ãëşóóåò Ş÷ïõ",
     "Antal ljudspråk",
     "Limbi sunet",
-    "",//TODO
+    "Audio-nyelvek",
     "",//TODO
     "¿àÕÔßŞçØâĞÕÜëÕ ï×ëÚØ (×ÒãÚ)",
     "Audio jezici",
@@ -3868,7 +3868,7 @@ const tI18nPhrase Phrases[] = {
     "Ãëşóóá Ş÷ïõ",
     "Ljudspråk",
     "Limba sunetului",
-    "",//TODO
+    "Audio-nyelv",
     "",//TODO
     "²ëÑàĞİ",
     "Audio jezik",
@@ -4000,7 +4000,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñüóèåôïò ÷ñüíïò óôçí áñ÷Ş (ëåğôÜ)",
     "Marginal för start (min)",
     "Marjã la pornire (min)",
-    "Idöeltolódás a kezdésnél (min)",
+    "Idöeltolódás a kezdésnél (perc)",
     "Marge d'inici de gravació (min)",
     "¾ßÕàÕÖÕİØÕ İĞçĞÛĞ ×ĞßØáØ (ÜØİ)",
     "Rezerva na poèetku snimanja (min)",
@@ -4022,7 +4022,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñüóèåôïò ÷ñüíïò óôü ôİëïò (ëåğôÜ)",
     "Marginal för stopp (min)",
     "Marjã la oprire (min)",
-    "Idöeltolódás a befejezésnél",
+    "Idöeltolódás a befejezésnél (perc)",
     "Marge de fi de gravació (min)",
     "·ĞßĞ×ÔëÒĞİØÕ ŞáâĞİŞÒÚØ ×ĞßØáØ (ÜØİ)",
     "Rezerva na kraju (min)",
@@ -4176,7 +4176,7 @@ const tI18nPhrase Phrases[] = {
     "×ñŞóç VPS",
     "Använd VPS",
     "Utilizeazã VPS",
-    "",// TODO
+    "VPS-t használni",
     "",// TODO
     "¸áßŞÛì×ŞÒĞâì áØÓİĞÛë VPS",
     "Koristi VPS",
@@ -4198,7 +4198,7 @@ const tI18nPhrase Phrases[] = {
     "Ğåñéèşñéï VPS (ä)",
     "VPS marginal (s)",
     "Marjã de timp la utilizare VPS (s)",
-    "",// TODO
+    "Idöeltolódás VPS-nél (s)",
     "",// TODO
     "±ãäÕàİŞÕ ÒàÕÜï VPS (áÕÚ)",
     "Vremenska rezerva kod VPS (s)",
@@ -4264,7 +4264,7 @@ const tI18nPhrase Phrases[] = {
     "ÄéÜñêåéá óôãìéáßáò åããñáöŞò (ëåğôÜ)",
     "Direktinspelning längd (min)",
     "Timpul de înregistare imediatã (min)",
-    "Felvétel idötartama",
+    "Felvétel idötartama (perc)",
     "Temps de gravació instantània (min)",
     "´ÛØâÕÛìİŞáâì àãçİŞÙ ×ĞßØáØ (ÜØİ)",
     "Trajanje direktnog snimanja (min)",
@@ -4396,7 +4396,7 @@ const tI18nPhrase Phrases[] = {
     "ÅëÜ÷éóôïò ÷ñÜíïò ğáñåìâïëŞò (ëåğôÜ)",
     "Minsta händelse-pause (min)",
     "Duratã minimã emisiuni (min)",
-    "Min. esemény szünet (min)",
+    "Idözitések közötti idötartam (perc)",
     "Temps mínim en pausa (min)",
     "¼Øİ. ÒàÕÜï ŞÖØÔĞİØï áŞÑëâØï (ÜØİ)",
     "Minimalno vrijeme pauze",
@@ -4418,7 +4418,7 @@ const tI18nPhrase Phrases[] = {
     "ÅëÜ÷éóôïò ÷ñüíïò áíáìïíŞò (ëåğôÜ)",
     "Minsta användar-inaktivitet (min)",
     "Durata minimã de inactivitate (min)",
-    "Min. kezelési aktivitás (min)",
+    "VDR leáll használat nélkül (perc)",
     "Temps mínim d'inactivitat (min)",
     "¼Øİ. ÒàÕÜï ŞÖØÔĞİØï ÒÒŞÔĞ (ÜØİ)",
     "Minimalno vrijeme neaktivnosti (min)",
@@ -4440,7 +4440,7 @@ const tI18nPhrase Phrases[] = {
     "SVDRP äéáêïğŞ (ä)",
     "SVDRP Timeout (s)",
     "Timeout SVDRP (sec)",
-    "SVDRP Timeout (s)",
+    "SVDRP szétkapcsol használat nélkül(s)",
     "SVDRP Timeout (s)",
     "·ĞÔÕàÖÚĞ ŞÑàëÒĞ áŞÕÔ. SVDRP (áÕÚ)",
     "SVDRP vrijeme neaktivnosti",
@@ -4462,7 +4462,7 @@ const tI18nPhrase Phrases[] = {
     "ÆÜğéíãê äéáêïğŞ (ä)",
     "Zap timeout(s)",
     "Interval zapping (s)",
-    "",// TODO
+    "Adásváltás ideje (s)",
     "",// TODO
     "·ĞÔÕàÖÚĞ ßÕàÕÚÛîçÕİØï ÚĞİĞÛĞ (áÕÚ)",
     "",// hrv TODO
@@ -4484,7 +4484,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Kanal vid uppstart",
     "Canalul de pornire",
-    "",// TODO
+    "Adás a bekapcsolásnál",
     "",// TODO
     "ºĞİĞÛ ßàØ ÒÚÛîçÕİØØ",
     "",// TODO
@@ -4506,7 +4506,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ljudstyrka vid uppstart",
     "Volumul la pornire",
-    "",// TODO
+    "Hangerö a bekapcsolásnál",
     "",// TODO
     "³àŞÜÚŞáâì ßàØ ÒÚÛîçÕİØØ",
     "",// TODO
@@ -4528,7 +4528,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "som förut",
     "ca mai înainte",
-    "",// TODO
+    "ahogy az elöbb",
     "",// TODO
     "ÚĞÚ àĞİìèÕ",
     "",// TODO
@@ -5193,7 +5193,7 @@ const tI18nPhrase Phrases[] = {
     "Ğëçñïöïñßåò",
     "Info",
     "Info",
-    "",//TODO
+    "Információ",
     "",//TODO
     "¸İäŞ",
     "Info",
@@ -5347,7 +5347,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Nästa",
     "Urmãtor",
-    "",// TODO
+    "Elöre",
     "",// TODO
     "²ßÕàÕÔ",
     "",// TODO
@@ -5369,7 +5369,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Bakåt",
     "Anterior",
-    "",// TODO
+    "Vissza",
     "",// TODO
     "½Ğ×ĞÔ",
     "",// TODO
@@ -5457,7 +5457,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Förra kanalen",
     "Canal anterior",
-    "",// TODO
+    "Az elözö adás",
     "",// TODO
     "¿àÕÔëÔãéØÙ ÚĞİĞÛ",
     "",// TODO
@@ -5545,7 +5545,7 @@ const tI18nPhrase Phrases[] = {
     "¹÷ïò",
     "Ljud",
     "Sunet",
-    "",// TODO
+    "Hang",
     "",// TODO
     "Ï×ëÚ",
     "",// TODO
@@ -5766,7 +5766,7 @@ const tI18nPhrase Phrases[] = {
     "Ôïğïèİôçóç: ",
     "Hopp: ",
     "Salt la: ",
-    "Ugrás: ",
+    "Ugrás:",
     "Salta a:",
     "¿ÕàÕÙâØ: ",
     "Skoèi: ",
@@ -5788,7 +5788,7 @@ const tI18nPhrase Phrases[] = {
     "¸íôáóç ",
     "Volym ",
     "Volum ",
-    "Hangerö ",
+    "Hangerö",
     "Volum ",
     "³àŞÜÚŞáâì ",
     "Glasnoæa ",
@@ -5832,7 +5832,7 @@ const tI18nPhrase Phrases[] = {
     " Ôİëïò åããáöŞò ",
     " Avsluta inspelning ",
     " Opreºte înregistrarea ",
-    " Felvételt befejezni ",
+    " Felvételt befejezni",
     " Aturar la gravació ",
     " ¿àÕÚàĞâØâì ×ĞßØáì ",
     " Prekini snimanje ",
@@ -5986,7 +5986,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Inspelningen har startat",
     "A început înregistrarea",
-    "",//TODO
+    "A felvétel elinditva Nd",
     "",//TODO
     "·ĞßØáì İĞçĞâĞ",
     "",//TODO
@@ -6030,7 +6030,7 @@ const tI18nPhrase Phrases[] = {
     "Áñ÷Ş óÜñùóç EPG",
     "Påbörjar EPG skanning",
     "Pornesc achizişia EPG",
-    "",// TODO
+    "EPG adatok aktualizálása",
     "",// TODO
     "½ĞçØİĞî EPG-áÚĞİØàŞÒĞİØÕ",
     "Poèinjem EPG-scan",
@@ -6074,7 +6074,7 @@ const tI18nPhrase Phrases[] = {
     "Êëáóéêü VDR",
     "Klassisk VDR",
     "VDR clasic",
-    "",// TODO
+    "Klasszikus VDR",
     "",// TODO
     "ºÛĞááØçÕáÚØÙ",
     "Klasièni VDR",
@@ -6096,7 +6096,7 @@ const tI18nPhrase Phrases[] = {
     "Ìïñöİò ST:TNG",
     "ST:TNG konsol",
     "Cons. ST:TNG",
-    "",// TODO
+    "ST:TNG Konzol",
     "",// TODO
     "ST:TNG ßĞİÕÛØ",
     "ST:TNG Konzole",
@@ -6118,7 +6118,7 @@ const tI18nPhrase Phrases[] = {
     "×ùñßò Ôßôëï",
     "ingen titel",
     "Fãrã titlu",
-    "",// TODO
+    "név nélkül",
     "",// TODO
     "±Õ× İĞ×ÒĞİØï",
     "Bez titla",

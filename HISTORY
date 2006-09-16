@@ -4923,3 +4923,4 @@ Video Disk Recorder Revision History
   window.
 - Fixed deleting expired VPS timers (under certain conditions a timer could have been
   deleted before it even started recording).
+- Updated the Hungarian language texts (thanks to Istvan Koenigsberger and Guido Josten).
