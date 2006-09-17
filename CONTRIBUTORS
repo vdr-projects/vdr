@@ -1006,6 +1006,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a bug in handling empty titles in cEvent::FixEpgBugs()
  for suggesting to replace the "Really restart?" prompt in the call to
  cPluginManager::Active() in menu.c to "restart anyway?"
+ for adding --remove-destination to the 'cp' command for binaries in the Makefiles of
+ the plugins
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1817,6 +1819,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  have been several reports that it causes more problems than it solves
  for suggesting to add --remove-destination to the 'cp' command for binaries in
  the Makefile to avoid a crash in case a new version is installed on a running system
+ for fixing handling video directory updates in case the timestamp of the .update
+ file is in the future
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch

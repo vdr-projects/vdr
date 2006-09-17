@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.149 2006/07/30 10:23:46 kls Exp $
+ * $Id: recording.c 1.150 2006/09/16 12:12:34 kls Exp $
  */
 
 #include "recording.h"
@@ -947,7 +947,10 @@ void cRecordings::TouchUpdate(void)
 
 bool cRecordings::NeedsUpdate(void)
 {
-  return lastUpdate < LastModifiedTime(UpdateFileName());
+  time_t lastModified = LastModifiedTime(UpdateFileName());
+  if (lastModified > time(NULL))
+     return false; // somebody's clock isn't running correctly
+  return lastUpdate < lastModified;
 }
 
 bool cRecordings::Update(bool Wait)

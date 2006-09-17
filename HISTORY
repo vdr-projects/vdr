@@ -4914,3 +4914,15 @@ Video Disk Recorder Revision History
   to Alexander Rieger).
 - Implemented a copy constructor for cTimer (thanks to Udo Richter for reporting that
   an assignment in svdrp.c didn't use the cTimer::operator=()).
+
+2006-09-17: Version 1.4.2-3
+
+- Added --remove-destination to the 'cp' command for binaries in the Makefiles of
+  the plugins (thanks to Rolf Ahrenberg).
+- The 'skincurses' plugin now adjusts the size of the OSD to the size of the console
+  window.
+- Fixed deleting expired VPS timers (under certain conditions a timer could have been
+  deleted before it even started recording).
+- Updated the Hungarian language texts (thanks to Istvan Koenigsberger and Guido Josten).
+- Fixed handling video directory updates in case the timestamp of the .update file
+  is in the future (thanks to Petri Hintukainen).

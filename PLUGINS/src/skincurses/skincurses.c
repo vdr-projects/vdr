@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.10 2006/06/03 14:20:39 kls Exp $
+ * $Id: skincurses.c 1.11 2006/09/10 14:23:55 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.7";
+static const char *VERSION        = "0.0.8";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -53,8 +53,8 @@ static int clrMessage[] = {
   clrRed
   };
 
-#define OsdWidth  50//XXX
-#define OsdHeight 20//XXX
+static int OsdWidth = 50;
+static int OsdHeight = 20;
 
 class cCursesOsd : public cOsd {
 private:
@@ -780,8 +780,13 @@ bool cPluginSkinCurses::ProcessArgs(int argc, char *argv[])
 bool cPluginSkinCurses::Initialize(void)
 {
   // Initialize any background activities the plugin shall perform.
-  initscr();
-  return true;
+  WINDOW *w = initscr();
+  if (w) {
+     OsdWidth  = w->_maxx - w->_begx + 1;
+     OsdHeight = w->_maxy - w->_begy + 1;
+     return true;
+     }
+  return false;
 }
 
 bool cPluginSkinCurses::Start(void)
