@@ -4915,7 +4915,7 @@ Video Disk Recorder Revision History
 - Implemented a copy constructor for cTimer (thanks to Udo Richter for reporting that
   an assignment in svdrp.c didn't use the cTimer::operator=()).
 
-2006-09-16: Version 1.4.2-3
+2006-09-17: Version 1.4.2-3
 
 - Added --remove-destination to the 'cp' command for binaries in the Makefiles of
   the plugins (thanks to Rolf Ahrenberg).
