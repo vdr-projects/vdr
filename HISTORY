@@ -4930,3 +4930,8 @@ Video Disk Recorder Revision History
 2006-09-23: Version 1.4.3
 
 - Official release.
+
+2006-09-24: Version 1.4.3-1
+
+- The function cThread::Cancel() now only sets 'running' to false and does not
+  actually kill the thread if the special value -1 is given (suggested by Udo Richter).

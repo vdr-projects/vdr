@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.36 2006/01/08 11:40:23 kls Exp $
+ * $Id: thread.h 1.37 2006/09/24 10:10:37 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -103,6 +103,8 @@ protected:
        ///< the Action() loop can finish in an orderly fashion and then waiting
        ///< up to WaitSeconds seconds for the thread to actually end. If the
        ///< thread doesn't end by itself, it is killed.
+       ///< If WaitSeconds is -1, only 'running' is set to false and Cancel()
+       ///< returns immediately, without killing the thread.
 public:
   cThread(const char *Description = NULL);
        ///< Creates a new thread.
