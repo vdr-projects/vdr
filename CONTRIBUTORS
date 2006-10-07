@@ -2013,3 +2013,5 @@ Boguslaw Juza <bogdan@uci.agh.edu.pl>
  for reporting that events without an ExtendedEventDescriptor may get duplicate
  information in their ShortText through the EPG bugfixes in case they are received
  again
+ for reporting a problem with language codes of recorded audio tracks on channels with
+ multiple tracks

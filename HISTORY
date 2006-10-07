@@ -4945,3 +4945,6 @@ Video Disk Recorder Revision History
   are received again).
 - Fixed handling video directory updates in case an other process has touched the
   .update file after the last NeedsUpdate() check (thanks to Petri Hintukainen).
+- Fixed handling language codes and descriptions of recorded audio tracks on channels
+  with multiple tracks where not all of them appear in the event data (reported by
+  Boguslaw Juza).
