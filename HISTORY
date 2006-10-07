@@ -4938,3 +4938,8 @@ Video Disk Recorder Revision History
 - Changed the I18nNormalizeLanguageCode() check to also allow blanks (and all other
   printable characters) in the language codes (thanks to Boguslaw Juza for reporting
   that there are stations that use blanks in these codes).
+- Now clearing an event's Title, ShortText and Description if there is no
+  ShortEventDescriptor or ExtendedEventDescriptor, respectively (thanks to Boguslaw
+  Juza for reporting that events without an ExtendedEventDescriptor may get
+  duplicate information in their ShortText through the EPG bugfixes in case they
+  are received again).
