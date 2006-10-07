@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.282 2006/09/16 09:08:30 kls Exp $
+ * $Id: i18n.c 1.283 2006/10/07 12:18:10 kls Exp $
  *
  * Translations provided by:
  *
@@ -6243,9 +6243,9 @@ int I18nLanguageIndex(const char *Code)
 
 const char *I18nNormalizeLanguageCode(const char *Code)
 {
-  if (Code[0] && !isalnum(Code[0]) || Code[1] && !isalnum(Code[1]) || Code[2] && !isalnum(Code[2])) {
+  if (Code[0] && !isprint(Code[0]) || Code[1] && !isprint(Code[1]) || Code[2] && !isprint(Code[2])) {
      // ISO 639 language codes are defined as alphabetical characters, but digits are apparently
-     // also used, for instance for "2ch"
+     // also used, for instance for "2ch". There are even channels that use blank characters.
      //dsyslog("invalid language code: '%s'", Code);
      return "???";
      }

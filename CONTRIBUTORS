@@ -2005,3 +2005,6 @@ Matthias Schwarzott <zzam@gentoo.org>
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
+
+Boguslaw Juza <bogdan@uci.agh.edu.pl>
+ for reporting that there are stations that use blanks in the language codes
