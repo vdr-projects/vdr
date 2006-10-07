@@ -4943,3 +4943,5 @@ Video Disk Recorder Revision History
   Juza for reporting that events without an ExtendedEventDescriptor may get
   duplicate information in their ShortText through the EPG bugfixes in case they
   are received again).
+- Fixed handling video directory updates in case an other process has touched the
+  .update file after the last NeedsUpdate() check (thanks to Petri Hintukainen).

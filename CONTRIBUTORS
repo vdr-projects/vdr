@@ -1823,6 +1823,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  the Makefile to avoid a crash in case a new version is installed on a running system
  for fixing handling video directory updates in case the timestamp of the .update
  file is in the future
+ for fixing handling video directory updates in case an other process has touched the
+ .update file after the last NeedsUpdate() check
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
