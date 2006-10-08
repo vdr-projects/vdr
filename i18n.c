@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.282 2006/09/16 09:08:30 kls Exp $
+ * $Id: i18n.c 1.284 2006/10/08 08:50:30 kls Exp $
  *
  * Translations provided by:
  *
@@ -6243,12 +6243,31 @@ int I18nLanguageIndex(const char *Code)
 
 const char *I18nNormalizeLanguageCode(const char *Code)
 {
-  if (Code[0] && !isalnum(Code[0]) || Code[1] && !isalnum(Code[1]) || Code[2] && !isalnum(Code[2])) {
-     // ISO 639 language codes are defined as alphabetical characters, but digits are apparently
-     // also used, for instance for "2ch"
-     //dsyslog("invalid language code: '%s'", Code);
-     return "???";
-     }
+  for (int i = 0; i < 3; i++) {
+      if (Code[i]) {
+         // ETSI EN 300 468 defines language codes as consisting of three letters
+         // according to ISO 639-2. This means that they are supposed to always consist
+         // of exactly three letters in the range a-z - no digits, UTF-8 or other
+         // funny characters. However, some broadcasters apparently don't have a
+         // copy of the DVB standard (or they do, but are perhaps unable to read it),
+         // so they put all sorts of non-standard stuff into the language codes,
+         // like nonsense as "2ch" or "A 1" (yes, they even go as far as using
+         // blanks!). Such things should go into the description of the EPG event's
+         // ComponentDescriptor.
+         // So, as a workaround for this broadcaster stupidity, let's ignore
+         // language codes with unprintable characters...
+         if (!isprint(Code[i])) {
+            //dsyslog("invalid language code: '%s'", Code);
+            return "???";
+            }
+         // ...and replace blanks with underlines (ok, this breaks the 'const'
+         // of the Code parameter - but hey, it's them who started this):
+         if (Code[i] == ' ')
+            *((char *)&Code[i]) = '_';
+         }
+      else
+         break;
+      }
   int n = I18nLanguageIndex(Code);
   return n >= 0 ? I18nLanguageCode(n) : Code;
 }

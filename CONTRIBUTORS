@@ -1468,6 +1468,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with cPlugin::ConfigDirectory() in case a plugin calls it
  from a separate thread
  for reporting that an assignment in svdrp.c didn't use the cTimer::operator=())
+ for suggesting that the function cThread::Cancel() should only set 'running' to
+ false and not actually kill the thread if the special value -1 is given
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1821,6 +1823,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  the Makefile to avoid a crash in case a new version is installed on a running system
  for fixing handling video directory updates in case the timestamp of the .update
  file is in the future
+ for fixing handling video directory updates in case an other process has touched the
+ .update file after the last NeedsUpdate() check
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
@@ -2003,3 +2007,11 @@ Matthias Schwarzott <zzam@gentoo.org>
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
+
+Boguslaw Juza <bogdan@uci.agh.edu.pl>
+ for reporting that there are stations that use blanks in the language codes
+ for reporting that events without an ExtendedEventDescriptor may get duplicate
+ information in their ShortText through the EPG bugfixes in case they are received
+ again
+ for reporting a problem with language codes of recorded audio tracks on channels with
+ multiple tracks

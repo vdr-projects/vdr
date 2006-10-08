@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.79 2006/08/05 10:04:17 kls Exp $
+ * $Id: epg.c 1.80 2006/10/07 13:47:28 kls Exp $
  */
 
 #include "epg.h"
@@ -87,7 +87,8 @@ void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *
 tComponent *cComponents::GetComponent(int Index, uchar Stream, uchar Type)
 {
   for (int i = 0; i < numComponents; i++) {
-      if (components[i].stream == Stream && components[i].type == Type) {
+      // In case of an audio stream the 'type' check actually just distinguishes between "normal" and "Dolby Digital":
+      if (components[i].stream == Stream && (Stream != 2 || (components[i].type < 5) == (Type < 5))) {
          if (!Index--)
             return &components[i];
          }

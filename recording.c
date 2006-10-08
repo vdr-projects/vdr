@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.150 2006/09/16 12:12:34 kls Exp $
+ * $Id: recording.c 1.151 2006/10/07 12:46:22 kls Exp $
  */
 
 #include "recording.h"
@@ -941,8 +941,10 @@ bool cRecordings::StateChanged(int &State)
 
 void cRecordings::TouchUpdate(void)
 {
+  bool needsUpdate = NeedsUpdate();
   TouchFile(UpdateFileName());
-  lastUpdate = time(NULL); // make sure we don't tigger ourselves
+  if (!needsUpdate)
+     lastUpdate = time(NULL); // make sure we don't tigger ourselves
 }
 
 bool cRecordings::NeedsUpdate(void)

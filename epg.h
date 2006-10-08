@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.34 2006/03/25 12:39:39 kls Exp $
+ * $Id: epg.h 1.35 2006/10/07 13:47:19 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -43,6 +43,7 @@ public:
   void SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
   tComponent *Component(int Index) const { return (Index < numComponents) ? &components[Index] : NULL; }
   tComponent *GetComponent(int Index, uchar Stream, uchar Type); // Gets the Index'th component of Stream and Type, skipping other components
+                                                                 // In case of an audio stream the 'type' check actually just distinguishes between "normal" and "Dolby Digital"
   };
 
 class cSchedule;

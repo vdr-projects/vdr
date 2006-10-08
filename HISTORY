@@ -4930,3 +4930,23 @@ Video Disk Recorder Revision History
 2006-09-23: Version 1.4.3
 
 - Official release.
+
+2006-10-08: Version 1.4.3-1
+
+- The function cThread::Cancel() now only sets 'running' to false and does not
+  actually kill the thread if the special value -1 is given (suggested by Udo Richter).
+- Changed the I18nNormalizeLanguageCode() check to also allow blanks (and all other
+  printable characters) in the language codes (thanks to Boguslaw Juza for reporting
+  that there are stations that use blanks in these codes). Blanks are replaced with
+  underlines, so that all parts of VDR that rely on language codes to be one word
+  (without blanks) work as expected.
+- Now clearing an event's Title, ShortText and Description if there is no
+  ShortEventDescriptor or ExtendedEventDescriptor, respectively (thanks to Boguslaw
+  Juza for reporting that events without an ExtendedEventDescriptor may get
+  duplicate information in their ShortText through the EPG bugfixes in case they
+  are received again).
+- Fixed handling video directory updates in case an other process has touched the
+  .update file after the last NeedsUpdate() check (thanks to Petri Hintukainen).
+- Fixed handling language codes and descriptions of recorded audio tracks on channels
+  with multiple tracks where not all of them appear in the event data (reported by
+  Boguslaw Juza).
