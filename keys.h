@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.9 2006/04/15 13:56:03 kls Exp $
+ * $Id: keys.h 1.10 2006/10/14 10:41:20 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -117,11 +117,16 @@ extern cKeys Keys;
 class cKeyMacro : public cListObject {
 private:
   eKeys macro[MAXKEYSINMACRO];
+  int numKeys;
   char *plugin;
 public:
   cKeyMacro(void);
   ~cKeyMacro();
   bool Parse(char *s);
+  int NumKeys(void) const { return numKeys; }
+      ///< Returns the number of keys in this macro. The first key (with
+      ///< index 0) is the macro code. The actual macro expansion codes
+      ///< start at index 1 and go to NumKeys() - 1.
   const eKeys *Macro(void) const { return macro; }
   const char *Plugin(void) const { return plugin; }
   };

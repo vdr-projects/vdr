@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.13 2006/04/15 13:50:43 kls Exp $
+ * $Id: keys.c 1.14 2006/10/14 10:18:05 kls Exp $
  */
 
 #include "keys.h"
@@ -186,8 +186,9 @@ void cKeys::PutSetup(const char *Remote, const char *Setup)
 
 cKeyMacro::cKeyMacro(void)
 {
+  numKeys = 0;
   for (int i = 0; i < MAXKEYSINMACRO; i++)
-      macro[i] = kNone;
+      macro[i] = kNone; // for compatibility with old code that doesn't know about NumKeys()
   plugin = NULL;
 }
 
@@ -241,9 +242,9 @@ bool cKeyMacro::Parse(char *s)
            return false;
            }
         }
-  if (n < 2) {
-     esyslog("ERROR: empty key macro");
-     }
+  if (n < 2)
+     esyslog("ERROR: empty key macro"); // non fatal
+  numKeys = n;
   return true;
 }
 

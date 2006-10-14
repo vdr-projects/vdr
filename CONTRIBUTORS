@@ -1829,6 +1829,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  pointer
  for fixing displaying the error log message in case an unknown plugin was requested
  in a key macro
+ for pointing out that keys from expanded key macros should be put into the front of
+ the key queue to avoid problems if the queue is not empty at that time
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch

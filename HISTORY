@@ -4960,3 +4960,7 @@ Video Disk Recorder Revision History
   pointer (thanks to Petri Hintukainen).
 - Fixed displaying the error log message in case an unknown plugin was requested
   in a key macro (thanks to Petri Hintukainen).
+- Keys from expanded key macros are now put into the front of the key queue to
+  avoid problems if the queue is not empty at that time (based on a patch from
+  Petri Hintukainen).
+- cKeyMacro now has an explicit counter for the number of keys it contains.
