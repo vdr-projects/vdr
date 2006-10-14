@@ -4958,3 +4958,5 @@ Video Disk Recorder Revision History
 - Updated the Hungarian language texts (thanks to Guido Josten).
 - Fixed a possible crash if cPluginManager::GetPlugin() is called with a NULL
   pointer (thanks to Petri Hintukainen).
+- Fixed displaying the error log message in case an unknown plugin was requested
+  in a key macro (thanks to Petri Hintukainen).

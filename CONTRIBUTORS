@@ -1827,6 +1827,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  .update file after the last NeedsUpdate() check
  for fixing a possible crash if cPluginManager::GetPlugin() is called with a NULL
  pointer
+ for fixing displaying the error log message in case an unknown plugin was requested
+ in a key macro
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
