@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.53 2006/10/14 10:44:02 kls Exp $
+ * $Id: remote.c 1.54 2006/10/14 11:05:57 kls Exp $
  */
 
 #include "remote.h"
@@ -29,7 +29,8 @@ cRemote *cRemote::learning = NULL;
 char *cRemote::unknownCode = NULL;
 cMutex cRemote::mutex;
 cCondVar cRemote::keyPressed;
-const char *cRemote::plugin = NULL;
+const char *cRemote::keyMacroPlugin = NULL;
+const char *cRemote::callPlugin = NULL;
 
 cRemote::cRemote(const char *Name)
 {
@@ -105,7 +106,7 @@ bool cRemote::PutMacro(eKeys Key)
 {
   const cKeyMacro *km = KeyMacros.Get(Key);
   if (km) {
-     plugin = km->Plugin();
+     keyMacroPlugin = km->Plugin();
      cMutexLock MutexLock(&mutex);
      for (int i = km->NumKeys(); --i > 0; ) {
          if (!Put(km->Macro()[i], true))
@@ -145,8 +146,8 @@ bool cRemote::Put(const char *Code, bool Repeat, bool Release)
 bool cRemote::CallPlugin(const char *Plugin)
 {
   cMutexLock MutexLock(&mutex);
-  if (!plugin) {
-     plugin = Plugin;
+  if (!callPlugin) {
+     callPlugin = Plugin;
      Put(k_Plugin);
      return true;
      }
@@ -156,8 +157,13 @@ bool cRemote::CallPlugin(const char *Plugin)
 const char *cRemote::GetPlugin(void)
 {
   cMutexLock MutexLock(&mutex);
-  const char *p = plugin;
-  plugin = NULL;
+  const char *p = keyMacroPlugin;
+  if (p)
+     keyMacroPlugin = NULL;
+  else {
+     p = callPlugin;
+     callPlugin = NULL;
+     }
   return p;
 }
 
