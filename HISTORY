@@ -4968,3 +4968,4 @@ Video Disk Recorder Revision History
   Petri Hintukainen).
 - Fixed handling plugins from cRemote::PutMacro() and cRemote::CallPlugin()
   (based on a patch from Petri Hintukainen).
+- Increased the size of the key queue to avoid problems with long key macros.

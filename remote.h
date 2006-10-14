@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.36 2006/10/14 10:56:50 kls Exp $
+ * $Id: remote.h 1.37 2006/10/14 11:46:58 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -19,7 +19,7 @@
 
 class cRemote : public cListObject {
 private:
-  enum { MaxKeys = MAXKEYSINMACRO };
+  enum { MaxKeys = 2 * MAXKEYSINMACRO };
   static eKeys keys[MaxKeys];
   static int in;
   static int out;
