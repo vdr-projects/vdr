@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.23 2006/08/13 08:51:44 kls Exp $
+ * $Id: plugin.c 1.24 2006/10/14 09:49:16 kls Exp $
  */
 
 #include "plugin.h"
@@ -416,7 +416,7 @@ cPlugin *cPluginManager::GetPlugin(int Index)
 
 cPlugin *cPluginManager::GetPlugin(const char *Name)
 {
-  if (pluginManager) {
+  if (pluginManager && Name) {
      for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
          cPlugin *p = dll->Plugin();
          if (p && strcmp(p->Name(), Name) == 0)

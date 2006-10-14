@@ -1825,6 +1825,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  file is in the future
  for fixing handling video directory updates in case an other process has touched the
  .update file after the last NeedsUpdate() check
+ for fixing a possible crash if cPluginManager::GetPlugin() is called with a NULL
+ pointer
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
