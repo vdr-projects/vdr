@@ -4964,3 +4964,5 @@ Video Disk Recorder Revision History
   avoid problems if the queue is not empty at that time (based on a patch from
   Petri Hintukainen).
 - cKeyMacro now has an explicit counter for the number of keys it contains.
+- cRemote::PutMacro() now sets a lock while it expands the macro (thanks to
+  Petri Hintukainen).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.52 2006/10/14 10:24:13 kls Exp $
+ * $Id: remote.c 1.53 2006/10/14 10:44:02 kls Exp $
  */
 
 #include "remote.h"
@@ -106,6 +106,7 @@ bool cRemote::PutMacro(eKeys Key)
   const cKeyMacro *km = KeyMacros.Get(Key);
   if (km) {
      plugin = km->Plugin();
+     cMutexLock MutexLock(&mutex);
      for (int i = km->NumKeys(); --i > 0; ) {
          if (!Put(km->Macro()[i], true))
             return false;
