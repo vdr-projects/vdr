@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.284 2006/10/08 08:50:30 kls Exp $
+ * $Id: i18n.c 1.285 2006/10/14 09:26:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -3582,7 +3582,7 @@ const tI18nPhrase Phrases[] = {
     "ÌïñöŞ áğåéêüíéóçò Âßíôåï",
     "Format för video display",
     "Formatul redãrii video",
-    "",//TODO
+    "Képerny¿formátum",
     "",//TODO
     "ÈØàŞÚŞíÚàĞİİŞÕ Ø×ŞÑàĞÖÕİØÕ",
     "Format video prikaza",
@@ -4596,7 +4596,7 @@ const tI18nPhrase Phrases[] = {
     " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~,/_@abcdefghijklmnopqrstuvwxyz",
     " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
     " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~,/_@",
-    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~,/_@",
+    " aábcdeéfghiíjklmnoóö¿pqrstuúü¿vwxyz0123456789-.,#~,/_@",
     " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·",
     " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~,/_@",
     " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@", // hrv
@@ -4619,7 +4619,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     " 0\t-.#~,/_@1\tabcåä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz",
     " 0\t-.#~,/_@1\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttşuv8\twxyz9",
-    "",//TODO
+    " 0\t-.#~,/_@1\taábc2\tdeé3\tghií4\tjkl5\tmnoóö¿6\tpqrs7\ttuúü¿v8\twxyz9",
     "",//TODO
     "",//TODO
     "",//TODO

@@ -4955,3 +4955,4 @@ Video Disk Recorder Revision History
 
 - Fixed clearing an event's Title, ShortText and Description in case the data comes
   from an external source.
+- Updated the Hungarian language texts (thanks to Guido Josten).
