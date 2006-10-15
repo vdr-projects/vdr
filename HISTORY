@@ -4951,7 +4951,7 @@ Video Disk Recorder Revision History
   with multiple tracks where not all of them appear in the event data (reported by
   Boguslaw Juza).
 
-2006-10-09: Version 1.4.3-2
+2006-10-15: Version 1.4.3-2
 
 - Fixed clearing an event's Title, ShortText and Description in case the data comes
   from an external source.
