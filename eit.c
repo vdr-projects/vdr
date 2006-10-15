@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.121 2006/10/07 12:32:24 kls Exp $
+ * $Id: eit.c 1.122 2006/10/09 16:14:36 kls Exp $
  */
 
 #include "eit.h"
@@ -234,7 +234,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
             pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
             pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
             }
-         else {
+         else if (!HasExternalData) {
             pEvent->SetTitle(NULL);
             pEvent->SetShortText(NULL);
             }
@@ -242,7 +242,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
             char buffer[ExtendedEventDescriptors->getMaximumTextLength(": ") + 1];
             pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, sizeof(buffer), ": "));
             }
-         else
+         else if (!HasExternalData)
             pEvent->SetDescription(NULL);
          }
       delete ExtendedEventDescriptors;
@@ -250,7 +250,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
 
       pEvent->SetComponents(Components);
 
-      pEvent->FixEpgBugs();
+      if (!HasExternalData)
+         pEvent->FixEpgBugs();
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
       Modified = true;

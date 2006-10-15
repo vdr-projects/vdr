@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.35 2006/04/17 08:59:48 kls Exp $
+ * $Id: remote.h 1.37 2006/10/14 11:46:58 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -19,7 +19,7 @@
 
 class cRemote : public cListObject {
 private:
-  enum { MaxKeys = MAXKEYSINMACRO };
+  enum { MaxKeys = 2 * MAXKEYSINMACRO };
   static eKeys keys[MaxKeys];
   static int in;
   static int out;
@@ -28,7 +28,8 @@ private:
   static char *unknownCode;
   static cMutex mutex;
   static cCondVar keyPressed;
-  static const char *plugin;
+  static const char *keyMacroPlugin;
+  static const char *callPlugin;
   char *name;
 protected:
   cRemote(const char *Name);
@@ -56,7 +57,7 @@ public:
       ///< false will be returned and the caller should try again later.
   static const char *GetPlugin(void);
       ///< Returns the name of the plugin that was set with a previous
-      ///< call to CallPlugin(). The internally stored pointer to the
+      ///< call to PutMacro() or CallPlugin(). The internally stored pointer to the
       ///< plugin name will be reset to NULL by this call.
   static bool HasKeys(void);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);

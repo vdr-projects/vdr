@@ -4950,3 +4950,22 @@ Video Disk Recorder Revision History
 - Fixed handling language codes and descriptions of recorded audio tracks on channels
   with multiple tracks where not all of them appear in the event data (reported by
   Boguslaw Juza).
+
+2006-10-15: Version 1.4.3-2
+
+- Fixed clearing an event's Title, ShortText and Description in case the data comes
+  from an external source.
+- Updated the Hungarian language texts (thanks to Guido Josten).
+- Fixed a possible crash if cPluginManager::GetPlugin() is called with a NULL
+  pointer (thanks to Petri Hintukainen).
+- Fixed displaying the error log message in case an unknown plugin was requested
+  in a key macro (thanks to Petri Hintukainen).
+- Keys from expanded key macros are now put into the front of the key queue to
+  avoid problems if the queue is not empty at that time (based on a patch from
+  Petri Hintukainen).
+- cKeyMacro now has an explicit counter for the number of keys it contains.
+- cRemote::PutMacro() now sets a lock while it expands the macro (thanks to
+  Petri Hintukainen).
+- Fixed handling plugins from cRemote::PutMacro() and cRemote::CallPlugin()
+  (based on a patch from Petri Hintukainen).
+- Increased the size of the key queue to avoid problems with long key macros.

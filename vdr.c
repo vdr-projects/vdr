@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.279 2006/09/01 12:57:44 kls Exp $
+ * $Id: vdr.c 1.280 2006/10/14 10:01:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -923,17 +923,20 @@ int main(int argc, char *argv[])
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
-               DELETE_MENU;
-               if (cControl::Control())
-                  cControl::Control()->Hide();
-               cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
-               if (plugin) {
-                  Menu = plugin->MainMenuAction();
-                  if (Menu)
-                     Menu->Show();
+               const char *PluginName = cRemote::GetPlugin();
+               if (PluginName) {
+                  DELETE_MENU;
+                  if (cControl::Control())
+                     cControl::Control()->Hide();
+                  cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
+                  if (plugin) {
+                     Menu = plugin->MainMenuAction();
+                     if (Menu)
+                        Menu->Show();
+                     }
+                  else
+                     esyslog("ERROR: unknown plugin '%s'", PluginName);
                   }
-               else
-                  esyslog("ERROR: unknown plugin '%s'", cRemote::GetPlugin());
                key = kNone; // nobody else needs to see these keys
                }
                break;

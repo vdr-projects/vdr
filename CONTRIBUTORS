@@ -1825,6 +1825,15 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  file is in the future
  for fixing handling video directory updates in case an other process has touched the
  .update file after the last NeedsUpdate() check
+ for fixing a possible crash if cPluginManager::GetPlugin() is called with a NULL
+ pointer
+ for fixing displaying the error log message in case an unknown plugin was requested
+ in a key macro
+ for pointing out that keys from expanded key macros should be put into the front of
+ the key queue to avoid problems if the queue is not empty at that time
+ for making cRemote::PutMacro() set a lock while it expands the macro
+ for pointing out that plugins from cRemote::PutMacro() and cRemote::CallPlugin()
+ need to be handled separately
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
