@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.443 2006/07/23 09:23:11 kls Exp $
+ * $Id: menu.c 1.444 2006/10/20 13:18:38 kls Exp $
  */
 
 #include "menu.h"
@@ -3018,9 +3018,9 @@ static void SetTrackDescriptions(int LiveChannel)
            }
         }
      }
-  else if (cReplayControl::LastReplayed()) {
+  else if (cReplayControl::NowReplaying()) {
      cThreadLock RecordingsLock(&Recordings);
-     cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
+     cRecording *Recording = Recordings.GetByName(cReplayControl::NowReplaying());
      if (Recording)
         Components = Recording->Info()->Components();
      }
@@ -3806,12 +3806,14 @@ bool cRecordControls::StateChanged(int &State)
 
 // --- cReplayControl --------------------------------------------------------
 
+cReplayControl *cReplayControl::currentReplayControl = NULL;
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
 
 cReplayControl::cReplayControl(void)
 :cDvbPlayerControl(fileName)
 {
+  currentReplayControl = this;
   displayReplay = NULL;
   visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
@@ -3830,6 +3832,8 @@ cReplayControl::~cReplayControl()
   Hide();
   cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();
+  if (currentReplayControl == this)
+     currentReplayControl = NULL;
 }
 
 void cReplayControl::SetRecording(const char *FileName, const char *Title)
@@ -3838,6 +3842,11 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   free(title);
   fileName = FileName ? strdup(FileName) : NULL;
   title = Title ? strdup(Title) : NULL;
+}
+
+const char *cReplayControl::NowReplaying(void)
+{
+  return currentReplayControl ? fileName : NULL;
 }
 
 const char *cReplayControl::LastReplayed(void)
