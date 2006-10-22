@@ -1382,6 +1382,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  files than VDR itself
  for adding a missing initialization of 'mutex' in cCiMenu::cCiMenu() and removing
  some superfluous semicolons in ci.c
+ for pointing out what caused the problem with audio track descriptions after a
+ replay has been stopped
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -2024,3 +2026,7 @@ Boguslaw Juza <bogdan@uci.agh.edu.pl>
  again
  for reporting a problem with language codes of recorded audio tracks on channels with
  multiple tracks
+
+Ulf Kiener <webmaster@ulf-kiener.de>
+ for reporting a problem with audio track descriptions in the DVD plugin after a
+ replay has been stopped
