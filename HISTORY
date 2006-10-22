@@ -4970,7 +4970,7 @@ Video Disk Recorder Revision History
   (based on a patch from Petri Hintukainen).
 - Increased the size of the key queue to avoid problems with long key macros.
 
-2006-10-20: Version 1.4.3-3
+2006-10-22: Version 1.4.3-3
 
 - Fixed setting audio track descriptions after a replay has been stopped (reported
   by Ulf Kiener, thanks to Marco Schlüßler for pointing out what caused the problem).
