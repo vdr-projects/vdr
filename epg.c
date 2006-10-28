@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.80 2006/10/07 13:47:28 kls Exp $
+ * $Id: epg.c 1.81 2006/10/28 09:12:42 kls Exp $
  */
 
 #include "epg.h"
@@ -664,6 +664,8 @@ cEvent *cSchedule::AddEvent(cEvent *Event)
 void cSchedule::DelEvent(cEvent *Event)
 {
   if (Event->schedule == this) {
+     if (hasRunning && Event->IsRunning())
+        ClrRunningStatus();
      UnhashEvent(Event);
      events.Del(Event);
      }
@@ -742,8 +744,10 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Cha
   hasRunning = false;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
       if (p == Event) {
-         if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning)
+         if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning) {
             p->SetRunningStatus(RunningStatus, Channel);
+            break;
+            }
          }
       else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
          p->SetRunningStatus(SI::RunningStatusNotRunning);
@@ -797,6 +801,8 @@ void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar Table
                   // We can't delete the event right here because a timer might have
                   // a pointer to it, so let's set its id and start time to 0 to have it
                   // "phased out":
+                  if (hasRunning && p->IsRunning())
+                     ClrRunningStatus();
                   UnhashEvent(p);
                   p->eventID = 0;
                   p->startTime = 0;
