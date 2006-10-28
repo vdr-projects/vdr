@@ -4978,3 +4978,5 @@ Video Disk Recorder Revision History
 2006-10-28: Version 1.4.3-4
 
 - Fixed deleting EPG events that have a running status of "pausing" or higher.
+- Fixed handling NITs with more than one delivery system descriptor tag for the
+  same transponder.
