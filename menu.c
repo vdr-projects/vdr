@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.444 2006/10/20 13:18:38 kls Exp $
+ * $Id: menu.c 1.445 2006/11/04 13:13:18 kls Exp $
  */
 
 #include "menu.h"
@@ -3818,7 +3818,7 @@ cReplayControl::cReplayControl(void)
   visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   lastPlay = lastForward = false;
-  lastSpeed = -1;
+  lastSpeed = -2; // an invalid value
   timeoutShow = 0;
   timeSearchActive = false;
   marks.Load(fileName);
@@ -3885,7 +3885,7 @@ void cReplayControl::Hide(void)
      needsFastResponse = visible = false;
      modeOnly = false;
      lastPlay = lastForward = false;
-     lastSpeed = -1;
+     lastSpeed = -2; // an invalid value
      timeSearchActive = false;
      }
 }

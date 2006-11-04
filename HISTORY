@@ -4980,3 +4980,8 @@ Video Disk Recorder Revision History
 - Fixed deleting EPG events that have a running status of "pausing" or higher.
 - Fixed handling NITs with more than one delivery system descriptor tag for the
   same transponder.
+
+2006-11-04: Version 1.4.4
+
+- Fixed displaying the replay mode symbol in case of "Multi speed mode" (reported
+  by Marco Schlüßler).
