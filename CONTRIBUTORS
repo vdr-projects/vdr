@@ -1638,6 +1638,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing converting the port number in the "connect from..." log message of SVDRP
  for reporting that there are places where ntohs() is assigned to different types
  for adapting cThread::ThreadId() to recent kernels
+ for some improvements to the man pages
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
