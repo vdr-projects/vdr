@@ -4990,3 +4990,8 @@ Video Disk Recorder Revision History
 
 - Some improvements to the man pages (thanks to Ville Skyttä).
 - Fixed a possible segfault in cSkins::Message() (thanks to Udo Richter).
+- Made the getskyepg.pl script of the 'sky' plugin send a user agent message to
+  the server, according to the rules at http://bleb.org/tv/data/listings.
+  If your version of 'wget' doesn't support the -U option to set the user agent,
+  use the new option -U of getskyepg.pl to have the information added to the URL
+  as a query string.
