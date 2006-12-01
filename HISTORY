@@ -4998,3 +4998,6 @@ Video Disk Recorder Revision History
 - Fixed a possible crash in remux.c on 64-bit machines (thanks to Reinhard Nissl).
 - Fixed a typo in the change to the "Use small font" setup option in version 1.3.47
   in the HISTORY and CONTRIBUTORS file (reported by Andreas Brugger).
+- Added a missing 'const' to cRecordingInfo::ChannelID() (reported by Andreas
+  Brugger). This required the APIVERSION to be increased, so plugins will have to
+  be recompiled.

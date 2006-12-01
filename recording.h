@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.55 2006/07/30 10:24:07 kls Exp $
+ * $Id: recording.h 1.56 2006/12/01 15:06:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -50,7 +50,7 @@ private:
   void SetAux(const char *Aux);
 public:
   ~cRecordingInfo();
-  tChannelID ChannelID(void) { return channelID; }
+  tChannelID ChannelID(void) const { return channelID; }
   const char *Title(void) const { return event->Title(); }
   const char *ShortText(void) const { return event->ShortText(); }
   const char *Description(void) const { return event->Description(); }
