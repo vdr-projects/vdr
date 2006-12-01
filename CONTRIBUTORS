@@ -1474,6 +1474,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting that an assignment in svdrp.c didn't use the cTimer::operator=())
  for suggesting that the function cThread::Cancel() should only set 'running' to
  false and not actually kill the thread if the special value -1 is given
+ or fixing a possible segfault in cSkins::Message()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

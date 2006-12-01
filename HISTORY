@@ -4986,6 +4986,7 @@ Video Disk Recorder Revision History
 - Fixed displaying the replay mode symbol in case of "Multi speed mode" (reported
   by Marco Schlüßler).
 
-2006-11-19: Version 1.4.4-1
+2006-12-01: Version 1.4.4-1
 
 - Some improvements to the man pages (thanks to Ville Skyttä).
+- Fixed a possible segfault in cSkins::Message() (thanks to Udo Richter).
