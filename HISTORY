@@ -4611,7 +4611,7 @@ Video Disk Recorder Revision History
   (since version 1.3.38 disk access is done in a separate thread, so the watchdog
   timer won't hit).
 - Changed the behaviour of the "Use small font" setup option to *always* use the small
-  font if set to '3' - even if it would have been a fixed font (suggested by Ronny
+  font if set to '2' - even if it would have been a fixed font (suggested by Ronny
   Kornexl).
 - No longer using characters 0x01 and 0x02 for mapping single quote and slash in
   recording names (thanks to Patrick Fischer for reporting that this was a problem
@@ -4996,3 +4996,5 @@ Video Disk Recorder Revision History
   use the new option -U of getskyepg.pl to have the information added to the URL
   as a query string.
 - Fixed a possible crash in remux.c on 64-bit machines (thanks to Reinhard Nissl).
+- Fixed a typo in the change to the "Use small font" setup option in version 1.3.47
+  in the HISTORY and CONTRIBUTORS file (reported by Andreas Brugger).

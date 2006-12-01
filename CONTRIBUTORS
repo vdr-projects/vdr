@@ -1523,6 +1523,8 @@ Andreas Brugger <brougs78@gmx.net>
  cStatus::Replaying(), so that they can provide the full file name of the recording
  for suggesting that externally provided EPG data (with table ID 0x00) shall get its
  component descriptors set from the broadcast data
+ for reporting a typo in the change to the "Use small font" setup option in version
+ 1.3.47 in the HISTORY and CONTRIBUTORS file
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1906,7 +1908,7 @@ Suur Karu <suurkaru@fastmail.fm>
 Ronny Kornexl <ronny.kornexl@online.de>
  for reporting a problem with setting "No title" for broken event data
  for suggesting to make the "Use small font" setup option *always* use the small
- font if set to '3' - even if it would have been a fixed font
+ font if set to '2' - even if it would have been a fixed font
  for reporting a bug in initializing 'noapiv' in the Makefile
 
 Vladimír Bárta <vladimir.barta@k2atmitec.cz>
