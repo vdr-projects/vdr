@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.445 2006/11/04 13:13:18 kls Exp $
+ * $Id: menu.c 1.446 2006/12/02 11:12:02 kls Exp $
  */
 
 #include "menu.h"
@@ -3280,7 +3280,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             return osEnd;
             }
     };
-  if (!timeout || lastTime.Elapsed() < (uint64)(Setup.ChannelInfoTime * 1000)) {
+  if (!timeout || lastTime.Elapsed() < (uint64_t)(Setup.ChannelInfoTime * 1000)) {
      if (Key == kNone && !number && group < 0 && !NewChannel && channel && channel->Number() != cDevice::CurrentChannel()) {
         // makes sure a channel switch through the SVDRP CHAN command is displayed
         channel = Channels.GetByNumber(cDevice::CurrentChannel());

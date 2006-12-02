@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.54 2006/10/14 11:05:57 kls Exp $
+ * $Id: remote.c 1.55 2006/12/02 11:12:42 kls Exp $
  */
 
 #include "remote.h"
@@ -116,7 +116,7 @@ bool cRemote::PutMacro(eKeys Key)
   return true;
 }
 
-bool cRemote::Put(uint64 Code, bool Repeat, bool Release)
+bool cRemote::Put(uint64_t Code, bool Repeat, bool Release)
 {
   char buffer[32];
   snprintf(buffer, sizeof(buffer), "%016LX", Code);
@@ -203,7 +203,7 @@ cRemotes Remotes;
 
 struct tKbdMap {
   eKbdFunc func;
-  uint64 code;
+  uint64_t code;
   };
 
 static tKbdMap KbdMap[] = {
@@ -264,7 +264,7 @@ void cKbdRemote::SetRawMode(bool RawMode)
   rawMode = RawMode;
 }
 
-uint64 cKbdRemote::MapFuncToCode(int Func)
+uint64_t cKbdRemote::MapFuncToCode(int Func)
 {
   for (tKbdMap *p = KbdMap; p->func != kfNone; p++) {
       if (p->func == Func)
@@ -273,7 +273,7 @@ uint64 cKbdRemote::MapFuncToCode(int Func)
   return (Func <= 0xFF) ? Func : 0;
 }
 
-int cKbdRemote::MapCodeToFunc(uint64 Code)
+int cKbdRemote::MapCodeToFunc(uint64_t Code)
 {
   for (tKbdMap *p = KbdMap; p->func != kfNone; p++) {
       if (p->code == Code)
@@ -296,9 +296,9 @@ int cKbdRemote::ReadKey(void)
   return -1;
 }
 
-uint64 cKbdRemote::ReadKeySequence(void)
+uint64_t cKbdRemote::ReadKeySequence(void)
 {
-  uint64 k = 0;
+  uint64_t k = 0;
   int key1;
 
   if ((key1 = ReadKey()) >= 0) {
@@ -342,7 +342,7 @@ uint64 cKbdRemote::ReadKeySequence(void)
 void cKbdRemote::Action(void)
 {
   while (Running()) {
-        uint64 Command = ReadKeySequence();
+        uint64_t Command = ReadKeySequence();
         if (Command) {
            if (rawMode || !Put(Command)) {
               int func = MapCodeToFunc(Command);

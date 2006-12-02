@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.120 2006/08/12 13:30:07 kls Exp $
+ * $Id: tools.c 1.121 2006/12/02 11:12:59 kls Exp $
  */
 
 #include "tools.h"
@@ -547,11 +547,11 @@ cTimeMs::cTimeMs(void)
   Set();
 }
 
-uint64 cTimeMs::Now(void)
+uint64_t cTimeMs::Now(void)
 {
   struct timeval t;
   if (gettimeofday(&t, NULL) == 0)
-     return (uint64(t.tv_sec)) * 1000 + t.tv_usec / 1000;
+     return (uint64_t(t.tv_sec)) * 1000 + t.tv_usec / 1000;
   return 0;
 }
 
@@ -565,7 +565,7 @@ bool cTimeMs::TimedOut(void)
   return Now() >= begin;
 }
 
-uint64 cTimeMs::Elapsed(void)
+uint64_t cTimeMs::Elapsed(void)
 {
   return Now() - begin;
 }
