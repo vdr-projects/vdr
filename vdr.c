@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.281 2006/12/02 10:33:35 kls Exp $
+ * $Id: vdr.c 1.282 2006/12/02 16:22:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -1159,10 +1159,6 @@ int main(int argc, char *argv[])
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
               if (Shutdown && (Setup.MinUserInactivity || LastActivity == 1) && Now - LastActivity > Setup.MinUserInactivity * 60) {
-                 if (!ForceShutdown && cPluginManager::Active()) {
-                    LastActivity = Now - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
-                    continue;
-                    }
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
@@ -1181,6 +1177,10 @@ int main(int argc, char *argv[])
                     Next = Now + Delta;
                     timer = NULL;
                     dsyslog("reboot at %s", *TimeToString(Next));
+                    }
+                 if (!ForceShutdown && cPluginManager::Active()) {
+                    LastActivity = Now - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
+                    continue;
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
