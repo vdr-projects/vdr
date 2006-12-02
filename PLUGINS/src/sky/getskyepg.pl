@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.5 2006/12/01 14:38:00 kls Exp $
+# $Id: getskyepg.pl 1.6 2006/12/02 09:52:49 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -95,6 +95,13 @@ sub GetPage
   return @page;
 }
 
+sub ReplaceTags
+{
+  my $s = shift;
+  $s =~ s/&amp;/&/g;
+  return $s;
+}
+
 sub StripWhitespace
 {
   my $s = shift;
@@ -108,7 +115,7 @@ sub Extract
   my $s = shift;
   my $t = shift;
   $s =~ /<$t>([^<]*)<\/$t>/;
-  return StripWhitespace($1);
+  return ReplaceTags(StripWhitespace($1));
 }
 
 # In order to get the duration we need to buffer the last event:

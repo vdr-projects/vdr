@@ -4995,6 +4995,7 @@ Video Disk Recorder Revision History
   If your version of 'wget' doesn't support the -U option to set the user agent,
   use the new option -U of getskyepg.pl to have the information added to the URL
   as a query string.
+- The getskyepg.pl script now replaces "&amp;" with "&".
 - Fixed a possible crash in remux.c on 64-bit machines (thanks to Reinhard Nissl).
 - Fixed a typo in the change to the "Use small font" setup option in version 1.3.47
   in the HISTORY and CONTRIBUTORS file (reported by Andreas Brugger).
