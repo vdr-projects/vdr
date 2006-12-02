@@ -1476,6 +1476,7 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting that the function cThread::Cancel() should only set 'running' to
  false and not actually kill the thread if the special value -1 is given
  or fixing a possible segfault in cSkins::Message()
+ for some hints on how to improve handling cPluginManager::Active()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2038,3 +2039,6 @@ Boguslaw Juza <bogdan@uci.agh.edu.pl>
 Ulf Kiener <webmaster@ulf-kiener.de>
  for reporting a problem with audio track descriptions in the DVD plugin after a
  replay has been stopped
+
+Jörg Wendel <vdr-ml@jwendel.de>
+ for reporting that cPlugin::Active() was called too often

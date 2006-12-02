@@ -5002,3 +5002,7 @@ Video Disk Recorder Revision History
 - Added a missing 'const' to cRecordingInfo::ChannelID() (reported by Andreas
   Brugger). This required the APIVERSION to be increased, so plugins will have to
   be recompiled.
+- Now calling cPluginManager::Active() only if VDR is really trying to shut down,
+  and waiting for 5 minutes before calling it again (thanks to Jörg Wendel for
+  reporting that cPlugin::Active() was called too often, and to Udo Richter for
+  some hints on how to improve this).

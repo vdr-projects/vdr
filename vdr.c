@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.280 2006/10/14 10:01:32 kls Exp $
+ * $Id: vdr.c 1.281 2006/12/02 10:33:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -1154,11 +1154,15 @@ int main(int argc, char *argv[])
                  Skins.Message(mtInfo, tr("Editing process finished"));
               }
            }
-        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && !cPluginManager::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
               if (Shutdown && (Setup.MinUserInactivity || LastActivity == 1) && Now - LastActivity > Setup.MinUserInactivity * 60) {
+                 if (!ForceShutdown && cPluginManager::Active()) {
+                    LastActivity = Now - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
+                    continue;
+                    }
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
