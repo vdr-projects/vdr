@@ -1906,6 +1906,7 @@ Daniel Karsubka <dkar@gmx.de>
 Suur Karu <suurkaru@fastmail.fm>
  for reporting a problem with the tuning timeout for channels that have low symbol
  rates
+ for reporting that dropping the 'uint64' typedef caused many plugins to be modified
 
 Ronny Kornexl <ronny.kornexl@online.de>
  for reporting a problem with setting "No title" for broken event data
@@ -2042,3 +2043,6 @@ Ulf Kiener <webmaster@ulf-kiener.de>
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
+
+Peter Pinnau <vdr@unterbrecher.de>
+ for reporting that 'uint32_t' requires uncluding stdint.h in font.h on some systems
