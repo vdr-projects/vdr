@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.94 2006/12/02 11:14:14 kls Exp $
+ * $Id: tools.h 1.95 2006/12/03 16:41:59 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -23,6 +23,7 @@
 #include <sys/types.h>
 
 typedef unsigned char uchar;
+#define uint64 uint64_t // for compatibility - TODO remove in version 1.5
 
 extern int SysLogLevel;
 

@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.13 2006/12/02 11:11:48 kls Exp $
+ * $Id: font.h 1.14 2006/12/03 16:42:10 kls Exp $
  */
 
 #ifndef __FONT_H
 #define __FONT_H
 
+#include <stdint.h>
 #include <stdlib.h>
 
 enum eDvbFont {
