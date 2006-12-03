@@ -4611,7 +4611,7 @@ Video Disk Recorder Revision History
   (since version 1.3.38 disk access is done in a separate thread, so the watchdog
   timer won't hit).
 - Changed the behaviour of the "Use small font" setup option to *always* use the small
-  font if set to '3' - even if it would have been a fixed font (suggested by Ronny
+  font if set to '2' - even if it would have been a fixed font (suggested by Ronny
   Kornexl).
 - No longer using characters 0x01 and 0x02 for mapping single quote and slash in
   recording names (thanks to Patrick Fischer for reporting that this was a problem
@@ -4985,3 +4985,26 @@ Video Disk Recorder Revision History
 
 - Fixed displaying the replay mode symbol in case of "Multi speed mode" (reported
   by Marco Schlüßler).
+
+2006-12-03: Version 1.4.4-1
+
+- Some improvements to the man pages (thanks to Ville Skyttä).
+- Fixed a possible segfault in cSkins::Message() (thanks to Udo Richter).
+- Made the getskyepg.pl script of the 'sky' plugin send a user agent message to
+  the server, according to the rules at http://bleb.org/tv/data/listings.
+  If your version of 'wget' doesn't support the -U option to set the user agent,
+  use the new option -U of getskyepg.pl to have the information added to the URL
+  as a query string.
+- The getskyepg.pl script now replaces "&amp;" with "&".
+- Fixed a possible crash in remux.c on 64-bit machines (thanks to Reinhard Nissl).
+- Fixed a typo in the change to the "Use small font" setup option in version 1.3.47
+  in the HISTORY and CONTRIBUTORS file (reported by Andreas Brugger).
+- Added a missing 'const' to cRecordingInfo::ChannelID() (reported by Andreas
+  Brugger). This required the APIVERSION to be increased, so plugins will have to
+  be recompiled.
+- Now calling cPluginManager::Active() only if VDR is really trying to shut down,
+  and waiting for 5 minutes before calling it again (thanks to Jörg Wendel for
+  reporting that cPlugin::Active() was called too often, and to Udo Richter for
+  some hints on how to improve this).
+- Replaced 'unsigned long long' with 'uint32_t' and 'uint64' with 'uint64_t' to
+  avoid problems on 64-bit machines.

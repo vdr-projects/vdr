@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.14 2006/06/16 09:29:24 kls Exp $
+ * $Id: rcu.c 1.15 2006/12/02 11:12:28 kls Exp $
  */
 
 #include "rcu.h"
@@ -97,7 +97,7 @@ void cRcuRemote::Action(void)
   time_t LastCodeRefresh = 0;
   cTimeMs FirstTime;
   unsigned char LastCode = 0, LastMode = 0;
-  uint64 LastCommand = ~0; // 0x00 might be a valid command
+  uint64_t LastCommand = ~0; // 0x00 might be a valid command
   unsigned int LastData = 0;
   bool repeat = false;
 
@@ -109,13 +109,13 @@ void cRcuRemote::Action(void)
                   buffer.raw[i] = b;
                   if (i == 5) {
                      unsigned short Address = ntohs(buffer.data.address); // the PIC sends bytes in "network order"
-                     uint64         Command = ntohl(buffer.data.command);
+                     uint64_t       Command = ntohl(buffer.data.command);
                      if (code == 'B' && Address == 0x0000 && Command == 0x00004000)
                         // Well, well, if it isn't the "d-box"...
                         // This remote control sends the above command before and after
                         // each keypress - let's just drop this:
                         break;
-                     Command |= uint64(Address) << 32;
+                     Command |= uint64_t(Address) << 32;
                      if (Command != LastCommand) {
                         LastCommand = Command;
                         repeat = false;

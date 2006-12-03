@@ -1113,6 +1113,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for implementing cDevice::ForceTransferMode()
  for changing the behaviour when hitting the end of a recording in fast forward mode
  for suggesting to give the cRemote::CallPlugin() function a boolean return value
+ for fixing a possible crash in remux.c on 64-bit machines
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1474,6 +1475,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting that an assignment in svdrp.c didn't use the cTimer::operator=())
  for suggesting that the function cThread::Cancel() should only set 'running' to
  false and not actually kill the thread if the special value -1 is given
+ or fixing a possible segfault in cSkins::Message()
+ for some hints on how to improve handling cPluginManager::Active()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1521,6 +1524,9 @@ Andreas Brugger <brougs78@gmx.net>
  cStatus::Replaying(), so that they can provide the full file name of the recording
  for suggesting that externally provided EPG data (with table ID 0x00) shall get its
  component descriptors set from the broadcast data
+ for reporting a typo in the change to the "Use small font" setup option in version
+ 1.3.47 in the HISTORY and CONTRIBUTORS file
+ for reporting a missing 'const' in cRecordingInfo::ChannelID()
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1638,6 +1644,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing converting the port number in the "connect from..." log message of SVDRP
  for reporting that there are places where ntohs() is assigned to different types
  for adapting cThread::ThreadId() to recent kernels
+ for some improvements to the man pages
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1903,7 +1910,7 @@ Suur Karu <suurkaru@fastmail.fm>
 Ronny Kornexl <ronny.kornexl@online.de>
  for reporting a problem with setting "No title" for broken event data
  for suggesting to make the "Use small font" setup option *always* use the small
- font if set to '3' - even if it would have been a fixed font
+ font if set to '2' - even if it would have been a fixed font
  for reporting a bug in initializing 'noapiv' in the Makefile
 
 Vladimír Bárta <vladimir.barta@k2atmitec.cz>
@@ -2032,3 +2039,6 @@ Boguslaw Juza <bogdan@uci.agh.edu.pl>
 Ulf Kiener <webmaster@ulf-kiener.de>
  for reporting a problem with audio track descriptions in the DVD plugin after a
  replay has been stopped
+
+Jörg Wendel <vdr-ml@jwendel.de>
+ for reporting that cPlugin::Active() was called too often

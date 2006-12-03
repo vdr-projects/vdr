@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.93 2006/04/16 10:40:45 kls Exp $
+ * $Id: tools.h 1.94 2006/12/02 11:14:14 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <syslog.h>
@@ -22,7 +23,6 @@
 #include <sys/types.h>
 
 typedef unsigned char uchar;
-typedef unsigned long long int uint64;
 
 extern int SysLogLevel;
 
@@ -159,13 +159,13 @@ public:
 
 class cTimeMs {
 private:
-  uint64 begin;
+  uint64_t begin;
 public:
   cTimeMs(void);
-  static uint64 Now(void);
+  static uint64_t Now(void);
   void Set(int Ms = 0);
   bool TimedOut(void);
-  uint64 Elapsed(void);
+  uint64_t Elapsed(void);
   };
 
 class cReadLine {

@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.56 2006/04/17 12:48:12 kls Exp $
+ * $Id: remux.c 1.57 2006/12/01 14:46:25 kls Exp $
  */
 
 #include "remux.h"
@@ -389,7 +389,7 @@ bool cVideoRepacker::ScanDataForStartCodeFast(const uchar *&Data, const uchar *L
         }
 
   Data = Limit;
-  unsigned long *Scanner = (unsigned long *)(Data - 3);
+  uint32_t *Scanner = (uint32_t *)(Data - 3);
   scanner = ntohl(*Scanner);
   return false;
 }
@@ -615,7 +615,7 @@ bool cVideoRepacker::ScanForEndOfPictureFast(const uchar *&Data, const uchar *Li
         }
 
   Data = Limit + 1;
-  unsigned long *LocalScanner = (unsigned long *)(Data - 4);
+  uint32_t *LocalScanner = (uint32_t *)(Data - 4);
   localScanner = ntohl(*LocalScanner);
   return false;
 }

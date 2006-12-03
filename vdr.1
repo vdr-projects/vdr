@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.26 2006/06/24 10:07:16 kls Exp $
+.\" $Id: vdr.1 1.27 2006/11/19 10:02:31 kls Exp $
 .\"
 .TH vdr 1 "30 Apr 2006" "1.4.0" "Video Disk Recorder"
 .SH NAME
@@ -23,12 +23,12 @@ It can work with signals received from satellites (DVB-S) as
 well as cable (DVB-C) and terrestrial (DVB-T) signals.
 
 At least one DVB card is required to run \fBvdr\fR. With it you can watch
-live tv while recording one or more other broadcasts from the same transponder.
+live TV while recording one or more other broadcasts from the same transponder.
 It is also possible to start watching a recorded programme before the live
 broadcast has ended (\fBtime shifting\fR). In order to record from different
 transponders simultaneously two or more DVB cards are necessary.
 By default \fBvdr\fR can support up to four
-DVB cards. The primary DVB card (the one your tv set is connected to) has
+DVB cards. The primary DVB card (the one your TV set is connected to) has
 to be a "full featured" card, which means it must contain an MPEG decoder
 and provide audio and video signal outputs.
 
@@ -76,7 +76,7 @@ Set logging to \fIlevel\fR.
 \fB0\fR\ =\ no logging, \fB1\fR\ =\ errors only,
 \fB2\fR\ =\ errors and info, \fB3\fR\ =\ errors, info and debug.
 The default logging level is \fB3\fR.
-If logging should be done to LOG_LOCALn instead of
+If logging should be done to LOG_LOCAL\fIn\fR instead of
 LOG_USER, add '.n' to LEVEL, as in 3.7 (n=0..7).
 .TP
 .BI \-L\  dir ,\ \-\-lib= dir
@@ -122,10 +122,12 @@ Use a serial port remote control device.
 If \fIpath\fR is omitted, vdr uses \fI/dev/ttyS1\fR.
 .TP
 .BI \-r\  cmd ,\ \-\-record= cmd
-Call \fIcmd\fR before and after a recording.
+Call \fIcmd\fR before and after a recording. See the file \fIINSTALL\fR for
+more information.
 .TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
-Call \fIcmd\fR to shutdown the computer.
+Call \fIcmd\fR to shutdown the computer. See the file \fIINSTALL\fR for more
+information.
 .TP
 .BI \-t\  tty ,\ \-\-terminal= tty
 Set the controlling terminal.

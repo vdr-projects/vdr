@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.4 2006/01/08 10:21:32 kls Exp $
+# $Id: getskyepg.pl 1.6 2006/12/02 09:52:49 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -21,18 +21,29 @@ Options: -c filename        channel config file name (default: channels.conf.sky
          -p port            SVDRP port number (default: 2001)
          -S source          channel source (default: S28.2E)
          -D days            days to get EPG for (1..7, default: 2)
+         -U                 use this if your version of 'wget' doesn't support -U
 };
 
-die $Usage if (!getopts("c:d:D:hp:S:") || $opt_h);
+die $Usage if (!getopts("c:d:D:hp:S:U") || $opt_h);
 
 $Conf   = $opt_c || "channels.conf.sky";
 $Dest   = $opt_d || "localhost";
 $Port   = $opt_p || 2001;
 $Source = $opt_S || "S28.2E";
 $Days   = $opt_D || 2;
+$User   = $opt_U;
+
+# See "Rules for using this data" on http://bleb.org/tv/data/listings.
+# In case you modify this script in a way that changes its behavior
+# towards the www.bleb.org website, please replace 'vdrbugs@cadsoft.de'
+# with your own email address! That way Andrew Flegg <andrew@bleb.org>,
+# who runs that web site, can contact you in case of problems.
+$IDENT = "VDR::getskyepg.pl, http://www.cadsoft.de/vdr - vdrbugs\@cadsoft.de";
+$GAP = 2;
 
 $SkyWebPage = "www.bleb.org/tv/data/listings";
 $WGET = "/usr/bin/wget -q -O-";
+$WGET .= " -U '$IDENT'" unless $User;
 $LOGGER = "/usr/bin/logger -t SKYEPG";
 
 $DST = -3600; # Daylight Saving Time offset
@@ -76,11 +87,19 @@ sub GetPage
   my $channel = shift;
   my $day = shift;
   $day--;
-  my $url = "$SkyWebPage/$day/$channel.xml";
+  my $url = "http://$SkyWebPage/$day/$channel.xml";
+  $url .= "?$IDENT" if $User;
   Log("reading $url");
   my @page = split("\n", `$WGET '$url'`);
   Log("received " . ($#page + 1) . " lines");
   return @page;
+}
+
+sub ReplaceTags
+{
+  my $s = shift;
+  $s =~ s/&amp;/&/g;
+  return $s;
 }
 
 sub StripWhitespace
@@ -96,7 +115,7 @@ sub Extract
   my $s = shift;
   my $t = shift;
   $s =~ /<$t>([^<]*)<\/$t>/;
-  return StripWhitespace($1);
+  return ReplaceTags(StripWhitespace($1));
 }
 
 # In order to get the duration we need to buffer the last event:
@@ -174,6 +193,7 @@ sub GetEpgData
              $data .= $line;
              }
           }
+      sleep($GAP);
       }
   SVDRPsend("c");
   Log("generated $numEvents EPG events");

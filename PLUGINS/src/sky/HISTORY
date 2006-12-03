@@ -45,3 +45,12 @@ VDR Plugin 'sky' Revision History
 2006-03-26: Version 0.3.5
 
 - Fixed format string handling.
+
+2006-12-02: Version 0.3.5 (version number not increased)
+
+- Made the getskyepg.pl script send a user agent message to
+  the server, according to the rules at http://bleb.org/tv/data/listings.
+  If your version of 'wget' doesn't support the -U option to set the user agent,
+  use the new option -U of getskyepg.pl to have the information added to the URL
+  as a query string.
+- The getskyepg.pl script now replaces "&amp;" with "&".
