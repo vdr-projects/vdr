@@ -5020,3 +5020,4 @@ Video Disk Recorder Revision History
 
 - Fixed a possible segfault if VDR gets terminated while a message is displayed
   (thanks to Udo Richter).
+- Fixed the INSTALL section on retrying shutdown later (reported by Udo Richter).

@@ -1478,6 +1478,7 @@ Udo Richter <udo_richter@gmx.de>
  or fixing a possible segfault in cSkins::Message()
  for some hints on how to improve handling cPluginManager::Active()
  for fixing a possible segfault if VDR gets terminated while a message is displayed
+ for reporting an error in the INSTALL section on retrying shutdown later
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

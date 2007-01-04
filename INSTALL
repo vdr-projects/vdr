@@ -199,9 +199,8 @@ correspond to a time that is "Min. event timeout" minutes in the future.
 Before the shutdown program is called, the user will be prompted to inform
 him that the system is about to shut down. If any remote control key is
 pressed while this prompt is visible, the shutdown will be cancelled (and
-tried again after another MinUserInactivity minutes). The shutdown prompt
-will be displayed for 5 minutes, which should be enough time for the user
-to react.
+tried again later). The shutdown prompt will be displayed for 5 minutes, which
+should be enough time for the user to react.
 
 A sample shell script to be used with the '-s' option might look like this:
 
