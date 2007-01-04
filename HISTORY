@@ -5006,7 +5006,7 @@ Video Disk Recorder Revision History
   and waiting for 5 minutes before calling it again (thanks to Jörg Wendel for
   reporting that cPlugin::Active() was called too often, and to Udo Richter for
   some hints on how to improve this).
-- Replaced 'unsigned long long' with 'uint32_t' and 'uint64' with 'uint64_t' to
+- Replaced 'unsigned long' with 'uint32_t' and 'uint64' with 'uint64_t' to
   avoid problems on 64-bit machines.
 
 2006-12-03: Version 1.4.4-2
