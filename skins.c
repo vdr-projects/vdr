@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.12 2006/12/01 13:32:37 kls Exp $
+ * $Id: skins.c 1.13 2007/01/04 13:08:55 kls Exp $
  */
 
 #include "skins.h"
@@ -357,4 +357,13 @@ void cSkins::Flush(void)
 {
   if (cSkinDisplay::Current())
      cSkinDisplay::Current()->Flush();
+}
+
+void cSkins::Clear(void)
+{
+  if (displayMessage) {
+     delete displayMessage;
+     displayMessage = NULL;
+     }
+  cList<cSkin>::Clear();
 }

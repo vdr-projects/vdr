@@ -5015,3 +5015,8 @@ Video Disk Recorder Revision History
 - Added a compatibility define for 'uint64' to tools.h, so that existing
   plugins don't need to be modified immediately (reported by Suur Karu).
   This will be removed in version 1.5.
+
+2007-01-04: Version 1.4.4-3
+
+- Fixed a possible segfault if VDR gets terminated while a message is displayed
+  (thanks to Udo Richter).
