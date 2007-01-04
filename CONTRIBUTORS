@@ -2016,6 +2016,8 @@ Norbert Wentz <norbert.wentz@online.de>
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
  for fixing assigning schedules to channels in case there is no initial EPG information
+ for making entering text via the numeric keys check the characters against the
+ allowed characters
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
