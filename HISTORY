@@ -5016,10 +5016,11 @@ Video Disk Recorder Revision History
   plugins don't need to be modified immediately (reported by Suur Karu).
   This will be removed in version 1.5.
 
-2007-01-04: Version 1.4.4-3
+2007-01-05: Version 1.4.4-3
 
 - Fixed a possible segfault if VDR gets terminated while a message is displayed
   (thanks to Udo Richter).
 - Fixed the INSTALL section on retrying shutdown later (reported by Udo Richter).
 - When entering text via the numeric keys, the characters are now checked against
   the allowed characters (thanks to Frank Schmirler).
+- Added a missing break statement in cCiHandler::OpenSession().
