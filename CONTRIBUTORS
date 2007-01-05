@@ -1477,6 +1477,8 @@ Udo Richter <udo_richter@gmx.de>
  false and not actually kill the thread if the special value -1 is given
  or fixing a possible segfault in cSkins::Message()
  for some hints on how to improve handling cPluginManager::Active()
+ for fixing a possible segfault if VDR gets terminated while a message is displayed
+ for reporting an error in the INSTALL section on retrying shutdown later
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2014,6 +2016,8 @@ Norbert Wentz <norbert.wentz@online.de>
 Frank Schmirler <vdr@schmirler.de>
  for fixing handling client side termination of SVDRP connections
  for fixing assigning schedules to channels in case there is no initial EPG information
+ for making entering text via the numeric keys check the characters against the
+ allowed characters
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while

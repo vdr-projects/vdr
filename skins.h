@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.14 2006/06/03 10:21:45 kls Exp $
+ * $Id: skins.h 1.15 2007/01/04 13:08:55 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -360,6 +360,8 @@ public:
        ///< Processes the first queued message, if any.
   void Flush(void);
        ///< Flushes the currently active cSkinDisplay, if any.
+  virtual void Clear(void);
+       ///< Free up all registered skins
   };
 
 extern cSkins Skins;

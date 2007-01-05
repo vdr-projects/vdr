@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.45 2006/08/20 11:38:33 kls Exp $
+ * $Id: ci.c 1.46 2007/01/05 10:08:46 kls Exp $
  */
 
 #include "ci.h"
@@ -1607,6 +1607,7 @@ bool cCiHandler::OpenSession(int Length, const uint8_t *Data)
                  }
               esyslog("ERROR: can't create session for resource identifier: %08X", ResourceId);
             }
+            break;
        default: esyslog("ERROR: unknown resource identifier: %08X", ResourceId);
        }
      }

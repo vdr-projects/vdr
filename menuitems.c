@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.47 2006/07/30 09:09:30 kls Exp $
+ * $Id: menuitems.c 1.48 2007/01/04 13:30:37 kls Exp $
  */
 
 #include "menuitems.h"
@@ -461,13 +461,6 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                           AdvancePos();
                        currentChar = NULL;
                        }
-                    if (insert && newchar) {
-                       // create a new character in insert mode
-                       if (int(strlen(value)) < length - 1) {
-                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
-                          value[pos] = ' ';
-                          }
-                       }
                     if (!currentChar || !*currentChar || *currentChar == '\t') {
                        // find the beginning of the character map entry for Key
                        int n = NORMALKEY(Key) - k0;
@@ -476,15 +469,28 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                              if (*currentChar++ == '\t')
                                 n--;
                              }
+                       // find first allowed character
+                       while (*currentChar && *currentChar != '\t' && !strchr(allowed, *currentChar))
+                             currentChar++;
                        }
                     if (*currentChar && *currentChar != '\t') {
+                       if (insert && newchar) {
+                          // create a new character in insert mode
+                          if (int(strlen(value)) < length - 1) {
+                             memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
+                             value[pos] = ' ';
+                             }
+                          }
                        value[pos] = *currentChar;
                        if (uppercase)
                           value[pos] = toupper(value[pos]);
-                       currentChar++;
+                       // find next allowed character
+                       do {
+                          currentChar++;
+                          } while (*currentChar && *currentChar != '\t' && !strchr(allowed, *currentChar));
+                       newchar = false;
+                       autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
                        }
-                    newchar = false;
-                    autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);
