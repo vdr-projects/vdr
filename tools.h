@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.95 2006/12/03 16:41:59 kls Exp $
+ * $Id: tools.h 1.96 2006/12/03 17:38:38 kls Exp $
  */
 
 #ifndef __TOOLS_H
