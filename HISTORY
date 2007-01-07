@@ -5024,3 +5024,7 @@ Video Disk Recorder Revision History
 - When entering text via the numeric keys, the characters are now checked against
   the allowed characters (thanks to Frank Schmirler).
 - Added a missing break statement in cCiHandler::OpenSession().
+
+2007-01-07: Version 1.4.5
+
+- Official release.
