@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.37 2006/09/24 10:10:37 kls Exp $
+ * $Id: thread.h 1.38 2007/01/07 14:44:38 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -115,6 +115,7 @@ public:
   void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
   bool Start(void);
        ///< Actually starts the thread.
+       ///< If the thread is already running, nothing happens.
   bool Active(void);
        ///< Checks whether the thread is still alive.
   static bool EmergencyExit(bool Request = false);

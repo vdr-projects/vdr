@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.95 2006/08/20 10:44:22 kls Exp $
+# $Id: Makefile 1.96 2007/01/07 14:38:00 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -32,7 +32,7 @@ DOXYFILE = Doxyfile
 
 SILIB    = $(LSIDIR)/libsi.a
 
-OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
+OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o dvbosd.o\
        dvbplayer.o dvbspu.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o rcu.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o\

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.86 2006/10/20 13:09:57 kls Exp $
+ * $Id: menu.h 1.87 2007/01/07 14:40:54 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -128,31 +128,6 @@ public:
   eOSState ProcessKey(eKeys Key);
   };
 
-class cMenuCam : public cOsdMenu {
-private:
-  cCiMenu *ciMenu;
-  bool selected;
-  int offset;
-  void AddMultiLineItem(const char *s);
-  eOSState Select(void);
-public:
-  cMenuCam(cCiMenu *CiMenu);
-  virtual ~cMenuCam();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-class cMenuCamEnquiry : public cOsdMenu {
-private:
-  cCiEnquiry *ciEnquiry;
-  char *input;
-  bool replied;
-  eOSState Reply(void);
-public:
-  cMenuCamEnquiry(cCiEnquiry *CiEnquiry);
-  virtual ~cMenuCamEnquiry();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cOsdObject *CamControl(void);
 
 class cMenuRecordingItem;
@@ -206,7 +181,6 @@ private:
 public:
   static bool Start(cTimer *Timer = NULL, bool Pause = false);
   static void Stop(const char *InstantId);
-  static void Stop(cDevice *Device);
   static bool PauseLiveVideo(void);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);

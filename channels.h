@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.42 2006/05/28 15:03:56 kls Exp $
+ * $Id: channels.h 1.43 2007/01/07 14:37:35 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -179,6 +179,7 @@ public:
   const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
   const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
   int Tpid(void) const { return tpid; }
+  const int *Caids(void) const { return caids; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
   int Nid(void) const { return nid; }
   int Tid(void) const { return tid; }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.446 2006/12/02 11:12:02 kls Exp $
+ * $Id: menu.c 1.447 2007/01/07 14:19:48 kls Exp $
  */
 
 #include "menu.h"
@@ -38,7 +38,9 @@
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
-#define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
+#define MAXWAITFORCAMMENU  10 // seconds to wait for the CAM menu to open
+#define CAMMENURETYTIMEOUT  3 // seconds after which opening the CAM menu is retried
+#define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
@@ -1579,38 +1581,104 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 // --- cMenuCam --------------------------------------------------------------
 
-cMenuCam::cMenuCam(cCiMenu *CiMenu)
-:cOsdMenu("")
+class cMenuCam : public cOsdMenu {
+private:
+  cCamSlot *camSlot;
+  cCiMenu *ciMenu;
+  cCiEnquiry *ciEnquiry;
+  char *input;
+  int offset;
+  time_t lastCamExchange;
+  void GenerateTitle(const char *s = NULL);
+  void QueryCam(void);
+  void AddMultiLineItem(const char *s);
+  void Set(void);
+  eOSState Select(void);
+public:
+  cMenuCam(cCamSlot *CamSlot);
+  virtual ~cMenuCam();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuCam::cMenuCam(cCamSlot *CamSlot)
+:cOsdMenu("", 1) // tab necessary for enquiry!
 {
-  dsyslog("CAM: Menu ------------------");
-  ciMenu = CiMenu;
-  selected = false;
+  camSlot = CamSlot;
+  ciMenu = NULL;
+  ciEnquiry = NULL;
+  input = NULL;
   offset = 0;
-  if (ciMenu->Selectable())
-     SetHasHotkeys();
-  SetTitle(*ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
-  dsyslog("CAM: '%s'", ciMenu->TitleText());
-  if (*ciMenu->SubTitleText()) {
-     dsyslog("CAM: '%s'", ciMenu->SubTitleText());
-     AddMultiLineItem(ciMenu->SubTitleText());
-     offset = Count();
-     }
-  for (int i = 0; i < ciMenu->NumEntries(); i++) {
-      Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
-      dsyslog("CAM: '%s'", ciMenu->Entry(i));
-      }
-  if (*ciMenu->BottomText()) {
-     AddMultiLineItem(ciMenu->BottomText());
-     dsyslog("CAM: '%s'", ciMenu->BottomText());
-     }
-  Display();
+  lastCamExchange = time(NULL);
+  SetNeedsFastResponse(true);
+  QueryCam();
 }
 
 cMenuCam::~cMenuCam()
 {
-  if (!selected)
+  if (ciMenu)
      ciMenu->Abort();
   delete ciMenu;
+  if (ciEnquiry)
+     ciEnquiry->Abort();
+  delete ciEnquiry;
+  free(input);
+}
+
+void cMenuCam::GenerateTitle(const char *s)
+{
+  SetTitle(cString::sprintf("CAM %d - %s", camSlot->SlotNumber(), (s && *s) ? s : camSlot->GetCamName()));
+}
+
+void cMenuCam::QueryCam(void)
+{
+  delete ciMenu;
+  ciMenu = NULL;
+  delete ciEnquiry;
+  ciEnquiry = NULL;
+  if (camSlot->HasUserIO()) {
+     ciMenu = camSlot->GetMenu();
+     ciEnquiry = camSlot->GetEnquiry();
+     }
+  Set();
+}
+
+void cMenuCam::Set(void)
+{
+  if (ciMenu) {
+     Clear();
+     free(input);
+     input = NULL;
+     dsyslog("CAM %d: Menu ------------------", camSlot->SlotNumber());
+     offset = 0;
+     SetHasHotkeys(ciMenu->Selectable());
+     GenerateTitle(ciMenu->TitleText());
+     dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->TitleText());
+     if (*ciMenu->SubTitleText()) {
+        dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->SubTitleText());
+        AddMultiLineItem(ciMenu->SubTitleText());
+        offset = Count();
+        }
+     for (int i = 0; i < ciMenu->NumEntries(); i++) {
+         Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
+         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->Entry(i));
+         }
+     if (*ciMenu->BottomText()) {
+        AddMultiLineItem(ciMenu->BottomText());
+        dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->BottomText());
+        }
+     }
+  else if (ciEnquiry) {
+     Clear();
+     int Length = ciEnquiry->ExpectedLength();
+     free(input);
+     input = MALLOC(char, Length + 1);
+     *input = 0;
+     GenerateTitle();
+     Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
+     Add(new cOsdItem("", osUnknown, false));
+     Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
+     }
+  Display();
 }
 
 void cMenuCam::AddMultiLineItem(const char *s)
@@ -1628,90 +1696,61 @@ void cMenuCam::AddMultiLineItem(const char *s)
 
 eOSState cMenuCam::Select(void)
 {
-  if (ciMenu->Selectable()) {
-     ciMenu->Select(Current() - offset);
-     dsyslog("CAM: select %d", Current() - offset);
+  if (ciMenu) {
+     if (ciMenu->Selectable()) {
+        ciMenu->Select(Current() - offset);
+        dsyslog("CAM %d: select %d", camSlot->SlotNumber(), Current() - offset);
+        }
+     else
+        ciMenu->Cancel();
      }
-  else
-     ciMenu->Cancel();
-  selected = true;
-  return osEnd;
+  else if (ciEnquiry) {
+     if (ciEnquiry->ExpectedLength() < 0xFF && int(strlen(input)) != ciEnquiry->ExpectedLength()) {
+        char buffer[64];
+        snprintf(buffer, sizeof(buffer), tr("Please enter %d digits!"), ciEnquiry->ExpectedLength());
+        Skins.Message(mtError, buffer);
+        return osContinue;
+        }
+     ciEnquiry->Reply(input);
+     dsyslog("CAM %d: entered '%s'", camSlot->SlotNumber(), ciEnquiry->Blind() ? "****" : input);
+     }
+  QueryCam();
+  return osContinue;
 }
 
 eOSState cMenuCam::ProcessKey(eKeys Key)
 {
+  if (!camSlot->HasMMI())
+     return osBack;
+
   eOSState state = cOsdMenu::ProcessKey(Key);
 
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk:     return Select();
-       default: break;
-       }
+  if (ciMenu || ciEnquiry) {
+     lastCamExchange = time(NULL);
+     if (state == osUnknown) {
+        switch (Key) {
+          case kOk: return Select();
+          default: break;
+          }
+        }
+     else if (state == osBack) {
+        if (ciMenu)
+           ciMenu->Cancel();
+        if (ciEnquiry)
+           ciEnquiry->Cancel();
+        QueryCam();
+        return osContinue;
+        }
+     if (ciMenu && ciMenu->HasUpdate()) {
+        QueryCam();
+        return osContinue;
+        }
      }
-  else if (state == osBack) {
-     ciMenu->Cancel();
-     selected = true;
-     return osEnd;
-     }
-  if (ciMenu->HasUpdate()) {
-     selected = true;
-     return osEnd;
-     }
-  return state;
-}
-
-// --- cMenuCamEnquiry -------------------------------------------------------
-
-cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
-:cOsdMenu("", 1)
-{
-  ciEnquiry = CiEnquiry;
-  int Length = ciEnquiry->ExpectedLength();
-  input = MALLOC(char, Length + 1);
-  *input = 0;
-  replied = false;
-  SetTitle("CAM");
-  Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
-  Add(new cOsdItem("", osUnknown, false));
-  Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
-  Display();
-}
-
-cMenuCamEnquiry::~cMenuCamEnquiry()
-{
-  if (!replied)
-     ciEnquiry->Abort();
-  free(input);
-  delete ciEnquiry;
-}
-
-eOSState cMenuCamEnquiry::Reply(void)
-{
-  if (ciEnquiry->ExpectedLength() < 0xFF && int(strlen(input)) != ciEnquiry->ExpectedLength()) {
-     char buffer[64];
-     snprintf(buffer, sizeof(buffer), tr("Please enter %d digits!"), ciEnquiry->ExpectedLength());
-     Skins.Message(mtError, buffer);
-     return osContinue;
-     }
-  ciEnquiry->Reply(input);
-  replied = true;
-  return osEnd;
-}
-
-eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
-{
-  eOSState state = cOsdMenu::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk:     return Reply();
-       default: break;
-       }
-     }
-  else if (state == osBack) {
-     ciEnquiry->Cancel();
-     replied = true;
-     return osEnd;
+  else if (time(NULL) - lastCamExchange < CAMRESPONSETIMEOUT)
+     QueryCam();
+  else {
+     Skins.Message(mtError, tr("CAM not responding!"));
+     return osBack;
      }
   return state;
 }
@@ -1720,21 +1759,9 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
 
 cOsdObject *CamControl(void)
 {
-  for (int d = 0; d < cDevice::NumDevices(); d++) {
-      cDevice *Device = cDevice::GetDevice(d);
-      if (Device) {
-         cCiHandler *CiHandler = Device->CiHandler();
-         if (CiHandler && CiHandler->HasUserIO()) {
-            cCiMenu *CiMenu = CiHandler->GetMenu();
-            if (CiMenu)
-               return new cMenuCam(CiMenu);
-            else {
-               cCiEnquiry *CiEnquiry = CiHandler->GetEnquiry();
-               if (CiEnquiry)
-                  return new cMenuCamEnquiry(CiEnquiry);
-               }
-            }
-         }
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot->HasUserIO())
+         return new cMenuCam(CamSlot);
       }
   return NULL;
 }
@@ -2454,95 +2481,117 @@ eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuSetupCICAM -------------------------------------------------------
+// --- cMenuSetupCAM ---------------------------------------------------------
 
-class cMenuSetupCICAMItem : public cOsdItem {
+class cMenuSetupCAMItem : public cOsdItem {
 private:
-  cCiHandler *ciHandler;
-  int slot;
+  cCamSlot *camSlot;
 public:
-  cMenuSetupCICAMItem(int Device, cCiHandler *CiHandler, int Slot);
-  cCiHandler *CiHandler(void) { return ciHandler; }
-  int Slot(void) { return slot; }
+  cMenuSetupCAMItem(cCamSlot *CamSlot);
+  cCamSlot *CamSlot(void) { return camSlot; }
+  bool Changed(void);
   };
 
-cMenuSetupCICAMItem::cMenuSetupCICAMItem(int Device, cCiHandler *CiHandler, int Slot)
+cMenuSetupCAMItem::cMenuSetupCAMItem(cCamSlot *CamSlot)
 {
-  ciHandler = CiHandler;
-  slot = Slot;
-  char buffer[32];
-  const char *CamName = CiHandler->GetCamName(slot);
-  snprintf(buffer, sizeof(buffer), "%s%d %d\t%s", tr("Setup.CICAM$CICAM DVB"), Device + 1, slot + 1, CamName ? CamName : "-");
-  SetText(buffer);
+  camSlot = CamSlot;
+  SetText("");
+  Changed();
 }
 
-class cMenuSetupCICAM : public cMenuSetupBase {
+bool cMenuSetupCAMItem::Changed(void)
+{
+  char buffer[32];
+  const char *CamName = camSlot->GetCamName();
+  if (!CamName) {
+     switch (camSlot->ModuleStatus()) {
+       case msReset:   CamName = tr("CAM reset"); break;
+       case msPresent: CamName = tr("CAM present"); break;
+       case msReady:   CamName = tr("CAM ready"); break;
+       default:        CamName = "-"; break;
+       }
+     }
+  snprintf(buffer, sizeof(buffer), " %d %s", camSlot->SlotNumber(), CamName);
+  if (strcmp(buffer, Text()) != 0) {
+     SetText(buffer);
+     return true;
+     }
+  return false;
+}
+
+class cMenuSetupCAM : public cMenuSetupBase {
 private:
   eOSState Menu(void);
   eOSState Reset(void);
 public:
-  cMenuSetupCICAM(void);
+  cMenuSetupCAM(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuSetupCICAM::cMenuSetupCICAM(void)
+cMenuSetupCAM::cMenuSetupCAM(void)
 {
-  SetSection(tr("CICAM"));
-  for (int d = 0; d < cDevice::NumDevices(); d++) {
-      cDevice *Device = cDevice::GetDevice(d);
-      if (Device) {
-         cCiHandler *CiHandler = Device->CiHandler();
-         if (CiHandler) {
-            for (int Slot = 0; Slot < CiHandler->NumSlots(); Slot++)
-                Add(new cMenuSetupCICAMItem(Device->CardIndex(), CiHandler, Slot));
-            }
-         }
-      }
+  SetSection(tr("CAM"));
+  SetCols(15);
+  SetHasHotkeys();
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
+      Add(new cMenuSetupCAMItem(CamSlot));
   SetHelp(tr("Button$Menu"), tr("Button$Reset"));
 }
 
-eOSState cMenuSetupCICAM::Menu(void)
+eOSState cMenuSetupCAM::Menu(void)
 {
-  cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
   if (item) {
-     if (item->CiHandler()->EnterMenu(item->Slot())) {
-        Skins.Message(mtWarning, tr("Opening CAM menu..."));
-        time_t t = time(NULL);
-        while (time(NULL) - t < MAXWAITFORCAMMENU && !item->CiHandler()->HasUserIO())
-              item->CiHandler()->Process();
-        return osEnd; // the CAM menu will be executed explicitly from the main loop
+     if (item->CamSlot()->EnterMenu()) {
+        Skins.Message(mtStatus, tr("Opening CAM menu..."));
+        time_t t0 = time(NULL);
+        time_t t1 = t0;
+        while (time(NULL) - t0 <= MAXWAITFORCAMMENU) {
+              if (item->CamSlot()->HasUserIO())
+                 break;
+              if (time(NULL) - t1 >= CAMMENURETYTIMEOUT) {
+                 dsyslog("CAM %d: retrying to enter CAM menu...", item->CamSlot()->SlotNumber());
+                 item->CamSlot()->EnterMenu();
+                 t1 = time(NULL);
+                 }
+              cCondWait::SleepMs(100);
+              }
+        Skins.Message(mtStatus, NULL);
+        if (item->CamSlot()->HasUserIO())
+           return AddSubMenu(new cMenuCam(item->CamSlot()));
         }
-     else
-        Skins.Message(mtError, tr("Can't open CAM menu!"));
+     Skins.Message(mtError, tr("Can't open CAM menu!"));
      }
   return osContinue;
 }
 
-eOSState cMenuSetupCICAM::Reset(void)
+eOSState cMenuSetupCAM::Reset(void)
 {
-  cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
   if (item) {
-     Skins.Message(mtWarning, tr("Resetting CAM..."));
-     if (item->CiHandler()->Reset(item->Slot())) {
-        Skins.Message(mtInfo, tr("CAM has been reset"));
-        return osEnd;
+     if (!item->CamSlot()->Device() || Interface->Confirm(tr("CAM is in use - really reset?"))) {
+        if (!item->CamSlot()->Reset())
+           Skins.Message(mtError, tr("Can't reset CAM!"));
         }
-     else
-        Skins.Message(mtError, tr("Can't reset CAM!"));
      }
   return osContinue;
 }
 
-eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
+eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
 {
-  eOSState state = cMenuSetupBase::ProcessKey(Key);
+  eOSState state = HasSubMenu() ? cMenuSetupBase::ProcessKey(Key) : cOsdMenu::ProcessKey(Key);
 
-  if (state == osUnknown) {
+  if (!HasSubMenu()) {
      switch (Key) {
+       case kOk:
        case kRed:    return Menu();
-       case kGreen:  return Reset();
+       case kGreen:  state = Reset(); break;
        default: break;
        }
+     for (cMenuSetupCAMItem *ci = (cMenuSetupCAMItem *)First(); ci; ci = (cMenuSetupCAMItem *)ci->Next()) {
+         if (ci->Changed())
+            DisplayItem(ci);
+         }
      }
   return state;
 }
@@ -2710,7 +2759,7 @@ void cMenuSetup::Set(void)
   Add(new cOsdItem(hk(tr("EPG")),           osUser2));
   Add(new cOsdItem(hk(tr("DVB")),           osUser3));
   Add(new cOsdItem(hk(tr("LNB")),           osUser4));
-  Add(new cOsdItem(hk(tr("CICAM")),         osUser5));
+  Add(new cOsdItem(hk(tr("CAM")),           osUser5));
   Add(new cOsdItem(hk(tr("Recording")),     osUser6));
   Add(new cOsdItem(hk(tr("Replay")),        osUser7));
   Add(new cOsdItem(hk(tr("Miscellaneous")), osUser8));
@@ -2740,7 +2789,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
     case osUser2: return AddSubMenu(new cMenuSetupEPG);
     case osUser3: return AddSubMenu(new cMenuSetupDVB);
     case osUser4: return AddSubMenu(new cMenuSetupLNB);
-    case osUser5: return AddSubMenu(new cMenuSetupCICAM);
+    case osUser5: return AddSubMenu(new cMenuSetupCAM);
     case osUser6: return AddSubMenu(new cMenuSetupRecord);
     case osUser7: return AddSubMenu(new cMenuSetupReplay);
     case osUser8: return AddSubMenu(new cMenuSetupMisc);
@@ -3126,7 +3175,7 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
   if (Direction) {
      while (Channel) {
            Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
-           if (Channel && !Channel->GroupSep() && (cDevice::PrimaryDevice()->ProvidesChannel(Channel, Setup.PrimaryLimit) || cDevice::GetDevice(Channel, 0)))
+           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, 0, true))
               return Channel;
            }
      }
@@ -3541,7 +3590,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   isyslog("record %s", fileName);
   if (MakeDirs(fileName, true)) {
      const cChannel *ch = timer->Channel();
-     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apids(), ch->Dpids(), ch->Spids());
+     recorder = new cRecorder(fileName, ch->GetChannelID(), timer->Priority(), ch->Vpid(), ch->Apids(), ch->Dpids(), ch->Spids());
      if (device->AttachReceiver(recorder)) {
         Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
@@ -3610,7 +3659,7 @@ void cRecordControl::Stop(void)
 
 bool cRecordControl::Process(time_t t)
 {
-  if (!recorder || !timer || !timer->Matches(t))
+  if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t))
      return false;
   AssertFreeDiskSpace(timer->Priority());
   return true;
@@ -3645,15 +3694,9 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
-     bool NeedsDetachReceivers = false;
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
-     cDevice *device = cDevice::GetDevice(channel, Priority, &NeedsDetachReceivers);
+     cDevice *device = cDevice::GetDevice(channel, Priority, false);
      if (device) {
-        if (NeedsDetachReceivers) {
-           Stop(device);
-           if (device == cTransferControl::ReceiverDevice())
-              cControl::Shutdown(); // in case this device was used for Transfer Mode
-           }
         dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
         if (!device->SwitchChannel(channel, false)) {
            cThread::EmergencyExit(true);
@@ -3693,19 +3736,6 @@ void cRecordControls::Stop(const char *InstantId)
                Timers.SetModified();
                }
             break;
-            }
-         }
-      }
-}
-
-void cRecordControls::Stop(cDevice *Device)
-{
-  ChangeState();
-  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
-      if (RecordControls[i]) {
-         if (RecordControls[i]->Device() == Device) {
-            isyslog("stopping recording on DVB device %d due to higher priority", Device->CardIndex() + 1);
-            RecordControls[i]->Stop();
             }
          }
       }
@@ -3882,7 +3912,8 @@ void cReplayControl::Hide(void)
   if (visible) {
      delete displayReplay;
      displayReplay = NULL;
-     needsFastResponse = visible = false;
+     SetNeedsFastResponse(false);
+     visible = false;
      modeOnly = false;
      lastPlay = lastForward = false;
      lastSpeed = -2; // an invalid value
@@ -3923,7 +3954,8 @@ bool cReplayControl::ShowProgress(bool Initial)
      if (!visible) {
         displayReplay = Skins.Current()->DisplayReplay(modeOnly);
         displayReplay->SetMarks(&marks);
-        needsFastResponse = visible = true;
+        SetNeedsFastResponse(true);
+        visible = true;
         }
      if (Initial) {
         if (title)

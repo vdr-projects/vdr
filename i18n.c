@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.285 2006/10/14 09:26:41 kls Exp $
+ * $Id: i18n.c 1.286 2007/01/07 14:19:15 kls Exp $
  *
  * Translations provided by:
  *
@@ -2598,27 +2598,27 @@ const tI18nPhrase Phrases[] = {
     "Kan ikke åbne CAM menuen!",
     "Menu CAM není dostupné",
   },
-  { "Resetting CAM...",
-    "CAM wird zurückgesetzt...",
-    "Resetiram CAM...",
-    "Reimpostazione modulo CAM...",
-    "CAM wordt herstart...",
+  { "CAM is in use - really reset?"
+    "CAM wird benutzt - wirklich zurücksetzen?",
     "",//TODO
-    "Réinitialisation du CAM",
     "",//TODO
-    "CA-moduuli palautetaan alkutilaan...",
-    "Resetujê CAM...",
-    "Reiniciando CAM...",
     "",//TODO
-    "Återställer CAM ...",
-    "Se reseteazã CAM...",
-    "A CAM újra indul...",
     "",//TODO
-    "¿ÕàÕÓàã×ÚÐ CAM...",
     "",//TODO
-    "CAM mooduli taaskäivitus...",
-    "Nulstiller CAM...",
-    "Restartuje se CAM...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Can't reset CAM!",
     "Zurücksetzen des CAM fehlgeschlagen!",
@@ -2642,27 +2642,93 @@ const tI18nPhrase Phrases[] = {
     "Kan ikke nulstille CAM!",
     "CAM modul nelze restartovat!",
   },
-  { "CAM has been reset",
-    "CAM wurde zurückgesetzt",
-    "CAM je resetiran",
-    "Modulo CAM reimpostato",
-    "CAM is herstart",
+  { "CAM reset",
+    "CAM zurückgesetzt",
     "",//TODO
-    "La CAM a été réinitialisée",
     "",//TODO
-    "CA-moduuli palautettu alkutilaan",
-    "CAM zosta³ zresetowany",
-    "CAM reiniciado",
-    "¸ãéíå åðáíáöïñÜ óôï CAM",
-    "CA modulen har återställts",
-    "CAM-ul a fost resetat",
-    "A CAM vissza lett állítva",
-    "CAM reiniciada",
-    "CAM-ÜÞÔãÛì ßÕàÕ×ÐßãéÕÝ",
-    "CAM je resetiran",
-    "CAM mooduli taaskäivitus tehtud",
-    "CAM er blevet nulstillet",
-    "CAM byl restartován",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "CAM present",
+    "CAM vorhanden",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "CAM ready",
+    "CAM bereit",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "CAM not responding!",
+    "CAM antwortet nicht!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Please enter %d digits!",
     "Bitte geben Sie %d Ziffern ein!",
@@ -2797,27 +2863,27 @@ const tI18nPhrase Phrases[] = {
     "LNB",
     "LNB",
   },
-  { "CICAM",
-    "CICAM",
-    "CICAM",
-    "Accesso condizionato CICAM",
-    "CICAM",
-    "CICAM",
+  { "CAM",
+    "CAM",
+    "CAM",
+    "Accesso condizionato CAM",
+    "CAM",
+    "CAM",
     "Accès conditionnel",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
     "CI Accés condicional",
     "ÃáÛÞÒÝëÙ ÔÞáâãß",
-    "CICAM",
-    "CICAM",
-    "CICAM",
-    "CICAM",
+    "CAM",
+    "CAM",
+    "CAM",
+    "CAM",
   },
   { "Recording",
     "Aufnahme",
@@ -3963,28 +4029,6 @@ const tI18nPhrase Phrases[] = {
     "DiSEqC kasutamine",
     "Anvend DiSEqC",
     "Pou¾ívat DiSEqC",
-  },
-  { "Setup.CICAM$CICAM DVB",
-    "CICAM-DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "Accès conditionnel",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "Accés condicional CICAM",
-    "CAM-ÜÞÔãÛì DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
-    "CICAM DVB",
   },
   { "Setup.Recording$Margin at start (min)",
     "Vorlauf zum Timer-Beginn (min)",
