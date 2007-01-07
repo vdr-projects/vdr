@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.14 2006/01/06 11:55:30 kls Exp $
+ * $Id: osdbase.h 1.15 2007/01/05 10:41:32 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -70,12 +70,13 @@ class cOsdObject {
   friend class cOsdMenu;
 private:
   bool isMenu;
-protected:
   bool needsFastResponse;
+protected:
+  void SetNeedsFastResponse(bool NeedsFastResponse) { needsFastResponse = NeedsFastResponse; }
 public:
   cOsdObject(bool FastResponse = false) { isMenu = false; needsFastResponse = FastResponse; }
   virtual ~cOsdObject() {}
-  bool NeedsFastResponse(void) { return needsFastResponse; }
+  virtual bool NeedsFastResponse(void) { return needsFastResponse; }
   bool IsMenu(void) { return isMenu; }
   virtual void Show(void);
   virtual eOSState ProcessKey(eKeys Key) { return osUnknown; }
@@ -98,12 +99,13 @@ protected:
   cSkinDisplayMenu *DisplayMenu(void) { return displayMenu; }
   const char *hk(const char *s);
   void SetCols(int c0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
-  void SetHasHotkeys(void);
+  void SetHasHotkeys(bool HasHotkeys = true);
   virtual void Clear(void);
   bool SelectableItem(int idx);
   void SetCurrent(cOsdItem *Item);
   void RefreshCurrent(void);
   void DisplayCurrent(bool Current);
+  void DisplayItem(cOsdItem *Item);
   void CursorUp(void);
   void CursorDown(void);
   void PageUp(void);
@@ -120,6 +122,7 @@ protected:
 public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
+  virtual bool NeedsFastResponse(void) { return subMenu ? subMenu->NeedsFastResponse() : cOsdObject::NeedsFastResponse(); }
   int Current(void) { return current; }
   void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
   void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);

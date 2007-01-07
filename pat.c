@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.16 2006/03/31 12:39:34 kls Exp $
+ * $Id: pat.c 1.17 2007/01/05 10:41:55 kls Exp $
  */
 
 #include "pat.h"
@@ -78,7 +78,7 @@ public:
   bool Is(cCaDescriptors * CaDescriptors);
   bool Empty(void) { return caDescriptors.Count() == 0; }
   void AddCaDescriptor(SI::CaDescriptor *d, bool Stream);
-  int GetCaDescriptors(const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
+  int GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
   const int *CaIds(void) { return caIds; }
   };
 
@@ -148,7 +148,7 @@ void cCaDescriptors::AddCaDescriptor(SI::CaDescriptor *d, bool Stream)
 #endif
 }
 
-int cCaDescriptors::GetCaDescriptors(const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
+int cCaDescriptors::GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
 {
   if (!CaSystemIds || !*CaSystemIds)
      return 0;
@@ -156,7 +156,7 @@ int cCaDescriptors::GetCaDescriptors(const unsigned short *CaSystemIds, int BufS
      int length = 0;
      int IsStream = -1;
      for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
-         const unsigned short *caids = CaSystemIds;
+         const int *caids = CaSystemIds;
          do {
             if (d->CaSystem() == *caids) {
                if (length + d->Length() <= BufSize) {
@@ -187,7 +187,7 @@ public:
       // Returns 0 if this is an already known descriptor,
       // 1 if it is an all new descriptor with actual contents,
       // and 2 if an existing descriptor was changed.
-  int GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
+  int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
   };
 
 int cCaDescriptorHandler::AddCaDescriptors(cCaDescriptors *CaDescriptors)
@@ -208,7 +208,7 @@ int cCaDescriptorHandler::AddCaDescriptors(cCaDescriptors *CaDescriptors)
   return CaDescriptors->Empty() ? 0 : 1;
 }
 
-int cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
+int cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
 {
   cMutexLock MutexLock(&mutex);
   StreamFlag = false;
@@ -221,7 +221,7 @@ int cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int Serv
 
 cCaDescriptorHandler CaDescriptorHandler;
 
-int GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
+int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
 {
   return CaDescriptorHandler.GetCaDescriptors(Source, Transponder, ServiceId, CaSystemIds, BufSize, Data, StreamFlag);
 }

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.282 2006/12/02 16:22:12 kls Exp $
+ * $Id: vdr.c 1.283 2007/01/05 10:46:14 kls Exp $
  */
 
 #include <getopt.h>
@@ -68,8 +68,6 @@
 #define SHUTDOWNWAIT      300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
 #define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
-#define LASTCAMMENUTIMEOUT  3 // seconds to run the main loop 'fast' after a CAM menu has been closed
-                              // in order to react on a possible new CAM menu as soon as possible
 #define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
 #define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
 #define SHUTDOWNRETRY     300 // seconds before trying again to shut down
@@ -501,7 +499,6 @@ int main(int argc, char *argv[])
   int PreviousChannelIndex = 0;
   time_t LastChannelChanged = time(NULL);
   time_t LastActivity = 0;
-  time_t LastCamMenu = 0;
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
   bool UserShutdown = false;
@@ -851,19 +848,14 @@ int main(int argc, char *argv[])
            DeletedRecordings.Update();
            }
         // CAM control:
-        if (!Menu && !cOsd::IsOpen()) {
+        if (!Menu && !cOsd::IsOpen())
            Menu = CamControl();
-           if (Menu)
-              LastCamMenu = 0;
-           else if (!LastCamMenu)
-              LastCamMenu = time(NULL);
-           }
         // Queued messages:
         if (!Skins.IsOpen())
            Skins.ProcessQueuedMessages();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
-        eKeys key = Interface->GetKey((!Interact || !Interact->NeedsFastResponse()) && time(NULL) - LastCamMenu > LASTCAMMENUTIMEOUT);
+        eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
         if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
            LastActivity = time(NULL);
@@ -1052,9 +1044,6 @@ int main(int argc, char *argv[])
               else if (time(NULL) - LastActivity > MENUTIMEOUT)
                  state = osEnd;
               }
-           // TODO make the CAM menu stay open in case of automatic updates and have it return osContinue; then the following two lines can be removed again
-           else if (state == osEnd && LastActivity > 1)
-              LastActivity = time(NULL);
            switch (state) {
              case osPause:  DELETE_MENU;
                             cControl::Shutdown(); // just in case

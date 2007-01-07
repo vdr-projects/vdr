@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.79 2006/06/15 09:32:48 kls Exp $
+ * $Id: device.h 1.80 2007/01/03 14:14:29 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -128,12 +128,21 @@ public:
          ///< Gets the device with the given Index.
          ///< \param Index must be in the range 0..numDevices-1.
          ///< \return A pointer to the device, or NULL if the Index was invalid.
-  static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView);
          ///< Returns a device that is able to receive the given Channel at the
          ///< given Priority, with the least impact on active recordings and
-         ///< live viewing.
-         ///< See ProvidesChannel() for more information on how
-         ///< priorities are handled, and the meaning of NeedsDetachReceivers.
+         ///< live viewing. The LiveView parameter tells whether the device will
+         ///< be used for live viewing or a recording.
+         ///< If the Channel is encrypted, a CAM slot that claims to be able to
+         ///< decrypt the channel is automatically selected and assigned to the
+         ///< returned device. Whether or not this combination of device and CAM
+         ///< slot is actually able to decrypt the channel can only be determined
+         ///< by checking the "scrambling control" bits of the received TS packets.
+         ///< The Action() function automatically does this and takes care that
+         ///< after detaching any receivers because the channel can't be decrypted,
+         ///< this device/CAM combination will be skipped in the next call to
+         ///< GetDevice().
+         ///< See also ProvidesChannel().
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.
@@ -171,16 +180,6 @@ public:
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
          ///< Returns the number of this device (0 ... numDevices).
-  virtual int ProvidesCa(const cChannel *Channel) const;
-         ///< Checks whether this device provides the conditional access
-         ///< facilities to decrypt the given Channel.
-         ///< Returns 0 if the Channel can't be decrypted, 1 if this is a
-         ///< Free To Air channel or only exactly this device can decrypt it,
-         ///< and > 1 if this device can decrypt the Channel.
-         ///< If the result is greater than 1 and the device has more than one
-         ///< CAM, the value will be increased by the number of CAMs, which
-         ///< allows to select the device with the smallest number of CAMs
-         ///< in order to preserve resources for other recordings.
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
 
@@ -199,7 +198,9 @@ public:
   virtual bool ProvidesSource(int Source) const;
          ///< Returns true if this device can provide the given source.
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
-         ///< XXX -> PLUGINS.html!
+         ///< Returns true if this device can provide the transponder of the
+         ///< given Channel (which implies that it can provide the Channel's
+         ///< source).
   virtual bool ProvidesTransponderExclusively(const cChannel *Channel) const;
          ///< Returns true if this is the only device that is able to provide
          ///< the given channel's transponder.
@@ -246,7 +247,7 @@ public:
          ///< channel number while replaying.
   void ForceTransferMode(void);
          ///< Forces the device into transfermode for the current channel.
-  virtual bool HasLock(int TimeoutMs = 0);//XXX PLUGINS.html
+  virtual bool HasLock(int TimeoutMs = 0);
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false
          ///< to indicate that it is not ready yet.
@@ -309,10 +310,15 @@ public:
 
 // Common Interface facilities:
 
-protected:
-  cCiHandler *ciHandler;
+private:
+  time_t startScrambleDetection;
+  cCamSlot *camSlot;
 public:
-  cCiHandler *CiHandler(void) { return ciHandler; }
+  void SetCamSlot(cCamSlot *CamSlot);
+         ///< Sets the given CamSlot to be used with this device.
+  cCamSlot *CamSlot(void) const { return camSlot; }
+         ///< Returns the CAM slot that is currently used with this device,
+         ///< or NULL if no CAM slot is in use.
 
 // Image Grab facilities
 
@@ -512,11 +518,12 @@ public:
 private:
   cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
-protected:
+public:
   int Priority(void) const;
       ///< Returns the priority of the current receiving session (0..MAXPRIORITY),
       ///< or -1 if no receiver is currently active. The primary device will
       ///< always return at least Setup.PrimaryLimit-1.
+protected:
   virtual bool OpenDvr(void);
       ///< Opens the DVR of this device and prepares it to deliver a Transport
       ///< Stream for use in a cReceiver.
@@ -530,8 +537,6 @@ protected:
       ///< false in case of a non recoverable error, otherwise it returns true,
       ///< even if Data is NULL.
 public:
-  int  Ca(void) const;
-       ///< Returns the ca of the current receiving session(s).
   bool Receiving(bool CheckAny = false) const;
        ///< Returns true if we are currently receiving.
   bool AttachReceiver(cReceiver *Receiver);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.96 2006/12/03 17:38:38 kls Exp $
+ * $Id: tools.h 1.97 2007/01/05 10:45:11 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -23,7 +23,6 @@
 #include <sys/types.h>
 
 typedef unsigned char uchar;
-#define uint64 uint64_t // for compatibility - TODO remove in version 1.5
 
 extern int SysLogLevel;
 
@@ -162,7 +161,8 @@ class cTimeMs {
 private:
   uint64_t begin;
 public:
-  cTimeMs(void);
+  cTimeMs(int Ms = 0);
+      ///< Creates a timer with ms resolution and an initial timeout of Ms.
   static uint64_t Now(void);
   void Set(int Ms = 0);
   bool TimedOut(void);

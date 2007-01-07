@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.29 2006/02/05 14:37:03 kls Exp $
+ * $Id: osdbase.c 1.30 2007/01/05 10:41:16 kls Exp $
  */
 
 #include "osdbase.h"
@@ -127,9 +127,9 @@ void cOsdMenu::SetCols(int c0, int c1, int c2, int c3, int c4)
   cols[4] = c4;
 }
 
-void cOsdMenu::SetHasHotkeys(void)
+void cOsdMenu::SetHasHotkeys(bool HasHotkeys)
 {
-  hasHotkeys = true;
+  hasHotkeys = HasHotkeys;
   digit = 0;
 }
 
@@ -253,6 +253,20 @@ void cOsdMenu::DisplayCurrent(bool Current)
         cStatus::MsgOsdCurrentItem(item->Text());
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
+     }
+}
+
+void cOsdMenu::DisplayItem(cOsdItem *Item)
+{
+  if (Item) {
+     int Index = Item->Index();
+     int Offset = Index - first;
+     if (Offset >= 0 && Offset < first + displayMenuItems) {
+        bool Current = Index == current;
+        displayMenu->SetItem(Item->Text(), Offset, Current && Item->Selectable(), Item->Selectable());
+        if (Current && Item->Selectable())
+           cStatus::MsgOsdCurrentItem(Item->Text());
+        }
      }
 }
 
@@ -432,6 +446,8 @@ eOSState cOsdMenu::HotKey(eKeys Key)
       if (s && (s = skipspace(s)) != NULL) {
          if (*s == Key - k1 + '1') {
             current = item->Index();
+            RefreshCurrent();
+            Display();
             cRemote::Put(kOk, true);
             break;
             }
@@ -499,4 +515,3 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
     }
   return osContinue;
 }
-

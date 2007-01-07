@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.6 2006/03/29 15:18:38 kls Exp $
+ * $Id: pat.h 1.7 2007/01/05 10:42:11 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -32,7 +32,7 @@ public:
   void Trigger(void);
   };
 
-int GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
+int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);
          ///< Gets all CA descriptors for a given channel.
          ///< Copies all available CA descriptors for the given Source, Transponder and ServiceId
          ///< into the provided buffer at Data (at most BufSize bytes). Only those CA descriptors

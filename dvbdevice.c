@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.160 2006/08/14 09:38:32 kls Exp $
+ * $Id: dvbdevice.c 1.161 2007/01/05 11:09:51 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -19,6 +19,7 @@
 #include <sys/mman.h>
 #include "channels.h"
 #include "diseqc.h"
+#include "dvbci.h"
 #include "dvbosd.h"
 #include "eitscan.h"
 #include "player.h"
@@ -28,7 +29,6 @@
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1
-//#define DO_MULTIPLE_CA_CHANNELS
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -77,7 +77,6 @@ private:
   int lockTimeout;
   time_t lastTimeoutReport;
   fe_type_t frontendType;
-  cCiHandler *ciHandler;
   cChannel channel;
   const char *diseqcCommands;
   eTunerStatus tunerStatus;
@@ -88,19 +87,18 @@ private:
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
+  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType);
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel, bool Tune);
   bool Locked(int TimeoutMs = 0);
   };
 
-cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
+cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType)
 {
   fd_frontend = Fd_Frontend;
   cardIndex = CardIndex;
   frontendType = FrontendType;
-  ciHandler = CiHandler;
   tuneTimeout = 0;
   lockTimeout = 0;
   lastTimeoutReport = 0;
@@ -346,8 +344,6 @@ void cDvbTuner::Action(void)
                   }
           }
 
-        if (ciHandler)
-           ciHandler->Process();
         if (tunerStatus != tsTuned)
            newSet.TimedWait(mutex, 1000);
         }
@@ -360,6 +356,7 @@ int cDvbDevice::setTransferModeForDolbyDigital = 1;
 
 cDvbDevice::cDvbDevice(int n)
 {
+  ciAdapter = NULL;
   dvbTuner = NULL;
   frontendType = fe_type_t(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   spuDecoder = NULL;
@@ -376,6 +373,12 @@ cDvbDevice::cDvbDevice(int n)
   fd_video    = DvbOpen(DEV_DVB_VIDEO,  n, O_RDWR | O_NONBLOCK);
   fd_audio    = DvbOpen(DEV_DVB_AUDIO,  n, O_RDWR | O_NONBLOCK);
   fd_stc      = DvbOpen(DEV_DVB_DEMUX,  n, O_RDWR);
+
+  // Common Interface:
+
+  fd_ca       = DvbOpen(DEV_DVB_CA,     n, O_RDWR);
+  if (fd_ca >= 0)
+     ciAdapter = cDvbCiAdapter::CreateCiAdapter(this, fd_ca);
 
   // The DVR device (will be opened and closed as needed):
 
@@ -420,8 +423,7 @@ cDvbDevice::cDvbDevice(int n)
      dvb_frontend_info feinfo;
      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
         frontendType = feinfo.type;
-        ciHandler = cCiHandler::CreateCiHandler(*cDvbName(DEV_DVB_CA, n));
-        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType, ciHandler);
+        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType);
         }
      else
         LOG_ERROR;
@@ -436,6 +438,7 @@ cDvbDevice::~cDvbDevice()
 {
   delete spuDecoder;
   delete dvbTuner;
+  delete ciAdapter;
   // We're not explicitly closing any device files here, since this sometimes
   // caused segfaults. Besides, the program is about to terminate anyway...
 }
@@ -494,30 +497,9 @@ bool cDvbDevice::HasDecoder(void) const
 
 bool cDvbDevice::Ready(void)
 {
-  if (ciHandler) {
-     ciHandler->Process();
-     return ciHandler->Ready();
-     }
+  if (ciAdapter)
+     return ciAdapter->Ready();
   return true;
-}
-
-int cDvbDevice::ProvidesCa(const cChannel *Channel) const
-{
-  int NumCams = 0;
-  if (ciHandler) {
-     NumCams = ciHandler->NumCams();
-     if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
-        unsigned short ids[MAXCAIDS + 1];
-        for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
-            ids[i] = Channel->Ca(i);
-        if (ciHandler->ProvidesCa(ids))
-           return NumCams + 1;
-        }
-     }
-  int result = cDevice::ProvidesCa(Channel);
-  if (result > 0)
-     result += NumCams;
-  return result;
 }
 
 cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
@@ -770,18 +752,19 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
 
-  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
+  if (ProvidesSource(Channel->Source())) {
      result = hasPriority;
      if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
-#ifndef DO_MULTIPLE_CA_CHANNELS
-              if (Ca() >= CA_ENCRYPTED_MIN || Channel->Ca() >= CA_ENCRYPTED_MIN)
-                 needsDetachReceivers = Ca() != Channel->Ca();
-              else
-#endif
-              if (!IsPrimaryDevice())
+              if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
+                 if (CamSlot()->CanDecrypt(Channel))
+                    result = true;
+                 else
+                    needsDetachReceivers = true;
+                 }
+              else if (!IsPrimaryDevice())
                  result = true;
 #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
               else
@@ -821,6 +804,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
                            && (LiveView && HasPid(Channel->Vpid() ? Channel->Vpid() : Channel->Apid(0)) && (pidHandles[ptVideo].pid != Channel->Vpid() || (pidHandles[ptAudio].pid != Channel->Apid(0) && (Channel->Dpid(0) ? pidHandles[ptAudio].pid != Channel->Dpid(0) : true)))// the PID is already set as DMX_PES_OTHER
                               || !LiveView && (pidHandles[ptVideo].pid == Channel->Vpid() || pidHandles[ptAudio].pid == Channel->Apid(0)) // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
+  if (CamSlot() && !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlot()->SlotNumber()))
+     StartTransferMode |= LiveView && IsPrimaryDevice() && Channel->Ca() >= CA_ENCRYPTED_MIN;
 
   bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode && LiveView;
 
@@ -861,7 +846,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+     cControl::Launch(new cTransferControl(this, Channel->GetChannelID(), Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
 
   return true;
 }
@@ -922,13 +907,13 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
      if (IS_AUDIO_TRACK(Type) || (IS_DOLBY_TRACK(Type) && SetAudioBypass(true))) {
         if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
            DetachAll(pidHandles[ptAudio].pid);
-           if (ciHandler)
-              ciHandler->SetPid(pidHandles[ptAudio].pid, false);
+           if (CamSlot())
+              CamSlot()->SetPid(pidHandles[ptAudio].pid, false);
            pidHandles[ptAudio].pid = TrackId->id;
            SetPid(&pidHandles[ptAudio], ptAudio, true);
-           if (ciHandler) {
-              ciHandler->SetPid(pidHandles[ptAudio].pid, true);
-              ciHandler->StartDecrypting();
+           if (CamSlot()) {
+              CamSlot()->SetPid(pidHandles[ptAudio].pid, true);
+              CamSlot()->StartDecrypting();
               }
            }
         }

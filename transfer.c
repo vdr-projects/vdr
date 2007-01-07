@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.33 2006/01/29 17:24:39 kls Exp $
+ * $Id: transfer.c 1.34 2007/01/05 10:45:28 kls Exp $
  */
 
 #include "transfer.h"
@@ -14,8 +14,8 @@
 
 // --- cTransfer -------------------------------------------------------------
 
-cTransfer::cTransfer(int VPid, const int *APids, const int *DPids, const int *SPids)
-:cReceiver(0, -1, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
+cTransfer::cTransfer(tChannelID ChannelID, int VPid, const int *APids, const int *DPids, const int *SPids)
+:cReceiver(ChannelID, -1, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 ,cThread("transfer")
 {
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
@@ -34,17 +34,18 @@ void cTransfer::Activate(bool On)
 {
   if (On)
      Start();
-  else
+  else {
      Cancel(3);
+     cPlayer::Detach();
+     }
 }
 
 void cTransfer::Receive(uchar *Data, int Length)
 {
-  if (IsAttached() && Running()) {
+  if (cPlayer::IsAttached() && Running()) {
      int p = ringBuffer->Put(Data, Length);
      if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
-     return;
      }
 }
 
@@ -110,8 +111,8 @@ void cTransfer::Action(void)
 
 cDevice *cTransferControl::receiverDevice = NULL;
 
-cTransferControl::cTransferControl(cDevice *ReceiverDevice, int VPid, const int *APids, const int *DPids, const int *SPids)
-:cControl(transfer = new cTransfer(VPid, APids, DPids, SPids), true)
+cTransferControl::cTransferControl(cDevice *ReceiverDevice, tChannelID ChannelID, int VPid, const int *APids, const int *DPids, const int *SPids)
+:cControl(transfer = new cTransfer(ChannelID, VPid, APids, DPids, SPids), true)
 {
   ReceiverDevice->AttachReceiver(transfer);
   receiverDevice = ReceiverDevice;

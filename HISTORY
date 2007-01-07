@@ -5028,3 +5028,56 @@ Video Disk Recorder Revision History
 2007-01-07: Version 1.4.5
 
 - Official release.
+
+2007-01-07: Version 1.5.0
+
+- The CAM handling has been refactored. Instead of a cCiHandler per device there
+  is now an abstract cCiAdapter and a cCamSlot. This allows each slot to be
+  accessed individually.
+- The general 15 seconds workaround time before opening the CAM menu has been
+  removed. If the CAM menu doesn't open within a timeout, the enter menu command
+  is now sent again.
+- If a CAM is reset or pulled and reinserted, it now automatically starts
+  decrypting the current channel again.
+- The Setup/CAM menu now dynamically refreshes its items and displays whether
+  a CAM is present or ready. The 'Reset' function no longer leaves the menu.
+- The CAM menu will now be openend when pressing the Ok key on a slot entry.
+- The CAM menu now stays within the current menu context and doesn't close and
+  reopen the menu every time an option is selected.
+- When an encrypted channel is switched to for the first time, VDR now checks
+  explicitly whether a CAM can actually decrypt that channel. If there is more
+  than one CAM in the system that claims to be able to decrypt the channel,
+  they are all tried in turn.
+  To make this possible, an encrypted channel needs to be received in Transfer
+  Mode when it is switched to for the first time, so that VDR can determine
+  whether the TS packets are actually decrypted. Once a channel is known to
+  be decrypted by a particular CAM, the next time it is switched to it will
+  be shown in normal live viewing mode.
+- A cDevice now automatically detaches all cReceiver objects that receive PIDs
+  that can't be decrypted with the current CAM. A plugin that attaches a cReceiver
+  to a device should therefore watch the receiver's IsAttached() function to
+  see if it is still attached to the device.
+- The cReceiver constructor no longer takes an 'int Ca' as its first parameter,
+  but rather a 'tChannelID ChannelID'. This is necessary for the device to be
+  able to determine which CAM a particular channel can be decrypted with. If the
+  channel is known to be unencrypted, or a plugin doesn't want to provide the
+  channel id for other reasons, an invalid tChannelID() can be given.
+- The cThread::Start() function now waits until a previous incarnation of this
+  thread has actually stopped. Before this it could happen that a thread's
+  Cancel(-1) function was called and immediately after that it was started again,
+  but the Start() function still found it to be 'active'.
+- The parameter NeedsDetachReceivers in cDevice::GetDevice(const cChannel *Channel, ...)
+  has been removed. A call to this function will automatically detach all receivers
+  from the device if it returns a non-NULL pointer.
+- The cTimeMs class now accepts an initial timeout value in its constructor.
+- A CAM is now explicitly instructed to stop decrypting when switching away from
+  an encrypted channel.
+- If the CAM in use can decrypt several channels at the same time, VDR can
+  now make use if this capability. Whether or not a CAM can decrypt more
+  than one channel is determined by sending it an initial empty QUERY command
+  and testing whether it replies to it.
+- Ca values in the range 0...F in channels.conf can still be used to assign a channel
+  to a particular device, but this will no longer work with encrypted channels because
+  without valid CA ids VDR can't decide which CAM slot to use. However, since VDR now
+  automatically determines which CAM can decrypt which channel, setting fixed
+  channel/device relations should no longer be necessary.

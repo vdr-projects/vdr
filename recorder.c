@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.17 2006/01/08 11:01:25 kls Exp $
+ * $Id: recorder.c 1.18 2007/01/05 10:43:09 kls Exp $
  */
 
 #include "recorder.h"
@@ -20,6 +20,8 @@
 
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
+
+// --- cFileWriter -----------------------------------------------------------
 
 class cFileWriter : public cThread {
 private:
@@ -121,8 +123,10 @@ void cFileWriter::Action(void)
         }
 }
 
-cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids)
-:cReceiver(Ca, Priority, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
+// --- cRecorder -------------------------------------------------------------
+
+cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids)
+:cReceiver(ChannelID, Priority, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 ,cThread("recording")
 {
   // Make sure the disk is up and running:
