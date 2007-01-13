@@ -2050,3 +2050,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires uncluding stdint.h in font.h on some systems
+
+Petri Helin <phelin@googlemail.com>
+ for suggesting to avoid budget DVB cards with Common Interface when tuning to an
+ FTA channel

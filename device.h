@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.80 2007/01/07 14:38:00 kls Exp $
+ * $Id: device.h 1.81 2007/01/13 11:33:57 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -314,6 +314,8 @@ private:
   time_t startScrambleDetection;
   cCamSlot *camSlot;
 public:
+  virtual bool HasCi(void);
+         ///< Returns true if this device has a Common Interface.
   void SetCamSlot(cCamSlot *CamSlot);
          ///< Sets the given CamSlot to be used with this device.
   cCamSlot *CamSlot(void) const { return camSlot; }

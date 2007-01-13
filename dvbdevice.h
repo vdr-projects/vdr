@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.42 2007/01/07 14:39:52 kls Exp $
+ * $Id: dvbdevice.h 1.43 2007/01/13 11:35:07 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -83,6 +83,11 @@ protected:
 
 protected:
   virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
+
+// Common Interface facilities:
+
+public:
+  virtual bool HasCi(void);
 
 // Image Grab facilities
 

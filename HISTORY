@@ -5081,3 +5081,9 @@ Video Disk Recorder Revision History
   without valid CA ids VDR can't decide which CAM slot to use. However, since VDR now
   automatically determines which CAM can decrypt which channel, setting fixed
   channel/device relations should no longer be necessary.
+
+2007-01-13: Version 1.5.1
+
+- Added cDevice::HasCi() so that devices with Common Interface can be avoided
+  when tuning to an FTA channel, thus preserving the CAM resources even on budget
+  DVB cards (suggested by Petri Helin).

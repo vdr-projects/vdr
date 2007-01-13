@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.138 2007/01/07 14:41:07 kls Exp $
+ * $Id: device.c 1.139 2007/01/13 12:05:00 kls Exp $
  */
 
 #include "device.h"
@@ -334,6 +334,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
              imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
+             imp <<= 1; imp |= NumUsableSlots ? 0 : device[i]->HasCi();                                              // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->HasDecoder();                                                              // avoid full featured cards
              imp <<= 1; imp |= NumUsableSlots ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
              if (imp < Impact) {
@@ -365,6 +366,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
         d->CamSlot()->Assign(NULL);
      }
   return d;
+}
+
+bool cDevice::HasCi(void)
+{
+  return false;
 }
 
 void cDevice::SetCamSlot(cCamSlot *CamSlot)

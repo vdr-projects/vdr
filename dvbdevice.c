@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.161 2007/01/07 14:09:51 kls Exp $
+ * $Id: dvbdevice.c 1.162 2007/01/13 11:37:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -507,6 +507,11 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
   if (!spuDecoder && IsPrimaryDevice())
      spuDecoder = new cDvbSpuDecoder();
   return spuDecoder;
+}
+
+bool cDvbDevice::HasCi(void)
+{
+  return ciAdapter;
 }
 
 uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
