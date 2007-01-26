@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.146 2006/07/22 11:57:51 kls Exp $
+ * $Id: config.c 1.147 2007/01/26 13:32:19 kls Exp $
  */
 
 #include "config.h"
@@ -67,8 +67,8 @@ const char *cCommand::Execute(const char *Parameters)
      asprintf(&cmdbuf, "%s %s", command, Parameters);
   const char *cmd = cmdbuf ? cmdbuf : command;
   dsyslog("executing command '%s'", cmd);
-  FILE *p = popen(cmd, "r");
-  if (p) {
+  cPipe p;
+  if (p.Open(cmd, "r")) {
      int l = 0;
      int c;
      while ((c = fgetc(p)) != EOF) {
@@ -78,7 +78,7 @@ const char *cCommand::Execute(const char *Parameters)
            }
      if (result)
         result[l] = 0;
-     pclose(p);
+     p.Close();
      }
   else
      esyslog("ERROR: can't open pipe for command '%s'", cmd);
