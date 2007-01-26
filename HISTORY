@@ -5081,6 +5081,8 @@ Video Disk Recorder Revision History
   without valid CA ids VDR can't decide which CAM slot to use. However, since VDR now
   automatically determines which CAM can decrypt which channel, setting fixed
   channel/device relations should no longer be necessary.
+  IF AN ENCRYPTED CHANNEL CAN'T BE DECRYPTED AND YOU HAVE A CA VALUE IN THE RANGE
+  0...F FOR THAT CHANNEL, SET IT TO 0 (FTA) AND TUNE TO THE CHANNEL AGAIN.
 
 2007-01-26: Version 1.4.5-1
 
