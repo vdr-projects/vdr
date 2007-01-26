@@ -5028,3 +5028,7 @@ Video Disk Recorder Revision History
 2007-01-07: Version 1.4.5
 
 - Official release.
+
+2007-01-26: Version 1.4.5-1
+
+- Fixed i18n characters for the Hungarian texts (thanks to Thomas Günther).
