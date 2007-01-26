@@ -1014,7 +1014,7 @@ Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in handling a channels.conf that contains a ":@nnn" line as
  its last entry
 
-Hermann Gausterer <mrq1@gmx.net>
+Hermann Gausterer <vdr@mrq1.org>
  for suggesting to switch to the recording channel in case the current channel
  becomes unavailable
 
