@@ -1720,6 +1720,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for reporting a bug in the initial setting of the time transponder setup parameter
  for suggesting to extend the version number reported with the '-V' option to also
  show the current APIVERSION
+ for fixing i18n characters for the Hungarian texts
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
