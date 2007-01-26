@@ -5032,3 +5032,6 @@ Video Disk Recorder Revision History
 2007-01-26: Version 1.4.5-1
 
 - Fixed i18n characters for the Hungarian texts (thanks to Thomas Günther).
+- Now using cPipe instead of popen() in cCommand::Execute() to avoid problems
+  with open file handles when starting background commands (thanks to Reinhard
+  Nissl).

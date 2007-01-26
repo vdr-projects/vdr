@@ -1114,6 +1114,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for changing the behaviour when hitting the end of a recording in fast forward mode
  for suggesting to give the cRemote::CallPlugin() function a boolean return value
  for fixing a possible crash in remux.c on 64-bit machines
+ for making cCommand::Execute() use cPipe instead of popen() to avoid problems
+ with open file handles when starting background commands
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
