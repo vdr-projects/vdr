@@ -5084,7 +5084,7 @@ Video Disk Recorder Revision History
   IF AN ENCRYPTED CHANNEL CAN'T BE DECRYPTED AND YOU HAVE A CA VALUE IN THE RANGE
   0...F FOR THAT CHANNEL, SET IT TO 0 (FTA) AND TUNE TO THE CHANNEL AGAIN.
 
-2007-01-26: Version 1.4.5-1
+2007-01-28: Version 1.4.5-1
 
 - Fixed i18n characters for the Hungarian texts (thanks to Thomas Günther).
 - Now using cPipe instead of popen() in cCommand::Execute() to avoid problems
