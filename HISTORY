@@ -5035,3 +5035,7 @@ Video Disk Recorder Revision History
 - Now using cPipe instead of popen() in cCommand::Execute() to avoid problems
   with open file handles when starting background commands (thanks to Reinhard
   Nissl).
+
+2007-02-03: Version 1.4.5-2
+
+- Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
