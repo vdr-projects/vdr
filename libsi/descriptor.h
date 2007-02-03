@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.15 2006/05/28 14:25:30 kls Exp $
+ *   $Id: descriptor.h 1.16 2007/02/03 11:45:58 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -210,7 +210,9 @@ public:
    int getOrbitalPosition() const;
    int getWestEastFlag() const;
    int getPolarization() const;
-   int getModulation() const;
+   int getModulationSystem() const;
+   int getModulationType() const;
+   int getRollOff() const;
    int getSymbolRate() const;
    int getFecInner() const;
 protected:
@@ -236,6 +238,9 @@ class TerrestrialDeliverySystemDescriptor : public Descriptor {
 public:
    int getFrequency() const;
    int getBandwidth() const;
+   int getPriority() const;
+   int getTimeSlicingIndicator() const;
+   int getMpeFecIndicator() const;
    int getConstellation() const;
    int getHierarchy() const;
    int getCodeRateHP() const;
@@ -482,6 +487,30 @@ protected:
    virtual void Parse();
 private:
    const descr_ancillary_data *s;
+};
+
+class S2SatelliteDeliverySystemDescriptor : public Descriptor {
+public:
+   int getScramblingSequenceSelector() const;
+   int getMultipleInputStreamFlag() const;
+   int getBackwardsCompatibilityIndicator() const;
+   int getScramblingSequenceIndex() const;
+   int getInputStreamIdentifier() const { return input_stream_identifier; }
+protected:
+   virtual void Parse();
+private:
+   const descr_s2_satellite_delivery_system *s;
+   const descr_scrambling_sequence_selector *sss;
+   int input_stream_identifier;
+};
+
+class ExtensionDescriptor : public Descriptor {
+public:
+   int getExtensionDescriptorTag() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_extension *s;
 };
 
 // Private DVB Descriptor  Premiere.de

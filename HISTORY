@@ -5105,3 +5105,4 @@ Video Disk Recorder Revision History
   with open file handles when starting background commands (thanks to Reinhard
   Nissl).
 - Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
+- Adapted 'libsi' to DVB-S2 (thanks to Marco Schlüßler).

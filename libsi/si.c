@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.16 2006/04/14 10:53:44 kls Exp $
+ *   $Id: si.c 1.17 2007/02/03 11:45:58 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -425,6 +425,12 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case AncillaryDataDescriptorTag:
             d=new AncillaryDataDescriptor();
             break;
+         case S2SatelliteDeliverySystemDescriptorTag:
+            d=new S2SatelliteDeliverySystemDescriptor();
+            break;
+         case ExtensionDescriptorTag:
+            d=new ExtensionDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -459,12 +465,23 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case PartialTransportStreamDescriptorTag:
          case DataBroadcastDescriptorTag:
          case DataBroadcastIdDescriptorTag:
-         case CaSystemDescriptorTag:
+         case ScramblingDescriptorTag:
          case AC3DescriptorTag:
          case DSNGDescriptorTag:
          case AnnouncementSupportDescriptorTag:
          case AdaptationFieldDataDescriptorTag:
          case TransportStreamDescriptorTag:
+
+         //defined in ETSI EN 300 468 v 1.7.1
+         case DefaultAuthorityDescriptorTag:
+         case RelatedContentDescriptorTag:
+         case TVAIdDescriptorTag:
+         case ContentIdentifierDescriptorTag:
+         case TimeSliceFecIdentifierDescriptorTag:
+         case ECMRepetitionRateDescriptorTag:
+         case EnhancedAC3DescriptorTag:
+         case DTSDescriptorTag:
+         case AACDescriptorTag:
          default:
             if (!returnUnimplemetedDescriptor)
                return 0;

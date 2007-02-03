@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.8 2006/09/02 20:25:16 kls Exp $
+ *   $Id: headers.h 1.9 2007/02/03 11:45:58 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -942,9 +942,13 @@ struct descr_satellite_delivery_system {
 #if BYTE_ORDER == BIG_ENDIAN
    u_char west_east_flag                         :1;
    u_char polarization                           :2;
-   u_char modulation                             :5;
+   u_char roll_off                               :2;
+   u_char modulation_system                      :1;
+   u_char modulation_type                        :2;
 #else
-   u_char modulation                             :5;
+   u_char modulation_type                        :2;
+   u_char modulation_system                      :1;
+   u_char roll_off                               :2;
    u_char polarization                           :2;
    u_char west_east_flag                         :1;
 #endif
@@ -1349,9 +1353,15 @@ struct descr_terrestrial_delivery {
    u_char frequency_lo_lo                        :8;
 #if BYTE_ORDER == BIG_ENDIAN
    u_char bandwidth                              :3;
-   u_char reserved1                              :5;
+   u_char priority                               :1;
+   u_char time_slicing_indicator                 :1;
+   u_char mpe_fec_indicator                      :1;
+   u_char reserved1                              :2;
 #else
-   u_char reserved1                              :5;
+   u_char reserved1                              :2;
+   u_char mpe_fec_indicator                      :1;
+   u_char time_slicing_indicator                 :1;
+   u_char priority                               :1;
    u_char bandwidth                              :3;
 #endif
 #if BYTE_ORDER == BIG_ENDIAN
@@ -1492,10 +1502,10 @@ struct descr_data_broadcast {
    /* TBD */
 };
 
-/* 0x65 ca_system_descriptor */
+/* 0x65 scrambling_descriptor */
 
-#define DESCR_CA_SYSTEM_LEN XX
-struct descr_ca_system {
+#define DESCR_SCRAMBLING_LEN XX
+struct descr_scrambling {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
    /* TBD */
@@ -1626,6 +1636,189 @@ struct application_signalling_entry {
 struct descr_service_identifier {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
+};
+
+/* 0x72 service_availbility_descriptor */
+
+struct descr_service_availbility {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char availability_flag                      :1;
+   u_char reserved                               :7;
+#else
+   u_char reserved                               :7;
+   u_char availability_flag                      :1;
+#endif
+};
+
+/* 0x73 default_authority_descriptor (ETSI TS 102 323) */
+
+struct descr_default_authority {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+/* 0x74 related_content_descriptor (ETSI TS 102 323) */
+
+struct descr_related_content {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+/* 0x75 tva_id_descriptor (ETSI TS 102 323) */
+
+struct descr_tva_id {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+/* 0x76 content_identifier_descriptor (ETSI TS 102 323) */
+
+struct descr_content_identifier {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+/* 0x77 time_slice_fec_identifier_descriptor (ETSI EN 301 192) */
+
+struct descr_time_slice_fec_identifier {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char time_slicing                           :1;
+   u_char mpe_fec                                :2;
+   u_char reserved                               :2;
+   u_char frame_size                             :3;
+#else
+   u_char frame_size                             :3;
+   u_char reserved                               :2;
+   u_char mpe_fec                                :2;
+   u_char time_slicing                           :1;
+#endif
+   u_char max_burst_duration                     :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char max_average_rate                       :4;
+   u_char time_slice_fec_id                      :4;
+#else
+   u_char time_slice_fec_id                      :4;
+   u_char max_average_rate                       :4;
+#endif
+};
+
+/* 0x78 ecm_repetition_rate_descriptor (ETSI EN 301 192) */
+
+struct descr_ecm_repetition_rate {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char ca_system_id_hi                        :8;
+   u_char ca_system_id_lo                        :8;
+   u_char ecm_repetition_rate_hi                 :8;
+   u_char ecm_repetition_rate_lo                 :8;
+};
+
+/* 0x79 s2_satellite_delivery_system_descriptor */
+
+struct descr_s2_satellite_delivery_system {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char scrambling_sequence_selector           :1;
+   u_char multiple_input_stream_flag             :1;
+   u_char backwards_compatibility_indicator      :1;
+   u_char reserved                               :5;
+#else
+   u_char reserved                               :5;
+   u_char backwards_compatibility_indicator      :1;
+   u_char multiple_input_stream_flag             :1;
+   u_char scrambling_sequence_selector           :1;
+#endif
+};
+
+struct descr_scrambling_sequence_selector {
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char reserved                               :6;
+   u_char scrambling_sequence_index_hi_lo        :2;
+#else
+   u_char scrambling_sequence_index_hi_lo        :2;
+   u_char reserved                               :6;
+#endif
+   u_char scrambling_sequence_index_lo_hi        :8;
+   u_char scrambling_sequence_index_lo_lo        :8;
+};
+
+/* 0x7A enhanced_ac3_descriptor */
+
+struct descr_enhanced_ac3 {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char component_type_flag                    :1;
+   u_char bsid_flag                              :1;
+   u_char mainid_flag                            :1;
+   u_char asvc_flag                              :1;
+   u_char mixinfoexists                          :1;
+   u_char substream1_flag                        :1;
+   u_char substream2_flag                        :1;
+   u_char substream3_flag                        :1;
+#else
+   u_char substream3_flag                        :1;
+   u_char substream2_flag                        :1;
+   u_char substream1_flag                        :1;
+   u_char mixinfoexists                          :1;
+   u_char asvc_flag                              :1;
+   u_char mainid_flag                            :1;
+   u_char bsid_flag                              :1;
+   u_char component_type_flag                    :1;
+#endif
+};
+
+/* 0x7B dts_descriptor */
+
+struct descr_dts {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char sample_rate_code                       :4;
+   u_char bit_rate_code                          :6;
+   u_char nblks                                  :7;
+   u_char fsize_hi                               :6;
+   u_char fsize_lo                               :8;
+   u_char surround_mode                          :6;
+   u_char lfe_flag                               :1;
+   u_char extended_surround_flag                 :2;
+#else
+   u_char extended_surround_flag                 :2;
+   u_char lfe_flag                               :1;
+   u_char surround_mode                          :6;
+   u_char fsize_lo                               :8;
+   u_char fsize_hi                               :6;
+   u_char nblks                                  :7;
+   u_char bit_rate_code                          :6;
+   u_char sample_rate_code                       :4;
+#endif
+};
+
+/* 0x7C aac_descriptor */
+
+struct descr_aac {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char profile_and_level                      :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char aac_type_flag                          :1;
+   u_char reserved                               :7;
+#else
+   u_char reserved                               :7;
+   u_char aac_type_flag                          :1;
+#endif
+};
+/* 0x7F extension_descriptor */
+
+struct descr_extension {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char descriptor_tag_extension               :8;
 };
 
 /* MHP 0x00 application_descriptor */
