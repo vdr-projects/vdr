@@ -5095,6 +5095,7 @@ Video Disk Recorder Revision History
 
 - Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
 - Fixed a possible crash when loading an invalid XPM file (thanks to Martin Wache).
+- Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
 
 2007-02-03: Version 1.5.1
 
