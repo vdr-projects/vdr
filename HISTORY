@@ -5036,8 +5036,10 @@ Video Disk Recorder Revision History
   with open file handles when starting background commands (thanks to Reinhard
   Nissl).
 
-2007-02-17: Version 1.4.5-2
+2007-02-24: Version 1.4.5-2
 
 - Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
 - Fixed a possible crash when loading an invalid XPM file (thanks to Martin Wache).
 - Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
+- Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
+  Reinhard Nissl).
