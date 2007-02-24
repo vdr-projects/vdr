@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.162 2007/01/13 11:37:00 kls Exp $
+ * $Id: dvbdevice.c 1.163 2007/02/24 11:20:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -155,15 +155,13 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
               ; // just to clear the event queue - we'll read the actual status below
         }
      }
-  do {
-     int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
-     if (stat == 0)
-        return true;
-     if (stat < 0) {
-        if (errno == EINTR)
-           continue;
+  while (1) {
+        int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
+        if (stat == 0)
+           return true;
+        if (stat > 0 || errno != EINTR)
+           break;
         }
-     } while (0);
   return false;
 }
 
