@@ -5099,7 +5099,7 @@ Video Disk Recorder Revision History
 - Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
   Reinhard Nissl).
 
-2007-02-03: Version 1.5.1
+2007-02-25: Version 1.5.1
 
 - Added cDevice::HasCi() so that devices with Common Interface can be avoided
   when tuning to an FTA channel, thus preserving the CAM resources even on budget
@@ -5110,3 +5110,8 @@ Video Disk Recorder Revision History
   Nissl).
 - Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
 - Adapted 'libsi' to DVB-S2 (thanks to Marco Schlüßler).
+- Shutdown handling has been rewritten (thanks to Udo Richter).
+- Plugins can now implement the new function WakeupTime() to request VDR to wake
+  up at a particular time (thanks to Udo Richter).
+- The HUP signal now forces a restart of VDR (thanks to Udo Richter).
+- cThread::EmergencyExit() has been replaced by ShutdownHandler.RequestEmergencyExit().

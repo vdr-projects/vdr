@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.28 2007/01/07 14:03:56 kls Exp $
+.\" $Id: vdr.1 1.29 2007/02/24 17:40:20 kls Exp $
 .\"
 .TH vdr 1 "07 Jan 2007" "1.4.5" "Video Disk Recorder"
 .SH NAME
@@ -153,6 +153,14 @@ Print version information and exit.
 .BI \-w\  sec ,\ \-\-watchdog= sec
 Activate the watchdog timer with a timeout of \fIsec\fR seconds.
 A value of \fB0\fR (default) disables the watchdog.
+.SH SIGNALS
+.TP
+.B SIGINT, SIGTERM
+Program exits with status 0.
+.TP
+.B SIGHUP
+Program exits with status 1. This can be used to force a reload, for example
+if an update has been installed.
 .SH EXIT STATUS
 .TP
 .B 0

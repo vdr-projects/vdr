@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.18 2007/01/07 14:43:09 kls Exp $
+ * $Id: recorder.c 1.19 2007/02/24 16:36:24 kls Exp $
  */
 
 #include "recorder.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "shutdown.h"
 
 #define RECORDERBUFSIZE  MEGABYTE(5)
 
@@ -117,7 +118,7 @@ void cFileWriter::Action(void)
            }
         else if (time(NULL) - t > MAXBROKENTIMEOUT) {
            esyslog("ERROR: video data stream broken");
-           cThread::EmergencyExit(true);
+           ShutdownHandler.RequestEmergencyExit();
            t = time(NULL);
            }
         }

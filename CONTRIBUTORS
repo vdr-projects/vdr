@@ -1485,6 +1485,10 @@ Udo Richter <udo_richter@gmx.de>
  for some hints on how to improve handling cPluginManager::Active()
  for fixing a possible segfault if VDR gets terminated while a message is displayed
  for reporting an error in the INSTALL section on retrying shutdown later
+ for rewriting shutdown handling
+ for implementing cPlugin::WakeupTime() to allow plugins to request VDR to wake
+ up at a particular time
+ for making the HUP signal force a restart of VDR
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

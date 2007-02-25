@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.24 2006/10/14 09:49:16 kls Exp $
+ * $Id: plugin.c 1.25 2007/02/24 13:44:23 kls Exp $
  */
 
 #include "plugin.h"
@@ -78,6 +78,11 @@ void cPlugin::MainThreadHook(void)
 cString cPlugin::Active(void)
 {
   return NULL;
+}
+
+time_t cPlugin::WakeupTime(void)
+{
+  return 0;
 }
 
 const char *cPlugin::MainMenuEntry(void)
@@ -401,6 +406,26 @@ bool cPluginManager::Active(const char *Prompt)
          }
      }
   return false;
+}
+
+cPlugin *cPluginManager::GetNextWakeupPlugin(void)
+{
+  cPlugin *NextPlugin = NULL;
+  if (pluginManager) {
+     time_t Now = time(NULL);
+     time_t Next = 0;
+     for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
+         cPlugin *p = dll->Plugin();
+         if (p) {
+            time_t t = p->WakeupTime();
+            if (t > Now && (!Next || t < Next)) {
+               Next = t;
+               NextPlugin = p;
+               }
+            }
+         }
+     }
+  return NextPlugin;
 }
 
 bool cPluginManager::HasPlugins(void)

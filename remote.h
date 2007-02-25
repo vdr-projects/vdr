@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.38 2006/12/02 11:12:49 kls Exp $
+ * $Id: remote.h 1.39 2007/02/24 15:53:00 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -28,6 +28,7 @@ private:
   static char *unknownCode;
   static cMutex mutex;
   static cCondVar keyPressed;
+  static time_t lastActivity;
   static const char *keyMacroPlugin;
   static const char *callPlugin;
   char *name;
@@ -61,6 +62,8 @@ public:
       ///< plugin name will be reset to NULL by this call.
   static bool HasKeys(void);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
+  static time_t LastActivity(void) { return lastActivity; }
+      ///< Absolute time when last key was delivered by Get().
   };
 
 class cRemotes : public cList<cRemote> {};

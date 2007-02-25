@@ -11,13 +11,13 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.57 2006/12/01 14:46:25 kls Exp $
+ * $Id: remux.c 1.58 2007/02/24 16:36:10 kls Exp $
  */
 
 #include "remux.h"
 #include <stdlib.h>
 #include "channels.h"
-#include "thread.h"
+#include "shutdown.h"
 #include "tools.h"
 
 ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader)
@@ -2011,7 +2011,7 @@ int cRemux::Put(const uchar *Data, int Count)
         esyslog("ERROR: no useful data seen within %d byte of video stream", skipped);
         skipped = -1;
         if (exitOnFailure)
-           cThread::EmergencyExit(true);
+           ShutdownHandler.RequestEmergencyExit();
         }
      else
         skipped += used;
@@ -2059,7 +2059,7 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
                   if (pt < I_FRAME || B_FRAME < pt) {
                      esyslog("ERROR: unknown picture type '%d'", pt);
                      if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure)
-                        cThread::EmergencyExit(true);
+                        ShutdownHandler.RequestEmergencyExit();
                      }
                   else if (!synced) {
                      if (pt == I_FRAME) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.447 2007/01/07 14:19:48 kls Exp $
+ * $Id: menu.c 1.448 2007/02/25 09:51:53 kls Exp $
  */
 
 #include "menu.h"
@@ -22,6 +22,7 @@
 #include "plugin.h"
 #include "recording.h"
 #include "remote.h"
+#include "shutdown.h"
 #include "sources.h"
 #include "status.h"
 #include "themes.h"
@@ -2770,10 +2771,8 @@ void cMenuSetup::Set(void)
 
 eOSState cMenuSetup::Restart(void)
 {
-  if (Interface->Confirm(tr("Really restart?"))
-     && (!cRecordControls::Active() || Interface->Confirm(tr("Recording - restart anyway?")))
-     && !cPluginManager::Active(tr("restart anyway?"))) {
-     cThread::EmergencyExit(true);
+  if (Interface->Confirm(tr("Really restart?")) && ShutdownHandler.ConfirmRestart(true)) {
+     ShutdownHandler.Exit(1);
      return osEnd;
      }
   return osContinue;
@@ -3699,7 +3698,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      if (device) {
         dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
         if (!device->SwitchChannel(channel, false)) {
-           cThread::EmergencyExit(true);
+           ShutdownHandler.RequestEmergencyExit();
            return false;
            }
         if (!Timer || Timer->Matches()) {

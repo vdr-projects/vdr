@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.147 2007/01/26 13:32:19 kls Exp $
+ * $Id: config.c 1.148 2007/02/24 13:29:52 kls Exp $
  */
 
 #include "config.h"
@@ -267,6 +267,7 @@ cSetup::cSetup(void)
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 300;
+  NextWakeupTime = 0;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   ResumeID = 0;
@@ -428,6 +429,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
   else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
   else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
+  else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -496,6 +498,7 @@ bool cSetup::Save(void)
   Store("SplitEditedFiles",   SplitEditedFiles);
   Store("MinEventTimeout",    MinEventTimeout);
   Store("MinUserInactivity",  MinUserInactivity);
+  Store("NextWakeupTime",     NextWakeupTime);
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
   Store("ResumeID",           ResumeID);
