@@ -5081,3 +5081,56 @@ Video Disk Recorder Revision History
   without valid CA ids VDR can't decide which CAM slot to use. However, since VDR now
   automatically determines which CAM can decrypt which channel, setting fixed
   channel/device relations should no longer be necessary.
+  IF AN ENCRYPTED CHANNEL CAN'T BE DECRYPTED AND YOU HAVE A CA VALUE IN THE RANGE
+  0...F FOR THAT CHANNEL, SET IT TO 0 (FTA) AND TUNE TO THE CHANNEL AGAIN.
+
+2007-01-28: Version 1.4.5-1
+
+- Fixed i18n characters for the Hungarian texts (thanks to Thomas Günther).
+- Now using cPipe instead of popen() in cCommand::Execute() to avoid problems
+  with open file handles when starting background commands (thanks to Reinhard
+  Nissl).
+
+2007-02-24: Version 1.4.5-2
+
+- Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
+- Fixed a possible crash when loading an invalid XPM file (thanks to Martin Wache).
+- Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
+- Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
+  Reinhard Nissl).
+
+2007-02-25: Version 1.5.1
+
+- Added cDevice::HasCi() so that devices with Common Interface can be avoided
+  when tuning to an FTA channel, thus preserving the CAM resources even on budget
+  DVB cards (suggested by Petri Helin).
+- Fixed i18n characters for the Hungarian texts (thanks to Thomas Günther).
+- Now using cPipe instead of popen() in cCommand::Execute() to avoid problems
+  with open file handles when starting background commands (thanks to Reinhard
+  Nissl).
+- Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
+- Fixed a possible crash when loading an invalid XPM file (thanks to Martin Wache).
+- Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
+- Adapted 'libsi' to DVB-S2 (thanks to Marco Schlüßler).
+- Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
+  Reinhard Nissl).
+- Shutdown handling has been rewritten (thanks to Udo Richter).
+- Plugins can now implement the new function WakeupTime() to request VDR to wake
+  up at a particular time (thanks to Udo Richter).
+- The HUP signal now forces a restart of VDR (thanks to Udo Richter).
+- cThread::EmergencyExit() has been replaced by ShutdownHandler.RequestEmergencyExit().
+- Several references to "button" in a remote control context have been changed
+  to "key" (based on a report from Marko Mäkelä regarding the "Menu button closes"
+  text). The "MenuButtonCloses" parameter in 'setup.conf' has therefore been
+  renamed to "MenuKeyCloses", accordingly. This will result in an "unknown config
+  parameter: MenuButtonCloses" error message in the log file, so you may want to
+  remove that entry from your 'setup.conf' file.
+- Simplified the error handling in cDvbTuner::GetFrontendStatus() (based on a
+  discussion with Reinhard Nissl).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Increased the maximum number of DVB devices to 8 (thanks to Rolf Ahrenberg).
+- The new Setup parameter "Channel entry timeout" can be used to customize the time
+  since the last keypress until a numerically entered channel number is considered
+  complete, and the channel is switched (suggested by Helmut Auer). Setting this
+  parameter to 0 turns off the automatic channel switching, and the user will
+  have to confirm the entry by pressing the "Ok" key.

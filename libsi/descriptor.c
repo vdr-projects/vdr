@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.21 2006/05/28 14:25:30 kls Exp $
+ *   $Id: descriptor.c 1.22 2007/02/03 11:45:58 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -418,8 +418,16 @@ int SatelliteDeliverySystemDescriptor::getPolarization() const {
    return s->polarization;
 }
 
-int SatelliteDeliverySystemDescriptor::getModulation() const {
-   return s->modulation;
+int SatelliteDeliverySystemDescriptor::getModulationSystem() const {
+   return s->modulation_system;
+}
+
+int SatelliteDeliverySystemDescriptor::getModulationType() const {
+   return s->modulation_type;
+}
+
+int SatelliteDeliverySystemDescriptor::getRollOff() const {
+   return s->roll_off;
 }
 
 int SatelliteDeliverySystemDescriptor::getSymbolRate() const {
@@ -460,6 +468,18 @@ void CableDeliverySystemDescriptor::Parse() {
 
 int TerrestrialDeliverySystemDescriptor::getFrequency() const {
    return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
+}
+
+int TerrestrialDeliverySystemDescriptor::getPriority() const {
+   return s->priority;
+}
+
+int TerrestrialDeliverySystemDescriptor::getTimeSlicingIndicator() const {
+   return s->time_slicing_indicator;
+}
+
+int TerrestrialDeliverySystemDescriptor::getMpeFecIndicator() const {
+   return s->mpe_fec_indicator;
 }
 
 int TerrestrialDeliverySystemDescriptor::getBandwidth() const {
@@ -792,6 +812,41 @@ void AncillaryDataDescriptor::Parse() {
 
 int AncillaryDataDescriptor::getAncillaryDataIdentifier() const {
    return s->ancillary_data_identifier;
+}
+
+void S2SatelliteDeliverySystemDescriptor::Parse() {
+   int offset=0;
+   input_stream_identifier=0;
+   data.setPointerAndOffset<const descr_s2_satellite_delivery_system>(s, offset);
+   if (s->scrambling_sequence_selector)
+      data.setPointerAndOffset<const descr_scrambling_sequence_selector>(sss, offset);
+   if (s->multiple_input_stream_flag)
+      input_stream_identifier = *data.getData(offset++);
+}
+
+int S2SatelliteDeliverySystemDescriptor::getScramblingSequenceSelector() const {
+   return s->scrambling_sequence_selector;
+}
+
+int S2SatelliteDeliverySystemDescriptor::getMultipleInputStreamFlag() const {
+   return s->multiple_input_stream_flag;
+}
+
+int S2SatelliteDeliverySystemDescriptor::getBackwardsCompatibilityIndicator() const {
+   return s->backwards_compatibility_indicator;
+}
+
+int S2SatelliteDeliverySystemDescriptor::getScramblingSequenceIndex() const {
+   return sss == NULL ? 0 : (sss->scrambling_sequence_index_hi_lo << 16) | HILO(sss->scrambling_sequence_index_lo);
+}
+
+void ExtensionDescriptor::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const descr_extension>(s, offset);
+}
+
+int ExtensionDescriptor::getExtensionDescriptorTag() const {
+   return s->descriptor_tag_extension;
 }
 
 int PremiereContentTransmissionDescriptor::getOriginalNetworkId() const {

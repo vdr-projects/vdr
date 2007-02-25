@@ -360,6 +360,7 @@ Norbert Schmidt <nschmidt-nrw@t-online.de>
 Thilo Wunderlich <wunderlich@speedway.org>
  for his help in keeping 'channels.conf' up to date
  for reporting a problem with accessing the epg.data file before it is fully written
+ for updating satellite names in 'sources.conf'
 
 Stephan Schreiber <stephan@sschreiber.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
@@ -583,6 +584,7 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to reduce the logging for the SVDRP GRAB command
  for reporting that the shutdown script is given a reboot time in the past if there
  is a recording going on or about to start, and the user insists in shutting down now
+ for suggesting to make the channel entry timeout configurable
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1008,13 +1010,14 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  cPluginManager::Active() in menu.c to "restart anyway?"
  for adding --remove-destination to the 'cp' command for binaries in the Makefiles of
  the plugins
+ for increasing the maximum number of DVB devices to 8
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
  for reporting a bug in handling a channels.conf that contains a ":@nnn" line as
  its last entry
 
-Hermann Gausterer <mrq1@gmx.net>
+Hermann Gausterer <vdr@mrq1.org>
  for suggesting to switch to the recording channel in case the current channel
  becomes unavailable
 
@@ -1114,6 +1117,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for changing the behaviour when hitting the end of a recording in fast forward mode
  for suggesting to give the cRemote::CallPlugin() function a boolean return value
  for fixing a possible crash in remux.c on 64-bit machines
+ for making cCommand::Execute() use cPipe instead of popen() to avoid problems
+ with open file handles when starting background commands
+ for fixing handling error status in cDvbTuner::GetFrontendStatus()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1387,6 +1393,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  replay has been stopped
  for reporting a problem with displaying the replay mode symbol in case of "Multi
  speed mode"
+ for removing 'assert(0)' from cDvbSpuDecoder::setTime()
+ for adapting 'libsi' to DVB-S2
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1479,6 +1487,10 @@ Udo Richter <udo_richter@gmx.de>
  for some hints on how to improve handling cPluginManager::Active()
  for fixing a possible segfault if VDR gets terminated while a message is displayed
  for reporting an error in the INSTALL section on retrying shutdown later
+ for rewriting shutdown handling
+ for implementing cPlugin::WakeupTime() to allow plugins to request VDR to wake
+ up at a particular time
+ for making the HUP signal force a restart of VDR
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1692,6 +1704,7 @@ Henrik Niehaus <henrik.niehaus@gmx.de>
 Martin Wache <M.Wache@gmx.net>
  for adding a sleep in cDvbPlayer::Action() in case there is no data to send to the
  device, which avoids a busy loop on very fast machines
+ for fixing a possible crash when loading an invalid XPM file
 
 Matthias Lenk <matthias.lenk@amd.com>
  for reporting an out-of-bounds memory access with audio language ids
@@ -1720,6 +1733,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for reporting a bug in the initial setting of the time transponder setup parameter
  for suggesting to extend the version number reported with the '-V' option to also
  show the current APIVERSION
+ for fixing i18n characters for the Hungarian texts
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1744,6 +1758,7 @@ Marko Mäkelä <marko.makela@hut.fi>
  for suggesting to ignore k_Repeat when deciding whether the same key has been
  pressed in string input fields
  for fixing missing ',' in the Italian and Polish OSD texts
+ for pointing out that "Menu button closes" should actually be "Menu key closes"
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -2050,3 +2065,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires uncluding stdint.h in font.h on some systems
+
+Petri Helin <phelin@googlemail.com>
+ for suggesting to avoid budget DVB cards with Common Interface when tuning to an
+ FTA channel

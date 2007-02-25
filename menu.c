@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.447 2007/01/07 12:19:48 kls Exp $
+ * $Id: menu.c 1.450 2007/02/25 14:04:33 kls Exp $
  */
 
 #include "menu.h"
@@ -22,6 +22,7 @@
 #include "plugin.h"
 #include "recording.h"
 #include "remote.h"
+#include "shutdown.h"
 #include "sources.h"
 #include "status.h"
 #include "themes.h"
@@ -2206,7 +2207,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Timeout requested channel info"), &data.TimeoutRequChInfo));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll wraps"),           &data.MenuScrollWrap));
-  Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu button closes"),     &data.MenuButtonCloses));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu key closes"),        &data.MenuKeyCloses));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   SetCurrent(Get(current));
   Display();
@@ -2661,6 +2662,7 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
 }
@@ -2770,10 +2772,8 @@ void cMenuSetup::Set(void)
 
 eOSState cMenuSetup::Restart(void)
 {
-  if (Interface->Confirm(tr("Really restart?"))
-     && (!cRecordControls::Active() || Interface->Confirm(tr("Recording - restart anyway?")))
-     && !cPluginManager::Active(tr("restart anyway?"))) {
-     cThread::EmergencyExit(true);
+  if (Interface->Confirm(tr("Really restart?")) && ShutdownHandler.ConfirmRestart(true)) {
+     ShutdownHandler.Exit(1);
      return osEnd;
      }
   return osContinue;
@@ -3090,8 +3090,6 @@ static void SetTrackDescriptions(int LiveChannel)
 
 // --- cDisplayChannel -------------------------------------------------------
 
-#define DIRECTCHANNELTIMEOUT 1000 //ms
-
 cDisplayChannel *cDisplayChannel::currentDisplayChannel = NULL;
 
 cDisplayChannel::cDisplayChannel(int Number, bool Switched)
@@ -3290,7 +3288,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          Refresh();
          break;
     case kNone:
-         if (number && lastTime.Elapsed() > DIRECTCHANNELTIMEOUT) {
+         if (number && Setup.ChannelEntryTimeout && int(lastTime.Elapsed()) > Setup.ChannelEntryTimeout) {
             channel = Channels.GetByNumber(number);
             if (channel)
                NewChannel = channel;
@@ -3699,7 +3697,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      if (device) {
         dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
         if (!device->SwitchChannel(channel, false)) {
-           cThread::EmergencyExit(true);
+           ShutdownHandler.RequestEmergencyExit();
            return false;
            }
         if (!Timer || Timer->Matches()) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.38 2007/01/05 10:44:38 kls Exp $
+ * $Id: thread.h 1.39 2007/02/24 16:13:28 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -84,7 +84,6 @@ private:
   cMutex mutex;
   char *description;
   static tThreadId mainThreadId;
-  static bool emergencyExitRequested;
   static void *StartThread(cThread *Thread);
 protected:
   void SetPriority(int Priority);
@@ -118,7 +117,6 @@ public:
        ///< If the thread is already running, nothing happens.
   bool Active(void);
        ///< Checks whether the thread is still alive.
-  static bool EmergencyExit(bool Request = false);
   static tThreadId ThreadId(void);
   static tThreadId IsMainThread(void) { return ThreadId() == mainThreadId; }
   static void SetMainThreadId(void);
@@ -175,7 +173,9 @@ public:
 
 // SystemExec() implements a 'system()' call that closes all unnecessary file
 // descriptors in the child process.
+// With Detached=true, calls command in background and in a separate session,
+// with stdin connected to /dev/null.
 
-int SystemExec(const char *Command);
+int SystemExec(const char *Command, bool Detached = false);
 
 #endif //__THREAD_H

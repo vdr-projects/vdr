@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.283 2007/01/07 14:09:31 kls Exp $
+ * $Id: config.h 1.287 2007/02/25 13:58:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -21,13 +21,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.5.0"
-#define VDRVERSNUM   10500  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.5.1"
+#define VDRVERSNUM   10501  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.5.0"
-#define APIVERSNUM   10500  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.5.1"
+#define APIVERSNUM   10501  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -206,7 +206,7 @@ public:
   int TimeoutRequChInfo;
   int MenuScrollPage;
   int MenuScrollWrap;
-  int MenuButtonCloses;
+  int MenuKeyCloses;
   int MarkInstantRecord;
   char NameInstantRecord[MaxFileName];
   int InstantRecordTime;
@@ -225,6 +225,7 @@ public:
   int EPGLinger;
   int SVDRPTimeout;
   int ZapTimeout;
+  int ChannelEntryTimeout;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
   int PausePriority, PauseLifetime;
@@ -244,6 +245,7 @@ public:
   int MaxVideoFileSize;
   int SplitEditedFiles;
   int MinEventTimeout, MinUserInactivity;
+  time_t NextWakeupTime;
   int MultiSpeedMode;
   int ShowReplayMode;
   int ResumeID;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.67 2006/02/26 14:31:31 kls Exp $
+ * $Id: osd.c 1.68 2007/02/17 16:05:52 kls Exp $
  */
 
 #include "osd.h"
@@ -218,14 +218,17 @@ bool cBitmap::LoadXpm(const char *FileName)
                  int w, h, n, c;
                  if (4 != sscanf(s, "%d %d %d %d", &w, &h, &n, &c)) {
                     esyslog("ERROR: faulty 'values' line in XPM file '%s'", FileName);
+                    isXpm = false;
                     break;
                     }
                  lines = h + n + 1;
                  Xpm = MALLOC(char *, lines);
+                 memset(Xpm, 0, lines * sizeof(char*));
                  }
               char *q = strchr(s, '"');
               if (!q) {
                  esyslog("ERROR: missing quotes in XPM file '%s'", FileName);
+                 isXpm = false;
                  break;
                  }
               *q = 0;
@@ -233,16 +236,21 @@ bool cBitmap::LoadXpm(const char *FileName)
                  Xpm[index++] = strdup(s);
               else {
                  esyslog("ERROR: too many lines in XPM file '%s'", FileName);
+                 isXpm = false;
                  break;
                  }
               }
            }
-     if (index == lines)
-        Result = SetXpm(Xpm);
-     else
-        esyslog("ERROR: too few lines in XPM file '%s'", FileName);
-     for (int i = 0; i < index; i++)
-         free(Xpm[i]);
+     if (isXpm) {
+        if (index == lines)
+           Result = SetXpm(Xpm);
+        else
+           esyslog("ERROR: too few lines in XPM file '%s'", FileName);
+        }
+     if (Xpm) {
+        for (int i = 0; i < index; i++)
+            free(Xpm[i]);
+        }
      free(Xpm);
      fclose(f);
      }

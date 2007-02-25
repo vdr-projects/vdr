@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.146 2006/07/22 11:57:51 kls Exp $
+ * $Id: config.c 1.150 2007/02/25 13:58:45 kls Exp $
  */
 
 #include "config.h"
@@ -67,8 +67,8 @@ const char *cCommand::Execute(const char *Parameters)
      asprintf(&cmdbuf, "%s %s", command, Parameters);
   const char *cmd = cmdbuf ? cmdbuf : command;
   dsyslog("executing command '%s'", cmd);
-  FILE *p = popen(cmd, "r");
-  if (p) {
+  cPipe p;
+  if (p.Open(cmd, "r")) {
      int l = 0;
      int c;
      while ((c = fgetc(p)) != EOF) {
@@ -78,7 +78,7 @@ const char *cCommand::Execute(const char *Parameters)
            }
      if (result)
         result[l] = 0;
-     pclose(p);
+     p.Close();
      }
   else
      esyslog("ERROR: can't open pipe for command '%s'", cmd);
@@ -222,7 +222,7 @@ cSetup::cSetup(void)
   TimeoutRequChInfo = 1;
   MenuScrollPage = 1;
   MenuScrollWrap = 0;
-  MenuButtonCloses = 0;
+  MenuKeyCloses = 0;
   MarkInstantRecord = 1;
   strcpy(NameInstantRecord, "TITLE EPISODE");
   InstantRecordTime = 180;
@@ -242,6 +242,7 @@ cSetup::cSetup(void)
   EPGLinger = 0;
   SVDRPTimeout = 300;
   ZapTimeout = 3;
+  ChannelEntryTimeout = 1000;
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 99;
@@ -267,6 +268,7 @@ cSetup::cSetup(void)
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 300;
+  NextWakeupTime = 0;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   ResumeID = 0;
@@ -383,7 +385,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollWrap"))      MenuScrollWrap     = atoi(Value);
-  else if (!strcasecmp(Name, "MenuButtonCloses"))    MenuButtonCloses   = atoi(Value);
+  else if (!strcasecmp(Name, "MenuKeyCloses"))       MenuKeyCloses      = atoi(Value);
   else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
   else if (!strcasecmp(Name, "NameInstantRecord"))   strn0cpy(NameInstantRecord, Value, MaxFileName);
   else if (!strcasecmp(Name, "InstantRecordTime"))   InstantRecordTime  = atoi(Value);
@@ -403,6 +405,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
+  else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
@@ -428,6 +431,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
   else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
   else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
+  else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -451,7 +455,7 @@ bool cSetup::Save(void)
   Store("TimeoutRequChInfo",  TimeoutRequChInfo);
   Store("MenuScrollPage",     MenuScrollPage);
   Store("MenuScrollWrap",     MenuScrollWrap);
-  Store("MenuButtonCloses",   MenuButtonCloses);
+  Store("MenuKeyCloses",      MenuKeyCloses);
   Store("MarkInstantRecord",  MarkInstantRecord);
   Store("NameInstantRecord",  NameInstantRecord);
   Store("InstantRecordTime",  InstantRecordTime);
@@ -471,6 +475,7 @@ bool cSetup::Save(void)
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
+  Store("ChannelEntryTimeout",ChannelEntryTimeout);
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
@@ -496,6 +501,7 @@ bool cSetup::Save(void)
   Store("SplitEditedFiles",   SplitEditedFiles);
   Store("MinEventTimeout",    MinEventTimeout);
   Store("MinUserInactivity",  MinUserInactivity);
+  Store("NextWakeupTime",     NextWakeupTime);
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
   Store("ResumeID",           ResumeID);

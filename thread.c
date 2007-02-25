@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.59 2007/01/05 10:44:22 kls Exp $
+ * $Id: thread.c 1.60 2007/02/24 16:13:33 kls Exp $
  */
 
 #include "thread.h"
@@ -200,7 +200,6 @@ void cMutex::Unlock(void)
 // --- cThread ---------------------------------------------------------------
 
 tThreadId cThread::mainThreadId = 0;
-bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
@@ -318,14 +317,6 @@ void cThread::Cancel(int WaitSeconds)
      childTid = 0;
      active = false;
      }
-}
-
-bool cThread::EmergencyExit(bool Request)
-{
-  if (!Request)
-     return emergencyExitRequested;
-  esyslog("initiating emergency exit");
-  return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
 }
 
 tThreadId cThread::ThreadId(void)
@@ -505,7 +496,7 @@ int cPipe::Close(void)
 
 // --- SystemExec ------------------------------------------------------------
 
-int SystemExec(const char *Command)
+int SystemExec(const char *Command, bool Detached)
 {
   pid_t pid;
 
@@ -515,14 +506,24 @@ int SystemExec(const char *Command)
      }
 
   if (pid > 0) { // parent process
-     int status;
-     if (waitpid(pid, &status, 0) < 0) {
+     int status = 0;
+     if (!Detached && waitpid(pid, &status, 0) < 0) {
         LOG_ERROR;
         return -1;
         }
      return status;
      }
   else { // child process
+     if (Detached) {
+        // Start a new session
+        pid_t sid = setsid();
+        if (sid < 0)
+           LOG_ERROR;
+        // close STDIN and re-open as /dev/null
+        int devnull = open("/dev/null", O_RDONLY);
+        if (devnull < 0 || dup2(devnull, 0) < 0)
+           LOG_ERROR;
+        }
      int MaxPossibleFileDescriptors = getdtablesize();
      for (int i = STDERR_FILENO + 1; i < MaxPossibleFileDescriptors; i++)
          close(i); //close all dup'ed filedescriptors

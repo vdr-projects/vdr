@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.10 2006/10/14 10:41:20 kls Exp $
+ * $Id: keys.h 1.11 2007/02/25 10:49:35 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -74,6 +74,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define ISRAWKEY(k)      ((k) != kNone && ((k) & k_Flags) == 0)
 #define NORMALKEY(k)     (eKeys((k) & ~k_Repeat))
 #define ISMODELESSKEY(k) (RAWKEY(k) > k9)
+#define ISREALKEY(k)     (k != kNone && k != k_Plugin)
 
 #define BASICKEY(k)      (eKeys((k) & 0xFFFF))
 #define KBDKEY(k)        (eKeys(((k) << 16) | kKbd))

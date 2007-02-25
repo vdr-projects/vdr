@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.161 2007/01/05 11:09:51 kls Exp $
+ * $Id: dvbdevice.c 1.164 2007/02/25 11:46:52 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -155,15 +155,12 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
               ; // just to clear the event queue - we'll read the actual status below
         }
      }
-  do {
-     int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
-     if (stat == 0)
-        return true;
-     if (stat < 0) {
-        if (errno == EINTR)
-           continue;
+  while (1) {
+        if (ioctl(fd_frontend, FE_READ_STATUS, &Status) != -1)
+           return true;
+        if (errno != EINTR)
+           break;
         }
-     } while (0);
   return false;
 }
 
@@ -507,6 +504,11 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
   if (!spuDecoder && IsPrimaryDevice())
      spuDecoder = new cDvbSpuDecoder();
   return spuDecoder;
+}
+
+bool cDvbDevice::HasCi(void)
+{
+  return ciAdapter;
 }
 
 uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)

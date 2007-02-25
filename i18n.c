@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.286 2007/01/07 12:19:15 kls Exp $
+ * $Id: i18n.c 1.291 2007/02/25 13:59:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -119,7 +119,7 @@ const tI18nPhrase Phrases[] = {
     "iso8859-7",
     "iso8859-1",
     "iso8859-2",
-    "iso8859-1",
+    "iso8859-2",
     "iso8859-1",
     "iso8859-5",
     "iso8859-2",
@@ -231,7 +231,7 @@ const tI18nPhrase Phrases[] = {
     "×ñïíïğñïãñáììáôéóìïß",
     "Timers",
     "Timer-e",
-    "Idözítö",
+    "Idõzítõ",
     "Temporitzadors",
     "ÂĞÙÜÕàë",
     "Termini",
@@ -385,7 +385,7 @@ const tI18nPhrase Phrases[] = {
     "Ôñïğïğïßçóç ÷ñïíïğñïãñáììáôéóìïı",
     "Ändra timer",
     "Modificare timer",
-    "Idözítö megváltoztatása",
+    "Idõzítõ megváltoztatása",
     "Editar temporitzador",
     "ÃáâĞİŞÒÚĞ âĞÙÜÕàĞ",
     "Ureğivanje termina",
@@ -694,7 +694,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Timer",
     "Timer",
-    "Idözítö",
+    "Idõzítõ",
     "",// TODO
     "ÂĞÙÜÕà",
     "",// TODO
@@ -936,7 +936,7 @@ const tI18nPhrase Phrases[] = {
     "Åğüìåíï",
     "Nästa",
     "Urmãtor",
-    "Következö",
+    "Következõ",
     "Següent",
     "´ĞÛÕÕ",
     "Slijedi",
@@ -1157,7 +1157,7 @@ const tI18nPhrase Phrases[] = {
     "ÄéáãñáöŞ ÷ñïíïğñïãñáììáôéóìïı;?",
     "Ta bort timern?",
     "ªterg timer-ul?",
-    "Idözítö törlése?",
+    "Idõzítõ törlése?",
     "Esborrar el temporitzador?",
     "ÃÔĞÛØâì âĞÙÜÕà?",
     "Obrisati termin?",
@@ -1341,6 +1341,28 @@ const tI18nPhrase Phrases[] = {
     "Optagelse igang - genstart alligevel?",
     "Systém je zaneprázdnìn - pøesto restartovat?",
   },
+  { "Editing - restart anyway?",
+    "Schnitt läuft - trotzdem neu starten?",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
     "Snemanje - zares izklopi?",
@@ -1377,7 +1399,7 @@ const tI18nPhrase Phrases[] = {
     "Áíáìİíåôáé åããñáöŞ óİ %ld ëåğôÜ - ÔåëéêÜ íá ôåñìáôéóôåß?",
     "Inspelning startar om %ld minuter, vill du avsluta?",
     "Înregistrez peste %ld minute - închid, totuºi?",
-    "Felvétel %ld perc mulva kezdödik - mégis kikapcsolni?",
+    "Felvétel %ld perc mulva kezdõdik - mégis kikapcsolni?",
     "Hi ha una gravació en %ld minuts - Apagar de totes maneres?",
     "ÇÕàÕ× %ld ÜØİãâ İĞçİñâáï ×ĞßØáì - ÔÕÙáâÒØâÕÛìİŞ ÒëÚÛîçØâì?",
     "Snimanje za %ld minuta - svejedno iskljuèiti?",
@@ -1406,6 +1428,116 @@ const tI18nPhrase Phrases[] = {
     "Vajuta suvalist klahvi väljalülitamise tühistamiseks",
     "Tryk vilkårlig tast for at annullere sluk",
     "Jakákoliv klávesa zru¹í vypnutí",
+  },
+  { "Press any key to cancel restart",
+    "Taste drücken, um Neustart abzubrechen",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "VDR will shut down later - press Power to force",
+    "VDR schaltet später aus - Power zum erzwingen",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "VDR sammuu myöhemmin - pakota virtakytkimellä",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "VDR will shut down in %s minutes",
+    "VDR wird in %s Minuten ausschalten",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "VDR sammuu %s minuutin kuluttua",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Editing - shut down anyway?",
+    "Schnitt läuft - trotzdem ausschalten?",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Leikkaus kesken - sammutetaanko?",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Plugin %s wakes up in %ld min, continue?",
+    "Plugin %s wacht in %ld Min auf, weiter?",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Laajennos %s herää %ld minuutin kuluttua - sammutetaanko?",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Channel parameters:
   { "Name",
@@ -2149,7 +2281,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñşôç ìİñá",
     "Första dag",
     "Prima zi",
-    "Elsö nap",
+    "Elsõ nap",
     "Primer dia",
     "¿ÕàÒëÙ ÔÕİì",
     "Prvi dan",
@@ -2172,7 +2304,7 @@ const tI18nPhrase Phrases[] = {
     "Ôï êáíÜëç ÷ñéóéìïğïéåßôáé áğü ÷ñïíïğñïãñáììáôéóìü!",
     "Kanalen används av en timer!",
     "Canalul este utilizat de un timer!",
-    "Az adót az idözítö használja!",
+    "Az adót az idõzítõ használja!",
     "Canal en ús per un temporitzador!",
     "ºĞİĞÛ ×Ğİïâ âĞÙÜÕàŞÜ!",
     "Program je trenutno zauzet terminom za snimanje",
@@ -2304,7 +2436,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "strax VPS inspelning...",
     "Urmeazã o înregistrare VPS!",
-    "VPS-felvétel rögtön kezdödik!",
+    "VPS-felvétel rögtön kezdõdik!",
     "",//TODO
     "VPS-·ĞßØáì áÚŞàŞ İĞçİÕâáï",
     "",//TODO
@@ -2348,7 +2480,7 @@ const tI18nPhrase Phrases[] = {
     "Ôï êáíÜëç äİí åßíáé äéáèİóéìï!",
     "Kanalen är inte tillgänglig!",
     "Canal indisponibil",
-    "Az adó nem elérhetö",
+    "Az adó nem elérhetõ",
     "Canal no disponible!",
     "ºĞİĞÛ İÕÔŞáâãßÕİ!",
     "Program nije dostupan!",
@@ -2370,7 +2502,7 @@ const tI18nPhrase Phrases[] = {
     "Ïé ñéèìıóåéò ôïí êáíáëéşí áëëõëïóõìğßğôïõí!",
     "Kanalinställningarna är ej unika!",
     "Parametrii canalului nu sunt univoci!",
-    "Az adóbeállítások nem egyértelmüek",
+    "Az adóbeállítások nem egyértelmûek",
     "Propietats del canal duplicades!",
     "½ĞáâàŞÙÚØ ÚĞİĞÛĞ İÕ ãİØÚĞÛìİë!",
     "Parametri programa nisu jednoznaèni!",
@@ -2524,7 +2656,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Otillräcklingt diskutrymme för inspelning!",
     "Insuficient spaşiul pe disc pentru înregistrare!",
-    "Nincs elegendö hely a felvételre",
+    "Nincs elegendõ hely a felvételre",
     "",//TODO
     "½ÕÔŞáâĞâŞçİŞ ÜÕáâĞ İĞ ÔØáÚÕ ÔÛï İĞçĞÛĞ ×ĞßØáØ",
     "",//TODO
@@ -3186,7 +3318,7 @@ const tI18nPhrase Phrases[] = {
     "×ñüíïò İíäåéîçò ìõíçìÜôùí (ä)",
     "Tid för meddelanden (sek)",
     "Timp afiºare mesaje (sec)",
-    "Információ feltüntetésének idötartama",
+    "Információ feltûntetésének idõtartama",
     "Durada dels missatges (s)",
     "´ÛØâÕÛìİŞáâì ßŞÚĞ×Ğ áŞŞÑéÕİØÙ (áÕÚ)",
     "Vrijeme prikaza poruka (s)",
@@ -3208,7 +3340,7 @@ const tI18nPhrase Phrases[] = {
     "×ñéóçìïğïßçóç ìéêñüí ãñáììáôïóåéñşí",
     "Använd liten font",
     "Utilizare fonturi mici",
-    "Kisbetüt használni",
+    "Kisbetût használni",
     "",// TODO
     "¸áßŞÛì×ŞÒĞâì ÜÕÛÚØÙ èàØäâ",
     "Koristi mala slova",
@@ -3252,7 +3384,7 @@ const tI18nPhrase Phrases[] = {
     "ÅîáñôÜôå áğü ôŞí åğéöÜíåéá",
     "skin beroende",
     "dep. de skin",
-    "Menü nézetétöl függöen",
+    "Menü nézetétõl függõen",
     "",// TODO
     "áŞÓÛĞáİŞ âÕÜÕ",
     "ovisno o povr¹ini",
@@ -3318,7 +3450,7 @@ const tI18nPhrase Phrases[] = {
     "÷ñüíïò İíäåéêóçò ğëçñïöïñßùí êáíáëéïı óå (ä)",
     "Kanal information (s)",
     "Durata afiºãrii info-canal (s)",
-    "Adásinformáció feltüntetésének idötartama (s)",
+    "Adásinformáció feltûntetésének idõtartama (s)",
     "",// TODO
     "¿ŞÚĞ× ØİäŞàÜĞæØØ Ş ÚĞİĞÛÕ (áÕÚ)",
     "Vrijeme prikaza informacije o programu (s)",
@@ -3414,7 +3546,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll rundt",
     "Z konce na zaèátek",
   },
-  { "Setup.OSD$Menu button closes",
+  { "Setup.OSD$Menu key closes",
     "Menu-Taste schließt",
     "Meni gumb zapre meni",
     "Usare il bottone Menu per chiudere",
@@ -3472,7 +3604,7 @@ const tI18nPhrase Phrases[] = {
     "×ñüíïò äéÜñêåéáò åîİôáóçò EPG óå şñåò",
     "EPG sökning timeout",
     "Interval achizişie EPG (h)",
-    "Fennmaradt idö az EPG-újításig (h)",
+    "Fennmaradt idõ az EPG-újításig (h)",
     "Màxim d'Hores a cercar per la Guia",
     "·ĞÔÕàÖÚĞ áÚĞİØàŞÒĞİØï âÕÛÕÓØÔĞ (ç)",
     "Vrijeme do EPG pregleda (h)",
@@ -3538,7 +3670,7 @@ const tI18nPhrase Phrases[] = {
     "Óõíôïíéóìüò şñáò õğïëïãéóôŞ",
     "Ställ in systemtid",
     "Potriveºte ceasul sistem",
-    "Az idö beállítása",
+    "Az idõ beállítása",
     "Ajustar l'hora del sistema",
     "ÃáâĞİŞÒØâì áØáâÕÜİŞÕ ÒàÕÜï",
     "Podesi vrijeme sistema",
@@ -3560,7 +3692,7 @@ const tI18nPhrase Phrases[] = {
     "Áíáìåôáäüôçò óõíôïíéóìïı şñáò",
     "Använd klockan från transponder",
     "Preia ora din transponder",
-    "Idöhöz tartozó Transponder",
+    "Idõhöz tartozó Transponder",
     "Usar el temps del múltiplex",
     "¸áßŞÛì×ŞÒĞâì ÒàÕÜï âàĞİáßŞİÔÕàĞ",
     "Transponder za pode¹avanje sata",
@@ -3626,7 +3758,7 @@ const tI18nPhrase Phrases[] = {
     "Êıñéá DVB êÜñôá",
     "Primär DVB enhet",
     "Dispozitiv DVB primar",
-    "Elsö DVB interface",
+    "Elsõ DVB interface",
     "Tarja DVB primària",
     "¾áİŞÒİŞÕ DVB-ãáâàŞÙáâÒŞ",
     "Primarni DVB ureğaj",
@@ -4000,7 +4132,7 @@ const tI18nPhrase Phrases[] = {
     "¢íù LNB-Óõ÷íüôçôá (MHz)",
     "Övre LNB frekvens (MHz)",
     "Frecvnşã LNB superioarã (MHz)",
-    "Felsö LNB-frekvencia (MHZ)",
+    "Felsõ LNB-frekvencia (MHZ)",
     "Freqüència LNB alta (MHz)",
     "²Õàåİïï çĞáâŞâĞ ÚŞİÒÕàâÕàĞ (¼³æ)",
     "Gornja LNB frekv. (MHz)",
@@ -4044,7 +4176,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñüóèåôïò ÷ñüíïò óôçí áñ÷Ş (ëåğôÜ)",
     "Marginal för start (min)",
     "Marjã la pornire (min)",
-    "Idöeltolódás a kezdésnél (perc)",
+    "Idõeltolódás a kezdésnél (perc)",
     "Marge d'inici de gravació (min)",
     "¾ßÕàÕÖÕİØÕ İĞçĞÛĞ ×ĞßØáØ (ÜØİ)",
     "Rezerva na poèetku snimanja (min)",
@@ -4066,7 +4198,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñüóèåôïò ÷ñüíïò óôü ôİëïò (ëåğôÜ)",
     "Marginal för stopp (min)",
     "Marjã la oprire (min)",
-    "Idöeltolódás a befejezésnél (perc)",
+    "Idõeltolódás a befejezésnél (perc)",
     "Marge de fi de gravació (min)",
     "·ĞßĞ×ÔëÒĞİØÕ ŞáâĞİŞÒÚØ ×ĞßØáØ (ÜØİ)",
     "Rezerva na kraju (min)",
@@ -4242,7 +4374,7 @@ const tI18nPhrase Phrases[] = {
     "Ğåñéèşñéï VPS (ä)",
     "VPS marginal (s)",
     "Marjã de timp la utilizare VPS (s)",
-    "Idöeltolódás VPS-nél (s)",
+    "Idõeltolódás VPS-nél (s)",
     "",// TODO
     "±ãäÕàİŞÕ ÒàÕÜï VPS (áÕÚ)",
     "Vremenska rezerva kod VPS (s)",
@@ -4308,7 +4440,7 @@ const tI18nPhrase Phrases[] = {
     "ÄéÜñêåéá óôãìéáßáò åããñáöŞò (ëåğôÜ)",
     "Direktinspelning längd (min)",
     "Timpul de înregistare imediatã (min)",
-    "Felvétel idötartama (perc)",
+    "Felvétel idõtartama (perc)",
     "Temps de gravació instantània (min)",
     "´ÛØâÕÛìİŞáâì àãçİŞÙ ×ĞßØáØ (ÜØİ)",
     "Trajanje direktnog snimanja (min)",
@@ -4440,7 +4572,7 @@ const tI18nPhrase Phrases[] = {
     "ÅëÜ÷éóôïò ÷ñÜíïò ğáñåìâïëŞò (ëåğôÜ)",
     "Minsta händelse-pause (min)",
     "Duratã minimã emisiuni (min)",
-    "Idözitések közötti idötartam (perc)",
+    "Idõzitések közötti idõtartam (perc)",
     "Temps mínim en pausa (min)",
     "¼Øİ. ÒàÕÜï ŞÖØÔĞİØï áŞÑëâØï (ÜØİ)",
     "Minimalno vrijeme pauze",
@@ -4514,6 +4646,28 @@ const tI18nPhrase Phrases[] = {
     "Zap timeout (s)",
     "Èasovı limit Zap (s)",
   },
+  { "Setup.Miscellaneous$Channel entry timeout (ms)",
+    "Zeitlimit für Kanaleingabe (ms)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Setup.Miscellaneous$Initial channel",
     "Kanal beim Einschalten",
     "Privzeti kanal",
@@ -4550,7 +4704,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ljudstyrka vid uppstart",
     "Volumul la pornire",
-    "Hangerö a bekapcsolásnál",
+    "Hangerõ a bekapcsolásnál",
     "",// TODO
     "³àŞÜÚŞáâì ßàØ ÒÚÛîçÕİØØ",
     "",// TODO
@@ -4572,7 +4726,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "som förut",
     "ca mai înainte",
-    "ahogy az elöbb",
+    "ahogy az elõbb",
     "",// TODO
     "ÚĞÚ àĞİìèÕ",
     "",// TODO
@@ -4640,7 +4794,7 @@ const tI18nPhrase Phrases[] = {
     " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~,/_@abcdefghijklmnopqrstuvwxyz",
     " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
     " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~,/_@",
-    " aábcdeéfghiíjklmnoóö¿pqrstuúü¿vwxyz0123456789-.,#~,/_@",
+    " aábcdeéfghiíjklmnoóöõpqrstuúüûvwxyz0123456789-.,#~,/_@",
     " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·",
     " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~,/_@",
     " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@", // hrv
@@ -4663,7 +4817,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     " 0\t-.#~,/_@1\tabcåä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz",
     " 0\t-.#~,/_@1\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttşuv8\twxyz9",
-    " 0\t-.#~,/_@1\taábc2\tdeé3\tghií4\tjkl5\tmnoóö¿6\tpqrs7\ttuúü¿v8\twxyz9",
+    " 0\t-.#~,/_@1\taábc2\tdeéf3\tghií4\tjkl5\tmnoóöõ6\tpqrs7\ttuúüûv8\twxyz9",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -4708,7 +4862,7 @@ const tI18nPhrase Phrases[] = {
     "ÖÜóç 1: Áíß÷íåõóç êşäéêá RC",
     "Steg1: identifiering av kod",
     "Faza 1: Detecşia tipului telecomenzii",
-    "Elsö lépés: távirányító kódjának meghatározása",
+    "Elsõ lépés: távirányító kódjának meghatározása",
     "Fase 1: Detectant el tipus de receptor",
     "ÈĞÓ 1: ¾ßàÕÔÕÛÕİØÕ âØßĞ ÚŞÔĞ ßãÛìâĞ",
     "Faza 1: detektiranje kôda daljinskog upravljaèa.",
@@ -5347,7 +5501,7 @@ const tI18nPhrase Phrases[] = {
     "Ğñïşèçóç åìğñüò",
     "Snabbspolning framåt",
     "Derulare înainte",
-    "Elöre pörgetni",
+    "Elõre pörgetni",
     "Endavant ràpidament",
     "¿àŞÚàãâÚĞ ÒßÕàñÔ",
     "Naprijed",
@@ -5391,7 +5545,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Nästa",
     "Urmãtor",
-    "Elöre",
+    "Elõre",
     "",// TODO
     "²ßÕàÕÔ",
     "",// TODO
@@ -5429,7 +5583,7 @@ const tI18nPhrase Phrases[] = {
     "Ligar",
     "Arrêt",
     "Power",
-    "Virtakytkin",
+    "Virta",
     "Wy³±cz",
     "Apagar",
     "Këåßóéìï",
@@ -5501,7 +5655,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Förra kanalen",
     "Canal anterior",
-    "Az elözö adás",
+    "Az elõzõ adás",
     "",// TODO
     "¿àÕÔëÔãéØÙ ÚĞİĞÛ",
     "",// TODO
@@ -5523,7 +5677,7 @@ const tI18nPhrase Phrases[] = {
     "¸íôáóç+",
     "Volym+",
     "Volum+",
-    "Hangerö+",
+    "Hangerõ+",
     "Volum +",
     "³àŞÜÚŞáâì +",
     "Glasnije", // hrv "Glasnocca +"
@@ -5545,7 +5699,7 @@ const tI18nPhrase Phrases[] = {
     "¸íôáóç-",
     "Volym-",
     "Volum-",
-    "Hangerö-",
+    "Hangerõ-",
     "Volum -",
     "³àŞÜÚŞáâì -",
     "Ti¹e", // hrv Glasnocca -"
@@ -5561,7 +5715,7 @@ const tI18nPhrase Phrases[] = {
     "Sem som",
     "Coupure du son",
     "Lyd av",
-    "Äänetön",
+    "Mykistys",
     "Wycisz",
     "Mudo",
     "Óéùğçëü",
@@ -5832,7 +5986,7 @@ const tI18nPhrase Phrases[] = {
     "¸íôáóç ",
     "Volym ",
     "Volum ",
-    "Hangerö",
+    "Hangerõ",
     "Volum ",
     "³àŞÜÚŞáâì ",
     "Glasnoæa ",
@@ -6052,7 +6206,7 @@ const tI18nPhrase Phrases[] = {
     "ĞÜãùìá æùíôáíïı óŞìáôïò",
     "Pausar direktinspelningen",
     "Trec în pauzã emisiunea transmisã...",
-    "Az élö adás megállítva...",
+    "Az élõ adás megállítva...",
     "Pausa d'emissió en directe...",
     "ÀÕÖØÜ ŞâÛŞÖÕİİŞÓŞ ßàŞáÜŞâàĞ...",
     "Zaustavljanje ¾ivog signala...",
