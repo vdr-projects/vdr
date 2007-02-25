@@ -1009,6 +1009,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  cPluginManager::Active() in menu.c to "restart anyway?"
  for adding --remove-destination to the 'cp' command for binaries in the Makefiles of
  the plugins
+ for increasing the maximum number of DVB devices to 8
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

@@ -5128,3 +5128,4 @@ Video Disk Recorder Revision History
 - Simplified the error handling in cDvbTuner::GetFrontendStatus() (based on a
   discussion with Reinhard Nissl).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Increased the maximum number of DVB devices to 8 (thanks to Rolf Ahrenberg).

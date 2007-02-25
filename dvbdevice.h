@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.43 2007/01/13 11:35:07 kls Exp $
+ * $Id: dvbdevice.h 1.44 2007/02/25 12:23:57 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -19,7 +19,7 @@
 #error VDR requires Linux DVB driver API version 3!
 #endif
 
-#define MAXDVBDEVICES  4
+#define MAXDVBDEVICES  8
 
 class cDvbTuner;
 
