@@ -5043,3 +5043,7 @@ Video Disk Recorder Revision History
 - Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
 - Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
   Reinhard Nissl).
+
+2007-02-25: Version 1.4.6
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
