@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.148 2007/02/24 13:29:52 kls Exp $
+ * $Id: config.c 1.149 2007/02/25 11:27:24 kls Exp $
  */
 
 #include "config.h"
@@ -222,7 +222,7 @@ cSetup::cSetup(void)
   TimeoutRequChInfo = 1;
   MenuScrollPage = 1;
   MenuScrollWrap = 0;
-  MenuButtonCloses = 0;
+  MenuKeyCloses = 0;
   MarkInstantRecord = 1;
   strcpy(NameInstantRecord, "TITLE EPISODE");
   InstantRecordTime = 180;
@@ -384,7 +384,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollWrap"))      MenuScrollWrap     = atoi(Value);
-  else if (!strcasecmp(Name, "MenuButtonCloses"))    MenuButtonCloses   = atoi(Value);
+  else if (!strcasecmp(Name, "MenuKeyCloses"))       MenuKeyCloses      = atoi(Value);
   else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
   else if (!strcasecmp(Name, "NameInstantRecord"))   strn0cpy(NameInstantRecord, Value, MaxFileName);
   else if (!strcasecmp(Name, "InstantRecordTime"))   InstantRecordTime  = atoi(Value);
@@ -453,7 +453,7 @@ bool cSetup::Save(void)
   Store("TimeoutRequChInfo",  TimeoutRequChInfo);
   Store("MenuScrollPage",     MenuScrollPage);
   Store("MenuScrollWrap",     MenuScrollWrap);
-  Store("MenuButtonCloses",   MenuButtonCloses);
+  Store("MenuKeyCloses",      MenuKeyCloses);
   Store("MarkInstantRecord",  MarkInstantRecord);
   Store("NameInstantRecord",  NameInstantRecord);
   Store("InstantRecordTime",  InstantRecordTime);

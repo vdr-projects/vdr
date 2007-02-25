@@ -1756,6 +1756,7 @@ Marko Mäkelä <marko.makela@hut.fi>
  for suggesting to ignore k_Repeat when deciding whether the same key has been
  pressed in string input fields
  for fixing missing ',' in the Italian and Polish OSD texts
+ for pointing out that "Menu button closes" should actually be "Menu key closes"
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week

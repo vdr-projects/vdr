@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.284 2007/02/25 10:56:29 kls Exp $
+ * $Id: vdr.c 1.285 2007/02/25 11:27:36 kls Exp $
  */
 
 #include <getopt.h>
@@ -885,7 +885,7 @@ int main(int argc, char *argv[])
                   else
                      WasOpen = false;
                   }
-               if (!WasOpen || !WasMenu && !Setup.MenuButtonCloses)
+               if (!WasOpen || !WasMenu && !Setup.MenuKeyCloses)
                   Menu = new cMenuMain;
                }
                break;

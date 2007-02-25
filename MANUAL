@@ -112,7 +112,7 @@ Version 1.4
   "Ok" here opens the "Edit timer" menu.
 
   Textual options, like channel names or recording file names, can be edited
-  by pressing the "Right" button (which puts brackets around the current
+  by pressing the "Right" key (which puts brackets around the current
   character as in "[R]TL"), selecting the desired character position with
   "Left" and "Right", and changing the character with the "Up" and "Down"
   keys. "Ok" then confirms the changes. The "Red" key toggles between
@@ -120,7 +120,7 @@ Version 1.4
   insert and overwrite mode. The "Yellow" key deletes the current character
   (or the one to the right of the cursor in insert mode).
 
-  The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
+  The "Red", "Green", "Yellow" and "Blue" keys have special meanings
   in various menus and are listed at the bottom of the on-screen-display.
 
   At any point in the menu system, pressing the "Menu" key again will
@@ -137,22 +137,22 @@ Version 1.4
   displays detailed information about the selected programme. Pressing "Ok"
   again (or pressing "Back") gets you back into the "Schedule" menu.
 
-  From the "Schedule" menu, the "Green" button opens the "What's on now?"
+  From the "Schedule" menu, the "Green" key opens the "What's on now?"
   menu, which displays all programmes that are currently running on all
   channels that broadcast their programme information on the current
   transponder, or from channels that have been current lately (VDR stores
   all information it gathers in an internal list). The more channels you
   have been switching through lately, the longer this list will be.
-  The "Yellow" button opens the "What's on next?" menu, which lists all
+  The "Yellow" key opens the "What's on next?" menu, which lists all
   programmes that will start next on all channels.
 
-  Inside the "What's on now/next?" menus the "Green" button toggles between
-  the "Now" and "Next" display, and the "Yellow" button takes you to the
+  Inside the "What's on now/next?" menus the "Green" key toggles between
+  the "Now" and "Next" display, and the "Yellow" key takes you to the
   "Schedule" menu of the current channel in the list.
 
-  The "Red" button allows you to instantly program a timer to record the
-  selected programme. After pressing this button, the current event will
-  be marked with 'T', and the function of the "Red" button will change from
+  The "Red" key allows you to instantly program a timer to record the
+  selected programme. After pressing this key, the current event will
+  be marked with 'T', and the function of the "Red" key will change from
   "Record" to "Timer". Pressing "Red" on an event marked with 'T' will open
   the "Edit timer" menu for this timer, where you can make any modifications
   you may want to apply. Note that the Start and Stop time are offset by the
@@ -167,7 +167,7 @@ Version 1.4
   directly into the "Edit timer" menu in order to allow the user to make further
   changes to timer parameters before the actual recording starts.
 
-  The "Blue" button can be pressed to switch to the channel with the selected
+  The "Blue" key can be pressed to switch to the channel with the selected
   programme.
 
   The following markers in these menus give additional information about the
@@ -192,14 +192,14 @@ Version 1.4
 
   1. With no On Screen Menu displayed press the "Up" or "Down" key to switch
      to the next higher or lower channel.
-  2. Press the "Menu" button to bring up the On Screen Menu, select "Channels"
+  2. Press the "Menu" key to bring up the On Screen Menu, select "Channels"
      and browse through the list with the "Up" and "Down" key; to switch to the
      selected channel press "Ok".
   3. Directly type in the channel number with the numeric keys ('0'..'9');
      if no key is pressed for about one second, the digits collected so
      far will define the channel number.
   4. From the "Now", "Next" and "Event" menus (accessible through the "Schedule"
-     menu) by pressing the "Blue" button.
+     menu) by pressing the "Blue" key.
 
   Pressing the '0' key in normal viewing mode toggles between the current and
   the previous channel. A channel is considered "previous" if it has been
@@ -210,15 +210,15 @@ Version 1.4
   'current/next' information will be displayed below this line. This display
   automatically goes away after about five seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
-  the "Ok" button.
+  the "Ok" key.
 
 * Selecting audio tracks
 
   If the current channel or recording provides different audio tracks (for
-  different languages or Dolby Digital), the "Green" button in the "VDR" menu can
+  different languages or Dolby Digital), the "Green" key in the "VDR" menu can
   be pressed to bring up the "Audio" menu. Within this menu, the "Up" and "Down"
   keys can be used to switch between the audio tracks. If your remote control has
-  a dedicated "Audio" button, the first press of that button brings up the "Audio"
+  a dedicated "Audio" key, the first press of that key brings up the "Audio"
   menu, and every further press switches to the next available audio track.
 
   The "Left" and "Right" keys can be used to switch between "mono left", "stereo"
@@ -242,7 +242,7 @@ Version 1.4
   If the 'channels.conf' file contains "group separators" you can switch
   through these groups by pressing the "Left" and "Right" key while no
   menu is being displayed. The channel display will show the name of the
-  group, and if you press the "Ok" button while the group name is being
+  group, and if you press the "Ok" key while the group name is being
   displayed, you will switch to the first channel of that group.
 
   Channel groups can be whatever you decide them to be. You can either
@@ -251,11 +251,11 @@ Version 1.4
 
 * Instant Recording
 
-  You can start recording the current channel by pressing the "Red" button
+  You can start recording the current channel by pressing the "Red" key
   in the "VDR" menu. This will create a timer event named "@channelname" that
   starts at the current time and by default records for 3 hours.
   If you want to modify the recording time you need to edit the timer.
-  Stop instant recording by pressing the "Menu" button and selecting
+  Stop instant recording by pressing the "Menu" key and selecting
   "Stop Recording", or by disabling the timer. The default priority, lifetime
   and recording time can be defined in the "Setup/Recording" menu.
 
@@ -267,7 +267,7 @@ Version 1.4
   "Record") and immediately begin replaying that recording. Replay will be
   put into "pause" mode, so you can attend to whatever it was that disturbed
   your live viewing session. Once you're back, simply press the "Up" or "Play"
-  button and you'll be watching the current channel in time shift mode, right
+  key and you'll be watching the current channel in time shift mode, right
   from the point where you left off. The instant recording VDR has started
   will use the parameters for "Pause priority" and "Pause lifetime" as defined
   in the "Setup/Recording" menu. Recording time will be the same as for
@@ -277,12 +277,12 @@ Version 1.4
 * Replaying a Recording
 
   All recordings are listed in the "Recordings" menu. Browse through the
-  list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
+  list with the "Up" and "Down" key and press "Ok" (or the "Red" key)
   to start playback. New recordings are marked with an '*'.
   If the Setup parameter RecordingDirs has been set and there are recordings
   from repeating timers organized in a subdirectory structure, only the
   directory is displayed and it can be opened by pressing "Ok" (or the "Red"
-  button). A directory entry displays the total number of recordings within
+  key). A directory entry displays the total number of recordings within
   that directory (and any possible subdirectory thereof) as well as the total
   number of new recordings (as opposed to a recording's entry, which displays
   the date and time of the recording).
@@ -295,15 +295,15 @@ Version 1.4
   the order in which they were broadcast.
 
   Playback can be stopped via the "VDR" menu by selecting "Stop replaying",
-  or by pressing the "Blue" button outside the menu.
+  or by pressing the "Blue" key outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
-  button in the "VDR" menu.
+  key in the "VDR" menu.
 
 * Processing Recordings
 
   The configuration file 'reccmds.conf' can be used to define system commands
   that can be applied to the recording that is currently highlighted in the
-  "Recordings" menu. The "Red" button in the "Recordings" menu opens the "Recording
+  "Recordings" menu. The "Red" key in the "Recordings" menu opens the "Recording
   commands" menu if there are commands defined in the file 'reccmds.conf'. Pressing
   one of the keys '1'..'9' in the "Recordings" menu executes the corresponding
   command from 'reccmds.conf' (see also "Executing system commands" below).
@@ -322,20 +322,20 @@ Version 1.4
     Right   Runs playback forward or backward at a higher speed; press
             again to resume normal speed. If in Pause mode, runs forward or
             backward at a slower speed; press again to return to pause mode.
-            Pressing and holding down the button performs the function until
-            the button is released again.
+            Pressing and holding down the key performs the function until
+            the key is released again.
             If "Multi Speed Mode" has been enabled in the "Setup" menu, the
-            function of these buttons changes in a way that gives you three
+            function of these keys changes in a way that gives you three
             fast and slow speeds, through which you can switch by pressing
-            the respective button several times.
+            the respective key several times.
   - Red     Jump to a specific location. Enter the time you want to jump to
             and then press "Left" or "Right" to jump relative to the current
             position, "Up" to jump to an absolute position, and "Down" to
             jump and pause at an absolute position.
   - Green
     Yellow  Skips about 60 seconds back or forward.
-            Pressing and holding down the button performs the function until
-            the button is released again.
+            Pressing and holding down the key performs the function until
+            the key is released again.
   - Ok      Brings up the replay progress display, which shows the date,
             time and title of the recording, a progress bar and the
             current and total time of the recording.
@@ -469,7 +469,7 @@ Version 1.4
   First day: The date of the first day when this timer shall start recording
              (only available for repeating timers).
 
-  A timer can also be programmed by pressing the "Red" button on the "Schedule",
+  A timer can also be programmed by pressing the "Red" key on the "Schedule",
   "Now", "Next" or "Event" menus.
 
 * Parameters in the "Setup" menu
@@ -513,7 +513,7 @@ Version 1.4
   Info on channel switch = yes
                          Turns the display of the current/next information on
                          or off when switching the channel. The information is
-                         always displayed when pressing the "Ok" button in
+                         always displayed when pressing the "Ok" key in
                          normal viewing mode.
 
   Timeout requested channel info = yes
@@ -535,10 +535,10 @@ Version 1.4
                                (first) line of the list directly to the first (last)
                                one.
 
-  Menu button closes = no
-                         If set to "yes", pressing the "Menu" button while there is
+  Menu key closes = no
+                         If set to "yes", pressing the "Menu" key while there is
                          anything displayed on the OSD will close the OSD. If set
-                         to "no", the "Menu" button will open the main menu after
+                         to "no", the "Menu" key will open the main menu after
                          closing a temporary display, like, for instance, the channel
                          display.
 
@@ -607,7 +607,7 @@ Version 1.4
                          different languages, the preferred languages are checked
                          in the given order to decide which one to take.
 
-  Scan                   The "Red" button in the "Setup/EPG" menu can be used to
+  Scan                   The "Red" key in the "Setup/EPG" menu can be used to
                          force an EPG scan on a single DVB card system. If pressed,
                          and the primary DVB device is currently not recording or
                          replaying, it will loop through the transponders once and
@@ -711,7 +711,7 @@ Version 1.4
                          yes = use it (and create subdirectories)
 
   Use VPS = 0            Defines whether a timer that is created from an EPG entry
-                         (by pressing the "Record" (red) button in the "Schedules"
+                         (by pressing the "Record" (red) key in the "Schedules"
                          or "What's on now/next?" menu) will automatically use VPS
                          if the event it is created for has a VPS time.
 
@@ -723,7 +723,7 @@ Version 1.4
 
   Mark instant recording = yes
                          Defines whether an "instant recording" (started by
-                         pressing the "Red" button in the "VDR" menu) will be
+                         pressing the "Red" key in the "VDR" menu) will be
                          marked with a '@' character to make it distinguishable
                          from timer recordings in the "Recordings" menu.
 

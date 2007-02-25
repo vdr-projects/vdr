@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.288 2007/02/25 10:11:26 kls Exp $
+ * $Id: i18n.c 1.289 2007/02/25 11:26:29 kls Exp $
  *
  * Translations provided by:
  *
@@ -3546,7 +3546,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll rundt",
     "Z konce na zaË·tek",
   },
-  { "Setup.OSD$Menu button closes",
+  { "Setup.OSD$Menu key closes",
     "Menu-Taste schlieﬂt",
     "Meni gumb zapre meni",
     "Usare il bottone Menu per chiudere",

@@ -5115,3 +5115,9 @@ Video Disk Recorder Revision History
   up at a particular time (thanks to Udo Richter).
 - The HUP signal now forces a restart of VDR (thanks to Udo Richter).
 - cThread::EmergencyExit() has been replaced by ShutdownHandler.RequestEmergencyExit().
+- Several references to "button" in a remote control context have been changed
+  to "key" (based on a report from Marko Mäkelä regarding the "Menu button closes"
+  text). The "MenuButtonCloses" parameter in 'setup.conf' has therefore been
+  renamed to "MenuKeyCloses", accordingly. This will result in an "unknown config
+  parameter: MenuButtonCloses" error message in the log file, so you may want to
+  remove that entry from your 'setup.conf' file.
