@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.289 2007/02/25 11:26:29 kls Exp $
+ * $Id: i18n.c 1.290 2007/02/25 11:57:25 kls Exp $
  *
  * Translations provided by:
  *
@@ -5561,7 +5561,7 @@ const tI18nPhrase Phrases[] = {
     "Ligar",
     "Arrêt",
     "Power",
-    "Virtakytkin",
+    "Virta",
     "Wy³±cz",
     "Apagar",
     "Këåßóéìï",
@@ -5693,7 +5693,7 @@ const tI18nPhrase Phrases[] = {
     "Sem som",
     "Coupure du son",
     "Lyd av",
-    "Äänetön",
+    "Mykistys",
     "Wycisz",
     "Mudo",
     "Óéùğçëü",
