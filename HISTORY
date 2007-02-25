@@ -5109,7 +5109,11 @@ Video Disk Recorder Revision History
   with open file handles when starting background commands (thanks to Reinhard
   Nissl).
 - Removed 'assert(0)' from cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
+- Fixed a possible crash when loading an invalid XPM file (thanks to Martin Wache).
+- Updated satellite names in 'sources.conf' (thanks to Thilo Wunderlich).
 - Adapted 'libsi' to DVB-S2 (thanks to Marco Schlüßler).
+- Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
+  Reinhard Nissl).
 - Shutdown handling has been rewritten (thanks to Udo Richter).
 - Plugins can now implement the new function WakeupTime() to request VDR to wake
   up at a particular time (thanks to Udo Richter).
