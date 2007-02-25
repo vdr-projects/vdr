@@ -5121,3 +5121,5 @@ Video Disk Recorder Revision History
   renamed to "MenuKeyCloses", accordingly. This will result in an "unknown config
   parameter: MenuButtonCloses" error message in the log file, so you may want to
   remove that entry from your 'setup.conf' file.
+- Simplified the error handling in cDvbTuner::GetFrontendStatus() (based on a
+  discussion with Reinhard Nissl).
