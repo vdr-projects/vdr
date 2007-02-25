@@ -5129,3 +5129,8 @@ Video Disk Recorder Revision History
   discussion with Reinhard Nissl).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Increased the maximum number of DVB devices to 8 (thanks to Rolf Ahrenberg).
+- The new Setup parameter "Channel entry timeout" can be used to customize the time
+  since the last keypress until a numerically entered channel number is considered
+  complete, and the channel is switched (suggested by Helmut Auer). Setting this
+  parameter to 0 turns off the automatic channel switching, and the user will
+  have to confirm the entry by pressing the "Ok" key.

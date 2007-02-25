@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.286 2007/02/25 11:26:53 kls Exp $
+ * $Id: config.h 1.287 2007/02/25 13:58:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -225,6 +225,7 @@ public:
   int EPGLinger;
   int SVDRPTimeout;
   int ZapTimeout;
+  int ChannelEntryTimeout;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
   int PausePriority, PauseLifetime;

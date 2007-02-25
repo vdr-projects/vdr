@@ -786,8 +786,17 @@ Version 1.4
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
 
-  Zap Timeout = 3        The time (in seconds) until a channel counts as "previous"
+  Zap timeout = 3        The time (in seconds) until a channel counts as "previous"
                          for switching with '0'
+
+  Channel entry timeout = 1000
+                         The time (in milliseconds) after the last keypress until
+                         a numerically entered channel number is considered
+                         complete, and the channel is switched. Default is 1000,
+                         a value of 0 turns this off, so a numerically entered
+                         channel number then needs to be confirmed with the "Ok"
+                         key. Note that the total maximum is also limited by
+                         the "OSD/Channel info time" parameter.
 
   Initial channel = 0    The number of the channel that shall be tuned to when
                          VDR starts. Default is 0, which means that it will

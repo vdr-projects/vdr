@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.290 2007/02/25 11:57:25 kls Exp $
+ * $Id: i18n.c 1.291 2007/02/25 13:59:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -4645,6 +4645,28 @@ const tI18nPhrase Phrases[] = {
     "Kanalivahetuse ooteaeg (s)",
     "Zap timeout (s)",
     "Èasový limit Zap (s)",
+  },
+  { "Setup.Miscellaneous$Channel entry timeout (ms)",
+    "Zeitlimit für Kanaleingabe (ms)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.Miscellaneous$Initial channel",
     "Kanal beim Einschalten",
