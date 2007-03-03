@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.291 2007/02/25 13:59:28 kls Exp $
+ * $Id: i18n.c 1.292 2007/03/03 15:38:18 kls Exp $
  *
  * Translations provided by:
  *
@@ -1349,7 +1349,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Muokkaus kesken - käynnistetäänkö uudelleen?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1437,7 +1437,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1459,7 +1459,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "VDR sammuu myöhemmin - pakota virtakytkimellä",
+    "VDR sammuu myöhemmin - pakota virtanäppäimellä",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1503,7 +1503,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "Leikkaus kesken - sammutetaanko?",
+    "Muokkaus kesken - sammutetaanko?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -4654,7 +4654,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanavasyötteen odotusaika (ms)",
     "",// TODO
     "",// TODO
     "",// TODO

@@ -5134,3 +5134,7 @@ Video Disk Recorder Revision History
   complete, and the channel is switched (suggested by Helmut Auer). Setting this
   parameter to 0 turns off the automatic channel switching, and the user will
   have to confirm the entry by pressing the "Ok" key.
+
+2007-03-03: Version 1.5.2
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
