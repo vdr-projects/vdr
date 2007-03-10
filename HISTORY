@@ -5139,6 +5139,8 @@ Video Disk Recorder Revision History
   parameter to 0 turns off the automatic channel switching, and the user will
   have to confirm the entry by pressing the "Ok" key.
 
-2007-03-03: Version 1.5.2
+2007-03-10: Version 1.5.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed handling user activity for shutdown, which I had messed when adopting Udo's
+  original patch (thanks to Udo Richter).

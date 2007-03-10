@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.285 2007/02/25 11:27:36 kls Exp $
+ * $Id: vdr.c 1.286 2007/03/10 13:00:22 kls Exp $
  */
 
 #include <getopt.h>
@@ -1162,7 +1162,7 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if (!Interact && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && cRemote::LastActivity() > ACTIVITYTIMEOUT) {
+        if (!Interact && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (time(NULL) - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
            // Shutdown:
