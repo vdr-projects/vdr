@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.13 2006/04/16 10:59:15 kls Exp $
+ * $Id: font.c 1.14 2007/03/11 09:51:44 kls Exp $
  */
 
 #include "config.h"
@@ -28,6 +28,10 @@
 #include "fontosd-iso8859-7.c"
 #include "fontsml-iso8859-7.c"
 
+#include "fontfix-iso8859-9.c"
+#include "fontosd-iso8859-9.c"
+#include "fontsml-iso8859-9.c"
+
 #include "fontfix-iso8859-13.c"
 #include "fontosd-iso8859-13.c"
 #include "fontsml-iso8859-13.c"
@@ -43,6 +47,7 @@ static const void *const FontData[eDvbCodeSize][eDvbFontSize] = {
   { FontOsd_iso8859_2,  FontFix_iso8859_2,  FontSml_iso8859_2 },
   { FontOsd_iso8859_5,  FontFix_iso8859_5,  FontSml_iso8859_5 },
   { FontOsd_iso8859_7,  FontFix_iso8859_7,  FontSml_iso8859_7 },
+  { FontOsd_iso8859_9,  FontFix_iso8859_9,  FontSml_iso8859_9 },
   { FontOsd_iso8859_13, FontFix_iso8859_13, FontSml_iso8859_13 },
   { FontOsd_iso8859_15, FontFix_iso8859_15, FontSml_iso8859_15 },
   };
@@ -52,6 +57,7 @@ static const char *FontCode[eDvbCodeSize] = {
   "iso8859-2",
   "iso8859-5",
   "iso8859-7",
+  "iso8859-9",
   "iso8859-13",
   "iso8859-15",
   };
