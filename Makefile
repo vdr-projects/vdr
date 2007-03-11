@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.98 2007/03/11 10:17:55 kls Exp $
+# $Id: Makefile 1.99 2007/03/11 10:22:18 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -59,6 +59,10 @@ FIXFONT_ISO8859_9 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-9
 OSDFONT_ISO8859_9 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-9
 SMLFONT_ISO8859_9 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-9
 
+FIXFONT_ISO8859_13 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-13
+OSDFONT_ISO8859_13 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-13
+SMLFONT_ISO8859_13 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-13
+
 FIXFONT_ISO8859_15 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-15
 OSDFONT_ISO8859_15 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-15
 SMLFONT_ISO8859_15 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-15
@@ -100,6 +104,7 @@ font: genfontfile\
       fontfix-iso8859-5.c fontosd-iso8859-5.c fontsml-iso8859-5.c\
       fontfix-iso8859-7.c fontosd-iso8859-7.c fontsml-iso8859-7.c\
       fontfix-iso8859-9.c fontosd-iso8859-9.c fontsml-iso8859-9.c\
+      fontfix-iso8859-13.c fontosd-iso8859-13.c fontsml-iso8859-13.c\
       fontfix-iso8859-15.c fontosd-iso8859-15.c fontsml-iso8859-15.c
 	@echo "font files created."
 
@@ -158,6 +163,13 @@ fontosd-iso8859-9.c:
 	./genfontfile "cFont::tPixelData FontOsd_iso8859_9" "$(OSDFONT_ISO8859_9)" > $@
 fontsml-iso8859-9.c:
 	./genfontfile "cFont::tPixelData FontSml_iso8859_9" "$(SMLFONT_ISO8859_9)" > $@
+
+fontfix-iso8859-13.c:
+	./genfontfile "cFont::tPixelData FontFix_iso8859_13" "$(FIXFONT_ISO8859_13)" > $@
+fontosd-iso8859-13.c:
+	./genfontfile "cFont::tPixelData FontOsd_iso8859_13" "$(OSDFONT_ISO8859_13)" > $@
+fontsml-iso8859-13.c:
+	./genfontfile "cFont::tPixelData FontSml_iso8859_13" "$(SMLFONT_ISO8859_13)" > $@
 
 fontfix-iso8859-15.c:
 	./genfontfile "cFont::tPixelData FontFix_iso8859_15" "$(FIXFONT_ISO8859_15)" > $@

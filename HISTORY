@@ -5145,3 +5145,4 @@ Video Disk Recorder Revision History
 - Fixed handling user activity for shutdown, which I had messed when adopting Udo's
   original patch (thanks to Udo Richter).
 - Added Turkish language texts (thanks to Oktay Yolgeçen).
+- Added missing rules for generating iso8859-13 font to Makefile.
