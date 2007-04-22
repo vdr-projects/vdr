@@ -5099,6 +5099,10 @@ Video Disk Recorder Revision History
 - Fixed handling error status in cDvbTuner::GetFrontendStatus() (thanks to
   Reinhard Nissl).
 
+2007-03-03: Version 1.4.6
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+
 2007-02-25: Version 1.5.1
 
 - Added cDevice::HasCi() so that devices with Common Interface can be avoided
@@ -5134,3 +5138,30 @@ Video Disk Recorder Revision History
   complete, and the channel is switched (suggested by Helmut Auer). Setting this
   parameter to 0 turns off the automatic channel switching, and the user will
   have to confirm the entry by pressing the "Ok" key.
+
+2007-04-22: Version 1.5.2
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed handling user activity for shutdown, which I had messed when adopting Udo's
+  original patch (thanks to Udo Richter).
+- Added Turkish language texts (thanks to Oktay Yolgeçen).
+- Added missing rules for generating iso8859-13 font to Makefile.
+- 'libsi' now converts the incoming strings into the system's character set
+  according to the DVB standard. The system's character set is determined from
+  the LANG environment variable. If no recognizable setting can be found, no
+  conversion will take place. Note that currently only the strings received from the
+  SI data stream are converted, there have not been any changes regarding displaying
+  UTF-8 characters on the OSD, yet - this will follow in one of the next steps.
+  With this conversion, it should now be safe to run VDR on a UTF-8 file system,
+  because all incoming characters are converted to UTF-8. This will most likely
+  result in wrong characters being displayed on the OSD (because there UTF-8 is
+  not known, yet), but the file names should be ok (haven't tested this myself,
+  though, because I don't do UTF-8 - so please be very careful when testing!).
+  There's one piece of bad news here: the German pay-tv broadcaster Premiere
+  apparently encodes all EPG strings as ISO8859-1, but fails to correctly mark
+  these strings as such. Therefore 'libsi' (following the DVB standard) considers
+  the strings to be encoded in the default ISO6937 and converts them to whatever
+  the system's character set is. This, of course, results in wrong umlauts.
+  On its old transponder, the ProSieben/SAT.1 channels also had their EPG data
+  wrongly encoded, but apparently on the new transponder they started broadcasting
+  on this month, they got it right.

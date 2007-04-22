@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.16 2007/02/03 11:47:25 kls Exp $
+ *   $Id: si.h 1.17 2007/04/22 13:32:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -485,6 +485,11 @@ protected:
    void decodeText(char *buffer, int size);
    void decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 };
+
+// Call this function to set the system character table. CharacterTable is a string
+// like "iso8859-15" or "utf-8" (case insensitive).
+// Returns true if the character table was recognized.
+bool SetSystemCharacterTable(const char *CharacterTable);
 
 } //end of namespace
 
