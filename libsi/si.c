@@ -6,12 +6,15 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.17 2007/02/03 11:45:58 kls Exp $
+ *   $Id: si.c 1.18 2007/04/22 13:56:39 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
-#include <string.h>
 #include "si.h"
+#include <errno.h>
+#include <iconv.h>
+#include <malloc.h>
+#include <string.h>
 #include "descriptor.h"
 
 namespace SI {
@@ -232,7 +235,6 @@ char *String::getText(char *buffer, int size) {
    return buffer;
 }
 
-//taken from VDR, Copyright Klaus Schmidinger <kls@cadsoft.de>
 char *String::getText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion) {
    int len=getLength();
    if (len < 0 || len >= sizeBuffer) {
@@ -245,21 +247,163 @@ char *String::getText(char *buffer, char *shortVersion, int sizeBuffer, int size
    return buffer;
 }
 
-//taken from libdtv, Copyright Rolf Hakenes <hakenes@hippomi.de>
+static const char *CharacterTables1[] = {
+  NULL,         // 0x00
+  "ISO8859-5",  // 0x01
+  "ISO8859-6",  // 0x02
+  "ISO8859-7",  // 0x03
+  "ISO8859-8",  // 0x04
+  "ISO8859-9",  // 0x05
+  "ISO8859-10", // 0x06
+  "ISO8859-11", // 0x07
+  "ISO8859-12", // 0x08
+  "ISO8859-13", // 0x09
+  "ISO8859-14", // 0x0A
+  "ISO8859-15", // 0x0B
+  NULL,         // 0x0C
+  NULL,         // 0x0D
+  NULL,         // 0x0E
+  NULL,         // 0x0F
+  NULL,         // 0x10
+  "UTF16",      // 0x11
+  "EUC-KR",     // 0x12
+  "GB2312",     // 0x13
+  "GBK",        // 0x14
+  "UTF8",       // 0x15
+  NULL,         // 0x16
+  NULL,         // 0x17
+  NULL,         // 0x18
+  NULL,         // 0x19
+  NULL,         // 0x1A
+  NULL,         // 0x1B
+  NULL,         // 0x1C
+  NULL,         // 0x1D
+  NULL,         // 0x1E
+  NULL,         // 0x1F
+};
+
+#define SingleByteLimit 0x0B
+
+static const char *CharacterTables2[] = {
+  NULL,         // 0x00
+  "ISO8859-1",  // 0x01
+  "ISO8859-2",  // 0x02
+  "ISO8859-3",  // 0x03
+  "ISO8859-4",  // 0x04
+  "ISO8859-5",  // 0x05
+  "ISO8859-6",  // 0x06
+  "ISO8859-7",  // 0x07
+  "ISO8859-8",  // 0x08
+  "ISO8859-9",  // 0x09
+  "ISO8859-10", // 0x0A
+  "ISO8859-11", // 0x0B
+  NULL,         // 0x0C
+  "ISO8859-13", // 0x0D
+  "ISO8859-14", // 0x0E
+  "ISO8859-15", // 0x0F
+};
+
+#define NumEntries(Table) (sizeof(Table) / sizeof(char *))
+
+static const char *SystemCharacterTable = NULL;
+bool SystemCharacterTableIsSingleByte = true;
+
+bool SetSystemCharacterTable(const char *CharacterTable) {
+   if (CharacterTable) {
+      for (unsigned int i = 0; i < NumEntries(CharacterTables1); i++) {
+         if (CharacterTables1[i] && strcasecmp(CharacterTable, CharacterTables1[i]) == 0) {
+            SystemCharacterTable = CharacterTables1[i];
+            SystemCharacterTableIsSingleByte = i <= SingleByteLimit;
+            return true;
+         }
+      }
+      for (unsigned int i = 0; i < NumEntries(CharacterTables2); i++) {
+         if (CharacterTables2[i] && strcasecmp(CharacterTable, CharacterTables2[i]) == 0) {
+            SystemCharacterTable = CharacterTables2[i];
+            SystemCharacterTableIsSingleByte = true;
+            return true;
+         }
+      }
+   } else {
+      SystemCharacterTable = NULL;
+      SystemCharacterTableIsSingleByte = true;
+      return true;
+   }
+   return false;
+}
+
+// Determines the character table used in the given buffer and returns
+// a string indicating that table. If no table can be determined, the
+// default ISO6937 is returned. If a table can be determined, the buffer
+// and length are adjusted accordingly.
+static const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL) {
+   const char *cs = "ISO6937";
+   if (isSingleByte)
+      *isSingleByte = false;
+   if (length <= 0)
+      return cs;
+   unsigned int tag = buffer[0];
+   if (tag >= 0x20)
+      return cs;
+   if (tag == 0x10) {
+      if (length >= 3) {
+         tag = (buffer[1] << 8) | buffer[2];
+         if (tag < NumEntries(CharacterTables2) && CharacterTables2[tag]) {
+            buffer += 3;
+            length -= 3;
+            if (isSingleByte)
+               *isSingleByte = true;
+            return CharacterTables2[tag];
+         }
+      }
+   } else if (tag < NumEntries(CharacterTables1) && CharacterTables1[tag]) {
+      buffer += 1;
+      length -= 1;
+      if (isSingleByte)
+         *isSingleByte = tag <= SingleByteLimit;
+      return CharacterTables1[tag];
+   }
+   return cs;
+}
+
+static bool convertCharacterTable(const char *from, size_t fromLength, char *to, size_t toLength, const char *fromCode)
+{
+  if (SystemCharacterTable) {
+     iconv_t cd = iconv_open(SystemCharacterTable, fromCode);
+     if (cd >= 0) {
+        char *fromPtr = (char *)from;
+        while (fromLength > 0 && toLength > 1) {
+           if (iconv(cd, &fromPtr, &fromLength, &to, &toLength) == size_t(-1)) {
+              if (errno == EILSEQ) {
+                 // A character can't be converted, so mark it with '?' and proceed:
+                 fromPtr++;
+                 fromLength--;
+                 *to++ = '?';
+                 toLength--;
+              }
+              else
+                 break;
+           }
+        }
+        *to = 0;
+        iconv_close(cd);
+        return true;
+     }
+  }
+  return false;
+}
+
+// originally from libdtv, Copyright Rolf Hakenes <hakenes@hippomi.de>
 void String::decodeText(char *buffer, int size) {
    const unsigned char *from=data.getData(0);
    char *to=buffer;
-
-   /* Disable detection of coding tables - libdtv doesn't do it either
-   if ( (0x01 <= *from) && (*from <= 0x1f) ) {
-      codeTable=*from
-   }
-   */
-
-   if (*from == 0x10)
-      from += 3; // skips code table info
-
    int len=getLength();
+   if (len <= 0) {
+      *to = '\0';
+      return;
+      }
+   bool singleByte;
+   const char *cs = getCharacterTable(from, len, &singleByte);
    for (int i = 0; i < len; i++) {
       if (*from == 0)
          break;
@@ -276,6 +420,11 @@ void String::decodeText(char *buffer, int size) {
          break;
    }
    *to = '\0';
+   if (!singleByte || !SystemCharacterTableIsSingleByte) {
+      char convBuffer[size];
+      if (convertCharacterTable(buffer, strlen(buffer), convBuffer, sizeof(convBuffer), cs))
+         strncpy(buffer, convBuffer, strlen(convBuffer) + 1);
+   }
 }
 
 void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion) {
@@ -283,11 +432,14 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
    char *to=buffer;
    char *toShort=shortVersion;
    int IsShortName=0;
-
-   if (*from == 0x10)
-      from += 3; // skips code table info
-
    int len=getLength();
+   if (len <= 0) {
+      *to = '\0';
+      *toShort = '\0';
+      return;
+      }
+   bool singleByte;
+   const char *cs = getCharacterTable(from, len, &singleByte);
    for (int i = 0; i < len; i++) {
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
@@ -312,6 +464,14 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
    }
    *to = '\0';
    *toShort = '\0';
+   if (!singleByte || !SystemCharacterTableIsSingleByte) {
+      char convBuffer[sizeBuffer];
+      if (convertCharacterTable(buffer, strlen(buffer), convBuffer, sizeof(convBuffer), cs))
+         strncpy(buffer, convBuffer, strlen(convBuffer) + 1);
+      char convShortVersion[sizeShortVersion];
+      if (convertCharacterTable(shortVersion, strlen(shortVersion), convShortVersion, sizeof(convShortVersion), cs))
+         strncpy(shortVersion, convShortVersion, strlen(convShortVersion) + 1);
+   }
 }
 
 Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, bool returnUnimplemetedDescriptor) {

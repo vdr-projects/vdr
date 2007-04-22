@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.286 2007/03/10 13:00:22 kls Exp $
+ * $Id: vdr.c 1.287 2007/04/22 13:28:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -455,15 +455,6 @@ int main(int argc, char *argv[])
      return 0;
      }
 
-  // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
-  char *LangEnv;
-  if ((LangEnv = getenv("LANG"))     != NULL && strcasestr(LangEnv, "utf") ||
-      (LangEnv = getenv("LC_ALL"))   != NULL && strcasestr(LangEnv, "utf") ||
-      (LangEnv = getenv("LC_CTYPE")) != NULL && strcasestr(LangEnv, "utf")) {
-     fprintf(stderr, "vdr: please turn off UTF-8 before starting VDR\n");
-     return 2;
-     }
-
   // Log file:
 
   if (SysLogLevel > 0)
@@ -499,6 +490,18 @@ int main(int argc, char *argv[])
   if (DaemonMode)
      dsyslog("running as daemon (tid=%d)", cThread::ThreadId());
   cThread::SetMainThreadId();
+
+  // Set the system character table:
+
+  char *LangEnv = getenv("LANG");
+  if (LangEnv) {
+     char *CodeSet = strchr(LangEnv, '.');
+     if (CodeSet) {
+        CodeSet++; // skip the dot
+        bool known = SI::SetSystemCharacterTable(CodeSet);
+        isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
+        }
+     }
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
