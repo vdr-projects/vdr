@@ -5165,3 +5165,7 @@ Video Disk Recorder Revision History
   On its old transponder, the ProSieben/SAT.1 channels also had their EPG data
   wrongly encoded, but apparently on the new transponder they started broadcasting
   on this month, they got it right.
+
+2007-04-28: Version 1.5.3
+
+- Fixed some spelling errors in 'newplugin' (thanks to Ville Skyttä).

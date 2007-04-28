@@ -1659,6 +1659,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting that there are places where ntohs() is assigned to different types
  for adapting cThread::ThreadId() to recent kernels
  for some improvements to the man pages
+ for fixing some spelling errors in 'newplugin'
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
