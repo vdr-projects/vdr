@@ -5047,3 +5047,8 @@ Video Disk Recorder Revision History
 2007-03-03: Version 1.4.6
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+
+2007-04-28: Version 1.4.6-1
+
+- Fixed a busy loop in fast forward if the next video data file is missing
+  (thanks to Reinhard Nissl).
