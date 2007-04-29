@@ -2016,6 +2016,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for suggesting that cDevice::GetDevice() should prefer any device that's already
  receiving and doesn't require detatching receivers
  for improving handling Transfer Mode devices when selecting a device to receive
+ for fixing handling frequencies in NitFilter::Process()
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.13 2006/10/28 12:31:04 kls Exp $
+ * $Id: nit.c 1.14 2007/04/29 11:35:33 kls Exp $
  */
 
 #include "nit.h"
@@ -144,17 +144,16 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                         if (Setup.UpdateChannels >= 5) {
-                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) { // only modify channels if we're actually receiving this transponder
-                              if (!ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Channel->Transponder())) {
-                                 for (int n = 0; n < NumFrequencies; n++) {
-                                     if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], Polarization), Channel->Transponder())) {
-                                        Frequency = Frequencies[n];
-                                        break;
-                                        }
+                           if (!ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Channel->Transponder())) {
+                              for (int n = 0; n < NumFrequencies; n++) {
+                                  if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], Polarization), Channel->Transponder())) {
+                                     Frequency = Frequencies[n];
+                                     break;
                                      }
-                                 }
-                              Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate);
+                                  }
                               }
+                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) // only modify channels if we're actually receiving this transponder
+                              Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate);
                            }
                         found = true;
                         }
@@ -195,17 +194,16 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                         if (Setup.UpdateChannels >= 5) {
-                           if (ISTRANSPONDER(Frequency / 1000, Transponder())) { // only modify channels if we're actually receiving this transponder
-                              if (!ISTRANSPONDER(Frequency / 1000, Channel->Transponder())) {
-                                 for (int n = 0; n < NumFrequencies; n++) {
-                                     if (ISTRANSPONDER(Frequencies[n] / 1000, Channel->Transponder())) {
-                                        Frequency = Frequencies[n];
-                                        break;
-                                        }
+                           if (!ISTRANSPONDER(Frequency / 1000, Channel->Transponder())) {
+                              for (int n = 0; n < NumFrequencies; n++) {
+                                  if (ISTRANSPONDER(Frequencies[n] / 1000, Channel->Transponder())) {
+                                     Frequency = Frequencies[n];
+                                     break;
                                      }
-                                 }
-                              Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate);
+                                  }
                               }
+                           if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
+                              Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate);
                            }
                         found = true;
                         }
@@ -253,17 +251,16 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                      if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                         if (Setup.UpdateChannels >= 5) {
-                           if (ISTRANSPONDER(Frequency / 1000000, Transponder())) { // only modify channels if we're actually receiving this transponder
-                              if (!ISTRANSPONDER(Frequency / 1000000, Channel->Transponder())) {
-                                 for (int n = 0; n < NumFrequencies; n++) {
-                                     if (ISTRANSPONDER(Frequencies[n] / 1000000, Channel->Transponder())) {
-                                        Frequency = Frequencies[n];
-                                        break;
-                                        }
+                           if (!ISTRANSPONDER(Frequency / 1000000, Channel->Transponder())) {
+                              for (int n = 0; n < NumFrequencies; n++) {
+                                  if (ISTRANSPONDER(Frequencies[n] / 1000000, Channel->Transponder())) {
+                                     Frequency = Frequencies[n];
+                                     break;
                                      }
-                                 }
-                              Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
+                                  }
                               }
+                           if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
+                              Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
                            }
                         found = true;
                         }
