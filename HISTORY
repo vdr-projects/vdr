@@ -5166,11 +5166,13 @@ Video Disk Recorder Revision History
   wrongly encoded, but apparently on the new transponder they started broadcasting
   on this month, they got it right.
 
-2007-04-28: Version 1.4.6-1
+2007-04-30: Version 1.4.6-1
 
 - Fixed a busy loop in fast forward if the next video data file is missing
   (thanks to Reinhard Nissl).
 - Fixed handling frequencies in NitFilter::Process() (thanks to Anssi Hannula).
+- Fixed handling ChannelUp/Down keys if there is currently a replay running
+  (thanks to Marco Schlüßler).
 
 2007-04-30: Version 1.5.3
 
@@ -5182,3 +5184,5 @@ Video Disk Recorder Revision History
   Richter).
 - Non-primary devices in Transfer mode are now also used for recording (thanks
   to Anssi Hannula).
+- Fixed handling ChannelUp/Down keys if there is currently a replay running
+  (thanks to Marco Schlüßler).
