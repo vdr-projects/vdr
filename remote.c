@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.56 2007/02/24 13:23:12 kls Exp $
+ * $Id: remote.c 1.57 2007/04/30 12:27:56 kls Exp $
  */
 
 #include "remote.h"
@@ -31,6 +31,7 @@ cMutex cRemote::mutex;
 cCondVar cRemote::keyPressed;
 const char *cRemote::keyMacroPlugin = NULL;
 const char *cRemote::callPlugin = NULL;
+bool cRemote::enabled = true;
 time_t cRemote::lastActivity = 0;
 
 cRemote::cRemote(const char *Name)
@@ -185,7 +186,7 @@ eKeys cRemote::Get(int WaitMs, char **UnknownCode)
          if ((k & k_Repeat) != 0)
             repeatTimeout.Set(REPEATTIMEOUT);
          lastActivity = time(NULL);
-         return k;
+         return enabled ? k : kNone;
          }
       else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs) && repeatTimeout.TimedOut())
          return kNone;

@@ -585,6 +585,7 @@ Helmut Auer <vdr@helmutauer.de>
  for reporting that the shutdown script is given a reboot time in the past if there
  is a recording going on or about to start, and the user insists in shutting down now
  for suggesting to make the channel entry timeout configurable
+ for a patch that was used to implement the SVDRP command REMO
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -2078,3 +2079,6 @@ Petri Helin <phelin@googlemail.com>
 
 Oktay Yolgeçen <oktay_73@yahoo.de>
  for translating OSD texts to the Turkish language
+
+Krzysztof Parma <krzycho@zoz.wodzislaw.pl>
+ for suggesting to implement the SVDRP command REMO

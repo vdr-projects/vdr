@@ -5186,3 +5186,6 @@ Video Disk Recorder Revision History
   to Anssi Hannula).
 - Fixed handling ChannelUp/Down keys if there is currently a replay running
   (thanks to Marco Schlüßler).
+- The new SVDRP command REMO can be used to turn VDR's remote control off and
+  on in case other programs need to be controlled (based on patches from Krzysztof
+  Parma and Helmut Auer).

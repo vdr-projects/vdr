@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.100 2006/08/12 09:09:55 kls Exp $
+ * $Id: svdrp.c 1.101 2007/04/30 12:41:07 kls Exp $
  */
 
 #include "svdrp.h"
@@ -290,6 +290,9 @@ const char *HelpPages[] = {
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
   "    entered data is buffered until the terminating '.' is seen).",
+  "REMO [ on | off ]\n"
+  "    Turns the remote control on or off. Without a parameter, the current\n"
+  "    status of the remote control is reported.",
   "SCAN\n"
   "    Forces an EPG scan. If this is a single DVB device system, the scan\n"
   "    will be done on the primary device unless it is currently recording.",
@@ -1406,6 +1409,24 @@ void cSVDRP::CmdPUTE(const char *Option)
      DELETENULL(PUTEhandler);
 }
 
+void cSVDRP::CmdREMO(const char *Option)
+{
+  if (*Option) {
+     if (!strcasecmp(Option, "ON")) {
+        cRemote::SetEnabled(true);
+        Reply(250, "Remote control enabled");
+        }
+     else if (!strcasecmp(Option, "OFF")) {
+        cRemote::SetEnabled(false);
+        Reply(250, "Remote control disabled");
+        }
+     else
+        Reply(501, "Invalid Option \"%s\"", Option);
+     }
+  else
+     Reply(250, "Remote control is %s", cRemote::Enabled() ? "enabled" : "disabled");
+}
+
 void cSVDRP::CmdSCAN(const char *Option)
 {
   EITScanner.ForceScan();
@@ -1526,6 +1547,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("PLAY"))  CmdPLAY(s);
   else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
+  else if (CMD("REMO"))  CmdREMO(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
