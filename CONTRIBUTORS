@@ -1393,6 +1393,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a problem with displaying the replay mode symbol in case of "Multi
  speed mode"
  for removing 'assert(0)' from cDvbSpuDecoder::setTime()
+ for fixing handling ChannelUp/Down keys if there is currently a replay running
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

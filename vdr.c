@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.282 2006/12/02 16:22:12 kls Exp $
+ * $Id: vdr.c 1.282.1.1 2007/04/30 09:48:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -947,7 +947,7 @@ int main(int argc, char *argv[])
           case kChanDn:
                if (!Interact)
                   Menu = new cDisplayChannel(NORMALKEY(key));
-               else if (cDisplayChannel::IsOpen()) {
+               else if (cDisplayChannel::IsOpen() || cControl::Control()) {
                   Interact->ProcessKey(key);
                   continue;
                   }

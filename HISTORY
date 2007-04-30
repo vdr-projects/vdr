@@ -5048,8 +5048,10 @@ Video Disk Recorder Revision History
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 
-2007-04-29: Version 1.4.6-1
+2007-04-30: Version 1.4.6-1
 
 - Fixed a busy loop in fast forward if the next video data file is missing
   (thanks to Reinhard Nissl).
 - Fixed handling frequencies in NitFilter::Process() (thanks to Anssi Hannula).
+- Fixed handling ChannelUp/Down keys if there is currently a replay running
+  (thanks to Marco Schlüßler).
