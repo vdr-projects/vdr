@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.47 2007/01/07 14:38:03 kls Exp $
+ * $Id: ci.c 1.48 2007/04/30 13:02:49 kls Exp $
  */
 
 #include "ci.h"
@@ -643,7 +643,7 @@ void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 
 // --- cCiConditionalAccessSupport -------------------------------------------
 
-#define MAXCASYSTEMIDS 16
+#define MAXCASYSTEMIDS 64
 
 // CA Enable Ids:
 
