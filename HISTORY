@@ -5172,9 +5172,11 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Fixed handling frequencies in NitFilter::Process() (thanks to Anssi Hannula).
 
-2007-04-28: Version 1.5.3
+2007-04-30: Version 1.5.3
 
 - Fixed some spelling errors in 'newplugin' (thanks to Ville Skyttä).
 - Fixed a busy loop in fast forward if the next video data file is missing
   (thanks to Reinhard Nissl).
 - Fixed handling frequencies in NitFilter::Process() (thanks to Anssi Hannula).
+- Fixed a race condition with signal handlers at program exit (thanks to Udo
+  Richter).

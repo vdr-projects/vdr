@@ -1492,6 +1492,7 @@ Udo Richter <udo_richter@gmx.de>
  for implementing cPlugin::WakeupTime() to allow plugins to request VDR to wake
  up at a particular time
  for making the HUP signal force a restart of VDR
+ for fixing a race condition with signal handlers at program exit
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

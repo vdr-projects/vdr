@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.287 2007/04/22 13:28:32 kls Exp $
+ * $Id: vdr.c 1.288 2007/04/30 09:22:27 kls Exp $
  */
 
 #include <getopt.h>
@@ -1202,6 +1202,13 @@ int main(int argc, char *argv[])
      esyslog("emergency exit requested - shutting down");
 
 Exit:
+
+  // Reset all signal handlers to default before Interface gets deleted:
+  signal(SIGHUP,  SIG_DFL);
+  signal(SIGINT,  SIG_DFL);
+  signal(SIGTERM, SIG_DFL);
+  signal(SIGPIPE, SIG_DFL);
+  signal(SIGALRM, SIG_DFL);
 
   PluginManager.StopPlugins();
   cRecordControls::Shutdown();
