@@ -5180,3 +5180,5 @@ Video Disk Recorder Revision History
 - Fixed handling frequencies in NitFilter::Process() (thanks to Anssi Hannula).
 - Fixed a race condition with signal handlers at program exit (thanks to Udo
   Richter).
+- Non-primary devices in Transfer mode are now also used for recording (thanks
+  to Anssi Hannula).
