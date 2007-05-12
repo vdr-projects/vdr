@@ -5057,3 +5057,7 @@ Video Disk Recorder Revision History
   (thanks to Marco Schlüßler).
 - Increased the maximum number of CA system ids to cope with the AlphaCrypt
   CAM's version 3.11 firmware.
+
+2007-05-12: Version 1.4.7
+
+- Official release.
