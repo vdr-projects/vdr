@@ -5180,7 +5180,7 @@ Video Disk Recorder Revision History
 
 - Official release.
 
-2007-04-30: Version 1.5.3
+2007-05-12: Version 1.5.3
 
 - Fixed some spelling errors in 'newplugin' (thanks to Ville Skyttä).
 - Fixed a busy loop in fast forward if the next video data file is missing
@@ -5197,3 +5197,4 @@ Video Disk Recorder Revision History
   Parma and Helmut Auer).
 - Increased the maximum number of CA system ids to cope with the AlphaCrypt
   CAM's version 3.11 firmware.
+- Fixed getting the code setting from the locale (thanks to Matthias Schwarzott).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.289 2007/04/30 09:52:51 kls Exp $
+ * $Id: vdr.c 1.290 2007/05/12 09:35:07 kls Exp $
  */
 
 #include <getopt.h>
@@ -493,7 +493,9 @@ int main(int argc, char *argv[])
 
   // Set the system character table:
 
-  char *LangEnv = getenv("LANG");
+  char *LangEnv = setlocale(LC_CTYPE, "");
+  if (!LangEnv)
+     LangEnv = getenv("LANG"); // last resort in case locale stuff isn't installed
   if (LangEnv) {
      char *CodeSet = strchr(LangEnv, '.');
      if (CodeSet) {
