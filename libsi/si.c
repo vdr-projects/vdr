@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.18 2007/04/22 13:56:39 kls Exp $
+ *   $Id: si.c 1.19 2007/05/28 10:22:42 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -370,7 +370,7 @@ static bool convertCharacterTable(const char *from, size_t fromLength, char *to,
 {
   if (SystemCharacterTable) {
      iconv_t cd = iconv_open(SystemCharacterTable, fromCode);
-     if (cd >= 0) {
+     if (cd != (iconv_t)-1) {
         char *fromPtr = (char *)from;
         while (fromLength > 0 && toLength > 1) {
            if (iconv(cd, &fromPtr, &fromLength, &to, &toLength) == size_t(-1)) {
