@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.53 2006/02/26 14:45:05 kls Exp $
+ * $Id: osd.h 1.54 2007/06/10 12:15:52 kls Exp $
  */
 
 #ifndef __OSD_H
 #define __OSD_H
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "font.h"
@@ -41,7 +42,7 @@ enum eOsdError { oeOk,
                  oeUnknown,
                };
 
-typedef uint32_t tColor;
+typedef uint32_t tColor; // see also font.h
 typedef uint8_t tIndex;
 
 class cPalette {
@@ -50,11 +51,22 @@ private:
   int bpp;
   int maxColors, numColors;
   bool modified;
+  double antiAliasGranularity;
 protected:
   typedef tIndex tIndexes[MAXNUMCOLORS];
 public:
   cPalette(int Bpp = 8);
         ///< Initializes the palette with the given color depth.
+  void SetAntiAliasGranularity(uint FixedColors, uint BlendColors);
+        ///< Allows the system to optimize utilization of the limited color
+        ///< palette entries when generating blended colors for anti-aliasing.
+        ///< FixedColors is the maximum number of colors used, and BlendColors
+        ///< is the maximum number of foreground/background color combinations
+        ///< used with anti-aliasing. If this function is not called with
+        ///< useful values, the palette may be filled up with many shades of
+        ///< a single color combination, and may not be able to serve all
+        ///< requested colors. By default the palette assumes there will be
+        ///< 10 fixed colors and 10 color combinations.
   int Bpp(void) { return bpp; }
   void Reset(void);
         ///< Resets the palette, making it contain no colors.
@@ -62,7 +74,7 @@ public:
         ///< Returns the index of the given Color (the first color has index 0).
         ///< If Color is not yet contained in this palette, it will be added if
         ///< there is a free slot. If the color can't be added to this palette,
-        ///< 0 will be returned.
+        ///< the closest existing color will be returned.
   tColor Color(int Index) { return Index < maxColors ? color[Index] : 0; }
         ///< Returns the color at the given Index. If Index is outside the valid
         ///< range, 0 will be returned.
@@ -88,6 +100,18 @@ public:
   void Replace(const cPalette &Palette);
         ///< Replaces the colors of this palette with the colors from the given
         ///< palette.
+  tColor Blend(tColor ColorFg, tColor ColorBg, uint8_t Level);
+        ///< Determines a color that consists of a linear blend between ColorFg
+        ///< and ColorBg. If Level is 0, the result is ColorBg, if it is 255,
+        ///< the result is ColorFg. If SetAntiAliasGranularity() has been called previously,
+        ///< Level will be mapped to a limited range of levels that allow to make best
+        ///< use of the palette entries.
+  int ClosestColor(tColor Color, int MaxDiff = INT_MAX);
+        ///< Returns the index of a color in this paltte that is closest to the given
+        ///< Color. MaxDiff can be used to control the maximum allowed color difference.
+        ///< If no color with a maximum difference of MaxDiff can be found, -1 will
+        ///< be returned. With the default value of INT_MAX, there will always be
+        ///< a valid color index returned, but the color may be completely different.
   };
 
 enum eTextAlignment { taCenter  = 0x00,
@@ -97,6 +121,8 @@ enum eTextAlignment { taCenter  = 0x00,
                       taBottom  = 0x08,
                       taDefault = taTop | taLeft
                     };
+
+class cFont;
 
 class cBitmap : public cPalette {
 private:
@@ -202,6 +228,8 @@ public:
        ///< 7: vertical,   falling, upper
   const tIndex *Data(int x, int y);
        ///< Returns the address of the index byte at the given coordinates.
+  tColor GetColor(int x, int y) { return Color(*Data(x, y)); }
+       ///< Returns the color at the given coordinates.
   };
 
 struct tArea {
@@ -247,6 +275,16 @@ public:
   int Top(void) { return top; }
   int Width(void) { return width; }
   int Height(void) { return height; }
+  void SetAntiAliasGranularity(uint FixedColors, uint BlendColors);
+       ///< Allows the system to optimize utilization of the limited color
+       ///< palette entries when generating blended colors for anti-aliasing.
+       ///< FixedColors is the maximum number of colors used, and BlendColors
+       ///< is the maximum number of foreground/background color combinations
+       ///< used with anti-aliasing. If this function is not called with
+       ///< useful values, the palette may be filled up with many shades of
+       ///< a single color combination, and may not be able to serve all
+       ///< requested colors. By default the palette assumes there will be
+       ///< 10 fixed colors and 10 color combinations.
   cBitmap *GetBitmap(int Area);
        ///< Returns a pointer to the bitmap for the given Area, or NULL if no
        ///< such bitmap exists.

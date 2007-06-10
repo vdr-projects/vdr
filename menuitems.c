@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.48 2007/01/04 13:30:37 kls Exp $
+ * $Id: menuitems.c 1.49 2007/06/08 15:16:38 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
+#include <wctype.h>
 #include "i18n.h"
 #include "plugin.h"
 #include "remote.h"
@@ -252,23 +253,64 @@ eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
 cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed)
 :cMenuEditItem(Name)
 {
-  orgValue = NULL;
   value = Value;
   length = Length;
-  allowed = strdup(Allowed ? Allowed : "");
+  allowed = Allowed;
   pos = -1;
+  offset = 0;
   insert = uppercase = false;
   newchar = true;
-  charMap = tr(" 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
-  currentChar = NULL;
+  lengthUtf8 = 0;
+  valueUtf8 = NULL;
+  allowedUtf8 = NULL;
+  charMapUtf8 = NULL;
+  currentCharUtf8 = NULL;
   lastKey = kNone;
   Set();
 }
 
 cMenuEditStrItem::~cMenuEditStrItem()
 {
-  free(orgValue);
-  free(allowed);
+  delete valueUtf8;
+  delete allowedUtf8;
+  delete charMapUtf8;
+}
+
+void cMenuEditStrItem::EnterEditMode(void)
+{
+  if (!valueUtf8) {
+     valueUtf8 = new uint[length];
+     lengthUtf8 = Utf8ToArray(value, valueUtf8, length);
+     int l = strlen(allowed) + 1;
+     allowedUtf8 = new uint[l];
+     Utf8ToArray(allowed, allowedUtf8, l);
+     const char *charMap = tr(" 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
+     l = strlen(charMap) + 1;
+     charMapUtf8 = new uint[l];
+     Utf8ToArray(charMap, charMapUtf8, l);
+     currentCharUtf8 = charMapUtf8;
+     AdvancePos();
+     }
+}
+
+void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
+{
+  if (valueUtf8) {
+     if (SaveValue) {
+        Utf8FromArray(valueUtf8, value, length);
+        stripspace(value);
+        }
+     lengthUtf8 = 0;
+     delete valueUtf8;
+     valueUtf8 = NULL;
+     delete allowedUtf8;
+     allowedUtf8 = NULL;
+     delete charMapUtf8;
+     charMapUtf8 = NULL;
+     pos = -1;
+     offset = 0;
+     newchar = true;
+     }
 }
 
 void cMenuEditStrItem::SetHelpKeys(void)
@@ -279,82 +321,118 @@ void cMenuEditStrItem::SetHelpKeys(void)
      cSkinDisplay::Current()->SetButtons(NULL);
 }
 
+uint *cMenuEditStrItem::IsAllowed(uint c)
+{
+  if (allowedUtf8) {
+     for (uint *a = allowedUtf8; *a; a++) {
+         if (c == *a)
+            return a;
+         }
+     }
+  return NULL;
+}
+
 void cMenuEditStrItem::AdvancePos(void)
 {
-  if (pos < length - 2 && pos < int(strlen(value)) ) {
-     if (++pos >= int(strlen(value))) {
-        if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
+  if (pos < length - 2 && pos < lengthUtf8) {
+     if (++pos >= lengthUtf8) {
+        if (pos >= 2 && valueUtf8[pos - 1] == ' ' && valueUtf8[pos - 2] == ' ')
            pos--; // allow only two blanks at the end
         else {
-           value[pos] = ' ';
-           value[pos + 1] = 0;
+           valueUtf8[pos] = ' ';
+           valueUtf8[pos + 1] = 0;
+           lengthUtf8++;
            }
         }
      }
   newchar = true;
-  if (!insert && isalpha(value[pos]))
-     uppercase = isupper(value[pos]);
+  if (!insert && Utf8is(alpha, valueUtf8[pos]))
+     uppercase = Utf8is(upper, valueUtf8[pos]);
 }
 
 void cMenuEditStrItem::Set(void)
 {
-  char buf[1000];
-
   if (InEditMode()) {
      // This is an ugly hack to make editing strings work with the 'skincurses' plugin.
      const cFont *font = dynamic_cast<cSkinDisplayMenu *>(cSkinDisplay::Current())->GetTextAreaFont(false);
      if (!font || font->Width("W") != 1) // all characters have with == 1 in the font used by 'skincurses'
         font = cFont::GetFont(fontOsd);
-     strncpy(buf, value, pos);
-     snprintf(buf + pos, sizeof(buf) - pos - 2, insert && newchar ? "[]%c%s" : "[%c]%s", *(value + pos), value + pos + 1);
+
      int width = cSkinDisplay::Current()->EditableWidth();
-     if (font->Width(buf) <= width) {
-        // the whole buffer fits on the screen
-        SetValue(buf);
-        return;
-        }
-     width -= font->Width('>'); // assuming '<' and '>' have the same width
-     int w = 0;
-     int i = 0;
-     int l = strlen(buf);
-     while (i < l && w <= width)
-           w += font->Width(buf[i++]);
-     if (i >= pos + 4) {
-        // the cursor fits on the screen
-        buf[i - 1] = '>';
-        buf[i] = 0;
-        SetValue(buf);
-        return;
-        }
-     // the cursor doesn't fit on the screen
-     w = 0;
-     if (buf[i = pos + 3]) {
-        buf[i] = '>';
-        buf[i + 1] = 0;
-        }
-     else
-        i--;
-     while (i >= 0 && w <= width)
-           w += font->Width(buf[i--]);
-     buf[++i] = '<';
-     SetValue(buf + i);
+     width -= font->Width("[]");
+     width -= font->Width("<>"); // reserving this anyway make the whole thing simpler
+
+     if (pos < offset)
+        offset = pos;
+     int WidthFromOffset = 0;
+     int EndPos = lengthUtf8;
+     for (int i = offset; i < lengthUtf8; i++) {
+         WidthFromOffset += font->Width(valueUtf8[i]);
+         if (WidthFromOffset > width) {
+            if (pos >= i) {
+               do {
+                  WidthFromOffset -= font->Width(valueUtf8[offset]);
+                  offset++;
+                  } while (WidthFromOffset > width && offset < pos);
+               EndPos = pos + 1;
+               }
+            else {
+               EndPos = i;
+               break;
+               }
+            }
+         }
+
+     char buf[1000];
+     char *p = buf;
+     if (offset)
+        *p++ = '<';
+     p += Utf8FromArray(valueUtf8 + offset, p, sizeof(buf) - (p - buf), pos - offset);
+     *p++ = '[';
+     if (insert && newchar)
+        *p++ = ']';
+     p += Utf8FromArray(&valueUtf8[pos], p, sizeof(buf) - (p - buf), 1);
+     if (!(insert && newchar))
+        *p++ = ']';
+     p += Utf8FromArray(&valueUtf8[pos + 1], p, sizeof(buf) - (p - buf), EndPos - pos - 1);
+     if (EndPos != lengthUtf8)
+        *p++ = '>';
+     *p = 0;
+
+     SetValue(buf);
      }
   else
      SetValue(value);
 }
 
-char cMenuEditStrItem::Inc(char c, bool Up)
+uint cMenuEditStrItem::Inc(uint c, bool Up)
 {
-  const char *p = strchr(allowed, c);
+  uint *p = IsAllowed(c);
   if (!p)
-     p = allowed;
+     p = allowedUtf8;
   if (Up) {
      if (!*++p)
-        p = allowed;
+        p = allowedUtf8;
      }
-  else if (--p < allowed)
-     p = allowed + strlen(allowed) - 1;
+  else if (--p < allowedUtf8) {
+     p = allowedUtf8;
+     while (*p && *(p + 1))
+           p++;
+     }
   return *p;
+}
+
+void cMenuEditStrItem::Insert(void)
+{
+  memmove(valueUtf8 + pos + 1, valueUtf8 + pos, (lengthUtf8 - pos + 1) * sizeof(*valueUtf8));
+  lengthUtf8++;
+  valueUtf8[pos] = ' ';
+}
+
+void cMenuEditStrItem::Delete(void)
+{
+  memmove(valueUtf8 + pos, valueUtf8 + pos + 1, (lengthUtf8 - pos) * sizeof(*valueUtf8));
+  lengthUtf8--;
 }
 
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
@@ -365,7 +443,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
   else if (!newchar && k0 <= lastKey && lastKey <= k9 && autoAdvanceTimeout.TimedOut()) {
      AdvancePos();
      newchar = true;
-     currentChar = NULL;
+     currentCharUtf8 = NULL;
      Set();
      return osContinue;
      }
@@ -374,7 +452,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  if (InEditMode()) {
                     if (!insert || !newchar) {
                        uppercase = !uppercase;
-                       value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
+                       valueUtf8[pos] = uppercase ? Utf8to(upper, valueUtf8[pos]) : Utf8to(lower, valueUtf8[pos]);
                        }
                     }
                  else
@@ -390,21 +468,21 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return osUnknown;
                  break;
     case kYellow|k_Repeat:
-    case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
+    case kYellow: // Remove the character at the current position; in insert mode it is the character to the right of the cursor
                  if (InEditMode()) {
-                    if (strlen(value) > 1) {
-                       if (!insert || pos < int(strlen(value)) - 1)
-                          memmove(value + pos, value + pos + 1, strlen(value) - pos);
-                       else if (insert && pos == int(strlen(value)) - 1)
-                          value[pos] = ' '; // in insert mode, deleting the last character replaces it with a blank to keep the cursor position
+                    if (lengthUtf8 > 1) {
+                       if (!insert || pos < lengthUtf8 - 1)
+                          Delete();
+                       else if (insert && pos == lengthUtf8 - 1)
+                          valueUtf8[pos] = ' '; // in insert mode, deleting the last character replaces it with a blank to keep the cursor position
                        // reduce position, if we removed the last character
-                       if (pos == int(strlen(value)))
+                       if (pos == lengthUtf8)
                           pos--;
                        }
-                    else if (strlen(value) == 1)
-                       value[0] = ' '; // This is the last character in the string, replace it with a blank
-                    if (isalpha(value[pos]))
-                       uppercase = isupper(value[pos]);
+                    else if (lengthUtf8 == 1)
+                       valueUtf8[0] = ' '; // This is the last character in the string, replace it with a blank
+                    if (Utf8is(alpha, valueUtf8[pos]))
+                       uppercase = Utf8is(upper, valueUtf8[pos]);
                     newchar = true;
                     }
                  else
@@ -423,13 +501,14 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        pos--;
                     newchar = true;
                     }
-                 if (!insert && isalpha(value[pos]))
-                    uppercase = isupper(value[pos]);
+                 if (!insert && Utf8is(alpha, valueUtf8[pos]))
+                    uppercase = Utf8is(upper, valueUtf8[pos]);
                  break;
     case kRight|k_Repeat:
-    case kRight: AdvancePos();
-                 if (pos == 0) {
-                    orgValue = strdup(value);
+    case kRight: if (InEditMode())
+                    AdvancePos();
+                 else {
+                    EnterEditMode();
                     SetHelpKeys();
                     }
                  break;
@@ -439,15 +518,13 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kDown:  if (InEditMode()) {
                     if (insert && newchar) {
                        // create a new character in insert mode
-                       if (int(strlen(value)) < length - 1) {
-                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
-                          value[pos] = ' ';
-                          }
+                       if (lengthUtf8 < length - 1)
+                          Insert();
                        }
                     if (uppercase)
-                       value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
+                       valueUtf8[pos] = Utf8to(upper, Inc(Utf8to(lower, valueUtf8[pos]), NORMALKEY(Key) == kUp));
                     else
-                       value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
+                       valueUtf8[pos] =               Inc(              valueUtf8[pos],  NORMALKEY(Key) == kUp);
                     newchar = false;
                     }
                  else
@@ -459,35 +536,33 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     if (!SameKey) {
                        if (!newchar)
                           AdvancePos();
-                       currentChar = NULL;
+                       currentCharUtf8 = NULL;
                        }
-                    if (!currentChar || !*currentChar || *currentChar == '\t') {
+                    if (!currentCharUtf8 || !*currentCharUtf8 || *currentCharUtf8 == '\t') {
                        // find the beginning of the character map entry for Key
                        int n = NORMALKEY(Key) - k0;
-                       currentChar = charMap;
-                       while (n > 0 && *currentChar) {
-                             if (*currentChar++ == '\t')
+                       currentCharUtf8 = charMapUtf8;
+                       while (n > 0 && *currentCharUtf8) {
+                             if (*currentCharUtf8++ == '\t')
                                 n--;
                              }
                        // find first allowed character
-                       while (*currentChar && *currentChar != '\t' && !strchr(allowed, *currentChar))
-                             currentChar++;
+                       while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8))
+                             currentCharUtf8++;
                        }
-                    if (*currentChar && *currentChar != '\t') {
+                    if (*currentCharUtf8 && *currentCharUtf8 != '\t') {
                        if (insert && newchar) {
                           // create a new character in insert mode
-                          if (int(strlen(value)) < length - 1) {
-                             memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
-                             value[pos] = ' ';
-                             }
+                          if (lengthUtf8 < length - 1)
+                             Insert();
                           }
-                       value[pos] = *currentChar;
+                       valueUtf8[pos] = *currentCharUtf8;
                        if (uppercase)
-                          value[pos] = toupper(value[pos]);
+                          valueUtf8[pos] = Utf8to(upper, valueUtf8[pos]);
                        // find next allowed character
                        do {
-                          currentChar++;
-                          } while (*currentChar && *currentChar != '\t' && !strchr(allowed, *currentChar));
+                          currentCharUtf8++;
+                          } while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8));
                        newchar = false;
                        autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
                        }
@@ -498,32 +573,25 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kBack:
     case kOk:    if (InEditMode()) {
-                    if (Key == kBack && orgValue) {
-                       strcpy(value, orgValue);
-                       free(orgValue);
-                       orgValue = NULL;
-                       }
-                    pos = -1;
-                    newchar = true;
-                    stripspace(value);
+                    LeaveEditMode(Key == kOk);
                     SetHelpKeys();
                     break;
                     }
                  // run into default
     default:     if (InEditMode() && BASICKEY(Key) == kKbd) {
                     int c = KEYKBD(Key);
-                    if (c <= 0xFF) {
-                       const char *p = strchr(allowed, tolower(c));
+                    if (c <= 0xFF) { // FIXME what about other UTF-8 characters?
+                       uint *p = IsAllowed(Utf8to(lower, c));
                        if (p) {
-                          int l = strlen(value);
-                          if (insert && l < length - 1)
-                             memmove(value + pos + 1, value + pos, l - pos + 1);
-                          value[pos] = c;
+                          if (insert && lengthUtf8 < length - 1)
+                             Insert();
+                          valueUtf8[pos] = c;
                           if (pos < length - 2)
                              pos++;
-                          if (pos >= l) {
-                             value[pos] = ' ';
-                             value[pos + 1] = 0;
+                          if (pos >= lengthUtf8) {
+                             valueUtf8[pos] = ' ';
+                             valueUtf8[pos + 1] = 0;
+                             lengthUtf8 = pos + 1;
                              }
                           }
                        else {
@@ -540,7 +608,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     else {
                        switch (c) {
                          case kfHome: pos = 0; break;
-                         case kfEnd:  pos = strlen(value) - 1; break;
+                         case kfEnd:  pos = lengthUtf8 - 1; break;
                          case kfIns:  return ProcessKey(kGreen);
                          case kfDel:  return ProcessKey(kYellow);
                          }
@@ -690,7 +758,7 @@ void cMenuEditDateItem::Set(void)
 #define DATEBUFFERSIZE 32
   char buf[DATEBUFFERSIZE];
   if (weekdays && *weekdays) {
-     SetValue(cTimer::PrintDay(0, *weekdays));
+     SetValue(cTimer::PrintDay(0, *weekdays, false));
      return;
      }
   else if (*value) {
@@ -880,9 +948,7 @@ cMenuSetupPage::cMenuSetupPage(void)
 
 void cMenuSetupPage::SetSection(const char *Section)
 {
-  char buf[40];
-  snprintf(buf, sizeof(buf), "%s - %s", tr("Setup"), Section);
-  SetTitle(buf);
+  SetTitle(cString::sprintf("%s - %s", tr("Setup"), Section));
 }
 
 eOSState cMenuSetupPage::ProcessKey(eKeys Key)
@@ -903,9 +969,7 @@ eOSState cMenuSetupPage::ProcessKey(eKeys Key)
 void cMenuSetupPage::SetPlugin(cPlugin *Plugin)
 {
   plugin = Plugin;
-  char buf[40];
-  snprintf(buf, sizeof(buf), "%s '%s'", tr("Plugin"), plugin->Name());
-  SetSection(buf);
+  SetSection(cString::sprintf("%s '%s'", tr("Plugin"), plugin->Name()));
 }
 
 void cMenuSetupPage::SetupStore(const char *Name, const char *Value)

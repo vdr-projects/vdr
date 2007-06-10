@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.150 2007/02/25 13:58:45 kls Exp $
+ * $Id: config.c 1.151 2007/06/02 11:21:40 kls Exp $
  */
 
 #include "config.h"
@@ -264,6 +264,13 @@ cSetup::cSetup(void)
   OSDHeight = 486;
   OSDMessageTime = 1;
   UseSmallFont = 1;
+  AntiAlias = 1;
+  strcpy(FontOsd, "arialbd.ttf");
+  strcpy(FontSml, "arial.ttf");
+  strcpy(FontFix, "courbd.ttf");
+  FontOsdSize = 22;
+  FontSmlSize = 18;
+  FontFixSize = 20;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
@@ -427,6 +434,13 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "OSDHeight"))         { OSDHeight          = atoi(Value); if (OSDHeight < 100) OSDHeight *= 27; }
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
   else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
+  else if (!strcasecmp(Name, "AntiAlias"))           AntiAlias          = atoi(Value);
+  else if (!strcasecmp(Name, "FontOsd"))             strn0cpy(FontOsd, Value, MAXFONTNAME);
+  else if (!strcasecmp(Name, "FontSml"))             strn0cpy(FontSml, Value, MAXFONTNAME);
+  else if (!strcasecmp(Name, "FontFix"))             strn0cpy(FontFix, Value, MAXFONTNAME);
+  else if (!strcasecmp(Name, "FontOsdSize"))         FontOsdSize        = atoi(Value);
+  else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
+  else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);
   else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
   else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
   else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
@@ -497,6 +511,13 @@ bool cSetup::Save(void)
   Store("OSDHeight",          OSDHeight);
   Store("OSDMessageTime",     OSDMessageTime);
   Store("UseSmallFont",       UseSmallFont);
+  Store("AntiAlias",          AntiAlias);
+  Store("FontOsd",            FontOsd);
+  Store("FontSml",            FontSml);
+  Store("FontFix",            FontFix);
+  Store("FontOsdSize",        FontOsdSize);
+  Store("FontSmlSize",        FontSmlSize);
+  Store("FontFixSize",        FontFixSize);
   Store("MaxVideoFileSize",   MaxVideoFileSize);
   Store("SplitEditedFiles",   SplitEditedFiles);
   Store("MinEventTimeout",    MinEventTimeout);

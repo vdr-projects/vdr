@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.16 2006/04/15 14:12:21 kls Exp $
+ * $Id: sdt.c 1.17 2007/06/10 08:50:49 kls Exp $
  */
 
 #include "sdt.h"
@@ -56,9 +56,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                    case 0x04: // NVOD reference service
                    case 0x05: // NVOD time-shifted service
                         {
-                        char NameBuf[1024];
-                        char ShortNameBuf[1024];
-                        char ProviderNameBuf[1024];
+                        char NameBuf[Utf8BufSize(1024)];
+                        char ShortNameBuf[Utf8BufSize(1024)];
+                        char ProviderNameBuf[Utf8BufSize(1024)];
                         sd->serviceName.getText(NameBuf, ShortNameBuf, sizeof(NameBuf), sizeof(ShortNameBuf));
                         char *pn = compactspace(NameBuf);
                         char *ps = compactspace(ShortNameBuf);

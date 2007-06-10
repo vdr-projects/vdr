@@ -5180,7 +5180,7 @@ Video Disk Recorder Revision History
 
 - Official release.
 
-2007-05-12: Version 1.5.3
+2007-06-10: Version 1.5.3
 
 - Fixed some spelling errors in 'newplugin' (thanks to Ville Skyttä).
 - Fixed a busy loop in fast forward if the next video data file is missing
@@ -5198,3 +5198,31 @@ Video Disk Recorder Revision History
 - Increased the maximum number of CA system ids to cope with the AlphaCrypt
   CAM's version 3.11 firmware.
 - Fixed getting the code setting from the locale (thanks to Matthias Schwarzott).
+- Implemented support for Freetype fonts (based on a patch from Alexander Riedel).
+- If the OSD device in use has at least 8bpp bitmap depth and this is also
+  used by the current skin, Freetype fonts are displayed "anti-aliased".
+  The new setup parameter "OSD/Anti-alias" can be used to turn this off.
+- The new function cOsd::SetAntiAliasGranularity() can be used to help the OSD
+  in managing the available color palette entries when doing anti-aliasing.
+  Skins that use 8bpp bitmaps can call this function with the maximum number
+  of colors used, and the maximum number of color combinations. The OSD will
+  then evenly split the available palette entries between the various colors
+  combinations, so that fonts can be "anti-aliased". By default a total of
+  10 colors and 10 combinations is assumed.
+- The pixel fonts have been completely removed from the VDR source.
+- VDR is now "UTF-8 aware". It handles strings according to the character
+  encoding used on the user's system. All internationalization strings and
+  incoming SI data are converted to the system encoding.
+- Plugins that handle strings need to be aware that on systems with UTF-8
+  encoding a "character symbol" may consist of more than a single byte in
+  memory. The functions and macros named Utf8...() can be used to handle
+  strings without needing to care about the underlying character encoding
+  (see tools.h for details).
+- Even though the weekdays of repeating timers are presented to the user as UTF-8
+  characters in the OSD, the timers.conf file and the SVDRP timer commands still
+  use single byte characters ("MTWTFSS") to make sure this information is handled
+  correctly between systems with different character encodings.
+- Added a missing i18n string for "CAM" in the Turkish OSD texts.
+- Improved editing strings that are too long to fit into the editable area.
+- Changes to the OSD settings in the "Setup/OSD" menu now immediately take effect
+  when the "Ok" key is pressed.

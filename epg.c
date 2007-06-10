@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.81 2006/10/28 09:12:42 kls Exp $
+ * $Id: epg.c 1.82 2007/06/10 12:52:19 kls Exp $
  */
 
 #include "epg.h"
@@ -634,6 +634,7 @@ Final:
   // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
+  /* TODO adapt to UTF-8
   // Same for control characters:
   strreplace(title, '\x86', ' ');
   strreplace(title, '\x87', ' ');
@@ -641,6 +642,7 @@ Final:
   strreplace(shortText, '\x87', ' ');
   strreplace(description, '\x86', ' ');
   strreplace(description, '\x87', ' ');
+  XXX*/
 }
 
 // --- cSchedule -------------------------------------------------------------

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.290 2007/05/12 09:35:07 kls Exp $
+ * $Id: vdr.c 1.291 2007/06/09 12:33:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -502,6 +502,7 @@ int main(int argc, char *argv[])
         CodeSet++; // skip the dot
         bool known = SI::SetSystemCharacterTable(CodeSet);
         isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
+        cCharSetConv::SetSystemCharacterTable(CodeSet);
         }
      }
 
@@ -543,8 +544,6 @@ int main(int argc, char *argv[])
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
      EXIT(2);
-
-  cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
   // Recordings:
 

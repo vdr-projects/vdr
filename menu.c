@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.450 2007/02/25 14:04:33 kls Exp $
+ * $Id: menu.c 1.451 2007/06/09 14:36:46 kls Exp $
  */
 
 #include "menu.h"
@@ -761,7 +761,7 @@ void cMenuTimerItem::Set(void)
 {
   cString day, name("");
   if (timer->WeekDays())
-     day = timer->PrintDay(0, timer->WeekDays());
+     day = timer->PrintDay(0, timer->WeekDays(), false);
   else if (timer->Day() - time(NULL) < 28 * SECSINDAY) {
      day = itoa(timer->GetMDay(timer->Day()));
      name = WeekDayName(timer->Day());
@@ -1052,10 +1052,11 @@ bool cMenuScheduleItem::Update(bool Force)
      char t = TimerMatchChars[timerMatch];
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
      char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
+     const char *csn = channel ? channel->ShortName(true) : NULL;
      if (channel && withDate)
-        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
-        asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, *event->GetTimeString(), t, v, r, event->Title());
      else
         asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
      SetText(buffer, false);
@@ -2157,7 +2158,10 @@ private:
   int skinIndex;
   const char **skinDescriptions;
   cThemes themes;
+  int originalThemeIndex;
   int themeIndex;
+  cFileNameList fontNames;
+  int fontOsdIndex, fontSmlIndex, fontFixIndex;
   virtual void Set(void);
 public:
   cMenuSetupOSD(void);
@@ -2171,13 +2175,18 @@ cMenuSetupOSD::cMenuSetupOSD(void)
   skinIndex = originalSkinIndex = Skins.Current()->Index();
   skinDescriptions = new const char*[numSkins];
   themes.Load(Skins.Current()->Name());
-  themeIndex = Skins.Current()->Theme() ? themes.GetThemeIndex(Skins.Current()->Theme()->Description()) : 0;
+  themeIndex = originalThemeIndex = Skins.Current()->Theme() ? themes.GetThemeIndex(Skins.Current()->Theme()->Description()) : 0;
+  fontNames.Load(FONTDIR);
+  if (fontNames.Size()) {
+     fontOsdIndex = max(0, fontNames.Find(Setup.FontOsd));
+     fontSmlIndex = max(0, fontNames.Find(Setup.FontSml));
+     fontFixIndex = max(0, fontNames.Find(Setup.FontFix));
+     }
   Set();
 }
 
 cMenuSetupOSD::~cMenuSetupOSD()
 {
-  cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
   delete[] skinDescriptions;
 }
 
@@ -2201,6 +2210,15 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDHeight, MINOSDHEIGHT, MAXOSDHEIGHT));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Use small font"),         &data.UseSmallFont, 3, useSmallFontTexts));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Anti-alias"),             &data.AntiAlias));
+  if (fontNames.Size()) {
+  Add(new cMenuEditStraItem(tr("Setup.OSD$OSD font name"),          &fontOsdIndex, fontNames.Size(), &fontNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Small font name"),        &fontSmlIndex, fontNames.Size(), &fontNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font name"),        &fontFixIndex, fontNames.Size(), &fontNames[0]));
+  }
+  Add(new cMenuEditIntItem( tr("Setup.OSD$OSD font size (pixel)"),  &data.FontOsdSize, 10, MAXFONTSIZE));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Small font size (pixel)"),&data.FontSmlSize, 10, MAXFONTSIZE));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Fixed font size (pixel)"),&data.FontFixSize, 10, MAXFONTSIZE));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Channel info time (s)"),  &data.ChannelInfoTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
@@ -2215,29 +2233,57 @@ void cMenuSetupOSD::Set(void)
 
 eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
 {
+  bool ModifiedApperance = false;
+
   if (Key == kOk) {
      if (skinIndex != originalSkinIndex) {
         cSkin *Skin = Skins.Get(skinIndex);
         if (Skin) {
            strn0cpy(data.OSDSkin, Skin->Name(), sizeof(data.OSDSkin));
            Skins.SetCurrent(Skin->Name());
+           ModifiedApperance = true;
            }
         }
      if (themes.NumThemes() && Skins.Current()->Theme()) {
         Skins.Current()->Theme()->Load(themes.FileName(themeIndex));
         strn0cpy(data.OSDTheme, themes.Name(themeIndex), sizeof(data.OSDTheme));
+        ModifiedApperance |= themeIndex != originalThemeIndex;
         }
-     data.OSDWidth &= ~0x07; // OSD width must be a multiple of 8
+     if (data.OSDLeft != Setup.OSDLeft || data.OSDTop != Setup.OSDTop || data.OSDWidth != Setup.OSDWidth || data.OSDHeight != Setup.OSDHeight) {
+        data.OSDWidth &= ~0x07; // OSD width must be a multiple of 8
+        ModifiedApperance = true;
+        }
+     if (data.UseSmallFont != Setup.UseSmallFont || data.AntiAlias != Setup.AntiAlias)
+        ModifiedApperance = true;
+     if (fontNames.Size()) {
+        strn0cpy(data.FontOsd, fontNames[fontOsdIndex], sizeof(data.FontOsd));
+        strn0cpy(data.FontSml, fontNames[fontSmlIndex], sizeof(data.FontSml));
+        strn0cpy(data.FontFix, fontNames[fontFixIndex], sizeof(data.FontFix));
+        }
+     if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSize != Setup.FontOsdSize) {
+        cFont::SetFont(fontOsd, data.FontOsd, data.FontOsdSize);
+        ModifiedApperance = true;
+        }
+     if (strcmp(data.FontSml, Setup.FontSml) || data.FontSmlSize != Setup.FontSmlSize) {
+        cFont::SetFont(fontSml, data.FontSml, data.FontSmlSize);
+        ModifiedApperance = true;
+        }
+     if (strcmp(data.FontFix, Setup.FontFix) || data.FontFixSize != Setup.FontFixSize) {
+        cFont::SetFont(fontFix, data.FontFix, data.FontFixSize);
+        ModifiedApperance = true;
+        }
      }
 
   int osdLanguage = data.OSDLanguage;
   int oldSkinIndex = skinIndex;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
+  if (ModifiedApperance)
+     SetDisplayMenu();
+
   if (data.OSDLanguage != osdLanguage || skinIndex != oldSkinIndex) {
      int OriginalOSDLanguage = Setup.OSDLanguage;
      Setup.OSDLanguage = data.OSDLanguage;
-     cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
      cSkin *Skin = Skins.Get(skinIndex);
      if (Skin) {
@@ -2910,10 +2956,8 @@ bool cMenuMain::Update(bool Force)
         int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
         int Hours = Minutes / 60;
         Minutes %= 60;
-        char buffer[40];
-        snprintf(buffer, sizeof(buffer), "%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free"));
         //XXX -> skin function!!!
-        SetTitle(buffer);
+        SetTitle(cString::sprintf("%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free")));
         result = true;
         }
      lastDiskSpaceCheck = time(NULL);

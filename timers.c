@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.65 2006/09/15 14:15:53 kls Exp $
+ * $Id: timers.c 1.66 2007/06/03 13:48:57 kls Exp $
  */
 
 #include "timers.h"
@@ -136,7 +136,7 @@ cString cTimer::ToText(bool UseChannelID)
 {
   char *buffer;
   strreplace(file, ':', '|');
-  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, aux ? aux : "");
+  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
   strreplace(file, '|', ':');
   return cString(buffer, true);
 }
@@ -212,17 +212,26 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
   return true;
 }
 
-cString cTimer::PrintDay(time_t Day, int WeekDays)
+cString cTimer::PrintDay(time_t Day, int WeekDays, bool SingleByteChars)
 {
-#define DAYBUFFERSIZE 32
+#define DAYBUFFERSIZE 64
   char buffer[DAYBUFFERSIZE];
   char *b = buffer;
   if (WeekDays) {
-     const char *w = tr("MTWTFSS");
+     const char *w = "MTWTFSS";
+     if (!SingleByteChars)
+        w = tr(w);
      while (*w) {
-           *b++ = (WeekDays & 1) ? *w : '-';
+           int sl = Utf8CharLen(w);
+           if (WeekDays & 1) {
+              for (int i = 0; i < sl; i++)
+                  b[i] = w[i];
+              b += sl;
+              }
+           else
+              *b++ = '-';
            WeekDays >>= 1;
-           w++;
+           w += sl;
            }
      if (Day)
         *b++ = '@';
@@ -239,7 +248,7 @@ cString cTimer::PrintDay(time_t Day, int WeekDays)
 cString cTimer::PrintFirstDay(void) const
 {
   if (weekdays) {
-     cString s = PrintDay(day, weekdays);
+     cString s = PrintDay(day, weekdays, true);
      if (strlen(s) == 18)
         return *s + 8;
      }

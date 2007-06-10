@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.293 2007/03/11 10:05:36 kls Exp $
+ * $Id: i18n.c 1.294 2007/06/09 08:44:54 kls Exp $
  *
  * Translations provided by:
  *
@@ -3138,6 +3138,7 @@ const tI18nPhrase Phrases[] = {
     "CAM",
     "CAM",
     "CAM",
+    "CAM",
   },
   { "Recording",
     "Aufnahme",
@@ -3553,6 +3554,167 @@ const tI18nPhrase Phrases[] = {
     "altid",
     "v¾dy",
     "hep",
+  },
+  { "Setup.OSD$Anti-alias",
+    "Kantenglättung",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$OSD font name",
+    "OSD Schriftart",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Small font name",
+    "Kleine Schriftart",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Fixed font name",
+    "Festbreiten-Schriftart",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$OSD font size (pixel)",
+    "OSD Schriftgröße (pixel)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Small font size (pixel)",
+    "Kleine Schriftgröße (pixel)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Fixed font size (pixel)",
+    "Festbreiten-Schriftgröße (pixel)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Channel info position",
     "Kanalinfo-Position",
@@ -5021,7 +5183,7 @@ const tI18nPhrase Phrases[] = {
     " 0\t-.#~,/_@1\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttþuv8\twxyz9",
     " 0\t-.#~,/_@1\taábc2\tdeéf3\tghií4\tjkl5\tmnoóöõ6\tpqrs7\ttuúüûv8\twxyz9",
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcÐÑÒÓ2\tdefÔÕñÖ×3\tghiØÙÚÛ4\tjklÜÝÞ5\tmnoßàá6\tpqrsâãäå7\ttuvæçèéê8\twxyzëìíîï9",
     "",//TODO
     " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoõö6\tpqrsð7\ttuvü8\twxyzþ9",
     " 0\t-.#~,/_@1\tabcæå2\tdef3\tghi4\tjkl5\tmnoø6\tpqrs7\ttuv8\twxyz9",
@@ -6603,17 +6765,26 @@ const tI18nPhrase Phrases[] = {
 class cI18nEntry : public cListObject {
 private:
   const tI18nPhrase *phrases;
+  tI18nPhrase *converted;
   const char *plugin;
 public:
   cI18nEntry(const tI18nPhrase * const Phrases, const char *Plugin);
+  virtual ~cI18nEntry();
   const tI18nPhrase *Phrases(void) { return phrases; }
+  tI18nPhrase **Converted(void) { return &converted; }
   const char *Plugin(void) { return plugin; }
   };
 
 cI18nEntry::cI18nEntry(const tI18nPhrase * const Phrases, const char *Plugin)
 {
   phrases = Phrases;
+  converted = NULL;
   plugin = Plugin;
+}
+
+cI18nEntry::~cI18nEntry()
+{
+  delete converted;
 }
 
 // --- cI18nList -------------------------------------------------------------
@@ -6621,7 +6792,6 @@ cI18nEntry::cI18nEntry(const tI18nPhrase * const Phrases, const char *Plugin)
 class cI18nList : public cList<cI18nEntry> {
 public:
   cI18nEntry *Get(const char *Plugin);
-  const tI18nPhrase *GetPhrases(const char *Plugin);
   };
 
 cI18nEntry *cI18nList::Get(const char *Plugin)
@@ -6635,15 +6805,27 @@ cI18nEntry *cI18nList::Get(const char *Plugin)
   return NULL;
 }
 
-const tI18nPhrase *cI18nList::GetPhrases(const char *Plugin)
-{
-  cI18nEntry *p = Get(Plugin);
-  return p ? p->Phrases() : NULL;
-}
-
 cI18nList I18nList;
 
 // ---
+
+static tI18nPhrase *Converted = NULL;
+
+static const char *ConvertPhrase(const tI18nPhrase *Original, tI18nPhrase **Converted, int NrPhrase, int NrLanguage)
+{
+  if (!*Converted) {
+     int NumPhrases = 0;
+     for (const tI18nPhrase *p = Original; **p; p++)
+         NumPhrases++;
+     *Converted = new tI18nPhrase[NumPhrases + 1];
+     memset(*Converted, 0, sizeof(tI18nPhrase) * (NumPhrases + 1));
+     }
+  if (!(*Converted)[NrPhrase][NrLanguage]) {
+     cCharSetConv csc(Phrases[1][NrLanguage], cCharSetConv::SystemCharacterTable());
+     (*Converted)[NrPhrase][NrLanguage] = strdup(csc.Convert(Original[NrPhrase][NrLanguage]));
+     }
+  return (*Converted)[NrPhrase][NrLanguage];
+}
 
 void I18nRegister(const tI18nPhrase * const Phrases, const char *Plugin)
 {
@@ -6657,13 +6839,14 @@ void I18nRegister(const tI18nPhrase * const Phrases, const char *Plugin)
 const char *I18nTranslate(const char *s, const char *Plugin)
 {
   if (Setup.OSDLanguage) {
-     const tI18nPhrase *p = Plugin ? I18nList.GetPhrases(Plugin) : Phrases;
-     if (!p)
-        p = Phrases;
+     cI18nEntry *e = Plugin ? I18nList.Get(Plugin) : NULL;
+     const tI18nPhrase *OriginalPhrases = e ? e->Phrases() : Phrases;
+     tI18nPhrase **ConvertedPhrases = e ? e->Converted() : &Converted;
+     const tI18nPhrase *p = OriginalPhrases;
      for (int i = ((p == Phrases) ? 1 : 2); i--; ) {
          for (; **p; p++) {
              if (strcmp(s, **p) == 0) {
-                const char *t = (*p)[Setup.OSDLanguage];
+                const char *t = ConvertPhrase(OriginalPhrases, ConvertedPhrases, p - OriginalPhrases, Setup.OSDLanguage);
                 if (t && *t)
                    return t;
                 }
@@ -6678,7 +6861,11 @@ const char *I18nTranslate(const char *s, const char *Plugin)
 
 const char * const * I18nLanguages(void)
 {
-  return &Phrases[0][0];
+  if (!Converted || !(Converted)[0][0]) {
+     for (int i = 0; i < I18nNumLanguages; i++)
+         ConvertPhrase(Phrases, &Converted, 0, i);
+     }
+  return &Converted[0][0];
 }
 
 const char * const * I18nCharSets(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.289 2007/04/28 14:47:24 kls Exp $
+ * $Id: config.h 1.290 2007/06/02 11:22:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,6 +17,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "i18n.h"
+#include "font.h"
 #include "tools.h"
 
 // VDR's own version number:
@@ -242,6 +243,13 @@ public:
   int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
   int UseSmallFont;
+  int AntiAlias;
+  char FontOsd[MAXFONTNAME];
+  char FontSml[MAXFONTNAME];
+  char FontFix[MAXFONTNAME];
+  int FontOsdSize;
+  int FontSmlSize;
+  int FontFixSize;
   int MaxVideoFileSize;
   int SplitEditedFiles;
   int MinEventTimeout, MinUserInactivity;

@@ -2083,3 +2083,7 @@ Oktay Yolgeçen <oktay_73@yahoo.de>
 
 Krzysztof Parma <krzycho@zoz.wodzislaw.pl>
  for suggesting to implement the SVDRP command REMO
+
+Alexander Riedel <alexander-riedel@t-online.de>
+ for a patch that was used as a base to implement support for Freetype fonts and
+ UTF-8 handling

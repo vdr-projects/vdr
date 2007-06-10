@@ -503,6 +503,23 @@ Version 1.4
                          current skin wants to, and 2 means always use the small
                          font.
 
+  Anti-alias = 1         Controls whether the OSD uses "anti-aliasing" to improve
+                         font rendering. To make this work, the OSD must support
+                         at least 256 colors, and the skin in use has to
+                         utilize these. If either of these conditions is not met,
+                         rendering will be done without anti-aliasing.
+
+  OSD font name = arialbd.ttf
+  Small font name = arial.ttf
+  Fixed font name = courbd.ttf
+                         The file names of the various fonts to use.
+
+  OSD font size = 22
+  Small font size = 18
+  Fixed font size = 20
+                         The sizes (in pixel) of the various fonts. Valid range is
+                         10...64.
+
   Channel info position = bottom
                          The position of the channel info window in the OSD
                          (either 'bottom' or 'top').
