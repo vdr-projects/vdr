@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.18 2007/04/22 13:56:39 kls Exp $
+ *   $Id: si.c 1.20 2007/06/10 09:31:34 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -219,7 +219,9 @@ char *String::getText() {
    int len=getLength();
    if (len < 0 || len > 4095)
       return strdup("text error"); // caller will delete it!
-   char *data=new char(len+1);
+   char *data=new char(len+1); // FIXME If this function is ever actually used, this buffer might
+                               // need to be bigger in order to hold the string as UTF-8.
+                               // Maybe decodeText should dynamically handle this? kls 2007-06-10
    decodeText(data, len+1);
    return data;
 }
@@ -370,7 +372,7 @@ static bool convertCharacterTable(const char *from, size_t fromLength, char *to,
 {
   if (SystemCharacterTable) {
      iconv_t cd = iconv_open(SystemCharacterTable, fromCode);
-     if (cd >= 0) {
+     if (cd != (iconv_t)-1) {
         char *fromPtr = (char *)from;
         while (fromLength > 0 && toLength > 1) {
            if (iconv(cd, &fromPtr, &fromLength, &to, &toLength) == size_t(-1)) {
@@ -404,6 +406,9 @@ void String::decodeText(char *buffer, int size) {
       }
    bool singleByte;
    const char *cs = getCharacterTable(from, len, &singleByte);
+   // FIXME Need to make this UTF-8 aware (different control codes).
+   // However, there's yet to be found a broadcaster that actually
+   // uses UTF-8 for the SI data... (kls 2007-06-10)
    for (int i = 0; i < len; i++) {
       if (*from == 0)
          break;
@@ -440,6 +445,9 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
       }
    bool singleByte;
    const char *cs = getCharacterTable(from, len, &singleByte);
+   // FIXME Need to make this UTF-8 aware (different control codes).
+   // However, there's yet to be found a broadcaster that actually
+   // uses UTF-8 for the SI data... (kls 2007-06-10)
    for (int i = 0; i < len; i++) {
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')

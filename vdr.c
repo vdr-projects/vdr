@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.287 2007/04/22 13:28:32 kls Exp $
+ * $Id: vdr.c 1.291 2007/06/09 12:33:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -493,13 +493,16 @@ int main(int argc, char *argv[])
 
   // Set the system character table:
 
-  char *LangEnv = getenv("LANG");
+  char *LangEnv = setlocale(LC_CTYPE, "");
+  if (!LangEnv)
+     LangEnv = getenv("LANG"); // last resort in case locale stuff isn't installed
   if (LangEnv) {
      char *CodeSet = strchr(LangEnv, '.');
      if (CodeSet) {
         CodeSet++; // skip the dot
         bool known = SI::SetSystemCharacterTable(CodeSet);
         isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
+        cCharSetConv::SetSystemCharacterTable(CodeSet);
         }
      }
 
@@ -541,8 +544,6 @@ int main(int argc, char *argv[])
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
      EXIT(2);
-
-  cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
   // Recordings:
 
@@ -952,7 +953,7 @@ int main(int argc, char *argv[])
           case kChanDn:
                if (!Interact)
                   Menu = new cDisplayChannel(NORMALKEY(key));
-               else if (cDisplayChannel::IsOpen()) {
+               else if (cDisplayChannel::IsOpen() || cControl::Control()) {
                   Interact->ProcessKey(key);
                   continue;
                   }
@@ -1202,6 +1203,13 @@ int main(int argc, char *argv[])
      esyslog("emergency exit requested - shutting down");
 
 Exit:
+
+  // Reset all signal handlers to default before Interface gets deleted:
+  signal(SIGHUP,  SIG_DFL);
+  signal(SIGINT,  SIG_DFL);
+  signal(SIGTERM, SIG_DFL);
+  signal(SIGPIPE, SIG_DFL);
+  signal(SIGALRM, SIG_DFL);
 
   PluginManager.StopPlugins();
   cRecordControls::Shutdown();

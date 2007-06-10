@@ -1,24 +1,8 @@
 Installation of the Video Disk Recorder
 ---------------------------------------
 
-Version 1.4
+Version 1.5
 -----------
-
-IMPORTANT NOTES:
-----------------
-
-Please make sure your environment is NOT set to use UTF-8 or
-any other multibyte character representation. Check the value of your
-$LANG or $LC_CTYPE environment variable, and if it contains something
-like "de_DE.UTF-8", make sure you set it to something like "de_DE.iso8859-1"
-or whatever single byte character mode you want. If you run VDR with
-UTF-8 enabled, it may crash in case it encounters EPG or channel data
-that contains non-7-bit ASCII characters. Another problem may occur if
-you have mounted your video partition with "iocharset=utf8". In that case
-recordings that contain umlauts or other non-seven-bit ASCII characters
-may be displayed wrong, or not at all. Please make sure you mount your
-video partition with "iocharset=iso8859-1" or whatever single byte character
-mode you want.
 
 Compiling and running the program:
 ----------------------------------
@@ -35,11 +19,18 @@ Refer to http://linuxtv.org for more information about the Linux-DVB driver.
 VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
 to work properly.
 
-You will also need to install the "libjpeg" and "libcap" libraries,
-as well as their "devel" packages to get the necessary header files
-for compiling VDR. If the "capability" module is not compiled into
-your kernel, you may need to do "modprobe capability" before running
-VDR.
+You will also need to install the following libraries, as well as their
+"devel" packages to get the necessary header files for compiling VDR:
+
+  freetype2
+  libcap
+  libjpeg
+
+If the "capability" module is not compiled into your kernel, you may
+need to do "modprobe capability" before running VDR.
+
+When running VDR, the Freetype fonts must be installed in the directory
+/usr/share/fonts/truetype.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file

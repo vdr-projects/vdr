@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.97 2007/01/05 10:45:11 kls Exp $
+ * $Id: tools.h 1.98 2007/06/10 08:46:23 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -13,10 +13,12 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <iconv.h>
 #include <poll.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
 #include <sys/stat.h>
@@ -71,6 +73,73 @@ template<class T> inline void put_unaligned(unsigned int v, T* p)
   struct s { T v; } __attribute__((packed));
   ((s *)p)->v = v;
 }
+
+// When handling strings that might contain UTF-8 characters, it may be necessary
+// to process a "symbol" that consists of several actual character bytes. The
+// following functions allow transparently accessing a "char *" string without
+// having to worry about what character set is actually used.
+
+int Utf8CharLen(const char *s);
+    ///< Returns the number of character bytes at the beginning of the given
+    ///< string that form a UTF-8 symbol.
+uint Utf8CharGet(const char *s, int Length = 0);
+    ///< Returns the UTF-8 symbol at the beginning of the given string.
+    ///< Length can be given from a previous call to Utf8CharLen() to avoid calculating
+    ///< it again. If no Length is given, Utf8CharLen() will be called.
+int Utf8CharSet(uint c, char *s = NULL);
+    ///< Converts the given UTF-8 symbol to a sequence of character bytes and copies
+    ///< them to the given string. Returns the number of bytes written. If no string
+    ///< is given, only the number of bytes is returned and nothing is copied.
+int Utf8SymChars(const char *s, int Symbols);
+    ///< Returns the number of character bytes at the beginning of the given
+    ///< string that form at most the given number of UTF-8 Symbols.
+int Utf8ToArray(const char *s, uint *a, int Size);
+    ///< Converts the given character bytes (including the terminating 0) into an
+    ///< array of UTF-8 symbols of the given Size. Returns the number of symbols
+    ///< in the array (without the terminating 0).
+int Utf8FromArray(const uint *a, char *s, int Size, int Max = -1);
+    ///< Converts the given array of UTF-8 symbols (including the terminating 0)
+    ///< into a sequence of character bytes of at most Size length. Returns the
+    ///< number of character bytes written (without the terminating 0).
+    ///< If Max is given, only that many symbols will be converted.
+    ///< The resulting string is always zero-terminated if Size is big enough.
+
+// When allocating buffer space, make sure we reserve enough space to hold
+// a string in UTF-8 representation:
+
+#define Utf8BufSize(s) ((s) * 4)
+
+// The following macros automatically use the correct versions of the character
+// class functions:
+
+#define Utf8to(conv, c) (cCharSetConv::SystemCharacterTable() ? to##conv(c) : tow##conv(c))
+#define Utf8is(ccls, c) (cCharSetConv::SystemCharacterTable() ? is##ccls(c) : isw##ccls(c))
+
+class cCharSetConv {
+private:
+  iconv_t cd;
+  char *result;
+  size_t length;
+  static char *systemCharacterTable;
+public:
+  cCharSetConv(const char *FromCode = NULL, const char *ToCode = NULL);
+     ///< Sets up a character set converter to convert from FromCode to ToCode.
+     ///< If FromCode is NULL, the previously set systemCharacterTable is used.
+     ///< If ToCode is NULL, "UTF-8" is used.
+  ~cCharSetConv();
+  const char *Convert(const char *From, char *To = NULL, size_t ToLength = 0);
+     ///< Converts the given Text from FromCode to ToCode (as set in the cosntructor).
+     ///< If To is given, it is used to copy at most ToLength bytes of the result
+     ///< (including the terminating 0) into that buffer. If To is not given,
+     ///< the result is copied into a dynamically allocated buffer and is valid as
+     ///< long as this object lives, or until the next call to Convert(). The
+     ///< return value always points to the result if the conversion was successful
+     ///< (even if a fixed size To buffer was given and the result didn't fit into
+     ///< it). If the string could not be converted, the result points to the
+     ///< original From string.
+  static const char *SystemCharacterTable(void) { return systemCharacterTable; }
+  static void SetSystemCharacterTable(const char *CharacterTable);
+  };
 
 class cString {
 private:
@@ -318,6 +387,61 @@ public:
   T *Last(void) const { return (T *)lastObject; }
   T *Prev(const T *object) const { return (T *)object->cListObject::Prev(); } // need to call cListObject's members to
   T *Next(const T *object) const { return (T *)object->cListObject::Next(); } // avoid ambiguities in case of a "list of lists"
+  };
+
+template<class T> class cVector {
+private:
+  mutable int allocated;
+  mutable int size;
+  mutable T *data;
+  void Realloc(int NewAllocated) const { data = (T *)realloc(data, (allocated = NewAllocated) * sizeof(T)); }
+public:
+  cVector(int Allocated = 10)
+  {
+    allocated = 0;
+    size = 0;
+    data = NULL;
+    Realloc(Allocated);
+  }
+  virtual ~cVector() { free(data); }
+  T& At(int Index) const
+  {
+    if (Index >= size)
+       Realloc(size = Index + 1);
+    return data[Index];
+  }
+  const T& operator[](int Index) const
+  {
+    return At(Index);
+  }
+  T& operator[](int Index)
+  {
+    return At(Index);
+  }
+  int Size(void) const { return size; }
+  virtual void Append(T Data)
+  {
+    if (size >= allocated)
+       Realloc(allocated * 4 / 2); // increase size by 50%
+    data[size++] = Data;
+  }
+  void Sort(__compar_fn_t Compare)
+  {
+    qsort(data, size, sizeof(T), Compare);
+  }
+  };
+
+inline int CompareStrings(const void *a, const void *b)
+{
+  return strcmp(*(const char **)a, *(const char **)b);
+}
+
+class cFileNameList : public cVector<char *> {
+public:
+  cFileNameList(const char *Directory = NULL);
+  virtual ~cFileNameList();
+  bool Load(const char *Directory);
+  int Find(const char *FileName);
   };
 
 class cHashObject : public cListObject {

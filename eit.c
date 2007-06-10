@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.122 2006/10/09 16:14:36 kls Exp $
+ * $Id: eit.c 1.123 2007/06/10 12:51:05 kls Exp $
  */
 
 #include "eit.h"
@@ -188,6 +188,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                     if (hit) {
                        char linkName[ld->privateData.getLength() + 1];
                        strn0cpy(linkName, (const char *)ld->privateData.getData(), sizeof(linkName));
+                       // TODO is there a standard way to determine the character set of this string?
                        cChannel *link = Channels.GetByChannelID(linkID);
                        if (link != channel) { // only link to other channels, not the same one
                           //fprintf(stderr, "Linkage %s %4d %4d %5d %5d %5d %5d  %02X  '%s'\n", hit ? "*" : "", channel->Number(), link ? link->Number() : -1, SiEitEvent.getEventId(), ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId(), ld->getLinkageType(), linkName);//XXX
@@ -218,7 +219,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  if (1 <= Stream && Stream <= 2 && Type != 0) {
                     if (!Components)
                        Components = new cComponents;
-                    char buffer[256];
+                    char buffer[Utf8BufSize(256)];
                     Components->SetComponent(Components->NumComponents(), cd->getStreamContent(), cd->getComponentType(), I18nNormalizeLanguageCode(cd->languageCode), cd->description.getText(buffer, sizeof(buffer)));
                     }
                  }
@@ -230,7 +231,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
 
       if (!rEvent) {
          if (ShortEventDescriptor) {
-            char buffer[256];
+            char buffer[Utf8BufSize(256)];
             pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
             pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
             }
@@ -239,7 +240,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
             pEvent->SetShortText(NULL);
             }
          if (ExtendedEventDescriptors) {
-            char buffer[ExtendedEventDescriptors->getMaximumTextLength(": ") + 1];
+            char buffer[Utf8BufSize(ExtendedEventDescriptors->getMaximumTextLength(": ")) + 1];
             pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, sizeof(buffer), ": "));
             }
          else if (!HasExternalData)

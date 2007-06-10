@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.99 2007/03/11 10:22:18 kls Exp $
+# $Id: Makefile 1.100 2007/05/28 11:22:42 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,8 +17,8 @@ CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
-LIBS     = -ljpeg -lpthread -ldl -lcap
-INCLUDES =
+LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype
+INCLUDES = -I/usr/include/freetype2
 
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
@@ -38,34 +38,6 @@ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o d
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
        skinclassic.o skins.o skinsttng.o sources.o spu.o status.o svdrp.o themes.o thread.o\
        timers.o tools.o transfer.o vdr.o videodir.o
-
-FIXFONT_ISO8859_1 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
-OSDFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
-SMLFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-1
-
-FIXFONT_ISO8859_2 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-2
-OSDFONT_ISO8859_2 = -adobe-helvetica-medium-r-normal--24-*-75-75-p-*-iso8859-2
-SMLFONT_ISO8859_2 = -adobe-helvetica-medium-r-normal--18-*-75-75-p-*-iso8859-2
-
-FIXFONT_ISO8859_5 = -rfx-courier-bold-r-normal--24-*-75-75-m-*-iso8859-5
-OSDFONT_ISO8859_5 = -rfx-helvetica-medium-r-normal--24-*-75-75-p-*-iso8859-5
-SMLFONT_ISO8859_5 = -rfx-helvetica-medium-r-normal--18-*-75-75-p-*-iso8859-5
-
-FIXFONT_ISO8859_7 = --user-medium-r-normal--26-171-110-110-m-140-iso8859-7
-OSDFONT_ISO8859_7 = --user-medium-r-normal--23-179-85-85-m-120-iso8859-7
-SMLFONT_ISO8859_7 = --user-medium-r-normal--19-160-72-72-m-110-iso8859-7
-
-FIXFONT_ISO8859_9 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-9
-OSDFONT_ISO8859_9 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-9
-SMLFONT_ISO8859_9 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-9
-
-FIXFONT_ISO8859_13 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-13
-OSDFONT_ISO8859_13 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-13
-SMLFONT_ISO8859_13 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-13
-
-FIXFONT_ISO8859_15 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-15
-OSDFONT_ISO8859_15 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-15
-SMLFONT_ISO8859_15 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-15
 
 ifndef NO_KBD
 DEFINES += -DREMOTE_KBD
@@ -98,15 +70,6 @@ DEFINES += -DVFAT
 endif
 
 all: vdr
-font: genfontfile\
-      fontfix-iso8859-1.c fontosd-iso8859-1.c fontsml-iso8859-1.c\
-      fontfix-iso8859-2.c fontosd-iso8859-2.c fontsml-iso8859-2.c\
-      fontfix-iso8859-5.c fontosd-iso8859-5.c fontsml-iso8859-5.c\
-      fontfix-iso8859-7.c fontosd-iso8859-7.c fontsml-iso8859-7.c\
-      fontfix-iso8859-9.c fontosd-iso8859-9.c fontsml-iso8859-9.c\
-      fontfix-iso8859-13.c fontosd-iso8859-13.c fontsml-iso8859-13.c\
-      fontfix-iso8859-15.c fontosd-iso8859-15.c fontsml-iso8859-15.c
-	@echo "font files created."
 
 # Implicit rules:
 
@@ -126,62 +89,6 @@ $(DEPFILE): Makefile
 
 vdr: $(OBJS) $(SILIB)
 	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
-
-# The font files:
-
-fontfix-iso8859-1.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_1" "$(FIXFONT_ISO8859_1)" > $@
-fontosd-iso8859-1.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_1" "$(OSDFONT_ISO8859_1)" > $@
-fontsml-iso8859-1.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_1" "$(SMLFONT_ISO8859_1)" > $@
-
-fontfix-iso8859-2.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_2" "$(FIXFONT_ISO8859_2)" > $@
-fontosd-iso8859-2.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_2" "$(OSDFONT_ISO8859_2)" > $@
-fontsml-iso8859-2.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_2" "$(SMLFONT_ISO8859_2)" > $@
-
-fontfix-iso8859-5.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_5" "$(FIXFONT_ISO8859_5)" > $@
-fontosd-iso8859-5.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_5" "$(OSDFONT_ISO8859_5)" > $@
-fontsml-iso8859-5.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_5" "$(SMLFONT_ISO8859_5)" > $@
-
-fontfix-iso8859-7.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_7" "$(FIXFONT_ISO8859_7)" > $@
-fontosd-iso8859-7.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_7" "$(OSDFONT_ISO8859_7)" > $@
-fontsml-iso8859-7.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_7" "$(SMLFONT_ISO8859_7)" > $@
-
-fontfix-iso8859-9.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_9" "$(FIXFONT_ISO8859_9)" > $@
-fontosd-iso8859-9.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_9" "$(OSDFONT_ISO8859_9)" > $@
-fontsml-iso8859-9.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_9" "$(SMLFONT_ISO8859_9)" > $@
-
-fontfix-iso8859-13.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_13" "$(FIXFONT_ISO8859_13)" > $@
-fontosd-iso8859-13.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_13" "$(OSDFONT_ISO8859_13)" > $@
-fontsml-iso8859-13.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_13" "$(SMLFONT_ISO8859_13)" > $@
-
-fontfix-iso8859-15.c:
-	./genfontfile "cFont::tPixelData FontFix_iso8859_15" "$(FIXFONT_ISO8859_15)" > $@
-fontosd-iso8859-15.c:
-	./genfontfile "cFont::tPixelData FontOsd_iso8859_15" "$(OSDFONT_ISO8859_15)" > $@
-fontsml-iso8859-15.c:
-	./genfontfile "cFont::tPixelData FontSml_iso8859_15" "$(SMLFONT_ISO8859_15)" > $@
-
-# The font file generator:
-
-genfontfile: genfontfile.c
-	$(CC) $(CFLAGS) -o $@ -L/usr/X11R6/lib $< -lX11
 
 # The libsi library:
 
@@ -261,10 +168,8 @@ srcdoc:
 
 clean:
 	$(MAKE) -C $(LSIDIR) clean
-	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
+	-rm -f $(OBJS) $(DEPFILE) vdr core* *~
 	-rm -rf include
 	-rm -rf srcdoc
-fontclean:
-	-rm -f fontfix*.c fontosd*.c fontsml*.c
-CLEAN: clean fontclean
+CLEAN: clean
 

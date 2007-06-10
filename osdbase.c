@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.30 2007/01/05 10:41:16 kls Exp $
+ * $Id: osdbase.c 1.31 2007/06/09 10:07:46 kls Exp $
  */
 
 #include "osdbase.h"
@@ -86,10 +86,8 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   subMenu = NULL;
   helpRed = helpGreen = helpYellow = helpBlue = NULL;
   status = NULL;
-  if (!displayMenuCount++) {
-     displayMenu = Skins.Current()->DisplayMenu();
-     displayMenuItems = displayMenu->MaxItems();
-     }
+  if (!displayMenuCount++)
+     SetDisplayMenu();
 }
 
 cOsdMenu::~cOsdMenu()
@@ -103,15 +101,25 @@ cOsdMenu::~cOsdMenu()
      DELETENULL(displayMenu);
 }
 
+void cOsdMenu::SetDisplayMenu(void)
+{
+  if (displayMenu) {
+     displayMenu->Clear();
+     delete displayMenu;
+     }
+  displayMenu = Skins.Current()->DisplayMenu();
+  displayMenuItems = displayMenu->MaxItems();
+}
+
 const char *cOsdMenu::hk(const char *s)
 {
-  static char buffer[64];
+  static cString buffer;
   if (s && hasHotkeys) {
      if (digit == 0 && '1' <= *s && *s <= '9' && *(s + 1) == ' ')
         digit = -1; // prevents automatic hotkeys - input already has them
      if (digit >= 0) {
         digit++;
-        snprintf(buffer, sizeof(buffer), " %c %s", (digit < 10) ? '0' + digit : ' ' , s);
+        buffer = cString::sprintf(" %c %s", (digit < 10) ? '0' + digit : ' ' , s);
         s = buffer;
         }
      }

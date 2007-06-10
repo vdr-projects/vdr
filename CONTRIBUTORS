@@ -585,6 +585,7 @@ Helmut Auer <vdr@helmutauer.de>
  for reporting that the shutdown script is given a reboot time in the past if there
  is a recording going on or about to start, and the user insists in shutting down now
  for suggesting to make the channel entry timeout configurable
+ for a patch that was used to implement the SVDRP command REMO
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1120,6 +1121,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for making cCommand::Execute() use cPipe instead of popen() to avoid problems
  with open file handles when starting background commands
  for fixing handling error status in cDvbTuner::GetFrontendStatus()
+ for fixing a busy loop in fast forward if the next video data file is missing
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1395,6 +1397,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  speed mode"
  for removing 'assert(0)' from cDvbSpuDecoder::setTime()
  for adapting 'libsi' to DVB-S2
+ for fixing handling ChannelUp/Down keys if there is currently a replay running
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1491,6 +1494,7 @@ Udo Richter <udo_richter@gmx.de>
  for implementing cPlugin::WakeupTime() to allow plugins to request VDR to wake
  up at a particular time
  for making the HUP signal force a restart of VDR
+ for fixing a race condition with signal handlers at program exit
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1659,6 +1663,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting that there are places where ntohs() is assigned to different types
  for adapting cThread::ThreadId() to recent kernels
  for some improvements to the man pages
+ for fixing some spelling errors in 'newplugin'
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2014,6 +2019,8 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for suggesting that cDevice::GetDevice() should prefer any device that's already
  receiving and doesn't require detatching receivers
  for improving handling Transfer Mode devices when selecting a device to receive
+ for fixing handling frequencies in NitFilter::Process()
+ for making non-primary devices in Transfer mode be also used for recording
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2044,6 +2051,7 @@ Tomas Berglund <tomber@telia.com>
 
 Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to add LC_ALL to the checks for UTF-8 at startup
+ for fixing getting the code setting from the locale
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
@@ -2072,3 +2080,10 @@ Petri Helin <phelin@googlemail.com>
 
 Oktay Yolgeçen <oktay_73@yahoo.de>
  for translating OSD texts to the Turkish language
+
+Krzysztof Parma <krzycho@zoz.wodzislaw.pl>
+ for suggesting to implement the SVDRP command REMO
+
+Alexander Riedel <alexander-riedel@t-online.de>
+ for a patch that was used as a base to implement support for Freetype fonts and
+ UTF-8 handling

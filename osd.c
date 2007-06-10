@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.68 2007/02/17 16:05:52 kls Exp $
+ * $Id: osd.c 1.69 2007/06/10 12:16:36 kls Exp $
  */
 
 #include "osd.h"
 #include <math.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -20,6 +21,18 @@
 cPalette::cPalette(int Bpp)
 {
   SetBpp(Bpp);
+  SetAntiAliasGranularity(10, 10);
+}
+
+void cPalette::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
+{
+  if (FixedColors >= MAXNUMCOLORS || BlendColors == 0)
+     antiAliasGranularity = MAXNUMCOLORS - 1;
+  else {
+     int ColorsForBlending = MAXNUMCOLORS - FixedColors;
+     int ColorsPerBlend = ColorsForBlending / BlendColors + 2; // +2 = the full foreground and background colors, which are amoung the fixed colors
+     antiAliasGranularity = double(MAXNUMCOLORS - 1) / (ColorsPerBlend - 1);
+     }
 }
 
 void cPalette::Reset(void)
@@ -30,18 +43,23 @@ void cPalette::Reset(void)
 
 int cPalette::Index(tColor Color)
 {
+  // Check if color is already defined:
   for (int i = 0; i < numColors; i++) {
       if (color[i] == Color)
          return i;
       }
+  // No exact color, try a close one:
+  int i = ClosestColor(Color, 4);
+  if (i >= 0)
+     return i;
+  // No close one, try to define a new one:
   if (numColors < maxColors) {
      color[numColors++] = Color;
      modified = true;
      return numColors - 1;
      }
-  dsyslog("too many different colors used in palette");
-  //TODO: return the index of the "closest" color?
-  return 0;
+  // Out of colors, so any close color must do:
+  return ClosestColor(Color);
 }
 
 void cPalette::SetBpp(int Bpp)
@@ -91,6 +109,48 @@ void cPalette::Replace(const cPalette &Palette)
   for (int i = 0; i < Palette.numColors; i++)
       SetColor(i, Palette.color[i]);
   numColors = Palette.numColors;
+  antiAliasGranularity = Palette.antiAliasGranularity;
+}
+
+tColor cPalette::Blend(tColor ColorFg, tColor ColorBg, uint8_t Level)
+{
+  if (antiAliasGranularity > 0)
+     Level = uint8_t(int(Level / antiAliasGranularity + 0.5) * antiAliasGranularity);
+  int Af = (ColorFg & 0xFF000000) >> 24;
+  int Rf = (ColorFg & 0x00FF0000) >> 16;
+  int Gf = (ColorFg & 0x0000FF00) >>  8;
+  int Bf = (ColorFg & 0x000000FF);
+  int Ab = (ColorBg & 0xFF000000) >> 24;
+  int Rb = (ColorBg & 0x00FF0000) >> 16;
+  int Gb = (ColorBg & 0x0000FF00) >>  8;
+  int Bb = (ColorBg & 0x000000FF);
+  int A = (Ab + (Af - Ab) * Level / 0xFF) & 0xFF;
+  int R = (Rb + (Rf - Rb) * Level / 0xFF) & 0xFF;
+  int G = (Gb + (Gf - Gb) * Level / 0xFF) & 0xFF;
+  int B = (Bb + (Bf - Bb) * Level / 0xFF) & 0xFF;
+  return (A << 24) | (R << 16) | (G << 8) | B;
+}
+
+int cPalette::ClosestColor(tColor Color, int MaxDiff)
+{
+  int n = 0;
+  int d = INT_MAX;
+  int A1 = (Color & 0xFF000000) >> 24;
+  int R1 = (Color & 0x00FF0000) >> 16;
+  int G1 = (Color & 0x0000FF00) >>  8;
+  int B1 = (Color & 0x000000FF);
+  for (int i = 0; i < numColors; i++) {
+      int A2 = (color[i] & 0xFF000000) >> 24;
+      int R2 = (color[i] & 0x00FF0000) >> 16;
+      int G2 = (color[i] & 0x0000FF00) >>  8;
+      int B2 = (color[i] & 0x000000FF);
+      int diff = (abs(A1 - A2) << 1) + (abs(R1 - R2) << 1) + (abs(G1 - G2) << 1) + (abs(B1 - B2) << 1);
+      if (diff < d) {
+         d = diff;
+         n = i;
+         }
+      }
+  return d <= MaxDiff ? n : -1;
 }
 
 // --- cBitmap ---------------------------------------------------------------
@@ -424,26 +484,7 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
         return;
      x -= x0;
      y -= y0;
-     tIndex fg = Index(ColorFg);
-     tIndex bg = (ColorBg != clrTransparent) ? Index(ColorBg) : 0;
-     while (s && *s) {
-           const cFont::tCharData *CharData = Font->CharData(*s++);
-           if (limit && int(x + CharData->width) > limit)
-              break; // we don't draw partial characters
-           if (int(x + CharData->width) > 0) {
-              for (int row = 0; row < h; row++) {
-                  cFont::tPixelData PixelData = CharData->lines[row];
-                  for (int col = CharData->width; col-- > 0; ) {
-                      if (ColorBg != clrTransparent || (PixelData & 1))
-                         SetIndex(x + col, y + row, (PixelData & 1) ? fg : bg);
-                      PixelData >>= 1;
-                      }
-                  }
-              }
-           x += CharData->width;
-           if (x > width - 1)
-              break;
-           }
+     Font->DrawText(this, x, y, s, ColorFg, ColorBg, limit);
      }
 }
 
@@ -621,6 +662,12 @@ cOsd::~cOsd()
       delete bitmaps[i];
   delete savedRegion;
   isOpen--;
+}
+
+void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
+{
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->SetAntiAliasGranularity(FixedColors, BlendColors);
 }
 
 cBitmap *cOsd::GetBitmap(int Area)

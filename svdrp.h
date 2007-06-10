@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.28 2006/08/06 08:51:09 kls Exp $
+ * $Id: svdrp.h 1.29 2007/04/30 12:28:28 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -78,6 +78,7 @@ private:
   void CmdPLAY(const char *Option);
   void CmdPLUG(const char *Option);
   void CmdPUTE(const char *Option);
+  void CmdREMO(const char *Option);
   void CmdSCAN(const char *Option);
   void CmdSTAT(const char *Option);
   void CmdUPDT(const char *Option);

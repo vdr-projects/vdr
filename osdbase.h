@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.15 2007/01/05 10:41:32 kls Exp $
+ * $Id: osdbase.h 1.16 2007/06/09 11:49:00 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -96,6 +96,7 @@ private:
   int digit;
   bool hasHotkeys;
 protected:
+  void SetDisplayMenu(void);
   cSkinDisplayMenu *DisplayMenu(void) { return displayMenu; }
   const char *hk(const char *s);
   void SetCols(int c0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);

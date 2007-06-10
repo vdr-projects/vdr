@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.19 2006/02/17 15:57:37 kls Exp $
+ * $Id: skinsttng.c 1.20 2007/06/10 12:40:43 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -178,8 +178,13 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      int yt = (y0 + y1) / 2;
      int yb = (y6 + y7) / 2;
      osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - y7));
-     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
      osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
      osd->DrawRectangle(x0, y6, x1 - 1, y7 - 1, clrTransparent);
@@ -211,8 +216,13 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      y0 = 0;
      y1 = lineHeight;
      osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - y1));
-     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
      osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);
      osd->DrawRectangle(x1, y0, x2 - 1, y1 - 1, frameColor);
@@ -297,7 +307,7 @@ void cSkinSTTNGDisplayChannel::Flush(void)
         const cFont *font = cFont::GetFont(fontSml);
         cString date = DayDateTime();
         int w = font->Width(date);
-        osd->DrawText(x4 - w - 2, y7 - font->Height(date), date, Theme.Color(clrChannelDate), frameColor, font);
+        osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
         cDevice *Device = cDevice::PrimaryDevice();
         const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
         if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
@@ -333,6 +343,7 @@ private:
   tColor frameColor;
   int currentIndex;
   bool message;
+  cString lastDate;
   void SetScrollbar(void);
 public:
   cSkinSTTNGDisplayMenu(void);
@@ -378,17 +389,22 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop);
-  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
-  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
-                       { x0, y3, x3 - 1, y4 - 1, 1 },
-                       { x3, y3, x4 - 1, y4 - 1, 2 },
-                       { x4, y3, x7 - 1, y4 - 1, 2 },
-                       { x0, y4, x7 - 1, y7 - 1, 4 }
-                     };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
+     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
+                          { x0, y3, x3 - 1, y4 - 1, 1 },
+                          { x3, y3, x4 - 1, y4 - 1, 2 },
+                          { x4, y3, x7 - 1, y4 - 1, 2 },
+                          { x0, y4, x7 - 1, y7 - 1, 4 }
+                        };
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
   osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
@@ -465,7 +481,7 @@ void cSkinSTTNGDisplayMenu::SetTitle(const char *Title)
   const char *VDR = " VDR";
   int w = font->Width(VDR);
   osd->DrawText(x3 + 5, y0, Title, Theme.Color(clrMenuTitle), frameColor, font, x4 - w - x3 - 5);
-  osd->DrawText(x4 - w, y0, VDR, frameColor, clrBlack, font);
+  osd->DrawText(x4 - w, y0, VDR, frameColor, clrBlack, font, w, lineHeight);
 }
 
 void cSkinSTTNGDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -551,9 +567,10 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
   ts.Set(osd, xl, y, x4 - xl, y4 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s ", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
-     osd->DrawText(x4 - font->Width(buffer), y, buffer, Theme.Color(clrMenuEventVps), frameColor, font);
+     int w = font->Width(buffer);
+     osd->DrawText(x4 - w, y, buffer, Theme.Color(clrMenuEventVps), frameColor, font, w);
      int yb = y + font->Height();
      osd->DrawRectangle(x5, y, x6 - 1, yb - 1, frameColor);
      osd->DrawEllipse  (x6, y, x7 - 1, yb - 1, frameColor, 5);
@@ -640,8 +657,12 @@ void cSkinSTTNGDisplayMenu::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     const cFont *font = cFont::GetFont(fontSml);
-     osd->DrawText(x4 - font->Width(date) - 2, y7 - font->Height(date), date, Theme.Color(clrMenuDate), frameColor, font);
+     if (!lastDate || strcmp(date, lastDate)) {
+        const cFont *font = cFont::GetFont(fontSml);
+        int w = font->Width(date);
+        osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrMenuDate), frameColor, font, w);
+        lastDate = date;
+        }
      }
   osd->Flush();
 }
@@ -697,8 +718,13 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y7);
-  tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, ModeOnly ? clrTransparent : Theme.Color(clrBackground));
   if (!ModeOnly) {
      osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
@@ -760,14 +786,15 @@ void cSkinSTTNGDisplayReplay::SetCurrent(const char *Current)
 {
   const cFont *font = cFont::GetFont(fontSml);
   int w = font->Width(Current);
-  osd->DrawText(x3, y6, Current, Theme.Color(clrReplayCurrent), frameColor, font, lastCurrentWidth > w ? lastCurrentWidth : 0);
+  osd->DrawText(x3, y6, Current, Theme.Color(clrReplayCurrent), frameColor, font, lastCurrentWidth > w ? lastCurrentWidth : w);
   lastCurrentWidth = w;
 }
 
 void cSkinSTTNGDisplayReplay::SetTotal(const char *Total)
 {
   const cFont *font = cFont::GetFont(fontSml);
-  osd->DrawText(x4 - font->Width(Total) - 5, y6, Total, Theme.Color(clrReplayTotal), frameColor, font);
+  int w = font->Width(Total);
+  osd->DrawText(x4 - w - 5, y6, Total, Theme.Color(clrReplayTotal), frameColor, font, w);
 }
 
 void cSkinSTTNGDisplayReplay::SetJump(const char *Jump)
@@ -825,8 +852,13 @@ cSkinSTTNGDisplayVolume::cSkinSTTNGDisplayVolume(void)
   y0 = 0;
   y1 = lineHeight;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y1);
-  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);
   osd->DrawRectangle(x1, y0, x2 - 1, y1 - 1, frameColor);
@@ -935,17 +967,22 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y7);
-  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
-  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
-                       { x0, y3, x3 - 1, y4 - 1, 1 },
-                       { x3, y3, x4 - 1, y4 - 1, 2 },
-                       { x4, y3, x7 - 1, y4 - 1, 2 },
-                       { x0, y4, x7 - 1, y7 - 1, 4 }
-                     };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
+     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
+                          { x0, y3, x3 - 1, y4 - 1, 1 },
+                          { x3, y3, x4 - 1, y4 - 1, 2 },
+                          { x4, y3, x7 - 1, y4 - 1, 2 },
+                          { x0, y4, x7 - 1, y7 - 1, 4 }
+                        };
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
   osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
@@ -1057,8 +1094,13 @@ cSkinSTTNGDisplayMessage::cSkinSTTNGDisplayMessage(void)
   y0 = 0;
   y1 = lineHeight;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y1);
-  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 2 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 2 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);
   osd->DrawRectangle(x1, y0, x2 - 1, y1 - 1, frameColor);

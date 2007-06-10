@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.29 2006/09/04 17:07:39 kls Exp $
+ * $Id: timers.h 1.30 2007/06/03 13:24:58 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -94,7 +94,7 @@ public:
   cString PrintFirstDay(void) const;
   static int TimeToInt(int t);
   static bool ParseDay(const char *s, time_t &Day, int &WeekDays);
-  static cString PrintDay(time_t Day, int WeekDays);
+  static cString PrintDay(time_t Day, int WeekDays, bool SingleByteChars);
   };
 
 class cTimers : public cConfig<cTimer> {

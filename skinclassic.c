@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.15 2006/03/31 13:59:50 kls Exp $
+ * $Id: skinclassic.c 1.16 2007/06/10 12:42:02 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -94,8 +94,13 @@ cSkinClassicDisplayChannel::cSkinClassicDisplayChannel(bool WithInfo)
   message = false;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - Lines * lineHeight));
   timeWidth = font->Width("00:00") + 4;
-  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, Theme.Color(clrBackground));
 }
 
@@ -142,7 +147,9 @@ void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
+     const cFont *font = cFont::GetFont(fontSml);
+     int w = font->Width(date);
+     osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
      }
   osd->Flush();
 }
@@ -155,6 +162,7 @@ private:
   int x0, x1;
   int y0, y1, y2, y3, y4, y5;
   int lineHeight;
+  cString lastDate;
   void SetScrollbar(void);
 public:
   cSkinClassicDisplayMenu(void);
@@ -187,15 +195,20 @@ cSkinClassicDisplayMenu::cSkinClassicDisplayMenu(void)
   y4 = y5 - lineHeight;
   y3 = y4 - lineHeight;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop);
-  tArea Areas[] = { { x0, y0, x1 - 1, y5 - 1, 4 } };
-  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x1 - 1, y5 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x1 - 1, y1 - 1, 2 },
-                       { x0, y1, x1 - 1, y3 - 1, 2 },
-                       { x0, y3, x1 - 1, y5 - 1, 4 }
-                     };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x1 - 1, y5 - 1, 4 } };
+     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x1 - 1, y1 - 1, 2 },
+                          { x0, y1, x1 - 1, y3 - 1, 2 },
+                          { x0, y3, x1 - 1, y5 - 1, 4 }
+                        };
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x1 - 1, y5 - 1, Theme.Color(clrBackground));
 }
@@ -305,9 +318,10 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s ", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
-     osd->DrawText(x1 - font->Width(buffer), y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font);
+     int w = font->Width(buffer);
+     osd->DrawText(x1 - w, y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font, w);
      free(buffer);
      }
   y += ts.Height();
@@ -376,8 +390,12 @@ const cFont *cSkinClassicDisplayMenu::GetTextAreaFont(bool FixedFont) const
 void cSkinClassicDisplayMenu::Flush(void)
 {
   cString date = DayDateTime();
-  const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x1 - font->Width(date) - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
+  if (!lastDate || strcmp(date, lastDate)) {
+     const cFont *font = cFont::GetFont(fontOsd);
+     int w = font->Width(date);
+     osd->DrawText(x1 - w - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font, w);
+     lastDate = date;
+     }
   osd->Flush();
 }
 
@@ -414,8 +432,13 @@ cSkinClassicDisplayReplay::cSkinClassicDisplayReplay(bool ModeOnly)
   y2 = 2 * lineHeight;
   y3 = 3 * lineHeight;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y3);
-  tArea Areas[] = { { x0, y0, x1 - 1, y3 - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { x0, y0, x1 - 1, y3 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { x0, y0, x1 - 1, y3 - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawRectangle(x0, y0, x1 - 1, y3 - 1, ModeOnly ? clrTransparent : Theme.Color(clrBackground));
 }
 
@@ -455,14 +478,15 @@ void cSkinClassicDisplayReplay::SetCurrent(const char *Current)
 {
   const cFont *font = cFont::GetFont(fontOsd);
   int w = font->Width(Current);
-  osd->DrawText(x0, y2, Current, Theme.Color(clrReplayCurrent), Theme.Color(clrBackground), font, lastCurrentWidth > w ? lastCurrentWidth : 0);
+  osd->DrawText(x0, y2, Current, Theme.Color(clrReplayCurrent), Theme.Color(clrBackground), font, lastCurrentWidth > w ? lastCurrentWidth : w);
   lastCurrentWidth = w;
 }
 
 void cSkinClassicDisplayReplay::SetTotal(const char *Total)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x1 - font->Width(Total), y2, Total, Theme.Color(clrReplayTotal), Theme.Color(clrBackground), font);
+  int w = font->Width(Total);
+  osd->DrawText(x1 - font->Width(Total), y2, Total, Theme.Color(clrReplayTotal), Theme.Color(clrBackground), font, w);
 }
 
 void cSkinClassicDisplayReplay::SetJump(const char *Jump)
@@ -503,8 +527,13 @@ cSkinClassicDisplayVolume::cSkinClassicDisplayVolume(void)
   const cFont *font = cFont::GetFont(fontOsd);
   int lineHeight = font->Height();
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - lineHeight);
-  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
 }
 
 cSkinClassicDisplayVolume::~cSkinClassicDisplayVolume()
@@ -572,8 +601,13 @@ cSkinClassicDisplayTracks::cSkinClassicDisplayTracks(const char *Title, int NumT
   y1 = lineHeight;
   y2 = y1 + NumTracks * lineHeight;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y2);
-  tArea Areas[] = { { x0, y0, x1 - 1, y2 - 1, 4 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { x0, y0, x1 - 1, y2 - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { x0, y0, x1 - 1, y2 - 1, 4 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
   osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0);
   for (int i = 0; i < NumTracks; i++)
       SetItem(Tracks[i], i, false);
@@ -630,8 +664,13 @@ cSkinClassicDisplayMessage::cSkinClassicDisplayMessage(void)
   const cFont *font = cFont::GetFont(fontOsd);
   int lineHeight = font->Height();
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - lineHeight);
-  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 2 } };
-  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 8 } };
+  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  else {
+     tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, lineHeight - 1, 2 } };
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     }
 }
 
 cSkinClassicDisplayMessage::~cSkinClassicDisplayMessage()

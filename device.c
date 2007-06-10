@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.139 2007/01/13 12:05:00 kls Exp $
+ * $Id: device.c 1.140 2007/04/30 09:34:00 kls Exp $
  */
 
 #include "device.h"
@@ -327,7 +327,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              // difference, because it results in the most significant bit of the result.
              uint32_t imp = 0;
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
-             imp <<= 1; imp |= !device[i]->Receiving() || ndr;                                                       // use receiving devices if we don't need to detach existing receivers
+             imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
              imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)

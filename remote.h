@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.39 2007/02/24 15:53:00 kls Exp $
+ * $Id: remote.h 1.40 2007/04/30 12:37:37 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -31,6 +31,7 @@ private:
   static time_t lastActivity;
   static const char *keyMacroPlugin;
   static const char *callPlugin;
+  static bool enabled;
   char *name;
 protected:
   cRemote(const char *Name);
@@ -45,6 +46,8 @@ public:
   const char *Name(void) { return name; }
   static void SetLearning(cRemote *Learning) { learning = Learning; }
   static bool IsLearning() { return learning != NULL; }
+  static bool Enabled(void) { return enabled; }
+  static void SetEnabled(bool Enabled) { enabled = Enabled; }
   static void Clear(void);
   static bool Put(eKeys Key, bool AtFront = false);
   static bool PutMacro(eKeys Key);

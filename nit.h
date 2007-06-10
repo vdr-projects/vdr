@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.h 1.2 2004/01/18 11:13:48 kls Exp $
+ * $Id: nit.h 1.3 2007/06/10 08:50:21 kls Exp $
  */
 
 #ifndef __NIT_H
@@ -13,7 +13,7 @@
 #include "filter.h"
 
 #define MAXNITS 16
-#define MAXNETWORKNAME 256
+#define MAXNETWORKNAME Utf8BufSize(256)
 
 class cNitFilter : public cFilter {
 private:
