@@ -5199,6 +5199,9 @@ Video Disk Recorder Revision History
   CAM's version 3.11 firmware.
 - Fixed getting the code setting from the locale (thanks to Matthias Schwarzott).
 - Implemented support for Freetype fonts (based on a patch from Alexander Riedel).
+  The font names and sizes can be adjusted in the "Setup/OSD" menu.
+  Note that VDR now requires freetype fonts to be installed in
+  /usr/share/fonts/truetype.
 - If the OSD device in use has at least 8bpp bitmap depth and this is also
   used by the current skin, Freetype fonts are displayed "anti-aliased".
   The new setup parameter "OSD/Anti-alias" can be used to turn this off.
