@@ -5229,3 +5229,7 @@ Video Disk Recorder Revision History
 - Improved editing strings that are too long to fit into the editable area.
 - Changes to the OSD settings in the "Setup/OSD" menu now immediately take effect
   when the "Ok" key is pressed.
+
+2007-06-15: Version 1.5.4
+
+- Increased APIVERSION (forgot to do that in 1.5.2 and 1.5.3).
