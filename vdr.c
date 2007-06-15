@@ -22,11 +22,12 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.291 2007/06/09 12:33:53 kls Exp $
+ * $Id: vdr.c 1.292 2007/06/15 13:20:34 kls Exp $
  */
 
 #include <getopt.h>
 #include <grp.h>
+#include <langinfo.h>
 #include <locale.h>
 #include <pwd.h>
 #include <signal.h>
@@ -493,17 +494,21 @@ int main(int argc, char *argv[])
 
   // Set the system character table:
 
-  char *LangEnv = setlocale(LC_CTYPE, "");
-  if (!LangEnv)
-     LangEnv = getenv("LANG"); // last resort in case locale stuff isn't installed
-  if (LangEnv) {
-     char *CodeSet = strchr(LangEnv, '.');
-     if (CodeSet) {
-        CodeSet++; // skip the dot
-        bool known = SI::SetSystemCharacterTable(CodeSet);
-        isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
-        cCharSetConv::SetSystemCharacterTable(CodeSet);
+  char *CodeSet = NULL;
+  if (setlocale(LC_CTYPE, ""))
+     CodeSet = nl_langinfo(CODESET);
+  else {
+     char *LangEnv = getenv("LANG"); // last resort in case locale stuff isn't installed
+     if (LangEnv) {
+        CodeSet = strchr(LangEnv, '.');
+        if (CodeSet)
+           CodeSet++; // skip the dot
         }
+     }
+  if (CodeSet) {
+     bool known = SI::SetSystemCharacterTable(CodeSet);
+     isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
+     cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():

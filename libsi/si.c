@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.20 2007/06/10 09:31:34 kls Exp $
+ *   $Id: si.c 1.21 2007/06/15 13:08:31 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -250,59 +250,59 @@ char *String::getText(char *buffer, char *shortVersion, int sizeBuffer, int size
 }
 
 static const char *CharacterTables1[] = {
-  NULL,         // 0x00
-  "ISO8859-5",  // 0x01
-  "ISO8859-6",  // 0x02
-  "ISO8859-7",  // 0x03
-  "ISO8859-8",  // 0x04
-  "ISO8859-9",  // 0x05
-  "ISO8859-10", // 0x06
-  "ISO8859-11", // 0x07
-  "ISO8859-12", // 0x08
-  "ISO8859-13", // 0x09
-  "ISO8859-14", // 0x0A
-  "ISO8859-15", // 0x0B
-  NULL,         // 0x0C
-  NULL,         // 0x0D
-  NULL,         // 0x0E
-  NULL,         // 0x0F
-  NULL,         // 0x10
-  "UTF16",      // 0x11
-  "EUC-KR",     // 0x12
-  "GB2312",     // 0x13
-  "GBK",        // 0x14
-  "UTF8",       // 0x15
-  NULL,         // 0x16
-  NULL,         // 0x17
-  NULL,         // 0x18
-  NULL,         // 0x19
-  NULL,         // 0x1A
-  NULL,         // 0x1B
-  NULL,         // 0x1C
-  NULL,         // 0x1D
-  NULL,         // 0x1E
-  NULL,         // 0x1F
+  NULL,          // 0x00
+  "ISO-8859-5",  // 0x01
+  "ISO-8859-6",  // 0x02
+  "ISO-8859-7",  // 0x03
+  "ISO-8859-8",  // 0x04
+  "ISO-8859-9",  // 0x05
+  "ISO-8859-10", // 0x06
+  "ISO-8859-11", // 0x07
+  "ISO-8859-12", // 0x08
+  "ISO-8859-13", // 0x09
+  "ISO-8859-14", // 0x0A
+  "ISO-8859-15", // 0x0B
+  NULL,          // 0x0C
+  NULL,          // 0x0D
+  NULL,          // 0x0E
+  NULL,          // 0x0F
+  NULL,          // 0x10
+  "UTF-16",      // 0x11
+  "EUC-KR",      // 0x12
+  "GB2312",      // 0x13
+  "GBK",         // 0x14
+  "UTF-8",       // 0x15
+  NULL,          // 0x16
+  NULL,          // 0x17
+  NULL,          // 0x18
+  NULL,          // 0x19
+  NULL,          // 0x1A
+  NULL,          // 0x1B
+  NULL,          // 0x1C
+  NULL,          // 0x1D
+  NULL,          // 0x1E
+  NULL,          // 0x1F
 };
 
 #define SingleByteLimit 0x0B
 
 static const char *CharacterTables2[] = {
   NULL,         // 0x00
-  "ISO8859-1",  // 0x01
-  "ISO8859-2",  // 0x02
-  "ISO8859-3",  // 0x03
-  "ISO8859-4",  // 0x04
-  "ISO8859-5",  // 0x05
-  "ISO8859-6",  // 0x06
-  "ISO8859-7",  // 0x07
-  "ISO8859-8",  // 0x08
-  "ISO8859-9",  // 0x09
-  "ISO8859-10", // 0x0A
-  "ISO8859-11", // 0x0B
+  "ISO-8859-1",  // 0x01
+  "ISO-8859-2",  // 0x02
+  "ISO-8859-3",  // 0x03
+  "ISO-8859-4",  // 0x04
+  "ISO-8859-5",  // 0x05
+  "ISO-8859-6",  // 0x06
+  "ISO-8859-7",  // 0x07
+  "ISO-8859-8",  // 0x08
+  "ISO-8859-9",  // 0x09
+  "ISO-8859-10", // 0x0A
+  "ISO-8859-11", // 0x0B
   NULL,         // 0x0C
-  "ISO8859-13", // 0x0D
-  "ISO8859-14", // 0x0E
-  "ISO8859-15", // 0x0F
+  "ISO-8859-13", // 0x0D
+  "ISO-8859-14", // 0x0E
+  "ISO-8859-15", // 0x0F
 };
 
 #define NumEntries(Table) (sizeof(Table) / sizeof(char *))

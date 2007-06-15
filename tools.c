@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.125 2007/06/15 12:46:38 kls Exp $
+ * $Id: tools.c 1.126 2007/06/15 13:11:12 kls Exp $
  */
 
 #include "tools.h"
@@ -732,7 +732,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
 {
   free(systemCharacterTable);
   systemCharacterTable = NULL;
-  if (!strcasestr(CharacterTable, "UTF")) {
+  if (!strcasestr(CharacterTable, "UTF-8")) {
      // Set up a map for the character values 128...255:
      char buf[129];
      for (int i = 0; i < 128; i++)

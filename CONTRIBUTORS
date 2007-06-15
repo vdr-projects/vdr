@@ -886,6 +886,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for removing the LOCK_THREAD from the LIRC thread
  for making the Makefile patch friendlier
  for a patch that was used for implementing setting the user id
+ for pointing out that the canonical spelling of codesets is with '-'
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1739,6 +1740,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for suggesting to extend the version number reported with the '-V' option to also
  show the current APIVERSION
  for fixing i18n characters for the Hungarian texts
+ for implementing using nl_langinfo(CODESET) to determine the local codeset to use
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
