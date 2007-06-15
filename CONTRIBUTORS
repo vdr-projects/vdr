@@ -2091,3 +2091,6 @@ Alexander Riedel <alexander-riedel@t-online.de>
  for a patch that was used as a base to implement support for Freetype fonts and
  UTF-8 handling
  for a patch that fixed part of a crash in i18n character set conversion
+
+Jose Alberto Reguero <jareguero@telefonica.net>
+ for a patch that fixed part of a crash in i18n character set conversion

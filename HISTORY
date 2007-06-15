@@ -5233,8 +5233,9 @@ Video Disk Recorder Revision History
 2007-06-15: Version 1.5.4
 
 - Increased APIVERSION (forgot to do that in 1.5.2 and 1.5.3).
-- Fixed a crash in i18n character set conversion (thanks to Alexander Riedel and
-  Christian Wieninger for patches that cured part of the problem).
+- Fixed a crash in i18n character set conversion (thanks to Alexander Riedel,
+  Jose Alberto Reguero and Christian Wieninger for patches that cured part of
+  the problem).
 - Using nl_langinfo(CODESET) to determine the local codeset to use (thanks to
   Thomas Günther). The codeset names in 'libsi/si.c' have been changed to the
   canonical spelling with '-' (thanks to Ludwig Nussel for pointing this out).
