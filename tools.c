@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.124 2007/06/15 12:20:40 kls Exp $
+ * $Id: tools.c 1.125 2007/06/15 12:46:38 kls Exp $
  */
 
 #include "tools.h"
@@ -753,7 +753,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
 
 const char *cCharSetConv::Convert(const char *From, char *To, size_t ToLength)
 {
-  if (cd != (iconv_t)-1) {
+  if (cd != (iconv_t)-1 && From && *From) {
      char *FromPtr = (char *)From;
      size_t FromLength = strlen(From);
      char *ToPtr = To;

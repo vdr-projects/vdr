@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.294 2007/06/09 08:44:54 kls Exp $
+ * $Id: i18n.c 1.295 2007/06/15 12:52:51 kls Exp $
  *
  * Translations provided by:
  *
@@ -6820,7 +6820,7 @@ static const char *ConvertPhrase(const tI18nPhrase *Original, tI18nPhrase **Conv
      *Converted = new tI18nPhrase[NumPhrases + 1];
      memset(*Converted, 0, sizeof(tI18nPhrase) * (NumPhrases + 1));
      }
-  if (!(*Converted)[NrPhrase][NrLanguage]) {
+  if (!(*Converted)[NrPhrase][NrLanguage] && Original[NrPhrase][NrLanguage]) {
      cCharSetConv csc(Phrases[1][NrLanguage], cCharSetConv::SystemCharacterTable());
      (*Converted)[NrPhrase][NrLanguage] = strdup(csc.Convert(Original[NrPhrase][NrLanguage]));
      }
@@ -6851,7 +6851,8 @@ const char *I18nTranslate(const char *s, const char *Plugin)
                    return t;
                 }
              }
-         p = Phrases;
+         p = OriginalPhrases = Phrases;
+         ConvertedPhrases = &Converted;
          }
      esyslog("%s%sno translation found for '%s' in language %d (%s)", Plugin ? Plugin : "", Plugin ? ": " : "", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }

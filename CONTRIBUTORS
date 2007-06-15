@@ -1841,6 +1841,7 @@ Christian Wieninger <cwieninger@gmx.de>
  from the "Schedule" menu in case it starts withing the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
+ for a patch that fixed part of a crash in i18n character set conversion
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -2087,3 +2088,4 @@ Krzysztof Parma <krzycho@zoz.wodzislaw.pl>
 Alexander Riedel <alexander-riedel@t-online.de>
  for a patch that was used as a base to implement support for Freetype fonts and
  UTF-8 handling
+ for a patch that fixed part of a crash in i18n character set conversion

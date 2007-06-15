@@ -5233,3 +5233,5 @@ Video Disk Recorder Revision History
 2007-06-15: Version 1.5.4
 
 - Increased APIVERSION (forgot to do that in 1.5.2 and 1.5.3).
+- Fixed a crash in i18n character set conversion (thanks to Alexander Riedel and
+  Christian Wieninger for patches that cured part of the problem).
