@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.98 2007/06/10 08:46:23 kls Exp $
+ * $Id: tools.h 1.99 2007/06/15 12:18:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -92,7 +92,10 @@ int Utf8CharSet(uint c, char *s = NULL);
     ///< is given, only the number of bytes is returned and nothing is copied.
 int Utf8SymChars(const char *s, int Symbols);
     ///< Returns the number of character bytes at the beginning of the given
-    ///< string that form at most the given number of UTF-8 Symbols.
+    ///< string that form at most the given number of UTF-8 symbols.
+int Utf8NumSyms(const char *s);
+    ///< Returns the number of UTF-8 symbols formed by the given string of
+    ///< character bytes.
 int Utf8ToArray(const char *s, uint *a, int Size);
     ///< Converts the given character bytes (including the terminating 0) into an
     ///< array of UTF-8 symbols of the given Size. Returns the number of symbols

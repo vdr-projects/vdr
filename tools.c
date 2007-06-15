@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.123 2007/06/09 14:21:21 kls Exp $
+ * $Id: tools.c 1.124 2007/06/15 12:20:40 kls Exp $
  */
 
 #include "tools.h"
@@ -645,6 +645,18 @@ int Utf8SymChars(const char *s, int Symbols)
         int sl = Utf8CharLen(s);
         s += sl;
         n += sl;
+        }
+  return n;
+}
+
+int Utf8NumSyms(const char *s)
+{
+  if (cCharSetConv::SystemCharacterTable())
+     return strlen(s);
+  int n = 0;
+  while (*s) {
+        s += Utf8CharLen(s);
+        n++;
         }
   return n;
 }
