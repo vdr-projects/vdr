@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.140 2007/04/30 09:34:00 kls Exp $
+ * $Id: device.c 1.141 2007/06/16 09:31:32 kls Exp $
  */
 
 #include "device.h"
@@ -859,7 +859,7 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
      if (Language)
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
-        strn0cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
+        Utf8Strn0Cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
      if (Id) {
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
         int numAudioTracks = NumAudioTracks();

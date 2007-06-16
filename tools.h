@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.100 2007/06/16 09:05:22 kls Exp $
+ * $Id: tools.h 1.101 2007/06/16 09:15:40 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -96,6 +96,11 @@ int Utf8SymChars(const char *s, int Symbols);
 int Utf8StrLen(const char *s);
     ///< Returns the number of UTF-8 symbols formed by the given string of
     ///< character bytes.
+char *Utf8Strn0Cpy(char *Dest, const char *Src, int n);
+    ///< Copies at most n character bytes from Src to Dst, making sure that the
+    ///< resulting copy ends with a complete UTF-8 symbol. The copy is guaranteed
+    ///< to be zero terminated.
+    ///< Returns a pointer to Dest.
 int Utf8ToArray(const char *s, uint *a, int Size);
     ///< Converts the given character bytes (including the terminating 0) into an
     ///< array of UTF-8 symbols of the given Size. Returns the number of symbols

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.66 2007/06/03 13:48:57 kls Exp $
+ * $Id: timers.c 1.67 2007/06/16 10:41:21 kls Exp $
  */
 
 #include "timers.h"
@@ -78,7 +78,7 @@ cTimer::cTimer(const cEvent *Event)
   *file = 0;
   const char *Title = Event->Title();
   if (!isempty(Title))
-     strn0cpy(file, Event->Title(), sizeof(file));
+     Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
   aux = NULL;
   event = NULL; // let SetEvent() be called to get a log message
 }
@@ -286,7 +286,7 @@ bool cTimer::Parse(const char *s)
         }
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
-     strn0cpy(file, filebuffer, MaxFileName);
+     Utf8Strn0Cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
      if (isnumber(channelbuffer))
         channel = Channels.GetByNumber(atoi(channelbuffer));
@@ -358,7 +358,7 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
 char *cTimer::SetFile(const char *File)
 {
   if (!isempty(File))
-     strn0cpy(file, File, sizeof(file));
+     Utf8Strn0Cpy(file, File, sizeof(file));
   return file;
 }
 

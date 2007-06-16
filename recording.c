@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.152 2007/06/16 08:57:22 kls Exp $
+ * $Id: recording.c 1.153 2007/06/16 09:36:08 kls Exp $
  */
 
 #include "recording.h"
@@ -480,7 +480,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      Subtitle = " ";
   else if (strlen(Subtitle) > MAX_SUBTITLE_LENGTH) {
      // let's make sure the Subtitle doesn't produce too long a file name:
-     strn0cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
+     Utf8Strn0Cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
      Subtitle = SubtitleBuffer;
      }
   char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);

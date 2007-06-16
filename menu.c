@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.451 2007/06/09 14:36:46 kls Exp $
+ * $Id: menu.c 1.452 2007/06/16 09:33:21 kls Exp $
  */
 
 #include "menu.h"
@@ -2239,14 +2239,14 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
      if (skinIndex != originalSkinIndex) {
         cSkin *Skin = Skins.Get(skinIndex);
         if (Skin) {
-           strn0cpy(data.OSDSkin, Skin->Name(), sizeof(data.OSDSkin));
+           Utf8Strn0Cpy(data.OSDSkin, Skin->Name(), sizeof(data.OSDSkin));
            Skins.SetCurrent(Skin->Name());
            ModifiedApperance = true;
            }
         }
      if (themes.NumThemes() && Skins.Current()->Theme()) {
         Skins.Current()->Theme()->Load(themes.FileName(themeIndex));
-        strn0cpy(data.OSDTheme, themes.Name(themeIndex), sizeof(data.OSDTheme));
+        Utf8Strn0Cpy(data.OSDTheme, themes.Name(themeIndex), sizeof(data.OSDTheme));
         ModifiedApperance |= themeIndex != originalThemeIndex;
         }
      if (data.OSDLeft != Setup.OSDLeft || data.OSDTop != Setup.OSDTop || data.OSDWidth != Setup.OSDWidth || data.OSDHeight != Setup.OSDHeight) {
@@ -2256,9 +2256,9 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
      if (data.UseSmallFont != Setup.UseSmallFont || data.AntiAlias != Setup.AntiAlias)
         ModifiedApperance = true;
      if (fontNames.Size()) {
-        strn0cpy(data.FontOsd, fontNames[fontOsdIndex], sizeof(data.FontOsd));
-        strn0cpy(data.FontSml, fontNames[fontSmlIndex], sizeof(data.FontSml));
-        strn0cpy(data.FontFix, fontNames[fontFixIndex], sizeof(data.FontFix));
+        Utf8Strn0Cpy(data.FontOsd, fontNames[fontOsdIndex], sizeof(data.FontOsd));
+        Utf8Strn0Cpy(data.FontSml, fontNames[fontSmlIndex], sizeof(data.FontSml));
+        Utf8Strn0Cpy(data.FontFix, fontNames[fontFixIndex], sizeof(data.FontFix));
         }
      if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSize != Setup.FontOsdSize) {
         cFont::SetFont(fontOsd, data.FontOsd, data.FontOsdSize);

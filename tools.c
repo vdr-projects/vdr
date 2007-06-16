@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.127 2007/06/16 09:05:11 kls Exp $
+ * $Id: tools.c 1.128 2007/06/16 09:22:40 kls Exp $
  */
 
 #include "tools.h"
@@ -659,6 +659,25 @@ int Utf8StrLen(const char *s)
         n++;
         }
   return n;
+}
+
+char *Utf8Strn0Cpy(char *Dest, const char *Src, int n)
+{
+  if (cCharSetConv::SystemCharacterTable())
+     return strn0cpy(Dest, Src, n);
+  char *d = Dest;
+  while (*Src) {
+        int sl = Utf8CharLen(Src);
+        n -= sl;
+        if (n > 0) {
+           while (sl--)
+                 *d++ = *Src++;
+           }
+        else
+           break;
+        }
+  *d = 0;
+  return Dest;
 }
 
 int Utf8ToArray(const char *s, uint *a, int Size)
