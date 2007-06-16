@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.151 2006/10/07 12:46:22 kls Exp $
+ * $Id: recording.c 1.152 2007/06/16 08:57:22 kls Exp $
  */
 
 #include "recording.h"
@@ -406,34 +406,14 @@ char *ExchangeChars(char *s, bool ToFileSystem)
            // The VFAT file system can't handle all characters, so we
            // have to take extra efforts to encode/decode them:
            if (ToFileSystem) {
+              const char *InvalidChars = "\"\\/:*?|<>#";
               switch (*p) {
-                     // characters that can be used "as is":
-                     case '!':
-                     case '@':
-                     case '$':
-                     case '%':
-                     case '&':
-                     case '(':
-                     case ')':
-                     case '+':
-                     case ',':
-                     case '-':
-                     case ';':
-                     case '=':
-                     case '0' ... '9':
-                     case 'a' ... 'z':
-                     case 'A' ... 'Z':
-                     case 'ä': case 'Ä':
-                     case 'ö': case 'Ö':
-                     case 'ü': case 'Ü':
-                     case 'ß':
-                          break;
                      // characters that can be mapped to other characters:
                      case ' ': *p = '_'; break;
                      case '~': *p = '/'; break;
                      // characters that have to be encoded:
                      default:
-                       if (*p != '.' || !*(p + 1) || *(p + 1) == '~') { // Windows can't handle '.' at the end of directory names
+                       if (strchr(InvalidChars, *p) || *p == '.' && (!*(p + 1) || *(p + 1) == '~')) { // Windows can't handle '.' at the end of file/directory names
                           int l = p - s;
                           s = (char *)realloc(s, strlen(s) + 10);
                           p = s + l;
@@ -450,7 +430,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                 // mapped characters:
                 case '_': *p = ' '; break;
                 case '/': *p = '~'; break;
-                // encodes characters:
+                // encoded characters:
                 case '#': {
                      if (strlen(p) > 2) {
                         char buf[3];

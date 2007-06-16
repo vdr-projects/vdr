@@ -5230,7 +5230,7 @@ Video Disk Recorder Revision History
 - Changes to the OSD settings in the "Setup/OSD" menu now immediately take effect
   when the "Ok" key is pressed.
 
-2007-06-15: Version 1.5.4
+2007-06-16: Version 1.5.4
 
 - Increased APIVERSION (forgot to do that in 1.5.2 and 1.5.3).
 - Fixed a crash in i18n character set conversion (thanks to Alexander Riedel,
@@ -5239,3 +5239,4 @@ Video Disk Recorder Revision History
 - Using nl_langinfo(CODESET) to determine the local codeset to use (thanks to
   Thomas Günther). The codeset names in 'libsi/si.c' have been changed to the
   canonical spelling with '-' (thanks to Ludwig Nussel for pointing this out).
+- Modified handling invalid characters in VFAT mode.
