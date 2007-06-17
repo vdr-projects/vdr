@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.295 2007/06/15 12:52:51 kls Exp $
+ * $Id: i18n.c 1.296 2007/06/17 12:28:20 kls Exp $
  *
  * Translations provided by:
  *
@@ -3563,7 +3563,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Käytä antialiasointia",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3586,7 +3586,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Oletuskirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3609,7 +3609,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pienikirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3632,7 +3632,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tasavälinen kirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3655,7 +3655,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Oletuskirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3678,7 +3678,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pienen kirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3701,7 +3701,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tasavälisen kirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO

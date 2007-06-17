@@ -5248,3 +5248,4 @@ Video Disk Recorder Revision History
   any text, and logs an error message.
 - The new function cFont::CreateFont() can be used by plugins to create and use
   fonts of their own, independent of VDR's standard fonts.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
