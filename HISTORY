@@ -5252,3 +5252,6 @@ Video Disk Recorder Revision History
 - Changed the parameter "OSD font" to "Default font" in "Setup/OSD" (suggested
   by Rolf Ahrenberg).
 - Fixed handling detached processes in SystemExec() (thanks to Udo Richter).
+- The info.vdr file now also stores the name of the channel, and the new function
+  cRecordingInfo::ChannelName() returns this information if available (based on
+  a patch from Alexander Hans).
