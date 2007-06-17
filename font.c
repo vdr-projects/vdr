@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.16 2007/06/17 11:03:33 kls Exp $
+ * $Id: font.c 1.17 2007/06/17 11:46:25 kls Exp $
  */
 
 #include "font.h"
@@ -287,14 +287,33 @@ void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColo
      }
 }
 
+// --- cDummyFont ------------------------------------------------------------
+
+// A dummy font, in case there are no fonts installed:
+
+class cDummyFont : public cFont {
+public:
+  virtual int Width(uint c) const { return 10; }
+  virtual int Width(const char *s) const { return 50; }
+  virtual int Height(void) const { return 20; }
+  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
+  };
+
 // --- cFont -----------------------------------------------------------------
 
 cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
-  delete fonts[Font];
-  fonts[Font] = new cFreetypeFont(GetFontFileName(Name), CharHeight);
+  cString fn = GetFontFileName(Name);
+  if (*fn) {
+     delete fonts[Font];
+     fonts[Font] = new cFreetypeFont(fn, CharHeight);
+     }
+  if (!fonts[Font] || !fonts[Font]->Height()) {
+     delete fonts[Font];
+     fonts[Font] = new cDummyFont;
+     }
 }
 
 const cFont *cFont::GetFont(eDvbFont Font)

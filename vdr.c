@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.292 2007/06/15 13:20:34 kls Exp $
+ * $Id: vdr.c 1.293 2007/06/17 11:23:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -549,6 +549,12 @@ int main(int argc, char *argv[])
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
      EXIT(2);
+
+  if (!*cFont::GetFontFileName(Setup.FontOsd)) {
+     const char *msg = "no fonts available - OSD will not show any text!";
+     fprintf(stderr, "vdr: %s\n", msg);
+     esyslog("ERROR: %s", msg);
+     }
 
   // Recordings:
 

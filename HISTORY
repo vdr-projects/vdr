@@ -5244,3 +5244,5 @@ Video Disk Recorder Revision History
 - Replaced strn0cpy() with Utf8Strn0Cpy() where necessary.
 - Now using 'fontconfig' to determine which fonts to use (thanks to Anssi Hannula
   for code and hints on how to do this).
+- If no fonts are installed, VDR now uses a dummy font that doesn't actually draw
+  any text, and logs an error message.
