@@ -5255,3 +5255,8 @@ Video Disk Recorder Revision History
 - The info.vdr file now also stores the name of the channel, and the new function
   cRecordingInfo::ChannelName() returns this information if available (based on
   a patch from Alexander Hans).
+- The new function cOsd::SetOsdPosition() can be used to dynamically change the
+  position and size of the OSD (based on a request from Christoph Haubrich).
+  Plugins that implement skins should no longer use Setup.OSDWidth etc. directly,
+  but should rather use cOsd::OsdWidth() etc. instead.
+  Currently a change to the OSD position will only apply to newly opened OSDs.

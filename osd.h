@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.54 2007/06/10 12:15:52 kls Exp $
+ * $Id: osd.h 1.55 2007/06/17 13:59:22 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "config.h"
 #include "font.h"
 
 #define MAXNUMCOLORS 256
@@ -245,6 +246,7 @@ struct tArea {
 class cOsd {
   friend class cOsdProvider;
 private:
+  static int osdLeft, osdTop, osdWidth, osdHeight;
   static int isOpen;
   cBitmap *savedRegion;
   cBitmap *bitmaps[MAXOSDAREAS];
@@ -270,6 +272,15 @@ protected:
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
+  static int OsdLeft(void) { return osdLeft ? osdLeft : Setup.OSDLeft; }
+  static int OsdTop(void) { return osdTop ? osdTop : Setup.OSDTop; }
+  static int OsdWidth(void) { return osdWidth ? osdWidth : Setup.OSDWidth; }
+  static int OsdHeight(void) { return osdHeight ? osdHeight : Setup.OSDHeight; }
+  static void SetOsdPostion(int Left, int Top, int Width, int Height);
+       ///< Sets the position and size of the OSD to the given values.
+       ///< This may be useful for plugins that determine the scaling of the
+       ///< video image and need to scale the OSD accordingly to fit on the
+       ///< screen.
   static int IsOpen(void) { return isOpen; }
   int Left(void) { return left; }
   int Top(void) { return top; }
