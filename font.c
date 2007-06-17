@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.15 2007/06/09 14:41:27 kls Exp $
+ * $Id: font.c 1.16 2007/06/17 11:03:33 kls Exp $
  */
 
 #include "font.h"
 #include <ctype.h>
+#include <fontconfig/fontconfig.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "config.h"
@@ -22,7 +23,7 @@
 struct tKerning {
   uint prevSym;
   int kerning;
-  tKerning(uint PrevSym, int Kerning) { prevSym = PrevSym; kerning = Kerning; }
+  tKerning(uint PrevSym, int Kerning = 0) { prevSym = PrevSym; kerning = Kerning; }
   };
 
 class cGlyph : public cListObject {
@@ -293,7 +294,7 @@ cFont *cFont::fonts[eDvbFontSize] = { NULL };
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
   delete fonts[Font];
-  fonts[Font] = new cFreetypeFont(*Name == '/' ? Name : *AddDirectory(FONTDIR, Name), CharHeight);
+  fonts[Font] = new cFreetypeFont(GetFontFileName(Name), CharHeight);
 }
 
 const cFont *cFont::GetFont(eDvbFont Font)
@@ -304,12 +305,75 @@ const cFont *cFont::GetFont(eDvbFont Font)
      Font = fontSml;
   if (!fonts[Font]) {
      switch (Font) {
-       case fontOsd: SetFont(Font, AddDirectory(FONTDIR, Setup.FontOsd), Setup.FontOsdSize); break;
-       case fontSml: SetFont(Font, AddDirectory(FONTDIR, Setup.FontSml), Setup.FontSmlSize); break;
-       case fontFix: SetFont(Font, AddDirectory(FONTDIR, Setup.FontFix), Setup.FontFixSize); break;
+       case fontOsd: SetFont(Font, Setup.FontOsd, Setup.FontOsdSize); break;
+       case fontSml: SetFont(Font, Setup.FontSml, Setup.FontSmlSize); break;
+       case fontFix: SetFont(Font, Setup.FontFix, Setup.FontFixSize); break;
        }
      }
   return fonts[Font];
+}
+
+bool cFont::GetAvailableFontNames(cStringList *FontNames, bool Monospaced)
+{
+  if (!FontNames->Size()) {
+     FcInit();
+     FcObjectSet *os = FcObjectSetBuild(FC_FAMILY, FC_STYLE, NULL);
+     FcPattern *pat = FcPatternCreate();
+     FcPatternAddBool(pat, FC_SCALABLE, FcTrue);
+     if (Monospaced)
+        FcPatternAddInteger(pat, FC_SPACING, FC_MONO);
+     FcFontSet* fontset = FcFontList(NULL, pat, os);
+     for (int i = 0; i < fontset->nfont; i++) {
+         char *s = (char *)FcNameUnparse(fontset->fonts[i]);
+         if (s) {
+            // Strip i18n stuff:
+            char *p = strchr(s, ',');
+            if (p)
+               *p = 0;
+            // Make it user presentable:
+            s = strreplace(s, "\\", ""); // '-' is escaped
+            s = strreplace(s, "style=", "");
+            FontNames->Append(s); // takes ownership of s
+            }
+         }
+     FcFontSetDestroy(fontset);
+     FcPatternDestroy(pat);
+     FcObjectSetDestroy(os);
+     FcFini();
+     FontNames->Sort();
+     }
+  return FontNames->Size() > 0;
+}
+
+cString cFont::GetFontFileName(const char *FontName)
+{
+  cString FontFileName;
+  if (FontName) {
+     char *fn = strdup(FontName);
+     fn = strreplace(fn, ":", ":style=");
+     fn = strreplace(fn, "-", "\\-");
+     FcInit();
+     FcPattern *pat = FcNameParse((FcChar8 *)fn);
+     FcPatternAddBool(pat, FC_SCALABLE, FcTrue);
+     FcConfigSubstitute(NULL, pat, FcMatchPattern);
+     FcDefaultSubstitute(pat);
+     FcFontSet *fontset = FcFontSort(NULL, pat, FcFalse, NULL, NULL);
+     for (int i = 0; i < fontset->nfont; i++) {
+         FcBool scalable;
+         FcPatternGetBool(fontset->fonts[i], FC_SCALABLE, 0, &scalable);
+         if (scalable) {
+            FcChar8 *s = NULL;
+            FcPatternGetString(fontset->fonts[i], FC_FILE, 0, &s);
+            FontFileName = (char *)s;
+            break;
+            }
+         }
+     FcFontSetDestroy(fontset);
+     FcPatternDestroy(pat);
+     free(fn);
+     FcFini();
+     }
+  return FontFileName;
 }
 
 // --- cTextWrapper ----------------------------------------------------------

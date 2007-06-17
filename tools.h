@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.101 2007/06/16 09:15:40 kls Exp $
+ * $Id: tools.h 1.102 2007/06/17 11:00:20 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -402,7 +402,17 @@ private:
   mutable int allocated;
   mutable int size;
   mutable T *data;
-  void Realloc(int NewAllocated) const { data = (T *)realloc(data, (allocated = NewAllocated) * sizeof(T)); }
+  cVector(const cVector &Vector) {} // don't copy...
+  cVector &operator=(const cVector &Vector) { return *this; } // ...or assign this!
+  void Realloc(int Index) const
+  {
+    if (++Index > allocated) {
+       data = (T *)realloc(data, Index * sizeof(T));
+       for (int i = allocated; i < Index; i++)
+           data[i] = T(0);
+       allocated = Index;
+       }
+  }
 public:
   cVector(int Allocated = 10)
   {
@@ -414,8 +424,9 @@ public:
   virtual ~cVector() { free(data); }
   T& At(int Index) const
   {
+    Realloc(Index);
     if (Index >= size)
-       Realloc(size = Index + 1);
+       size = Index + 1;
     return data[Index];
   }
   const T& operator[](int Index) const
@@ -427,12 +438,24 @@ public:
     return At(Index);
   }
   int Size(void) const { return size; }
+  virtual void Insert(T Data, int Before = 0)
+  {
+    if (Before < size) {
+       Realloc(size);
+       memmove(&data[Before + 1], &data[Before], (size - Before) * sizeof(T));
+       size++;
+       data[Before] = Data;
+       }
+    else
+       Append(Data);
+  }
   virtual void Append(T Data)
   {
     if (size >= allocated)
        Realloc(allocated * 4 / 2); // increase size by 50%
     data[size++] = Data;
   }
+  virtual void Clear(void) {}
   void Sort(__compar_fn_t Compare)
   {
     qsort(data, size, sizeof(T), Compare);
@@ -444,12 +467,19 @@ inline int CompareStrings(const void *a, const void *b)
   return strcmp(*(const char **)a, *(const char **)b);
 }
 
-class cFileNameList : public cVector<char *> {
+class cStringList : public cVector<char *> {
+public:
+  cStringList(int Allocated = 10): cVector<char *>(Allocated) {}
+  virtual ~cStringList();
+  int Find(const char *s) const;
+  void Sort(void) { cVector<char *>::Sort(CompareStrings); }
+  virtual void Clear(void);
+  };
+
+class cFileNameList : public cStringList {
 public:
   cFileNameList(const char *Directory = NULL);
-  virtual ~cFileNameList();
   bool Load(const char *Directory);
-  int Find(const char *FileName);
   };
 
 class cHashObject : public cListObject {

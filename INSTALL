@@ -22,15 +22,13 @@ to work properly.
 You will also need to install the following libraries, as well as their
 "devel" packages to get the necessary header files for compiling VDR:
 
+  fontconfig
   freetype2
   libcap
   libjpeg
 
 If the "capability" module is not compiled into your kernel, you may
 need to do "modprobe capability" before running VDR.
-
-When running VDR, the Freetype fonts must be installed in the directory
-/usr/share/fonts/truetype.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file

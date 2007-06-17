@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.16 2007/06/10 12:58:54 kls Exp $
+ * $Id: font.h 1.17 2007/06/17 11:07:15 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -12,10 +12,10 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "tools.h"
 
 #define MAXFONTNAME 64
 #define MAXFONTSIZE 64
-#define FONTDIR     "/usr/share/fonts/truetype"
 
 enum eDvbFont {
   fontOsd,
@@ -53,6 +53,15 @@ public:
           ///< The caller must not use the returned font outside the scope in which
           ///< it was retrieved by the call to GetFont(), because a call to SetFont()
           ///< may delete an existing font.
+  static bool GetAvailableFontNames(cStringList *FontNames, bool Monospaced = false);
+          ///< Queries the font configuration for a list of available font names,
+          ///< which is returned in FontNames. If Monospaced is true, only
+          ///< monospaced fonts will be returned. The resulting font names are
+          ///< in a format that can be used with GetFontFileName() to get the name
+          ///< of the actual font file.
+          ///< Returns true if any font names were found.
+  static cString GetFontFileName(const char *FontName);
+          ///< Retruns the actual font file name for the given FontName.
   };
 
 class cTextWrapper {

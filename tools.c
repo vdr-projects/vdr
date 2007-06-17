@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.128 2007/06/16 09:22:40 kls Exp $
+ * $Id: tools.c 1.129 2007/06/17 11:02:34 kls Exp $
  */
 
 #include "tools.h"
@@ -1136,21 +1136,39 @@ struct dirent *cReadDir::Next(void)
   return directory && readdir_r(directory, &u.d, &result) == 0 ? result : NULL;
 }
 
-// --- cFileNameList ---------------------------------------------------------
+// --- cStringList -----------------------------------------------------------
 
-cFileNameList::cFileNameList(const char *Directory)
+cStringList::~cStringList()
 {
-  Load(Directory);
+  Clear();
 }
 
-cFileNameList::~cFileNameList()
+int cStringList::Find(const char *s) const
+{
+  for (int i = 0; i < Size(); i++) {
+      if (!strcmp(s, At(i)))
+         return i;
+      }
+  return -1;
+}
+
+void cStringList::Clear(void)
 {
   for (int i = 0; i < Size(); i++)
       free(At(i));
 }
 
+// --- cFileNameList ---------------------------------------------------------
+
+// TODO better GetFileNames(const char *Directory, cStringList *List)?
+cFileNameList::cFileNameList(const char *Directory)
+{
+  Load(Directory);
+}
+
 bool cFileNameList::Load(const char *Directory)
 {
+  Clear();
   if (Directory) {
      cReadDir d(Directory);
      struct dirent *e;
@@ -1159,22 +1177,13 @@ bool cFileNameList::Load(const char *Directory)
               if (strcmp(e->d_name, ".") && strcmp(e->d_name, ".."))
                  Append(strdup(e->d_name));
               }
-        Sort(CompareStrings);
+        Sort();
         return true;
         }
      else
         LOG_ERROR_STR(Directory);
      }
   return false;
-}
-
-int cFileNameList::Find(const char *FileName)
-{
-  for (int i = 0; i < Size(); i++) {
-      if (!strcmp(FileName, At(i)))
-         return i;
-      }
-  return -1;
 }
 
 // --- cFile -----------------------------------------------------------------

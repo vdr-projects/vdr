@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.452 2007/06/16 09:33:21 kls Exp $
+ * $Id: menu.c 1.453 2007/06/17 11:01:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2160,7 +2160,7 @@ private:
   cThemes themes;
   int originalThemeIndex;
   int themeIndex;
-  cFileNameList fontNames;
+  cStringList fontOsdNames, fontSmlNames, fontFixNames;
   int fontOsdIndex, fontSmlIndex, fontFixIndex;
   virtual void Set(void);
 public:
@@ -2176,12 +2176,15 @@ cMenuSetupOSD::cMenuSetupOSD(void)
   skinDescriptions = new const char*[numSkins];
   themes.Load(Skins.Current()->Name());
   themeIndex = originalThemeIndex = Skins.Current()->Theme() ? themes.GetThemeIndex(Skins.Current()->Theme()->Description()) : 0;
-  fontNames.Load(FONTDIR);
-  if (fontNames.Size()) {
-     fontOsdIndex = max(0, fontNames.Find(Setup.FontOsd));
-     fontSmlIndex = max(0, fontNames.Find(Setup.FontSml));
-     fontFixIndex = max(0, fontNames.Find(Setup.FontFix));
-     }
+  cFont::GetAvailableFontNames(&fontOsdNames);
+  cFont::GetAvailableFontNames(&fontSmlNames);
+  cFont::GetAvailableFontNames(&fontFixNames, true);
+  fontOsdNames.Insert(strdup("Sans Serif:Bold"));
+  fontSmlNames.Insert(strdup("Sans Serif"));
+  fontFixNames.Insert(strdup("Courier:Bold"));
+  fontOsdIndex = max(0, fontOsdNames.Find(Setup.FontOsd));
+  fontSmlIndex = max(0, fontSmlNames.Find(Setup.FontSml));
+  fontFixIndex = max(0, fontFixNames.Find(Setup.FontFix));
   Set();
 }
 
@@ -2211,11 +2214,9 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Use small font"),         &data.UseSmallFont, 3, useSmallFontTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Anti-alias"),             &data.AntiAlias));
-  if (fontNames.Size()) {
-  Add(new cMenuEditStraItem(tr("Setup.OSD$OSD font name"),          &fontOsdIndex, fontNames.Size(), &fontNames[0]));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Small font name"),        &fontSmlIndex, fontNames.Size(), &fontNames[0]));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font name"),        &fontFixIndex, fontNames.Size(), &fontNames[0]));
-  }
+  Add(new cMenuEditStraItem(tr("Setup.OSD$OSD font name"),          &fontOsdIndex, fontOsdNames.Size(), &fontOsdNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Small font name"),        &fontSmlIndex, fontSmlNames.Size(), &fontSmlNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font name"),        &fontFixIndex, fontFixNames.Size(), &fontFixNames[0]));
   Add(new cMenuEditIntItem( tr("Setup.OSD$OSD font size (pixel)"),  &data.FontOsdSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Small font size (pixel)"),&data.FontSmlSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Fixed font size (pixel)"),&data.FontFixSize, 10, MAXFONTSIZE));
@@ -2255,11 +2256,9 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         }
      if (data.UseSmallFont != Setup.UseSmallFont || data.AntiAlias != Setup.AntiAlias)
         ModifiedApperance = true;
-     if (fontNames.Size()) {
-        Utf8Strn0Cpy(data.FontOsd, fontNames[fontOsdIndex], sizeof(data.FontOsd));
-        Utf8Strn0Cpy(data.FontSml, fontNames[fontSmlIndex], sizeof(data.FontSml));
-        Utf8Strn0Cpy(data.FontFix, fontNames[fontFixIndex], sizeof(data.FontFix));
-        }
+     Utf8Strn0Cpy(data.FontOsd, fontOsdNames[fontOsdIndex], sizeof(data.FontOsd));
+     Utf8Strn0Cpy(data.FontSml, fontSmlNames[fontSmlIndex], sizeof(data.FontSml));
+     Utf8Strn0Cpy(data.FontFix, fontFixNames[fontFixIndex], sizeof(data.FontFix));
      if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSize != Setup.FontOsdSize) {
         cFont::SetFont(fontOsd, data.FontOsd, data.FontOsdSize);
         ModifiedApperance = true;
