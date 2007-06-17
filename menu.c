@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.454 2007/06/17 11:54:35 kls Exp $
+ * $Id: menu.c 1.455 2007/06/17 12:33:01 kls Exp $
  */
 
 #include "menu.h"
@@ -2214,9 +2214,9 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Use small font"),         &data.UseSmallFont, 3, useSmallFontTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Anti-alias"),             &data.AntiAlias));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$OSD font name"),          &fontOsdIndex, fontOsdNames.Size(), &fontOsdNames[0]));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Small font name"),        &fontSmlIndex, fontSmlNames.Size(), &fontSmlNames[0]));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font name"),        &fontFixIndex, fontFixNames.Size(), &fontFixNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Default font"),           &fontOsdIndex, fontOsdNames.Size(), &fontOsdNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Small font"),             &fontSmlIndex, fontSmlNames.Size(), &fontSmlNames[0]));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font"),             &fontFixIndex, fontFixNames.Size(), &fontFixNames[0]));
   Add(new cMenuEditIntItem( tr("Setup.OSD$OSD font size (pixel)"),  &data.FontOsdSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Small font size (pixel)"),&data.FontSmlSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Fixed font size (pixel)"),&data.FontFixSize, 10, MAXFONTSIZE));

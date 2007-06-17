@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.296 2007/06/17 12:28:20 kls Exp $
+ * $Id: i18n.c 1.297 2007/06/17 12:31:02 kls Exp $
  *
  * Translations provided by:
  *
@@ -3578,8 +3578,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$OSD font name",
-    "OSD Schriftart",
+  { "Setup.OSD$Default font",
+    "Standard-Schriftart",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3601,7 +3601,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$Small font name",
+  { "Setup.OSD$Small font",
     "Kleine Schriftart",
     "",// TODO
     "",// TODO
@@ -3624,7 +3624,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$Fixed font name",
+  { "Setup.OSD$Fixed font",
     "Festbreiten-Schriftart",
     "",// TODO
     "",// TODO

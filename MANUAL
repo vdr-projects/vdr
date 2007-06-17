@@ -509,10 +509,10 @@ Version 1.4
                          utilize these. If either of these conditions is not met,
                          rendering will be done without anti-aliasing.
 
-  OSD font name = arialbd.ttf
-  Small font name = arial.ttf
-  Fixed font name = courbd.ttf
-                         The file names of the various fonts to use.
+  Default font = Sans Serif:Bold
+  Small font = Sans Serif
+  Fixed font = Courier:Bold
+                         The names of the various fonts to use.
 
   OSD font size = 22
   Small font size = 18
