@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.18 2007/06/17 11:54:10 kls Exp $
+ * $Id: font.c 1.19 2007/06/17 12:13:49 kls Exp $
  */
 
 #include "font.h"
@@ -309,15 +309,11 @@ cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
-  cString fn = GetFontFileName(Name);
-  if (*fn) {
-     delete fonts[Font];
-     fonts[Font] = new cFreetypeFont(fn, CharHeight);
-     }
-  if (!fonts[Font] || !fonts[Font]->Height()) {
-     delete fonts[Font];
-     fonts[Font] = new cDummyFont;
-     }
+  cFont *f = CreateFont(Name, CharHeight);
+  if (!f || !f->Height())
+     f = new cDummyFont;
+  delete fonts[Font];
+  fonts[Font] = f;
 }
 
 const cFont *cFont::GetFont(eDvbFont Font)
@@ -334,6 +330,14 @@ const cFont *cFont::GetFont(eDvbFont Font)
        }
      }
   return fonts[Font];
+}
+
+cFont *cFont::CreateFont(const char *Name, int CharHeight)
+{
+  cString fn = GetFontFileName(Name);
+  if (*fn)
+     return new cFreetypeFont(fn, CharHeight);
+  return NULL;
 }
 
 bool cFont::GetAvailableFontNames(cStringList *FontNames, bool Monospaced)

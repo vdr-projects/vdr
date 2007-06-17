@@ -5246,3 +5246,5 @@ Video Disk Recorder Revision History
   for code and hints on how to do this).
 - If no fonts are installed, VDR now uses a dummy font that doesn't actually draw
   any text, and logs an error message.
+- The new function cFont::CreateFont() can be used by plugins to create and use
+  fonts of their own, independent of VDR's standard fonts.
