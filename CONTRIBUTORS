@@ -1497,6 +1497,7 @@ Udo Richter <udo_richter@gmx.de>
  up at a particular time
  for making the HUP signal force a restart of VDR
  for fixing a race condition with signal handlers at program exit
+ for fixing handling detached processes in SystemExec()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

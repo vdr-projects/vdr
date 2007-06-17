@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.60 2007/02/24 16:13:33 kls Exp $
+ * $Id: thread.c 1.61 2007/06/17 12:43:40 kls Exp $
  */
 
 #include "thread.h"
@@ -12,6 +12,7 @@
 #include <linux/unistd.h>
 #include <malloc.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <sys/resource.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
@@ -507,7 +508,7 @@ int SystemExec(const char *Command, bool Detached)
 
   if (pid > 0) { // parent process
      int status = 0;
-     if (!Detached && waitpid(pid, &status, 0) < 0) {
+     if (waitpid(pid, &status, 0) < 0) {
         LOG_ERROR;
         return -1;
         }
@@ -515,6 +516,9 @@ int SystemExec(const char *Command, bool Detached)
      }
   else { // child process
      if (Detached) {
+        // Fork again and let first child die - grandchild stays alive without parent
+        if (fork() > 0)
+           exit(0);
         // Start a new session
         pid_t sid = setsid();
         if (sid < 0)

@@ -5251,3 +5251,4 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Changed the parameter "OSD font" to "Default font" in "Setup/OSD" (suggested
   by Rolf Ahrenberg).
+- Fixed handling detached processes in SystemExec() (thanks to Udo Richter).
