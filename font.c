@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.17 2007/06/17 11:46:25 kls Exp $
+ * $Id: font.c 1.18 2007/06/17 11:54:10 kls Exp $
  */
 
 #include "font.h"
@@ -15,6 +15,10 @@
 #include "config.h"
 #include "osd.h"
 #include "tools.h"
+
+const char *DefaultFontOsd = "Sans Serif:Bold";
+const char *DefaultFontSml = "Sans Serif";
+const char *DefaultFontFix = "Courier:Bold";
 
 // --- cFreetypeFont ---------------------------------------------------------
 

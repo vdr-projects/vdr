@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.453 2007/06/17 11:01:13 kls Exp $
+ * $Id: menu.c 1.454 2007/06/17 11:54:35 kls Exp $
  */
 
 #include "menu.h"
@@ -2179,9 +2179,9 @@ cMenuSetupOSD::cMenuSetupOSD(void)
   cFont::GetAvailableFontNames(&fontOsdNames);
   cFont::GetAvailableFontNames(&fontSmlNames);
   cFont::GetAvailableFontNames(&fontFixNames, true);
-  fontOsdNames.Insert(strdup("Sans Serif:Bold"));
-  fontSmlNames.Insert(strdup("Sans Serif"));
-  fontFixNames.Insert(strdup("Courier:Bold"));
+  fontOsdNames.Insert(strdup(DefaultFontOsd));
+  fontSmlNames.Insert(strdup(DefaultFontSml));
+  fontFixNames.Insert(strdup(DefaultFontFix));
   fontOsdIndex = max(0, fontOsdNames.Find(Setup.FontOsd));
   fontSmlIndex = max(0, fontSmlNames.Find(Setup.FontSml));
   fontFixIndex = max(0, fontFixNames.Find(Setup.FontFix));

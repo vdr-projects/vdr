@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.17 2007/06/17 11:07:15 kls Exp $
+ * $Id: font.h 1.18 2007/06/17 11:53:55 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -27,6 +27,10 @@ enum eDvbFont {
 class cBitmap;
 typedef uint32_t tColor; // see also osd.h
 typedef uint8_t tIndex;
+
+extern const char *DefaultFontOsd;
+extern const char *DefaultFontSml;
+extern const char *DefaultFontFix;
 
 class cFont {
 private:

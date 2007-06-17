@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.152 2007/06/16 09:30:22 kls Exp $
+ * $Id: config.c 1.153 2007/06/17 11:54:54 kls Exp $
  */
 
 #include "config.h"
@@ -265,9 +265,9 @@ cSetup::cSetup(void)
   OSDMessageTime = 1;
   UseSmallFont = 1;
   AntiAlias = 1;
-  strcpy(FontOsd, "arialbd.ttf");
-  strcpy(FontSml, "arial.ttf");
-  strcpy(FontFix, "courbd.ttf");
+  strcpy(FontOsd, DefaultFontOsd);
+  strcpy(FontSml, DefaultFontSml);
+  strcpy(FontFix, DefaultFontFix);
   FontOsdSize = 22;
   FontSmlSize = 18;
   FontFixSize = 20;
