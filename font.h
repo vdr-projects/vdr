@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.16 2007/06/10 12:58:54 kls Exp $
+ * $Id: font.h 1.19 2007/06/17 12:11:31 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -12,10 +12,10 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "tools.h"
 
 #define MAXFONTNAME 64
 #define MAXFONTSIZE 64
-#define FONTDIR     "/usr/share/fonts/truetype"
 
 enum eDvbFont {
   fontOsd,
@@ -27,6 +27,10 @@ enum eDvbFont {
 class cBitmap;
 typedef uint32_t tColor; // see also osd.h
 typedef uint8_t tIndex;
+
+extern const char *DefaultFontOsd;
+extern const char *DefaultFontSml;
+extern const char *DefaultFontFix;
 
 class cFont {
 private:
@@ -45,14 +49,30 @@ public:
           ///< Draws the given text into the Bitmap at position (x, y) with the given colors.
           ///< The text will not exceed the given Width (if > 0), and will end with a complete character.
   static void SetFont(eDvbFont Font, const char *Name, int CharHeight);
-          ///< Sets the given Font to use the font data from the file Name and make its characters
-          ///< CharHeight pixels high.
+          ///< Sets the given Font to use the font data according to Name (see CreateFont())
+          ///< and make its characters CharHeight pixels high.
   static const cFont *GetFont(eDvbFont Font);
           ///< Gets the given Font, which was previously set by a call to SetFont().
           ///< If no SetFont() call has been made, the font as defined in the setup is returned.
           ///< The caller must not use the returned font outside the scope in which
           ///< it was retrieved by the call to GetFont(), because a call to SetFont()
           ///< may delete an existing font.
+  static cFont *CreateFont(const char *Name, int CharHeight);
+          ///< Creates a new font object with the given Name and makes its characters
+          ///< CharHeight pixels high. Name is of the form "Family:Style", for instance
+          ///< "Verdana:Bold Italic" or "Times New Roman". See GetAvailableFontNames()
+          ///< for how to get a list of all available font names.
+          ///< If the requested font can't be created, NULL is returned.
+          ///< The caller must delete the font when it is no longer needed.
+  static bool GetAvailableFontNames(cStringList *FontNames, bool Monospaced = false);
+          ///< Queries the font configuration for a list of available font names,
+          ///< which is returned in FontNames. If Monospaced is true, only
+          ///< monospaced fonts will be returned. The resulting font names are
+          ///< in a format that can be used with GetFontFileName() to get the name
+          ///< of the actual font file.
+          ///< Returns true if any font names were found.
+  static cString GetFontFileName(const char *FontName);
+          ///< Retruns the actual font file name for the given FontName.
   };
 
 class cTextWrapper {

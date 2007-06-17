@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.151 2006/10/07 12:46:22 kls Exp $
+ * $Id: recording.c 1.154 2007/06/17 13:10:12 kls Exp $
  */
 
 #include "recording.h"
@@ -262,6 +262,7 @@ void cResumeFile::Delete(void)
 cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 {
   channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
+  channelName = Channel ? strdup(Channel->Name()) : NULL;
   ownEvent = Event ? NULL : new cEvent(0);
   event = ownEvent ? ownEvent : Event;
   aux = NULL;
@@ -304,6 +305,7 @@ cRecordingInfo::~cRecordingInfo()
 {
   delete ownEvent;
   free(aux);
+  free(channelName);
 }
 
 void cRecordingInfo::SetData(const char *Title, const char *ShortText, const char *Description)
@@ -334,8 +336,11 @@ bool cRecordingInfo::Read(FILE *f)
            switch (*s) {
              case 'C': {
                          char *p = strchr(t, ' ');
-                         if (p)
+                         if (p) {
+                            free(channelName);
+                            asprintf(&channelName, "%s", compactspace(p));
                             *p = 0; // strips optional channel name
+                            }
                          if (*t)
                             channelID = tChannelID::FromString(t);
                        }
@@ -375,7 +380,7 @@ bool cRecordingInfo::Read(FILE *f)
 bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
 {
   if (channelID.Valid())
-     fprintf(f, "%sC %s\n", Prefix, *channelID.ToString());
+     fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
   event->Dump(f, Prefix, true);
   if (aux)
      fprintf(f, "%s@ %s\n", Prefix, aux);
@@ -406,34 +411,14 @@ char *ExchangeChars(char *s, bool ToFileSystem)
            // The VFAT file system can't handle all characters, so we
            // have to take extra efforts to encode/decode them:
            if (ToFileSystem) {
+              const char *InvalidChars = "\"\\/:*?|<>#";
               switch (*p) {
-                     // characters that can be used "as is":
-                     case '!':
-                     case '@':
-                     case '$':
-                     case '%':
-                     case '&':
-                     case '(':
-                     case ')':
-                     case '+':
-                     case ',':
-                     case '-':
-                     case ';':
-                     case '=':
-                     case '0' ... '9':
-                     case 'a' ... 'z':
-                     case 'A' ... 'Z':
-                     case 'ä': case 'Ä':
-                     case 'ö': case 'Ö':
-                     case 'ü': case 'Ü':
-                     case 'ß':
-                          break;
                      // characters that can be mapped to other characters:
                      case ' ': *p = '_'; break;
                      case '~': *p = '/'; break;
                      // characters that have to be encoded:
                      default:
-                       if (*p != '.' || !*(p + 1) || *(p + 1) == '~') { // Windows can't handle '.' at the end of directory names
+                       if (strchr(InvalidChars, *p) || *p == '.' && (!*(p + 1) || *(p + 1) == '~')) { // Windows can't handle '.' at the end of file/directory names
                           int l = p - s;
                           s = (char *)realloc(s, strlen(s) + 10);
                           p = s + l;
@@ -450,7 +435,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                 // mapped characters:
                 case '_': *p = ' '; break;
                 case '/': *p = '~'; break;
-                // encodes characters:
+                // encoded characters:
                 case '#': {
                      if (strlen(p) > 2) {
                         char buf[3];
@@ -500,7 +485,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      Subtitle = " ";
   else if (strlen(Subtitle) > MAX_SUBTITLE_LENGTH) {
      // let's make sure the Subtitle doesn't produce too long a file name:
-     strn0cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
+     Utf8Strn0Cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
      Subtitle = SubtitleBuffer;
      }
   char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);

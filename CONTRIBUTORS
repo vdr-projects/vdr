@@ -886,6 +886,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for removing the LOCK_THREAD from the LIRC thread
  for making the Makefile patch friendlier
  for a patch that was used for implementing setting the user id
+ for pointing out that the canonical spelling of codesets is with '-'
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1012,6 +1013,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding --remove-destination to the 'cp' command for binaries in the Makefiles of
  the plugins
  for increasing the maximum number of DVB devices to 8
+ for suggesting to change the parameter "OSD font" to "Default font" in "Setup/OSD"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1495,6 +1497,7 @@ Udo Richter <udo_richter@gmx.de>
  up at a particular time
  for making the HUP signal force a restart of VDR
  for fixing a race condition with signal handlers at program exit
+ for fixing handling detached processes in SystemExec()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1739,6 +1742,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for suggesting to extend the version number reported with the '-V' option to also
  show the current APIVERSION
  for fixing i18n characters for the Hungarian texts
+ for implementing using nl_langinfo(CODESET) to determine the local codeset to use
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1841,6 +1845,7 @@ Christian Wieninger <cwieninger@gmx.de>
  from the "Schedule" menu in case it starts withing the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
+ for a patch that fixed part of a crash in i18n character set conversion
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -1921,6 +1926,7 @@ Alexander Hans <cleditor@arcor.de>
  to be drawn with a transparent background
  for reporting that the "'1' for encrypted radio channels" part in the description
  of the VPID in vdr.5 is obsolete
+ for a patch that was used to implement storing the channel name in info.vdr
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits
@@ -1947,6 +1953,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting that the log message "deleting plugin: ..." is irritating when
  calling "vdr --help"
  for fixing cDevice::ToggleMute()
+ for suggestions that led to implementing cOsd::SetOsdPosition() etc.
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2021,6 +2028,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for improving handling Transfer Mode devices when selecting a device to receive
  for fixing handling frequencies in NitFilter::Process()
  for making non-primary devices in Transfer mode be also used for recording
+ for code and hints on how to use 'fontconfig' to determine which fonts to use
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2087,3 +2095,7 @@ Krzysztof Parma <krzycho@zoz.wodzislaw.pl>
 Alexander Riedel <alexander-riedel@t-online.de>
  for a patch that was used as a base to implement support for Freetype fonts and
  UTF-8 handling
+ for a patch that fixed part of a crash in i18n character set conversion
+
+Jose Alberto Reguero <jareguero@telefonica.net>
+ for a patch that fixed part of a crash in i18n character set conversion

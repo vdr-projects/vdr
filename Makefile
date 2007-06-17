@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.100 2007/05/28 11:22:42 kls Exp $
+# $Id: Makefile 1.101 2007/06/16 10:48:59 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,7 +17,7 @@ CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
-LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype
+LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype -lfontconfig
 INCLUDES = -I/usr/include/freetype2
 
 PLUGINDIR= ./PLUGINS

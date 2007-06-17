@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.20 2007/06/10 12:40:43 kls Exp $
+ * $Id: skinsttng.c 1.21 2007/06/17 13:51:56 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -163,7 +163,7 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      x1 = x0 + font->Width("00:00") + 4;
      x2 = x1 + Roundness;
      x3 = x2 + Gap;
-     x7 = Setup.OSDWidth;
+     x7 = cOsd::OsdWidth();
      x6 = x7 - lineHeight / 2;
      x5 = x6 - lineHeight / 2;
      x4 = x5 - Gap;
@@ -177,7 +177,7 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      y7 = y6 + cFont::GetFont(fontSml)->Height();
      int yt = (y0 + y1) / 2;
      int yb = (y6 + y7) / 2;
-     osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - y7));
+     osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + (Setup.ChannelInfoPos ? 0 : cOsd::OsdHeight() - y7));
      tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
      if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -209,13 +209,13 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      x1 = lineHeight / 2;
      x2 = lineHeight;
      x3 = x2 + Gap;
-     x7 = Setup.OSDWidth;
+     x7 = cOsd::OsdWidth();
      x6 = x7 - lineHeight / 2;
      x5 = x6 - lineHeight / 2;
      x4 = x5 - Gap;
      y0 = 0;
      y1 = lineHeight;
-     osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - y1));
+     osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + (Setup.ChannelInfoPos ? 0 : cOsd::OsdHeight() - y1));
      tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
      if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -374,7 +374,7 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   x1 = lineHeight / 2;
   x3 = (x1 + Roundness + Gap + 7) & ~0x07; // must be multiple of 8
   x2 = x3 - Gap;
-  x7 = Setup.OSDWidth;
+  x7 = cOsd::OsdWidth();
   x6 = x7 - lineHeight / 2;
   x4 = (x6 - lineHeight / 2 - Gap) & ~0x07; // must be multiple of 8
   x5 = x4 + Gap;
@@ -382,13 +382,13 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   y1 = lineHeight;
   y2 = y1 + Roundness;
   y3 = y2 + Gap;
-  y7 = Setup.OSDHeight;
+  y7 = cOsd::OsdHeight();
   y6 = y7 - cFont::GetFont(fontSml)->Height();
   y5 = y6 - Roundness;
   y4 = y5 - Gap;
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
-  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
   tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -703,7 +703,7 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   x1 = max(SymbolWidth, bm.Width());
   x2 = x1 + Roundness;
   x3 = x2 + Gap;
-  x7 = Setup.OSDWidth;
+  x7 = cOsd::OsdWidth();
   x6 = x7 - lineHeight / 2;
   x5 = x6 - lineHeight / 2;
   x4 = x5 - Gap;
@@ -717,7 +717,7 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   y7 = y6 + font->Height();
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
-  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y7);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y7);
   tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -845,13 +845,13 @@ cSkinSTTNGDisplayVolume::cSkinSTTNGDisplayVolume(void)
   x1 = lineHeight / 2;
   x2 = lineHeight;
   x3 = x2 + Gap;
-  x7 = Setup.OSDWidth;
+  x7 = cOsd::OsdWidth();
   x6 = x7 - lineHeight / 2;
   x5 = x6 - lineHeight / 2;
   x4 = x5 - Gap;
   y0 = 0;
   y1 = lineHeight;
-  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y1);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y1);
   tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -943,7 +943,7 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   x1 = lineHeight / 2;
   x3 = (x1 + Roundness + Gap + 7) & ~0x07; // must be multiple of 8
   x2 = x3 - Gap;
-  x7 = Setup.OSDWidth;
+  x7 = cOsd::OsdWidth();
   x6 = x7 - lineHeight / 2;
   x4 = (x6 - lineHeight / 2 - Gap) & ~0x07; // must be multiple of 8
   x5 = x4 + Gap;
@@ -959,14 +959,14 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   y1 = lineHeight;
   y2 = y1 + Roundness;
   y3 = y2 + Gap;
-  // limit to Setup.OSDHeight? - what if height is too big???
+  // limit to cOsd::OsdHeight()? - what if height is too big???
   y4 = y3 + NumTracks * lineHeight + 2 * Roundness;
   y5 = y4 + Gap;
   y6 = y5 + Roundness;
   y7 = y6 + cFont::GetFont(fontSml)->Height();
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
-  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y7);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y7);
   tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
@@ -1087,13 +1087,13 @@ cSkinSTTNGDisplayMessage::cSkinSTTNGDisplayMessage(void)
   x1 = lineHeight / 2;
   x2 = lineHeight;
   x3 = x2 + Gap;
-  x7 = Setup.OSDWidth;
+  x7 = cOsd::OsdWidth();
   x6 = x7 - lineHeight / 2;
   x5 = x6 - lineHeight / 2;
   x4 = x5 - Gap;
   y0 = 0;
   y1 = lineHeight;
-  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y1);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y1);
   tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.11 2006/09/10 14:23:55 kls Exp $
+ * $Id: skincurses.c 1.13 2007/06/16 09:05:04 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.8";
+static const char *VERSION        = "0.1.0";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -19,12 +19,10 @@ static const char *MAINMENUENTRY  = NULL;
 
 class cCursesFont : public cFont {
 public:
-  cCursesFont(void): cFont(NULL) {}
-  virtual int Width(unsigned char c) const { return 1; }
-  virtual int Width(const char *s) const { return s ? strlen(s) : 0; }
-  virtual int Height(unsigned char c) const { return 1; }
-  virtual int Height(const char *s) const { return 1; }
+  virtual int Width(uint c) const { return 1; }
+  virtual int Width(const char *s) const { return s ? Utf8StrLen(s) : 0; }
   virtual int Height(void) const { return 1; }
+  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
   };
 
 static const cCursesFont Font;
@@ -135,6 +133,8 @@ void cCursesOsd::RestoreRegion(void)
 
 void cCursesOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
 {
+  if (!s)
+     return;
   int w = Font->Width(s);
   int h = Font->Height();
   if (Width || Height) {
@@ -253,7 +253,7 @@ void cSkinCursesDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     osd->DrawText(OsdWidth - strlen(date), 0, date, clrWhite, clrBackground, &Font);
+     osd->DrawText(OsdWidth - Utf8StrLen(date), 0, date, clrWhite, clrBackground, &Font);
      }
   osd->Flush();
 }
@@ -388,7 +388,7 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
      asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
-     osd->DrawText(OsdWidth - strlen(buffer), y, buffer, clrBlack, clrYellow, &Font);
+     osd->DrawText(OsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
      free(buffer);
      }
   y += ts.Height();
@@ -443,7 +443,7 @@ void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 void cSkinCursesDisplayMenu::Flush(void)
 {
   cString date = DayDateTime();
-  osd->DrawText(OsdWidth - strlen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
+  osd->DrawText(OsdWidth - Utf8StrLen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
   osd->Flush();
 }
 
@@ -508,12 +508,12 @@ void cSkinCursesDisplayReplay::SetProgress(int Current, int Total)
 
 void cSkinCursesDisplayReplay::SetCurrent(const char *Current)
 {
-  osd->DrawText(0, 2, Current, clrWhite, clrBackground, &Font, strlen(Current) + 3);
+  osd->DrawText(0, 2, Current, clrWhite, clrBackground, &Font, Utf8StrLen(Current) + 3);
 }
 
 void cSkinCursesDisplayReplay::SetTotal(const char *Total)
 {
-  osd->DrawText(OsdWidth - strlen(Total), 2, Total, clrWhite, clrBackground, &Font);
+  osd->DrawText(OsdWidth - Utf8StrLen(Total), 2, Total, clrWhite, clrBackground, &Font);
 }
 
 void cSkinCursesDisplayReplay::SetJump(const char *Jump)
@@ -569,7 +569,7 @@ void cSkinCursesDisplayVolume::SetVolume(int Current, int Total, bool Mute)
      }
   else {
      const char *Prompt = tr("Volume ");
-     int l = strlen(Prompt);
+     int l = Utf8StrLen(Prompt);
      int p = (OsdWidth - l) * Current / Total;
      osd->DrawText(0, 0, Prompt, clrGreen, clrBackground, &Font);
      osd->DrawRectangle(l, 0, l + p - 1, 0, clrGreen);

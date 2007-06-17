@@ -39,3 +39,7 @@ VDR Plugin 'skincurses' Revision History
 2006-09-10: Version 0.0.8
 
 - The size of the OSD is now adjusted to the size of the console window.
+
+2007-06-15: Version 0.1.0
+
+- Implemented UTF-8 handling.

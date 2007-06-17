@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.69 2007/06/10 12:16:36 kls Exp $
+ * $Id: osd.c 1.70 2007/06/17 13:54:34 kls Exp $
  */
 
 #include "osd.h"
@@ -642,6 +642,10 @@ const tIndex *cBitmap::Data(int x, int y)
 
 // --- cOsd ------------------------------------------------------------------
 
+int cOsd::osdLeft = 0;
+int cOsd::osdTop = 0;
+int cOsd::osdWidth = 0;
+int cOsd::osdHeight = 0;
 int cOsd::isOpen = 0;
 
 cOsd::cOsd(int Left, int Top)
@@ -662,6 +666,14 @@ cOsd::~cOsd()
       delete bitmaps[i];
   delete savedRegion;
   isOpen--;
+}
+
+void cOsd::SetOsdPostion(int Left, int Top, int Width, int Height)
+{
+  osdLeft = Left;
+  osdTop = Top;
+  osdWidth = Width;
+  osdHeight = Height;
 }
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)

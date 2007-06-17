@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.123 2007/06/09 14:21:21 kls Exp $
+ * $Id: tools.c 1.129 2007/06/17 11:02:34 kls Exp $
  */
 
 #include "tools.h"
@@ -649,6 +649,37 @@ int Utf8SymChars(const char *s, int Symbols)
   return n;
 }
 
+int Utf8StrLen(const char *s)
+{
+  if (cCharSetConv::SystemCharacterTable())
+     return strlen(s);
+  int n = 0;
+  while (*s) {
+        s += Utf8CharLen(s);
+        n++;
+        }
+  return n;
+}
+
+char *Utf8Strn0Cpy(char *Dest, const char *Src, int n)
+{
+  if (cCharSetConv::SystemCharacterTable())
+     return strn0cpy(Dest, Src, n);
+  char *d = Dest;
+  while (*Src) {
+        int sl = Utf8CharLen(Src);
+        n -= sl;
+        if (n > 0) {
+           while (sl--)
+                 *d++ = *Src++;
+           }
+        else
+           break;
+        }
+  *d = 0;
+  return Dest;
+}
+
 int Utf8ToArray(const char *s, uint *a, int Size)
 {
   int n = 0;
@@ -720,7 +751,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
 {
   free(systemCharacterTable);
   systemCharacterTable = NULL;
-  if (!strcasestr(CharacterTable, "UTF")) {
+  if (!strcasestr(CharacterTable, "UTF-8")) {
      // Set up a map for the character values 128...255:
      char buf[129];
      for (int i = 0; i < 128; i++)
@@ -741,7 +772,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
 
 const char *cCharSetConv::Convert(const char *From, char *To, size_t ToLength)
 {
-  if (cd != (iconv_t)-1) {
+  if (cd != (iconv_t)-1 && From && *From) {
      char *FromPtr = (char *)From;
      size_t FromLength = strlen(From);
      char *ToPtr = To;
@@ -1105,21 +1136,39 @@ struct dirent *cReadDir::Next(void)
   return directory && readdir_r(directory, &u.d, &result) == 0 ? result : NULL;
 }
 
-// --- cFileNameList ---------------------------------------------------------
+// --- cStringList -----------------------------------------------------------
 
-cFileNameList::cFileNameList(const char *Directory)
+cStringList::~cStringList()
 {
-  Load(Directory);
+  Clear();
 }
 
-cFileNameList::~cFileNameList()
+int cStringList::Find(const char *s) const
+{
+  for (int i = 0; i < Size(); i++) {
+      if (!strcmp(s, At(i)))
+         return i;
+      }
+  return -1;
+}
+
+void cStringList::Clear(void)
 {
   for (int i = 0; i < Size(); i++)
       free(At(i));
 }
 
+// --- cFileNameList ---------------------------------------------------------
+
+// TODO better GetFileNames(const char *Directory, cStringList *List)?
+cFileNameList::cFileNameList(const char *Directory)
+{
+  Load(Directory);
+}
+
 bool cFileNameList::Load(const char *Directory)
 {
+  Clear();
   if (Directory) {
      cReadDir d(Directory);
      struct dirent *e;
@@ -1128,22 +1177,13 @@ bool cFileNameList::Load(const char *Directory)
               if (strcmp(e->d_name, ".") && strcmp(e->d_name, ".."))
                  Append(strdup(e->d_name));
               }
-        Sort(CompareStrings);
+        Sort();
         return true;
         }
      else
         LOG_ERROR_STR(Directory);
      }
   return false;
-}
-
-int cFileNameList::Find(const char *FileName)
-{
-  for (int i = 0; i < Size(); i++) {
-      if (!strcmp(FileName, At(i)))
-         return i;
-      }
-  return -1;
 }
 
 // --- cFile -----------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.294 2007/06/09 08:44:54 kls Exp $
+ * $Id: i18n.c 1.297 2007/06/17 12:31:02 kls Exp $
  *
  * Translations provided by:
  *
@@ -3563,30 +3563,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-  },
-  { "Setup.OSD$OSD font name",
-    "OSD Schriftart",
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
+    "Käytä antialiasointia",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3601,7 +3578,30 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$Small font name",
+  { "Setup.OSD$Default font",
+    "Standard-Schriftart",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Oletuskirjasintyyppi",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Small font",
     "Kleine Schriftart",
     "",// TODO
     "",// TODO
@@ -3609,7 +3609,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pienikirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3624,7 +3624,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$Fixed font name",
+  { "Setup.OSD$Fixed font",
     "Festbreiten-Schriftart",
     "",// TODO
     "",// TODO
@@ -3632,7 +3632,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tasavälinen kirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3655,7 +3655,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Oletuskirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3678,7 +3678,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pienen kirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3701,7 +3701,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tasavälisen kirjasintyypin koko (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -6820,7 +6820,7 @@ static const char *ConvertPhrase(const tI18nPhrase *Original, tI18nPhrase **Conv
      *Converted = new tI18nPhrase[NumPhrases + 1];
      memset(*Converted, 0, sizeof(tI18nPhrase) * (NumPhrases + 1));
      }
-  if (!(*Converted)[NrPhrase][NrLanguage]) {
+  if (!(*Converted)[NrPhrase][NrLanguage] && Original[NrPhrase][NrLanguage]) {
      cCharSetConv csc(Phrases[1][NrLanguage], cCharSetConv::SystemCharacterTable());
      (*Converted)[NrPhrase][NrLanguage] = strdup(csc.Convert(Original[NrPhrase][NrLanguage]));
      }
@@ -6851,7 +6851,8 @@ const char *I18nTranslate(const char *s, const char *Plugin)
                    return t;
                 }
              }
-         p = Phrases;
+         p = OriginalPhrases = Phrases;
+         ConvertedPhrases = &Converted;
          }
      esyslog("%s%sno translation found for '%s' in language %d (%s)", Plugin ? Plugin : "", Plugin ? ": " : "", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
