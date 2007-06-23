@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.20 2007/06/23 10:41:10 kls Exp $
+ * $Id: font.c 1.21 2007/06/23 11:25:42 kls Exp $
  */
 
 #include "font.h"
@@ -354,9 +354,19 @@ bool cFont::GetAvailableFontNames(cStringList *FontNames, bool Monospaced)
          char *s = (char *)FcNameUnparse(fontset->fonts[i]);
          if (s) {
             // Strip i18n stuff:
+            char *c = strchr(s, ':');
+            if (c) {
+               char *p = strchr(c + 1, ',');
+               if (p)
+                  *p = 0;
+               }
             char *p = strchr(s, ',');
-            if (p)
-               *p = 0;
+            if (p) {
+               if (c)
+                  memmove(p, c, strlen(c) + 1);
+               else
+                  *p = 0;
+               }
             // Make it user presentable:
             s = strreplace(s, "\\", ""); // '-' is escaped
             s = strreplace(s, "style=", "");

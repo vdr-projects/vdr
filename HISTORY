@@ -5270,3 +5270,4 @@ Video Disk Recorder Revision History
 - Fonts can now be created with a width that overwrites the default width (thanks
   to Andreas Mair).
 - Added full weekday names to i18n.c for plugins to use (thanks to Patrice Staudt).
+- Fixed stripping i18n stuff from font names (reported by Anssi Hannula).
