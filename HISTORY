@@ -5270,6 +5270,8 @@ Video Disk Recorder Revision History
 - Fonts can now be created with a width that overwrites the default width (thanks
   to Andreas Mair).
 - Added full weekday names to i18n.c for plugins to use (thanks to Patrice Staudt).
+  The new function WeekDayNameFull() can be used to get these names from integer
+  values (just like the abbreviated weekday names).
 - Fixed stripping i18n stuff from font names (reported by Anssi Hannula).
 - Improved performance of the SVDRP commands LSTC and CHAN when used with a
   channel name.

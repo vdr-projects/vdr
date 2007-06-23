@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.102 2007/06/17 11:00:20 kls Exp $
+ * $Id: tools.h 1.103 2007/06/23 13:34:28 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -196,6 +196,8 @@ void TouchFile(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
 cString WeekDayName(int WeekDay);
 cString WeekDayName(time_t t);
+cString WeekDayNameFull(int WeekDay);
+cString WeekDayNameFull(time_t t);
 cString DayDateTime(time_t t = 0);
 cString TimeToString(time_t t);
 cString DateString(time_t t);
