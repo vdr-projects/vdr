@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.19 2007/06/17 12:13:49 kls Exp $
+ * $Id: font.c 1.20 2007/06/23 10:41:10 kls Exp $
  */
 
 #include "font.h"
@@ -103,7 +103,7 @@ private:
   int Kerning(cGlyph *Glyph, uint PrevSym) const;
   cGlyph* Glyph(uint CharCode, bool AntiAliased = false) const;
 public:
-  cFreetypeFont(const char *Name, int CharHeight);
+  cFreetypeFont(const char *Name, int CharHeight, int CharWidth = 0);
   virtual ~cFreetypeFont();
   virtual int Width(uint c) const;
   virtual int Width(const char *s) const;
@@ -111,7 +111,7 @@ public:
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const;
   };
 
-cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight)
+cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
 {
   height = 0;
   bottom = 0;
@@ -140,7 +140,7 @@ cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight)
            }
         else {
            error = FT_Set_Char_Size(face, // handle to face object
-                                    0,    // char_width in 1/64th of points
+                                    CharWidth * 64,  // CharWidth in 1/64th of points
                                     CharHeight * 64, // CharHeight in 1/64th of points
                                     0,    // horizontal device resolution
                                     0);   // vertical device resolution
@@ -332,11 +332,11 @@ const cFont *cFont::GetFont(eDvbFont Font)
   return fonts[Font];
 }
 
-cFont *cFont::CreateFont(const char *Name, int CharHeight)
+cFont *cFont::CreateFont(const char *Name, int CharHeight, int CharWidth)
 {
   cString fn = GetFontFileName(Name);
   if (*fn)
-     return new cFreetypeFont(fn, CharHeight);
+     return new cFreetypeFont(fn, CharHeight, CharWidth);
   return NULL;
 }
 

@@ -5267,3 +5267,5 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Changed the parameter "OSD font size" to "Default font size" in "Setup/OSD".
 - Fixed handling address masks in SVDRP host settings (thanks to Frank Schmirler).
+- Fonts can now be created with a width that overwrites the default width (thanks
+  to Andreas Mair).

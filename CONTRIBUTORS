@@ -939,6 +939,7 @@ Andreas Mair <Andreas.Mair@linogate.com>
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
  for reporting a bug in handling the tfRecording flag when reading timers
+ for enabling fonts to be created with a width that overwrites the default width
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
