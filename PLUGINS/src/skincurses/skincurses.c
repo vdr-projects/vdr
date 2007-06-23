@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.13 2007/06/16 09:05:04 kls Exp $
+ * $Id: skincurses.c 1.14 2007/06/23 09:08:01 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.0";
+static const char *VERSION        = "0.1.1";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -51,8 +51,8 @@ static int clrMessage[] = {
   clrRed
   };
 
-static int OsdWidth = 50;
-static int OsdHeight = 20;
+static int ScOsdWidth = 50;
+static int ScOsdHeight = 20;
 
 class cCursesOsd : public cOsd {
 private:
@@ -80,7 +80,7 @@ cCursesOsd::cCursesOsd(int Left, int Top)
   start_color();
   leaveok(stdscr, true);
 
-  window = subwin(stdscr, OsdHeight, OsdWidth, 0, 0);
+  window = subwin(stdscr, ScOsdHeight, ScOsdWidth, 0, 0);
   syncok(window, true);
 }
 
@@ -168,7 +168,7 @@ void cCursesOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Co
      }
   SetColor(ColorFg, ColorBg);
   wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddnstr(window, s, OsdWidth - x);
+  waddnstr(window, s, ScOsdWidth - x);
 }
 
 void cCursesOsd::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
@@ -206,9 +206,9 @@ cSkinCursesDisplayChannel::cSkinCursesDisplayChannel(bool WithInfo)
 {
   int Lines = WithInfo ? 5 : 1;
   message = false;
-  osd = new cCursesOsd(0, Setup.ChannelInfoPos ? 0 : OsdHeight - Lines);
+  osd = new cCursesOsd(0, Setup.ChannelInfoPos ? 0 : ScOsdHeight - Lines);
   timeWidth = strlen("00:00");
-  osd->DrawRectangle(0, 0, OsdWidth - 1, Lines - 1, clrBackground);
+  osd->DrawRectangle(0, 0, ScOsdWidth - 1, Lines - 1, clrBackground);
 }
 
 cSkinCursesDisplayChannel::~cSkinCursesDisplayChannel()
@@ -218,14 +218,14 @@ cSkinCursesDisplayChannel::~cSkinCursesDisplayChannel()
 
 void cSkinCursesDisplayChannel::SetChannel(const cChannel *Channel, int Number)
 {
-  osd->DrawRectangle(0, 0, OsdWidth - 1, 0, clrBackground);
+  osd->DrawRectangle(0, 0, ScOsdWidth - 1, 0, clrBackground);
   osd->DrawText(0, 0, ChannelString(Channel, Number), clrWhite, clrBackground, &Font);
 }
 
 void cSkinCursesDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
 {
   osd->DrawRectangle(0, 1, timeWidth - 1, 4, clrRed);
-  osd->DrawRectangle(timeWidth, 1, OsdWidth - 1, 4, clrBackground);
+  osd->DrawRectangle(timeWidth, 1, ScOsdWidth - 1, 4, clrBackground);
   for (int i = 0; i < 2; i++) {
       const cEvent *e = !i ? Present : Following;
       if (e) {
@@ -239,8 +239,8 @@ void cSkinCursesDisplayChannel::SetEvents(const cEvent *Present, const cEvent *F
 void cSkinCursesDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 {
   if (Text) {
-     osd->SaveRegion(0, 0, OsdWidth - 1, 0);
-     osd->DrawText(0, 0, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, OsdWidth, 0, taCenter);
+     osd->SaveRegion(0, 0, ScOsdWidth - 1, 0);
+     osd->DrawText(0, 0, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, ScOsdWidth, 0, taCenter);
      message = true;
      }
   else {
@@ -253,7 +253,7 @@ void cSkinCursesDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     osd->DrawText(OsdWidth - Utf8StrLen(date), 0, date, clrWhite, clrBackground, &Font);
+     osd->DrawText(ScOsdWidth - Utf8StrLen(date), 0, date, clrWhite, clrBackground, &Font);
      }
   osd->Flush();
 }
@@ -284,7 +284,7 @@ public:
 cSkinCursesDisplayMenu::cSkinCursesDisplayMenu(void)
 {
   osd = new cCursesOsd(0, 0);
-  osd->DrawRectangle(0, 0, OsdWidth - 1, OsdHeight - 1, clrBackground);
+  osd->DrawRectangle(0, 0, ScOsdWidth - 1, ScOsdHeight - 1, clrBackground);
 }
 
 cSkinCursesDisplayMenu::~cSkinCursesDisplayMenu()
@@ -301,7 +301,7 @@ void cSkinCursesDisplayMenu::SetScrollbar(void)
      int sb = yb;
      int tt = st + (sb - st) * textScroller.Offset() / textScroller.Total();
      int tb = tt + (sb - st) * textScroller.Shown() / textScroller.Total();
-     int xl = OsdWidth - 1;
+     int xl = ScOsdWidth - 1;
      osd->DrawRectangle(xl, st, xl, sb, clrCyan);
      osd->DrawRectangle(xl, tt, xl, tb, clrWhite);
      }
@@ -315,29 +315,29 @@ void cSkinCursesDisplayMenu::Scroll(bool Up, bool Page)
 
 int cSkinCursesDisplayMenu::MaxItems(void)
 {
-  return OsdHeight - 4;
+  return ScOsdHeight - 4;
 }
 
 void cSkinCursesDisplayMenu::Clear(void)
 {
-  osd->DrawRectangle(0, 1, OsdWidth - 1, OsdHeight - 2, clrBackground);
+  osd->DrawRectangle(0, 1, ScOsdWidth - 1, ScOsdHeight - 2, clrBackground);
   textScroller.Reset();
 }
 
 void cSkinCursesDisplayMenu::SetTitle(const char *Title)
 {
-  osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, OsdWidth);
+  osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, ScOsdWidth);
 }
 
 void cSkinCursesDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
-  int w = OsdWidth;
+  int w = ScOsdWidth;
   int t0 = 0;
   int t1 = 0 + w / 4;
   int t2 = 0 + w / 2;
   int t3 = w - w / 4;
   int t4 = w;
-  int y = OsdHeight - 1;
+  int y = ScOsdHeight - 1;
   osd->DrawText(t0, y, Red,    clrWhite, Red    ? clrRed    : clrBackground, &Font, t1 - t0, 0, taCenter);
   osd->DrawText(t1, y, Green,  clrBlack, Green  ? clrGreen  : clrBackground, &Font, t2 - t1, 0, taCenter);
   osd->DrawText(t2, y, Yellow, clrBlack, Yellow ? clrYellow : clrBackground, &Font, t3 - t2, 0, taCenter);
@@ -347,9 +347,9 @@ void cSkinCursesDisplayMenu::SetButtons(const char *Red, const char *Green, cons
 void cSkinCursesDisplayMenu::SetMessage(eMessageType Type, const char *Text)
 {
   if (Text)
-     osd->DrawText(0, OsdHeight - 2, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, OsdWidth, 0, taCenter);
+     osd->DrawText(0, ScOsdHeight - 2, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, ScOsdWidth, 0, taCenter);
   else
-     osd->DrawRectangle(0, OsdHeight - 2, OsdWidth - 1, OsdHeight - 2, clrBackground);
+     osd->DrawRectangle(0, ScOsdHeight - 2, ScOsdWidth - 1, ScOsdHeight - 2, clrBackground);
 }
 
 void cSkinCursesDisplayMenu::SetItem(const char *Text, int Index, bool Current, bool Selectable)
@@ -368,12 +368,12 @@ void cSkinCursesDisplayMenu::SetItem(const char *Text, int Index, bool Current, 
       const char *s = GetTabbedText(Text, i);
       if (s) {
          int xt = Tab(i) / 12;// Tab() is in "pixel" - see also skins.c!!!
-         osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, OsdWidth - xt);
+         osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, ScOsdWidth - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(OsdWidth - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
+  SetEditableWidth(ScOsdWidth - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
 }
 
 void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
@@ -384,24 +384,24 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
   cTextScroller ts;
   char t[32];
   snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
-  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
+  ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
      asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
-     osd->DrawText(OsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
+     osd->DrawText(ScOsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
      free(buffer);
      }
   y += ts.Height();
   y += 1;
-  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Event->Title(), &Font, clrCyan, clrBackground);
+  ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Event->Title(), &Font, clrCyan, clrBackground);
   y += ts.Height();
   if (!isempty(Event->ShortText())) {
-     ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Event->ShortText(), &Font, clrYellow, clrBackground);
+     ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Event->ShortText(), &Font, clrYellow, clrBackground);
      y += ts.Height();
      }
   y += 1;
   if (!isempty(Event->Description())) {
-     textScroller.Set(osd, 0, y, OsdWidth - 2, OsdHeight - y - 2, Event->Description(), &Font, clrCyan, clrBackground);
+     textScroller.Set(osd, 0, y, ScOsdWidth - 2, ScOsdHeight - y - 2, Event->Description(), &Font, clrCyan, clrBackground);
      SetScrollbar();
      }
 }
@@ -415,35 +415,35 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   cTextScroller ts;
   char t[32];
   snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
-  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
+  ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   y += ts.Height();
   y += 1;
   const char *Title = Info->Title();
   if (isempty(Title))
      Title = Recording->Name();
-  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Title, &Font, clrCyan, clrBackground);
+  ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Title, &Font, clrCyan, clrBackground);
   y += ts.Height();
   if (!isempty(Info->ShortText())) {
-     ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Info->ShortText(), &Font, clrYellow, clrBackground);
+     ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Info->ShortText(), &Font, clrYellow, clrBackground);
      y += ts.Height();
      }
   y += 1;
   if (!isempty(Info->Description())) {
-     textScroller.Set(osd, 0, y, OsdWidth - 2, OsdHeight - y - 2, Info->Description(), &Font, clrCyan, clrBackground);
+     textScroller.Set(osd, 0, y, ScOsdWidth - 2, ScOsdHeight - y - 2, Info->Description(), &Font, clrCyan, clrBackground);
      SetScrollbar();
      }
 }
 
 void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
-  textScroller.Set(osd, 0, 2, OsdWidth - 2, OsdHeight - 4, Text, &Font, clrWhite, clrBackground);
+  textScroller.Set(osd, 0, 2, ScOsdWidth - 2, ScOsdHeight - 4, Text, &Font, clrWhite, clrBackground);
   SetScrollbar();
 }
 
 void cSkinCursesDisplayMenu::Flush(void)
 {
   cString date = DayDateTime();
-  osd->DrawText(OsdWidth - Utf8StrLen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
+  osd->DrawText(ScOsdWidth - Utf8StrLen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
   osd->Flush();
 }
 
@@ -469,8 +469,8 @@ public:
 cSkinCursesDisplayReplay::cSkinCursesDisplayReplay(bool ModeOnly)
 {
   message = false;
-  osd = new cCursesOsd(0, OsdHeight - 3);
-  osd->DrawRectangle(0, 0, OsdWidth - 1, 2, ModeOnly ? clrTransparent : clrBackground);
+  osd = new cCursesOsd(0, ScOsdHeight - 3);
+  osd->DrawRectangle(0, 0, ScOsdWidth - 1, 2, ModeOnly ? clrTransparent : clrBackground);
 }
 
 cSkinCursesDisplayReplay::~cSkinCursesDisplayReplay()
@@ -480,7 +480,7 @@ cSkinCursesDisplayReplay::~cSkinCursesDisplayReplay()
 
 void cSkinCursesDisplayReplay::SetTitle(const char *Title)
 {
-  osd->DrawText(0, 0, Title, clrWhite, clrBackground, &Font, OsdWidth);
+  osd->DrawText(0, 0, Title, clrWhite, clrBackground, &Font, ScOsdWidth);
 }
 
 void cSkinCursesDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
@@ -501,9 +501,9 @@ void cSkinCursesDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 
 void cSkinCursesDisplayReplay::SetProgress(int Current, int Total)
 {
-  int p = Total > 0 ? OsdWidth * Current / Total : 0;
+  int p = Total > 0 ? ScOsdWidth * Current / Total : 0;
   osd->DrawRectangle(0, 1, p, 1, clrGreen);
-  osd->DrawRectangle(p, 1, OsdWidth, 1, clrWhite);
+  osd->DrawRectangle(p, 1, ScOsdWidth, 1, clrWhite);
 }
 
 void cSkinCursesDisplayReplay::SetCurrent(const char *Current)
@@ -513,19 +513,19 @@ void cSkinCursesDisplayReplay::SetCurrent(const char *Current)
 
 void cSkinCursesDisplayReplay::SetTotal(const char *Total)
 {
-  osd->DrawText(OsdWidth - Utf8StrLen(Total), 2, Total, clrWhite, clrBackground, &Font);
+  osd->DrawText(ScOsdWidth - Utf8StrLen(Total), 2, Total, clrWhite, clrBackground, &Font);
 }
 
 void cSkinCursesDisplayReplay::SetJump(const char *Jump)
 {
-  osd->DrawText(OsdWidth / 4, 2, Jump, clrWhite, clrBackground, &Font, OsdWidth / 2, 0, taCenter);
+  osd->DrawText(ScOsdWidth / 4, 2, Jump, clrWhite, clrBackground, &Font, ScOsdWidth / 2, 0, taCenter);
 }
 
 void cSkinCursesDisplayReplay::SetMessage(eMessageType Type, const char *Text)
 {
   if (Text) {
-     osd->SaveRegion(0, 2, OsdWidth - 1, 2);
-     osd->DrawText(0, 2, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, OsdWidth, 0, taCenter);
+     osd->SaveRegion(0, 2, ScOsdWidth - 1, 2);
+     osd->DrawText(0, 2, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, ScOsdWidth, 0, taCenter);
      message = true;
      }
   else {
@@ -553,7 +553,7 @@ public:
 
 cSkinCursesDisplayVolume::cSkinCursesDisplayVolume(void)
 {
-  osd = new cCursesOsd(0, OsdHeight - 1);
+  osd = new cCursesOsd(0, ScOsdHeight - 1);
 }
 
 cSkinCursesDisplayVolume::~cSkinCursesDisplayVolume()
@@ -564,16 +564,16 @@ cSkinCursesDisplayVolume::~cSkinCursesDisplayVolume()
 void cSkinCursesDisplayVolume::SetVolume(int Current, int Total, bool Mute)
 {
   if (Mute) {
-     osd->DrawRectangle(0, 0, OsdWidth - 1, 0, clrTransparent);
+     osd->DrawRectangle(0, 0, ScOsdWidth - 1, 0, clrTransparent);
      osd->DrawText(0, 0, tr("Key$Mute"), clrGreen, clrBackground, &Font);
      }
   else {
      const char *Prompt = tr("Volume ");
      int l = Utf8StrLen(Prompt);
-     int p = (OsdWidth - l) * Current / Total;
+     int p = (ScOsdWidth - l) * Current / Total;
      osd->DrawText(0, 0, Prompt, clrGreen, clrBackground, &Font);
      osd->DrawRectangle(l, 0, l + p - 1, 0, clrGreen);
-     osd->DrawRectangle(l + p, 0, OsdWidth - 1, 0, clrWhite);
+     osd->DrawRectangle(l + p, 0, ScOsdWidth - 1, 0, clrWhite);
      }
 }
 
@@ -604,9 +604,9 @@ cSkinCursesDisplayTracks::cSkinCursesDisplayTracks(const char *Title, int NumTra
   itemsWidth = Font.Width(Title);
   for (int i = 0; i < NumTracks; i++)
       itemsWidth = max(itemsWidth, Font.Width(Tracks[i]));
-  itemsWidth = min(itemsWidth, OsdWidth);
+  itemsWidth = min(itemsWidth, ScOsdWidth);
   osd = new cCursesOsd(0, 0);
-  osd->DrawRectangle(0, 0, OsdWidth - 1, OsdHeight - 1, clrBackground);
+  osd->DrawRectangle(0, 0, ScOsdWidth - 1, ScOsdHeight - 1, clrBackground);
   osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, itemsWidth);
   for (int i = 0; i < NumTracks; i++)
       SetItem(Tracks[i], i, false);
@@ -659,7 +659,7 @@ public:
 
 cSkinCursesDisplayMessage::cSkinCursesDisplayMessage(void)
 {
-  osd = new cCursesOsd(0, OsdHeight - 1);
+  osd = new cCursesOsd(0, ScOsdHeight - 1);
 }
 
 cSkinCursesDisplayMessage::~cSkinCursesDisplayMessage()
@@ -669,7 +669,7 @@ cSkinCursesDisplayMessage::~cSkinCursesDisplayMessage()
 
 void cSkinCursesDisplayMessage::SetMessage(eMessageType Type, const char *Text)
 {
-  osd->DrawText(0, 0, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, OsdWidth, 0, taCenter);
+  osd->DrawText(0, 0, Text, clrMessage[2 * Type], clrMessage[2 * Type + 1], &Font, ScOsdWidth, 0, taCenter);
 }
 
 void cSkinCursesDisplayMessage::Flush(void)
@@ -782,8 +782,8 @@ bool cPluginSkinCurses::Initialize(void)
   // Initialize any background activities the plugin shall perform.
   WINDOW *w = initscr();
   if (w) {
-     OsdWidth  = w->_maxx - w->_begx + 1;
-     OsdHeight = w->_maxy - w->_begy + 1;
+     ScOsdWidth  = w->_maxx - w->_begx + 1;
+     ScOsdHeight = w->_maxy - w->_begy + 1;
      return true;
      }
   return false;

@@ -5260,3 +5260,7 @@ Video Disk Recorder Revision History
   Plugins that implement skins should no longer use Setup.OSDWidth etc. directly,
   but should rather use cOsd::OsdWidth() etc. instead.
   Currently a change to the OSD position will only apply to newly opened OSDs.
+
+2007-06-23: Version 1.5.5
+
+- Fixed a name clash between skincurses.c and the new cOsd position functions.
