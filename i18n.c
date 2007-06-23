@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.297 2007/06/17 12:31:02 kls Exp $
+ * $Id: i18n.c 1.298 2007/06/23 09:16:43 kls Exp $
  *
  * Translations provided by:
  *
@@ -3563,7 +3563,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "Käytä antialiasointia",
+    "Käytä reunan pehmennystä",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3609,7 +3609,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "Pienikirjasintyyppi",
+    "Pieni kirjasintyyppi",
     "",// TODO
     "",// TODO
     "",// TODO
