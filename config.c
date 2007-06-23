@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.153 2007/06/17 11:54:54 kls Exp $
+ * $Id: config.c 1.154 2007/06/23 09:42:49 kls Exp $
  */
 
 #include "config.h"
@@ -119,7 +119,7 @@ bool cSVDRPhost::Parse(const char *s)
 
 bool cSVDRPhost::Accepts(in_addr_t Address)
 {
-  return (Address & mask) == addr.s_addr;
+  return (Address & mask) == (addr.s_addr & mask);
 }
 
 // -- cCommands --------------------------------------------------------------
