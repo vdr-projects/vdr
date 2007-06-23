@@ -5265,3 +5265,4 @@ Video Disk Recorder Revision History
 
 - Fixed a name clash between skincurses.c and the new cOsd position functions.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Changed the parameter "OSD font size" to "Default font size" in "Setup/OSD".

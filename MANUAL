@@ -514,7 +514,7 @@ Version 1.4
   Fixed font = Courier:Bold
                          The names of the various fonts to use.
 
-  OSD font size = 22
+  Default font size = 22
   Small font size = 18
   Fixed font size = 20
                          The sizes (in pixel) of the various fonts. Valid range is

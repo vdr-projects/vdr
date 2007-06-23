@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.298 2007/06/23 09:16:43 kls Exp $
+ * $Id: i18n.c 1.299 2007/06/23 09:27:59 kls Exp $
  *
  * Translations provided by:
  *
@@ -3647,8 +3647,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
-  { "Setup.OSD$OSD font size (pixel)",
-    "OSD Schriftgröße (pixel)",
+  { "Setup.OSD$Default font size (pixel)",
+    "Standard-Schriftgröße (pixel)",
     "",// TODO
     "",// TODO
     "",// TODO
