@@ -5269,3 +5269,4 @@ Video Disk Recorder Revision History
 - Fixed handling address masks in SVDRP host settings (thanks to Frank Schmirler).
 - Fonts can now be created with a width that overwrites the default width (thanks
   to Andreas Mair).
+- Added full weekday names to i18n.c for plugins to use (thanks to Patrice Staudt).

@@ -2101,3 +2101,6 @@ Alexander Riedel <alexander-riedel@t-online.de>
 
 Jose Alberto Reguero <jareguero@telefonica.net>
  for a patch that fixed part of a crash in i18n character set conversion
+
+Patrice Staudt <staudt@engsystem.net>
+ for adding full weekday names to i18n.c for plugins to use
