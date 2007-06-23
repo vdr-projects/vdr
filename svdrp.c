@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.101 2007/04/30 12:41:07 kls Exp $
+ * $Id: svdrp.c 1.102 2007/06/23 13:14:59 kls Exp $
  */
 
 #include "svdrp.h"
@@ -497,14 +497,14 @@ void cSVDRP::CmdCHAN(const char *Option)
         if (channel)
            n = channel->Number();
         else {
-           int i = 1;
-           while ((channel = Channels.GetByNumber(i, 1)) != NULL) {
-                 if (strcasecmp(channel->Name(), Option) == 0) {
-                    n = channel->Number();
-                    break;
-                    }
-                 i = channel->Number() + 1;
-                 }
+           for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+               if (!channel->GroupSep()) {
+                  if (strcasecmp(channel->Name(), Option) == 0) {
+                     n = channel->Number();
+                     break;
+                     }
+                  }
+               }
            }
         }
      if (n < 0) {
@@ -871,23 +871,16 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(501, "Channel \"%s\" not defined", Option);
         }
      else {
-        int i = 1;
         cChannel *next = NULL;
-        while (i <= Channels.MaxNumber()) {
-              cChannel *channel = Channels.GetByNumber(i, 1);
-              if (channel) {
-                 if (strcasestr(channel->Name(), Option)) {
-                    if (next)
-                       Reply(-250, "%d %s", next->Number(), *next->ToText());
-                    next = channel;
-                    }
-                 }
-              else {
-                 Reply(501, "Channel \"%d\" not found", i);
-                 return;
-                 }
-              i = channel->Number() + 1;
-              }
+        for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+            if (!channel->GroupSep()) {
+               if (strcasestr(channel->Name(), Option)) {
+                  if (next)
+                     Reply(-250, "%d %s", next->Number(), *next->ToText());
+                  next = channel;
+                  }
+               }
+            }
         if (next)
            Reply(250, "%d %s", next->Number(), *next->ToText());
         else
@@ -895,15 +888,10 @@ void cSVDRP::CmdLSTC(const char *Option)
         }
      }
   else if (Channels.MaxNumber() >= 1) {
-     int i = 1;
-     while (i <= Channels.MaxNumber()) {
-           cChannel *channel = Channels.GetByNumber(i, 1);
-           if (channel)
-              Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), *channel->ToText());
-           else
-              Reply(501, "Channel \"%d\" not found", i);
-           i = channel->Number() + 1;
-           }
+     for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+         if (!channel->GroupSep())
+            Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), *channel->ToText());
+         }
      }
   else
      Reply(550, "No channels defined");

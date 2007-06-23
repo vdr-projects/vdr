@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.129 2007/06/17 11:02:34 kls Exp $
+ * $Id: tools.c 1.130 2007/06/23 13:38:30 kls Exp $
  */
 
 #include "tools.h"
@@ -869,6 +869,27 @@ cString WeekDayName(time_t t)
 {
   struct tm tm_r;
   return WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
+}
+
+cString WeekDayNameFull(int WeekDay)
+{
+  WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with Monday==0!
+  switch (WeekDay) {
+    case 0: return tr("Monday");
+    case 1: return tr("Tuesday");
+    case 2: return tr("Wednesday");
+    case 3: return tr("Thursday");
+    case 4: return tr("Friday");
+    case 5: return tr("Saturday");
+    case 6: return tr("Sunday");
+    }
+  return "???";
+}
+
+cString WeekDayNameFull(time_t t)
+{
+  struct tm tm_r;
+  return WeekDayNameFull(localtime_r(&t, &tm_r)->tm_wday);
 }
 
 cString DayDateTime(time_t t)

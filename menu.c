@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.455 2007/06/17 12:33:01 kls Exp $
+ * $Id: menu.c 1.456 2007/06/23 09:27:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2217,7 +2217,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditStraItem(tr("Setup.OSD$Default font"),           &fontOsdIndex, fontOsdNames.Size(), &fontOsdNames[0]));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Small font"),             &fontSmlIndex, fontSmlNames.Size(), &fontSmlNames[0]));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font"),             &fontFixIndex, fontFixNames.Size(), &fontFixNames[0]));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$OSD font size (pixel)"),  &data.FontOsdSize, 10, MAXFONTSIZE));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Default font size (pixel)"), &data.FontOsdSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Small font size (pixel)"),&data.FontSmlSize, 10, MAXFONTSIZE));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Fixed font size (pixel)"),&data.FontFixSize, 10, MAXFONTSIZE));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));

@@ -939,6 +939,7 @@ Andreas Mair <Andreas.Mair@linogate.com>
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
  for reporting a bug in handling the tfRecording flag when reading timers
+ for enabling fonts to be created with a width that overwrites the default width
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -2048,6 +2049,7 @@ Frank Schmirler <vdr@schmirler.de>
  for fixing assigning schedules to channels in case there is no initial EPG information
  for making entering text via the numeric keys check the characters against the
  allowed characters
+ for fixing handling address masks in SVDRP host settings
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2099,3 +2101,6 @@ Alexander Riedel <alexander-riedel@t-online.de>
 
 Jose Alberto Reguero <jareguero@telefonica.net>
  for a patch that fixed part of a crash in i18n character set conversion
+
+Patrice Staudt <staudt@engsystem.net>
+ for adding full weekday names to i18n.c for plugins to use

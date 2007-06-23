@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.19 2007/06/17 12:11:31 kls Exp $
+ * $Id: font.h 1.20 2007/06/23 10:09:14 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -57,9 +57,10 @@ public:
           ///< The caller must not use the returned font outside the scope in which
           ///< it was retrieved by the call to GetFont(), because a call to SetFont()
           ///< may delete an existing font.
-  static cFont *CreateFont(const char *Name, int CharHeight);
+  static cFont *CreateFont(const char *Name, int CharHeight, int CharWidth = 0);
           ///< Creates a new font object with the given Name and makes its characters
-          ///< CharHeight pixels high. Name is of the form "Family:Style", for instance
+          ///< CharHeight pixels high. If CharWidth is given, it overwrites the font's
+          ///< default width. Name is of the form "Family:Style", for instance
           ///< "Verdana:Bold Italic" or "Times New Roman". See GetAvailableFontNames()
           ///< for how to get a list of all available font names.
           ///< If the requested font can't be created, NULL is returned.
