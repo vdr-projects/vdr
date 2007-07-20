@@ -2106,3 +2106,6 @@ Jose Alberto Reguero <jareguero@telefonica.net>
 
 Patrice Staudt <staudt@engsystem.net>
  for adding full weekday names to i18n.c for plugins to use
+
+Tobias Bratfisch <tobias@reel-multimedia.com>
+ for improving numdigits(), isnumber() and strreplace()

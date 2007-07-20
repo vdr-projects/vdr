@@ -5283,3 +5283,4 @@ Video Disk Recorder Revision History
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Fixed handling single byte characters >0x7F in Utf8ToArray() (thanks to Udo
   Richter).
+- Improved numdigits(), isnumber() and strreplace() (thanks to Tobias Bratfisch).
