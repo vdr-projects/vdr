@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.14 2007/06/23 09:08:01 kls Exp $
+ * $Id: skincurses.c 1.15 2007/07/20 14:45:07 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.1";
+static const char *VERSION        = "0.1.2";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -133,8 +133,6 @@ void cCursesOsd::RestoreRegion(void)
 
 void cCursesOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
 {
-  if (!s)
-     return;
   int w = Font->Width(s);
   int h = Font->Height();
   if (Width || Height) {

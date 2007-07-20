@@ -47,3 +47,7 @@ VDR Plugin 'skincurses' Revision History
 2007-06-23: Version 0.1.1
 
 - Fixed a name clash with the new cOsd position functions.
+
+2007-07-20: Version 0.1.2
+
+- Fixed clearing color buttons.

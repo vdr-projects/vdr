@@ -5284,3 +5284,4 @@ Video Disk Recorder Revision History
 - Fixed handling single byte characters >0x7F in Utf8ToArray() (thanks to Udo
   Richter).
 - Improved numdigits(), isnumber() and strreplace() (thanks to Tobias Bratfisch).
+- Fixed clearing color buttons in the 'curses' skin (thanks to Udo Richter).

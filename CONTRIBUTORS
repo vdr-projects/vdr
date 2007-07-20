@@ -1501,6 +1501,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing a race condition with signal handlers at program exit
  for fixing handling detached processes in SystemExec()
  for fixing handling single byte characters >0x7F in Utf8ToArray()
+ for fixing clearing color buttons in the 'curses' skin
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
