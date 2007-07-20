@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.131 2007/07/16 15:23:28 kls Exp $
+ * $Id: tools.c 1.132 2007/07/20 13:17:40 kls Exp $
  */
 
 #include "tools.h"
@@ -685,7 +685,7 @@ int Utf8ToArray(const char *s, uint *a, int Size)
   int n = 0;
   while (*s && --Size > 0) {
         if (cCharSetConv::SystemCharacterTable())
-           *a++ = *s++;
+           *a++ = (uchar)(*s++);
         else {
            int sl = Utf8CharLen(s);
            *a++ = Utf8CharGet(s, sl);
