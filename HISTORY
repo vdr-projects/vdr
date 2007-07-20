@@ -5287,3 +5287,4 @@ Video Disk Recorder Revision History
 - Fixed clearing color buttons in the 'curses' skin (thanks to Udo Richter).
 - Fixed a typo in the function name of cOsd::SetOsdPosition() and added a range
   check to it (thanks to Christoph Haubrich).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

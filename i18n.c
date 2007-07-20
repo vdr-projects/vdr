@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.301 2007/07/20 12:35:17 kls Exp $
+ * $Id: i18n.c 1.302 2007/07/20 15:04:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -5150,7 +5150,7 @@ const tI18nPhrase Phrases[] = {
     "Segunda",
     "Lundi",
     "Manday",
-    "maanantai",
+    "Maanantai",
     "poniedzia³ek",
     "Lunes",
     "Äåõôİñá",
