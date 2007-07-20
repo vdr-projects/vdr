@@ -1958,6 +1958,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  calling "vdr --help"
  for fixing cDevice::ToggleMute()
  for suggestions that led to implementing cOsd::SetOsdPosition() etc.
+ for fixing a typo in the function name of cOsd::SetOsdPosition() and adding a range
+ check to it
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

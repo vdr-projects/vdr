@@ -5285,3 +5285,5 @@ Video Disk Recorder Revision History
   Richter).
 - Improved numdigits(), isnumber() and strreplace() (thanks to Tobias Bratfisch).
 - Fixed clearing color buttons in the 'curses' skin (thanks to Udo Richter).
+- Fixed a typo in the function name of cOsd::SetOsdPosition() and added a range
+  check to it (thanks to Christoph Haubrich).

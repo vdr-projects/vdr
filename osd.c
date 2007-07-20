@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.70 2007/06/17 13:54:34 kls Exp $
+ * $Id: osd.c 1.71 2007/07/20 14:51:36 kls Exp $
  */
 
 #include "osd.h"
@@ -668,12 +668,12 @@ cOsd::~cOsd()
   isOpen--;
 }
 
-void cOsd::SetOsdPostion(int Left, int Top, int Width, int Height)
+void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
 {
   osdLeft = Left;
   osdTop = Top;
-  osdWidth = Width;
-  osdHeight = Height;
+  osdWidth = min(max(Width, MINOSDWIDTH), MAXOSDWIDTH);
+  osdHeight = min(max(Height, MINOSDHEIGHT), MAXOSDHEIGHT);
 }
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
