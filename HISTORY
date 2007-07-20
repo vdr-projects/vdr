@@ -5280,3 +5280,4 @@ Video Disk Recorder Revision History
 
 - Fixed a buffer overflow in initializing the system character table (thanks
   to Marco Schlüßler).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
