@@ -1015,6 +1015,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  the plugins
  for increasing the maximum number of DVB devices to 8
  for suggesting to change the parameter "OSD font" to "Default font" in "Setup/OSD"
+ for improving cControl::Launch() to keep 'control' from pointing to uninitialized
+ memory
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

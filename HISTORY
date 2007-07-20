@@ -5288,3 +5288,5 @@ Video Disk Recorder Revision History
 - Fixed a typo in the function name of cOsd::SetOsdPosition() and added a range
   check to it (thanks to Christoph Haubrich).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Improved cControl::Launch() to keep 'control' from pointing to uninitialized
+  memory (thanks to Rolf Ahrenberg).
