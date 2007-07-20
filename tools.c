@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.130 2007/06/23 13:38:30 kls Exp $
+ * $Id: tools.c 1.131 2007/07/16 15:23:28 kls Exp $
  */
 
 #include "tools.h"
@@ -756,7 +756,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
      char buf[129];
      for (int i = 0; i < 128; i++)
          buf[i] = i + 128;
-     buf[129] = 0;
+     buf[128] = 0;
      cCharSetConv csc(CharacterTable);
      const char *s = csc.Convert(buf);
      int i = 0;

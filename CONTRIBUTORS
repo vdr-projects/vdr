@@ -1401,6 +1401,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for removing 'assert(0)' from cDvbSpuDecoder::setTime()
  for adapting 'libsi' to DVB-S2
  for fixing handling ChannelUp/Down keys if there is currently a replay running
+ for fixing a buffer overflow in initializing the system character table
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
