@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.21 2007/06/15 13:08:31 kls Exp $
+ *   $Id: si.c 1.22 2007/07/21 13:49:48 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -287,7 +287,7 @@ static const char *CharacterTables1[] = {
 #define SingleByteLimit 0x0B
 
 static const char *CharacterTables2[] = {
-  NULL,         // 0x00
+  NULL,          // 0x00
   "ISO-8859-1",  // 0x01
   "ISO-8859-2",  // 0x02
   "ISO-8859-3",  // 0x03
@@ -299,7 +299,7 @@ static const char *CharacterTables2[] = {
   "ISO-8859-9",  // 0x09
   "ISO-8859-10", // 0x0A
   "ISO-8859-11", // 0x0B
-  NULL,         // 0x0C
+  NULL,          // 0x0C
   "ISO-8859-13", // 0x0D
   "ISO-8859-14", // 0x0E
   "ISO-8859-15", // 0x0F
