@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.133 2007/07/20 14:25:46 kls Exp $
+ * $Id: tools.c 1.134 2007/07/21 13:02:45 kls Exp $
  */
 
 #include "tools.h"
@@ -165,13 +165,6 @@ char *strreplace(char *s, const char *s1, const char *s2)
      strncpy(sof, s2, l2);
      }
   return s;
-}
-
-char *skipspace(const char *s)
-{
-  while (*s && isspace(*s))
-        s++;
-  return (char *)s;
 }
 
 char *stripspace(char *s)

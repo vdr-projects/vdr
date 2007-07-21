@@ -5276,7 +5276,7 @@ Video Disk Recorder Revision History
 - Improved performance of the SVDRP commands LSTC and CHAN when used with a
   channel name.
 
-2007-07-20: Version 1.5.6
+2007-07-21: Version 1.5.6
 
 - Fixed a buffer overflow in initializing the system character table (thanks
   to Marco Schlüßler).
@@ -5290,3 +5290,6 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Improved cControl::Launch() to keep 'control' from pointing to uninitialized
   memory (thanks to Rolf Ahrenberg).
+- Made skipspace() an inline function (suggested by Tobias Bratfisch) and changed
+  it to handle the most common case of 'no leading space' very fast, and avoid
+  calling isspace(), which made the whole function a lot faster.

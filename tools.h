@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.103 2007/06/23 13:34:28 kls Exp $
+ * $Id: tools.h 1.104 2007/07/21 13:35:45 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -173,7 +173,14 @@ char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
-char *skipspace(const char *s);
+inline char *skipspace(const char *s)
+{
+  if (*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible
+     return (char *)s;
+  while (*s && *s <= ' ') // avoiding isspace() here, because it is much slower
+        s++;
+  return (char *)s;
+}
 char *stripspace(char *s);
 char *compactspace(char *s);
 cString strescape(const char *s, const char *chars);
