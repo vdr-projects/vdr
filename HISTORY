@@ -5293,3 +5293,4 @@ Video Disk Recorder Revision History
 - Made skipspace() an inline function (suggested by Tobias Bratfisch) and changed
   it to handle the most common case of 'no leading space' very fast, and avoid
   calling isspace(), which made the whole function a lot faster.
+- Fixed detection of Premiere NVOD channel links (thanks to anonymous).

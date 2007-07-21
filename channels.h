@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.43 2007/01/07 14:37:35 kls Exp $
+ * $Id: channels.h 1.44 2007/07/21 14:58:36 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -239,6 +239,7 @@ public:
   cChannel *GetByNumber(int Number, int SkipGap = 0);
   cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID);
   cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false, bool TryWithoutPolarization = false);
+  cChannel *GetByTransponderID(tChannelID ChannelID);
   int BeingEdited(void) { return beingEdited; }
   void IncBeingEdited(void) { beingEdited++; }
   void DecBeingEdited(void) { beingEdited--; }
