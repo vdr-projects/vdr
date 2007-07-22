@@ -5296,3 +5296,5 @@ Video Disk Recorder Revision History
 - Fixed detection of Premiere NVOD channel links (thanks to anonymous).
 - Added a table of the used trick speed values to the description of
   cDevice::TrickSpeed() (suggested by Martin Dauskardt).
+- Added a missing 'P' to vdr.c's SHUTDOWNCANCELROMPT macro (reported by Marco
+  Schlüßler).
