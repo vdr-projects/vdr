@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.81 2007/01/13 11:33:57 kls Exp $
+ * $Id: device.h 1.82 2007/07/22 11:20:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -468,6 +468,12 @@ public:
        ///< Sets the device into a mode where replay is done slower.
        ///< Every single frame shall then be displayed the given number of
        ///< times.
+       ///< The cDvbPlayer uses the following values for the various speeds:
+       ///<                   1x   2x   3x
+       ///< Fast Forward       6    3    1
+       ///< Fast Reverse       6    3    1
+       ///< Slow Forward       8    4    2
+       ///< Slow Reverse      63   48   24
   virtual void Clear(void);
        ///< Clears all video and audio data from the device.
        ///< A derived class must call the base class function to make sure

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.293 2007/06/17 11:23:08 kls Exp $
+ * $Id: vdr.c 1.294 2007/07/22 11:40:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -65,22 +65,22 @@
 #include "transfer.h"
 #include "videodir.h"
 
-#define MINCHANNELWAIT     10 // seconds to wait between failed channel switchings
-#define ACTIVITYTIMEOUT    60 // seconds before starting housekeeping
-#define SHUTDOWNWAIT      300 // seconds to wait in user prompt before automatic shutdown
-#define SHUTDOWNRETRY     360 // seconds before trying again to shut down
-#define SHUTDOWNFORCEPROMPT 5 // seconds to wait in user prompt to allow forcing shutdown
-#define SHUTDOWNCANCELROMPT 5 // seconds to wait in user prompt to allow canceling shutdown
-#define RESTARTCANCELPROMPT 5 // seconds to wait in user prompt before restarting on SIGHUP
-#define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
-#define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
-#define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
-#define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
-#define TIMERCHECKDELTA    10 // seconds between checks for timers that need to see their channel
-#define TIMERDEVICETIMEOUT  8 // seconds before a device used for timer check may be reused
-#define TIMERLOOKAHEADTIME 60 // seconds before a non-VPS timer starts and the channel is switched if possible
-#define VPSLOOKAHEADTIME   24 // hours within which VPS timers will make sure their events are up to date
-#define VPSUPTODATETIME  3600 // seconds before the event or schedule of a VPS timer needs to be refreshed
+#define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
+#define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
+#define SHUTDOWNWAIT         300 // seconds to wait in user prompt before automatic shutdown
+#define SHUTDOWNRETRY        360 // seconds before trying again to shut down
+#define SHUTDOWNFORCEPROMPT    5 // seconds to wait in user prompt to allow forcing shutdown
+#define SHUTDOWNCANCELPROMPT   5 // seconds to wait in user prompt to allow canceling shutdown
+#define RESTARTCANCELPROMPT    5 // seconds to wait in user prompt before restarting on SIGHUP
+#define MANUALSTART          600 // seconds the next timer must be in the future to assume manual start
+#define CHANNELSAVEDELTA     600 // seconds before saving channels.conf after automatic modifications
+#define DEVICEREADYTIMEOUT    30 // seconds to wait until all devices are ready
+#define MENUTIMEOUT          120 // seconds of user inactivity after which an OSD display is closed
+#define TIMERCHECKDELTA       10 // seconds between checks for timers that need to see their channel
+#define TIMERDEVICETIMEOUT     8 // seconds before a device used for timer check may be reused
+#define TIMERLOOKAHEADTIME    60 // seconds before a non-VPS timer starts and the channel is switched if possible
+#define VPSLOOKAHEADTIME      24 // hours within which VPS timers will make sure their events are up to date
+#define VPSUPTODATETIME     3600 // seconds before the event or schedule of a VPS timer needs to be refreshed
 
 #define EXIT(v) { ShutdownHandler.Exit(v); goto Exit; }
 
@@ -1037,7 +1037,7 @@ int main(int argc, char *argv[])
                   break;
                   }
                // Ask the final question:
-               if (!Interface->Confirm(tr("Press any key to cancel shutdown"), SHUTDOWNCANCELROMPT, true))
+               if (!Interface->Confirm(tr("Press any key to cancel shutdown"), SHUTDOWNCANCELPROMPT, true))
                   // If final question was canceled, continue to be active:
                   break;
                // Ok, now call the shutdown script:

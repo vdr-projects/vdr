@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.11 2006/01/06 11:30:07 kls Exp $
+ * $Id: player.c 1.12 2007/07/20 15:25:24 kls Exp $
  */
 
 #include "player.h"
@@ -69,8 +69,9 @@ cControl *cControl::Control(void)
 void cControl::Launch(cControl *Control)
 {
   cMutexLock MutexLock(&mutex);
-  delete control;
+  cControl *c = control; // keeps control from pointing to uninitialized memory
   control = Control;
+  delete c;
 }
 
 void cControl::Attach(void)

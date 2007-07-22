@@ -1015,6 +1015,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  the plugins
  for increasing the maximum number of DVB devices to 8
  for suggesting to change the parameter "OSD font" to "Default font" in "Setup/OSD"
+ for improving cControl::Launch() to keep 'control' from pointing to uninitialized
+ memory
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1401,6 +1403,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for removing 'assert(0)' from cDvbSpuDecoder::setTime()
  for adapting 'libsi' to DVB-S2
  for fixing handling ChannelUp/Down keys if there is currently a replay running
+ for fixing a buffer overflow in initializing the system character table
+ for reporting a missing 'P' in vdr.c's SHUTDOWNCANCELROMPT macro
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1419,6 +1423,8 @@ Olaf Henkel <olafhenkel@t-online.de>
 Martin Dauskardt <md001@gmx.de>
  for reporting a problem with switching channels while an encrypted channel is being
  recorded
+ for suggesting to add a table of the used trick speed values to the description of
+ cDevice::TrickSpeed()
 
 Maynard Cedric <maynard.cedric@wanadoo.fr>
  for reporting a problem in handling the color button texts in cMenuEditStrItem
@@ -1499,6 +1505,8 @@ Udo Richter <udo_richter@gmx.de>
  for making the HUP signal force a restart of VDR
  for fixing a race condition with signal handlers at program exit
  for fixing handling detached processes in SystemExec()
+ for fixing handling single byte characters >0x7F in Utf8ToArray()
+ for fixing clearing color buttons in the 'curses' skin
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1955,6 +1963,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  calling "vdr --help"
  for fixing cDevice::ToggleMute()
  for suggestions that led to implementing cOsd::SetOsdPosition() etc.
+ for fixing a typo in the function name of cOsd::SetOsdPosition() and adding a range
+ check to it
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2104,3 +2114,7 @@ Jose Alberto Reguero <jareguero@telefonica.net>
 
 Patrice Staudt <staudt@engsystem.net>
  for adding full weekday names to i18n.c for plugins to use
+
+Tobias Bratfisch <tobias@reel-multimedia.com>
+ for improving numdigits(), isnumber() and strreplace()
+ for suggesting to make skipspace() an inline function

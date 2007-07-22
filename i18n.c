@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.300 2007/06/23 13:28:32 kls Exp $
+ * $Id: i18n.c 1.302 2007/07/20 15:04:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -1415,7 +1415,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Процесс монтажа - действительно перезапустить?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1506,7 +1506,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Нажмите любую кнопку для отмены перезагрузки",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1528,7 +1528,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VDR выключится позже - нажмите Power для ускорения",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1550,7 +1550,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "VDR выключится через %s минут",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1572,7 +1572,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Идет монтаж - действительно выключить?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1594,7 +1594,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Plugin %s проснется через %ld минут - продолжить?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2861,7 +2861,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM используется - действительно перегрузить?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2906,7 +2906,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM перегружен",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2928,7 +2928,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM присутствует",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2950,7 +2950,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM готов",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2972,7 +2972,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM не отвечает",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3341,7 +3341,7 @@ const tI18nPhrase Phrases[] = {
     "Temу",
     "Tщma",
     "",// TODO
-    "Палитра",
+    "Тема",
     "Tema",
     "Teema",
     "Tema",
@@ -3525,7 +3525,7 @@ const tI18nPhrase Phrases[] = {
     "dep. de skin",
     "Menќ nщzetщtѕl fќggѕen",
     "",// TODO
-    "согласно теме",
+    "согласно стиля",
     "ovisno o povrЙini",
     "kestast sѕltuv",
     "skin afhцngig",
@@ -3571,7 +3571,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Сглаживание шрифтов",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3594,7 +3594,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Стандартный фонт",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3617,7 +3617,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Мелкий фонт",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3640,7 +3640,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Фиксированный фонт",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3663,7 +3663,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Размер фонта для меню (pixel)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3686,7 +3686,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Размер мелкого фонта (pixel)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3709,7 +3709,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Размер фиксированного фонта (pixel)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5020,7 +5020,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Предел времени для ввода канала (ms)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5150,7 +5150,7 @@ const tI18nPhrase Phrases[] = {
     "Segunda",
     "Lundi",
     "Manday",
-    "maanantai",
+    "Maanantai",
     "poniedziaГek",
     "Lunes",
     "Фхѕєнёс",

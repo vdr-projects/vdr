@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.130 2007/06/23 13:38:30 kls Exp $
+ * $Id: tools.c 1.134 2007/07/21 13:02:45 kls Exp $
  */
 
 #include "tools.h"
@@ -158,19 +158,13 @@ char *strreplace(char *s, const char *s1, const char *s2)
      int l1 = strlen(s1);
      int l2 = strlen(s2);
      if (l2 > l1)
-        s = (char *)realloc(s, strlen(s) + l2 - l1 + 1);
+        s = (char *)realloc(s, l + l2 - l1 + 1);
+     char *sof = s + of;
      if (l2 != l1)
-        memmove(s + of + l2, s + of + l1, l - of - l1 + 1);
-     strncpy(s + of, s2, l2);
+        memmove(sof + l2, sof + l1, l - of - l1 + 1);
+     strncpy(sof, s2, l2);
      }
   return s;
-}
-
-char *skipspace(const char *s)
-{
-  while (*s && isspace(*s))
-        s++;
-  return (char *)s;
 }
 
 char *stripspace(char *s)
@@ -252,20 +246,22 @@ bool isempty(const char *s)
 
 int numdigits(int n)
 {
-  char buf[16];
-  snprintf(buf, sizeof(buf), "%d", n);
-  return strlen(buf);
+  int res = 1;
+  while (n >= 10) {
+        n /= 10;
+        res++;
+        }
+  return res;
 }
 
 bool isnumber(const char *s)
 {
   if (!*s)
      return false;
-  while (*s) {
-        if (!isdigit(*s))
-           return false;
-        s++;
-        }
+  do {
+     if (!isdigit(*s))
+        return false;
+     } while (*++s);
   return true;
 }
 
@@ -685,7 +681,7 @@ int Utf8ToArray(const char *s, uint *a, int Size)
   int n = 0;
   while (*s && --Size > 0) {
         if (cCharSetConv::SystemCharacterTable())
-           *a++ = *s++;
+           *a++ = (uchar)(*s++);
         else {
            int sl = Utf8CharLen(s);
            *a++ = Utf8CharGet(s, sl);
@@ -756,7 +752,7 @@ void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
      char buf[129];
      for (int i = 0; i < 128; i++)
          buf[i] = i + 128;
-     buf[129] = 0;
+     buf[128] = 0;
      cCharSetConv csc(CharacterTable);
      const char *s = csc.Convert(buf);
      int i = 0;

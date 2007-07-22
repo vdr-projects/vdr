@@ -5275,3 +5275,26 @@ Video Disk Recorder Revision History
 - Fixed stripping i18n stuff from font names (reported by Anssi Hannula).
 - Improved performance of the SVDRP commands LSTC and CHAN when used with a
   channel name.
+
+2007-07-22: Version 1.5.6
+
+- Fixed a buffer overflow in initializing the system character table (thanks
+  to Marco Schlüßler).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Fixed handling single byte characters >0x7F in Utf8ToArray() (thanks to Udo
+  Richter).
+- Improved numdigits(), isnumber() and strreplace() (thanks to Tobias Bratfisch).
+- Fixed clearing color buttons in the 'curses' skin (thanks to Udo Richter).
+- Fixed a typo in the function name of cOsd::SetOsdPosition() and added a range
+  check to it (thanks to Christoph Haubrich).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Improved cControl::Launch() to keep 'control' from pointing to uninitialized
+  memory (thanks to Rolf Ahrenberg).
+- Made skipspace() an inline function (suggested by Tobias Bratfisch) and changed
+  it to handle the most common case of 'no leading space' very fast, and avoid
+  calling isspace(), which made the whole function a lot faster.
+- Fixed detection of Premiere NVOD channel links (thanks to anonymous).
+- Added a table of the used trick speed values to the description of
+  cDevice::TrickSpeed() (suggested by Martin Dauskardt).
+- Added a missing 'P' to vdr.c's SHUTDOWNCANCELROMPT macro (reported by Marco
+  Schlüßler).

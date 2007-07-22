@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.55 2007/06/17 13:59:22 kls Exp $
+ * $Id: osd.h 1.56 2007/07/20 14:50:17 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -276,7 +276,7 @@ public:
   static int OsdTop(void) { return osdTop ? osdTop : Setup.OSDTop; }
   static int OsdWidth(void) { return osdWidth ? osdWidth : Setup.OSDWidth; }
   static int OsdHeight(void) { return osdHeight ? osdHeight : Setup.OSDHeight; }
-  static void SetOsdPostion(int Left, int Top, int Width, int Height);
+  static void SetOsdPosition(int Left, int Top, int Width, int Height);
        ///< Sets the position and size of the OSD to the given values.
        ///< This may be useful for plugins that determine the scaling of the
        ///< video image and need to scale the OSD accordingly to fit on the

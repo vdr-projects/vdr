@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.53 2006/05/28 15:03:40 kls Exp $
+ * $Id: channels.c 1.54 2007/07/21 14:55:01 kls Exp $
  */
 
 #include "channels.h"
@@ -1005,6 +1005,17 @@ cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bo
             }
         }
      }
+  return NULL;
+}
+cChannel *cChannels::GetByTransponderID(tChannelID ChannelID)
+{
+  int source = ChannelID.Source();
+  int nid = ChannelID.Nid();
+  int tid = ChannelID.Tid();
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (channel->Tid() == tid && channel->Nid() == nid && channel->Source() == source)
+         return channel;
+      }
   return NULL;
 }
 
