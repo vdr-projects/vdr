@@ -5308,3 +5308,5 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed a problem with characters >0x7F in the modified version of skipspace()
   (thanks to Marco Schlüßler).
+- Fixed a bug I introduced when simplifying the original patch for detecting
+  Premiere NVOD channel links (crash reported by Malte Schröder).

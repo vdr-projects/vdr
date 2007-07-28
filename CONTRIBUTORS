@@ -1920,6 +1920,7 @@ Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
 
 Malte Schröder <MalteSch@gmx.de>
  for reporting a crash after executing the SVDRP command CLRE
+ for reporting a crash with the code for detecting Premiere NVOD channel links
 
 Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting to only start recordings if there is at least 300MB free disk space

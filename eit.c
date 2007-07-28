@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.124 2007/07/21 14:58:04 kls Exp $
+ * $Id: eit.c 1.125 2007/07/28 13:16:43 kls Exp $
  */
 
 #include "eit.h"
@@ -199,7 +199,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                           else if (Setup.UpdateChannels >= 4) {
                              cChannel *transponder = channel;
                              if (channel->Tid() != ld->getTransportStreamId())
-                                channel = Channels.GetByTransponderID(linkID);
+                                transponder = Channels.GetByTransponderID(linkID);
                              link = Channels.NewChannel(transponder, linkName, "", "", ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
                              //XXX patFilter->Trigger();
                              }
