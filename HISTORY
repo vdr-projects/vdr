@@ -5305,3 +5305,4 @@ Video Disk Recorder Revision History
   debug messages into separate files, which repeatedly caused extra efforts to
   find out when incomplete log excerpts were attached to problem reports in
   the past.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

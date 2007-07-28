@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.302 2007/07/20 15:04:37 kls Exp $
+ * $Id: i18n.c 1.303 2007/07/28 10:58:22 kls Exp $
  *
  * Translations provided by:
  *
@@ -101,7 +101,7 @@ const tI18nPhrase Phrases[] = {
     "Català",
     "ÀãááÚØÙ", // Russian
     "Hrvatski",
-    "Eesti",
+    "eesti",
     "Dansk",
     "Èesky", //Czech
     "Türkçe",
@@ -426,7 +426,7 @@ const tI18nPhrase Phrases[] = {
     "Esdeveniment",
     "¿ÕàÕÔĞçĞ",
     "Emisija",
-    "Sündmus",
+    "Saade",
     "Udsendelse",
     "Událost",
     "Yayın",
@@ -495,7 +495,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "ÍâĞ ßÕàÕÔĞçĞ - %s",
     "",//TODO
-    "See sündmus - %s",
+    "Sama saade - %s",
     "Denne udsendelse - %s",
     "Tato událost - %s",
     "Bu yayın - %s",
@@ -518,7 +518,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "ÍâĞ ßÕàÕÔĞçĞ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
-    "See sündmus - kõik kanalid",
+    "Sama saade - kõik kanalid",
     "Denne udsendelse - alle kanaler",
     "Tato událost - v¹echny kanály",
     "Bu yayın - tüm kanallar",
@@ -541,7 +541,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "²áÕ ßÕàÕÔĞçØ - ÒáÕ ÚĞİĞÛë",
     "",//TODO
-    "Kõik sündmused - kõik kanalid",
+    "Kõik saated - kõik kanalid",
     "Alle udsendelser - alle kanaler",
     "V¹echny událost - v¹echny kanály",
     "Tüm yayınlar - tüm kanallar",
@@ -1417,6 +1417,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¿àŞæÕáá ÜŞİâĞÖĞ - ÔÕÙáâÒØâÕÛìİŞ ßÕàÕ×ĞßãáâØâì?",
     "",//TODO
+    "Redigeerimine aktiivne - taaskäivitada?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1508,6 +1509,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "½ĞÖÜØâÕ ÛîÑãî ÚİŞßÚã ÔÛï ŞâÜÕİë ßÕàÕ×ĞÓàã×ÚØ",
     "",//TODO
+    "Restardi katkestamiseks vajuta suvalist klahvi",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1530,6 +1532,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "VDR ÒëÚÛîçØâáï ßŞ×ÖÕ - İĞÖÜØâÕ Power ÔÛï ãáÚŞàÕİØï",
     "",//TODO
+    "VDR lülitub välja hiljem - vajuta Power kiirendamiseks",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1552,6 +1555,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "VDR ÒëÚÛîçØâáï çÕàÕ× %s ÜØİãâ",
     "",//TODO
+    "VDR lülitub välja %s minuti pärast",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1574,6 +1578,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¸ÔÕâ ÜŞİâĞÖ - ÔÕÙáâÒØâÕÛìİŞ ÒëÚÛîçØâì?",
     "",//TODO
+    "Redigeerimine aktiive - lülitan välja?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1596,6 +1601,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Plugin %s ßàŞáİÕâáï çÕàÕ× %ld ÜØİãâ - ßàŞÔŞÛÖØâì?",
     "",//TODO
+    "Laiendusmoodul %s ärkab %ld minuti pärast, jätkata?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2863,6 +2869,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM ØáßŞÛì×ãÕâáï - ÔÕÙáâÒØâÕÛìİŞ ßÕàÕÓàã×Øâì?",
     "",//TODO
+    "CAM on kasutuses - taaskäivitada?",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2908,6 +2915,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM ßÕàÕÓàãÖÕİ",
     "",//TODO
+    "CAM taaskäivitamine",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2930,6 +2938,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM ßàØáãâáâÒãÕâ",
     "",//TODO
+    "CAM esitletud",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2952,6 +2961,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM ÓŞâŞÒ",
     "",//TODO
+    "CAM töövalmis",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2974,6 +2984,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM İÕ ŞâÒÕçĞÕâ",
     "",//TODO
+    "CAM ei vasta",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3573,7 +3584,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÁÓÛĞÖØÒĞİØÕ èàØäâŞÒ",
     "",// TODO
-    "",// TODO
+    "Fondi silumine",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3596,7 +3607,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÁâĞİÔĞàâİëÙ äŞİâ",
     "",// TODO
-    "",// TODO
+    "Vaikefont",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3619,7 +3630,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "¼ÕÛÚØÙ äŞİâ",
     "",// TODO
-    "",// TODO
+    "Väike font",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3642,7 +3653,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÄØÚáØàŞÒĞİİëÙ äŞİâ",
     "",// TODO
-    "",// TODO
+    "Fikseeritud font",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3665,7 +3676,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÀĞ×ÜÕà äŞİâĞ ÔÛï ÜÕİî (pixel)",
     "",// TODO
-    "",// TODO
+    "Vaikefondi suurus (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3688,7 +3699,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÀĞ×ÜÕà ÜÕÛÚŞÓŞ äŞİâĞ (pixel)",
     "",// TODO
-    "",// TODO
+    "Väikese fondi suurus (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3711,7 +3722,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ÀĞ×ÜÕà äØÚáØàŞÒĞİİŞÓŞ äŞİâĞ (pixel)",
     "",// TODO
-    "",// TODO
+    "Fiks. fondi suurus (px)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4447,7 +4458,7 @@ const tI18nPhrase Phrases[] = {
     "Freqüència LNB baixa (MHz)",
     "½ØÖİïï çĞáâŞâĞ ÚŞİÒÕàâÕàĞ (¼³æ)",
     "Donja LNB frekv. (MHz)",
-    "Alumine (LO) LNB sagedus (MHz)",
+    "LO LNB sagedus (MHz)",
     "Nedre LNB frekvens (MHz)",
     "Dolní frekvence LNB (MHz)",
     "Alt LNB frekansı (MHz)",
@@ -4470,7 +4481,7 @@ const tI18nPhrase Phrases[] = {
     "Freqüència LNB alta (MHz)",
     "²Õàåİïï çĞáâŞâĞ ÚŞİÒÕàâÕàĞ (¼³æ)",
     "Gornja LNB frekv. (MHz)",
-    "Ülemine (HI) LNB sagedus (MHz)",
+    "HI LNB sagedus (MHz)",
     "Øvre LNB frekvens (MHz)",
     "Horní frekvence LNB (MHz)",
     "Üst LNB frekansı (MHz)",
@@ -4838,7 +4849,7 @@ const tI18nPhrase Phrases[] = {
     "Separar arxius",
     "´ÕÛØâì ŞâàÕÔĞÚâØàŞÒĞİİëÕ äĞÙÛë",
     "Podijeli ureğene datoteke",
-    "Redigeeritud failide tükeldamine",
+    "Failide tükeldamine",
     "Opdel redigerede filer",
     "Dìlit editované soubory",
     "Düzenlenmiş kütükleri ayır",
@@ -5022,6 +5033,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "¿àÕÔÕÛ ÒàÕÜÕİØ ÔÛï ÒÒŞÔĞ ÚĞİĞÛĞ (ms)",
     "",// TODO
+    "Kanali sisestamise ajalimiit (ms)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5322,7 +5334,7 @@ const tI18nPhrase Phrases[] = {
     " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·",
     " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~,/_@",
     " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@", // hrv
-    " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~,/_@",
+    " abcdefghijklmnopqrsğzştuvwõäöüxy0123456789-.#~,/_@",
     " abcdefghijklmnopqrstuvwxyzæøå0123456789-.#~,/_@",
     " aábcèdïeéìfghiíjklmnòoópqrøs¹t»uúùvwxyız¾0123456789-.#~,/_@",
     " abcçdefgğhıijklmnoöprsştuüvyz0123456789-.#~,/_@",
@@ -5346,7 +5358,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     " 0\t-.#~,/_@1\tabcĞÑÒÓ2\tdefÔÕñÖ×3\tghiØÙÚÛ4\tjklÜİŞ5\tmnoßàá6\tpqrsâãäå7\ttuvæçèéê8\twxyzëìíîï9",
     "",//TODO
-    " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoõö6\tpqrsğ7\ttuvü8\twxyzş9",
+    " 0\t-.#~,/_@1\tabcä2\tdef3\tghi4\tjkl5\tmnoõö6\tpqrsğ7\ttuvü8\twxyzş9",
     " 0\t-.#~,/_@1\tabcæå2\tdef3\tghi4\tjkl5\tmnoø6\tpqrs7\ttuv8\twxyz9",
     " 0\t-.#~,/_@1\tabcáè2\tdefïéì3\tghií4\tjkl5\tmnoòó6\tpqrsø¹7\ttuv»úù8\twxyzı¾9",
     " 0\t-.#~,/_@1\tabcç2\tdef3\tgğhıi4\tjkl5\tmnoö6\tprsş7\ttuüv8\tyz9",
@@ -6384,7 +6396,7 @@ const tI18nPhrase Phrases[] = {
     "off",
     "ÒëÚÛ",
     "ugasi",
-    "välja",
+    "väljas",
     "fra",
     "vyp.",
     "kapalı",
@@ -6637,7 +6649,7 @@ const tI18nPhrase Phrases[] = {
     " Cancel·lar l'edició ",
     " ¿àÕàÒĞâì ÜŞİâĞÖ ×ĞßØáØ",
     " Prekini ureğivanje",
-    " Katkestada monteerimine",
+    " Katkestada redigeerimine",
     " Afbryd redigering",
     " Zru¹it editaci",
     " Kesimi iptal et",
