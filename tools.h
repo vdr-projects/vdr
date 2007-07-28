@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.104 2007/07/21 13:35:45 kls Exp $
+ * $Id: tools.h 1.105 2007/07/28 09:43:04 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -28,9 +28,9 @@ typedef unsigned char uchar;
 
 extern int SysLogLevel;
 
-#define esyslog(a...) void( (SysLogLevel > 0) ? syslog_with_tid(LOG_ERR,   a) : void() )
-#define isyslog(a...) void( (SysLogLevel > 1) ? syslog_with_tid(LOG_INFO,  a) : void() )
-#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_DEBUG, a) : void() )
+#define esyslog(a...) void( (SysLogLevel > 0) ? syslog_with_tid(LOG_ERR, a) : void() )
+#define isyslog(a...) void( (SysLogLevel > 1) ? syslog_with_tid(LOG_ERR, a) : void() )
+#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_ERR, a) : void() )
 
 #define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
 #define LOG_ERROR_STR(s)  esyslog("ERROR: %s: %m", s)

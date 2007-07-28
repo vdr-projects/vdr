@@ -5298,3 +5298,10 @@ Video Disk Recorder Revision History
   cDevice::TrickSpeed() (suggested by Martin Dauskardt).
 - Added a missing 'P' to vdr.c's SHUTDOWNCANCELROMPT macro (reported by Marco
   Schlüßler).
+
+2007-07-28: Version 1.5.7
+
+- All logging now goes to LOG_ERR, because some systems split error, info and
+  debug messages into separate files, which repeatedly caused extra efforts to
+  find out when incomplete log excerpts were attached to problem reports in
+  the past.
