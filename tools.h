@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.105 2007/07/28 09:43:04 kls Exp $
+ * $Id: tools.h 1.106 2007/07/28 12:54:49 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -175,9 +175,9 @@ char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
 inline char *skipspace(const char *s)
 {
-  if (*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible
+  if ((uchar)*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible
      return (char *)s;
-  while (*s && *s <= ' ') // avoiding isspace() here, because it is much slower
+  while (*s && (uchar)*s <= ' ') // avoiding isspace() here, because it is much slower
         s++;
   return (char *)s;
 }

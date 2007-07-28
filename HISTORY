@@ -5306,3 +5306,5 @@ Video Disk Recorder Revision History
   find out when incomplete log excerpts were attached to problem reports in
   the past.
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed a problem with characters >0x7F in the modified version of skipspace()
+  (thanks to Marco Schlüßler).
