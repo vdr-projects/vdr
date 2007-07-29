@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.303 2007/07/28 10:58:22 kls Exp $
+ * $Id: i18n.c 1.304 2007/07/29 11:35:03 kls Exp $
  *
  * Translations provided by:
  *
@@ -431,29 +431,6 @@ const tI18nPhrase Phrases[] = {
     "Událost",
     "Yayýn",
   },
-  { "Info",
-    "Info",
-    "Info",
-    "Informazioni",
-    "Info",
-    "",//TODO
-    "Info",
-    "",//TODO
-    "Tiedot",
-    "Info",
-    "Info",
-    "Ðëçñïöïñßåò",
-    "Info",
-    "Info",
-    "Információ",
-    "",//TODO
-    "¸ÝäÞ",
-    "Info",
-    "Info",
-    "Info",
-    "Info",
-    "Bilgi",
-  },
   { "Schedule - %s",
     "Programm - %s",
     "Program - %s",
@@ -483,7 +460,7 @@ const tI18nPhrase Phrases[] = {
     "Questo evento - %s",
     "",//TODO
     "",//TODO
-    "Cet événement",
+    "Cet événement -%s",
     "",//TODO
     "Tämä tapahtuma - %s",
     "Ta audycja - %s",
@@ -2437,29 +2414,6 @@ const tI18nPhrase Phrases[] = {
     "Kanál nelze pøepnout!",
     "Kanala deðiþtirelemiyor!",
   },
-  { "Timer is recording!",
-    "Timer zeichnet gerade auf!",
-    "Snemanje po terminu!",
-    "Registrazione di un timer in corso!",
-    "Timer is aan het opnemen!",
-    "Timer a gravar!",
-    "Enregistrement en cours!",
-    "Timer gjør opptak!",
-    "Ajastintallennus käynnissä!",
-    "Timer nagrywa!",
-    "¡Grabación en curso!",
-    "Ãßíåôáé ðñïãñáìáôéóìÝíç åããñáöÞ!",
-    "Timerstyrd inspelning pågår!",
-    "Timer-ul tocmai înregistreazã!",
-    "Felvétel folyamatban van!",
-    "El temporitzador està gravant!",
-    "¸Ôñâ ×ÐßØáì ßÞ âÐÙÜÕàã!",
-    "Snimanje po definiranom terminu!",
-    "Taimeriga salvestamine aktiivne!",
-    "Timer optager nu!",
-    "Èasovaè právì nahrává!",
-    "Zamanlayýcý çekim yapýyor!",
-  },
   { "Error while accessing recording!",
     "Fehler beim Ansprechen der Aufzeichnung!",
     "Napaka pri dostopu do posnetka!",
@@ -2851,7 +2805,7 @@ const tI18nPhrase Phrases[] = {
     "Menu CAM není dostupné",
     "CAM menüsü açýlamýyor!",
   },
-  { "CAM is in use - really reset?"
+  { "CAM is in use - really reset?",
     "CAM wird benutzt - wirklich zurücksetzen?",
     "",//TODO
     "",//TODO
