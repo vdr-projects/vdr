@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.305 2007/08/11 11:33:23 kls Exp $
+ * $Id: i18n.c 1.306 2007/08/11 14:27:02 kls Exp $
  *
  *
  */
@@ -57,10 +57,13 @@ void I18nInitialize(void)
      char *OldLocale = strdup(setlocale(LC_MESSAGES, NULL));
      for (int i = 0; i < Locales.Size(); i++) {
          if (i < I18N_MAX_LANGUAGES - 1) {
-            setlocale(LC_MESSAGES, Locales[i]);
-            LanguageLocales.Append(strdup(Locales[i]));
-            LanguageNames.Append(strdup(gettext(LanguageName)));
-            LanguageCodes.Append(strdup(gettext(LanguageCode)));
+            if (setlocale(LC_MESSAGES, Locales[i])) {
+               LanguageLocales.Append(strdup(Locales[i]));
+               LanguageNames.Append(strdup(gettext(LanguageName)));
+               LanguageCodes.Append(strdup(gettext(LanguageCode)));
+               if (strstr(OldLocale, Locales[i]) == OldLocale)
+                  CurrentLanguage = LanguageLocales.Size() - 1;
+               }
             }
          else
             esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");

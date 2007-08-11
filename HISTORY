@@ -5324,5 +5324,6 @@ Video Disk Recorder Revision History
 - The 'newplugin' script has been extended to generate the Makefile section
   for i18n support.
 - The parameter OSDLanguage in 'setup.conf' is now a string and holds the locale
-  code of the selcted OSD language (e.g. en_US). Therefore, when you first run
-  this version of VDR you may have to select your desired OSD language again.
+  code of the selected OSD language (e.g. en_US). If Setup.OSDLanguage is not
+  set to a particular locale that is found in VDR's locale directory, the
+  locale as defined in the system environment is used by default.
