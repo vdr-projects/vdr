@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.294 2007/07/22 11:40:01 kls Exp $
+ * $Id: vdr.c 1.295 2007/08/05 09:53:20 kls Exp $
  */
 
 #include <getopt.h>
@@ -510,6 +510,10 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
+
+  // Initialize internationalization:
+
+  I18nInitialize();
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.11 2007/02/25 10:49:35 kls Exp $
+ * $Id: keys.h 1.12 2007/08/04 14:40:23 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -100,7 +100,7 @@ public:
   bool Parse(char *s);
   bool Save(FILE *f);
   static eKeys FromString(const char *Name);
-  static const char *ToString(eKeys Key);
+  static const char *ToString(eKeys Key, bool Translate = false);
   };
 
 class cKeys : public cConfig<cKey> {

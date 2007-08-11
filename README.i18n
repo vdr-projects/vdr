@@ -1,0 +1,42 @@
+Video Disk Recorder ('VDR') - Internationalization
+--------------------------------------------------
+
+The internationalized texts of VDR and its plugins use the 'gettext'
+functionality. This file provides information on how to maintain
+these texts. The instructions apply equally to VDR itself or any
+plugin.
+
+
+How to translate to a new language
+----------------------------------
+
+- Change into the source directory.
+- Do a 'make i18n' to have the current *.pot file created.
+- Make sure your locale is set to the language you want to
+  translate to.
+- Change into the 'po' subdirectory and run 'msginit'. This
+  will create a new *.po file for your language.
+- Edit the new *.po file and translate the texts.
+  You can do this either with your favorite text editor, or
+  with a specialited tool like POEdit, GTranslator, KBabel
+  or whatever you have.
+
+How to maintain an existing language file
+-----------------------------------------
+
+- Do a 'make i18n' to have the *.po files brought up-to-date
+  with the texts in the source code.
+- Edit the new *.po file and translate the texts.
+  If you are using a plain text editor, you should search for
+  empty strings ("") to find new, untranslated texts. Also,
+  look for the "fuzzy" keyword to find translations that have
+  been "guessed" from other, similar texts, and make sure they
+  are correct. After that you may want to remove the "fuzzy"
+  keyword. Specialized tools for maintaining translation
+  files may provide particular functions to guide you through
+  updating translations.
+
+Once you have created or updated a translation file, please
+send it to the maintainer of the respective plugin (in case
+it belongs to a plugin) or to kls@cadsoft.de (for core VDR
+language files).

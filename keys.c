@@ -4,69 +4,69 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.14 2006/10/14 10:18:05 kls Exp $
+ * $Id: keys.c 1.15 2007/08/11 11:30:18 kls Exp $
  */
 
 #include "keys.h"
 #include "plugin.h"
 
 static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
-                    { kUp,            "Up"         },
-                    { kDown,          "Down"       },
-                    { kMenu,          "Menu"       },
-                    { kOk,            "Ok"         },
-                    { kBack,          "Back"       },
-                    { kLeft,          "Left"       },
-                    { kRight,         "Right"      },
-                    { kRed,           "Red"        },
-                    { kGreen,         "Green"      },
-                    { kYellow,        "Yellow"     },
-                    { kBlue,          "Blue"       },
-                    { k0,             "0"          },
-                    { k1,             "1"          },
-                    { k2,             "2"          },
-                    { k3,             "3"          },
-                    { k4,             "4"          },
-                    { k5,             "5"          },
-                    { k6,             "6"          },
-                    { k7,             "7"          },
-                    { k8,             "8"          },
-                    { k9,             "9"          },
-                    { kInfo,          "Info"       },
-                    { kPlay,          "Play"       },
-                    { kPause,         "Pause"      },
-                    { kStop,          "Stop"       },
-                    { kRecord,        "Record"     },
-                    { kFastFwd,       "FastFwd"    },
-                    { kFastRew,       "FastRew"    },
-                    { kNext,          "Next"       },
-                    { kPrev,          "Prev"       },
-                    { kPower,         "Power"      },
-                    { kChanUp,        "Channel+"   },
-                    { kChanDn,        "Channel-"   },
-                    { kChanPrev,      "PrevChannel"},
-                    { kVolUp,         "Volume+"    },
-                    { kVolDn,         "Volume-"    },
-                    { kMute,          "Mute"       },
-                    { kAudio,         "Audio"      },
-                    { kSchedule,      "Schedule"   },
-                    { kChannels,      "Channels"   },
-                    { kTimers,        "Timers"     },
-                    { kRecordings,    "Recordings" },
-                    { kSetup,         "Setup"      },
-                    { kCommands,      "Commands"   },
-                    { kUser1,         "User1"      },
-                    { kUser2,         "User2"      },
-                    { kUser3,         "User3"      },
-                    { kUser4,         "User4"      },
-                    { kUser5,         "User5"      },
-                    { kUser6,         "User6"      },
-                    { kUser7,         "User7"      },
-                    { kUser8,         "User8"      },
-                    { kUser9,         "User9"      },
-                    { kNone,          ""           },
-                    { k_Setup,        "_Setup"     },
-                    { kNone,          NULL         },
+                    { kUp,            trNOOP("Key$Up")          },
+                    { kDown,          trNOOP("Key$Down")        },
+                    { kMenu,          trNOOP("Key$Menu")        },
+                    { kOk,            trNOOP("Key$Ok")          },
+                    { kBack,          trNOOP("Key$Back")        },
+                    { kLeft,          trNOOP("Key$Left")        },
+                    { kRight,         trNOOP("Key$Right")       },
+                    { kRed,           trNOOP("Key$Red")         },
+                    { kGreen,         trNOOP("Key$Green")       },
+                    { kYellow,        trNOOP("Key$Yellow")      },
+                    { kBlue,          trNOOP("Key$Blue")        },
+                    { k0,                    "0"                },
+                    { k1,                    "1"                },
+                    { k2,                    "2"                },
+                    { k3,                    "3"                },
+                    { k4,                    "4"                },
+                    { k5,                    "5"                },
+                    { k6,                    "6"                },
+                    { k7,                    "7"                },
+                    { k8,                    "8"                },
+                    { k9,                    "9"                },
+                    { kInfo,          trNOOP("Key$Info")        },
+                    { kPlay,          trNOOP("Key$Play")        },
+                    { kPause,         trNOOP("Key$Pause")       },
+                    { kStop,          trNOOP("Key$Stop")        },
+                    { kRecord,        trNOOP("Key$Record")      },
+                    { kFastFwd,       trNOOP("Key$FastFwd")     },
+                    { kFastRew,       trNOOP("Key$FastRew")     },
+                    { kNext,          trNOOP("Key$Next")        },
+                    { kPrev,          trNOOP("Key$Prev")        },
+                    { kPower,         trNOOP("Key$Power")       },
+                    { kChanUp,        trNOOP("Key$Channel+")    },
+                    { kChanDn,        trNOOP("Key$Channel-")    },
+                    { kChanPrev,      trNOOP("Key$PrevChannel") },
+                    { kVolUp,         trNOOP("Key$Volume+")     },
+                    { kVolDn,         trNOOP("Key$Volume-")     },
+                    { kMute,          trNOOP("Key$Mute")        },
+                    { kAudio,         trNOOP("Key$Audio")       },
+                    { kSchedule,      trNOOP("Key$Schedule")    },
+                    { kChannels,      trNOOP("Key$Channels")    },
+                    { kTimers,        trNOOP("Key$Timers")      },
+                    { kRecordings,    trNOOP("Key$Recordings")  },
+                    { kSetup,         trNOOP("Key$Setup")       },
+                    { kCommands,      trNOOP("Key$Commands")    },
+                    { kUser1,         trNOOP("Key$User1")       },
+                    { kUser2,         trNOOP("Key$User2")       },
+                    { kUser3,         trNOOP("Key$User3")       },
+                    { kUser4,         trNOOP("Key$User4")       },
+                    { kUser5,         trNOOP("Key$User5")       },
+                    { kUser6,         trNOOP("Key$User6")       },
+                    { kUser7,         trNOOP("Key$User7")       },
+                    { kUser8,         trNOOP("Key$User8")       },
+                    { kUser9,         trNOOP("Key$User9")       },
+                    { kNone,                 ""                 },
+                    { k_Setup,               "_Setup"           },
+                    { kNone,                 NULL               },
                   };
 
 // -- cKey -------------------------------------------------------------------
@@ -121,18 +121,29 @@ eKeys cKey::FromString(const char *Name)
 {
   if (Name) {
      for (tKey *k = keyTable; k->name; k++) {
-         if (strcasecmp(k->name, Name) == 0)
+         const char *n = k->name;
+         const char *p = strchr(n, '$');
+         if (p)
+            n = p + 1;
+         if (strcasecmp(n, Name) == 0)
             return k->type;
          }
      }
   return kNone;
 }
 
-const char *cKey::ToString(eKeys Key)
+const char *cKey::ToString(eKeys Key, bool Translate)
 {
   for (tKey *k = keyTable; k->name; k++) {
-      if (k->type == Key)
-         return k->name;
+      if (k->type == Key) {
+         const char *n = k->name;
+         if (Translate)
+            n = tr(n);
+         const char *p = strchr(n, '$');
+         if (p)
+            n = p + 1;
+         return n;
+         }
       }
   return NULL;
 }

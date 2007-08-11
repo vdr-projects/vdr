@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.101 2007/06/16 10:48:59 kls Exp $
+# $Id: Makefile 1.102 2007/08/11 12:26:12 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,6 +17,7 @@ CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
+LOCDIR   = /usr/share/vdr/locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype -lfontconfig
 INCLUDES = -I/usr/include/freetype2
 
@@ -58,6 +59,7 @@ DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
+DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
 # The version numbers of VDR and the plugin API (taken from VDR's "config.h"):
 
@@ -69,7 +71,7 @@ ifdef VFAT
 DEFINES += -DVFAT
 endif
 
-all: vdr
+all: vdr i18n
 
 # Implicit rules:
 
@@ -94,6 +96,35 @@ vdr: $(OBJS) $(SILIB)
 
 $(SILIB):
 	$(MAKE) -C $(LSIDIR) all
+
+# Internationalization (I18N):
+
+PODIR     = po
+LOCALEDIR = locale
+I18Npo    = $(wildcard $(PODIR)/*.po)
+I18Nmo    = $(addsuffix .mo, $(foreach file, $(I18Npo), $(basename $(file))))
+I18Ndirs  = $(notdir $(foreach file, $(I18Npo), $(basename $(file))))
+I18Npot   = $(PODIR)/vdr.pot
+
+%.mo: %.po
+	msgfmt -c -o $@ $<
+
+$(I18Npot): $(wildcard *.c)
+	xgettext -C -cTRANSLATORS --no-wrap -F -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@cadsoft.de>' -o $@ $(wildcard *.c)
+
+$(I18Npo): $(I18Npot)
+	msgmerge -U --no-wrap -F --backup=none -q $@ $<
+
+i18n: $(I18Nmo)
+	@mkdir -p $(LOCALEDIR)
+	for i in $(I18Ndirs); do\
+	    mkdir -p $(LOCALEDIR)/$$i/LC_MESSAGES;\
+	    cp $(PODIR)/$$i.mo $(LOCALEDIR)/$$i/LC_MESSAGES/vdr.mo;\
+	    done
+
+install-i18n:
+	@mkdir -p $(LOCDIR)
+	@(cd $(LOCALEDIR); cp -r --parents * $(LOCDIR))
 
 # The 'include' directory (for plugins):
 
@@ -169,6 +200,7 @@ srcdoc:
 clean:
 	$(MAKE) -C $(LSIDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr core* *~
+	-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
 	-rm -rf include
 	-rm -rf srcdoc
 CLEAN: clean

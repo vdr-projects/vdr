@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.295 2007/07/28 09:45:27 kls Exp $
+ * $Id: config.h 1.296 2007/08/10 13:01:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -199,7 +199,7 @@ private:
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
   int __BeginData__;
-  int OSDLanguage;
+  char OSDLanguage[I18N_MAX_LOCALE_LEN];
   char OSDSkin[MaxSkinName];
   char OSDTheme[MaxThemeName];
   int PrimaryDVB;
@@ -219,8 +219,8 @@ public:
   int TimeSource;
   int TimeTransponder;
   int MarginStart, MarginStop;
-  int AudioLanguages[I18nNumLanguages + 1];
-  int EPGLanguages[I18nNumLanguages + 1];
+  int AudioLanguages[I18N_MAX_LANGUAGES + 1];
+  int EPGLanguages[I18N_MAX_LANGUAGES + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int EPGLinger;

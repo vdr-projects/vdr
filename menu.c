@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.456 2007/06/23 09:27:13 kls Exp $
+ * $Id: menu.c 1.457 2007/08/10 13:13:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2153,6 +2153,7 @@ void cMenuSetupBase::Store(void)
 class cMenuSetupOSD : public cMenuSetupBase {
 private:
   const char *useSmallFontTexts[3];
+  int osdLanguageIndex;
   int numSkins;
   int originalSkinIndex;
   int skinIndex;
@@ -2171,6 +2172,7 @@ public:
 
 cMenuSetupOSD::cMenuSetupOSD(void)
 {
+  osdLanguageIndex = I18nCurrentLanguage();
   numSkins = Skins.Count();
   skinIndex = originalSkinIndex = Skins.Current()->Index();
   skinDescriptions = new const char*[numSkins];
@@ -2203,7 +2205,7 @@ void cMenuSetupOSD::Set(void)
   useSmallFontTexts[2] = tr("always");
   Clear();
   SetSection(tr("OSD"));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, I18nNumLanguages, I18nLanguages()));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &osdLanguageIndex, I18nLanguages()->Size(), &I18nLanguages()->At(0)));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
   if (themes.NumThemes())
   Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -2237,6 +2239,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
   bool ModifiedApperance = false;
 
   if (Key == kOk) {
+     I18nSetLocale(data.OSDLanguage);
      if (skinIndex != originalSkinIndex) {
         cSkin *Skin = Skins.Get(skinIndex);
         if (Skin) {
@@ -2273,16 +2276,17 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         }
      }
 
-  int osdLanguage = data.OSDLanguage;
   int oldSkinIndex = skinIndex;
+  int oldOsdLanguageIndex = osdLanguageIndex;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (ModifiedApperance)
      SetDisplayMenu();
 
-  if (data.OSDLanguage != osdLanguage || skinIndex != oldSkinIndex) {
-     int OriginalOSDLanguage = Setup.OSDLanguage;
-     Setup.OSDLanguage = data.OSDLanguage;
+  if (osdLanguageIndex != oldOsdLanguageIndex || skinIndex != oldSkinIndex) {
+     strn0cpy(data.OSDLanguage, I18nLocale(osdLanguageIndex), sizeof(data.OSDLanguage));
+     int OriginalOSDLanguage = I18nCurrentLanguage();
+     I18nSetLanguage(osdLanguageIndex);
 
      cSkin *Skin = Skins.Get(skinIndex);
      if (Skin) {
@@ -2294,7 +2298,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         }
 
      Set();
-     Setup.OSDLanguage = OriginalOSDLanguage;
+     I18nSetLanguage(OriginalOSDLanguage);
      }
   return state;
 }
@@ -2313,7 +2317,7 @@ public:
 
 cMenuSetupEPG::cMenuSetupEPG(void)
 {
-  for (numLanguages = 0; numLanguages < I18nNumLanguages && data.EPGLanguages[numLanguages] >= 0; numLanguages++)
+  for (numLanguages = 0; numLanguages < I18nLanguages()->Size() && data.EPGLanguages[numLanguages] >= 0; numLanguages++)
       ;
   originalNumLanguages = numLanguages;
   SetSection(tr("EPG"));
@@ -2333,9 +2337,11 @@ void cMenuSetupEPG::Setup(void)
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   if (data.SetSystemTime)
      Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder, &data.TimeSource));
-  Add(new cMenuEditIntItem( tr("Setup.EPG$Preferred languages"),       &numLanguages, 0, I18nNumLanguages));
+  // TRANSLATORS: note the plural!
+  Add(new cMenuEditIntItem( tr("Setup.EPG$Preferred languages"),       &numLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numLanguages; i++)
-     Add(new cMenuEditStraItem(tr("Setup.EPG$Preferred language"),     &data.EPGLanguages[i], I18nNumLanguages, I18nLanguages()));
+      // TRANSLATORS: note the singular!
+      Add(new cMenuEditStraItem(tr("Setup.EPG$Preferred language"),    &data.EPGLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
 
   SetCurrent(Get(current));
   Display();
@@ -2365,7 +2371,7 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
      if (numLanguages != oldnumLanguages || data.SetSystemTime != oldSetSystemTime) {
         for (int i = oldnumLanguages; i < numLanguages; i++) {
             data.EPGLanguages[i] = 0;
-            for (int l = 0; l < I18nNumLanguages; l++) {
+            for (int l = 0; l < I18nLanguages()->Size(); l++) {
                 int k;
                 for (k = 0; k < oldnumLanguages; k++) {
                     if (data.EPGLanguages[k] == l)
@@ -2404,7 +2410,7 @@ public:
 
 cMenuSetupDVB::cMenuSetupDVB(void)
 {
-  for (numAudioLanguages = 0; numAudioLanguages < I18nNumLanguages && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
+  for (numAudioLanguages = 0; numAudioLanguages < I18nLanguages()->Size() && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
       ;
   originalNumAudioLanguages = numAudioLanguages;
   videoDisplayFormatTexts[0] = tr("pan&scan");
@@ -2433,9 +2439,9 @@ void cMenuSetupDVB::Setup(void)
      Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 6, updateChannelsTexts));
-  Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
+  Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numAudioLanguages; i++)
-      Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
+      Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
 
   SetCurrent(Get(current));
   Display();
@@ -2455,7 +2461,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
      if (numAudioLanguages != oldnumAudioLanguages) {
         for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
             data.AudioLanguages[i] = 0;
-            for (int l = 0; l < I18nNumLanguages; l++) {
+            for (int l = 0; l < I18nLanguages()->Size(); l++) {
                 int k;
                 for (k = 0; k < oldnumAudioLanguages; k++) {
                     if (data.AudioLanguages[k] == l)
@@ -2826,7 +2832,7 @@ eOSState cMenuSetup::Restart(void)
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
 {
-  int osdLanguage = Setup.OSDLanguage;
+  int osdLanguage = I18nCurrentLanguage();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   switch (state) {
@@ -2842,7 +2848,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
     case osUser10: return Restart();
     default: ;
     }
-  if (Setup.OSDLanguage != osdLanguage) {
+  if (I18nCurrentLanguage() != osdLanguage) {
      Set();
      if (!HasSubMenu())
         Display();
@@ -2868,7 +2874,8 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 // --- cMenuMain -------------------------------------------------------------
 
-#define STOP_RECORDING tr(" Stop recording ")
+// TRANSLATORS: note the leading and trailing blanks!
+#define STOP_RECORDING trNOOP(" Stop recording ")
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
@@ -2967,6 +2974,7 @@ bool cMenuMain::Update(bool Force)
      replaying = NewReplaying;
      // Replay control:
      if (replaying && !stopReplayItem)
+        // TRANSLATORS: note the leading blank!
         Add(stopReplayItem = new cOsdItem(tr(" Stop replaying"), osStopReplay));
      else if (stopReplayItem && !replaying) {
         Del(stopReplayItem->Index());
@@ -2980,6 +2988,7 @@ bool cMenuMain::Update(bool Force)
   // Editing control:
   bool CutterActive = cCutter::Active();
   if (CutterActive && !cancelEditingItem) {
+     // TRANSLATORS: note the leading blank!
      Add(cancelEditingItem = new cOsdItem(tr(" Cancel editing"), osCancelEdit));
      result = true;
      }
@@ -2999,7 +3008,7 @@ bool cMenuMain::Update(bool Force)
      const char *s = NULL;
      while ((s = cRecordControls::GetInstantId(s)) != NULL) {
            char *buffer = NULL;
-           asprintf(&buffer, "%s%s", STOP_RECORDING, s);
+           asprintf(&buffer, "%s%s", tr(STOP_RECORDING), s);
            cOsdItem *item = new cOsdItem(osStopRecord);
            item->SetText(buffer, false);
            Add(item);
@@ -3015,7 +3024,7 @@ bool cMenuMain::Update(bool Force)
 eOSState cMenuMain::ProcessKey(eKeys Key)
 {
   bool HadSubMenu = HasSubMenu();
-  int osdLanguage = Setup.OSDLanguage;
+  int osdLanguage = I18nCurrentLanguage();
   eOSState state = cOsdMenu::ProcessKey(Key);
   HadSubMenu |= HasSubMenu();
 
@@ -3029,7 +3038,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {
-                             cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
+                             cRecordControls::Stop(item->Text() + strlen(tr(STOP_RECORDING)));
                              return osEnd;
                              }
                           }
@@ -3080,7 +3089,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   if (!HasSubMenu() && Update(HadSubMenu))
      Display();
   if (Key != kNone) {
-     if (Setup.OSDLanguage != osdLanguage) {
+     if (I18nCurrentLanguage() != osdLanguage) {
         Set();
         if (!HasSubMenu())
            Display();
@@ -4026,6 +4035,7 @@ bool cReplayControl::ShowProgress(bool Initial)
 void cReplayControl::TimeSearchDisplay(void)
 {
   char buf[64];
+  // TRANSLATORS: note the trailing blank!
   strcpy(buf, tr("Jump: "));
   int len = strlen(buf);
   char h10 = '0' + (timeSearchTime >> 24);

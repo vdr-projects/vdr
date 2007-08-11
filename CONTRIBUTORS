@@ -1520,6 +1520,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for making VDR actually use the iso8859-15 fonts
  for suggesting to make the function ExchangeChars()
  for reporting duplicate texts in i18n.c
+ for suggesting to use 'gettext' for internationalization
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem

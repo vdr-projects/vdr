@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.106 2007/07/28 12:54:49 kls Exp $
+ * $Id: tools.h 1.107 2007/08/05 12:11:52 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -487,8 +487,8 @@ public:
 
 class cFileNameList : public cStringList {
 public:
-  cFileNameList(const char *Directory = NULL);
-  bool Load(const char *Directory);
+  cFileNameList(const char *Directory = NULL, bool DirsOnly = false);
+  bool Load(const char *Directory, bool DirsOnly = false);
   };
 
 class cHashObject : public cListObject {

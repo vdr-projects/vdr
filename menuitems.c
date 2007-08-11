@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.49 2007/06/08 15:16:38 kls Exp $
+ * $Id: menuitems.c 1.50 2007/08/04 09:12:18 kls Exp $
  */
 
 #include "menuitems.h"
@@ -18,7 +18,7 @@
 
 #define AUTO_ADVANCE_TIMEOUT  1500 // ms before auto advance when entering characters via numeric keys
 
-const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
+const char *FileNameChars = trNOOP(" abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@");
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -316,7 +316,7 @@ void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (InEditMode())
-     cSkinDisplay::Current()->SetButtons(tr("Button$ABC/abc"), tr(insert ? "Button$Overwrite" : "Button$Insert"), tr("Button$Delete"));
+     cSkinDisplay::Current()->SetButtons(tr("Button$ABC/abc"), insert ? tr("Button$Overwrite") : tr("Button$Insert"), tr("Button$Delete"));
   else
      cSkinDisplay::Current()->SetButtons(NULL);
 }

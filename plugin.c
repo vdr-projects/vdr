@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.25 2007/02/24 13:44:23 kls Exp $
+ * $Id: plugin.c 1.26 2007/08/05 12:48:50 kls Exp $
  */
 
 #include "plugin.h"
@@ -35,12 +35,12 @@ cPlugin::cPlugin(void)
 
 cPlugin::~cPlugin()
 {
-  I18nRegister(NULL, Name());
 }
 
 void cPlugin::SetName(const char *s)
 {
   name = s;
+  I18nRegister(name);
 }
 
 const char *cPlugin::CommandLineHelp(void)
@@ -130,9 +130,9 @@ cString cPlugin::SVDRPCommand(const char *Command, const char *Option, int &Repl
   return NULL;
 }
 
-void cPlugin::RegisterI18n(const tI18nPhrase * const Phrases)
+void cPlugin::RegisterI18n(const void *)
 {
-  I18nRegister(Phrases, Name());
+  dsyslog("plugin '%s' called obsolete function RegisterI18n()", Name());
 }
 
 void cPlugin::SetConfigDirectory(const char *Dir)
@@ -338,10 +338,7 @@ bool cPluginManager::InitializePlugins(void)
   for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
       cPlugin *p = dll->Plugin();
       if (p) {
-         int Language = Setup.OSDLanguage;
-         Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
          isyslog("initializing plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
-         Setup.OSDLanguage = Language;
          if (!p->Initialize())
             return false;
          }
@@ -354,10 +351,7 @@ bool cPluginManager::StartPlugins(void)
   for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
       cPlugin *p = dll->Plugin();
       if (p) {
-         int Language = Setup.OSDLanguage;
-         Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
          isyslog("starting plugin: %s", p->Name());
-         Setup.OSDLanguage = Language;
          if (!p->Start())
             return false;
          p->started = true;

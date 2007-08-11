@@ -24,6 +24,7 @@ You will also need to install the following libraries, as well as their
 
   fontconfig
   freetype2
+  gettext
   libcap
   libjpeg
 

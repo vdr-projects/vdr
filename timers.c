@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.67 2007/06/16 10:41:21 kls Exp $
+ * $Id: timers.c 1.68 2007/08/04 09:23:33 kls Exp $
  */
 
 #include "timers.h"
@@ -218,7 +218,8 @@ cString cTimer::PrintDay(time_t Day, int WeekDays, bool SingleByteChars)
   char buffer[DAYBUFFERSIZE];
   char *b = buffer;
   if (WeekDays) {
-     const char *w = "MTWTFSS";
+     // TRANSLATORS: the first character of each weekday, beginning with monday
+     const char *w = trNOOP("MTWTFSS");
      if (!SingleByteChars)
         w = tr(w);
      while (*w) {

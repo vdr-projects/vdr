@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.h 1.1 2004/05/15 14:22:16 kls Exp $
+ * $Id: themes.h 1.2 2007/08/05 14:10:22 kls Exp $
  */
 
 #ifndef __THEMES_H
 #define __THEMES_H
 
 #include "i18n.h"
+#include "tools.h"
 #include "osd.h"
 
 class cTheme {
@@ -18,7 +19,7 @@ public:
   enum { MaxThemeColors = 128 };
 private:
   char *name;
-  char *descriptions[I18nNumLanguages];
+  cStringList descriptions;
   char *colorNames[MaxThemeColors];
   tColor colorValues[MaxThemeColors];
   bool FileNameOk(const char *FileName, bool SetName = false);

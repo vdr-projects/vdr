@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.10 2006/06/15 09:15:25 kls Exp $
+# $Id: Make.config.template 1.11 2007/08/11 10:50:44 kls Exp $
 
 ### The C compiler and options:
 
@@ -26,6 +26,7 @@ endif
 #DVBDIR   = /usr/src/v4l-dvb/linux
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
+LOCDIR   = /usr/share/vdr/locale
 
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
