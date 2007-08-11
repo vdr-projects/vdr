@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-11 11:00+0200\n"
+"PO-Revision-Date: 2007-08-11 15:18+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -240,39 +240,39 @@ msgstr "Befehle"
 
 #: keys.c:58
 msgid "Key$User1"
-msgstr ""
+msgstr "Benutzer1"
 
 #: keys.c:59
 msgid "Key$User2"
-msgstr ""
+msgstr "Benutzer2"
 
 #: keys.c:60
 msgid "Key$User3"
-msgstr ""
+msgstr "Benutzer3"
 
 #: keys.c:61
 msgid "Key$User4"
-msgstr ""
+msgstr "Benutzer4"
 
 #: keys.c:62
 msgid "Key$User5"
-msgstr ""
+msgstr "Benutzer5"
 
 #: keys.c:63
 msgid "Key$User6"
-msgstr ""
+msgstr "Benutzer6"
 
 #: keys.c:64
 msgid "Key$User7"
-msgstr ""
+msgstr "Benutzer7"
 
 #: keys.c:65
 msgid "Key$User8"
-msgstr ""
+msgstr "Benutzer8"
 
 #: keys.c:66
 msgid "Key$User9"
-msgstr ""
+msgstr "Benutzer9"
 
 #: menu.c:69
 msgid "Free To Air"
