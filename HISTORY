@@ -5333,3 +5333,5 @@ Video Disk Recorder Revision History
 - The list of tracks given in cStatus::SetAudioTrack() is now NULL terminated,
   so that plugins can actually use all the strings in the list, not just the
   one pointed to by Index (thanks to Alexander Rieger).
+- Fixed handling kLeft in the calls to cStatus::MsgOsdTextItem() (thanks to
+  Alexander Rieger).

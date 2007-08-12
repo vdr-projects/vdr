@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.458 2007/08/12 10:35:16 kls Exp $
+ * $Id: menu.c 1.459 2007/08/12 10:44:35 kls Exp $
  */
 
 #include "menu.h"
@@ -630,7 +630,7 @@ eOSState cMenuText::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
-                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
     default: break;
     }
@@ -980,7 +980,7 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
-                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
     default: break;
     }
@@ -1809,7 +1809,7 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
-                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
     default: break;
     }
