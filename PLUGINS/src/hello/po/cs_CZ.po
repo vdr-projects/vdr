@@ -1,0 +1,40 @@
+# VDR plugin language source file.
+# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# This file is distributed under the same license as the VDR package.
+# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.5.7\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
+"POT-Creation-Date: 2007-08-11 14:35+0200\n"
+"PO-Revision-Date: 2007-08-11 12:34+0200\n"
+"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: hello.c:16
+msgid "A friendly greeting"
+msgstr "Pøátelský pozdrav"
+
+#: hello.c:17
+msgid "Hello"
+msgstr "Ahoj"
+
+#: hello.c:60
+msgid "Greeting time (s)"
+msgstr "Èas pozdravu (s)"
+
+#: hello.c:61
+msgid "Use alternate greeting"
+msgstr "Pou¾ít alternativní pozdrav"
+
+#: hello.c:129
+msgid "Hello world!"
+msgstr "Ahoj svìte!"
+
+#: hello.c:129
+msgid "Howdy folks!"
+msgstr "Nazdar vespolek!"

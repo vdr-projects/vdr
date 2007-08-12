@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- * Or, point your browser to http://www.gnu.org/copyleft/gpl.html
+ * Or, point your browser to http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * The author can be reached at kls@cadsoft.de
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.294 2007/07/22 11:40:01 kls Exp $
+ * $Id: vdr.c 1.296 2007/08/12 11:22:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -510,6 +510,10 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
+
+  // Initialize internationalization:
+
+  I18nInitialize();
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 

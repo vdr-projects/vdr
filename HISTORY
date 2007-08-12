@@ -5293,8 +5293,55 @@ Video Disk Recorder Revision History
 - Made skipspace() an inline function (suggested by Tobias Bratfisch) and changed
   it to handle the most common case of 'no leading space' very fast, and avoid
   calling isspace(), which made the whole function a lot faster.
-- Fixed detection of Premiere NVOD channel links (thanks to anonymous).
+- Fixed detection of Premiere NVOD channel links (thanks to Markus Hahn).
 - Added a table of the used trick speed values to the description of
   cDevice::TrickSpeed() (suggested by Martin Dauskardt).
 - Added a missing 'P' to vdr.c's SHUTDOWNCANCELROMPT macro (reported by Marco
   Schlüßler).
+
+2007-08-12: Version 1.5.7
+
+- All logging now goes to LOG_ERR, because some systems split error, info and
+  debug messages into separate files, which repeatedly caused extra efforts to
+  find out when incomplete log excerpts were attached to problem reports in
+  the past.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed a problem with characters >0x7F in the modified version of skipspace()
+  (thanks to Marco Schlüßler).
+- Fixed a bug I introduced when simplifying the original patch for detecting
+  Premiere NVOD channel links (crash reported by Malte Schröder).
+- Internationalization is now done with 'gettext' (following a suggestion by
+  Lucian Muresan). Plugin authors may want to use the Perl script
+  'i18n-to-gettext.pl' to convert their internationalized texts to the gettext
+  format (see the instructions inside that script file). The function
+  cPlugin::RegisterI18n() is still present for compatibility, but doesn't
+  have any more functionality. So plugins that don't convert their texts to
+  the gettext format will only present English texts.
+  See PLUGINS.html, section "Internationalization", for instructions on how
+  to make strings in arrays translatable.
+  See README.i18n for information on how to create new or maintain existing
+  translations.
+- The three letter language codes and their aliases are stored in i18n.c, and
+  each translation file only contains one of them to link that language name
+  to the code.
+- The 'newplugin' script has been extended to generate the Makefile section
+  for i18n support.
+- The parameter OSDLanguage in 'setup.conf' is now a string and holds the locale
+  code of the selected OSD language (e.g. en_US). If Setup.OSDLanguage is not
+  set to a particular locale that is found in VDR's locale directory, the
+  locale as defined in the system environment is used by default.
+- The list of tracks given in cStatus::SetAudioTrack() is now NULL terminated,
+  so that plugins can actually use all the strings in the list, not just the
+  one pointed to by Index (thanks to Alexander Rieger).
+- Fixed handling kLeft in the calls to cStatus::MsgOsdTextItem() (thanks to
+  Alexander Rieger).
+- Added the "...or (at your option) any later version" phrase to the license
+  information of all plugins, and also the 'newplugin' script (suggested by
+  Ville Skyttä). Plugin authors may want to consider doing the same.
+- Fixed the link to the GPL2 at http://www.gnu.org in vdr.c (thanks to Ville
+  Skyttä).
+- cBitmap::SetXpm() now checks whether the given Xpm pointer is not NULL, to
+  avoid a crash with files that only contain "/* XPM */" (suggested by Andreas
+  Mair).
+- Added a debug error message to cReceiver::~cReceiver() in case it is still
+  attached to a device (thanks to Reinhard Nissl).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.154 2007/06/23 09:42:49 kls Exp $
+ * $Id: config.c 1.156 2007/08/12 12:09:37 kls Exp $
  */
 
 #include "config.h"
@@ -214,7 +214,7 @@ cSetup Setup;
 
 cSetup::cSetup(void)
 {
-  OSDLanguage = 0;
+  strcpy(OSDLanguage, ""); // default is taken from environment
   strcpy(OSDSkin, "sttng");
   strcpy(OSDTheme, "default");
   PrimaryDVB = 1;
@@ -349,9 +349,9 @@ bool cSetup::Load(const char *FileName)
 
 void cSetup::StoreLanguages(const char *Name, int *Values)
 {
-  char buffer[I18nNumLanguages * 4];
+  char buffer[I18nLanguages()->Size() * 4];
   char *q = buffer;
-  for (int i = 0; i < I18nNumLanguages; i++) {
+  for (int i = 0; i < I18nLanguages()->Size(); i++) {
       if (Values[i] < 0)
          break;
       const char *s = I18nLanguageCode(Values[i]);
@@ -369,7 +369,7 @@ void cSetup::StoreLanguages(const char *Name, int *Values)
 bool cSetup::ParseLanguages(const char *Value, int *Values)
 {
   int n = 0;
-  while (Value && *Value && n < I18nNumLanguages) {
+  while (Value && *Value && n < I18nLanguages()->Size()) {
         char buffer[4];
         strn0cpy(buffer, Value, sizeof(buffer));
         int i = I18nLanguageIndex(buffer);
@@ -384,7 +384,7 @@ bool cSetup::ParseLanguages(const char *Value, int *Values)
 
 bool cSetup::Parse(const char *Name, const char *Value)
 {
-  if      (!strcasecmp(Name, "OSDLanguage"))         OSDLanguage        = atoi(Value);
+  if      (!strcasecmp(Name, "OSDLanguage"))       { strn0cpy(OSDLanguage, Value, sizeof(OSDLanguage)); I18nSetLocale(OSDLanguage); }
   else if (!strcasecmp(Name, "OSDSkin"))             Utf8Strn0Cpy(OSDSkin, Value, MaxSkinName);
   else if (!strcasecmp(Name, "OSDTheme"))            Utf8Strn0Cpy(OSDTheme, Value, MaxThemeName);
   else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);

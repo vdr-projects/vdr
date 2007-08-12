@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.71 2007/07/20 14:51:36 kls Exp $
+ * $Id: osd.c 1.72 2007/08/12 11:33:17 kls Exp $
  */
 
 #include "osd.h"
@@ -321,6 +321,8 @@ bool cBitmap::LoadXpm(const char *FileName)
 
 bool cBitmap::SetXpm(const char *const Xpm[], bool IgnoreNone)
 {
+  if (!Xpm)
+     return false;
   const char *const *p = Xpm;
   int w, h, n, c;
   if (4 != sscanf(*p, "%d %d %d %d", &w, &h, &n, &c)) {

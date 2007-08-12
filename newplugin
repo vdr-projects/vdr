@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.32 2007/04/28 14:46:39 kls Exp $
+# $Id: newplugin 1.34 2007/08/12 11:04:39 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -35,7 +35,11 @@ Project's homepage:          URL
 
 Latest version available at: URL
 
-See the file COPYING for license information.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+See the file COPYING for more information.
 
 Description:
 };
@@ -109,7 +113,7 @@ OBJS = \$(PLUGIN).o
 %.o: %.c
 	\$(CXX) \$(CXXFLAGS) -c \$(DEFINES) \$(INCLUDES) \$<
 
-# Dependencies:
+### Dependencies:
 
 MAKEDEP = \$(CXX) -MM -MG
 DEPFILE = .dependencies
@@ -118,9 +122,34 @@ DEPFILE = .dependencies
 
 -include \$(DEPFILE)
 
+### Internationalization (I18N):
+
+PODIR     = po
+LOCALEDIR = \$(VDRDIR)/locale
+I18Npo    = \$(wildcard \$(PODIR)/*.po)
+I18Nmo    = \$(addsuffix .mo, \$(foreach file, \$(I18Npo), \$(basename \$(file))))
+I18Ndirs  = \$(notdir \$(foreach file, \$(I18Npo), \$(basename \$(file))))
+I18Npot   = \$(PODIR)/\$(PLUGIN).pot
+
+%.mo: %.po
+	msgfmt -c -o \$\@ \$<
+
+\$(I18Npot): \$(wildcard *.c)
+	xgettext -C -cTRANSLATORS --no-wrap -F -k -ktr -ktrNOOP --msgid-bugs-address='<see README>' -o \$\@ \$(wildcard *.c)
+
+\$(I18Npo): \$(I18Npot)
+	msgmerge -U --no-wrap -F --backup=none -q \$\@ \$<
+
+i18n: \$(I18Nmo)
+	\@mkdir -p \$(LOCALEDIR)
+	for i in \$(I18Ndirs); do\\
+	    mkdir -p \$(LOCALEDIR)/\$\$i/LC_MESSAGES;\\
+	    cp \$(PODIR)/\$\$i.mo \$(LOCALEDIR)/\$\$i/LC_MESSAGES/\$(PLUGIN).mo;\\
+	    done
+
 ### Targets:
 
-all: libvdr-\$(PLUGIN).so
+all: libvdr-\$(PLUGIN).so i18n
 
 libvdr-\$(PLUGIN).so: \$(OBJS)
 	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@
@@ -135,7 +164,7 @@ dist: clean
 	\@echo Distribution package created as \$(PACKAGE).tgz
 
 clean:
-	\@-rm -f \$(OBJS) \$(DEPFILE) *.so *.tgz core* *~
+	\@-rm -f \$(OBJS) \$(DEPFILE) *.so *.tgz core* *~ \$(PODIR)/*.mo \$(PODIR)/*.pot
 };
 
 $MAIN = qq

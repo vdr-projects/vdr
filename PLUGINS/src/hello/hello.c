@@ -3,18 +3,18 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.12 2006/04/22 09:31:52 kls Exp $
+ * $Id: hello.c 1.13 2007/08/11 09:31:17 kls Exp $
  */
 
 #include <getopt.h>
 #include <stdlib.h>
+#include <vdr/i18n.h>
 #include <vdr/interface.h>
 #include <vdr/plugin.h>
-#include "i18n.h"
 
-static const char *VERSION        = "0.1.1";
-static const char *DESCRIPTION    = "A friendly greeting";
-static const char *MAINMENUENTRY  = "Hello";
+static const char *VERSION        = "0.2.0";
+static const char *DESCRIPTION    = trNOOP("A friendly greeting");
+static const char *MAINMENUENTRY  = trNOOP("Hello");
 
 class cPluginHello : public cPlugin {
 private:
@@ -115,7 +115,6 @@ bool cPluginHello::ProcessArgs(int argc, char *argv[])
 bool cPluginHello::Start(void)
 {
   // Start any background activities the plugin shall perform.
-  RegisterI18n(Phrases);
   return true;
 }
 

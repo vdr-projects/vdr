@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.134 2007/07/21 13:02:45 kls Exp $
+ * $Id: tools.c 1.135 2007/08/05 12:18:15 kls Exp $
  */
 
 #include "tools.h"
@@ -852,6 +852,7 @@ cString WeekDayName(int WeekDay)
   char buffer[16];
   WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with Monday==0!
   if (0 <= WeekDay && WeekDay <= 6) {
+     // TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
      const char *day = tr("MonTueWedThuFriSatSun");
      day += Utf8SymChars(day, WeekDay * 3);
      strn0cpy(buffer, day, min(Utf8SymChars(day, 3) + 1, int(sizeof(buffer))));
@@ -1178,12 +1179,12 @@ void cStringList::Clear(void)
 // --- cFileNameList ---------------------------------------------------------
 
 // TODO better GetFileNames(const char *Directory, cStringList *List)?
-cFileNameList::cFileNameList(const char *Directory)
+cFileNameList::cFileNameList(const char *Directory, bool DirsOnly)
 {
-  Load(Directory);
+  Load(Directory, DirsOnly);
 }
 
-bool cFileNameList::Load(const char *Directory)
+bool cFileNameList::Load(const char *Directory, bool DirsOnly)
 {
   Clear();
   if (Directory) {
@@ -1191,8 +1192,16 @@ bool cFileNameList::Load(const char *Directory)
      struct dirent *e;
      if (d.Ok()) {
         while ((e = d.Next()) != NULL) {
-              if (strcmp(e->d_name, ".") && strcmp(e->d_name, ".."))
+              if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+                 if (DirsOnly) {
+                    struct stat ds;
+                    if (stat(e->d_name, &ds) == 0) {
+                       if (S_ISDIR(ds.st_mode))
+                          continue;
+                       }
+                    }
                  Append(strdup(e->d_name));
+                 }
               }
         Sort();
         return true;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.294 2007/07/20 14:52:05 kls Exp $
+ * $Id: config.h 1.296 2007/08/10 13:01:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.5.6"
-#define VDRVERSNUM   10506  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.5.7"
+#define VDRVERSNUM   10507  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.5.6"
-#define APIVERSNUM   10506  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.5.7"
+#define APIVERSNUM   10507  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -199,7 +199,7 @@ private:
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
   int __BeginData__;
-  int OSDLanguage;
+  char OSDLanguage[I18N_MAX_LOCALE_LEN];
   char OSDSkin[MaxSkinName];
   char OSDTheme[MaxThemeName];
   int PrimaryDVB;
@@ -219,8 +219,8 @@ public:
   int TimeSource;
   int TimeTransponder;
   int MarginStart, MarginStop;
-  int AudioLanguages[I18nNumLanguages + 1];
-  int EPGLanguages[I18nNumLanguages + 1];
+  int AudioLanguages[I18N_MAX_LANGUAGES + 1];
+  int EPGLanguages[I18N_MAX_LANGUAGES + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int EPGLinger;

@@ -1127,6 +1127,8 @@ Reinhard Nissl <rnissl@gmx.de>
  with open file handles when starting background commands
  for fixing handling error status in cDvbTuner::GetFrontendStatus()
  for fixing a busy loop in fast forward if the next video data file is missing
+ for adding a debug error message to cReceiver::~cReceiver() in case it is still
+ attached to a device
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1405,6 +1407,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling ChannelUp/Down keys if there is currently a replay running
  for fixing a buffer overflow in initializing the system character table
  for reporting a missing 'P' in vdr.c's SHUTDOWNCANCELROMPT macro
+ for fixing a problem with characters >0x7F in the modified version of skipspace()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1519,6 +1522,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for making VDR actually use the iso8859-15 fonts
  for suggesting to make the function ExchangeChars()
  for reporting duplicate texts in i18n.c
+ for suggesting to use 'gettext' for internationalization
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -1676,6 +1680,9 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adapting cThread::ThreadId() to recent kernels
  for some improvements to the man pages
  for fixing some spelling errors in 'newplugin'
+ for suggesting to add the "...or (at your option) any later version" phrase to the
+ license information of all plugins, and also the 'newplugin' script
+ for fixing the link to the GPL2 at http://www.gnu.org in vdr.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1793,6 +1800,8 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for reporting that the cTimer::operator=() messes up the cListObject's pointers
  for reporting a memory leak in the cTimer::operator=() when using the 'aux' string
  for fixing cTimer::operator=() in case a cTimer variable is assigned to itself
+ for making the list of tracks given in cStatus::SetAudioTrack() NULL terminated
+ for fixing handling kLeft in the calls to cStatus::MsgOsdTextItem()
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
@@ -1919,11 +1928,13 @@ Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
 
 Malte Schröder <MalteSch@gmx.de>
  for reporting a crash after executing the SVDRP command CLRE
+ for reporting a crash with the code for detecting Premiere NVOD channel links
 
 Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting to only start recordings if there is at least 300MB free disk space
  for suggesting that the "Back" key should restore the original string when pressed
  while editing a string item
+ for fixing detection of Premiere NVOD channel links
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
@@ -2118,3 +2129,7 @@ Patrice Staudt <staudt@engsystem.net>
 Tobias Bratfisch <tobias@reel-multimedia.com>
  for improving numdigits(), isnumber() and strreplace()
  for suggesting to make skipspace() an inline function
+
+Andreas Mair <andreas@vdr-developer.org>
+ for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
+ not NULL

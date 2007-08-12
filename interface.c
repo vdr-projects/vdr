@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.75 2006/03/31 14:20:04 kls Exp $
+ * $Id: interface.c 1.76 2007/08/04 14:39:25 kls Exp $
  */
 
 #include "interface.h"
@@ -87,9 +87,7 @@ bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
      eKeys NewKey = kUp;
      while (NewKey != kNone) {
            char *Prompt;
-           char buf[32];
-           snprintf(buf, sizeof(buf), "Key$%s", cKey::ToString(NewKey));
-           asprintf(&Prompt, tr("Press key for '%s'"), tr(buf));
+           asprintf(&Prompt, tr("Press key for '%s'"), cKey::ToString(NewKey, true));
            DisplayMenu->SetItem(Prompt, 4, false, false);
            free(Prompt);
            cRemote::Clear();

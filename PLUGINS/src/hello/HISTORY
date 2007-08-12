@@ -49,3 +49,7 @@ VDR Plugin 'hello' Revision History
 2006-04-22: Version 0.1.1
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+
+2007-08-11: Version 0.2.0
+
+- Switched to 'gettext' internationalization.

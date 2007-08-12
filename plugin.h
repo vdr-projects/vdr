@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.14 2007/02/24 13:45:28 kls Exp $
+ * $Id: plugin.h 1.15 2007/08/04 09:56:26 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -51,7 +51,7 @@ public:
   void SetupStore(const char *Name, const char *Value = NULL);
   void SetupStore(const char *Name, int Value);
 
-  void RegisterI18n(const tI18nPhrase * const Phrases);
+  void RegisterI18n(const void *); ///< This function is obsolete and may be removed in future versions of VDR!
 
   virtual bool Service(const char *Id, void *Data = NULL);
   virtual const char **SVDRPHelpPages(void);

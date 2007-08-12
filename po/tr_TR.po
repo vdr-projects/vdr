@@ -1,0 +1,1270 @@
+# VDR language source file.
+# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# This file is distributed under the same license as the VDR package.
+# Oktay Yolgeçen <oktay_73@yahoo.de>, 2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.5.7\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: channels.c:1077 menu.c:707
+msgid "*** Invalid Channel ***"
+msgstr "*** Geçersiz kanal ***"
+
+#: device.c:634 device.c:670
+msgid "Channel not available!"
+msgstr "Kanal kullanýlamýyor!"
+
+#: device.c:636
+msgid "Can't start Transfer Mode!"
+msgstr "Transfer mode baþlatýlamýyor!"
+
+#: eitscan.c:159
+msgid "Starting EPG scan"
+msgstr "EPG tarama baþlýyor"
+
+#: epg.c:346 epg.c:441
+msgid "No title"
+msgstr "Ýsim yok"
+
+#. TRANSLATORS: The name of the language, as written natively
+#: i18n.c:29
+msgid "LanguageName$English"
+msgstr "Türkçe"
+
+#. TRANSLATORS: The 3-letter code of the language
+#: i18n.c:31
+msgid "LanguageCode$eng"
+msgstr "tur"
+
+#: interface.c:75
+msgid "Phase 1: Detecting RC code type"
+msgstr "Faz 1: Kumandanýn kodu aranýyor"
+
+#: interface.c:76
+msgid "Press any key on the RC unit"
+msgstr "Kumandada herhangi bir tuþa bas"
+
+#: interface.c:79
+msgid "RC code detected!"
+msgstr "Kumandanýn kodu bulundu!"
+
+#: interface.c:80
+msgid "Do not press any key..."
+msgstr "Tuþlara basmayýnýz..."
+
+#: interface.c:86
+msgid "Phase 2: Learning specific key codes"
+msgstr "Faz 2: Belirli tuþ kodu eðitiliyor"
+
+#: interface.c:90
+#, c-format
+msgid "Press key for '%s'"
+msgstr "'%s' için tuþ seçiniz"
+
+#: interface.c:106
+msgid "Press 'Up' to confirm"
+msgstr "Onaylamak için 'Yukarý' bas"
+
+#: interface.c:107
+msgid "Press 'Down' to continue"
+msgstr "Devam etmek için 'Aþaðý' bas"
+
+#: interface.c:138
+msgid "(press 'Up' to go back)"
+msgstr "(Geri dönmek için 'Yukarý' bas)"
+
+#: interface.c:142
+msgid "(press 'Down' to end key definition)"
+msgstr "(Sona erdirmek için 'Aþaðý' bas)"
+
+#: interface.c:146
+msgid "(press 'Menu' to skip this key)"
+msgstr "(Tuþu atlamak için 'Menü' bas)"
+
+#: interface.c:167
+msgid "Learning Remote Control Keys"
+msgstr "Uzaktan kumandanýn tuþlarý eðitiliyor"
+
+#: interface.c:180
+msgid "Phase 3: Saving key codes"
+msgstr "Faz 3: Tuþ ayarlarýný kesinleþtir"
+
+#: interface.c:181
+msgid "Press 'Up' to save, 'Down' to cancel"
+msgstr "Kesinleþtirmek için 'Yukarý', Iptal etmek için 'Aþaðý' bas"
+
+#: keys.c:14
+msgid "Key$Up"
+msgstr "Yukarý"
+
+#: keys.c:15
+msgid "Key$Down"
+msgstr "Aþaðý"
+
+#: keys.c:16
+msgid "Key$Menu"
+msgstr "Menü"
+
+#: keys.c:17
+msgid "Key$Ok"
+msgstr "Tamam"
+
+#: keys.c:18
+msgid "Key$Back"
+msgstr "Geri"
+
+#: keys.c:19
+msgid "Key$Left"
+msgstr "Sol"
+
+#: keys.c:20
+msgid "Key$Right"
+msgstr "Sað"
+
+#: keys.c:21
+msgid "Key$Red"
+msgstr "Kýrmýzý"
+
+#: keys.c:22
+msgid "Key$Green"
+msgstr "Yeþil"
+
+#: keys.c:23
+msgid "Key$Yellow"
+msgstr "Sarý"
+
+#: keys.c:24
+msgid "Key$Blue"
+msgstr "Mavi"
+
+#: keys.c:35
+msgid "Key$Info"
+msgstr "Bilgi"
+
+#: keys.c:36
+msgid "Key$Play"
+msgstr "Göster"
+
+#: keys.c:37
+msgid "Key$Pause"
+msgstr "Durakla"
+
+#: keys.c:38
+msgid "Key$Stop"
+msgstr "Durdur"
+
+#: keys.c:39
+msgid "Key$Record"
+msgstr "Kayýt et"
+
+#: keys.c:40
+msgid "Key$FastFwd"
+msgstr "Ýleri sar"
+
+#: keys.c:41
+msgid "Key$FastRew"
+msgstr "Geri sar"
+
+#: keys.c:42
+msgid "Key$Next"
+msgstr "Sonraki"
+
+#: keys.c:43
+msgid "Key$Prev"
+msgstr "Önceki"
+
+#: keys.c:44
+msgid "Key$Power"
+msgstr "Kapat"
+
+#: keys.c:45
+msgid "Key$Channel+"
+msgstr "Kanal+"
+
+#: keys.c:46
+msgid "Key$Channel-"
+msgstr "Kanal-"
+
+#: keys.c:47
+msgid "Key$PrevChannel"
+msgstr "Önceki kanal"
+
+#: keys.c:48
+msgid "Key$Volume+"
+msgstr "Ses+"
+
+#: keys.c:49
+msgid "Key$Volume-"
+msgstr "Ses-"
+
+#: keys.c:50 skinclassic.c:549
+msgid "Key$Mute"
+msgstr "Sessiz"
+
+#: keys.c:51
+msgid "Key$Audio"
+msgstr "Audio"
+
+#: keys.c:52
+msgid "Key$Schedule"
+msgstr "Program"
+
+#: keys.c:53
+msgid "Key$Channels"
+msgstr "Kanallar"
+
+#: keys.c:54
+msgid "Key$Timers"
+msgstr "Zamanlayýcý"
+
+#: keys.c:55
+msgid "Key$Recordings"
+msgstr "Kayýtlar"
+
+#: keys.c:56
+msgid "Key$Setup"
+msgstr "Ayarlar"
+
+#: keys.c:57
+msgid "Key$Commands"
+msgstr "Komutlar"
+
+#: keys.c:58
+msgid "Key$User1"
+msgstr ""
+
+#: keys.c:59
+msgid "Key$User2"
+msgstr ""
+
+#: keys.c:60
+msgid "Key$User3"
+msgstr ""
+
+#: keys.c:61
+msgid "Key$User4"
+msgstr ""
+
+#: keys.c:62
+msgid "Key$User5"
+msgstr ""
+
+#: keys.c:63
+msgid "Key$User6"
+msgstr ""
+
+#: keys.c:64
+msgid "Key$User7"
+msgstr ""
+
+#: keys.c:65
+msgid "Key$User8"
+msgstr ""
+
+#: keys.c:66
+msgid "Key$User9"
+msgstr ""
+
+#: menu.c:69
+msgid "Free To Air"
+msgstr "Þifresiz"
+
+#: menu.c:71
+msgid "encrypted"
+msgstr "Þifreli"
+
+#: menu.c:177
+msgid "auto"
+msgstr "otomatik"
+
+#: menu.c:229
+msgid "Edit channel"
+msgstr "Kanal ayarlarýný deðiþtir"
+
+#: menu.c:254
+msgid "Name"
+msgstr "Ýsim"
+
+#: menu.c:255
+msgid "Source"
+msgstr "Kaynak"
+
+#: menu.c:256
+msgid "Frequency"
+msgstr "Frekans"
+
+#: menu.c:257
+msgid "Vpid"
+msgstr "Vpid"
+
+#: menu.c:258
+msgid "Ppid"
+msgstr "Ppid"
+
+#: menu.c:259
+msgid "Apid1"
+msgstr "Apid1"
+
+#: menu.c:260
+msgid "Apid2"
+msgstr "Apid2"
+
+#: menu.c:261
+msgid "Dpid1"
+msgstr "Dpid1"
+
+#: menu.c:262
+msgid "Dpid2"
+msgstr "Dpid2"
+
+#: menu.c:263
+msgid "Tpid"
+msgstr "Tpid"
+
+#: menu.c:264
+msgid "CA"
+msgstr "CA"
+
+#: menu.c:265
+msgid "Sid"
+msgstr "Sid"
+
+#: menu.c:272
+msgid "Polarization"
+msgstr "Kutuplaþma"
+
+#: menu.c:273
+msgid "Srate"
+msgstr "Srate"
+
+#: menu.c:274
+msgid "Inversion"
+msgstr "Ýnversiyon"
+
+#: menu.c:274
+msgid "off"
+msgstr "kapalý"
+
+#: menu.c:275
+msgid "CoderateH"
+msgstr "CoderateH"
+
+#: menu.c:275 menu.c:276 menu.c:281
+msgid "none"
+msgstr "hiç"
+
+#: menu.c:276
+msgid "CoderateL"
+msgstr "CoderateL"
+
+#: menu.c:277
+msgid "Modulation"
+msgstr "Modülasyon"
+
+#: menu.c:278
+msgid "Bandwidth"
+msgstr "Bant geniþliði"
+
+#: menu.c:279
+msgid "Transmission"
+msgstr "Ýletim"
+
+#: menu.c:280
+msgid "Guard"
+msgstr "Koruma"
+
+#: menu.c:281
+msgid "Hierarchy"
+msgstr "Hiyerarþi"
+
+#: menu.c:312
+msgid "Channel settings are not unique!"
+msgstr "Kanal ayarlarý belli deðýl!"
+
+#: menu.c:402 menu.c:2923
+msgid "Channels"
+msgstr "Kanallar"
+
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+msgid "Button$Delete"
+msgstr "Sil"
+
+#: menu.c:432
+msgid "Button$Edit"
+msgstr "Deðiþtir"
+
+#: menu.c:432
+msgid "Button$Mark"
+msgstr "Ýþaretle"
+
+#: menu.c:432 menu.c:847
+msgid "Button$New"
+msgstr "Yeni"
+
+#: menu.c:512
+msgid "Channel is being used by a timer!"
+msgstr "Kanal zamanlayýcýdan kullanýlýyor!"
+
+#: menu.c:515
+msgid "Delete channel?"
+msgstr "Kanalý sil?"
+
+#: menu.c:652
+msgid "Edit timer"
+msgstr "Zamanlayýcýyý ayarla"
+
+#: menu.c:662
+msgid "Active"
+msgstr "Aktif"
+
+#: menu.c:663
+msgid "Channel"
+msgstr "Kanal"
+
+#: menu.c:664
+msgid "Day"
+msgstr "Gün"
+
+#: menu.c:665
+msgid "Start"
+msgstr "Baþlangýç"
+
+#: menu.c:666
+msgid "Stop"
+msgstr "Bitiþ"
+
+#: menu.c:667
+msgid "VPS"
+msgstr "VPS"
+
+#: menu.c:668
+msgid "Priority"
+msgstr "Öncelik"
+
+#: menu.c:669
+msgid "Lifetime"
+msgstr "Ömrü"
+
+#: menu.c:670
+msgid "File"
+msgstr "Kütük"
+
+#: menu.c:686
+msgid "First day"
+msgstr "Ýlk gün"
+
+#: menu.c:811 menu.c:2924
+msgid "Timers"
+msgstr "Zamanlayýcý"
+
+#: menu.c:847 menu.c:1920
+msgid "Button$Info"
+msgstr "Bilgi"
+
+#: menu.c:847
+msgid "Button$On/Off"
+msgstr "Aç/Kapat"
+
+#: menu.c:890
+msgid "Delete timer?"
+msgstr "Zamanlayýcýyý sil"
+
+#: menu.c:892 menu.c:2031
+msgid "Timer still recording - really delete?"
+msgstr "Zamanlayýcý kayýt ediyor - buna raðmen sil?"
+
+#: menu.c:948
+msgid "Event"
+msgstr "Yayýn"
+
+#: menu.c:958 menu.c:1137 menu.c:1380 menu.c:1501 menu.c:2984
+msgid "Button$Record"
+msgstr "Kayýt et"
+
+#: menu.c:958 menu.c:1138 menu.c:1501
+msgid "Button$Switch"
+msgstr "Deðiþtir"
+
+#: menu.c:958 menu.c:1137 menu.c:1380
+msgid "Button$Timer"
+msgstr "Zamanlayýcý"
+
+#: menu.c:1093
+msgid "What's on next?"
+msgstr "Gelecek yayýnlar"
+
+#: menu.c:1093
+msgid "What's on now?"
+msgstr "Þimdiki yayýnlar"
+
+#: menu.c:1138 menu.c:1381 menu.c:1501
+msgid "Button$Next"
+msgstr "Sonra"
+
+#: menu.c:1138 menu.c:1381 menu.c:1501
+msgid "Button$Now"
+msgstr "Þimdi"
+
+#: menu.c:1138
+msgid "Button$Schedule"
+msgstr "Program"
+
+#: menu.c:1158 menu.c:1450
+msgid "Can't switch channel!"
+msgstr "Kanala deðiþtirelemiyor!"
+
+#: menu.c:1283
+#, c-format
+msgid "Schedule - %s"
+msgstr "Program - %s"
+
+#: menu.c:1304
+#, c-format
+msgid "This event - %s"
+msgstr "Bu yayýn - %s"
+
+#: menu.c:1323
+msgid "This event - all channels"
+msgstr "Bu yayýn - tüm kanallar"
+
+#: menu.c:1342
+msgid "All events - all channels"
+msgstr "Tüm yayýnlar - tüm kanallar"
+
+#: menu.c:1712
+#, c-format
+msgid "Please enter %d digits!"
+msgstr "Lütfen %d rakam veriniz!"
+
+#: menu.c:1754
+msgid "CAM not responding!"
+msgstr ""
+
+#: menu.c:1784
+msgid "Recording info"
+msgstr "Kayýt bilgisi"
+
+#: menu.c:1789 menu.c:1920
+msgid "Button$Play"
+msgstr "Göster"
+
+#: menu.c:1789 menu.c:1920
+msgid "Button$Rewind"
+msgstr "Baslangýç"
+
+#: menu.c:1879 menu.c:2925
+msgid "Recordings"
+msgstr "Kayýtlar"
+
+#: menu.c:1918
+msgid "Button$Open"
+msgstr "Aç"
+
+#: menu.c:1920 menu.c:2902 menu.c:2944 menu.c:3037
+msgid "Commands"
+msgstr "Komutlar"
+
+#: menu.c:1970
+msgid "Error while accessing recording!"
+msgstr "Kayýt okuma hatasý!"
+
+#: menu.c:2028
+msgid "Delete recording?"
+msgstr "Kayýtý sil?"
+
+#: menu.c:2058
+msgid "Error while deleting recording!"
+msgstr "Kayýt silme hatasý!"
+
+#: menu.c:2089
+msgid "Recording commands"
+msgstr "Kayýt komutlarý"
+
+#: menu.c:2203
+msgid "never"
+msgstr "hiç"
+
+#: menu.c:2204
+msgid "skin dependent"
+msgstr "yüzeye baðimli"
+
+#: menu.c:2205
+msgid "always"
+msgstr "hep"
+
+#: menu.c:2207 menu.c:2811
+msgid "OSD"
+msgstr "OSD"
+
+#: menu.c:2208
+msgid "Setup.OSD$Language"
+msgstr "Dil"
+
+#: menu.c:2209
+msgid "Setup.OSD$Skin"
+msgstr "Yüzey"
+
+#: menu.c:2211
+msgid "Setup.OSD$Theme"
+msgstr "Tema"
+
+#: menu.c:2212
+msgid "Setup.OSD$Left"
+msgstr "Sol"
+
+#: menu.c:2213
+msgid "Setup.OSD$Top"
+msgstr "Üst"
+
+#: menu.c:2214
+msgid "Setup.OSD$Width"
+msgstr "Geniþlik"
+
+#: menu.c:2215
+msgid "Setup.OSD$Height"
+msgstr "Yükseklik"
+
+#: menu.c:2216
+msgid "Setup.OSD$Message time (s)"
+msgstr "Mesaj gösterme zamaný (sn)"
+
+#: menu.c:2217
+msgid "Setup.OSD$Use small font"
+msgstr "Küçük harf kullan"
+
+#: menu.c:2218
+msgid "Setup.OSD$Anti-alias"
+msgstr ""
+
+#: menu.c:2219
+msgid "Setup.OSD$Default font"
+msgstr ""
+
+#: menu.c:2220
+msgid "Setup.OSD$Small font"
+msgstr ""
+
+#: menu.c:2221
+msgid "Setup.OSD$Fixed font"
+msgstr ""
+
+#: menu.c:2222
+msgid "Setup.OSD$Default font size (pixel)"
+msgstr ""
+
+#: menu.c:2223
+msgid "Setup.OSD$Small font size (pixel)"
+msgstr ""
+
+#: menu.c:2224
+msgid "Setup.OSD$Fixed font size (pixel)"
+msgstr ""
+
+#: menu.c:2225
+msgid "Setup.OSD$Channel info position"
+msgstr "Kanal bilgi pozisyonu"
+
+#: menu.c:2225
+msgid "bottom"
+msgstr "alt"
+
+#: menu.c:2225
+msgid "top"
+msgstr "üst"
+
+#: menu.c:2226
+msgid "Setup.OSD$Channel info time (s)"
+msgstr "Kanal bilgi gösterme zamaný (sn)"
+
+#: menu.c:2227
+msgid "Setup.OSD$Info on channel switch"
+msgstr "Kanal deðiþtirme bilgisi"
+
+#: menu.c:2228
+msgid "Setup.OSD$Timeout requested channel info"
+msgstr "Kanal bilginin zaman aþýmý"
+
+#: menu.c:2229
+msgid "Setup.OSD$Scroll pages"
+msgstr "Sayfa kaydýrma"
+
+#: menu.c:2230
+msgid "Setup.OSD$Scroll wraps"
+msgstr "Sarým kaydýrma"
+
+#: menu.c:2231
+msgid "Setup.OSD$Menu key closes"
+msgstr "Menü düðmesi kapatýyor"
+
+#: menu.c:2232
+msgid "Setup.OSD$Recording directories"
+msgstr "Kayýt dizinleri"
+
+#: menu.c:2323 menu.c:2812
+msgid "EPG"
+msgstr "EPG"
+
+#: menu.c:2324
+msgid "Button$Scan"
+msgstr "Tara"
+
+#: menu.c:2334
+msgid "Setup.EPG$EPG scan timeout (h)"
+msgstr "EPG tarama zaman aþýmý (sa)"
+
+#: menu.c:2335
+msgid "Setup.EPG$EPG bugfix level"
+msgstr "EPG hata çözümleme ölçüsü"
+
+#: menu.c:2336
+msgid "Setup.EPG$EPG linger time (min)"
+msgstr "Eski EPG göster (dak)"
+
+#: menu.c:2337
+msgid "Setup.EPG$Set system time"
+msgstr "Bilgisayar saatini ayarla"
+
+#: menu.c:2339
+msgid "Setup.EPG$Use time from transponder"
+msgstr "Bilgisayar saati için uydu alýcý-verici"
+
+#. TRANSLATORS: note the plural!
+#: menu.c:2341
+msgid "Setup.EPG$Preferred languages"
+msgstr "Dil tercihleri"
+
+#. TRANSLATORS: note the singular!
+#: menu.c:2344
+msgid "Setup.EPG$Preferred language"
+msgstr "Dil tercihi"
+
+#: menu.c:2416
+msgid "pan&scan"
+msgstr "pan&scan"
+
+#: menu.c:2417
+msgid "letterbox"
+msgstr "letterbox"
+
+#: menu.c:2418
+msgid "center cut out"
+msgstr "center cut out"
+
+#: menu.c:2419 menuitems.c:121
+msgid "no"
+msgstr "hayýr"
+
+#: menu.c:2420
+msgid "names only"
+msgstr "sýrf isimler"
+
+#: menu.c:2421
+msgid "PIDs only"
+msgstr "sýrf PID'ler"
+
+#: menu.c:2422
+msgid "names and PIDs"
+msgstr "Ýsimler ve PID'ler"
+
+#: menu.c:2423
+msgid "add new channels"
+msgstr "yeni kanallar ekle"
+
+#: menu.c:2424
+msgid "add new transponders"
+msgstr "yeni uydu alýcý-verici ekle"
+
+#: menu.c:2426 menu.c:2813
+msgid "DVB"
+msgstr "DVB"
+
+#: menu.c:2436
+msgid "Setup.DVB$Primary DVB interface"
+msgstr "Primer DVB arayüzü"
+
+#: menu.c:2437
+msgid "Setup.DVB$Video format"
+msgstr "Video formatý"
+
+#: menu.c:2439
+msgid "Setup.DVB$Video display format"
+msgstr "Video görüntü biçimi"
+
+#: menu.c:2440
+msgid "Setup.DVB$Use Dolby Digital"
+msgstr "Dolby Dijital ses kullan"
+
+#: menu.c:2441
+msgid "Setup.DVB$Update channels"
+msgstr "Kanallarý yenile"
+
+#: menu.c:2442
+msgid "Setup.DVB$Audio languages"
+msgstr "Audio dilleri"
+
+#: menu.c:2444
+msgid "Setup.DVB$Audio language"
+msgstr "Audio dili"
+
+#: menu.c:2505 menu.c:2814
+msgid "LNB"
+msgstr "LNB"
+
+#: menu.c:2515
+msgid "Setup.LNB$Use DiSEqC"
+msgstr "DiSEqC kullan"
+
+#: menu.c:2517
+msgid "Setup.LNB$SLOF (MHz)"
+msgstr "SLOF (MHz)"
+
+#: menu.c:2518
+msgid "Setup.LNB$Low LNB frequency (MHz)"
+msgstr "Alt LNB frekansý (MHz)"
+
+#: menu.c:2519
+msgid "Setup.LNB$High LNB frequency (MHz)"
+msgstr "Üst LNB frekansý (MHz)"
+
+#: menu.c:2560
+msgid "CAM reset"
+msgstr ""
+
+#: menu.c:2561
+msgid "CAM present"
+msgstr ""
+
+#: menu.c:2562
+msgid "CAM ready"
+msgstr ""
+
+#: menu.c:2585 menu.c:2815
+msgid "CAM"
+msgstr "CAM"
+
+#: menu.c:2590
+msgid "Button$Menu"
+msgstr "Menü"
+
+#: menu.c:2590
+msgid "Button$Reset"
+msgstr "Sýfýrla"
+
+#: menu.c:2598
+msgid "Opening CAM menu..."
+msgstr "CAM menüsü açýlýyor..."
+
+#: menu.c:2615
+msgid "Can't open CAM menu!"
+msgstr "CAM menüsü açýlamýyor!"
+
+#: menu.c:2624
+msgid "CAM is in use - really reset?"
+msgstr ""
+
+#: menu.c:2626
+msgid "Can't reset CAM!"
+msgstr "CAM sýfýrlanamadý!"
+
+#: menu.c:2660 menu.c:2816
+msgid "Recording"
+msgstr "Kayýt"
+
+#: menu.c:2661
+msgid "Setup.Recording$Margin at start (min)"
+msgstr "Baþýnda tolerans (dak)"
+
+#: menu.c:2662
+msgid "Setup.Recording$Margin at stop (min)"
+msgstr "Sonunda tolerans (dak)"
+
+#: menu.c:2663
+msgid "Setup.Recording$Primary limit"
+msgstr "Primer limit"
+
+#: menu.c:2664
+msgid "Setup.Recording$Default priority"
+msgstr "Olaðan priorite"
+
+#: menu.c:2665
+msgid "Setup.Recording$Default lifetime (d)"
+msgstr "Olaðan çekim ömrü (gün)"
+
+#: menu.c:2666
+msgid "Setup.Recording$Pause priority"
+msgstr "Olaðan duraklama prioritesi"
+
+#: menu.c:2667
+msgid "Setup.Recording$Pause lifetime (d)"
+msgstr "Duraklama ömrü (gün)"
+
+#: menu.c:2668
+msgid "Setup.Recording$Use episode name"
+msgstr "Episod ismini kullan"
+
+#: menu.c:2669
+msgid "Setup.Recording$Use VPS"
+msgstr "VPS kullan"
+
+#: menu.c:2670
+msgid "Setup.Recording$VPS margin (s)"
+msgstr "VPS tolerans (s)"
+
+#: menu.c:2671
+msgid "Setup.Recording$Mark instant recording"
+msgstr "Derhal çekimi iþaretle"
+
+#: menu.c:2672
+msgid "Setup.Recording$Name instant recording"
+msgstr "Derhal çekimi isimlendir"
+
+#: menu.c:2673
+msgid "Setup.Recording$Instant rec. time (min)"
+msgstr "Derhal çekim süresi (dak)"
+
+#: menu.c:2674
+msgid "Setup.Recording$Max. video file size (MB)"
+msgstr "Maksimum Video kütük büyüklügü (MB)"
+
+#: menu.c:2675
+msgid "Setup.Recording$Split edited files"
+msgstr "Düzenlenmiþ kütükleri ayýr"
+
+#: menu.c:2689 menu.c:2817
+msgid "Replay"
+msgstr "Tekrar"
+
+#: menu.c:2690
+msgid "Setup.Replay$Multi speed mode"
+msgstr "Katlý hýz sarma"
+
+#: menu.c:2691
+msgid "Setup.Replay$Show replay mode"
+msgstr "Gösteriþ bilgisi"
+
+#: menu.c:2692
+msgid "Setup.Replay$Resume ID"
+msgstr "Gösteriþ ID'si"
+
+#: menu.c:2711 menu.c:2818
+msgid "Miscellaneous"
+msgstr "Diðerler"
+
+#: menu.c:2712
+msgid "Setup.Miscellaneous$Min. event timeout (min)"
+msgstr "Minimum olay zaman aþýmý (dak)"
+
+#: menu.c:2713
+msgid "Setup.Miscellaneous$Min. user inactivity (min)"
+msgstr "Minimum kullanýcý hareketsizliði (dak)"
+
+#: menu.c:2714
+msgid "Setup.Miscellaneous$SVDRP timeout (s)"
+msgstr "SVDRP zaman aþýmý (sn) "
+
+#: menu.c:2715
+msgid "Setup.Miscellaneous$Zap timeout (s)"
+msgstr "Kanal deðiþtirme zaman aþýmý (sn)"
+
+#: menu.c:2716
+msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
+msgstr ""
+
+#: menu.c:2717
+msgid "Setup.Miscellaneous$Initial channel"
+msgstr "Açýlýþdaki kanal"
+
+#: menu.c:2717 menu.c:2718
+msgid "Setup.Miscellaneous$as before"
+msgstr "önceki gibi"
+
+#: menu.c:2718
+msgid "Setup.Miscellaneous$Initial volume"
+msgstr "Açýlýþdaki ses"
+
+#: menu.c:2747 menu.c:2820
+msgid "Plugins"
+msgstr "Eklentiler"
+
+#: menu.c:2777
+msgid "This plugin has no setup parameters!"
+msgstr "Bu eklentinin düzenek parametresi yok!"
+
+#: menu.c:2808 menu.c:2942 menuitems.c:951
+msgid "Setup"
+msgstr "Ayarlar"
+
+#: menu.c:2821
+msgid "Restart"
+msgstr "Yeniden baþlat"
+
+#: menu.c:2826
+msgid "Really restart?"
+msgstr "Gerçekten yeniden baþlat?"
+
+#. TRANSLATORS: note the leading and trailing blanks!
+#: menu.c:2878
+msgid " Stop recording "
+msgstr " Çekimi bitir "
+
+#: menu.c:2922
+msgid "Schedule"
+msgstr "Program"
+
+#: menu.c:2966
+msgid "Disk"
+msgstr "Disk"
+
+#: menu.c:2966
+msgid "VDR"
+msgstr "VDR"
+
+#: menu.c:2966
+msgid "free"
+msgstr "boþ"
+
+#. TRANSLATORS: note the leading blank!
+#: menu.c:2978
+msgid " Stop replaying"
+msgstr " Gösteriþi bitir"
+
+#: menu.c:2984 menu.c:3496
+msgid "Button$Audio"
+msgstr "Audio"
+
+#: menu.c:2984
+msgid "Button$Pause"
+msgstr "Durakla"
+
+#: menu.c:2984
+msgid "Button$Resume"
+msgstr "Sürdür"
+
+#: menu.c:2984
+msgid "Button$Stop"
+msgstr "Durdur"
+
+#. TRANSLATORS: note the leading blank!
+#: menu.c:2992
+msgid " Cancel editing"
+msgstr " Kesimi iptal et"
+
+#: menu.c:3038
+msgid "Stop recording?"
+msgstr "Kayýtý durdur?"
+
+#: menu.c:3046
+msgid "Cancel editing?"
+msgstr "Kesimi iptal et?"
+
+#: menu.c:3526
+msgid "No audio available!"
+msgstr "Audio yok!"
+
+#: menu.c:3736
+msgid "Not enough disk space to start recording!"
+msgstr "Kayýt için yeterince kapasite yok!"
+
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
+msgid "No free DVB device to record!"
+msgstr "Kullanýlmayan DVB kartý bulunmadý!"
+
+#: menu.c:3797
+msgid "Pausing live video..."
+msgstr "Naklen yayýn duraklatýlýyor..."
+
+#. TRANSLATORS: note the trailing blank!
+#: menu.c:4040
+msgid "Jump: "
+msgstr "Atla: "
+
+#: menu.c:4184
+msgid "No editing marks defined!"
+msgstr "Kesim iþaretleri belirtilmemiþ!"
+
+#: menu.c:4186
+msgid "Can't start editing process!"
+msgstr "Kesim baþlatýlamýyor!"
+
+#: menu.c:4188
+msgid "Editing process started"
+msgstr "Kesim baþlandý"
+
+#: menu.c:4191
+msgid "Editing process already active!"
+msgstr "Kesim henüz aktif!"
+
+#: menuitems.c:21
+msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
+msgstr " abcçdefgðhýijklmnoöprsþtuüvyz0123456789-.#~,/_@"
+
+#: menuitems.c:122
+msgid "yes"
+msgstr "evet"
+
+#: menuitems.c:287
+msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.#~,/_@1\tabcç2\tdef3\tgðhýi4\tjkl5\tmnoö6\tprsþ7\ttuüv8\tyz9"
+
+#: menuitems.c:319
+msgid "Button$ABC/abc"
+msgstr "ABC/abc"
+
+#: menuitems.c:319
+msgid "Button$Insert"
+msgstr "Ekle"
+
+#: menuitems.c:319
+msgid "Button$Overwrite"
+msgstr "Üstüne yaz"
+
+#: menuitems.c:972
+msgid "Plugin"
+msgstr "Eklenti"
+
+#: osdbase.c:446
+msgid "Up/Dn for new location - OK to move"
+msgstr "'Yukarý/Aþaðý' yeni posizyon seç - 'Tamam' taþý"
+
+#: player.c:84
+msgid "Channel locked (recording)!"
+msgstr "Kanal geçersiz (kayýt ediliyor)!"
+
+#: recording.c:189
+msgid "Low disk space!"
+msgstr "Kayýt kapasitesi az!"
+
+#: shutdown.c:148
+msgid "Can't shutdown - option '-s' not given!"
+msgstr "Kapatýlamýyor - '-s' seçeneði verilmemiþ!"
+
+#: shutdown.c:152
+msgid "Editing - shut down anyway?"
+msgstr ""
+
+#: shutdown.c:162
+msgid "Recording - shut down anyway?"
+msgstr "Kayýt ediliyor - buna raðmen kapat?"
+
+#: shutdown.c:169
+#, c-format
+msgid "Recording in %ld minutes, shut down anyway?"
+msgstr "Kayýt %ld dakikada baþlýyor - buna raðmen kapat?"
+
+#: shutdown.c:174
+msgid "shut down anyway?"
+msgstr "buna raðmen kapat?"
+
+#: shutdown.c:184
+#, c-format
+msgid "Plugin %s wakes up in %ld min, continue?"
+msgstr ""
+
+#: shutdown.c:195
+msgid "Editing - restart anyway?"
+msgstr ""
+
+#: shutdown.c:205
+msgid "Recording - restart anyway?"
+msgstr "Kayýt ediliyor - buna raðmen yeniden baþlat?"
+
+#: shutdown.c:209
+msgid "restart anyway?"
+msgstr "buna raðmen yeniden baþlat?"
+
+#. TRANSLATORS: note the trailing blank!
+#: skinclassic.c:553
+msgid "Volume "
+msgstr "Ses "
+
+#: skinclassic.c:702
+msgid "Classic VDR"
+msgstr "Klasik VDR"
+
+#: skinsttng.c:1136
+msgid "ST:TNG Panels"
+msgstr "ST:TNG paneli"
+
+#. TRANSLATORS: the first character of each weekday, beginning with monday
+#: timers.c:222
+msgid "MTWTFSS"
+msgstr "PSÇPCCP"
+
+#. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
+#: tools.c:856
+msgid "MonTueWedThuFriSatSun"
+msgstr "PztSalÇarPerCumCmtPaz"
+
+#: tools.c:875
+msgid "Monday"
+msgstr "Pazartesi"
+
+#: tools.c:876
+msgid "Tuesday"
+msgstr "Salý"
+
+#: tools.c:877
+msgid "Wednesday"
+msgstr "Çarþamba"
+
+#: tools.c:878
+msgid "Thursday"
+msgstr "Perþembe"
+
+#: tools.c:879
+msgid "Friday"
+msgstr "Cuma"
+
+#: tools.c:880
+msgid "Saturday"
+msgstr "Cumartesi"
+
+#: tools.c:881
+msgid "Sunday"
+msgstr "Pazar"
+
+#: vdr.c:861
+msgid "Upcoming VPS recording!"
+msgstr "VPS çekim yakýnda baþlýyor!"
+
+#: vdr.c:1023 vdr.c:1079
+msgid "Recording started"
+msgstr "Kayýt baþlandý"
+
+#: vdr.c:1032
+msgid "VDR will shut down later - press Power to force"
+msgstr ""
+
+#: vdr.c:1044
+msgid "Press any key to cancel shutdown"
+msgstr "Kapatmayý iptal etmek için herhangi bir tuþa bas"
+
+#: vdr.c:1097
+msgid "Switching primary DVB..."
+msgstr "Primer DVB arayüzü deðiþtiriliyor..."
+
+#: vdr.c:1165
+msgid "Editing process failed!"
+msgstr "Kesim baþarýsýz!"
+
+#: vdr.c:1167
+msgid "Editing process finished"
+msgstr "Kesim bitti"
+
+#: vdr.c:1173
+msgid "Press any key to cancel restart"
+msgstr ""
+
+#: vdr.c:1193
+#, c-format
+msgid "VDR will shut down in %s minutes"
+msgstr ""
