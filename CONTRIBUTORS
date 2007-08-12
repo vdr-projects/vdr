@@ -1680,6 +1680,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing some spelling errors in 'newplugin'
  for suggesting to add the "...or (at your option) any later version" phrase to the
  license information of all plugins, and also the 'newplugin' script
+ for fixing the link to the GPL2 at http://www.gnu.org in vdr.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

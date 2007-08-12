@@ -5338,3 +5338,5 @@ Video Disk Recorder Revision History
 - Added the "...or (at your option) any later version" phrase to the license
   information of all plugins, and also the 'newplugin' script (suggested by
   Ville Skyttä). Plugin authors may want to consider doing the same.
+- Fixed the link to the GPL2 at http://www.gnu.org in vdr.c (thanks to Ville
+  Skyttä).
