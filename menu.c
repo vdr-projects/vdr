@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.457 2007/08/10 13:13:13 kls Exp $
+ * $Id: menu.c 1.458 2007/08/12 10:35:16 kls Exp $
  */
 
 #include "menu.h"
@@ -3491,6 +3491,7 @@ cDisplayTracks::cDisplayTracks(void)
          numTracks++;
          }
       }
+  descriptions[numTracks] = 0;
   timeout.Set(TRACKTIMEOUT);
   displayTracks = Skins.Current()->DisplayTracks(tr("Button$Audio"), numTracks, descriptions);
   Show();

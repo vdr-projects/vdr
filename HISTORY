@@ -5330,3 +5330,6 @@ Video Disk Recorder Revision History
   code of the selected OSD language (e.g. en_US). If Setup.OSDLanguage is not
   set to a particular locale that is found in VDR's locale directory, the
   locale as defined in the system environment is used by default.
+- The list of tracks given in cStatus::SetAudioTrack() is now NULL terminated,
+  so that plugins can actually use all the strings in the list, not just the
+  one pointed to by Index (thanks to Alexander Rieger).

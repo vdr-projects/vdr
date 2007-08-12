@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.9 2005/12/31 15:15:25 kls Exp $
+ * $Id: status.h 1.10 2007/08/12 10:34:40 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -40,7 +40,7 @@ protected:
                // absolutely or relative to the current volume.
   virtual void SetAudioTrack(int Index, const char * const *Tracks) {}
                // The audio track has been set to the one given by Index, which
-               // points into the Tracks array of strings.
+               // points into the Tracks array of strings. Tracks is NULL terminated.
   virtual void SetAudioChannel(int AudioChannel) {}
                // The audio channel has been set to the given value.
                // 0=stereo, 1=left, 2=right, -1=no information available.
