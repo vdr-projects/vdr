@@ -2127,3 +2127,7 @@ Patrice Staudt <staudt@engsystem.net>
 Tobias Bratfisch <tobias@reel-multimedia.com>
  for improving numdigits(), isnumber() and strreplace()
  for suggesting to make skipspace() an inline function
+
+Andreas Mair <andreas@vdr-developer.org>
+ for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
+ not NULL

@@ -5340,3 +5340,6 @@ Video Disk Recorder Revision History
   Ville Skyttä). Plugin authors may want to consider doing the same.
 - Fixed the link to the GPL2 at http://www.gnu.org in vdr.c (thanks to Ville
   Skyttä).
+- cBitmap::SetXpm() now checks whether the given Xpm pointer is not NULL, to
+  avoid a crash with files that only contain "/* XPM */" (suggested by Andreas
+  Mair).
