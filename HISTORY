@@ -5350,3 +5350,4 @@ Video Disk Recorder Revision History
 
 - Added missing install-i18n to the install target in the Makefile (reported
   by Joachim Wilke).
+- Fixed a faulty comment in Make.config.template (reported by Marco Schlüßler).
