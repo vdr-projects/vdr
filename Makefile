@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.102 2007/08/11 12:26:12 kls Exp $
+# $Id: Makefile 1.103 2007/08/12 20:36:34 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -157,7 +157,7 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins
+install: install-bin install-conf install-doc install-plugins install-i18n
 
 # VDR binary:
 

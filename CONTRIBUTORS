@@ -1544,6 +1544,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for fixing removing the '-' when entering a channel number where there is no other
  one that fits the input
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
+ for reporting a missing install-i18n in the install target in the Makefile
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
