@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-11 11:00+0200\n"
+"PO-Revision-Date: 2007-08-12 11:53+0200\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,10 +41,10 @@ msgstr "Brez naziva"
 msgid "LanguageName$English"
 msgstr "Slovenski"
 
-#. TRANSLATORS: The 3-letter code(s) of the language (separated by commas)
+#. TRANSLATORS: The 3-letter code of the language
 #: i18n.c:31
-msgid "LanguageCode$eng,dos"
-msgstr "slv,slo"
+msgid "LanguageCode$eng"
+msgstr "slv"
 
 #: interface.c:75
 msgid "Phase 1: Detecting RC code type"

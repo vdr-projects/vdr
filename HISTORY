@@ -5299,7 +5299,7 @@ Video Disk Recorder Revision History
 - Added a missing 'P' to vdr.c's SHUTDOWNCANCELROMPT macro (reported by Marco
   Schlüßler).
 
-2007-08-11: Version 1.5.7
+2007-08-12: Version 1.5.7
 
 - All logging now goes to LOG_ERR, because some systems split error, info and
   debug messages into separate files, which repeatedly caused extra efforts to
@@ -5321,6 +5321,9 @@ Video Disk Recorder Revision History
   to make strings in arrays translatable.
   See README.i18n for information on how to create new or maintain existing
   translations.
+- The three letter language codes and their aliases are stored in i18n.c, and
+  each translation file only contains one of them to link that language name
+  to the code.
 - The 'newplugin' script has been extended to generate the Makefile section
   for i18n support.
 - The parameter OSDLanguage in 'setup.conf' is now a string and holds the locale

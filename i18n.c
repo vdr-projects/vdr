@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.306 2007/08/11 14:27:02 kls Exp $
+ * $Id: i18n.c 1.307 2007/08/12 09:51:15 kls Exp $
  *
  *
  */
@@ -27,8 +27,39 @@
 
 // TRANSLATORS: The name of the language, as written natively
 const char *LanguageName = trNOOP("LanguageName$English");
-// TRANSLATORS: The 3-letter code(s) of the language (separated by commas)
-const char *LanguageCode = trNOOP("LanguageCode$eng,dos");
+// TRANSLATORS: The 3-letter code of the language
+const char *LanguageCode = trNOOP("LanguageCode$eng");
+
+// List of known language codes with aliases.
+// Actually we could list all codes from http://www.loc.gov/standards/iso639-2
+// here, but that would be several hundreds - and for most of them it's unlikely
+// they're ever going to be used...
+
+const char *LanguageCodeList[] = {
+  "eng,dos",
+  "deu,ger",
+  "slv,slo",
+  "ita",
+  "dut,nla,nld",
+  "por",
+  "fra,fre",
+  "nor",
+  "fin,smi",
+  "pol",
+  "esl,spa",
+  "ell,gre",
+  "sve,swe",
+  "rom,rum",
+  "hun",
+  "cat,cln",
+  "rus",
+  "hrv",
+  "est",
+  "dan",
+  "cze,ces",
+  "tur",
+  NULL
+  };
 
 static char *I18nLocaleDir = LOCDIR;
 
@@ -38,6 +69,21 @@ static cStringList LanguageCodes;
 
 static int CurrentLanguage = 0;
 
+static bool ContainsCode(const char *Codes, const char *Code)
+{
+  while (*Codes) {
+        int l = 0;
+        for ( ; l < 3 && Code[l]; l++) {
+            if (Codes[l] != tolower(Code[l]))
+               break;
+            }
+        if (l == 3)
+           return true;
+        Codes++;
+        }
+  return false;
+}
+
 static const char *SkipContext(const char *s)
 {
   const char *p = strchr(s, '$');
@@ -46,9 +92,9 @@ static const char *SkipContext(const char *s)
 
 void I18nInitialize(void)
 {
-  LanguageNames.Append(strdup(SkipContext(LanguageName)));
-  LanguageCodes.Append(strdup(SkipContext(LanguageCode)));
   LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
+  LanguageNames.Append(strdup(SkipContext(LanguageName)));
+  LanguageCodes.Append(strdup(LanguageCodeList[0]));
   textdomain("vdr");
   bindtextdomain("vdr", I18nLocaleDir);
   cFileNameList Locales(I18nLocaleDir, true);
@@ -58,11 +104,18 @@ void I18nInitialize(void)
      for (int i = 0; i < Locales.Size(); i++) {
          if (i < I18N_MAX_LANGUAGES - 1) {
             if (setlocale(LC_MESSAGES, Locales[i])) {
+               if (strstr(OldLocale, Locales[i]) == OldLocale)
+                  CurrentLanguage = LanguageLocales.Size();
                LanguageLocales.Append(strdup(Locales[i]));
                LanguageNames.Append(strdup(gettext(LanguageName)));
-               LanguageCodes.Append(strdup(gettext(LanguageCode)));
-               if (strstr(OldLocale, Locales[i]) == OldLocale)
-                  CurrentLanguage = LanguageLocales.Size() - 1;
+               const char *Code = gettext(LanguageCode);
+               for (const char **lc = LanguageCodeList; *lc; lc++) {
+                   if (ContainsCode(*lc, Code)) {
+                      Code = *lc;
+                      break;
+                      }
+                   }
+               LanguageCodes.Append(strdup(Code));
                }
             }
          else
@@ -71,6 +124,22 @@ void I18nInitialize(void)
      setlocale(LC_MESSAGES, OldLocale);
      free(OldLocale);
      }
+  // Prepare any known language codes for which there was no locale:
+  for (const char **lc = LanguageCodeList; *lc; lc++) {
+      bool Found = false;
+      for (int i = 0; i < LanguageCodes.Size(); i++) {
+          if (strcmp(*lc, LanguageCodes[i]) == 0) {
+             Found = true;
+             break;
+             }
+          }
+      if (!Found) {
+         dsyslog("no locale for language code '%s'", *lc);
+         LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
+         LanguageNames.Append(strdup(*lc));
+         LanguageCodes.Append(strdup(*lc));
+         }
+      }
 }
 
 void I18nRegister(const char *Plugin)
@@ -134,17 +203,8 @@ const char *I18nLanguageCode(int Language)
 int I18nLanguageIndex(const char *Code)
 {
   for (int i = 0; i < LanguageCodes.Size(); i++) {
-      const char *s = LanguageCodes[i];
-      while (*s) {
-            int l = 0;
-            for ( ; l < 3 && Code[l]; l++) {
-                if (s[l] != tolower(Code[l]))
-                   break;
-                }
-            if (l == 3)
-               return i;
-            s++;
-            }
+      if (ContainsCode(LanguageCodes[i], Code))
+         return i;
       }
   //dsyslog("unknown language code: '%s'", Code);
   return -1;
