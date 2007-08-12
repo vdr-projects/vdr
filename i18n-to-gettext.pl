@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.1 2007/08/11 10:36:33 kls Exp $
+# $Id: i18n-to-gettext.pl 1.2 2007/08/12 10:02:01 kls Exp $
 
 # How to convert an actual plugin:
 #
@@ -49,7 +49,12 @@
 # - Your Makefile will be automatically adjusted to allow for
 #   building the *.mo files necessary for supporting gettext().
 #   Please check carefully whether the automatic adjustments have
-#   succeeded, though.
+#   succeeded, though. The modified Makefile will be written to
+#   Makefile.new, so you can call this script any numer of times
+#   in case you need to do some fine tuning of your texts (especially
+#   adding some trNOOP() in case the script reports "missing phrases".
+#   Once you're done converting your plugin source to using gettext,
+#   rename Makefile.new to Makefile.
 #
 # - You may want to remove the old internationalized texts from your
 #   source. Usually this means removing the files i18n.[hc], stripping
@@ -308,9 +313,8 @@ i18n: $(I18Nmo)
 
 };
 
-`mv Makefile Makefile.old`;
-open(OLD, "Makefile.old") || die "Makefile.old: $!";
-open(NEW, ">Makefile") || die "Makefile: $!";
+open(OLD, "Makefile") || die "Makefile: $!";
+open(NEW, ">Makefile.new") || die "Makefile.new: $!";
 while (<OLD>) {
       chomp;
       if (/Targets:/) {
