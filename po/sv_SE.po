@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1038,7 +1038,7 @@ msgstr "ledigt"
 msgid " Stop replaying"
 msgstr " Avsluta uppspelning"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Ljud"
 
@@ -1067,40 +1067,40 @@ msgstr "Stanna inspelning?"
 msgid "Cancel editing?"
 msgstr "Avbryta redigeringen?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr "Ljud saknas!"
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr "Otillräcklingt diskutrymme för inspelning!"
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "Det finns ingen ledig DVB enhet för inspelning!"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Pausar direktinspelningen"
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Hopp: "
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "Det finns inga redigeringsmärken"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "Kan inte starta redigering!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Redigeringen startar"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "Redigeringen är redan aktiv!"
 
@@ -1140,7 +1140,7 @@ msgstr "Upp/Ner för nya platsen - därefter OK för att flytta"
 msgid "Channel locked (recording)!"
 msgstr "Kanalen är låst (inspelning pågår)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "Lågt diskutrymme!"
 

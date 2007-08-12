@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1038,7 +1038,7 @@ msgstr "prosto"
 msgid " Stop replaying"
 msgstr " Prekini predvajanje"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Zvok"
 
@@ -1067,40 +1067,40 @@ msgstr "Prekini snemanje?"
 msgid "Cancel editing?"
 msgstr "®elite prekiniti urejanje?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr "Zvok ni dosegljiv!"
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr "Premalo prostora na disku za snemanje!"
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "Ni proste DVB naprave za snemanje!"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Ustavljanje predvajanja v ¾ivo..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Skoèi: "
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "Nobena prekinitvena toèka ni definirana!"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "Ne morem zaèeti urejanja!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Urejanje se je zaèelo"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "Urejanje je ¾e aktivno!"
 
@@ -1140,7 +1140,7 @@ msgstr "Gor/Dol za novo poz. - Ok za premik"
 msgid "Channel locked (recording)!"
 msgstr "Zaklenjen kanal (snemanje)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "Premalo prostora na disku!"
 

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1038,7 +1038,7 @@ msgstr "szabad"
 msgid " Stop replaying"
 msgstr " Lejátszást befejzni"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Hang"
 
@@ -1067,40 +1067,40 @@ msgstr "Felvétel befejezni?"
 msgid "Cancel editing?"
 msgstr "Vágást befejezni?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr "Hang nem lehetséges!"
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr "Nincs elegendõ hely a felvételre"
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "Nincs szabad DVB kártya a felvételhez!"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Az élõ adás megállítva..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Ugrás:"
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "A vágópont nincs kijelölve"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "A vágás nem indítható!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Vágás elindítva"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "A vágás már aktivált!"
 
@@ -1140,7 +1140,7 @@ msgstr "Fel/Le egy uj opcióért - aztán OK"
 msgid "Channel locked (recording)!"
 msgstr "Az adó blokkolva (felvétel)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "A merev lemez majdnem tele!"
 

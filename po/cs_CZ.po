@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1037,7 +1037,7 @@ msgstr "volno"
 msgid " Stop replaying"
 msgstr " Zastavit pøehrávání"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Zvuk"
 
@@ -1066,40 +1066,40 @@ msgstr "Ukonèit nahrávání?"
 msgid "Cancel editing?"
 msgstr "Zru¹it editaci?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr "Zvuk není dostupný!"
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr "Nedostatek volného místa k zapoèetí nahrávání!"
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "®ádná DVB karta není volná pro nahrávání"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Pøeru¹uje se bì¾ící program ..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Skok: "
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "Nejsou definovány editaèní znaèky!"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "Nelze zaèít editaèní proces!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Editaèní proces zaèal"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "Editaèní proces je ji¾ aktivní!"
 
@@ -1139,7 +1139,7 @@ msgstr "Nahoru/Dolu pro novou pozici - Ok pøesune"
 msgid "Channel locked (recording)!"
 msgstr "Kanál je blokovaný (nahrává se)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "Disk bude brzy zaplnìn!"
 

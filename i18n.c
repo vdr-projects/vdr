@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.307 2007/08/12 09:51:15 kls Exp $
+ * $Id: i18n.c 1.308 2007/08/12 12:15:29 kls Exp $
  *
  *
  */
@@ -149,13 +149,15 @@ void I18nRegister(const char *Plugin)
 
 void I18nSetLocale(const char *Locale)
 {
-  int i = LanguageLocales.Find(Locale);
-  if (i >= 0) {
-     CurrentLanguage = i;
-     setlocale(LC_MESSAGES, Locale);
+  if (Locale && *Locale) {
+     int i = LanguageLocales.Find(Locale);
+     if (i >= 0) {
+        CurrentLanguage = i;
+        setlocale(LC_MESSAGES, Locale);
+        }
+     else
+        dsyslog("unknown locale: '%s'", Locale);
      }
-  else
-     dsyslog("unknown locale: '%s'", Locale);
 }
 
 int I18nCurrentLanguage(void)

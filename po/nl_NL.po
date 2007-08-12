@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1039,7 +1039,7 @@ msgstr "vrij"
 msgid " Stop replaying"
 msgstr " Stop afspelen"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Audio"
 
@@ -1068,40 +1068,40 @@ msgstr "Opname stoppen?"
 msgid "Cancel editing?"
 msgstr "Bewerken afbreken?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr "Geen audio beschikbaar!"
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr ""
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "Geen vrije DVB kaart om op te nemen!"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Pauzeren live uitzending..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Springen: "
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "Geen bewerkingsmarkeringen gedefinieerd!"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "Kan niet beginnen met bewerken!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Bewerken is gestart"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "Bewerken is al actief!"
 
@@ -1141,7 +1141,7 @@ msgstr "Gebruik Omhoog/Omlaag - daarna Ok"
 msgid "Channel locked (recording)!"
 msgstr "Kanaal geblokkeerd (neemt op)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "Disk bijna vol!"
 

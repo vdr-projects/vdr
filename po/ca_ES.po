@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 11:00+0200\n"
-"PO-Revision-Date: 2007-08-12 11:53+0200\n"
+"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -1039,7 +1039,7 @@ msgstr "lliure"
 msgid " Stop replaying"
 msgstr " Aturar la reproducció"
 
-#: menu.c:2984 menu.c:3495
+#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr ""
 
@@ -1068,40 +1068,40 @@ msgstr "Aturar la gravació?"
 msgid "Cancel editing?"
 msgstr "Cancel·lar l'edició?"
 
-#: menu.c:3525
+#: menu.c:3526
 msgid "No audio available!"
 msgstr ""
 
-#: menu.c:3735
+#: menu.c:3736
 msgid "Not enough disk space to start recording!"
 msgstr ""
 
-#: menu.c:3766 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1015 vdr.c:1075
 msgid "No free DVB device to record!"
 msgstr "No hi ha cap dispositiu DVB lliure per gravar!"
 
-#: menu.c:3796
+#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Pausa d'emissió en directe..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4039
+#: menu.c:4040
 msgid "Jump: "
 msgstr "Salta a:"
 
-#: menu.c:4183
+#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "No hi ha marques d'edició definides"
 
-#: menu.c:4185
+#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "No puc iniciar el procés d'edició!"
 
-#: menu.c:4187
+#: menu.c:4188
 msgid "Editing process started"
 msgstr "Procés d'edició iniciat"
 
-#: menu.c:4190
+#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "Procés d'edició iniciat anteriorment!"
 
@@ -1141,7 +1141,7 @@ msgstr "Amunt/Avall per una nova localització - OK per moure"
 msgid "Channel locked (recording)!"
 msgstr "Canal bloquejat (gravant)!"
 
-#: recording.c:190
+#: recording.c:189
 msgid "Low disk space!"
 msgstr "Disc gairebé ple!"
 
