@@ -5343,3 +5343,5 @@ Video Disk Recorder Revision History
 - cBitmap::SetXpm() now checks whether the given Xpm pointer is not NULL, to
   avoid a crash with files that only contain "/* XPM */" (suggested by Andreas
   Mair).
+- Added a debug error message to cReceiver::~cReceiver() in case it is still
+  attached to a device (thanks to Reinhard Nissl).
