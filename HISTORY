@@ -5335,3 +5335,6 @@ Video Disk Recorder Revision History
   one pointed to by Index (thanks to Alexander Rieger).
 - Fixed handling kLeft in the calls to cStatus::MsgOsdTextItem() (thanks to
   Alexander Rieger).
+- Added the "...or (at your option) any later version" phrase to the license
+  information of all plugins, and also the 'newplugin' script (suggested by
+  Ville Skyttä). Plugin authors may want to consider doing the same.

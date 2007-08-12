@@ -1678,6 +1678,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adapting cThread::ThreadId() to recent kernels
  for some improvements to the man pages
  for fixing some spelling errors in 'newplugin'
+ for suggesting to add the "...or (at your option) any later version" phrase to the
+ license information of all plugins, and also the 'newplugin' script
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
