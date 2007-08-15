@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2007-08-12 14:11+0200\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: channels.c:1077 menu.c:707
 msgid "*** Invalid Channel ***"
-msgstr "*** Virheellinen kanavavalinta! ***"
+msgstr "*** Virheellinen kanavavalinta ***"
 
 #: device.c:634 device.c:670
 msgid "Channel not available!"
@@ -243,39 +243,39 @@ msgstr "Komennot"
 
 #: keys.c:58
 msgid "Key$User1"
-msgstr ""
+msgstr "Lisänäppäin 1"
 
 #: keys.c:59
 msgid "Key$User2"
-msgstr ""
+msgstr "Lisänäppäin 2"
 
 #: keys.c:60
 msgid "Key$User3"
-msgstr ""
+msgstr "Lisänäppäin 3"
 
 #: keys.c:61
 msgid "Key$User4"
-msgstr ""
+msgstr "Lisänäppäin 4"
 
 #: keys.c:62
 msgid "Key$User5"
-msgstr ""
+msgstr "Lisänäppäin 5"
 
 #: keys.c:63
 msgid "Key$User6"
-msgstr ""
+msgstr "Lisänäppäin 6"
 
 #: keys.c:64
 msgid "Key$User7"
-msgstr ""
+msgstr "Lisänäppäin 7"
 
 #: keys.c:65
 msgid "Key$User8"
-msgstr ""
+msgstr "Lisänäppäin 8"
 
 #: keys.c:66
 msgid "Key$User9"
-msgstr ""
+msgstr "Lisänäppäin 9"
 
 #: menu.c:69
 msgid "Free To Air"
@@ -550,7 +550,7 @@ msgstr "Syötä %d numeroa!"
 
 #: menu.c:1754
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CA-moduuli ei vastaa!"
 
 #: menu.c:1784
 msgid "Recording info"
@@ -840,15 +840,15 @@ msgstr "LNB-ylätaajuus (MHz)"
 
 #: menu.c:2560
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM nollaus"
 
 #: menu.c:2561
 msgid "CAM present"
-msgstr ""
+msgstr "CAM havaittu"
 
 #: menu.c:2562
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM valmis"
 
 #: menu.c:2585 menu.c:2815
 msgid "CAM"
@@ -872,11 +872,11 @@ msgstr "CA-moduulin valikko ei saatavilla"
 
 #: menu.c:2624
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CA-moduuli käytössä - nollataanko?"
 
 #: menu.c:2626
 msgid "Can't reset CAM!"
-msgstr "CA-moduulin palautus alkutilaan epäonnistui!"
+msgstr "CA-moduulin nollaus epäonnistui!"
 
 #: menu.c:2660 menu.c:2816
 msgid "Recording"

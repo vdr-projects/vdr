@@ -5358,3 +5358,4 @@ Video Disk Recorder Revision History
   Plugin authors may want to change their Makefiles, too.
 - Added DESTDIR and PREFIX handling to the Makefile (thanks to Matthias
   Schwarzott).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
