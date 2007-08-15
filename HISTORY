@@ -5359,3 +5359,5 @@ Video Disk Recorder Revision History
 - Added DESTDIR and PREFIX handling to the Makefile (thanks to Matthias
   Schwarzott).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added internationalization to the "skincurses" plugin (thanks to Rolf
+  Ahrenberg).
