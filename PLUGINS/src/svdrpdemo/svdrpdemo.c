@@ -3,12 +3,12 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svdrpdemo.c 1.2 2005/08/28 21:11:14 kls Exp $
+ * $Id: svdrpdemo.c 1.3 2007/08/15 13:19:57 kls Exp $
  */
 
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.0.2";
+static const char *VERSION        = "0.0.3";
 static const char *DESCRIPTION    = "How to add SVDRP support to a plugin";
 
 class cPluginSvdrpdemo : public cPlugin {

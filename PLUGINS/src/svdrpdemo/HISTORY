@@ -8,3 +8,8 @@ VDR Plugin 'svdrpdemo' Revision History
 2005-08-28: Version 0.0.2
 
 - Removed unused MAINMENUENTRY.
+
+2007-08-15: Version 0.0.3
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.

@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.16 2007/08/11 10:18:16 kls Exp $
+# $Id: Makefile 1.17 2007/08/15 13:04:37 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -49,6 +49,10 @@ DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
 OBJS = $(PLUGIN).o
 
+### The main target:
+
+all: libvdr-$(PLUGIN).so i18n
+
 ### Implicit rules:
 
 %.o: %.c
@@ -89,8 +93,6 @@ i18n: $(I18Nmo)
 	    done
 
 ### Targets:
-
-all: libvdr-$(PLUGIN).so i18n
 
 libvdr-$(PLUGIN).so: $(OBJS)
 	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@

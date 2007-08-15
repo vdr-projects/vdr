@@ -35,3 +35,8 @@ VDR Plugin 'status' Revision History
 2005-12-31: Version 0.2.0
 
 - API change in cStatus.
+
+2007-08-15: Version 0.2.1
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.

@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.34 2007/08/12 11:04:39 kls Exp $
+# $Id: newplugin 1.35 2007/08/15 13:05:03 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -108,6 +108,10 @@ DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
 
 OBJS = \$(PLUGIN).o
 
+### The main target:
+
+all: libvdr-\$(PLUGIN).so i18n
+
 ### Implicit rules:
 
 %.o: %.c
@@ -148,8 +152,6 @@ i18n: \$(I18Nmo)
 	    done
 
 ### Targets:
-
-all: libvdr-\$(PLUGIN).so i18n
 
 libvdr-\$(PLUGIN).so: \$(OBJS)
 	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@

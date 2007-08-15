@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.15 2007/07/20 14:45:07 kls Exp $
+ * $Id: skincurses.c 1.16 2007/08/15 13:19:05 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.2";
+static const char *VERSION        = "0.1.3";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 

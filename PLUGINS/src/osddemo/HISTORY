@@ -12,3 +12,8 @@ VDR Plugin 'osddemo' Revision History
 2004-04-30: Version 0.1.1
 
 - New OSD handling.
+
+2007-08-15: Version 0.1.2
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.

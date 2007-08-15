@@ -53,3 +53,8 @@ VDR Plugin 'hello' Revision History
 2007-08-11: Version 0.2.0
 
 - Switched to 'gettext' internationalization.
+
+2007-08-15: Version 0.2.1
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.
