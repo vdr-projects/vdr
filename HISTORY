@@ -5361,3 +5361,4 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Added internationalization to the "skincurses" plugin (thanks to Rolf
   Ahrenberg).
+- Checking the string for NULL in I18nTranslate().
