@@ -2085,6 +2085,7 @@ Tomas Berglund <tomber@telia.com>
 Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to add LC_ALL to the checks for UTF-8 at startup
  for fixing getting the code setting from the locale
+ for improving i18n-to-gettext.pl
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems

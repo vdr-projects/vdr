@@ -5346,8 +5346,9 @@ Video Disk Recorder Revision History
 - Added a debug error message to cReceiver::~cReceiver() in case it is still
   attached to a device (thanks to Reinhard Nissl).
 
-2007-08-12: Version 1.5.8
+2007-08-15: Version 1.5.8
 
 - Added missing install-i18n to the install target in the Makefile (reported
   by Joachim Wilke).
 - Fixed a faulty comment in Make.config.template (reported by Marco Schlüßler).
+- Improved i18n-to-gettext.pl (thanks to Matthias Schwarzott).
