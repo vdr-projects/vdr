@@ -934,12 +934,14 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem with multiple entries of the same subdirectory in the
  "Recordings" menu
 
-Andreas Mair <Andreas.Mair@linogate.com>
+Andreas Mair <andreas@vdr-developer.org>
  for reporting a short display of the main menu if a plugin displays its own OSD and
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
  for reporting a bug in handling the tfRecording flag when reading timers
  for enabling fonts to be created with a width that overwrites the default width
+ for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
+ not NULL
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -2136,7 +2138,3 @@ Patrice Staudt <staudt@engsystem.net>
 Tobias Bratfisch <tobias@reel-multimedia.com>
  for improving numdigits(), isnumber() and strreplace()
  for suggesting to make skipspace() an inline function
-
-Andreas Mair <andreas@vdr-developer.org>
- for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
- not NULL
