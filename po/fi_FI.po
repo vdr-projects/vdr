@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"POT-Creation-Date: 2007-08-17 16:36+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -397,7 +397,7 @@ msgstr "Kanava-asetukset eivät ole yksilölliset!"
 msgid "Channels"
 msgstr "Kanavat"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
 msgid "Button$Delete"
 msgstr "Poista"
 
@@ -1002,7 +1002,7 @@ msgstr "Laajennokset"
 msgid "This plugin has no setup parameters!"
 msgstr "Tällä laajennoksella ei ole asetuksia!"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:951
+#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Asetukset"
 
@@ -1077,7 +1077,7 @@ msgstr "Äänen kieli ei ole valittavissa!"
 msgid "Not enough disk space to start recording!"
 msgstr "Tallennustilan puute estää tallennuksen!"
 
-#: menu.c:3767 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
 msgstr "Ei vapaata DVB-viritintä tallennukselle!"
 
@@ -1114,23 +1114,23 @@ msgstr " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@"
 msgid "yes"
 msgstr "kyllä"
 
-#: menuitems.c:287
+#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz9"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Insert"
 msgstr "Lisää"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Overwrite"
 msgstr "Korvaa"
 
-#: menuitems.c:972
+#: menuitems.c:971
 msgid "Plugin"
 msgstr "Laajennos"
 
@@ -1235,39 +1235,39 @@ msgstr "Lauantai"
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: vdr.c:861
+#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr "VPS-tallennus on alkamassa!"
 
-#: vdr.c:1023 vdr.c:1079
+#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr "Tallennus aloitettu"
 
-#: vdr.c:1032
+#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
 msgstr "VDR sammuu myöhemmin - pakota virtanäppäimellä"
 
-#: vdr.c:1044
+#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Peru sammutus painamalla mitä tahansa näppäintä"
 
-#: vdr.c:1097
+#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
 
-#: vdr.c:1165
+#: vdr.c:1167
 msgid "Editing process failed!"
 msgstr "Muokkaus epäonnistui!"
 
-#: vdr.c:1167
+#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Muokkaus valmis"
 
-#: vdr.c:1173
+#: vdr.c:1175
 msgid "Press any key to cancel restart"
 msgstr "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä"
 
-#: vdr.c:1193
+#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR sammuu %s minuutin kuluttua"

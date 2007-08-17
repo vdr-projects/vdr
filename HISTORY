@@ -5368,3 +5368,5 @@ Video Disk Recorder Revision History
 - Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).
 - Optimized cMenuEditChrItem::Set() (thanks to Tobias Bratfisch).
 - Optimized cNitFilter::Process() (thanks to Tobias Bratfisch).
+- Reduced the number of time(NULL) calls in vdr.c's main loop to a single call
+  (thanks to Tobias Bratfisch).

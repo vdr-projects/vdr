@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.296 2007/08/12 11:22:04 kls Exp $
+ * $Id: vdr.c 1.297 2007/08/17 14:32:02 kls Exp $
  */
 
 #include <getopt.h>
@@ -704,10 +704,13 @@ int main(int argc, char *argv[])
 #endif
         // Attach launched player control:
         cControl::Attach();
+
+        static time_t Now = time(NULL);
+
         // Make sure we have a visible programme in case device usage has changed:
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
-           if (time(NULL) - lastTime > MINCHANNELWAIT) {
+           if (Now - lastTime > MINCHANNELWAIT) {
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
               if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
                  if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
@@ -716,7 +719,7 @@ int main(int argc, char *argv[])
                      && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
                     ;
                  }
-              lastTime = time(NULL); // don't do this too often
+              lastTime = Now; // don't do this too often
               LastTimerChannel = -1;
               }
            }
@@ -738,8 +741,8 @@ int main(int argc, char *argv[])
            if (modified == CHANNELSMOD_USER || Timers.Modified(TimerState))
               ChannelSaveTimeout = 1; // triggers an immediate save
            else if (modified && !ChannelSaveTimeout)
-              ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;
-           bool timeout = ChannelSaveTimeout == 1 || ChannelSaveTimeout && time(NULL) > ChannelSaveTimeout && !cRecordControls::Active();
+              ChannelSaveTimeout = Now + CHANNELSAVEDELTA;
+           bool timeout = ChannelSaveTimeout == 1 || ChannelSaveTimeout && Now > ChannelSaveTimeout && !cRecordControls::Active();
            if ((modified || timeout) && Channels.Lock(false, 100)) {
               if (timeout) {
                  Channels.Save();
@@ -767,16 +770,15 @@ int main(int argc, char *argv[])
            if (!Menu)
               Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel >= 0);
            LastChannel = cDevice::CurrentChannel();
-           LastChannelChanged = time(NULL);
+           LastChannelChanged = Now;
            }
-        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[PreviousChannelIndex])
+        if (Now - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[PreviousChannelIndex])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
            // Assign events to timers:
            Timers.SetEvents();
            // Must do all following calls with the exact same time!
-           time_t Now = time(NULL);
            // Process ongoing recordings:
            cRecordControls::Process(Now);
            // Start new recordings:
@@ -863,7 +865,7 @@ int main(int argc, char *argv[])
                         }
                      }
                   }
-              LastTimerCheck = time(NULL);
+              LastTimerCheck = Now;
               }
            // Delete expired timers:
            Timers.DeleteExpired();
@@ -1065,7 +1067,7 @@ int main(int argc, char *argv[])
                     continue;
                     }
                  }
-              else if (time(NULL) - cRemote::LastActivity() > MENUTIMEOUT)
+              else if (Now - cRemote::LastActivity() > MENUTIMEOUT)
                  state = osEnd;
               }
            switch (state) {
@@ -1181,12 +1183,12 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if (!Interact && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (time(NULL) - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        if (!Interact && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
            // Shutdown:
            // Check whether VDR will be ready for shutdown in SHUTDOWNWAIT seconds:
-           time_t Soon = time(NULL) + SHUTDOWNWAIT;
+           time_t Soon = Now + SHUTDOWNWAIT;
            if (ShutdownHandler.IsUserInactive(Soon) && ShutdownHandler.Retry(Soon) && !ShutdownHandler.countdown) {
               if (ShutdownHandler.ConfirmShutdown(false))
                  // Time to shut down - start final countdown:

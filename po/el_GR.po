@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"POT-Creation-Date: 2007-08-17 16:36+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -394,7 +394,7 @@ msgstr "Οι ριθμύσεις τον καναλιών αλλυλοσυμπίπτουν!"
 msgid "Channels"
 msgstr "Κανάλια"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
 msgid "Button$Delete"
 msgstr "Διαγραφή"
 
@@ -999,7 +999,7 @@ msgstr "Επεκτάσεις"
 msgid "This plugin has no setup parameters!"
 msgstr "Αυτή η επέκταση δεν έχει παράμετρους!"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:951
+#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Ρυθμισεις"
 
@@ -1074,7 +1074,7 @@ msgstr "Μη διαθέσιμος ήχος"
 msgid "Not enough disk space to start recording!"
 msgstr ""
 
-#: menu.c:3767 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
 msgstr "Ανεπάρκεια DVB Κάρτας γιά εγγραφή!"
 
@@ -1111,23 +1111,23 @@ msgstr " αάβγδεέζηήθιίκλμνξοόπρσςτυύφχψωώ0123456789-.#~,/_@abcdefghijklmnopqrstu
 msgid "yes"
 msgstr "ναί"
 
-#: menuitems.c:287
+#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr ""
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABΓ/αβγ"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Insert"
 msgstr "Εισαγωγή"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Overwrite"
 msgstr "Αντικατάσταση"
 
-#: menuitems.c:972
+#: menuitems.c:971
 msgid "Plugin"
 msgstr "Επέκταση"
 
@@ -1232,39 +1232,39 @@ msgstr "Σάββατο"
 msgid "Sunday"
 msgstr "Κυριακή"
 
-#: vdr.c:861
+#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr ""
 
-#: vdr.c:1023 vdr.c:1079
+#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr ""
 
-#: vdr.c:1032
+#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
 msgstr ""
 
-#: vdr.c:1044
+#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Πίεσε ένα πλήκτρο γιά ακύρωδη τερματισμού"
 
-#: vdr.c:1097
+#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Η κύρια DVB κάρτα αλλάζει..."
 
-#: vdr.c:1165
+#: vdr.c:1167
 msgid "Editing process failed!"
 msgstr "Η επεξεργασία απέτυχε!"
 
-#: vdr.c:1167
+#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Η επεξεργασία τελείωσε"
 
-#: vdr.c:1173
+#: vdr.c:1175
 msgid "Press any key to cancel restart"
 msgstr ""
 
-#: vdr.c:1193
+#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr ""

@@ -2142,6 +2142,7 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
  for making some optimizations in cDvbDevice::SetChannelDevice()
  for optimizing cMenuEditChrItem::Set()
  for optimizing cNitFilter::Process()
+ for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language
