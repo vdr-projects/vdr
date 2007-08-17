@@ -5365,3 +5365,4 @@ Video Disk Recorder Revision History
 - Updated the French OSD texts (thanks to Bruno Roussel).
 - I18nInitialize() now uses best matching default locale (problem reported by
   Matthias Schwarzott).
+- Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).

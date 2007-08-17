@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.164 2007/02/25 11:46:52 kls Exp $
+ * $Id: dvbdevice.c 1.165 2007/08/17 13:37:56 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -793,18 +793,25 @@ bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel)
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
+  int apid = Channel->Apid(0);
+  int vpid = Channel->Vpid();
+  int dpid = Channel->Dpid(0);
+
   bool DoTune = !dvbTuner->IsTunedTo(Channel);
+
+  bool pidHandlesVideo = pidHandles[ptVideo].pid == vpid;
+  bool pidHandlesAudio = pidHandles[ptAudio].pid == apid;
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
                             || !IsPrimaryDevice()
                             || LiveView // for a new live view the old PIDs need to be turned off
-                            || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                            || pidHandlesVideo // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                             );
 
   bool StartTransferMode = IsPrimaryDevice() && !DoTune
-                           && (LiveView && HasPid(Channel->Vpid() ? Channel->Vpid() : Channel->Apid(0)) && (pidHandles[ptVideo].pid != Channel->Vpid() || (pidHandles[ptAudio].pid != Channel->Apid(0) && (Channel->Dpid(0) ? pidHandles[ptAudio].pid != Channel->Dpid(0) : true)))// the PID is already set as DMX_PES_OTHER
-                              || !LiveView && (pidHandles[ptVideo].pid == Channel->Vpid() || pidHandles[ptAudio].pid == Channel->Apid(0)) // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                           && (LiveView && HasPid(vpid ? vpid : apid) && (!pidHandlesVideo || (!pidHandlesAudio && (dpid ? pidHandles[ptAudio].pid != dpid : true)))// the PID is already set as DMX_PES_OTHER
+                              || !LiveView && (pidHandlesVideo || pidHandlesAudio) // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
   if (CamSlot() && !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlot()->SlotNumber()))
      StartTransferMode |= LiveView && IsPrimaryDevice() && Channel->Ca() >= CA_ENCRYPTED_MIN;
@@ -836,7 +843,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   if (TurnOnLivePIDs) {
      SetAudioBypass(false);
-     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid(0), ptAudio))) {
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(vpid, ptVideo) && AddPid(apid, ptAudio))) {
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -848,7 +855,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->GetChannelID(), Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+     cControl::Launch(new cTransferControl(this, Channel->GetChannelID(), vpid, Channel->Apids(), Channel->Dpids(), Channel->Spids()));
 
   return true;
 }
