@@ -2138,3 +2138,6 @@ Patrice Staudt <staudt@engsystem.net>
 Tobias Bratfisch <tobias@reel-multimedia.com>
  for improving numdigits(), isnumber() and strreplace()
  for suggesting to make skipspace() an inline function
+
+Bruno Roussel <bruno.roussel@free.fr>
+ for translating OSD texts to the French language
