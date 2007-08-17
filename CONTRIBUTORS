@@ -1981,6 +1981,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggestions that led to implementing cOsd::SetOsdPosition() etc.
  for fixing a typo in the function name of cOsd::SetOsdPosition() and adding a range
  check to it
+ for changing cBitmap::DrawText() to always draw the background unless ColorBg
+ is clrTransparent
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
