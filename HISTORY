@@ -5366,3 +5366,4 @@ Video Disk Recorder Revision History
 - I18nInitialize() now uses best matching default locale (problem reported by
   Matthias Schwarzott).
 - Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).
+- Optimized cMenuEditChrItem::Set() (thanks to Tobias Bratfisch).

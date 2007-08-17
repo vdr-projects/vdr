@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.50 2007/08/04 09:12:18 kls Exp $
+ * $Id: menuitems.c 1.51 2007/08/17 13:48:07 kls Exp $
  */
 
 #include "menuitems.h"
@@ -222,7 +222,8 @@ cMenuEditChrItem::~cMenuEditChrItem()
 void cMenuEditChrItem::Set(void)
 {
   char buf[2];
-  snprintf(buf, sizeof(buf), "%c", *value);
+  buf[0] = *value;
+  buf[1] = '\0';
   SetValue(buf);
 }
 
@@ -490,9 +491,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kBlue|k_Repeat:
     case kBlue:  // consume the key only if in edit-mode
-                 if (InEditMode())
-                    ;
-                 else
+                 if (!InEditMode())
                     return osUnknown;
                  break;
     case kLeft|k_Repeat:
