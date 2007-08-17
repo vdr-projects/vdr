@@ -2092,6 +2092,7 @@ Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to move the "all" target in plugin Makefiles before the
  "Implicit rules", so that a plain "make" will compile everything
  for adding DESTDIR and PREFIX handling to the Makefile
+ for reporting a problem with locale matching
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.309 2007/08/15 14:17:56 kls Exp $
+ * $Id: i18n.c 1.310 2007/08/17 12:31:17 kls Exp $
  *
  *
  */
@@ -100,12 +100,15 @@ void I18nInitialize(void)
   cFileNameList Locales(I18nLocaleDir, true);
   if (Locales.Size() > 0) {
      dsyslog("found %d locales in %s", Locales.Size(), I18nLocaleDir);
+     int MatchFull = 0, MatchPartial = 0;
      char *OldLocale = strdup(setlocale(LC_MESSAGES, NULL));
      for (int i = 0; i < Locales.Size(); i++) {
          if (i < I18N_MAX_LANGUAGES - 1) {
             if (setlocale(LC_MESSAGES, Locales[i])) {
                if (strstr(OldLocale, Locales[i]) == OldLocale)
-                  CurrentLanguage = LanguageLocales.Size();
+                  MatchFull = LanguageLocales.Size();
+               else if (strncmp(OldLocale, Locales[i], 2) == 0)
+                  MatchPartial = LanguageLocales.Size();
                LanguageLocales.Append(strdup(Locales[i]));
                LanguageNames.Append(strdup(gettext(LanguageName)));
                const char *Code = gettext(LanguageCode);
@@ -121,7 +124,8 @@ void I18nInitialize(void)
          else
             esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
          }
-     setlocale(LC_MESSAGES, OldLocale);
+     CurrentLanguage = MatchFull ? MatchFull : MatchPartial;
+     setlocale(LC_MESSAGES, CurrentLanguage ? LanguageLocales[CurrentLanguage] : OldLocale);
      free(OldLocale);
      }
   // Prepare any known language codes for which there was no locale:

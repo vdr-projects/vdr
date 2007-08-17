@@ -5363,3 +5363,5 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - Checking the string for NULL in I18nTranslate().
 - Updated the French OSD texts (thanks to Bruno Roussel).
+- I18nInitialize() now uses best matching default locale (problem reported by
+  Matthias Schwarzott).
