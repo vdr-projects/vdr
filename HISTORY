@@ -5367,3 +5367,4 @@ Video Disk Recorder Revision History
   Matthias Schwarzott).
 - Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).
 - Optimized cMenuEditChrItem::Set() (thanks to Tobias Bratfisch).
+- Optimized cNitFilter::Process() (thanks to Tobias Bratfisch).
