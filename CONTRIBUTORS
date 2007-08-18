@@ -2058,6 +2058,8 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for fixing handling frequencies in NitFilter::Process()
  for making non-primary devices in Transfer mode be also used for recording
  for code and hints on how to use 'fontconfig' to determine which fonts to use
+ for suggesting to make the "Setup/OSD/Language" menu only show those languages
+ that actually have a locale
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'

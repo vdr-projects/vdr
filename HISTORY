@@ -5346,7 +5346,7 @@ Video Disk Recorder Revision History
 - Added a debug error message to cReceiver::~cReceiver() in case it is still
   attached to a device (thanks to Reinhard Nissl).
 
-2007-08-17: Version 1.5.8
+2007-08-18: Version 1.5.8
 
 - Added missing install-i18n to the install target in the Makefile (reported
   by Joachim Wilke).
@@ -5372,3 +5372,5 @@ Video Disk Recorder Revision History
   (thanks to Tobias Bratfisch).
 - Changed cBitmap::DrawText() to always draw the background unless ColorBg
   is clrTransparent (thanks to Christoph Haubrich).
+- The "Setup/OSD/Language" menu now only shows those languages that actually
+  have a locale (suggested by Anssi Hannula).

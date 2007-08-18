@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.310 2007/08/17 12:31:17 kls Exp $
+ * $Id: i18n.c 1.311 2007/08/18 09:08:45 kls Exp $
  *
  *
  */
@@ -67,6 +67,7 @@ static cStringList LanguageLocales;
 static cStringList LanguageNames;
 static cStringList LanguageCodes;
 
+static int NumLocales = 1;
 static int CurrentLanguage = 0;
 
 static bool ContainsCode(const char *Codes, const char *Code)
@@ -105,6 +106,7 @@ void I18nInitialize(void)
      for (int i = 0; i < Locales.Size(); i++) {
          if (i < I18N_MAX_LANGUAGES - 1) {
             if (setlocale(LC_MESSAGES, Locales[i])) {
+               NumLocales++;
                if (strstr(OldLocale, Locales[i]) == OldLocale)
                   MatchFull = LanguageLocales.Size();
                else if (strncmp(OldLocale, Locales[i], 2) == 0)
@@ -121,8 +123,10 @@ void I18nInitialize(void)
                LanguageCodes.Append(strdup(Code));
                }
             }
-         else
+         else {
             esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
+            break;
+            }
          }
      CurrentLanguage = MatchFull ? MatchFull : MatchPartial;
      setlocale(LC_MESSAGES, CurrentLanguage ? LanguageLocales[CurrentLanguage] : OldLocale);
@@ -175,6 +179,11 @@ void I18nSetLanguage(int Language)
      CurrentLanguage = Language;
      I18nSetLocale(I18nLocale(CurrentLanguage));
      }
+}
+
+int I18nNumLanguagesWithLocale(void)
+{
+  return NumLocales;
 }
 
 const cStringList *I18nLanguages(void)
