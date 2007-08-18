@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.297 2007/08/17 14:32:02 kls Exp $
+ * $Id: vdr.c 1.298 2007/08/18 13:03:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -705,7 +705,7 @@ int main(int argc, char *argv[])
         // Attach launched player control:
         cControl::Attach();
 
-        static time_t Now = time(NULL);
+        time_t Now = time(NULL);
 
         // Make sure we have a visible programme in case device usage has changed:
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
