@@ -5346,7 +5346,7 @@ Video Disk Recorder Revision History
 - Added a debug error message to cReceiver::~cReceiver() in case it is still
   attached to a device (thanks to Reinhard Nissl).
 
-2007-08-18: Version 1.5.8
+2007-08-19: Version 1.5.8
 
 - Added missing install-i18n to the install target in the Makefile (reported
   by Joachim Wilke).
@@ -5363,8 +5363,6 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - Checking the string for NULL in I18nTranslate().
 - Updated the French OSD texts (thanks to Bruno Roussel).
-- I18nInitialize() now uses best matching default locale (problem reported by
-  Matthias Schwarzott).
 - Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).
 - Optimized cMenuEditChrItem::Set() (thanks to Tobias Bratfisch).
 - Optimized cNitFilter::Process() (thanks to Tobias Bratfisch).
@@ -5374,3 +5372,10 @@ Video Disk Recorder Revision History
   is clrTransparent (thanks to Christoph Haubrich).
 - The "Setup/OSD/Language" menu now only shows those languages that actually
   have a locale (suggested by Anssi Hannula).
+- Now using setenv() instead of setlocale() to set the language for gettext()
+  (suggested by Anssi Hannula; thanks also to Ludwig Nussel for a hint on using
+  _nl_msg_cat_cntr).
+- When scanning the locale directory, VDR now explicitly looks for a file named
+  vdr.mo. Text files for plugins are now named "vdr-name.mo", when "name" is the
+  name of the plugin. The "newplugin" script has been changed accordingly, and
+  plugin authors should change their Makefiles, too.

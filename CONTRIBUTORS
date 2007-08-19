@@ -887,6 +887,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for making the Makefile patch friendlier
  for a patch that was used for implementing setting the user id
  for pointing out that the canonical spelling of codesets is with '-'
+ for a hint on using _nl_msg_cat_cntr
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -2060,6 +2061,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for code and hints on how to use 'fontconfig' to determine which fonts to use
  for suggesting to make the "Setup/OSD/Language" menu only show those languages
  that actually have a locale
+ for suggesting to use setenv() instead of setlocale() to set the language for gettext()
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2096,7 +2098,6 @@ Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to move the "all" target in plugin Makefiles before the
  "Implicit rules", so that a plain "make" will compile everything
  for adding DESTDIR and PREFIX handling to the Makefile
- for reporting a problem with locale matching
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems

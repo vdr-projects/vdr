@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.22 2007/08/18 09:10:39 kls Exp $
+ * $Id: i18n.h 1.23 2007/08/19 14:07:17 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -79,7 +79,7 @@ bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, 
    ///< the second one (like "deu" out of ""eng+deu").
 
 #ifdef PLUGIN_NAME_I18N
-#define tr(s)  I18nTranslate(s, PLUGIN_NAME_I18N)
+#define tr(s)  I18nTranslate(s, "vdr-" PLUGIN_NAME_I18N)
 #else
 #define tr(s)  I18nTranslate(s)
 #endif

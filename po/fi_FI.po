@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-17 16:36+0200\n"
+"POT-Creation-Date: 2007-08-19 13:53+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -39,12 +39,12 @@ msgid "No title"
 msgstr "Ei esitystä"
 
 #. TRANSLATORS: The name of the language, as written natively
-#: i18n.c:29
+#: i18n.c:30
 msgid "LanguageName$English"
 msgstr "suomi"
 
 #. TRANSLATORS: The 3-letter code of the language
-#: i18n.c:31
+#: i18n.c:32
 msgid "LanguageCode$eng"
 msgstr "fin"
 

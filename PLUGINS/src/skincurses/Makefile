@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.10 2007/08/15 14:00:27 kls Exp $
+# $Id: Makefile 1.11 2007/08/19 14:19:07 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -87,7 +87,7 @@ i18n: $(I18Nmo)
 	@mkdir -p $(LOCALEDIR)
 	for i in $(I18Ndirs); do\
 	    mkdir -p $(LOCALEDIR)/$$i/LC_MESSAGES;\
-	    cp $(PODIR)/$$i.mo $(LOCALEDIR)/$$i/LC_MESSAGES/$(PLUGIN).mo;\
+	    cp $(PODIR)/$$i.mo $(LOCALEDIR)/$$i/LC_MESSAGES/vdr-$(PLUGIN).mo;\
 	    done
 
 ### Targets:

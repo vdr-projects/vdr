@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.35 2007/08/15 13:05:03 kls Exp $
+# $Id: newplugin 1.36 2007/08/19 14:19:49 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -148,7 +148,7 @@ i18n: \$(I18Nmo)
 	\@mkdir -p \$(LOCALEDIR)
 	for i in \$(I18Ndirs); do\\
 	    mkdir -p \$(LOCALEDIR)/\$\$i/LC_MESSAGES;\\
-	    cp \$(PODIR)/\$\$i.mo \$(LOCALEDIR)/\$\$i/LC_MESSAGES/\$(PLUGIN).mo;\\
+	    cp \$(PODIR)/\$\$i.mo \$(LOCALEDIR)/\$\$i/LC_MESSAGES/vdr-\$(PLUGIN).mo;\\
 	    done
 
 ### Targets:
