@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.102 2007/08/11 12:26:12 kls Exp $
+# $Id: Makefile 1.104 2007/08/15 13:47:16 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -15,9 +15,11 @@ CXX      ?= g++
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 
 LSIDIR   = ./libsi
-MANDIR   = /usr/local/man
-BINDIR   = /usr/local/bin
-LOCDIR   = /usr/share/vdr/locale
+DESTDIR ?=
+PREFIX  ?= /usr/local
+MANDIR   = $(PREFIX)/share/man
+BINDIR   = $(PREFIX)/bin
+LOCDIR   = $(PREFIX)/share/vdr/locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype -lfontconfig
 INCLUDES = -I/usr/include/freetype2
 
@@ -25,6 +27,7 @@ PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
 
 VIDEODIR = /video
+CONFDIR ?= $(VIDEODIR)
 
 DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile
@@ -123,8 +126,8 @@ i18n: $(I18Nmo)
 	    done
 
 install-i18n:
-	@mkdir -p $(LOCDIR)
-	@(cd $(LOCALEDIR); cp -r --parents * $(LOCDIR))
+	@mkdir -p $(DESTDIR)$(LOCDIR)
+	@(cd $(LOCALEDIR); cp -r --parents * $(DESTDIR)$(LOCDIR))
 
 # The 'include' directory (for plugins):
 
@@ -157,35 +160,36 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins
+install: install-bin install-conf install-doc install-plugins install-i18n
 
 # VDR binary:
 
 install-bin: vdr
-	@mkdir -p $(BINDIR)
-	@cp --remove-destination vdr runvdr $(BINDIR)
+	@mkdir -p $(DESTDIR)$(BINDIR)
+	@cp --remove-destination vdr runvdr svdrpsend.pl $(DESTDIR)$(BINDIR)
 
 # Configuration files:
 
 install-conf:
-	@if [ ! -d $(VIDEODIR) ]; then\
-	    mkdir -p $(VIDEODIR);\
-	    cp *.conf $(VIDEODIR);\
+	@mkdir -p $(DESTDIR)$(VIDEODIR)
+	@if [ ! -d $(DESTDIR)$(CONFDIR) ]; then\
+	    mkdir -p $(DESTDIR)$(CONFDIR);\
+	    cp *.conf $(DESTDIR)$(CONFDIR);\
 	    fi
 
 # Documentation:
 
 install-doc:
-	@mkdir -p $(MANDIR)/man1
-	@mkdir -p $(MANDIR)/man5
-	@gzip -c vdr.1 > $(MANDIR)/man1/vdr.1.gz
-	@gzip -c vdr.5 > $(MANDIR)/man5/vdr.5.gz
+	@mkdir -p $(DESTDIR)$(MANDIR)/man1
+	@mkdir -p $(DESTDIR)$(MANDIR)/man5
+	@gzip -c vdr.1 > $(DESTDIR)$(MANDIR)/man1/vdr.1.gz
+	@gzip -c vdr.5 > $(DESTDIR)$(MANDIR)/man5/vdr.5.gz
 
 # Plugins:
 
 install-plugins: plugins
-	@mkdir -p $(PLUGINLIBDIR)
-	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(PLUGINLIBDIR)
+	@mkdir -p $(DESTDIR)$(PLUGINLIBDIR)
+	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(DESTDIR)$(PLUGINLIBDIR)
 
 # Source documentation:
 

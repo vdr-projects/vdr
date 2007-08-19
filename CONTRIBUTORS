@@ -887,6 +887,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for making the Makefile patch friendlier
  for a patch that was used for implementing setting the user id
  for pointing out that the canonical spelling of codesets is with '-'
+ for a hint on using _nl_msg_cat_cntr
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -934,12 +935,14 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem with multiple entries of the same subdirectory in the
  "Recordings" menu
 
-Andreas Mair <Andreas.Mair@linogate.com>
+Andreas Mair <andreas@vdr-developer.org>
  for reporting a short display of the main menu if a plugin displays its own OSD and
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
  for reporting a bug in handling the tfRecording flag when reading timers
  for enabling fonts to be created with a width that overwrites the default width
+ for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
+ not NULL
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1017,6 +1020,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to change the parameter "OSD font" to "Default font" in "Setup/OSD"
  for improving cControl::Launch() to keep 'control' from pointing to uninitialized
  memory
+ for adding internationalization to the "skincurses" plugin
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1408,6 +1412,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a buffer overflow in initializing the system character table
  for reporting a missing 'P' in vdr.c's SHUTDOWNCANCELROMPT macro
  for fixing a problem with characters >0x7F in the modified version of skipspace()
+ for reporting a faulty comment in Make.config.template
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1544,6 +1549,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for fixing removing the '-' when entering a channel number where there is no other
  one that fits the input
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
+ for reporting a missing install-i18n in the install target in the Makefile
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -1976,6 +1982,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggestions that led to implementing cOsd::SetOsdPosition() etc.
  for fixing a typo in the function name of cOsd::SetOsdPosition() and adding a range
  check to it
+ for changing cBitmap::DrawText() to always draw the background unless ColorBg
+ is clrTransparent
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2051,6 +2059,9 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for fixing handling frequencies in NitFilter::Process()
  for making non-primary devices in Transfer mode be also used for recording
  for code and hints on how to use 'fontconfig' to determine which fonts to use
+ for suggesting to make the "Setup/OSD/Language" menu only show those languages
+ that actually have a locale
+ for suggesting to use setenv() instead of setlocale() to set the language for gettext()
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2083,6 +2094,10 @@ Tomas Berglund <tomber@telia.com>
 Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to add LC_ALL to the checks for UTF-8 at startup
  for fixing getting the code setting from the locale
+ for improving i18n-to-gettext.pl
+ for suggesting to move the "all" target in plugin Makefiles before the
+ "Implicit rules", so that a plain "make" will compile everything
+ for adding DESTDIR and PREFIX handling to the Makefile
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
@@ -2129,7 +2144,10 @@ Patrice Staudt <staudt@engsystem.net>
 Tobias Bratfisch <tobias@reel-multimedia.com>
  for improving numdigits(), isnumber() and strreplace()
  for suggesting to make skipspace() an inline function
+ for making some optimizations in cDvbDevice::SetChannelDevice()
+ for optimizing cMenuEditChrItem::Set()
+ for optimizing cNitFilter::Process()
+ for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
 
-Andreas Mair <andreas@vdr-developer.org>
- for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
- not NULL
+Bruno Roussel <bruno.roussel@free.fr>
+ for translating OSD texts to the French language

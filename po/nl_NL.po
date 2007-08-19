@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-12 14:11+0200\n"
+"POT-Creation-Date: 2007-08-19 13:53+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -38,12 +38,12 @@ msgid "No title"
 msgstr "Geen titel"
 
 #. TRANSLATORS: The name of the language, as written natively
-#: i18n.c:29
+#: i18n.c:30
 msgid "LanguageName$English"
 msgstr "Nederlands"
 
 #. TRANSLATORS: The 3-letter code of the language
-#: i18n.c:31
+#: i18n.c:32
 msgid "LanguageCode$eng"
 msgstr "dut"
 
@@ -396,7 +396,7 @@ msgstr "Kanaalinstellingen zijn niet uniek!"
 msgid "Channels"
 msgstr "Kanalen"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
 msgid "Button$Delete"
 msgstr "Verwijder"
 
@@ -1001,7 +1001,7 @@ msgstr "Plugins"
 msgid "This plugin has no setup parameters!"
 msgstr "Deze plugin heeft geen instelparameters"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:951
+#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Instellingen"
 
@@ -1076,7 +1076,7 @@ msgstr "Geen audio beschikbaar!"
 msgid "Not enough disk space to start recording!"
 msgstr ""
 
-#: menu.c:3767 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
 msgstr "Geen vrije DVB kaart om op te nemen!"
 
@@ -1113,23 +1113,23 @@ msgstr " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@בהאןףצעתüש"
 msgid "yes"
 msgstr "ja"
 
-#: menuitems.c:287
+#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr ""
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Insert"
 msgstr "Invoegen"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Overwrite"
 msgstr "Overschrijven"
 
-#: menuitems.c:972
+#: menuitems.c:971
 msgid "Plugin"
 msgstr "Plugin"
 
@@ -1234,39 +1234,39 @@ msgstr "Zaterdag"
 msgid "Sunday"
 msgstr "Zondag"
 
-#: vdr.c:861
+#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr ""
 
-#: vdr.c:1023 vdr.c:1079
+#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr ""
 
-#: vdr.c:1032
+#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
 msgstr ""
 
-#: vdr.c:1044
+#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Druk een toets om shutdown af te breken"
 
-#: vdr.c:1097
+#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Eerste DVB-kaart wordt omgeschakeld..."
 
-#: vdr.c:1165
+#: vdr.c:1167
 msgid "Editing process failed!"
 msgstr "Bewerken is mislukt!"
 
-#: vdr.c:1167
+#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Bewerken is klaar"
 
-#: vdr.c:1173
+#: vdr.c:1175
 msgid "Press any key to cancel restart"
 msgstr ""
 
-#: vdr.c:1193
+#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr ""

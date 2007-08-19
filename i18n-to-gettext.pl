@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.2 2007/08/12 10:02:01 kls Exp $
+# $Id: i18n-to-gettext.pl 1.3 2007/08/15 12:52:00 kls Exp $
 
 # How to convert an actual plugin:
 #
@@ -75,7 +75,7 @@ die "can't find plugin name!" unless ($PLUGIN);
 # Locate the file containing the texts:
 
 $I18NFILE = "";
-for ("i18n.c", `ls *.c`) { # try i18n.c explicitly first
+for ("i18n.c", "i18n.h", `ls *.c`) { # try i18n.[ch] explicitly first
     chomp($f = $_);
     if (-f $f && `grep tI18nPhrase $f`) {
        $I18NFILE = $f;
@@ -204,13 +204,28 @@ $POTFILE = "$PODIR/$PLUGIN.pot";
 # Collect all translated texts:
 
 open(F, $I18NFILE) || die "$I18NFILE: $!\n";
+$InComment = 0;
 while (<F>) {
       chomp;
       s/\t/ /g; # get rid of tabs
       s/  *$//; # get rid of trailing blanks
       s/^ *\/\/.*//; # remove comment lines
-      s/, *\/\/.*/,/; # strip trailing comments
+      s/ *\/\/.*//; # strip trailing comments
+      s/\/\*.*\*\///g; # strip c comments
+      if (/\/\*/) {
+         $InComment = 1;
+         s/\/\*.*$//; # remove start of comment
+         }
+      elsif (/\*\//) {
+         $InComment = 0;
+         s/^.*\*\///; # remove end of comment
+         }
+      elsif ($InComment) {
+         next;
+         }
       next if (/^ *$/); # skip empty lines
+      next if (/#if/);
+      next if (/#endif/);
       next unless ($found or $found = /const *tI18nPhrase .*{/); # sync on phrases
       next if (/const *tI18nPhrase .*{/); # skip sync line
       last if (/{ *NULL *}/); # stop after last phrase
@@ -324,7 +339,7 @@ while (<OLD>) {
          $_ .= " i18n";
          }
       elsif (/^clean:/) {
-	 $_ .= "\n\t\@-rm -f \$(PODIR)/*.mo \$(PODIR)/*.pot";
+         $_ .= "\n\t\@-rm -f \$(PODIR)/*.mo \$(PODIR)/*.pot";
          }
       print NEW "$_\n";
       }

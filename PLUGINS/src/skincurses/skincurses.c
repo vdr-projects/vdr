@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.15 2007/07/20 14:45:07 kls Exp $
+ * $Id: skincurses.c 1.17 2007/08/15 14:01:54 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,8 +11,8 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.2";
-static const char *DESCRIPTION    = "A text only skin";
+static const char *VERSION        = "0.1.3";
+static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
 // --- cCursesFont -----------------------------------------------------------
@@ -738,13 +738,13 @@ public:
   cPluginSkinCurses(void);
   virtual ~cPluginSkinCurses();
   virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
+  virtual const char *Description(void) { return tr(DESCRIPTION); }
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
   virtual bool Initialize(void);
   virtual bool Start(void);
   virtual void Housekeeping(void);
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
+  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
   virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);

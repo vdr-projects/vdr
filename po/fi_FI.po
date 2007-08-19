@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-12 14:11+0200\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"POT-Creation-Date: 2007-08-19 13:53+0200\n"
+"PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: channels.c:1077 menu.c:707
 msgid "*** Invalid Channel ***"
-msgstr "*** Virheellinen kanavavalinta! ***"
+msgstr "*** Virheellinen kanavavalinta ***"
 
 #: device.c:634 device.c:670
 msgid "Channel not available!"
@@ -39,12 +39,12 @@ msgid "No title"
 msgstr "Ei esitystä"
 
 #. TRANSLATORS: The name of the language, as written natively
-#: i18n.c:29
+#: i18n.c:30
 msgid "LanguageName$English"
 msgstr "suomi"
 
 #. TRANSLATORS: The 3-letter code of the language
-#: i18n.c:31
+#: i18n.c:32
 msgid "LanguageCode$eng"
 msgstr "fin"
 
@@ -243,39 +243,39 @@ msgstr "Komennot"
 
 #: keys.c:58
 msgid "Key$User1"
-msgstr ""
+msgstr "Lisänäppäin 1"
 
 #: keys.c:59
 msgid "Key$User2"
-msgstr ""
+msgstr "Lisänäppäin 2"
 
 #: keys.c:60
 msgid "Key$User3"
-msgstr ""
+msgstr "Lisänäppäin 3"
 
 #: keys.c:61
 msgid "Key$User4"
-msgstr ""
+msgstr "Lisänäppäin 4"
 
 #: keys.c:62
 msgid "Key$User5"
-msgstr ""
+msgstr "Lisänäppäin 5"
 
 #: keys.c:63
 msgid "Key$User6"
-msgstr ""
+msgstr "Lisänäppäin 6"
 
 #: keys.c:64
 msgid "Key$User7"
-msgstr ""
+msgstr "Lisänäppäin 7"
 
 #: keys.c:65
 msgid "Key$User8"
-msgstr ""
+msgstr "Lisänäppäin 8"
 
 #: keys.c:66
 msgid "Key$User9"
-msgstr ""
+msgstr "Lisänäppäin 9"
 
 #: menu.c:69
 msgid "Free To Air"
@@ -397,7 +397,7 @@ msgstr "Kanava-asetukset eivät ole yksilölliset!"
 msgid "Channels"
 msgstr "Kanavat"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
 msgid "Button$Delete"
 msgstr "Poista"
 
@@ -550,7 +550,7 @@ msgstr "Syötä %d numeroa!"
 
 #: menu.c:1754
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CA-moduuli ei vastaa!"
 
 #: menu.c:1784
 msgid "Recording info"
@@ -840,15 +840,15 @@ msgstr "LNB-ylätaajuus (MHz)"
 
 #: menu.c:2560
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM nollaus"
 
 #: menu.c:2561
 msgid "CAM present"
-msgstr ""
+msgstr "CAM havaittu"
 
 #: menu.c:2562
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM valmis"
 
 #: menu.c:2585 menu.c:2815
 msgid "CAM"
@@ -872,11 +872,11 @@ msgstr "CA-moduulin valikko ei saatavilla"
 
 #: menu.c:2624
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CA-moduuli käytössä - nollataanko?"
 
 #: menu.c:2626
 msgid "Can't reset CAM!"
-msgstr "CA-moduulin palautus alkutilaan epäonnistui!"
+msgstr "CA-moduulin nollaus epäonnistui!"
 
 #: menu.c:2660 menu.c:2816
 msgid "Recording"
@@ -1002,7 +1002,7 @@ msgstr "Laajennokset"
 msgid "This plugin has no setup parameters!"
 msgstr "Tällä laajennoksella ei ole asetuksia!"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:951
+#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Asetukset"
 
@@ -1077,7 +1077,7 @@ msgstr "Äänen kieli ei ole valittavissa!"
 msgid "Not enough disk space to start recording!"
 msgstr "Tallennustilan puute estää tallennuksen!"
 
-#: menu.c:3767 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
 msgstr "Ei vapaata DVB-viritintä tallennukselle!"
 
@@ -1114,23 +1114,23 @@ msgstr " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@"
 msgid "yes"
 msgstr "kyllä"
 
-#: menuitems.c:287
+#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz9"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Insert"
 msgstr "Lisää"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Overwrite"
 msgstr "Korvaa"
 
-#: menuitems.c:972
+#: menuitems.c:971
 msgid "Plugin"
 msgstr "Laajennos"
 
@@ -1235,39 +1235,39 @@ msgstr "Lauantai"
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: vdr.c:861
+#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr "VPS-tallennus on alkamassa!"
 
-#: vdr.c:1023 vdr.c:1079
+#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr "Tallennus aloitettu"
 
-#: vdr.c:1032
+#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
 msgstr "VDR sammuu myöhemmin - pakota virtanäppäimellä"
 
-#: vdr.c:1044
+#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Peru sammutus painamalla mitä tahansa näppäintä"
 
-#: vdr.c:1097
+#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
 
-#: vdr.c:1165
+#: vdr.c:1167
 msgid "Editing process failed!"
 msgstr "Muokkaus epäonnistui!"
 
-#: vdr.c:1167
+#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Muokkaus valmis"
 
-#: vdr.c:1173
+#: vdr.c:1175
 msgid "Press any key to cancel restart"
 msgstr "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä"
 
-#: vdr.c:1193
+#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR sammuu %s minuutin kuluttua"

@@ -5345,3 +5345,37 @@ Video Disk Recorder Revision History
   Mair).
 - Added a debug error message to cReceiver::~cReceiver() in case it is still
   attached to a device (thanks to Reinhard Nissl).
+
+2007-08-19: Version 1.5.8
+
+- Added missing install-i18n to the install target in the Makefile (reported
+  by Joachim Wilke).
+- Fixed a faulty comment in Make.config.template (reported by Marco Schlüßler).
+- Improved i18n-to-gettext.pl (thanks to Matthias Schwarzott).
+- Moved the "all" target in plugin Makefiles before the "Implicit rules",
+  so that a plain "make" will compile everything (suggested by Matthias
+  Schwarzott). The "newplugin" script has been changed accordingly.
+  Plugin authors may want to change their Makefiles, too.
+- Added DESTDIR and PREFIX handling to the Makefile (thanks to Matthias
+  Schwarzott).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added internationalization to the "skincurses" plugin (thanks to Rolf
+  Ahrenberg).
+- Checking the string for NULL in I18nTranslate().
+- Updated the French OSD texts (thanks to Bruno Roussel).
+- Some optimizations in cDvbDevice::SetChannelDevice() (thanks to Tobias Bratfisch).
+- Optimized cMenuEditChrItem::Set() (thanks to Tobias Bratfisch).
+- Optimized cNitFilter::Process() (thanks to Tobias Bratfisch).
+- Reduced the number of time(NULL) calls in vdr.c's main loop to a single call
+  (thanks to Tobias Bratfisch).
+- Changed cBitmap::DrawText() to always draw the background unless ColorBg
+  is clrTransparent (thanks to Christoph Haubrich).
+- The "Setup/OSD/Language" menu now only shows those languages that actually
+  have a locale (suggested by Anssi Hannula).
+- Now using setenv() instead of setlocale() to set the language for gettext()
+  (suggested by Anssi Hannula; thanks also to Ludwig Nussel for a hint on using
+  _nl_msg_cat_cntr).
+- When scanning the locale directory, VDR now explicitly looks for a file named
+  vdr.mo. Text files for plugins are now named "vdr-name.mo", when "name" is the
+  name of the plugin. The "newplugin" script has been changed accordingly, and
+  plugin authors should change their Makefiles, too.

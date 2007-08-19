@@ -54,3 +54,8 @@ VDR Plugin 'sky' Revision History
   use the new option -U of getskyepg.pl to have the information added to the URL
   as a query string.
 - The getskyepg.pl script now replaces "&amp;" with "&".
+
+2007-08-15:Version 0.3.6
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.

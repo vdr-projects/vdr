@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.308 2007/08/12 12:15:29 kls Exp $
+ * $Id: i18n.c 1.312 2007/08/19 14:10:46 kls Exp $
  *
  *
  */
@@ -23,6 +23,7 @@
 #include <ctype.h>
 #include <libintl.h>
 #include <locale.h>
+#include <unistd.h>
 #include "tools.h"
 
 // TRANSLATORS: The name of the language, as written natively
@@ -67,6 +68,7 @@ static cStringList LanguageLocales;
 static cStringList LanguageNames;
 static cStringList LanguageCodes;
 
+static int NumLocales = 1;
 static int CurrentLanguage = 0;
 
 static bool ContainsCode(const char *Codes, const char *Code)
@@ -90,6 +92,13 @@ static const char *SkipContext(const char *s)
   return p ? p + 1 : s;
 }
 
+static void SetEnvLanguage(const char *Locale)
+{
+  setenv("LANGUAGE", Locale, 1);
+  extern int _nl_msg_cat_cntr;
+  ++_nl_msg_cat_cntr;
+}
+
 void I18nInitialize(void)
 {
   LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
@@ -99,11 +108,13 @@ void I18nInitialize(void)
   bindtextdomain("vdr", I18nLocaleDir);
   cFileNameList Locales(I18nLocaleDir, true);
   if (Locales.Size() > 0) {
-     dsyslog("found %d locales in %s", Locales.Size(), I18nLocaleDir);
      char *OldLocale = strdup(setlocale(LC_MESSAGES, NULL));
      for (int i = 0; i < Locales.Size(); i++) {
-         if (i < I18N_MAX_LANGUAGES - 1) {
-            if (setlocale(LC_MESSAGES, Locales[i])) {
+         cString FileName = cString::sprintf("%s/%s/LC_MESSAGES/vdr.mo", I18nLocaleDir, Locales[i]);
+         if (access(FileName, F_OK) == 0) { // found a locale with VDR texts
+            if (i < I18N_MAX_LANGUAGES - 1) {
+               SetEnvLanguage(Locales[i]);
+               NumLocales++;
                if (strstr(OldLocale, Locales[i]) == OldLocale)
                   CurrentLanguage = LanguageLocales.Size();
                LanguageLocales.Append(strdup(Locales[i]));
@@ -117,12 +128,15 @@ void I18nInitialize(void)
                    }
                LanguageCodes.Append(strdup(Code));
                }
+            else {
+               esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
+               break;
+               }
             }
-         else
-            esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
          }
-     setlocale(LC_MESSAGES, OldLocale);
+     SetEnvLanguage(LanguageLocales[CurrentLanguage]);
      free(OldLocale);
+     dsyslog("found %d locales in %s", NumLocales - 1, I18nLocaleDir);
      }
   // Prepare any known language codes for which there was no locale:
   for (const char **lc = LanguageCodeList; *lc; lc++) {
@@ -144,7 +158,8 @@ void I18nInitialize(void)
 
 void I18nRegister(const char *Plugin)
 {
-  bindtextdomain(Plugin, I18nLocaleDir);
+  cString Domain = cString::sprintf("vdr-%s", Plugin);
+  bindtextdomain(Domain, I18nLocaleDir);
 }
 
 void I18nSetLocale(const char *Locale)
@@ -153,7 +168,7 @@ void I18nSetLocale(const char *Locale)
      int i = LanguageLocales.Find(Locale);
      if (i >= 0) {
         CurrentLanguage = i;
-        setlocale(LC_MESSAGES, Locale);
+        SetEnvLanguage(Locale);
         }
      else
         dsyslog("unknown locale: '%s'", Locale);
@@ -173,6 +188,11 @@ void I18nSetLanguage(int Language)
      }
 }
 
+int I18nNumLanguagesWithLocale(void)
+{
+  return NumLocales;
+}
+
 const cStringList *I18nLanguages(void)
 {
   return &LanguageNames;
@@ -180,6 +200,8 @@ const cStringList *I18nLanguages(void)
 
 const char *I18nTranslate(const char *s, const char *Plugin)
 {
+  if (!s)
+     return s;
   if (CurrentLanguage) {
      const char *t = s;
      if (Plugin)

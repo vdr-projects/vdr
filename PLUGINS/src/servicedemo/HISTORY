@@ -4,3 +4,8 @@ VDR Plugin 'servicedemo' Revision History
 2005-08-21: Version 0.1.1
 
 - Initial revision.
+
+2007-08-15: Version 0.1.2
+
+- Moved the "all" target in the Makefile before the "Implicit rules",
+  so that a plain "make" will compile everything.

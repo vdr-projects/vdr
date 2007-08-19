@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.459 2007/08/12 10:44:35 kls Exp $
+ * $Id: menu.c 1.460 2007/08/18 09:03:05 kls Exp $
  */
 
 #include "menu.h"
@@ -2205,7 +2205,7 @@ void cMenuSetupOSD::Set(void)
   useSmallFontTexts[2] = tr("always");
   Clear();
   SetSection(tr("OSD"));
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &osdLanguageIndex, I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &osdLanguageIndex, I18nNumLanguagesWithLocale(), &I18nLanguages()->At(0)));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
   if (themes.NumThemes())
   Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));

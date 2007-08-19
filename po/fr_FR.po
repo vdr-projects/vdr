@@ -5,14 +5,16 @@
 # Olivier Jacques <jacquesolivier@hotmail.com>, 2003
 # Gregoire Favre <greg@magma.unil.ch>, 2003
 # Nicolas Huillard <nhuillard@e-dition.fr>, 2005
+# Pierre Briec <pbriec@free.fr>, 2006
+# Bruno Roussel <bruno.roussel@free.fr>, 2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-12 14:11+0200\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Nicolas Huillard <nhuillard@e-dition.fr>\n"
+"POT-Creation-Date: 2007-08-19 13:53+0200\n"
+"PO-Revision-Date: 2007-08-17 13:45+0200\n"
+"Last-Translator: Bruno Roussel <bruno.roussel@free.fr>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -20,15 +22,15 @@ msgstr ""
 
 #: channels.c:1077 menu.c:707
 msgid "*** Invalid Channel ***"
-msgstr "*** Chaîne invalide! ***"
+msgstr "*** Chaîne invalide ! ***"
 
 #: device.c:634 device.c:670
 msgid "Channel not available!"
-msgstr "Chaîne non disponible!"
+msgstr "Chaîne non disponible !"
 
 #: device.c:636
 msgid "Can't start Transfer Mode!"
-msgstr "Impossible d'utiliser le mode transfert!"
+msgstr "Impossible d'utiliser le mode transfert !"
 
 #: eitscan.c:159
 msgid "Starting EPG scan"
@@ -39,12 +41,12 @@ msgid "No title"
 msgstr "Sans titre"
 
 #. TRANSLATORS: The name of the language, as written natively
-#: i18n.c:29
+#: i18n.c:30
 msgid "LanguageName$English"
 msgstr "Français"
 
 #. TRANSLATORS: The 3-letter code of the language
-#: i18n.c:31
+#: i18n.c:32
 msgid "LanguageCode$eng"
 msgstr "fra"
 
@@ -58,7 +60,7 @@ msgstr "Appuyer sur une touche de la télécommande"
 
 #: interface.c:79
 msgid "RC code detected!"
-msgstr "Code de la télécommande détecté!"
+msgstr "Code de la télécommande détecté !"
 
 #: interface.c:80
 msgid "Do not press any key..."
@@ -243,39 +245,39 @@ msgstr "Commandes"
 
 #: keys.c:58
 msgid "Key$User1"
-msgstr ""
+msgstr "Utilisateur1"
 
 #: keys.c:59
 msgid "Key$User2"
-msgstr ""
+msgstr "Utilisateur2"
 
 #: keys.c:60
 msgid "Key$User3"
-msgstr ""
+msgstr "Utilisateur3"
 
 #: keys.c:61
 msgid "Key$User4"
-msgstr ""
+msgstr "Utilisateur4"
 
 #: keys.c:62
 msgid "Key$User5"
-msgstr ""
+msgstr "Utilisateur5"
 
 #: keys.c:63
 msgid "Key$User6"
-msgstr ""
+msgstr "Utilisateur6"
 
 #: keys.c:64
 msgid "Key$User7"
-msgstr ""
+msgstr "Utilisateur7"
 
 #: keys.c:65
 msgid "Key$User8"
-msgstr ""
+msgstr "Utilisateur8"
 
 #: keys.c:66
 msgid "Key$User9"
-msgstr ""
+msgstr "Utilisateur9"
 
 #: menu.c:69
 msgid "Free To Air"
@@ -391,13 +393,13 @@ msgstr "Hiérarchie"
 
 #: menu.c:312
 msgid "Channel settings are not unique!"
-msgstr "Caractéristiques des chaînes ne sont pas uniques"
+msgstr "Caractéristiques des chaînes non uniques"
 
 #: menu.c:402 menu.c:2923
 msgid "Channels"
 msgstr "Chaînes"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:319
+#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
 msgid "Button$Delete"
 msgstr "Supprimer"
 
@@ -415,11 +417,11 @@ msgstr "Nouveau"
 
 #: menu.c:512
 msgid "Channel is being used by a timer!"
-msgstr "Cette chaîne est en cours d'utilisation!"
+msgstr "Cette chaîne est en cours d'utilisation !"
 
 #: menu.c:515
 msgid "Delete channel?"
-msgstr "Supprimer la chaîne?"
+msgstr "Supprimer la chaîne ?"
 
 #: menu.c:652
 msgid "Edit timer"
@@ -479,11 +481,11 @@ msgstr "Marche/Arr"
 
 #: menu.c:890
 msgid "Delete timer?"
-msgstr "Supprimer la programmation?"
+msgstr "Supprimer la programmation ?"
 
 #: menu.c:892 menu.c:2031
 msgid "Timer still recording - really delete?"
-msgstr "Enregistrement en cours - confirmez la suppression"
+msgstr "Enregistrement en cours - suppression confirmée ?"
 
 #: menu.c:948
 msgid "Event"
@@ -511,7 +513,7 @@ msgstr "Programmes en cours"
 
 #: menu.c:1138 menu.c:1381 menu.c:1501
 msgid "Button$Next"
-msgstr "Après"
+msgstr "Aprés"
 
 #: menu.c:1138 menu.c:1381 menu.c:1501
 msgid "Button$Now"
@@ -523,7 +525,7 @@ msgstr "Programme"
 
 #: menu.c:1158 menu.c:1450
 msgid "Can't switch channel!"
-msgstr "Impossible de changer de chaîne!"
+msgstr "Impossible de changer de chaîne !"
 
 #: menu.c:1283
 #, c-format
@@ -541,16 +543,16 @@ msgstr "Cet événement - toutes les chaînes"
 
 #: menu.c:1342
 msgid "All events - all channels"
-msgstr "Tous les événements - toutes chaînes"
+msgstr "Tous les événements - toutes les chaînes"
 
 #: menu.c:1712
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Veuillez entrer %d chiffres!"
+msgstr "Veuillez entrer %d chiffres !"
 
 #: menu.c:1754
 msgid "CAM not responding!"
-msgstr ""
+msgstr "Pas de réponse de la CAM"
 
 #: menu.c:1784
 msgid "Recording info"
@@ -578,15 +580,15 @@ msgstr "Commandes"
 
 #: menu.c:1970
 msgid "Error while accessing recording!"
-msgstr "Impossible d'accèder à l'enregistrement"
+msgstr "Impossible d'accéder à l'enregistrement"
 
 #: menu.c:2028
 msgid "Delete recording?"
-msgstr "Supprimer l'enregistrement?"
+msgstr "Supprimer l'enregistrement ?"
 
 #: menu.c:2058
 msgid "Error while deleting recording!"
-msgstr "Erreur de suppression de l'enregistrement!"
+msgstr "Erreur de suppression de l'enregistrement !"
 
 #: menu.c:2089
 msgid "Recording commands"
@@ -642,35 +644,35 @@ msgstr "Durée affichage message (s)"
 
 #: menu.c:2217
 msgid "Setup.OSD$Use small font"
-msgstr "Utiliser les petits caractères"
+msgstr "Utiliser les petites polices"
 
 #: menu.c:2218
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-aliasing"
 
 #: menu.c:2219
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Police par défaut"
 
 #: menu.c:2220
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Petite police"
 
 #: menu.c:2221
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Police taille fixe"
 
 #: menu.c:2222
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Taille police par défaut (pixel)"
 
 #: menu.c:2223
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Taille petite police par défaut (pixel)"
 
 #: menu.c:2224
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Taille police fixe par défaut (pixel)"
 
 #: menu.c:2225
 msgid "Setup.OSD$Channel info position"
@@ -840,19 +842,19 @@ msgstr "Fréquence haute LNB (MHz)"
 
 #: menu.c:2560
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM remise à zéro"
 
 #: menu.c:2561
 msgid "CAM present"
-msgstr ""
+msgstr "CAM présente"
 
 #: menu.c:2562
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM prête"
 
 #: menu.c:2585 menu.c:2815
 msgid "CAM"
-msgstr "Accès conditionnel"
+msgstr "Accés conditionnel"
 
 #: menu.c:2590
 msgid "Button$Menu"
@@ -868,15 +870,15 @@ msgstr "Ouverture du menu CAM"
 
 #: menu.c:2615
 msgid "Can't open CAM menu!"
-msgstr "Impossible d'ouvrir le menu CAM!"
+msgstr "Impossible d'ouvrir le menu CAM !"
 
 #: menu.c:2624
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM en cours d'utilisation - Remettre à zéro ?"
 
 #: menu.c:2626
 msgid "Can't reset CAM!"
-msgstr "Impossible de réinitialiser la CAM!"
+msgstr "Impossible de réinitialiser la CAM !"
 
 #: menu.c:2660 menu.c:2816
 msgid "Recording"
@@ -980,7 +982,7 @@ msgstr "Prise en compte chaîne (s)"
 
 #: menu.c:2716
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Entrée chaîne timeout (ms)"
 
 #: menu.c:2717
 msgid "Setup.Miscellaneous$Initial channel"
@@ -1002,7 +1004,7 @@ msgstr "Plugins"
 msgid "This plugin has no setup parameters!"
 msgstr "Ce plugin n'a pas de paramètres!"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:951
+#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Configuration"
 
@@ -1012,7 +1014,7 @@ msgstr "Redémarrer"
 
 #: menu.c:2826
 msgid "Really restart?"
-msgstr "Redémarrer?"
+msgstr "Vraiment redémarrer ?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 #: menu.c:2878
@@ -1063,23 +1065,23 @@ msgstr " Annuler le montage"
 
 #: menu.c:3038
 msgid "Stop recording?"
-msgstr "Arrêter l'enregistrement?"
+msgstr "Arrêter l'enregistrement ?"
 
 #: menu.c:3046
 msgid "Cancel editing?"
-msgstr "Annuler les modifications?"
+msgstr "Annuler les modifications ?"
 
 #: menu.c:3526
 msgid "No audio available!"
-msgstr ""
+msgstr "Pas d'audio disponible !"
 
 #: menu.c:3736
 msgid "Not enough disk space to start recording!"
-msgstr "Espace disque insuffisant pour démarrer l'enregistrement!"
+msgstr "Espace disque insuffisant pour démarrer l'enregistrement !"
 
-#: menu.c:3767 vdr.c:1015 vdr.c:1075
+#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
-msgstr "Pas de carte DVB disponible pour l'enregistrement!"
+msgstr "Pas de carte DVB disponible pour l'enregistrement !"
 
 #: menu.c:3797
 msgid "Pausing live video..."
@@ -1088,15 +1090,15 @@ msgstr "Pause de l'émission en direct..."
 #. TRANSLATORS: note the trailing blank!
 #: menu.c:4040
 msgid "Jump: "
-msgstr "Accès direct: "
+msgstr "Accès direct : "
 
 #: menu.c:4184
 msgid "No editing marks defined!"
-msgstr "Pas de marques d'édition définies!"
+msgstr "Pas de marques d'édition définies !"
 
 #: menu.c:4186
 msgid "Can't start editing process!"
-msgstr "Impossible de commencer le montage!"
+msgstr "Impossible de commencer le montage !"
 
 #: menu.c:4188
 msgid "Editing process started"
@@ -1104,7 +1106,7 @@ msgstr "Opération de montage lancée"
 
 #: menu.c:4191
 msgid "Editing process already active!"
-msgstr "Montage déjà en cours!"
+msgstr "Montage déjà en cours !"
 
 #: menuitems.c:21
 msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
@@ -1114,23 +1116,23 @@ msgstr " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~,/_@"
 msgid "yes"
 msgstr "oui"
 
-#: menuitems.c:287
+#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.#~,/_@1\tabcàâç2\tdeféèê3\tghiîï4\tjkl5\tmnoô6\tpqrs7\ttuvù8\twxyz9"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Insert"
 msgstr "Insérer"
 
-#: menuitems.c:319
+#: menuitems.c:320
 msgid "Button$Overwrite"
-msgstr "Écraser"
+msgstr "Ecraser"
 
-#: menuitems.c:972
+#: menuitems.c:971
 msgid "Plugin"
 msgstr "Plugin"
 
@@ -1140,23 +1142,23 @@ msgstr "Haut/Bas -> nouvelle place - OK -> déplacer"
 
 #: player.c:84
 msgid "Channel locked (recording)!"
-msgstr "Chaîne verrouillée (enregistrement en cours)!"
+msgstr "Chaîne verrouillée (enregistrement en cours) !"
 
 #: recording.c:189
 msgid "Low disk space!"
-msgstr "Disque presque plein!"
+msgstr "Disque presque plein !"
 
 #: shutdown.c:148
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Arrêt impossible - option '-s' absente!"
+msgstr "Arrêt impossible - option '-s' absente !"
 
 #: shutdown.c:152
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Edition en cours - confirmez l'arrêt ?"
 
 #: shutdown.c:162
 msgid "Recording - shut down anyway?"
-msgstr "Enregistrement en cours - confirmez l'arrêt"
+msgstr "Enregistrement en cours - confirmez l'arrêt ?"
 
 #: shutdown.c:169
 #, c-format
@@ -1170,19 +1172,19 @@ msgstr "confirmez l'arrêt"
 #: shutdown.c:184
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Le plugin %s démarre dans %ld min, continuer ?"
 
 #: shutdown.c:195
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Edition en cours - redémarrer ?"
 
 #: shutdown.c:205
 msgid "Recording - restart anyway?"
-msgstr "Enregistrement en cours - redémarrer?"
+msgstr "Enregistrement en cours - redémarrer ?"
 
 #: shutdown.c:209
 msgid "restart anyway?"
-msgstr "redémarrer?"
+msgstr "redémarrer ?"
 
 #. TRANSLATORS: note the trailing blank!
 #: skinclassic.c:553
@@ -1235,39 +1237,39 @@ msgstr "Samedi"
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: vdr.c:861
+#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr "Enregistrement VPS commence prochaînement"
 
-#: vdr.c:1023 vdr.c:1079
+#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr "Enregistrement a commencé"
 
-#: vdr.c:1032
+#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR doit s'arrêter plus tard - Appuyer sur Power pour forcer"
 
-#: vdr.c:1044
+#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Appuyez sur une touche pour annuler l'arrêt"
 
-#: vdr.c:1097
+#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Changement de carte DVB primaire..."
 
-#: vdr.c:1165
-msgid "Editing process failed!"
-msgstr "Echec du montage!"
-
 #: vdr.c:1167
+msgid "Editing process failed!"
+msgstr "Echec du montage !"
+
+#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Montage terminé"
 
-#: vdr.c:1173
+#: vdr.c:1175
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Appuyer sur une touche pour annuler le redémarrage"
 
-#: vdr.c:1193
+#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR s'arrêtera dans %s minutes"

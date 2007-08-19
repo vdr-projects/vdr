@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.72 2007/08/12 11:33:17 kls Exp $
+ * $Id: osd.c 1.73 2007/08/17 15:23:50 kls Exp $
  */
 
 #include "osd.h"
@@ -449,13 +449,13 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
      int w = Font->Width(s);
      int h = Font->Height();
      int limit = 0;
+     int cw = Width ? Width : w;
+     int ch = Height ? Height : h;
+     if (!Intersects(x, y, x + cw - 1, y + ch - 1))
+        return;
+     if (ColorBg != clrTransparent)
+        DrawRectangle(x, y, x + cw - 1, y + ch - 1, ColorBg);
      if (Width || Height) {
-        int cw = Width ? Width : w;
-        int ch = Height ? Height : h;
-        if (!Intersects(x, y, x + cw - 1, y + ch - 1))
-           return;
-        if (ColorBg != clrTransparent)
-           DrawRectangle(x, y, x + cw - 1, y + ch - 1, ColorBg);
         limit = x + cw - x0;
         if (Width) {
            if ((Alignment & taLeft) != 0)
@@ -482,8 +482,6 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
               }
            }
         }
-     else if (!Intersects(x, y, x + w - 1, y + h - 1))
-        return;
      x -= x0;
      y -= y0;
      Font->DrawText(this, x, y, s, ColorFg, ColorBg, limit);

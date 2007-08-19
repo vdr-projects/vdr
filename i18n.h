@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.21 2007/08/10 13:53:57 kls Exp $
+ * $Id: i18n.h 1.23 2007/08/19 14:07:17 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -36,9 +36,16 @@ int I18nCurrentLanguage(void);
 void I18nSetLanguage(int Language);
    ///< Sets the current language index to Language. If Language is outside
    ///< the range of available languages, nothing happens.
+int I18nNumLanguagesWithLocale(void);
+   ///< Returns the number of entries in the list returned by I18nLanguages()
+   ///< that actually have a locale.
 const cStringList *I18nLanguages(void);
    ///< Returns the list of available languages. Values returned by
    ///< I18nCurrentLanguage() are indexes into this list.
+   ///< Only the first I18nNumLanguagesWithLocale() entries in this list
+   ///< have an actual locale installed. The rest are just dummy entries
+   ///< to allow having three letter language codes for other languages
+   ///< that have no actual locale on this system.
 const char *I18nTranslate(const char *s, const char *Plugin = NULL) __attribute_format_arg__(1);
    ///< Translates the given string (with optional Plugin context) into
    ///< the current language. If no translation is available, the original
@@ -72,7 +79,7 @@ bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, 
    ///< the second one (like "deu" out of ""eng+deu").
 
 #ifdef PLUGIN_NAME_I18N
-#define tr(s)  I18nTranslate(s, PLUGIN_NAME_I18N)
+#define tr(s)  I18nTranslate(s, "vdr-" PLUGIN_NAME_I18N)
 #else
 #define tr(s)  I18nTranslate(s)
 #endif
