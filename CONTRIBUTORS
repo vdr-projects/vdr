@@ -2062,6 +2062,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for suggesting to make the "Setup/OSD/Language" menu only show those languages
  that actually have a locale
  for suggesting to use setenv() instead of setlocale() to set the language for gettext()
+ for fixing handling locale directories with a large number of entries
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'

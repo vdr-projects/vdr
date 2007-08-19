@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.312 2007/08/19 14:10:46 kls Exp $
+ * $Id: i18n.c 1.313 2007/08/19 16:03:03 kls Exp $
  *
  *
  */
@@ -112,7 +112,7 @@ void I18nInitialize(void)
      for (int i = 0; i < Locales.Size(); i++) {
          cString FileName = cString::sprintf("%s/%s/LC_MESSAGES/vdr.mo", I18nLocaleDir, Locales[i]);
          if (access(FileName, F_OK) == 0) { // found a locale with VDR texts
-            if (i < I18N_MAX_LANGUAGES - 1) {
+            if (NumLocales < I18N_MAX_LANGUAGES - 1) {
                SetEnvLanguage(Locales[i]);
                NumLocales++;
                if (strstr(OldLocale, Locales[i]) == OldLocale)
