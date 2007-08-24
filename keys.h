@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.12 2007/08/04 14:40:23 kls Exp $
+ * $Id: keys.h 1.13 2007/08/24 13:15:48 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -82,7 +82,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 
 struct tKey {
   eKeys type;
-  char *name;
+  const char *name;
   };
 
 class cKey : public cListObject {

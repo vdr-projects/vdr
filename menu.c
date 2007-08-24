@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.460 2007/08/18 09:03:05 kls Exp $
+ * $Id: menu.c 1.461 2007/08/24 13:15:48 kls Exp $
  */
 
 #include "menu.h"
@@ -1040,7 +1040,7 @@ int cMenuScheduleItem::Compare(const cListObject &ListObject) const
   return r;
 }
 
-static char *TimerMatchChars = " tT";
+static const char *TimerMatchChars = " tT";
 
 bool cMenuScheduleItem::Update(bool Force)
 {

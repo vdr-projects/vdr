@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.315 2007/08/24 13:08:04 kls Exp $
+ * $Id: i18n.c 1.316 2007/08/24 13:15:48 kls Exp $
  *
  *
  */
@@ -62,7 +62,7 @@ const char *LanguageCodeList[] = {
   NULL
   };
 
-static char *I18nLocaleDir = LOCDIR;
+static const char *I18nLocaleDir = LOCDIR;
 
 static cStringList LanguageLocales;
 static cStringList LanguageNames;

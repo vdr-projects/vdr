@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.61 2007/06/17 12:43:40 kls Exp $
+ * $Id: thread.c 1.62 2007/08/24 13:15:48 kls Exp $
  */
 
 #include "thread.h"
@@ -416,7 +416,7 @@ bool cPipe::Open(const char *Command, const char *Mode)
      return false;
      }
 
-  char *mode = "w";
+  const char *mode = "w";
   int iopipe = 0;
 
   if (pid > 0) { // parent process

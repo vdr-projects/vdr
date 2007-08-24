@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.15 2006/12/02 11:12:28 kls Exp $
+ * $Id: rcu.c 1.16 2007/08/24 13:15:48 kls Exp $
  */
 
 #include "rcu.h"
@@ -257,7 +257,7 @@ void cRcuRemote::SetNumber(int n, bool Hex)
   data = m;
 }
 
-void cRcuRemote::SetString(char *s)
+void cRcuRemote::SetString(const char *s)
 {
   const char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
   int n = 0;

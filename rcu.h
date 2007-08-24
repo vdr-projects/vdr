@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.6 2005/12/31 15:09:25 kls Exp $
+ * $Id: rcu.h 1.7 2007/08/24 13:15:48 kls Exp $
  */
 
 #ifndef __RCU_H
@@ -31,7 +31,7 @@ private:
   void SetMode(unsigned char Mode);
   void SetNumber(int n, bool Hex = false);
   void SetPoints(unsigned char Dp, bool On);
-  void SetString(char *s);
+  void SetString(const char *s);
   bool DetectCode(unsigned char *Code);
   virtual void Action(void);
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
