@@ -5396,3 +5396,6 @@ Video Disk Recorder Revision History
 - Changed the default for LOCDIR in Makefile and Make.config.template to
   "./locale", so that internationalization works by default when running VDR
   from within its source directory (suggested by Anssi Hannula).
+- Added the new i18n macro trVDR(), which can be used by plugins to mark
+  texts they want to reuse from VDR's core translations (suggested by Matthias
+  Becker).
