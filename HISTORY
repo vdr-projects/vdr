@@ -5391,3 +5391,5 @@ Video Disk Recorder Revision History
 - Added a note about LANG having to be set to a valid locale in INSTALL
   (suggested by Matthias Fechner).
 - Fixed some compiler warnings with gcc-4.2.0 (thanks to Matthias Schwarzott).
+- Fixed setting the locale file name in i18n-to-gettext.pl (thanks to Matthias
+  Schwarzott).

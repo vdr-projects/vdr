@@ -2102,6 +2102,7 @@ Matthias Schwarzott <zzam@gentoo.org>
  "Implicit rules", so that a plain "make" will compile everything
  for adding DESTDIR and PREFIX handling to the Makefile
  for fixing some compiler warnings with gcc-4.2.0
+ for fixing setting the locale file name in i18n-to-gettext.pl
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
