@@ -5393,3 +5393,6 @@ Video Disk Recorder Revision History
 - Fixed some compiler warnings with gcc-4.2.0 (thanks to Matthias Schwarzott).
 - Fixed setting the locale file name in i18n-to-gettext.pl (thanks to Matthias
   Schwarzott).
+- Changed the default for LOCDIR in Makefile and Make.config.template to
+  "./locale", so that internationalization works by default when running VDR
+  from within its source directory (suggested by Anssi Hannula).

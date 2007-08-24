@@ -2065,6 +2065,9 @@ Anssi Hannula <anssi.hannula@gmail.com>
  that actually have a locale
  for suggesting to use setenv() instead of setlocale() to set the language for gettext()
  for fixing handling locale directories with a large number of entries
+ for suggesting to change the default for LOCDIR in Makefile and Make.config.template
+ to "./locale", so that internationalization works by default when running VDR
+ from within its source directory
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
