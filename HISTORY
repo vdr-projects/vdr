@@ -5385,3 +5385,5 @@ Video Disk Recorder Revision History
 - Fixed handling locale directories with a large number of entries (thanks to
   Anssi Hannula).
 - Updated Turkish language texts (thanks to Oktay Yolgeçen).
+- Fixed stripping the context in I18nTranslate() (reported by Christian
+  Wieninger).

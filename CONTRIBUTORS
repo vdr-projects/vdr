@@ -1870,6 +1870,7 @@ Christian Wieninger <cwieninger@gmx.de>
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
  for a patch that fixed part of a crash in i18n character set conversion
+ for reporting a bug in stripping the context in I18nTranslate()
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the

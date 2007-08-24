@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.313 2007/08/19 16:03:03 kls Exp $
+ * $Id: i18n.c 1.314 2007/08/24 12:53:53 kls Exp $
  *
  *
  */
@@ -208,10 +208,10 @@ const char *I18nTranslate(const char *s, const char *Plugin)
         t = dgettext(Plugin, s);
      if (t == s)
         t = gettext(s);
-     s = t;
+     if (t != s)
+        return t;
      }
-  const char *p = strchr(s, '$');
-  return p ? p + 1 : s;
+  return SkipContext(s);
 }
 
 const char *I18nLocale(int Language)
