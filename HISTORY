@@ -5380,7 +5380,8 @@ Video Disk Recorder Revision History
   name of the plugin. The "newplugin" script has been changed accordingly, and
   plugin authors should change their Makefiles, too.
 
-2007-08-19: Version 1.5.9
+2007-08-24: Version 1.5.9
 
 - Fixed handling locale directories with a large number of entries (thanks to
   Anssi Hannula).
+- Updated Turkish language texts (thanks to Oktay Yolgeçen).
