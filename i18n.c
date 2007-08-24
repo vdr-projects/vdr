@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.314 2007/08/24 12:53:53 kls Exp $
+ * $Id: i18n.c 1.315 2007/08/24 13:08:04 kls Exp $
  *
  *
  */
@@ -114,19 +114,22 @@ void I18nInitialize(void)
          if (access(FileName, F_OK) == 0) { // found a locale with VDR texts
             if (NumLocales < I18N_MAX_LANGUAGES - 1) {
                SetEnvLanguage(Locales[i]);
-               NumLocales++;
-               if (strstr(OldLocale, Locales[i]) == OldLocale)
-                  CurrentLanguage = LanguageLocales.Size();
-               LanguageLocales.Append(strdup(Locales[i]));
-               LanguageNames.Append(strdup(gettext(LanguageName)));
-               const char *Code = gettext(LanguageCode);
-               for (const char **lc = LanguageCodeList; *lc; lc++) {
-                   if (ContainsCode(*lc, Code)) {
-                      Code = *lc;
-                      break;
+               const char *TranslatedLanguageName = gettext(LanguageName);
+               if (TranslatedLanguageName != LanguageName) {
+                  NumLocales++;
+                  if (strstr(OldLocale, Locales[i]) == OldLocale)
+                     CurrentLanguage = LanguageLocales.Size();
+                  LanguageLocales.Append(strdup(Locales[i]));
+                  LanguageNames.Append(strdup(TranslatedLanguageName));
+                  const char *Code = gettext(LanguageCode);
+                  for (const char **lc = LanguageCodeList; *lc; lc++) {
+                      if (ContainsCode(*lc, Code)) {
+                         Code = *lc;
+                         break;
+                         }
                       }
-                   }
-               LanguageCodes.Append(strdup(Code));
+                  LanguageCodes.Append(strdup(Code));
+                  }
                }
             else {
                esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
