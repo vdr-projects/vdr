@@ -5388,3 +5388,5 @@ Video Disk Recorder Revision History
 - Fixed stripping the context in I18nTranslate() (reported by Christian
   Wieninger).
 - Fixed detecting whether a particular locale is actually supported.
+- Added a note about LANG having to be set to a valid locale in INSTALL
+  (suggested by Matthias Fechner).

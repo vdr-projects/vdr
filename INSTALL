@@ -113,6 +113,9 @@ in the log file, it is sufficient to just set
 which only influences the way strings are sorted and leaves error messages
 in English.
 
+Note that for VDR's internationalized texts to work, the LANG environment
+variable must be set to a valid locale!
+
 Automatic restart in case of hangups:
 -------------------------------------
 

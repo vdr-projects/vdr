@@ -541,6 +541,7 @@ Tomas Prybil <tomas.prybil@copper.se>
 
 Matthias Fechner <matthiasfechner@web.de>
  for pointing out a bug in parsing 'E' records in epg2html.pl
+ for suggesting to add a note about LANG having to be set to a valid locale in INSTALL
 
 Paul Lacatus <paul@campina.iiruc.ro>
  for translating OSD texts to the Romanian language
