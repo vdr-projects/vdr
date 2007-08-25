@@ -5403,3 +5403,5 @@ Video Disk Recorder Revision History
   varable in the Makefile (thanks to Thomas Schmidt).
 - The SVDRP command LSTC can now list the channels with group separators if the
   option ':groups' is given (thanks to Andreas Mair).
+- Added a missing error report to cCuttingThread::Action() (thanks to Udo
+  Richter).
