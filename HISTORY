@@ -5380,7 +5380,7 @@ Video Disk Recorder Revision History
   name of the plugin. The "newplugin" script has been changed accordingly, and
   plugin authors should change their Makefiles, too.
 
-2007-08-24: Version 1.5.9
+2007-08-25: Version 1.5.9
 
 - Fixed handling locale directories with a large number of entries (thanks to
   Anssi Hannula).
@@ -5399,3 +5399,5 @@ Video Disk Recorder Revision History
 - Added the new i18n macro trVDR(), which can be used by plugins to mark
   texts they want to reuse from VDR's core translations (suggested by Matthias
   Becker).
+- VDR now uses the default configuration directory as defined in the CONFDIR
+  varable in the Makefile (thanks to Thomas Schmidt).

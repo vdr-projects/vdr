@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.298 2007/08/18 13:03:46 kls Exp $
+ * $Id: vdr.c 1.299 2007/08/25 08:51:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
   // Configuration data:
 
   if (!ConfigDirectory)
-     ConfigDirectory = VideoDirectory;
+     ConfigDirectory = CONFDIR;
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
   cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));

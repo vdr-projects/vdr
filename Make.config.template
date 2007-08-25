@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.14 2007/08/24 13:23:04 kls Exp $
+# $Id: Make.config.template 1.15 2007/08/25 08:53:45 kls Exp $
 
 ### The C compiler and options:
 
@@ -31,6 +31,7 @@ LOCDIR   = ./locale
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
 VIDEODIR = /video
+CONFDIR  = $(VIDEODIR)
 
 ### The remote control:
 

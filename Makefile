@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.105 2007/08/24 13:22:25 kls Exp $
+# $Id: Makefile 1.106 2007/08/25 08:52:17 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -61,6 +61,7 @@ DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
 DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
+DEFINES += -DCONFDIR=\"$(CONFDIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 

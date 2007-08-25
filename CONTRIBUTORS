@@ -1057,9 +1057,11 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
  for reporting a bug in handling the '.update' file in case the video directory is
  not at the default location
 
-Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
+Thomas Schmidt <tschmidt@debian.org>
  for reporting a crash when canceling a newly created timer
  for making 'diseqc.conf' a required file only if Setup.DiSEqC is activated
+ for making VDR use the default configuration directory as defined in the CONFDIR
+ varable in the Makefile
 
 Michael Walle <michael.walle@web.de>
  for reporting a bug in channel switching after Left/Right has been pressed
