@@ -5401,3 +5401,5 @@ Video Disk Recorder Revision History
   Becker).
 - VDR now uses the default configuration directory as defined in the CONFDIR
   varable in the Makefile (thanks to Thomas Schmidt).
+- The SVDRP command LSTC can now list the channels with group separators if the
+  option ':groups' is given (thanks to Andreas Mair).

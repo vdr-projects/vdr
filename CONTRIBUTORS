@@ -944,6 +944,8 @@ Andreas Mair <andreas@vdr-developer.org>
  for enabling fonts to be created with a width that overwrites the default width
  for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
  not NULL
+ for making the SVDRP command LSTC list the channels with group separators if the
+ option ':groups' is given
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
