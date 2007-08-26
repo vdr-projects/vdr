@@ -5380,7 +5380,7 @@ Video Disk Recorder Revision History
   name of the plugin. The "newplugin" script has been changed accordingly, and
   plugin authors should change their Makefiles, too.
 
-2007-08-25: Version 1.5.9
+2007-08-26: Version 1.5.9
 
 - Fixed handling locale directories with a large number of entries (thanks to
   Anssi Hannula).
@@ -5405,3 +5405,12 @@ Video Disk Recorder Revision History
   option ':groups' is given (thanks to Andreas Mair).
 - Added a missing error report to cCuttingThread::Action() (thanks to Udo
   Richter).
+- There can now be more than one OSD at the same time. At any given time,
+  however, only one of them can be active (and thus visible). This is to
+  allow displaying things like subtitles in an easy way. A cOsd therefore
+  now has a "Level", and only the OSD with the smallest level will be
+  displayed. The level 0 OSD is special, and there can only be one with
+  this level. If there is more than one OSD with a particular level, only
+  the one that was created first will be displayed.
+  Plugins that provide an OSD need to adjust their cOsdProvider::CreateOsd()
+  function to hand through the Level.

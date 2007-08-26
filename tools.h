@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.107 2007/08/05 12:11:52 kls Exp $
+ * $Id: tools.h 1.108 2007/08/25 14:16:39 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -463,6 +463,12 @@ public:
     if (size >= allocated)
        Realloc(allocated * 4 / 2); // increase size by 50%
     data[size++] = Data;
+  }
+  virtual void Remove(int Index)
+  {
+    if (Index < size - 1)
+       memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
+    size--;
   }
   virtual void Clear(void) {}
   void Sort(__compar_fn_t Compare)
