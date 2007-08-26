@@ -1418,6 +1418,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a missing 'P' in vdr.c's SHUTDOWNCANCELROMPT macro
  for fixing a problem with characters >0x7F in the modified version of skipspace()
  for reporting a faulty comment in Make.config.template
+ for fixing checking for ttDolbyLast in cDevice::SetCurrentAudioTrack()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

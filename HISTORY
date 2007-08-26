@@ -5414,3 +5414,5 @@ Video Disk Recorder Revision History
   the one that was created first will be displayed.
   Plugins that provide an OSD need to adjust their cOsdProvider::CreateOsd()
   function to hand through the Level.
+- Fixed checking for ttDolbyLast in cDevice::SetCurrentAudioTrack() (thanks
+  to Marco Schlüßler).

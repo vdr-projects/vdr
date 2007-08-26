@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.141 2007/06/16 09:31:32 kls Exp $
+ * $Id: device.c 1.142 2007/08/26 11:11:42 kls Exp $
  */
 
 #include "device.h"
@@ -892,7 +892,7 @@ int cDevice::NumAudioTracks(void) const
 
 bool cDevice::SetCurrentAudioTrack(eTrackType Type)
 {
-  if (ttNone < Type && Type < ttDolbyLast) {
+  if (ttNone < Type && Type <= ttDolbyLast) {
      cMutexLock MutexLock(&mutexCurrentAudioTrack);
      if (IS_DOLBY_TRACK(Type))
         SetDigitalAudioDevice(true);
