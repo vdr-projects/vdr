@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.73 2007/08/17 15:23:50 kls Exp $
+ * $Id: osd.c 1.74 2007/08/26 09:44:50 kls Exp $
  */
 
 #include "osd.h"
@@ -646,18 +646,24 @@ int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
-int cOsd::isOpen = 0;
+cVector<cOsd *> cOsd::Osds;
 
-cOsd::cOsd(int Left, int Top)
+cOsd::cOsd(int Left, int Top, uint Level)
 {
-  if (isOpen)
-     esyslog("ERROR: OSD opened without closing previous OSD!");
   savedRegion = NULL;
   numBitmaps = 0;
   left = Left;
   top = Top;
   width = height = 0;
-  isOpen++;
+  level = Level;
+  active = false;
+  for (int i = 0; i < Osds.Size(); i++) {
+      if (Osds[i]->level > level) {
+         Osds.Insert(this, i);
+         return;
+         }
+      }
+  Osds.Append(this);
 }
 
 cOsd::~cOsd()
@@ -665,7 +671,14 @@ cOsd::~cOsd()
   for (int i = 0; i < numBitmaps; i++)
       delete bitmaps[i];
   delete savedRegion;
-  isOpen--;
+  for (int i = 0; i < Osds.Size(); i++) {
+      if (Osds[i] == this) {
+         Osds.Remove(i);
+         if (Osds.Size())
+            Osds[0]->SetActive(true);
+         break;
+         }
+      }
 }
 
 void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
@@ -803,15 +816,23 @@ cOsdProvider::~cOsdProvider()
   osdProvider = NULL;
 }
 
-cOsd *cOsdProvider::NewOsd(int Left, int Top)
+cOsd *cOsdProvider::NewOsd(int Left, int Top, uint Level)
 {
-  if (cOsd::IsOpen())
+  if (Level == 0 && cOsd::IsOpen())
      esyslog("ERROR: attempt to open OSD while it is already open - using dummy OSD!");
-  else if (osdProvider)
-     return osdProvider->CreateOsd(Left, Top);
+  else if (osdProvider) {
+     cOsd *ActiveOsd = cOsd::Osds.Size() ? cOsd::Osds[0] : NULL;
+     cOsd *Osd = osdProvider->CreateOsd(Left, Top, Level);
+     if (Osd == cOsd::Osds[0]) {
+        if (ActiveOsd)
+           ActiveOsd->SetActive(false);
+        Osd->SetActive(true);
+        }
+     return Osd;
+     }
   else
      esyslog("ERROR: no OSD provider available - using dummy OSD!");
-  return new cOsd(Left, Top); // create a dummy cOsd, so that access won't result in a segfault
+  return new cOsd(Left, Top, 999); // create a dummy cOsd, so that access won't result in a segfault
 }
 
 void cOsdProvider::Shutdown(void)

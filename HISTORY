@@ -5379,3 +5379,40 @@ Video Disk Recorder Revision History
   vdr.mo. Text files for plugins are now named "vdr-name.mo", when "name" is the
   name of the plugin. The "newplugin" script has been changed accordingly, and
   plugin authors should change their Makefiles, too.
+
+2007-08-26: Version 1.5.9
+
+- Fixed handling locale directories with a large number of entries (thanks to
+  Anssi Hannula).
+- Updated Turkish language texts (thanks to Oktay Yolgeçen).
+- Fixed stripping the context in I18nTranslate() (reported by Christian
+  Wieninger).
+- Fixed detecting whether a particular locale is actually supported.
+- Added a note about LANG having to be set to a valid locale in INSTALL
+  (suggested by Matthias Fechner).
+- Fixed some compiler warnings with gcc-4.2.0 (thanks to Matthias Schwarzott).
+- Fixed setting the locale file name in i18n-to-gettext.pl (thanks to Matthias
+  Schwarzott).
+- Changed the default for LOCDIR in Makefile and Make.config.template to
+  "./locale", so that internationalization works by default when running VDR
+  from within its source directory (suggested by Anssi Hannula).
+- Added the new i18n macro trVDR(), which can be used by plugins to mark
+  texts they want to reuse from VDR's core translations (suggested by Matthias
+  Becker).
+- VDR now uses the default configuration directory as defined in the CONFDIR
+  varable in the Makefile (thanks to Thomas Schmidt).
+- The SVDRP command LSTC can now list the channels with group separators if the
+  option ':groups' is given (thanks to Andreas Mair).
+- Added a missing error report to cCuttingThread::Action() (thanks to Udo
+  Richter).
+- There can now be more than one OSD at the same time. At any given time,
+  however, only one of them can be active (and thus visible). This is to
+  allow displaying things like subtitles in an easy way. A cOsd therefore
+  now has a "Level", and only the OSD with the smallest level will be
+  displayed. The level 0 OSD is special, and there can only be one with
+  this level. If there is more than one OSD with a particular level, only
+  the one that was created first will be displayed.
+  Plugins that provide an OSD need to adjust their cOsdProvider::CreateOsd()
+  function to hand through the Level.
+- Fixed checking for ttDolbyLast in cDevice::SetCurrentAudioTrack() (thanks
+  to Marco Schlüßler).

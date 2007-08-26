@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.56 2007/07/20 14:50:17 kls Exp $
+ * $Id: osd.h 1.57 2007/08/26 09:45:38 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include "config.h"
 #include "font.h"
+#include "tools.h"
 
 #define MAXNUMCOLORS 256
 
@@ -247,13 +248,15 @@ class cOsd {
   friend class cOsdProvider;
 private:
   static int osdLeft, osdTop, osdWidth, osdHeight;
-  static int isOpen;
+  static cVector<cOsd *> Osds;
   cBitmap *savedRegion;
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
   int left, top, width, height;
+  uint level;
+  bool active;
 protected:
-  cOsd(int Left, int Top);
+  cOsd(int Left, int Top, uint Level);
        ///< Initializes the OSD with the given coordinates.
        ///< By default it is assumed that the full area will be able to display
        ///< full 32 bit graphics (ARGB with eight bit for each color and the alpha
@@ -269,6 +272,14 @@ protected:
        ///< and should require only the minimum necessary color depth. This is
        ///< because a derived cOsd class may or may not be able to handle more
        ///< than one area.
+       ///< There can be any number of cOsd objects at the same time, but only
+       ///< one of them will be active at any given time. The active OSD is the
+       ///< one with the lowest value of Level. If there are several cOsd objects
+       ///< with the same Level, the one that was created first will be active.
+  bool Active(void) { return active; }
+  virtual void SetActive(bool On) { active = On; }
+       ///< Sets this OSD to be the active one.
+       ///< A derived class must call cOsd::SetActive(On).
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
@@ -281,7 +292,8 @@ public:
        ///< This may be useful for plugins that determine the scaling of the
        ///< video image and need to scale the OSD accordingly to fit on the
        ///< screen.
-  static int IsOpen(void) { return isOpen; }
+  static int IsOpen(void) { return Osds.Size() && Osds[0]->level == 0; }
+       ///< Returns true if there is currently a level 0 OSD open.
   int Left(void) { return left; }
   int Top(void) { return top; }
   int Width(void) { return width; }
@@ -379,14 +391,14 @@ class cOsdProvider {
 private:
   static cOsdProvider *osdProvider;
 protected:
-  virtual cOsd *CreateOsd(int Left, int Top) = 0;
+  virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located
       ///< at the given coordinates.
 public:
   cOsdProvider(void);
       //XXX maybe parameter to make this one "sticky"??? (frame-buffer etc.)
   virtual ~cOsdProvider();
-  static cOsd *NewOsd(int Left, int Top);
+  static cOsd *NewOsd(int Left, int Top, uint Level = 0);
       ///< Returns a pointer to a newly created cOsd object, which will be located
       ///< at the given coordinates. When the cOsd object is no longer needed, the
       ///< caller must delete it. If the OSD is already in use, or there is no OSD

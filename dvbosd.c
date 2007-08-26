@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.30 2006/01/28 14:24:04 kls Exp $
+ * $Id: dvbosd.c 1.31 2007/08/26 09:39:20 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -26,15 +26,17 @@ private:
   int osdMem;
   bool shown;
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
+protected:
+  virtual void SetActive(bool On);
 public:
-  cDvbOsd(int Left, int Top, int OsdDev);
+  cDvbOsd(int Left, int Top, int OsdDev, uint Level);
   virtual ~cDvbOsd();
   virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
   virtual void Flush(void);
   };
 
-cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
-:cOsd(Left, Top)
+cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev, uint Level)
+:cOsd(Left, Top, Level)
 {
   osdDev = OsdDev;
   shown = false;
@@ -49,23 +51,36 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
      if (ioctl(osdDev, OSD_GET_CAPABILITY, &cap) == 0)
         osdMem = cap.val;
 #endif
-     // must clear all windows here to avoid flashing effects - doesn't work if done
-     // in Flush() only for the windows that are actually used...
-     for (int i = 0; i < MAXNUMWINDOWS; i++) {
-         Cmd(OSD_SetWindow, 0, i + 1);
-         Cmd(OSD_Clear);
-         }
      }
 }
 
 cDvbOsd::~cDvbOsd()
 {
-  if (shown) {
-     cBitmap *Bitmap;
-     for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
-         Cmd(OSD_SetWindow, 0, i + 1);
-         Cmd(OSD_Close);
-         }
+  SetActive(false);
+}
+
+void cDvbOsd::SetActive(bool On)
+{
+  if (On != Active()) {
+     cOsd::SetActive(On);
+     if (On) {
+        // must clear all windows here to avoid flashing effects - doesn't work if done
+        // in Flush() only for the windows that are actually used...
+        for (int i = 0; i < MAXNUMWINDOWS; i++) {
+            Cmd(OSD_SetWindow, 0, i + 1);
+            Cmd(OSD_Clear);
+            }
+        if (GetBitmap(0)) // only flush here if there are already bitmaps
+           Flush();
+        }
+     else if (shown) {
+        cBitmap *Bitmap;
+        for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
+            Cmd(OSD_SetWindow, 0, i + 1);
+            Cmd(OSD_Close);
+            }
+        shown = false;
+        }
      }
 }
 
@@ -108,13 +123,20 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
 
 void cDvbOsd::Flush(void)
 {
+  if (!Active())
+     return;
   cBitmap *Bitmap;
   for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
       Cmd(OSD_SetWindow, 0, i + 1);
       if (!shown)
          Cmd(OSD_Open, Bitmap->Bpp(), Left() + Bitmap->X0(), Top() + Bitmap->Y0(), Left() + Bitmap->X0() + Bitmap->Width() - 1, Top() + Bitmap->Y0() + Bitmap->Height() - 1, (void *)1); // initially hidden!
       int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-      if (Bitmap->Dirty(x1, y1, x2, y2)) {
+      if (!shown || Bitmap->Dirty(x1, y1, x2, y2)) {
+         if (!shown) {
+            x1 = y1 = 0;
+            x2 = Bitmap->Width() - 1;
+            y2 = Bitmap->Height() - 1;
+            }
          //TODO Workaround: apparently the bitmap sent to the driver always has to be a multiple
          //TODO of 8 bits wide, and (dx * dy) also has to be a multiple of 8.
          //TODO Fix driver (should be able to handle any size bitmaps!)
@@ -173,7 +195,7 @@ cDvbOsdProvider::cDvbOsdProvider(int OsdDev)
   osdDev = OsdDev;
 }
 
-cOsd *cDvbOsdProvider::CreateOsd(int Left, int Top)
+cOsd *cDvbOsdProvider::CreateOsd(int Left, int Top, uint Level)
 {
-  return new cDvbOsd(Left, Top, osdDev);
+  return new cDvbOsd(Left, Top, osdDev, Level);
 }

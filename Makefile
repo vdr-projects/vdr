@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.104 2007/08/15 13:47:16 kls Exp $
+# $Id: Makefile 1.106 2007/08/25 08:52:17 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -19,7 +19,7 @@ DESTDIR ?=
 PREFIX  ?= /usr/local
 MANDIR   = $(PREFIX)/share/man
 BINDIR   = $(PREFIX)/bin
-LOCDIR   = $(PREFIX)/share/vdr/locale
+LOCDIR   = ./locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype -lfontconfig
 INCLUDES = -I/usr/include/freetype2
 
@@ -61,6 +61,7 @@ DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
 DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
+DEFINES += -DCONFDIR=\"$(CONFDIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 

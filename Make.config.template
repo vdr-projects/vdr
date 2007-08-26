@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.13 2007/08/12 20:43:46 kls Exp $
+# $Id: Make.config.template 1.15 2007/08/25 08:53:45 kls Exp $
 
 ### The C compiler and options:
 
@@ -26,12 +26,12 @@ endif
 #DVBDIR   = /usr/src/v4l-dvb/linux
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
-# set to ./locale to run VDR from within its source directory:
-LOCDIR   = /usr/share/vdr/locale
 
+LOCDIR   = ./locale
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
 VIDEODIR = /video
+CONFDIR  = $(VIDEODIR)
 
 ### The remote control:
 

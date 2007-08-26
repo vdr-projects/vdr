@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.18 2004/06/12 13:09:52 kls Exp $
+ * $Id: dvbosd.h 1.19 2007/08/25 13:49:34 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -17,7 +17,7 @@ private:
   int osdDev;
 public:
   cDvbOsdProvider(int OsdDev);
-  virtual cOsd *CreateOsd(int Left, int Top);
+  virtual cOsd *CreateOsd(int Left, int Top, uint Level);
   };
 
 #endif //__DVBOSD_H

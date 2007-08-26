@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.3 2007/08/15 12:52:00 kls Exp $
+# $Id: i18n-to-gettext.pl 1.4 2007/08/24 13:19:34 kls Exp $
 
 # How to convert an actual plugin:
 #
@@ -323,7 +323,7 @@ i18n: $(I18Nmo)
 	@mkdir -p $(LOCALEDIR)
 	for i in $(I18Ndirs); do\
 	    mkdir -p $(LOCALEDIR)/$$i/LC_MESSAGES;\
-	    cp $(PODIR)/$$i.mo $(LOCALEDIR)/$$i/LC_MESSAGES/$(PLUGIN).mo;\
+	    cp $(PODIR)/$$i.mo $(LOCALEDIR)/$$i/LC_MESSAGES/vdr-$(PLUGIN).mo;\
 	    done
 
 };

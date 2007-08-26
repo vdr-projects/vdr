@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.102 2007/06/23 13:14:59 kls Exp $
+ * $Id: svdrp.c 1.103 2007/08/25 09:28:26 kls Exp $
  */
 
 #include "svdrp.h"
@@ -216,10 +216,12 @@ const char *HelpPages[] = {
   "HITK [ <key> ]\n"
   "    Hit the given remote control key. Without option a list of all\n"
   "    valid key names is given.",
-  "LSTC [ <number> | <name> ]\n"
+  "LSTC [ :groups | <number> | <name> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
-  "    containing the given string as part of their name are listed.",
+  "    containing the given string as part of their name are listed.\n"
+  "    If ':groups' is given, all channels are listed including group\n"
+  "    separators. The channel number of a group separator is always 0.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
   "    listed. If a channel is given (either by number or by channel ID),\n"
@@ -862,7 +864,8 @@ void cSVDRP::CmdHITK(const char *Option)
 
 void cSVDRP::CmdLSTC(const char *Option)
 {
-  if (*Option) {
+  bool WithGroupSeps = strcasecmp(Option, ":groups") == 0;
+  if (*Option && !WithGroupSeps) {
      if (isnumber(Option)) {
         cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
         if (channel)
@@ -889,7 +892,9 @@ void cSVDRP::CmdLSTC(const char *Option)
      }
   else if (Channels.MaxNumber() >= 1) {
      for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
-         if (!channel->GroupSep())
+         if (WithGroupSeps)
+            Reply(channel->Next() ? -250: 250, "%d %s", channel->GroupSep() ? 0 : channel->Number(), *channel->ToText());
+         else if (!channel->GroupSep())
             Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), *channel->ToText());
          }
      }

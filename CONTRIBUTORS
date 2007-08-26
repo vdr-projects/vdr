@@ -541,6 +541,7 @@ Tomas Prybil <tomas.prybil@copper.se>
 
 Matthias Fechner <matthiasfechner@web.de>
  for pointing out a bug in parsing 'E' records in epg2html.pl
+ for suggesting to add a note about LANG having to be set to a valid locale in INSTALL
 
 Paul Lacatus <paul@campina.iiruc.ro>
  for translating OSD texts to the Romanian language
@@ -943,6 +944,8 @@ Andreas Mair <andreas@vdr-developer.org>
  for enabling fonts to be created with a width that overwrites the default width
  for suggesting to make cBitmap::SetXpm() checks whether the given Xpm pointer is
  not NULL
+ for making the SVDRP command LSTC list the channels with group separators if the
+ option ':groups' is given
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1056,9 +1059,11 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
  for reporting a bug in handling the '.update' file in case the video directory is
  not at the default location
 
-Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
+Thomas Schmidt <tschmidt@debian.org>
  for reporting a crash when canceling a newly created timer
  for making 'diseqc.conf' a required file only if Setup.DiSEqC is activated
+ for making VDR use the default configuration directory as defined in the CONFDIR
+ varable in the Makefile
 
 Michael Walle <michael.walle@web.de>
  for reporting a bug in channel switching after Left/Right has been pressed
@@ -1413,6 +1418,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a missing 'P' in vdr.c's SHUTDOWNCANCELROMPT macro
  for fixing a problem with characters >0x7F in the modified version of skipspace()
  for reporting a faulty comment in Make.config.template
+ for fixing checking for ttDolbyLast in cDevice::SetCurrentAudioTrack()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1515,6 +1521,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling detached processes in SystemExec()
  for fixing handling single byte characters >0x7F in Utf8ToArray()
  for fixing clearing color buttons in the 'curses' skin
+ for adding a missing error report to cCuttingThread::Action()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1870,6 +1877,7 @@ Christian Wieninger <cwieninger@gmx.de>
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
  for a patch that fixed part of a crash in i18n character set conversion
+ for reporting a bug in stripping the context in I18nTranslate()
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -2062,6 +2070,10 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for suggesting to make the "Setup/OSD/Language" menu only show those languages
  that actually have a locale
  for suggesting to use setenv() instead of setlocale() to set the language for gettext()
+ for fixing handling locale directories with a large number of entries
+ for suggesting to change the default for LOCDIR in Makefile and Make.config.template
+ to "./locale", so that internationalization works by default when running VDR
+ from within its source directory
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2098,6 +2110,8 @@ Matthias Schwarzott <zzam@gentoo.org>
  for suggesting to move the "all" target in plugin Makefiles before the
  "Implicit rules", so that a plain "make" will compile everything
  for adding DESTDIR and PREFIX handling to the Makefile
+ for fixing some compiler warnings with gcc-4.2.0
+ for fixing setting the locale file name in i18n-to-gettext.pl
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
@@ -2151,3 +2165,7 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language
+
+Matthias Becker <becker.matthias@gmail.com>
+ for suggesting to add a new i18n macro that can be used by plugins to mark
+ texts they want to reuse from VDR's core translations

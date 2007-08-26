@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.312 2007/08/19 14:10:46 kls Exp $
+ * $Id: i18n.c 1.317 2007/08/24 14:03:47 kls Exp $
  *
  *
  */
@@ -62,7 +62,7 @@ const char *LanguageCodeList[] = {
   NULL
   };
 
-static char *I18nLocaleDir = LOCDIR;
+static const char *I18nLocaleDir = LOCDIR;
 
 static cStringList LanguageLocales;
 static cStringList LanguageNames;
@@ -112,21 +112,24 @@ void I18nInitialize(void)
      for (int i = 0; i < Locales.Size(); i++) {
          cString FileName = cString::sprintf("%s/%s/LC_MESSAGES/vdr.mo", I18nLocaleDir, Locales[i]);
          if (access(FileName, F_OK) == 0) { // found a locale with VDR texts
-            if (i < I18N_MAX_LANGUAGES - 1) {
+            if (NumLocales < I18N_MAX_LANGUAGES - 1) {
                SetEnvLanguage(Locales[i]);
-               NumLocales++;
-               if (strstr(OldLocale, Locales[i]) == OldLocale)
-                  CurrentLanguage = LanguageLocales.Size();
-               LanguageLocales.Append(strdup(Locales[i]));
-               LanguageNames.Append(strdup(gettext(LanguageName)));
-               const char *Code = gettext(LanguageCode);
-               for (const char **lc = LanguageCodeList; *lc; lc++) {
-                   if (ContainsCode(*lc, Code)) {
-                      Code = *lc;
-                      break;
+               const char *TranslatedLanguageName = gettext(LanguageName);
+               if (TranslatedLanguageName != LanguageName) {
+                  NumLocales++;
+                  if (strstr(OldLocale, Locales[i]) == OldLocale)
+                     CurrentLanguage = LanguageLocales.Size();
+                  LanguageLocales.Append(strdup(Locales[i]));
+                  LanguageNames.Append(strdup(TranslatedLanguageName));
+                  const char *Code = gettext(LanguageCode);
+                  for (const char **lc = LanguageCodeList; *lc; lc++) {
+                      if (ContainsCode(*lc, Code)) {
+                         Code = *lc;
+                         break;
+                         }
                       }
-                   }
-               LanguageCodes.Append(strdup(Code));
+                  LanguageCodes.Append(strdup(Code));
+                  }
                }
             else {
                esyslog("ERROR: too many locales - increase I18N_MAX_LANGUAGES!");
@@ -203,15 +206,11 @@ const char *I18nTranslate(const char *s, const char *Plugin)
   if (!s)
      return s;
   if (CurrentLanguage) {
-     const char *t = s;
-     if (Plugin)
-        t = dgettext(Plugin, s);
-     if (t == s)
-        t = gettext(s);
-     s = t;
+     const char *t = Plugin ? dgettext(Plugin, s) : gettext(s);
+     if (t != s)
+        return t;
      }
-  const char *p = strchr(s, '$');
-  return p ? p + 1 : s;
+  return SkipContext(s);
 }
 
 const char *I18nLocale(int Language)
