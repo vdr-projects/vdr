@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.17 2007/08/15 14:01:54 kls Exp $
+ * $Id: skincurses.c 1.18 2007/08/26 20:16:59 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.3";
+static const char *VERSION        = "0.1.4";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -72,7 +72,7 @@ public:
   };
 
 cCursesOsd::cCursesOsd(int Left, int Top)
-:cOsd(Left, Top)
+:cOsd(Left, Top, 0)
 {
   savedRegion = NULL;
 
