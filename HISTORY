@@ -5416,3 +5416,32 @@ Video Disk Recorder Revision History
   function to hand through the Level.
 - Fixed checking for ttDolbyLast in cDevice::SetCurrentAudioTrack() (thanks
   to Marco Schlüßler).
+
+2007-10-12: Version 1.5.10
+
+- Implemented handling DVB subtitles (thanks to Marco Schlüßler, and also to
+  Pekka Virtanen for writing the subtitle plugin, which helped in implementing
+  subtitle handling in VDR).
+- The new remote control key "Subtitles" can be used to bring up the list
+  of available subtitles.
+- The new setup option "DVB/Subtitle languages" can be used to define the
+  preferred languages for subtitles.
+- Fixed selecting the audio track when pressing Ok in the Audio menu (thanks
+  to Marco Schlüßler).
+- Implemented display of DVB subtitles in live viewing mode.
+- Implemented subtitle track selection.
+- Implemented bitmap color reduction and shrinking to display subtitles even
+  on devices that can't display the necessary number of colors.
+- Added compatibility mode for playback of recordings made with the subtitles
+  plugin (with some help from Rolf Ahrenberg).
+- The new setup option "DVB/Subtitle offset" can be used to shift the location
+  of the subtitles in the vertical direction.
+- The new setup options "DVB/Subtitle foreground/background transparency"
+  define an additional level of transparency for the foreground and background
+  color of subtitles.
+- Existing recordings made with the subtitle plugin can be given an 'X' record
+  in their info.vdr file, so that subtitles can be automatically selected upon
+  replay, according to the preferred language setup, as in
+  X 3 03 ger deutsch
+  (see vdr.5). Note that these entries need to be added in the proper sequence,
+  so that they correspond with the actual track languages in the recording.

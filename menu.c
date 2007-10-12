@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.461 2007/08/24 13:15:48 kls Exp $
+ * $Id: menu.c 1.462 2007/10/12 14:30:29 kls Exp $
  */
 
 #include "menu.h"
@@ -260,6 +260,8 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Apid2"),        &data.apids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpids[0], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpids[1], 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Spid1"),        &data.spids[0], 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Spid2"),        &data.spids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0]));
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
@@ -2400,6 +2402,8 @@ class cMenuSetupDVB : public cMenuSetupBase {
 private:
   int originalNumAudioLanguages;
   int numAudioLanguages;
+  int originalNumSubtitleLanguages;
+  int numSubtitleLanguages;
   void Setup(void);
   const char *videoDisplayFormatTexts[3];
   const char *updateChannelsTexts[6];
@@ -2412,7 +2416,10 @@ cMenuSetupDVB::cMenuSetupDVB(void)
 {
   for (numAudioLanguages = 0; numAudioLanguages < I18nLanguages()->Size() && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
       ;
+  for (numSubtitleLanguages = 0; numSubtitleLanguages < I18nLanguages()->Size() && data.SubtitleLanguages[numSubtitleLanguages] >= 0; numSubtitleLanguages++)
+      ;
   originalNumAudioLanguages = numAudioLanguages;
+  originalNumSubtitleLanguages = numSubtitleLanguages;
   videoDisplayFormatTexts[0] = tr("pan&scan");
   videoDisplayFormatTexts[1] = tr("letterbox");
   videoDisplayFormatTexts[2] = tr("center cut out");
@@ -2442,6 +2449,15 @@ void cMenuSetupDVB::Setup(void)
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numAudioLanguages; i++)
       Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+  Add(new cMenuEditBoolItem(tr("Setup.DVB$Display subtitles"),     &data.DisplaySubtitles));
+  if (data.DisplaySubtitles) {
+     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle languages"),    &numSubtitleLanguages, 0, I18nLanguages()->Size()));
+     for (int i = 0; i < numSubtitleLanguages; i++)
+         Add(new cMenuEditStraItem(tr("Setup.DVB$Subtitle language"), &data.SubtitleLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle offset"),                  &data.SubtitleOffset,       -50, 50));
+     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
+     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
+     }
 
   SetCurrent(Get(current));
   Display();
@@ -2453,11 +2469,15 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
   bool newVideoFormat = data.VideoFormat;
+  bool oldDisplaySubtitles = ::Setup.DisplaySubtitles;
+  bool newDisplaySubtitles = data.DisplaySubtitles;
   int oldnumAudioLanguages = numAudioLanguages;
+  int oldnumSubtitleLanguages = numSubtitleLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone) {
      bool DoSetup = data.VideoFormat != newVideoFormat;
+     DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
      if (numAudioLanguages != oldnumAudioLanguages) {
         for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
             data.AudioLanguages[i] = 0;
@@ -2476,6 +2496,24 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
         data.AudioLanguages[numAudioLanguages] = -1;
         DoSetup = true;
         }
+     if (numSubtitleLanguages != oldnumSubtitleLanguages) {
+        for (int i = oldnumSubtitleLanguages; i < numSubtitleLanguages; i++) {
+            data.SubtitleLanguages[i] = 0;
+            for (int l = 0; l < I18nLanguages()->Size(); l++) {
+                int k;
+                for (k = 0; k < oldnumSubtitleLanguages; k++) {
+                    if (data.SubtitleLanguages[k] == l)
+                       break;
+                    }
+                if (k >= oldnumSubtitleLanguages) {
+                   data.SubtitleLanguages[i] = l;
+                   break;
+                   }
+                }
+            }
+        data.SubtitleLanguages[numSubtitleLanguages] = -1;
+        DoSetup = true;
+        }
      if (DoSetup)
         Setup();
      }
@@ -2486,6 +2524,9 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
         cDevice::PrimaryDevice()->SetVideoDisplayFormat(eVideoDisplayFormat(::Setup.VideoDisplayFormat));
      if (::Setup.VideoFormat != oldVideoFormat)
         cDevice::PrimaryDevice()->SetVideoFormat(::Setup.VideoFormat);
+     if (::Setup.DisplaySubtitles != oldDisplaySubtitles)
+        cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+     cDvbSubtitleConverter::SetupChanged();
      }
   return state;
 }
@@ -3128,14 +3169,18 @@ static void SetTrackDescriptions(int LiveChannel)
   if (Components) {
      int indexAudio = 0;
      int indexDolby = 0;
+     int indexSubtitle = 0;
      for (int i = 0; i < Components->NumComponents(); i++) {
          const tComponent *p = Components->Component(i);
-         if (p->stream == 2) {
-            if (p->type == 0x05)
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
-            else
-               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
-            }
+         switch (p->stream) {
+           case 2: if (p->type == 0x05)
+                      cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
+                   else
+                      cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
+                   break;
+           case 3: cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, indexSubtitle++, 0, LiveChannel ? NULL : p->language, p->description);
+                   break;
+           }
          }
      }
 }
@@ -3491,7 +3536,7 @@ cDisplayTracks::cDisplayTracks(void)
          numTracks++;
          }
       }
-  descriptions[numTracks] = 0;
+  descriptions[numTracks] = NULL;
   timeout.Set(TRACKTIMEOUT);
   displayTracks = Skins.Current()->DisplayTracks(tr("Button$Audio"), numTracks, descriptions);
   Show();
@@ -3569,7 +3614,7 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
          timeout.Set(TRACKTIMEOUT);
          break;
     case kOk:
-         if (track != cDevice::PrimaryDevice()->GetCurrentAudioTrack())
+         if (types[track] != cDevice::PrimaryDevice()->GetCurrentAudioTrack())
             oldTrack = -1; // make sure we explicitly switch to that track
          timeout.Set();
          break;
@@ -3585,6 +3630,105 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
      }
   if (audioChannel != oldAudioChannel)
      cDevice::PrimaryDevice()->SetAudioChannel(audioChannel);
+  return timeout.TimedOut() ? osEnd : osContinue;
+}
+
+// --- cDisplaySubtitleTracks ------------------------------------------------
+
+cDisplaySubtitleTracks *cDisplaySubtitleTracks::currentDisplayTracks = NULL;
+
+cDisplaySubtitleTracks::cDisplaySubtitleTracks(void)
+:cOsdObject(true)
+{
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring() ? cDevice::CurrentChannel() : 0);
+  currentDisplayTracks = this;
+  numTracks = track = 0;
+  types[numTracks] = ttNone;
+  descriptions[numTracks] = strdup(tr("No subtitles"));
+  numTracks++;
+  eTrackType CurrentSubtitleTrack = cDevice::PrimaryDevice()->GetCurrentSubtitleTrack();
+  for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
+      const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
+      if (TrackId && TrackId->id) {
+         types[numTracks] = eTrackType(i);
+         descriptions[numTracks] = strdup(*TrackId->description ? TrackId->description : *TrackId->language ? TrackId->language : *itoa(i));
+         if (i == CurrentSubtitleTrack)
+            track = numTracks;
+         numTracks++;
+         }
+      }
+  descriptions[numTracks] = NULL;
+  timeout.Set(TRACKTIMEOUT);
+  displayTracks = Skins.Current()->DisplayTracks(tr("Button$Subtitles"), numTracks, descriptions);
+  Show();
+}
+
+cDisplaySubtitleTracks::~cDisplaySubtitleTracks()
+{
+  delete displayTracks;
+  currentDisplayTracks = NULL;
+  for (int i = 0; i < numTracks; i++)
+      free(descriptions[i]);
+  cStatus::MsgOsdClear();
+}
+
+void cDisplaySubtitleTracks::Show(void)
+{
+  displayTracks->SetTrack(track, descriptions);
+  displayTracks->Flush();
+  //cStatus::MsgSetSubtitleTrack(track, descriptions); //TODO better make a more general cStatus::MsgSetTrack(tr("Subtitles"), track, descriptions)
+}
+
+cDisplaySubtitleTracks *cDisplaySubtitleTracks::Create(void)
+{
+  if (cDevice::PrimaryDevice()->NumSubtitleTracks() > 0) {
+     if (!currentDisplayTracks)
+        new cDisplaySubtitleTracks;
+     return currentDisplayTracks;
+     }
+  Skins.Message(mtWarning, tr("No subtitles available!"));
+  return NULL;
+}
+
+void cDisplaySubtitleTracks::Process(eKeys Key)
+{
+  if (currentDisplayTracks)
+     currentDisplayTracks->ProcessKey(Key);
+}
+
+eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
+{
+  int oldTrack = track;
+  switch (Key) {
+    case kUp|k_Repeat:
+    case kUp:
+    case kDown|k_Repeat:
+    case kDown:
+         if (NORMALKEY(Key) == kUp && track > 0)
+            track--;
+         else if (NORMALKEY(Key) == kDown && track < numTracks - 1)
+            track++;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kSubtitles|k_Repeat:
+    case kSubtitles:
+         if (++track >= numTracks)
+            track = 0;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kOk:
+         if (types[track] != cDevice::PrimaryDevice()->GetCurrentSubtitleTrack())
+            oldTrack = -1; // make sure we explicitly switch to that track
+         timeout.Set();
+         break;
+    case kNone: break;
+    default: if ((Key & k_Release) == 0)
+                return osEnd;
+    }
+  if (track != oldTrack) {
+     Show();
+     cDevice::PrimaryDevice()->SetCurrentSubtitleTrack(types[track], true);
+     }
   return timeout.TimedOut() ? osEnd : osContinue;
 }
 

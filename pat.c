@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.17 2007/01/07 14:41:55 kls Exp $
+ * $Id: pat.c 1.18 2007/09/02 10:44:19 kls Exp $
  */
 
 #include "pat.h"
@@ -331,11 +331,14 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Ppid = pmt.getPCRPid();
         int Apids[MAXAPIDS + 1] = { 0 }; // these lists are zero-terminated
         int Dpids[MAXDPIDS + 1] = { 0 };
+        int Spids[MAXSPIDS + 1] = { 0 };
         char ALangs[MAXAPIDS][MAXLANGCODE2] = { "" };
         char DLangs[MAXDPIDS][MAXLANGCODE2] = { "" };
+        char SLangs[MAXSPIDS][MAXLANGCODE2] = { "" };
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
+        int NumSpids = 0;
         for (SI::Loop::Iterator it; pmt.streamLoop.getNext(stream, it); ) {
             switch (stream.getStreamType()) {
               case 1: // STREAMTYPE_11172_VIDEO
@@ -387,6 +390,26 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                             case SI::AC3DescriptorTag:
                                  dpid = stream.getPid();
                                  break;
+                            case SI::SubtitlingDescriptorTag:
+                                 if (NumSpids < MAXSPIDS) {
+                                    Spids[NumSpids] = stream.getPid();
+                                    SI::SubtitlingDescriptor *sd = (SI::SubtitlingDescriptor *)d;
+                                    SI::SubtitlingDescriptor::Subtitling sub;
+                                    char *s = SLangs[NumSpids];
+                                    int n = 0;
+                                    for (SI::Loop::Iterator it; sd->subtitlingLoop.getNext(sub, it); ) {
+                                        if (sub.languageCode[0]) {
+                                           if (n > 0)
+                                              *s++ = '+';
+                                           strn0cpy(s, I18nNormalizeLanguageCode(sub.languageCode), MAXLANGCODE1);
+                                           s += strlen(s);
+                                           if (n++ > 1)
+                                              break;
+                                           }
+                                        }
+                                    NumSpids++;
+                                    }
+                                 break;
                             case SI::TeletextDescriptorTag:
                                  Tpid = stream.getPid();
                                  break;
@@ -416,7 +439,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                 }
             }
         if (Setup.UpdateChannels >= 2) {
-           Channel->SetPids(Vpid, Vpid ? Ppid : 0, Apids, ALangs, Dpids, DLangs, Tpid);
+           Channel->SetPids(Vpid, Vpid ? Ppid : 0, Apids, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
            }
         Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.299 2007/08/25 08:51:13 kls Exp $
+ * $Id: vdr.c 1.300 2007/09/26 14:36:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -1007,6 +1007,18 @@ int main(int argc, char *argv[])
                   }
                else
                   cDisplayTracks::Process(key);
+               key = kNone;
+               break;
+          // Subtitle track control:
+          case kSubtitles:
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               if (!cDisplaySubtitleTracks::IsOpen()) {
+                  DELETE_MENU;
+                  Menu = cDisplaySubtitleTracks::Create();
+                  }
+               else
+                  cDisplaySubtitleTracks::Process(key);
                key = kNone;
                break;
           // Pausing live video:

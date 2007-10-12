@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.154 2007/06/17 13:10:12 kls Exp $
+ * $Id: recording.c 1.155 2007/10/12 14:48:20 kls Exp $
  */
 
 #include "recording.h"
@@ -292,6 +292,17 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
             tComponent *Component = Components->GetComponent(i, 2, 5);
             if (!Component)
                Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
+            }
+         }
+     // The same applies to subtitles:
+     for (int i = 0; i < MAXSPIDS; i++) {
+         const char *s = Channel->Slang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 3, 3);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 3, 3, s, NULL);
             else if (strlen(s) > strlen(Component->language))
                strn0cpy(Component->language, s, sizeof(Component->language));
             }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.298 2007/08/19 16:02:50 kls Exp $
+ * $Id: config.h 1.299 2007/10/06 14:27:18 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.5.9"
-#define VDRVERSNUM   10509  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.5.10"
+#define VDRVERSNUM   10510  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.5.9"
-#define APIVERSNUM   10509  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.5.10"
+#define APIVERSNUM   10510  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -220,6 +220,10 @@ public:
   int TimeTransponder;
   int MarginStart, MarginStop;
   int AudioLanguages[I18N_MAX_LANGUAGES + 1];
+  int DisplaySubtitles;
+  int SubtitleLanguages[I18N_MAX_LANGUAGES + 1];
+  int SubtitleOffset;
+  int SubtitleFgTransparency, SubtitleBgTransparency;
   int EPGLanguages[I18N_MAX_LANGUAGES + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;

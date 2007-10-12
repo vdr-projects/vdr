@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.57 2007/08/26 09:45:38 kls Exp $
+ * $Id: osd.h 1.58 2007/10/12 14:28:44 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -16,6 +16,9 @@
 #include "config.h"
 #include "font.h"
 #include "tools.h"
+
+#define OSD_LEVEL_DEFAULT     0
+#define OSD_LEVEL_SUBTITLES  10
 
 #define MAXNUMCOLORS 256
 
@@ -69,7 +72,7 @@ public:
         ///< a single color combination, and may not be able to serve all
         ///< requested colors. By default the palette assumes there will be
         ///< 10 fixed colors and 10 color combinations.
-  int Bpp(void) { return bpp; }
+  int Bpp(void) const { return bpp; }
   void Reset(void);
         ///< Resets the palette, making it contain no colors.
   int Index(tColor Color);
@@ -77,7 +80,7 @@ public:
         ///< If Color is not yet contained in this palette, it will be added if
         ///< there is a free slot. If the color can't be added to this palette,
         ///< the closest existing color will be returned.
-  tColor Color(int Index) { return Index < maxColors ? color[Index] : 0; }
+  tColor Color(int Index) const { return Index < maxColors ? color[Index] : 0; }
         ///< Returns the color at the given Index. If Index is outside the valid
         ///< range, 0 will be returned.
   void SetBpp(int Bpp);
@@ -87,7 +90,7 @@ public:
         ///< Sets the palette entry at Index to Color. If Index is larger than
         ///< the number of currently used entries in this palette, the entries
         ///< in between will have undefined values.
-  const tColor *Colors(int &NumColors);
+  const tColor *Colors(int &NumColors) const;
         ///< Returns a pointer to the complete color table and stores the
         ///< number of valid entries in NumColors. If no colors have been
         ///< stored yet, NumColors will be set to 0 and the function will
@@ -102,14 +105,14 @@ public:
   void Replace(const cPalette &Palette);
         ///< Replaces the colors of this palette with the colors from the given
         ///< palette.
-  tColor Blend(tColor ColorFg, tColor ColorBg, uint8_t Level);
+  tColor Blend(tColor ColorFg, tColor ColorBg, uint8_t Level) const;
         ///< Determines a color that consists of a linear blend between ColorFg
         ///< and ColorBg. If Level is 0, the result is ColorBg, if it is 255,
         ///< the result is ColorFg. If SetAntiAliasGranularity() has been called previously,
         ///< Level will be mapped to a limited range of levels that allow to make best
         ///< use of the palette entries.
-  int ClosestColor(tColor Color, int MaxDiff = INT_MAX);
-        ///< Returns the index of a color in this paltte that is closest to the given
+  int ClosestColor(tColor Color, int MaxDiff = INT_MAX) const;
+        ///< Returns the index of a color in this palette that is closest to the given
         ///< Color. MaxDiff can be used to control the maximum allowed color difference.
         ///< If no color with a maximum difference of MaxDiff can be found, -1 will
         ///< be returned. With the default value of INT_MAX, there will always be
@@ -232,6 +235,17 @@ public:
        ///< Returns the address of the index byte at the given coordinates.
   tColor GetColor(int x, int y) { return Color(*Data(x, y)); }
        ///< Returns the color at the given coordinates.
+  void ReduceBpp(const cPalette &Palette);
+       ///< Reduces the color depth of the bitmap to that of the given Palette.
+       ///< If Palette's color depth is not smaller than the bitmap's current
+       ///< color depth, or if it is not one of 4bpp or 2bpp, nothing happens. After
+       ///< reducing the color depth the current palette is replaced with
+       ///< the given one.
+  void ShrinkBpp(int NewBpp);
+       ///< Shrinks the color depth of the bitmap to NewBpp by keeping only
+       ///< the 2^NewBpp most frequently used colors as defined in the current palette.
+       ///< If NewBpp is not smaller than the bitmap's current color depth,
+       ///< or if it is not one of 4bpp or 2bpp, nothing happens.
   };
 
 struct tArea {
@@ -292,7 +306,7 @@ public:
        ///< This may be useful for plugins that determine the scaling of the
        ///< video image and need to scale the OSD accordingly to fit on the
        ///< screen.
-  static int IsOpen(void) { return Osds.Size() && Osds[0]->level == 0; }
+  static int IsOpen(void) { return Osds.Size() && Osds[0]->level == OSD_LEVEL_DEFAULT; }
        ///< Returns true if there is currently a level 0 OSD open.
   int Left(void) { return left; }
   int Top(void) { return top; }
@@ -327,6 +341,7 @@ public:
        ///< If the OSD has been divided into several sub-areas, all areas that
        ///< are part of the rectangle that surrounds a given drawing operation
        ///< will be drawn into, with the proper offsets.
+       ///< A new call overwrites any previous settings
   virtual void SaveRegion(int x1, int y1, int x2, int y2);
        ///< Saves the region defined by the given coordinates for later restoration
        ///< through RestoreRegion(). Only one saved region can be active at any
@@ -398,7 +413,7 @@ public:
   cOsdProvider(void);
       //XXX maybe parameter to make this one "sticky"??? (frame-buffer etc.)
   virtual ~cOsdProvider();
-  static cOsd *NewOsd(int Left, int Top, uint Level = 0);
+  static cOsd *NewOsd(int Left, int Top, uint Level = OSD_LEVEL_DEFAULT);
       ///< Returns a pointer to a newly created cOsd object, which will be located
       ///< at the given coordinates. When the cOsd object is no longer needed, the
       ///< caller must delete it. If the OSD is already in use, or there is no OSD

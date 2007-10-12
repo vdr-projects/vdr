@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.156 2007/08/12 12:09:37 kls Exp $
+ * $Id: config.c 1.157 2007/10/06 14:28:58 kls Exp $
  */
 
 #include "config.h"
@@ -236,6 +236,11 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   AudioLanguages[0] = -1;
+  DisplaySubtitles = 0;
+  SubtitleLanguages[0] = -1;
+  SubtitleOffset = 0;
+  SubtitleFgTransparency = 0;
+  SubtitleBgTransparency = 0;
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 3;
@@ -406,6 +411,11 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
   else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
+  else if (!strcasecmp(Name, "DisplaySubtitles"))    DisplaySubtitles   = atoi(Value);
+  else if (!strcasecmp(Name, "SubtitleLanguages"))   return ParseLanguages(Value, SubtitleLanguages);
+  else if (!strcasecmp(Name, "SubtitleOffset"))      SubtitleOffset     = atoi(Value);
+  else if (!strcasecmp(Name, "SubtitleFgTransparency")) SubtitleFgTransparency = atoi(Value);
+  else if (!strcasecmp(Name, "SubtitleBgTransparency")) SubtitleBgTransparency = atoi(Value);
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
@@ -483,6 +493,11 @@ bool cSetup::Save(void)
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
   StoreLanguages("AudioLanguages", AudioLanguages);
+  Store("DisplaySubtitles",   DisplaySubtitles);
+  StoreLanguages("SubtitleLanguages", SubtitleLanguages);
+  Store("SubtitleOffset",     SubtitleOffset);
+  Store("SubtitleFgTransparency", SubtitleFgTransparency);
+  Store("SubtitleBgTransparency", SubtitleBgTransparency);
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);

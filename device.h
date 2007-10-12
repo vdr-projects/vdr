@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.82 2007/07/22 11:20:13 kls Exp $
+ * $Id: device.h 1.83 2007/10/12 13:53:50 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -12,6 +12,7 @@
 
 #include "channels.h"
 #include "ci.h"
+#include "dvbsubtitle.h"
 #include "eit.h"
 #include "filter.h"
 #include "nit.h"
@@ -70,16 +71,15 @@ enum eTrackType { ttNone,
                   ttDolby,
                   ttDolbyFirst = ttDolby,
                   ttDolbyLast  = ttDolbyFirst + 15, // MAXDPIDS - 1
-                  /* future...
                   ttSubtitle,
                   ttSubtitleFirst = ttSubtitle,
-                  ttSubtitleLast  = ttSubtitleFirst + 7, // MAXSPIDS - 1
-                  */
+                  ttSubtitleLast  = ttSubtitleFirst + 31, // MAXSPIDS - 1
                   ttMaxTrackTypes
                 };
 
 #define IS_AUDIO_TRACK(t) (ttAudioFirst <= (t) && (t) <= ttAudioLast)
 #define IS_DOLBY_TRACK(t) (ttDolbyFirst <= (t) && (t) <= ttDolbyLast)
+#define IS_SUBTITLE_TRACK(t) (ttSubtitleFirst <= (t) && (t) <= ttSubtitleLast)
 
 struct tTrackId {
   uint16_t id;                  // The PES packet id or the PID.
@@ -90,10 +90,12 @@ struct tTrackId {
 class cPlayer;
 class cReceiver;
 class cPesAssembler;
+class cLiveSubtitle;
 
 /// The cDevice class is the base from which actual devices can be derived.
 
 class cDevice : public cThread {
+  friend class cLiveSubtitle;
 private:
   static int numDevices;
   static int useDevice;
@@ -185,6 +187,9 @@ public:
 
 // SPU facilities
 
+private:
+  cLiveSubtitle *liveSubtitle;
+  cDvbSubtitleConverter *dvbSubtitleConverter;
 public:
   virtual cSpuDecoder *GetSpuDecoder(void);
          ///< Returns a pointer to the device's SPU decoder (or NULL, if this
@@ -362,8 +367,11 @@ public:
 private:
   tTrackId availableTracks[ttMaxTrackTypes];
   eTrackType currentAudioTrack;
+  eTrackType currentSubtitleTrack;
   cMutex mutexCurrentAudioTrack;
+  cMutex mutexCurrentSubtitleTrack;
   int currentAudioTrackMissingCount;
+  bool autoSelectPreferredSubtitleLanguage;
   bool pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
@@ -384,18 +392,33 @@ public:
   const tTrackId *GetTrack(eTrackType Type);
        ///< Returns a pointer to the given track id, or NULL if Type is not
        ///< less than ttMaxTrackTypes.
+  int NumTracks(eTrackType FirstTrack, eTrackType LastTrack) const;
+       ///< Returns the number of tracks in the given range that are currently
+       ///< available.
   int NumAudioTracks(void) const;
        ///< Returns the number of audio tracks that are currently available.
        ///< This is just for information, to quickly find out whether there
        ///< is more than one audio track.
+  int NumSubtitleTracks(void) const;
+       ///< Returns the number of subtitle tracks that are currently available.
   eTrackType GetCurrentAudioTrack(void) { return currentAudioTrack; }
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
+  eTrackType GetCurrentSubtitleTrack(void) { return currentSubtitleTrack; }
+  bool SetCurrentSubtitleTrack(eTrackType Type, bool Manual = false);
+       ///< Sets the current subtitle track to the given Type.
+       ///< IF Manual is true, no automatic preferred subtitle language selection
+       ///< will be done for the rest of the current replay session, or until
+       ///< the channel is changed.
+       ///< \return Returns true if Type is a valid subtitle track, false otherwise.
   void EnsureAudioTrack(bool Force = false);
        ///< Makes sure an audio track is selected that is actually available.
        ///< If Force is true, the language and Dolby Digital settings will
        ///< be verified even if the current audio track is available.
+  void EnsureSubtitleTrack(void);
+       ///< Makes sure one of the preferred language subtitle tracks is selected.
+       ///< Only has an effect if Setup.DisplaySubtitles is on.
 
 // Audio facilities
 
@@ -451,6 +474,13 @@ protected:
        ///< Data points to exactly one complete PES packet of the given Length.
        ///< Id indicates the type of audio data this packet holds.
        ///< PlayAudio() shall process the packet either as a whole (returning
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< \return Returns the number of bytes actually taken from Data, or -1
+       ///< in case of an error.
+  virtual int PlaySubtitle(const uchar *Data, int Length);
+       ///< Plays the given data block as a subtitle.
+       ///< Data points to exactly one complete PES packet of the given Length.
+       ///< PlaySubtitle() shall process the packet either as a whole (returning
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
        ///< \return Returns the number of bytes actually taken from Data, or -1
        ///< in case of an error.

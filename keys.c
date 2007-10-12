@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.15 2007/08/11 11:30:18 kls Exp $
+ * $Id: keys.c 1.16 2007/09/26 12:35:21 kls Exp $
  */
 
 #include "keys.h"
@@ -49,6 +49,7 @@ static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { kVolDn,         trNOOP("Key$Volume-")     },
                     { kMute,          trNOOP("Key$Mute")        },
                     { kAudio,         trNOOP("Key$Audio")       },
+                    { kSubtitles,     trNOOP("Key$Subtitles")   },
                     { kSchedule,      trNOOP("Key$Schedule")    },
                     { kChannels,      trNOOP("Key$Channels")    },
                     { kTimers,        trNOOP("Key$Timers")      },

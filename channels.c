@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.54 2007/07/21 14:55:01 kls Exp $
+ * $Id: channels.c 1.55 2007/10/12 14:40:53 kls Exp $
  */
 
 #include "channels.h"
@@ -440,12 +440,12 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int Tpid)
+void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
   if (vpid != Vpid || ppid != Ppid || tpid != Tpid)
      mod |= CHANNELMOD_PIDS;
-  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs);
+  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
      mod |= CHANNELMOD_LANGS;
   if (m & VALDIFF)
@@ -468,7 +468,16 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE
         q += IntArrayToString(q, Dpids, 10, DLangs);
         }
      *q = 0;
-     dsyslog("changing pids of channel %d from %d+%d:%s:%d to %d+%d:%s:%d", Number(), vpid, ppid, OldApidsBuf, tpid, Vpid, Ppid, NewApidsBuf, Tpid);
+     const int SBufferSize = MAXSPIDS * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
+     char OldSpidsBuf[SBufferSize];
+     char NewSpidsBuf[SBufferSize];
+     q = OldSpidsBuf;
+     q += IntArrayToString(q, spids, 10, slangs);
+     *q = 0;
+     q = NewSpidsBuf;
+     q += IntArrayToString(q, Spids, 10, SLangs);
+     *q = 0;
+     dsyslog("changing pids of channel %d from %d+%d:%s:%s:%d to %d+%d:%s:%s:%d", Number(), vpid, ppid, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, NewApidsBuf, NewSpidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
      for (int i = 0; i < MAXAPIDS; i++) {
@@ -481,6 +490,11 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE
          strn0cpy(dlangs[i], DLangs[i], MAXLANGCODE2);
          }
      dpids[MAXDPIDS] = 0;
+     for (int i = 0; i < MAXSPIDS; i++) {
+         spids[i] = Spids[i];
+         strn0cpy(slangs[i], SLangs[i], MAXLANGCODE2);
+         }
+     spids[MAXSPIDS] = 0;
      tpid = Tpid;
      modification |= mod;
      Channels.SetModified();

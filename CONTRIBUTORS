@@ -1024,6 +1024,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for improving cControl::Launch() to keep 'control' from pointing to uninitialized
  memory
  for adding internationalization to the "skincurses" plugin
+ for helping with adding compatibility mode for playback of recordings made with
+ the subtitles plugin
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1293,6 +1295,8 @@ Marcus Mönnig <minibbjd@gmx.de>
 Pekka Virtanen <pekka.virtanen@sci.fi>
  for adding language code handling to the subtitling descriptor in 'libsi'
  for adding missing NULL checks when accessing sectionHandler in device.c
+ for writing the subtitle plugin, which helped in implementing subtitle handling
+ in VDR
 
 John Kennedy <rkennedy@ix.netcom.com>
  for publishing "A Fast Bresenham Algorithm For Drawing Ellipses" (found at
@@ -1419,6 +1423,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a problem with characters >0x7F in the modified version of skipspace()
  for reporting a faulty comment in Make.config.template
  for fixing checking for ttDolbyLast in cDevice::SetCurrentAudioTrack()
+ for fixing selecting the audio track when pressing Ok in the Audio menu
+ for implementing handling DVB subtitles
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

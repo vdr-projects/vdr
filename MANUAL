@@ -59,6 +59,7 @@ Version 1.4
   Mute        mute
 
   Audio       select audio track
+  Subtitles   select subtitles
 
   Schedule    \
   Channels    |
@@ -674,6 +675,31 @@ Version 1.4
                          is set to a non-zero value, the menu page will contain that
                          many "Audio language" options which allow you to select the
                          individual preferred languages.
+
+  Display subtitles = no If set to 'yes', the first available subtitles in the list
+                         of preferred subtitle languages will be turned on when
+                         switching to a channel that provides subtitles.
+
+  Subtitle languages = 0 Some tv stations broadcast various subtitle tracks in different
+                         languages. This option allows you to define which language(s)
+                         you prefer in such cases. By default, or if none of the
+                         preferred languages is broadcast, no subtitles will
+                         be selected when switching to such a channel. If this option
+                         is set to a non-zero value, the menu page will contain that
+                         many "Subtitle language" options which allow you to select the
+                         individual preferred languages.
+
+  Subtitle offset = 0    Allows you to shift the location of the subtitles in the
+                         vertical direction. The valid range is -50...50. This option
+                         is only avialable if "Display subtitles" is set to 'yes'.
+
+  Subtitle foreground transparency = 0
+  Subtitle background transparency = 0
+                         These define an additional level of transparency for the
+                         foreground and background color of subtitles. Valid ranges
+                         are 0...9 for foreground transparency, and 0...10 for
+                         background transparency. By default the values as broadcast
+                         are used.
 
   LNB:
 
