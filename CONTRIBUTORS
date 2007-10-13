@@ -1426,6 +1426,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing checking for ttDolbyLast in cDevice::SetCurrentAudioTrack()
  for fixing selecting the audio track when pressing Ok in the Audio menu
  for implementing handling DVB subtitles
+ for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
+ an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -1328,7 +1328,9 @@ A player that has special requirements about audio tracks should announce its
 available audio tracks by calling
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, uint32_t Flags = 0)
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL)
+<!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>
 
 See <tt>device.h</tt> for details about the parameters for track handling.
@@ -1454,9 +1456,19 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-:cReceiver(0, -1, Pid)
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+:cReceiver(tChannelID(), -1, Pid)
+<!--X1.5.10--></td></tr></table>
 {
 }
+
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%><pre>
+cMyReceiver::~cMyReceiver()
+{
+  cReceiver::Detach();
+  ...
+}
+<!--X1.5.10--></pre></td></tr></table>
 
 void cMyReceiver::Activate(bool On)
 {

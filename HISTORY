@@ -5467,3 +5467,5 @@ Video Disk Recorder Revision History
 - Implemented sending all frames to devices that can handle them in fast forward
   trick speeds (thansk to Timo Eskola).
 - Updated the Hungarian language texts (thanks to Thomas Günther).
+- Fixed description of DeviceSetAvailableTrack() and cReceiver(), and added an
+  example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
