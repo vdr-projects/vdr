@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.51 2007/08/17 13:48:07 kls Exp $
+ * $Id: menuitems.c 1.52 2007/10/13 10:39:40 kls Exp $
  */
 
 #include "menuitems.h"
@@ -499,9 +499,9 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     if (!insert || newchar)
                        pos--;
                     newchar = true;
+                    if (!insert && Utf8is(alpha, valueUtf8[pos]))
+                       uppercase = Utf8is(upper, valueUtf8[pos]);
                     }
-                 if (!insert && Utf8is(alpha, valueUtf8[pos]))
-                    uppercase = Utf8is(upper, valueUtf8[pos]);
                  break;
     case kRight|k_Repeat:
     case kRight: if (InEditMode())

@@ -5455,3 +5455,5 @@ Video Disk Recorder Revision History
   Denis Knauf).
 - Added a missing SetVolumeDevice() call in cDevice::SetPrimaryDevice() (reported
   by Reinhard Nissl).
+- Fixed a crash when pressing Left while at the first character of a cMenuEditStrItem
+  (thanks to Christian Wieninger).
