@@ -5462,3 +5462,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed handling reallocated memory in cCharSetConv::Convert() (reported by Udo
   Richter).
+- Fixed a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode() (thanks to
+  Udo Richter).

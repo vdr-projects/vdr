@@ -1530,6 +1530,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing clearing color buttons in the 'curses' skin
  for adding a missing error report to cCuttingThread::Action()
  for reporting a problem in handling reallocated memory in cCharSetConv::Convert()
+ for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
