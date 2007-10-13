@@ -5449,3 +5449,5 @@ Video Disk Recorder Revision History
   large diffs. Plugin authors may want to replace the -F option with
   --no-location in the xgettext and msgmerge calls in their Makefiles.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added a missing Channels.SetModified(true) call when deleting or moving a
+  channel in the Channels menu (reported by Halim Sahin).
