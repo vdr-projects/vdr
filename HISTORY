@@ -5466,3 +5466,4 @@ Video Disk Recorder Revision History
   Udo Richter).
 - Implemented sending all frames to devices that can handle them in fast forward
   trick speeds (thansk to Timo Eskola).
+- Updated the Hungarian language texts (thanks to Thomas Günther).
