@@ -5457,3 +5457,5 @@ Video Disk Recorder Revision History
   by Reinhard Nissl).
 - Fixed a crash when pressing Left while at the first character of a cMenuEditStrItem
   (thanks to Christian Wieninger).
+- Only creating a new cDvbOsdProvider in cDvbDevice::MakePrimaryDevice() if 'On'
+  is true (i.e. this device is being made the primary device).

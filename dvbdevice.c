@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.165 2007/08/17 13:37:56 kls Exp $
+ * $Id: dvbdevice.c 1.166 2007/10/13 11:15:50 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -483,7 +483,7 @@ bool cDvbDevice::Initialize(void)
 
 void cDvbDevice::MakePrimaryDevice(bool On)
 {
-  if (HasDecoder())
+  if (On && HasDecoder())
      new cDvbOsdProvider(fd_osd);
 }
 
