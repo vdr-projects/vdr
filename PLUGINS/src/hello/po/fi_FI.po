@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 14:35+0200\n"
+"POT-Creation-Date: 2007-10-13 11:52+0200\n"
 "PO-Revision-Date: 2007-08-11 12:34+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -18,26 +18,20 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hello.c:16
 msgid "A friendly greeting"
 msgstr "Ystävällisin terveisin"
 
-#: hello.c:17
 msgid "Hello"
 msgstr "Hei"
 
-#: hello.c:60
 msgid "Greeting time (s)"
 msgstr "Tervehdysaika (s)"
 
-#: hello.c:61
 msgid "Use alternate greeting"
 msgstr "Käytä vaihtoehtoista tervehdystä"
 
-#: hello.c:129
-msgid "Hello world!"
-msgstr "Hei maailma!"
-
-#: hello.c:129
 msgid "Howdy folks!"
 msgstr "Mitä kuuluu?"
+
+msgid "Hello world!"
+msgstr "Hei maailma!"

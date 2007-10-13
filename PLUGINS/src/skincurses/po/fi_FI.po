@@ -15,18 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: skincurses.c:15
 msgid "A text only skin"
 msgstr "Tekstipohjainen ulkoasu"
 
-#: skincurses.c:566
 msgid "Key$Mute"
 msgstr "Mykistys"
 
-#: skincurses.c:569
 msgid "Volume "
 msgstr "Äänenvoimakkuus "
 
-#: skincurses.c:699
 msgid "Text mode"
 msgstr "Teksti"

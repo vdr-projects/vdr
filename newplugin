@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.36 2007/08/19 14:19:49 kls Exp $
+# $Id: newplugin 1.37 2007/10/13 09:28:55 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -139,10 +139,10 @@ I18Npot   = \$(PODIR)/\$(PLUGIN).pot
 	msgfmt -c -o \$\@ \$<
 
 \$(I18Npot): \$(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap -F -k -ktr -ktrNOOP --msgid-bugs-address='<see README>' -o \$\@ \$(wildcard *.c)
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<see README>' -o \$\@ \$(wildcard *.c)
 
 \$(I18Npo): \$(I18Npot)
-	msgmerge -U --no-wrap -F --backup=none -q \$\@ \$<
+	msgmerge -U --no-wrap --no-location --backup=none -q \$\@ \$<
 
 i18n: \$(I18Nmo)
 	\@mkdir -p \$(LOCALEDIR)

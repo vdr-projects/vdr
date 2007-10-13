@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-19 13:53+0200\n"
+"POT-Creation-Date: 2007-10-13 11:29+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -16,1256 +16,983 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: channels.c:1077 menu.c:707
 msgid "*** Invalid Channel ***"
 msgstr "*** Érvénytelen csatorna ***"
 
-#: device.c:634 device.c:670
 msgid "Channel not available!"
 msgstr "Az adó nem elérhetõ"
 
-#: device.c:636
 msgid "Can't start Transfer Mode!"
 msgstr "Transfer-Mode nem indítható!"
 
-#: eitscan.c:159
 msgid "Starting EPG scan"
 msgstr "EPG adatok aktualizálása"
 
-#: epg.c:346 epg.c:441
 msgid "No title"
 msgstr "név nélkül"
 
 #. TRANSLATORS: The name of the language, as written natively
-#: i18n.c:30
 msgid "LanguageName$English"
 msgstr "Magyar"
 
 #. TRANSLATORS: The 3-letter code of the language
-#: i18n.c:32
 msgid "LanguageCode$eng"
 msgstr "hun"
 
-#: interface.c:75
 msgid "Phase 1: Detecting RC code type"
 msgstr "Elsõ lépés: távirányító kódjának meghatározása"
 
-#: interface.c:76
 msgid "Press any key on the RC unit"
 msgstr "Nyomjon meg egy gombot a távirányítón"
 
-#: interface.c:79
 msgid "RC code detected!"
 msgstr "Távirányító kódja felismerve!"
 
-#: interface.c:80
 msgid "Do not press any key..."
 msgstr "Ne nyomjon meg gombot..."
 
-#: interface.c:86
 msgid "Phase 2: Learning specific key codes"
 msgstr "Második lépés: az egyes gombok betanítása"
 
-#: interface.c:90
 #, c-format
 msgid "Press key for '%s'"
 msgstr "'%s' gomb megnyomása"
 
-#: interface.c:106
 msgid "Press 'Up' to confirm"
 msgstr "'Fel' megnyomása az elfogadáshoz"
 
-#: interface.c:107
 msgid "Press 'Down' to continue"
 msgstr "'Le' megnyomása a folytatáshoz"
 
-#: interface.c:138
 msgid "(press 'Up' to go back)"
 msgstr "(´Fel' megnyomása a visszatéréshez)"
 
-#: interface.c:142
 msgid "(press 'Down' to end key definition)"
 msgstr "('Le' megnyomása a befejezéshez)"
 
-#: interface.c:146
 msgid "(press 'Menu' to skip this key)"
 msgstr "A Menü gombot nyomni ennek a gombnak a kihagyásához"
 
-#: interface.c:167
 msgid "Learning Remote Control Keys"
 msgstr "Távirányító betanítása"
 
-#: interface.c:180
 msgid "Phase 3: Saving key codes"
 msgstr "Harmadik lépés: kód mentése"
 
-#: interface.c:181
 msgid "Press 'Up' to save, 'Down' to cancel"
 msgstr "'Fel' mentés, 'Le´ mégse"
 
-#: keys.c:14
 msgid "Key$Up"
 msgstr "Fel"
 
-#: keys.c:15
 msgid "Key$Down"
 msgstr "Le"
 
-#: keys.c:16
 msgid "Key$Menu"
 msgstr "Menü"
 
-#: keys.c:17
 msgid "Key$Ok"
 msgstr "Ok"
 
-#: keys.c:18
 msgid "Key$Back"
 msgstr "Vissza"
 
-#: keys.c:19
 msgid "Key$Left"
 msgstr "Balra"
 
-#: keys.c:20
 msgid "Key$Right"
 msgstr "Jobbra"
 
-#: keys.c:21
 msgid "Key$Red"
 msgstr "Piros"
 
-#: keys.c:22
 msgid "Key$Green"
 msgstr "Zöld"
 
-#: keys.c:23
 msgid "Key$Yellow"
 msgstr "Sárga"
 
-#: keys.c:24
 msgid "Key$Blue"
 msgstr "Kék"
 
-#: keys.c:35
 msgid "Key$Info"
 msgstr "Információ"
 
-#: keys.c:36
 msgid "Key$Play"
 msgstr "Lejátszás"
 
-#: keys.c:37
 msgid "Key$Pause"
 msgstr "Szünet"
 
-#: keys.c:38
 msgid "Key$Stop"
 msgstr "Stop"
 
-#: keys.c:39
 msgid "Key$Record"
 msgstr "Felvenni"
 
-#: keys.c:40
 msgid "Key$FastFwd"
 msgstr "Elõre pörgetni"
 
-#: keys.c:41
 msgid "Key$FastRew"
 msgstr "Vissza pörgetni"
 
-#: keys.c:42
 msgid "Key$Next"
 msgstr "Elõre"
 
-#: keys.c:43
 msgid "Key$Prev"
 msgstr "Vissza"
 
-#: keys.c:44
 msgid "Key$Power"
 msgstr "Kikapcsolni"
 
-#: keys.c:45
 msgid "Key$Channel+"
 msgstr "Csatorna+"
 
-#: keys.c:46
 msgid "Key$Channel-"
 msgstr "Csatorna-"
 
-#: keys.c:47
 msgid "Key$PrevChannel"
 msgstr "Az elõzõ adás"
 
-#: keys.c:48
 msgid "Key$Volume+"
 msgstr "Hangerõ+"
 
-#: keys.c:49
 msgid "Key$Volume-"
 msgstr "Hangerõ-"
 
-#: keys.c:50 skinclassic.c:549
 msgid "Key$Mute"
 msgstr "Csend"
 
-#: keys.c:51
 msgid "Key$Audio"
 msgstr "Hang"
 
-#: keys.c:52
+msgid "Key$Subtitles"
+msgstr ""
+
 msgid "Key$Schedule"
 msgstr "Program"
 
-#: keys.c:53
 msgid "Key$Channels"
 msgstr "Csatornák"
 
-#: keys.c:54
 msgid "Key$Timers"
 msgstr "Idõzítõ"
 
-#: keys.c:55
 msgid "Key$Recordings"
 msgstr "Felvett adások"
 
-#: keys.c:56
 msgid "Key$Setup"
 msgstr "Beállítások"
 
-#: keys.c:57
 msgid "Key$Commands"
 msgstr "Parancsok"
 
-#: keys.c:58
 msgid "Key$User1"
 msgstr ""
 
-#: keys.c:59
 msgid "Key$User2"
 msgstr ""
 
-#: keys.c:60
 msgid "Key$User3"
 msgstr ""
 
-#: keys.c:61
 msgid "Key$User4"
 msgstr ""
 
-#: keys.c:62
 msgid "Key$User5"
 msgstr ""
 
-#: keys.c:63
 msgid "Key$User6"
 msgstr ""
 
-#: keys.c:64
 msgid "Key$User7"
 msgstr ""
 
-#: keys.c:65
 msgid "Key$User8"
 msgstr ""
 
-#: keys.c:66
 msgid "Key$User9"
 msgstr ""
 
-#: menu.c:69
 msgid "Free To Air"
 msgstr "Kódolatlan"
 
-#: menu.c:71
 msgid "encrypted"
 msgstr "Kódolt"
 
-#: menu.c:177
 msgid "auto"
 msgstr "auto"
 
-#: menu.c:229
 msgid "Edit channel"
 msgstr "Csatornák beállítása"
 
-#: menu.c:254
 msgid "Name"
 msgstr "Név"
 
-#: menu.c:255
 msgid "Source"
 msgstr "Forrás"
 
-#: menu.c:256
 msgid "Frequency"
 msgstr "Frekvencia"
 
-#: menu.c:257
 msgid "Vpid"
 msgstr "Vpid"
 
-#: menu.c:258
 msgid "Ppid"
 msgstr "Ppid"
 
-#: menu.c:259
 msgid "Apid1"
 msgstr "Apid1"
 
-#: menu.c:260
 msgid "Apid2"
 msgstr "Apid2"
 
-#: menu.c:261
 msgid "Dpid1"
 msgstr "Dpid1"
 
-#: menu.c:262
 msgid "Dpid2"
 msgstr "Dpid2"
 
-#: menu.c:263
+msgid "Spid1"
+msgstr ""
+
+msgid "Spid2"
+msgstr ""
+
 msgid "Tpid"
 msgstr "Tpid"
 
-#: menu.c:264
 msgid "CA"
 msgstr "CA"
 
-#: menu.c:265
 msgid "Sid"
 msgstr "Sid"
 
-#: menu.c:272
 msgid "Polarization"
 msgstr "Polarizáció"
 
-#: menu.c:273
 msgid "Srate"
 msgstr "Srate"
 
-#: menu.c:274
 msgid "Inversion"
 msgstr "Inversion"
 
-#: menu.c:274
 msgid "off"
 msgstr "ki"
 
-#: menu.c:275
 msgid "CoderateH"
 msgstr "CoderateH"
 
-#: menu.c:275 menu.c:276 menu.c:281
 msgid "none"
 msgstr "semmi"
 
-#: menu.c:276
 msgid "CoderateL"
 msgstr "CoderateL"
 
-#: menu.c:277
 msgid "Modulation"
 msgstr "Modulation"
 
-#: menu.c:278
 msgid "Bandwidth"
 msgstr "Bandwidth"
 
-#: menu.c:279
 msgid "Transmission"
 msgstr "Transmission"
 
-#: menu.c:280
 msgid "Guard"
 msgstr "Guard"
 
-#: menu.c:281
 msgid "Hierarchy"
 msgstr "Hierarchy"
 
-#: menu.c:312
 msgid "Channel settings are not unique!"
 msgstr "Az adóbeállítások nem egyértelmûek"
 
-#: menu.c:402 menu.c:2923
 msgid "Channels"
 msgstr "Csatornák"
 
-#: menu.c:432 menu.c:847 menu.c:1920 menuitems.c:320
-msgid "Button$Delete"
-msgstr "Törölni"
-
-#: menu.c:432
 msgid "Button$Edit"
 msgstr "Beállítani"
 
-#: menu.c:432
-msgid "Button$Mark"
-msgstr "Megjelölni"
-
-#: menu.c:432 menu.c:847
 msgid "Button$New"
 msgstr "Új"
 
-#: menu.c:512
+msgid "Button$Delete"
+msgstr "Törölni"
+
+msgid "Button$Mark"
+msgstr "Megjelölni"
+
 msgid "Channel is being used by a timer!"
 msgstr "Az adót az idõzítõ használja!"
 
-#: menu.c:515
 msgid "Delete channel?"
 msgstr "Csatorna törlése?"
 
-#: menu.c:652
 msgid "Edit timer"
 msgstr "Idõzítõ megváltoztatása"
 
-#: menu.c:662
 msgid "Active"
 msgstr "Aktiv"
 
-#: menu.c:663
 msgid "Channel"
 msgstr "Csatorna"
 
-#: menu.c:664
 msgid "Day"
 msgstr "Nap"
 
-#: menu.c:665
 msgid "Start"
 msgstr "Kezdet"
 
-#: menu.c:666
 msgid "Stop"
 msgstr "Vége"
 
-#: menu.c:667
 msgid "VPS"
 msgstr "VPS"
 
-#: menu.c:668
 msgid "Priority"
 msgstr "Prioritás"
 
-#: menu.c:669
 msgid "Lifetime"
 msgstr "Élettartam"
 
-#: menu.c:670
 msgid "File"
 msgstr "File"
 
-#: menu.c:686
 msgid "First day"
 msgstr "Elsõ nap"
 
-#: menu.c:811 menu.c:2924
 msgid "Timers"
 msgstr "Idõzítõ"
 
-#: menu.c:847 menu.c:1920
-msgid "Button$Info"
-msgstr "Információ"
-
-#: menu.c:847
 msgid "Button$On/Off"
 msgstr "Be/Ki"
 
-#: menu.c:890
+msgid "Button$Info"
+msgstr "Információ"
+
 msgid "Delete timer?"
 msgstr "Idõzítõ törlése?"
 
-#: menu.c:892 menu.c:2031
 msgid "Timer still recording - really delete?"
 msgstr "Felvétel folyamatban van - mégis törölni?"
 
-#: menu.c:948
 msgid "Event"
 msgstr "Adás"
 
-#: menu.c:958 menu.c:1137 menu.c:1380 menu.c:1501 menu.c:2984
-msgid "Button$Record"
-msgstr "Felvenni"
-
-#: menu.c:958 menu.c:1138 menu.c:1501
-msgid "Button$Switch"
-msgstr "Átkapcsolni"
-
-#: menu.c:958 menu.c:1137 menu.c:1380
 msgid "Button$Timer"
 msgstr "Idõzítõ"
 
-#: menu.c:1093
-msgid "What's on next?"
-msgstr "Mi következik?"
+msgid "Button$Record"
+msgstr "Felvenni"
 
-#: menu.c:1093
+msgid "Button$Switch"
+msgstr "Átkapcsolni"
+
 msgid "What's on now?"
 msgstr "Mi megy most?"
 
-#: menu.c:1138 menu.c:1381 menu.c:1501
+msgid "What's on next?"
+msgstr "Mi következik?"
+
 msgid "Button$Next"
 msgstr "Következõ"
 
-#: menu.c:1138 menu.c:1381 menu.c:1501
 msgid "Button$Now"
 msgstr "Most"
 
-#: menu.c:1138
 msgid "Button$Schedule"
 msgstr "Program"
 
-#: menu.c:1158 menu.c:1450
 msgid "Can't switch channel!"
 msgstr "Az adót nem lehet elkapcsolni"
 
-#: menu.c:1283
 #, c-format
 msgid "Schedule - %s"
 msgstr "Program - %s"
 
-#: menu.c:1304
 #, c-format
 msgid "This event - %s"
 msgstr "Ez az adás - %s"
 
-#: menu.c:1323
 msgid "This event - all channels"
 msgstr "Ez az adás - összes adó"
 
-#: menu.c:1342
 msgid "All events - all channels"
 msgstr "Az összes adás - az összes adó"
 
-#: menu.c:1712
 #, c-format
 msgid "Please enter %d digits!"
 msgstr "Üssön be %d számot!"
 
-#: menu.c:1754
 msgid "CAM not responding!"
 msgstr ""
 
-#: menu.c:1784
 msgid "Recording info"
 msgstr "Felvétel"
 
-#: menu.c:1789 menu.c:1920
 msgid "Button$Play"
 msgstr "Lejátszani"
 
-#: menu.c:1789 menu.c:1920
 msgid "Button$Rewind"
 msgstr "Vissza az elejére"
 
-#: menu.c:1879 menu.c:2925
 msgid "Recordings"
 msgstr "Felvett adások"
 
-#: menu.c:1918
 msgid "Button$Open"
 msgstr "Kinyitni"
 
-#: menu.c:1920 menu.c:2902 menu.c:2944 menu.c:3037
 msgid "Commands"
 msgstr "Parancsok"
 
-#: menu.c:1970
 msgid "Error while accessing recording!"
 msgstr "Hiba a felvétel hozzáférésénél"
 
-#: menu.c:2028
 msgid "Delete recording?"
 msgstr "Felvétel törlése?"
 
-#: menu.c:2058
 msgid "Error while deleting recording!"
 msgstr "Hiba a felvétel törlésénél!"
 
-#: menu.c:2089
 msgid "Recording commands"
 msgstr "Parancsok a felvett filmekhez"
 
-#: menu.c:2203
 msgid "never"
 msgstr "soha"
 
-#: menu.c:2204
 msgid "skin dependent"
 msgstr "Menü nézetétõl függõen"
 
-#: menu.c:2205
 msgid "always"
 msgstr "mindig"
 
-#: menu.c:2207 menu.c:2811
 msgid "OSD"
 msgstr "OSD"
 
-#: menu.c:2208
 msgid "Setup.OSD$Language"
 msgstr "Nyelv"
 
-#: menu.c:2209
 msgid "Setup.OSD$Skin"
 msgstr "Menü nézet"
 
-#: menu.c:2211
 msgid "Setup.OSD$Theme"
 msgstr "Téma"
 
-#: menu.c:2212
 msgid "Setup.OSD$Left"
 msgstr "Balra"
 
-#: menu.c:2213
 msgid "Setup.OSD$Top"
 msgstr "Fent"
 
-#: menu.c:2214
 msgid "Setup.OSD$Width"
 msgstr "Szélesség"
 
-#: menu.c:2215
 msgid "Setup.OSD$Height"
 msgstr "Magasság"
 
-#: menu.c:2216
 msgid "Setup.OSD$Message time (s)"
 msgstr "Információ feltûntetésének idõtartama"
 
-#: menu.c:2217
 msgid "Setup.OSD$Use small font"
 msgstr "Kisbetût használni"
 
-#: menu.c:2218
 msgid "Setup.OSD$Anti-alias"
 msgstr ""
 
-#: menu.c:2219
 msgid "Setup.OSD$Default font"
 msgstr ""
 
-#: menu.c:2220
 msgid "Setup.OSD$Small font"
 msgstr ""
 
-#: menu.c:2221
 msgid "Setup.OSD$Fixed font"
 msgstr ""
 
-#: menu.c:2222
 msgid "Setup.OSD$Default font size (pixel)"
 msgstr ""
 
-#: menu.c:2223
 msgid "Setup.OSD$Small font size (pixel)"
 msgstr ""
 
-#: menu.c:2224
 msgid "Setup.OSD$Fixed font size (pixel)"
 msgstr ""
 
-#: menu.c:2225
 msgid "Setup.OSD$Channel info position"
 msgstr "Adásinformáció poziciója"
 
-#: menu.c:2225
 msgid "bottom"
 msgstr "lent"
 
-#: menu.c:2225
 msgid "top"
 msgstr "Fent"
 
-#: menu.c:2226
 msgid "Setup.OSD$Channel info time (s)"
 msgstr "Adásinformáció feltûntetésének idõtartama (s)"
 
-#: menu.c:2227
 msgid "Setup.OSD$Info on channel switch"
 msgstr "Információ az adó váltásánál"
 
-#: menu.c:2228
 msgid "Setup.OSD$Timeout requested channel info"
 msgstr "A lekérdezett adásinformáció bezárása"
 
-#: menu.c:2229
 msgid "Setup.OSD$Scroll pages"
 msgstr "Oldalanként léptetmi"
 
-#: menu.c:2230
 msgid "Setup.OSD$Scroll wraps"
 msgstr "Korlátlan léptetés"
 
-#: menu.c:2231
 msgid "Setup.OSD$Menu key closes"
 msgstr "A menü gomb zár"
 
-#: menu.c:2232
 msgid "Setup.OSD$Recording directories"
 msgstr "Felvételek listája"
 
-#: menu.c:2323 menu.c:2812
 msgid "EPG"
 msgstr "EPG"
 
-#: menu.c:2324
 msgid "Button$Scan"
 msgstr "Adáskeresés"
 
-#: menu.c:2334
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Fennmaradt idõ az EPG-újításig (h)"
 
-#: menu.c:2335
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "EPG hibaelhárítás"
 
-#: menu.c:2336
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Régi EPG adatok megmutatása (perc)"
 
-#: menu.c:2337
 msgid "Setup.EPG$Set system time"
 msgstr "Az idõ beállítása"
 
-#: menu.c:2339
 msgid "Setup.EPG$Use time from transponder"
 msgstr "Idõhöz tartozó Transponder"
 
 #. TRANSLATORS: note the plural!
-#: menu.c:2341
 msgid "Setup.EPG$Preferred languages"
 msgstr "Kedvenc nyelvek"
 
 #. TRANSLATORS: note the singular!
-#: menu.c:2344
 msgid "Setup.EPG$Preferred language"
 msgstr "Kedvenc nyelv"
 
-#: menu.c:2416
 msgid "pan&scan"
 msgstr "pan&scan"
 
-#: menu.c:2417
 msgid "letterbox"
 msgstr "letterbox"
 
-#: menu.c:2418
 msgid "center cut out"
 msgstr "center cut out"
 
-#: menu.c:2419 menuitems.c:121
 msgid "no"
 msgstr "nem"
 
-#: menu.c:2420
 msgid "names only"
 msgstr "kizárólag nevek"
 
-#: menu.c:2421
 msgid "PIDs only"
 msgstr "kizárólag PID-k"
 
-#: menu.c:2422
 msgid "names and PIDs"
 msgstr "nevek és PID-k"
 
-#: menu.c:2423
 msgid "add new channels"
 msgstr "új adók hozzáadása"
 
-#: menu.c:2424
 msgid "add new transponders"
 msgstr "új transponder hozzáadása"
 
-#: menu.c:2426 menu.c:2813
 msgid "DVB"
 msgstr "DVB"
 
-#: menu.c:2436
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Elsõ DVB interface"
 
-#: menu.c:2437
 msgid "Setup.DVB$Video format"
 msgstr "Video formátum"
 
-#: menu.c:2439
 msgid "Setup.DVB$Video display format"
 msgstr "Képerny¿formátum"
 
-#: menu.c:2440
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Dolby-Digital hangot használni"
 
-#: menu.c:2441
 msgid "Setup.DVB$Update channels"
 msgstr "Adók aktualizálása"
 
-#: menu.c:2442
 msgid "Setup.DVB$Audio languages"
 msgstr "Audio-nyelvek"
 
-#: menu.c:2444
 msgid "Setup.DVB$Audio language"
 msgstr "Audio-nyelv"
 
-#: menu.c:2505 menu.c:2814
+msgid "Setup.DVB$Display subtitles"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle languages"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle language"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle offset"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle foreground transparency"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle background transparency"
+msgstr ""
+
 msgid "LNB"
 msgstr "LNB"
 
-#: menu.c:2515
 msgid "Setup.LNB$Use DiSEqC"
 msgstr "DiSEqC használata"
 
-#: menu.c:2517
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "SLOF (MHz)"
 
-#: menu.c:2518
 msgid "Setup.LNB$Low LNB frequency (MHz)"
 msgstr "Alsó LNB-frekvencia (MHZ)"
 
-#: menu.c:2519
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Felsõ LNB-frekvencia (MHZ)"
 
-#: menu.c:2560
 msgid "CAM reset"
 msgstr ""
 
-#: menu.c:2561
 msgid "CAM present"
 msgstr ""
 
-#: menu.c:2562
 msgid "CAM ready"
 msgstr ""
 
-#: menu.c:2585 menu.c:2815
 msgid "CAM"
 msgstr "CAM"
 
-#: menu.c:2590
 msgid "Button$Menu"
 msgstr "Menü"
 
-#: menu.c:2590
 msgid "Button$Reset"
 msgstr "Reset"
 
-#: menu.c:2598
 msgid "Opening CAM menu..."
 msgstr "A CAM-menü nyitás alatt..."
 
-#: menu.c:2615
 msgid "Can't open CAM menu!"
 msgstr "A CAM-Menü nem nyitható"
 
-#: menu.c:2624
 msgid "CAM is in use - really reset?"
 msgstr ""
 
-#: menu.c:2626
 msgid "Can't reset CAM!"
 msgstr "A CAM-Reset nem sikerült"
 
-#: menu.c:2660 menu.c:2816
 msgid "Recording"
 msgstr "Felvétel"
 
-#: menu.c:2661
 msgid "Setup.Recording$Margin at start (min)"
 msgstr "Idõeltolódás a kezdésnél (perc)"
 
-#: menu.c:2662
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Idõeltolódás a befejezésnél (perc)"
 
-#: menu.c:2663
 msgid "Setup.Recording$Primary limit"
 msgstr "Primér-határ"
 
-#: menu.c:2664
 msgid "Setup.Recording$Default priority"
 msgstr "Default priority"
 
-#: menu.c:2665
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Default élettartam"
 
-#: menu.c:2666
 msgid "Setup.Recording$Pause priority"
 msgstr "Szünet prioritás"
 
-#: menu.c:2667
 msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Szünet élettartama"
 
-#: menu.c:2668
 msgid "Setup.Recording$Use episode name"
 msgstr "Epizódnév felhasználása"
 
-#: menu.c:2669
 msgid "Setup.Recording$Use VPS"
 msgstr "VPS-t használni"
 
-#: menu.c:2670
 msgid "Setup.Recording$VPS margin (s)"
 msgstr "Idõeltolódás VPS-nél (s)"
 
-#: menu.c:2671
 msgid "Setup.Recording$Mark instant recording"
 msgstr "Direktfelvétel megjelölése"
 
-#: menu.c:2672
 msgid "Setup.Recording$Name instant recording"
 msgstr "Direktfelvétel megnevezése"
 
-#: menu.c:2673
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Felvétel idõtartama (perc)"
 
-#: menu.c:2674
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Max. video File-terjedelem (MB)"
 
-#: menu.c:2675
 msgid "Setup.Recording$Split edited files"
 msgstr "Feldolgozott File-k felosztása"
 
-#: menu.c:2689 menu.c:2817
 msgid "Replay"
 msgstr "Lejátszás"
 
-#: menu.c:2690
 msgid "Setup.Replay$Multi speed mode"
 msgstr "MultiSpeed funkció"
 
-#: menu.c:2691
 msgid "Setup.Replay$Show replay mode"
 msgstr "Lejátszás feltüntetése"
 
-#: menu.c:2692
 msgid "Setup.Replay$Resume ID"
 msgstr "Lejátszás ID"
 
-#: menu.c:2711 menu.c:2818
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
-#: menu.c:2712
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Idõzitések közötti idõtartam (perc)"
 
-#: menu.c:2713
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "VDR leáll használat nélkül (perc)"
 
-#: menu.c:2714
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP szétkapcsol használat nélkül(s)"
 
-#: menu.c:2715
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Adásváltás ideje (s)"
 
-#: menu.c:2716
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr ""
 
-#: menu.c:2717
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Adás a bekapcsolásnál"
 
-#: menu.c:2717 menu.c:2718
 msgid "Setup.Miscellaneous$as before"
 msgstr "ahogy az elõbb"
 
-#: menu.c:2718
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hangerõ a bekapcsolásnál"
 
-#: menu.c:2747 menu.c:2820
 msgid "Plugins"
 msgstr "Plugins"
 
-#: menu.c:2777
 msgid "This plugin has no setup parameters!"
 msgstr "Ennek a plugin-nak nincs setup-parametere!"
 
-#: menu.c:2808 menu.c:2942 menuitems.c:950
 msgid "Setup"
 msgstr "Beállítások"
 
-#: menu.c:2821
 msgid "Restart"
 msgstr "Ùjraindítás"
 
-#: menu.c:2826
 msgid "Really restart?"
 msgstr "Tényleg újraindítani?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
-#: menu.c:2878
 msgid " Stop recording "
 msgstr " Felvételt befejezni"
 
-#: menu.c:2922
 msgid "Schedule"
 msgstr "Program"
 
-#: menu.c:2966
-msgid "Disk"
-msgstr "Lemez"
-
-#: menu.c:2966
 msgid "VDR"
 msgstr "VDR"
 
-#: menu.c:2966
+msgid "Disk"
+msgstr "Lemez"
+
 msgid "free"
 msgstr "szabad"
 
 #. TRANSLATORS: note the leading blank!
-#: menu.c:2978
 msgid " Stop replaying"
 msgstr " Lejátszást befejzni"
 
-#: menu.c:2984 menu.c:3496
 msgid "Button$Audio"
 msgstr "Hang"
 
-#: menu.c:2984
 msgid "Button$Pause"
 msgstr "Szünet"
 
-#: menu.c:2984
-msgid "Button$Resume"
-msgstr "Tovább"
-
-#: menu.c:2984
 msgid "Button$Stop"
 msgstr "Stop"
 
+msgid "Button$Resume"
+msgstr "Tovább"
+
 #. TRANSLATORS: note the leading blank!
-#: menu.c:2992
 msgid " Cancel editing"
 msgstr " Vágást megszakítani"
 
-#: menu.c:3038
 msgid "Stop recording?"
 msgstr "Felvétel befejezni?"
 
-#: menu.c:3046
 msgid "Cancel editing?"
 msgstr "Vágást befejezni?"
 
-#: menu.c:3526
 msgid "No audio available!"
 msgstr "Hang nem lehetséges!"
 
-#: menu.c:3736
+msgid "No subtitles"
+msgstr ""
+
+msgid "Button$Subtitles"
+msgstr ""
+
+msgid "No subtitles available!"
+msgstr ""
+
 msgid "Not enough disk space to start recording!"
 msgstr "Nincs elegendõ hely a felvételre"
 
-#: menu.c:3767 vdr.c:1017 vdr.c:1077
 msgid "No free DVB device to record!"
 msgstr "Nincs szabad DVB kártya a felvételhez!"
 
-#: menu.c:3797
 msgid "Pausing live video..."
 msgstr "Az élõ adás megállítva..."
 
 #. TRANSLATORS: note the trailing blank!
-#: menu.c:4040
 msgid "Jump: "
 msgstr "Ugrás:"
 
-#: menu.c:4184
 msgid "No editing marks defined!"
 msgstr "A vágópont nincs kijelölve"
 
-#: menu.c:4186
 msgid "Can't start editing process!"
 msgstr "A vágás nem indítható!"
 
-#: menu.c:4188
 msgid "Editing process started"
 msgstr "Vágás elindítva"
 
-#: menu.c:4191
 msgid "Editing process already active!"
 msgstr "A vágás már aktivált!"
 
-#: menuitems.c:21
 msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
 msgstr " aábcdeéfghiíjklmnoóöõpqrstuúüûvwxyz0123456789-.,#~,/_@"
 
-#: menuitems.c:122
 msgid "yes"
 msgstr "igen"
 
-#: menuitems.c:288
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.#~,/_@1\taábc2\tdeéf3\tghií4\tjkl5\tmnoóöõ6\tpqrs7\ttuúüûv8\twxyz9"
 
-#: menuitems.c:320
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
-#: menuitems.c:320
-msgid "Button$Insert"
-msgstr "Beilleszteni"
-
-#: menuitems.c:320
 msgid "Button$Overwrite"
 msgstr "Átírni"
 
-#: menuitems.c:971
+msgid "Button$Insert"
+msgstr "Beilleszteni"
+
 msgid "Plugin"
 msgstr "Plugin"
 
-#: osdbase.c:446
 msgid "Up/Dn for new location - OK to move"
 msgstr "Fel/Le egy uj opcióért - aztán OK"
 
-#: player.c:84
 msgid "Channel locked (recording)!"
 msgstr "Az adó blokkolva (felvétel)!"
 
-#: recording.c:189
 msgid "Low disk space!"
 msgstr "A merev lemez majdnem tele!"
 
-#: shutdown.c:148
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "A leállítás nem lehetséges - Opció '-s' hiányzik!"
 
-#: shutdown.c:152
 msgid "Editing - shut down anyway?"
 msgstr ""
 
-#: shutdown.c:162
 msgid "Recording - shut down anyway?"
 msgstr "Felvétel folyamatban van - mégis kikapcsolni?"
 
-#: shutdown.c:169
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
 msgstr "Felvétel %ld perc mulva kezdõdik - mégis kikapcsolni?"
 
-#: shutdown.c:174
 msgid "shut down anyway?"
 msgstr "mégis kikapcsolni?"
 
-#: shutdown.c:184
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr ""
 
-#: shutdown.c:195
 msgid "Editing - restart anyway?"
 msgstr ""
 
-#: shutdown.c:205
 msgid "Recording - restart anyway?"
 msgstr "Felvétel folyamatban van - mégis újraindítani?"
 
-#: shutdown.c:209
 msgid "restart anyway?"
 msgstr "mégis újraindítani?"
 
 #. TRANSLATORS: note the trailing blank!
-#: skinclassic.c:553
 msgid "Volume "
 msgstr "Hangerõ"
 
-#: skinclassic.c:702
 msgid "Classic VDR"
 msgstr "Klasszikus VDR"
 
-#: skinsttng.c:1136
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Konzol"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
-#: timers.c:222
 msgid "MTWTFSS"
 msgstr "HKSCPSV"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
-#: tools.c:856
 msgid "MonTueWedThuFriSatSun"
 msgstr "HétKedSzeCsüPénSzoVas"
 
-#: tools.c:875
 msgid "Monday"
 msgstr "Hétfõ"
 
-#: tools.c:876
 msgid "Tuesday"
 msgstr "Kedd"
 
-#: tools.c:877
 msgid "Wednesday"
 msgstr "Szerda"
 
-#: tools.c:878
 msgid "Thursday"
 msgstr "Csütörtök"
 
-#: tools.c:879
 msgid "Friday"
 msgstr "Péntek"
 
-#: tools.c:880
 msgid "Saturday"
 msgstr "Szombat"
 
-#: tools.c:881
 msgid "Sunday"
 msgstr "Vasárnap"
 
-#: vdr.c:863
 msgid "Upcoming VPS recording!"
 msgstr "VPS-felvétel rögtön kezdõdik!"
 
-#: vdr.c:1025 vdr.c:1081
 msgid "Recording started"
 msgstr "A felvétel elinditva Nd"
 
-#: vdr.c:1034
 msgid "VDR will shut down later - press Power to force"
 msgstr ""
 
-#: vdr.c:1046
 msgid "Press any key to cancel shutdown"
 msgstr "Nyomj egy gombot a leállás megállításához"
 
-#: vdr.c:1099
 msgid "Switching primary DVB..."
 msgstr "Primér Interface átkapcsolva..."
 
-#: vdr.c:1167
 msgid "Editing process failed!"
 msgstr "Vágás sikertelen!"
 
-#: vdr.c:1169
 msgid "Editing process finished"
 msgstr "Vágás befejezve"
 
-#: vdr.c:1175
 msgid "Press any key to cancel restart"
 msgstr ""
 
-#: vdr.c:1195
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr ""

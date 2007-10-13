@@ -5417,7 +5417,7 @@ Video Disk Recorder Revision History
 - Fixed checking for ttDolbyLast in cDevice::SetCurrentAudioTrack() (thanks
   to Marco Schlüßler).
 
-2007-10-12: Version 1.5.10
+2007-10-13: Version 1.5.10
 
 - Implemented handling DVB subtitles (thanks to Marco Schlüßler, and also to
   Pekka Virtanen for writing the subtitle plugin, which helped in implementing
@@ -5445,3 +5445,7 @@ Video Disk Recorder Revision History
   X 3 03 ger deutsch
   (see vdr.5). Note that these entries need to be added in the proper sequence,
   so that they correspond with the actual track languages in the recording.
+- Now generating translation files without line numbers to avoid unnecessarily
+  large diffs. Plugin authors may want to replace the -F option with
+  --no-location in the xgettext and msgmerge calls in their Makefiles.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
