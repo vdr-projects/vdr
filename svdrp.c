@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.103 2007/08/25 09:28:26 kls Exp $
+ * $Id: svdrp.c 1.104 2007/10/13 10:17:48 kls Exp $
  */
 
 #include "svdrp.h"
@@ -819,7 +819,7 @@ void cSVDRP::CmdHELP(const char *Option)
   if (*Option) {
      const char *hp = GetHelpPage(Option, HelpPages);
      if (hp)
-        Reply(214, "%s", hp);
+        Reply(-214, "%s", hp);
      else {
         Reply(504, "HELP topic \"%s\" unknown", Option);
         return;
