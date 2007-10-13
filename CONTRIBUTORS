@@ -1529,6 +1529,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling single byte characters >0x7F in Utf8ToArray()
  for fixing clearing color buttons in the 'curses' skin
  for adding a missing error report to cCuttingThread::Action()
+ for reporting a problem in handling reallocated memory in cCharSetConv::Convert()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

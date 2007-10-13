@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.135 2007/08/05 12:18:15 kls Exp $
+ * $Id: tools.c 1.136 2007/10/13 12:00:21 kls Exp $
  */
 
 #include "tools.h"
@@ -791,7 +791,7 @@ const char *cCharSetConv::Convert(const char *From, char *To, size_t ToLength)
                  size_t d = ToPtr - result;
                  size_t r = length / 2;
                  length += r;
-                 result = (char *)realloc(result, length);
+                 Converted = result = (char *)realloc(result, length);
                  ToLength += r;
                  ToPtr = result + d;
                  }
