@@ -2196,3 +2196,6 @@ Diego Pierotto <vdr-italian@tiscali.it>
 Timo Eskola <timo@tolleri.net>
  for implementing sending all frames to devices that can handle them in fast forward
  trick speeds
+
+Elias Luttinen <el@iki.fi>
+ for improving the description of where logging goes in the INSTALL file

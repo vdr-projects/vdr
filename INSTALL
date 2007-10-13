@@ -66,8 +66,9 @@ to the 'make' command. Alternatively, you can call VDR with the command
 line option '--vfat'.
 
 When running, the 'vdr' program writes status information into the
-system log file (/var/log/messages). You may want to watch these
-messages (tail -f /var/log/mesages) to see if there are any problems.
+system log file, which is usually /var/log/messages (or /var/log/user.log,
+depending on your syslog configuration). You may want to watch these
+messages (tail -f /var/log/messages) to see if there are any problems.
 
 The program can be controlled via a network connection to its SVDRP
 port ("Simple Video Disk Recorder Protocol"). By default, it listens

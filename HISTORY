@@ -5469,3 +5469,5 @@ Video Disk Recorder Revision History
 - Updated the Hungarian language texts (thanks to Thomas Günther).
 - Fixed description of DeviceSetAvailableTrack() and cReceiver(), and added an
   example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
+- Improved the description of where logging goes in the INSTALL file (thanks to
+  Elias Luttinen).
