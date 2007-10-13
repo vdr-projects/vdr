@@ -1140,6 +1140,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a busy loop in fast forward if the next video data file is missing
  for adding a debug error message to cReceiver::~cReceiver() in case it is still
  attached to a device
+ for reporting a missing SetVolumeDevice() call in cDevice::SetPrimaryDevice()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

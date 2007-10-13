@@ -5453,3 +5453,5 @@ Video Disk Recorder Revision History
   channel in the Channels menu (reported by Halim Sahin).
 - Fixed a missing '-' at the next to last line of SVDRP help texts (reported by
   Denis Knauf).
+- Added a missing SetVolumeDevice() call in cDevice::SetPrimaryDevice() (reported
+  by Reinhard Nissl).

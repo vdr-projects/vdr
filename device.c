@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.143 2007/10/12 14:27:30 kls Exp $
+ * $Id: device.c 1.144 2007/10/13 10:30:13 kls Exp $
  */
 
 #include "device.h"
@@ -326,6 +326,7 @@ bool cDevice::SetPrimaryDevice(int n)
      primaryDevice = device[n];
      primaryDevice->MakePrimaryDevice(true);
      primaryDevice->SetVideoFormat(Setup.VideoFormat);
+     primaryDevice->SetVolumeDevice(Setup.CurrentVolume);
      return true;
      }
   esyslog("ERROR: invalid primary device number: %d", n + 1);
