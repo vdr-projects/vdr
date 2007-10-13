@@ -4,6 +4,7 @@
 # Alberto Carraro <bertocar@tin.it>, 2001
 # Antonio Ospite <ospite@studenti.unina.it>, 2003
 # Sean Carlos <seanc@libero.it>, 2005
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007
 #
 msgid ""
 msgstr ""
@@ -24,7 +25,7 @@ msgid "Channel not available!"
 msgstr "Canale non disponibile!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Impossibile iniziare la modalita' di trasferimento!"
+msgstr "Impossibile iniziare la modalità di trasferimento!"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -44,7 +45,7 @@ msgid "Phase 1: Detecting RC code type"
 msgstr "Fase 1: tipo ricevitore RC"
 
 msgid "Press any key on the RC unit"
-msgstr "Premere un tasto dell'unita' RC"
+msgstr "Premi un tasto dell'unità RC"
 
 msgid "RC code detected!"
 msgstr "Codice RC rilevato!"
@@ -57,37 +58,37 @@ msgstr "Fase 2: Codici specifici dei tasti"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Premere il tasto per '%s'"
+msgstr "Premi il tasto per '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Premere 'Su' per confermare"
+msgstr "Premi 'Su' per confermare"
 
 msgid "Press 'Down' to continue"
-msgstr "Premere 'Giu' per continuare"
+msgstr "Premi 'Giù' per continuare"
 
 msgid "(press 'Up' to go back)"
-msgstr "(premere 'Su' per tornare indietro)"
+msgstr "(premi 'Su' per tornare indietro)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "('Giu' per finire la definizione tasti)"
+msgstr "(premi 'Giù' per concludere la definizione tasti)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(premere 'Menu' per saltare questo tasto)"
+msgstr "(premi 'Menu' per saltare questo tasto)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Apprendimento tasti unita' remota"
+msgstr "Apprendimento tasti unità remota"
 
 msgid "Phase 3: Saving key codes"
 msgstr "Fase 3: Salvataggio codici tasti"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "'Su' per salvare, 'Giu' per annullare"
+msgstr "'Premi 'Su' per salvare, 'Giù' per annullare"
 
 msgid "Key$Up"
 msgstr "Su"
 
 msgid "Key$Down"
-msgstr "Giu"
+msgstr "Giù"
 
 msgid "Key$Menu"
 msgstr "Menu"
@@ -126,16 +127,16 @@ msgid "Key$Pause"
 msgstr "Pausa"
 
 msgid "Key$Stop"
-msgstr "Stop"
+msgstr "Ferma"
 
 msgid "Key$Record"
 msgstr "Registrazione"
 
 msgid "Key$FastFwd"
-msgstr "Avanti Veloce"
+msgstr "Avanti veloce"
 
 msgid "Key$FastRew"
-msgstr "Indietro Veloce"
+msgstr "Indietro veloce"
 
 msgid "Key$Next"
 msgstr "Prossimo"
@@ -189,31 +190,31 @@ msgid "Key$Commands"
 msgstr "Comandi"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Utente1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Utente2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Utente3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Utente4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Utente5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Utente6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Utente7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Utente8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Utente9"
 
 msgid "Free To Air"
 msgstr "in chiaro"
@@ -351,7 +352,7 @@ msgid "VPS"
 msgstr "VPS"
 
 msgid "Priority"
-msgstr "Priorita'"
+msgstr "Priorità"
 
 msgid "Lifetime"
 msgstr "Durata"
@@ -423,10 +424,10 @@ msgstr "Tutti gli eventi - tutti i canali"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Inserire %d cifre!"
+msgstr "Inserisci %d cifre!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "La CAM non risponde!"
 
 msgid "Recording info"
 msgstr "Informazioni registrazione"
@@ -498,25 +499,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Utilizzare caratteri piccoli"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Caratteri predefiniti"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Caratteri piccoli"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Caratteri fissi"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Dimensione caratteri predefiniti (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Dimensione caratteri piccoli (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Dimensione caratteri fissi (pixel)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posizione informazioni canale"
@@ -531,19 +532,19 @@ msgid "Setup.OSD$Channel info time (s)"
 msgstr "Durata informazioni canale (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Mostrare informazioni al cambio canale"
+msgstr "Mostra informazioni al cambio canale"
 
 msgid "Setup.OSD$Timeout requested channel info"
 msgstr "Scadenza informazioni canale richieste"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "Scorrere per pagine"
+msgstr "Scorri per pagine"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Scorrere riavvolgendo"
+msgstr "Scorri riavvolgendo"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Usare il bottone Menu per chiudere"
+msgstr "Utilizza il pulsante Menu per chiudere"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Directory di registrazione"
@@ -564,10 +565,10 @@ msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Visualizzazione dati vecchi (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Settare orario automatico"
+msgstr "Imposta orario automatico"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "Utilizzare orario da transponder"
+msgstr "Utilizza orario da transponder"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
@@ -620,13 +621,13 @@ msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Aggiornare i canali"
+msgstr "Aggiorna i canali"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "Lingue per l'Audio"
+msgstr "Lingue per l'audio"
 
 msgid "Setup.DVB$Audio language"
-msgstr "Lingua per l'Audio"
+msgstr "Lingua per l'audio"
 
 msgid "Setup.DVB$Display subtitles"
 msgstr ""
@@ -662,13 +663,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Freq HI LNB (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Reimposta la CAM"
 
 msgid "CAM present"
-msgstr ""
+msgstr "La CAM è presente"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "La CAM è pronta"
 
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
@@ -677,7 +678,7 @@ msgid "Button$Menu"
 msgstr "Menu"
 
 msgid "Button$Reset"
-msgstr "Resetta"
+msgstr "Reimposta"
 
 msgid "Opening CAM menu..."
 msgstr "Apertura menu CAM..."
@@ -686,7 +687,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossibile aprire il menu CAM!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "La CAM è in uso - vuoi reimpostarla?"
 
 msgid "Can't reset CAM!"
 msgstr "Impossibile reimpostare il modulo CAM!"
@@ -704,28 +705,28 @@ msgid "Setup.Recording$Primary limit"
 msgstr "Limite primario"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Priorita' predefinita"
+msgstr "Priorità predefinita"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Durata predefinita (gg)"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorita' di pausa"
+msgstr "Priorità di pausa"
 
 msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Durata pausa (gg)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Usare nome episodio"
+msgstr "Utilizza nome episodio"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "Usare VPS"
+msgstr "Utilizza VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
 msgstr "Margine VPS"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Marcare registrazione immediata"
+msgstr "Marca registrazione immediata"
 
 msgid "Setup.Recording$Name instant recording"
 msgstr "Nome registrazione immediata"
@@ -743,10 +744,10 @@ msgid "Replay"
 msgstr "Riproduzione"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Modalita' multispeed"
+msgstr "Modalità multispeed"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Mostrare modalita' riproduzione"
+msgstr "Mostra modalità riproduzione"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di rispristino"
@@ -758,7 +759,7 @@ msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Scadenza minima evento (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Periodo minimo di inattivita' (min)"
+msgstr "Periodo minimo di inattività (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Scadenza SVDRP (s)"
@@ -767,7 +768,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Scadenza Zapping (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Scadenza voce canale (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canale iniziale"
@@ -795,7 +796,7 @@ msgstr "Eseguire un riavvio?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Stop registrazione "
+msgstr " Ferma registrazione "
 
 msgid "Schedule"
 msgstr "Programmi"
@@ -811,7 +812,7 @@ msgstr "liberi"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " Stop riproduzione"
+msgstr " Ferma riproduzione"
 
 msgid "Button$Audio"
 msgstr "Audio"
@@ -820,14 +821,14 @@ msgid "Button$Pause"
 msgstr "Pausa"
 
 msgid "Button$Stop"
-msgstr "Stop"
+msgstr "Ferma"
 
 msgid "Button$Resume"
 msgstr "Riprendi"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Annullare modifiche"
+msgstr " Annulla modifiche"
 
 msgid "Stop recording?"
 msgstr "Fermare la registrazione?"
@@ -864,19 +865,19 @@ msgid "No editing marks defined!"
 msgstr "Nessun marcatore di modifica definito!"
 
 msgid "Can't start editing process!"
-msgstr "Impossibile iniziare processo di modifica!"
+msgstr "Impossibile iniziare il processo di modifica!"
 
 msgid "Editing process started"
 msgstr "Processo di modifica iniziato"
 
 msgid "Editing process already active!"
-msgstr "Processo di modifica gia' attivo!"
+msgstr "Processo di modifica già attivo!"
 
 msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
 msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.#~,/_@"
 
 msgid "yes"
-msgstr "si"
+msgstr "sì"
 
 msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.#~,/_@1\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"
@@ -894,7 +895,7 @@ msgid "Plugin"
 msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Su/Giu per nuova posizione - OK per muovere"
+msgstr "Su/Giù per nuova posizione - OK per muovere"
 
 msgid "Channel locked (recording)!"
 msgstr "Canale bloccato (in registrazione)!"
@@ -903,13 +904,13 @@ msgid "Low disk space!"
 msgstr "Poco spazio su disco!"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Impossibile spegnere - parametro '-s' non passato!"
+msgstr "Impossibile spegnere - parametro '-s' non assegnato!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Modifica in corso - spegnere comunque?"
 
 msgid "Recording - shut down anyway?"
-msgstr "In registrazione - spegnere comunque?"
+msgstr "Registrazione in corso - spegnere comunque?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
@@ -920,13 +921,13 @@ msgstr "spegnere comunque?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Il plugin %s si ripristina tra %ld min, continuare?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Modifica in corso - riavviare comunque?"
 
 msgid "Recording - restart anyway?"
-msgstr "In registrazione - riavviare comunque?"
+msgstr "Registrazione in corso - riavviare comunque?"
 
 msgid "restart anyway?"
 msgstr "riavviare comunque?"
@@ -956,7 +957,7 @@ msgid "Tuesday"
 msgstr "Martedì"
 
 msgid "Wednesday"
-msgstr "mercoledì"
+msgstr "Mercoledì"
 
 msgid "Thursday"
 msgstr "Giovedì"
@@ -977,13 +978,13 @@ msgid "Recording started"
 msgstr "Registrazione avviata"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR si spegnerà più tardi - premi Power per forzare"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Premere un tasto per annullare lo spegnimento"
+msgstr "Premi un tasto per annullare lo spegnimento"
 
 msgid "Switching primary DVB..."
-msgstr "Cambio su card DVB primaria..."
+msgstr "Cambio della scheda DVB primaria..."
 
 msgid "Editing process failed!"
 msgstr "Processo di modifica fallito!"
@@ -992,8 +993,8 @@ msgid "Editing process finished"
 msgstr "Processo di modifica terminato"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Premi un tasto per annullare il riavvio"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR si spegnerà tra %s minuti"

@@ -5459,3 +5459,4 @@ Video Disk Recorder Revision History
   (thanks to Christian Wieninger).
 - Only creating a new cDvbOsdProvider in cDvbDevice::MakePrimaryDevice() if 'On'
   is true (i.e. this device is being made the primary device).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
