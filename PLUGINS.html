@@ -14,18 +14,18 @@ Copyright &copy; 2006 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.5.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.1 are marked like this.
-<!--X1.5.1--></td></tr></table>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.3 are marked like this.
 <!--X1.5.3--></td></tr></table>
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.5.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.7 are marked like this.
 <!--X1.5.7--></td></tr></table>
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.8 are marked like this.
 <!--X1.5.8--></td></tr></table>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.5.10 are marked like this.
+<!--X1.5.10--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -64,9 +64,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Housekeeping">Housekeeping</a>
 <li><a href="#Main thread hook">Main thread hook</a>
 <li><a href="#Activity">Activity</a>
-<!--X1.5.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Wakeup">Wakeup</a>
-<!--X1.5.1--></td></tr></table>
 <li><a href="#Setup parameters">Setup parameters</a>
 <li><a href="#The Setup menu">The Setup menu</a>
 <li><a href="#Configuration files">Configuration files</a>
@@ -685,7 +683,6 @@ be queried, and further prompts may show up. If all prompts have been confirmed,
 the shutdown will take place. As soon as one prompt is not confirmed, no
 further plugins will be queried and no shutdown will be done.
 
-<!--X1.5.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Wakeup"><hr><h2>Wakeup</h2>
 
 <center><i><b>Wake me up before you go-go</b></i></center><p>
@@ -718,7 +715,6 @@ After wakeup, the plugin shall continue to return the wakeup time and shall
 return a string when <tt>Active()</tt> is called at that time, otherwise VDR may shut down
 again instantly. If <tt>WakeupTime()</tt> returns a time that is not in
 the future, the time will be ignored.
-<!--X1.5.1--></td></tr></table>
 
 <a name="Setup parameters"><hr><h2>Setup parameters</h2>
 
@@ -910,7 +906,7 @@ const char *MyConfigDir = cPlugin::ConfigDirectory();
 
 <center><i><b>Welcome to Babylon!</b></i></center><p>
 
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.5.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 If a plugin displays texts to the user, it should prepare for internationalization
 of these texts. All that is necessary for this is to mark every text that is
 presented to the user as translatable, as in
@@ -921,7 +917,7 @@ const char *s = tr("Hello world!");
 
 The text given here must be the English version, and the returned pointer is either
 a translated version (if available) or the original string.
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Texts are searched for in the domain registered for this plugin.
 If a plugin wants to make use of texts defined by the core VDR code, it can use
 the special <tt>trVDR()</tt> macro to mark these texts without having them
@@ -944,7 +940,7 @@ for (int i = 0; i &lt; 3; i++)
 </pre></td></tr></table><p>
 
 <p>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 The system VDR is running on may use a character encoding where a single character
 (or <i>symbol</i>) consists of more than one byte (UTF-8, as opposed to, for instance,
 ISO8859-1, where every character is represented by a single byte in memory).
@@ -1606,7 +1602,7 @@ with the full required resolution. Only if this fails shall it use alternate
 areas. Drawing areas are always rectangular and may not overlap (but do not need
 to be adjacent).
 <p>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Special consideration may have to be given to color usage if the OSD provides
 8bpp (256 colors). In that case, fonts may be drawn using <i>anti-aliasing</i>,
 which requires several blended color values between the foreground and background
@@ -1824,6 +1820,9 @@ virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual bool HasIBPTrickSpeed(void);
+<!--X1.5.10--></td></tr></table>
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
 virtual void Play(void);

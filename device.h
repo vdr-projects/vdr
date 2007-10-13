@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.83 2007/10/12 13:53:50 kls Exp $
+ * $Id: device.h 1.84 2007/10/13 12:25:26 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -494,6 +494,9 @@ public:
        ///< Gets the current System Time Counter, which can be used to
        ///< synchronize audio and video. If this device is unable to
        ///< provide the STC, -1 will be returned.
+  virtual bool HasIBPTrickSpeed(void) { return false; }
+       ///< Returns true if this device can handle all frames in 'fast forward'
+       ///< trick speeds.
   virtual void TrickSpeed(int Speed);
        ///< Sets the device into a mode where replay is done slower.
        ///< Every single frame shall then be displayed the given number of

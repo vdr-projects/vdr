@@ -5464,3 +5464,5 @@ Video Disk Recorder Revision History
   Richter).
 - Fixed a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode() (thanks to
   Udo Richter).
+- Implemented sending all frames to devices that can handle them in fast forward
+  trick speeds (thansk to Timo Eskola).
