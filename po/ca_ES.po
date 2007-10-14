@@ -873,7 +873,7 @@ msgid "Editing process already active!"
 msgstr "Procés d'edició iniciat anteriorment!"
 
 msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
-msgstr " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·"
+msgstr " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.#~,/_@·"
 
 msgid "yes"
 msgstr "sí"

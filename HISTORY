@@ -5478,3 +5478,4 @@ Video Disk Recorder Revision History
   target in their Makefiles, as in
   i18n: $(I18Npot) $(I18Nmo)
   (based on a suggestion by Torsten Kunkel).
+- Removed a duplicate ',' from the ca_ES.po file (thanks to Thomas Günther).
