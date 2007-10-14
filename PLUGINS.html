@@ -1786,7 +1786,7 @@ selecting which channel it shall tune to:
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual bool ProvidesSource(int Source) const;
 virtual bool ProvidesTransponder(const cChannel *Channel) const;
-virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
 virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 </pre></td></tr></table><p>
 
@@ -1849,7 +1849,7 @@ In addition, the following functions may be implemented to provide further
 functionality:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-virtual bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int Si
+virtual bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
 virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
@@ -1858,13 +1858,16 @@ virtual void SetVolumeDevice(int Volume);
 <b>Section Filtering</b>
 <p>
 If your device provides section filtering capabilities it can implement
-the function
+the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual void CloseFilter(int Handle);
+<!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>
 
-which must open a file handle that delivers section data for the given
+which must open and close a file handle that delivers section data for the given
 filter parameters.
 <p>
 In order to actually start section handling, the

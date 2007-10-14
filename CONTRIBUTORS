@@ -1026,6 +1026,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding internationalization to the "skincurses" plugin
  for helping with adding compatibility mode for playback of recordings made with
  the subtitles plugin
+ for implementing cDevice::CloseFilter()
+ for some fixes to PLUGINS.html
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

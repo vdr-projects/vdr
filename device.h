@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.84 2007/10/13 12:25:26 kls Exp $
+ * $Id: device.h 1.85 2007/10/14 13:09:12 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -308,6 +308,11 @@ public:
        ///< Opens a file handle for the given filter data.
        ///< A derived device that provides section data must
        ///< implement this function.
+  virtual void CloseFilter(int Handle);
+       ///< Closes a file handle that has previously been opened
+       ///< by OpenFilter(). If this is as simple as calling close(Handle),
+       ///< a derived class need not implement this function, because this
+       ///< is done by the default implementation.
   void AttachFilter(cFilter *Filter);
        ///< Attaches the given filter to this device.
   void Detach(cFilter *Filter);

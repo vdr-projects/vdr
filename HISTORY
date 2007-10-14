@@ -5484,3 +5484,6 @@ Video Disk Recorder Revision History
 - Made the default copy ctor of cRecording private (thanks to Markus Hahn).
   Same for the assign operator.
 - Added cRecording::Undelete() (based on a patch from Markus Hahn).
+- Added cDevice::CloseFilter() to allow a device to have complete control over
+  both opening and closing section filters (thanks to Rolf Ahrenberg).
+- Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
