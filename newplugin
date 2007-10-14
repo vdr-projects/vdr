@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.37 2007/10/13 09:28:55 kls Exp $
+# $Id: newplugin 1.38 2007/10/14 09:13:17 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -144,7 +144,7 @@ I18Npot   = \$(PODIR)/\$(PLUGIN).pot
 \$(I18Npo): \$(I18Npot)
 	msgmerge -U --no-wrap --no-location --backup=none -q \$\@ \$<
 
-i18n: \$(I18Nmo)
+i18n: \$(I18Npot) \$(I18Nmo)
 	\@mkdir -p \$(LOCALEDIR)
 	for i in \$(I18Ndirs); do\\
 	    mkdir -p \$(LOCALEDIR)/\$\$i/LC_MESSAGES;\\

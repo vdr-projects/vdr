@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.4 2007/08/24 13:19:34 kls Exp $
+# $Id: i18n-to-gettext.pl 1.5 2007/10/14 09:29:59 kls Exp $
 
 # How to convert an actual plugin:
 #
@@ -319,7 +319,7 @@ $(I18Npot): $(wildcard *.c)
 $(I18Npo): $(I18Npot)
 	msgmerge -U --no-wrap -F --backup=none -q $@ $<
 
-i18n: $(I18Nmo)
+i18n: $(I18Npot) $(I18Nmo)
 	@mkdir -p $(LOCALEDIR)
 	for i in $(I18Ndirs); do\
 	    mkdir -p $(LOCALEDIR)/$$i/LC_MESSAGES;\

@@ -2199,3 +2199,7 @@ Timo Eskola <timo@tolleri.net>
 
 Elias Luttinen <el@iki.fi>
  for improving the description of where logging goes in the INSTALL file
+
+Torsten Kunkel <vdrml@tkunkel.de>
+ for pointing out that it was not obvious how to initiate internationalization
+ support for a plugin

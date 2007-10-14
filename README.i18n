@@ -7,6 +7,19 @@ these texts. The instructions apply equally to VDR itself or any
 plugin.
 
 
+How to initiate internationalization support
+--------------------------------------------
+
+Not every plugin necessarily has texts that are visible to the
+user, therefore there is by default no 'po' directory.
+If your plugin source contains texts marked for translation
+with tr(), you need to
+
+- Change into the source directory.
+- Enter the command 'mkdir po'.
+
+After that, continue with "How to translate to a new language".
+
 How to translate to a new language
 ----------------------------------
 
@@ -18,15 +31,16 @@ How to translate to a new language
   will create a new *.po file for your language.
 - Edit the new *.po file and translate the texts.
   You can do this either with your favorite text editor, or
-  with a specialited tool like POEdit, GTranslator, KBabel
+  with a specialized tool like POEdit, GTranslator, KBabel
   or whatever you have.
 
 How to maintain an existing language file
 -----------------------------------------
 
+- Change into the source directory.
 - Do a 'make i18n' to have the *.po files brought up-to-date
   with the texts in the source code.
-- Edit the new *.po file and translate the texts.
+- Edit the modified *.po file(s) and translate the texts.
   If you are using a plain text editor, you should search for
   empty strings ("") to find new, untranslated texts. Also,
   look for the "fuzzy" keyword to find translations that have
