@@ -1784,6 +1784,8 @@ Thomas Günther <tom1@toms-cafe.de>
  for fixing i18n characters for the Hungarian texts
  for implementing using nl_langinfo(CODESET) to determine the local codeset to use
  for removing a duplicate ',' from the ca_ES.po file
+ for suggesting to add the 'ß' character to the "allowed characters" in the
+ de_DE.po file
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with

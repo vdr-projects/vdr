@@ -871,7 +871,7 @@ msgid "Editing process already active!"
 msgstr "Schnitt bereits aktiv!"
 
 msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
-msgstr " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~,/_@"
+msgstr " aäbcdefghijklmnoöpqrsßtuüvwxyz0123456789-.#~,/_@"
 
 msgid "yes"
 msgstr "ja"
