@@ -5483,3 +5483,4 @@ Video Disk Recorder Revision History
   (suggested by Thomas Günther).
 - Made the default copy ctor of cRecording private (thanks to Markus Hahn).
   Same for the assign operator.
+- Added cRecording::Undelete() (based on a patch from Markus Hahn).

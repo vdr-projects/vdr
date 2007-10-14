@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.58 2007/10/14 10:06:48 kls Exp $
+ * $Id: recording.h 1.59 2007/10/14 10:11:34 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -101,6 +101,10 @@ public:
        // Returns false in case of error
   bool Remove(void);
        // Actually removes the file from the disk
+       // Returns false in case of error
+  bool Undelete(void);
+       // Changes the file name so that it will be visible in the "Recordings" menu again and
+       // not processed by cRemoveDeletedRecordingsThread.
        // Returns false in case of error
   };
 

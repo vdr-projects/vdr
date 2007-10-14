@@ -1966,6 +1966,7 @@ Markus Hahn <mhahn@reel-multimedia.com>
  while editing a string item
  for fixing detection of Premiere NVOD channel links
  for making the default copy ctor of cRecording private
+ for a patch that was used to implement cRecording::Undelete()
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
