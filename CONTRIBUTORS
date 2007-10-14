@@ -1965,6 +1965,7 @@ Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting that the "Back" key should restore the original string when pressed
  while editing a string item
  for fixing detection of Premiere NVOD channel links
+ for making the default copy ctor of cRecording private
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file

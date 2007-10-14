@@ -5481,3 +5481,5 @@ Video Disk Recorder Revision History
 - Removed a duplicate ',' from the ca_ES.po file (thanks to Thomas Günther).
 - Added the 'ß' character to the "allowed charcaters" in the de_DE.po file
   (suggested by Thomas Günther).
+- Made the default copy ctor of cRecording private (thanks to Markus Hahn).
+  Same for the assign operator.
