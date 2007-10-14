@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.74 2007/08/26 09:44:50 kls Exp $
+ * $Id: osd.c 1.75 2007/10/12 12:38:36 kls Exp $
  */
 
 #include "osd.h"
@@ -82,7 +82,7 @@ void cPalette::SetColor(int Index, tColor Color)
      }
 }
 
-const tColor *cPalette::Colors(int &NumColors)
+const tColor *cPalette::Colors(int &NumColors) const
 {
   NumColors = numColors;
   return numColors ? color : NULL;
@@ -112,7 +112,7 @@ void cPalette::Replace(const cPalette &Palette)
   antiAliasGranularity = Palette.antiAliasGranularity;
 }
 
-tColor cPalette::Blend(tColor ColorFg, tColor ColorBg, uint8_t Level)
+tColor cPalette::Blend(tColor ColorFg, tColor ColorBg, uint8_t Level) const
 {
   if (antiAliasGranularity > 0)
      Level = uint8_t(int(Level / antiAliasGranularity + 0.5) * antiAliasGranularity);
@@ -131,7 +131,7 @@ tColor cPalette::Blend(tColor ColorFg, tColor ColorBg, uint8_t Level)
   return (A << 24) | (R << 16) | (G << 8) | B;
 }
 
-int cPalette::ClosestColor(tColor Color, int MaxDiff)
+int cPalette::ClosestColor(tColor Color, int MaxDiff) const
 {
   int n = 0;
   int d = INT_MAX;
@@ -640,6 +640,79 @@ const tIndex *cBitmap::Data(int x, int y)
   return &bitmap[y * width + x];
 }
 
+void cBitmap::ReduceBpp(const cPalette &Palette)
+{
+  int NewBpp = Palette.Bpp();
+  if (Bpp() == 4 && NewBpp == 2) {
+     for (int i = width * height; i--; ) {
+         tIndex p = bitmap[i];
+         bitmap[i] = (p >> 2) | ((p & 0x03) != 0);
+         }
+     }
+  else if (Bpp() == 8) {
+     if (NewBpp == 2) {
+        for (int i = width * height; i--; ) {
+            tIndex p = bitmap[i];
+            bitmap[i] = (p >> 6) | ((p & 0x30) != 0);
+            }
+        }
+     else if (NewBpp == 4) {
+        for (int i = width * height; i--; ) {
+            tIndex p = bitmap[i];
+            bitmap[i] = p >> 4;
+            }
+        }
+     else
+        return;
+     }
+  else
+     return;
+  SetBpp(NewBpp);
+  Replace(Palette);
+}
+
+void cBitmap::ShrinkBpp(int NewBpp)
+{
+  int NumOldColors;
+  const tColor *Colors = this->Colors(NumOldColors);
+  if (Colors) {
+     // Find the most frequently used colors and create a map table:
+     int Used[MAXNUMCOLORS] = { 0 };
+     int Map[MAXNUMCOLORS] = { 0 };
+     for (int i = width * height; i--; )
+         Used[bitmap[i]]++;
+     int MaxNewColors = (NewBpp == 4) ? 16 : 4;
+     cPalette NewPalette(NewBpp);
+     for (int i = 0; i < MaxNewColors; i++) {
+         int Max = 0;
+         int Index = -1;
+         for (int n = 0; n < NumOldColors; n++) {
+             if (Used[n] > Max) {
+                Max = Used[n];
+                Index = n;
+                }
+             }
+         if (Index >= 0) {
+            Used[Index] = 0;
+            Map[Index] = i;
+            NewPalette.SetColor(i, Colors[Index]);
+            }
+         else
+            break;
+         }
+     // Complete the map table for all other colors (will be set to closest match):
+     for (int n = 0; n < NumOldColors; n++) {
+         if (Used[n])
+            Map[n] = NewPalette.Index(Colors[n]);
+         }
+     // Do the actual index mapping:
+     for (int i = width * height; i--; )
+         bitmap[i] = Map[bitmap[i]];
+     SetBpp(NewBpp);
+     Replace(NewPalette);
+     }
+}
+
 // --- cOsd ------------------------------------------------------------------
 
 int cOsd::osdLeft = 0;
@@ -720,19 +793,18 @@ eOsdError cOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
 
 eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
 {
-  eOsdError Result = oeUnknown;
-  if (numBitmaps == 0) {
-     Result = CanHandleAreas(Areas, NumAreas);
-     if (Result == oeOk) {
-        width = height = 0;
-        for (int i = 0; i < NumAreas; i++) {
-            bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
-            width = max(width, Areas[i].x2 + 1);
-            height = max(height, Areas[i].y2 + 1);
-            }
-        }
+  eOsdError Result = CanHandleAreas(Areas, NumAreas);
+  if (Result == oeOk) {
+     while (numBitmaps)
+           delete bitmaps[--numBitmaps];
+     width = height = 0;
+     for (int i = 0; i < NumAreas; i++) {
+         bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
+         width = max(width, Areas[i].x2 + 1);
+         height = max(height, Areas[i].y2 + 1);
+         }
      }
-  if (Result != oeOk)
+  else
      esyslog("ERROR: cOsd::SetAreas returned %d", Result);
   return Result;
 }
@@ -818,7 +890,7 @@ cOsdProvider::~cOsdProvider()
 
 cOsd *cOsdProvider::NewOsd(int Left, int Top, uint Level)
 {
-  if (Level == 0 && cOsd::IsOpen())
+  if (Level == OSD_LEVEL_DEFAULT && cOsd::IsOpen())
      esyslog("ERROR: attempt to open OSD while it is already open - using dummy OSD!");
   else if (osdProvider) {
      cOsd *ActiveOsd = cOsd::Osds.Size() ? cOsd::Osds[0] : NULL;

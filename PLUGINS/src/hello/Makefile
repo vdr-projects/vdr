@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.18 2007/08/19 14:18:59 kls Exp $
+# $Id: Makefile 1.20 2007/10/14 09:23:04 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -80,12 +80,12 @@ I18Npot   = $(PODIR)/$(PLUGIN).pot
 	msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap -F -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@cadsoft.de>' -o $@ $(wildcard *.c)
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@cadsoft.de>' -o $@ $(wildcard *.c)
 
 $(I18Npo): $(I18Npot)
-	msgmerge -U --no-wrap -F --backup=none -q $@ $<
+	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<
 
-i18n: $(I18Nmo)
+i18n: $(I18Npot) $(I18Nmo)
 	@mkdir -p $(LOCALEDIR)
 	for i in $(I18Ndirs); do\
 	    mkdir -p $(LOCALEDIR)/$$i/LC_MESSAGES;\

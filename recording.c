@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.154 2007/06/17 13:10:12 kls Exp $
+ * $Id: recording.c 1.156 2007/10/14 10:21:54 kls Exp $
  */
 
 #include "recording.h"
@@ -292,6 +292,17 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
             tComponent *Component = Components->GetComponent(i, 2, 5);
             if (!Component)
                Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
+            else if (strlen(s) > strlen(Component->language))
+               strn0cpy(Component->language, s, sizeof(Component->language));
+            }
+         }
+     // The same applies to subtitles:
+     for (int i = 0; i < MAXSPIDS; i++) {
+         const char *s = Channel->Slang(i);
+         if (*s) {
+            tComponent *Component = Components->GetComponent(i, 3, 3);
+            if (!Component)
+               Components->SetComponent(Components->NumComponents(), 3, 3, s, NULL);
             else if (strlen(s) > strlen(Component->language))
                strn0cpy(Component->language, s, sizeof(Component->language));
             }
@@ -816,6 +827,32 @@ bool cRecording::Remove(void)
      }
   isyslog("removing recording %s", FileName());
   return RemoveVideoFile(FileName());
+}
+
+bool cRecording::Undelete(void)
+{
+  bool result = true;
+  char *NewName = strdup(FileName());
+  char *ext = strrchr(NewName, '.');
+  if (ext && strcmp(ext, DELEXT) == 0) {
+     strncpy(ext, RECEXT, strlen(ext));
+     if (access(NewName, F_OK) == 0) {
+        // the new name already exists, so let's not remove that one:
+        esyslog("ERROR: attempt to undelete '%s', while recording '%s' exists", FileName(), NewName);
+        result = false;
+        }
+     else {
+        isyslog("undeleting recording '%s'", FileName());
+        if (access(FileName(), F_OK) == 0)
+           result = RenameVideoFile(FileName(), NewName);
+        else {
+           isyslog("deleted recording '%s' vanished", FileName());
+           result = false;
+           }
+        }
+     }
+  free(NewName);
+  return result;
 }
 
 void cRecording::ResetResume(void) const

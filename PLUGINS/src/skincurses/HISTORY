@@ -57,3 +57,7 @@ VDR Plugin 'skincurses' Revision History
 - Moved the "all" target in the Makefile before the "Implicit rules",
   so that a plain "make" will compile everything.
 - Added internationalization.
+
+2007-08-26: Version 0.1.4
+
+- Adapted to the new Level parameter of cOsd.

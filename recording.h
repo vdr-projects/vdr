@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.57 2007/06/17 12:53:05 kls Exp $
+ * $Id: recording.h 1.59 2007/10/14 10:11:34 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -72,6 +72,8 @@ private:
   mutable char *name;
   mutable int fileSizeMB;
   cRecordingInfo *info;
+  cRecording(const cRecording&); // can't copy cRecording
+  cRecording &operator=(const cRecording &); // can't assign cRecording
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
@@ -99,6 +101,10 @@ public:
        // Returns false in case of error
   bool Remove(void);
        // Actually removes the file from the disk
+       // Returns false in case of error
+  bool Undelete(void);
+       // Changes the file name so that it will be visible in the "Recordings" menu again and
+       // not processed by cRemoveDeletedRecordingsThread.
        // Returns false in case of error
   };
 

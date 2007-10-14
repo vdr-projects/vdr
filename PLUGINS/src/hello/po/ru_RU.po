@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-08-11 14:35+0200\n"
+"POT-Creation-Date: 2007-10-13 11:52+0200\n"
 "PO-Revision-Date: 2007-08-11 12:34+0200\n"
 "Last-Translator: Vyacheslav Dikonov <sdiconov@mail.ru>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -15,26 +15,20 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-5\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hello.c:16
 msgid "A friendly greeting"
 msgstr "Дружеское приветствие"
 
-#: hello.c:17
 msgid "Hello"
 msgstr "Привет!"
 
-#: hello.c:60
 msgid "Greeting time (s)"
 msgstr "Продолжительность приветствия"
 
-#: hello.c:61
 msgid "Use alternate greeting"
 msgstr "Альтернативное приветствие"
 
-#: hello.c:129
-msgid "Hello world!"
-msgstr "Здравствуй мир!"
-
-#: hello.c:129
 msgid "Howdy folks!"
 msgstr "Как поживаете?"
+
+msgid "Hello world!"
+msgstr "Здравствуй мир!"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.44 2007/07/21 14:58:36 kls Exp $
+ * $Id: channels.h 1.45 2007/09/02 10:23:11 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -33,7 +33,7 @@
 
 #define MAXAPIDS 32 // audio
 #define MAXDPIDS 16 // dolby (AC3 + DTS)
-#define MAXSPIDS  8 // subtitles
+#define MAXSPIDS 32 // subtitles
 #define MAXCAIDS  8 // conditional access
 
 #define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
@@ -212,7 +212,7 @@ public:
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
-  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int Tpid);
+  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
   void SetLinkChannels(cLinkChannels *LinkChannels);

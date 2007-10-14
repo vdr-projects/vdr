@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.142 2007/08/26 11:11:42 kls Exp $
+ * $Id: device.c 1.145 2007/10/14 13:09:19 kls Exp $
  */
 
 #include "device.h"
@@ -18,6 +18,75 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+// --- cLiveSubtitle ---------------------------------------------------------
+
+#define LIVESUBTITLEBUFSIZE  KILOBYTE(100)
+
+class cLiveSubtitle : public cReceiver, public cThread {
+private:
+  cRingBufferLinear *ringBuffer;
+  cRemux *remux;
+protected:
+  virtual void Activate(bool On);
+  virtual void Receive(uchar *Data, int Length);
+  virtual void Action(void);
+public:
+  cLiveSubtitle(int SPid);
+  virtual ~cLiveSubtitle();
+  };
+
+cLiveSubtitle::cLiveSubtitle(int SPid)
+:cReceiver(tChannelID(), -1, SPid)
+,cThread("live subtitle")
+{
+  ringBuffer = new cRingBufferLinear(LIVESUBTITLEBUFSIZE, TS_SIZE * 2, true, "Live Subtitle");
+  int NoPids = 0;
+  int SPids[] = { SPid, 0 };
+  remux = new cRemux(0, &NoPids, &NoPids, SPids);
+}
+
+cLiveSubtitle::~cLiveSubtitle()
+{
+  cReceiver::Detach();
+  delete remux;
+  delete ringBuffer;
+}
+
+void cLiveSubtitle::Activate(bool On)
+{
+  if (On)
+     Start();
+  else
+     Cancel(3);
+}
+
+void cLiveSubtitle::Receive(uchar *Data, int Length)
+{
+  if (Running()) {
+     int p = ringBuffer->Put(Data, Length);
+     if (p != Length && Running())
+        ringBuffer->ReportOverflow(Length - p);
+     }
+}
+
+void cLiveSubtitle::Action(void)
+{
+  while (Running()) {
+        int Count;
+        uchar *b = ringBuffer->Get(Count);
+        if (b) {
+           Count = remux->Put(b, Count);
+           if (Count)
+              ringBuffer->Del(Count);
+           }
+        b = remux->Get(Count);
+        if (b) {
+           Count = cDevice::PrimaryDevice()->PlaySubtitle(b, Count);
+           remux->Del(Count);
+           }
+        }
+}
 
 // --- cPesAssembler ---------------------------------------------------------
 
@@ -172,6 +241,10 @@ cDevice::cDevice(void)
   ClrAvailableTracks();
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
+  currentSubtitleTrack = ttNone;
+  liveSubtitle = NULL;
+  dvbSubtitleConverter = NULL;
+  autoSelectPreferredSubtitleLanguage = true;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -186,6 +259,8 @@ cDevice::~cDevice()
 {
   Detach(player);
   DetachAllReceivers();
+  delete liveSubtitle;
+  delete dvbSubtitleConverter;
   delete nitFilter;
   delete sdtFilter;
   delete patFilter;
@@ -251,6 +326,7 @@ bool cDevice::SetPrimaryDevice(int n)
      primaryDevice = device[n];
      primaryDevice->MakePrimaryDevice(true);
      primaryDevice->SetVideoFormat(Setup.VideoFormat);
+     primaryDevice->SetVolumeDevice(Setup.CurrentVolume);
      return true;
      }
   esyslog("ERROR: invalid primary device number: %d", n + 1);
@@ -576,6 +652,11 @@ int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
   return -1;
 }
 
+void cDevice::CloseFilter(int Handle)
+{
+  close(Handle);
+}
+
 void cDevice::AttachFilter(cFilter *Filter)
 {
   if (sectionHandler)
@@ -674,8 +755,11 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
-  if (LiveView)
+  if (LiveView) {
      StopReplay();
+     DELETENULL(liveSubtitle);
+     DELETENULL(dvbSubtitleConverter);
+     }
 
   cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, 0, LiveView) : this;
 
@@ -735,8 +819,11 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
            }
+        for (int i = 0; i < MAXSPIDS; i++)
+            SetAvailableTrack(ttSubtitle, i, Channel->Spid(i), Channel->Slang(i));
         if (!NeedsTransferMode)
            EnsureAudioTrack(true);
+        EnsureSubtitleTrack();
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -848,6 +935,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
      SetAudioChannel(0); // fall back to stereo
      currentAudioTrackMissingCount = 0;
      currentAudioTrack = ttNone;
+     currentSubtitleTrack = ttNone;
      }
 }
 
@@ -855,18 +943,23 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
 {
   eTrackType t = eTrackType(Type + Index);
   if (Type == ttAudio && IS_AUDIO_TRACK(t) ||
-      Type == ttDolby && IS_DOLBY_TRACK(t)) {
+      Type == ttDolby && IS_DOLBY_TRACK(t) ||
+      Type == ttSubtitle && IS_SUBTITLE_TRACK(t)) {
      if (Language)
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
         Utf8Strn0Cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
      if (Id) {
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
-        int numAudioTracks = NumAudioTracks();
-        if (!availableTracks[currentAudioTrack].id && numAudioTracks && currentAudioTrackMissingCount++ > numAudioTracks * 10)
-           EnsureAudioTrack();
-        else if (t == currentAudioTrack)
-           currentAudioTrackMissingCount = 0;
+        if (Type == ttAudio || Type == ttDolby) {
+           int numAudioTracks = NumAudioTracks();
+           if (!availableTracks[currentAudioTrack].id && numAudioTracks && currentAudioTrackMissingCount++ > numAudioTracks * 10)
+              EnsureAudioTrack();
+           else if (t == currentAudioTrack)
+              currentAudioTrackMissingCount = 0;
+           }
+        else if (Type == ttSubtitle && autoSelectPreferredSubtitleLanguage)
+           EnsureSubtitleTrack();
         }
      return true;
      }
@@ -880,14 +973,24 @@ const tTrackId *cDevice::GetTrack(eTrackType Type)
   return (ttNone < Type && Type < ttMaxTrackTypes) ? &availableTracks[Type] : NULL;
 }
 
-int cDevice::NumAudioTracks(void) const
+int cDevice::NumTracks(eTrackType FirstTrack, eTrackType LastTrack) const
 {
   int n = 0;
-  for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+  for (int i = FirstTrack; i <= LastTrack; i++) {
       if (availableTracks[i].id)
          n++;
       }
   return n;
+}
+
+int cDevice::NumAudioTracks(void) const
+{
+  return NumTracks(ttAudioFirst, ttDolbyLast);
+}
+
+int cDevice::NumSubtitleTracks(void) const
+{
+  return NumTracks(ttSubtitleFirst, ttSubtitleLast);
 }
 
 bool cDevice::SetCurrentAudioTrack(eTrackType Type)
@@ -903,6 +1006,30 @@ bool cDevice::SetCurrentAudioTrack(eTrackType Type)
         SetAudioTrackDevice(currentAudioTrack);
      if (IS_AUDIO_TRACK(Type))
         SetDigitalAudioDevice(false);
+     return true;
+     }
+  return false;
+}
+
+bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
+{
+  if (Type == ttNone || IS_SUBTITLE_TRACK(Type)) {
+     currentSubtitleTrack = Type;
+     autoSelectPreferredSubtitleLanguage = !Manual;
+     if (dvbSubtitleConverter)
+        dvbSubtitleConverter->Reset();
+     if (Type == ttNone && dvbSubtitleConverter) {
+        cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+        DELETENULL(dvbSubtitleConverter);
+        }
+     DELETENULL(liveSubtitle);
+     if (currentSubtitleTrack != ttNone && !Replaying() && !Transferring()) {
+        const tTrackId *TrackId = GetTrack(currentSubtitleTrack);
+        if (TrackId && TrackId->id) {
+           liveSubtitle = new cLiveSubtitle(TrackId->id);
+           AttachReceiver(liveSubtitle);
+           }
+        }
      return true;
      }
   return false;
@@ -939,6 +1066,25 @@ void cDevice::EnsureAudioTrack(bool Force)
      }
 }
 
+void cDevice::EnsureSubtitleTrack(void)
+{
+  if (Setup.DisplaySubtitles) {
+     eTrackType PreferredTrack = ttSubtitleFirst;
+     int LanguagePreference = -1;
+     for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
+         const tTrackId *TrackId = GetTrack(eTrackType(i));
+         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference))
+            PreferredTrack = eTrackType(i);
+         }
+     // Make sure we're set to an available subtitle track:
+     const tTrackId *Track = GetTrack(GetCurrentSubtitleTrack());
+     if (!Track || !Track->id || PreferredTrack != GetCurrentSubtitleTrack())
+        SetCurrentSubtitleTrack(PreferredTrack);
+     }
+  else
+     SetCurrentSubtitleTrack(ttNone);
+}
+
 bool cDevice::CanReplay(void) const
 {
   return HasDecoder();
@@ -961,6 +1107,8 @@ void cDevice::TrickSpeed(int Speed)
 void cDevice::Clear(void)
 {
   Audios.ClearAudio();
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->Reset();
 }
 
 void cDevice::Play(void)
@@ -1016,6 +1164,9 @@ void cDevice::Detach(cPlayer *Player)
      player = NULL; // avoids recursive calls to Detach()
      p->Activate(false);
      p->device = NULL;
+     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+     delete dvbSubtitleConverter;
+     dvbSubtitleConverter = NULL;
      SetPlayMode(pmNone);
      SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      Audios.ClearAudio();
@@ -1051,6 +1202,13 @@ int cDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
   return -1;
 }
 
+int cDevice::PlaySubtitle(const uchar *Data, int Length)
+{
+  if (!dvbSubtitleConverter)
+     dvbSubtitleConverter = new cDvbSubtitleConverter;
+  return dvbSubtitleConverter->Convert(Data, Length);
+}
+
 int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 {
   cMutexLock MutexLock(&mutexCurrentAudioTrack);
@@ -1076,6 +1234,11 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                break;
           case 0xBD: { // private stream 1
                int PayloadOffset = Data[8] + 9;
+
+               // Compatibility mode for old subtitles plugin:
+               if ((Data[PayloadOffset - 3] & 0x81) == 1 && Data[PayloadOffset - 2] == 0x81)
+                  PayloadOffset--;
+
                uchar SubStreamId = Data[PayloadOffset];
                uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
@@ -1090,6 +1253,9 @@ pre_1_3_19_PrivateStreamDeteced:
                switch (SubStreamType) {
                  case 0x20: // SPU
                  case 0x30: // SPU
+                      SetAvailableTrack(ttSubtitle, SubStreamIndex, SubStreamId);
+                      if (!VideoOnly && currentSubtitleTrack != ttNone && SubStreamId == availableTracks[currentSubtitleTrack].id)
+                         w = PlaySubtitle(Start, d);
                       break;
                  case 0x80: // AC3 & DTS
                       if (Setup.UseDolbyDigital) {
@@ -1139,6 +1305,8 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
 {
   if (!Data) {
      pesAssembler->Reset();
+     if (dvbSubtitleConverter)
+        dvbSubtitleConverter->Reset();
      return 0;
      }
   int Result = 0;

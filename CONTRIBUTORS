@@ -1024,6 +1024,10 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for improving cControl::Launch() to keep 'control' from pointing to uninitialized
  memory
  for adding internationalization to the "skincurses" plugin
+ for helping with adding compatibility mode for playback of recordings made with
+ the subtitles plugin
+ for implementing cDevice::CloseFilter()
+ for some fixes to PLUGINS.html
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1138,6 +1142,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a busy loop in fast forward if the next video data file is missing
  for adding a debug error message to cReceiver::~cReceiver() in case it is still
  attached to a device
+ for reporting a missing SetVolumeDevice() call in cDevice::SetPrimaryDevice()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1293,6 +1298,8 @@ Marcus Mönnig <minibbjd@gmx.de>
 Pekka Virtanen <pekka.virtanen@sci.fi>
  for adding language code handling to the subtitling descriptor in 'libsi'
  for adding missing NULL checks when accessing sectionHandler in device.c
+ for writing the subtitle plugin, which helped in implementing subtitle handling
+ in VDR
 
 John Kennedy <rkennedy@ix.netcom.com>
  for publishing "A Fast Bresenham Algorithm For Drawing Ellipses" (found at
@@ -1419,6 +1426,10 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a problem with characters >0x7F in the modified version of skipspace()
  for reporting a faulty comment in Make.config.template
  for fixing checking for ttDolbyLast in cDevice::SetCurrentAudioTrack()
+ for fixing selecting the audio track when pressing Ok in the Audio menu
+ for implementing handling DVB subtitles
+ for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
+ an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1522,6 +1533,8 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling single byte characters >0x7F in Utf8ToArray()
  for fixing clearing color buttons in the 'curses' skin
  for adding a missing error report to cCuttingThread::Action()
+ for reporting a problem in handling reallocated memory in cCharSetConv::Convert()
+ for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1772,6 +1785,9 @@ Thomas Günther <tom1@toms-cafe.de>
  show the current APIVERSION
  for fixing i18n characters for the Hungarian texts
  for implementing using nl_langinfo(CODESET) to determine the local codeset to use
+ for removing a duplicate ',' from the ca_ES.po file
+ for suggesting to add the 'ß' character to the "allowed characters" in the
+ de_DE.po file
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1878,6 +1894,8 @@ Christian Wieninger <cwieninger@gmx.de>
  for reporting a problem with the device selection in case of timer conflicts
  for a patch that fixed part of a crash in i18n character set conversion
  for reporting a bug in stripping the context in I18nTranslate()
+ for fixing a crash when pressing Left while at the first character of a
+ cMenuEditStrItem
 
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
@@ -1949,6 +1967,8 @@ Markus Hahn <mhahn@reel-multimedia.com>
  for suggesting that the "Back" key should restore the original string when pressed
  while editing a string item
  for fixing detection of Premiere NVOD channel links
+ for making the default copy ctor of cRecording private
+ for a patch that was used to implement cRecording::Undelete()
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
@@ -2169,3 +2189,24 @@ Bruno Roussel <bruno.roussel@free.fr>
 Matthias Becker <becker.matthias@gmail.com>
  for suggesting to add a new i18n macro that can be used by plugins to mark
  texts they want to reuse from VDR's core translations
+
+Halim Sahin <halim.sahin@t-online.de>
+ for reporting that the channels.conf file was not written when stopping VDR after
+ deleting or moving a channel in the Channels menu
+
+Denis Knauf <denis.knauf@gmail.com>
+ for reporting a missing '-' at the next to last line of SVDRP help texts
+
+Diego Pierotto <vdr-italian@tiscali.it>
+ for translating OSD texts to the Italian language
+
+Timo Eskola <timo@tolleri.net>
+ for implementing sending all frames to devices that can handle them in fast forward
+ trick speeds
+
+Elias Luttinen <el@iki.fi>
+ for improving the description of where logging goes in the INSTALL file
+
+Torsten Kunkel <vdrml@tkunkel.de>
+ for pointing out that it was not obvious how to initiate internationalization
+ support for a plugin

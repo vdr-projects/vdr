@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.58 2007/02/24 16:36:10 kls Exp $
+ * $Id: remux.c 1.59 2007/09/22 12:08:22 kls Exp $
  */
 
 #include "remux.h"
@@ -1555,6 +1555,13 @@ void cTS2PES::send_ipack(void)
             buf[7] = 0x00;
             buf[8] = 0x00;
             count = 9;
+            if (!repacker && subStreamId) {
+               buf[9] = subStreamId;
+               buf[10] = 1;
+               buf[11] = 0;
+               buf[12] = 1;
+               count = 13;
+               }
             break;
     case 1:
             buf[6] = 0x0F;
@@ -1766,6 +1773,19 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
                   return;
                }
 
+            if (!repacker && subStreamId) {
+               while (c < Count && found < (hlength + 9) && found < plength + 6) {
+                     write_ipack(Buf + c, 1);
+                     c++;
+                     found++;
+                     }
+               if (found == (hlength + 9)) {
+                  uchar sbuf[] = { 0x01, 0x00, 0x00 };
+                  write_ipack(&subStreamId, 1);
+                  write_ipack(sbuf, 3);
+                  }
+               }
+
             while (c < Count && found < plength + 6) {
                   int l = Count - c;
                   if (l + found > plength + 6)
@@ -1856,7 +1876,7 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, bool ExitOnFailure)
 {
   exitOnFailure = ExitOnFailure;
-  isRadio = VPid == 0 || VPid == 1 || VPid == 0x1FFF;
+  noVideo = VPid == 0 || VPid == 1 || VPid == 0x1FFF;
   numUPTerrors = 0;
   synced = false;
   skipped = 0;
@@ -1888,13 +1908,11 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
      while (*DPids && numTracks < MAXTRACKS && n < MAXDPIDS)
            ts2pes[numTracks++] = new cTS2PES(*DPids++, resultBuffer, IPACKS, 0x00, 0x80 + n++, new cDolbyRepacker);
      }
-  /* future...
   if (SPids) {
      int n = 0;
      while (*SPids && numTracks < MAXTRACKS && n < MAXSPIDS)
-           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS, 0x00, 0x28 + n++);
+           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS, 0x00, 0x20 + n++);
      }
-  */
 }
 
 cRemux::~cRemux()
@@ -2080,7 +2098,7 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
                l = GetPacketLength(data, resultCount, i);
                if (l < 0)
                   return resultData;
-               if (isRadio) {
+               if (noVideo) {
                   if (!synced) {
                      if (PictureType)
                         *PictureType = I_FRAME;

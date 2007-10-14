@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.14 2005/09/18 11:30:29 kls Exp $
+ * $Id: sections.c 1.15 2007/10/14 12:52:07 kls Exp $
  */
 
 #include "sections.h"
@@ -105,7 +105,7 @@ void cSectionHandler::Del(const cFilterData *FilterData)
   for (fh = filterHandles.First(); fh; fh = filterHandles.Next(fh)) {
       if (fh->filterData.Is(FilterData->pid, FilterData->tid, FilterData->mask)) {
          if (--fh->used <= 0) {
-            close(fh->handle);
+            device->CloseFilter(fh->handle);
             filterHandles.Del(fh);
             break;
             }

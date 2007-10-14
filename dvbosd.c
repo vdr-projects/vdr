@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.31 2007/08/26 09:39:20 kls Exp $
+ * $Id: dvbosd.c 1.32 2007/09/16 08:55:54 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -32,6 +32,7 @@ public:
   cDvbOsd(int Left, int Top, int OsdDev, uint Level);
   virtual ~cDvbOsd();
   virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
+  virtual eOsdError SetAreas(const tArea *Areas, int NumAreas);
   virtual void Flush(void);
   };
 
@@ -104,6 +105,19 @@ eOsdError cDvbOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
         return oeOutOfMemory;
      }
   return Result;
+}
+
+eOsdError cDvbOsd::SetAreas(const tArea *Areas, int NumAreas)
+{
+  if (shown) {
+     cBitmap *Bitmap;
+     for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
+         Cmd(OSD_SetWindow, 0, i + 1);
+         Cmd(OSD_Close);
+         }
+     shown = false;
+     }
+  return cOsd::SetAreas(Areas, NumAreas);
 }
 
 void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)

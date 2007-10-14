@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.165 2007/08/17 13:37:56 kls Exp $
+ * $Id: dvbdevice.c 1.167 2007/10/14 12:56:03 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -483,7 +483,7 @@ bool cDvbDevice::Initialize(void)
 
 void cDvbDevice::MakePrimaryDevice(bool On)
 {
-  if (HasDecoder())
+  if (On && HasDecoder())
      new cDvbOsdProvider(fd_osd);
 }
 
@@ -709,6 +709,11 @@ int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
   else
      esyslog("ERROR: can't open filter handle on '%s'", FileName);
   return -1;
+}
+
+void cDvbDevice::CloseFilter(int Handle)
+{
+  close(Handle);
 }
 
 void cDvbDevice::TurnOffLiveMode(bool LiveView)

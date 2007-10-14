@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.16 2006/03/25 12:27:30 kls Exp $
+ * $Id: remux.h 1.17 2007/09/02 10:19:06 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -37,7 +37,7 @@ class cTS2PES;
 class cRemux {
 private:
   bool exitOnFailure;
-  bool isRadio;
+  bool noVideo;
   int numUPTerrors;
   bool synced;
   int skipped;

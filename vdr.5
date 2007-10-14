@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.63 2007/08/05 12:58:35 kls Exp $
+.\" $Id: vdr.5 1.64 2007/08/26 10:57:08 kls Exp $
 .\"
 .TH vdr 5 "07 Jan 2007" "1.4.5" "Video Disk Recorder Files"
 .SH NAME
@@ -557,6 +557,8 @@ a recording is split into several files. The contents of these files is
 0xC0...0xDF for audio 1...32 (up to 32 audio tracks may occur).
 Dolby Digital data is stored in packets with ids 0xBD ("Private Stream 1")
 and substream ids 0x80...0x87.
+DVB subtitle data is stored in packets with ids 0xBD ("Private Stream 1")
+and substream ids 0x20...0x27.
 .SS INDEX
 The file \fIindex.vdr\fR (if present in a recording directory) contains
 the (binary) index data into each of the the recording files
@@ -646,7 +648,7 @@ l l.
 <title>        @is the title of the event
 <short text>   @is the short text of the event (typically the name of the episode etc.)
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
-<stream>       @is the stream content (1 = video, 2 = audio)
+<stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component
