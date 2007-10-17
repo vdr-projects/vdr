@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.145 2007/10/14 13:09:19 kls Exp $
+ * $Id: device.c 1.146 2007/10/17 18:31:02 kls Exp $
  */
 
 #include "device.h"
@@ -1236,7 +1236,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                int PayloadOffset = Data[8] + 9;
 
                // Compatibility mode for old subtitles plugin:
-               if ((Data[PayloadOffset - 3] & 0x81) == 1 && Data[PayloadOffset - 2] == 0x81)
+               if ((Data[7] & 0x01) && (Data[PayloadOffset - 3] & 0x81) == 0x01 && Data[PayloadOffset - 2] == 0x81)
                   PayloadOffset--;
 
                uchar SubStreamId = Data[PayloadOffset];

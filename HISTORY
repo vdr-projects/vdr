@@ -5487,3 +5487,8 @@ Video Disk Recorder Revision History
 - Added cDevice::CloseFilter() to allow a device to have complete control over
   both opening and closing section filters (thanks to Rolf Ahrenberg).
 - Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
+
+2007-10-17: Version 1.5.11
+
+- Fixed checking compatibility mode for old subtitles plugin (thanks to Marco
+  Schlüßler).

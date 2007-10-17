@@ -1430,6 +1430,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for implementing handling DVB subtitles
  for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
  an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
+ for fixing checking compatibility mode for old subtitles plugin
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
