@@ -11,9 +11,9 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2007-10-13 11:29+0200\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Sean Carlos <seanc@libero.it>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"PO-Revision-Date: 2007-10-16 02:15+0100\n"
+"Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
+"Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -169,7 +169,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Key$Sottotitoli"
 
 msgid "Key$Schedule"
 msgstr "Programmi"
@@ -256,10 +256,10 @@ msgid "Dpid2"
 msgstr "PID AC3 (2)"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "PID Teletext"
@@ -630,22 +630,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Lingua per l'audio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Setup.DVB$Mostra sottotitoli"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Setup.DVB$Lingue sottotitoli"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Setup.DVB$Lingua sottotitoli"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Setup.DVB$Posizione sottotitolo"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Setup.DVB$Trasparenza primo piano sottotitoli"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Setup.DVB$Trasparenza sfondo sottotitoli"
 
 msgid "LNB"
 msgstr "LNB"
@@ -840,13 +840,13 @@ msgid "No audio available!"
 msgstr "Nessun audio disponibile!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Nessun sottotitolo"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Button$Sottotitoli"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Nessun sottotitolo disponibile!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Spazio su disco insufficiente per registrare!"
