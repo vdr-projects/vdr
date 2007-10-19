@@ -5495,3 +5495,5 @@ Video Disk Recorder Revision History
 - Updated the French OSD texts (thanks to Michael Nival).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The "Play" key now starts replay of the selected recording in the Recordings
+  menu (thanks to Ville Skyttä);

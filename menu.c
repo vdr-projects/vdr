@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.463 2007/10/13 10:10:20 kls Exp $
+ * $Id: menu.c 1.464 2007/10/19 14:20:15 kls Exp $
  */
 
 #include "menu.h"
@@ -2107,6 +2107,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
+       case kPlay:
        case kOk:     return Play();
        case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
        case kGreen:  return Rewind();
