@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.300 2007/09/26 14:36:48 kls Exp $
+ * $Id: vdr.c 1.301 2007/10/19 14:44:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -523,6 +523,7 @@ int main(int argc, char *argv[])
   int PreviousChannel[2] = { 1, 1 };
   int PreviousChannelIndex = 0;
   time_t LastChannelChanged = time(NULL);
+  time_t LastInteract = 0;
   int MaxLatencyTime = 0;
   bool InhibitEpgScan = false;
   bool IsInfoMenu = false;
@@ -1069,6 +1070,7 @@ int main(int argc, char *argv[])
           }
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
         if (Interact) {
+           LastInteract = Now;
            eOSState state = Interact->ProcessKey(key);
            if (state == osUnknown && Interact != cControl::Control()) {
               if (ISMODELESSKEY(key) && cControl::Control()) {
@@ -1195,7 +1197,7 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if (!Interact && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
            // Shutdown:

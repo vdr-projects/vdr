@@ -1537,6 +1537,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem in handling reallocated memory in cCharSetConv::Convert()
  for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
  for improving shutdown handling
+ for making housekeeping wait for a while after a replay has ended
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

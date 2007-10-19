@@ -5498,3 +5498,4 @@ Video Disk Recorder Revision History
 - The "Play" key now starts replay of the selected recording in the Recordings
   menu (thanks to Ville Skyttä);
 - Improved shutdown handling (thanks to Udo Richter).
+- Housekeeping now waits for a while after a replay has ended (thanks to Udo Richter).
