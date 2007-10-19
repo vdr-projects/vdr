@@ -7,15 +7,16 @@
 # Nicolas Huillard <nhuillard@e-dition.fr>, 2005
 # Pierre Briec <pbriec@free.fr>, 2006
 # Bruno Roussel <bruno.roussel@free.fr>, 2007
+# Michael Nival <mnival@club-internet.fr>, 2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2007-10-13 11:29+0200\n"
-"PO-Revision-Date: 2007-08-17 13:45+0200\n"
-"Last-Translator: Bruno Roussel <bruno.roussel@free.fr>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"PO-Revision-Date: 2007-10-18 16:12+0100\n"
+"Last-Translator: Michael Nival <mnival@club-internet.fr>\n"
+"Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -171,7 +172,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Sous-Titres"
 
 msgid "Key$Schedule"
 msgstr "Programmes"
@@ -258,10 +259,10 @@ msgid "Dpid2"
 msgstr "PID AC3 (2)"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Sous-Titre (1)"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Sous-Titre (2)"
 
 msgid "Tpid"
 msgstr "PID Télétexte"
@@ -632,22 +633,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Langue audio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Afficher les Sous-Titres"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Langues des Sous-Titres"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Langue de Sous-Titre"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Offset du Sous-Titre"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparence de l'avant-plan"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparence du fond"
 
 msgid "LNB"
 msgstr "LNB"
@@ -842,13 +843,13 @@ msgid "No audio available!"
 msgstr "Pas d'audio disponible !"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Pas de Sous-Titres"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Sous-Titres"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Pas de Sous-Titres disponible !"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Espace disque insuffisant pour démarrer l'enregistrement !"
