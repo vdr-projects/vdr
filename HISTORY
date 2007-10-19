@@ -5497,3 +5497,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - The "Play" key now starts replay of the selected recording in the Recordings
   menu (thanks to Ville Skyttä);
+- Improved shutdown handling (thanks to Udo Richter).
