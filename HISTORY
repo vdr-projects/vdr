@@ -5488,7 +5488,7 @@ Video Disk Recorder Revision History
   both opening and closing section filters (thanks to Rolf Ahrenberg).
 - Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
 
-2007-10-17: Version 1.5.11
+2007-10-21: Version 1.5.11
 
 - Fixed checking compatibility mode for old subtitles plugin (thanks to Marco
   Schlüßler).
@@ -5499,3 +5499,5 @@ Video Disk Recorder Revision History
   menu (thanks to Ville Skyttä);
 - Improved shutdown handling (thanks to Udo Richter).
 - Housekeeping now waits for a while after a replay has ended (thanks to Udo Richter).
+- Added more special characters to the list of allowed characters when entering
+  strings (thanks to Thomas Günther).

@@ -870,14 +870,14 @@ msgstr "Kesim baþlandý"
 msgid "Editing process already active!"
 msgstr "Kesim henüz aktif!"
 
-msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
-msgstr " abcçdefgðhýijklmnoöprsþtuüvyz0123456789-.#~,/_@"
+msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " abcçdefgðhýijklmnoöprsþtuüvyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "yes"
 msgstr "evet"
 
-msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.#~,/_@1\tabcç2\tdef3\tgðhýi4\tjkl5\tmnoö6\tprsþ7\ttuüv8\tyz9"
+msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcç2\tdef3\tgðhýi4\tjkl5\tmnoö6\tprsþ7\ttuüv8\tyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"

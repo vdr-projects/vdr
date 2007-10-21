@@ -871,14 +871,14 @@ msgstr "Montajul înregistrãrii a început"
 msgid "Editing process already active!"
 msgstr "Montajul înregistrãrii este deja activ!"
 
-msgid " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@"
-msgstr " aãâbcdefghiîjklmnopqrsºtþuvwxyz0123456789-.#~,/_@"
+msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aãâbcdefghiîjklmnopqrsºtþuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "yes"
 msgstr "da"
 
-msgid " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.#~,/_@1\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttþuv8\twxyz9"
+msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttþuv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
