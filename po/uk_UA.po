@@ -1,0 +1,999 @@
+# VDR language source file.
+# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# This file is distributed under the same license as the VDR package.
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.5.10\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
+"POT-Creation-Date: 2007-11-01 11:36+0100\n"
+"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"Last-Translator: Yarema Aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-5\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Неправильний канал ***"
+
+msgid "Channel not available!"
+msgstr "Канал недоступний!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Неможливо включити режим пропуску!"
+
+msgid "Starting EPG scan"
+msgstr "Починаю EPG-сканування"
+
+msgid "No title"
+msgstr "Без назви"
+
+#. TRANSLATORS: The name of the language, as written natively
+msgid "LanguageName$English"
+msgstr "Українська"
+
+#. TRANSLATORS: The 3-letter code of the language
+msgid "LanguageCode$eng"
+msgstr "ukr"
+
+msgid "Phase 1: Detecting RC code type"
+msgstr "Крок 1: Визначення типу коду пульта"
+
+msgid "Press any key on the RC unit"
+msgstr "Натисніть будь-яку кнопку на пульті"
+
+msgid "RC code detected!"
+msgstr "Визначено код пульта!"
+
+msgid "Do not press any key..."
+msgstr "Не натискайте кнопки..."
+
+msgid "Phase 2: Learning specific key codes"
+msgstr "Крок 2: Приписування кодів для відповідних кнопок"
+
+#, c-format
+msgid "Press key for '%s'"
+msgstr "Натисніть кнопку '%s'"
+
+msgid "Press 'Up' to confirm"
+msgstr "Натисніть 'Вверх' для підтвердження"
+
+msgid "Press 'Down' to continue"
+msgstr "Натисніть 'Вниз' для продовження"
+
+msgid "(press 'Up' to go back)"
+msgstr "(Натисніть 'Вверх' для повернення)"
+
+msgid "(press 'Down' to end key definition)"
+msgstr "(Натисніть 'Вниз' для закінчення настройки пульта)"
+
+msgid "(press 'Menu' to skip this key)"
+msgstr "(Натисніть 'Меню' щоб пропустити кнопку)"
+
+msgid "Learning Remote Control Keys"
+msgstr "Навчання пульта"
+
+msgid "Phase 3: Saving key codes"
+msgstr "Крок 3: Запам'ятовування кодів кнопок"
+
+msgid "Press 'Up' to save, 'Down' to cancel"
+msgstr "Натисніть 'Вверх' для закінчення, 'Вниз' для відмови"
+
+msgid "Key$Up"
+msgstr "Вверх"
+
+msgid "Key$Down"
+msgstr "Вниз"
+
+msgid "Key$Menu"
+msgstr "Меню"
+
+msgid "Key$Ok"
+msgstr "Ok"
+
+msgid "Key$Back"
+msgstr "Назад"
+
+msgid "Key$Left"
+msgstr "Наліво"
+
+msgid "Key$Right"
+msgstr "Направо"
+
+msgid "Key$Red"
+msgstr "Червона"
+
+msgid "Key$Green"
+msgstr "Зелена"
+
+msgid "Key$Yellow"
+msgstr "Жовта"
+
+msgid "Key$Blue"
+msgstr "Синя"
+
+msgid "Key$Info"
+msgstr "Інфо"
+
+msgid "Key$Play"
+msgstr "Програвання"
+
+msgid "Key$Pause"
+msgstr "Пауза"
+
+msgid "Key$Stop"
+msgstr "Стоп"
+
+msgid "Key$Record"
+msgstr "Запис"
+
+msgid "Key$FastFwd"
+msgstr "Прокрутка вперед"
+
+msgid "Key$FastRew"
+msgstr "Прокрутка назад"
+
+msgid "Key$Next"
+msgstr "Вперед"
+
+msgid "Key$Prev"
+msgstr "Назад"
+
+msgid "Key$Power"
+msgstr "Виключити"
+
+msgid "Key$Channel+"
+msgstr "Канал +"
+
+msgid "Key$Channel-"
+msgstr "Канал -"
+
+msgid "Key$PrevChannel"
+msgstr "Попередній канал"
+
+msgid "Key$Volume+"
+msgstr "Гучність +"
+
+msgid "Key$Volume-"
+msgstr "Гучність -"
+
+msgid "Key$Mute"
+msgstr "Виключити звук"
+
+msgid "Key$Audio"
+msgstr "Мова"
+
+msgid "Key$Subtitles"
+msgstr "Субтитри"
+
+msgid "Key$Schedule"
+msgstr "Телегід"
+
+msgid "Key$Channels"
+msgstr "Канали"
+
+msgid "Key$Timers"
+msgstr "Таймери"
+
+msgid "Key$Recordings"
+msgstr "Записи"
+
+msgid "Key$Setup"
+msgstr "Налаштування"
+
+msgid "Key$Commands"
+msgstr "Команди"
+
+msgid "Key$User1"
+msgstr ""
+
+msgid "Key$User2"
+msgstr ""
+
+msgid "Key$User3"
+msgstr ""
+
+msgid "Key$User4"
+msgstr ""
+
+msgid "Key$User5"
+msgstr ""
+
+msgid "Key$User6"
+msgstr ""
+
+msgid "Key$User7"
+msgstr ""
+
+msgid "Key$User8"
+msgstr ""
+
+msgid "Key$User9"
+msgstr ""
+
+msgid "Free To Air"
+msgstr "FTA (незакодовано)"
+
+msgid "encrypted"
+msgstr "закодовано"
+
+msgid "auto"
+msgstr "авто"
+
+msgid "Edit channel"
+msgstr "Редактування каналу"
+
+msgid "Name"
+msgstr "Назва"
+
+msgid "Source"
+msgstr "Джерело"
+
+msgid "Frequency"
+msgstr "Частота"
+
+msgid "Vpid"
+msgstr "Vpid (відео)"
+
+msgid "Ppid"
+msgstr "Ppid"
+
+msgid "Apid1"
+msgstr "Apid1 (аудіо 1)"
+
+msgid "Apid2"
+msgstr "Apid2 (аудіо 2)"
+
+msgid "Dpid1"
+msgstr "Dpid1 (AC3 1)"
+
+msgid "Dpid2"
+msgstr "Dpid2 (AC3 2)"
+
+msgid "Spid1"
+msgstr ""
+
+msgid "Spid2"
+msgstr ""
+
+msgid "Tpid"
+msgstr "Tpid (телетекст)"
+
+msgid "CA"
+msgstr "CA (декодер)"
+
+msgid "Sid"
+msgstr "Sid"
+
+msgid "Polarization"
+msgstr "Поляризація"
+
+msgid "Srate"
+msgstr "Симв. швидкість"
+
+msgid "Inversion"
+msgstr "Інверсія"
+
+msgid "off"
+msgstr "викл"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "none"
+msgstr "нічого"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Модуляція"
+
+msgid "Bandwidth"
+msgstr "Діапазон"
+
+msgid "Transmission"
+msgstr "Передача"
+
+msgid "Guard"
+msgstr "Захист"
+
+msgid "Hierarchy"
+msgstr "Ієрархія"
+
+msgid "Channel settings are not unique!"
+msgstr "Настройки каналу не єдині!"
+
+msgid "Channels"
+msgstr "Канали"
+
+msgid "Button$Edit"
+msgstr "Редактувати"
+
+msgid "Button$New"
+msgstr "Додати"
+
+msgid "Button$Delete"
+msgstr "Видалити"
+
+msgid "Button$Mark"
+msgstr "Перемістити"
+
+msgid "Channel is being used by a timer!"
+msgstr "Канал занятий таймером!"
+
+msgid "Delete channel?"
+msgstr "Видалити канал?"
+
+msgid "Edit timer"
+msgstr "Налаштування таймера"
+
+msgid "Active"
+msgstr "Активовано"
+
+msgid "Channel"
+msgstr "Канал"
+
+msgid "Day"
+msgstr "День"
+
+msgid "Start"
+msgstr "Початок"
+
+msgid "Stop"
+msgstr "Кінець"
+
+msgid "VPS"
+msgstr "VPS поправка"
+
+msgid "Priority"
+msgstr "Пріоритет"
+
+msgid "Lifetime"
+msgstr "Строк зберігання"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "First day"
+msgstr "Перший день"
+
+msgid "Timers"
+msgstr "Таймери"
+
+msgid "Button$On/Off"
+msgstr "Вкл/Викл"
+
+msgid "Button$Info"
+msgstr "Інфо"
+
+msgid "Delete timer?"
+msgstr "Видалити таймер?"
+
+msgid "Timer still recording - really delete?"
+msgstr "Йде запис по таймеру - дійсно видалити?"
+
+msgid "Event"
+msgstr "Передача"
+
+msgid "Button$Timer"
+msgstr "Таймер"
+
+msgid "Button$Record"
+msgstr "Запис"
+
+msgid "Button$Switch"
+msgstr "Переключити"
+
+msgid "What's on now?"
+msgstr "Зараз в ефірі:"
+
+msgid "What's on next?"
+msgstr "Далі в програмі:"
+
+msgid "Button$Next"
+msgstr "Далі"
+
+msgid "Button$Now"
+msgstr "Зараз"
+
+msgid "Button$Schedule"
+msgstr "Програма"
+
+msgid "Can't switch channel!"
+msgstr "Неможливо переключити канал!"
+
+#, c-format
+msgid "Schedule - %s"
+msgstr "Програма - %s"
+
+#, c-format
+msgid "This event - %s"
+msgstr "Ця передача - %s"
+
+msgid "This event - all channels"
+msgstr "Ця передача - всі канали"
+
+msgid "All events - all channels"
+msgstr "Всі передачі - всі канали"
+
+#, c-format
+msgid "Please enter %d digits!"
+msgstr "Натисніть %d цифри"
+
+msgid "CAM not responding!"
+msgstr "CAM не відповідає"
+
+msgid "Recording info"
+msgstr "Про запис"
+
+msgid "Button$Play"
+msgstr "Програвати"
+
+msgid "Button$Rewind"
+msgstr "Назад"
+
+msgid "Recordings"
+msgstr "Записи"
+
+msgid "Button$Open"
+msgstr "Відкрити"
+
+msgid "Commands"
+msgstr "Команди"
+
+msgid "Error while accessing recording!"
+msgstr "Помилка доступу до запису!"
+
+msgid "Delete recording?"
+msgstr "Витерти запис?"
+
+msgid "Error while deleting recording!"
+msgstr "Помилка видалення запису!"
+
+msgid "Recording commands"
+msgstr "Команди запису"
+
+msgid "never"
+msgstr "ніколи"
+
+msgid "skin dependent"
+msgstr "згідно з стилем"
+
+msgid "always"
+msgstr "завжди"
+
+msgid "OSD"
+msgstr "Меню"
+
+msgid "Setup.OSD$Language"
+msgstr "Мова"
+
+msgid "Setup.OSD$Skin"
+msgstr "Стиль"
+
+msgid "Setup.OSD$Theme"
+msgstr "Тема"
+
+msgid "Setup.OSD$Left"
+msgstr "Відступ зліва"
+
+msgid "Setup.OSD$Top"
+msgstr "Відступ зверху"
+
+msgid "Setup.OSD$Width"
+msgstr "Ширина"
+
+msgid "Setup.OSD$Height"
+msgstr "Висота"
+
+msgid "Setup.OSD$Message time (s)"
+msgstr "Тривалість показу повідомлень (сек)"
+
+msgid "Setup.OSD$Use small font"
+msgstr "Використовувати малий шрифт"
+
+msgid "Setup.OSD$Anti-alias"
+msgstr "Згладживання шрифтів"
+
+msgid "Setup.OSD$Default font"
+msgstr "Стандартний фонт"
+
+msgid "Setup.OSD$Small font"
+msgstr "Малий фонт"
+
+msgid "Setup.OSD$Fixed font"
+msgstr "Фіксований фонт"
+
+msgid "Setup.OSD$Default font size (pixel)"
+msgstr "Размір фонта для меню (pixel)"
+
+msgid "Setup.OSD$Small font size (pixel)"
+msgstr "Размір малого фонта (pixel)"
+
+msgid "Setup.OSD$Fixed font size (pixel)"
+msgstr "Размір фіксованого фонта (pixel)"
+
+msgid "Setup.OSD$Channel info position"
+msgstr "Положення вікна інформації про канал"
+
+msgid "bottom"
+msgstr "внизу"
+
+msgid "top"
+msgstr "вверху"
+
+msgid "Setup.OSD$Channel info time (s)"
+msgstr "Показ інформації про канал (сек)"
+
+msgid "Setup.OSD$Info on channel switch"
+msgstr "Показувати інформацію про канал"
+
+msgid "Setup.OSD$Timeout requested channel info"
+msgstr "Інформацію про канал закрити"
+
+msgid "Setup.OSD$Scroll pages"
+msgstr "Прокрутка сторінок меню"
+
+msgid "Setup.OSD$Scroll wraps"
+msgstr "Циклічна прокрутка"
+
+msgid "Setup.OSD$Menu key closes"
+msgstr "Кнопку Меню закрити"
+
+msgid "Setup.OSD$Recording directories"
+msgstr "Каталоги зберігання записів"
+
+msgid "EPG"
+msgstr "Телегід"
+
+msgid "Button$Scan"
+msgstr "Скануровати"
+
+msgid "Setup.EPG$EPG scan timeout (h)"
+msgstr "Затримка сканування телегіда (ч)"
+
+msgid "Setup.EPG$EPG bugfix level"
+msgstr "Рівень корекції помилок"
+
+msgid "Setup.EPG$EPG linger time (min)"
+msgstr "Зберігання застарілих даних (хв)"
+
+msgid "Setup.EPG$Set system time"
+msgstr "Втановити системий час"
+
+msgid "Setup.EPG$Use time from transponder"
+msgstr "Використати час транспондера"
+
+#. TRANSLATORS: note the plural!
+msgid "Setup.EPG$Preferred languages"
+msgstr "Бажані мови (телегід)"
+
+#. TRANSLATORS: note the singular!
+msgid "Setup.EPG$Preferred language"
+msgstr "Вибрано"
+
+msgid "pan&scan"
+msgstr "панорамувати"
+
+msgid "letterbox"
+msgstr "зменшувати"
+
+msgid "center cut out"
+msgstr "обрізати збоку"
+
+msgid "no"
+msgstr "ні"
+
+msgid "names only"
+msgstr "тільки назви"
+
+msgid "PIDs only"
+msgstr "Тільки PIDи"
+
+msgid "names and PIDs"
+msgstr "назви і PIDи"
+
+msgid "add new channels"
+msgstr "додати нові канали"
+
+msgid "add new transponders"
+msgstr "додати нові транспондери"
+
+msgid "DVB"
+msgstr "DVB"
+
+msgid "Setup.DVB$Primary DVB interface"
+msgstr "Основний DVB-пристрій"
+
+msgid "Setup.DVB$Video format"
+msgstr "Формат відео"
+
+msgid "Setup.DVB$Video display format"
+msgstr "Широкоекране зображення"
+
+msgid "Setup.DVB$Use Dolby Digital"
+msgstr "Включити Dolby Digital"
+
+msgid "Setup.DVB$Update channels"
+msgstr "Оновлювати настройки каналів"
+
+msgid "Setup.DVB$Audio languages"
+msgstr "Бажані мови (звук)"
+
+msgid "Setup.DVB$Audio language"
+msgstr "Вибрано"
+
+msgid "Setup.DVB$Display subtitles"
+msgstr "Показувати субтитри"
+
+msgid "Setup.DVB$Subtitle languages"
+msgstr "Мови субтитрів"
+
+msgid "Setup.DVB$Subtitle language"
+msgstr "Мова субтитрів"
+
+msgid "Setup.DVB$Subtitle offset"
+msgstr "Відступ субтитрів"
+
+msgid "Setup.DVB$Subtitle foreground transparency"
+msgstr ""
+
+msgid "Setup.DVB$Subtitle background transparency"
+msgstr ""
+
+msgid "LNB"
+msgstr "Конвертер"
+
+msgid "Setup.LNB$Use DiSEqC"
+msgstr "Використовувати DiSEqC"
+
+msgid "Setup.LNB$SLOF (MHz)"
+msgstr "Частота переключання (SLOF) (МГц)"
+
+msgid "Setup.LNB$Low LNB frequency (MHz)"
+msgstr "Нижня частота конвертера (МГц)"
+
+msgid "Setup.LNB$High LNB frequency (MHz)"
+msgstr "Верхня частота конвертера (МГц)"
+
+msgid "CAM reset"
+msgstr "Перезавантаження CAM"
+
+msgid "CAM present"
+msgstr "CAM присутній"
+
+msgid "CAM ready"
+msgstr "CAM готовий"
+
+msgid "CAM"
+msgstr "Умовний доступ"
+
+msgid "Button$Menu"
+msgstr "Меню"
+
+msgid "Button$Reset"
+msgstr "Скинути"
+
+msgid "Opening CAM menu..."
+msgstr "Відкриваю меню модуля умовного доступу (CAM)"
+
+msgid "Can't open CAM menu!"
+msgstr "Меню CAM-модуля недоступне!"
+
+msgid "CAM is in use - really reset?"
+msgstr "CAM використовується - дійсно перезавантажити?"
+
+msgid "Can't reset CAM!"
+msgstr "Помилка перезапуску CAM-модуля!"
+
+msgid "Recording"
+msgstr "Запис"
+
+msgid "Setup.Recording$Margin at start (min)"
+msgstr "Випередження початку запису (хв)"
+
+msgid "Setup.Recording$Margin at stop (min)"
+msgstr "Запізнення зупинки запису (хв)"
+
+msgid "Setup.Recording$Primary limit"
+msgstr "Мін. пріоритет захоплення осн. пристрою"
+
+msgid "Setup.Recording$Default priority"
+msgstr "Пріоритет таймера по замовчуванню"
+
+msgid "Setup.Recording$Default lifetime (d)"
+msgstr "Строк зберігання запису по замовчуванню (д)"
+
+msgid "Setup.Recording$Pause priority"
+msgstr "Пріоритет відкладеного перегляду"
+
+msgid "Setup.Recording$Pause lifetime (d)"
+msgstr "Зберігання відкладеного перегляду (д)"
+
+msgid "Setup.Recording$Use episode name"
+msgstr "Групувати файли по епізодах"
+
+msgid "Setup.Recording$Use VPS"
+msgstr "Використовувати сигнали VPS"
+
+msgid "Setup.Recording$VPS margin (s)"
+msgstr "Буферний час VPS (сек)"
+
+msgid "Setup.Recording$Mark instant recording"
+msgstr "Відмічати зроблені вручну записи"
+
+msgid "Setup.Recording$Name instant recording"
+msgstr "Схема найменувань ручних записів"
+
+msgid "Setup.Recording$Instant rec. time (min)"
+msgstr "Протяжність ручного запису (хв)"
+
+msgid "Setup.Recording$Max. video file size (MB)"
+msgstr "Макс. размір відеофайлу (Мб)"
+
+msgid "Setup.Recording$Split edited files"
+msgstr "Ділити відредактовані файли"
+
+msgid "Replay"
+msgstr "Перегляд"
+
+msgid "Setup.Replay$Multi speed mode"
+msgstr "Багатошвидкісний режим"
+
+msgid "Setup.Replay$Show replay mode"
+msgstr "Віображати режим перегляду"
+
+msgid "Setup.Replay$Resume ID"
+msgstr "ID перегляду"
+
+msgid "Miscellaneous"
+msgstr "Різне"
+
+msgid "Setup.Miscellaneous$Min. event timeout (min)"
+msgstr "Мін. час очікування події (хв)"
+
+msgid "Setup.Miscellaneous$Min. user inactivity (min)"
+msgstr "Мін. час очікування вводу (хв)"
+
+msgid "Setup.Miscellaneous$SVDRP timeout (s)"
+msgstr "Затримкка обриву з'єднання SVDRP (сек)"
+
+msgid "Setup.Miscellaneous$Zap timeout (s)"
+msgstr "Затримка переключання каналу (сек)"
+
+msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
+msgstr "Затримка часу для впровадження каналу (ms)"
+
+msgid "Setup.Miscellaneous$Initial channel"
+msgstr "Канал при включанню"
+
+msgid "Setup.Miscellaneous$as before"
+msgstr "як раніше"
+
+msgid "Setup.Miscellaneous$Initial volume"
+msgstr "Гучність при включенні"
+
+msgid "Plugins"
+msgstr "Модулі розширення"
+
+msgid "This plugin has no setup parameters!"
+msgstr "Модуль не має параметрів налаштувань!"
+
+msgid "Setup"
+msgstr "Налаштування"
+
+msgid "Restart"
+msgstr "Перезапустити"
+
+msgid "Really restart?"
+msgstr "Дійсно перезапустити?"
+
+#. TRANSLATORS: note the leading and trailing blanks!
+msgid " Stop recording "
+msgstr " Зупинити запис "
+
+msgid "Schedule"
+msgstr "Телегід"
+
+msgid "VDR"
+msgstr "VDR"
+
+msgid "Disk"
+msgstr "Диск"
+
+msgid "free"
+msgstr "вільно"
+
+#. TRANSLATORS: note the leading blank!
+msgid " Stop replaying"
+msgstr " Зупинити програвання"
+
+msgid "Button$Audio"
+msgstr "Мова"
+
+msgid "Button$Pause"
+msgstr "Пауза"
+
+msgid "Button$Stop"
+msgstr "Стоп"
+
+msgid "Button$Resume"
+msgstr "Продовжити"
+
+#. TRANSLATORS: note the leading blank!
+msgid " Cancel editing"
+msgstr " Перервати монтаж запису"
+
+msgid "Stop recording?"
+msgstr "Припинити запис?"
+
+msgid "Cancel editing?"
+msgstr "Перервати редактування?"
+
+msgid "No audio available!"
+msgstr "Відсутній звук!"
+
+msgid "No subtitles"
+msgstr "Немає субтитрів"
+
+msgid "Button$Subtitles"
+msgstr "Субтитри"
+
+msgid "No subtitles available!"
+msgstr "Субтитрів немає!"
+
+msgid "Not enough disk space to start recording!"
+msgstr "Недостатньо місця на диску для початку запису"
+
+msgid "No free DVB device to record!"
+msgstr "Немає вільного DVB-пристрою для запису!"
+
+msgid "Pausing live video..."
+msgstr "Режим відкладеного перегляду..."
+
+#. TRANSLATORS: note the trailing blank!
+msgid "Jump: "
+msgstr "Перейти: "
+
+msgid "No editing marks defined!"
+msgstr "Не задано міток для монтажу!"
+
+msgid "Can't start editing process!"
+msgstr "Неможливо почати монтаж запису!"
+
+msgid "Editing process started"
+msgstr "Монтаж запису почався"
+
+msgid "Editing process already active!"
+msgstr "Процес відеомонтажу вже запущений!"
+
+#, fuzzy
+msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " abcdefghijklmnopqrstuvwxyzабвгдеєёжзиіїйклмнопрстуфхцчшщъыьюя0123456789-.#~,/_@"
+
+msgid "yes"
+msgstr "так"
+
+#, fuzzy
+msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.#~,/_@1\tabcабвг2\tdefдеєёжз3\tghiиіїйкл4\tjklмно5\tmnoпрс6\tpqrsтуфх7\ttuvцчшщъ8\twxyzыьэюя9"
+
+msgid "Button$ABC/abc"
+msgstr "АБВ/абв"
+
+msgid "Button$Overwrite"
+msgstr "Заміна"
+
+msgid "Button$Insert"
+msgstr "Вставка"
+
+msgid "Plugin"
+msgstr "Модуль"
+
+msgid "Up/Dn for new location - OK to move"
+msgstr "Натискайте \"Вверх\"/\"Вниз\" для вибору позиції, а потім \"OK\""
+
+msgid "Channel locked (recording)!"
+msgstr "Канал заблоковано (йде запис)!"
+
+msgid "Low disk space!"
+msgstr "Недостатньо місця на диску!"
+
+msgid "Can't shutdown - option '-s' not given!"
+msgstr "Виключенння неможливе - не задано параметр '-s'!"
+
+msgid "Editing - shut down anyway?"
+msgstr "Йде монтаж - дійсно виключити?"
+
+msgid "Recording - shut down anyway?"
+msgstr "Йде запис - дійсно виключити?"
+
+#, c-format
+msgid "Recording in %ld minutes, shut down anyway?"
+msgstr "Через %ld хвилин почнеться запис - дійсно виключити?"
+
+msgid "shut down anyway?"
+msgstr "дійсно виключити?"
+
+#, c-format
+msgid "Plugin %s wakes up in %ld min, continue?"
+msgstr "Plugin %s проснеться через %ld хвилин - продовжити?"
+
+msgid "Editing - restart anyway?"
+msgstr "Процес монтажу - дійсно перезапустити?"
+
+msgid "Recording - restart anyway?"
+msgstr "Йде запис - дійсно перезапустити?"
+
+msgid "restart anyway?"
+msgstr "дійсно перезапустити?"
+
+#. TRANSLATORS: note the trailing blank!
+msgid "Volume "
+msgstr "Гучність "
+
+msgid "Classic VDR"
+msgstr "Класичний"
+
+msgid "ST:TNG Panels"
+msgstr "ST:TNG панелі"
+
+#. TRANSLATORS: the first character of each weekday, beginning with monday
+msgid "MTWTFSS"
+msgstr "ПВСЧПСН"
+
+#. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
+msgid "MonTueWedThuFriSatSun"
+msgstr "ПонВтрСрдЧтвПтнСубНед"
+
+msgid "Monday"
+msgstr "Понеділок"
+
+msgid "Tuesday"
+msgstr "Вівторок"
+
+msgid "Wednesday"
+msgstr "Середа"
+
+msgid "Thursday"
+msgstr "Четвер"
+
+msgid "Friday"
+msgstr "П'ятниця"
+
+msgid "Saturday"
+msgstr "Субота"
+
+msgid "Sunday"
+msgstr "Неділя"
+
+msgid "Upcoming VPS recording!"
+msgstr "VPS-Запис скоро почнеться"
+
+msgid "Recording started"
+msgstr "Запис почався"
+
+msgid "VDR will shut down later - press Power to force"
+msgstr "VDR виключиться ппізніше - натисніть Power для пришвидшення"
+
+msgid "Press any key to cancel shutdown"
+msgstr "Натисніть будь-яку кнопку для відміни виключення."
+
+msgid "Switching primary DVB..."
+msgstr "Зміна основного DVB-пристрою..."
+
+msgid "Editing process failed!"
+msgstr "Помилка під час монтажу запису!"
+
+msgid "Editing process finished"
+msgstr "Монтаж закінчено"
+
+msgid "Press any key to cancel restart"
+msgstr "Натисніть будь-яку кнопку для відміни перезавантаження"
+
+#, c-format
+msgid "VDR will shut down in %s minutes"
+msgstr "VDR виключиться через %s хвилин"

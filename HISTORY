@@ -5501,3 +5501,4 @@ Video Disk Recorder Revision History
 - Housekeeping now waits for a while after a replay has ended (thanks to Udo Richter).
 - Added more special characters to the list of allowed characters when entering
   strings (thanks to Thomas Günther).
+- Added Ukrainian language texts (thanks to Yarema Aka Knedlyk).
