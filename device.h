@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.85 2007/10/14 13:09:12 kls Exp $
+ * $Id: device.h 1.86 2007/11/03 13:30:00 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -377,7 +377,7 @@ private:
   cMutex mutexCurrentSubtitleTrack;
   int currentAudioTrackMissingCount;
   bool autoSelectPreferredSubtitleLanguage;
-  bool pre_1_3_19_PrivateStream;
+  int pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.

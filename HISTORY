@@ -5488,7 +5488,7 @@ Video Disk Recorder Revision History
   both opening and closing section filters (thanks to Rolf Ahrenberg).
 - Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
 
-2007-10-21: Version 1.5.11
+2007-11-03: Version 1.5.11
 
 - Fixed checking compatibility mode for old subtitles plugin (thanks to Marco
   Schlüßler).
@@ -5502,3 +5502,4 @@ Video Disk Recorder Revision History
 - Added more special characters to the list of allowed characters when entering
   strings (thanks to Thomas Günther).
 - Added Ukrainian language texts (thanks to Yarema Aka Knedlyk).
+- Added a workaround for recovering from wrongfully interpreted "pre 1.3.19 PS1 packets".
