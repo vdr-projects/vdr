@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 1.1 2007/10/12 14:27:30 kls Exp $
+ * $Id: dvbsubtitle.c 1.2 2007/11/03 14:36:07 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -692,7 +692,7 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
      bool ResetSubtitleAssembler = Data[PayloadOffset + 3] == 0x00;
 
      // Compatibility mode for old subtitles plugin:
-     if ((Data[PayloadOffset - 3] & 0x81) == 1 && Data[PayloadOffset - 2] == 0x81) {
+     if ((Data[7] & 0x01) && (Data[PayloadOffset - 3] & 0x81) == 0x01 && Data[PayloadOffset - 2] == 0x81) {
         PayloadOffset--;
         SubstreamHeaderLength = 1;
         ResetSubtitleAssembler = Data[8] >= 5;
@@ -730,8 +730,8 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
                     break;
                  }
            }
-        return Length;
         }
+     return Length;
      }
   return 0;
 }
@@ -767,7 +767,7 @@ void cDvbSubtitleConverter::Action(void)
               //TODO sync on PTS? are there actually devices that don't deliver an STC?
               }
            Delta /= 90; // STC and PTS are in 1/90000s
-           if (abs(Delta) <= MAXDELTA) {
+           if (Delta <= MAXDELTA) {
               if (Delta <= 0) {
                  dbgconverter("Got %d bitmaps, showing #%d\n", bitmaps->Count(), sb->Index() + 1);
                  if (AssertOsd()) {
@@ -777,8 +777,8 @@ void cDvbSubtitleConverter::Action(void)
                     }
                  bitmaps->Del(sb);
                  }
-              else
-                 WaitMs = min(max(Delta, int64_t(0)), int64_t(1000));
+              else if (Delta < WaitMs)
+                 WaitMs = Delta;
               }
            else
               bitmaps->Del(sb);
@@ -830,6 +830,8 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
         pages->Add(page);
         dbgpages("Create SubtitlePage %d  (total pages = %d)\n", pageId, pages->Count());
         }
+     if (Pts)
+        page->SetPts(Pts);
      switch (segmentType) {
        case PAGE_COMPOSITION_SEGMENT: {
             dbgsegments("PAGE_COMPOSITION_SEGMENT\n");
@@ -837,8 +839,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             if (pageVersion == page->Version())
                break; // no update
             page->SetVersion(pageVersion);
-            if (Pts)
-               page->SetPts(Pts);
             page->SetTimeout(Data[6]);
             page->SetState((Data[6 + 1] & 0x0C) >> 2);
             page->regions.Clear();
@@ -968,6 +968,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             dbgsegments("END_OF_DISPLAY_SET_SEGMENT\n");
             FinishPage(page);
             }
+            break;
        default:
             dbgsegments("*** unknown segment type: %02X\n", segmentType);
        }

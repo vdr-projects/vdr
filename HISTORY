@@ -5503,3 +5503,5 @@ Video Disk Recorder Revision History
   strings (thanks to Thomas Günther).
 - Added Ukrainian language texts (thanks to Yarema Aka Knedlyk).
 - Added a workaround for recovering from wrongfully interpreted "pre 1.3.19 PS1 packets".
+- Fixed a possible blocking in replay when subtitles are active.
+- Fixed displaying subtitles in live mode.
