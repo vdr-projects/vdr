@@ -2227,3 +2227,6 @@ Michael Nival <mnival@club-internet.fr>
 
 Yarema Aka Knedlyk <yupadmin@gmail.com>
  for translating OSD texts to the Ukrainian language
+
+Lauri Nurmi <lanurmi@iki.fi>
+ for adding a missing '.' to the date returned by DayDateTime()

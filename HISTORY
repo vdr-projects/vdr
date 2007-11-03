@@ -5509,3 +5509,4 @@ Video Disk Recorder Revision History
 - Added some missing 'const' keywords (thanks to Sascha Volkenandt).
 - The 'Allowed' parameter in cMenuEditStrItem() is now NULL by default, which results
   in using tr(FileNameChars) (suggested by Thomas Günther).
+- Added a missing '.' to the date returned by DayDateTime() (thanks to Lauri Nurmi).
