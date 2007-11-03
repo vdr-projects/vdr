@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.108 2007/10/13 09:26:40 kls Exp $
+# $Id: Makefile 1.109 2007/11/03 14:46:29 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -27,7 +27,7 @@ PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
 
 VIDEODIR = /video
-CONFDIR ?= $(VIDEODIR)
+CONFDIR  = $(VIDEODIR)
 
 DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile

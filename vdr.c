@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.301 2007/10/19 14:44:19 kls Exp $
+ * $Id: vdr.c 1.302 2007/11/03 14:46:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -181,6 +181,7 @@ int main(int argc, char *argv[])
 
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
+#define DEFAULTCONFDIR CONFDIR
 #define DEFAULTPLUGINDIR PLUGINDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
@@ -382,8 +383,7 @@ int main(int argc, char *argv[])
      if (DisplayHelp) {
         printf("Usage: vdr [OPTIONS]\n\n"          // for easier orientation, this is column 80|
                "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
-               "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
-               "                           from the video directory)\n"
+               "  -c DIR,   --config=DIR   read config files from DIR (default: %s)\n"
                "  -d,       --daemon       run in daemon mode\n"
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
@@ -425,6 +425,7 @@ int main(int argc, char *argv[])
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
+               DEFAULTCONFDIR,
                DEFAULTEPGDATAFILENAME,
                DEFAULTPLUGINDIR,
                LIRC_DEVICE,
@@ -537,7 +538,7 @@ int main(int argc, char *argv[])
   // Configuration data:
 
   if (!ConfigDirectory)
-     ConfigDirectory = CONFDIR;
+     ConfigDirectory = DEFAULTCONFDIR;
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
   cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));

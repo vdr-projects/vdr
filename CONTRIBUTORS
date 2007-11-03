@@ -1028,6 +1028,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  the subtitles plugin
  for implementing cDevice::CloseFilter()
  for some fixes to PLUGINS.html
+ for fixing handling CONFDIR
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
