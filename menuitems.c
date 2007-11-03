@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.54 2007/10/21 12:21:51 kls Exp $
+ * $Id: menuitems.c 1.55 2007/11/03 15:01:01 kls Exp $
  */
 
 #include "menuitems.h"
@@ -256,7 +256,7 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
 {
   value = Value;
   length = Length;
-  allowed = Allowed;
+  allowed = Allowed ? Allowed : tr(FileNameChars);
   pos = -1;
   offset = 0;
   insert = uppercase = false;

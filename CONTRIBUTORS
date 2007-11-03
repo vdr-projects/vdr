@@ -1797,6 +1797,8 @@ Thomas Günther <tom1@toms-cafe.de>
  de_DE.po file
  for adding more special characters to the list of allowed characters when entering
  strings
+ for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
+ which results in using tr(FileNameChars)
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with

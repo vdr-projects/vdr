@@ -5507,3 +5507,5 @@ Video Disk Recorder Revision History
 - Fixed displaying subtitles in live mode.
 - Fixed handling CONFDIR (thanks to Rolf Ahrenberg).
 - Added some missing 'const' keywords (thanks to Sascha Volkenandt).
+- The 'Allowed' parameter in cMenuEditStrItem() is now NULL by default, which results
+  in using tr(FileNameChars) (suggested by Thomas Günther).
