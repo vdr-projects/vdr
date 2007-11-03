@@ -889,6 +889,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for a patch that was used for implementing setting the user id
  for pointing out that the canonical spelling of codesets is with '-'
  for a hint on using _nl_msg_cat_cntr
+ for adding some missing 'const' keywords
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

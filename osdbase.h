@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.16 2007/06/09 11:49:00 kls Exp $
+ * $Id: osdbase.h 1.17 2007/11/03 14:50:52 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -57,11 +57,11 @@ public:
   cOsdItem(eOSState State = osUnknown);
   cOsdItem(const char *Text, eOSState State = osUnknown, bool Selectable = true);
   virtual ~cOsdItem();
-  bool Selectable(void) { return selectable; }
+  bool Selectable(void) const { return selectable; }
   void SetText(const char *Text, bool Copy = true);
   void SetSelectable(bool Selectable);
   void SetFresh(bool Fresh);
-  const char *Text(void) { return text; }
+  const char *Text(void) const { return text; }
   virtual void Set(void) {}
   virtual eOSState ProcessKey(eKeys Key);
   };
@@ -77,7 +77,7 @@ public:
   cOsdObject(bool FastResponse = false) { isMenu = false; needsFastResponse = FastResponse; }
   virtual ~cOsdObject() {}
   virtual bool NeedsFastResponse(void) { return needsFastResponse; }
-  bool IsMenu(void) { return isMenu; }
+  bool IsMenu(void) const { return isMenu; }
   virtual void Show(void);
   virtual eOSState ProcessKey(eKeys Key) { return osUnknown; }
   };
@@ -124,7 +124,7 @@ public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
   virtual bool NeedsFastResponse(void) { return subMenu ? subMenu->NeedsFastResponse() : cOsdObject::NeedsFastResponse(); }
-  int Current(void) { return current; }
+  int Current(void) const { return current; }
   void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
   void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
   virtual void Display(void);
