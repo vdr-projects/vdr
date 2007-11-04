@@ -5488,7 +5488,7 @@ Video Disk Recorder Revision History
   both opening and closing section filters (thanks to Rolf Ahrenberg).
 - Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
 
-2007-11-03: Version 1.5.11
+2007-11-04: Version 1.5.11
 
 - Fixed checking compatibility mode for old subtitles plugin (thanks to Marco
   Schlüßler).
@@ -5510,3 +5510,5 @@ Video Disk Recorder Revision History
 - The 'Allowed' parameter in cMenuEditStrItem() is now NULL by default, which results
   in using tr(FileNameChars) (suggested by Thomas Günther).
 - Added a missing '.' to the date returned by DayDateTime() (thanks to Lauri Nurmi).
+- Improved the 'i18n' target in the Makefile to avoid unnecessary work (thanks to
+  Stefan Huelswitt).

@@ -222,6 +222,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a double fdopen() in cPipe::Open()
  for suggesting to increase the APIVERSION to allow plugins that relied on the
  cStatus::MsgSetVolume() bug to react properly
+ for improving the 'i18n' target in the Makefile to avoid unnecessary work
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
