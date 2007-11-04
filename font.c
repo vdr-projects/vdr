@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.21 2007/06/23 11:25:42 kls Exp $
+ * $Id: font.c 1.22 2007/11/04 11:08:12 kls Exp $
  */
 
 #include "font.h"
@@ -395,17 +395,21 @@ cString cFont::GetFontFileName(const char *FontName)
      FcConfigSubstitute(NULL, pat, FcMatchPattern);
      FcDefaultSubstitute(pat);
      FcFontSet *fontset = FcFontSort(NULL, pat, FcFalse, NULL, NULL);
-     for (int i = 0; i < fontset->nfont; i++) {
-         FcBool scalable;
-         FcPatternGetBool(fontset->fonts[i], FC_SCALABLE, 0, &scalable);
-         if (scalable) {
-            FcChar8 *s = NULL;
-            FcPatternGetString(fontset->fonts[i], FC_FILE, 0, &s);
-            FontFileName = (char *)s;
-            break;
+     if (fontset) {
+        for (int i = 0; i < fontset->nfont; i++) {
+            FcBool scalable;
+            FcPatternGetBool(fontset->fonts[i], FC_SCALABLE, 0, &scalable);
+            if (scalable) {
+               FcChar8 *s = NULL;
+               FcPatternGetString(fontset->fonts[i], FC_FILE, 0, &s);
+               FontFileName = (char *)s;
+               break;
+               }
             }
-         }
-     FcFontSetDestroy(fontset);
+        FcFontSetDestroy(fontset);
+        }
+     else
+        esyslog("ERROR: no usable font found for '%s'", FontName);
      FcPatternDestroy(pat);
      free(fn);
      FcFini();

@@ -5514,3 +5514,5 @@ Video Disk Recorder Revision History
   Stefan Huelswitt). The 'newplugin' and 'i18n-to-gettext.pl' scripts have been
   changed accordingly. Plugin authors may want to adjust the 'i18n' target
   of their Makefiles.
+- Fixed a crash if no fonts are found (thanks to Mario Ivankovits and Clemens
+  Kirchgatterer).

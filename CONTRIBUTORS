@@ -744,6 +744,7 @@ Georg Hitsch <georg@hitsch.at>
 Clemens Kirchgatterer <clemens@thf.ath.cx>
  for suggesting to change source directory name for plugins from 'SRC' to 'src'
  for reporting a problem with user defined CFLAGS in libdtv/libvdr/Makefile
+ for suggesting an error log message if no fonts are found
 
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for suggesting to take an active SVDRP connection into account when doing shutdown or
@@ -2231,3 +2232,6 @@ Yarema Aka Knedlyk <yupadmin@gmail.com>
 
 Lauri Nurmi <lanurmi@iki.fi>
  for adding a missing '.' to the date returned by DayDateTime()
+
+Mario Ivankovits <mario@ops.co.at>
+ for fixing a crash if no fonts are found
