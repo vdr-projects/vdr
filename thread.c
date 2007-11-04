@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.62 2007/08/24 13:15:48 kls Exp $
+ * $Id: thread.c 1.63 2007/10/19 14:30:13 kls Exp $
  */
 
 #include "thread.h"
@@ -518,7 +518,7 @@ int SystemExec(const char *Command, bool Detached)
      if (Detached) {
         // Fork again and let first child die - grandchild stays alive without parent
         if (fork() > 0)
-           exit(0);
+           _exit(0);
         // Start a new session
         pid_t sid = setsid();
         if (sid < 0)

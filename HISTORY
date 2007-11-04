@@ -5487,3 +5487,34 @@ Video Disk Recorder Revision History
 - Added cDevice::CloseFilter() to allow a device to have complete control over
   both opening and closing section filters (thanks to Rolf Ahrenberg).
 - Some fixes to PLUGINS.html (thanks to Rolf Ahrenberg).
+
+2007-11-04: Version 1.5.11
+
+- Fixed checking compatibility mode for old subtitles plugin (thanks to Marco
+  Schlüßler).
+- Updated the French OSD texts (thanks to Michael Nival).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The "Play" key now starts replay of the selected recording in the Recordings
+  menu (thanks to Ville Skyttä);
+- Improved shutdown handling (thanks to Udo Richter).
+- Housekeeping now waits for a while after a replay has ended (thanks to Udo Richter).
+- Added more special characters to the list of allowed characters when entering
+  strings (thanks to Thomas Günther).
+- Added Ukrainian language texts (thanks to Yarema Aka Knedlyk).
+- Added a workaround for recovering from wrongfully interpreted "pre 1.3.19 PS1 packets".
+- Fixed a possible blocking in replay when subtitles are active.
+- Fixed displaying subtitles in live mode.
+- Fixed handling CONFDIR (thanks to Rolf Ahrenberg).
+- Added some missing 'const' keywords (thanks to Sascha Volkenandt).
+- The 'Allowed' parameter in cMenuEditStrItem() is now NULL by default, which results
+  in using tr(FileNameChars) (suggested by Thomas Günther).
+- Added a missing '.' to the date returned by DayDateTime() (thanks to Lauri Nurmi).
+- Improved the 'i18n' target in the Makefile to avoid unnecessary work (thanks to
+  Stefan Huelswitt). The 'newplugin' and 'i18n-to-gettext.pl' scripts have been
+  changed accordingly. Plugin authors may want to adjust the 'i18n' target
+  of their Makefiles.
+- Fixed a crash if no fonts are found (thanks to Mario Ivankovits and Clemens
+  Kirchgatterer).
+- Fixed decoding filename characters in case there are not two hex digits after
+  the '#' (reported by Helmut Auer).

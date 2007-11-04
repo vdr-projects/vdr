@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.156 2007/10/14 10:21:54 kls Exp $
+ * $Id: recording.c 1.157 2007/11/04 11:17:43 kls Exp $
  */
 
 #include "recording.h"
+#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -448,12 +449,14 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                 case '/': *p = '~'; break;
                 // encoded characters:
                 case '#': {
-                     if (strlen(p) > 2) {
+                     if (strlen(p) > 2 && isxdigit(*(p + 1)) && isxdigit(*(p + 2))) {
                         char buf[3];
                         sprintf(buf, "%c%c", *(p + 1), *(p + 2));
                         unsigned char c = strtol(buf, NULL, 16);
-                        *p = c;
-                        memmove(p + 1, p + 3, strlen(p) - 2);
+                        if (c) {
+                           *p = c;
+                           memmove(p + 1, p + 3, strlen(p) - 2);
+                           }
                         }
                      }
                      break;

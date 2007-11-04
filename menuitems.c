@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.53 2007/10/13 12:05:37 kls Exp $
+ * $Id: menuitems.c 1.55 2007/11/03 15:01:01 kls Exp $
  */
 
 #include "menuitems.h"
@@ -18,7 +18,7 @@
 
 #define AUTO_ADVANCE_TIMEOUT  1500 // ms before auto advance when entering characters via numeric keys
 
-const char *FileNameChars = trNOOP(" abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@");
+const char *FileNameChars = trNOOP("FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&");
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -256,7 +256,7 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
 {
   value = Value;
   length = Length;
-  allowed = Allowed;
+  allowed = Allowed ? Allowed : tr(FileNameChars);
   pos = -1;
   offset = 0;
   insert = uppercase = false;
@@ -285,7 +285,7 @@ void cMenuEditStrItem::EnterEditMode(void)
      int l = strlen(allowed) + 1;
      allowedUtf8 = new uint[l];
      Utf8ToArray(allowed, allowedUtf8, l);
-     const char *charMap = tr(" 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
+     const char *charMap = tr("CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
      l = strlen(charMap) + 1;
      charMapUtf8 = new uint[l];
      Utf8ToArray(charMap, charMapUtf8, l);

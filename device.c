@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.145 2007/10/14 13:09:19 kls Exp $
+ * $Id: device.c 1.147 2007/11/03 13:30:09 kls Exp $
  */
 
 #include "device.h"
@@ -208,6 +208,9 @@ int cPesAssembler::PacketSize(const uchar *data)
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -1
+
+// The minimum number of unknown PS1 packets to consider this a "pre 1.3.19 private stream":
+#define MIN_PRE_1_3_19_PRIVATESTREAM 10
 
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
@@ -931,7 +934,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
         }
      else
         memset(availableTracks, 0, sizeof(availableTracks));
-     pre_1_3_19_PrivateStream = false;
+     pre_1_3_19_PrivateStream = 0;
      SetAudioChannel(0); // fall back to stereo
      currentAudioTrackMissingCount = 0;
      currentAudioTrack = ttNone;
@@ -1236,7 +1239,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                int PayloadOffset = Data[8] + 9;
 
                // Compatibility mode for old subtitles plugin:
-               if ((Data[PayloadOffset - 3] & 0x81) == 1 && Data[PayloadOffset - 2] == 0x81)
+               if ((Data[7] & 0x01) && (Data[PayloadOffset - 3] & 0x81) == 0x01 && Data[PayloadOffset - 2] == 0x81)
                   PayloadOffset--;
 
                uchar SubStreamId = Data[PayloadOffset];
@@ -1245,11 +1248,13 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
 pre_1_3_19_PrivateStreamDeteced:
-               if (pre_1_3_19_PrivateStream) {
+               if (pre_1_3_19_PrivateStream > MIN_PRE_1_3_19_PRIVATESTREAM) {
                   SubStreamId = c;
                   SubStreamType = 0x80;
                   SubStreamIndex = 0;
                   }
+               else if (pre_1_3_19_PrivateStream)
+                  pre_1_3_19_PrivateStream--; // every known PS1 packet counts down towards 0 to recover from glitches...
                switch (SubStreamType) {
                  case 0x20: // SPU
                  case 0x30: // SPU
@@ -1277,11 +1282,14 @@ pre_1_3_19_PrivateStreamDeteced:
                       break;
                  default:
                       // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
-                      if (!pre_1_3_19_PrivateStream) {
-                         dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode");
-                         ClrAvailableTracks();
-                         pre_1_3_19_PrivateStream = true;
-                         goto pre_1_3_19_PrivateStreamDeteced;
+                      if (pre_1_3_19_PrivateStream <= MIN_PRE_1_3_19_PRIVATESTREAM) {
+                         dsyslog("unknown PS1 packet, substream id = %02X (counter is at %d)", SubStreamId, pre_1_3_19_PrivateStream);
+                         pre_1_3_19_PrivateStream += 2; // ...and every unknown PS1 packet counts up (the very first one counts twice, but that's ok)
+                         if (pre_1_3_19_PrivateStream > MIN_PRE_1_3_19_PRIVATESTREAM) {
+                            dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode - substream id = %02X", SubStreamId);
+                            ClrAvailableTracks();
+                            goto pre_1_3_19_PrivateStreamDeteced;
+                            }
                          }
                  }
                }

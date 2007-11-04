@@ -222,6 +222,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a double fdopen() in cPipe::Open()
  for suggesting to increase the APIVERSION to allow plugins that relied on the
  cStatus::MsgSetVolume() bug to react properly
+ for improving the 'i18n' target in the Makefile to avoid unnecessary work
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -587,6 +588,8 @@ Helmut Auer <vdr@helmutauer.de>
  is a recording going on or about to start, and the user insists in shutting down now
  for suggesting to make the channel entry timeout configurable
  for a patch that was used to implement the SVDRP command REMO
+ for reporting a possible crash in decoding filename characters in case there are
+ not two hex digits after the '#'
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -743,6 +746,7 @@ Georg Hitsch <georg@hitsch.at>
 Clemens Kirchgatterer <clemens@thf.ath.cx>
  for suggesting to change source directory name for plugins from 'SRC' to 'src'
  for reporting a problem with user defined CFLAGS in libdtv/libvdr/Makefile
+ for suggesting an error log message if no fonts are found
 
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for suggesting to take an active SVDRP connection into account when doing shutdown or
@@ -889,6 +893,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for a patch that was used for implementing setting the user id
  for pointing out that the canonical spelling of codesets is with '-'
  for a hint on using _nl_msg_cat_cntr
+ for adding some missing 'const' keywords
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1028,6 +1033,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  the subtitles plugin
  for implementing cDevice::CloseFilter()
  for some fixes to PLUGINS.html
+ for fixing handling CONFDIR
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1430,6 +1436,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for implementing handling DVB subtitles
  for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
  an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
+ for fixing checking compatibility mode for old subtitles plugin
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1535,6 +1542,8 @@ Udo Richter <udo_richter@gmx.de>
  for adding a missing error report to cCuttingThread::Action()
  for reporting a problem in handling reallocated memory in cCharSetConv::Convert()
  for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
+ for improving shutdown handling
+ for making housekeeping wait for a while after a replay has ended
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1709,6 +1718,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for suggesting to add the "...or (at your option) any later version" phrase to the
  license information of all plugins, and also the 'newplugin' script
  for fixing the link to the GPL2 at http://www.gnu.org in vdr.c
+ for making the "Play" key start replay of the selected recording in the Recordings
+ menu
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1788,6 +1799,10 @@ Thomas Günther <tom1@toms-cafe.de>
  for removing a duplicate ',' from the ca_ES.po file
  for suggesting to add the 'ß' character to the "allowed characters" in the
  de_DE.po file
+ for adding more special characters to the list of allowed characters when entering
+ strings
+ for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
+ which results in using tr(FileNameChars)
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -2210,3 +2225,15 @@ Elias Luttinen <el@iki.fi>
 Torsten Kunkel <vdrml@tkunkel.de>
  for pointing out that it was not obvious how to initiate internationalization
  support for a plugin
+
+Michael Nival <mnival@club-internet.fr>
+ for translating OSD texts to the French language
+
+Yarema Aka Knedlyk <yupadmin@gmail.com>
+ for translating OSD texts to the Ukrainian language
+
+Lauri Nurmi <lanurmi@iki.fi>
+ for adding a missing '.' to the date returned by DayDateTime()
+
+Mario Ivankovits <mario@ops.co.at>
+ for fixing a crash if no fonts are found
