@@ -588,6 +588,8 @@ Helmut Auer <vdr@helmutauer.de>
  is a recording going on or about to start, and the user insists in shutting down now
  for suggesting to make the channel entry timeout configurable
  for a patch that was used to implement the SVDRP command REMO
+ for reporting a possible crash in decoding filename characters in case there are
+ not two hex digits after the '#'
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

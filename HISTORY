@@ -5516,3 +5516,5 @@ Video Disk Recorder Revision History
   of their Makefiles.
 - Fixed a crash if no fonts are found (thanks to Mario Ivankovits and Clemens
   Kirchgatterer).
+- Fixed decoding filename characters in case there are not two hex digits after
+  the '#' (reported by Helmut Auer).
