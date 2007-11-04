@@ -5511,4 +5511,6 @@ Video Disk Recorder Revision History
   in using tr(FileNameChars) (suggested by Thomas Günther).
 - Added a missing '.' to the date returned by DayDateTime() (thanks to Lauri Nurmi).
 - Improved the 'i18n' target in the Makefile to avoid unnecessary work (thanks to
-  Stefan Huelswitt).
+  Stefan Huelswitt). The 'newplugin' and 'i18n-to-gettext.pl' scripts have been
+  changed accordingly. Plugin authors may want to adjust the 'i18n' target
+  of their Makefiles.
