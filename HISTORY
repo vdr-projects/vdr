@@ -5518,3 +5518,8 @@ Video Disk Recorder Revision History
   Kirchgatterer).
 - Fixed decoding filename characters in case there are not two hex digits after
   the '#' (reported by Helmut Auer).
+
+2007-11-10: Version 1.5.12
+
+- Fixed assembling PS1 packets in cTS2PES::instant_repack() (thanks to Reinhard
+  Nissl).

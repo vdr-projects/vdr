@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.60 2007/11/03 14:36:07 kls Exp $
+ * $Id: remux.c 1.61 2007/11/10 13:36:47 kls Exp $
  */
 
 #include "remux.h"
@@ -1750,13 +1750,13 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
        case VIDEO_STREAM_S ... VIDEO_STREAM_E:
        case PRIVATE_STREAM1:
 
-            if (mpeg == 2 && found == 9) {
+            if (mpeg == 2 && found == 9 && count < found) { // make sure to not write the data twice by looking at count
                write_ipack(&flag1, 1);
                write_ipack(&flag2, 1);
                write_ipack(&hlength, 1);
                }
 
-            if (mpeg == 1 && found == mpeg1_required) {
+            if (mpeg == 1 && found == mpeg1_required && count < found) { // make sure to not write the data twice by looking at count
                write_ipack(&flag1, 1);
                if (mpeg1_required > 7) {
                   write_ipack(&flag2, 1);
