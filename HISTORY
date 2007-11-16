@@ -5523,3 +5523,4 @@ Video Disk Recorder Revision History
 
 - Fixed assembling PS1 packets in cTS2PES::instant_repack() (thanks to Reinhard
   Nissl).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
