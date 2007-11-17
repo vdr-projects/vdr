@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.147 2007/11/03 13:30:09 kls Exp $
+ * $Id: device.c 1.148 2007/11/17 15:39:28 kls Exp $
  */
 
 #include "device.h"
@@ -1148,6 +1148,8 @@ bool cDevice::AttachPlayer(cPlayer *Player)
   if (CanReplay()) {
      if (player)
         Detach(player);
+     DELETENULL(liveSubtitle);
+     DELETENULL(dvbSubtitleConverter);
      pesAssembler->Reset();
      player = Player;
      if (!Transferring())

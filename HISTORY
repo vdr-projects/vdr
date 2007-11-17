@@ -5526,3 +5526,4 @@ Video Disk Recorder Revision History
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Fixed handling small PES packets that caused subtitles to be displayed late
   in live mode (based on a patch from Reinhard Nissl).
+- Fixed stopping live subtitles when a player is attached to the device.
