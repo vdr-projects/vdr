@@ -1150,6 +1150,8 @@ Reinhard Nissl <rnissl@gmx.de>
  attached to a device
  for reporting a missing SetVolumeDevice() call in cDevice::SetPrimaryDevice()
  for fixing assembling PS1 packets in cTS2PES::instant_repack()
+ for a patch that was used to fix handling small PES packets that caused subtitles
+ to be displayed late in live mode
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

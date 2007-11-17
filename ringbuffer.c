@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.24 2006/06/16 09:32:13 kls Exp $
+ * $Id: ringbuffer.c 1.25 2007/11/17 13:49:34 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -187,6 +187,11 @@ cRingBufferLinear::~cRingBufferLinear()
   free(description);
 }
 
+int cRingBufferLinear::DataReady(const uchar *Data, int Count)
+{
+  return Count >= margin ? Count : 0;
+}
+
 int cRingBufferLinear::Available(void)
 {
   int diff = head - tail;
@@ -284,7 +289,6 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
 
 uchar *cRingBufferLinear::Get(int &Count)
 {
-  uchar *p = NULL;
   int Head = head;
   if (getThreadTid <= 0)
      getThreadTid = cThread::ThreadId();
@@ -299,13 +303,13 @@ uchar *cRingBufferLinear::Get(int &Count)
   int cont = (diff >= 0) ? diff : Size() + diff - margin;
   if (cont > rest)
      cont = rest;
-  if (cont >= margin) {
-     p = buffer + tail;
+  uchar *p = buffer + tail;
+  if ((cont = DataReady(p, cont)) > 0) {
      Count = gotten = cont;
+     return p;
      }
-  if (!p)
-     WaitForGet();
-  return p;
+  WaitForGet();
+  return NULL;
 }
 
 void cRingBufferLinear::Del(int Count)

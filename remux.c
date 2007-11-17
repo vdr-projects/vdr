@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.61 2007/11/10 13:36:47 kls Exp $
+ * $Id: remux.c 1.62 2007/11/17 13:49:34 kls Exp $
  */
 
 #include "remux.h"
@@ -1870,6 +1870,30 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
      instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
 }
 
+// --- cRingBufferLinearPes --------------------------------------------------
+
+class cRingBufferLinearPes : public cRingBufferLinear {
+protected:
+  virtual int DataReady(const uchar *Data, int Count);
+public:
+  cRingBufferLinearPes(int Size, int Margin = 0, bool Statistics = false, const char *Description = NULL)
+  :cRingBufferLinear(Size, Margin, Statistics, Description) {}
+  };
+
+int cRingBufferLinearPes::DataReady(const uchar *Data, int Count)
+{
+  int c = cRingBufferLinear::DataReady(Data, Count);
+  if (!c) {
+     const uchar *p = Data;
+     if (Count >= 6 && !p[0] && !p[1] && p[2] == 0x01) {
+        int Length = 6 + p[4] * 256 + p[5];
+        if (Length <= Count)
+           return Length;
+        }
+     }
+  return c;
+}
+
 // --- cRemux ----------------------------------------------------------------
 
 #define RESULTBUFFERSIZE KILOBYTE(256)
@@ -1883,7 +1907,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   skipped = 0;
   numTracks = 0;
   resultSkipped = 0;
-  resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
+  resultBuffer = new cRingBufferLinearPes(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
   if (VPid)
 #define TEST_cVideoRepacker
