@@ -5519,7 +5519,7 @@ Video Disk Recorder Revision History
 - Fixed decoding filename characters in case there are not two hex digits after
   the '#' (reported by Helmut Auer).
 
-2007-11-17: Version 1.5.12
+2007-11-18: Version 1.5.12
 
 - Fixed assembling PS1 packets in cTS2PES::instant_repack() (thanks to Reinhard
   Nissl).
@@ -5527,3 +5527,4 @@ Video Disk Recorder Revision History
 - Fixed handling small PES packets that caused subtitles to be displayed late
   in live mode (based on a patch from Reinhard Nissl).
 - Fixed stopping live subtitles when a player is attached to the device.
+- Fixed suddenly stopping subtitles in live mode.

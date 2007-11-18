@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.62 2007/11/17 13:49:34 kls Exp $
+ * $Id: remux.c 1.63 2007/11/18 14:45:28 kls Exp $
  */
 
 #include "remux.h"
@@ -1427,7 +1427,6 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define MMAX_PLENGTH (64*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland or HDTV 1920x1080
 
 #define IPACKS 2048
-#define SUBTITLE_PACKS  KILOBYTE(32)
 
 // Start codes:
 #define SC_SEQUENCE 0xB3  // "sequence header code"
@@ -1883,10 +1882,9 @@ public:
 int cRingBufferLinearPes::DataReady(const uchar *Data, int Count)
 {
   int c = cRingBufferLinear::DataReady(Data, Count);
-  if (!c) {
-     const uchar *p = Data;
-     if (Count >= 6 && !p[0] && !p[1] && p[2] == 0x01) {
-        int Length = 6 + p[4] * 256 + p[5];
+  if (!c && Count >= 6) {
+     if (!Data[0] && !Data[1] && Data[2] == 0x01) {
+        int Length = 6 + Data[4] * 256 + Data[5];
         if (Length <= Count)
            return Length;
         }
@@ -1936,7 +1934,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   if (SPids) {
      int n = 0;
      while (*SPids && numTracks < MAXTRACKS && n < MAXSPIDS)
-           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, SUBTITLE_PACKS, 0x00, 0x20 + n++);
+           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS, 0x00, 0x20 + n++);
      }
 }
 
@@ -2034,7 +2032,7 @@ int cRemux::Put(const uchar *Data, int Count)
          break;
       if (Data[i] != TS_SYNC_BYTE)
          break;
-      if (resultBuffer->Free() < SUBTITLE_PACKS)
+      if (resultBuffer->Free() < 2 * IPACKS)
          break; // A cTS2PES might write one full packet and also a small rest
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
