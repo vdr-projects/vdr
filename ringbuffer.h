@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.17 2005/12/10 10:54:51 kls Exp $
+ * $Id: ringbuffer.h 1.18 2007/11/17 13:49:34 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -60,6 +60,13 @@ private:
   int gotten;
   uchar *buffer;
   char *description;
+protected:
+  virtual int DataReady(const uchar *Data, int Count);
+    ///< By default a ring buffer has data ready as soon as there are at least
+    ///< 'margin' bytes available. A derived class can reimplement this function
+    ///< if it has other conditions that define when data is ready.
+    ///< The return value is either 0 if there is not yet enough data available,
+    ///< or the number of bytes from the beginning of Data that are "ready".
 public:
   cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false, const char *Description = NULL);
     ///< Creates a linear ring buffer.

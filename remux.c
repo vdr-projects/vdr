@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.60 2007/11/03 14:18:07 kls Exp $
+ * $Id: remux.c 1.63 2007/11/18 14:45:28 kls Exp $
  */
 
 #include "remux.h"
@@ -1427,7 +1427,6 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define MMAX_PLENGTH (64*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland or HDTV 1920x1080
 
 #define IPACKS 2048
-#define SUBTITLE_PACKS  KILOBYTE(32)
 
 // Start codes:
 #define SC_SEQUENCE 0xB3  // "sequence header code"
@@ -1750,13 +1749,13 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
        case VIDEO_STREAM_S ... VIDEO_STREAM_E:
        case PRIVATE_STREAM1:
 
-            if (mpeg == 2 && found == 9) {
+            if (mpeg == 2 && found == 9 && count < found) { // make sure to not write the data twice by looking at count
                write_ipack(&flag1, 1);
                write_ipack(&flag2, 1);
                write_ipack(&hlength, 1);
                }
 
-            if (mpeg == 1 && found == mpeg1_required) {
+            if (mpeg == 1 && found == mpeg1_required && count < found) { // make sure to not write the data twice by looking at count
                write_ipack(&flag1, 1);
                if (mpeg1_required > 7) {
                   write_ipack(&flag2, 1);
@@ -1870,6 +1869,29 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
      instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
 }
 
+// --- cRingBufferLinearPes --------------------------------------------------
+
+class cRingBufferLinearPes : public cRingBufferLinear {
+protected:
+  virtual int DataReady(const uchar *Data, int Count);
+public:
+  cRingBufferLinearPes(int Size, int Margin = 0, bool Statistics = false, const char *Description = NULL)
+  :cRingBufferLinear(Size, Margin, Statistics, Description) {}
+  };
+
+int cRingBufferLinearPes::DataReady(const uchar *Data, int Count)
+{
+  int c = cRingBufferLinear::DataReady(Data, Count);
+  if (!c && Count >= 6) {
+     if (!Data[0] && !Data[1] && Data[2] == 0x01) {
+        int Length = 6 + Data[4] * 256 + Data[5];
+        if (Length <= Count)
+           return Length;
+        }
+     }
+  return c;
+}
+
 // --- cRemux ----------------------------------------------------------------
 
 #define RESULTBUFFERSIZE KILOBYTE(256)
@@ -1883,7 +1905,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   skipped = 0;
   numTracks = 0;
   resultSkipped = 0;
-  resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
+  resultBuffer = new cRingBufferLinearPes(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
   if (VPid)
 #define TEST_cVideoRepacker
@@ -1912,7 +1934,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   if (SPids) {
      int n = 0;
      while (*SPids && numTracks < MAXTRACKS && n < MAXSPIDS)
-           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, SUBTITLE_PACKS, 0x00, 0x20 + n++);
+           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS, 0x00, 0x20 + n++);
      }
 }
 
@@ -2010,7 +2032,7 @@ int cRemux::Put(const uchar *Data, int Count)
          break;
       if (Data[i] != TS_SYNC_BYTE)
          break;
-      if (resultBuffer->Free() < SUBTITLE_PACKS)
+      if (resultBuffer->Free() < 2 * IPACKS)
          break; // A cTS2PES might write one full packet and also a small rest
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
