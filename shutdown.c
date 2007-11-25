@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 1.2 2007/10/19 14:33:40 kls Exp $
+ * $Id: shutdown.c 1.3 2007/11/25 13:49:27 kls Exp $
  */
 
 #include "shutdown.h"
@@ -95,9 +95,13 @@ cShutdownHandler::~cShutdownHandler()
 
 void cShutdownHandler::RequestEmergencyExit(void)
 {
-  esyslog("initiating emergency exit");
-  emergencyExitRequested = true;
-  Exit(1);
+  if (Setup.EmergencyExit) {
+     esyslog("initiating emergency exit");
+     emergencyExitRequested = true;
+     Exit(1);
+     }
+  else
+     dsyslog("emergency exit request ignored according to setup");
 }
 
 void cShutdownHandler::CheckManualStart(int ManualStart)

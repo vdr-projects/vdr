@@ -5533,3 +5533,5 @@ Video Disk Recorder Revision History
 
 - Fixed the declaration of cSubtitleObject::Decode8BppCodeString() (thanks to
   Gregoire Favre).
+- The new setup option "Miscellaneous/Emergency exit" can be used to turn off
+  the automatic restart of VDR in case a recording fails for some reason.

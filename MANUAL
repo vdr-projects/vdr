@@ -850,6 +850,14 @@ Version 1.4
                          VDR was stopped will be used. The valid range is from
                          0 (silent) to 255 (loudest).
 
+  Emergency exit = yes   If, for some reason, a recording fails because the video
+                         data stream is broken, or the CAM doesn't decrypt etc.,
+                         VDR automatically exits in order to allow the surrounding
+                         wrapper script to reload the DVB drivers. If this option
+                         is set to 'no', the "emergency exit" will be ignored,
+                         hoping that the problem will go away by itself (as, for
+                         instance, with bad weather conditions).
+
 * Executing system commands
 
   The "VDR" menu option "Commands" allows you to execute any system commands

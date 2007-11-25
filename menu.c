@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.465 2007/11/03 15:02:00 kls Exp $
+ * $Id: menu.c 1.466 2007/11/25 13:47:38 kls Exp $
  */
 
 #include "menu.h"
@@ -2760,6 +2760,7 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
+  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
 }
 
 // --- cMenuSetupPluginItem --------------------------------------------------

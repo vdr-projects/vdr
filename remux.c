@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.63 2007/11/18 14:45:28 kls Exp $
+ * $Id: remux.c 1.64 2007/11/25 13:56:03 kls Exp $
  */
 
 #include "remux.h"
@@ -2099,8 +2099,10 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
                if (pt != NO_PICTURE) {
                   if (pt < I_FRAME || B_FRAME < pt) {
                      esyslog("ERROR: unknown picture type '%d'", pt);
-                     if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure)
+                     if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure) {
                         ShutdownHandler.RequestEmergencyExit();
+                        numUPTerrors = 0;
+                        }
                      }
                   else if (!synced) {
                      if (pt == I_FRAME) {
