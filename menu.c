@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.466 2007/11/25 13:47:38 kls Exp $
+ * $Id: menu.c 1.467 2007/11/25 14:52:03 kls Exp $
  */
 
 #include "menu.h"
@@ -931,6 +931,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kRed:    state = OnOff(); break; // must go through SetHelpKeys()!
        case kGreen:  return New();
        case kYellow: state = Delete(); break;
+       case kInfo:
        case kBlue:   return Info();
                      break;
        default: break;
@@ -986,6 +987,7 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
                   cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
+    case kInfo:   return osBack;
     default: break;
     }
 
@@ -1216,6 +1218,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      }
                      break;
        case kBlue:   return Switch();
+       case kInfo:
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true, true));
                      break;
@@ -1486,6 +1489,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kBlue:   if (Count() && otherChannel)
                         return Switch();
                      break;
+       case kInfo:
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel, true));
                      break;
@@ -1815,6 +1819,7 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
                   cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
+    case kInfo:   return osBack;
     default: break;
     }
 
@@ -2112,6 +2117,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
        case kGreen:  return Rewind();
        case kYellow: return Delete();
+       case kInfo:
        case kBlue:   return Info();
        case k1...k9: return Commands(Key);
        case kNone:   if (Recordings.StateChanged(recordingsState))

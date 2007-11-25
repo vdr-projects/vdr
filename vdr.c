@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.302 2007/11/03 14:46:29 kls Exp $
+ * $Id: vdr.c 1.303 2007/11/25 15:11:33 kls Exp $
  */
 
 #include <getopt.h>
@@ -914,9 +914,11 @@ int main(int argc, char *argv[])
                break;
           // Info:
           case kInfo: {
-               bool WasInfoMenu = IsInfoMenu;
-               DELETE_MENU;
-               if (!WasInfoMenu) {
+               if (IsInfoMenu) {
+                  key = kNone; // nobody else needs to see this key
+                  DELETE_MENU;
+                  }
+               else if (!Menu) {
                   IsInfoMenu = true;
                   if (cControl::Control()) {
                      cControl::Control()->Hide();
@@ -930,6 +932,7 @@ int main(int argc, char *argv[])
                      cRemote::Put(kOk, true);
                      cRemote::Put(kSchedule, true);
                      }
+                  key = kNone; // nobody else needs to see this key
                   }
                }
                break;
