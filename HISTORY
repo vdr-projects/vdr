@@ -5528,3 +5528,8 @@ Video Disk Recorder Revision History
   in live mode (based on a patch from Reinhard Nissl).
 - Fixed stopping live subtitles when a player is attached to the device.
 - Fixed suddenly stopping subtitles in live mode.
+
+2007-11-25: Version 1.5.13
+
+- Fixed the declaration of cSubtitleObject::Decode8BppCodeString() (thanks to
+  Gregoire Favre).
