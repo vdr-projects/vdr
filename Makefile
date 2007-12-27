@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.110 2007/11/04 10:15:59 kls Exp $
+# $Id: Makefile 1.111 2007/12/02 11:29:22 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -20,7 +20,7 @@ PREFIX  ?= /usr/local
 MANDIR   = $(PREFIX)/share/man
 BINDIR   = $(PREFIX)/bin
 LOCDIR   = ./locale
-LIBS     = -ljpeg -lpthread -ldl -lcap -lfreetype -lfontconfig
+LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
 INCLUDES = -I/usr/include/freetype2
 
 PLUGINDIR= ./PLUGINS

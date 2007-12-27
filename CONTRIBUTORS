@@ -1943,6 +1943,7 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for making cRemote::PutMacro() set a lock while it expands the macro
  for pointing out that plugins from cRemote::PutMacro() and cRemote::CallPlugin()
  need to be handled separately
+ for making cTimeMs use the monotonic clock
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
