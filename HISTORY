@@ -5529,7 +5529,7 @@ Video Disk Recorder Revision History
 - Fixed stopping live subtitles when a player is attached to the device.
 - Fixed suddenly stopping subtitles in live mode.
 
-2007-12-27: Version 1.5.13
+2008-01-13: Version 1.5.13
 
 - Fixed the declaration of cSubtitleObject::Decode8BppCodeString() (thanks to
   Gregoire Favre).
@@ -5539,3 +5539,4 @@ Video Disk Recorder Revision History
   in a context sensitive manner (suggested by Andreas Brugger). If there is
   no menu open it will show the info of the current broadcast or replay.
 - cTimeMs now uses the monotonic clock, if available (thanks to Petri Hintukainen).
+- Fixed cVector::Clear() and cStringList::Clear().

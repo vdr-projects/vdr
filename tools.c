@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.138 2007/12/27 15:57:49 kls Exp $
+ * $Id: tools.c 1.139 2008/01/01 15:10:07 kls Exp $
  */
 
 #include "tools.h"
@@ -1209,6 +1209,7 @@ void cStringList::Clear(void)
 {
   for (int i = 0; i < Size(); i++)
       free(At(i));
+  cVector<char *>::Clear();
 }
 
 // --- cFileNameList ---------------------------------------------------------

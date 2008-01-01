@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.108 2007/08/25 14:16:39 kls Exp $
+ * $Id: tools.h 1.109 2008/01/01 15:09:25 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -470,7 +470,10 @@ public:
        memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
     size--;
   }
-  virtual void Clear(void) {}
+  virtual void Clear(void)
+  {
+    size = 0;
+  }
   void Sort(__compar_fn_t Compare)
   {
     qsort(data, size, sizeof(T), Compare);
