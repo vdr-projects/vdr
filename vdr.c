@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.303 2007/11/25 15:11:33 kls Exp $
+ * $Id: vdr.c 1.304 2008/01/06 11:48:14 kls Exp $
  */
 
 #include <getopt.h>
@@ -345,7 +345,8 @@ int main(int argc, char *argv[])
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
                     break;
-          case 'w': if (isnumber(optarg)) { int t = atoi(optarg);
+          case 'w': if (isnumber(optarg)) {
+                       int t = atoi(optarg);
                        if (t >= 0) {
                           WatchdogTimeout = t;
                           break;
