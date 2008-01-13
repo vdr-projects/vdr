@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.139 2008/01/01 15:10:07 kls Exp $
+ * $Id: tools.c 1.140 2008/01/13 11:26:30 kls Exp $
  */
 
 #include "tools.h"
@@ -870,6 +870,16 @@ cString &cString::operator=(const cString &String)
      return *this;
   free(s);
   s = String.s ? strdup(String.s) : NULL;
+  return *this;
+}
+
+cString &cString::Truncate(int Index)
+{
+  int l = strlen(s);
+  if (Index < 0)
+     Index = l + Index;
+  if (Index >= 0 && Index < l)
+     s[Index] = 0;
   return *this;
 }
 

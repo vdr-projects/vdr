@@ -5540,3 +5540,4 @@ Video Disk Recorder Revision History
   no menu open it will show the info of the current broadcast or replay.
 - cTimeMs now uses the monotonic clock, if available (thanks to Petri Hintukainen).
 - Fixed cVector::Clear() and cStringList::Clear().
+- Added cString::Truncate().
