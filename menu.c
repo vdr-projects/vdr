@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.467 2007/11/25 14:52:03 kls Exp $
+ * $Id: menu.c 1.468 2008/01/13 12:43:09 kls Exp $
  */
 
 #include "menu.h"
@@ -3015,6 +3015,7 @@ bool cMenuMain::Update(bool Force)
         Minutes %= 60;
         //XXX -> skin function!!!
         SetTitle(cString::sprintf("%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free")));
+        lastFreeMB = FreeMB;
         result = true;
         }
      lastDiskSpaceCheck = time(NULL);

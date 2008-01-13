@@ -5547,3 +5547,5 @@ Video Disk Recorder Revision History
 - Fixed error handling in cCuttingThread::Action() (thanks to Udo Richter).
 - Fixed a loss of the date display in the "classic" skin's main menu (reported by
   Andreas Brugger).
+- Added a missing setting of lastFreeMB in cMenuMain::Update() (reported by
+  Andreas Brugger).
