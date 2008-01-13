@@ -5545,3 +5545,5 @@ Video Disk Recorder Revision History
   initial *.pot file.
 - Fixed handling the '-l' option.
 - Fixed error handling in cCuttingThread::Action() (thanks to Udo Richter).
+- Fixed a loss of the date display in the "classic" skin's main menu (reported by
+  Andreas Brugger).
