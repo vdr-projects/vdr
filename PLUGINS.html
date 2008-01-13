@@ -14,18 +14,18 @@ Copyright &copy; 2006 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.3 are marked like this.
-<!--X1.5.3--></td></tr></table>
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.5.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.7 are marked like this.
 <!--X1.5.7--></td></tr></table>
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.5.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.8 are marked like this.
 <!--X1.5.8--></td></tr></table>
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.5.10 are marked like this.
 <!--X1.5.10--></td></tr></table>
+<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.5.13 are marked like this.
+<!--X1.5.13--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -59,6 +59,9 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
 <li><a href="#Shutting down">Shutting down</a>
+<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#Logging">Logging</a>
+<!--X1.5.13--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
@@ -540,6 +543,26 @@ The <tt>Stop()</tt> function will only be called if a previous call to the
 returned <i>true</i>. The <tt>Stop()</tt> functions are called in the reverse order
 as the <a href="#Getting started"><tt>Start()</tt></a> functions were called.
 
+<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a name="Logging"><hr><h2>Logging</h2>
+
+If the plugin should print log messages, you can use <tt>dsyslog()</tt>, <tt>isyslog()</tt> or <tt>esyslog()</tt>.<br>
+<ul>
+<li><tt>dsyslog()</tt> prints the log message only if the log level of vdr is set to 3.
+<li><tt>isyslog()</tt> prints the log message only if the log level of vdr is set to 2 or above.
+<li><tt>esyslog()</tt> prints the log message only if the log level of vdr is set to 1 or above.
+</ul>
+The output of this log is the syslog of the system vdr is running on.
+The logmessage can be formatted like <tt>printf()</tt>, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+esyslog("pluginname: error #%d has occurred", ErrorNumber);
+</pre></td></tr></table><p>
+
+Note that the log messages will be given as provided, the plugin's name will not
+automatically be added, so make shure your log messages are obvious enough.
+<!--X1.5.13--></td></tr></table>
+
 <a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
 <center><i><b>Today's special is...</b></i></center><p>
@@ -906,7 +929,7 @@ const char *MyConfigDir = cPlugin::ConfigDirectory();
 
 <center><i><b>Welcome to Babylon!</b></i></center><p>
 
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.5.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If a plugin displays texts to the user, it should prepare for internationalization
 of these texts. All that is necessary for this is to mark every text that is
 presented to the user as translatable, as in
@@ -917,7 +940,7 @@ const char *s = tr("Hello world!");
 
 The text given here must be the English version, and the returned pointer is either
 a translated version (if available) or the original string.
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.5.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Texts are searched for in the domain registered for this plugin.
 If a plugin wants to make use of texts defined by the core VDR code, it can use
 the special <tt>trVDR()</tt> macro to mark these texts without having them
@@ -940,7 +963,6 @@ for (int i = 0; i &lt; 3; i++)
 </pre></td></tr></table><p>
 
 <p>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 The system VDR is running on may use a character encoding where a single character
 (or <i>symbol</i>) consists of more than one byte (UTF-8, as opposed to, for instance,
 ISO8859-1, where every character is represented by a single byte in memory).
@@ -951,7 +973,6 @@ character set. The names of these functions and macros are all of the form <tt>U
 and are defined in <tt>VDR/tools.h</tt>.
 Most of the time a plugin doesn't need to care about this, but when it comes to
 handling individual characters these functions may come in handy.
-<!--X1.5.3--></td></tr></table>
 <!--X1.5.7--></td></tr></table>
 
 <a name="Custom services"><hr><h2>Custom services</h2>
@@ -1328,7 +1349,7 @@ A player that has special requirements about audio tracks should announce its
 available audio tracks by calling
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL)
 <!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>
@@ -1456,13 +1477,13 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 :cReceiver(tChannelID(), -1, Pid)
 <!--X1.5.10--></td></tr></table>
 {
 }
 
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%><pre>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%><pre>
 cMyReceiver::~cMyReceiver()
 {
   cReceiver::Detach();
@@ -1614,7 +1635,6 @@ with the full required resolution. Only if this fails shall it use alternate
 areas. Drawing areas are always rectangular and may not overlap (but do not need
 to be adjacent).
 <p>
-<!--X1.5.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Special consideration may have to be given to color usage if the OSD provides
 8bpp (256 colors). In that case, fonts may be drawn using <i>anti-aliasing</i>,
 which requires several blended color values between the foreground and background
@@ -1628,7 +1648,6 @@ osd-&gt;SetAntiAliasGranularity();
 
 which allows the system to evenly distribute the palette entries to the various
 color combinations (see <tt>VDR/osd.h</tt> for details).
-<!--X1.5.3--></td></tr></table>
 <p>
 Directly accessing the OSD is only allowed from the foreground thread, which
 restricts this to a <tt>cOsdObject</tt> returned from the plugin's <tt>MainMenuAction()</tt>
@@ -1832,7 +1851,7 @@ virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual bool HasIBPTrickSpeed(void);
 <!--X1.5.10--></td></tr></table>
 virtual void TrickSpeed(int Speed);
@@ -1862,7 +1881,7 @@ the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual void CloseFilter(int Handle);
 <!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>

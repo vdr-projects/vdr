@@ -5560,3 +5560,4 @@ Video Disk Recorder Revision History
   See PLUGINS/src/pictures/README for details.
 - The automatic shutdown is now suppressed if the remote control is currently
   disabled (suggested by Helmut Auer, implemented by Udo Richter).
+- Added a section about "Logging" to PLUGINS.html (suggested by Torsten Kunkel).
