@@ -5544,3 +5544,4 @@ Video Disk Recorder Revision History
 - Fixed the "i18n:" target in the "newplugin" script, so that it can create the
   initial *.pot file.
 - Fixed handling the '-l' option.
+- Fixed error handling in cCuttingThread::Action() (thanks to Udo Richter).

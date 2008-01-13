@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.17 2007/08/25 10:33:18 kls Exp $
+ * $Id: cutter.c 1.18 2008/01/13 12:22:21 kls Exp $
  */
 
 #include "cutter.h"
@@ -111,7 +111,9 @@ void cCuttingThread::Action(void)
                  }
               }
            else {
-              error = "index";
+              // Error, unless we're past the last cut-in and there's no cut-out
+              if (Mark || LastMark)
+                 error = "index";
               break;
               }
 

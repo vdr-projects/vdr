@@ -1548,6 +1548,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
  for improving shutdown handling
  for making housekeeping wait for a while after a replay has ended
+ for fixing error handling in cCuttingThread::Action()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
