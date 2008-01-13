@@ -5543,3 +5543,4 @@ Video Disk Recorder Revision History
 - Added cString::Truncate().
 - Fixed the "i18n:" target in the "newplugin" script, so that it can create the
   initial *.pot file.
+- Fixed handling the '-l' option.

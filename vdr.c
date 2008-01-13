@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.304 2008/01/06 11:48:14 kls Exp $
+ * $Id: vdr.c 1.305 2008/01/13 11:51:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
                        }
                     break;
           case 'l' | 0x100:
-                    LircDevice = optarg ? : LIRC_DEVICE;
+                    LircDevice = optarg ? optarg : LIRC_DEVICE;
                     break;
           case 'm': MuteAudio = true;
                     break;
