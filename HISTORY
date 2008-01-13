@@ -5556,3 +5556,5 @@ Video Disk Recorder Revision History
 - Updated the Hungarian language texts (thanks to István Füley).
 - Fixed displaying weekday names in the Schedule menu if the system uses UTF-8
   (reported by Jiri Dobry).
+- The new plugin "pictures" implements a simple picture viewer.
+  See PLUGINS/src/pictures/README for details.
