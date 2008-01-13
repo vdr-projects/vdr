@@ -37,7 +37,8 @@ Version 1.4
   If your remote control provides additional keys, they can be used for the
   following functions:
 
-  Info        display information on the currently viewed programme or recording
+  Info        display information on the currently viewed programme or recording,
+              or on the current item in a menu
   Play        resume normal replay
   Pause       pause replay or live video
   Stop        stop replay
@@ -849,6 +850,14 @@ Version 1.4
                          is -1, which means that the same volume as before
                          VDR was stopped will be used. The valid range is from
                          0 (silent) to 255 (loudest).
+
+  Emergency exit = yes   If, for some reason, a recording fails because the video
+                         data stream is broken, or the CAM doesn't decrypt etc.,
+                         VDR automatically exits in order to allow the surrounding
+                         wrapper script to reload the DVB drivers. If this option
+                         is set to 'no', the "emergency exit" will be ignored,
+                         hoping that the problem will go away by itself (as, for
+                         instance, with bad weather conditions).
 
 * Executing system commands
 

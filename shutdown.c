@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 1.2 2007/10/19 14:33:40 kls Exp $
+ * $Id: shutdown.c 1.4 2008/01/13 14:27:29 kls Exp $
  */
 
 #include "shutdown.h"
@@ -95,9 +95,13 @@ cShutdownHandler::~cShutdownHandler()
 
 void cShutdownHandler::RequestEmergencyExit(void)
 {
-  esyslog("initiating emergency exit");
-  emergencyExitRequested = true;
-  Exit(1);
+  if (Setup.EmergencyExit) {
+     esyslog("initiating emergency exit");
+     emergencyExitRequested = true;
+     Exit(1);
+     }
+  else
+     dsyslog("emergency exit request ignored according to setup");
 }
 
 void cShutdownHandler::CheckManualStart(int ManualStart)
@@ -150,6 +154,9 @@ void cShutdownHandler::SetUserInactiveTimeout(int Seconds, bool Force)
 
 bool cShutdownHandler::ConfirmShutdown(bool Interactive)
 {
+  if (!Interactive && !cRemote::Enabled())
+     return false;
+
   if (!shutdownCommand) {
      if (Interactive)
         Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));

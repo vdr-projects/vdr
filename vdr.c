@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.302 2007/11/03 14:46:29 kls Exp $
+ * $Id: vdr.c 1.305 2008/01/13 11:51:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
                        }
                     break;
           case 'l' | 0x100:
-                    LircDevice = optarg ? : LIRC_DEVICE;
+                    LircDevice = optarg ? optarg : LIRC_DEVICE;
                     break;
           case 'm': MuteAudio = true;
                     break;
@@ -345,7 +345,8 @@ int main(int argc, char *argv[])
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
                     break;
-          case 'w': if (isnumber(optarg)) { int t = atoi(optarg);
+          case 'w': if (isnumber(optarg)) {
+                       int t = atoi(optarg);
                        if (t >= 0) {
                           WatchdogTimeout = t;
                           break;
@@ -914,9 +915,11 @@ int main(int argc, char *argv[])
                break;
           // Info:
           case kInfo: {
-               bool WasInfoMenu = IsInfoMenu;
-               DELETE_MENU;
-               if (!WasInfoMenu) {
+               if (IsInfoMenu) {
+                  key = kNone; // nobody else needs to see this key
+                  DELETE_MENU;
+                  }
+               else if (!Menu) {
                   IsInfoMenu = true;
                   if (cControl::Control()) {
                      cControl::Control()->Hide();
@@ -930,6 +933,7 @@ int main(int argc, char *argv[])
                      cRemote::Put(kOk, true);
                      cRemote::Put(kSchedule, true);
                      }
+                  key = kNone; // nobody else needs to see this key
                   }
                }
                break;

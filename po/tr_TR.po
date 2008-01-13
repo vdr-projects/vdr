@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-10-13 11:29+0200\n"
+"POT-Creation-Date: 2007-11-25 14:59+0100\n"
 "PO-Revision-Date: 2007-08-24 14:37+0200\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -775,6 +775,9 @@ msgstr "önceki gibi"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Açýlýþdaki ses"
+
+msgid "Setup.Miscellaneous$Emergency exit"
+msgstr ""
 
 msgid "Plugins"
 msgstr "Eklentiler"

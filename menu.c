@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.465 2007/11/03 15:02:00 kls Exp $
+ * $Id: menu.c 1.469 2008/01/13 13:59:33 kls Exp $
  */
 
 #include "menu.h"
@@ -931,6 +931,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kRed:    state = OnOff(); break; // must go through SetHelpKeys()!
        case kGreen:  return New();
        case kYellow: state = Delete(); break;
+       case kInfo:
        case kBlue:   return Info();
                      break;
        default: break;
@@ -986,6 +987,7 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
                   cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
+    case kInfo:   return osBack;
     default: break;
     }
 
@@ -1057,12 +1059,13 @@ bool cMenuScheduleItem::Update(bool Force)
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
      char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      const char *csn = channel ? channel->ShortName(true) : NULL;
+     cString eds = event->GetDateString();
      if (channel && withDate)
-        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
         asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, *event->GetTimeString(), t, v, r, event->Title());
      else
-        asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      SetText(buffer, false);
      result = true;
      }
@@ -1216,6 +1219,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      }
                      break;
        case kBlue:   return Switch();
+       case kInfo:
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true, true));
                      break;
@@ -1486,6 +1490,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kBlue:   if (Count() && otherChannel)
                         return Switch();
                      break;
+       case kInfo:
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel, true));
                      break;
@@ -1815,6 +1820,7 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
                   cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft);
                   return osContinue;
+    case kInfo:   return osBack;
     default: break;
     }
 
@@ -2112,6 +2118,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
        case kGreen:  return Rewind();
        case kYellow: return Delete();
+       case kInfo:
        case kBlue:   return Info();
        case k1...k9: return Commands(Key);
        case kNone:   if (Recordings.StateChanged(recordingsState))
@@ -2760,6 +2767,7 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
+  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
 }
 
 // --- cMenuSetupPluginItem --------------------------------------------------
@@ -3008,6 +3016,7 @@ bool cMenuMain::Update(bool Force)
         Minutes %= 60;
         //XXX -> skin function!!!
         SetTitle(cString::sprintf("%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free")));
+        lastFreeMB = FreeMB;
         result = true;
         }
      lastDiskSpaceCheck = time(NULL);

@@ -4,15 +4,16 @@
 # Istvan Koenigsberger <istvnko@hotmail.com>, 2002
 # Guido Josten <guido.josten@t-online.de>, 2002
 # Thomas Günther <tom@toms-cafe.de>, 2007
+# István Füley <ifuley@tigercomp.ro>, 2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-10-13 11:29+0200\n"
-"PO-Revision-Date: 2007-10-13 14:32+0200\n"
-"Last-Translator: Thomas Günther <tom@toms-cafe.de>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"POT-Creation-Date: 2008-01-13 14:21+0100\n"
+"PO-Revision-Date: 2007-12-01 21:42+0200\n"
+"Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
+"Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -168,7 +169,7 @@ msgid "Key$Audio"
 msgstr "Hang"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Feliratok"
 
 msgid "Key$Schedule"
 msgstr "Program"
@@ -189,31 +190,31 @@ msgid "Key$Commands"
 msgstr "Parancsok"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Felhasználó1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Felhasználó2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Felhasználó3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Felhasználó4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Felhasználó5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Felhasználó6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Felhasználó7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Felhasználó8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Felhasználó9"
 
 msgid "Free To Air"
 msgstr "Kódolatlan"
@@ -255,10 +256,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -291,19 +292,19 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulation"
+msgstr "Moduláció"
 
 msgid "Bandwidth"
-msgstr "Bandwidth"
+msgstr "Sávszélesség"
 
 msgid "Transmission"
-msgstr "Transmission"
+msgstr "Átvitel"
 
 msgid "Guard"
 msgstr "Guard"
 
 msgid "Hierarchy"
-msgstr "Hierarchy"
+msgstr "Hierarhia"
 
 msgid "Channel settings are not unique!"
 msgstr "Az adóbeállítások nem egyértelmûek"
@@ -426,7 +427,7 @@ msgid "Please enter %d digits!"
 msgstr "Üssön be %d számot!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "A CAM nem válaszol!"
 
 msgid "Recording info"
 msgstr "Felvétel"
@@ -498,25 +499,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Kisbetût használni"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Alapértelmezett betûtipus"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Kis betûtipus"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Kötött betûtipus"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Alapértelmezett betûtipus méret (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Kis betûtipus méret (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Kötött betûtipus méret (pixel)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Adásinformáció poziciója"
@@ -593,10 +594,10 @@ msgid "names only"
 msgstr "kizárólag nevek"
 
 msgid "PIDs only"
-msgstr "kizárólag PID-k"
+msgstr "kizárólag PIDek"
 
 msgid "names and PIDs"
-msgstr "nevek és PID-k"
+msgstr "nevek és PIDek"
 
 msgid "add new channels"
 msgstr "új adók hozzáadása"
@@ -623,28 +624,28 @@ msgid "Setup.DVB$Update channels"
 msgstr "Adók aktualizálása"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "Audio-nyelvek"
+msgstr "Audio nyelvek"
 
 msgid "Setup.DVB$Audio language"
-msgstr "Audio-nyelv"
+msgstr "Audio nyelv"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Felirat látható"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Felirat nyelvek"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Felirat nyelv"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Felirat eltolása"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Felirat transzparenciája"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Felirat hátterének transzparenciája"
 
 msgid "LNB"
 msgstr "LNB"
@@ -662,13 +663,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Felsõ LNB-frekvencia (MHZ)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM újraindítás"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM jelen"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM mûködik"
 
 msgid "CAM"
 msgstr "CAM"
@@ -680,16 +681,16 @@ msgid "Button$Reset"
 msgstr "Reset"
 
 msgid "Opening CAM menu..."
-msgstr "A CAM-menü nyitás alatt..."
+msgstr "A CAM menü nyitás alatt..."
 
 msgid "Can't open CAM menu!"
-msgstr "A CAM-Menü nem nyitható"
+msgstr "A CAM menü nem nyitható"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM használatban - valóban újraindítjuk?"
 
 msgid "Can't reset CAM!"
-msgstr "A CAM-Reset nem sikerült"
+msgstr "A CAM újraindítás nem sikerült"
 
 msgid "Recording"
 msgstr "Felvétel"
@@ -704,10 +705,10 @@ msgid "Setup.Recording$Primary limit"
 msgstr "Primér-határ"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Default priority"
+msgstr "Alapértelmezett prioritás"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Default élettartam"
+msgstr "Alapértelmezett élettartam"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Szünet prioritás"
@@ -767,7 +768,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Adásváltás ideje (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Csatornaváltás timeout (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Adás a bekapcsolásnál"
@@ -777,6 +778,10 @@ msgstr "ahogy az elõbb"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hangerõ a bekapcsolásnál"
+
+#, fuzzy
+msgid "Setup.Miscellaneous$Emergency exit"
+msgstr "ahogy az elõbb"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -839,13 +844,13 @@ msgid "No audio available!"
 msgstr "Hang nem lehetséges!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Felirat ki"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Feliratok"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "A csatornán nincs felirat!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Nincs elegendõ hely a felvételre"
@@ -870,7 +875,7 @@ msgid "Editing process started"
 msgstr "Vágás elindítva"
 
 msgid "Editing process already active!"
-msgstr "A vágás már aktivált!"
+msgstr "A vágás már aktív!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aábcdeéfghiíjklmnoóöõpqrstuúüûvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
@@ -906,7 +911,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "A leállítás nem lehetséges - Opció '-s' hiányzik!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Szerkesztés folyamatban - valóban leállítjuk?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Felvétel folyamatban van - mégis kikapcsolni?"
@@ -920,10 +925,10 @@ msgstr "mégis kikapcsolni?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "A(z) %s plugin  ébreszt %ld perc múlva, folytatjuk?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Szerkesztés folyamatban - valóban újraindítjuk?"
 
 msgid "Recording - restart anyway?"
 msgstr "Felvétel folyamatban van - mégis újraindítani?"
@@ -977,10 +982,10 @@ msgid "Recording started"
 msgstr "A felvétel elindítva"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "A VDR késõbb fog leállni - Kikapcs gombbal kényszerített leállítás"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Nyomj egy gombot a leállás megállításához"
+msgstr "Nyomj egy gombot a leállás megszakításához"
 
 msgid "Switching primary DVB..."
 msgstr "Primér Interface átkapcsolva..."
@@ -992,8 +997,8 @@ msgid "Editing process finished"
 msgstr "Vágás befejezve"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Nyomj egy gombot az újraindítás megszakításához"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "A VDR leáll %s perc múlva"

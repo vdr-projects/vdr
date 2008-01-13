@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 1.2 2007/11/03 14:36:07 kls Exp $
+ * $Id: dvbsubtitle.c 1.3 2007/11/25 13:33:08 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -102,7 +102,7 @@ private:
   uchar Get4Bits(const uchar *Data, int &Index);
   bool Decode2BppCodeString(const uchar *Data, int &Index, int&x, int y);
   bool Decode4BppCodeString(const uchar *Data, int &Index, int&x, int y);
-  bool Decode8BppCodeString(const uchar *Data, int &Index, int&y, int y);
+  bool Decode8BppCodeString(const uchar *Data, int &Index, int&x, int y);
 public:
   cSubtitleObject(int ObjectId, cBitmap *Bitmap);
   int ObjectId(void) { return objectId; }

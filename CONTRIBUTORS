@@ -531,6 +531,7 @@ Gregoire Favre <greg@ulima.unil.ch>
  for translating OSD texts to the French language
  for suggesting to initiate an "emergency exit" if there are UPT errors during a
  recording
+ for fixing the declaration of cSubtitleObject::Decode8BppCodeString()
 
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
@@ -590,6 +591,8 @@ Helmut Auer <vdr@helmutauer.de>
  for a patch that was used to implement the SVDRP command REMO
  for reporting a possible crash in decoding filename characters in case there are
  not two hex digits after the '#'
+ for suggesting to suppress the automatic shutdown if the remote control is
+ currently disabled
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1547,6 +1550,8 @@ Udo Richter <udo_richter@gmx.de>
  for fixing a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode()
  for improving shutdown handling
  for making housekeeping wait for a while after a replay has ended
+ for fixing error handling in cCuttingThread::Action()
+ for suppressing the automatic shutdown if the remote control is currently disabled
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1599,6 +1604,10 @@ Andreas Brugger <brougs78@gmx.net>
  for reporting a typo in the change to the "Use small font" setup option in version
  1.3.47 in the HISTORY and CONTRIBUTORS file
  for reporting a missing 'const' in cRecordingInfo::ChannelID()
+ for suggesting to propagate the kInfo key to any open menu, so that it can react to
+ it in a context sensitive manner
+ for reporting a loss of the date display in the "classic" skin's main menu
+ for reporting a missing setting of lastFreeMB in cMenuMain::Update()
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1940,6 +1949,7 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for making cRemote::PutMacro() set a lock while it expands the macro
  for pointing out that plugins from cRemote::PutMacro() and cRemote::CallPlugin()
  need to be handled separately
+ for making cTimeMs use the monotonic clock
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
@@ -2060,6 +2070,7 @@ Tobias Grimm <listaccount@e-tobi.net>
  for fixing a memory leak in handling external EPG data
  for fixing a memory leak in closing the video file during replay
  for fixing deleting the 'skinDescriptions' in cMenuSetupOSD::~cMenuSetupOSD()
+ for reporting that GCC 4.3 issues a silly warning for expressions like 'a || b && c'
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2228,6 +2239,7 @@ Elias Luttinen <el@iki.fi>
 Torsten Kunkel <vdrml@tkunkel.de>
  for pointing out that it was not obvious how to initiate internationalization
  support for a plugin
+ for suggesting to add a section about "Logging" to PLUGINS.html
 
 Michael Nival <mnival@club-internet.fr>
  for translating OSD texts to the French language
@@ -2240,3 +2252,14 @@ Lauri Nurmi <lanurmi@iki.fi>
 
 Mario Ivankovits <mario@ops.co.at>
  for fixing a crash if no fonts are found
+
+István Füley <ifuley@tigercomp.ro>
+ for translating OSD texts to the Hungarian language
+
+Jiri Dobry <jdobry@centrum.cz>
+ for reporting a bug in displaying weekday names in the Schedule menu if the system
+ uses UTF-8
+
+Benjamin Hess <benjamin.h@gmx.ch>
+ for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
+ channel

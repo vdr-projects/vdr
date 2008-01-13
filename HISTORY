@@ -5528,3 +5528,38 @@ Video Disk Recorder Revision History
   in live mode (based on a patch from Reinhard Nissl).
 - Fixed stopping live subtitles when a player is attached to the device.
 - Fixed suddenly stopping subtitles in live mode.
+
+2008-01-13: Version 1.5.13
+
+- Fixed the declaration of cSubtitleObject::Decode8BppCodeString() (thanks to
+  Gregoire Favre).
+- The new setup option "Miscellaneous/Emergency exit" can be used to turn off
+  the automatic restart of VDR in case a recording fails for some reason.
+- The kInfo key is now propagated to any open menu, so that it can react to it
+  in a context sensitive manner (suggested by Andreas Brugger). If there is
+  no menu open it will show the info of the current broadcast or replay.
+- cTimeMs now uses the monotonic clock, if available (thanks to Petri Hintukainen).
+- Fixed cVector::Clear() and cStringList::Clear().
+- Added cString::Truncate().
+- Fixed the "i18n:" target in the "newplugin" script, so that it can create the
+  initial *.pot file.
+- Fixed handling the '-l' option.
+- Fixed error handling in cCuttingThread::Action() (thanks to Udo Richter).
+- Fixed a loss of the date display in the "classic" skin's main menu (reported by
+  Andreas Brugger).
+- Added a missing setting of lastFreeMB in cMenuMain::Update() (reported by
+  Andreas Brugger).
+- Added '-Wno-parentheses' to the compiler options in order to avoid silly compiler
+  warnings for expessions like 'a || b && c', where GCC 4.3 wants to force the
+  programmer to write 'a || (b && c)', while everybody knows that '&&' links
+  stronger than '||' (reported by Tobias Grimm).
+- Updated the Hungarian language texts (thanks to István Füley).
+- Fixed displaying weekday names in the Schedule menu if the system uses UTF-8
+  (reported by Jiri Dobry).
+- The new plugin "pictures" implements a simple picture viewer.
+  See PLUGINS/src/pictures/README for details.
+- The automatic shutdown is now suppressed if the remote control is currently
+  disabled (suggested by Helmut Auer, implemented by Udo Richter).
+- Added a section about "Logging" to PLUGINS.html (suggested by Torsten Kunkel).
+- Enhanced the SVDRP command CLRE to allow clearing the EPG data of a particular
+  channel (thanks to Benjamin Hess).

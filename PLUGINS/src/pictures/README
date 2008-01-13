@@ -1,0 +1,119 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Klaus Schmidinger <kls@cadsoft.de>
+
+Project's homepage:          www.cadsoft.de/vdr
+
+Latest version available at: www.cadsoft.de/vdr
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+See the file COPYING for more information.
+
+Description:
+============
+
+The 'pictures' plugin implements a simple picture viewer.
+
+There is already an 'image' plugin out there which has a lot more
+functionality than this one, but it's way too complex for my taste,
+and also converts the image files on-the-fly, which makes it slow
+on slow hardware.
+
+This plugin assumes that the pictures have already been converted to
+MPEG frames (with the 'pic2mpg' script that comes with this archive),
+and doesn't implement any fancy features like zooming, panning or
+tiled previews. It's just a very simple viewer.
+
+It also assumes a rather particular directory structure (see below),
+which I have found to fit well for my needs. If you use a different
+structure, the plugin should still work, but the information displayed
+in the caption may not be as expected.
+
+Remote control key functions while in the Pictures menu:
+========================================================
+
+- Left/right/Up/Down:  navigate in the menu as usual.
+- Ok:                  opens a directory or displays the selected
+                       picture.
+- Red/Play:            start a slide show at the first picture in the
+                       selected directory (or at the selected picture).
+
+Remote control key functions while displaying pictures:
+=======================================================
+
+- Left/Right:  advances to the previous/next picture. At the end of a directory
+               it automatically advances to the first picture of the next
+               directory and displays the caption.
+- Up/Play:     start the slide show.
+- Down/Pause:  stop the slide show.
+- Blue/Stop:   exit from the picture viewer.
+- Green/Prev:  skip to the first picture in the previous directory.
+- Yellow/Next: skip to the first picture in the next directory.
+- Ok:          toggle the caption display.
+- Back:        return to the picture selection menu.
+
+The slide show starts with the picture immediately following the one that
+is currently visible, and continues until the last available picture,
+automatically crossing directories as necessary.
+
+Pressing any of the Left/Right, Green/Prev, Yellow/Next or Back keys
+automatically stops an ongoing slide show.
+
+Directory structure:
+====================
+
+The 'pictures' plugin requires a particular directory structure in order to
+work properly. Starting at some base directory (e.g. "/path/to/pictures"),
+there is one directory level marking the year in which the pictures were
+taken, followed by a level with a properly sortable combination of month
+and description, and finally the plain picture files, as in
+
+/path/to/pictures/YEAR/MONTH_DESCRIPTION/*.jpg
+
+For example
+
+/path/to/pictures/2007/06a_Vacation_in_Colorado/dsc01234.jpg
+/path/to/pictures/2007/06a_Vacation_in_Colorado/dsc01235.jpg
+/path/to/pictures/2007/06b_Our_cat/dsc01236.jpg
+
+The MONTH is "01" for January through "12" for December. If there is more
+than one entry for one month, it should be followed by a letter to make them
+sort correctly. Note that this is just a suggestion on how to make the
+directories sort in the correct chronological order. Instead of the two digit
+month number, optionally followed by a letter, you can use anything else you
+like. There must be an underscore between the MONTH and the DESCRIPTION part,
+and any underscores within the DESCRIPTION will be converted to blanks when
+displaying the description (this is done so that blanks can be avoided in
+the directory names).
+
+Preparing the files:
+====================
+
+In order to display the pictures as "still pictures" on the DVB device, they
+need to be converted into MPEG frames. This procedure takes some time, and
+would make viewing pictures sluggish, especially on slow hardware. Therefore
+the script "pic2mpg" must be used to convert all picture files before
+using this plugin, as in
+
+pic2mpg /path/to/pictures /path/to/pictures.MPG
+
+This will recursively walk through all pictures in the source directory and
+convert them into MPEG frames, stored in the destination directory. The
+extension ".MPG" is just a suggestion, you can name the directory anything
+you like, and it doesn't have to start with the same path as the source
+directory. Just don't make the destination directory a subdirectory of
+the source directory, because this would surely lead to problems.
+See "pic2mpg -h" for a list of available options.
+The pic2mpg conversion can be run any time, even if converted pictures
+already exist. It will only convert pictures that haven't been converted
+yet. Any changes to the source directory will be reflected in the destination
+directory accordingly after pic2mpg has finished (note that this especially
+means that any files or directories in the destination tree that have no
+corresponding entry in the source tree will be deleted!). So you can run
+pic2mpg, for instance, after copying new pictures into your picture
+directory, or after making any other kind of changes to your existing
+pictures. It might even be a good idea to run pic2mpg in a (nightly)
+cron job.

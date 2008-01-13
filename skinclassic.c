@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.18 2007/07/29 12:35:03 kls Exp $
+ * $Id: skinclassic.c 1.19 2008/01/13 12:38:00 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -162,6 +162,7 @@ private:
   int x0, x1;
   int y0, y1, y2, y3, y4, y5;
   int lineHeight;
+  int dateWidth;
   cString lastDate;
   void SetScrollbar(void);
 public:
@@ -186,6 +187,7 @@ cSkinClassicDisplayMenu::cSkinClassicDisplayMenu(void)
 {
   const cFont *font = cFont::GetFont(fontOsd);
   lineHeight = font->Height();
+  dateWidth = 0;
   x0 = 0;
   x1 = cOsd::OsdWidth();
   y0 = 0;
@@ -253,7 +255,7 @@ void cSkinClassicDisplayMenu::Clear(void)
 void cSkinClassicDisplayMenu::SetTitle(const char *Title)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0);
+  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0 - dateWidth);
 }
 
 void cSkinClassicDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -395,6 +397,7 @@ void cSkinClassicDisplayMenu::Flush(void)
      int w = font->Width(date);
      osd->DrawText(x1 - w - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font, w);
      lastDate = date;
+     dateWidth = max(w + 2, dateWidth);
      }
   osd->Flush();
 }

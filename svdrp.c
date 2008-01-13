@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.104 2007/10/13 10:17:48 kls Exp $
+ * $Id: svdrp.c 1.105 2008/01/13 15:06:25 kls Exp $
  */
 
 #include "svdrp.h"
@@ -185,8 +185,9 @@ const char *HelpPages[] = {
   "    Switch channel up, down or to the given channel number, name or id.\n"
   "    Without option (or after successfully switching to the channel)\n"
   "    it returns the current channel number and name.",
-  "CLRE\n"
-  "    Clear the entire EPG list.",
+  "CLRE [ <number> | <name> | <id> ]\n"
+  "    Clear the EPG list of the given channel number, name or id.\n"
+  "    Without option it clears the entire EPG list.",
   "DELC <number>\n"
   "    Delete channel.",
   "DELR <number>\n"
@@ -538,8 +539,57 @@ void cSVDRP::CmdCHAN(const char *Option)
 
 void cSVDRP::CmdCLRE(const char *Option)
 {
-  cSchedules::ClearAll();
-  Reply(250, "EPG data cleared");
+  if (*Option) {
+     tChannelID ChannelID = tChannelID::InvalidID;
+     if (isnumber(Option)) {
+        int o = strtol(Option, NULL, 10);
+        if (o >= 1 && o <= Channels.MaxNumber())
+           ChannelID = Channels.GetByNumber(o)->GetChannelID();
+        }
+     else {
+        ChannelID = tChannelID::FromString(Option);
+        if (ChannelID == tChannelID::InvalidID) {
+           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+               if (!Channel->GroupSep()) {
+                  if (strcasecmp(Channel->Name(), Option) == 0) {
+                     ChannelID = Channel->GetChannelID();
+                     break;
+                     }
+                  }
+               }
+           }
+        }
+     if (!(ChannelID == tChannelID::InvalidID)) {
+        cSchedulesLock SchedulesLock(true, 1000);
+        cSchedules *s = (cSchedules *)cSchedules::Schedules(SchedulesLock);
+        if (s) {
+           cSchedule *Schedule = NULL;
+           ChannelID.ClrRid();
+           for (cSchedule *p = s->First(); p; p = s->Next(p)) {
+               if (p->ChannelID() == ChannelID) {
+                  Schedule = p;
+                  break;
+                  }
+               }
+           if (Schedule) {
+              Schedule->Cleanup(INT_MAX);
+              Reply(250, "EPG data of channel \"%s\" cleared", Option);
+              }
+           else {
+              Reply(550, "No EPG data found for channel \"%s\"", Option);
+              return;
+              }
+           }
+        else
+           Reply(451, "Can't get EPG data");
+        }
+     else
+        Reply(501, "Undefined channel \"%s\"", Option);
+     }
+  else {
+     cSchedules::ClearAll();
+     Reply(250, "EPG data cleared");
+     }
 }
 
 void cSVDRP::CmdDELC(const char *Option)
