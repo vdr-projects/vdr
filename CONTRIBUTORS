@@ -2067,6 +2067,7 @@ Tobias Grimm <listaccount@e-tobi.net>
  for fixing a memory leak in handling external EPG data
  for fixing a memory leak in closing the video file during replay
  for fixing deleting the 'skinDescriptions' in cMenuSetupOSD::~cMenuSetupOSD()
+ for reporting that GCC 4.3 issues a silly warning for expressions like 'a || b && c'
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
