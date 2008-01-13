@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.39 2007/11/04 10:42:52 kls Exp $
+# $Id: newplugin 1.40 2008/01/13 11:49:08 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -149,7 +149,7 @@ I18Npot   = \$(PODIR)/\$(PLUGIN).pot
 	cp \$< \$\@
 
 .PHONY: i18n
-i18n: \$(I18Nmsgs)
+i18n: \$(I18Nmsgs) \$(I18Npot)
 
 ### Targets:
 

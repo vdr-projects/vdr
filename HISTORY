@@ -5541,3 +5541,5 @@ Video Disk Recorder Revision History
 - cTimeMs now uses the monotonic clock, if available (thanks to Petri Hintukainen).
 - Fixed cVector::Clear() and cStringList::Clear().
 - Added cString::Truncate().
+- Fixed the "i18n:" target in the "newplugin" script, so that it can create the
+  initial *.pot file.
