@@ -5553,3 +5553,4 @@ Video Disk Recorder Revision History
   warnings for expessions like 'a || b && c', where GCC 4.3 wants to force the
   programmer to write 'a || (b && c)', while everybody knows that '&&' links
   stronger than '||' (reported by Tobias Grimm).
+- Updated the Hungarian language texts (thanks to István Füley).

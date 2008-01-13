@@ -2248,3 +2248,6 @@ Lauri Nurmi <lanurmi@iki.fi>
 
 Mario Ivankovits <mario@ops.co.at>
  for fixing a crash if no fonts are found
+
+István Füley <ifuley@tigercomp.ro>
+ for translating OSD texts to the Hungarian language
