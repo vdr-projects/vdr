@@ -2259,3 +2259,7 @@ István Füley <ifuley@tigercomp.ro>
 Jiri Dobry <jdobry@centrum.cz>
  for reporting a bug in displaying weekday names in the Schedule menu if the system
  uses UTF-8
+
+Benjamin Hess <benjamin.h@gmx.ch>
+ for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
+ channel

@@ -5561,3 +5561,5 @@ Video Disk Recorder Revision History
 - The automatic shutdown is now suppressed if the remote control is currently
   disabled (suggested by Helmut Auer, implemented by Udo Richter).
 - Added a section about "Logging" to PLUGINS.html (suggested by Torsten Kunkel).
+- Enhanced the SVDRP command CLRE to allow clearing the EPG data of a particular
+  channel (thanks to Benjamin Hess).
