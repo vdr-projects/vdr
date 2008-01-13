@@ -2251,3 +2251,7 @@ Mario Ivankovits <mario@ops.co.at>
 
 István Füley <ifuley@tigercomp.ro>
  for translating OSD texts to the Hungarian language
+
+Jiri Dobry <jdobry@centrum.cz>
+ for reporting a bug in displaying weekday names in the Schedule menu if the system
+ uses UTF-8

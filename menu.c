@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.468 2008/01/13 12:43:09 kls Exp $
+ * $Id: menu.c 1.469 2008/01/13 13:59:33 kls Exp $
  */
 
 #include "menu.h"
@@ -1059,12 +1059,13 @@ bool cMenuScheduleItem::Update(bool Force)
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
      char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      const char *csn = channel ? channel->ShortName(true) : NULL;
+     cString eds = event->GetDateString();
      if (channel && withDate)
-        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
         asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, *event->GetTimeString(), t, v, r, event->Title());
      else
-        asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+        asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      SetText(buffer, false);
      result = true;
      }

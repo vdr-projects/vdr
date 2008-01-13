@@ -5554,3 +5554,5 @@ Video Disk Recorder Revision History
   programmer to write 'a || (b && c)', while everybody knows that '&&' links
   stronger than '||' (reported by Tobias Grimm).
 - Updated the Hungarian language texts (thanks to István Füley).
+- Fixed displaying weekday names in the Schedule menu if the system uses UTF-8
+  (reported by Jiri Dobry).
