@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 1.3 2007/11/25 13:49:27 kls Exp $
+ * $Id: shutdown.c 1.4 2008/01/13 14:27:29 kls Exp $
  */
 
 #include "shutdown.h"
@@ -154,6 +154,9 @@ void cShutdownHandler::SetUserInactiveTimeout(int Seconds, bool Force)
 
 bool cShutdownHandler::ConfirmShutdown(bool Interactive)
 {
+  if (!Interactive && !cRemote::Enabled())
+     return false;
+
   if (!shutdownCommand) {
      if (Interactive)
         Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));

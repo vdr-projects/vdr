@@ -591,6 +591,8 @@ Helmut Auer <vdr@helmutauer.de>
  for a patch that was used to implement the SVDRP command REMO
  for reporting a possible crash in decoding filename characters in case there are
  not two hex digits after the '#'
+ for suggesting to suppress the automatic shutdown if the remote control is
+ currently disabled
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1549,6 +1551,7 @@ Udo Richter <udo_richter@gmx.de>
  for improving shutdown handling
  for making housekeeping wait for a while after a replay has ended
  for fixing error handling in cCuttingThread::Action()
+ for suppressing the automatic shutdown if the remote control is currently disabled
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

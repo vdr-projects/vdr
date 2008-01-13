@@ -5558,3 +5558,5 @@ Video Disk Recorder Revision History
   (reported by Jiri Dobry).
 - The new plugin "pictures" implements a simple picture viewer.
   See PLUGINS/src/pictures/README for details.
+- The automatic shutdown is now suppressed if the remote control is currently
+  disabled (suggested by Helmut Auer, implemented by Udo Richter).
