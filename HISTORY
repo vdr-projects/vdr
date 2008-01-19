@@ -5568,3 +5568,4 @@ Video Disk Recorder Revision History
 
 - Fixed the Play function in the pictures plugin.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Makefile of the skincurses plugin (thanks to Rolf Ahrenberg).

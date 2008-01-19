@@ -1037,6 +1037,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for implementing cDevice::CloseFilter()
  for some fixes to PLUGINS.html
  for fixing handling CONFDIR
+ for updating the Makefile of the skincurses plugin
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
