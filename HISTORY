@@ -5563,3 +5563,7 @@ Video Disk Recorder Revision History
 - Added a section about "Logging" to PLUGINS.html (suggested by Torsten Kunkel).
 - Enhanced the SVDRP command CLRE to allow clearing the EPG data of a particular
   channel (thanks to Benjamin Hess).
+
+2008-01-19: Version 1.5.14
+
+- Fixed the Play function in the pictures plugin.

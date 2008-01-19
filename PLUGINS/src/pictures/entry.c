@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: entry.c 1.1 2008/01/13 11:29:27 kls Exp $
+ * $Id: entry.c 1.2 2008/01/18 15:49:51 kls Exp $
  */
 
 #include "entry.h"
@@ -137,6 +137,11 @@ const cPictureEntry *cPictureEntry::NextPicture(const cPictureEntry *This) const
            }
         return pe;
         }
+     }
+  else if (IsDirectory()) {
+     const cPictureEntry *p = FirstPicture();
+     if (p)
+        return p;
      }
   if (parent)
      return parent->NextPicture(this);
