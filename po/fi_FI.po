@@ -780,7 +780,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Äänenvoimakkuus käynnistettäessä"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Käytä hätäsammutusta"
 
 msgid "Plugins"
 msgstr "Laajennokset"
