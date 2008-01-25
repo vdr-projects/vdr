@@ -5564,10 +5564,11 @@ Video Disk Recorder Revision History
 - Enhanced the SVDRP command CLRE to allow clearing the EPG data of a particular
   channel (thanks to Benjamin Hess).
 
-2008-01-19: Version 1.5.14
+2008-01-25: Version 1.5.14
 
 - Fixed the Play function in the pictures plugin.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Makefile of the skincurses plugin (thanks to Rolf Ahrenberg).
 - The new option --localedir can be used to set the locale directory at runtime
   (based on a patch from Stefan Huelswitt).
+- Fixed finding new transponders (thanks to Winfried Köhler).

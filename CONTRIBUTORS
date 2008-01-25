@@ -2265,3 +2265,6 @@ Jiri Dobry <jdobry@centrum.cz>
 Benjamin Hess <benjamin.h@gmx.ch>
  for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
  channel
+
+Winfried Koehler <w_koehl@gmx.de>
+ for fixing finding new transponders

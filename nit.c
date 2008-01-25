@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.15 2007/08/17 14:02:45 kls Exp $
+ * $Id: nit.c 1.16 2008/01/25 14:53:43 kls Exp $
  */
 
 #include "nit.h"
@@ -145,6 +145,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
+                           found = true;
                            if (!ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], Polarization), transponder)) {
@@ -156,7 +157,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate);
                            }
-                        found = true;
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
@@ -196,6 +196,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
+                           found = true;
                            if (!ISTRANSPONDER(Frequency / 1000, transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(Frequencies[n] / 1000, transponder)) {
@@ -207,7 +208,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate);
                            }
-                        found = true;
                         }
                     if (!found) {
                         for (int n = 0; n < NumFrequencies; n++) {
@@ -254,6 +254,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
+                           found = true;
                            if (!ISTRANSPONDER(Frequency / 1000000, transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(Frequencies[n] / 1000000, transponder)) {
@@ -265,7 +266,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
                            }
-                        found = true;
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
