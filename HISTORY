@@ -5575,3 +5575,6 @@ Video Disk Recorder Revision History
 - Implemented handling of DVB-S2 (thanks to Marco Schlüßler and Reinhald Nissl
   for a patch that was used to implement this). VDR now requires the "multiproto"
   DVB driver, e.g. from http://jusst.de/hg/multiproto.
+- Removed switching to the next higher or lower channel if the current channel
+  is not available, in order to allow staying on an encrypted channel that takes
+  a while for the CAM to start decrypting.
