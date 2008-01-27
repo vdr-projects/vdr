@@ -7,13 +7,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-11-25 14:59+0100\n"
+"POT-Creation-Date: 2008-01-27 15:00+0100\n"
 "PO-Revision-Date: 2007-11-25 15:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "aus"
+
+msgid "on"
+msgstr "ein"
+
+msgid "none"
+msgstr "keine"
+
+msgid "high"
+msgstr "hoch"
+
+msgid "low"
+msgstr "niedrig"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Ungültiger Kanal ***"
@@ -219,9 +234,6 @@ msgstr "frei empfangbar"
 msgid "encrypted"
 msgstr "verschlüsselt"
 
-msgid "auto"
-msgstr "auto"
-
 msgid "Edit channel"
 msgstr "Kanal editieren"
 
@@ -270,20 +282,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarisation"
 
+msgid "System"
+msgstr "System"
+
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
-msgid "off"
-msgstr "aus"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "keine"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -302,6 +311,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarchie"
+
+msgid "Alpha"
+msgstr "Alpha"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaleinstellungen sind nicht eindeutig!"
@@ -347,9 +365,6 @@ msgstr "Ende"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Priorität"
 
 msgid "Lifetime"
 msgstr "Lebensdauer"
@@ -890,6 +905,9 @@ msgstr "Überschreiben"
 
 msgid "Button$Insert"
 msgstr "Einfügen"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Plugin"
 msgstr "Plugin"

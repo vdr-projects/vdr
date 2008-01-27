@@ -8,13 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-11-25 14:59+0100\n"
+"POT-Creation-Date: 2008-01-27 15:00+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "inactiv"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "niciuna(ul)"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
@@ -220,9 +235,6 @@ msgstr "FTA (necriptat)"
 msgid "encrypted"
 msgstr "criptat"
 
-msgid "auto"
-msgstr "automat"
-
 msgid "Edit channel"
 msgstr "Modificare canal"
 
@@ -271,20 +283,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizare"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "Ratã simboluri"
 
 msgid "Inversion"
 msgstr "Inversiune"
 
-msgid "off"
-msgstr "inactiv"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "niciuna(ul)"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -303,6 +312,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Ierarhie"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Prioritate"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Parametrii canalului nu sunt univoci!"
@@ -348,9 +366,6 @@ msgstr "Sfârºit"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Prioritate"
 
 msgid "Lifetime"
 msgstr "Timp de pãstrare"
@@ -891,6 +906,9 @@ msgstr "Suprascrie"
 
 msgid "Button$Insert"
 msgstr "Insereazã"
+
+msgid "auto"
+msgstr "automat"
 
 msgid "Plugin"
 msgstr "Plugin (modul adiþional)"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.18 2007/09/02 10:44:19 kls Exp $
+ * $Id: pat.c 1.19 2008/01/27 13:53:43 kls Exp $
  */
 
 #include "pat.h"
@@ -343,6 +343,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             switch (stream.getStreamType()) {
               case 1: // STREAMTYPE_11172_VIDEO
               case 2: // STREAMTYPE_13818_VIDEO
+//TODO        case 0x1B: // MPEG4
                       Vpid = stream.getPid();
                       break;
               case 3: // STREAMTYPE_11172_AUDIO
