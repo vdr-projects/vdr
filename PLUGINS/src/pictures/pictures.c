@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: pictures.c 1.2 2008/01/19 11:20:03 kls Exp $
+ * $Id: pictures.c 1.3 2008/01/27 15:44:58 kls Exp $
  */
 
 #include <getopt.h>
@@ -11,7 +11,7 @@
 #include "menu.h"
 #include "player.h"
 
-static const char *VERSION       = "0.0.2";
+static const char *VERSION       = "0.0.3";
 static const char *DESCRIPTION   = trNOOP("A simple picture viewer");
 static const char *MAINMENUENTRY = trNOOP("Pictures");
 
