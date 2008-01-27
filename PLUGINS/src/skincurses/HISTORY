@@ -61,3 +61,7 @@ VDR Plugin 'skincurses' Revision History
 2007-08-26: Version 0.1.4
 
 - Adapted to the new Level parameter of cOsd.
+
+2008-01-19:
+
+- Updated the Makefile of the skincurses plugin (thanks to Rolf Ahrenberg).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.24 2007/08/24 13:35:18 kls Exp $
+ * $Id: i18n.h 1.25 2008/01/19 11:56:19 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -19,8 +19,10 @@ typedef const char *tI18nPhrase[22]; ///< obsolete - switch to 'gettext'!
 #define I18N_MAX_LOCALE_LEN 16       // for buffers that hold en_US etc.
 #define I18N_MAX_LANGUAGES  256      // for buffers that hold all available languages
 
-void I18nInitialize(void);
+void I18nInitialize(const char *LocaleDir = NULL);
    ///< Detects all available locales and loads the language names and codes.
+   ///< If LocaleDir is given, it must point to a static string that lives
+   ///< for the entire lifetime of the program.
 void I18nRegister(const char *Plugin);
    ///< Registers the named plugin, so that it can use internationalized texts.
 void I18nSetLocale(const char *Locale);

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 1.1 2008/01/13 11:29:27 kls Exp $
+ * $Id: player.c 1.2 2008/01/19 11:01:58 kls Exp $
  */
 
 #include "player.h"
@@ -95,6 +95,7 @@ cPictureControl::cPictureControl(cPictureEntry *Pictures, const cPictureEntry *P
   pictureEntry = PictureEntry;
   osd = NULL;
   lastPath = "/";
+  slideShowDelay.Set(SlideShowDelay * 1000);
   slideShow = SlideShow;
   alwaysDisplayCaption = false;
   NextPicture(slideShow && pictureEntry->IsDirectory() ? 1 : 0);

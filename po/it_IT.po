@@ -10,13 +10,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-11-25 14:59+0100\n"
+"POT-Creation-Date: 2008-01-27 15:00+0100\n"
 "PO-Revision-Date: 2007-10-16 02:15+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "off"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "nessuno"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
@@ -222,9 +237,6 @@ msgstr "in chiaro"
 msgid "encrypted"
 msgstr "criptato"
 
-msgid "auto"
-msgstr "automatico"
-
 msgid "Edit channel"
 msgstr "Modifica canale"
 
@@ -273,20 +285,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizzazione"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "SymbolRate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
-msgid "off"
-msgstr "off"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "nessuno"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -305,6 +314,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarchy"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Priorità"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
@@ -350,9 +368,6 @@ msgstr "Fine"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Priorità"
 
 msgid "Lifetime"
 msgstr "Durata"
@@ -893,6 +908,9 @@ msgstr "Sovrascrivi"
 
 msgid "Button$Insert"
 msgstr "Inserisci"
+
+msgid "auto"
+msgstr "automatico"
 
 msgid "Plugin"
 msgstr "Plugin"

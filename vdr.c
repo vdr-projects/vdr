@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.305 2008/01/13 11:51:53 kls Exp $
+ * $Id: vdr.c 1.307 2008/01/27 14:38:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -198,6 +198,7 @@ int main(int argc, char *argv[])
   bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
+  const char *LocaleDir = NULL;
 
   bool UseKbd = true;
   const char *LircDevice = NULL;
@@ -229,6 +230,7 @@ int main(int argc, char *argv[])
       { "help",     no_argument,       NULL, 'h' },
       { "lib",      required_argument, NULL, 'L' },
       { "lirc",     optional_argument, NULL, 'l' | 0x100 },
+      { "localedir",required_argument, NULL, 'l' | 0x200 },
       { "log",      required_argument, NULL, 'l' },
       { "mute",     no_argument,       NULL, 'm' },
       { "no-kbd",   no_argument,       NULL, 'n' | 0x100 },
@@ -305,6 +307,14 @@ int main(int argc, char *argv[])
                     break;
           case 'l' | 0x100:
                     LircDevice = optarg ? optarg : LIRC_DEVICE;
+                    break;
+          case 'l' | 0x200:
+                    if (access(optarg, R_OK | X_OK) == 0)
+                       LocaleDir = optarg;
+                    else {
+                       fprintf(stderr, "vdr: can't access locale directory: %s\n", optarg);
+                       return 2;
+                       }
                     break;
           case 'm': MuteAudio = true;
                     break;
@@ -407,6 +417,8 @@ int main(int argc, char *argv[])
                "  -L DIR,   --lib=DIR      search for plugins in DIR (default is %s)\n"
                "            --lirc[=PATH]  use a LIRC remote control device, attached to PATH\n"
                "                           (default: %s)\n"
+               "            --localedir=DIR search for locale files in DIR (default is\n"
+               "                           %s)\n"
                "  -m,       --mute         mute audio of the primary DVB device at startup\n"
                "            --no-kbd       don't use the keyboard as an input device\n"
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
@@ -430,6 +442,7 @@ int main(int argc, char *argv[])
                DEFAULTEPGDATAFILENAME,
                DEFAULTPLUGINDIR,
                LIRC_DEVICE,
+               LOCDIR,
                DEFAULTSVDRPPORT,
                RCU_DEVICE,
                VideoDirectory,
@@ -515,7 +528,7 @@ int main(int argc, char *argv[])
 
   // Initialize internationalization:
 
-  I18nInitialize();
+  I18nInitialize(LocaleDir);
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
@@ -717,9 +730,7 @@ int main(int argc, char *argv[])
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
               if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
                  if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
-                     && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
-                     && !cDevice::SwitchChannel(1) // ...or the next higher available one...
-                     && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
+                     && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel))) // ...or the one used by the last timer...
                     ;
                  }
               lastTime = Now; // don't do this too often

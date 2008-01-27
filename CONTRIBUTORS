@@ -223,6 +223,7 @@ Stefan Huelswitt <huels@iname.com>
  for suggesting to increase the APIVERSION to allow plugins that relied on the
  cStatus::MsgSetVolume() bug to react properly
  for improving the 'i18n' target in the Makefile to avoid unnecessary work
+ for a patch that was used to implement the --localedir option
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -1037,6 +1038,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for implementing cDevice::CloseFilter()
  for some fixes to PLUGINS.html
  for fixing handling CONFDIR
+ for updating the Makefile of the skincurses plugin
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1155,6 +1157,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing assembling PS1 packets in cTS2PES::instant_repack()
  for a patch that was used to fix handling small PES packets that caused subtitles
  to be displayed late in live mode
+ for a patch that was used to implement handling of DVB-S2
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1443,6 +1446,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
  an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
  for fixing checking compatibility mode for old subtitles plugin
+ for a patch that was used to implement handling of DVB-S2
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -2263,3 +2267,6 @@ Jiri Dobry <jdobry@centrum.cz>
 Benjamin Hess <benjamin.h@gmx.ch>
  for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
  channel
+
+Winfried Koehler <w_koehl@gmx.de>
+ for fixing finding new transponders

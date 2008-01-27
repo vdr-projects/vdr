@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.318 2007/11/01 10:38:27 kls Exp $
+ * $Id: i18n.c 1.319 2008/01/19 12:07:11 kls Exp $
  *
  *
  */
@@ -100,8 +100,10 @@ static void SetEnvLanguage(const char *Locale)
   ++_nl_msg_cat_cntr;
 }
 
-void I18nInitialize(void)
+void I18nInitialize(const char *LocaleDir)
 {
+  if (LocaleDir)
+     I18nLocaleDir = LocaleDir;
   LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
   LanguageNames.Append(strdup(SkipContext(LanguageName)));
   LanguageCodes.Append(strdup(LanguageCodeList[0]));
