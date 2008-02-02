@@ -5582,3 +5582,4 @@ Video Disk Recorder Revision History
 2008-02-01: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.

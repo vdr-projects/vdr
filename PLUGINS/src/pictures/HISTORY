@@ -14,3 +14,7 @@ VDR Plugin 'pictures' Revision History
 2008-01-27: Version 0.0.3
 
 - Added French texts (thanks to Patrice Staudt <patrice.staudt@laposte.net>).
+
+2008-02-02: Version 0.0.4
+
+- Added option -i to pic2mpg to ignore unknown file types.

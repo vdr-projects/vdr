@@ -7,7 +7,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 1.1 2008/01/13 11:39:12 kls Exp $
+# $Id: pic2mpg 1.2 2008/02/02 11:34:43 kls Exp $
 
 ## TODO implement HDTV (1920 x 1080)
 
@@ -20,20 +20,22 @@ Usage: $0 [options] picture-dir mpeg-dir
        $0 [options] picture-file mpeg-file
 
 Options: -a             Aspect ratio 4:3 (default is 16:9)
-         -h             print Help
          -f             Force conversion
+         -h             print Help
+         -i             Ignore unknown file types
          -n             NTSC (default is PAL)
          -v num         Verbose (0=none, 1=list files, 2=detailed)
          -x percent     X overscan in percent
          -y percent     Y overscan in percent
 };
 
-getopts("ahfnv:x:y:") || die $Usage;
+getopts("afhinv:x:y:") || die $Usage;
 
 die $Usage if $opt_h;
 
 $Aspect    = $opt_a;
 $Force     = $opt_f;
+$Ignore    = $opt_i;
 $NTSC      = $opt_n;
 $Verbose   = $opt_v;
 $OverscanX = $opt_x;
@@ -142,7 +144,10 @@ sub ConvertFile
 {
   my ($Pict, $Mpeg) = @_;
   (my $Type) = $Pict =~ /\.([^\.]*)$/;
-  die "unknown file type '$Type': '$Pict'\n" unless defined $PNMCONV{$Type};
+  if (!defined $PNMCONV{$Type}) {
+     return if ($Ignore);
+     die "unknown file type '$Type': '$Pict'\n";
+     }
   my ($w, $h) = imgsize($Pict);
   print "image size is $w x $h\n" if ($Detailed);
   if ($w / $h <= $ScreenRatio) {
