@@ -777,7 +777,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Helitugevus käivitamisel"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Hädaväljumine"
 
 msgid "Plugins"
 msgstr "Laiendusmoodulid"
