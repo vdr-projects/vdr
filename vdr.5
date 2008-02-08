@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.65 2008/01/26 14:16:51 kls Exp $
+.\" $Id: vdr.5 1.66 2008/02/08 13:48:31 kls Exp $
 .\"
 .TH vdr 5 "07 Jan 2007" "1.4.5" "Video Disk Recorder Files"
 .SH NAME
@@ -83,23 +83,19 @@ meaning (and allowed values) are
 .TS
 tab (@);
 l l.
-\fBA\fR@Alpha (0, 1, 2, 4)
-\fBB\fR@Bandwidth (5, 6, 7, 8)
-\fBC\fR@Code rate high priority (0, 12, 13, 14, 23, 25, 34, 35, 45, 56, 67, 78, 89, 910)
-\fBD\fR@coDe rate low priority (0, 12, 13, 14, 23, 25, 34, 35, 45, 56, 67, 78, 89, 910)
+\fBB\fR@Bandwidth (6, 7, 8)
+\fBC\fR@Code rate high priority (0, 12, 23, 34, 45, 56, 67, 78, 89)
+\fBD\fR@Code rate low priority (0, 12, 23, 34, 45, 56, 67, 78, 89)
 \fBG\fR@Guard interval (4, 8, 16, 32)
 \fBH\fR@Horizontal polarization
 \fBI\fR@Inversion (0, 1)
 \fBL\fR@Left circular polarization
-\fBM\fR@Modulation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 32, 64, 128, 256, 512, 998, 1024)
-\fBO\fR@rollOff (0, 20, 25, 35)
-\fBP\fR@Priority (0, 1)
+\fBM\fR@Modulation (0, 16, 32, 64, 128, 256)
 \fBR\fR@Right circular polarization
-\fBT\fR@Transmission mode (2, 4, 8)
+\fBT\fR@Transmission mode (2, 8)
 \fBV\fR@Vertical polarization
-\fBY\fR@hierarchY (0, 1)
+\fBY\fR@Hierarchy (0, 1, 2, 4)
 .TE
-
 The polarization parameters have no integer numbers following them. This is for
 compatibility with files from older versions and also to keep the DVB-S entries
 as simple as possible.

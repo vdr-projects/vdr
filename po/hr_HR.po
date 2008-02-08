@@ -8,28 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-01-27 15:00+0100\n"
+"POT-Creation-Date: 2007-11-25 14:59+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Drazen Dupor <drazen.dupor@dupor.com>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "off"
-msgstr "ugasi"
-
-msgid "on"
-msgstr ""
-
-msgid "none"
-msgstr "nijedan"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Neispravan program ***"
@@ -235,6 +220,9 @@ msgstr ""
 msgid "encrypted"
 msgstr ""
 
+msgid "auto"
+msgstr "automatski"
+
 msgid "Edit channel"
 msgstr "Ureðivanje programa"
 
@@ -283,17 +271,20 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizacija"
 
-msgid "System"
-msgstr ""
-
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inverzija"
 
+msgid "off"
+msgstr "ugasi"
+
 msgid "CoderateH"
 msgstr "CoderateH"
+
+msgid "none"
+msgstr "nijedan"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -312,15 +303,6 @@ msgstr "Za¹tita"
 
 msgid "Hierarchy"
 msgstr "Hijerarhija"
-
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Prioritet"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri programa nisu jednoznaèni!"
@@ -366,6 +348,9 @@ msgstr "Kraj"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Prioritet"
 
 msgid "Lifetime"
 msgstr "Trajanje"
@@ -906,9 +891,6 @@ msgstr "Prepi¹i"
 
 msgid "Button$Insert"
 msgstr "Umetni"
-
-msgid "auto"
-msgstr "automatski"
 
 msgid "Plugin"
 msgstr "Plugin"

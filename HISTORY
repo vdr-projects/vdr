@@ -5579,7 +5579,13 @@ Video Disk Recorder Revision History
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
 
-2008-02-01: Version 1.5.15
+2008-02-08: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
+- Revoked the switch to the "multiproto" driver in order to make a new stable
+  version before making this big switch and forcing all users to install a
+  driver that is not yet in the kernel source. The removed code will reappear
+  in version 1.7.0.
+  Note that you may need to switch back to an older version of your channels.conf
+  file if you have already used version 1.5.14, because it introduced new parameters.

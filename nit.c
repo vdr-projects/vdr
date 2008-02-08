@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.17 2008/01/26 15:08:01 kls Exp $
+ * $Id: nit.c 1.18 2008/02/08 13:48:31 kls Exp $
  */
 
 #include "nit.h"
@@ -127,13 +127,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 100;
                  static char Polarizations[] = { 'h', 'v', 'l', 'r' };
                  char Polarization = Polarizations[sd->getPolarization()];
-                 static int CodeRates[] = { DVBFE_FEC_NONE, DVBFE_FEC_1_2, DVBFE_FEC_2_3, DVBFE_FEC_3_4, DVBFE_FEC_5_6, DVBFE_FEC_7_8, DVBFE_FEC_8_9, DVBFE_FEC_3_5, DVBFE_FEC_4_5, DVBFE_FEC_9_10, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_NONE };
+                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  int CodeRate = CodeRates[sd->getFecInner()];
-                 static int Modulations[] = { DVBFE_MOD_AUTO, DVBFE_MOD_QPSK, DVBFE_MOD_8PSK, DVBFE_MOD_QAM16 };
-                 int Modulation = Modulations[sd->getModulationType()];
-                 int System = sd->getModulationSystem() ? DVBFE_DELSYS_DVBS2 : DVBFE_DELSYS_DVBS;
-                 static int RollOffs[] = { DVBFE_ROLLOFF_35, DVBFE_ROLLOFF_25, DVBFE_ROLLOFF_20, DVBFE_ROLLOFF_UNKNOWN };
-                 int RollOff = sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : DVBFE_ROLLOFF_UNKNOWN;
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
@@ -160,14 +155,14 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate, Modulation, System, RollOff);
+                              Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate);
                            }
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
-                           if (Channel->SetSatTransponderData(Source, Frequencies[n], Polarization, SymbolRate, CodeRate, Modulation, System, RollOff))
+                           if (Channel->SetSatTransponderData(Source, Frequencies[n], Polarization, SymbolRate, CodeRate))
                               EITScanner.AddTransponder(Channel);
                            else
                               delete Channel;
@@ -181,9 +176,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  int Source = cSource::FromData(cSource::stCable);
                  int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 10;
                  //XXX FEC_outer???
-                 static int CodeRates[] = { DVBFE_FEC_NONE, DVBFE_FEC_1_2, DVBFE_FEC_2_3, DVBFE_FEC_3_4, DVBFE_FEC_5_6, DVBFE_FEC_7_8, DVBFE_FEC_8_9, DVBFE_FEC_3_5, DVBFE_FEC_4_5, DVBFE_FEC_9_10, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_NONE };
+                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  int CodeRate = CodeRates[sd->getFecInner()];
-                 static int Modulations[] = { DVBFE_MOD_NONE, DVBFE_MOD_QAM16, DVBFE_MOD_QAM32, DVBFE_MOD_QAM64, DVBFE_MOD_QAM128, DVBFE_MOD_QAM256, QAM_AUTO };
+                 static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256, QAM_AUTO };
                  int Modulation = Modulations[min(sd->getModulation(), 6)];
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  if (ThisNIT >= 0) {
@@ -231,22 +226,19 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::TerrestrialDeliverySystemDescriptor *sd = (SI::TerrestrialDeliverySystemDescriptor *)d;
                  int Source = cSource::FromData(cSource::stTerr);
                  int Frequency = Frequencies[0] = sd->getFrequency() * 10;
-                 static int Bandwidths[] = { DVBFE_BANDWIDTH_8_MHZ, DVBFE_BANDWIDTH_7_MHZ, DVBFE_BANDWIDTH_6_MHZ, DVBFE_BANDWIDTH_5_MHZ, DVBFE_BANDWIDTH_AUTO, DVBFE_BANDWIDTH_AUTO, DVBFE_BANDWIDTH_AUTO, DVBFE_BANDWIDTH_AUTO };
+                 static int Bandwidths[] = { BANDWIDTH_8_MHZ, BANDWIDTH_7_MHZ, BANDWIDTH_6_MHZ, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO };
                  int Bandwidth = Bandwidths[sd->getBandwidth()];
-                 static int Constellations[] = { DVBFE_MOD_QPSK, DVBFE_MOD_QAM16, DVBFE_MOD_QAM64, DVBFE_MOD_AUTO };
+                 static int Constellations[] = { QPSK, QAM_16, QAM_64, QAM_AUTO };
                  int Constellation = Constellations[sd->getConstellation()];
-                 static int CodeRates[] = { DVBFE_FEC_1_2, DVBFE_FEC_2_3, DVBFE_FEC_3_4, DVBFE_FEC_5_6, DVBFE_FEC_7_8, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO, DVBFE_FEC_AUTO };
+                 static int Hierarchies[] = { HIERARCHY_NONE, HIERARCHY_1, HIERARCHY_2, HIERARCHY_4, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO };
+                 int Hierarchy = Hierarchies[sd->getHierarchy()];
+                 static int CodeRates[] = { FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO };
                  int CodeRateHP = CodeRates[sd->getCodeRateHP()];
                  int CodeRateLP = CodeRates[sd->getCodeRateLP()];
-                 static int GuardIntervals[] = { DVBFE_GUARD_INTERVAL_1_32, DVBFE_GUARD_INTERVAL_1_16, DVBFE_GUARD_INTERVAL_1_8, DVBFE_GUARD_INTERVAL_1_4 };
+                 static int GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4 };
                  int GuardInterval = GuardIntervals[sd->getGuardInterval()];
-                 static int TransmissionModes[] = { DVBFE_TRANSMISSION_MODE_2K, DVBFE_TRANSMISSION_MODE_8K, DVBFE_TRANSMISSION_MODE_4K, DVBFE_TRANSMISSION_MODE_AUTO };
+                 static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
                  int TransmissionMode = TransmissionModes[sd->getTransmissionMode()];
-                 static int Priorities[] = { DVBFE_STREAM_PRIORITY_LP, DVBFE_STREAM_PRIORITY_HP };
-                 int Priority = Priorities[sd->getPriority()];
-                 static int Alphas[] = { 0, DVBFE_ALPHA_1, DVBFE_ALPHA_2, DVBFE_ALPHA_4 };
-                 int Alpha = Alphas[sd->getHierarchy() & 3];
-                 int Hierarchy = Alpha ? DVBFE_HIERARCHY_ON : DVBFE_HIERARCHY_OFF;
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
                         if (ISTRANSPONDER(Frequencies[n] / 1000000, Transponder())) {
@@ -272,14 +264,14 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode, Alpha, Priority);
+                              Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
                            }
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
-                           if (Channel->SetTerrTransponderData(Source, Frequencies[n], Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode, Alpha, Priority))
+                           if (Channel->SetTerrTransponderData(Source, Frequencies[n], Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode))
                               EITScanner.AddTransponder(Channel);
                            else
                               delete Channel;

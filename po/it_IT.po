@@ -10,28 +10,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-01-27 15:00+0100\n"
-"PO-Revision-Date: 2008-01-28 00:59+0100\n"
+"POT-Creation-Date: 2007-11-25 14:59+0100\n"
+"PO-Revision-Date: 2007-10-16 02:15+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "off"
-msgstr "disattivo"
-
-msgid "on"
-msgstr "attivo"
-
-msgid "none"
-msgstr "nessuno"
-
-msgid "high"
-msgstr "alta"
-
-msgid "low"
-msgstr "bassa"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
@@ -40,7 +25,7 @@ msgid "Channel not available!"
 msgstr "Canale non disponibile!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Impossibile avviare la modalità di trasferimento!"
+msgstr "Impossibile iniziare la modalità di trasferimento!"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -57,7 +42,7 @@ msgid "LanguageCode$eng"
 msgstr "ita"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Fase 1: Rilevamento tipo codice RC"
+msgstr "Fase 1: tipo ricevitore RC"
 
 msgid "Press any key on the RC unit"
 msgstr "Premi un tasto dell'unità RC"
@@ -69,7 +54,7 @@ msgid "Do not press any key..."
 msgstr "Non premere alcun tasto..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fase 2: Apprendimento codici specifici dei tasti"
+msgstr "Fase 2: Codici specifici dei tasti"
 
 #, c-format
 msgid "Press key for '%s'"
@@ -184,7 +169,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr "Sottotitoli"
+msgstr "Key$Sottotitoli"
 
 msgid "Key$Schedule"
 msgstr "Programmi"
@@ -237,6 +222,9 @@ msgstr "in chiaro"
 msgid "encrypted"
 msgstr "criptato"
 
+msgid "auto"
+msgstr "automatico"
+
 msgid "Edit channel"
 msgstr "Modifica canale"
 
@@ -285,44 +273,38 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizzazione"
 
-msgid "System"
-msgstr "Sistema"
-
 msgid "Srate"
 msgstr "SymbolRate"
 
 msgid "Inversion"
-msgstr "Inversione"
+msgstr "Inversion"
+
+msgid "off"
+msgstr "off"
 
 msgid "CoderateH"
 msgstr "CoderateH"
+
+msgid "none"
+msgstr "nessuno"
 
 msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulazione"
+msgstr "Modulation"
 
 msgid "Bandwidth"
 msgstr "Banda passante"
 
 msgid "Transmission"
-msgstr "Trasmissione"
+msgstr "Transmission"
 
 msgid "Guard"
 msgstr "Guard"
 
 msgid "Hierarchy"
-msgstr "Gerarchia"
-
-msgid "Alpha"
-msgstr "Alpha"
-
-msgid "Priority"
-msgstr "Priorità"
-
-msgid "Rolloff"
-msgstr "Rolloff"
+msgstr "Hierarchy"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
@@ -369,6 +351,9 @@ msgstr "Fine"
 msgid "VPS"
 msgstr "VPS"
 
+msgid "Priority"
+msgstr "Priorità"
+
 msgid "Lifetime"
 msgstr "Durata"
 
@@ -382,7 +367,7 @@ msgid "Timers"
 msgstr "Timer"
 
 msgid "Button$On/Off"
-msgstr "Attivo/Disattivo"
+msgstr "On/Off"
 
 msgid "Button$Info"
 msgstr "Informazioni"
@@ -478,7 +463,7 @@ msgid "never"
 msgstr "mai"
 
 msgid "skin dependent"
-msgstr "in base allo stile interfaccia"
+msgstr "in base allo stile"
 
 msgid "always"
 msgstr "sempre"
@@ -511,7 +496,7 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Tempo del messaggio (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Utilizza caratteri piccoli"
+msgstr "Utilizzare caratteri piccoli"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Anti-alias"
@@ -571,7 +556,7 @@ msgid "Button$Scan"
 msgstr "Scansione"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Scadenza scansione aggiorn. EPG (ore)"
+msgstr "Timeout scansione aggiorn. EPG (ore)"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Livello correzione EPG"
@@ -645,22 +630,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Lingua per l'audio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "Mostra sottotitoli"
+msgstr "Setup.DVB$Mostra sottotitoli"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "Lingue sottotitoli"
+msgstr "Setup.DVB$Lingue sottotitoli"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "Lingua sottotitoli"
+msgstr "Setup.DVB$Lingua sottotitoli"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Posizione sottotitoli"
+msgstr "Setup.DVB$Posizione sottotitolo"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Trasparenza primo piano sottotitoli"
+msgstr "Setup.DVB$Trasparenza primo piano sottotitoli"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Trasparenza sfondo sottotitoli"
+msgstr "Setup.DVB$Trasparenza sfondo sottotitoli"
 
 msgid "LNB"
 msgstr "LNB"
@@ -738,7 +723,7 @@ msgid "Setup.Recording$Use VPS"
 msgstr "Utilizza VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "Margine VPS (s)"
+msgstr "Margine VPS"
 
 msgid "Setup.Recording$Mark instant recording"
 msgstr "Marca registrazione immediata"
@@ -765,7 +750,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Mostra modalità riproduzione"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID di ripristino"
+msgstr "ID di rispristino"
 
 msgid "Miscellaneous"
 msgstr "Generici"
@@ -795,7 +780,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "Uscita d'emergenza"
+msgstr ""
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -861,7 +846,7 @@ msgid "No subtitles"
 msgstr "Nessun sottotitolo"
 
 msgid "Button$Subtitles"
-msgstr "Sottotitoli"
+msgstr "Button$Sottotitoli"
 
 msgid "No subtitles available!"
 msgstr "Nessun sottotitolo disponibile!"
@@ -908,9 +893,6 @@ msgstr "Sovrascrivi"
 
 msgid "Button$Insert"
 msgstr "Inserisci"
-
-msgid "auto"
-msgstr "automatico"
 
 msgid "Plugin"
 msgstr "Plugin"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.470 2008/01/26 16:29:05 kls Exp $
+ * $Id: menu.c 1.471 2008/02/08 13:48:31 kls Exp $
  */
 
 #include "menu.h"
@@ -148,6 +148,70 @@ eOSState cMenuEditSrcItem::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuEditMapItem ------------------------------------------------------
+
+class cMenuEditMapItem : public cMenuEditItem {
+protected:
+  int *value;
+  const tChannelParameterMap *map;
+  const char *zeroString;
+  virtual void Set(void);
+public:
+  cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString = NULL);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditMapItem::cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  map = Map;
+  zeroString = ZeroString;
+  Set();
+}
+
+void cMenuEditMapItem::Set(void)
+{
+  int n = MapToUser(*value, map);
+  if (n == 999)
+     SetValue(tr("auto"));
+  else if (n == 0 && zeroString)
+     SetValue(zeroString);
+  else if (n >= 0) {
+     char buf[16];
+     snprintf(buf, sizeof(buf), "%d", n);
+     SetValue(buf);
+     }
+  else
+     SetValue("???");
+}
+
+eOSState cMenuEditMapItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     int newValue = *value;
+     int n = DriverIndex(*value, map);
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (n-- > 0)
+           newValue = map[n].driverValue;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (map[++n].userValue >= 0)
+           newValue = map[n].driverValue;
+        }
+     else
+        return state;
+     if (newValue != *value) {
+        *value = newValue;
+        Set();
+        }
+     state = osContinue;
+     }
+  return state;
+}
+
 // --- cMenuEditChannel ------------------------------------------------------
 
 class cMenuEditChannel : public cOsdMenu {
@@ -208,19 +272,15 @@ void cMenuEditChannel::Setup(void)
   XXX*/
   // Parameters for specific types of sources:
   ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hvlr"));
-  ST(" S ")  Add(new cMenuEditMapItem( tr("System"),       &data.system,       SystemValues));
   ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
-  ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues));
-  ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("CoderateL"),    &data.coderateL,    CoderateValues));
-  ST("CST")  Add(new cMenuEditMapItem( tr("Modulation"),   &data.modulation,   ModulationValues));
+  ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues, tr("off")));
+  ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues, tr("none")));
+  ST("  T")  Add(new cMenuEditMapItem( tr("CoderateL"),    &data.coderateL,    CoderateValues, tr("none")));
+  ST("C T")  Add(new cMenuEditMapItem( tr("Modulation"),   &data.modulation,   ModulationValues, "QPSK"));
   ST("  T")  Add(new cMenuEditMapItem( tr("Bandwidth"),    &data.bandwidth,    BandwidthValues));
   ST("  T")  Add(new cMenuEditMapItem( tr("Transmission"), &data.transmission, TransmissionValues));
   ST("  T")  Add(new cMenuEditMapItem( tr("Guard"),        &data.guard,        GuardValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Hierarchy"),    &data.hierarchy,    HierarchyValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Alpha"),        &data.alpha,        AlphaValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Priority"),     &data.priority,     PriorityValues));
-  ST(" S ")  Add(new cMenuEditMapItem( tr("Rolloff"),      &data.rollOff,      RollOffValues));
+  ST("  T")  Add(new cMenuEditMapItem( tr("Hierarchy"),    &data.hierarchy,    HierarchyValues, tr("none")));
 
   SetCurrent(Get(current));
   Display();
