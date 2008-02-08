@@ -5589,3 +5589,5 @@ Video Disk Recorder Revision History
   in version 1.7.0.
   Note that you may need to switch back to an older version of your channels.conf
   file if you have already used version 1.5.14, because it introduced new parameters.
+- Added the new command line option --userdump to enable core dumps in case VDR
+  is run as root with option -u (thanks to Hans-Werner Hilse).

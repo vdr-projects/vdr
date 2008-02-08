@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.307 2008/01/27 14:38:45 kls Exp $
+ * $Id: vdr.c 1.308 2008/02/08 15:55:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -86,7 +86,7 @@
 
 static int LastSignal = 0;
 
-static bool SetUser(const char *UserName)
+static bool SetUser(const char *UserName, bool UserDump)//XXX name?
 {
   if (UserName) {
      struct passwd *user = getpwnam(UserName);
@@ -106,10 +106,8 @@ static bool SetUser(const char *UserName)
         fprintf(stderr, "vdr: cannot set user id %u: %s\n", (unsigned int)user->pw_uid, strerror(errno));
         return false;
         }
-     if (prctl(PR_SET_DUMPABLE, 2, 0, 0, 0) < 0) {
+     if (UserDump && prctl(PR_SET_DUMPABLE, 1, 0, 0, 0) < 0)
         fprintf(stderr, "vdr: warning - cannot set dumpable: %s\n", strerror(errno));
-        // always non-fatal, and will not work with kernel < 2.6.13
-        }
      }
   return true;
 }
@@ -187,6 +185,7 @@ int main(int argc, char *argv[])
 
   bool StartedAsRoot = false;
   const char *VdrUser = NULL;
+  bool UserDump = false;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
@@ -241,6 +240,7 @@ int main(int argc, char *argv[])
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
       { "user",     required_argument, NULL, 'u' },
+      { "userdump", no_argument,       NULL, 'u' | 0x100 },
       { "version",  no_argument,       NULL, 'V' },
       { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
@@ -346,6 +346,9 @@ int main(int argc, char *argv[])
           case 'u': if (*optarg)
                        VdrUser = optarg;
                     break;
+          case 'u' | 0x100:
+                    UserDump = true;
+                    break;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -376,7 +379,7 @@ int main(int argc, char *argv[])
      if (strcmp(VdrUser, "root")) {
         if (!SetKeepCaps(true))
            return 2;
-        if (!SetUser(VdrUser))
+        if (!SetUser(VdrUser, UserDump))
            return 2;
         if (!SetKeepCaps(false))
            return 2;
@@ -431,6 +434,7 @@ int main(int argc, char *argv[])
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root\n"
+               "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         encode special characters in recording names to\n"
