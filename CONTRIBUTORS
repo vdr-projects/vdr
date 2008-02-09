@@ -86,6 +86,7 @@ Deti Fliegl <deti@fliegl.de>
  for implementing the 'CurrentChannel' setup parameter
  for fixing setting the OSD size in the 'Confirm' interface call
  for fixing handling improper buffer lengths in the EIT parser
+ for a patch that was used to implement StopSectionHandler()
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
@@ -1158,6 +1159,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for a patch that was used to fix handling small PES packets that caused subtitles
  to be displayed late in live mode
  for a patch that was used to implement handling of DVB-S2
+ for reporting an invalid access in the section handler when ending VDR
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

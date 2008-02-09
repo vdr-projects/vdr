@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.151 2008/02/09 15:09:04 kls Exp $
+ * $Id: device.c 1.152 2008/02/09 16:10:56 kls Exp $
  */
 
 #include "device.h"
@@ -264,11 +264,6 @@ cDevice::~cDevice()
   DetachAllReceivers();
   delete liveSubtitle;
   delete dvbSubtitleConverter;
-  delete nitFilter;
-  delete sdtFilter;
-  delete patFilter;
-  delete eitFilter;
-  delete sectionHandler;
   delete pesAssembler;
 }
 
@@ -647,6 +642,22 @@ void cDevice::StartSectionHandler(void)
      AttachFilter(patFilter = new cPatFilter);
      AttachFilter(sdtFilter = new cSdtFilter(patFilter));
      AttachFilter(nitFilter = new cNitFilter);
+     }
+}
+
+void cDevice::StopSectionHandler(void)
+{
+  if (sectionHandler) {
+     delete nitFilter;
+     delete sdtFilter;
+     delete patFilter;
+     delete eitFilter;
+     delete sectionHandler;
+     nitFilter = NULL;
+     sdtFilter = NULL;
+     patFilter = NULL;
+     eitFilter = NULL;
+     sectionHandler = NULL;
      }
 }
 

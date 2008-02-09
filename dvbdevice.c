@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.169 2008/02/08 13:48:31 kls Exp $
+ * $Id: dvbdevice.c 1.170 2008/02/09 16:11:44 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -433,6 +433,7 @@ cDvbDevice::cDvbDevice(int n)
 
 cDvbDevice::~cDvbDevice()
 {
+  StopSectionHandler();
   delete spuDecoder;
   delete dvbTuner;
   delete ciAdapter;

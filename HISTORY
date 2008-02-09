@@ -5599,3 +5599,7 @@ Video Disk Recorder Revision History
   by Andreas Brugger).
 - Improved sending all frames to devices that can handle them in fast forward
   trick speeds, including subtitles (thanks to Timo Eskola).
+- The section handler is now stopped before the device is destroyed, to avoid
+  accessing file handles after they have become invalid (thanks to Reinhard
+  Nissl for reporting an invalid access when ending VDR, and to Deti Fliegl for
+  a patch that was used to implement StopSectionHandler()).
