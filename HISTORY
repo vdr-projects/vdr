@@ -5593,3 +5593,4 @@ Video Disk Recorder Revision History
   is run as root with option -u (thanks to Hans-Werner Hilse).
 - Speeded up anti-aliased font rendering by caching the blend indexes (based on
   a suggestion by Martin Wache).
+- Fixed setting the OSD area in the pictures plugin.

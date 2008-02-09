@@ -18,3 +18,7 @@ VDR Plugin 'pictures' Revision History
 2008-02-02: Version 0.0.4
 
 - Added option -i to pic2mpg to ignore unknown file types.
+
+2008-02-09: Version 0.0.5
+
+- Fixed setting the OSD area.
