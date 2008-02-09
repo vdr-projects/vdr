@@ -1612,6 +1612,8 @@ Andreas Brugger <brougs78@gmx.net>
  it in a context sensitive manner
  for reporting a loss of the date display in the "classic" skin's main menu
  for reporting a missing setting of lastFreeMB in cMenuMain::Update()
+ for suggesting to ignore "repeat" and "release" keys in the time search entry mode
+ during replay, to avoid inadvertently leaving it in case a key is pressed too long
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file

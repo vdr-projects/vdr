@@ -5594,3 +5594,6 @@ Video Disk Recorder Revision History
 - Speeded up anti-aliased font rendering by caching the blend indexes (based on
   a suggestion by Martin Wache).
 - Fixed setting the OSD area in the pictures plugin.
+- Ignoring "repeat" and "release" keys in the time search entry mode during replay,
+  to avoid inadvertently leaving it in case a key is pressed too long (suggested
+  by Andreas Brugger).

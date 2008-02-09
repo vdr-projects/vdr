@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.471 2008/02/08 13:48:31 kls Exp $
+ * $Id: menu.c 1.472 2008/02/09 12:24:24 kls Exp $
  */
 
 #include "menu.h"
@@ -4243,7 +4243,8 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
          timeSearchActive = false;
          break;
     default:
-         timeSearchActive = false;
+         if (!(Key & k_Flags)) // ignore repeat/release keys
+            timeSearchActive = false;
          break;
     }
 
