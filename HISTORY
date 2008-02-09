@@ -5579,7 +5579,7 @@ Video Disk Recorder Revision History
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
 
-2008-02-08: Version 1.5.15
+2008-02-09: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
@@ -5591,3 +5591,5 @@ Video Disk Recorder Revision History
   file if you have already used version 1.5.14, because it introduced new parameters.
 - Added the new command line option --userdump to enable core dumps in case VDR
   is run as root with option -u (thanks to Hans-Werner Hilse).
+- Speeded up anti-aliased font rendering by caching the blend indexes (based on
+  a suggestion by Martin Wache).
