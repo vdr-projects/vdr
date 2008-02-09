@@ -5465,7 +5465,7 @@ Video Disk Recorder Revision History
 - Fixed a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode() (thanks to
   Udo Richter).
 - Implemented sending all frames to devices that can handle them in fast forward
-  trick speeds (thansk to Timo Eskola).
+  trick speeds (thanks to Timo Eskola).
 - Updated the Hungarian language texts (thanks to Thomas Günther).
 - Fixed description of DeviceSetAvailableTrack() and cReceiver(), and added an
   example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
@@ -5597,3 +5597,5 @@ Video Disk Recorder Revision History
 - Ignoring "repeat" and "release" keys in the time search entry mode during replay,
   to avoid inadvertently leaving it in case a key is pressed too long (suggested
   by Andreas Brugger).
+- Improved sending all frames to devices that can handle them in fast forward
+  trick speeds, including subtitles (thanks to Timo Eskola).

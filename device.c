@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.150 2008/02/08 13:48:31 kls Exp $
+ * $Id: device.c 1.151 2008/02/09 15:09:04 kls Exp $
  */
 
 #include "device.h"
@@ -1231,7 +1231,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                break;
           case 0xC0 ... 0xDF: // audio
                SetAvailableTrack(ttAudio, c - 0xC0, c);
-               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
+               if ((!VideoOnly || HasIBPTrickSpeed()) && c == availableTracks[currentAudioTrack].id) {
                   w = PlayAudio(Start, d, c);
                   if (FirstLoop)
                      Audios.PlayAudio(Data, Length, c);
@@ -1261,13 +1261,13 @@ pre_1_3_19_PrivateStreamDeteced:
                  case 0x20: // SPU
                  case 0x30: // SPU
                       SetAvailableTrack(ttSubtitle, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && currentSubtitleTrack != ttNone && SubStreamId == availableTracks[currentSubtitleTrack].id)
+                      if ((!VideoOnly || HasIBPTrickSpeed()) && currentSubtitleTrack != ttNone && SubStreamId == availableTracks[currentSubtitleTrack].id)
                          w = PlaySubtitle(Start, d);
                       break;
                  case 0x80: // AC3 & DTS
                       if (Setup.UseDolbyDigital) {
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
-                         if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
+                         if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
                             w = PlayAudio(Start, d, SubStreamId);
                             if (FirstLoop)
                                Audios.PlayAudio(Data, Length, SubStreamId);
@@ -1276,7 +1276,7 @@ pre_1_3_19_PrivateStreamDeteced:
                       break;
                  case 0xA0: // LPCM
                       SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
+                      if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
                          w = PlayAudio(Start, d, SubStreamId);
                          if (FirstLoop)
                             Audios.PlayAudio(Data, Length, SubStreamId);
