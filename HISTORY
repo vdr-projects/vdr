@@ -5579,7 +5579,7 @@ Video Disk Recorder Revision History
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
 
-2008-02-09: Version 1.5.15
+2008-02-10: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
@@ -5611,3 +5611,5 @@ Video Disk Recorder Revision History
   it applies to non-VPS recordings as well.
 - Fixed a loss of a timer's 'recording' flag after modifying it via MODT.
 - Fixed detecting directories in cFileNameList::Load().
+- Running the thread that removes deleted recordings at a low priority to (maybe)
+  avoid stuttering replay in case the thread is run during replay.
