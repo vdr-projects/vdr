@@ -6,26 +6,13 @@
 
 <center><h1>The VDR Plugin System</h1></center>
 
-<center><b>Version 1.5.8</b></center>
+<center><b>Version 1.6</b></center>
 <p>
 <center>
-Copyright &copy; 2006 Klaus Schmidinger<br>
+Copyright &copy; 2008 Klaus Schmidinger<br>
 <a href="mailto:kls@cadsoft.de">kls@cadsoft.de</a><br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
-<p>
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.7 are marked like this.
-<!--X1.5.7--></td></tr></table>
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.8 are marked like this.
-<!--X1.5.8--></td></tr></table>
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.10 are marked like this.
-<!--X1.5.10--></td></tr></table>
-<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.5.13 are marked like this.
-<!--X1.5.13--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -59,9 +46,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
 <li><a href="#Shutting down">Shutting down</a>
-<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <li><a href="#Logging">Logging</a>
-<!--X1.5.13--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
@@ -543,7 +528,6 @@ The <tt>Stop()</tt> function will only be called if a previous call to the
 returned <i>true</i>. The <tt>Stop()</tt> functions are called in the reverse order
 as the <a href="#Getting started"><tt>Start()</tt></a> functions were called.
 
-<!--X1.5.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <a name="Logging"><hr><h2>Logging</h2>
 
 If the plugin should print log messages, you can use <tt>dsyslog()</tt>, <tt>isyslog()</tt> or <tt>esyslog()</tt>.<br>
@@ -561,7 +545,6 @@ esyslog("pluginname: error #%d has occurred", ErrorNumber);
 
 Note that the log messages will be given as provided, the plugin's name will not
 automatically be added, so make shure your log messages are obvious enough.
-<!--X1.5.13--></td></tr></table>
 
 <a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
@@ -929,7 +912,6 @@ const char *MyConfigDir = cPlugin::ConfigDirectory();
 
 <center><i><b>Welcome to Babylon!</b></i></center><p>
 
-<!--X1.5.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If a plugin displays texts to the user, it should prepare for internationalization
 of these texts. All that is necessary for this is to mark every text that is
 presented to the user as translatable, as in
@@ -940,12 +922,10 @@ const char *s = tr("Hello world!");
 
 The text given here must be the English version, and the returned pointer is either
 a translated version (if available) or the original string.
-<!--X1.5.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Texts are searched for in the domain registered for this plugin.
 If a plugin wants to make use of texts defined by the core VDR code, it can use
 the special <tt>trVDR()</tt> macro to mark these texts without having them
 appear in its own translation file.
-<!--X1.5.8--></td></tr></table>
 <p>
 Sometimes texts are stored in an array, in which case they need to be marked
 differently, using the trNOOP() macro. The actual translation is then done
@@ -973,7 +953,6 @@ character set. The names of these functions and macros are all of the form <tt>U
 and are defined in <tt>VDR/tools.h</tt>.
 Most of the time a plugin doesn't need to care about this, but when it comes to
 handling individual characters these functions may come in handy.
-<!--X1.5.7--></td></tr></table>
 
 <a name="Custom services"><hr><h2>Custom services</h2>
 
@@ -1349,9 +1328,7 @@ A player that has special requirements about audio tracks should announce its
 available audio tracks by calling
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL)
-<!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>
 
 See <tt>device.h</tt> for details about the parameters for track handling.
@@ -1477,19 +1454,15 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 :cReceiver(tChannelID(), -1, Pid)
-<!--X1.5.10--></td></tr></table>
 {
 }
 
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%><pre>
 cMyReceiver::~cMyReceiver()
 {
   cReceiver::Detach();
   ...
 }
-<!--X1.5.10--></pre></td></tr></table>
 
 void cMyReceiver::Activate(bool On)
 {
@@ -1851,9 +1824,7 @@ virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual bool HasIBPTrickSpeed(void);
-<!--X1.5.10--></td></tr></table>
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
 virtual void Play(void);
@@ -1881,9 +1852,7 @@ the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
-<!--X1.5.10--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual void CloseFilter(int Handle);
-<!--X1.5.10--></td></tr></table>
 </pre></td></tr></table><p>
 
 which must open and close a file handle that delivers section data for the given
