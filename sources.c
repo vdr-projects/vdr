@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 1.3 2004/12/26 11:58:52 kls Exp $
+ * $Id: sources.c 1.4 2008/02/10 14:07:26 kls Exp $
  */
 
 #include "sources.h"
 #include <ctype.h>
 
-// -- cSource ----------------------------------------------------------------
+// --- cSource ---------------------------------------------------------------
 
 cSource::cSource(void)
 {
@@ -101,7 +101,7 @@ int cSource::FromData(eSourceType SourceType, int Position, bool East)
   return code;
 }
 
-// -- cSources ---------------------------------------------------------------
+// --- cSources --------------------------------------------------------------
 
 cSources Sources;
 

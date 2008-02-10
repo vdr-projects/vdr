@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.158 2007/11/25 13:46:27 kls Exp $
+ * $Id: config.c 1.159 2008/02/10 14:10:48 kls Exp $
  */
 
 #include "config.h"
@@ -86,7 +86,7 @@ const char *cCommand::Execute(const char *Parameters)
   return result;
 }
 
-// -- cSVDRPhost -------------------------------------------------------------
+// --- cSVDRPhost ------------------------------------------------------------
 
 cSVDRPhost::cSVDRPhost(void)
 {
@@ -122,12 +122,12 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
   return (Address & mask) == (addr.s_addr & mask);
 }
 
-// -- cCommands --------------------------------------------------------------
+// --- cCommands -------------------------------------------------------------
 
 cCommands Commands;
 cCommands RecordingCommands;
 
-// -- cSVDRPhosts ------------------------------------------------------------
+// --- cSVDRPhosts -----------------------------------------------------------
 
 cSVDRPhosts SVDRPhosts;
 
@@ -142,7 +142,7 @@ bool cSVDRPhosts::Acceptable(in_addr_t Address)
   return false;
 }
 
-// -- cSetupLine -------------------------------------------------------------
+// --- cSetupLine ------------------------------------------------------------
 
 cSetupLine::cSetupLine(void)
 {
@@ -208,7 +208,7 @@ bool cSetupLine::Save(FILE *f)
   return fprintf(f, "%s%s%s = %s\n", plugin ? plugin : "", plugin ? "." : "", name, value) > 0;
 }
 
-// -- cSetup -----------------------------------------------------------------
+// --- cSetup ----------------------------------------------------------------
 
 cSetup Setup;
 

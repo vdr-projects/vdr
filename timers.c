@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.69 2008/02/10 12:22:02 kls Exp $
+ * $Id: timers.c 1.70 2008/02/10 14:05:49 kls Exp $
  */
 
 #include "timers.h"
@@ -19,7 +19,7 @@
 // format characters in order to allow any number of blanks after a numeric
 // value!
 
-// -- cTimer -----------------------------------------------------------------
+// --- cTimer ----------------------------------------------------------------
 
 cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 {
@@ -608,7 +608,7 @@ void cTimer::OnOff(void)
   Matches(); // refresh start and end time
 }
 
-// -- cTimers ----------------------------------------------------------------
+// --- cTimers ---------------------------------------------------------------
 
 cTimers Timers;
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.57 2008/02/08 13:43:07 kls Exp $
+ * $Id: channels.c 1.58 2008/02/10 14:11:47 kls Exp $
  */
 
 #include "channels.h"
@@ -18,7 +18,7 @@
 // format characters in order to allow any number of blanks after a numeric
 // value!
 
-// -- Channel Parameter Maps -------------------------------------------------
+// --- Channel Parameter Maps ------------------------------------------------
 
 const tChannelParameterMap InversionValues[] = {
   {   0, INVERSION_OFF },
@@ -123,7 +123,7 @@ int MapToDriver(int Value, const tChannelParameterMap *Map)
   return -1;
 }
 
-// -- tChannelID -------------------------------------------------------------
+// --- tChannelID ------------------------------------------------------------
 
 const tChannelID tChannelID::InvalidID;
 
@@ -158,7 +158,7 @@ tChannelID &tChannelID::ClrPolarization(void)
   return *this;
 }
 
-// -- cChannel ---------------------------------------------------------------
+// --- cChannel --------------------------------------------------------------
 
 cChannel::cChannel(void)
 {
@@ -850,7 +850,7 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, "%s", *ToText()) > 0;
 }
 
-// -- cChannelSorter ---------------------------------------------------------
+// --- cChannelSorter --------------------------------------------------------
 
 class cChannelSorter : public cListObject {
 public:
@@ -866,7 +866,7 @@ public:
     }
   };
 
-// -- cChannels --------------------------------------------------------------
+// --- cChannels -------------------------------------------------------------
 
 cChannels Channels;
 
