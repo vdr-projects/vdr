@@ -5610,3 +5610,4 @@ Video Disk Recorder Revision History
 - Changed the message "Upcoming VPS recording!" to "Upcoming recording!" because
   it applies to non-VPS recordings as well.
 - Fixed a loss of a timer's 'recording' flag after modifying it via MODT.
+- Fixed detecting directories in cFileNameList::Load().

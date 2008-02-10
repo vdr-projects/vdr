@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.140 2008/01/13 11:26:30 kls Exp $
+ * $Id: tools.c 1.141 2008/02/10 12:40:36 kls Exp $
  */
 
 #include "tools.h"
@@ -1241,8 +1241,8 @@ bool cFileNameList::Load(const char *Directory, bool DirsOnly)
               if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
                  if (DirsOnly) {
                     struct stat ds;
-                    if (stat(e->d_name, &ds) == 0) {
-                       if (S_ISDIR(ds.st_mode))
+                    if (stat(AddDirectory(Directory, e->d_name), &ds) == 0) {
+                       if (!S_ISDIR(ds.st_mode))
                           continue;
                        }
                     }
