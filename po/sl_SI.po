@@ -972,8 +972,8 @@ msgstr "Sobota"
 msgid "Sunday"
 msgstr "Nedelja"
 
-msgid "Upcoming VPS recording!"
-msgstr "Sledi VPS snemanje!"
+msgid "Upcoming recording!"
+msgstr "Sledi snemanje!"
 
 msgid "Recording started"
 msgstr "Snemanje se je prièelo"

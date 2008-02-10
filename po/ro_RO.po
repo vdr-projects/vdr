@@ -972,8 +972,8 @@ msgstr "Sâmbãtã"
 msgid "Sunday"
 msgstr "Duminicã"
 
-msgid "Upcoming VPS recording!"
-msgstr "Urmeazã o înregistrare VPS!"
+msgid "Upcoming recording!"
+msgstr "Urmeazã o înregistrare!"
 
 msgid "Recording started"
 msgstr "A început înregistrarea"

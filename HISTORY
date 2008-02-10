@@ -5607,3 +5607,5 @@ Video Disk Recorder Revision History
   to avoid unnecessary OSD access (thanks to Marco Schlüßler).
 - The free disk space is now also displayed in the title of the "Recordings"
   menu (suggested by Walter Koch).
+- Changed the message "Upcoming VPS recording!" to "Upcoming recording!" because
+  it applies to non-VPS recordings as well.

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.308 2008/02/08 15:55:30 kls Exp $
+ * $Id: vdr.c 1.309 2008/02/10 11:53:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -878,7 +878,7 @@ int main(int argc, char *argv[])
                         if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
                            // the previous SwitchChannel() has switched away the current live channel
                            Channels.SwitchTo(Timer->Channel()->Number()); // avoids toggling between old channel and black screen
-                           Skins.Message(mtInfo, tr("Upcoming VPS recording!"));
+                           Skins.Message(mtInfo, tr("Upcoming recording!"));
                            }
                         }
                      }

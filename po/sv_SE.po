@@ -972,8 +972,8 @@ msgstr "Lördag"
 msgid "Sunday"
 msgstr "Söndag"
 
-msgid "Upcoming VPS recording!"
-msgstr "strax VPS inspelning..."
+msgid "Upcoming recording!"
+msgstr "strax inspelning..."
 
 msgid "Recording started"
 msgstr "Inspelningen har startat"

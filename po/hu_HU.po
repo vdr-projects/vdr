@@ -975,8 +975,8 @@ msgstr "Szombat"
 msgid "Sunday"
 msgstr "Vasárnap"
 
-msgid "Upcoming VPS recording!"
-msgstr "VPS-felvétel rögtön kezdõdik!"
+msgid "Upcoming recording!"
+msgstr "Felvétel rögtön kezdõdik!"
 
 msgid "Recording started"
 msgstr "A felvétel elindítva"

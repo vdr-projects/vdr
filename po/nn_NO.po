@@ -972,7 +972,7 @@ msgstr "Lørdag"
 msgid "Sunday"
 msgstr "Søndag"
 
-msgid "Upcoming VPS recording!"
+msgid "Upcoming recording!"
 msgstr ""
 
 msgid "Recording started"

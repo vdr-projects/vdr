@@ -974,8 +974,8 @@ msgstr "Lauantai"
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-msgid "Upcoming VPS recording!"
-msgstr "VPS-tallennus on alkamassa!"
+msgid "Upcoming recording!"
+msgstr "Tallennus on alkamassa!"
 
 msgid "Recording started"
 msgstr "Tallennus aloitettu"
