@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.68 2007/08/04 09:23:33 kls Exp $
+ * $Id: timers.c 1.69 2008/02/10 12:22:02 kls Exp $
  */
 
 #include "timers.h"
@@ -99,13 +99,14 @@ cTimer::~cTimer()
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
   if (&Timer != this) {
+     uint OldFlags = flags & tfRecording;
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
      lastSetEvent = 0;
      recording    = Timer.recording;
      pending      = Timer.pending;
      inVpsMargin  = Timer.inVpsMargin;
-     flags        = Timer.flags;
+     flags        = Timer.flags | OldFlags;
      channel      = Timer.channel;
      day          = Timer.day;
      weekdays     = Timer.weekdays;
