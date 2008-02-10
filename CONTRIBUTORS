@@ -1449,6 +1449,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
  for fixing checking compatibility mode for old subtitles plugin
  for a patch that was used to implement handling of DVB-S2
+ for fixing setting the date in the channel display of the classic and sttng skins,
+ to avoid unnecessary OSD access
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

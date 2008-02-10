@@ -5603,3 +5603,5 @@ Video Disk Recorder Revision History
   accessing file handles after they have become invalid (thanks to Reinhard
   Nissl for reporting an invalid access when ending VDR, and to Deti Fliegl for
   a patch that was used to implement StopSectionHandler()).
+- Fixed setting the date in the channel display of the classic and sttng skins,
+  to avoid unnecessary OSD access (thanks to Marco Schlüßler).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.21 2007/06/17 13:51:56 kls Exp $
+ * $Id: skinsttng.c 1.22 2008/02/10 10:05:40 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -129,6 +129,7 @@ private:
   tColor frameColor;
   bool message;
   const cEvent *present;
+  cString lastDate;
   int lastSeen;
   tTrackId lastTrackId;
   static cBitmap bmTeletext, bmRadio, bmAudio, bmDolbyDigital, bmEncrypted, bmRecording;
@@ -307,7 +308,10 @@ void cSkinSTTNGDisplayChannel::Flush(void)
         const cFont *font = cFont::GetFont(fontSml);
         cString date = DayDateTime();
         int w = font->Width(date);
-        osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
+        if (!lastDate || strcmp(date, lastDate)) {
+           osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
+           lastDate = date;
+           }
         cDevice *Device = cDevice::PrimaryDevice();
         const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
         if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
@@ -325,7 +329,7 @@ void cSkinSTTNGDisplayChannel::Flush(void)
      if (seen != lastSeen) {
         osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y4 - 1, Theme.Color(clrChannelTimebarRest));
         if (seen)
-        osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y3 + seen, Theme.Color(clrChannelTimebarSeen));
+           osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y3 + seen, Theme.Color(clrChannelTimebarSeen));
         lastSeen = seen;
         }
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.19 2008/01/13 12:38:00 kls Exp $
+ * $Id: skinclassic.c 1.20 2008/02/10 10:01:13 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -77,6 +77,7 @@ private:
   int lineHeight;
   int timeWidth;
   bool message;
+  cString lastDate;
 public:
   cSkinClassicDisplayChannel(bool WithInfo);
   virtual ~cSkinClassicDisplayChannel();
@@ -113,6 +114,7 @@ void cSkinClassicDisplayChannel::SetChannel(const cChannel *Channel, int Number)
 {
   osd->DrawRectangle(0, 0, osd->Width() - 1, lineHeight - 1, Theme.Color(clrBackground));
   osd->DrawText(2, 0, ChannelString(Channel, Number), Theme.Color(clrChannelName), Theme.Color(clrBackground), cFont::GetFont(fontOsd));
+  lastDate = NULL;
 }
 
 void cSkinClassicDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -147,9 +149,12 @@ void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     const cFont *font = cFont::GetFont(fontSml);
-     int w = font->Width(date);
-     osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
+     if (!lastDate || strcmp(date, lastDate)) {
+        const cFont *font = cFont::GetFont(fontSml);
+        int w = font->Width(date);
+        osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
+        lastDate = date;
+        }
      }
   osd->Flush();
 }
