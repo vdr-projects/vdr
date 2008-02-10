@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.472 2008/02/09 12:24:24 kls Exp $
+ * $Id: menu.c 1.473 2008/02/10 11:40:49 kls Exp $
  */
 
 #include "menu.h"
@@ -32,7 +32,7 @@
 
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
-#define DISKSPACECHEK     5 // seconds between disk space checks in the main menu
+#define DISKSPACECHEK     5 // seconds between disk space checks
 #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
                             // within which it will go directly into the "Edit timer" menu to allow
                             // further parameter settings
@@ -46,6 +46,44 @@
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
+
+// --- cFreeDiskSpace --------------------------------------------------------
+
+#define MB_PER_MINUTE 25.75 // this is just an estimate!
+
+class cFreeDiskSpace {
+private:
+  static time_t lastDiskSpaceCheck;
+  static int lastFreeMB;
+  static cString freeDiskSpaceString;
+public:
+  static bool HasChanged(bool ForceCheck = false);
+  static const char *FreeDiskSpaceString(void) { HasChanged(); return freeDiskSpaceString; }
+  };
+
+time_t cFreeDiskSpace::lastDiskSpaceCheck = 0;
+int cFreeDiskSpace::lastFreeMB = 0;
+cString cFreeDiskSpace::freeDiskSpaceString;
+
+cFreeDiskSpace FreeDiskSpace;
+
+bool cFreeDiskSpace::HasChanged(bool ForceCheck)
+{
+  if (ForceCheck || time(NULL) - lastDiskSpaceCheck > DISKSPACECHEK) {
+     int FreeMB;
+     int Percent = VideoDiskSpace(&FreeMB);
+     lastDiskSpaceCheck = time(NULL);
+     if (ForceCheck || FreeMB != lastFreeMB) {
+        int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
+        int Hours = Minutes / 60;
+        Minutes %= 60;
+        freeDiskSpaceString = cString::sprintf("%s %d%%  -  %2d:%02d %s", tr("Disk"), Percent, Hours, Minutes, tr("free"));
+        lastFreeMB = FreeMB;
+        return true;
+        }
+     }
+  return false;
+}
 
 // --- cMenuEditCaItem -------------------------------------------------------
 
@@ -1898,6 +1936,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
+  SetFreeDiskDisplay(true);
   Display();
   SetHelpKeys();
 }
@@ -1906,6 +1945,16 @@ cMenuRecordings::~cMenuRecordings()
 {
   helpKeys = -1;
   free(base);
+}
+
+bool cMenuRecordings::SetFreeDiskDisplay(bool Force)
+{
+  if (FreeDiskSpace.HasChanged(Force)) {
+     //XXX -> skin function!!!
+     SetTitle(cString::sprintf("%s  -  %s", base ? base : tr("Recordings"), FreeDiskSpace.FreeDiskSpaceString()));
+     return true;
+     }
+  return false;
 }
 
 void cMenuRecordings::SetHelpKeys(void)
@@ -1969,6 +2018,7 @@ void cMenuRecordings::Set(bool Refresh)
          }
       }
   free(LastItemText);
+  Refresh |= SetFreeDiskDisplay(Refresh);
   if (Refresh)
      Display();
 }
@@ -2060,6 +2110,7 @@ eOSState cMenuRecordings::Delete(void)
               Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
               SetHelpKeys();
+              SetFreeDiskDisplay(true);
               Display();
               if (!Count())
                  return osBack;
@@ -2934,8 +2985,6 @@ cOsdObject *cMenuMain::pluginOsdObject = NULL;
 cMenuMain::cMenuMain(eOSState State)
 :cOsdMenu("")
 {
-  lastDiskSpaceCheck = 0;
-  lastFreeMB = 0;
   replaying = false;
   stopReplayItem = NULL;
   cancelEditingItem = NULL;
@@ -3000,26 +3049,15 @@ void cMenuMain::Set(void)
   Display();
 }
 
-#define MB_PER_MINUTE 25.75 // this is just an estimate!
-
 bool cMenuMain::Update(bool Force)
 {
   bool result = false;
 
   // Title with disk usage:
-  if (Force || time(NULL) - lastDiskSpaceCheck > DISKSPACECHEK) {
-     int FreeMB;
-     int Percent = VideoDiskSpace(&FreeMB);
-     if (Force || FreeMB != lastFreeMB) {
-        int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
-        int Hours = Minutes / 60;
-        Minutes %= 60;
-        //XXX -> skin function!!!
-        SetTitle(cString::sprintf("%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free")));
-        lastFreeMB = FreeMB;
-        result = true;
-        }
-     lastDiskSpaceCheck = time(NULL);
+  if (FreeDiskSpace.HasChanged(Force)) {
+     //XXX -> skin function!!!
+     SetTitle(cString::sprintf("%s  -  %s", tr("VDR"), FreeDiskSpace.FreeDiskSpaceString()));
+     result = true;
      }
 
   bool NewReplaying = cControl::Control() != NULL;

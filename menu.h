@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.89 2007/09/26 14:35:57 kls Exp $
+ * $Id: menu.h 1.90 2008/02/10 11:34:43 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -56,8 +56,6 @@ public:
 
 class cMenuMain : public cOsdMenu {
 private:
-  time_t lastDiskSpaceCheck;
-  int lastFreeMB;
   bool replaying;
   cOsdItem *stopReplayItem;
   cOsdItem *cancelEditingItem;
@@ -156,6 +154,7 @@ private:
   int level;
   int recordingsState;
   int helpKeys;
+  bool SetFreeDiskDisplay(bool Force = false);
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
   bool Open(bool OpenSubMenus = false);

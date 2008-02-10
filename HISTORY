@@ -5605,3 +5605,5 @@ Video Disk Recorder Revision History
   a patch that was used to implement StopSectionHandler()).
 - Fixed setting the date in the channel display of the classic and sttng skins,
   to avoid unnecessary OSD access (thanks to Marco Schlüßler).
+- The free disk space is now also displayed in the title of the "Recordings"
+  menu (suggested by Walter Koch).

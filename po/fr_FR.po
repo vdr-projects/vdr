@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2007-11-25 14:59+0100\n"
+"POT-Creation-Date: 2008-02-10 12:22+0100\n"
 "PO-Revision-Date: 2007-10-18 16:12+0100\n"
 "Last-Translator: Michael Nival <mnival@club-internet.fr>\n"
 "Language-Team:  <vdr@linuxtv.org>\n"
@@ -218,6 +218,12 @@ msgstr "Utilisateur8"
 
 msgid "Key$User9"
 msgstr "Utilisateur9"
+
+msgid "Disk"
+msgstr "Disque"
+
+msgid "free"
+msgstr "restant"
 
 msgid "Free To Air"
 msgstr "Aucun cryptage"
@@ -809,12 +815,6 @@ msgstr "Programmes"
 
 msgid "VDR"
 msgstr "VDR"
-
-msgid "Disk"
-msgstr "Disque"
-
-msgid "free"
-msgstr "restant"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
