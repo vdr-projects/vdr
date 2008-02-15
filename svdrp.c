@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.106 2008/02/10 13:37:18 kls Exp $
+ * $Id: svdrp.c 1.107 2008/02/15 14:48:59 kls Exp $
  */
 
 #include "svdrp.h"
@@ -423,8 +423,8 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
      if (Code != 0) {
         va_list ap;
         va_start(ap, fmt);
-        char *buffer;
-        vasprintf(&buffer, fmt, ap);
+        cString buffer = cString::sprintf(fmt, ap);
+        va_end(ap);
         const char *s = buffer;
         while (s && *s) {
               const char *n = strchr(s, '\n');
@@ -437,8 +437,6 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
                  break;
               s = n ? n + 1 : NULL;
               }
-        free(buffer);
-        va_end(ap);
         }
      else {
         Reply(451, "Zero return code - looks like a programming error!");
@@ -730,7 +728,7 @@ void cSVDRP::CmdEDIT(const char *Option)
 
 void cSVDRP::CmdGRAB(const char *Option)
 {
-  char *FileName = NULL;
+  const char *FileName = NULL;
   bool Jpeg = true;
   int Quality = -1, SizeX = -1, SizeY = -1;
   if (*Option) {
@@ -799,10 +797,10 @@ void cSVDRP::CmdGRAB(const char *Option)
      char RealFileName[PATH_MAX];
      if (FileName) {
         if (grabImageDir) {
-           char *s = 0;
+           cString s;
            char *slash = strrchr(FileName, '/');
            if (!slash) {
-              asprintf(&s, "%s/%s", grabImageDir, FileName);
+              s = AddDirectory(grabImageDir, FileName);
               FileName = s;
               }
            slash = strrchr(FileName, '/'); // there definitely is one
@@ -812,12 +810,10 @@ void cSVDRP::CmdGRAB(const char *Option)
            if (!r) {
               LOG_ERROR_STR(FileName);
               Reply(501, "Invalid file name \"%s\"", FileName);
-              free(s);
               return;
               }
            strcat(RealFileName, slash);
            FileName = RealFileName;
-           free(s);
            if (strncmp(FileName, grabImageDir, strlen(grabImageDir)) != 0) {
               Reply(501, "Invalid file name \"%s\"", FileName);
               return;

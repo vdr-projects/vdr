@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.141 2008/02/10 12:40:36 kls Exp $
+ * $Id: tools.c 1.142 2008/02/15 14:45:05 kls Exp $
  */
 
 #include "tools.h"
@@ -267,9 +267,7 @@ bool isnumber(const char *s)
 
 cString AddDirectory(const char *DirName, const char *FileName)
 {
-  char *buf;
-  asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  return cString(buf, true);
+  return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
 }
 
 cString itoa(int n)
@@ -352,15 +350,14 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
            struct dirent *e;
            while ((e = d.Next()) != NULL) {
                  if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-                    char *buffer;
-                    asprintf(&buffer, "%s/%s", FileName, e->d_name);
+                    cString buffer = AddDirectory(FileName, e->d_name);
                     if (FollowSymlinks) {
                        int size = strlen(buffer) * 2; // should be large enough
                        char *l = MALLOC(char, size);
                        int n = readlink(buffer, l, size);
                        if (n < 0) {
                           if (errno != EINVAL)
-                             LOG_ERROR_STR(buffer);
+                             LOG_ERROR_STR(*buffer);
                           }
                        else if (n < size) {
                           l[n] = 0;
@@ -372,10 +369,9 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                           esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
                        free(l);
                        }
-                    dsyslog("removing %s", buffer);
+                    dsyslog("removing %s", *buffer);
                     if (remove(buffer) < 0)
-                       LOG_ERROR_STR(buffer);
-                    free(buffer);
+                       LOG_ERROR_STR(*buffer);
                     }
                  }
            }
@@ -405,8 +401,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
      struct dirent *e;
      while ((e = d.Next()) != NULL) {
            if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..") && strcmp(e->d_name, "lost+found")) {
-              char *buffer;
-              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              cString buffer = AddDirectory(DirName, e->d_name);
               struct stat st;
               if (stat(buffer, &st) == 0) {
                  if (S_ISDIR(st.st_mode)) {
@@ -417,10 +412,9 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
                     empty = false;
                  }
               else {
-                 LOG_ERROR_STR(buffer);
+                 LOG_ERROR_STR(*buffer);
                  empty = false;
                  }
-              free(buffer);
               }
            }
      if (RemoveThis && empty) {
@@ -445,8 +439,7 @@ int DirSizeMB(const char *DirName)
      struct dirent *e;
      while (size >= 0 && (e = d.Next()) != NULL) {
            if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-              char *buffer;
-              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              cString buffer = AddDirectory(DirName, e->d_name);
               struct stat st;
               if (stat(buffer, &st) == 0) {
                  if (S_ISDIR(st.st_mode)) {
@@ -460,10 +453,9 @@ int DirSizeMB(const char *DirName)
                     size += st.st_size / MEGABYTE(1);
                  }
               else {
-                 LOG_ERROR_STR(buffer);
+                 LOG_ERROR_STR(*buffer);
                  size = -1;
                  }
-              free(buffer);
               }
            }
      return size;
@@ -489,13 +481,12 @@ char *ReadLink(const char *FileName)
 
 bool SpinUpDisk(const char *FileName)
 {
-  char *buf = NULL;
   for (int n = 0; n < 10; n++) {
-      free(buf);
+      cString buf;
       if (DirectoryOk(FileName))
-         asprintf(&buf, "%s/vdr-%06d", *FileName ? FileName : ".", n);
+         buf = cString::sprintf("%s/vdr-%06d", *FileName ? FileName : ".", n);
       else
-         asprintf(&buf, "%s.vdr-%06d", FileName, n);
+         buf = cString::sprintf("%s.vdr-%06d", FileName, n);
       if (access(buf, F_OK) != 0) { // the file does not exist
          timeval tp1, tp2;
          gettimeofday(&tp1, NULL);
@@ -503,21 +494,19 @@ bool SpinUpDisk(const char *FileName)
          // O_SYNC doesn't work on all file systems
          if (f >= 0) {
             if (fdatasync(f) < 0)
-               LOG_ERROR_STR(buf);
+               LOG_ERROR_STR(*buf);
             close(f);
             remove(buf);
             gettimeofday(&tp2, NULL);
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
             if (seconds > 0.5)
                dsyslog("SpinUpDisk took %.2f seconds", seconds);
-            free(buf);
             return true;
             }
          else
-            LOG_ERROR_STR(buf);
+            LOG_ERROR_STR(*buf);
          }
       }
-  free(buf);
   esyslog("ERROR: SpinUpDisk failed");
   return false;
 }
@@ -888,7 +877,21 @@ cString cString::sprintf(const char *fmt, ...)
   va_list ap;
   va_start(ap, fmt);
   char *buffer;
-  vasprintf(&buffer, fmt, ap);
+  if (!fmt || vasprintf(&buffer, fmt, ap) < 0) {
+     esyslog("error in vasprintf('%s', ...)", fmt);
+     buffer = strdup("???");
+     }
+  va_end(ap);
+  return cString(buffer, true);
+}
+
+cString cString::sprintf(const char *fmt, va_list &ap)
+{
+  char *buffer;
+  if (!fmt || vasprintf(&buffer, fmt, ap) < 0) {
+     esyslog("error in vasprintf('%s', ...)", fmt);
+     buffer = strdup("???");
+     }
   return cString(buffer, true);
 }
 
@@ -1622,7 +1625,7 @@ cLockFile::cLockFile(const char *Directory)
   fileName = NULL;
   f = -1;
   if (DirectoryOk(Directory))
-     asprintf(&fileName, "%s/%s", Directory, LOCKFILENAME);
+     fileName = strdup(AddDirectory(Directory, LOCKFILENAME));
 }
 
 cLockFile::~cLockFile()

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.110 2008/01/13 11:22:26 kls Exp $
+ * $Id: tools.h 1.111 2008/02/15 14:10:11 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -161,6 +161,7 @@ public:
   cString &operator=(const cString &String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+  static cString sprintf(const char *fmt, va_list &ap);
   };
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.58 2008/02/10 14:11:47 kls Exp $
+ * $Id: channels.c 1.59 2008/02/10 15:45:38 kls Exp $
  */
 
 #include "channels.h"
@@ -658,12 +658,12 @@ cString cChannel::ToText(const cChannel *Channel)
      q += sprintf(q, ";%s", Channel->provider);
   *q = 0;
   strreplace(FullName, ':', '|');
-  char *buffer;
+  cString buffer;
   if (Channel->groupSep) {
      if (Channel->number)
-        asprintf(&buffer, ":@%d %s\n", Channel->number, FullName);
+        buffer = cString::sprintf(":@%d %s\n", Channel->number, FullName);
      else
-        asprintf(&buffer, ":%s\n", FullName);
+        buffer = cString::sprintf(":%s\n", FullName);
      }
   else {
      char vpidbuf[32];
@@ -685,9 +685,9 @@ cString cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->ParametersToString(), *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->ParametersToString(), *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
-  return cString(buffer, true);
+  return buffer;
 }
 
 cString cChannel::ToText(void) const

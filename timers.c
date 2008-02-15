@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.70 2008/02/10 14:05:49 kls Exp $
+ * $Id: timers.c 1.71 2008/02/10 16:26:25 kls Exp $
  */
 
 #include "timers.h"
@@ -135,18 +135,15 @@ int cTimer::Compare(const cListObject &ListObject) const
 
 cString cTimer::ToText(bool UseChannelID)
 {
-  char *buffer;
   strreplace(file, ':', '|');
-  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
+  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
   strreplace(file, '|', ':');
-  return cString(buffer, true);
+  return buffer;
 }
 
 cString cTimer::ToDescr(void) const
 {
-  char *buffer;
-  asprintf(&buffer, "%d (%d %04d-%04d %s'%s')", Index() + 1, Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
-  return cString(buffer, true);
+  return cString::sprintf("%d (%d %04d-%04d %s'%s')", Index() + 1, Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
 }
 
 int cTimer::TimeToInt(int t)

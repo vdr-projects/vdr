@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.159 2008/02/10 14:10:48 kls Exp $
+ * $Id: config.c 1.160 2008/02/10 15:48:17 kls Exp $
  */
 
 #include "config.h"
@@ -62,9 +62,9 @@ const char *cCommand::Execute(const char *Parameters)
 {
   free(result);
   result = NULL;
-  char *cmdbuf = NULL;
+  cString cmdbuf;
   if (Parameters)
-     asprintf(&cmdbuf, "%s %s", command, Parameters);
+     cmdbuf = cString::sprintf("%s %s", command, Parameters);
   const char *cmd = cmdbuf ? cmdbuf : command;
   dsyslog("executing command '%s'", cmd);
   cPipe p;
@@ -82,7 +82,6 @@ const char *cCommand::Execute(const char *Parameters)
      }
   else
      esyslog("ERROR: can't open pipe for command '%s'", cmd);
-  free(cmdbuf);
   return result;
 }
 
@@ -322,10 +321,7 @@ void cSetup::Store(const char *Name, const char *Value, const char *Plugin, bool
 
 void cSetup::Store(const char *Name, int Value, const char *Plugin)
 {
-  char *buffer = NULL;
-  asprintf(&buffer, "%d", Value);
-  Store(Name, buffer, Plugin);
-  free(buffer);
+  Store(Name, cString::sprintf("%d", Value), Plugin);
 }
 
 bool cSetup::Load(const char *FileName)

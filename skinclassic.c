@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.20 2008/02/10 10:01:13 kls Exp $
+ * $Id: skinclassic.c 1.21 2008/02/10 16:18:25 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -324,12 +324,10 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
-     char *buffer;
-     asprintf(&buffer, " VPS: %s ", *Event->GetVpsString());
+     cString buffer = cString::sprintf(" VPS: %s ", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
      int w = font->Width(buffer);
      osd->DrawText(x1 - w, y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font, w);
-     free(buffer);
      }
   y += ts.Height();
   y += font->Height();
