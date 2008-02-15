@@ -5623,3 +5623,4 @@ Video Disk Recorder Revision History
 - When deleting the recording that is currently replayed, the replay is now
   stopped immediately (thanks to Mikko Matilainen for reporting a possible crash
   if the Info key is pressed after deleting the currently replayed recording).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
