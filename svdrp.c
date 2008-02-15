@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.107 2008/02/15 14:48:59 kls Exp $
+ * $Id: svdrp.c 1.108 2008/02/15 15:10:49 kls Exp $
  */
 
 #include "svdrp.h"
@@ -39,8 +39,6 @@
 #include "timers.h"
 #include "tools.h"
 #include "videodir.h"
-
-#define VFAT_MAX_FILENAME 40 // same as MAX_SUBTITLE_LENGTH in recording.c
 
 // --- cSocket ---------------------------------------------------------------
 
@@ -1177,16 +1175,6 @@ void cSVDRP::CmdMODT(const char *Option)
                  Reply(501, "Error in timer settings");
                  return;
                  }
-              else if (VfatFileSystem) {
-                 const char *FileName = timer->File();
-                 const char *p = strrchr(FileName, '~');
-                 if (!p)
-                    p = FileName;
-                 if (strlen(p) > VFAT_MAX_FILENAME) {
-                    Reply(501, "File name too long for VFAT file system");
-                    return;
-                    }
-                 }
               *timer = t;
               Timers.SetModified();
               isyslog("timer %s modified (%s)", *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
@@ -1293,17 +1281,6 @@ void cSVDRP::CmdNEWT(const char *Option)
   if (*Option) {
      cTimer *timer = new cTimer;
      if (timer->Parse(Option)) {
-        if (VfatFileSystem) {
-           const char *FileName = timer->File();
-           const char *p = strrchr(FileName, '~');
-           if (!p)
-              p = FileName;
-           if (strlen(p) > VFAT_MAX_FILENAME) {
-              Reply(501, "File name too long for VFAT file system");
-              delete timer;
-              return;
-              }
-           }
         cTimer *t = Timers.GetTimer(timer);
         if (!t) {
            Timers.Add(timer);

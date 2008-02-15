@@ -5613,9 +5613,9 @@ Video Disk Recorder Revision History
 - Fixed detecting directories in cFileNameList::Load().
 - Running the thread that removes deleted recordings at a low priority to (maybe)
   avoid stuttering replay in case the thread is run during replay.
-- Limiting the length of the recording name in timers created via SVDRP in case VDR
-  is run with --vfat, in order to avoid names that are too long for Windows
-  (suggested by Rolf Ahrenberg).
+- Limiting the length of the recording name in timers in case VDR is run with
+  --vfat, in order to avoid names that are too long for Windows (suggested by Rolf
+  Ahrenberg).
 - Using cString::sprintf() instead of asprintf() (thanks to Wolfgang Rohdewald
   for pointing out a possible problem if the return value is not checked).
   Plugin authors may want to consider doing the same. For convenience there is now

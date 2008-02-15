@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.71 2008/02/10 16:26:25 kls Exp $
+ * $Id: timers.c 1.72 2008/02/15 15:36:59 kls Exp $
  */
 
 #include "timers.h"
@@ -13,7 +13,10 @@
 #include "device.h"
 #include "i18n.h"
 #include "libsi/si.h"
+#include "recording.h"
 #include "remote.h"
+
+#define VFAT_MAX_FILENAME 40 // same as MAX_SUBTITLE_LENGTH in recording.c
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -285,6 +288,18 @@ bool cTimer::Parse(const char *s)
         }
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
+     if (VfatFileSystem) {
+        char *p = strrchr(filebuffer, '~');
+        if (p)
+           p++;
+        else
+           p = filebuffer;
+        if (strlen(p) > VFAT_MAX_FILENAME) {
+           dsyslog("timer file name too long for VFAT file system: '%s'", p);
+           p[VFAT_MAX_FILENAME] = 0;
+           dsyslog("timer file name truncated to '%s'", p);
+           }
+        }
      Utf8Strn0Cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
      if (isnumber(channelbuffer))
