@@ -5620,3 +5620,6 @@ Video Disk Recorder Revision History
   for pointing out a possible problem if the return value is not checked).
   Plugin authors may want to consider doing the same. For convenience there is now
   an additional version of cString::sprintf() that accepts a va_list parameter.
+- When deleting the recording that is currently replayed, the replay is now
+  stopped immediately (thanks to Mikko Matilainen for reporting a possible crash
+  if the Info key is pressed after deleting the currently replayed recording).

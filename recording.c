@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.159 2008/02/10 21:57:09 kls Exp $
+ * $Id: recording.c 1.160 2008/02/15 15:50:06 kls Exp $
  */
 
 #include "recording.h"
@@ -987,10 +987,12 @@ bool cRecordings::Update(bool Wait)
 
 cRecording *cRecordings::GetByName(const char *FileName)
 {
-  for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (strcmp(recording->FileName(), FileName) == 0)
-         return recording;
-      }
+  if (FileName) {
+     for (cRecording *recording = First(); recording; recording = Next(recording)) {
+         if (strcmp(recording->FileName(), FileName) == 0)
+            return recording;
+         }
+     }
   return NULL;
 }
 

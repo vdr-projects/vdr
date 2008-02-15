@@ -2288,3 +2288,7 @@ Winfried Koehler <w_koehl@gmx.de>
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
  is run as root with option -u
+
+Mikko Matilainen <mikkom@iki.fi>
+ for reporting a possible crash if the Info key is pressed after deleting the
+ currently replayed recording
