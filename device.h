@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.89 2008/02/09 16:05:24 kls Exp $
+ * $Id: device.h 1.90 2008/02/16 13:50:11 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -386,6 +386,8 @@ private:
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.
+  virtual void SetSubtitleTrackDevice(eTrackType Type);
+       ///< Sets the current subtitle track to the given value.
 public:
   void ClrAvailableTracks(bool DescriptionsOnly = false, bool IdsOnly = false);
        ///< Clears the list of currently availabe tracks. If DescriptionsOnly

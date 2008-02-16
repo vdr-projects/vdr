@@ -1968,6 +1968,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for pointing out that plugins from cRemote::PutMacro() and cRemote::CallPlugin()
  need to be handled separately
  for making cTimeMs use the monotonic clock
+ for implementing the cStatus, cDevice and cPlayer functions for setting subtitle
+ tracks in plugins
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch

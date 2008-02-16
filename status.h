@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.10 2007/08/12 10:34:40 kls Exp $
+ * $Id: status.h 1.11 2008/02/16 13:50:15 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -44,6 +44,9 @@ protected:
   virtual void SetAudioChannel(int AudioChannel) {}
                // The audio channel has been set to the given value.
                // 0=stereo, 1=left, 2=right, -1=no information available.
+  virtual void SetSubtitleTrack(int Index, const char * const *Tracks) {}
+               // The subtitle track has been set to the one given by Index, which
+               // points into the Tracks array of strings. Tracks is NULL terminated.
   virtual void OsdClear(void) {}
                // The OSD has been cleared.
   virtual void OsdTitle(const char *Title) {}
@@ -77,6 +80,7 @@ public:
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgSetAudioTrack(int Index, const char * const *Tracks);
   static void MsgSetAudioChannel(int AudioChannel);
+  static void MsgSetSubtitleTrack(int Index, const char * const *Tracks);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);
   static void MsgOsdStatusMessage(const char *Message);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.20 2007/10/13 12:18:10 kls Exp $
+ * $Id: player.h 1.21 2008/02/16 13:50:11 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -22,6 +22,7 @@ protected:
   void DeviceClrAvailableTracks(bool DescriptionsOnly = false) { if (device) device->ClrAvailableTracks(DescriptionsOnly); }
   bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL) { return device ? device->SetAvailableTrack(Type, Index, Id, Language, Description) : false; }
   bool DeviceSetCurrentAudioTrack(eTrackType Type) { return device ? device->SetCurrentAudioTrack(Type) : false; }
+  bool DeviceSetCurrentSubtitleTrack(eTrackType Type) { return device ? device->SetCurrentSubtitleTrack(Type) : false; }
   bool DevicePoll(cPoller &Poller, int TimeoutMs = 0) { return device ? device->Poll(Poller, TimeoutMs) : false; }
   bool DeviceFlush(int TimeoutMs = 0) { return device ? device->Flush(TimeoutMs) : true; }
   bool DeviceHasIBPTrickSpeed(void) { return device ? device->HasIBPTrickSpeed() : false; }
@@ -58,6 +59,10 @@ public:
        // Sets the current audio track to the given value.
        // This is just a virtual hook for players that need to do special things
        // in order to switch audio tracks.
+  virtual void SetSubtitleTrack(eTrackType Type, const tTrackId *TrackId) {}
+       // Sets the current subtitle track to the given value.
+       // This is just a virtual hook for players that need to do special things
+       // in order to switch subtitle tracks.
   };
 
 class cControl : public cOsdObject {

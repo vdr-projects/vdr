@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.476 2008/02/16 12:04:12 kls Exp $
+ * $Id: menu.c 1.477 2008/02/16 13:53:26 kls Exp $
  */
 
 #include "menu.h"
@@ -3702,7 +3702,7 @@ void cDisplaySubtitleTracks::Show(void)
 {
   displayTracks->SetTrack(track, descriptions);
   displayTracks->Flush();
-  //cStatus::MsgSetSubtitleTrack(track, descriptions); //TODO better make a more general cStatus::MsgSetTrack(tr("Subtitles"), track, descriptions)
+  cStatus::MsgSetSubtitleTrack(track, descriptions);
 }
 
 cDisplaySubtitleTracks *cDisplaySubtitleTracks::Create(void)

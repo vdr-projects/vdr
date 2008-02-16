@@ -5631,3 +5631,5 @@ Video Disk Recorder Revision History
   recordings are removed, that actually are on the video directory file system(s).
   This prevents VDR from accidentally deleting recordings on other file systems,
   which would not add any free space to the video directory.
+- Implemented the cStatus, cDevice and cPlayer functions for setting subtitle tracks
+  in plugins (thanks to Petri Hintukainen).

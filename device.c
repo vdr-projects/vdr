@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.152 2008/02/09 16:10:56 kls Exp $
+ * $Id: device.c 1.153 2008/02/16 13:52:11 kls Exp $
  */
 
 #include "device.h"
@@ -890,6 +890,10 @@ void cDevice::SetAudioTrackDevice(eTrackType Type)
 {
 }
 
+void cDevice::SetSubtitleTrackDevice(eTrackType Type)
+{
+}
+
 bool cDevice::ToggleMute(void)
 {
   int OldVolume = volume;
@@ -1037,6 +1041,10 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
         DELETENULL(dvbSubtitleConverter);
         }
      DELETENULL(liveSubtitle);
+     if (player)
+        player->SetSubtitleTrack(currentSubtitleTrack, GetTrack(currentSubtitleTrack));
+     else
+        SetSubtitleTrackDevice(currentSubtitleTrack);
      if (currentSubtitleTrack != ttNone && !Replaying() && !Transferring()) {
         const tTrackId *TrackId = GetTrack(currentSubtitleTrack);
         if (TrackId && TrackId->id) {
