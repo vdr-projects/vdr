@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.111 2008/02/15 14:10:11 kls Exp $
+ * $Id: tools.h 1.112 2008/02/16 13:00:16 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -193,6 +193,7 @@ int numdigits(int n);
 bool isnumber(const char *s);
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
+bool EntriesOnSameFileSystem(const char *File1, const char *File2);
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);

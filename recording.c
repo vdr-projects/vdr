@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.160 2008/02/15 15:50:06 kls Exp $
+ * $Id: recording.c 1.161 2008/02/16 13:31:39 kls Exp $
  */
 
 #include "recording.h"
@@ -144,10 +144,12 @@ void AssertFreeDiskSpace(int Priority, bool Force)
         cThreadLock DeletedRecordingsLock(&DeletedRecordings);
         if (DeletedRecordings.Count()) {
            cRecording *r = DeletedRecordings.First();
-           cRecording *r0 = r;
+           cRecording *r0 = NULL;
            while (r) {
-                 if (r->start < r0->start)
-                    r0 = r;
+                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
+                    if (!r0 || r->start < r0->start)
+                       r0 = r;
+                    }
                  r = DeletedRecordings.Next(r);
                  }
            if (r0 && r0->Remove()) {
@@ -156,11 +158,13 @@ void AssertFreeDiskSpace(int Priority, bool Force)
               return;
               }
            }
-        // DeletedRecordings was empty, so to be absolutely sure there are no
-        // deleted recordings we need to double check:
-        DeletedRecordings.Update(true);
-        if (DeletedRecordings.Count())
-           return; // the next call will actually remove it
+        else {
+           // DeletedRecordings was empty, so to be absolutely sure there are no
+           // deleted recordings we need to double check:
+           DeletedRecordings.Update(true);
+           if (DeletedRecordings.Count())
+              return; // the next call will actually remove it
+           }
         // No "deleted" files to remove, so let's see if we can delete a recording:
         isyslog("...no deleted recording found, trying to delete an old recording...");
         cThreadLock RecordingsLock(&Recordings);
@@ -168,15 +172,17 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                        (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
-                       if (r0) {
-                          if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
-                             r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
+                    if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                       if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                           (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
+                          if (r0) {
+                             if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                                r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                             }
+                          else
+                             r0 = r;
                           }
-                       else
-                          r0 = r;
                        }
                     }
                  r = Recordings.Next(r);
@@ -1035,7 +1041,7 @@ int cRecordings::TotalFileSizeMB(void)
   int size = 0;
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (recording->fileSizeMB > 0)
+      if (recording->fileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
          size += recording->fileSizeMB;
       }
   return size;
@@ -1400,10 +1406,6 @@ bool cIndexFile::IsStillRecording()
 }
 
 // --- cFileName -------------------------------------------------------------
-
-#include <errno.h>
-#include <unistd.h>
-#include "videodir.h"
 
 #define MAXFILESPERRECORDING 255
 #define RECORDFILESUFFIX    "/%03d.vdr"

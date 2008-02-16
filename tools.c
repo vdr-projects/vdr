@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.142 2008/02/15 14:45:05 kls Exp $
+ * $Id: tools.c 1.143 2008/02/16 13:38:22 kls Exp $
  */
 
 #include "tools.h"
@@ -275,6 +275,21 @@ cString itoa(int n)
   char buf[16];
   snprintf(buf, sizeof(buf), "%d", n);
   return buf;
+}
+
+bool EntriesOnSameFileSystem(const char *File1, const char *File2)
+{
+  struct statfs statFs;
+  if (statfs(File1, &statFs) == 0) {
+     fsid_t fsid1 = statFs.f_fsid;
+     if (statfs(File2, &statFs) == 0)
+        return memcmp(&statFs.f_fsid, &fsid1, sizeof(fsid1)) == 0;
+     else
+        LOG_ERROR_STR(File2);
+     }
+  else
+     LOG_ERROR_STR(File1);
+  return false;
 }
 
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB)

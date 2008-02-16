@@ -5579,7 +5579,7 @@ Video Disk Recorder Revision History
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
 
-2008-02-10: Version 1.5.15
+2008-02-16: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
@@ -5624,3 +5624,10 @@ Video Disk Recorder Revision History
   stopped immediately (thanks to Mikko Matilainen for reporting a possible crash
   if the Info key is pressed after deleting the currently replayed recording).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- When determining the amount of free disk space, any deleted (but not yet removed)
+  recordings on different file systems (that are mounted under the video directory)
+  are no longer taken into account.
+- When running out of disk space during a recording, only such deleted or old
+  recordings are removed, that actually are on the video directory file system(s).
+  This prevents VDR from accidentally deleting recordings on other file systems,
+  which would not add any free space to the video directory.

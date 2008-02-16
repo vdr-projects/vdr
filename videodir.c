@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.14 2005/12/18 10:33:20 kls Exp $
+ * $Id: videodir.c 1.15 2008/02/16 13:00:03 kls Exp $
  */
 
 #include "videodir.h"
@@ -232,3 +232,12 @@ void RemoveEmptyVideoDirectories(void)
      } while (Dir.Next());
 }
 
+bool IsOnVideoDirectoryFileSystem(const char *FileName)
+{
+  cVideoDirectory Dir;
+  do {
+     if (EntriesOnSameFileSystem(Dir.Name(), FileName))
+        return true;
+     } while (Dir.Next());
+  return false;
+}
