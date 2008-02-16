@@ -7,11 +7,12 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.82 2007/06/10 12:52:19 kls Exp $
+ * $Id: epg.c 1.83 2008/02/16 16:09:12 kls Exp $
  */
 
 #include "epg.h"
 #include <ctype.h>
+#include <limits.h>
 #include <time.h>
 #include "libsi/si.h"
 #include "timers.h"

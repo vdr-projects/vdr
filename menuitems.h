@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.24 2008/02/08 13:48:31 kls Exp $
+ * $Id: menuitems.h 1.25 2008/02/16 16:09:58 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
+#include <limits.h>
 #include "osdbase.h"
 
 extern const char *FileNameChars;

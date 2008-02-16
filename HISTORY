@@ -5636,3 +5636,4 @@ Video Disk Recorder Revision History
 - Added cStatus::TimerChange() to inform plugins about changes to the list of timers
   (based on a patch from Benedikt Elser).
 - Added new cStatus functions to the 'status' plugin.
+- Added missing #include <limits.h> to epg.c and menuitems.h (thanks to Ville Skyttä).

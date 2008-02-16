@@ -1749,6 +1749,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing the link to the GPL2 at http://www.gnu.org in vdr.c
  for making the "Play" key start replay of the selected recording in the Recordings
  menu
+ for adding missing #include <limits.h> to epg.c and menuitems.h
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
