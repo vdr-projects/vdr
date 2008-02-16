@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.30 2007/06/03 13:24:58 kls Exp $
+ * $Id: timers.h 1.31 2008/02/16 14:33:23 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -38,7 +38,7 @@ private:
   int stop;
   int priority;
   int lifetime;
-  char file[MaxFileName];
+  mutable char file[MaxFileName];
   char *aux;
   const cEvent *event;
 public:
@@ -62,7 +62,7 @@ public:
   const char *File(void) const { return file; }
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
-  cString ToText(bool UseChannelID = false);
+  cString ToText(bool UseChannelID = false) const;
   cString ToDescr(void) const;
   const cEvent *Event(void) const { return event; }
   bool Parse(const char *s);
@@ -119,6 +119,9 @@ public:
       ///< Upon return the internal state will be stored in State.
   void SetEvents(void);
   void DeleteExpired(void);
+  void Add(cTimer *Timer, cTimer *After = NULL);
+  void Ins(cTimer *Timer, cTimer *Before = NULL);
+  void Del(cTimer *Timer, bool DeleteObject = true);
   };
 
 extern cTimers Timers;

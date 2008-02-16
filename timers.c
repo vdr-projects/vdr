@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.72 2008/02/15 15:36:59 kls Exp $
+ * $Id: timers.c 1.73 2008/02/16 14:47:40 kls Exp $
  */
 
 #include "timers.h"
@@ -15,6 +15,7 @@
 #include "libsi/si.h"
 #include "recording.h"
 #include "remote.h"
+#include "status.h"
 
 #define VFAT_MAX_FILENAME 40 // same as MAX_SUBTITLE_LENGTH in recording.c
 
@@ -136,7 +137,7 @@ int cTimer::Compare(const cListObject &ListObject) const
   return r;
 }
 
-cString cTimer::ToText(bool UseChannelID)
+cString cTimer::ToText(bool UseChannelID) const
 {
   strreplace(file, ':', '|');
   cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
@@ -696,7 +697,26 @@ cTimer *cTimers::GetNextActiveTimer(void)
 
 void cTimers::SetModified(void)
 {
+  cStatus::MsgTimerChange(NULL, tcMod);
   state++;
+}
+
+void cTimers::Add(cTimer *Timer, cTimer *After)
+{
+  cConfig<cTimer>::Add(Timer, After);
+  cStatus::MsgTimerChange(Timer, tcAdd);
+}
+
+void cTimers::Ins(cTimer *Timer, cTimer *Before)
+{
+  cConfig<cTimer>::Ins(Timer, Before);
+  cStatus::MsgTimerChange(Timer, tcAdd);
+}
+
+void cTimers::Del(cTimer *Timer, bool DeleteObject)
+{
+  cStatus::MsgTimerChange(Timer, tcDel);
+  cConfig<cTimer>::Del(Timer, DeleteObject);
 }
 
 bool cTimers::Modified(int &State)

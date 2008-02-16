@@ -5633,3 +5633,5 @@ Video Disk Recorder Revision History
   which would not add any free space to the video directory.
 - Implemented the cStatus, cDevice and cPlayer functions for setting subtitle tracks
   in plugins (thanks to Petri Hintukainen).
+- Added cStatus::TimerChange() to inform plugins about changes to the list of timers
+  (based on a patch from Benedikt Elser).
