@@ -5635,3 +5635,4 @@ Video Disk Recorder Revision History
   in plugins (thanks to Petri Hintukainen).
 - Added cStatus::TimerChange() to inform plugins about changes to the list of timers
   (based on a patch from Benedikt Elser).
+- Added new cStatus functions to the 'status' plugin.
