@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.19 2008/01/13 12:38:00 kls Exp $
+ * $Id: skinclassic.c 1.25 2008/02/17 14:23:36 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -77,6 +77,7 @@ private:
   int lineHeight;
   int timeWidth;
   bool message;
+  cString lastDate;
 public:
   cSkinClassicDisplayChannel(bool WithInfo);
   virtual ~cSkinClassicDisplayChannel();
@@ -113,6 +114,7 @@ void cSkinClassicDisplayChannel::SetChannel(const cChannel *Channel, int Number)
 {
   osd->DrawRectangle(0, 0, osd->Width() - 1, lineHeight - 1, Theme.Color(clrBackground));
   osd->DrawText(2, 0, ChannelString(Channel, Number), Theme.Color(clrChannelName), Theme.Color(clrBackground), cFont::GetFont(fontOsd));
+  lastDate = NULL;
 }
 
 void cSkinClassicDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -147,9 +149,12 @@ void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     const cFont *font = cFont::GetFont(fontSml);
-     int w = font->Width(date);
-     osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
+     if (!*lastDate || strcmp(date, lastDate)) {
+        const cFont *font = cFont::GetFont(fontSml);
+        int w = font->Width(date);
+        osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
+        lastDate = date;
+        }
      }
   osd->Flush();
 }
@@ -159,12 +164,13 @@ void cSkinClassicDisplayChannel::Flush(void)
 class cSkinClassicDisplayMenu : public cSkinDisplayMenu {
 private:
   cOsd *osd;
-  int x0, x1;
+  int x0, x1, x2, x3;
   int y0, y1, y2, y3, y4, y5;
   int lineHeight;
   int dateWidth;
   cString lastDate;
-  void SetScrollbar(void);
+  void DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown);
+  void SetTextScrollbar(void);
 public:
   cSkinClassicDisplayMenu(void);
   virtual ~cSkinClassicDisplayMenu();
@@ -175,6 +181,7 @@ public:
   virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
+  virtual void SetScrollbar(int Total, int Offset);
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
@@ -189,7 +196,9 @@ cSkinClassicDisplayMenu::cSkinClassicDisplayMenu(void)
   lineHeight = font->Height();
   dateWidth = 0;
   x0 = 0;
-  x1 = cOsd::OsdWidth();
+  x1 = x0 + 10;
+  x3 = cOsd::OsdWidth();
+  x2 = x3 - 2 * ScrollWidth;
   y0 = 0;
   y1 = lineHeight;
   y2 = y1 + lineHeight;
@@ -197,22 +206,22 @@ cSkinClassicDisplayMenu::cSkinClassicDisplayMenu(void)
   y4 = y5 - lineHeight;
   y3 = y4 - lineHeight;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
-  tArea Areas[] = { { x0, y0, x1 - 1, y5 - 1, 8 } };
+  tArea Areas[] = { { x0, y0, x3 - 1, y5 - 1, 8 } };
   if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x1 - 1, y5 - 1, 4 } };
+     tArea Areas[] = { { x0, y0, x3 - 1, y5 - 1, 4 } };
      if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { x0, y0, x1 - 1, y1 - 1, 2 },
-                          { x0, y1, x1 - 1, y3 - 1, 2 },
-                          { x0, y3, x1 - 1, y5 - 1, 4 }
+        tArea Areas[] = { { x0, y0, x3 - 1, y1 - 1, 2 },
+                          { x0, y1, x3 - 1, y3 - 1, 2 },
+                          { x0, y3, x3 - 1, y5 - 1, 4 }
                         };
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
         }
      }
-  osd->DrawRectangle(x0, y0, x1 - 1, y5 - 1, Theme.Color(clrBackground));
+  osd->DrawRectangle(x0, y0, x3 - 1, y5 - 1, Theme.Color(clrBackground));
 }
 
 cSkinClassicDisplayMenu::~cSkinClassicDisplayMenu()
@@ -220,25 +229,31 @@ cSkinClassicDisplayMenu::~cSkinClassicDisplayMenu()
   delete osd;
 }
 
-void cSkinClassicDisplayMenu::SetScrollbar(void)
+void cSkinClassicDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown)
 {
-  if (textScroller.CanScroll()) {
-     int yt = textScroller.Top();
-     int yb = yt + textScroller.Height();
+  if (Total > 0 && Total > Shown) {
+     int yt = Top;
+     int yb = yt + Height - 1;
      int st = yt;
      int sb = yb;
-     int tt = st + (sb - st) * textScroller.Offset() / textScroller.Total();
-     int tb = tt + (sb - st) * textScroller.Shown() / textScroller.Total();
-     int xl = x1 - ScrollWidth;
-     osd->DrawRectangle(xl, st, x1 - 1, sb, Theme.Color(clrMenuScrollbarTotal));
-     osd->DrawRectangle(xl, tt, x1 - 1, tb, Theme.Color(clrMenuScrollbarShown));
+     int tt = st + (sb - st + 1) * Offset / Total;
+     int tb = tt + (sb - st + 1) * Shown / Total;
+     int xl = x3 - ScrollWidth;
+     osd->DrawRectangle(xl, st, x3 - 1, sb, Theme.Color(clrMenuScrollbarTotal));
+     osd->DrawRectangle(xl, tt, x3 - 1, tb, Theme.Color(clrMenuScrollbarShown));
      }
+}
+
+void cSkinClassicDisplayMenu::SetTextScrollbar(void)
+{
+  if (textScroller.CanScroll())
+     DrawScrollbar(textScroller.Total(), textScroller.Offset(), textScroller.Shown(), textScroller.Top(), textScroller.Height(), textScroller.CanScrollUp(), textScroller.CanScrollDown());
 }
 
 void cSkinClassicDisplayMenu::Scroll(bool Up, bool Page)
 {
   cSkinDisplayMenu::Scroll(Up, Page);
-  SetScrollbar();
+  SetTextScrollbar();
 }
 
 int cSkinClassicDisplayMenu::MaxItems(void)
@@ -249,24 +264,24 @@ int cSkinClassicDisplayMenu::MaxItems(void)
 void cSkinClassicDisplayMenu::Clear(void)
 {
   textScroller.Reset();
-  osd->DrawRectangle(x0, y1, x1 - 1, y4 - 1, Theme.Color(clrBackground));
+  osd->DrawRectangle(x0, y1, x3 - 1, y4 - 1, Theme.Color(clrBackground));
 }
 
 void cSkinClassicDisplayMenu::SetTitle(const char *Title)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0 - dateWidth);
+  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x3 - x0 - dateWidth);
 }
 
 void cSkinClassicDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  int w = x1 - x0;
+  int w = x3 - x0;
   int t0 = x0;
   int t1 = x0 + w / 4;
   int t2 = x0 + w / 2;
-  int t3 = x1 - w / 4;
-  int t4 = x1;
+  int t3 = x3 - w / 4;
+  int t4 = x3;
   osd->DrawText(t0, y4, Red,    Theme.Color(clrButtonRedFg),    Red    ? Theme.Color(clrButtonRedBg)    : Theme.Color(clrBackground), font, t1 - t0, 0, taCenter);
   osd->DrawText(t1, y4, Green,  Theme.Color(clrButtonGreenFg),  Green  ? Theme.Color(clrButtonGreenBg)  : Theme.Color(clrBackground), font, t2 - t1, 0, taCenter);
   osd->DrawText(t2, y4, Yellow, Theme.Color(clrButtonYellowFg), Yellow ? Theme.Color(clrButtonYellowBg) : Theme.Color(clrBackground), font, t3 - t2, 0, taCenter);
@@ -277,9 +292,9 @@ void cSkinClassicDisplayMenu::SetMessage(eMessageType Type, const char *Text)
 {
   const cFont *font = cFont::GetFont(fontOsd);
   if (Text)
-     osd->DrawText(x0, y3, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x1 - x0, 0, taCenter);
+     osd->DrawText(x0, y3, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x3 - x0, 0, taCenter);
   else
-     osd->DrawRectangle(x0, y3, x1 - 1, y4 - 1, Theme.Color(clrBackground));
+     osd->DrawRectangle(x0, y3, x3 - 1, y4 - 1, Theme.Color(clrBackground));
 }
 
 void cSkinClassicDisplayMenu::SetItem(const char *Text, int Index, bool Current, bool Selectable)
@@ -299,12 +314,17 @@ void cSkinClassicDisplayMenu::SetItem(const char *Text, int Index, bool Current,
       const char *s = GetTabbedText(Text, i);
       if (s) {
          int xt = x0 + Tab(i);
-         osd->DrawText(xt, y, s, ColorFg, ColorBg, font, x1 - xt);
+         osd->DrawText(xt, y, s, ColorFg, ColorBg, font, x2 - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(x1 - x0 - Tab(1));
+  SetEditableWidth(x2 - x0 - Tab(1));
+}
+
+void cSkinClassicDisplayMenu::SetScrollbar(int Total, int Offset)
+{
+  DrawScrollbar(Total, Offset, MaxItems(), y2, MaxItems() * lineHeight, Offset > 0, Offset + MaxItems() < Total);
 }
 
 void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
@@ -312,33 +332,30 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   if (!Event)
      return;
   const cFont *font = cFont::GetFont(fontOsd);
-  int xl = x0 + 10;
   int y = y2;
   cTextScroller ts;
   char t[32];
   snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
-  ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
+  ts.Set(osd, x1, y, x2 - x1, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
-     char *buffer;
-     asprintf(&buffer, " VPS: %s ", *Event->GetVpsString());
+     cString buffer = cString::sprintf(" VPS: %s ", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
      int w = font->Width(buffer);
-     osd->DrawText(x1 - w, y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font, w);
-     free(buffer);
+     osd->DrawText(x3 - w, y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font, w);
      }
   y += ts.Height();
   y += font->Height();
-  ts.Set(osd, xl, y, x1 - xl, y3 - y, Event->Title(), font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
+  ts.Set(osd, x1, y, x2 - x1, y3 - y, Event->Title(), font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
   y += ts.Height();
   if (!isempty(Event->ShortText())) {
      const cFont *font = cFont::GetFont(fontSml);
-     ts.Set(osd, xl, y, x1 - xl, y3 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
+     ts.Set(osd, x1, y, x2 - x1, y3 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
   y += font->Height();
   if (!isempty(Event->Description())) {
-     textScroller.Set(osd, xl, y, x1 - xl - 2 * ScrollWidth, y3 - y, Event->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
-     SetScrollbar();
+     textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Event->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     SetTextScrollbar();
      }
 }
 
@@ -348,40 +365,39 @@ void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
      return;
   const cRecordingInfo *Info = Recording->Info();
   const cFont *font = cFont::GetFont(fontOsd);
-  int xl = x0 + 10;
   int y = y2;
   cTextScroller ts;
   char t[32];
   snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
-  ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
+  ts.Set(osd, x1, y, x2 - x1, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   y += ts.Height();
   y += font->Height();
   const char *Title = Info->Title();
   if (isempty(Title))
      Title = Recording->Name();
-  ts.Set(osd, xl, y, x1 - xl, y3 - y, Title, font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
+  ts.Set(osd, x1, y, x2 - x1, y3 - y, Title, font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
   y += ts.Height();
   if (!isempty(Info->ShortText())) {
      const cFont *font = cFont::GetFont(fontSml);
-     ts.Set(osd, xl, y, x1 - xl, y3 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
+     ts.Set(osd, x1, y, x2 - x1, y3 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
   y += font->Height();
   if (!isempty(Info->Description())) {
-     textScroller.Set(osd, xl, y, x1 - xl - 2 * ScrollWidth, y3 - y, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
-     SetScrollbar();
+     textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     SetTextScrollbar();
      }
 }
 
 void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
-  textScroller.Set(osd, x0, y2, GetTextAreaWidth(), y3 - y2, Text, GetTextAreaFont(FixedFont), Theme.Color(clrMenuText), Theme.Color(clrBackground));
-  SetScrollbar();
+  textScroller.Set(osd, x1, y2, GetTextAreaWidth(), y3 - y2, Text, GetTextAreaFont(FixedFont), Theme.Color(clrMenuText), Theme.Color(clrBackground));
+  SetTextScrollbar();
 }
 
 int cSkinClassicDisplayMenu::GetTextAreaWidth(void) const
 {
-  return x1 - x0 - 2 * ScrollWidth;
+return x2 - x1;
 }
 
 const cFont *cSkinClassicDisplayMenu::GetTextAreaFont(bool FixedFont) const
@@ -392,10 +408,10 @@ const cFont *cSkinClassicDisplayMenu::GetTextAreaFont(bool FixedFont) const
 void cSkinClassicDisplayMenu::Flush(void)
 {
   cString date = DayDateTime();
-  if (!lastDate || strcmp(date, lastDate)) {
+  if (!*lastDate || strcmp(date, lastDate)) {
      const cFont *font = cFont::GetFont(fontOsd);
      int w = font->Width(date);
-     osd->DrawText(x1 - w - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font, w);
+     osd->DrawText(x3 - w - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font, w);
      lastDate = date;
      dateWidth = max(w + 2, dateWidth);
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.10 2007/08/12 10:34:40 kls Exp $
+ * $Id: status.h 1.12 2008/02/16 15:00:33 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -15,11 +15,21 @@
 #include "player.h"
 #include "tools.h"
 
+enum eTimerChange { tcMod, tcAdd, tcDel };
+
+class cTimer;
+
 class cStatus : public cListObject {
 private:
   static cList<cStatus> statusMonitors;
 protected:
   // These functions can be implemented by derived classes to receive status information:
+  virtual void TimerChange(const cTimer *Timer, eTimerChange Change) {}
+               // Indicates a change in the timer settings.
+               // If Change is tcAdd or tcDel, Timer points to the timer that has
+               // been added or will be deleted, respectively. In case of tcMod,
+               // Timer is NULL; this indicates that some timer has been changed.
+               // Note that tcAdd and tcDel are always also followed by a tcMod.
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber) {}
                // Indicates a channel switch on the given DVB device.
                // If ChannelNumber is 0, this is before the channel is being switched,
@@ -44,6 +54,9 @@ protected:
   virtual void SetAudioChannel(int AudioChannel) {}
                // The audio channel has been set to the given value.
                // 0=stereo, 1=left, 2=right, -1=no information available.
+  virtual void SetSubtitleTrack(int Index, const char * const *Tracks) {}
+               // The subtitle track has been set to the one given by Index, which
+               // points into the Tracks array of strings. Tracks is NULL terminated.
   virtual void OsdClear(void) {}
                // The OSD has been cleared.
   virtual void OsdTitle(const char *Title) {}
@@ -71,12 +84,14 @@ public:
   cStatus(void);
   virtual ~cStatus();
   // These functions are called whenever the related status information changes:
+  static void MsgTimerChange(const cTimer *Timer, eTimerChange Change);
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
   static void MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On);
   static void MsgReplaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgSetAudioTrack(int Index, const char * const *Tracks);
   static void MsgSetAudioChannel(int AudioChannel);
+  static void MsgSetSubtitleTrack(int Index, const char * const *Tracks);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);
   static void MsgOsdStatusMessage(const char *Message);

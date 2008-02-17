@@ -6,13 +6,13 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.c 1.3 2006/04/17 12:48:33 kls Exp $
+ * $Id: spu.c 1.4 2008/02/10 14:06:48 kls Exp $
  */
 
 #include "spu.h"
 #include <inttypes.h>
 
-// -- cSpuDecoder ------------------------------------------------------------
+// --- cSpuDecoder -----------------------------------------------------------
 /*
 cSpuDecoder::cSpuDecoder()
 {};

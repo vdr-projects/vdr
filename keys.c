@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.16 2007/08/26 12:35:21 kls Exp $
+ * $Id: keys.c 1.17 2008/02/10 14:08:48 kls Exp $
  */
 
 #include "keys.h"
@@ -70,7 +70,7 @@ static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { kNone,                 NULL               },
                   };
 
-// -- cKey -------------------------------------------------------------------
+// --- cKey ------------------------------------------------------------------
 
 cKey::cKey(void)
 {
@@ -149,7 +149,7 @@ const char *cKey::ToString(eKeys Key, bool Translate)
   return NULL;
 }
 
-// -- cKeys ------------------------------------------------------------------
+// --- cKeys -----------------------------------------------------------------
 
 cKeys Keys;
 
@@ -194,7 +194,7 @@ void cKeys::PutSetup(const char *Remote, const char *Setup)
      esyslog("ERROR: called PutSetup() for %s, but setup has already been defined!", Remote);
 }
 
-// -- cKeyMacro --------------------------------------------------------------
+// --- cKeyMacro -------------------------------------------------------------
 
 cKeyMacro::cKeyMacro(void)
 {
@@ -260,7 +260,7 @@ bool cKeyMacro::Parse(char *s)
   return true;
 }
 
-// -- cKeyMacros -------------------------------------------------------------
+// --- cKeyMacros ------------------------------------------------------------
 
 cKeyMacros KeyMacros;
 

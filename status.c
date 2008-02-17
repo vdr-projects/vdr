@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 1.8 2005/12/31 15:10:10 kls Exp $
+ * $Id: status.c 1.10 2008/02/16 14:46:31 kls Exp $
  */
 
 #include "status.h"
@@ -21,6 +21,12 @@ cStatus::cStatus(void)
 cStatus::~cStatus()
 {
   statusMonitors.Del(this, false);
+}
+
+void cStatus::MsgTimerChange(const cTimer *Timer, eTimerChange Change)
+{
+  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+      sm->TimerChange(Timer, Change);
 }
 
 void cStatus::MsgChannelSwitch(const cDevice *Device, int ChannelNumber)
@@ -57,6 +63,12 @@ void cStatus::MsgSetAudioChannel(int AudioChannel)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->SetAudioChannel(AudioChannel);
+}
+
+void cStatus::MsgSetSubtitleTrack(int Index, const char * const *Tracks)
+{
+  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+      sm->SetSubtitleTrack(Index, Tracks);
 }
 
 void cStatus::MsgOsdClear(void)

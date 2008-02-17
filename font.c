@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.22 2007/11/04 11:08:12 kls Exp $
+ * $Id: font.c 1.23 2008/02/09 11:52:25 kls Exp $
  */
 
 #include "font.h"
@@ -241,10 +241,16 @@ int cFreetypeFont::Width(const char *s) const
   return w;
 }
 
+#define MAX_BLEND_LEVELS 256
+
 void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const
 {
   if (s && height) { // checking height to make sure we actually have a valid font
      bool AntiAliased = Setup.AntiAlias && Bitmap->Bpp() >= 8;
+     bool TransparentBackground = ColorBg == clrTransparent;
+     int16_t BlendLevelIndex[MAX_BLEND_LEVELS]; // tIndex is 8 bit unsigned, so a negative value can be used to mark unused entries
+     if (AntiAliased && !TransparentBackground)
+        memset(BlendLevelIndex, 0xFF, sizeof(BlendLevelIndex)); // initializes the array with negative values
      tIndex fg = Bitmap->Index(ColorFg);
      uint prevSym = 0;
      while (*s) {
@@ -266,12 +272,16 @@ void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColo
                          if (bt > 0x00) {
                             int px = x + pitch + g->Left() + kerning;
                             int py = y + row + (height - Bottom() - g->Top());
+                            tColor bg;
                             if (bt == 0xFF)
-                               Bitmap->SetIndex(px, py, fg);
-                            else {
-                               tColor bg = (ColorBg != clrTransparent) ? ColorBg : Bitmap->GetColor(px, py);
-                               Bitmap->SetIndex(px, py, Bitmap->Index(Bitmap->Blend(ColorFg, bg, bt)));
-                               }
+                               bg = fg;
+                            else if (TransparentBackground)
+                               bg = Bitmap->Index(Bitmap->Blend(ColorFg, Bitmap->GetColor(px, py), bt));
+                            else if (BlendLevelIndex[bt] >= 0)
+                               bg = BlendLevelIndex[bt];
+                            else
+                               bg = BlendLevelIndex[bt] = Bitmap->Index(Bitmap->Blend(ColorFg, ColorBg, bt));
+                            Bitmap->SetIndex(px, py, bg);
                             }
                          }
                       else { //monochrome rendering

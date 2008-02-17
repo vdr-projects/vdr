@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.87 2008/01/27 10:35:18 kls Exp $
+ * $Id: device.h 1.90 2008/02/16 13:50:11 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -224,12 +224,6 @@ public:
          ///< function itself actually returns true.
          ///< The default implementation always returns false, so a derived cDevice
          ///< class that can provide channels must implement this function.
-  virtual int NumProvidedSystems(void) const;
-         ///< Returns the number of individual "delivery systems" this device provides.
-         ///< The default implementation returns 0, so any derived class that can
-         ///< actually provide channels must implement this function.
-         ///< The result of this function is used when selecting a device, in order
-         ///< to avoid devices that provide more than one system.
   virtual bool IsTunedToTransponder(const cChannel *Channel);
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.
@@ -308,7 +302,12 @@ private:
 protected:
   void StartSectionHandler(void);
        ///< A derived device that provides section data must call
-       ///< this function to actually set up the section handler.
+       ///< this function (typically in its constructor) to actually set
+       ///< up the section handler.
+  void StopSectionHandler(void);
+       ///< A device that has called StartSectionHandler() must call this
+       ///< function (typically in its destructor) to stop the section
+       ///< handler.
 public:
   virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
        ///< Opens a file handle for the given filter data.
@@ -387,6 +386,8 @@ private:
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.
+  virtual void SetSubtitleTrackDevice(eTrackType Type);
+       ///< Sets the current subtitle track to the given value.
 public:
   void ClrAvailableTracks(bool DescriptionsOnly = false, bool IdsOnly = false);
        ///< Clears the list of currently availabe tracks. If DescriptionsOnly

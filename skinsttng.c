@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.21 2007/06/17 13:51:56 kls Exp $
+ * $Id: skinsttng.c 1.26 2008/02/17 14:23:45 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -129,6 +129,7 @@ private:
   tColor frameColor;
   bool message;
   const cEvent *present;
+  cString lastDate;
   int lastSeen;
   tTrackId lastTrackId;
   static cBitmap bmTeletext, bmRadio, bmAudio, bmDolbyDigital, bmEncrypted, bmRecording;
@@ -307,7 +308,10 @@ void cSkinSTTNGDisplayChannel::Flush(void)
         const cFont *font = cFont::GetFont(fontSml);
         cString date = DayDateTime();
         int w = font->Width(date);
-        osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
+        if (!*lastDate || strcmp(date, lastDate)) {
+           osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
+           lastDate = date;
+           }
         cDevice *Device = cDevice::PrimaryDevice();
         const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
         if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
@@ -325,7 +329,7 @@ void cSkinSTTNGDisplayChannel::Flush(void)
      if (seen != lastSeen) {
         osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y4 - 1, Theme.Color(clrChannelTimebarRest));
         if (seen)
-        osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y3 + seen, Theme.Color(clrChannelTimebarSeen));
+           osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y3 + seen, Theme.Color(clrChannelTimebarSeen));
         lastSeen = seen;
         }
      }
@@ -344,7 +348,8 @@ private:
   int currentIndex;
   bool message;
   cString lastDate;
-  void SetScrollbar(void);
+  void DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown);
+  void SetTextScrollbar(void);
 public:
   cSkinSTTNGDisplayMenu(void);
   virtual ~cSkinSTTNGDisplayMenu();
@@ -355,6 +360,7 @@ public:
   virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
+  virtual void SetScrollbar(int Total, int Offset);
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
@@ -431,37 +437,43 @@ cSkinSTTNGDisplayMenu::~cSkinSTTNGDisplayMenu()
   delete osd;
 }
 
-void cSkinSTTNGDisplayMenu::SetScrollbar(void)
+void cSkinSTTNGDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown)
 {
-  if (textScroller.CanScroll()) {
+  if (Total > 0 && Total > Shown) {
      int h  = lineHeight;
-     int yt = textScroller.Top();
-     int yb = yt + textScroller.Height();
+     int yt = Top;
+     int yb = yt + Height - 1;
      int st = yt + h + Gap;
      int sb = yb - h - Gap;
-     int tt = st + (sb - st) * textScroller.Offset() / textScroller.Total();
-     int tb = tt + (sb - st) * textScroller.Shown() / textScroller.Total();
+     int tt = st + (sb - st + 1) * Offset / Total;
+     int tb = tt + (sb - st + 1) * Shown / Total;
      osd->DrawRectangle(x5, st, x5 + ScrollWidth - 1, sb, Theme.Color(clrMenuScrollbarTotal));
      osd->DrawRectangle(x5, tt, x5 + ScrollWidth - 1, tb, Theme.Color(clrMenuScrollbarShown));
      osd->DrawRectangle(x5, yt, x6 - 1, yt + h - 1, frameColor);
      osd->DrawEllipse  (x6, yt, x7 - 1, yt + h - 1, frameColor, 5);
      osd->DrawRectangle(x5, yb - h, x6 - 1, yb - 1, frameColor);
      osd->DrawEllipse  (x6, yb - h, x7 - 1, yb - 1, frameColor, 5);
-     if (textScroller.CanScrollUp()) {
+     if (CanScrollUp) {
         cBitmap bm(arrowup_xpm);
         osd->DrawBitmap(x5 + (x7 - x5 - bm.Width()) / 2 - 2, yt + (h - bm.Height()) / 2, bm, Theme.Color(clrMenuScrollbarArrow), frameColor);
         }
-     if (textScroller.CanScrollDown()) {
+     if (CanScrollDown) {
         cBitmap bm(arrowdown_xpm);
         osd->DrawBitmap(x5 + (x7 - x5 - bm.Width()) / 2 - 2, yb - h + (h - bm.Height()) / 2, bm, Theme.Color(clrMenuScrollbarArrow), frameColor);
         }
-     }
+   }
+}
+
+void cSkinSTTNGDisplayMenu::SetTextScrollbar(void)
+{
+  if (textScroller.CanScroll())
+     DrawScrollbar(textScroller.Total(), textScroller.Offset(), textScroller.Shown(), textScroller.Top(), textScroller.Height(), textScroller.CanScrollUp(), textScroller.CanScrollDown());
 }
 
 void cSkinSTTNGDisplayMenu::Scroll(bool Up, bool Page)
 {
   cSkinDisplayMenu::Scroll(Up, Page);
-  SetScrollbar();
+  SetTextScrollbar();
 }
 
 int cSkinSTTNGDisplayMenu::MaxItems(void)
@@ -554,6 +566,11 @@ void cSkinSTTNGDisplayMenu::SetItem(const char *Text, int Index, bool Current, b
   SetEditableWidth(x4 - x3 - 5 - Tab(1));
 }
 
+void cSkinSTTNGDisplayMenu::SetScrollbar(int Total, int Offset)
+{
+  DrawScrollbar(Total, Offset, MaxItems(), y3 + Roundness, MaxItems() * lineHeight, Offset > 0, Offset + MaxItems() < Total);
+}
+
 void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
 {
   if (!Event)
@@ -566,15 +583,13 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
   snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, xl, y, x4 - xl, y4 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
-     char *buffer;
-     asprintf(&buffer, " VPS: %s ", *Event->GetVpsString());
+     cString buffer = cString::sprintf(" VPS: %s ", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
      int w = font->Width(buffer);
      osd->DrawText(x4 - w, y, buffer, Theme.Color(clrMenuEventVps), frameColor, font, w);
      int yb = y + font->Height();
      osd->DrawRectangle(x5, y, x6 - 1, yb - 1, frameColor);
      osd->DrawEllipse  (x6, y, x7 - 1, yb - 1, frameColor, 5);
-     free(buffer);
      }
   y += ts.Height();
   y += font->Height();
@@ -594,7 +609,7 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
      osd->DrawEllipse  (x1, yt - Roundness, x2, yt,             frameColor, -3);
      osd->DrawRectangle(x1, yt,             x2, yb,             frameColor);
      osd->DrawEllipse  (x1, yb,             x2, yb + Roundness, frameColor, -2);
-     SetScrollbar();
+     SetTextScrollbar();
      }
 }
 
@@ -631,14 +646,14 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
      osd->DrawEllipse  (x1, yt - Roundness, x2, yt,             frameColor, -3);
      osd->DrawRectangle(x1, yt,             x2, yb,             frameColor);
      osd->DrawEllipse  (x1, yb,             x2, yb + Roundness, frameColor, -2);
-     SetScrollbar();
+     SetTextScrollbar();
      }
 }
 
 void cSkinSTTNGDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
   textScroller.Set(osd, x3, y3, GetTextAreaWidth(), y4 - y3, Text, GetTextAreaFont(FixedFont), Theme.Color(clrMenuText), Theme.Color(clrBackground));
-  SetScrollbar();
+  SetTextScrollbar();
 }
 
 int cSkinSTTNGDisplayMenu::GetTextAreaWidth(void) const
@@ -657,7 +672,7 @@ void cSkinSTTNGDisplayMenu::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     if (!lastDate || strcmp(date, lastDate)) {
+     if (!*lastDate || strcmp(date, lastDate)) {
         const cFont *font = cFont::GetFont(fontSml);
         int w = font->Width(date);
         osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrMenuDate), frameColor, font, w);

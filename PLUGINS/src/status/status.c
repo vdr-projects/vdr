@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 1.9 2007/08/15 13:19:44 kls Exp $
+ * $Id: status.c 1.10 2008/02/16 15:41:05 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.2.1";
+static const char *VERSION        = "0.3.0";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -17,19 +17,29 @@ static const char *MAINMENUENTRY  = NULL;
 
 class cStatusTest : public cStatus {
 protected:
+  virtual void TimerChange(const cTimer *Timer, eTimerChange Change);
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
   virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
   virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   virtual void SetVolume(int Volume, bool Absolute);
+  virtual void SetAudioTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel);
+  virtual void SetSubtitleTrack(int Index, const char * const *Tracks);
   virtual void OsdClear(void);
   virtual void OsdTitle(const char *Title);
   virtual void OsdStatusMessage(const char *Message);
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
+  virtual void OsdItem(const char *Text, int Index);
   virtual void OsdCurrentItem(const char *Text);
   virtual void OsdTextItem(const char *Text, bool Scroll);
   virtual void OsdChannel(const char *Text);
   virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);
   };
+
+void cStatusTest::TimerChange(const cTimer *Timer, eTimerChange Change)
+{
+  dsyslog("status: cStatusTest::TimerChange  %s %d", Timer ? *Timer->ToText(true) : "-", Change);
+}
 
 void cStatusTest::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
@@ -51,6 +61,21 @@ void cStatusTest::SetVolume(int Volume, bool Absolute)
   dsyslog("status: cStatusTest::SetVolume  %d %d", Volume, Absolute);
 }
 
+void cStatusTest::SetAudioTrack(int Index, const char * const *Tracks)
+{
+  dsyslog("status: cStatusTest::SetAudioTrack  %d %s", Index, Tracks[Index]);
+}
+
+void cStatusTest::SetAudioChannel(int AudioChannel)
+{
+  dsyslog("status: cStatusTest::SetAudioChannel  %d", AudioChannel);
+}
+
+void cStatusTest::SetSubtitleTrack(int Index, const char * const *Tracks)
+{
+  dsyslog("status: cStatusTest::SetSubtitleTrack  %d %s", Index, Tracks[Index]);
+}
+
 void cStatusTest::OsdClear(void)
 {
   dsyslog("status: cStatusTest::OsdClear");
@@ -69,6 +94,11 @@ void cStatusTest::OsdStatusMessage(const char *Message)
 void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
   dsyslog("status: cStatusTest::OsdHelpKeys %s - %s - %s - %s", Red, Green, Yellow, Blue);
+}
+
+void cStatusTest::OsdItem(const char *Text, int Index)
+{
+  //dsyslog("status: cStatusTest::OsdItem  %s %d", Text, Index);
 }
 
 void cStatusTest::OsdCurrentItem(const char *Text)

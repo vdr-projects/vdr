@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.7 2007/08/05 14:11:35 kls Exp $
+ * $Id: themes.c 1.8 2008/02/10 16:25:00 kls Exp $
  */
 
 #include "themes.h"
@@ -285,18 +285,14 @@ void cThemes::SetThemesDirectory(const char *ThemesDirectory)
 
 void cThemes::Load(const char *SkinName, const char *ThemeName, cTheme *Theme)
 {
-  char *FileName = NULL;
-  asprintf(&FileName, "%s/%s-%s.theme", themesDirectory, SkinName, ThemeName);
+  cString FileName = cString::sprintf("%s/%s-%s.theme", themesDirectory, SkinName, ThemeName);
   if (access(FileName, F_OK) == 0) // the file exists
      Theme->Load(FileName);
-  free(FileName);
 }
 
 void cThemes::Save(const char *SkinName, cTheme *Theme)
 {
-  char *FileName = NULL;
-  asprintf(&FileName, "%s/%s-%s.theme", themesDirectory, SkinName, Theme->Name());
+  cString FileName = cString::sprintf("%s/%s-%s.theme", themesDirectory, SkinName, Theme->Name());
   if (access(FileName, F_OK) != 0) // the file does not exist
      Theme->Save(FileName);
-  free(FileName);
 }

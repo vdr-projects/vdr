@@ -19,7 +19,7 @@ CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 ifdef PLUGIN
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
-endif 
+endif
 
 ### The directory environment:
 

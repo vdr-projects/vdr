@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.56 2008/01/26 16:07:07 kls Exp $
+ * $Id: menuitems.c 1.58 2008/02/10 16:03:30 kls Exp $
  */
 
 #include "menuitems.h"
@@ -34,9 +34,8 @@ cMenuEditItem::~cMenuEditItem()
 
 void cMenuEditItem::SetValue(const char *Value)
 {
-  char *buffer = NULL;
-  asprintf(&buffer, "%s:\t%s", name, Value);
-  SetText(buffer, false);
+  cString buffer = cString::sprintf("%s:\t%s", name, Value);
+  SetText(buffer);
   cStatus::MsgOsdCurrentItem(buffer);
 }
 
@@ -932,64 +931,6 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
         return state;
      *value = hh * 100 + mm;
      Set();
-     state = osContinue;
-     }
-  return state;
-}
-
-// --- cMenuEditMapItem ------------------------------------------------------
-
-cMenuEditMapItem::cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString)
-:cMenuEditItem(Name)
-{
-  value = Value;
-  map = Map;
-  zeroString = ZeroString;
-  Set();
-}
-
-void cMenuEditMapItem::Set(void)
-{
-  const char *s = NULL;
-  int n = MapToUser(*value, map, &s);
-  if (n == 999)
-     SetValue(tr("auto"));
-  else if (n == 0 && zeroString)
-     SetValue(zeroString);
-  else if (n >= 0) {
-     if (s)
-        SetValue(s);
-     else {
-        char buf[16];
-        snprintf(buf, sizeof(buf), "%d", n);
-        SetValue(buf);
-        }
-     }
-  else
-     SetValue("???");
-}
-
-eOSState cMenuEditMapItem::ProcessKey(eKeys Key)
-{
-  eOSState state = cMenuEditItem::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     int newValue = *value;
-     int n = DriverIndex(*value, map);
-     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        if (n-- > 0)
-           newValue = map[n].driverValue;
-        }
-     else if (NORMALKEY(Key) == kRight) {
-        if (map[++n].userValue >= 0)
-           newValue = map[n].driverValue;
-        }
-     else
-        return state;
-     if (newValue != *value) {
-        *value = newValue;
-        Set();
-        }
      state = osContinue;
      }
   return state;

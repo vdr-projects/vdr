@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.158 2007/11/25 13:46:27 kls Exp $
+ * $Id: config.c 1.161 2008/02/17 13:39:00 kls Exp $
  */
 
 #include "config.h"
@@ -62,10 +62,10 @@ const char *cCommand::Execute(const char *Parameters)
 {
   free(result);
   result = NULL;
-  char *cmdbuf = NULL;
+  cString cmdbuf;
   if (Parameters)
-     asprintf(&cmdbuf, "%s %s", command, Parameters);
-  const char *cmd = cmdbuf ? cmdbuf : command;
+     cmdbuf = cString::sprintf("%s %s", command, Parameters);
+  const char *cmd = *cmdbuf ? *cmdbuf : command;
   dsyslog("executing command '%s'", cmd);
   cPipe p;
   if (p.Open(cmd, "r")) {
@@ -82,11 +82,10 @@ const char *cCommand::Execute(const char *Parameters)
      }
   else
      esyslog("ERROR: can't open pipe for command '%s'", cmd);
-  free(cmdbuf);
   return result;
 }
 
-// -- cSVDRPhost -------------------------------------------------------------
+// --- cSVDRPhost ------------------------------------------------------------
 
 cSVDRPhost::cSVDRPhost(void)
 {
@@ -122,12 +121,12 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
   return (Address & mask) == (addr.s_addr & mask);
 }
 
-// -- cCommands --------------------------------------------------------------
+// --- cCommands -------------------------------------------------------------
 
 cCommands Commands;
 cCommands RecordingCommands;
 
-// -- cSVDRPhosts ------------------------------------------------------------
+// --- cSVDRPhosts -----------------------------------------------------------
 
 cSVDRPhosts SVDRPhosts;
 
@@ -142,7 +141,7 @@ bool cSVDRPhosts::Acceptable(in_addr_t Address)
   return false;
 }
 
-// -- cSetupLine -------------------------------------------------------------
+// --- cSetupLine ------------------------------------------------------------
 
 cSetupLine::cSetupLine(void)
 {
@@ -208,7 +207,7 @@ bool cSetupLine::Save(FILE *f)
   return fprintf(f, "%s%s%s = %s\n", plugin ? plugin : "", plugin ? "." : "", name, value) > 0;
 }
 
-// -- cSetup -----------------------------------------------------------------
+// --- cSetup ----------------------------------------------------------------
 
 cSetup Setup;
 
@@ -322,10 +321,7 @@ void cSetup::Store(const char *Name, const char *Value, const char *Plugin, bool
 
 void cSetup::Store(const char *Name, int Value, const char *Plugin)
 {
-  char *buffer = NULL;
-  asprintf(&buffer, "%d", Value);
-  Store(Name, buffer, Plugin);
-  free(buffer);
+  Store(Name, cString::sprintf("%d", Value), Plugin);
 }
 
 bool cSetup::Load(const char *FileName)

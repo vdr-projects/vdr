@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.15 2007/01/04 13:08:55 kls Exp $
+ * $Id: skins.h 1.16 2008/02/17 11:30:56 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -144,6 +144,11 @@ public:
   virtual void SetItem(const cRecording *Recording, int Index, bool Current, bool Selectable);
   --> false: call SetItem(text)
   */
+  virtual void SetScrollbar(int Total, int Offset);
+       ///< Sets the Total number of items in the currently displayed list, and the
+       ///< Offset of the first item that is currently displayed (the skin knows how
+       ///< many items it can display at once, see MaxItems()). This can be used to
+       ///< display a scollbar.
   virtual void SetEvent(const cEvent *Event) = 0;
        ///< Sets the Event that shall be displayed, using the entire central area
        ///< of the menu. The Event's 'description' shall be displayed using a

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.157 2007/11/04 11:17:43 kls Exp $
+ * $Id: recording.c 1.161 2008/02/16 13:31:39 kls Exp $
  */
 
 #include "recording.h"
@@ -81,6 +81,7 @@ cRemoveDeletedRecordingsThread::cRemoveDeletedRecordingsThread(void)
 
 void cRemoveDeletedRecordingsThread::Action(void)
 {
+  SetPriority(19);
   // Make sure only one instance of VDR does this:
   cLockFile LockFile(VideoDirectory);
   if (LockFile.Lock()) {
@@ -143,10 +144,12 @@ void AssertFreeDiskSpace(int Priority, bool Force)
         cThreadLock DeletedRecordingsLock(&DeletedRecordings);
         if (DeletedRecordings.Count()) {
            cRecording *r = DeletedRecordings.First();
-           cRecording *r0 = r;
+           cRecording *r0 = NULL;
            while (r) {
-                 if (r->start < r0->start)
-                    r0 = r;
+                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
+                    if (!r0 || r->start < r0->start)
+                       r0 = r;
+                    }
                  r = DeletedRecordings.Next(r);
                  }
            if (r0 && r0->Remove()) {
@@ -155,11 +158,13 @@ void AssertFreeDiskSpace(int Priority, bool Force)
               return;
               }
            }
-        // DeletedRecordings was empty, so to be absolutely sure there are no
-        // deleted recordings we need to double check:
-        DeletedRecordings.Update(true);
-        if (DeletedRecordings.Count())
-           return; // the next call will actually remove it
+        else {
+           // DeletedRecordings was empty, so to be absolutely sure there are no
+           // deleted recordings we need to double check:
+           DeletedRecordings.Update(true);
+           if (DeletedRecordings.Count())
+              return; // the next call will actually remove it
+           }
         // No "deleted" files to remove, so let's see if we can delete a recording:
         isyslog("...no deleted recording found, trying to delete an old recording...");
         cThreadLock RecordingsLock(&Recordings);
@@ -167,15 +172,17 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                        (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
-                       if (r0) {
-                          if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
-                             r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
+                    if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                       if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                           (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
+                          if (r0) {
+                             if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                                r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                             }
+                          else
+                             r0 = r;
                           }
-                       else
-                          r0 = r;
                        }
                     }
                  r = Recordings.Next(r);
@@ -350,7 +357,7 @@ bool cRecordingInfo::Read(FILE *f)
                          char *p = strchr(t, ' ');
                          if (p) {
                             free(channelName);
-                            asprintf(&channelName, "%s", compactspace(p));
+                            channelName = strdup(compactspace(p));
                             *p = 0; // strips optional channel name
                             }
                          if (*t)
@@ -524,7 +531,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   else if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
      name = strdup(Timer->File());
   else
-     asprintf(&name, "%s~%s", Timer->File(), Subtitle);
+     name = strdup(cString::sprintf("%s~%s", Timer->File(), Subtitle));
   // substitute characters that would cause problems in file names:
   strreplace(name, '\n', ' ');
   start = Timer->StartTime();
@@ -565,22 +572,19 @@ cRecording::cRecording(const char *FileName)
         }
      GetResume();
      // read an optional info file:
-     char *InfoFileName = NULL;
-     asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
+     cString InfoFileName = cString::sprintf("%s%s", fileName, INFOFILESUFFIX);
      FILE *f = fopen(InfoFileName, "r");
      if (f) {
         if (!info->Read(f))
-           esyslog("ERROR: EPG data problem in file %s", InfoFileName);
+           esyslog("ERROR: EPG data problem in file %s", *InfoFileName);
         fclose(f);
         }
      else if (errno != ENOENT)
-        LOG_ERROR_STR(InfoFileName);
-     free(InfoFileName);
+        LOG_ERROR_STR(*InfoFileName);
 #ifdef SUMMARYFALLBACK
      // fall back to the old 'summary.vdr' if there was no 'info.vdr':
      if (isempty(info->Title())) {
-        char *SummaryFileName = NULL;
-        asprintf(&SummaryFileName, "%s%s", fileName, SUMMARYFILESUFFIX);
+        cString SummaryFileName = cString::sprintf("%s%s", fileName, SUMMARYFILESUFFIX);
         FILE *f = fopen(SummaryFileName, "r");
         if (f) {
            int line = 0;
@@ -626,8 +630,7 @@ cRecording::cRecording(const char *FileName)
                free(data[i]);
            }
         else if (errno != ENOENT)
-           LOG_ERROR_STR(SummaryFileName);
-        free(SummaryFileName);
+           LOG_ERROR_STR(*SummaryFileName);
         }
 #endif
      }
@@ -696,7 +699,7 @@ const char *cRecording::FileName(void) const
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
      name = ExchangeChars(name, true);
-     asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
+     fileName = strdup(cString::sprintf(NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime));
      name = ExchangeChars(name, false);
      }
   return fileName;
@@ -715,7 +718,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     asprintf(&titleBuffer, "%02d.%02d.%02d%c%02d:%02d%c%c%s",
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
@@ -724,7 +727,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                             t->tm_min,
                             New,
                             Delimiter,
-                            s);
+                            s));
      // let's not display a trailing '~':
      if (!NewIndicator)
         stripspace(titleBuffer);
@@ -784,16 +787,14 @@ bool cRecording::IsEdited(void) const
 
 bool cRecording::WriteInfo(void)
 {
-  char *InfoFileName = NULL;
-  asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
+  cString InfoFileName = cString::sprintf("%s%s", fileName, INFOFILESUFFIX);
   FILE *f = fopen(InfoFileName, "w");
   if (f) {
      info->Write(f);
      fclose(f);
      }
   else
-     LOG_ERROR_STR(InfoFileName);
-  free(InfoFileName);
+     LOG_ERROR_STR(*InfoFileName);
   return true;
 }
 
@@ -910,8 +911,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
         if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-           char *buffer;
-           asprintf(&buffer, "%s/%s", DirName, e->d_name);
+           char *buffer = strdup(AddDirectory(DirName, e->d_name));
            struct stat st;
            if (stat(buffer, &st) == 0) {
               int Link = 0;
@@ -993,10 +993,12 @@ bool cRecordings::Update(bool Wait)
 
 cRecording *cRecordings::GetByName(const char *FileName)
 {
-  for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (strcmp(recording->FileName(), FileName) == 0)
-         return recording;
-      }
+  if (FileName) {
+     for (cRecording *recording = First(); recording; recording = Next(recording)) {
+         if (strcmp(recording->FileName(), FileName) == 0)
+            return recording;
+         }
+     }
   return NULL;
 }
 
@@ -1039,7 +1041,7 @@ int cRecordings::TotalFileSizeMB(void)
   int size = 0;
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (recording->fileSizeMB > 0)
+      if (recording->fileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
          size += recording->fileSizeMB;
       }
   return size;
@@ -1070,9 +1072,7 @@ cMark::~cMark()
 
 cString cMark::ToText(void)
 {
-  char *buffer;
-  asprintf(&buffer, "%s%s%s\n", *IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
-  return cString(buffer, true);
+  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
 }
 
 bool cMark::Parse(const char *s)
@@ -1161,11 +1161,9 @@ const char *cRecordingUserCommand::command = NULL;
 void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName)
 {
   if (command) {
-     char *cmd;
-     asprintf(&cmd, "%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\"$"));
-     isyslog("executing '%s'", cmd);
+     cString cmd = cString::sprintf("%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\"$"));
+     isyslog("executing '%s'", *cmd);
      SystemExec(cmd);
-     free(cmd);
      }
 }
 
@@ -1408,10 +1406,6 @@ bool cIndexFile::IsStillRecording()
 }
 
 // --- cFileName -------------------------------------------------------------
-
-#include <errno.h>
-#include <unistd.h>
-#include "videodir.h"
 
 #define MAXFILESPERRECORDING 255
 #define RECORDFILESUFFIX    "/%03d.vdr"

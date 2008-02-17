@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 1.2 2008/01/19 11:01:58 kls Exp $
+ * $Id: player.c 1.3 2008/02/09 12:13:10 kls Exp $
  */
 
 #include "player.h"
@@ -173,11 +173,11 @@ void cPictureControl::DisplayCaption(void)
   int h = 2 * Font->Height();
   if (!osd) {
      osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - h, OSD_LEVEL_SUBTITLES);
-     tArea Areas[] = { { 0, 0, w, h, 8 } };
+     tArea Areas[] = { { 0, 0, w - 1, h - 1, 8 } };
      if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { 0, 0, w, h, 4 } };
+        tArea Areas[] = { { 0, 0, w - 1, h - 1, 4 } };
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
         }
      }

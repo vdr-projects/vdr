@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.23 2008/01/26 15:52:53 kls Exp $
+ * $Id: menuitems.h 1.25 2008/02/16 16:09:58 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
+#include <limits.h>
 #include "osdbase.h"
 
 extern const char *FileNameChars;
@@ -156,17 +157,6 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditTimeItem(const char *Name, int *Value);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-class cMenuEditMapItem : public cMenuEditItem {
-protected:
-  int *value;
-  const tChannelParameterMap *map;
-  const char *zeroString;
-  virtual void Set(void);
-public:
-  cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

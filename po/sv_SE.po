@@ -8,28 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-01-27 15:00+0100\n"
+"POT-Creation-Date: 2008-02-10 12:22+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "off"
-msgstr "av"
-
-msgid "on"
-msgstr ""
-
-msgid "none"
-msgstr "ingen"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Felaktig kanal ***"
@@ -229,11 +214,20 @@ msgstr ""
 msgid "Key$User9"
 msgstr ""
 
+msgid "Disk"
+msgstr "Disk"
+
+msgid "free"
+msgstr "ledigt"
+
 msgid "Free To Air"
 msgstr "Okodad"
 
 msgid "encrypted"
 msgstr "krypterad"
+
+msgid "auto"
+msgstr "automatisk"
 
 msgid "Edit channel"
 msgstr "Ändra kanal"
@@ -283,17 +277,20 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarisation"
 
-msgid "System"
-msgstr ""
-
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
+msgid "off"
+msgstr "av"
+
 msgid "CoderateH"
 msgstr "CoderateH"
+
+msgid "none"
+msgstr "ingen"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -312,15 +309,6 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarchy"
-
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Prioritet"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Kanalinställningarna är ej unika!"
@@ -366,6 +354,9 @@ msgstr "Slutar"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Prioritet"
 
 msgid "Lifetime"
 msgstr "Livstid"
@@ -820,12 +811,6 @@ msgstr "Program"
 msgid "VDR"
 msgstr "VDR"
 
-msgid "Disk"
-msgstr "Disk"
-
-msgid "free"
-msgstr "ledigt"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Avsluta uppspelning"
@@ -907,9 +892,6 @@ msgstr "Skriv över"
 msgid "Button$Insert"
 msgstr "Infoga"
 
-msgid "auto"
-msgstr "automatisk"
-
 msgid "Plugin"
 msgstr "Modul"
 
@@ -990,8 +972,8 @@ msgstr "Lördag"
 msgid "Sunday"
 msgstr "Söndag"
 
-msgid "Upcoming VPS recording!"
-msgstr "strax VPS inspelning..."
+msgid "Upcoming recording!"
+msgstr "strax inspelning..."
 
 msgid "Recording started"
 msgstr "Inspelningen har startat"

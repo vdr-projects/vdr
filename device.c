@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.149 2008/01/27 10:40:46 kls Exp $
+ * $Id: device.c 1.153 2008/02/16 13:52:11 kls Exp $
  */
 
 #include "device.h"
@@ -264,11 +264,6 @@ cDevice::~cDevice()
   DetachAllReceivers();
   delete liveSubtitle;
   delete dvbSubtitleConverter;
-  delete nitFilter;
-  delete sdtFilter;
-  delete patFilter;
-  delete eitFilter;
-  delete sectionHandler;
   delete pesAssembler;
 }
 
@@ -359,21 +354,6 @@ cDevice *cDevice::GetDevice(int Index)
   return (0 <= Index && Index < numDevices) ? device[Index] : NULL;
 }
 
-static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
-{
-  int MaxNumProvidedSystems = 1 << AvailableBits;
-  int NumProvidedSystems = Device->NumProvidedSystems();
-  if (NumProvidedSystems > MaxNumProvidedSystems) {
-     esyslog("ERROR: device %d supports %d modulation systems but cDevice::GetDevice() currently only supports %d delivery systems which should be fixed", Device->CardIndex() + 1, NumProvidedSystems, MaxNumProvidedSystems);
-     NumProvidedSystems = MaxNumProvidedSystems;
-     }
-  else if (NumProvidedSystems <= 0) {
-     esyslog("ERROR: device %d reported an invalid number (%d) of supported delivery systems - assuming 1", Device->CardIndex() + 1, NumProvidedSystems);
-     NumProvidedSystems = 1;
-     }
-  return NumProvidedSystems;
-}
-
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView)
 {
   // Collect the current priorities of all CAM slots that can decrypt the channel:
@@ -423,7 +403,6 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
-             imp <<= 2; imp |= GetClippedNumProvidedSystems(2, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
              imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
@@ -666,6 +645,22 @@ void cDevice::StartSectionHandler(void)
      }
 }
 
+void cDevice::StopSectionHandler(void)
+{
+  if (sectionHandler) {
+     delete nitFilter;
+     delete sdtFilter;
+     delete patFilter;
+     delete eitFilter;
+     delete sectionHandler;
+     nitFilter = NULL;
+     sdtFilter = NULL;
+     patFilter = NULL;
+     eitFilter = NULL;
+     sectionHandler = NULL;
+     }
+}
+
 int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
   return -1;
@@ -710,11 +705,6 @@ bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   return false;
-}
-
-int cDevice::NumProvidedSystems(void) const
-{
-  return 0;
 }
 
 bool cDevice::IsTunedToTransponder(const cChannel *Channel)
@@ -900,6 +890,10 @@ void cDevice::SetAudioTrackDevice(eTrackType Type)
 {
 }
 
+void cDevice::SetSubtitleTrackDevice(eTrackType Type)
+{
+}
+
 bool cDevice::ToggleMute(void)
 {
   int OldVolume = volume;
@@ -1047,6 +1041,10 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
         DELETENULL(dvbSubtitleConverter);
         }
      DELETENULL(liveSubtitle);
+     if (player)
+        player->SetSubtitleTrack(currentSubtitleTrack, GetTrack(currentSubtitleTrack));
+     else
+        SetSubtitleTrackDevice(currentSubtitleTrack);
      if (currentSubtitleTrack != ttNone && !Replaying() && !Transferring()) {
         const tTrackId *TrackId = GetTrack(currentSubtitleTrack);
         if (TrackId && TrackId->id) {
@@ -1252,7 +1250,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                break;
           case 0xC0 ... 0xDF: // audio
                SetAvailableTrack(ttAudio, c - 0xC0, c);
-               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
+               if ((!VideoOnly || HasIBPTrickSpeed()) && c == availableTracks[currentAudioTrack].id) {
                   w = PlayAudio(Start, d, c);
                   if (FirstLoop)
                      Audios.PlayAudio(Data, Length, c);
@@ -1282,13 +1280,13 @@ pre_1_3_19_PrivateStreamDeteced:
                  case 0x20: // SPU
                  case 0x30: // SPU
                       SetAvailableTrack(ttSubtitle, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && currentSubtitleTrack != ttNone && SubStreamId == availableTracks[currentSubtitleTrack].id)
+                      if ((!VideoOnly || HasIBPTrickSpeed()) && currentSubtitleTrack != ttNone && SubStreamId == availableTracks[currentSubtitleTrack].id)
                          w = PlaySubtitle(Start, d);
                       break;
                  case 0x80: // AC3 & DTS
                       if (Setup.UseDolbyDigital) {
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
-                         if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
+                         if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
                             w = PlayAudio(Start, d, SubStreamId);
                             if (FirstLoop)
                                Audios.PlayAudio(Data, Length, SubStreamId);
@@ -1297,7 +1295,7 @@ pre_1_3_19_PrivateStreamDeteced:
                       break;
                  case 0xA0: // LPCM
                       SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
+                      if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
                          w = PlayAudio(Start, d, SubStreamId);
                          if (FirstLoop)
                             Audios.PlayAudio(Data, Length, SubStreamId);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.26 2007/08/05 12:48:50 kls Exp $
+ * $Id: plugin.c 1.28 2008/02/17 13:32:12 kls Exp $
  */
 
 #include "plugin.h"
@@ -142,12 +142,11 @@ void cPlugin::SetConfigDirectory(const char *Dir)
 
 const char *cPlugin::ConfigDirectory(const char *PluginName)
 {
-  static char *buffer = NULL;
+  static cString buffer;
   if (!cThread::IsMainThread())
      esyslog("ERROR: plugin '%s' called cPlugin::ConfigDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
-  free(buffer);
-  asprintf(&buffer, "%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
-  return MakeDirs(buffer, true) ? buffer : NULL;
+  buffer = cString::sprintf("%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  return MakeDirs(buffer, true) ? *buffer : NULL;
 }
 
 // --- cDll ------------------------------------------------------------------
@@ -317,10 +316,7 @@ void cPluginManager::AddPlugin(const char *Args)
   char *p = strchr(s, ' ');
   if (p)
      *p = 0;
-  char *buffer = NULL;
-  asprintf(&buffer, "%s/%s%s%s%s", directory, LIBVDR_PREFIX, s, SO_INDICATOR, APIVERSION);
-  dlls.Add(new cDll(buffer, Args));
-  free(buffer);
+  dlls.Add(new cDll(cString::sprintf("%s/%s%s%s%s", directory, LIBVDR_PREFIX, s, SO_INDICATOR, APIVERSION), Args));
   free(s);
 }
 

@@ -5465,7 +5465,7 @@ Video Disk Recorder Revision History
 - Fixed a new[]/delete mismatch in cMenuEditStrItem::LeaveEditMode() (thanks to
   Udo Richter).
 - Implemented sending all frames to devices that can handle them in fast forward
-  trick speeds (thansk to Timo Eskola).
+  trick speeds (thanks to Timo Eskola).
 - Updated the Hungarian language texts (thanks to Thomas Günther).
 - Fixed description of DeviceSetAvailableTrack() and cReceiver(), and added an
   example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
@@ -5578,3 +5578,68 @@ Video Disk Recorder Revision History
 - Removed switching to the next higher or lower channel if the current channel
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
+
+2008-02-17: Version 1.5.15
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
+- Revoked the switch to the "multiproto" driver in order to make a new stable
+  version before making this big switch and forcing all users to install a
+  driver that is not yet in the kernel source. The removed code will reappear
+  in version 1.7.0.
+  Note that you may need to switch back to an older version of your channels.conf
+  file if you have already used version 1.5.14, because it introduced new parameters.
+- Added the new command line option --userdump to enable core dumps in case VDR
+  is run as root with option -u (thanks to Hans-Werner Hilse).
+- Speeded up anti-aliased font rendering by caching the blend indexes (based on
+  a suggestion by Martin Wache).
+- Fixed setting the OSD area in the pictures plugin.
+- Ignoring "repeat" and "release" keys in the time search entry mode during replay,
+  to avoid inadvertently leaving it in case a key is pressed too long (suggested
+  by Andreas Brugger).
+- Improved sending all frames to devices that can handle them in fast forward
+  trick speeds, including subtitles (thanks to Timo Eskola).
+- The section handler is now stopped before the device is destroyed, to avoid
+  accessing file handles after they have become invalid (thanks to Reinhard
+  Nissl for reporting an invalid access when ending VDR, and to Deti Fliegl for
+  a patch that was used to implement StopSectionHandler()).
+- Fixed setting the date in the channel display of the classic and sttng skins,
+  to avoid unnecessary OSD access (thanks to Marco Schlüßler).
+- The free disk space is now also displayed in the title of the "Recordings"
+  menu (suggested by Walter Koch).
+- Changed the message "Upcoming VPS recording!" to "Upcoming recording!" because
+  it applies to non-VPS recordings as well.
+- Fixed a loss of a timer's 'recording' flag after modifying it via MODT.
+- Fixed detecting directories in cFileNameList::Load().
+- Running the thread that removes deleted recordings at a low priority to (maybe)
+  avoid stuttering replay in case the thread is run during replay.
+- Limiting the length of the recording name in timers in case VDR is run with
+  --vfat, in order to avoid names that are too long for Windows (suggested by Rolf
+  Ahrenberg).
+- Using cString::sprintf() instead of asprintf() (thanks to Wolfgang Rohdewald
+  for pointing out a possible problem if the return value is not checked).
+  Plugin authors may want to consider doing the same. For convenience there is now
+  an additional version of cString::sprintf() that accepts a va_list parameter.
+- When deleting the recording that is currently replayed, the replay is now
+  stopped immediately (thanks to Mikko Matilainen for reporting a possible crash
+  if the Info key is pressed after deleting the currently replayed recording).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- When determining the amount of free disk space, any deleted (but not yet removed)
+  recordings on different file systems (that are mounted under the video directory)
+  are no longer taken into account.
+- When running out of disk space during a recording, only such deleted or old
+  recordings are removed, that actually are on the video directory file system(s).
+  This prevents VDR from accidentally deleting recordings on other file systems,
+  which would not add any free space to the video directory.
+- Implemented the cStatus, cDevice and cPlayer functions for setting subtitle tracks
+  in plugins (thanks to Petri Hintukainen).
+- Added cStatus::TimerChange() to inform plugins about changes to the list of timers
+  (based on a patch from Benedikt Elser).
+- Added new cStatus functions to the 'status' plugin.
+- Added missing #include <limits.h> to epg.c and menuitems.h (thanks to Ville Skyttä).
+- The new function cSkin::SetScrollbar() can be implemented by skins to display
+  a scrollbar in every list menu. The 'classic' and 'sttng' skins have been
+  changed accordingly, as well as the 'skincurses' plugin.
+- Introduced 'operator const void * ()' in cString to catch cases where operator*()
+  should be used.
+- Fixed calculating the scrollbar sizes in the skins.

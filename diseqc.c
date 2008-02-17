@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 1.5 2005/12/30 15:41:48 kls Exp $
+ * $Id: diseqc.c 1.6 2008/02/10 14:09:27 kls Exp $
  */
 
 #include "diseqc.h"
@@ -12,7 +12,7 @@
 #include "sources.h"
 #include "thread.h"
 
-// -- cDiseqc ----------------------------------------------------------------
+// --- cDiseqc ---------------------------------------------------------------
 
 cDiseqc::cDiseqc(void)
 {
@@ -122,7 +122,7 @@ cDiseqc::eDiseqcActions cDiseqc::Execute(char **CurrentAction)
   return daNone;
 }
 
-// -- cDiseqcs ---------------------------------------------------------------
+// --- cDiseqcs --------------------------------------------------------------
 
 cDiseqcs Diseqcs;
 

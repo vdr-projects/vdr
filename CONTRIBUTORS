@@ -86,6 +86,7 @@ Deti Fliegl <deti@fliegl.de>
  for implementing the 'CurrentChannel' setup parameter
  for fixing setting the OSD size in the 'Confirm' interface call
  for fixing handling improper buffer lengths in the EIT parser
+ for a patch that was used to implement StopSectionHandler()
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
@@ -1039,6 +1040,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for some fixes to PLUGINS.html
  for fixing handling CONFDIR
  for updating the Makefile of the skincurses plugin
+ for suggesting to limit the length of the recording name in timers created via
+ SVDRP in case VDR is run with --vfat, in order to avoid names that are too long
+ for Windows
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1158,6 +1162,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for a patch that was used to fix handling small PES packets that caused subtitles
  to be displayed late in live mode
  for a patch that was used to implement handling of DVB-S2
+ for reporting an invalid access in the section handler when ending VDR
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1447,6 +1452,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
  for fixing checking compatibility mode for old subtitles plugin
  for a patch that was used to implement handling of DVB-S2
+ for fixing setting the date in the channel display of the classic and sttng skins,
+ to avoid unnecessary OSD access
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1612,6 +1619,8 @@ Andreas Brugger <brougs78@gmx.net>
  it in a context sensitive manner
  for reporting a loss of the date display in the "classic" skin's main menu
  for reporting a missing setting of lastFreeMB in cMenuMain::Update()
+ for suggesting to ignore "repeat" and "release" keys in the time search entry mode
+ during replay, to avoid inadvertently leaving it in case a key is pressed too long
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1664,6 +1673,8 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
 Walter Koch <koch@u32.de>
  for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
  for fixing some missing '-' in the German OSD texts
+ for suggesting to display the free disk space also in the title of the "Recordings"
+ menu
 
 Rolf Groppe <rolf@groppe.de>
  for suggesting to fall back to 'stereo' when switching channels in case the user
@@ -1678,6 +1689,8 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for removing an unnecessary #include from osd.c
  for reporting a problem with with numerical input to switch channels if Up, Down,
  Channel+ or Channel- is pressed
+ for pointing out a possible problem with asprintf() if the return value is not
+ checked
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
@@ -1736,6 +1749,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing the link to the GPL2 at http://www.gnu.org in vdr.c
  for making the "Play" key start replay of the selected recording in the Recordings
  menu
+ for adding missing #include <limits.h> to epg.c and menuitems.h
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1782,6 +1796,7 @@ Martin Wache <M.Wache@gmx.net>
  for adding a sleep in cDvbPlayer::Action() in case there is no data to send to the
  device, which avoids a busy loop on very fast machines
  for fixing a possible crash when loading an invalid XPM file
+ for suggesting to speed up anti-aliased font rendering by caching the blend indexes
 
 Matthias Lenk <matthias.lenk@amd.com>
  for reporting an out-of-bounds memory access with audio language ids
@@ -1954,6 +1969,8 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for pointing out that plugins from cRemote::PutMacro() and cRemote::CallPlugin()
  need to be handled separately
  for making cTimeMs use the monotonic clock
+ for implementing the cStatus, cDevice and cPlayer functions for setting subtitle
+ tracks in plugins
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
@@ -2270,3 +2287,15 @@ Benjamin Hess <benjamin.h@gmx.ch>
 
 Winfried Koehler <w_koehl@gmx.de>
  for fixing finding new transponders
+
+Hans-Werner Hilse <hilse@web.de>
+ for adding the command line option --userdump to enable core dumps in case VDR
+ is run as root with option -u
+
+Mikko Matilainen <mikkom@iki.fi>
+ for reporting a possible crash if the Info key is pressed after deleting the
+ currently replayed recording
+
+Benedikt Elser <elser@in.tum.de>
+ for a patch that was used to add cStatus::TimerChange() to inform plugins about
+ changes to the list of timers

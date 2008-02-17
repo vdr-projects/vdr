@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.47 2007/10/13 12:20:58 kls Exp $
+ * $Id: dvbplayer.c 1.48 2008/02/09 15:10:54 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -537,8 +537,10 @@ void cDvbPlayer::Pause(void)
      Play();
   else {
      LOCK_THREAD;
-     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))
-        Empty();
+     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
+        if (!(DeviceHasIBPTrickSpeed() && playDir == pdForward))
+           Empty();
+        }
      DeviceFreeze();
      playMode = pmPause;
      }
@@ -548,8 +550,10 @@ void cDvbPlayer::Play(void)
 {
   if (playMode != pmPlay) {
      LOCK_THREAD;
-     if (playMode == pmStill || playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))
-        Empty();
+     if (playMode == pmStill || playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
+        if (!(DeviceHasIBPTrickSpeed() && playDir == pdForward))
+           Empty();
+        }
      DevicePlay();
      playMode = pmPlay;
      playDir = pdForward;
@@ -572,7 +576,8 @@ void cDvbPlayer::Forward(void)
             // run into pmPlay
        case pmPlay: {
             LOCK_THREAD;
-            Empty();
+            if (!(DeviceHasIBPTrickSpeed() && playDir == pdForward))
+               Empty();
             DeviceMute();
             playMode = pmFast;
             playDir = pdForward;

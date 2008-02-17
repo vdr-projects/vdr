@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.110 2008/01/13 11:22:26 kls Exp $
+ * $Id: tools.h 1.113 2008/02/17 13:41:27 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -156,11 +156,13 @@ public:
   cString(const char *S = NULL, bool TakePointer = false);
   cString(const cString &String);
   virtual ~cString();
+  operator const void * () const { return s; } // to catch cases where operator*() should be used
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+  static cString sprintf(const char *fmt, va_list &ap);
   };
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
@@ -192,6 +194,7 @@ int numdigits(int n);
 bool isnumber(const char *s);
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
+bool EntriesOnSameFileSystem(const char *File1, const char *File2);
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
