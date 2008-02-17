@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.23 2008/02/17 13:34:29 kls Exp $
+ * $Id: skinclassic.c 1.24 2008/02/17 13:55:54 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -326,6 +326,7 @@ void cSkinClassicDisplayMenu::SetScrollbar(int Total, int Offset)
 {
   DrawScrollbar(Total, Offset, MaxItems(), y2, MaxItems() * lineHeight, Offset > 0, Offset + MaxItems() < Total);
 }
+
 void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
 {
   if (!Event)
