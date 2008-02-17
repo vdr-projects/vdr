@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.160 2008/02/10 15:48:17 kls Exp $
+ * $Id: config.c 1.161 2008/02/17 13:39:00 kls Exp $
  */
 
 #include "config.h"
@@ -65,7 +65,7 @@ const char *cCommand::Execute(const char *Parameters)
   cString cmdbuf;
   if (Parameters)
      cmdbuf = cString::sprintf("%s %s", command, Parameters);
-  const char *cmd = cmdbuf ? cmdbuf : command;
+  const char *cmd = *cmdbuf ? *cmdbuf : command;
   dsyslog("executing command '%s'", cmd);
   cPipe p;
   if (p.Open(cmd, "r")) {

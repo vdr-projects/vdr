@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.108 2008/02/15 15:10:49 kls Exp $
+ * $Id: svdrp.c 1.109 2008/02/17 13:36:01 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1420,7 +1420,7 @@ void cSVDRP::CmdPLUG(const char *Option)
         else {
            int ReplyCode = 900;
            cString s = plugin->SVDRPCommand(cmd, option, ReplyCode);
-           if (s)
+           if (*s)
               Reply(abs(ReplyCode), "%s", *s);
            else
               Reply(500, "Command unrecognized: \"%s\"", cmd);

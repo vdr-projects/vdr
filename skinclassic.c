@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.22 2008/02/17 12:24:15 kls Exp $
+ * $Id: skinclassic.c 1.23 2008/02/17 13:34:29 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -149,7 +149,7 @@ void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
      cString date = DayDateTime();
-     if (!lastDate || strcmp(date, lastDate)) {
+     if (!*lastDate || strcmp(date, lastDate)) {
         const cFont *font = cFont::GetFont(fontSml);
         int w = font->Width(date);
         osd->DrawText(osd->Width() - w - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml), w);
@@ -407,7 +407,7 @@ const cFont *cSkinClassicDisplayMenu::GetTextAreaFont(bool FixedFont) const
 void cSkinClassicDisplayMenu::Flush(void)
 {
   cString date = DayDateTime();
-  if (!lastDate || strcmp(date, lastDate)) {
+  if (!*lastDate || strcmp(date, lastDate)) {
      const cFont *font = cFont::GetFont(fontOsd);
      int w = font->Width(date);
      osd->DrawText(x3 - w - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font, w);

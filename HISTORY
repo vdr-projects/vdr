@@ -5640,3 +5640,5 @@ Video Disk Recorder Revision History
 - The new function cSkin::SetScrollbar() can be implemented by skins to display
   a scrollbar in every list menu. The 'classic' and 'sttng' skins have been
   changed accordingly.
+- Introduced 'operator const void * ()' in cString to catch cases where operator*()
+  should be used.

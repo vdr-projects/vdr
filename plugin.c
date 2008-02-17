@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.27 2008/02/10 16:05:46 kls Exp $
+ * $Id: plugin.c 1.28 2008/02/17 13:32:12 kls Exp $
  */
 
 #include "plugin.h"
@@ -146,7 +146,7 @@ const char *cPlugin::ConfigDirectory(const char *PluginName)
   if (!cThread::IsMainThread())
      esyslog("ERROR: plugin '%s' called cPlugin::ConfigDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
   buffer = cString::sprintf("%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
-  return MakeDirs(buffer, true) ? buffer : NULL;
+  return MakeDirs(buffer, true) ? *buffer : NULL;
 }
 
 // --- cDll ------------------------------------------------------------------

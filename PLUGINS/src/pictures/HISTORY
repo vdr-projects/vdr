@@ -19,6 +19,8 @@ VDR Plugin 'pictures' Revision History
 
 - Added option -i to pic2mpg to ignore unknown file types.
 
-2008-02-09: Version 0.0.5
+2008-02-17: Version 0.0.5
 
 - Fixed setting the OSD area.
+- Introduced 'operator const void * ()' in cString to catch cases where operator*()
+  should be used.
