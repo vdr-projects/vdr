@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.19 2008/02/15 14:52:03 kls Exp $
+ * $Id: skincurses.c 1.20 2008/02/17 14:28:19 kls Exp $
  */
 
 #include <ncurses.h>
@@ -166,7 +166,7 @@ void cCursesOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Co
      }
   SetColor(ColorFg, ColorBg);
   wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddnstr(window, s, ScOsdWidth - x);
+  waddnstr(window, s, Width ? Width : ScOsdWidth - x);
 }
 
 void cCursesOsd::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
@@ -261,7 +261,8 @@ void cSkinCursesDisplayChannel::Flush(void)
 class cSkinCursesDisplayMenu : public cSkinDisplayMenu {
 private:
   cOsd *osd;
-  void SetScrollbar(void);
+  void DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown);
+  void SetTextScrollbar(void);
 public:
   cSkinCursesDisplayMenu(void);
   virtual ~cSkinCursesDisplayMenu();
@@ -272,6 +273,7 @@ public:
   virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
+  virtual void SetScrollbar(int Total, int Offset);
   virtual void SetEvent(const cEvent *Event);
   virtual void SetRecording(const cRecording *Recording);
   virtual void SetText(const char *Text, bool FixedFont);
@@ -290,25 +292,31 @@ cSkinCursesDisplayMenu::~cSkinCursesDisplayMenu()
   delete osd;
 }
 
-void cSkinCursesDisplayMenu::SetScrollbar(void)
+void cSkinCursesDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown)
 {
-  if (textScroller.CanScroll()) {
-     int yt = textScroller.Top();
-     int yb = yt + textScroller.Height() - 1;
+  if (Total > 0 && Total > Shown) {
+     int yt = Top;
+     int yb = yt + Height - 1;
      int st = yt;
      int sb = yb;
-     int tt = st + (sb - st) * textScroller.Offset() / textScroller.Total();
-     int tb = tt + (sb - st) * textScroller.Shown() / textScroller.Total();
+     int tt = st + (sb - st + 1) * Offset / Total;
+     int tb = tt + (sb - st + 1) * Shown / Total;
      int xl = ScOsdWidth - 1;
-     osd->DrawRectangle(xl, st, xl, sb, clrCyan);
-     osd->DrawRectangle(xl, tt, xl, tb, clrWhite);
+     osd->DrawRectangle(xl, st, xl, sb, clrWhite);
+     osd->DrawRectangle(xl, tt, xl, tb, clrCyan);
      }
+}
+
+void cSkinCursesDisplayMenu::SetTextScrollbar(void)
+{
+  if (textScroller.CanScroll())
+     DrawScrollbar(textScroller.Total(), textScroller.Offset(), textScroller.Shown(), textScroller.Top(), textScroller.Height(), textScroller.CanScrollUp(), textScroller.CanScrollDown());
 }
 
 void cSkinCursesDisplayMenu::Scroll(bool Up, bool Page)
 {
   cSkinDisplayMenu::Scroll(Up, Page);
-  SetScrollbar();
+  SetTextScrollbar();
 }
 
 int cSkinCursesDisplayMenu::MaxItems(void)
@@ -366,12 +374,17 @@ void cSkinCursesDisplayMenu::SetItem(const char *Text, int Index, bool Current, 
       const char *s = GetTabbedText(Text, i);
       if (s) {
          int xt = Tab(i) / 12;// Tab() is in "pixel" - see also skins.c!!!
-         osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, ScOsdWidth - xt);
+         osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, ScOsdWidth - 2 - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(ScOsdWidth - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
+  SetEditableWidth(ScOsdWidth - 2 - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
+}
+
+void cSkinCursesDisplayMenu::SetScrollbar(int Total, int Offset)
+{
+  DrawScrollbar(Total, Offset, MaxItems(), 2, MaxItems(), Offset > 0, Offset + MaxItems() < Total);
 }
 
 void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
@@ -398,7 +411,7 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
   y += 1;
   if (!isempty(Event->Description())) {
      textScroller.Set(osd, 0, y, ScOsdWidth - 2, ScOsdHeight - y - 2, Event->Description(), &Font, clrCyan, clrBackground);
-     SetScrollbar();
+     SetTextScrollbar();
      }
 }
 
@@ -426,14 +439,14 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   y += 1;
   if (!isempty(Info->Description())) {
      textScroller.Set(osd, 0, y, ScOsdWidth - 2, ScOsdHeight - y - 2, Info->Description(), &Font, clrCyan, clrBackground);
-     SetScrollbar();
+     SetTextScrollbar();
      }
 }
 
 void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 {
   textScroller.Set(osd, 0, 2, ScOsdWidth - 2, ScOsdHeight - 4, Text, &Font, clrWhite, clrBackground);
-  SetScrollbar();
+  SetTextScrollbar();
 }
 
 void cSkinCursesDisplayMenu::Flush(void)

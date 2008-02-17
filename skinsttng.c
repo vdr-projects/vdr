@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.25 2008/02/17 13:35:09 kls Exp $
+ * $Id: skinsttng.c 1.26 2008/02/17 14:23:45 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -442,11 +442,11 @@ void cSkinSTTNGDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int 
   if (Total > 0 && Total > Shown) {
      int h  = lineHeight;
      int yt = Top;
-     int yb = yt + Height;
+     int yb = yt + Height - 1;
      int st = yt + h + Gap;
      int sb = yb - h - Gap;
-     int tt = st + (sb - st) * Offset / Total;
-     int tb = tt + (sb - st) * Shown / Total;
+     int tt = st + (sb - st + 1) * Offset / Total;
+     int tb = tt + (sb - st + 1) * Shown / Total;
      osd->DrawRectangle(x5, st, x5 + ScrollWidth - 1, sb, Theme.Color(clrMenuScrollbarTotal));
      osd->DrawRectangle(x5, tt, x5 + ScrollWidth - 1, tb, Theme.Color(clrMenuScrollbarShown));
      osd->DrawRectangle(x5, yt, x6 - 1, yt + h - 1, frameColor);
