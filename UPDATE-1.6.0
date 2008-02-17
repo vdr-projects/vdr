@@ -54,6 +54,7 @@ OSD:
   the one that was created first will be displayed.
   Plugins that provide an OSD need to adjust their cOsdProvider::CreateOsd()
   function to hand through the Level.
+- Skins can now have scrollbars in all list menus.
 
 Channels:
 

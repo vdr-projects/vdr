@@ -5579,7 +5579,7 @@ Video Disk Recorder Revision History
   is not available, in order to allow staying on an encrypted channel that takes
   a while for the CAM to start decrypting.
 
-2008-02-16: Version 1.5.15
+2008-02-17: Version 1.5.15
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added option -i to the pictures plugin's pic2mpg to ignore unknown file types.
@@ -5637,3 +5637,6 @@ Video Disk Recorder Revision History
   (based on a patch from Benedikt Elser).
 - Added new cStatus functions to the 'status' plugin.
 - Added missing #include <limits.h> to epg.c and menuitems.h (thanks to Ville Skyttä).
+- The new function cSkin::SetScrollbar() can be implemented by skins to display
+  a scrollbar in every list menu. The 'classic' and 'sttng' skins have been
+  changed accordingly.
