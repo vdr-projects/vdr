@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.153 2008/02/16 13:52:11 kls Exp $
+ * $Id: device.c 1.154 2008/02/17 15:55:06 kls Exp $
  */
 
 #include "device.h"
@@ -1159,7 +1159,7 @@ bool cDevice::Replaying(void) const
 
 bool cDevice::Transferring(void) const
 {
-  return dynamic_cast<cTransfer *>(player) != NULL;
+  return ActualDevice() != PrimaryDevice();
 }
 
 bool cDevice::AttachPlayer(cPlayer *Player)
