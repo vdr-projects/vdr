@@ -166,7 +166,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Undertekster"
 
 msgid "Key$Schedule"
 msgstr "Programoversigt"
@@ -187,31 +187,31 @@ msgid "Key$Commands"
 msgstr "Kommandoer"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Bruger1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Bruger2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Bruger3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Bruger4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Bruger5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Bruger6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Bruger7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Bruger8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Bruger9"
 
 msgid "Disk"
 msgstr "Disk"
@@ -259,10 +259,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -430,7 +430,7 @@ msgid "Please enter %d digits!"
 msgstr "Indtast venligst %d cifre!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM svarer ikke!"
 
 msgid "Recording info"
 msgstr "Optagelses info"
@@ -502,25 +502,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Anvend lille skrift"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Standard skrift"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Lille skrift"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Fast skrift"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Standard skrift størrelse (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Lille skrift størrelse (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Fast skrift størrelse (pixel)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Placering af kanalinfo"
@@ -633,22 +633,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Audio sprog"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Vis undertekster"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Undertekst sprog (ant.)"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Undertekst sprog"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Undertekst offset"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Undertekst forgrundsgennemsigtighed"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Undertekst baggrundsgennemsigtighed"
 
 msgid "LNB"
 msgstr "LNB"
@@ -666,13 +666,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Øvre LNB frekvens (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM nulstil"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM til stede"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM klar"
 
 msgid "CAM"
 msgstr "CAM"
@@ -681,7 +681,7 @@ msgid "Button$Menu"
 msgstr "Menu"
 
 msgid "Button$Reset"
-msgstr "Nulstille"
+msgstr "Nulstil"
 
 msgid "Opening CAM menu..."
 msgstr "Åbner CAM menu..."
@@ -690,7 +690,7 @@ msgid "Can't open CAM menu!"
 msgstr "Kan ikke åbne CAM menuen!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM er i brug - virkelig nulstille?"
 
 msgid "Can't reset CAM!"
 msgstr "Kan ikke nulstille CAM!"
@@ -771,7 +771,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap timeout (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Kanal adgang timeout (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanal ved opstart"
@@ -783,7 +783,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Lydstyrke ved opstart"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Nødudgang"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -840,13 +840,13 @@ msgid "No audio available!"
 msgstr "Ingen lyd tilgængelig!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Ingen undertekster"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Undertekster"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Ingen undertekster tilgængelig!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "For lidt harddisk plads til optagelse!"
@@ -907,7 +907,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Kan ikke slukke - parameter '-s' ikke angivet!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Redigering igang - sluk alligevel?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Optagelse igang - sluk alligevel?"
@@ -921,10 +921,10 @@ msgstr "sluk alligevel?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Plugin %s vågner om %ld min, fortsæt?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Redigering igang - genstart alligevel?"
 
 msgid "Recording - restart anyway?"
 msgstr "Optagelse igang - genstart alligevel?"
@@ -978,7 +978,7 @@ msgid "Recording started"
 msgstr "Optagelse startet"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR slukker senere - tryk Sluk for at tvinge"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Tryk vilkårlig tast for at annullere sluk"
@@ -993,8 +993,8 @@ msgid "Editing process finished"
 msgstr "Redigeringsproces afsluttet"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Tryk vilkårlig knap for at annullere genstart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR slukker om %s minutter"

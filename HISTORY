@@ -5644,8 +5644,9 @@ Video Disk Recorder Revision History
   should be used.
 - Fixed calculating the scrollbar sizes in the skins.
 
-2008-02-17: Version 1.5.16
+2008-02-18: Version 1.5.16
 
 - Fixed setting the current subtitle track in Transfer-Mode (reported by Petri Helin,
   thanks to Reinhard Nissl for pointing out that cDevice::Transferring() doesn't
   return the right value in the early stage of channel switching).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
