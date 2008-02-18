@@ -4,14 +4,15 @@
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
 # Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003
 # Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
+# Carel Willemse <ca_willemse@planet.nl>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
+"PO-Revision-Date: 2008-02-18 17:50+0200\n"
+"Last-Translator: Carel Willemse <ca_willemse@planet.nl>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
@@ -138,10 +139,10 @@ msgid "Key$FastRew"
 msgstr "Terugspoelen"
 
 msgid "Key$Next"
-msgstr ""
+msgstr "Volgende"
 
 msgid "Key$Prev"
-msgstr ""
+msgstr "Vorige"
 
 msgid "Key$Power"
 msgstr "Uitschakelen"
@@ -153,7 +154,7 @@ msgid "Key$Channel-"
 msgstr "Kanaal-"
 
 msgid "Key$PrevChannel"
-msgstr ""
+msgstr "VorigKanaal"
 
 msgid "Key$Volume+"
 msgstr "Volume+"
@@ -168,10 +169,10 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Ondertiteling"
 
 msgid "Key$Schedule"
-msgstr "Gids"
+msgstr "ProgrammaGids"
 
 msgid "Key$Channels"
 msgstr "Kanalen"
@@ -189,43 +190,43 @@ msgid "Key$Commands"
 msgstr "Commando's"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Gebruiker1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Gebruiker2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Gebruiker3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Gebruiker4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Gebruiker5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Gebruiker6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Gebruiker7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Gebruiker8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Gebruiker9"
 
 msgid "Disk"
-msgstr "Disk"
+msgstr "Schijf"
 
 msgid "free"
 msgstr "vrij"
 
 msgid "Free To Air"
-msgstr ""
+msgstr "Vrij te ontvangen"
 
 msgid "encrypted"
-msgstr ""
+msgstr "gecodeerd"
 
 msgid "auto"
 msgstr "auto"
@@ -261,10 +262,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -297,19 +298,19 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulation"
+msgstr "Modulatie"
 
 msgid "Bandwidth"
-msgstr "Bandwidth"
+msgstr "Bandbreedte"
 
 msgid "Transmission"
-msgstr "Transmission"
+msgstr "Transmissie"
 
 msgid "Guard"
 msgstr "Guard"
 
 msgid "Hierarchy"
-msgstr "Hierarchy"
+msgstr "Hierarchie"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaalinstellingen zijn niet uniek!"
@@ -363,7 +364,7 @@ msgid "Lifetime"
 msgstr "Bewaarduur"
 
 msgid "File"
-msgstr "Filenaam"
+msgstr "Bestandnaam"
 
 msgid "First day"
 msgstr "Eerste dag"
@@ -387,7 +388,7 @@ msgid "Event"
 msgstr "Uitzending"
 
 msgid "Button$Timer"
-msgstr ""
+msgstr "Timer"
 
 msgid "Button$Record"
 msgstr "Opnemen"
@@ -408,7 +409,7 @@ msgid "Button$Now"
 msgstr "Nu"
 
 msgid "Button$Schedule"
-msgstr "Programma"
+msgstr "Programmagids"
 
 msgid "Can't switch channel!"
 msgstr "Kan geen kanaal wisselen!"
@@ -419,20 +420,20 @@ msgstr "Programma - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr ""
+msgstr "Deze uitzending - %s"
 
 msgid "This event - all channels"
-msgstr ""
+msgstr "Deze uitzending - alle kanalen"
 
 msgid "All events - all channels"
-msgstr ""
+msgstr "Alle uitzendingen - alle kanalen"
 
 #, c-format
 msgid "Please enter %d digits!"
 msgstr "Vul %d cijfers in!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM reageert niet!"
 
 msgid "Recording info"
 msgstr "Opname info"
@@ -504,25 +505,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Klein lettertype gebruiken"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Standaard lettertype"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Kleine lettertype"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Letter met vaste breedte"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Afmetingen standaard lettertype (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Afmetingen klein lettertype (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Afmetingen lettertype met vaste breedte (pixel)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanaal info positie"
@@ -540,7 +541,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Kanaal info tonen"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr ""
+msgstr "Tijdsduur opgevraagde kanaalinfo."
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Scrollen per pagina"
@@ -549,10 +550,10 @@ msgid "Setup.OSD$Scroll wraps"
 msgstr "Rondom scrollen"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr ""
+msgstr "Menu toets sluit ook af"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Opname directories"
+msgstr "Opname mappen"
 
 msgid "EPG"
 msgstr "EPG"
@@ -599,7 +600,7 @@ msgid "names only"
 msgstr "alleen namen"
 
 msgid "PIDs only"
-msgstr ""
+msgstr "alleen PIDs"
 
 msgid "names and PIDs"
 msgstr "namen en PIDs"
@@ -635,22 +636,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Audio taal"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Toon ondertiteling"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Talen ondertiteling"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Taal ondertiteling"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Positie ondertiteling"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparantie voorgrond ondertiteling"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparantie achtergrond ondertiteling"
 
 msgid "LNB"
 msgstr "LNB"
@@ -668,13 +669,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Hoogste LNB frequentie (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM herstarten"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM aanwezig"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM gereed"
 
 msgid "CAM"
 msgstr "CAM"
@@ -692,7 +693,7 @@ msgid "Can't open CAM menu!"
 msgstr "Kan CAM-menu niet openen!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM wordt gebruikt - werkelijk herstarten?"
 
 msgid "Can't reset CAM!"
 msgstr "Kan CAM niet herstarten!"
@@ -773,19 +774,19 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap timeout (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Tijdsduur kanaalinvoer (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr ""
+msgstr "Opstartkanaal"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr ""
+msgstr "zoals eerder"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr ""
+msgstr "Opstartvolume"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Nooduitgang"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -807,7 +808,7 @@ msgid " Stop recording "
 msgstr " Stop opnemen "
 
 msgid "Schedule"
-msgstr "Gids"
+msgstr "Programmagids"
 
 msgid "VDR"
 msgstr "VDR"
@@ -826,7 +827,7 @@ msgid "Button$Stop"
 msgstr "Eindigen"
 
 msgid "Button$Resume"
-msgstr "Verder"
+msgstr "Hervat"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
@@ -842,16 +843,16 @@ msgid "No audio available!"
 msgstr "Geen audio beschikbaar!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Geen ondertiteling"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Ondertiteling"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Geen ondertiteling beschikbaar"
 
 msgid "Not enough disk space to start recording!"
-msgstr ""
+msgstr "Onvoldoende hardeschijfruimte voor deze opname!"
 
 msgid "No free DVB device to record!"
 msgstr "Geen vrije DVB kaart om op te nemen!"
@@ -903,13 +904,13 @@ msgid "Channel locked (recording)!"
 msgstr "Kanaal geblokkeerd (neemt op)!"
 
 msgid "Low disk space!"
-msgstr "Disk bijna vol!"
+msgstr "Hardeschijf bijna vol!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Shutdown onmogelijk - Optie '-s' ontbreekt!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Bewerken aktief - toch uitschakelen?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Opname loopt - toch uitschakelen?"
@@ -923,10 +924,10 @@ msgstr "toch uitschakelen?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Plugin %s wordt binnen %ld min. aktief, doorgaan?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Bewerken aktief - toch herstarten?"
 
 msgid "Recording - restart anyway?"
 msgstr "Opname loopt - toch opnieuw starten?"
@@ -953,13 +954,13 @@ msgid "MonTueWedThuFriSatSun"
 msgstr "MaaDinWoeDonVryZatZon"
 
 msgid "Monday"
-msgstr "maandag"
+msgstr "Maandag"
 
 msgid "Tuesday"
 msgstr "Dinsdag"
 
 msgid "Wednesday"
-msgstr "woensdag"
+msgstr "Woensdag"
 
 msgid "Thursday"
 msgstr "Donderdag"
@@ -974,13 +975,13 @@ msgid "Sunday"
 msgstr "Zondag"
 
 msgid "Upcoming recording!"
-msgstr ""
+msgstr "Opname start binnenkort!"
 
 msgid "Recording started"
-msgstr ""
+msgstr "Opname is gestart!"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR zal later uitschakelen - Druk 'Power' om te forceren"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Druk een toets om shutdown af te breken"
@@ -995,8 +996,8 @@ msgid "Editing process finished"
 msgstr "Bewerken is klaar"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Druk een willekeurige toets om herstarten af te breken"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR zal na %s minuten uitschakelen"

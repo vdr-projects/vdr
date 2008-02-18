@@ -5650,3 +5650,4 @@ Video Disk Recorder Revision History
   thanks to Reinhard Nissl for pointing out that cDevice::Transferring() doesn't
   return the right value in the early stage of channel switching).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Updated the Dutch OSD texts (thanks to Carel Willemse).

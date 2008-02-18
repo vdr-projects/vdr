@@ -2302,3 +2302,6 @@ Mikko Matilainen <mikkom@iki.fi>
 Benedikt Elser <elser@in.tum.de>
  for a patch that was used to add cStatus::TimerChange() to inform plugins about
  changes to the list of timers
+
+Carel Willemse <ca_willemse@planet.nl>
+ for translating OSD texts to the Dutch language
