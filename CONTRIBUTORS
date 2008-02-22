@@ -899,6 +899,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for pointing out that the canonical spelling of codesets is with '-'
  for a hint on using _nl_msg_cat_cntr
  for adding some missing 'const' keywords
+ for pointing out that "%016llX" should be used instead of "%016LX"
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

@@ -5644,7 +5644,7 @@ Video Disk Recorder Revision History
   should be used.
 - Fixed calculating the scrollbar sizes in the skins.
 
-2008-02-18: Version 1.5.16
+2008-02-21: Version 1.5.16
 
 - Fixed setting the current subtitle track in Transfer-Mode (reported by Petri Helin,
   thanks to Reinhard Nissl for pointing out that cDevice::Transferring() doesn't
@@ -5653,3 +5653,5 @@ Video Disk Recorder Revision History
 - Updated the Dutch OSD texts (thanks to Carel Willemse).
 - Fixed various spelling errors and improved PLUGINS.html (thanks to Ville Skyttä).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed the format in cRemote::Put() to use "%016llX" instead of "%016LX" (thanks
+  to Ludwig Nussel for pointing this out).

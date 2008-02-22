@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.57 2007/04/30 12:27:56 kls Exp $
+ * $Id: remote.c 1.58 2008/02/22 15:34:08 kls Exp $
  */
 
 #include "remote.h"
@@ -121,7 +121,7 @@ bool cRemote::PutMacro(eKeys Key)
 bool cRemote::Put(uint64_t Code, bool Repeat, bool Release)
 {
   char buffer[32];
-  snprintf(buffer, sizeof(buffer), "%016LX", Code);
+  snprintf(buffer, sizeof(buffer), "%016llX", Code);
   return Put(buffer, Repeat, Release);
 }
 
