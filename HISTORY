@@ -5655,3 +5655,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed the format in cRemote::Put() to use "%016llX" instead of "%016LX" (thanks
   to Ludwig Nussel for pointing this out).
+- Revised the fix of calculating the scrollbar height in the skins.

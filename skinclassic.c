@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.25 2008/02/17 14:23:36 kls Exp $
+ * $Id: skinclassic.c 1.26 2008/02/22 16:56:29 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -233,14 +233,14 @@ void cSkinClassicDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, in
 {
   if (Total > 0 && Total > Shown) {
      int yt = Top;
-     int yb = yt + Height - 1;
+     int yb = yt + Height;
      int st = yt;
      int sb = yb;
-     int tt = st + (sb - st + 1) * Offset / Total;
-     int tb = tt + (sb - st + 1) * Shown / Total;
+     int tt = st + (sb - st) * double(Offset) / Total + 0.5;
+     int tb = tt + (sb - st) * double(Shown) / Total + 0.5;
      int xl = x3 - ScrollWidth;
-     osd->DrawRectangle(xl, st, x3 - 1, sb, Theme.Color(clrMenuScrollbarTotal));
-     osd->DrawRectangle(xl, tt, x3 - 1, tb, Theme.Color(clrMenuScrollbarShown));
+     osd->DrawRectangle(xl, st, x3 - 1, sb - 1, Theme.Color(clrMenuScrollbarTotal));
+     osd->DrawRectangle(xl, tt, x3 - 1, tb - 1, Theme.Color(clrMenuScrollbarShown));
      }
 }
 
