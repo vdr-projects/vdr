@@ -71,6 +71,7 @@ VDR Plugin 'skincurses' Revision History
 - Using cString::sprintf() instead of asprintf().
 - Implemented cSkinCursesDisplayMenu::SetScrollbar().
 
-2008-02-22: Version 0.1.6
+2008-02-23: Version 0.1.6
 
-- Revised the fix of calculating the scrollbar height in the skins.
+- Revised the fix of calculating the scrollbar height in the skins. The scrollbar
+  handle now always has a height that is at least the width of the scrollbar.

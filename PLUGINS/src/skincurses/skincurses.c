@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.21 2008/02/22 17:02:31 kls Exp $
+ * $Id: skincurses.c 1.22 2008/02/23 10:38:04 kls Exp $
  */
 
 #include <ncurses.h>
@@ -299,8 +299,9 @@ void cSkinCursesDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int
      int yb = yt + Height;
      int st = yt;
      int sb = yb;
-     int tt = st + (sb - st) * double(Offset) / Total + 0.5;
-     int tb = tt + (sb - st) * double(Shown) / Total + 0.5;
+     int th = max(int((sb - st) * double(Shown) / Total + 0.5), 1);
+     int tt = min(int(st + (sb - st) * double(Offset) / Total + 0.5), sb - th);
+     int tb = min(tt + th, sb);
      int xl = ScOsdWidth - 1;
      osd->DrawRectangle(xl, st, xl, sb - 1, clrWhite);
      osd->DrawRectangle(xl, tt, xl, tb - 1, clrCyan);
