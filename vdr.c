@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.310 2008/02/10 14:23:31 kls Exp $
+ * $Id: vdr.c 1.311 2008/02/23 13:19:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -877,7 +877,9 @@ int main(int argc, char *argv[])
                            }
                         if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
                            // the previous SwitchChannel() has switched away the current live channel
-                           Channels.SwitchTo(Timer->Channel()->Number()); // avoids toggling between old channel and black screen
+                           cDevice::SetAvoidDevice(Device);
+                           if (!Channels.SwitchTo(cDevice::CurrentChannel())) // try to switch to the original channel on a different device...
+                              Channels.SwitchTo(Timer->Channel()->Number()); // ...or avoid toggling between old channel and black screen
                            Skins.Message(mtInfo, tr("Upcoming recording!"));
                            }
                         }
