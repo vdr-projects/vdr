@@ -5660,3 +5660,6 @@ Video Disk Recorder Revision History
 - When switching the device that's used for live viewing away from the current
   transponder in favor of an upcoming recording, an attempt is now made to stay
   on the current channel by possibly going into 'Transfer Mode'.
+- The CAM menu now stays open as long as it is automatically updated, even without
+  pressing a remote control key. This is important when updating the CAM firmware
+  from the transponder.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.477 2008/02/16 13:53:26 kls Exp $
+ * $Id: menu.c 1.478 2008/02/23 14:36:43 kls Exp $
  */
 
 #include "menu.h"
@@ -1697,6 +1697,7 @@ void cMenuCam::Set(void)
         AddMultiLineItem(ciMenu->BottomText());
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->BottomText());
         }
+     cRemote::TriggerLastActivity();
      }
   else if (ciEnquiry) {
      Clear();
