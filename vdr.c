@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.311 2008/02/23 13:19:10 kls Exp $
+ * $Id: vdr.c 1.312 2008/02/23 15:36:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -730,7 +730,7 @@ int main(int argc, char *argv[])
         // Make sure we have a visible programme in case device usage has changed:
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
-           if (Now - lastTime > MINCHANNELWAIT) {
+           if (!Menu && Now - lastTime > MINCHANNELWAIT) { // !Menu to avoid interfering with the CAM if a CAM menu is open
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
               if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
                  if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
