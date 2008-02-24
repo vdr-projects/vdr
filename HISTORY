@@ -5668,3 +5668,5 @@ Video Disk Recorder Revision History
   case a CAM menu is open).
 - Increased the valid range of the "Subtitle offset" setup option to -100...100
   (thanks to Rolf Ahrenberg).
+- Added the backslash ('\') to the list of characters that need to be escaped
+  when executing external commands (thanks to Peter Bieringer for reporting this one).
