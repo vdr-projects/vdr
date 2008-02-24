@@ -5644,7 +5644,7 @@ Video Disk Recorder Revision History
   should be used.
 - Fixed calculating the scrollbar sizes in the skins.
 
-2008-02-23: Version 1.5.16
+2008-02-24: Version 1.5.16
 
 - Fixed setting the current subtitle track in Transfer-Mode (reported by Petri Helin,
   thanks to Reinhard Nissl for pointing out that cDevice::Transferring() doesn't
@@ -5666,3 +5666,5 @@ Video Disk Recorder Revision History
 - No longer trying to switch to an available channel if the primary device has
   no valid programme and a menu is open (avoids interference with the CAM in
   case a CAM menu is open).
+- Increased the valid range of the "Subtitle offset" setup option to -100...100
+  (thanks to Rolf Ahrenberg).
