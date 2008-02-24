@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.20 2008/02/17 14:28:19 kls Exp $
+ * $Id: skincurses.c 1.22 2008/02/23 10:38:04 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.5";
+static const char *VERSION        = "0.1.6";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -296,14 +296,15 @@ void cSkinCursesDisplayMenu::DrawScrollbar(int Total, int Offset, int Shown, int
 {
   if (Total > 0 && Total > Shown) {
      int yt = Top;
-     int yb = yt + Height - 1;
+     int yb = yt + Height;
      int st = yt;
      int sb = yb;
-     int tt = st + (sb - st + 1) * Offset / Total;
-     int tb = tt + (sb - st + 1) * Shown / Total;
+     int th = max(int((sb - st) * double(Shown) / Total + 0.5), 1);
+     int tt = min(int(st + (sb - st) * double(Offset) / Total + 0.5), sb - th);
+     int tb = min(tt + th, sb);
      int xl = ScOsdWidth - 1;
-     osd->DrawRectangle(xl, st, xl, sb, clrWhite);
-     osd->DrawRectangle(xl, tt, xl, tb, clrCyan);
+     osd->DrawRectangle(xl, st, xl, sb - 1, clrWhite);
+     osd->DrawRectangle(xl, tt, xl, tb - 1, clrCyan);
      }
 }
 

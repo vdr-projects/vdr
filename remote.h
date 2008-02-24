@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.40 2007/04/30 12:37:37 kls Exp $
+ * $Id: remote.h 1.41 2008/02/23 14:38:47 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -67,6 +67,9 @@ public:
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
   static time_t LastActivity(void) { return lastActivity; }
       ///< Absolute time when last key was delivered by Get().
+  static void TriggerLastActivity(void);
+      ///< Simulates user activity, for instance to keep the current menu open
+      ///< even if no remote control key has been pressed.
   };
 
 class cRemotes : public cList<cRemote> {};

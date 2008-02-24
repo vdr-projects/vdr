@@ -122,7 +122,7 @@ Henning Holtschneider <hh@holtschneider.com>
  for pointing out a possible hangup when reading a broken epg.data file
 
 Paulo Lopes <pmml@netvita.pt>
- for translating OSD texts to the Portugese language
+ for translating OSD texts to the Portuguese language
 
 Markus Lang <pretender@gaze.de> and Ulrich Röder <dynamite@efr-net.de>
  for making DiSEqC support configurable
@@ -186,7 +186,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a bug in handling of Ca parameters with values <= MAXDEVICES, which
  don't indicate an actual encrypted channel
  for implementing setting the "broken link" flag for GOPs at the beginning of a new
- video sequence, which avoids artefacts when cutting
+ video sequence, which avoids artifacts when cutting
  for suggesting to add VDRVERSNUM to config.h
  for fixing a memory leak in cNonBlockingFileReader
  for fixing an uninitialized variable in cDisplayChannel
@@ -899,6 +899,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for pointing out that the canonical spelling of codesets is with '-'
  for a hint on using _nl_msg_cat_cntr
  for adding some missing 'const' keywords
+ for pointing out that "%016llX" should be used instead of "%016LX"
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1043,6 +1044,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to limit the length of the recording name in timers created via
  SVDRP in case VDR is run with --vfat, in order to avoid names that are too long
  for Windows
+ for increasing the valid range of the "Subtitle offset" setup option to -100...100
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1060,6 +1062,8 @@ Peter Bieringer <pb@bieringer.de>
  for adding more error messages and line numbers when reading EPG data and info.vdr
  for fixing handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
  for suggesting to ignore lines tagged with '#' in the 'info.vdr' file of a recording
+ for reporting a problem with the backslash ('\') in parameters when executing
+ external commands
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -1082,7 +1086,7 @@ Thomas Schmidt <tschmidt@debian.org>
  for reporting a crash when canceling a newly created timer
  for making 'diseqc.conf' a required file only if Setup.DiSEqC is activated
  for making VDR use the default configuration directory as defined in the CONFDIR
- varable in the Makefile
+ variable in the Makefile
 
 Michael Walle <michael.walle@web.de>
  for reporting a bug in channel switching after Left/Right has been pressed
@@ -1163,6 +1167,8 @@ Reinhard Nissl <rnissl@gmx.de>
  to be displayed late in live mode
  for a patch that was used to implement handling of DVB-S2
  for reporting an invalid access in the section handler when ending VDR
+ for pointing out that cDevice::Transferring() doesn't return the right value in the
+ early stage of channel switching
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1350,7 +1356,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
  for reporting some missing braces in remux.c
- for suggesting to modifiy the Makefile to copy and clean up additional libraries
+ for suggesting to modify the Makefile to copy and clean up additional libraries
  a plugin might provide
 
 Marco Schlüßler <marco@lordzodiac.de>
@@ -1449,7 +1455,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing selecting the audio track when pressing Ok in the Audio menu
  for implementing handling DVB subtitles
  for fixing the description of DeviceSetAvailableTrack() and cReceiver(), and adding
- an example ~cMyReceiver() in PLUGINS.html (thanks to Marco Schlüßler).
+ an example ~cMyReceiver() in PLUGINS.html
  for fixing checking compatibility mode for old subtitles plugin
  for a patch that was used to implement handling of DVB-S2
  for fixing setting the date in the channel display of the classic and sttng skins,
@@ -1750,6 +1756,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for making the "Play" key start replay of the selected recording in the Recordings
  menu
  for adding missing #include <limits.h> to epg.c and menuitems.h
+ for fixing various spelling errors and improving PLUGINS.html
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1884,7 +1891,7 @@ Philip Prindeville <philipp_subx@redfish-solutions.com>
 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
  for making VDR use use daemon() instead of fork() to run in daemon mode
  for fixing a possible endless loop in a menu with no selectable items if
- Setup.MenuScrollWrap is true (thanks to Enrico Scholz)
+ Setup.MenuScrollWrap is true
 
 Nicolas Huillard <nhuillard@e-dition.fr>
  for translating OSD texts to the French language
@@ -2132,7 +2139,7 @@ Prakash Punnoor <prakash@punnoor.de>
 Anssi Hannula <anssi.hannula@gmail.com>
  for a patch that was used to implement processing the "frequency list descriptor"
  for suggesting that cDevice::GetDevice() should prefer any device that's already
- receiving and doesn't require detatching receivers
+ receiving and doesn't require detaching receivers
  for improving handling Transfer Mode devices when selecting a device to receive
  for fixing handling frequencies in NitFilter::Process()
  for making non-primary devices in Transfer mode be also used for recording
@@ -2202,11 +2209,12 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
 
 Peter Pinnau <vdr@unterbrecher.de>
- for reporting that 'uint32_t' requires uncluding stdint.h in font.h on some systems
+ for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
 
 Petri Helin <phelin@googlemail.com>
  for suggesting to avoid budget DVB cards with Common Interface when tuning to an
  FTA channel
+ for reporting a bug in setting the current subtitle track in Transfer-Mode
 
 Oktay Yolgeçen <oktay_73@yahoo.de>
  for translating OSD texts to the Turkish language
@@ -2299,3 +2307,6 @@ Mikko Matilainen <mikkom@iki.fi>
 Benedikt Elser <elser@in.tum.de>
  for a patch that was used to add cStatus::TimerChange() to inform plugins about
  changes to the list of timers
+
+Carel Willemse <ca_willemse@planet.nl>
+ for translating OSD texts to the Dutch language

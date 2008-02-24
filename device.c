@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.153 2008/02/16 13:52:11 kls Exp $
+ * $Id: device.c 1.155 2008/02/23 13:09:01 kls Exp $
  */
 
 #include "device.h"
@@ -218,6 +218,7 @@ int cDevice::nextCardIndex = 0;
 int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
+cDevice *cDevice::avoidDevice = NULL;
 
 cDevice::cDevice(void)
 {
@@ -356,6 +357,8 @@ cDevice *cDevice::GetDevice(int Index)
 
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView)
 {
+  cDevice *AvoidDevice = avoidDevice;
+  avoidDevice = NULL;
   // Collect the current priorities of all CAM slots that can decrypt the channel:
   int NumCamSlots = CamSlots.Count();
   int SlotPriority[NumCamSlots];
@@ -385,6 +388,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (NumUsableSlots && SlotPriority[j] > MAXPRIORITY)
          continue; // there is no CAM available in this slot
       for (int i = 0; i < numDevices; i++) {
+          if (device[i] == AvoidDevice)
+             continue; // this device shall be temporarily avoided
           if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->CardIndex() + 1)
              continue; // a specific card was requested, but not this one
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
@@ -1159,7 +1164,7 @@ bool cDevice::Replaying(void) const
 
 bool cDevice::Transferring(void) const
 {
-  return dynamic_cast<cTransfer *>(player) != NULL;
+  return ActualDevice() != PrimaryDevice();
 }
 
 bool cDevice::AttachPlayer(cPlayer *Player)

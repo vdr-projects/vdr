@@ -691,8 +691,8 @@ Version 1.6
                          individual preferred languages.
 
   Subtitle offset = 0    Allows you to shift the location of the subtitles in the
-                         vertical direction. The valid range is -50...50. This option
-                         is only avialable if "Display subtitles" is set to 'yes'.
+                         vertical direction. The valid range is -100...100. This option
+                         is only available if "Display subtitles" is set to 'yes'.
 
   Subtitle foreground transparency = 0
   Subtitle background transparency = 0

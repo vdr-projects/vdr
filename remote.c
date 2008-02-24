@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.57 2007/04/30 12:27:56 kls Exp $
+ * $Id: remote.c 1.59 2008/02/23 14:14:46 kls Exp $
  */
 
 #include "remote.h"
@@ -121,7 +121,7 @@ bool cRemote::PutMacro(eKeys Key)
 bool cRemote::Put(uint64_t Code, bool Repeat, bool Release)
 {
   char buffer[32];
-  snprintf(buffer, sizeof(buffer), "%016LX", Code);
+  snprintf(buffer, sizeof(buffer), "%016llX", Code);
   return Put(buffer, Repeat, Release);
 }
 
@@ -185,7 +185,7 @@ eKeys cRemote::Get(int WaitMs, char **UnknownCode)
             out = 0;
          if ((k & k_Repeat) != 0)
             repeatTimeout.Set(REPEATTIMEOUT);
-         lastActivity = time(NULL);
+         TriggerLastActivity();
          return enabled ? k : kNone;
          }
       else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs) && repeatTimeout.TimedOut())
@@ -196,6 +196,11 @@ eKeys cRemote::Get(int WaitMs, char **UnknownCode)
          return kNone;
          }
       }
+}
+
+void cRemote::TriggerLastActivity(void)
+{
+  lastActivity = time(NULL);
 }
 
 // --- cRemotes --------------------------------------------------------------

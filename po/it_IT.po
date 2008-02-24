@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-10-16 02:15+0100\n"
+"PO-Revision-Date: 2008-02-21 20:29+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgid "Channel not available!"
 msgstr "Canale non disponibile!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Impossibile iniziare la modalità di trasferimento!"
+msgstr "Impossibile avviare la modalità di trasferimento!"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -42,7 +42,7 @@ msgid "LanguageCode$eng"
 msgstr "ita"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Fase 1: tipo ricevitore RC"
+msgstr "Fase 1: Rilevamento tipo codice RC"
 
 msgid "Press any key on the RC unit"
 msgstr "Premi un tasto dell'unità RC"
@@ -54,7 +54,7 @@ msgid "Do not press any key..."
 msgstr "Non premere alcun tasto..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fase 2: Codici specifici dei tasti"
+msgstr "Fase 2: Apprendimento codici specifici dei tasti"
 
 #, c-format
 msgid "Press key for '%s'"
@@ -82,7 +82,7 @@ msgid "Phase 3: Saving key codes"
 msgstr "Fase 3: Salvataggio codici tasti"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "'Premi 'Su' per salvare, 'Giù' per annullare"
+msgstr "Premi 'Su' per salvare, 'Giù' per annullare"
 
 msgid "Key$Up"
 msgstr "Su"
@@ -169,7 +169,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr "Key$Sottotitoli"
+msgstr "Sottotitoli"
 
 msgid "Key$Schedule"
 msgstr "Programmi"
@@ -226,7 +226,7 @@ msgid "Free To Air"
 msgstr "in chiaro"
 
 msgid "encrypted"
-msgstr "criptato"
+msgstr "codificato"
 
 msgid "auto"
 msgstr "automatico"
@@ -283,7 +283,7 @@ msgid "Srate"
 msgstr "SymbolRate"
 
 msgid "Inversion"
-msgstr "Inversion"
+msgstr "Inversione"
 
 msgid "off"
 msgstr "off"
@@ -298,19 +298,19 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulation"
+msgstr "Modulazione"
 
 msgid "Bandwidth"
 msgstr "Banda passante"
 
 msgid "Transmission"
-msgstr "Transmission"
+msgstr "Trasmissione"
 
 msgid "Guard"
 msgstr "Guard"
 
 msgid "Hierarchy"
-msgstr "Hierarchy"
+msgstr "Gerarchia"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
@@ -325,16 +325,16 @@ msgid "Button$New"
 msgstr "Nuovo"
 
 msgid "Button$Delete"
-msgstr "Cancella"
+msgstr "Elimina"
 
 msgid "Button$Mark"
-msgstr "Marca"
+msgstr "Segna"
 
 msgid "Channel is being used by a timer!"
 msgstr "Canale occupato da un timer!"
 
 msgid "Delete channel?"
-msgstr "Cancellare il canale?"
+msgstr "Eliminare il canale?"
 
 msgid "Edit timer"
 msgstr "Modifica timer"
@@ -373,16 +373,16 @@ msgid "Timers"
 msgstr "Timer"
 
 msgid "Button$On/Off"
-msgstr "On/Off"
+msgstr "Attivo/Disattivo"
 
 msgid "Button$Info"
 msgstr "Informazioni"
 
 msgid "Delete timer?"
-msgstr "Cancellare il timer?"
+msgstr "Eliminare il timer?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Timer in registrazione - cancellare?"
+msgstr "Timer in registrazione - eliminare?"
 
 msgid "Event"
 msgstr "Eventi"
@@ -457,10 +457,10 @@ msgid "Error while accessing recording!"
 msgstr "Errore nell'accedere alla registrazione!"
 
 msgid "Delete recording?"
-msgstr "Cancellare la registrazione?"
+msgstr "Eliminare la registrazione?"
 
 msgid "Error while deleting recording!"
-msgstr "Errore nel cancellare la registrazione!"
+msgstr "Errore eliminazione della registrazione!"
 
 msgid "Recording commands"
 msgstr "Comandi di registrazione"
@@ -469,7 +469,7 @@ msgid "never"
 msgstr "mai"
 
 msgid "skin dependent"
-msgstr "in base allo stile"
+msgstr "in base allo stile interfaccia"
 
 msgid "always"
 msgstr "sempre"
@@ -502,7 +502,7 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Tempo del messaggio (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Utilizzare caratteri piccoli"
+msgstr "Utilizza caratteri piccoli"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Anti-alias"
@@ -541,7 +541,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Mostra informazioni al cambio canale"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Scadenza informazioni canale richieste"
+msgstr "Scadenza richieste informazioni canale"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Scorri per pagine"
@@ -550,7 +550,7 @@ msgid "Setup.OSD$Scroll wraps"
 msgstr "Scorri riavvolgendo"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Utilizza il pulsante Menu per chiudere"
+msgstr "Utilizza il tasto Menu per chiudere"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Directory di registrazione"
@@ -562,13 +562,13 @@ msgid "Button$Scan"
 msgstr "Scansione"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Timeout scansione aggiorn. EPG (ore)"
+msgstr "Scadenza scansione aggiorn. EPG (ore)"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Livello correzione EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Visualizzazione dati vecchi (min)"
+msgstr "Visualizzazione vecchi dati EPG (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Imposta orario automatico"
@@ -636,22 +636,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Lingua per l'audio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "Setup.DVB$Mostra sottotitoli"
+msgstr "Mostra sottotitoli"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "Setup.DVB$Lingue sottotitoli"
+msgstr "Lingue sottotitoli"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "Setup.DVB$Lingua sottotitoli"
+msgstr "Lingua sottotitoli"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Setup.DVB$Posizione sottotitolo"
+msgstr "Posizione sottotitoli"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Setup.DVB$Trasparenza primo piano sottotitoli"
+msgstr "Trasparenza primo piano sottotitoli"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Setup.DVB$Trasparenza sfondo sottotitoli"
+msgstr "Trasparenza sfondo sottotitoli"
 
 msgid "LNB"
 msgstr "LNB"
@@ -729,10 +729,10 @@ msgid "Setup.Recording$Use VPS"
 msgstr "Utilizza VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "Margine VPS"
+msgstr "Margine VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Marca registrazione immediata"
+msgstr "Segna registrazione immediata"
 
 msgid "Setup.Recording$Name instant recording"
 msgstr "Nome registrazione immediata"
@@ -756,7 +756,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Mostra modalità riproduzione"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID di rispristino"
+msgstr "ID di ripristino"
 
 msgid "Miscellaneous"
 msgstr "Generici"
@@ -786,7 +786,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Uscita d'emergenza"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -846,7 +846,7 @@ msgid "No subtitles"
 msgstr "Nessun sottotitolo"
 
 msgid "Button$Subtitles"
-msgstr "Button$Sottotitoli"
+msgstr "Sottotitoli"
 
 msgid "No subtitles available!"
 msgstr "Nessun sottotitolo disponibile!"
@@ -868,10 +868,10 @@ msgid "No editing marks defined!"
 msgstr "Nessun marcatore di modifica definito!"
 
 msgid "Can't start editing process!"
-msgstr "Impossibile iniziare il processo di modifica!"
+msgstr "Impossibile avviare il processo di modifica!"
 
 msgid "Editing process started"
-msgstr "Processo di modifica iniziato"
+msgstr "Processo di modifica avviato"
 
 msgid "Editing process already active!"
 msgstr "Processo di modifica già attivo!"

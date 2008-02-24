@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.90 2008/02/16 13:50:11 kls Exp $
+ * $Id: device.h 1.91 2008/02/23 13:13:04 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -101,6 +101,7 @@ private:
   static int useDevice;
   static cDevice *device[MAXDEVICES];
   static cDevice *primaryDevice;
+  static cDevice *avoidDevice;
 public:
   static int NumDevices(void) { return numDevices; }
          ///< Returns the total number of devices.
@@ -145,6 +146,9 @@ public:
          ///< this device/CAM combination will be skipped in the next call to
          ///< GetDevice().
          ///< See also ProvidesChannel().
+  static void SetAvoidDevice(cDevice *Device) { avoidDevice = Device; }
+         ///< Sets the given Device to be temporarily avoided in the next call to
+         ///< GetDevice(const cChannel, int, bool).
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.

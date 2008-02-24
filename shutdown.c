@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 1.4 2008/01/13 14:27:29 kls Exp $
+ * $Id: shutdown.c 1.5 2008/02/24 10:29:00 kls Exp $
  */
 
 #include "shutdown.h"
@@ -130,7 +130,7 @@ void cShutdownHandler::SetShutdownCommand(const char *ShutdownCommand)
 void cShutdownHandler::CallShutdownCommand(time_t WakeupTime, int Channel, const char *File, bool UserShutdown)
 {
   time_t Delta = WakeupTime ? WakeupTime - time(NULL) : 0;
-  cString cmd = cString::sprintf("%s %ld %ld %d \"%s\" %d", shutdownCommand, WakeupTime, Delta, Channel, *strescape(File, "\"$"), UserShutdown);
+  cString cmd = cString::sprintf("%s %ld %ld %d \"%s\" %d", shutdownCommand, WakeupTime, Delta, Channel, *strescape(File, "\\\"$"), UserShutdown);
   isyslog("executing '%s'", *cmd);
   int Status = SystemExec(cmd, true);
   if (!WIFEXITED(Status) || WEXITSTATUS(Status))

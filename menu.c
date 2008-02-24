@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.477 2008/02/16 13:53:26 kls Exp $
+ * $Id: menu.c 1.480 2008/02/24 10:28:46 kls Exp $
  */
 
 #include "menu.h"
@@ -1697,6 +1697,7 @@ void cMenuCam::Set(void)
         AddMultiLineItem(ciMenu->BottomText());
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->BottomText());
         }
+     cRemote::TriggerLastActivity();
      }
   else if (ciEnquiry) {
      Clear();
@@ -2126,7 +2127,7 @@ eOSState cMenuRecordings::Commands(eKeys Key)
      cRecording *recording = GetRecording(ri);
      if (recording) {
         cMenuCommands *menu;
-        eOSState state = AddSubMenu(menu = new cMenuCommands(tr("Recording commands"), &RecordingCommands, cString::sprintf("\"%s\"", *strescape(recording->FileName(), "\"$"))));
+        eOSState state = AddSubMenu(menu = new cMenuCommands(tr("Recording commands"), &RecordingCommands, cString::sprintf("\"%s\"", *strescape(recording->FileName(), "\\\"$"))));
         if (Key != kNone)
            state = menu->ProcessKey(Key);
         return state;
@@ -2497,7 +2498,7 @@ void cMenuSetupDVB::Setup(void)
      Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle languages"),    &numSubtitleLanguages, 0, I18nLanguages()->Size()));
      for (int i = 0; i < numSubtitleLanguages; i++)
          Add(new cMenuEditStraItem(tr("Setup.DVB$Subtitle language"), &data.SubtitleLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
-     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle offset"),                  &data.SubtitleOffset,       -50, 50));
+     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle offset"),                  &data.SubtitleOffset,      -100, 100));
      Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
      Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
      }

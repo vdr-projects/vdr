@@ -247,10 +247,10 @@ Video Disk Recorder Revision History
 2000-11-01: Version 0.67
 
 - The EIT information is now gathered in a separate thread.
-- The sytem time can now be synchronized to the time broadcast in the DVB data
+- The system time can now be synchronized to the time broadcast in the DVB data
   stream. This can be enabled in the "Setup" menu by setting "SetSystemTime" to
   1.  Note that this works only if VDR is running under a user ID that has
-  permisson to set the system time.
+  permission to set the system time.
 - The new item "Schedule" in the "Main" menu opens VDR's EPG (thanks to Robert
   Schneider). See the MANUAL file for a detailed description.
 - The new setup parameters MarginStart and MarginStop define how long (in
@@ -640,7 +640,7 @@ Video Disk Recorder Revision History
 - The new command line option '-E' can be used to define where the EPG data
   shall be written to. This is especially useful if VDR runs in a system
   that turns off the video disk when it is not used, and therefore needs
-  to write the EPG file to a ramdisk (or turn off writing it alltogether).
+  to write the EPG file to a ramdisk (or turn off writing it altogether).
   See 'vdr --help' for details.
 - Making sure the disk is up and running before starting recording (this
   is important for systems that turn off the video disk when it is not used).
@@ -776,7 +776,7 @@ Video Disk Recorder Revision History
   set to INVERSION_AUTO, which should work with all channels on Astra).
 - Removing unnecessary double quotes from EPG Subtitle in EPGBugfixLevel >=1.
 - EPG info is now updated if the contents changes but the ID remains the same.
-- Fixed handling SVDRP commands whith more than one blank between the command
+- Fixed handling SVDRP commands with more than one blank between the command
   word and the options.
 - The current volume setting is now saved to setup.conf and restored at the
   next program start.
@@ -907,7 +907,7 @@ Video Disk Recorder Revision History
   in the call to the shutdown command (option '-s') and the recording command
   (option '-r').
 - Improved error handling in the editing process; the resulting file will be
-  deleted if an error occured.
+  deleted if an error occurred.
 - A message is now prompted at the end of the editing process, indicating
   whether the process succeeded or failed.
 - Fixed setting the LastActivity timestamp after a shutdown prompt (thanks to
@@ -1058,7 +1058,7 @@ Video Disk Recorder Revision History
 - Changed the meaning of the 'Ca' parameter in 'channels.conf'. Each channel can
   now define which decryption method it needs in order to be accessed. The new
   configuration file 'ca.conf' contains the defined values, and the default
-  'channels.conf' has been modifed to contain the new values for 'Premiere World'
+  'channels.conf' has been modified to contain the new values for 'Premiere World'
   and 'ORF'. If you use the default 'channels.conf' and have the conditional
   access hardware to receive encrypted channels, please make sure you copy the
   file 'ca.conf' into your /video directory (or wherever your configuration files
@@ -1369,7 +1369,7 @@ Video Disk Recorder Revision History
   cPlayer and cControl have been given the functions GetIndex() and GetReplayMode() to
   allow access to the player's status.
 - Added cOsd::OpenRaw() to create a raw OSD (needed for displaying SPUs).
-- Changed the symantics of the Name parameter in cStatus::Recording() and
+- Changed the semantics of the Name parameter in cStatus::Recording() and
   cStatus::Replaying(). It is no longer the full directory name of the recording,
   but rather just the basic name. This has been changed to allow players that can't
   provide a name to simply use a string that describes the player type (like, e.g.,
@@ -1661,7 +1661,7 @@ Video Disk Recorder Revision History
 - Implemented new keys to directly access the VDR main menu functions "Schedule",
   "Channels", "Timers", "Recordings", "Setup" and "Commands". If your remote
   control provides keys you want to assign these functions to, you can delete
-  your 'remote.cof' file and restart VDR to  go through the key learning procedure
+  your 'remote.conf' file and restart VDR to  go through the key learning procedure
   again in order to assign these new keys. See MANUAL for more information.
 - The new configuration file 'keymacros.conf' can be used to assign macros to
   the color buttons in normal viewing mode, as well as to up to 9 user defined
@@ -1905,7 +1905,7 @@ Video Disk Recorder Revision History
 - Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
   separators without names (thanks to Guy Roussin for reporting this one).
 - The SVDRP command CHAN now also accepts channel IDs.
-- Increased the timeout until an index file is considerd no longer to be written
+- Increased the timeout until an index file is considered no longer to be written
   (sometimes in time shift with heavy system load the index file was closed too
   early by the replay thread).
 - Implemented "Link Layer" based CAM support, which hopefully will solve the
@@ -2006,7 +2006,7 @@ Video Disk Recorder Revision History
 - Added some missing cAudio handling calls (thanks to Werner Fink).
 - Replaced the 'for' loops in StripAudioPackets() with memset() calls (thanks to
   Werner Fink).
-- Further increased the timeout until an index file is considerd no longer to be
+- Further increased the timeout until an index file is considered no longer to be
   written.
 - Fixed a crash in case the index file can't be accessed any more during replay
   (thanks to Stefan Huelswitt for reporting this one).
@@ -2068,7 +2068,7 @@ Video Disk Recorder Revision History
 - Fixed deleting the last recording in the "Recordings" menu, which started pausing
   live video (thanks to Christoph Friederich for reporting this one).
 - Now setting the "broken link" flag for GOPs at the beginning of a new video
-  sequence, which avoids artefacts when cutting (thanks to Stefan Huelswitt).
+  sequence, which avoids artifacts when cutting (thanks to Stefan Huelswitt).
 - Removed the Mute() call from cDvbDevice::StillPicture() (suggested by Andreas
   Schultz).
 - Updated 'channels.conf.terr' for Berlin (thanks to Andreas Brachold).
@@ -2136,7 +2136,7 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' for Berlin (thanks to Juri Haberland).
 - Avoiding short display of the "Main" menu when pressing the "Recordings" button
   or the "Back" button during replay.
-- Further increased the timeout until an index file is considerd no longer to be
+- Further increased the timeout until an index file is considered no longer to be
   written.
 - Implemented separate PausePriority and PauseLifetime parameters for the recordings
   created when pausing live video (suggested by Alfred Zastrow).
@@ -2168,7 +2168,7 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.cable' (thanks to Stefan Hußfeldt).
 - Fixed reading 'epg.data' for channels with non-zero RID (thanks to Oliver
   Endriss for reporting this one).
-- Fixed EPG bugfix statistics to avoid log entires for undefined channels (thanks
+- Fixed EPG bugfix statistics to avoid log entries for undefined channels (thanks
   to Lars Bläser for reporting this one).
 - No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
   at the end of a recording.
@@ -2218,7 +2218,7 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - Completed the Italian OSD texts (thanks to Antonio Ospite).
 - Fixed breaking off replay in case the user hits "Play" or "Pause" too soon after
-  going into "Pause live video" mode (thanks to Karim Afifi for reporting ths one).
+  going into "Pause live video" mode (thanks to Karim Afifi for reporting this one).
 - Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
@@ -2247,7 +2247,7 @@ Video Disk Recorder Revision History
   Josten).
 - Fixed device handling in the CICAM menu in case a VDR instance was started
   with a specific device using the -D option (thanks to Gerald Raaf for reporting
-  ths one).
+  this one).
 - Initializing the current channel to '1' to avoid a crash in creating a new
   timer in case there is no device in the system that can actually receive any
   channel (thanks to Malcolm Caldwell for reporting this one).
@@ -2448,7 +2448,7 @@ Video Disk Recorder Revision History
 2003-10-26: Version 1.2.6pre4
 
 - Fixed handling CAM menus in case the CAM connection fails while the menu
-  is being presented (thanks to Thomas v. Keller for reportign this one).
+  is being presented (thanks to Thomas v. Keller for reporting this one).
 - Added missing 'const' to some cChannel member functions (thanks to Torsten
   Herz).
 
@@ -2668,7 +2668,7 @@ Video Disk Recorder Revision History
   recording exceeds 10 (suggested by Gregoire Favre). Since the UPT error doesn't
   happen on my system, this has not been explicitly tested.
   The "preliminary fix" for the UPT error in VDR/dvbdevice.c has been disabled
-  by default, since it makes channel switching unpleasently slow. If you want
+  by default, since it makes channel switching unpleasantly slow. If you want
   to have that workaround back, you can uncomment the line
   //#define WAIT_FOR_LOCK_AFTER_TUNING 1
   in VDR/dvbdevice.c.
@@ -2815,7 +2815,7 @@ Video Disk Recorder Revision History
 - Added a hint to PLUGINS.html about how to name a plugin that implements a skin.
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Single shot timers and events now show the day of week (adopted with some changes
-  from the "elchi" patch, orginally introduced by Oskar Signell). Plugins that use
+  from the "elchi" patch, originally introduced by Oskar Signell). Plugins that use
   cEvent::GetDateString() should note that this function now returns a longer
   string, including the day of week. The new function const char *WeekDayName(time_t t)
   can be called with a time_t value to get the day of week for that time.
@@ -3267,7 +3267,7 @@ Video Disk Recorder Revision History
 - Skins need to implement the new cSkinDisplayTrack class to display the audio
   track menu.
 - The ST:TNG skin now displays the current audio track description (if any) at the
-  botton left side.
+  bottom left side.
 - The new setup option "DVB/Audio languages" can be used to control which audio
   language shall be selected in case a channel broadcasts in different languages
   (see MANUAL for details).
@@ -3959,7 +3959,7 @@ Video Disk Recorder Revision History
   (thanks to Holger Brunn).
 - The new function Skins.QueueMessage() can be called from a background thread
   to queue a message for display. See VDR/skins.h for details.
-- The SVDRP command MESG uses the new message queueing facility, so MESG
+- The SVDRP command MESG uses the new message queuing facility, so MESG
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
@@ -4483,7 +4483,7 @@ Video Disk Recorder Revision History
 - Fixed a typo in skins.h (thanks to Alexander Rieger).
 - cSkins::QueueMessage() called from a background thread with an empty message
   now clears all messages that have been previously queued by that thread and have
-  not yet beed displayed (thanks to Alexander Rieger).
+  not yet been displayed (thanks to Alexander Rieger).
 - Fixed handling the color button texts when switching from the 'Schedule' menu of
   a channel without EPG info to the 'What's on now' menu (reported by Rolf
   Ahrenberg).
@@ -4736,7 +4736,7 @@ Video Disk Recorder Revision History
 - Fixed handling VPS timers in case the EPG event hasn't been 'seen' in a while.
 - Fixed calculating the cache size in cUnbufferedFile::Read() (thanks to Artur Skawina).
 - Removed -fPIC from VDR's and libsi's Makefile (suggested by Prakash Punnoor).
-- Modifed the device selection to better handle timer conflicts (reported by
+- Modified the device selection to better handle timer conflicts (reported by
   Christian Wieninger).
 - Avoiding a compiler warning in libsi's TypeLoop::operator[].
 - Now processing the "frequency list descriptor" (based on a patch from Anssi Hannula).
@@ -4827,7 +4827,7 @@ Video Disk Recorder Revision History
 - Fixed handling client side termination of SVDRP connections (thanks to Frank
   Schmirler).
 - cDevice::GetDevice() now prefers any device that's already receiving and doesn't
-  require detatching receivers (suggested by Anssi Hannula).
+  require detaching receivers (suggested by Anssi Hannula).
 - Fixed handling numeric keys in the channel display after switching channel groups
   (thanks to Andreas Regel).
 - Menu items derived from cMenuEditIntItem now loop though their values if they
@@ -4893,7 +4893,7 @@ Video Disk Recorder Revision History
 
 - Revoked the change to cDevice::GetDevice() that was introduced in version 1.4.1-2,
   which made it prefer any device that's already receiving and doesn't require
-  detatching receivers. This change has caused some unwanted behavior, so further
+  detaching receivers. This change has caused some unwanted behavior, so further
   testing is necessary.
 
 2006-09-03: Version 1.4.2-1
@@ -5041,7 +5041,7 @@ Video Disk Recorder Revision History
   decrypting the current channel again.
 - The Setup/CAM menu now dynamically refreshes its items and displays whether
   a CAM is present or ready. The 'Reset' function no longer leaves the menu.
-- The CAM menu will now be openend when pressing the Ok key on a slot entry.
+- The CAM menu will now be opened when pressing the Ok key on a slot entry.
 - The CAM menu now stays within the current menu context and doesn't close and
   reopen the menu every time an option is selected.
 - When an encrypted channel is switched to for the first time, VDR now checks
@@ -5400,7 +5400,7 @@ Video Disk Recorder Revision History
   texts they want to reuse from VDR's core translations (suggested by Matthias
   Becker).
 - VDR now uses the default configuration directory as defined in the CONFDIR
-  varable in the Makefile (thanks to Thomas Schmidt).
+  variable in the Makefile (thanks to Thomas Schmidt).
 - The SVDRP command LSTC can now list the channels with group separators if the
   option ':groups' is given (thanks to Andreas Mair).
 - Added a missing error report to cCuttingThread::Action() (thanks to Udo
@@ -5479,7 +5479,7 @@ Video Disk Recorder Revision History
   i18n: $(I18Npot) $(I18Nmo)
   (based on a suggestion by Torsten Kunkel).
 - Removed a duplicate ',' from the ca_ES.po file (thanks to Thomas Günther).
-- Added the 'ß' character to the "allowed charcaters" in the de_DE.po file
+- Added the 'ß' character to the "allowed characters" in the de_DE.po file
   (suggested by Thomas Günther).
 - Made the default copy ctor of cRecording private (thanks to Markus Hahn).
   Same for the assign operator.
@@ -5550,7 +5550,7 @@ Video Disk Recorder Revision History
 - Added a missing setting of lastFreeMB in cMenuMain::Update() (reported by
   Andreas Brugger).
 - Added '-Wno-parentheses' to the compiler options in order to avoid silly compiler
-  warnings for expessions like 'a || b && c', where GCC 4.3 wants to force the
+  warnings for expressions like 'a || b && c', where GCC 4.3 wants to force the
   programmer to write 'a || (b && c)', while everybody knows that '&&' links
   stronger than '||' (reported by Tobias Grimm).
 - Updated the Hungarian language texts (thanks to István Füley).
@@ -5572,7 +5572,7 @@ Video Disk Recorder Revision History
 - The new option --localedir can be used to set the locale directory at runtime
   (based on a patch from Stefan Huelswitt).
 - Fixed finding new transponders (thanks to Winfried Köhler).
-- Implemented handling of DVB-S2 (thanks to Marco Schlüßler and Reinhald Nissl
+- Implemented handling of DVB-S2 (thanks to Marco Schlüßler and Reinhard Nissl
   for a patch that was used to implement this). VDR now requires the "multiproto"
   DVB driver, e.g. from http://jusst.de/hg/multiproto.
 - Removed switching to the next higher or lower channel if the current channel
@@ -5643,3 +5643,30 @@ Video Disk Recorder Revision History
 - Introduced 'operator const void * ()' in cString to catch cases where operator*()
   should be used.
 - Fixed calculating the scrollbar sizes in the skins.
+
+2008-02-24: Version 1.5.16
+
+- Fixed setting the current subtitle track in Transfer-Mode (reported by Petri Helin,
+  thanks to Reinhard Nissl for pointing out that cDevice::Transferring() doesn't
+  return the right value in the early stage of channel switching).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Updated the Dutch OSD texts (thanks to Carel Willemse).
+- Fixed various spelling errors and improved PLUGINS.html (thanks to Ville Skyttä).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed the format in cRemote::Put() to use "%016llX" instead of "%016LX" (thanks
+  to Ludwig Nussel for pointing this out).
+- Revised the fix of calculating the scrollbar height in the skins. The scrollbar
+  handle now always has a height that is at least the width of the scrollbar.
+- When switching the device that's used for live viewing away from the current
+  transponder in favor of an upcoming recording, an attempt is now made to stay
+  on the current channel by possibly going into 'Transfer Mode'.
+- The CAM menu now stays open as long as it is automatically updated, even without
+  pressing a remote control key. This is important when updating the CAM firmware
+  from the transponder.
+- No longer trying to switch to an available channel if the primary device has
+  no valid programme and a menu is open (avoids interference with the CAM in
+  case a CAM menu is open).
+- Increased the valid range of the "Subtitle offset" setup option to -100...100
+  (thanks to Rolf Ahrenberg).
+- Added the backslash ('\') to the list of characters that need to be escaped
+  when executing external commands (thanks to Peter Bieringer for reporting this one).
