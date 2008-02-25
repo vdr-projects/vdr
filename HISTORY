@@ -5671,7 +5671,8 @@ Video Disk Recorder Revision History
 - Added the backslash ('\') to the list of characters that need to be escaped
   when executing external commands (thanks to Peter Bieringer for reporting this one).
 
-2008-02-24: Version 1.5.17
-
+2008-02-25: Version 1.5.17
 
 - Updated the Swedish OSD texts (thanks to Tomas Berglund).
+- Made the 'pic2mpg' script of the 'pictures' plugin work with uppercase filename
+  extensions (thanks to Stefan Wagner for reporting this one).
