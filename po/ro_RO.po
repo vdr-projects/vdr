@@ -1,20 +1,22 @@
 # VDR language source file.
-# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
-# Lucian Muresan <lucianm@users.sourceforge.net>, 2004
+# Lucian Muresan <lucianm@users.sourceforge.net>, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.5.7\n"
+"Project-Id-Version: VDR 1.5.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"PO-Revision-Date: 2008-02-25 00:39+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Romanian\n"
+"X-Poedit-Country: ROMANIA\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
@@ -167,7 +169,7 @@ msgid "Key$Audio"
 msgstr "Sunet"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Subtitrare"
 
 msgid "Key$Schedule"
 msgstr "Program (EPG)"
@@ -188,31 +190,31 @@ msgid "Key$Commands"
 msgstr "Comenzi"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Utilizator1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Utilizator2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Utilizator3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Utilizator4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Utilizator5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Utilizator6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Utilizator7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Utilizator8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Utilizator9"
 
 msgid "Disk"
 msgstr "Disc"
@@ -260,10 +262,10 @@ msgid "Dpid2"
 msgstr "PID AC3 (2)"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "PID Teletext"
@@ -431,7 +433,7 @@ msgid "Please enter %d digits!"
 msgstr "Vã rog introduceþi %d cifre!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM-ul nu reacþioneazã!"
 
 msgid "Recording info"
 msgstr "Detaliile înregistrãrii"
@@ -503,25 +505,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Utilizare fonturi mici"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Antialiere"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Font implicit"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Font mic"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Font cu lãþime fixã"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Mãrimea implicitã a fontului (pixeli)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Mãrimea 'micã' a fontului (pixeli)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Mãrimea 'fixã' a fontului (pixeli)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Poziþia informaþiilor despre canal"
@@ -634,22 +636,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Limba sunetului"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Afiºeazã subtitrare"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Limbi subtitrare"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Limbã subtitrare"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Offset subtitrare"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparenþa prim-planului subtitrãrii"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparenþa fundalului subtitrãrii"
 
 msgid "LNB"
 msgstr "LNB"
@@ -667,13 +669,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Frecvnþã LNB superioarã (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Resetare CAM"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM preyent"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM pregãtit"
 
 msgid "CAM"
 msgstr "CAM"
@@ -691,7 +693,7 @@ msgid "Can't open CAM menu!"
 msgstr "Nu pot deschide meniul CAM"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM-ul este in folosinþã - totuºi resetez?"
 
 msgid "Can't reset CAM!"
 msgstr "Nu pot reseta CAM"
@@ -772,7 +774,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Interval zapping (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Timeout la introducerea canalului (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canalul de pornire"
@@ -784,7 +786,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumul la pornire"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Oprire de urgenþã"
 
 msgid "Plugins"
 msgstr "Plugin-uri"
@@ -841,13 +843,13 @@ msgid "No audio available!"
 msgstr "Lipseºte sunetul!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Nu afiºeazã subtirare"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Subtitrare"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Subtitrare indisponibilã!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Insuficient spaþiul pe disc pentru înregistrare!"
@@ -908,7 +910,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nu pot închide - vezi opþiunea '-s'"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Montajul tocmai se efectueazã - închid, totuºi?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Tocmai se înregistreazã - închid, totuºi?"
@@ -922,10 +924,10 @@ msgstr "închid, totuºi?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Plugin-ul %s se va trezi +n %ld min, continui?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Montajul tocmai se efectueazã - repornesc, totuºi?"
 
 msgid "Recording - restart anyway?"
 msgstr "Tocmai se înregistreazã - repornesc, totuºi?"
@@ -979,7 +981,7 @@ msgid "Recording started"
 msgstr "A început înregistrarea"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR se va închide mai târziu - apãsaþi 'Power' pentru a forþa"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Apasã orice tastã pentru a anula închiderea"
@@ -994,8 +996,8 @@ msgid "Editing process finished"
 msgstr "Montajul înregistrãrii s-a terminat"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Apãsaþi orice tastã pentru a anula repornirea"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR se va închide în %s minute"
