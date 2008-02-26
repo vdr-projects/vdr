@@ -5677,3 +5677,4 @@ Video Disk Recorder Revision History
 - Made the 'pic2mpg' script of the 'pictures' plugin work with uppercase filename
   extensions (thanks to Stefan Wagner for reporting this one).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the Dutch OSD texts (thanks to Johan Schuring).
