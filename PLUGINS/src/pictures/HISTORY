@@ -25,7 +25,7 @@ VDR Plugin 'pictures' Revision History
 - Introduced 'operator const void * ()' in cString to catch cases where operator*()
   should be used.
 
-2008-02-25:
+2008-02-29: Version 0.0.6
 
 - Made the 'pic2mpg' script of the 'pictures' plugin work with uppercase filename
-  extensions (reported by Stefan Wagner <stefanwag@gmx.at>).
+  extensions and relative paths (reported by Stefan Wagner <stefanwag@gmx.at>).
