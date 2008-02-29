@@ -5685,3 +5685,4 @@ Video Disk Recorder Revision History
 - Fixed a crash in cFreetypeFont::DrawText() if an unknown symbol is encountered
   (thanks to Tobias Grimm). Unknown symbols are replaced with a '?'.
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Updated the Czech OSD texts (thanks to Vladimír Bárta and Jiri Dobry).

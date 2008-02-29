@@ -1,15 +1,16 @@
 # VDR language source file.
 # Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
-# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006
+# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006, 2008
+# Jiøí Dobrý <jdobry@centrum.cz>, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.5.7\n"
+"Project-Id-Version: VDR 1.5.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
+"PO-Revision-Date: 2008-02-28 15:00+0200\n"
+"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrý <jdobry@centrum.cz>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
@@ -166,7 +167,7 @@ msgid "Key$Audio"
 msgstr "Zvuk"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Titulky"
 
 msgid "Key$Schedule"
 msgstr "Program (EPG)"
@@ -187,31 +188,31 @@ msgid "Key$Commands"
 msgstr "Pøíkazy"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "U¾ivatel1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "U¾ivatel2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "U¾ivatel3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "U¾ivatel4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "U¾ivatel5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "U¾ivatel6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "U¾ivatel7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "U¾ivatel8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "U¾ivatel9"
 
 msgid "Disk"
 msgstr "Disk"
@@ -259,10 +260,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -430,7 +431,7 @@ msgid "Please enter %d digits!"
 msgstr "Prosím vlo¾te %d znakù!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM neodpovídá!"
 
 msgid "Recording info"
 msgstr "Detail nahrávky"
@@ -502,25 +503,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Pou¾ívat malé písmo"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Vyhladit písmo"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Výchozí písmo"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Malé písmo"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Fixní písmo"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Velikost výchozího písma (pixely)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Velikost malého písma (pixely)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Velikost fixního písma (pixely)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozice informace o kanálu"
@@ -633,22 +634,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Jazyk zvuku"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Zobrazovat titulky"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Jazyky titulkù"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Jazyk titulkù"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Posunutí titulkù"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Prùhlednost písma titulkù"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Prùhlednost pozadí titulkù"
 
 msgid "LNB"
 msgstr "LNB"
@@ -666,13 +667,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Horní frekvence LNB (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Reset CAMu"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM pøítomen"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM pøipraven"
 
 msgid "CAM"
 msgstr "CAM"
@@ -690,7 +691,7 @@ msgid "Can't open CAM menu!"
 msgstr "Menu CAM není dostupné"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM se pou¾ívá - opravdu restartovat?"
 
 msgid "Can't reset CAM!"
 msgstr "CAM modul nelze restartovat!"
@@ -771,7 +772,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Èasový limit Zap (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Prodleva pøi volbì kanálu (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanál po spu¹tìní"
@@ -783,7 +784,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitost po spu¹tìní"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Nouzové ukonèení"
 
 msgid "Plugins"
 msgstr "Moduly"
@@ -840,13 +841,13 @@ msgid "No audio available!"
 msgstr "Zvuk není dostupný!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Bez titulkù"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Titulky"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "®ádné dostupné titulky!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Nedostatek volného místa k zapoèetí nahrávání!"
@@ -904,10 +905,10 @@ msgid "Low disk space!"
 msgstr "Disk bude brzy zaplnìn!"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Vypnutí není mo¾né - chbí volba '-s'!"
+msgstr "Vypnutí není mo¾né - chybí volba '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Edituji - pøesto vypnout?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Systém je zaneprázdnìn - pøesto vypnout?"
@@ -921,10 +922,10 @@ msgstr "pøesto vypnout?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Modul %s startuje za %ld min., pokraèovat?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Edituji - pøesto restartovat?"
 
 msgid "Recording - restart anyway?"
 msgstr "Systém je zaneprázdnìn - pøesto restartovat?"
@@ -944,7 +945,7 @@ msgstr "ST:TNG konzola"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "PUSÈPSN"
+msgstr "PÚSÈPSN"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
@@ -978,7 +979,7 @@ msgid "Recording started"
 msgstr "Zaèalo nahrávání"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "Vypnutí VDR bude odlo¾eno - vypnete klávesou Power"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Jakákoliv klávesa zru¹í vypnutí"
@@ -993,8 +994,8 @@ msgid "Editing process finished"
 msgstr "Editaèní proces skonèil"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Jakákoliv klávesa zru¹í restart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR se vypne za %s minut"
