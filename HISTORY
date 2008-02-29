@@ -5682,3 +5682,5 @@ Video Disk Recorder Revision History
 - Updated French language texts (thanks to Jean-Claude Repetto).
 - Fixed handling 3 and 4 byte UTF-8 symbols in Utf8CharGet() (thanks to Andreas
   Mair).
+- Fixed a crash in cFreetypeFont::DrawText() if an unknown symbol is encountered
+  (thanks to Tobias Grimm). Unknown symbols are replaced with a '?'.

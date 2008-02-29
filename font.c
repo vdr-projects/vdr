@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.23 2008/02/09 11:52:25 kls Exp $
+ * $Id: font.c 1.24 2008/02/29 13:35:15 kls Exp $
  */
 
 #include "font.h"
@@ -214,6 +214,9 @@ cGlyph* cFreetypeFont::Glyph(uint CharCode, bool AntiAliased) const
         return Glyph;
         }
      }
+#define UNKNOWN_GLYPH_INDICATOR '?'
+  if (CharCode != UNKNOWN_GLYPH_INDICATOR)
+     return Glyph(UNKNOWN_GLYPH_INDICATOR);
   return NULL;
 }
 
@@ -258,6 +261,8 @@ void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColo
            uint sym = Utf8CharGet(s, sl);
            s += sl;
            cGlyph *g = Glyph(sym, AntiAliased);
+           if (!g)
+              continue;
            int kerning = Kerning(g, prevSym);
            prevSym = sym;
            uchar *buffer = g->Bitmap();
