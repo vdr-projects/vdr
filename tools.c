@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.143 2008/02/16 13:38:22 kls Exp $
+ * $Id: tools.c 1.144 2008/02/29 13:16:39 kls Exp $
  */
 
 #include "tools.h"
@@ -630,9 +630,9 @@ uint Utf8CharGet(const char *s, int Length)
   if (!Length)
      Length = Utf8CharLen(s);
   switch (Length) {
-    case 2: return ((*s & 0x1F) << 6) |  (*(s + 1) & 0x3F);
-    case 3: return ((*s & 0x0F) << 4) | ((*(s + 1) & 0x3F) << 6) |  (*(s + 2) & 0x3F);
-    case 4: return ((*s & 0x07) << 2) | ((*(s + 1) & 0x3F) << 4) | ((*(s + 2) & 0x3F) << 6) | (*(s + 3) & 0x3F);
+    case 2: return ((*s & 0x1F) <<  6) |  (*(s + 1) & 0x3F);
+    case 3: return ((*s & 0x0F) << 12) | ((*(s + 1) & 0x3F) <<  6) |  (*(s + 2) & 0x3F);
+    case 4: return ((*s & 0x07) << 18) | ((*(s + 1) & 0x3F) << 12) | ((*(s + 2) & 0x3F) << 6) | (*(s + 3) & 0x3F);
     }
   return *s;
 }
