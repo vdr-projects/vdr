@@ -5689,3 +5689,4 @@ Video Disk Recorder Revision History
 - Updated the Turkish OSD texts (thanks to Oktay Yolgeçen).
 - The 'plugins' target in the Makefile now returns an error exit code if one of the
   plugins failed to compile (suggested by Tobias Grimm).
+- Rendering the non-breaking space symbol as a blank (thanks to Tobias Grimm).

@@ -2103,6 +2103,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for fixing a crash in cFreetypeFont::DrawText() if an unknown symbol is encountered
  for suggesting that the 'plugins' target in the Makefile should return an error exit
  code if one of the plugins failed to compile
+ for making the non-breaking space symbol be rendered as a blank
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
