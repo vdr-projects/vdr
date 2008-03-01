@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.112 2008/01/13 12:53:17 kls Exp $
+# $Id: Makefile 1.113 2008/02/29 21:43:03 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -153,7 +153,7 @@ plugins: include-dir
 	    $(MAKE) -C "$(PLUGINDIR)/src/$$i" all || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
-	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; fi
+	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
 
 clean-plugins:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
