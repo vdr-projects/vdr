@@ -5690,3 +5690,6 @@ Video Disk Recorder Revision History
 - The 'plugins' target in the Makefile now returns an error exit code if one of the
   plugins failed to compile (suggested by Tobias Grimm).
 - Rendering the non-breaking space symbol as a blank (thanks to Tobias Grimm).
+- Changed the default character set for SI data from ISO6937 (as required by the DVB
+  standard ETSI EN 300 468) to ISO-8859-9, in order to work around the stupidity of
+  some providers, who actually use ISO-8859-9, but fail to correctly announce that.
