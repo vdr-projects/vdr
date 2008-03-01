@@ -531,7 +531,7 @@ Video Disk Recorder Revision History
 2001-06-26: Version 0.83
 
 - Avoiding "Device or resource busy" error message when setting PIDs.
-- Added Portugese language texts (thanks to Paulo Lopes).
+- Added Portuguese language texts (thanks to Paulo Lopes).
 - Recording and replaying Dolby Digital (AC3) sound.
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
