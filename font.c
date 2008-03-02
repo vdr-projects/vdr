@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.23 2008/02/09 11:52:25 kls Exp $
+ * $Id: font.c 1.25 2008/03/01 10:19:41 kls Exp $
  */
 
 #include "font.h"
@@ -184,6 +184,10 @@ int cFreetypeFont::Kerning(cGlyph *Glyph, uint PrevSym) const
 
 cGlyph* cFreetypeFont::Glyph(uint CharCode, bool AntiAliased) const
 {
+  // Non-breaking space:
+  if (CharCode == 0xA0)
+     CharCode = 0x20;
+
   // Lookup in cache:
   cList<cGlyph> *glyphCache = AntiAliased ? &glyphCacheAntiAliased : &glyphCacheMonochrome;
   for (cGlyph *g = glyphCache->First(); g; g = glyphCache->Next(g)) {
@@ -214,6 +218,9 @@ cGlyph* cFreetypeFont::Glyph(uint CharCode, bool AntiAliased) const
         return Glyph;
         }
      }
+#define UNKNOWN_GLYPH_INDICATOR '?'
+  if (CharCode != UNKNOWN_GLYPH_INDICATOR)
+     return Glyph(UNKNOWN_GLYPH_INDICATOR, AntiAliased);
   return NULL;
 }
 
@@ -258,6 +265,8 @@ void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColo
            uint sym = Utf8CharGet(s, sl);
            s += sl;
            cGlyph *g = Glyph(sym, AntiAliased);
+           if (!g)
+              continue;
            int kerning = Kerning(g, prevSym);
            prevSym = sym;
            uchar *buffer = g->Bitmap();

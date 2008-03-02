@@ -1,17 +1,17 @@
 # VDR language source file.
-# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
 # Miha Setina <mihasetina@softhome.net>, 2000
-# Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003
+# Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003, 2005, 2006, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.5.7\n"
+"Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"PO-Revision-Date: 2008-02-28 19:44+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -167,7 +167,7 @@ msgid "Key$Audio"
 msgstr "Zvok"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Podnapisi"
 
 msgid "Key$Schedule"
 msgstr "Program"
@@ -188,31 +188,31 @@ msgid "Key$Commands"
 msgstr "Ukazi"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Uporabnik1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Uporabnik2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Uporabnik3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Uporabnik4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Uporabnik5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Uporabnik6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Uporabnik7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Uporabnik8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Uporabnik9"
 
 msgid "Disk"
 msgstr "Disk"
@@ -260,10 +260,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -431,7 +431,7 @@ msgid "Please enter %d digits!"
 msgstr "Prosim vnesite %d ¹tevilk!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM se ne odziva!"
 
 msgid "Recording info"
 msgstr "Podatki o snemanju"
@@ -503,25 +503,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Uporabi male èrke"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Privzeteta pisava"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Mala pisava"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Fiksna pisava"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Privzeta velikost pisave (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Majhna velikost pisave (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Pozicija informacije o kanalu"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozicija informacije o kanalu"
@@ -634,22 +634,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Jezik za zvok"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Prika¾i podnapise"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Jeziki za podnapise"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Jezik za podnapise"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Izravnava podnapisov"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparentnost podnapisov"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparentnost ozadja podnapisov"
 
 msgid "LNB"
 msgstr "LNB"
@@ -667,13 +667,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Zgornja LNB-frek. (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Reset CAM-a"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM prisoten"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM pripravljen"
 
 msgid "CAM"
 msgstr "CAM"
@@ -691,7 +691,7 @@ msgid "Can't open CAM menu!"
 msgstr "Ne morem odpreti CAM menija!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM je v uporabi - zares resetiraj?"
 
 msgid "Can't reset CAM!"
 msgstr "Ne morem resetirati CAM-a!"
@@ -772,7 +772,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Èas ugla¹evanja (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Timeout za vnos kanala (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Privzeti kanal"
@@ -784,7 +784,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Privzeta glasnost"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Izhod v sili"
 
 msgid "Plugins"
 msgstr "Vstavki"
@@ -841,13 +841,13 @@ msgid "No audio available!"
 msgstr "Zvok ni dosegljiv!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Ni podnapisov"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Podnapisi"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Podnapisi niso dosegljivi!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Premalo prostora na disku za snemanje!"
@@ -908,7 +908,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Zaustavitev ni izvedljiva - opcija '-s' ni podana!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Urejanje - zares izklopi?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Snemanje - zares izklopi?"
@@ -922,10 +922,10 @@ msgstr "zares izklopi?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Vstavek %s se zbudi v %ld min, nadaljuj?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Urejanje - zares ponoven zagon?"
 
 msgid "Recording - restart anyway?"
 msgstr "Snemanje - zares ponoven zagon?"
@@ -979,7 +979,7 @@ msgid "Recording started"
 msgstr "Snemanje se je prièelo"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR se bo zaustavil kasneje - pritisni Power za takoj¹en izklop"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Pritisnite katerikoli gumb za preklic izklopa"
@@ -994,8 +994,8 @@ msgid "Editing process finished"
 msgstr "Proces urejanja je konèan"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Pritisni katerokoli tipko za preklic ponovnega zagona"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR se bo zaustavil v %s minutah"

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.22 2007/07/21 13:49:48 kls Exp $
+ *   $Id: si.c 1.24 2008/03/01 12:02:01 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -340,6 +340,9 @@ bool SetSystemCharacterTable(const char *CharacterTable) {
 // and length are adjusted accordingly.
 static const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL) {
    const char *cs = "ISO6937";
+   cs = "ISO-8859-9"; // Workaround for broadcaster stupidity: according to
+   // "ETSI EN 300 468" the default character set is ISO6937. But unfortunately some
+   // broadcasters actually use ISO-8859-9, but fail to correctly announce that.
    if (isSingleByte)
       *isSingleByte = false;
    if (length <= 0)
@@ -415,7 +418,6 @@ void String::decodeText(char *buffer, int size) {
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
            || (0xA0 <= *from)
-           || (*from == 0x86 || *from == 0x87)
          )
          *to++ = *from;
       else if (*from == 0x8A)

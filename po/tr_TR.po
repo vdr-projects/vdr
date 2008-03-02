@@ -1,16 +1,16 @@
 # VDR language source file.
-# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
-# Oktay Yolgeçen <oktay_73@yahoo.de>, 2007
+# Oktay Yolgeçen <oktay_73@yahoo.de>, 2007, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.5.7\n"
+"Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-24 14:37+0200\n"
+"PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -166,7 +166,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Altyazý"
 
 msgid "Key$Schedule"
 msgstr "Program"
@@ -259,10 +259,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -633,22 +633,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Audio dili"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Altyazý gÃster"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Altyazý dilleri"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Altyazý dili"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Altyazý ofset"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Altyazý Ãn þeffaflýk"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Altyazý arka þeffaflýk"
 
 msgid "LNB"
 msgstr "LNB"
@@ -783,7 +783,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Açýlýþdaki ses"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Acil cýkýþ"
 
 msgid "Plugins"
 msgstr "Eklentiler"
@@ -840,13 +840,13 @@ msgid "No audio available!"
 msgstr "Audio yok!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Altyazý yok"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Altyazý"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Altyazý bulunamadý"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Kayýt için yeterince kapasite yok!"

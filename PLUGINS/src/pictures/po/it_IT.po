@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pictures 0.0.1\n"
+"Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-01-12 17:38+0100\n"
 "PO-Revision-Date: 2008-01-27 20:22+0100\n"

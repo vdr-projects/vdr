@@ -957,6 +957,7 @@ Andreas Mair <andreas@vdr-developer.org>
  not NULL
  for making the SVDRP command LSTC list the channels with group separators if the
  option ':groups' is given
+ for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -2093,12 +2094,16 @@ Jurij Retzlaff <jurij@topofweb.de>
 Richard Lithvall <richard@lithvall.se>
  for adding a tolerance for symbol rate values that are off by one
 
-Tobias Grimm <listaccount@e-tobi.net>
+Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
  for fixing a memory leak in handling external EPG data
  for fixing a memory leak in closing the video file during replay
  for fixing deleting the 'skinDescriptions' in cMenuSetupOSD::~cMenuSetupOSD()
  for reporting that GCC 4.3 issues a silly warning for expressions like 'a || b && c'
+ for fixing a crash in cFreetypeFont::DrawText() if an unknown symbol is encountered
+ for suggesting that the 'plugins' target in the Makefile should return an error exit
+ code if one of the plugins failed to compile
+ for making the non-breaking space symbol be rendered as a blank
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2309,4 +2314,10 @@ Benedikt Elser <elser@in.tum.de>
  changes to the list of timers
 
 Carel Willemse <ca_willemse@planet.nl>
+ for translating OSD texts to the Dutch language
+
+Tomas Berglund <tomber@telia.com>
+ for translating OSD texts to the Swedish language
+
+Johan Schuring <johan.schuring@vetteblei.nl>
  for translating OSD texts to the Dutch language

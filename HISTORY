@@ -531,7 +531,7 @@ Video Disk Recorder Revision History
 2001-06-26: Version 0.83
 
 - Avoiding "Device or resource busy" error message when setting PIDs.
-- Added Portugese language texts (thanks to Paulo Lopes).
+- Added Portuguese language texts (thanks to Paulo Lopes).
 - Recording and replaying Dolby Digital (AC3) sound.
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
@@ -5670,3 +5670,26 @@ Video Disk Recorder Revision History
   (thanks to Rolf Ahrenberg).
 - Added the backslash ('\') to the list of characters that need to be escaped
   when executing external commands (thanks to Peter Bieringer for reporting this one).
+
+2008-03-02: Version 1.5.17
+
+- Updated the Swedish OSD texts (thanks to Tomas Berglund).
+- Made the 'pic2mpg' script of the 'pictures' plugin work with uppercase filename
+  extensions and relative paths (thanks to Stefan Wagner for reporting this one).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the Dutch OSD texts (thanks to Johan Schuring).
+- Stripping control codes 0x86 and 0x87 from SI strings.
+- Updated French language texts (thanks to Jean-Claude Repetto).
+- Fixed handling 3 and 4 byte UTF-8 symbols in Utf8CharGet() (thanks to Andreas
+  Mair).
+- Fixed a crash in cFreetypeFont::DrawText() if an unknown symbol is encountered
+  (thanks to Tobias Grimm). Unknown symbols are replaced with a '?'.
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Updated the Czech OSD texts (thanks to Vladimír Bárta and Jiri Dobry).
+- Updated the Turkish OSD texts (thanks to Oktay Yolgeçen).
+- The 'plugins' target in the Makefile now returns an error exit code if one of the
+  plugins failed to compile (suggested by Tobias Grimm).
+- Rendering the non-breaking space symbol as a blank (thanks to Tobias Grimm).
+- Changed the default character set for SI data from ISO6937 (as required by the DVB
+  standard ETSI EN 300 468) to ISO-8859-9, in order to work around the stupidity of
+  some providers, who actually use ISO-8859-9, but fail to correctly announce that.

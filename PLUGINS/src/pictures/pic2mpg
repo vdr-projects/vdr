@@ -7,11 +7,12 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 1.2 2008/02/02 11:34:43 kls Exp $
+# $Id: pic2mpg 1.4 2008/02/29 14:34:22 kls Exp $
 
 ## TODO implement HDTV (1920 x 1080)
 
 use File::Path;
+use File::Spec;
 use Getopt::Std;
 use Image::Size;
 
@@ -87,8 +88,8 @@ if (-f $ARGV[0]) {
 
 die "$0: mixed directory and file ('$ARGV[0]' <-> '$ARGV[1]')\n" unless !-e $ARGV[1] || -d $ARGV[1];
 
-$PICDIR = $ARGV[0];
-$MPGDIR = $ARGV[1];
+$PICDIR = File::Spec->rel2abs($ARGV[0]);
+$MPGDIR = File::Spec->rel2abs($ARGV[1]);
 
 # Convert pictures to mpegs:
 
@@ -143,7 +144,7 @@ for ($i = 0; $i < 10; $i++) { # dirs might become empty when removing empty subd
 sub ConvertFile
 {
   my ($Pict, $Mpeg) = @_;
-  (my $Type) = $Pict =~ /\.([^\.]*)$/;
+  (my $Type) = lc($Pict) =~ /\.([^\.]*)$/;
   if (!defined $PNMCONV{$Type}) {
      return if ($Ignore);
      die "unknown file type '$Type': '$Pict'\n";

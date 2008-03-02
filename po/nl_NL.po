@@ -1,19 +1,20 @@
 # VDR language source file.
-# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
-# Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003
+# Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003, 2005
 # Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
 # Carel Willemse <ca_willemse@planet.nl>, 2008
+# Johan Schuring <johan.schuring@vetteblei.nl>, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.5.7\n"
+"Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2008-02-18 17:50+0200\n"
-"Last-Translator: Carel Willemse <ca_willemse@planet.nl>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"PO-Revision-Date: 2008-02-26 17:20+0100\n"
+"Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
+"Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -877,13 +878,13 @@ msgid "Editing process already active!"
 msgstr "Bewerken is al actief!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&בהאןףצעתüש"
+msgstr " abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "yes"
 msgstr "ja"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr ""
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
