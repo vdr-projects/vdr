@@ -5703,3 +5703,5 @@ Video Disk Recorder Revision History
   SI data on the Czech/Slovak channels, which actually do follow the standard).
   Users who want to set the default character set to something different can do wo
   through "export VDR_CHARSET_OVERRIDE=ISO-8859-9".
+- Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
+  to Tobias Grimm).

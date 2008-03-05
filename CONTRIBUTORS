@@ -2104,6 +2104,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting that the 'plugins' target in the Makefile should return an error exit
  code if one of the plugins failed to compile
  for making the non-breaking space symbol be rendered as a blank
+ for fixing a signed character used as index in cBase64Encoder::NextLine()
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown

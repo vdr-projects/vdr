@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.144 2008/02/29 13:16:39 kls Exp $
+ * $Id: tools.c 1.145 2008/03/05 17:23:47 kls Exp $
  */
 
 #include "tools.h"
@@ -1102,7 +1102,7 @@ const char *cBase64Encoder::NextLine(void)
   int r = 0;
   while (i < length && r < maxResult - 3) {
         result[r++] = b64[(data[i] >> 2) & 0x3F];
-        char c = (data[i] << 4) & 0x3F;
+        uchar c = (data[i] << 4) & 0x3F;
         if (++i < length)
            c |= (data[i] >> 4) & 0x0F;
         result[r++] = b64[c];
