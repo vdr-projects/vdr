@@ -2324,3 +2324,7 @@ Johan Schuring <johan.schuring@vetteblei.nl>
 
 Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a missing reset of maxNumber in cChannels::Renumber()
+
+Ales Jurik <ajurik@quick.cz>
+ for reporting broken SI data on Czech/Slovak channels after changing the default
+ character set to ISO-8859-9

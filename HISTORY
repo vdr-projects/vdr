@@ -5698,3 +5698,8 @@ Video Disk Recorder Revision History
 
 - Added a missing reset of maxNumber in cChannels::Renumber() (reported by Sundararaj
   Reel).
+- Revoked the fixed change of the default character set for SI data and introduced
+  an environment variable to control it (thanks to Ales Jurik for reporting broken
+  SI data on the Czech/Slovak channels, which actually do follow the standard).
+  Users who want to set the default character set to something different can do wo
+  through "export VDR_CHARSET_OVERRIDE=ISO-8859-9".
