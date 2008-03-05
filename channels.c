@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.59 2008/02/10 15:45:38 kls Exp $
+ * $Id: channels.c 1.60 2008/03/05 16:42:50 kls Exp $
  */
 
 #include "channels.h"
@@ -947,9 +947,10 @@ int cChannels::GetPrevNormal(int Idx)
   return channel ? Idx : -1;
 }
 
-void cChannels::ReNumber( void )
+void cChannels::ReNumber(void)
 {
   channelsHashSid.Clear();
+  maxNumber = 0;
   int Number = 1;
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (channel->GroupSep()) {
