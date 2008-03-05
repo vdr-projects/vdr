@@ -4,14 +4,15 @@
 # Marc Rovira Vall <tm05462@salleURL.edu>, 2003
 # Ramon Roca <ramon.roca@xcombo.com>, 2003
 # Jordi Vilà <jvila@tinet.org>, 2003
+# Luca Olivetti <luca@ventoso.org>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
+"PO-Revision-Date: 2008-03-02 19:02+0100\n"
+"Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalanian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -27,10 +28,10 @@ msgid "Can't start Transfer Mode!"
 msgstr "No puc iniciar el mode de transferència!"
 
 msgid "Starting EPG scan"
-msgstr ""
+msgstr "Iniciant exploració EPG"
 
 msgid "No title"
-msgstr ""
+msgstr "Sense títol"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
@@ -117,7 +118,7 @@ msgid "Key$Blue"
 msgstr "Blau"
 
 msgid "Key$Info"
-msgstr ""
+msgstr "Informació"
 
 msgid "Key$Play"
 msgstr "Reproduir"
@@ -138,10 +139,10 @@ msgid "Key$FastRew"
 msgstr "Enrera ràpidament"
 
 msgid "Key$Next"
-msgstr ""
+msgstr "Següent"
 
 msgid "Key$Prev"
-msgstr ""
+msgstr "Anterior"
 
 msgid "Key$Power"
 msgstr "Aturar"
@@ -153,7 +154,7 @@ msgid "Key$Channel-"
 msgstr "Canal -"
 
 msgid "Key$PrevChannel"
-msgstr ""
+msgstr "Canal anterior"
 
 msgid "Key$Volume+"
 msgstr "Volum +"
@@ -165,10 +166,10 @@ msgid "Key$Mute"
 msgstr "En silenci"
 
 msgid "Key$Audio"
-msgstr ""
+msgstr "Àudio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Subtítols"
 
 msgid "Key$Schedule"
 msgstr "Guia de Programació"
@@ -189,31 +190,31 @@ msgid "Key$Commands"
 msgstr "Ordres"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Usuari 1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Usuari 2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Usuari 3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Usuari 4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Usuari 5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Usuari 6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Usuari 7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Usuari 8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Usuari 9"
 
 msgid "Disk"
 msgstr "Disc"
@@ -222,10 +223,10 @@ msgid "free"
 msgstr "lliure"
 
 msgid "Free To Air"
-msgstr ""
+msgstr "No codificat"
 
 msgid "encrypted"
-msgstr ""
+msgstr "Codificat"
 
 msgid "auto"
 msgstr "auto"
@@ -261,10 +262,10 @@ msgid "Dpid2"
 msgstr "PID AC3 (2)"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "PID Teletext"
@@ -354,7 +355,7 @@ msgid "Stop"
 msgstr "Fi"
 
 msgid "VPS"
-msgstr ""
+msgstr "VPS"
 
 msgid "Priority"
 msgstr "Prioritat"
@@ -375,7 +376,7 @@ msgid "Button$On/Off"
 msgstr "On/Off"
 
 msgid "Button$Info"
-msgstr ""
+msgstr "Informació"
 
 msgid "Delete timer?"
 msgstr "Esborrar el temporitzador?"
@@ -387,7 +388,7 @@ msgid "Event"
 msgstr "Esdeveniment"
 
 msgid "Button$Timer"
-msgstr ""
+msgstr "Temporitzador"
 
 msgid "Button$Record"
 msgstr "Gravar"
@@ -419,23 +420,23 @@ msgstr "Guia de Programació - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr ""
+msgstr "Aquest esdeveniment - %s"
 
 msgid "This event - all channels"
-msgstr ""
+msgstr "Aquest esdeveniment - tots els canals"
 
 msgid "All events - all channels"
-msgstr ""
+msgstr "Tots els esdeveniments - tots els canals"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr ""
+msgstr "Si us plau introdueixi %d digitos"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM no respon"
 
 msgid "Recording info"
-msgstr ""
+msgstr "Informació de la gravació"
 
 msgid "Button$Play"
 msgstr "Reproduir"
@@ -465,13 +466,13 @@ msgid "Recording commands"
 msgstr "Ordres de gravació"
 
 msgid "never"
-msgstr ""
+msgstr "mai"
 
 msgid "skin dependent"
-msgstr ""
+msgstr "depèn de l'aparença"
 
 msgid "always"
-msgstr ""
+msgstr "sempre"
 
 msgid "OSD"
 msgstr "Informació en pantalla"
@@ -480,16 +481,16 @@ msgid "Setup.OSD$Language"
 msgstr "Idioma"
 
 msgid "Setup.OSD$Skin"
-msgstr ""
+msgstr "Aparença"
 
 msgid "Setup.OSD$Theme"
-msgstr ""
+msgstr "Tema"
 
 msgid "Setup.OSD$Left"
-msgstr ""
+msgstr "Esquerra"
 
 msgid "Setup.OSD$Top"
-msgstr ""
+msgstr "A dalt"
 
 msgid "Setup.OSD$Width"
 msgstr "Amplada"
@@ -501,28 +502,28 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Durada dels missatges (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr ""
+msgstr "Usar font petita"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Antidentat"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Font predeterminada"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Font petita"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Font fixa"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Mida font predeterminada (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Mida font petita"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Mida font fixa"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posició de la informació del canal"
@@ -534,22 +535,22 @@ msgid "top"
 msgstr "a dalt"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr ""
+msgstr "Temps de l'informació de canal (s)"
 
 msgid "Setup.OSD$Info on channel switch"
 msgstr "Informació del canvi de canal"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr ""
+msgstr "Temps d'espera informació de canal sol·licitada"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Desplaçar pàgina sencera"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr ""
+msgstr "Desplaçament circular"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr ""
+msgstr "Tecla menu tanca"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Gravacions en subcarpetes"
@@ -558,7 +559,7 @@ msgid "EPG"
 msgstr "Guia de Programes"
 
 msgid "Button$Scan"
-msgstr ""
+msgstr "Escaneig"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Màxim d'Hores a cercar per la Guia"
@@ -567,7 +568,7 @@ msgid "Setup.EPG$EPG bugfix level"
 msgstr "Nivell de correcció de la Guia"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr ""
+msgstr "Temps manteniment EPG (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Ajustar l'hora del sistema"
@@ -577,11 +578,11 @@ msgstr "Usar el temps del múltiplex"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr ""
+msgstr "Idiomes preferits"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr ""
+msgstr "Idioma preferit"
 
 msgid "pan&scan"
 msgstr "pan&scan"
@@ -596,19 +597,19 @@ msgid "no"
 msgstr "no"
 
 msgid "names only"
-msgstr ""
+msgstr "només noms"
 
 msgid "PIDs only"
-msgstr ""
+msgstr "només PIDs"
 
 msgid "names and PIDs"
-msgstr ""
+msgstr "noms i PIDs"
 
 msgid "add new channels"
-msgstr ""
+msgstr "afegir nous canals"
 
 msgid "add new transponders"
-msgstr ""
+msgstr "afegir nous transponders"
 
 msgid "DVB"
 msgstr "Tarja DVB"
@@ -620,37 +621,37 @@ msgid "Setup.DVB$Video format"
 msgstr "Format del vídeo"
 
 msgid "Setup.DVB$Video display format"
-msgstr ""
+msgstr "Format de visualització de vídeo"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr ""
+msgstr "Fer servir Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr ""
+msgstr "Actualitza canals"
 
 msgid "Setup.DVB$Audio languages"
-msgstr ""
+msgstr "Idiomes d'àudio"
 
 msgid "Setup.DVB$Audio language"
-msgstr ""
+msgstr "Idioma d'àudio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Visualitza subtítols"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Idiomes subtítols"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Idioma subtítols"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Desplaçament subtítols"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparència primer pla subtítols"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparència fons subtítols"
 
 msgid "LNB"
 msgstr "Configuració de l'LNB"
@@ -668,16 +669,16 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Freqüència LNB alta (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Reiniciar CAM"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM present"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM preparat"
 
 msgid "CAM"
-msgstr "CI Accés condicional"
+msgstr "CAM"
 
 msgid "Button$Menu"
 msgstr "Menú"
@@ -686,13 +687,13 @@ msgid "Button$Reset"
 msgstr "Reiniciar"
 
 msgid "Opening CAM menu..."
-msgstr ""
+msgstr "Obrint menu CAM..."
 
 msgid "Can't open CAM menu!"
 msgstr "No puc obrir el menú de la CAM!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM en ús - reiniciar?"
 
 msgid "Can't reset CAM!"
 msgstr "No puc reiniciar la CAM!"
@@ -725,10 +726,10 @@ msgid "Setup.Recording$Use episode name"
 msgstr "Utilitzar el nom de l'episodi"
 
 msgid "Setup.Recording$Use VPS"
-msgstr ""
+msgstr "Fer servir VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr ""
+msgstr "Marge VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
 msgstr "Marcar gravació instantània"
@@ -770,22 +771,22 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP Timeout (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr ""
+msgstr "Temps d'espera Zap (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Temps d'introducció canal (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr ""
+msgstr "Canal inicial"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr ""
+msgstr "anterior"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr ""
+msgstr "Volum inicial"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Sortida d'emergència"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -817,7 +818,7 @@ msgid " Stop replaying"
 msgstr " Aturar la reproducció"
 
 msgid "Button$Audio"
-msgstr ""
+msgstr "Àudio"
 
 msgid "Button$Pause"
 msgstr "Pausa"
@@ -839,19 +840,19 @@ msgid "Cancel editing?"
 msgstr "Cancel·lar l'edició?"
 
 msgid "No audio available!"
-msgstr ""
+msgstr "No hi ha àudio disponible!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Sense subtítols"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Subtítols"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "No hi ha subtítols disponibles!"
 
 msgid "Not enough disk space to start recording!"
-msgstr ""
+msgstr "No hi ha espai en disc per a iniciar la gravació!"
 
 msgid "No free DVB device to record!"
 msgstr "No hi ha cap dispositiu DVB lliure per gravar!"
@@ -882,7 +883,7 @@ msgid "yes"
 msgstr "sí"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr ""
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcáç2\tdefé3\tghií4\tjkl5\tmnoñó6\tpqrs7\ttuvú8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
@@ -909,7 +910,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "No puc apagar, falta la opció -s !"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Editant - Apagar de totes maneres?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Gravant - Apagar de totes maneres?"
@@ -923,10 +924,10 @@ msgstr "Apagar de totes maneres?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "El plugin %s s'activarà en %ld minuts, continuar?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Editant - Reiniciar de totes maneres?"
 
 msgid "Recording - restart anyway?"
 msgstr "Gravant - Reiniciar de totes maneres?"
@@ -939,10 +940,10 @@ msgid "Volume "
 msgstr "Volum "
 
 msgid "Classic VDR"
-msgstr ""
+msgstr "VDR clasico"
 
 msgid "ST:TNG Panels"
-msgstr ""
+msgstr "Quadres ST:TNG"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
@@ -974,13 +975,13 @@ msgid "Sunday"
 msgstr "Diumenge"
 
 msgid "Upcoming recording!"
-msgstr ""
+msgstr "Gravació a punt d'iniciar!"
 
 msgid "Recording started"
-msgstr ""
+msgstr "Gravació començada"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR s'apagarà més tard, prem Power per a forçar"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Prem qualsevol tecla per cancel·lar l'aturada"
@@ -995,8 +996,8 @@ msgid "Editing process finished"
 msgstr "Procés d'edició finalitzat"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Prem qualsevol tecla per cancel·lar el reinici"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR s'apagarà en %s minuts"

@@ -5705,3 +5705,4 @@ Video Disk Recorder Revision History
   through "export VDR_CHARSET_OVERRIDE=ISO-8859-9".
 - Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
   to Tobias Grimm).
+- Updated the Spanish and Catalanian OSD texts (thanks to Luca Olivetti).

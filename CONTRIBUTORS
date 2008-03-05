@@ -1715,6 +1715,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
+ for translating OSD texts to the Spanish and Catalanian language
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only

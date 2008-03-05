@@ -2,14 +2,15 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
 # Ruben Nunez Francisco <ruben.nunez@tang-it.com>, 2002, 2006
+# Luca Olivetti <luca@ventoso.org>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Ruben Nunez Francisco <ruben.nunez@tang-it.com>\n"
+"POT-Creation-Date: 2008-03-02 17:25+0100\n"
+"PO-Revision-Date: 2008-03-02 19:02+0100\n"
+"Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
@@ -136,10 +137,10 @@ msgid "Key$FastRew"
 msgstr "Retroceso rápido"
 
 msgid "Key$Next"
-msgstr ""
+msgstr "Siguiente"
 
 msgid "Key$Prev"
-msgstr ""
+msgstr "Anterior"
 
 msgid "Key$Power"
 msgstr "Apagar"
@@ -151,7 +152,7 @@ msgid "Key$Channel-"
 msgstr "Canal-"
 
 msgid "Key$PrevChannel"
-msgstr ""
+msgstr "Canal anterior"
 
 msgid "Key$Volume+"
 msgstr "Volumen+"
@@ -166,7 +167,7 @@ msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Subtítulos"
 
 msgid "Key$Schedule"
 msgstr "Guía de Programación"
@@ -187,31 +188,31 @@ msgid "Key$Commands"
 msgstr "Órdenes"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Usuario 1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Usuario 2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Usuario 3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Usuario 4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Usuario 5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Usuario 6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Usuario 7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Usuario 8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Usuario 9"
 
 msgid "Disk"
 msgstr "Disco"
@@ -259,10 +260,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -430,13 +431,13 @@ msgid "Please enter %d digits!"
 msgstr "¡Escriba %d dígitos!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "¡CAM no responde!"
 
 msgid "Recording info"
 msgstr "Información de grabación"
 
 msgid "Button$Play"
-msgstr "Play"
+msgstr "Reproducir"
 
 msgid "Button$Rewind"
 msgstr "Rebobinar"
@@ -502,25 +503,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "Usar letra pequeña"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Alisado de fuentes"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Fuente por defecto"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Fuente pequeña"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Fuente fija"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Tamaño fuente por defecto (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Tamaño fuente pequeña (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Tamaño fuente fija (pixel)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posición para información de canal"
@@ -597,7 +598,7 @@ msgid "names only"
 msgstr "sólo nombres"
 
 msgid "PIDs only"
-msgstr ""
+msgstr "sólo PIDs"
 
 msgid "names and PIDs"
 msgstr "nombres y PIDs"
@@ -633,22 +634,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Idioma de audio"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Visualizar subtítulos"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Idiomas subtítulos"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Idioma subtítulos"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Desplazamiento subtítulos"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Transparencia primer plano subtítulos"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Transparencia fondo subtítulos"
 
 msgid "LNB"
 msgstr "LNB"
@@ -666,13 +667,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Frecuencia superior del LNB (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "Reset CAM"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM presente"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM preparado"
 
 msgid "CAM"
 msgstr "CAM"
@@ -690,7 +691,7 @@ msgid "Can't open CAM menu!"
 msgstr "¡No se puede abrir el menú CAM!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM en uso - ¿reiniciar?"
 
 msgid "Can't reset CAM!"
 msgstr "¡No se puede reiniciar CAM!"
@@ -771,19 +772,19 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Considerar canal como visto (sg)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Tiempo introducción canal (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr ""
+msgstr "Canal inicial"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr ""
+msgstr "anterior"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr ""
+msgstr "Volumen inicial"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Salida de emergencia"
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -840,16 +841,16 @@ msgid "No audio available!"
 msgstr "¡No hay audio disponible!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Sin subtítulos"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Subtítulos"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "¡No hay subtítulos disponibles!"
 
 msgid "Not enough disk space to start recording!"
-msgstr ""
+msgstr "¡Sin espacio en disco para iniciar grabación!"
 
 msgid "No free DVB device to record!"
 msgstr "¡Ningún dispositivo DVB disponible para grabar!"
@@ -907,7 +908,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "¡No se puede apagar - falta el parámetro '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Editando -¿apagar igualmente?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Grabación en curso - ¿apagar igualmente?"
@@ -921,10 +922,10 @@ msgstr "¿apagar igualmente?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Plugin %s inicia en %ld min, ¿continuar?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Editando - ¿reiniciar igualmente?"
 
 msgid "Recording - restart anyway?"
 msgstr "Grabación en curso - ¿reiniciar igualmente?"
@@ -972,13 +973,13 @@ msgid "Sunday"
 msgstr "Domingo"
 
 msgid "Upcoming recording!"
-msgstr ""
+msgstr "¡Grabación a punto de empezar!"
 
 msgid "Recording started"
 msgstr "Iniciando grabación"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR se apagará más tarde - pulse Power para forzar"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Pulse una tecla para interrumpir apagar"
@@ -993,8 +994,8 @@ msgid "Editing process finished"
 msgstr "Proceso de edición terminado"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Pulse cualquier tecla para cancelar reinicio"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR se apagará en %s minutos"
