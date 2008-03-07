@@ -1046,6 +1046,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  SVDRP in case VDR is run with --vfat, in order to avoid names that are too long
  for Windows
  for increasing the valid range of the "Subtitle offset" setup option to -100...100
+ for a patch that was used to fix automatically selecting the preferred subtitle
+ language
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
