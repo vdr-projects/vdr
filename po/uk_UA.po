@@ -1,14 +1,14 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
-# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
+"PO-Revision-Date: 2008-03-07 14:17+0200\n"
 "Last-Translator: Yarema Aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -187,31 +187,31 @@ msgid "Key$Commands"
 msgstr "Команди"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "Користувач1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "Користувач2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "Користувач3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "Користувач4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "Користувач5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "Користувач6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "Користувач7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "Користувач8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "Користувач8"
 
 msgid "Disk"
 msgstr "Диск"
@@ -259,10 +259,10 @@ msgid "Dpid2"
 msgstr "Dpid2 (AC3 2)"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Субтитри ПІД1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Субтитри ПІД2"
 
 msgid "Tpid"
 msgstr "Tpid (телетекст)"
@@ -645,10 +645,10 @@ msgid "Setup.DVB$Subtitle offset"
 msgstr "Відступ субтитрів"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Прозорість переднього плану субтитрів"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Прозорість заднього плану субтитрів"
 
 msgid "LNB"
 msgstr "Конвертер"
@@ -783,7 +783,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Гучність при включенні"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Аварійний вихід"
 
 msgid "Plugins"
 msgstr "Модулі розширення"
