@@ -5694,7 +5694,7 @@ Video Disk Recorder Revision History
   standard ETSI EN 300 468) to ISO-8859-9, in order to work around the stupidity of
   some providers, who actually use ISO-8859-9, but fail to correctly announce that.
 
-2008-03-07: Version 1.5.18
+2008-03-09: Version 1.5.18
 
 - Added a missing reset of maxNumber in cChannels::Renumber() (reported by Sundararaj
   Reel).
@@ -5709,3 +5709,4 @@ Video Disk Recorder Revision History
 - Fixed automatically selecting the preferred subtitle language (based on a patch
   from Rolf Ahrenberg).
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).

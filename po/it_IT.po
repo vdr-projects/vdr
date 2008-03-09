@@ -12,9 +12,9 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2008-02-21 20:29+0100\n"
+"PO-Revision-Date: 2008-03-08 21:06+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
-"Language-Team: Italian\n"
+"Language-Team:  Italian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +26,7 @@ msgid "Channel not available!"
 msgstr "Canale non disponibile!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Impossibile avviare la modalità di trasferimento!"
+msgstr "Impossibile avviare mod. trasferimento!"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -55,11 +55,11 @@ msgid "Do not press any key..."
 msgstr "Non premere alcun tasto..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fase 2: Apprendimento codici specifici dei tasti"
+msgstr "Fase 2: Apprendimento codici dei tasti"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Premi il tasto per '%s'"
+msgstr "Premi il tasto '%s'"
 
 msgid "Press 'Up' to confirm"
 msgstr "Premi 'Su' per confermare"
@@ -71,13 +71,13 @@ msgid "(press 'Up' to go back)"
 msgstr "(premi 'Su' per tornare indietro)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(premi 'Giù' per concludere la definizione tasti)"
+msgstr "(premi 'Giù' per concludere definizione tasti)"
 
 msgid "(press 'Menu' to skip this key)"
 msgstr "(premi 'Menu' per saltare questo tasto)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Apprendimento tasti unità remota"
+msgstr "Apprendimento tasti RC"
 
 msgid "Phase 3: Saving key codes"
 msgstr "Fase 3: Salvataggio codici tasti"
@@ -119,10 +119,10 @@ msgid "Key$Blue"
 msgstr "Blu"
 
 msgid "Key$Info"
-msgstr "Informazioni"
+msgstr "Info"
 
 msgid "Key$Play"
-msgstr "Riproduzione"
+msgstr "Riproduci"
 
 msgid "Key$Pause"
 msgstr "Pausa"
@@ -131,7 +131,7 @@ msgid "Key$Stop"
 msgstr "Ferma"
 
 msgid "Key$Record"
-msgstr "Registrazione"
+msgstr "Registra"
 
 msgid "Key$FastFwd"
 msgstr "Avanti veloce"
@@ -368,16 +368,16 @@ msgid "File"
 msgstr "Nome"
 
 msgid "First day"
-msgstr "Primo giorno"
+msgstr "1° giorno"
 
 msgid "Timers"
 msgstr "Timer"
 
 msgid "Button$On/Off"
-msgstr "Attivo/Disattivo"
+msgstr "On/Off"
 
 msgid "Button$Info"
-msgstr "Informazioni"
+msgstr "Info"
 
 msgid "Delete timer?"
 msgstr "Eliminare il timer?"
@@ -386,7 +386,7 @@ msgid "Timer still recording - really delete?"
 msgstr "Timer in registrazione - eliminare?"
 
 msgid "Event"
-msgstr "Eventi"
+msgstr "Evento"
 
 msgid "Button$Timer"
 msgstr "Timer"
@@ -437,7 +437,7 @@ msgid "CAM not responding!"
 msgstr "La CAM non risponde!"
 
 msgid "Recording info"
-msgstr "Informazioni registrazione"
+msgstr "Info registrazione"
 
 msgid "Button$Play"
 msgstr "Riproduci"
@@ -455,13 +455,13 @@ msgid "Commands"
 msgstr "Comandi"
 
 msgid "Error while accessing recording!"
-msgstr "Errore nell'accedere alla registrazione!"
+msgstr "Errore accesso alla registrazione!"
 
 msgid "Delete recording?"
 msgstr "Eliminare la registrazione?"
 
 msgid "Error while deleting recording!"
-msgstr "Errore eliminazione della registrazione!"
+msgstr "Errore eliminazione registrazione!"
 
 msgid "Recording commands"
 msgstr "Comandi di registrazione"
@@ -518,16 +518,16 @@ msgid "Setup.OSD$Fixed font"
 msgstr "Caratteri fissi"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Dimensione caratteri predefiniti (pixel)"
+msgstr "Dim. caratteri pred. (pixel)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Dimensione caratteri piccoli (pixel)"
+msgstr "Dim. caratteri piccoli (pixel)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Dimensione caratteri fissi (pixel)"
+msgstr "Dim. caratteri fissi (pixel)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Posizione informazioni canale"
+msgstr "Posizione info canale"
 
 msgid "bottom"
 msgstr "in basso"
@@ -536,13 +536,13 @@ msgid "top"
 msgstr "in alto"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Durata informazioni canale (s)"
+msgstr "Durata info canale (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Mostra informazioni al cambio canale"
+msgstr "Mostra info al cambio canale"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Scadenza richieste informazioni canale"
+msgstr "Scadenza richieste info canale"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Scorri per pagine"
@@ -551,7 +551,7 @@ msgid "Setup.OSD$Scroll wraps"
 msgstr "Scorri riavvolgendo"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Utilizza il tasto Menu per chiudere"
+msgstr "Tasto Menu per chiudere"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Directory di registrazione"
@@ -563,13 +563,13 @@ msgid "Button$Scan"
 msgstr "Scansione"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Scadenza scansione aggiorn. EPG (ore)"
+msgstr "Scadenza aggiorn. EPG (ore)"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Livello correzione EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Visualizzazione vecchi dati EPG (min)"
+msgstr "Mostra vecchi dati EPG (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Imposta orario automatico"
@@ -631,10 +631,10 @@ msgid "Setup.DVB$Update channels"
 msgstr "Aggiorna i canali"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "Lingue per l'audio"
+msgstr "Lingue audio"
 
 msgid "Setup.DVB$Audio language"
-msgstr "Lingua per l'audio"
+msgstr "Lingua audio"
 
 msgid "Setup.DVB$Display subtitles"
 msgstr "Mostra sottotitoli"
@@ -649,7 +649,7 @@ msgid "Setup.DVB$Subtitle offset"
 msgstr "Posizione sottotitoli"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Trasparenza primo piano sottotitoli"
+msgstr "Trasparenza sottotitoli"
 
 msgid "Setup.DVB$Subtitle background transparency"
 msgstr "Trasparenza sfondo sottotitoli"
@@ -733,16 +733,16 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "Margine VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Segna registrazione immediata"
+msgstr "Segna reg. immediata"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Nome registrazione immediata"
+msgstr "Nome reg. immediata"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Tempo registrazione immediata (min)"
+msgstr "Tempo reg. immediata (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Dimensione massima file video (MB)"
+msgstr "Dim. massima file video (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Dividi i file modificati"
@@ -763,10 +763,10 @@ msgid "Miscellaneous"
 msgstr "Generici"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Scadenza minima evento (min)"
+msgstr "Scadenza min. evento (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Periodo minimo di inattività (min)"
+msgstr "Periodo min. inattività (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Scadenza SVDRP (s)"
@@ -787,13 +787,13 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "Uscita d'emergenza"
+msgstr "Uscita di emergenza"
 
 msgid "Plugins"
 msgstr "Plugins"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Questo plugin non ha parametri di configurazione!"
+msgstr "Il plugin non ha parametri di configurazione!"
 
 msgid "Setup"
 msgstr "Opzioni"
@@ -838,7 +838,7 @@ msgid "Stop recording?"
 msgstr "Fermare la registrazione?"
 
 msgid "Cancel editing?"
-msgstr "Annullare la modifica?"
+msgstr "Annullare le modifiche?"
 
 msgid "No audio available!"
 msgstr "Nessun audio disponibile!"
@@ -878,13 +878,13 @@ msgid "Editing process already active!"
 msgstr "Processo di modifica già attivo!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&°"
 
 msgid "yes"
 msgstr "sì"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+°?{}/:%@&\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
