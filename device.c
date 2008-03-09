@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.156 2008/03/07 15:36:25 kls Exp $
+ * $Id: device.c 1.157 2008/03/09 10:03:34 kls Exp $
  */
 
 #include "device.h"
@@ -1416,7 +1416,7 @@ bool cDevice::Receiving(bool CheckAny) const
 
 #define TS_SCRAMBLING_CONTROL  0xC0
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
-#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked a known to decrypt
+#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
 
 void cDevice::Action(void)
 {
