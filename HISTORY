@@ -5711,3 +5711,4 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Polish OSD texts (thanks to Michael Rakowski).
+- Fixed formatting the name section in the VDR man pages (thanks to Tobias Grimm).
