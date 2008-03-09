@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
 # This file is distributed under the same license as the VDR package.
-# Michael Rakowski <mrak@gmx.de>, 2002, 2003
+# Michael Rakowski <mrak@gmx.de>, 2002, 2003, 2008
 # Jaroslaw Swierczynski <swiergot@gmail.com>, 2006
 #
 msgid ""
@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Jaroslaw Swierczynski <swiergot@gmail.com>\n"
-"Language-Team: Polish\n"
+"PO-Revision-Date: 2008-03-09 12:59+0100\n"
+"Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
+"Language-Team:  Polish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -167,7 +167,7 @@ msgid "Key$Audio"
 msgstr "D¼wiêk"
 
 msgid "Key$Subtitles"
-msgstr ""
+msgstr "Podtytu³y"
 
 msgid "Key$Schedule"
 msgstr "Program"
@@ -188,31 +188,31 @@ msgid "Key$Commands"
 msgstr "Polecenia"
 
 msgid "Key$User1"
-msgstr ""
+msgstr "U¿ytkownik 1"
 
 msgid "Key$User2"
-msgstr ""
+msgstr "U¿ytkownik 2"
 
 msgid "Key$User3"
-msgstr ""
+msgstr "U¿ytkownik 3"
 
 msgid "Key$User4"
-msgstr ""
+msgstr "U¿ytkownik 4"
 
 msgid "Key$User5"
-msgstr ""
+msgstr "U¿ytkownik 5"
 
 msgid "Key$User6"
-msgstr ""
+msgstr "U¿ytkownik 6"
 
 msgid "Key$User7"
-msgstr ""
+msgstr "U¿ytkownik 7"
 
 msgid "Key$User8"
-msgstr ""
+msgstr "U¿ytkownik 8"
 
 msgid "Key$User9"
-msgstr ""
+msgstr "U¿ytkownik 9"
 
 msgid "Disk"
 msgstr "Dysk"
@@ -260,10 +260,10 @@ msgid "Dpid2"
 msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
 msgstr "Tpid"
@@ -431,7 +431,7 @@ msgid "Please enter %d digits!"
 msgstr "Proszê podaæ %d cyfr!"
 
 msgid "CAM not responding!"
-msgstr ""
+msgstr "CAM nie reaguje!"
 
 msgid "Recording info"
 msgstr "Informacje o nagraniu"
@@ -503,25 +503,25 @@ msgid "Setup.OSD$Use small font"
 msgstr "U¿ywaj ma³ej czcionki"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr ""
+msgstr "Wyg³adzanie"
 
 msgid "Setup.OSD$Default font"
-msgstr ""
+msgstr "Standardowa  czcionka"
 
 msgid "Setup.OSD$Small font"
-msgstr ""
+msgstr "Ma³a czcionka"
 
 msgid "Setup.OSD$Fixed font"
-msgstr ""
+msgstr "Sta³a czcionka"
 
 msgid "Setup.OSD$Default font size (pixel)"
-msgstr ""
+msgstr "Standardowa czcionka wyj¶ciowa (pixle)"
 
 msgid "Setup.OSD$Small font size (pixel)"
-msgstr ""
+msgstr "Ma³a czcionka wyj¶ciowa (pixle)"
 
 msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr ""
+msgstr "Ustalona czcionka wyj¶ciowa (pixle)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozycja informacji o kanale"
@@ -634,22 +634,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Jêzyk d¼wiêku"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr ""
+msgstr "Obraz napisów"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr ""
+msgstr "Jêzyki napisu"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr ""
+msgstr "Jêzyk napisu"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr ""
+msgstr "Zrównowa¿yæ napis"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr ""
+msgstr "Prze¼rocze podtytu³ów: Przód"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr ""
+msgstr "Prze¼rocze podtytu³ów: T³o"
 
 msgid "LNB"
 msgstr "LNB"
@@ -667,13 +667,13 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Górna czêstotliwo¶æ LNB (MHz)"
 
 msgid "CAM reset"
-msgstr ""
+msgstr "CAM zresetowany"
 
 msgid "CAM present"
-msgstr ""
+msgstr "CAM obecny"
 
 msgid "CAM ready"
-msgstr ""
+msgstr "CAM gotowy"
 
 msgid "CAM"
 msgstr "CAM"
@@ -691,7 +691,7 @@ msgid "Can't open CAM menu!"
 msgstr "Nie mo¿na otworzyæ menu CAM!"
 
 msgid "CAM is in use - really reset?"
-msgstr ""
+msgstr "CAM jest w u¿yciu - naprawdê zresetowaæ?"
 
 msgid "Can't reset CAM!"
 msgstr "Nie mo¿na zresetowaæ CAM!"
@@ -772,7 +772,7 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Czas oczekiwania na zap (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr ""
+msgstr "Min±³ czas wej¶cia do kana³u"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Pocz±tkowy kana³"
@@ -784,7 +784,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Pocz±tkowa g³o¶no¶æ"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr ""
+msgstr "Wyj¶cie awaryjne"
 
 msgid "Plugins"
 msgstr "Wtyczki"
@@ -841,13 +841,13 @@ msgid "No audio available!"
 msgstr "D¼wiêk nie jest dostêpny!"
 
 msgid "No subtitles"
-msgstr ""
+msgstr "Brak napisów"
 
 msgid "Button$Subtitles"
-msgstr ""
+msgstr "Napisy"
 
 msgid "No subtitles available!"
-msgstr ""
+msgstr "Napisy nie s± dostêpne"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Brak miejsca na dysku do nagrywania!"
@@ -908,7 +908,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nie mo¿na wy³±czyæ - nie podano opcji '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr ""
+msgstr "Monta¿ w trakcie  - Wy³±czyæ mimo to?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Trwa nagrywanie - wy³±czyæ mimo to?"
@@ -922,10 +922,10 @@ msgstr "wy³±czyæ mimo to?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Wtyczka %s obudzi siê za %ld min, kontynuowaæ?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Monta¿ w trakcie  - Zrestartowaæ mimo to?"
 
 msgid "Recording - restart anyway?"
 msgstr "Trwa nagrywanie - zrestartowaæ mimo to?"
@@ -979,7 +979,7 @@ msgid "Recording started"
 msgstr "Rozpoczêto nagrywanie"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr ""
+msgstr "VDR zostanie wy³±czony pó¼niej - Naci¶nij Wy³±cz (Power) aby wymusiæ"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Naci¶nij dowolny klawisz aby nie wy³±czaæ"
@@ -994,8 +994,8 @@ msgid "Editing process finished"
 msgstr "Proces edycji zakoñczony"
 
 msgid "Press any key to cancel restart"
-msgstr ""
+msgstr "Naci¶nij dowolny klawisz aby nie zrestartowaæ"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr ""
+msgstr "VDR zostanie wy³±czony za %s minut"
