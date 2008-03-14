@@ -29,3 +29,7 @@ VDR Plugin 'pictures' Revision History
 
 - Made the 'pic2mpg' script of the 'pictures' plugin work with uppercase filename
   extensions and relative paths (reported by Stefan Wagner <stefanwag@gmx.at>).
+
+2008-03-14: Version 0.0.7
+
+- Added Russian translations (thanks to Alexander Gross).

@@ -5694,7 +5694,7 @@ Video Disk Recorder Revision History
   standard ETSI EN 300 468) to ISO-8859-9, in order to work around the stupidity of
   some providers, who actually use ISO-8859-9, but fail to correctly announce that.
 
-2008-03-12: Version 1.5.18
+2008-03-14: Version 1.5.18
 
 - Added a missing reset of maxNumber in cChannels::Renumber() (reported by Sundararaj
   Reel).
@@ -5713,3 +5713,5 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Michael Rakowski).
 - Fixed formatting the name section in the VDR man pages (thanks to Tobias Grimm).
 - Updated the Swedish OSD texts (thanks to Magnus Andersson).
+- Added Russian translations to the 'skincurses' and 'pictures' plugins (thanks
+  to Alexander Gross).

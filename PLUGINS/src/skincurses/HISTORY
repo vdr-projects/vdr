@@ -75,3 +75,7 @@ VDR Plugin 'skincurses' Revision History
 
 - Revised the fix of calculating the scrollbar height in the skins. The scrollbar
   handle now always has a height that is at least the width of the scrollbar.
+
+2008-03-14: Version 0.1.7
+
+- Added Russian translations (thanks to Alexander Gross).
