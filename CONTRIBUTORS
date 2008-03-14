@@ -1048,6 +1048,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for increasing the valid range of the "Subtitle offset" setup option to -100...100
  for a patch that was used to fix automatically selecting the preferred subtitle
  language
+ for fixing displaying the free disk space when entering the recordings menu where
+ the last replayed recording was in a subdirectory, and pressing Back
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

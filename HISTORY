@@ -5715,3 +5715,6 @@ Video Disk Recorder Revision History
 - Updated the Swedish OSD texts (thanks to Magnus Andersson).
 - Added Russian translations to the 'skincurses' and 'pictures' plugins (thanks
   to Alexander Gross).
+- Fixed displaying the free disk space when entering the recordings menu where the
+  last replayed recording was in a subdirectory, and pressing Back (thanks to Rolf
+  Ahrenberg).

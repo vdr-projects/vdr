@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.480 2008/02/24 10:28:46 kls Exp $
+ * $Id: menu.c 1.481 2008/03/14 13:09:19 kls Exp $
  */
 
 #include "menu.h"
@@ -1913,11 +1913,11 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
   helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   Set();
+  SetFreeDiskDisplay(true);
   if (Current() < 0)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
-  SetFreeDiskDisplay(true);
   Display();
   SetHelpKeys();
 }
