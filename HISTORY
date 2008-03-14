@@ -5718,3 +5718,5 @@ Video Disk Recorder Revision History
 - Fixed displaying the free disk space when entering the recordings menu where the
   last replayed recording was in a subdirectory, and pressing Back (thanks to Rolf
   Ahrenberg).
+- Fixed tuning to a live channel after a recording has been stopped using the
+  'Back' key.
