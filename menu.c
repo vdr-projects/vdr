@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.481 2008/03/14 13:09:19 kls Exp $
+ * $Id: menu.c 1.482 2008/03/16 11:15:28 kls Exp $
  */
 
 #include "menu.h"
@@ -3879,8 +3879,11 @@ void cRecordControl::Stop(void)
 
 bool cRecordControl::Process(time_t t)
 {
-  if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t))
+  if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t)) {
+     if (timer)
+        timer->SetPending(false);
      return false;
+     }
   AssertFreeDiskSpace(timer->Priority());
   return true;
 }
