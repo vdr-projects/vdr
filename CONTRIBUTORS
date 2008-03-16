@@ -1046,6 +1046,10 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  SVDRP in case VDR is run with --vfat, in order to avoid names that are too long
  for Windows
  for increasing the valid range of the "Subtitle offset" setup option to -100...100
+ for a patch that was used to fix automatically selecting the preferred subtitle
+ language
+ for fixing displaying the free disk space when entering the recordings menu where
+ the last replayed recording was in a subdirectory, and pressing Back
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1715,6 +1719,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
+ for translating OSD texts to the Spanish and Catalanian language
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -2104,6 +2109,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting that the 'plugins' target in the Makefile should return an error exit
  code if one of the plugins failed to compile
  for making the non-breaking space symbol be rendered as a blank
+ for fixing a signed character used as index in cBase64Encoder::NextLine()
+ for fixing formatting the name section in the VDR man pages
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2321,3 +2328,16 @@ Tomas Berglund <tomber@telia.com>
 
 Johan Schuring <johan.schuring@vetteblei.nl>
  for translating OSD texts to the Dutch language
+
+Sundararaj Reel <sundararaj.reel@googlemail.com>
+ for reporting a missing reset of maxNumber in cChannels::Renumber()
+
+Ales Jurik <ajurik@quick.cz>
+ for reporting broken SI data on Czech/Slovak channels after changing the default
+ character set to ISO-8859-9
+
+Magnus Andersson <svankan@bahnhof.se>
+ for translating OSD texts to the Swedish language
+
+Alexander Gross <Bikalexander@gmail.com>
+ for adding Russian translations to the 'skincurses' and 'pictures' plugins

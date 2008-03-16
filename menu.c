@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.480 2008/02/24 10:28:46 kls Exp $
+ * $Id: menu.c 1.482 2008/03/16 11:15:28 kls Exp $
  */
 
 #include "menu.h"
@@ -1913,11 +1913,11 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
   helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   Set();
+  SetFreeDiskDisplay(true);
   if (Current() < 0)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
-  SetFreeDiskDisplay(true);
   Display();
   SetHelpKeys();
 }
@@ -3879,8 +3879,11 @@ void cRecordControl::Stop(void)
 
 bool cRecordControl::Process(time_t t)
 {
-  if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t))
+  if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t)) {
+     if (timer)
+        timer->SetPending(false);
      return false;
+     }
   AssertFreeDiskSpace(timer->Priority());
   return true;
 }

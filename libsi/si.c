@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.24 2008/03/01 12:02:01 kls Exp $
+ *   $Id: si.c 1.25 2008/03/05 17:00:55 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -14,6 +14,7 @@
 #include <errno.h>
 #include <iconv.h>
 #include <malloc.h>
+#include <stdlib.h> // for broadcaster stupidity workaround
 #include <string.h>
 #include "descriptor.h"
 
@@ -340,9 +341,12 @@ bool SetSystemCharacterTable(const char *CharacterTable) {
 // and length are adjusted accordingly.
 static const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL) {
    const char *cs = "ISO6937";
-   cs = "ISO-8859-9"; // Workaround for broadcaster stupidity: according to
+   // Workaround for broadcaster stupidity: according to
    // "ETSI EN 300 468" the default character set is ISO6937. But unfortunately some
    // broadcasters actually use ISO-8859-9, but fail to correctly announce that.
+   static const char *CharsetOverride = getenv("VDR_CHARSET_OVERRIDE");
+   if (CharsetOverride)
+      cs = CharsetOverride;
    if (isSingleByte)
       *isSingleByte = false;
    if (length <= 0)

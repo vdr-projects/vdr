@@ -5693,3 +5693,32 @@ Video Disk Recorder Revision History
 - Changed the default character set for SI data from ISO6937 (as required by the DVB
   standard ETSI EN 300 468) to ISO-8859-9, in order to work around the stupidity of
   some providers, who actually use ISO-8859-9, but fail to correctly announce that.
+
+2008-03-16: Version 1.5.18
+
+- Added a missing reset of maxNumber in cChannels::Renumber() (reported by Sundararaj
+  Reel).
+- Revoked the fixed change of the default character set for SI data and introduced
+  an environment variable to control it (thanks to Ales Jurik for reporting broken
+  SI data on the Czech/Slovak channels, which actually do follow the standard).
+  Users who want to set the default character set to something different can do this
+  by setting the environment variable VDR_CHARSET_OVERRIDE to something like
+  ISO-8859-9.
+- Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
+  to Tobias Grimm).
+- Updated the Spanish and Catalanian OSD texts (thanks to Luca Olivetti).
+- Fixed automatically selecting the preferred subtitle language (based on a patch
+  from Rolf Ahrenberg).
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Updated the Polish OSD texts (thanks to Michael Rakowski).
+- Fixed formatting the name section in the VDR man pages (thanks to Tobias Grimm).
+- Updated the Swedish OSD texts (thanks to Magnus Andersson).
+- Added Russian translations to the 'skincurses' and 'pictures' plugins (thanks
+  to Alexander Gross).
+- Fixed displaying the free disk space when entering the recordings menu where the
+  last replayed recording was in a subdirectory, and pressing Back (thanks to Rolf
+  Ahrenberg).
+- Fixed tuning to a live channel after a recording has been stopped using the
+  'Back' key.
+- Resetting a timer's 'pending' flag when it has ended.

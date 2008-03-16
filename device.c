@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.155 2008/02/23 13:09:01 kls Exp $
+ * $Id: device.c 1.157 2008/03/09 10:03:34 kls Exp $
  */
 
 #include "device.h"
@@ -1096,8 +1096,8 @@ void cDevice::EnsureAudioTrack(bool Force)
 void cDevice::EnsureSubtitleTrack(void)
 {
   if (Setup.DisplaySubtitles) {
-     eTrackType PreferredTrack = ttSubtitleFirst;
-     int LanguagePreference = -1;
+     eTrackType PreferredTrack = ttNone;
+     int LanguagePreference = INT_MAX; // higher than the maximum possible value
      for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
          const tTrackId *TrackId = GetTrack(eTrackType(i));
          if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference))
@@ -1416,7 +1416,7 @@ bool cDevice::Receiving(bool CheckAny) const
 
 #define TS_SCRAMBLING_CONTROL  0xC0
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
-#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked a known to decrypt
+#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
 
 void cDevice::Action(void)
 {
