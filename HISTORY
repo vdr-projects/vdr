@@ -5701,8 +5701,9 @@ Video Disk Recorder Revision History
 - Revoked the fixed change of the default character set for SI data and introduced
   an environment variable to control it (thanks to Ales Jurik for reporting broken
   SI data on the Czech/Slovak channels, which actually do follow the standard).
-  Users who want to set the default character set to something different can do wo
-  through "export VDR_CHARSET_OVERRIDE=ISO-8859-9".
+  Users who want to set the default character set to something different can do this
+  by setting the environment variable VDR_CHARSET_OVERRIDE to something like
+  ISO-8859-9.
 - Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
   to Tobias Grimm).
 - Updated the Spanish and Catalanian OSD texts (thanks to Luca Olivetti).
