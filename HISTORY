@@ -5722,3 +5722,7 @@ Video Disk Recorder Revision History
 - Fixed tuning to a live channel after a recording has been stopped using the
   'Back' key.
 - Resetting a timer's 'pending' flag when it has ended.
+
+2008-03-18: Version 1.5.19
+
+- Updated the Croatian language texts (thanks to Adrian Caval).
