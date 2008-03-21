@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-02-10 12:22+0100\n"
-"PO-Revision-Date: 2008-03-17 14:21+0800\n"
+"PO-Revision-Date: 2008-03-21 08:44+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "No title"
 msgstr "没有标题"
 
 #. TRANSLATORS: The name of the language, as written natively
-msgid "LanguageName$eng"
+msgid "LanguageName$English"
 msgstr "中文"
 
 #. TRANSLATORS: The 3-letter code of the language
@@ -48,7 +48,7 @@ msgid "Press any key on the RC unit"
 msgstr "请按在RC单元下按任意键"
 
 msgid "RC code detected!"
-msgstr "RC代码发现!"
+msgstr "发现RC代码!"
 
 msgid "Do not press any key..."
 msgstr "不按下任何键... "
@@ -130,7 +130,7 @@ msgid "Key$Stop"
 msgstr "停止"
 
 msgid "Key$Record"
-msgstr "记录"
+msgstr "回放列表"
 
 msgid "Key$FastFwd"
 msgstr "快速往前"
@@ -175,16 +175,16 @@ msgid "Key$Schedule"
 msgstr "附表"
 
 msgid "Key$Channels"
-msgstr "频道"
+msgstr "频道列表"
 
 msgid "Key$Timers"
 msgstr "时间"
 
 msgid "Key$Recordings"
-msgstr "记录"
+msgstr "录像"
 
 msgid "Key$Setup"
-msgstr "设置- NFVDR中文版《南风&DDDK》编译发布"
+msgstr "设置"
 
 msgid "Key$Commands"
 msgstr "命令"
@@ -409,7 +409,7 @@ msgid "Button$Now"
 msgstr "现在"
 
 msgid "Button$Schedule"
-msgstr "时间表"
+msgstr "任务表"
 
 msgid "Can't switch channel!"
 msgstr "不能切换频道"
