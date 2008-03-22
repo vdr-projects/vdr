@@ -59,3 +59,8 @@ VDR Plugin 'sky' Revision History
 
 - Moved the "all" target in the Makefile before the "Implicit rules",
   so that a plain "make" will compile everything.
+
+2008-03-22:Version 0.3.7
+
+- Removed the full path from the 'logger' call in the getskyepg.pl script (this
+  program is apparently "on the move" through the file system...).
