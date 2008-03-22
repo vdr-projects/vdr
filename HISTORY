@@ -5723,8 +5723,9 @@ Video Disk Recorder Revision History
   'Back' key.
 - Resetting a timer's 'pending' flag when it has ended.
 
-2008-03-18: Version 1.5.19
+2008-03-22: Version 1.5.19
 
 - Updated the Croatian language texts (thanks to Adrian Caval).
 - Added Chinese language texts (thanks to Nan Feng).
 - Updated the Portuguese language texts.
+- Added a note about VDR_CHARSET_OVERRIDE to the INSTALL file.
