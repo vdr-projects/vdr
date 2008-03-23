@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.6 2006/12/02 09:52:49 kls Exp $
+# $Id: getskyepg.pl 1.7 2008/03/22 10:17:42 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -44,7 +44,7 @@ $GAP = 2;
 $SkyWebPage = "www.bleb.org/tv/data/listings";
 $WGET = "/usr/bin/wget -q -O-";
 $WGET .= " -U '$IDENT'" unless $User;
-$LOGGER = "/usr/bin/logger -t SKYEPG";
+$LOGGER = "logger -t SKYEPG";
 
 $DST = -3600; # Daylight Saving Time offset
 $SecsInDay = 86400;

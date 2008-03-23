@@ -58,3 +58,7 @@ VDR Plugin 'hello' Revision History
 
 - Moved the "all" target in the Makefile before the "Implicit rules",
   so that a plain "make" will compile everything.
+
+2008-03-18: Version 0.2.2
+
+- Updated the Croatian language texts (thanks to Adrian Caval).

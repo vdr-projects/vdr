@@ -119,6 +119,7 @@ Internationalization:
 - The new option --localedir can be used to set the locale directory at runtime.
 - Added Turkish language texts.
 - Added Ukrainian language texts.
+- Added Chinese language texts.
 
 Misc:
 
