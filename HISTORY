@@ -5729,3 +5729,12 @@ Video Disk Recorder Revision History
 - Added Chinese language texts (thanks to Nan Feng).
 - Updated the Portuguese language texts.
 - Added a note about VDR_CHARSET_OVERRIDE to the INSTALL file.
+
+2008-04-12: Version 1.7.0
+
+- Re-implemented handling of DVB-S2, which first appeared in version 1.5.14, but was
+  revoked in version 1.5.15 in favor of making a stable version 1.6.0. VDR now
+  requires the "multiproto" DVB driver, e.g. from http://jusst.de/hg/multiproto.
+  Note that the channels.conf file now supports additional parameters, so you may
+  want to make sure you have a backup of this file in case you need to go back to
+  the previous version of VDR!

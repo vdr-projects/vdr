@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.91 2008/02/23 13:13:04 kls Exp $
+ * $Id: device.h 2.1 2008/04/12 11:11:23 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -228,6 +228,12 @@ public:
          ///< function itself actually returns true.
          ///< The default implementation always returns false, so a derived cDevice
          ///< class that can provide channels must implement this function.
+  virtual int NumProvidedSystems(void) const;
+         ///< Returns the number of individual "delivery systems" this device provides.
+         ///< The default implementation returns 0, so any derived class that can
+         ///< actually provide channels must implement this function.
+         ///< The result of this function is used when selecting a device, in order
+         ///< to avoid devices that provide more than one system.
   virtual bool IsTunedToTransponder(const cChannel *Channel);
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.

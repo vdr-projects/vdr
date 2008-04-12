@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.47 2008/02/08 13:48:31 kls Exp $
+ * $Id: dvbdevice.h 2.1 2008/04/12 11:20:48 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -15,8 +15,8 @@
 #include "device.h"
 #include "dvbspu.h"
 
-#if DVB_API_VERSION != 3
-#error VDR requires Linux DVB driver API version 3!
+#if DVB_API_VERSION != 3 || DVB_API_VERSION_MINOR != 3
+#error VDR requires Linux DVB driver API version 3.3!
 #endif
 
 #define MAXDVBDEVICES  8
@@ -35,7 +35,8 @@ public:
          ///< Must be called before accessing any DVB functions.
          ///< \return True if any devices are available.
 private:
-  fe_type_t frontendType;
+  dvbfe_delsys frontendType;
+  int numProvidedSystems;
   int fd_osd, fd_audio, fd_video, fd_dvr, fd_stc, fd_ca;
 protected:
   virtual void MakePrimaryDevice(bool On);
@@ -66,6 +67,7 @@ public:
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual int NumProvidedSystems(void) const;
   virtual bool IsTunedToTransponder(const cChannel *Channel);
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);

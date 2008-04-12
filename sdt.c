@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.19 2008/02/08 13:48:31 kls Exp $
+ * $Id: sdt.c 2.1 2008/04/12 13:33:55 kls Exp $
  */
 
 #include "sdt.h"
@@ -55,6 +55,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                    case 0x02: // digital radio sound service
                    case 0x04: // NVOD reference service
                    case 0x05: // NVOD time-shifted service
+                   case 0x19: // digital HD television service
                         {
                         char NameBuf[Utf8BufSize(1024)];
                         char ShortNameBuf[Utf8BufSize(1024)];

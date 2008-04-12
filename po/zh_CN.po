@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-03-22 13:28+0100\n"
+"POT-Creation-Date: 2008-04-12 14:19+0200\n"
 "PO-Revision-Date: 2008-03-21 08:44+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese\n"
@@ -17,6 +17,21 @@ msgstr ""
 "X-Poedit-Language: Chinese\n"
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+msgid "off"
+msgstr "关"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "无"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "***无效频道 ***"
@@ -228,9 +243,6 @@ msgstr "剩余空间"
 msgid "encrypted"
 msgstr "加密"
 
-msgid "auto"
-msgstr "自动"
-
 msgid "Edit channel"
 msgstr "编辑频道"
 
@@ -279,20 +291,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "极化"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "比率"
 
 msgid "Inversion"
 msgstr "倒置"
 
-msgid "off"
-msgstr "关"
-
 msgid "CoderateH"
 msgstr "高符号频率"
-
-msgid "none"
-msgstr "无"
 
 msgid "CoderateL"
 msgstr "论符号频率"
@@ -311,6 +320,15 @@ msgstr "防护"
 
 msgid "Hierarchy"
 msgstr "层次"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "优先"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "频道设置不是唯一的！"
@@ -356,9 +374,6 @@ msgstr "停止"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "优先"
 
 msgid "Lifetime"
 msgstr "终生"
@@ -893,6 +908,9 @@ msgstr "覆盖"
 
 msgid "Button$Insert"
 msgstr "插入"
+
+msgid "auto"
+msgstr "自动"
 
 msgid "Plugin"
 msgstr "插件"
