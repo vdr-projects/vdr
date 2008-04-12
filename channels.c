@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.1 2008/04/12 11:02:40 kls Exp $
+ * $Id: channels.c 2.2 2008/04/12 13:49:12 kls Exp $
  */
 
 #include "channels.h"
@@ -356,7 +356,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
      Srate = srate;
 
   if (source != Source || frequency != Frequency || polarization != Polarization || srate != Srate || coderateH != CoderateH || modulation != Modulation || system != System || rollOff != RollOff) {
-     cString OldParameters = ParametersToString();
+     cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
      polarization = Polarization;
@@ -367,7 +367,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
      rollOff = RollOff;
      schedule = NULL;
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %d:%s:%s:%d to %d:%s:%s:%d", Number(), frequency, *OldParameters, *cSource::ToString(source), srate, Frequency, *ParametersToString(), *cSource::ToString(Source), Srate);
+        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -378,7 +378,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
 bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH)
 {
   if (source != Source || frequency != Frequency || modulation != Modulation || srate != Srate || coderateH != CoderateH) {
-     cString OldParameters = ParametersToString();
+     cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
      modulation = Modulation;
@@ -386,7 +386,7 @@ bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation
      coderateH = CoderateH;
      schedule = NULL;
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %d:%s:%s:%d to %d:%s:%s:%d", Number(), frequency, *OldParameters, *cSource::ToString(source), srate, Frequency, *ParametersToString(), *cSource::ToString(Source), Srate);
+        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -397,7 +397,7 @@ bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation
 bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CoderateH, int CoderateL, int Guard, int Transmission, int Alpha, int Priority)
 {
   if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission || alpha != Alpha || priority != Priority) {
-     cString OldParameters = ParametersToString();
+     cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
      bandwidth = Bandwidth;
@@ -411,7 +411,7 @@ bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, 
      priority = Priority;
      schedule = NULL;
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %d:%s:%s to %d:%s:%s", Number(), frequency, *OldParameters, *cSource::ToString(source), Frequency, *ParametersToString(), *cSource::ToString(Source));
+        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -650,6 +650,13 @@ void cChannel::SetRefChannel(cChannel *RefChannel)
 static int PrintParameter(char *p, char Name, int Value)
 {
   return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
+}
+
+cString cChannel::TransponderDataToString(void) const
+{
+  if (cSource::IsTerr(source))
+     return cString::sprintf("%d:%s:%s", frequency, *ParametersToString(), *cSource::ToString(source));
+  return cString::sprintf("%d:%s:%s:%d", frequency, *ParametersToString(), *cSource::ToString(source), srate);
 }
 
 cString cChannel::ParametersToString(void) const

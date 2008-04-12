@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.1 2008/04/12 10:49:51 kls Exp $
+ * $Id: channels.h 2.2 2008/04/12 13:46:50 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -156,6 +156,7 @@ private:
   mutable const cSchedule *schedule;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
+  cString TransponderDataToString(void) const;
   cString ParametersToString(void) const;
   bool StringToParameters(const char *s);
 public:
