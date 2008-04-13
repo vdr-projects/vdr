@@ -5743,6 +5743,8 @@ Video Disk Recorder Revision History
   Nissl).
 - Improved logging system time changes to avoid problems on slow systems under
   heavy load (suggested by Helmut Auer).
+- Now setting the thread name, so that it can be seen in 'top -H' (thanks to Rolf
+  Ahrenberg).
 
 2008-04-13: Version 1.6.0-1
 

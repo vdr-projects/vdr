@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.64 2008/02/15 14:17:42 kls Exp $
+ * $Id: thread.c 2.1 2008/04/13 11:53:56 kls Exp $
  */
 
 #include "thread.h"
@@ -17,6 +17,7 @@
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/wait.h>
+#include <sys/prctl.h>
 #include <unistd.h>
 #include "tools.h"
 
@@ -239,8 +240,13 @@ void cThread::SetDescription(const char *Description, ...)
 void *cThread::StartThread(cThread *Thread)
 {
   Thread->childThreadId = ThreadId();
-  if (Thread->description)
+  if (Thread->description) {
      dsyslog("%s thread started (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
+#ifdef PR_SET_NAME
+     if (prctl(PR_SET_NAME, Thread->description, 0, 0, 0) < 0)
+        esyslog("%s thread naming failed (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
+#endif
+     }
   Thread->Action();
   if (Thread->description)
      dsyslog("%s thread ended (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
