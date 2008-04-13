@@ -5759,3 +5759,5 @@ Video Disk Recorder Revision History
   heavy load (suggested by Helmut Auer).
 - Fixed initializing the timer's flags in the cTimer copy constructor (thanks to
   Andreas Mair).
+- Increased the time between checking the CAM status to 500ms to avoid problems
+  with some CAMs (reported by Arthur Konovalov).
