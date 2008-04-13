@@ -5754,3 +5754,5 @@ Video Disk Recorder Revision History
   Nissl).
 - Improved logging system time changes to avoid problems on slow systems under
   heavy load (suggested by Helmut Auer).
+- Fixed initializing the timer's flags in the cTimer copy constructor (thanks to
+  Andreas Mair).
