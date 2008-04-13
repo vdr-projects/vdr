@@ -5734,3 +5734,5 @@ Video Disk Recorder Revision History
 
 - Fixed handling the counter in detection of pre 1.3.19 PS data (thanks to Reinhard
   Nissl).
+- Improved logging system time changes to avoid problems on slow systems under
+  heavy load (suggested by Helmut Auer).
