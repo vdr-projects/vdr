@@ -1510,6 +1510,7 @@ Arthur Konovalov <kasjas@hot.ee>
  for translating OSD texts to the Estonian language
  for fixing a missing ',' in the Greek OSD texts
  for fixing a missing ',' in the Swedish OSD texts
+ for reporting problems with CAMs when checking the CAM status too frequently
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
