@@ -5745,6 +5745,8 @@ Video Disk Recorder Revision History
   heavy load (suggested by Helmut Auer).
 - Now setting the thread name, so that it can be seen in 'top -H' (thanks to Rolf
   Ahrenberg).
+- Fixed initializing the timer's flags in the cTimer copy constructor (thanks to
+  Andreas Mair).
 
 2008-04-13: Version 1.6.0-1
 

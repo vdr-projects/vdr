@@ -960,6 +960,7 @@ Andreas Mair <andreas@vdr-developer.org>
  for making the SVDRP command LSTC list the channels with group separators if the
  option ':groups' is given
  for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
+ for fixing initializing the timer's flags in the cTimer copy constructor
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
