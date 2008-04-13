@@ -5747,6 +5747,7 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - Fixed initializing the timer's flags in the cTimer copy constructor (thanks to
   Andreas Mair).
+- Fixed setting the OSD level in the 'osddemo' example (thanks to Wolfgang Rohdewald).
 
 2008-04-13: Version 1.6.0-1
 

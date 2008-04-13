@@ -3,12 +3,12 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 1.4 2007/08/15 13:17:55 kls Exp $
+ * $Id: osddemo.c 2.1 2008/04/13 12:59:57 kls Exp $
  */
 
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.1.2";
+static const char *VERSION        = "0.1.3";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -41,7 +41,7 @@ cLineGame::~cLineGame()
 
 void cLineGame::Show(void)
 {
-  osd = cOsdProvider::NewOsd(100, 50);
+  osd = cOsdProvider::NewOsd(100, 50, 50);
   if (osd) {
      tArea Area = { 0, 0, 99, 199,  4 };
      osd->SetAreas(&Area, 1);
