@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.1 2008/04/12 11:32:56 kls Exp $
+ * $Id: dvbdevice.c 2.2 2008/04/13 13:31:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -310,7 +310,7 @@ bool cDvbTuner::SetFrontend(void)
   else {
      esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
      return false;
-    }
+     }
   if (ioctl(fd_frontend, DVBFE_SET_PARAMS, &Frontend) < 0) {
      esyslog("ERROR: frontend %d: %m", cardIndex);
      return false;
