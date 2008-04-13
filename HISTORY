@@ -5730,7 +5730,7 @@ Video Disk Recorder Revision History
 - Updated the Portuguese language texts.
 - Added a note about VDR_CHARSET_OVERRIDE to the INSTALL file.
 
-2008-04-12: Version 1.7.0
+2008-04-13: Version 1.7.0
 
 - Re-implemented handling of DVB-S2, which first appeared in version 1.5.14, but was
   revoked in version 1.5.15 in favor of making a stable version 1.6.0. VDR now
@@ -5741,6 +5741,8 @@ Video Disk Recorder Revision History
 - Fixed displaying transponder data when it is modified (thanks to Reinhard Nissl).
 - Fixed handling the counter in detection of pre 1.3.19 PS data (thanks to Reinhard
   Nissl).
+- Improved logging system time changes to avoid problems on slow systems under
+  heavy load (suggested by Helmut Auer).
 
 2008-04-13: Version 1.6.0-1
 

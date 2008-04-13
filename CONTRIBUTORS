@@ -595,6 +595,8 @@ Helmut Auer <vdr@helmutauer.de>
  not two hex digits after the '#'
  for suggesting to suppress the automatic shutdown if the remote control is
  currently disabled
+ for suggesting to improve logging system time changes to avoid problems on slow
+ systems under heavy load
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
