@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 1.3 2007/11/25 13:33:08 kls Exp $
+ * $Id: dvbsubtitle.c 2.0 2007/11/25 13:33:08 kls Exp $
  */
 
 #include "dvbsubtitle.h"

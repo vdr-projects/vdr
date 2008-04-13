@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.15 2006/05/28 08:48:13 kls Exp $
+ * $Id: lirc.c 2.0 2006/05/28 08:48:13 kls Exp $
  */
 
 #include "lirc.h"

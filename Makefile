@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.113 2008/02/29 21:43:03 kls Exp $
+# $Id: Makefile 2.0 2008/02/29 21:43:03 kls Exp $
 
 .DELETE_ON_ERROR:
 

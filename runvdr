@@ -20,7 +20,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.19 2006/05/14 16:02:05 kls Exp $
+# $Id: runvdr 2.0 2006/05/14 16:02:05 kls Exp $
 
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"

@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.22 2007/02/03 10:13:18 kls Exp $
+ * $Id: dvbspu.c 2.0 2007/02/03 10:13:18 kls Exp $
  */
 
 #include "dvbspu.h"

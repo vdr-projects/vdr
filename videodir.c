@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.15 2008/02/16 13:00:03 kls Exp $
+ * $Id: videodir.c 2.0 2008/02/16 13:00:03 kls Exp $
  */
 
 #include "videodir.h"

@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: summary2info.pl 1.6 2006/04/17 12:19:24 kls Exp $
+# $Id: summary2info.pl 2.0 2006/04/17 12:19:24 kls Exp $
 
 $VideoDir = $ARGV[0] || die "please provide the name of the video directory\n";
 

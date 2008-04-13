@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.25 2008/01/19 11:56:19 kls Exp $
+ * $Id: i18n.h 2.0 2008/01/19 11:56:19 kls Exp $
  */
 
 #ifndef __I18N_H

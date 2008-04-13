@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 1.1 2007/10/14 14:02:46 kls Exp $
+ * $Id: dvbsubtitle.h 2.0 2007/10/14 14:02:46 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H

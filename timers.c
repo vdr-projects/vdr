@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.73 2008/02/16 14:47:40 kls Exp $
+ * $Id: timers.c 2.1 2008/04/13 12:41:41 kls Exp $
  */
 
 #include "timers.h"
@@ -92,6 +92,7 @@ cTimer::cTimer(const cTimer &Timer)
   channel = NULL;
   aux = NULL;
   event = NULL;
+  flags = tfNone;
   *this = Timer;
 }
 

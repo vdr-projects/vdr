@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.15 2008/03/22 10:19:32 kls Exp $
+ * $Id: sky.c 2.0 2008/03/22 10:19:32 kls Exp $
  */
 
 #include <sys/socket.h>

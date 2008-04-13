@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.7 2008/03/22 10:17:42 kls Exp $
+# $Id: getskyepg.pl 2.0 2008/03/22 10:17:42 kls Exp $
 
 use Getopt::Std;
 use Time::Local;

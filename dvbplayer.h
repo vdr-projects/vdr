@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 1.2 2002/06/23 10:13:51 kls Exp $
+ * $Id: dvbplayer.h 2.0 2002/06/23 10:13:51 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H

@@ -11,13 +11,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-02-10 12:22+0100\n"
+"POT-Creation-Date: 2008-04-12 14:19+0200\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "uit"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "geen"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Ongeldig kanaal ***"
@@ -229,9 +244,6 @@ msgstr "Vrij te ontvangen"
 msgid "encrypted"
 msgstr "gecodeerd"
 
-msgid "auto"
-msgstr "auto"
-
 msgid "Edit channel"
 msgstr "Kanaal aanpassen"
 
@@ -280,20 +292,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarisatie"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
-msgid "off"
-msgstr "uit"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "geen"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -312,6 +321,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarchie"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Prioriteit"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaalinstellingen zijn niet uniek!"
@@ -357,9 +375,6 @@ msgstr "Einde"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Prioriteit"
 
 msgid "Lifetime"
 msgstr "Bewaarduur"
@@ -894,6 +909,9 @@ msgstr "Overschrijven"
 
 msgid "Button$Insert"
 msgstr "Invoegen"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Plugin"
 msgstr "Plugin"

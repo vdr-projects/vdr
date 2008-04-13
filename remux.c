@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.64 2007/11/25 13:56:03 kls Exp $
+ * $Id: remux.c 2.0 2007/11/25 13:56:03 kls Exp $
  */
 
 #include "remux.h"

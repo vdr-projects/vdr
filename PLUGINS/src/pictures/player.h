@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.h 1.1 2008/01/12 16:21:57 kls Exp $
+ * $Id: player.h 2.0 2008/01/12 16:21:57 kls Exp $
  */
 
 #ifndef _PLAYER_H

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.31 2008/02/16 14:33:23 kls Exp $
+ * $Id: timers.h 2.0 2008/02/16 14:33:23 kls Exp $
  */
 
 #ifndef __TIMERS_H

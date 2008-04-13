@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.9 2007/02/03 11:45:58 kls Exp $
+ *   $Id: headers.h 2.0 2007/02/03 11:45:58 kls Exp $
  *                                                                         *
  ***************************************************************************/
 

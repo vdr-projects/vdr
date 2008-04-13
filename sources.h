@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 1.4 2005/05/14 09:30:41 kls Exp $
+ * $Id: sources.h 2.0 2005/05/14 09:30:41 kls Exp $
  */
 
 #ifndef __SOURCES_H

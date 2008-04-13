@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.23 2008/03/14 12:57:14 kls Exp $
+ * $Id: skincurses.c 2.0 2008/03/14 12:57:14 kls Exp $
  */
 
 #include <ncurses.h>

@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.6 2007/11/04 10:57:36 kls Exp $
+# $Id: i18n-to-gettext.pl 2.0 2007/11/04 10:57:36 kls Exp $
 
 # How to convert an actual plugin:
 #

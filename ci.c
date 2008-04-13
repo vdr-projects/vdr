@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.48 2007/04/30 13:02:49 kls Exp $
+ * $Id: ci.c 2.1 2008/04/13 13:28:52 kls Exp $
  */
 
 #include "ci.h"
@@ -1525,7 +1525,7 @@ void cCiAdapter::Action(void)
 
 cCamSlots CamSlots;
 
-#define MODULE_CHECK_INTERVAL 100 // ms
+#define MODULE_CHECK_INTERVAL 500 // ms
 #define MODULE_RESET_TIMEOUT    2 // s
 
 cCamSlot::cCamSlot(cCiAdapter *CiAdapter)

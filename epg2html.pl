@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 1.7 2006/04/17 12:19:08 kls Exp $
+# $Id: epg2html.pl 2.0 2006/04/17 12:19:08 kls Exp $
 
 @Index = ();
 

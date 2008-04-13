@@ -8,13 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-02-10 12:22+0100\n"
+"POT-Creation-Date: 2008-04-12 14:19+0200\n"
 "PO-Revision-Date: 2008-02-15 16:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-5\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "выкл"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "ничего"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Неправильный канал ***"
@@ -226,9 +241,6 @@ msgstr "FTA (незакодировано)"
 msgid "encrypted"
 msgstr "закодировано"
 
-msgid "auto"
-msgstr "авто"
-
 msgid "Edit channel"
 msgstr "Редактирование канала"
 
@@ -277,20 +289,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Поляризация"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "Симв. скорость"
 
 msgid "Inversion"
 msgstr "Инверсия"
 
-msgid "off"
-msgstr "выкл"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "ничего"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -309,6 +318,15 @@ msgstr "Защита"
 
 msgid "Hierarchy"
 msgstr "Иерархия"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Приоритет"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Настройки канала не уникальны!"
@@ -354,9 +372,6 @@ msgstr "Конец"
 
 msgid "VPS"
 msgstr "VPS поправка"
-
-msgid "Priority"
-msgstr "Приоритет"
 
 msgid "Lifetime"
 msgstr "Срок хранения"
@@ -891,6 +906,9 @@ msgstr "Замена"
 
 msgid "Button$Insert"
 msgstr "Вставка"
+
+msgid "auto"
+msgstr "авто"
 
 msgid "Plugin"
 msgstr "Модуль"

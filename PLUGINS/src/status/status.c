@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 1.10 2008/02/16 15:41:05 kls Exp $
+ * $Id: status.c 2.0 2008/02/16 15:41:05 kls Exp $
  */
 
 #include <vdr/plugin.h>

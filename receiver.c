@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 1.7 2007/08/12 11:52:59 kls Exp $
+ * $Id: receiver.c 2.0 2007/08/12 11:52:59 kls Exp $
  */
 
 #include "receiver.h"

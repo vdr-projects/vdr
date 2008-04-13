@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.23 2007/01/03 12:49:10 kls Exp $
+ * $Id: ci.h 2.0 2007/01/03 12:49:10 kls Exp $
  */
 
 #ifndef __CI_H

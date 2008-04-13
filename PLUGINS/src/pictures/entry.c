@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: entry.c 1.3 2008/02/17 13:42:34 kls Exp $
+ * $Id: entry.c 2.0 2008/02/17 13:42:34 kls Exp $
  */
 
 #include "entry.h"

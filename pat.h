@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.7 2007/01/05 10:42:11 kls Exp $
+ * $Id: pat.h 2.0 2007/01/05 10:42:11 kls Exp $
  */
 
 #ifndef __PAT_H

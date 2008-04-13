@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 1.6 2006/05/26 10:40:19 kls Exp $
+# $Id: Makefile 2.0 2006/05/26 10:40:19 kls Exp $
 
 ### The C++ compiler and options:
 

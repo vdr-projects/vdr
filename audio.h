@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: audio.h 1.3 2005/02/12 12:20:19 kls Exp $
+ * $Id: audio.h 2.0 2005/02/12 12:20:19 kls Exp $
  */
 
 #ifndef __AUDIO_H

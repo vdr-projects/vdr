@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eit.h 1.30 2003/12/21 14:51:50 kls Exp $
+ * $Id: eit.h 2.0 2003/12/21 14:51:50 kls Exp $
  */
 
 #ifndef __EIT_H

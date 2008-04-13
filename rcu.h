@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.7 2007/08/24 13:15:48 kls Exp $
+ * $Id: rcu.h 2.0 2007/08/24 13:15:48 kls Exp $
  */
 
 #ifndef __RCU_H

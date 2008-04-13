@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.47 2008/02/08 13:48:31 kls Exp $
+ * $Id: channels.h 2.2 2008/04/12 13:46:50 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -50,10 +50,10 @@
 struct tChannelParameterMap {
   int userValue;
   int driverValue;
+  const char *userString;
   };
 
-//XXX into cChannel???
-int MapToUser(int Value, const tChannelParameterMap *Map);
+int MapToUser(int Value, const tChannelParameterMap *Map, const char **String = NULL);
 int MapToDriver(int Value, const tChannelParameterMap *Map);
 int UserIndex(int Value, const tChannelParameterMap *Map);
 int DriverIndex(int Value, const tChannelParameterMap *Map);
@@ -62,9 +62,13 @@ extern const tChannelParameterMap InversionValues[];
 extern const tChannelParameterMap BandwidthValues[];
 extern const tChannelParameterMap CoderateValues[];
 extern const tChannelParameterMap ModulationValues[];
+extern const tChannelParameterMap SystemValues[];
 extern const tChannelParameterMap TransmissionValues[];
 extern const tChannelParameterMap GuardValues[];
 extern const tChannelParameterMap HierarchyValues[];
+extern const tChannelParameterMap AlphaValues[];
+extern const tChannelParameterMap PriorityValues[];
+extern const tChannelParameterMap RollOffValues[];
 
 struct tChannelID {
 private:
@@ -140,14 +144,19 @@ private:
   int coderateH;
   int coderateL;
   int modulation;
+  int system;
   int transmission;
   int guard;
   int hierarchy;
+  int alpha;
+  int priority;
+  int rollOff;
   int __EndData__;
   int modification;
   mutable const cSchedule *schedule;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
+  cString TransponderDataToString(void) const;
   cString ParametersToString(void) const;
   bool StringToParameters(const char *s);
 public:
@@ -194,9 +203,13 @@ public:
   int CoderateH(void) const { return coderateH; }
   int CoderateL(void) const { return coderateL; }
   int Modulation(void) const { return modulation; }
+  int System(void) const { return system; }
   int Transmission(void) const { return transmission; }
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
+  int Alpha(void) const { return alpha; }
+  int Priority(void) const { return priority; }
+  int RollOff(void) const { return rollOff; }
   const cLinkChannels* LinkChannels(void) const { return linkChannels; }
   const cChannel *RefChannel(void) const { return refChannel; }
   bool IsCable(void) const { return cSource::IsCable(source); }
@@ -206,9 +219,9 @@ public:
   bool HasTimer(void) const;
   int Modification(int Mask = CHANNELMOD_ALL);
   void CopyTransponderData(const cChannel *Channel);
-  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH);
+  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, int Modulation, int System, int RollOff);
   bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
-  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
+  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, int Alpha, int Priority);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);

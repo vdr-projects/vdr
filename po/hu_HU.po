@@ -10,13 +10,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-02-10 12:22+0100\n"
+"POT-Creation-Date: 2008-04-12 14:19+0200\n"
 "PO-Revision-Date: 2007-12-01 21:42+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "ki"
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "semmi"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Érvénytelen csatorna ***"
@@ -228,9 +243,6 @@ msgstr "Kódolatlan"
 msgid "encrypted"
 msgstr "Kódolt"
 
-msgid "auto"
-msgstr "auto"
-
 msgid "Edit channel"
 msgstr "Csatornák beállítása"
 
@@ -279,20 +291,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizáció"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
-msgid "off"
-msgstr "ki"
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "semmi"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -311,6 +320,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarhia"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Prioritás"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Az adóbeállítások nem egyértelmûek"
@@ -356,9 +374,6 @@ msgstr "Vége"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Prioritás"
 
 msgid "Lifetime"
 msgstr "Élettartam"
@@ -785,9 +800,8 @@ msgstr "ahogy az elõbb"
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hangerõ a bekapcsolásnál"
 
-#, fuzzy
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "ahogy az elõbb"
+msgstr ""
 
 msgid "Plugins"
 msgstr "Plugins"
@@ -894,6 +908,9 @@ msgstr "Átírni"
 
 msgid "Button$Insert"
 msgstr "Beilleszteni"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Plugin"
 msgstr "Plugin"

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.313 2008/03/14 13:22:39 kls Exp $
+ * $Id: vdr.c 2.0 2008/03/14 13:22:39 kls Exp $
  */
 
 #include <getopt.h>

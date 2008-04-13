@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.59 2008/02/23 14:14:46 kls Exp $
+ * $Id: remote.c 2.0 2008/02/23 14:14:46 kls Exp $
  */
 
 #include "remote.h"

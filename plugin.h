@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.15 2007/08/04 09:56:26 kls Exp $
+ * $Id: plugin.h 2.0 2007/08/04 09:56:26 kls Exp $
  */
 
 #ifndef __PLUGIN_H

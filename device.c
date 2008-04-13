@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.157 2008/03/09 10:03:34 kls Exp $
+ * $Id: device.c 2.2 2008/04/12 14:12:14 kls Exp $
  */
 
 #include "device.h"
@@ -355,6 +355,21 @@ cDevice *cDevice::GetDevice(int Index)
   return (0 <= Index && Index < numDevices) ? device[Index] : NULL;
 }
 
+static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
+{
+  int MaxNumProvidedSystems = 1 << AvailableBits;
+  int NumProvidedSystems = Device->NumProvidedSystems();
+  if (NumProvidedSystems > MaxNumProvidedSystems) {
+     esyslog("ERROR: device %d supports %d modulation systems but cDevice::GetDevice() currently only supports %d delivery systems which should be fixed", Device->CardIndex() + 1, NumProvidedSystems, MaxNumProvidedSystems);
+     NumProvidedSystems = MaxNumProvidedSystems;
+     }
+  else if (NumProvidedSystems <= 0) {
+     esyslog("ERROR: device %d reported an invalid number (%d) of supported delivery systems - assuming 1", Device->CardIndex() + 1, NumProvidedSystems);
+     NumProvidedSystems = 1;
+     }
+  return NumProvidedSystems;
+}
+
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView)
 {
   cDevice *AvoidDevice = avoidDevice;
@@ -408,6 +423,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
+             imp <<= 2; imp |= GetClippedNumProvidedSystems(2, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
              imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
@@ -710,6 +726,11 @@ bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   return false;
+}
+
+int cDevice::NumProvidedSystems(void) const
+{
+  return 0;
 }
 
 bool cDevice::IsTunedToTransponder(const cChannel *Channel)
@@ -1273,7 +1294,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamIndex = SubStreamId & 0x1F;
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
-pre_1_3_19_PrivateStreamDeteced:
+pre_1_3_19_PrivateStreamDetected:
                if (pre_1_3_19_PrivateStream > MIN_PRE_1_3_19_PRIVATESTREAM) {
                   SubStreamId = c;
                   SubStreamType = 0x80;
@@ -1314,7 +1335,8 @@ pre_1_3_19_PrivateStreamDeteced:
                          if (pre_1_3_19_PrivateStream > MIN_PRE_1_3_19_PRIVATESTREAM) {
                             dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode - substream id = %02X", SubStreamId);
                             ClrAvailableTracks();
-                            goto pre_1_3_19_PrivateStreamDeteced;
+                            pre_1_3_19_PrivateStream = MIN_PRE_1_3_19_PRIVATESTREAM + 1;
+                            goto pre_1_3_19_PrivateStreamDetected;
                             }
                          }
                  }

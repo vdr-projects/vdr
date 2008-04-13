@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.16 2008/02/17 11:30:56 kls Exp $
+ * $Id: skins.h 2.0 2008/02/17 11:30:56 kls Exp $
  */
 
 #ifndef __SKINS_H

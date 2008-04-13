@@ -8,13 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-02-10 12:22+0100\n"
+"POT-Creation-Date: 2008-04-12 14:19+0200\n"
 "PO-Revision-Date: 2008-02-28 15:00+0200\n"
 "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrý <jdobry@centrum.cz>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "off"
+msgstr "vyp."
+
+msgid "on"
+msgstr ""
+
+msgid "none"
+msgstr "¾ádný"
+
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Neplatný kanál ***"
@@ -226,9 +241,6 @@ msgstr "volný"
 msgid "encrypted"
 msgstr "kódovaný"
 
-msgid "auto"
-msgstr "auto"
-
 msgid "Edit channel"
 msgstr "Editace kanálu"
 
@@ -277,20 +289,17 @@ msgstr "Sid"
 msgid "Polarization"
 msgstr "Polarizace"
 
+msgid "System"
+msgstr ""
+
 msgid "Srate"
 msgstr "Srate"
 
 msgid "Inversion"
 msgstr "Inversion"
 
-msgid "off"
-msgstr "vyp."
-
 msgid "CoderateH"
 msgstr "CoderateH"
-
-msgid "none"
-msgstr "¾ádný"
 
 msgid "CoderateL"
 msgstr "CoderateL"
@@ -309,6 +318,15 @@ msgstr "Guard"
 
 msgid "Hierarchy"
 msgstr "Hierarchy"
+
+msgid "Alpha"
+msgstr ""
+
+msgid "Priority"
+msgstr "Priorita"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Nastavení kanálù nejsou unikátní!"
@@ -354,9 +372,6 @@ msgstr "Konec"
 
 msgid "VPS"
 msgstr "VPS"
-
-msgid "Priority"
-msgstr "Priorita"
 
 msgid "Lifetime"
 msgstr "®ivotnost"
@@ -891,6 +906,9 @@ msgstr "Pøepsat"
 
 msgid "Button$Insert"
 msgstr "Vlo¾it"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Plugin"
 msgstr "Modul"
