@@ -5740,3 +5740,7 @@ Video Disk Recorder Revision History
   Andreas Mair).
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
+
+2008-04-19: Version 1.6.0-2
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
