@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.2 2008/04/13 13:31:00 kls Exp $
+ * $Id: dvbdevice.c 2.3 2008/04/19 09:19:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -266,10 +266,6 @@ bool cDvbTuner::SetFrontend(void)
 
      tuneTimeout = DVBS_TUNE_TIMEOUT;
      lockTimeout = DVBS_LOCK_TIMEOUT;
-
-     dvbfe_info feinfo;
-     feinfo.delivery = Frontend.delivery;
-     CHECK(ioctl(fd_frontend, DVBFE_GET_INFO, &feinfo)); //switch system
      }
   else if (frontendType & DVBFE_DELSYS_DVBC) {
      Frontend.delivery = DVBFE_DELSYS_DVBC;
@@ -281,10 +277,6 @@ bool cDvbTuner::SetFrontend(void)
 
      tuneTimeout = DVBC_TUNE_TIMEOUT;
      lockTimeout = DVBC_LOCK_TIMEOUT;
-
-     dvbfe_info feinfo;
-     feinfo.delivery = Frontend.delivery;
-     CHECK(ioctl(fd_frontend, DVBFE_GET_INFO, &feinfo)); //switch system
      }
   else if (frontendType & DVBFE_DELSYS_DVBT) {
      Frontend.delivery = DVBFE_DELSYS_DVBT;
@@ -302,15 +294,12 @@ bool cDvbTuner::SetFrontend(void)
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
-
-     dvbfe_info feinfo;
-     feinfo.delivery = Frontend.delivery;
-     CHECK(ioctl(fd_frontend, DVBFE_GET_INFO, &feinfo)); //switch system
      }
   else {
      esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
      return false;
      }
+  CHECK(ioctl(fd_frontend, DVBFE_SET_DELSYS, &Frontend.delivery));
   if (ioctl(fd_frontend, DVBFE_SET_PARAMS, &Frontend) < 0) {
      esyslog("ERROR: frontend %d: %m", cardIndex);
      return false;

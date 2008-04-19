@@ -5761,3 +5761,8 @@ Video Disk Recorder Revision History
   Andreas Mair).
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
+
+2008-04-19: Version 1.7.1
+
+- Adapted the tuning code to the new DVBFE_SET_DELSYS API (thanks to Reinhard Nissl).
+  VDR now uses the driver from http://jusst.de/hg/multiproto_plus.
