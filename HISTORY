@@ -5767,6 +5767,7 @@ Video Disk Recorder Revision History
 - Adapted the tuning code to the new DVBFE_SET_DELSYS API (thanks to Reinhard Nissl).
   VDR now uses the driver from http://jusst.de/hg/multiproto_plus.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Removed obsolete $(NCURSESLIB) from the Makefile.
 
 2008-04-19: Version 1.6.0-2
 

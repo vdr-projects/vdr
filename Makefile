@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.113 2008/02/29 21:43:03 kls Exp $
+# $Id: Makefile 2.1 2008/04/19 10:58:56 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -94,7 +94,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
 
 # The libsi library:
 
