@@ -5762,12 +5762,17 @@ Video Disk Recorder Revision History
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
 
-2008-04-19: Version 1.7.1
+2008-05-01: Version 1.7.1
 
 - Adapted the tuning code to the new DVBFE_SET_DELSYS API (thanks to Reinhard Nissl).
   VDR now uses the driver from http://jusst.de/hg/multiproto_plus.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Removed obsolete $(NCURSESLIB) from the Makefile.
+- Implemented handling the standard component descriptor for AC3 (stream=4), as it
+  will soon be used by the German ARD channels (thanks to Michael Pennewiﬂ for
+  advance information about this change). The previously used "Premiere pseudo
+  standard" (stream=2, type=5) still works, but has apparently been wrongfully used
+  by broadcasters from the beginning.
 
 2008-04-19: Version 1.6.0-2
 

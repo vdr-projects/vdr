@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.162 2008/02/24 10:28:53 kls Exp $
+ * $Id: recording.c 2.1 2008/05/01 15:33:39 kls Exp $
  */
 
 #include "recording.h"
@@ -297,7 +297,9 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
      for (int i = 0; i < MAXDPIDS; i++) {
          const char *s = Channel->Dlang(i);
          if (*s) {
-            tComponent *Component = Components->GetComponent(i, 2, 5);
+            tComponent *Component = Components->GetComponent(i, 4, 0); // AC3 component according to the DVB standard
+            if (!Component)
+               Component = Components->GetComponent(i, 2, 5); // fallback "Dolby" component according to the "Premiere pseudo standard"
             if (!Component)
                Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
             else if (strlen(s) > strlen(Component->language))

@@ -1329,6 +1329,8 @@ Marc Hoppe <MarcHoppe@gmx.de>
 
 Michael Pennewiß <M.Pennewiss@ARD-Digital.de>
  for pointing out that an empty EPG event means there is currently no running event
+ for advance information about the use of the standard component descriptor for AC3
+ (stream=4) on the German ARD channels
 
 Marcus Mönnig <minibbjd@gmx.de>
  for adding some 3-letter language codes
