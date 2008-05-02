@@ -5780,6 +5780,10 @@ Video Disk Recorder Revision History
   This may be useful for instance for external tools that provide EPG data, so that
   they can correctly encode the strings.
 
-2008-04-19: Version 1.6.0-2
+2008-05-02: Version 1.6.0-2
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The SVDRP signon message now indicates the character encoding in use, as in
+  "220 video SVDRP VideoDiskRecorder 1.7.1; Fri May  2 16:17:10 2008; ISO-8859-1".
+  This may be useful for instance for external tools that provide EPG data, so that
+  they can correctly encode the strings.
