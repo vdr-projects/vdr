@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.109 2008/02/17 13:36:01 kls Exp $
+ * $Id: svdrp.c 1.109.1.1 2008/05/02 14:29:16 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1606,7 +1606,7 @@ bool cSVDRP::Process(void)
         char buffer[BUFSIZ];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
-        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, *TimeToString(now));
+        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", buffer, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
         }
      if (NewConnection)
         lastActivity = time(NULL);
