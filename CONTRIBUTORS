@@ -2359,3 +2359,7 @@ Adrian Caval <anrxc@sysphere.org>
 
 Nan Feng <nfgx@21cn.com>
  for translating OSD texts to the Chinese language
+
+Edgar Toernig <froese@gmx.de>
+ for suggesting to not call FcFini() to avoid problems with older (broken) versions
+ of fontconfig
