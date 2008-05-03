@@ -2363,3 +2363,8 @@ Nan Feng <nfgx@21cn.com>
 Edgar Toernig <froese@gmx.de>
  for suggesting to not call FcFini() to avoid problems with older (broken) versions
  of fontconfig
+
+Michael Nork <mnork0@gmx.net>
+ for suggesting to remove the compile time option VFAT to allow users of precompiled
+ binary distributions to have full control over whether or not to use the --vfat
+ option at runtime

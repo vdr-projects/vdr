@@ -5781,6 +5781,9 @@ Video Disk Recorder Revision History
   they can correctly encode the strings.
 - No longer calling FcFini() to avoid problems with older (broken) versions of
   fontconfig (suggested by Edgar Toernig).
+- Removed the compile time option VFAT to allow users of precompiled binary
+  distributions to have full control over whether or not to use the --vfat option
+  at runtime (suggested by Michael Nork).
 
 2008-05-03: Version 1.6.0-2
 

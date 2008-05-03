@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.1 2008/05/01 15:33:39 kls Exp $
+ * $Id: recording.c 2.2 2008/05/03 10:16:10 kls Exp $
  */
 
 #include "recording.h"
@@ -31,8 +31,8 @@
 /* This was the original code, which works fine in a Linux only environment.
    Unfortunately, because of Windows and its brain dead file system, we have
    to use a more complicated approach, in order to allow users who have enabled
-   the VFAT compile time option to see their recordings even if they forget to
-   enable VFAT when compiling a new version of VDR... Gee, do I hate Windows.
+   the --vfat command line option to see their recordings even if they forget to
+   enable --vfat when restarting VDR... Gee, do I hate Windows.
    (kls 2002-07-27)
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT

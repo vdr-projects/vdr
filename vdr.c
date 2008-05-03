@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.313 2008/03/14 13:22:39 kls Exp $
+ * $Id: vdr.c 2.1 2008/05/03 10:16:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -209,9 +209,6 @@ int main(int argc, char *argv[])
   LircDevice = LIRC_DEVICE;
 #elif defined(REMOTE_RCU)
   RcuDevice = RCU_DEVICE;
-#endif
-#if defined(VFAT)
-  VfatFileSystem = true;
 #endif
 #if defined(VDR_USER)
   VdrUser = VDR_USER;

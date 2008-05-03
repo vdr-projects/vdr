@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.1 2008/04/19 10:58:56 kls Exp $
+# $Id: Makefile 2.2 2008/05/03 10:13:43 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -69,11 +69,6 @@ DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
-
-ifdef VFAT
-# for people who want their video directory on a VFAT partition
-DEFINES += -DVFAT
-endif
 
 all: vdr i18n
 
