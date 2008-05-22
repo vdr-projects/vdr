@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.2 2008/05/03 10:16:10 kls Exp $
+ * $Id: recording.c 2.3 2008/05/22 10:40:08 kls Exp $
  */
 
 #include "recording.h"
@@ -1485,8 +1485,8 @@ cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
                  return SetOffset(Number + 1); // file exists and has non zero size, let's try next suffix
               else {
                  // zero size file, remove it
-                 dsyslog ("cFileName::SetOffset: removing zero-sized file %s", fileName);
-                 unlink (fileName);
+                 dsyslog("cFileName::SetOffset: removing zero-sized file %s", fileName);
+                 unlink(fileName);
                  }
               }
            else
