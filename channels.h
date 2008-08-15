@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.2 2008/04/12 13:46:50 kls Exp $
+ * $Id: channels.h 2.3 2008/07/06 11:49:37 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -124,6 +124,7 @@ private:
   int srate;
   int vpid;
   int ppid;
+  int vtype;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
   char alangs[MAXAPIDS][MAXLANGCODE2];
   int dpids[MAXDPIDS + 1]; // list is zero-terminated
@@ -178,6 +179,7 @@ public:
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
   int Ppid(void) const { return ppid; }
+  int Vtype(void) const { return vtype; }
   const int *Apids(void) const { return apids; }
   const int *Dpids(void) const { return dpids; }
   const int *Spids(void) const { return spids; }
@@ -225,7 +227,7 @@ public:
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
-  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
+  void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
   void SetLinkChannels(cLinkChannels *LinkChannels);

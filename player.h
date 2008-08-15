@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.21 2008/02/16 13:50:11 kls Exp $
+ * $Id: player.h 2.1 2008/08/15 14:07:48 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -42,6 +42,10 @@ protected:
        // Sends the given PES Data to the device and returns the number of
        // bytes that have actually been accepted by the device (or a
        // negative value in case of an error).
+  int PlayTs(const uchar *Data, int Length, bool VideoOnly = false) { return device ? device->PlayTs(Data, Length, VideoOnly) : -1; }
+       // Sends the given TS packet to the device and returns a positive number
+       // if the packet has been accepted by the device, or a negative value in
+       // case of an error.
 public:
   cPlayer(ePlayMode PlayMode = pmAudioVideo);
   virtual ~cPlayer();

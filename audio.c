@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: audio.c 1.5 2006/05/28 15:03:24 kls Exp $
+ * $Id: audio.c 2.1 2008/07/06 11:42:58 kls Exp $
  */
 
 #include "audio.h"
@@ -30,6 +30,12 @@ void cAudios::PlayAudio(const uchar *Data, int Length, uchar Id)
 {
   for (cAudio *audio = First(); audio; audio = Next(audio))
       audio->Play(Data, Length, Id);
+}
+
+void cAudios::PlayTsAudio(const uchar *Data, int Length)
+{
+  for (cAudio *audio = First(); audio; audio = Next(audio))
+      audio->PlayTs(Data, Length);
 }
 
 void cAudios::MuteAudio(bool On)
@@ -77,6 +83,29 @@ void cExternalAudio::Play(const uchar *Data, int Length, uchar Id)
                  written += w;
                  }
            }
+        }
+     else {
+        esyslog("ERROR: can't open pipe to audio command '%s'", command);
+        free(command);
+        command = NULL;
+        }
+     }
+}
+
+void cExternalAudio::PlayTs(const uchar *Data, int Length)
+{
+  if (command && !mute) {
+     if (pipe || pipe.Open(command, "w")) {
+        int written = 0;
+        while (Length > 0) {
+              int w = fwrite(Data + written, 1, Length, pipe);
+              if (w < 0) {
+                 LOG_ERROR;
+                 break;
+                 }
+              Length -= w;
+              written += w;
+              }
         }
      else {
         esyslog("ERROR: can't open pipe to audio command '%s'", command);

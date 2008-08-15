@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.2 2008/04/12 13:49:12 kls Exp $
+ * $Id: channels.c 2.3 2008/07/06 12:59:41 kls Exp $
  */
 
 #include "channels.h"
@@ -505,10 +505,10 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
+void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
-  if (vpid != Vpid || ppid != Ppid || tpid != Tpid)
+  if (vpid != Vpid || ppid != Ppid || vtype != Vtype || tpid != Tpid)
      mod |= CHANNELMOD_PIDS;
   int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
@@ -542,9 +542,10 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE
      q = NewSpidsBuf;
      q += IntArrayToString(q, Spids, 10, SLangs);
      *q = 0;
-     dsyslog("changing pids of channel %d from %d+%d:%s:%s:%d to %d+%d:%s:%s:%d", Number(), vpid, ppid, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, NewApidsBuf, NewSpidsBuf, Tpid);
+     dsyslog("changing pids of channel %d from %d+%d=%d:%s:%s:%d to %d+%d=%d:%s:%s:%d", Number(), vpid, ppid, vtype, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, Vtype, NewApidsBuf, NewSpidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
+     vtype = Vtype;
      for (int i = 0; i < MAXAPIDS; i++) {
          apids[i] = Apids[i];
          strn0cpy(alangs[i], ALangs[i], MAXLANGCODE2);
@@ -752,6 +753,8 @@ cString cChannel::ToText(const cChannel *Channel)
      q += snprintf(q, sizeof(vpidbuf), "%d", Channel->vpid);
      if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
+     if (Channel->vtype)
+        q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "=%d", Channel->vtype);
      *q = 0;
      const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia
      char apidbuf[BufferSize];
@@ -813,22 +816,27 @@ bool cChannel::Parse(const char *s)
            tpid = 0;
            }
         vpid = ppid = 0;
+        vtype = 2; // default is MPEG-2
         apids[0] = 0;
         dpids[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            ok = StringToParameters(parambuf) && (source = cSource::FromString(sourcebuf)) >= 0;
 
-           char *p = strchr(vpidbuf, '+');
-           if (p)
+           char *p;
+           if ((p = strchr(vpidbuf, '=')) != NULL) {
               *p++ = 0;
-           if (sscanf(vpidbuf, "%d", &vpid) != 1)
-              return false;
-           if (p) {
+              if (sscanf(p, "%d", &vtype) != 1)
+                 return false;
+              }
+           if ((p = strchr(vpidbuf, '+')) != NULL) {
+              *p++ = 0;
               if (sscanf(p, "%d", &ppid) != 1)
                  return false;
               }
-           else
+           if (sscanf(vpidbuf, "%d", &vpid) != 1)
+              return false;
+           if (!ppid)
               ppid = vpid;
 
            char *dpidbuf = strchr(apidbuf, ';');

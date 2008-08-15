@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.7 2006/02/25 10:13:28 kls Exp $
+ *   $Id: util.h 2.1 2008/05/22 10:49:08 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -148,9 +148,9 @@ public:
    CRC32(const char *d, int len, u_int32_t CRCvalue=0xFFFFFFFF);
    bool isValid() { return crc32(data, length, value) == 0; }
    static bool isValid(const char *d, int len, u_int32_t CRCvalue=0xFFFFFFFF) { return crc32(d, len, CRCvalue) == 0; }
+   static u_int32_t crc32(const char *d, int len, u_int32_t CRCvalue);
 protected:
    static u_int32_t crc_table[256];
-   static u_int32_t crc32 (const char *d, int len, u_int32_t CRCvalue);
 
    const char *data;
    int length;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.1 2008/04/12 11:11:23 kls Exp $
+ * $Id: device.h 2.2 2008/07/06 11:25:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -17,6 +17,7 @@
 #include "filter.h"
 #include "nit.h"
 #include "pat.h"
+#include "remux.h"
 #include "ringbuffer.h"
 #include "sdt.h"
 #include "sections.h"
@@ -29,10 +30,6 @@
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
-
-#define TS_SIZE          188
-#define TS_SYNC_BYTE     0x47
-#define PID_MASK_HI      0x1F
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
@@ -89,7 +86,6 @@ struct tTrackId {
 
 class cPlayer;
 class cReceiver;
-class cPesAssembler;
 class cLiveSubtitle;
 
 /// The cDevice class is the base from which actual devices can be derived.
@@ -477,7 +473,10 @@ public:
 
 private:
   cPlayer *player;
-  cPesAssembler *pesAssembler;
+  cPatPmtParser patPmtParser;
+  cTsToPes tsToPesVideo;
+  cTsToPes tsToPesAudio;
+  cTsToPes tsToPesSubtitle;
 protected:
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
@@ -511,6 +510,33 @@ protected:
        ///< If VideoOnly is true, only the video will be displayed,
        ///< which is necessary for trick modes like 'fast forward'.
        ///< Data must point to one single, complete PES packet.
+  virtual int PlayTsVideo(const uchar *Data, int Length);
+       ///< Plays the given data block as video.
+       ///< Data points to exactly one complete TS packet of the given Length
+       ///< (which is always TS_SIZE).
+       ///< PlayTsVideo() shall process the packet either as a whole (returning
+       ///< a positive number, which needs not necessarily be Length) or not at all
+       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< The default implementation collects all incoming TS payload belonging
+       ///< to one PES packet and calls PlayVideo() with the resulting packet.
+  virtual int PlayTsAudio(const uchar *Data, int Length);
+       ///< Plays the given data block as audio.
+       ///< Data points to exactly one complete TS packet of the given Length
+       ///< (which is always TS_SIZE).
+       ///< PlayTsAudio() shall process the packet either as a whole (returning
+       ///< a positive number, which needs not necessarily be Length) or not at all
+       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< The default implementation collects all incoming TS payload belonging
+       ///< to one PES packet and calls PlayAudio() with the resulting packet.
+  virtual int PlayTsSubtitle(const uchar *Data, int Length);
+       ///< Plays the given data block as a subtitle.
+       ///< Data points to exactly one complete TS packet of the given Length
+       ///< (which is always TS_SIZE).
+       ///< PlayTsSubtitle() shall process the packet either as a whole (returning
+       ///< a positive number, which needs not necessarily be Length) or not at all
+       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< The default implementation collects all incoming TS payload belonging
+       ///< to one PES packet and displays the resulting subtitle via the OSD.
 public:
   virtual int64_t GetSTC(void);
        ///< Gets the current System Time Counter, which can be used to
@@ -565,6 +591,21 @@ public:
        ///< to a complete packet with data from the next call to PlayPes().
        ///< That way any functions called from within PlayPes() will be
        ///< guaranteed to always receive complete PES packets.
+  virtual int PlayTs(const uchar *Data, int Length, bool VideoOnly = false);
+       ///< Plays the given TS packet.
+       ///< If VideoOnly is true, only the video will be displayed,
+       ///< which is necessary for trick modes like 'fast forward'.
+       ///< Data points to a single TS packet, Length is always TS_SIZE (the total
+       ///< size of a single TS packet).
+       ///< A derived device can reimplement this function to handle the
+       ///< TS packets itself. Any packets the derived function can't handle
+       ///< must be sent to the base class function. This applies especially
+       ///< to the PAT/PMT packets.
+       ///< Returns -1 in case of error, otherwise the number of actually
+       ///< processed bytes is returned, which may be less than Length.
+       ///< PlayTs() shall process the packet either as a whole (returning
+       ///< a positive number, which needs not necessarily be Length) or not at all
+       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;

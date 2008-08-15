@@ -5762,7 +5762,7 @@ Video Disk Recorder Revision History
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
 
-2008-05-02: Version 1.7.1
+2008-08-15: Version 1.7.1
 
 - Adapted the tuning code to the new DVBFE_SET_DELSYS API (thanks to Reinhard Nissl).
   VDR now uses the driver from http://jusst.de/hg/multiproto_plus.
@@ -5784,6 +5784,26 @@ Video Disk Recorder Revision History
 - Removed the compile time option VFAT to allow users of precompiled binary
   distributions to have full control over whether or not to use the --vfat option
   at runtime (suggested by Michael Nork).
+- First step towards switching to TS (Transport Stream) as recording format:
+  + The new function cDevice::PlayTs() is used to play TS packets.
+  + The new functions cDevice::PlayTsVideo() and cDevice::PlayTsAudio()
+    are used to play video and audio TS packets, respectively.
+  + The new function cAudio::PlayTs() is used to play audio TS packets.
+  + The new class cPatPmtGenerator is used to generate a PAT/PMT pair that precedes
+    the TS data in Transfer Mode.
+  + The new class cPatPmtParser is used by cDevice to parse the PAT/PMT data in a
+    TS in order to find out which streams it contains.
+  + The new class cTsToPes is used to convert TS packets to a PES packet.
+  + cTransfer no longer uses cRemux, and doesn't run a separate thread any more.
+    It just generates a PAT/PMT and sends all received TS packets to the primary
+    device's PlayTs().
+  + Live subtitle display no longer uses a ring buffer and separate thread.
+  + cPesAssembler has been removed. Old VDR recordings only contain complete PES
+    packets.
+  + Since a TS needs to have a PAT/PMT, which requires the video stream type to
+    be explicitly given, the format of the VPID field in the channels.conf file
+    and the SVDRP commands NEWC/MODC/LSTC has been extended. The video stream type
+    now follows the VPID and optional PPID, separated by an '=' sign.
 
 2008-05-03: Version 1.6.0-2
 

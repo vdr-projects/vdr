@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 1.3 2007/11/25 13:33:08 kls Exp $
+ * $Id: dvbsubtitle.c 2.1 2008/05/25 14:36:24 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -580,12 +580,12 @@ bool cDvbSubtitleAssembler::Realloc(int Size)
 unsigned char *cDvbSubtitleAssembler::Get(int &Length)
 {
   if (length > pos + 5) {
-      Length = (data[pos + 4] << 8) + data[pos + 5] + 6;
-      if (length >= pos + Length) {
-         unsigned char *result = data + pos;
-         pos += Length;
-         return result;
-         }
+     Length = (data[pos + 4] << 8) + data[pos + 5] + 6;
+     if (length >= pos + Length) {
+        unsigned char *result = data + pos;
+        pos += Length;
+        return result;
+        }
      }
   return NULL;
 }
@@ -684,10 +684,10 @@ void cDvbSubtitleConverter::Reset(void)
   Unlock();
 }
 
-int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
+int cDvbSubtitleConverter::ConvertFragments(const uchar *Data, int Length)
 {
   if (Data && Length > 8) {
-     int PayloadOffset = Data[8] + 9;
+     int PayloadOffset = PesPayloadOffset(Data);
      int SubstreamHeaderLength = 4;
      bool ResetSubtitleAssembler = Data[PayloadOffset + 3] == 0x00;
 
@@ -699,15 +699,9 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
         }
 
      if (Length > PayloadOffset + SubstreamHeaderLength) {
-        int64_t pts = 0;
-        if ((Data[7] & 0x80) && Data[8] >= 5) {
-           pts  = (((int64_t)Data[ 9]) & 0x0E) << 29;
-           pts |= ( (int64_t)Data[10])         << 22;
-           pts |= (((int64_t)Data[11]) & 0xFE) << 14;
-           pts |= ( (int64_t)Data[12])         <<  7;
-           pts |= (((int64_t)Data[13]) & 0xFE) >>  1;
+        int64_t pts = PesGetPts(Data);
+        if (pts)
            dbgconverter("Converter PTS: %lld\n", pts);
-           }
         const uchar *data = Data + PayloadOffset + SubstreamHeaderLength; // skip substream header
         int length = Length - PayloadOffset - SubstreamHeaderLength; // skip substream header
         if (ResetSubtitleAssembler)
@@ -725,6 +719,40 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
                  if (b && b[0] == 0x0F) {
                     if (ExtractSegment(b, Count, pts) == -1)
                        break;
+                    }
+                 else
+                    break;
+                 }
+           }
+        }
+     return Length;
+     }
+  return 0;
+}
+
+int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
+{
+  if (Data && Length > 8) {
+     int PayloadOffset = PesPayloadOffset(Data);
+     if (Length > PayloadOffset) {
+        int64_t pts = PesGetPts(Data);
+        if (pts)
+           dbgconverter("Converter PTS: %lld\n", pts);
+        const uchar *data = Data + PayloadOffset;
+        int length = Length - PayloadOffset;
+        if (length > 3) {
+           if (data[0] == 0x20 && data[1] == 0x00 && data[2] == 0x0F) {
+              data += 2;
+              length -= 2;
+              }
+           const uchar *b = data;
+           while (length > 0) {
+                 if (b[0] == 0x0F) {
+                    int n = ExtractSegment(b, length, pts);
+                    if (n < 0)
+                       break;
+                    b += n;
+                    length -= n;
                     }
                  else
                     break;
