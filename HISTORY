@@ -5741,7 +5741,7 @@ Video Disk Recorder Revision History
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
 
-2008-05-03: Version 1.6.0-2
+2008-08-16: Version 1.6.0-2
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - The SVDRP signon message now indicates the character encoding in use, as in
@@ -5750,3 +5750,4 @@ Video Disk Recorder Revision History
   they can correctly encode the strings.
 - No longer calling FcFini() to avoid problems with older (broken) versions of
   fontconfig (suggested by Edgar Toernig).
+- Updated the sources.conf file (thanks to Oleg Roitburd).
