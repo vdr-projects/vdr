@@ -2371,3 +2371,6 @@ Michael Nork <mnork0@gmx.net>
  for suggesting to remove the compile time option VFAT to allow users of precompiled
  binary distributions to have full control over whether or not to use the --vfat
  option at runtime
+
+Winfried Köhler <w_koehl@gmx.de>
+ for fixing wrong value for TableIdBAT in libsi/si.h
