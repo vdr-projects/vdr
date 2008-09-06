@@ -5756,3 +5756,5 @@ Video Disk Recorder Revision History
   to Udo Richter).
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
+- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+  (reported by Tobias Grimm).
