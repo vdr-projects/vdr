@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-04-12 14:19+0200\n"
-"PO-Revision-Date: 2008-04-17 01:07+0100\n"
+"PO-Revision-Date: 2008-08-25 02:36+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -236,7 +236,7 @@ msgid "Disk"
 msgstr "Disco"
 
 msgid "free"
-msgstr "disponibile"
+msgstr "disponibili"
 
 msgid "Free To Air"
 msgstr "in chiaro"
@@ -377,7 +377,7 @@ msgid "VPS"
 msgstr "VPS"
 
 msgid "Lifetime"
-msgstr "Durata"
+msgstr "Scadenza"
 
 msgid "File"
 msgstr "Nome"
@@ -637,7 +637,7 @@ msgid "Setup.DVB$Video format"
 msgstr "Formato video"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Formato di visualizz. video"
+msgstr "Formato visualizzazione video"
 
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Dolby Digital"
@@ -730,13 +730,13 @@ msgid "Setup.Recording$Default priority"
 msgstr "Priorità predefinita"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Durata predefinita (gg)"
+msgstr "Scadenza predefinita (gg)"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorità di pausa"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Durata pausa (gg)"
+msgstr "Scadenza pausa (gg)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Utilizza nome episodio"
@@ -936,7 +936,7 @@ msgstr "Registrazione in corso - spegnere comunque?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Registrazione fra %ld minuti - spegnere comunque?"
+msgstr "Registrazione tra %ld minuti - spegnere comunque?"
 
 msgid "shut down anyway?"
 msgstr "spegnere comunque?"
