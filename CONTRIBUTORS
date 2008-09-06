@@ -2359,3 +2359,6 @@ Nan Feng <nfgx@21cn.com>
 Edgar Toernig <froese@gmx.de>
  for suggesting to not call FcFini() to avoid problems with older (broken) versions
  of fontconfig
+
+Winfried Köhler <w_koehl@gmx.de>
+ for fixing wrong value for TableIdBAT in libsi/si.h

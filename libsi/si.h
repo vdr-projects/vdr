@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.17 2007/04/22 13:32:09 kls Exp $
+ *   $Id: si.h 1.17.1.1 2008/09/06 12:40:49 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -28,7 +28,7 @@ enum TableId { TableIdPAT = 0x00, //program association section
                TableIdNIT_other  = 0x41, //network information section, other network
                TableIdSDT = 0x42, //service description section
                TableIdSDT_other  = 0x46,
-               TableIdBAT = 0x46, //bouquet association section
+               TableIdBAT = 0x4A, //bouquet association section
                TableIdEIT_presentFollowing = 0x4E, //event information section
                TableIdEIT_presentFollowing_other = 0x4F,
                //range from 0x50 to 0x5F
