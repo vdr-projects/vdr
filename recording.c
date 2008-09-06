@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.0 2008/02/24 10:28:53 kls Exp $
+ * $Id: recording.c 2.3 2008/06/12 21:46:08 kls Exp $
  */
 
 #include "recording.h"
@@ -31,8 +31,8 @@
 /* This was the original code, which works fine in a Linux only environment.
    Unfortunately, because of Windows and its brain dead file system, we have
    to use a more complicated approach, in order to allow users who have enabled
-   the VFAT compile time option to see their recordings even if they forget to
-   enable VFAT when compiling a new version of VDR... Gee, do I hate Windows.
+   the --vfat command line option to see their recordings even if they forget to
+   enable --vfat when restarting VDR... Gee, do I hate Windows.
    (kls 2002-07-27)
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
@@ -297,7 +297,9 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
      for (int i = 0; i < MAXDPIDS; i++) {
          const char *s = Channel->Dlang(i);
          if (*s) {
-            tComponent *Component = Components->GetComponent(i, 2, 5);
+            tComponent *Component = Components->GetComponent(i, 4, 0); // AC3 component according to the DVB standard
+            if (!Component)
+               Component = Components->GetComponent(i, 2, 5); // fallback "Dolby" component according to the "Premiere pseudo standard"
             if (!Component)
                Components->SetComponent(Components->NumComponents(), 2, 5, s, NULL);
             else if (strlen(s) > strlen(Component->language))
@@ -1483,8 +1485,8 @@ cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
                  return SetOffset(Number + 1); // file exists and has non zero size, let's try next suffix
               else {
                  // zero size file, remove it
-                 dsyslog ("cFileName::SetOffset: removing zero-sized file %s", fileName);
-                 unlink (fileName);
+                 dsyslog("cFileName::SetOffset: removing zero-sized file %s", fileName);
+                 unlink(fileName);
                  }
               }
            else

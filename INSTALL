@@ -1,7 +1,7 @@
 Installation of the Video Disk Recorder
 ---------------------------------------
 
-Version 1.6
+Version 1.7
 -----------
 
 Compiling and running the program:
@@ -57,13 +57,8 @@ These options accept an optional path to the remote control device,
 the defaults of which can be set via the RCU_DEVICE and LIRC_DEVICE macros,
 respectively.
 
-If your video directory will be on a VFAT partition, add the compile
-time switch
-
-  VFAT=1
-
-to the 'make' command. Alternatively, you can call VDR with the command
-line option '--vfat'.
+If your video directory will be on a VFAT partition, you can call VDR with
+the command line option '--vfat'.
 
 When running, the 'vdr' program writes status information into the
 system log file, which is usually /var/log/messages (or /var/log/user.log,

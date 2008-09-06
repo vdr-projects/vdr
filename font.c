@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 2.0 2008/03/01 10:19:41 kls Exp $
+ * $Id: font.c 2.1 2008/05/02 16:16:51 kls Exp $
  */
 
 #include "font.h"
@@ -395,7 +395,7 @@ bool cFont::GetAvailableFontNames(cStringList *FontNames, bool Monospaced)
      FcFontSetDestroy(fontset);
      FcPatternDestroy(pat);
      FcObjectSetDestroy(os);
-     FcFini();
+     //FcFini(); // older versions of fontconfig are broken - and FcInit() can be called more than once
      FontNames->Sort();
      }
   return FontNames->Size() > 0;
@@ -431,7 +431,7 @@ cString cFont::GetFontFileName(const char *FontName)
         esyslog("ERROR: no usable font found for '%s'", FontName);
      FcPatternDestroy(pat);
      free(fn);
-     FcFini();
+     //FcFini(); // older versions of fontconfig are broken - and FcInit() can be called more than once
      }
   return FontFileName;
 }

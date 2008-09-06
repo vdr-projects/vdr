@@ -12,9 +12,9 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-04-12 14:19+0200\n"
-"PO-Revision-Date: 2008-03-08 21:06+0100\n"
+"PO-Revision-Date: 2008-08-25 02:36+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
-"Language-Team:  Italian\n"
+"Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -236,7 +236,7 @@ msgid "Disk"
 msgstr "Disco"
 
 msgid "free"
-msgstr "liberi"
+msgstr "disponibili"
 
 msgid "Free To Air"
 msgstr "in chiaro"
@@ -377,7 +377,7 @@ msgid "VPS"
 msgstr "VPS"
 
 msgid "Lifetime"
-msgstr "Durata"
+msgstr "Scadenza"
 
 msgid "File"
 msgstr "Nome"
@@ -419,20 +419,20 @@ msgid "What's on next?"
 msgstr "Prossimi programmi"
 
 msgid "Button$Next"
-msgstr "Prossimo"
+msgstr "Prossimi"
 
 msgid "Button$Now"
 msgstr "Adesso"
 
 msgid "Button$Schedule"
-msgstr "Programma"
+msgstr "Programmi"
 
 msgid "Can't switch channel!"
 msgstr "Impossibile cambiare canale!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "Programma - %s"
+msgstr "Programmi - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -515,7 +515,7 @@ msgid "Setup.OSD$Height"
 msgstr "Altezza OSD"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Tempo del messaggio (s)"
+msgstr "Durata del messaggio (s)"
 
 msgid "Setup.OSD$Use small font"
 msgstr "Utilizza caratteri piccoli"
@@ -587,7 +587,7 @@ msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Mostra vecchi dati EPG (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Imposta orario automatico"
+msgstr "Imposta orario di sistema"
 
 msgid "Setup.EPG$Use time from transponder"
 msgstr "Utilizza orario da transponder"
@@ -637,13 +637,13 @@ msgid "Setup.DVB$Video format"
 msgstr "Formato video"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Formato di visualizz. video"
+msgstr "Formato visualizzazione video"
 
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Aggiorna i canali"
+msgstr "Aggiornamento canali"
 
 msgid "Setup.DVB$Audio languages"
 msgstr "Lingue audio"
@@ -730,13 +730,13 @@ msgid "Setup.Recording$Default priority"
 msgstr "Priorità predefinita"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Durata predefinita (gg)"
+msgstr "Scadenza predefinita (gg)"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorità di pausa"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Durata pausa (gg)"
+msgstr "Scadenza pausa (gg)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Utilizza nome episodio"
@@ -754,7 +754,7 @@ msgid "Setup.Recording$Name instant recording"
 msgstr "Nome reg. immediata"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Tempo reg. immediata (min)"
+msgstr "Durata reg. immediata (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Dim. massima file video (MB)"
@@ -917,7 +917,7 @@ msgid "Plugin"
 msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Su/Giù per nuova posizione - OK per muovere"
+msgstr "Su/Giù per nuova posizione - OK per spostare"
 
 msgid "Channel locked (recording)!"
 msgstr "Canale bloccato (in registrazione)!"
@@ -936,7 +936,7 @@ msgstr "Registrazione in corso - spegnere comunque?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Registrazione fra %ld minuti - spegnere comunque?"
+msgstr "Registrazione tra %ld minuti - spegnere comunque?"
 
 msgid "shut down anyway?"
 msgstr "spegnere comunque?"

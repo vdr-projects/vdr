@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.1 2008/04/13 11:27:06 kls Exp $
+ * $Id: eit.c 2.2 2008/05/01 15:33:27 kls Exp $
  */
 
 #include "eit.h"
@@ -219,7 +219,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  SI::ComponentDescriptor *cd = (SI::ComponentDescriptor *)d;
                  uchar Stream = cd->getStreamContent();
                  uchar Type = cd->getComponentType();
-                 if (1 <= Stream && Stream <= 3 && Type != 0) { // 1=video, 2=audio, 3=subtitles
+                 if (1 <= Stream && Stream <= 4 && Type != 0) { // 1=video, 2=audio, 3=subtitles, 4=AC3
                     if (!Components)
                        Components = new cComponents;
                     char buffer[Utf8BufSize(256)];

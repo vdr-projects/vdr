@@ -5761,3 +5761,73 @@ Video Disk Recorder Revision History
   Andreas Mair).
 - Increased the time between checking the CAM status to 500ms to avoid problems
   with some CAMs (reported by Arthur Konovalov).
+
+2008-09-06: Version 1.7.1
+
+- Adapted the tuning code to the new DVBFE_SET_DELSYS API (thanks to Reinhard Nissl).
+  VDR now uses the driver from http://jusst.de/hg/multiproto_plus.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Removed obsolete $(NCURSESLIB) from the Makefile.
+- Implemented handling the standard component descriptor for AC3 (stream=4), as it
+  will soon be used by the German ARD channels (thanks to Michael Pennewiß for
+  advance information about this change). The previously used "Premiere pseudo
+  standard" (stream=2, type=5) still works, but has apparently been wrongfully used
+  by broadcasters from the beginning.
+- Added missing description of the 'S' channel parameter to vdr.5 (reported by
+  Reinhard Nissl).
+- The SVDRP signon message now indicates the character encoding in use, as in
+  "220 video SVDRP VideoDiskRecorder 1.7.1; Fri May  2 16:17:10 2008; ISO-8859-1".
+  This may be useful for instance for external tools that provide EPG data, so that
+  they can correctly encode the strings.
+- No longer calling FcFini() to avoid problems with older (broken) versions of
+  fontconfig (suggested by Edgar Toernig).
+- Removed the compile time option VFAT to allow users of precompiled binary
+  distributions to have full control over whether or not to use the --vfat option
+  at runtime (suggested by Michael Nork).
+- First step towards switching to TS (Transport Stream) as recording format:
+  + The new function cDevice::PlayTs() is used to play TS packets.
+  + The new functions cDevice::PlayTsVideo() and cDevice::PlayTsAudio()
+    are used to play video and audio TS packets, respectively.
+  + The new function cAudio::PlayTs() is used to play audio TS packets.
+  + The new class cPatPmtGenerator is used to generate a PAT/PMT pair that precedes
+    the TS data in Transfer Mode.
+  + The new class cPatPmtParser is used by cDevice to parse the PAT/PMT data in a
+    TS in order to find out which streams it contains.
+  + The new class cTsToPes is used to convert TS packets to a PES packet.
+  + cTransfer no longer uses cRemux, and doesn't run a separate thread any more.
+    It just generates a PAT/PMT and sends all received TS packets to the primary
+    device's PlayTs().
+  + Live subtitle display no longer uses a ring buffer and separate thread.
+  + cPesAssembler has been removed. Old VDR recordings only contain complete PES
+    packets.
+  + Since a TS needs to have a PAT/PMT, which requires the video stream type to
+    be explicitly given, the format of the VPID field in the channels.conf file
+    and the SVDRP commands NEWC/MODC/LSTC has been extended. The video stream type
+    now follows the VPID and optional PPID, separated by an '=' sign.
+- Updated the sources.conf file (thanks to Oleg Roitburd).
+- Fixed a possible integer overflow in GetAbsTime() (thanks to Alexander Rieger).
+- Fixed a problem with calling isyslog() from within the SignalHandler() (thanks
+  to Udo Richter).
+- Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
+- Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
+- Errors in config files no longer keep VDR from starting.
+- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+  (reported by Tobias Grimm).
+
+2008-09-06: Version 1.6.0-2
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The SVDRP signon message now indicates the character encoding in use, as in
+  "220 video SVDRP VideoDiskRecorder 1.7.1; Fri May  2 16:17:10 2008; ISO-8859-1".
+  This may be useful for instance for external tools that provide EPG data, so that
+  they can correctly encode the strings.
+- No longer calling FcFini() to avoid problems with older (broken) versions of
+  fontconfig (suggested by Edgar Toernig).
+- Updated the sources.conf file (thanks to Oleg Roitburd).
+- Fixed a possible integer overflow in GetAbsTime() (thanks to Alexander Rieger).
+- Fixed a problem with calling isyslog() from within the SignalHandler() (thanks
+  to Udo Richter).
+- Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
+- Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
+- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+  (reported by Tobias Grimm).

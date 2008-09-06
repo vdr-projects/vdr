@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.1 2008/04/12 10:46:32 kls Exp $
+.\" $Id: vdr.5 2.4 2008/07/06 13:00:19 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -95,6 +95,7 @@ l l.
 \fBO\fR@rollOff (0, 20, 25, 35)
 \fBP\fR@Priority (0, 1)
 \fBR\fR@Right circular polarization
+\fBS\fR@delivery System (0, 1)
 \fBT\fR@Transmission mode (2, 4, 8)
 \fBV\fR@Vertical polarization
 \fBY\fR@hierarchY (0, 1)
@@ -125,7 +126,13 @@ The symbol rate of this channel (DVB-S and DVB-C only).
 The video PID (set to '0' for radio channels).
 If this channel uses a separate PCR PID, it follows the VPID, separated by a
 plus sign, as in
+
 .B ...:164+17:...
+
+If this channel has a video mode other than 0, the mode
+follows the pids, separated by an '=' sign, as in
+
+.B ...:164+17=27:...
 .TP
 .B APID
 The audio PID (either one number, or several, separated by commas).
@@ -652,7 +659,7 @@ l l.
 <title>        @is the title of the event
 <short text>   @is the short text of the event (typically the name of the episode etc.)
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
-<stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles)
+<stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles, 4 = AC3)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component

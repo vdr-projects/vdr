@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 2.0 2007/10/14 14:02:46 kls Exp $
+ * $Id: dvbsubtitle.h 2.1 2008/05/25 14:36:52 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -17,7 +17,7 @@
 #include "tools.h"
 
 class cDvbSubtitlePage;
-class cDvbSubtitleAssembler;
+class cDvbSubtitleAssembler; // for legacy PES recordings
 class cDvbSubtitleBitmaps;
 
 class cDvbSubtitleConverter : public cThread {
@@ -36,6 +36,7 @@ public:
   virtual ~cDvbSubtitleConverter();
   void Action(void);
   void Reset(void);
+  int ConvertFragments(const uchar *Data, int Length); // for legacy PES recordings
   int Convert(const uchar *Data, int Length);
   static void SetupChanged(void);
   };

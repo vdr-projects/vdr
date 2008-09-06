@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.1 2008/04/12 11:37:17 kls Exp $
+ * $Id: menu.c 2.2 2008/05/01 14:37:24 kls Exp $
  */
 
 #include "menu.h"
@@ -3146,6 +3146,8 @@ static void SetTrackDescriptions(int LiveChannel)
                       cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
                    break;
            case 3: cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, indexSubtitle++, 0, LiveChannel ? NULL : p->language, p->description);
+                   break;
+           case 4: cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
                    break;
            }
          }

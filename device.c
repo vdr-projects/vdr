@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.2 2008/04/12 14:12:14 kls Exp $
+ * $Id: device.c 2.3 2008/07/06 13:22:21 kls Exp $
  */
 
 #include "device.h"
@@ -21,16 +21,9 @@
 
 // --- cLiveSubtitle ---------------------------------------------------------
 
-#define LIVESUBTITLEBUFSIZE  KILOBYTE(100)
-
-class cLiveSubtitle : public cReceiver, public cThread {
-private:
-  cRingBufferLinear *ringBuffer;
-  cRemux *remux;
+class cLiveSubtitle : public cReceiver {
 protected:
-  virtual void Activate(bool On);
   virtual void Receive(uchar *Data, int Length);
-  virtual void Action(void);
 public:
   cLiveSubtitle(int SPid);
   virtual ~cLiveSubtitle();
@@ -38,170 +31,17 @@ public:
 
 cLiveSubtitle::cLiveSubtitle(int SPid)
 :cReceiver(tChannelID(), -1, SPid)
-,cThread("live subtitle")
 {
-  ringBuffer = new cRingBufferLinear(LIVESUBTITLEBUFSIZE, TS_SIZE * 2, true, "Live Subtitle");
-  int NoPids = 0;
-  int SPids[] = { SPid, 0 };
-  remux = new cRemux(0, &NoPids, &NoPids, SPids);
 }
 
 cLiveSubtitle::~cLiveSubtitle()
 {
   cReceiver::Detach();
-  delete remux;
-  delete ringBuffer;
-}
-
-void cLiveSubtitle::Activate(bool On)
-{
-  if (On)
-     Start();
-  else
-     Cancel(3);
 }
 
 void cLiveSubtitle::Receive(uchar *Data, int Length)
 {
-  if (Running()) {
-     int p = ringBuffer->Put(Data, Length);
-     if (p != Length && Running())
-        ringBuffer->ReportOverflow(Length - p);
-     }
-}
-
-void cLiveSubtitle::Action(void)
-{
-  while (Running()) {
-        int Count;
-        uchar *b = ringBuffer->Get(Count);
-        if (b) {
-           Count = remux->Put(b, Count);
-           if (Count)
-              ringBuffer->Del(Count);
-           }
-        b = remux->Get(Count);
-        if (b) {
-           Count = cDevice::PrimaryDevice()->PlaySubtitle(b, Count);
-           remux->Del(Count);
-           }
-        }
-}
-
-// --- cPesAssembler ---------------------------------------------------------
-
-class cPesAssembler {
-private:
-  uchar *data;
-  uint32_t tag;
-  int length;
-  int size;
-  bool Realloc(int Size);
-public:
-  cPesAssembler(void);
-  ~cPesAssembler();
-  int ExpectedLength(void) { return PacketSize(data); }
-  static int PacketSize(const uchar *data);
-  int Length(void) { return length; }
-  const uchar *Data(void) { return data; } // only valid if Length() >= 4
-  void Reset(void);
-  void Put(uchar c);
-  void Put(const uchar *Data, int Length);
-  bool IsPes(void);
-  };
-
-cPesAssembler::cPesAssembler(void)
-{
-  data = NULL;
-  size = 0;
-  Reset();
-}
-
-cPesAssembler::~cPesAssembler()
-{
-  free(data);
-}
-
-void cPesAssembler::Reset(void)
-{
-  tag = 0xFFFFFFFF;
-  length = 0;
-}
-
-bool cPesAssembler::Realloc(int Size)
-{
-  if (Size > size) {
-     size = max(Size, 2048);
-     data = (uchar *)realloc(data, size);
-     if (!data) {
-        esyslog("ERROR: can't allocate memory for PES assembler");
-        length = 0;
-        size = 0;
-        return false;
-        }
-     }
-  return true;
-}
-
-void cPesAssembler::Put(uchar c)
-{
-  if (length < 4) {
-     tag = (tag << 8) | c;
-     if ((tag & 0xFFFFFF00) == 0x00000100) {
-        if (Realloc(4)) {
-           *(uint32_t *)data = htonl(tag);
-           length = 4;
-           }
-        }
-     else if (length < 3)
-        length++;
-     }
-  else if (Realloc(length + 1))
-     data[length++] = c;
-}
-
-void cPesAssembler::Put(const uchar *Data, int Length)
-{
-  while (length < 4 && Length > 0) {
-        Put(*Data++);
-        Length--;
-        }
-  if (Length && Realloc(length + Length)) {
-     memcpy(data + length, Data, Length);
-     length += Length;
-     }
-}
-
-int cPesAssembler::PacketSize(const uchar *data)
-{
-  // we need atleast 6 bytes of data here !!!
-  switch (data[3]) {
-    default:
-    case 0x00 ... 0xB8: // video stream start codes
-    case 0xB9: // Program end
-    case 0xBC: // Programm stream map
-    case 0xF0 ... 0xFF: // reserved
-         return 6;
-
-    case 0xBA: // Pack header
-         if ((data[4] & 0xC0) == 0x40) // MPEG2
-            return 14;
-         // to be absolutely correct we would have to add the stuffing bytes
-         // as well, but at this point we only may have 6 bytes of data avail-
-         // able. So it's up to the higher level to resync...
-         //return 14 + (data[13] & 0x07); // add stuffing bytes
-         else // MPEG1
-            return 12;
-
-    case 0xBB: // System header
-    case 0xBD: // Private stream1
-    case 0xBE: // Padding stream
-    case 0xBF: // Private stream2 (navigation data)
-    case 0xC0 ... 0xCF: // all the rest (the real packets)
-    case 0xD0 ... 0xDF:
-    case 0xE0 ... 0xEF:
-         return 6 + data[4] * 256 + data[5];
-    }
+  cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
 // --- cDevice ---------------------------------------------------------------
@@ -241,7 +81,6 @@ cDevice::cDevice(void)
   startScrambleDetection = 0;
 
   player = NULL;
-  pesAssembler = new cPesAssembler;
   ClrAvailableTracks();
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
@@ -265,7 +104,6 @@ cDevice::~cDevice()
   DetachAllReceivers();
   delete liveSubtitle;
   delete dvbSubtitleConverter;
-  delete pesAssembler;
 }
 
 bool cDevice::WaitForAllDevicesReady(int Timeout)
@@ -1195,7 +1033,6 @@ bool cDevice::AttachPlayer(cPlayer *Player)
         Detach(player);
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
-     pesAssembler->Reset();
      player = Player;
      if (!Transferring())
         ClrAvailableTracks(false, true);
@@ -1256,7 +1093,7 @@ int cDevice::PlaySubtitle(const uchar *Data, int Length)
 {
   if (!dvbSubtitleConverter)
      dvbSubtitleConverter = new cDvbSubtitleConverter;
-  return dvbSubtitleConverter->Convert(Data, Length);
+  return dvbSubtitleConverter->ConvertFragments(Data, Length);
 }
 
 int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
@@ -1360,42 +1197,16 @@ pre_1_3_19_PrivateStreamDetected:
 int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
 {
   if (!Data) {
-     pesAssembler->Reset();
      if (dvbSubtitleConverter)
         dvbSubtitleConverter->Reset();
      return 0;
      }
-  int Result = 0;
-  if (pesAssembler->Length()) {
-     // Make sure we have a complete PES header:
-     while (pesAssembler->Length() < 6 && Length > 0) {
-           pesAssembler->Put(*Data++);
-           Length--;
-           Result++;
-           }
-     if (pesAssembler->Length() < 6)
-        return Result; // Still no complete PES header - wait for more
-     int l = pesAssembler->ExpectedLength();
-     int Rest = min(l - pesAssembler->Length(), Length);
-     pesAssembler->Put(Data, Rest);
-     Data += Rest;
-     Length -= Rest;
-     Result += Rest;
-     if (pesAssembler->Length() < l)
-        return Result; // Still no complete PES packet - wait for more
-     // Now pesAssembler contains one complete PES packet.
-     int w = PlayPesPacket(pesAssembler->Data(), pesAssembler->Length(), VideoOnly);
-     if (w > 0)
-        pesAssembler->Reset();
-     return Result > 0 ? Result : w < 0 ? w : 0;
-     }
   int i = 0;
   while (i <= Length - 6) {
         if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
-           int l = cPesAssembler::PacketSize(&Data[i]);
+           int l = PesLength(Data + i);
            if (i + l > Length) {
-              // Store incomplete PES packet for later completion:
-              pesAssembler->Put(Data + i, Length - i);
+              esyslog("ERROR: incomplete PES packet!");
               return Length;
               }
            int w = PlayPesPacket(Data + i, l, VideoOnly);
@@ -1408,8 +1219,89 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
            i++;
         }
   if (i < Length)
-     pesAssembler->Put(Data + i, Length - i);
+     esyslog("ERROR: leftover PES data!");
   return Length;
+}
+
+int cDevice::PlayTsVideo(const uchar *Data, int Length)
+{
+  // Video PES has no explicit length, so we can only determine the end of
+  // a PES packet when the next TS packet that starts a payload comes in:
+  if (TsPayloadStart(Data)) {
+     if (const uchar *p = tsToPesVideo.GetPes(Length)) {
+        int w = PlayVideo(p, Length);
+        if (w > 0)
+           tsToPesVideo.Reset();
+        else
+           return w;
+        }
+     }
+  tsToPesVideo.PutTs(Data, Length);
+  return Length;
+}
+
+int cDevice::PlayTsAudio(const uchar *Data, int Length)
+{
+  bool PayloadStart = TsPayloadStart(Data);
+  for (int Pass = 0; Pass < 2; Pass++) {
+      if (Pass == 0 && !PayloadStart) // if no new payload is started, we can always put the packet into the converter
+         tsToPesAudio.PutTs(Data, Length);
+      if (const uchar *p = tsToPesAudio.GetPes(Length)) {
+         int w = PlayAudio(p, Length, 0);
+         if (w > 0)
+            tsToPesAudio.Reset();
+         else if (PayloadStart)
+            return w; // must get out the old packet before starting a new one
+         }
+      if (Pass == 0 && PayloadStart)
+         tsToPesAudio.PutTs(Data, Length);
+      }
+  return Length;
+}
+
+int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
+{
+  if (!dvbSubtitleConverter)
+     dvbSubtitleConverter = new cDvbSubtitleConverter;
+  tsToPesSubtitle.PutTs(Data, Length);
+  if (const uchar *p = tsToPesSubtitle.GetPes(Length)) {
+     dvbSubtitleConverter->Convert(p, Length);
+     tsToPesSubtitle.Reset();
+     }
+  return Length;
+}
+
+//TODO detect and report continuity errors?
+int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
+{
+  if (Length == TS_SIZE) {
+     if (!TsHasPayload(Data))
+        return Length; // silently ignore TS packets w/o payload
+     int PayloadOffset = TsPayloadOffset(Data);
+     if (PayloadOffset < Length) {
+        int Pid = TsPid(Data);
+        if (Pid == 0)
+           patPmtParser.ParsePat(Data + PayloadOffset, Length - PayloadOffset);
+        else if (Pid == patPmtParser.PmtPid())
+           patPmtParser.ParsePmt(Data + PayloadOffset, Length - PayloadOffset);
+        else if (Pid == patPmtParser.Vpid())
+           return PlayTsVideo(Data, Length);
+        else if (Pid == availableTracks[currentAudioTrack].id) {
+           if (!VideoOnly || HasIBPTrickSpeed()) {
+              int w = PlayTsAudio(Data, Length);
+              if (w > 0)
+                 Audios.PlayTsAudio(Data, Length);
+              return w;
+              }
+           }
+        else if (Pid == availableTracks[currentSubtitleTrack].id) {
+           if (!VideoOnly || HasIBPTrickSpeed())
+              return PlayTsSubtitle(Data, Length);
+           }
+        return Length;
+        }
+     }
+  return -1;
 }
 
 int cDevice::Priority(void) const
@@ -1448,7 +1340,7 @@ void cDevice::Action(void)
            uchar *b = NULL;
            if (GetTSPacket(b)) {
               if (b) {
-                 int Pid = (((uint16_t)b[1] & PID_MASK_HI) << 8) | b[2];
+                 int Pid = TsPid(b);
                  // Check whether the TS packets are scrambled:
                  bool DetachReceivers = false;
                  bool DescramblingOk = false;

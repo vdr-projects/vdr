@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.0 2008/02/29 21:43:03 kls Exp $
+# $Id: Makefile 2.2 2008/05/03 10:13:43 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -70,11 +70,6 @@ DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 
-ifdef VFAT
-# for people who want their video directory on a VFAT partition
-DEFINES += -DVFAT
-endif
-
 all: vdr i18n
 
 # Implicit rules:
@@ -94,7 +89,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
 
 # The libsi library:
 

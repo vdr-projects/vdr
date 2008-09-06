@@ -11,14 +11,23 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 2.0 2007/11/25 13:56:03 kls Exp $
+ * $Id: remux.c 2.1 2008/08/15 14:49:34 kls Exp $
  */
 
 #include "remux.h"
 #include <stdlib.h>
 #include "channels.h"
+#include "device.h"
+#include "libsi/si.h"
+#include "libsi/section.h"
+#include "libsi/descriptor.h"
 #include "shutdown.h"
 #include "tools.h"
+
+// Set this to 'true' for debug output:
+static bool DebugPatPmt = false;
+
+#define dbgpatpmt(a...) if (DebugPatPmt) fprintf(stderr, a)
 
 ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader)
 {
@@ -1413,7 +1422,6 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 //pts_dts flags
 #define PTS_ONLY         0x80
 
-#define TS_SIZE        188
 #define PID_MASK_HI    0x1F
 #define CONT_CNT_MASK  0x0F
 
@@ -2007,8 +2015,6 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
   return -1;
 }
 
-#define TS_SYNC_BYTE 0x47
-
 int cRemux::Put(const uchar *Data, int Count)
 {
   int used = 0;
@@ -2181,4 +2187,467 @@ void cRemux::SetBrokenLink(uchar *Data, int Length)
      }
   else
      dsyslog("SetBrokenLink: no video packet in frame");
+}
+
+// --- cPatPmtGenerator ------------------------------------------------------
+
+cPatPmtGenerator::cPatPmtGenerator(void)
+{
+  numPmtPackets = 0;
+  patCounter = pmtCounter = 0;
+  patVersion = pmtVersion = 0;
+  esInfoLength = NULL;
+  GeneratePat();
+}
+
+void cPatPmtGenerator::IncCounter(int &Counter, uchar *TsPacket)
+{
+  TsPacket[3] = (TsPacket[3] & 0xF0) | Counter;
+  if (++Counter > 0x0F)
+     Counter = 0x00;
+}
+
+void cPatPmtGenerator::IncVersion(int &Version)
+{
+  if (++Version > 0x1F)
+     Version = 0x00;
+}
+
+void cPatPmtGenerator::IncEsInfoLength(int Length)
+{
+  if (esInfoLength) {
+     Length += ((*esInfoLength & 0x0F) << 8) | *(esInfoLength + 1);
+     *esInfoLength = 0xF0 | (Length >> 8);
+     *(esInfoLength + 1) = Length;
+     }
+}
+
+int cPatPmtGenerator::MakeStream(uchar *Target, uchar Type, int Pid)
+{
+  int i = 0;
+  Target[i++] = Type; // stream type
+  Target[i++] = 0xE0 | (Pid >> 8); // dummy (3), pid hi (5)
+  Target[i++] = Pid; // pid lo
+  esInfoLength = &Target[i];
+  Target[i++] = 0xF0; // dummy (4), ES info length hi
+  Target[i++] = 0x00; // ES info length lo
+  return i;
+}
+
+int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target)
+{
+  int i = 0;
+  Target[i++] = SI::AC3DescriptorTag;
+  Target[i++] = 0x01; // length
+  Target[i++] = 0x00;
+  IncEsInfoLength(i);
+  return i;
+}
+
+int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Language)
+{
+  int i = 0;
+  Target[i++] = SI::SubtitlingDescriptorTag;
+  Target[i++] = 0x08; // length
+  Target[i++] = *Language++;
+  Target[i++] = *Language++;
+  Target[i++] = *Language++;
+  Target[i++] = 0x00; // subtitling type
+  Target[i++] = 0x00; // composition page id hi
+  Target[i++] = 0x01; // composition page id lo
+  Target[i++] = 0x00; // ancillary page id hi
+  Target[i++] = 0x01; // ancillary page id lo
+  IncEsInfoLength(i);
+  return i;
+}
+
+int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language)
+{
+  int i = 0;
+  Target[i++] = SI::ISO639LanguageDescriptorTag;
+  Target[i++] = 0x04; // length
+  Target[i++] = *Language++;
+  Target[i++] = *Language++;
+  Target[i++] = *Language++;
+  Target[i++] = 0x01; // audio type
+  IncEsInfoLength(i);
+  return i;
+}
+
+int cPatPmtGenerator::MakeCRC(uchar *Target, const uchar *Data, int Length)
+{
+  int crc = SI::CRC32::crc32((const char *)Data, Length, 0xFFFFFFFF);
+  int i = 0;
+  Target[i++] = crc >> 24;
+  Target[i++] = crc >> 16;
+  Target[i++] = crc >> 8;
+  Target[i++] = crc;
+  return i;
+}
+
+#define P_TSID    0x8008 // pseudo TS ID
+#define P_PNR     0x0084 // pseudo Program Number
+#define P_PMT_PID 0x0084 // pseudo PMT pid
+
+void cPatPmtGenerator::GeneratePat(void)
+{
+  memset(pat, 0xFF, sizeof(pat));
+  uchar *p = pat;
+  int i = 0;
+  p[i++] = 0x47; // TS indicator
+  p[i++] = 0x40; // flags (3), pid hi (5)
+  p[i++] = 0x00; // pid lo
+  p[i++] = 0x10; // flags (4), continuity counter (4)
+  int PayloadStart = i;
+  p[i++] = 0x00; // table id
+  p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
+  int SectionLength = i;
+  p[i++] = 0x00; // section length lo (filled in later)
+  p[i++] = P_TSID >> 8;   // TS id hi
+  p[i++] = P_TSID & 0xFF; // TS id lo
+  p[i++] = 0xC1 | (patVersion << 1); // dummy (2), version number (5), current/next indicator (1)
+  p[i++] = 0x00; // section number
+  p[i++] = 0x00; // last section number
+  p[i++] = P_PNR >> 8;   // program number hi
+  p[i++] = P_PNR & 0xFF; // program number lo
+  p[i++] = 0xE0 | (P_PMT_PID >> 8); // dummy (3), PMT pid hi (5)
+  p[i++] = P_PMT_PID & 0xFF; // PMT pid lo
+  pat[SectionLength] = i - SectionLength - 1 + 4; // -2 = SectionLength storage, +4 = length of CRC
+  MakeCRC(pat + i, pat + PayloadStart, i - PayloadStart);
+  IncVersion(patVersion);
+}
+
+void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
+{
+  // generate the complete PMT section:
+  uchar buf[MAX_SECTION_SIZE];
+  memset(buf, 0xFF, sizeof(buf));
+  numPmtPackets = 0;
+  cChannel *Channel = Channels.GetByChannelID(ChannelID);
+  if (Channel) {
+     int Vpid = Channel->Vpid();
+     uchar *p = buf;
+     int i = 0;
+     p[i++] = 0x02; // table id
+     int SectionLength = i;
+     p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
+     p[i++] = 0x00; // section length lo (filled in later)
+     p[i++] = P_PNR >> 8;   // program number hi
+     p[i++] = P_PNR & 0xFF; // program number lo
+     p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
+     p[i++] = 0x00; // section number
+     p[i++] = 0x00; // last section number
+     p[i++] = 0xE0 | (Vpid >> 8); // dummy (3), PCR pid hi (5)
+     p[i++] = Vpid; // PCR pid lo
+     p[i++] = 0xF0; // dummy (4), program info length hi (4)
+     p[i++] = 0x00; // program info length lo
+
+     if (Vpid)
+        i += MakeStream(buf + i, Channel->Vtype(), Vpid);
+     for (int n = 0; Channel->Apid(n); n++) {
+         i += MakeStream(buf + i, 0x04, Channel->Apid(n));
+         const char *Alang = Channel->Alang(n);
+         i += MakeLanguageDescriptor(buf + i, Alang);
+         if (Alang[3] == '+')
+            i += MakeLanguageDescriptor(buf + i, Alang + 3);
+         }
+     for (int n = 0; Channel->Dpid(n); n++) {
+         i += MakeStream(buf + i, 0x06, Channel->Dpid(n));
+         i += MakeAC3Descriptor(buf + i);
+         i += MakeLanguageDescriptor(buf + i, Channel->Dlang(n));
+         }
+     for (int n = 0; Channel->Spid(n); n++) {
+         i += MakeStream(buf + i, 0x06, Channel->Spid(n));
+         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n));
+         }
+
+     int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
+     buf[SectionLength] |= (sl >> 8) & 0x0F;
+     buf[SectionLength + 1] = sl;
+     MakeCRC(buf + i, buf, i);
+     // split the PMT section into several TS packets:
+     uchar *q = buf;
+     while (i > 0) {
+           uchar *p = pmt[numPmtPackets++];
+           int j = 0;
+           p[j++] = 0x47; // TS indicator
+           p[j++] = 0x40 | (P_PNR >> 8); // flags (3), pid hi (5)
+           p[j++] = P_PNR & 0xFF; // pid lo
+           p[j++] = 0x10; // flags (4), continuity counter (4)
+           int l = TS_SIZE - j;
+           memcpy(p + j, q, l);
+           q += l;
+           i -= l;
+           }
+     IncVersion(pmtVersion);
+     }
+  else
+     esyslog("ERROR: can't find channel %s", *ChannelID.ToString());
+}
+
+uchar *cPatPmtGenerator::GetPat(void)
+{
+  IncCounter(patCounter, pat);
+  return pat;
+}
+
+uchar *cPatPmtGenerator::GetPmt(int &Index)
+{
+  if (Index < numPmtPackets) {
+     IncCounter(patCounter, pmt[Index]);
+     return pmt[Index++];
+     }
+  return NULL;
+}
+
+// --- cPatPmtParser ---------------------------------------------------------
+
+cPatPmtParser::cPatPmtParser(void)
+{
+  pmtSize = 0;
+  pmtPid = -1;
+  vpid = vtype = 0;
+}
+
+void cPatPmtParser::ParsePat(const uchar *Data, int Length)
+{
+  // The PAT is always assumed to fit into a single TS packet
+  SI::PAT Pat(Data, false);
+  if (Pat.CheckCRCAndParse()) {
+     dbgpatpmt("PAT: TSid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pat.getTransportStreamId(), Pat.getCurrentNextIndicator(), Pat.getVersionNumber(), Pat.getSectionNumber(), Pat.getLastSectionNumber());
+     SI::PAT::Association assoc;
+     for (SI::Loop::Iterator it; Pat.associationLoop.getNext(assoc, it); ) {
+         dbgpatpmt("     isNITPid = %d\n", assoc.isNITPid());
+         if (!assoc.isNITPid()) {
+            pmtPid = assoc.getPid();
+            dbgpatpmt("     service id = %d, pid = %d\n", assoc.getServiceId(), assoc.getPid());
+            }
+         }
+     }
+  else
+     esyslog("ERROR: can't parse PAT");
+}
+
+void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
+{
+  // The PMT may extend over several TS packets, so we need to assemble them
+  if (pmtSize == 0) {
+     // this is the first packet
+     if (SectionLength(Data, Length) > Length) {
+        if (Length <= int(sizeof(pmt))) {
+           memcpy(pmt, Data, Length);
+           pmtSize = Length;
+           }
+        else
+           esyslog("ERROR: PMT packet length too big (%d byte)!", Length);
+        return;
+        }
+     // the packet contains the entire PMT section, so we run into the actual parsing
+     }
+  else {
+     // this is a following packet, so we add it to the pmt storage
+     if (Length <= int(sizeof(pmt)) - pmtSize) {
+        memcpy(pmt + pmtSize, Data, Length);
+        pmtSize += Length;
+        }
+     else {
+        esyslog("ERROR: PMT section length too big (%d byte)!", pmtSize + Length);
+        pmtSize = 0;
+        }
+     if (SectionLength(pmt, pmtSize) > pmtSize)
+        return; // more packets to come
+     // the PMT section is now complete, so we run into the actual parsing
+     Data = pmt;
+     }
+  SI::PMT Pmt(Data, false);
+  if (Pmt.CheckCRCAndParse()) {
+     dbgpatpmt("PMT: sid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pmt.getServiceId(), Pmt.getCurrentNextIndicator(), Pmt.getVersionNumber(), Pmt.getSectionNumber(), Pmt.getLastSectionNumber());
+     dbgpatpmt("     pcr = %d\n", Pmt.getPCRPid());
+     cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
+     int NumApids = 0;
+     int NumDpids = 0;
+     int NumSpids = 0;
+     SI::PMT::Stream stream;
+     for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
+         dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
+         switch (stream.getStreamType()) {
+           case 0x02: // STREAMTYPE_13818_VIDEO
+           case 0x1B: // MPEG4
+                      vpid = stream.getPid();
+                      vtype = stream.getStreamType();
+                      break;
+           case 0x04: // STREAMTYPE_13818_AUDIO
+                      {
+                      if (NumApids < MAXAPIDS) {
+                         char ALangs[MAXLANGCODE2] = "";
+                         SI::Descriptor *d;
+                         for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                             switch (d->getDescriptorTag()) {
+                               case SI::ISO639LanguageDescriptorTag: {
+                                    SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                    SI::ISO639LanguageDescriptor::Language l;
+                                    char *s = ALangs;
+                                    int n = 0;
+                                    for (SI::Loop::Iterator it; ld->languageLoop.getNext(l, it); ) {
+                                        if (*ld->languageCode != '-') { // some use "---" to indicate "none"
+                                           dbgpatpmt(" '%s'", l.languageCode);
+                                           if (n > 0)
+                                              *s++ = '+';
+                                           strn0cpy(s, I18nNormalizeLanguageCode(l.languageCode), MAXLANGCODE1);
+                                           s += strlen(s);
+                                           if (n++ > 1)
+                                              break;
+                                           }
+                                        }
+                                    }
+                                    break;
+                               default: ;
+                               }
+                             delete d;
+                             }
+                         cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
+                         NumApids++;
+                         }
+                      }
+                      break;
+           case 0x06: // STREAMTYPE_13818_PES_PRIVATE
+                      {
+                      int dpid = 0;
+                      char lang[MAXLANGCODE1] = "";
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::AC3DescriptorTag:
+                                 dbgpatpmt(" AC3");
+                                 dpid = stream.getPid();
+                                 break;
+                            case SI::SubtitlingDescriptorTag:
+                                 dbgpatpmt(" subtitling");
+                                 if (NumSpids < MAXSPIDS) {
+                                    SI::SubtitlingDescriptor *sd = (SI::SubtitlingDescriptor *)d;
+                                    SI::SubtitlingDescriptor::Subtitling sub;
+                                    char SLangs[MAXLANGCODE2] = "";
+                                    char *s = SLangs;
+                                    int n = 0;
+                                    for (SI::Loop::Iterator it; sd->subtitlingLoop.getNext(sub, it); ) {
+                                        if (sub.languageCode[0]) {
+                                           dbgpatpmt(" '%s'", sub.languageCode);
+                                           if (n > 0)
+                                              *s++ = '+';
+                                           strn0cpy(s, I18nNormalizeLanguageCode(sub.languageCode), MAXLANGCODE1);
+                                           s += strlen(s);
+                                           if (n++ > 1)
+                                              break;
+                                           }
+                                        }
+                                    cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
+                                    NumSpids++;
+                                    }
+                                 break;
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 dbgpatpmt(" '%s'", ld->languageCode);
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 }
+                                 break;
+                            default: ;
+                            }
+                          delete d;
+                          }
+                      if (dpid) {
+                         if (NumDpids < MAXDPIDS) {
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
+                            NumDpids++;
+                            }
+                         }
+                      }
+                      break;
+           }
+         dbgpatpmt("\n");
+         cDevice::PrimaryDevice()->EnsureAudioTrack(true);
+         cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+         }
+     }
+  else
+     esyslog("ERROR: can't parse PMT");
+  pmtSize = 0;
+}
+
+// --- cTsToPes --------------------------------------------------------------
+
+cTsToPes::cTsToPes(void)
+{
+  data = NULL;
+  size = length = 0;
+  synced = false;
+}
+
+cTsToPes::~cTsToPes()
+{
+  free(data);
+}
+
+void cTsToPes::PutTs(const uchar *Data, int Length)
+{
+  if (TsPayloadStart(Data))
+     Reset();
+  else if (!size)
+     return; // skip everything before the first payload start
+  Length = TsGetPayload(&Data);
+  if (length + Length > size) {
+     size = max(KILOBYTE(2), length + Length);
+     data = (uchar *)realloc(data, size);
+     }
+  memcpy(data + length, Data, Length);
+  length += Length;
+}
+
+const uchar *cTsToPes::GetPes(int &Length)
+{
+  if (PesLongEnough(length)) {
+     Length = PesLength(data);
+     if (Length <= length) {
+        Length = length; // in case the PES packet has no explicit length, as is the case for video PES
+        return data;
+        }
+     }
+  return NULL;
+}
+
+void cTsToPes::Reset(void)
+{
+  length = 0;
+}
+
+// --- Some helper functions for debugging -----------------------------------
+
+void BlockDump(const char *Name, const u_char *Data, int Length)
+{
+  printf("--- %s\n", Name);
+  for (int i = 0; i < Length; i++) {
+      if (i && (i % 16) == 0)
+         printf("\n");
+      printf(" %02X", Data[i]);
+      }
+  printf("\n");
+}
+
+void TsDump(const char *Name, const u_char *Data, int Length)
+{
+  printf("%s: %04X", Name, Length);
+  int n = min(Length, 20);
+  for (int i = 0; i < n; i++)
+      printf(" %02X", Data[i]);
+  if (n < Length) {
+     printf(" ...");
+     n = max(n, Length - 10);
+     for (n = max(n, Length - 10); n < Length; n++)
+         printf(" %02X", Data[n]);
+     }
+  printf("\n");
+}
+
+void PesDump(const char *Name, const u_char *Data, int Length)
+{
+  TsDump(Name, Data, Length);
 }
