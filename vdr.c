@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.1 2008/05/03 10:16:41 kls Exp $
+ * $Id: vdr.c 2.2 2008/09/06 11:24:21 kls Exp $
  */
 
 #include <getopt.h>
@@ -141,7 +141,6 @@ static bool SetKeepCaps(bool On)
 
 static void SignalHandler(int signum)
 {
-  isyslog("caught signal %d", signum);
   switch (signum) {
     case SIGPIPE:
          break;
@@ -1285,9 +1284,11 @@ Exit:
   ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
-  isyslog("exiting, exit code %d", ShutdownHandler.GetExitCode());
+  if (LastSignal)
+     isyslog("caught signal %d", LastSignal);
   if (ShutdownHandler.EmergencyExitRequested())
      esyslog("emergency exit!");
+  isyslog("exiting, exit code %d", ShutdownHandler.GetExitCode());
   if (SysLogLevel > 0)
      closelog();
   if (HasStdin)

@@ -1585,6 +1585,7 @@ Udo Richter <udo_richter@gmx.de>
  for making housekeeping wait for a while after a replay has ended
  for fixing error handling in cCuttingThread::Action()
  for suppressing the automatic shutdown if the remote control is currently disabled
+ for fixing a problem with calling isyslog() from within the SignalHandler()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
