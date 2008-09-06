@@ -5810,6 +5810,7 @@ Video Disk Recorder Revision History
   to Udo Richter).
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
+- Errors in config files no longer keep VDR from starting.
 
 2008-09-06: Version 1.6.0-2
 

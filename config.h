@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.2 2008/04/19 09:19:22 kls Exp $
+ * $Id: config.h 2.3 2008/09/06 14:06:56 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -122,7 +122,6 @@ public:
                       esyslog("ERROR: error in %s, line %d", fileName, line);
                       delete l;
                       result = false;
-                      break;
                       }
                    }
                 }

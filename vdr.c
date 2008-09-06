@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.2 2008/09/06 11:24:21 kls Exp $
+ * $Id: vdr.c 2.3 2008/09/06 14:08:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -559,17 +559,15 @@ int main(int argc, char *argv[])
   cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
-  if (!(Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
-        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC) &&
-        Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
-        Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
-        Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
-        RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
-        SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
-        Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
-        KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
-        ))
-     EXIT(2);
+  Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true);
+  Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC);
+  Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true);
+  Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
+  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
+  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
+  SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
+  Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
+  KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
 
   if (!*cFont::GetFontFileName(Setup.FontOsd)) {
      const char *msg = "no fonts available - OSD will not show any text!";
