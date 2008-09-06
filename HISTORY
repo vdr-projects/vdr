@@ -5808,6 +5808,7 @@ Video Disk Recorder Revision History
 - Fixed a possible integer overflow in GetAbsTime() (thanks to Alexander Rieger).
 - Fixed a problem with calling isyslog() from within the SignalHandler() (thanks
   to Udo Richter).
+- Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 
 2008-09-06: Version 1.6.0-2
 
@@ -5822,3 +5823,4 @@ Video Disk Recorder Revision History
 - Fixed a possible integer overflow in GetAbsTime() (thanks to Alexander Rieger).
 - Fixed a problem with calling isyslog() from within the SignalHandler() (thanks
   to Udo Richter).
+- Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
