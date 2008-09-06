@@ -1053,6 +1053,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  language
  for fixing displaying the free disk space when entering the recordings menu where
  the last replayed recording was in a subdirectory, and pressing Back
+ for replacing the Finnish language code "smi" with "suo"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
