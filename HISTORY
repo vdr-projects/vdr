@@ -5752,3 +5752,5 @@ Video Disk Recorder Revision History
   fontconfig (suggested by Edgar Toernig).
 - Updated the sources.conf file (thanks to Oleg Roitburd).
 - Fixed a possible integer overflow in GetAbsTime() (thanks to Alexander Rieger).
+- Fixed a problem with calling isyslog() from within the SignalHandler() (thanks
+  to Udo Richter).
