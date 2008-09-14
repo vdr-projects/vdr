@@ -5831,3 +5831,7 @@ Video Disk Recorder Revision History
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
 - Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
   (reported by Tobias Grimm).
+
+2008-09-14: Version 1.7.2
+
+- Added a note about 'Id' being obsolete to the description of cDevice::PlayAudio().

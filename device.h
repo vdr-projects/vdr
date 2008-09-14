@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.2 2008/07/06 11:25:42 kls Exp $
+ * $Id: device.h 2.3 2008/09/14 13:44:54 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -494,6 +494,9 @@ protected:
        ///< Plays the given data block as audio.
        ///< Data points to exactly one complete PES packet of the given Length.
        ///< Id indicates the type of audio data this packet holds.
+       ///< Note that as of version 1.7.1 Id is obsolete and may be 0 (in case of
+       ///< TS replay). Plugins that need to know this Id shall read it from the
+       ///< actual PES data (it's the 4th byte).
        ///< PlayAudio() shall process the packet either as a whole (returning
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
        ///< \return Returns the number of bytes actually taken from Data, or -1
