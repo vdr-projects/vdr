@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-04-12 14:19+0200\n"
+"POT-Creation-Date: 2008-12-14 16:10+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian\n"
@@ -23,14 +23,11 @@ msgstr "iskljuèi"
 msgid "on"
 msgstr ""
 
+msgid "auto"
+msgstr "automatski"
+
 msgid "none"
 msgstr "ni¹ta"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Neispravan Program ***"
@@ -320,12 +317,6 @@ msgstr "Za¹tita"
 msgid "Hierarchy"
 msgstr "Hijerarhija"
 
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Prioritet"
-
 msgid "Rolloff"
 msgstr ""
 
@@ -373,6 +364,9 @@ msgstr "Kraj"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Prioritet"
 
 msgid "Lifetime"
 msgstr "Trajanje"
@@ -907,9 +901,6 @@ msgstr "Prepi¹i"
 
 msgid "Button$Insert"
 msgstr "Umetni"
-
-msgid "auto"
-msgstr "automatski"
 
 msgid "Plugin"
 msgstr "Dodatak"

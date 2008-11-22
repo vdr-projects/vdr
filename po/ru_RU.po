@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-04-12 14:19+0200\n"
+"POT-Creation-Date: 2008-12-14 16:10+0100\n"
 "PO-Revision-Date: 2008-02-15 16:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
@@ -22,14 +22,11 @@ msgstr "выкл"
 msgid "on"
 msgstr ""
 
+msgid "auto"
+msgstr "авто"
+
 msgid "none"
 msgstr "ничего"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Неправильный канал ***"
@@ -319,12 +316,6 @@ msgstr "Защита"
 msgid "Hierarchy"
 msgstr "Иерархия"
 
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Приоритет"
-
 msgid "Rolloff"
 msgstr ""
 
@@ -372,6 +363,9 @@ msgstr "Конец"
 
 msgid "VPS"
 msgstr "VPS поправка"
+
+msgid "Priority"
+msgstr "Приоритет"
 
 msgid "Lifetime"
 msgstr "Срок хранения"
@@ -906,9 +900,6 @@ msgstr "Замена"
 
 msgid "Button$Insert"
 msgstr "Вставка"
-
-msgid "auto"
-msgstr "авто"
 
 msgid "Plugin"
 msgstr "Модуль"
