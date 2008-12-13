@@ -5832,6 +5832,11 @@ Video Disk Recorder Revision History
 - Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
   (reported by Tobias Grimm).
 
-2008-09-14: Version 1.7.2
+2008-12-13: Version 1.7.2
 
 - Added a note about 'Id' being obsolete to the description of cDevice::PlayAudio().
+- Switched to the new S2API driver API, which was decided to become the official
+  DVB API in the kernel (based on patches from Igor M. Liplianin, Niels Wagenaar
+  and Edgar Hucek).
+- The cDvbTuner::IsTunedTo() function now also checks the symbol rate in case of
+  DVB-S and DVB-C.

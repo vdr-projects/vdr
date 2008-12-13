@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.2 2008/06/01 09:48:04 kls Exp $
+ * $Id: dvbdevice.h 2.3 2008/12/06 13:31:12 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -15,8 +15,8 @@
 #include "device.h"
 #include "dvbspu.h"
 
-#if DVB_API_VERSION != 3 || DVB_API_VERSION_MINOR != 3
-#error VDR requires Linux DVB driver API version 3.3!
+#if DVB_API_VERSION != 5 || DVB_API_VERSION_MINOR != 0
+#error VDR requires Linux DVB driver API version 5.0!
 #endif
 
 #define MAXDVBDEVICES  8
@@ -35,8 +35,9 @@ public:
          ///< Must be called before accessing any DVB functions.
          ///< \return True if any devices are available.
 private:
-  dvbfe_delsys frontendType;
+  dvb_frontend_info frontendInfo;
   int numProvidedSystems;
+  fe_delivery_system frontendType;
   int fd_osd, fd_audio, fd_video, fd_dvr, fd_stc, fd_ca;
 protected:
   virtual void MakePrimaryDevice(bool On);

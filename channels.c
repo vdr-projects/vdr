@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.3 2008/07/06 12:59:41 kls Exp $
+ * $Id: channels.c 2.4 2008/12/13 11:42:15 kls Exp $
  */
 
 #include "channels.h"
@@ -21,114 +21,86 @@
 // --- Channel Parameter Maps ------------------------------------------------
 
 const tChannelParameterMap InversionValues[] = {
-  {   0, DVBFE_INVERSION_OFF, trNOOP("off") },
-  {   1, DVBFE_INVERSION_ON,  trNOOP("on") },
-  { 999, DVBFE_INVERSION_AUTO },
+  {   0, INVERSION_OFF,  trNOOP("off") },
+  {   1, INVERSION_ON,   trNOOP("on") },
+  { 999, INVERSION_AUTO, trNOOP("auto") },
   { -1 }
   };
 
 const tChannelParameterMap BandwidthValues[] = {
-  {   5, DVBFE_BANDWIDTH_5_MHZ, "5 MHz" },
-  {   6, DVBFE_BANDWIDTH_6_MHZ, "6 MHz" },
-  {   7, DVBFE_BANDWIDTH_7_MHZ, "7 MHz" },
-  {   8, DVBFE_BANDWIDTH_8_MHZ, "8 MHz" },
-  { 999, DVBFE_BANDWIDTH_AUTO },
+  {   6, 6000000, "6 MHz" },
+  {   7, 7000000, "7 MHz" },
+  {   8, 8000000, "8 MHz" },
   { -1 }
   };
 
 const tChannelParameterMap CoderateValues[] = {
-  {   0, DVBFE_FEC_NONE, trNOOP("none") },
-  {  12, DVBFE_FEC_1_2,  "1/2" },
-  {  13, DVBFE_FEC_1_3,  "1/3" },
-  {  14, DVBFE_FEC_1_4,  "1/4" },
-  {  23, DVBFE_FEC_2_3,  "2/3" },
-  {  25, DVBFE_FEC_2_5,  "2/5" },
-  {  34, DVBFE_FEC_3_4,  "3/4" },
-  {  35, DVBFE_FEC_3_5,  "3/5" },
-  {  45, DVBFE_FEC_4_5,  "4/5" },
-  {  56, DVBFE_FEC_5_6,  "5/6" },
-  {  67, DVBFE_FEC_6_7,  "6/7" },
-  {  78, DVBFE_FEC_7_8,  "7/8" },
-  {  89, DVBFE_FEC_8_9,  "8/9" },
-  { 910, DVBFE_FEC_9_10, "9/10" },
-  { 999, DVBFE_FEC_AUTO },
+  {   0, FEC_NONE, trNOOP("none") },
+  {  12, FEC_1_2,  "1/2" },
+  {  23, FEC_2_3,  "2/3" },
+  {  34, FEC_3_4,  "3/4" },
+  {  35, FEC_3_5,  "3/5" },
+  {  45, FEC_4_5,  "4/5" },
+  {  56, FEC_5_6,  "5/6" },
+  {  67, FEC_6_7,  "6/7" },
+  {  78, FEC_7_8,  "7/8" },
+  {  89, FEC_8_9,  "8/9" },
+  { 910, FEC_9_10, "9/10" },
+  { 999, FEC_AUTO, trNOOP("auto") },
   { -1 }
   };
 
 const tChannelParameterMap ModulationValues[] = {
-  {   0, DVBFE_MOD_NONE,    trNOOP("none") },
-  {   4, DVBFE_MOD_QAM4,    "QAM4" },
-  {  16, DVBFE_MOD_QAM16,   "QAM16" },
-  {  32, DVBFE_MOD_QAM32,   "QAM32" },
-  {  64, DVBFE_MOD_QAM64,   "QAM64" },
-  { 128, DVBFE_MOD_QAM128,  "QAM128" },
-  { 256, DVBFE_MOD_QAM256,  "QAM256" },
-  { 512, DVBFE_MOD_QAM512,  "QAM512" },
-  {1024, DVBFE_MOD_QAM1024, "QAM1024" },
-  {   1, DVBFE_MOD_BPSK,    "BPSK" },
-  {   2, DVBFE_MOD_QPSK,    "QPSK" },
-  {   3, DVBFE_MOD_OQPSK,   "OQPSK" },
-  {   5, DVBFE_MOD_8PSK,    "8PSK" },
-  {   6, DVBFE_MOD_16APSK,  "16APSK" },
-  {   7, DVBFE_MOD_32APSK,  "32APSK" },
-  {   8, DVBFE_MOD_OFDM,    "OFDM" },
-  {   9, DVBFE_MOD_COFDM,   "COFDM" },
-  {  10, DVBFE_MOD_VSB8,    "VSB8" },
-  {  11, DVBFE_MOD_VSB16,   "VSB16" },
-  { 998, DVBFE_MOD_QAMAUTO, "QAMAUTO" },
-  { 999, DVBFE_MOD_AUTO },
+  {  16, QAM_16,   "QAM16" },
+  {  32, QAM_32,   "QAM32" },
+  {  64, QAM_64,   "QAM64" },
+  { 128, QAM_128,  "QAM128" },
+  { 256, QAM_256,  "QAM256" },
+  {   2, QPSK,     "QPSK" },
+  {   5, PSK_8,    "8PSK" },
+  {   6, APSK_16,  "16APSK" },
+  {  10, VSB_8,    "VSB8" },
+  {  11, VSB_16,   "VSB16" },
+  { 998, QAM_AUTO, "QAMAUTO" },
   { -1 }
   };
 
 const tChannelParameterMap SystemValues[] = {
-  {   0, DVBFE_DELSYS_DVBS,  "DVB-S" },
-  {   1, DVBFE_DELSYS_DVBS2, "DVB-S2" },
+  {   0, SYS_DVBS,  "DVB-S" },
+  {   1, SYS_DVBS2, "DVB-S2" },
   { -1 }
   };
 
 const tChannelParameterMap TransmissionValues[] = {
-  {   2, DVBFE_TRANSMISSION_MODE_2K, "2K" },
-  {   4, DVBFE_TRANSMISSION_MODE_4K, "4K" },
-  {   8, DVBFE_TRANSMISSION_MODE_8K, "8K" },
-  { 999, DVBFE_TRANSMISSION_MODE_AUTO },
+  {   2, TRANSMISSION_MODE_2K,   "2K" },
+  {   8, TRANSMISSION_MODE_8K,   "8K" },
+  { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
   { -1 }
   };
 
 const tChannelParameterMap GuardValues[] = {
-  {   4, DVBFE_GUARD_INTERVAL_1_4,  "1/4" },
-  {   8, DVBFE_GUARD_INTERVAL_1_8,  "1/8" },
-  {  16, DVBFE_GUARD_INTERVAL_1_16, "1/16" },
-  {  32, DVBFE_GUARD_INTERVAL_1_32, "1/32" },
-  { 999, DVBFE_GUARD_INTERVAL_AUTO },
+  {   4, GUARD_INTERVAL_1_4,  "1/4" },
+  {   8, GUARD_INTERVAL_1_8,  "1/8" },
+  {  16, GUARD_INTERVAL_1_16, "1/16" },
+  {  32, GUARD_INTERVAL_1_32, "1/32" },
+  { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
   { -1 }
   };
 
 const tChannelParameterMap HierarchyValues[] = {
-  {   0, DVBFE_HIERARCHY_OFF, trNOOP("off") },
-  {   1, DVBFE_HIERARCHY_ON,  trNOOP("on") },
-  { 999, DVBFE_HIERARCHY_AUTO },
-  { -1 }
-  };
-
-const tChannelParameterMap AlphaValues[] = {
-  {   0, 0 },
-  {   1, DVBFE_ALPHA_1 },
-  {   2, DVBFE_ALPHA_2 },
-  {   4, DVBFE_ALPHA_4 },
-  { -1 }
-  };
-
-const tChannelParameterMap PriorityValues[] = {
-  {   0, DVBFE_STREAM_PRIORITY_HP, trNOOP("high") },
-  {   1, DVBFE_STREAM_PRIORITY_LP, trNOOP("low") },
+  {   0, HIERARCHY_NONE, trNOOP("none") },
+  {   1, HIERARCHY_1,    "1" },
+  {   2, HIERARCHY_2,    "2" },
+  {   4, HIERARCHY_4,    "4" },
+  { 999, HIERARCHY_AUTO, trNOOP("auto") },
   { -1 }
   };
 
 const tChannelParameterMap RollOffValues[] = {
-  {   0, DVBFE_ROLLOFF_UNKNOWN },
-  {  20, DVBFE_ROLLOFF_20, "0.20" },
-  {  25, DVBFE_ROLLOFF_25, "0.25" },
-  {  35, DVBFE_ROLLOFF_35, "0.35" },
+  {   0, ROLLOFF_AUTO, trNOOP("auto") },
+  {  20, ROLLOFF_20, "0.20" },
+  {  25, ROLLOFF_25, "0.25" },
+  {  35, ROLLOFF_35, "0.35" },
   { -1 }
   };
 
@@ -217,18 +189,16 @@ cChannel::cChannel(void)
   provider = strdup("");
   portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
-  inversion    = DVBFE_INVERSION_AUTO;
-  bandwidth    = DVBFE_BANDWIDTH_AUTO;
-  coderateH    = DVBFE_FEC_AUTO;
-  coderateL    = DVBFE_FEC_AUTO;
-  modulation   = DVBFE_MOD_AUTO;
-  system       = DVBFE_DELSYS_DVBS;
-  transmission = DVBFE_TRANSMISSION_MODE_AUTO;
-  guard        = DVBFE_GUARD_INTERVAL_AUTO;
-  hierarchy    = DVBFE_HIERARCHY_AUTO;
-  alpha        = 0;
-  priority     = DVBFE_STREAM_PRIORITY_HP;
-  rollOff      = DVBFE_ROLLOFF_UNKNOWN;
+  inversion    = INVERSION_AUTO;
+  bandwidth    = 8000000;
+  coderateH    = FEC_AUTO;
+  coderateL    = FEC_AUTO;
+  modulation   = QPSK;
+  system       = SYS_DVBS;
+  transmission = TRANSMISSION_MODE_AUTO;
+  guard        = GUARD_INTERVAL_AUTO;
+  hierarchy    = HIERARCHY_AUTO;
+  rollOff      = ROLLOFF_AUTO;
   modification = CHANNELMOD_NONE;
   schedule     = NULL;
   linkChannels = NULL;
@@ -335,8 +305,6 @@ void cChannel::CopyTransponderData(const cChannel *Channel)
      transmission = Channel->transmission;
      guard        = Channel->guard;
      hierarchy    = Channel->hierarchy;
-     alpha        = Channel->alpha;
-     priority     = Channel->priority;
      rollOff      = Channel->rollOff;
      }
 }
@@ -394,9 +362,9 @@ bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation
   return true;
 }
 
-bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CoderateH, int CoderateL, int Guard, int Transmission, int Alpha, int Priority)
+bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CoderateH, int CoderateL, int Guard, int Transmission)
 {
-  if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission || alpha != Alpha || priority != Priority) {
+  if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission) {
      cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
@@ -407,8 +375,6 @@ bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, 
      coderateL = CoderateL;
      guard = Guard;
      transmission = Transmission;
-     alpha = Alpha;
-     priority = Priority;
      schedule = NULL;
      if (Number()) {
         dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
@@ -670,7 +636,6 @@ cString cChannel::ParametersToString(void) const
   char *q = buffer;
   *q = 0;
   ST(" S ")  q += sprintf(q, "%c", polarization);
-  ST("  T")  q += PrintParameter(q, 'A', MapToUser(alpha, AlphaValues));
   ST("  T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
   ST("CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
   ST("  T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
@@ -678,7 +643,6 @@ cString cChannel::ParametersToString(void) const
   ST("CST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
   ST("CST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
   ST(" S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST("  T")  q += PrintParameter(q, 'P', MapToUser(priority, PriorityValues));
   ST(" S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
   ST("  T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
   ST("  T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
@@ -701,11 +665,18 @@ static const char *ParseParameter(const char *s, int &Value, const tChannelParam
   return NULL;
 }
 
+static const char *SkipDigits(const char *s)
+{
+  while (*++s && isdigit(*s))
+        ;
+  return s;
+}
+
 bool cChannel::StringToParameters(const char *s)
 {
   while (s && *s) {
         switch (toupper(*s)) {
-          case 'A': s = ParseParameter(s, alpha, AlphaValues); break;
+          case 'A': s = SkipDigits(s); break; // for compatibility with the "multiproto" approach - may be removed in future versions
           case 'B': s = ParseParameter(s, bandwidth, BandwidthValues); break;
           case 'C': s = ParseParameter(s, coderateH, CoderateValues); break;
           case 'D': s = ParseParameter(s, coderateL, CoderateValues); break;
@@ -714,14 +685,14 @@ bool cChannel::StringToParameters(const char *s)
           case 'I': s = ParseParameter(s, inversion, InversionValues); break;
           case 'L': polarization = *s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
-          case 'Z':// for compatibility with the original DVB-S2 patch - may be removed in future versions
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
-          case 'P': s = ParseParameter(s, priority, PriorityValues); break;
+          case 'P': s = SkipDigits(s); break; // for compatibility with the "multiproto" approach - may be removed in future versions
           case 'R': polarization = *s++; break;
           case 'S': s = ParseParameter(s, system, SystemValues); break;
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
           case 'V': polarization = *s++; break;
           case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
+          case 'Z': s = SkipDigits(s); break; // for compatibility with the original DVB-S2 patch - may be removed in future versions
           default: esyslog("ERROR: unknown parameter key '%c'", *s);
                    return false;
           }
