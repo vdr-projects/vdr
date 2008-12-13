@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.3 2008/07/06 13:22:21 kls Exp $
+ * $Id: device.c 2.4 2008/12/13 14:30:28 kls Exp $
  */
 
 #include "device.h"
@@ -1228,13 +1228,13 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
   // Video PES has no explicit length, so we can only determine the end of
   // a PES packet when the next TS packet that starts a payload comes in:
   if (TsPayloadStart(Data)) {
-     if (const uchar *p = tsToPesVideo.GetPes(Length)) {
-        int w = PlayVideo(p, Length);
-        if (w > 0)
-           tsToPesVideo.Reset();
-        else
-           return w;
-        }
+     int l;
+     while (const uchar *p = tsToPesVideo.GetPes(l)) {
+           int w = PlayVideo(p, l);
+           if (w < 0)
+              return w;
+           }
+     tsToPesVideo.Reset();
      }
   tsToPesVideo.PutTs(Data, Length);
   return Length;

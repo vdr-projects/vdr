@@ -5840,3 +5840,4 @@ Video Disk Recorder Revision History
   and Edgar Hucek).
 - The cDvbTuner::IsTunedTo() function now also checks the symbol rate in case of
   DVB-S and DVB-C.
+- Improved handling PES video packets with zero length when converting from TS to PES.
