@@ -5832,12 +5832,19 @@ Video Disk Recorder Revision History
 - Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
   (reported by Tobias Grimm).
 
-2008-12-13: Version 1.7.2
+2008-12-14: Version 1.7.2
 
 - Added a note about 'Id' being obsolete to the description of cDevice::PlayAudio().
 - Switched to the new S2API driver API, which was decided to become the official
   DVB API in the kernel (based on patches from Igor M. Liplianin, Niels Wagenaar
-  and Edgar Hucek).
+  and Edgar Hucek). VDR now uses the S2API driver from http://linuxtv.org/hg/v4l-dvb.
+  In order to correctly detect DVB-S2 capable devices, you need to apply the patch
+  from ftp://ftp.cadsoft.de/vdr/Developer/v4l-dvb-s2api-add-s2-capability.diff to
+  the driver source, because the S2API doesn't provide a way of telling whether a
+  device can handle DVB-S2 transponders.
 - The cDvbTuner::IsTunedTo() function now also checks the symbol rate in case of
   DVB-S and DVB-C.
 - Improved handling PES video packets with zero length when converting from TS to PES.
+  For good replay in Transfer Mode on full featured DVB cards you may want to apply
+  the patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_v4ldvb_api5_audiobuf_test_1.diff
+  to the driver (thanks to Oliver Endriss).

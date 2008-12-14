@@ -656,6 +656,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for making VDR no longer stop removing empty directories if an error occurs
  for reporting a bug in handling relative volume settings that unmute the audio in
  the call to cStatus::MsgSetVolume()
+ for providing a driver patch that allows replaying TS->PES converted video in
+ Transfer Mode
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
