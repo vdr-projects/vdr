@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 2.0 2008/03/22 10:19:32 kls Exp $
+ * $Id: sky.c 2.1 2008/09/07 11:54:07 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -15,7 +15,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.7";
+static const char *VERSION        = "0.3.8";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -160,12 +160,12 @@ bool cDigiboxDevice::GetTSPacket(uchar *&Data)
      Data = tsBuffer->Get();
      if (Data) {
         // insert the actual PIDs:
-        int Pid = (((uint16_t)Data[1] & PID_MASK_HI) << 8) | Data[2];
+        int Pid = (((uint16_t)Data[1] & TS_PID_MASK_HI) << 8) | Data[2];
         if (Pid == DUMMYAPID)
            Pid = apid;
         else if (Pid == DUMMYVPID)
            Pid = vpid;
-        Data[1] = ((Pid >> 8) & 0xFF) | (Data[1] & ~PID_MASK_HI);
+        Data[1] = ((Pid >> 8) & 0xFF) | (Data[1] & ~TS_PID_MASK_HI);
         Data[2] = Pid & 0xFF;
         }
      return true;

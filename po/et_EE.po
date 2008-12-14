@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-04-12 14:19+0200\n"
+"POT-Creation-Date: 2008-12-14 16:10+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
 "Language-Team: Estonian\n"
@@ -21,14 +21,11 @@ msgstr "väljas"
 msgid "on"
 msgstr ""
 
+msgid "auto"
+msgstr "automaatne"
+
 msgid "none"
 msgstr "puudu"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Vigane kanal ***"
@@ -318,12 +315,6 @@ msgstr "Guard"
 msgid "Hierarchy"
 msgstr "Hierarhia"
 
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Prioriteet"
-
 msgid "Rolloff"
 msgstr ""
 
@@ -371,6 +362,9 @@ msgstr "Stopp"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Prioriteet"
 
 msgid "Lifetime"
 msgstr "Eluiga"
@@ -905,9 +899,6 @@ msgstr "Asenda (OVR)"
 
 msgid "Button$Insert"
 msgstr "Lisa (INS)"
-
-msgid "auto"
-msgstr "automaatne"
 
 msgid "Plugin"
 msgstr "Laiendusmoodul"

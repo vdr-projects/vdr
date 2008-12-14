@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-04-12 14:19+0200\n"
+"POT-Creation-Date: 2008-12-14 16:10+0100\n"
 "PO-Revision-Date: 2008-03-18 17:04+0100\n"
 "Last-Translator: anonymous\n"
 "Language-Team: Portuguese\n"
@@ -21,14 +21,11 @@ msgstr "off"
 msgid "on"
 msgstr ""
 
+msgid "auto"
+msgstr "Automático"
+
 msgid "none"
 msgstr "nenhum"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal inválido ***"
@@ -318,12 +315,6 @@ msgstr "Guard"
 msgid "Hierarchy"
 msgstr "Hierarquia"
 
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Prioridade"
-
 msgid "Rolloff"
 msgstr ""
 
@@ -371,6 +362,9 @@ msgstr "Fim"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Prioridade"
 
 msgid "Lifetime"
 msgstr "Duração"
@@ -905,9 +899,6 @@ msgstr "Substituir"
 
 msgid "Button$Insert"
 msgstr "Inserir"
-
-msgid "auto"
-msgstr "Automático"
 
 msgid "Plugin"
 msgstr "Plugin"

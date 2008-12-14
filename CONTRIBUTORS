@@ -656,6 +656,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for making VDR no longer stop removing empty directories if an error occurs
  for reporting a bug in handling relative volume settings that unmute the audio in
  the call to cStatus::MsgSetVolume()
+ for providing a driver patch that allows replaying TS->PES converted video in
+ Transfer Mode
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -2375,3 +2377,12 @@ Michael Nork <mnork0@gmx.net>
 
 Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
+
+Igor M. Liplianin <liplianin@tut.by>
+ for a patch that was used to convert VDR to the S2API driver API
+
+Niels Wagenaar <n.wagenaar@xs4all.nl>
+ for a patch that was used to convert VDR to the S2API driver API
+
+Edgar Hucek <gimli@dark-green.com>
+ for a patch that was used to convert VDR to the S2API driver API

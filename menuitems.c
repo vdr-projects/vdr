@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.1 2008/04/12 12:05:25 kls Exp $
+ * $Id: menuitems.c 2.2 2008/12/13 11:35:31 kls Exp $
  */
 
 #include "menuitems.h"
@@ -951,9 +951,7 @@ void cMenuEditMapItem::Set(void)
 {
   const char *s = NULL;
   int n = MapToUser(*value, map, &s);
-  if (n == 999)
-     SetValue(tr("auto"));
-  else if (n == 0 && zeroString)
+  if (n == 0 && zeroString)
      SetValue(zeroString);
   else if (n >= 0) {
      if (s)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.2 2008/09/06 14:48:28 kls Exp $
+ * $Id: remux.h 2.3 2008/12/13 13:55:07 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -138,6 +138,11 @@ inline bool PesLongEnough(int Length)
   return Length >= 6;
 }
 
+inline bool PesHasLength(const uchar *p)
+{
+  return p[4] | p[5];
+}
+
 inline int PesLength(const uchar *p)
 {
   return 6 + p[4] * 256 + p[5];
@@ -241,6 +246,7 @@ private:
   uchar *data;
   int size;
   int length;
+  int offset;
   bool synced;
 public:
   cTsToPes(void);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-04-12 14:19+0200\n"
+"POT-Creation-Date: 2008-12-14 16:10+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish\n"
@@ -21,14 +21,11 @@ msgstr "kapalý"
 msgid "on"
 msgstr ""
 
+msgid "auto"
+msgstr "otomatik"
+
 msgid "none"
 msgstr "hiç"
-
-msgid "high"
-msgstr ""
-
-msgid "low"
-msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Geçersiz kanal ***"
@@ -318,12 +315,6 @@ msgstr "Koruma"
 msgid "Hierarchy"
 msgstr "Hiyerarþi"
 
-msgid "Alpha"
-msgstr ""
-
-msgid "Priority"
-msgstr "Öncelik"
-
 msgid "Rolloff"
 msgstr ""
 
@@ -371,6 +362,9 @@ msgstr "Bitiþ"
 
 msgid "VPS"
 msgstr "VPS"
+
+msgid "Priority"
+msgstr "Öncelik"
 
 msgid "Lifetime"
 msgstr "Ömrü"
@@ -905,9 +899,6 @@ msgstr "Üstüne yaz"
 
 msgid "Button$Insert"
 msgstr "Ekle"
-
-msgid "auto"
-msgstr "otomatik"
 
 msgid "Plugin"
 msgstr "Eklenti"

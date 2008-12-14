@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.4 2008/07/06 13:00:19 kls Exp $
+.\" $Id: vdr.5 2.5 2008/11/22 15:23:10 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -83,22 +83,20 @@ meaning (and allowed values) are
 .TS
 tab (@);
 l l.
-\fBA\fR@Alpha (0, 1, 2, 4)
-\fBB\fR@Bandwidth (5, 6, 7, 8)
-\fBC\fR@Code rate high priority (0, 12, 13, 14, 23, 25, 34, 35, 45, 56, 67, 78, 89, 910)
-\fBD\fR@coDe rate low priority (0, 12, 13, 14, 23, 25, 34, 35, 45, 56, 67, 78, 89, 910)
+\fBB\fR@Bandwidth (6, 7, 8)
+\fBC\fR@Code rate high priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
+\fBD\fR@coDe rate low priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
 \fBG\fR@Guard interval (4, 8, 16, 32)
 \fBH\fR@Horizontal polarization
 \fBI\fR@Inversion (0, 1)
 \fBL\fR@Left circular polarization
-\fBM\fR@Modulation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 32, 64, 128, 256, 512, 998, 1024)
+\fBM\fR@Modulation (2, 5, 6, 10, 11, 16, 32, 64, 128, 256, 998)
 \fBO\fR@rollOff (0, 20, 25, 35)
-\fBP\fR@Priority (0, 1)
 \fBR\fR@Right circular polarization
 \fBS\fR@delivery System (0, 1)
-\fBT\fR@Transmission mode (2, 4, 8)
+\fBT\fR@Transmission mode (2, 8)
 \fBV\fR@Vertical polarization
-\fBY\fR@hierarchY (0, 1)
+\fBY\fR@hierarchY (0, 1, 2, 4)
 .TE
 
 The polarization parameters have no integer numbers following them. This is for

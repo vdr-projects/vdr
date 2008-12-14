@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 2.1 2008/08/15 14:49:34 kls Exp $
+ * $Id: remux.c 2.2 2008/12/13 14:30:15 kls Exp $
  */
 
 #include "remux.h"
@@ -2578,7 +2578,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
 cTsToPes::cTsToPes(void)
 {
   data = NULL;
-  size = length = 0;
+  size = length = offset = 0;
   synced = false;
 }
 
@@ -2602,12 +2602,35 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
   length += Length;
 }
 
+#define MAXPESLENGTH 0xFFF0
+
 const uchar *cTsToPes::GetPes(int &Length)
 {
-  if (PesLongEnough(length)) {
-     Length = PesLength(data);
-     if (Length <= length) {
-        Length = length; // in case the PES packet has no explicit length, as is the case for video PES
+  if (offset < length && PesLongEnough(length)) {
+     if (!PesHasLength(data)) // this is a video PES packet with undefined length
+        offset = 6; // trigger setting PES length for initial slice
+     if (offset) {
+        uchar *p = data + offset - 6;
+        if (p != data) {
+           p -= 3;
+           memmove(p, data, 4);
+           }
+        int l = min(length - offset, MAXPESLENGTH);
+        offset += l;
+        if (p != data) {
+           l += 3;
+           p[6]  = 0x80;
+           p[7]  = 0x00;
+           p[8]  = 0x00;
+           }
+        p[4] = l / 256;
+        p[5] = l & 0xFF;
+        Length = l + 6;
+        return p;
+        }
+     else {
+        Length = PesLength(data);
+        offset = Length; // to make sure we break out in case of garbage data
         return data;
         }
      }
@@ -2616,7 +2639,7 @@ const uchar *cTsToPes::GetPes(int &Length)
 
 void cTsToPes::Reset(void)
 {
-  length = 0;
+  length = offset = 0;
 }
 
 // --- Some helper functions for debugging -----------------------------------

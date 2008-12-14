@@ -55,12 +55,16 @@ VDR Plugin 'sky' Revision History
   as a query string.
 - The getskyepg.pl script now replaces "&amp;" with "&".
 
-2007-08-15:Version 0.3.6
+2007-08-15: Version 0.3.6
 
 - Moved the "all" target in the Makefile before the "Implicit rules",
   so that a plain "make" will compile everything.
 
-2008-03-22:Version 0.3.7
+2008-03-22: Version 0.3.7
 
 - Removed the full path from the 'logger' call in the getskyepg.pl script (this
   program is apparently "on the move" through the file system...).
+ 
+2008-09-07: Version 0.3.8
+
+- Fixed renamed constants (thanks to Udo Richter).

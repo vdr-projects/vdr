@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.3 2008/07/06 11:49:37 kls Exp $
+ * $Id: channels.h 2.4 2008/11/22 13:35:52 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -66,8 +66,6 @@ extern const tChannelParameterMap SystemValues[];
 extern const tChannelParameterMap TransmissionValues[];
 extern const tChannelParameterMap GuardValues[];
 extern const tChannelParameterMap HierarchyValues[];
-extern const tChannelParameterMap AlphaValues[];
-extern const tChannelParameterMap PriorityValues[];
 extern const tChannelParameterMap RollOffValues[];
 
 struct tChannelID {
@@ -149,8 +147,6 @@ private:
   int transmission;
   int guard;
   int hierarchy;
-  int alpha;
-  int priority;
   int rollOff;
   int __EndData__;
   int modification;
@@ -209,8 +205,6 @@ public:
   int Transmission(void) const { return transmission; }
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
-  int Alpha(void) const { return alpha; }
-  int Priority(void) const { return priority; }
   int RollOff(void) const { return rollOff; }
   const cLinkChannels* LinkChannels(void) const { return linkChannels; }
   const cChannel *RefChannel(void) const { return refChannel; }
@@ -223,7 +217,7 @@ public:
   void CopyTransponderData(const cChannel *Channel);
   bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, int Modulation, int System, int RollOff);
   bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
-  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, int Alpha, int Priority);
+  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
