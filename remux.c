@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 2.2 2008/12/13 14:30:15 kls Exp $
+ * $Id: remux.c 2.3 2008/12/20 10:38:47 kls Exp $
  */
 
 #include "remux.h"
@@ -2298,6 +2298,7 @@ void cPatPmtGenerator::GeneratePat(void)
   p[i++] = 0x40; // flags (3), pid hi (5)
   p[i++] = 0x00; // pid lo
   p[i++] = 0x10; // flags (4), continuity counter (4)
+  p[i++] = 0x00; // pointer field (payload unit start indicator is set)
   int PayloadStart = i;
   p[i++] = 0x00; // table id
   p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
@@ -2367,13 +2368,18 @@ void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
      MakeCRC(buf + i, buf, i);
      // split the PMT section into several TS packets:
      uchar *q = buf;
+     bool pusi = true;
      while (i > 0) {
            uchar *p = pmt[numPmtPackets++];
            int j = 0;
            p[j++] = 0x47; // TS indicator
-           p[j++] = 0x40 | (P_PNR >> 8); // flags (3), pid hi (5)
+           p[j++] = (pusi ? 0x40 : 0x00) | (P_PNR >> 8); // flags (3), pid hi (5)
            p[j++] = P_PNR & 0xFF; // pid lo
            p[j++] = 0x10; // flags (4), continuity counter (4)
+           if (pusi) {
+              p[j++] = 0x00; // pointer field (payload unit start indicator is set)
+              pusi = false;
+              }
            int l = TS_SIZE - j;
            memcpy(p + j, q, l);
            q += l;
@@ -2412,6 +2418,7 @@ cPatPmtParser::cPatPmtParser(void)
 void cPatPmtParser::ParsePat(const uchar *Data, int Length)
 {
   // The PAT is always assumed to fit into a single TS packet
+  Data += Data[0] + 1; // process pointer_field
   SI::PAT Pat(Data, false);
   if (Pat.CheckCRCAndParse()) {
      dbgpatpmt("PAT: TSid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pat.getTransportStreamId(), Pat.getCurrentNextIndicator(), Pat.getVersionNumber(), Pat.getSectionNumber(), Pat.getLastSectionNumber());
@@ -2432,7 +2439,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
 {
   // The PMT may extend over several TS packets, so we need to assemble them
   if (pmtSize == 0) {
-     // this is the first packet
+     Data += Data[0] + 1; // this is the first packet
+     Length -= Data[0] + 1;
      if (SectionLength(Data, Length) > Length) {
         if (Length <= int(sizeof(pmt))) {
            memcpy(pmt, Data, Length);

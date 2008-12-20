@@ -5849,6 +5849,8 @@ Video Disk Recorder Revision History
   the patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_v4ldvb_api5_audiobuf_test_1.diff
   to the driver (thanks to Oliver Endriss).
 
-2008-12-17: Version 1.7.3
+2008-12-20: Version 1.7.3
 
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Fixed handling the 'pointer field' in generating and parsing PAT/PMT (thanks to
+  Frank Schmirler).

@@ -2201,6 +2201,7 @@ Frank Schmirler <vdr@schmirler.de>
  for making entering text via the numeric keys check the characters against the
  allowed characters
  for fixing handling address masks in SVDRP host settings
+ for fixing handling the 'pointer field' in generating and parsing PAT/PMT
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
