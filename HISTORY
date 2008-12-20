@@ -5854,3 +5854,4 @@ Video Disk Recorder Revision History
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Fixed handling the 'pointer field' in generating and parsing PAT/PMT (thanks to
   Frank Schmirler).
+- Fixed handling modulation types for DVB-S transponders when processing the NIT.
