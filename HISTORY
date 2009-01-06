@@ -5868,9 +5868,9 @@ Video Disk Recorder Revision History
     255).
   + The recording file names are now of the form 00001.ts (previously 001.vdr).
   + The frame rate is now detected by looking at two subsequent PTS values.
-    The "frame duration" (in multiples of 1/90000) is stored in the info.vdr
-    file using the new tag F (thanks to Artur Skawina for helping to get the
-    IndexToHMSF() calculation right).
+    The "frames per second" is stored in the "info" file using the new tag F
+    (thanks to Artur Skawina for helping to get the IndexToHMSF() calculation
+    right).
   + Several functions now have an additional parameter FramesPerSecond.
   + Several functions now have an additional parameter IsPesRecording.
   + The functionality of cFileWriter was moved into cRecorder, and cRemux is
@@ -5882,7 +5882,7 @@ Video Disk Recorder Revision History
   + The directory name for a recording has been changed from
     YYYY-MM-DD-hh[.:]mm.pr.lt.rec (pr=priority, lt=lifetime) to
     YYYY-MM-DD-hh.mm.ch-ri.rec (ch=channel, ri=resumeId).
-    Priority and Lifetime are now stored in the info.vdr file with the new
+    Priority and Lifetime are now stored in the "info" file with the new
     tags P and L (if no such file exists, the maximum values are assumed by
     default, which avoids inadvertently deleting a recording if disk space
     is low). No longer storing Priority and Lifetime in the directory name
