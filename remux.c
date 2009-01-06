@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.4 2009/01/06 12:39:34 kls Exp $
+ * $Id: remux.c 2.5 2009/01/06 14:46:21 kls Exp $
  */
 
 #include "remux.h"
@@ -395,6 +395,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      int NumApids = 0;
      int NumDpids = 0;
      int NumSpids = 0;
+     vpid = vtype = 0;
      SI::PMT::Stream stream;
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());

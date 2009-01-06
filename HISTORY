@@ -5906,3 +5906,5 @@ Video Disk Recorder Revision History
   + cDevice::StillPicture() will now be called with either TS or PES data.
   + cDvbPlayer::Goto() no longer appends a "sequence end code" to the data.
     If the output device needs this, it has to take care of it by itself.
+- Fixed cPatPmtParser::ParsePmt() to reset vpid and vtype when switching from
+  a video to an audio channel (thanks to Reinhard Nissl).
