@@ -5908,3 +5908,6 @@ Video Disk Recorder Revision History
     If the output device needs this, it has to take care of it by itself.
 - Fixed cPatPmtParser::ParsePmt() to reset vpid and vtype when switching from
   a video to an audio channel (thanks to Reinhard Nissl).
+- cDvbDevice now uses the FE_CAN_2G_MODULATION flag to determine whether a device
+  can handle DVB-S2. The #define is still there to allow people with older drivers
+  who don't need DVB-S2 to use this version without pathcing.

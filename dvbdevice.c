@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.9 2009/01/05 16:08:18 kls Exp $
+ * $Id: dvbdevice.c 2.10 2009/01/06 14:52:54 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -491,7 +491,7 @@ cDvbDevice::cDvbDevice(int n)
   if (fd_frontend >= 0) {
      if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) >= 0) {
         switch (frontendInfo.type) {
-          case FE_QPSK: frontendType = (frontendInfo.caps & FE_CAN_2ND_GEN_MODULATION) ? SYS_DVBS2 : SYS_DVBS; break;
+          case FE_QPSK: frontendType = (frontendInfo.caps & FE_CAN_2G_MODULATION) ? SYS_DVBS2 : SYS_DVBS; break;
           case FE_OFDM: frontendType = SYS_DVBT; break;
           case FE_QAM:  frontendType = SYS_DVBC_ANNEX_AC; break;
           case FE_ATSC: frontendType = SYS_ATSC; break;
