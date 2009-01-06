@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.145 2008/03/05 17:23:47 kls Exp $
+ * $Id: tools.c 2.1 2009/01/05 13:04:10 kls Exp $
  */
 
 #include "tools.h"
@@ -1589,7 +1589,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
               //    last (partial) page might be skipped, writeback will start only after
               //    second call; the third call will still include this page and finally
               //    drop it from cache.
-              off_t headdrop = min(begin, WRITE_BUFFER * 2L);
+              off_t headdrop = min(begin, off_t(WRITE_BUFFER * 2));
               posix_fadvise(fd, begin - headdrop, lastpos - begin + headdrop, POSIX_FADV_DONTNEED);
               }
            begin = lastpos = curpos;
@@ -1608,7 +1608,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
               // kind of write gathering enabled), but the syncs cause (io) load..
               // Uncomment the next line if you think you need them.
               //fdatasync(fd);
-              off_t headdrop = min(curpos - totwritten, totwritten * 2L);
+              off_t headdrop = min(curpos - totwritten, off_t(totwritten * 2));
               posix_fadvise(fd, curpos - totwritten - headdrop, totwritten + headdrop, POSIX_FADV_DONTNEED);
               totwritten = 0;
               }

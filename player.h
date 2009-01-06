@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 2.1 2008/08/15 14:07:48 kls Exp $
+ * $Id: player.h 2.2 2009/01/05 13:04:10 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -50,6 +50,8 @@ public:
   cPlayer(ePlayMode PlayMode = pmAudioVideo);
   virtual ~cPlayer();
   bool IsAttached(void) { return device != NULL; }
+  virtual double FramesPerSecond(void) { return DEFAULTFRAMESPERSECOND; }
+       // Returns the number of frames per second of the currently played material.
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return false; }
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
@@ -82,6 +84,7 @@ public:
   virtual ~cControl();
   virtual void Hide(void) = 0;
   virtual cOsdObject *GetInfo(void);
+  double FramesPerSecond(void) { return player->FramesPerSecond(); }
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return player->GetIndex(Current, Total, SnapToIFrame); }
   bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return player->GetReplayMode(Play, Forward, Speed); }
   static void Launch(cControl *Control);

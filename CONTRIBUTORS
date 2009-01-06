@@ -284,6 +284,8 @@ Artur Skawina <skawina@geocities.com>
  for fixing calculating the cache size in cUnbufferedFile::Read()
  for making the /video/.update file be touched _after_ an editing process is finished
  in order to avoid excessive disk access
+ for helping to get the IndexToHMSF() calculation right with non-integer frame
+ rates
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR

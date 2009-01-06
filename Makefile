@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.2 2008/05/03 10:13:43 kls Exp $
+# $Id: Makefile 2.3 2009/01/05 13:04:10 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -59,6 +59,8 @@ RCU_DEVICE  ?= /dev/ttyS1
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
 
 DEFINES += -D_GNU_SOURCE
+
+DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"

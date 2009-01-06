@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.3 2008/05/22 10:40:08 kls Exp $
+ * $Id: recording.c 2.4 2009/01/06 14:41:11 kls Exp $
  */
 
 #include "recording.h"
@@ -12,6 +12,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -19,7 +20,6 @@
 #include "channels.h"
 #include "i18n.h"
 #include "interface.h"
-#include "remux.h" //XXX+ I_FRAME
 #include "skins.h"
 #include "tools.h"
 #include "videodir.h"
@@ -37,15 +37,17 @@
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 */
-#define DATAFORMAT   "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
-#define NAMEFORMAT   "%s/%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#define DATAFORMATPES   "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
+#define NAMEFORMATPES   "%s/%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#define DATAFORMATTS    "%4d-%02d-%02d.%02d.%02d.%d-%d" RECEXT
+#define NAMEFORMATTS    "%s/%s/" DATAFORMATTS
 
-#define RESUMEFILESUFFIX  "/resume%s%s.vdr"
+#define RESUMEFILESUFFIX  "/resume%s%s"
 #ifdef SUMMARYFALLBACK
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #endif
-#define INFOFILESUFFIX    "/info.vdr"
-#define MARKSFILESUFFIX   "/marks.vdr"
+#define INFOFILESUFFIX    "/info"
+#define MARKSFILESUFFIX   "/marks"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -202,12 +204,14 @@ void AssertFreeDiskSpace(int Priority, bool Force)
 
 // --- cResumeFile -----------------------------------------------------------
 
-cResumeFile::cResumeFile(const char *FileName)
+cResumeFile::cResumeFile(const char *FileName, bool IsPesRecording)
 {
-  fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
+  isPesRecording = IsPesRecording;
+  const char *Suffix = isPesRecording ? RESUMEFILESUFFIX ".vdr" : RESUMEFILESUFFIX;
+  fileName = MALLOC(char, strlen(FileName) + strlen(Suffix) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
-     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? *itoa(Setup.ResumeID) : "");
+     sprintf(fileName + strlen(fileName), Suffix, Setup.ResumeID ? "." : "", Setup.ResumeID ? *itoa(Setup.ResumeID) : "");
      }
   else
      esyslog("ERROR: can't allocate memory for resume file name");
@@ -227,16 +231,37 @@ int cResumeFile::Read(void)
         if ((st.st_mode & S_IWUSR) == 0) // no write access, assume no resume
            return -1;
         }
-     int f = open(fileName, O_RDONLY);
-     if (f >= 0) {
-        if (safe_read(f, &resume, sizeof(resume)) != sizeof(resume)) {
-           resume = -1;
-           LOG_ERROR_STR(fileName);
+     if (isPesRecording) {
+        int f = open(fileName, O_RDONLY);
+        if (f >= 0) {
+           if (safe_read(f, &resume, sizeof(resume)) != sizeof(resume)) {
+              resume = -1;
+              LOG_ERROR_STR(fileName);
+              }
+           close(f);
            }
-        close(f);
+        else if (errno != ENOENT)
+           LOG_ERROR_STR(fileName);
         }
-     else if (errno != ENOENT)
-        LOG_ERROR_STR(fileName);
+     else {
+        FILE *f = fopen(fileName, "r");
+        if (f) {
+           cReadLine ReadLine;
+           char *s;
+           int line = 0;
+           while ((s = ReadLine.Read(f)) != NULL) {
+                 ++line;
+                 char *t = skipspace(s + 1);
+                 switch (*s) {
+                   case 'I': resume = atoi(t);
+                             break;
+                   }
+                 }
+           fclose(f);
+           }
+        else if (errno != ENOENT)
+           LOG_ERROR_STR(fileName);
+        }
      }
   return resume;
 }
@@ -244,12 +269,24 @@ int cResumeFile::Read(void)
 bool cResumeFile::Save(int Index)
 {
   if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, DEFFILEMODE);
-     if (f >= 0) {
-        if (safe_write(f, &Index, sizeof(Index)) < 0)
+     if (isPesRecording) {
+        int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, DEFFILEMODE);
+        if (f >= 0) {
+           if (safe_write(f, &Index, sizeof(Index)) < 0)
+              LOG_ERROR_STR(fileName);
+           close(f);
+           Recordings.ResetResume(fileName);
+           return true;
+           }
+        }
+     else {
+        FILE *f = fopen(fileName, "w");
+        if (f) {
+           fprintf(f, "I %d\n", Index);
+           fclose(f);
+           }
+        else
            LOG_ERROR_STR(fileName);
-        close(f);
-        Recordings.ResetResume(fileName);
         return true;
         }
      }
@@ -274,6 +311,10 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
   ownEvent = Event ? NULL : new cEvent(0);
   event = ownEvent ? ownEvent : Event;
   aux = NULL;
+  framesPerSecond = DEFAULTFRAMESPERSECOND;
+  priority = MAXPRIORITY;
+  lifetime = MAXLIFETIME;
+  fileName = NULL;
   if (Channel) {
      // Since the EPG data's component records can carry only a single
      // language code, let's see whether the channel's PID data has
@@ -322,11 +363,25 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
      }
 }
 
+cRecordingInfo::cRecordingInfo(const char *FileName)
+{
+  channelID = tChannelID::InvalidID;
+  channelName = NULL;
+  ownEvent = new cEvent(0);
+  event = ownEvent;
+  aux = NULL;
+  framesPerSecond = DEFAULTFRAMESPERSECOND;
+  priority = MAXPRIORITY;
+  lifetime = MAXLIFETIME;
+  fileName = strdup(cString::sprintf("%s%s", FileName, INFOFILESUFFIX));
+}
+
 cRecordingInfo::~cRecordingInfo()
 {
   delete ownEvent;
   free(aux);
   free(channelName);
+  free(fileName);
 }
 
 void cRecordingInfo::SetData(const char *Title, const char *ShortText, const char *Description)
@@ -343,6 +398,11 @@ void cRecordingInfo::SetAux(const char *Aux)
 {
   free(aux);
   aux = Aux ? strdup(Aux) : NULL;
+}
+
+void cRecordingInfo::SetFramesPerSecond(double FramesPerSecond)
+{
+  framesPerSecond = FramesPerSecond;
 }
 
 bool cRecordingInfo::Read(FILE *f)
@@ -382,6 +442,12 @@ bool cRecordingInfo::Read(FILE *f)
                             }
                        }
                        break;
+             case 'F': framesPerSecond = atof(t);
+                       break;
+             case 'L': lifetime = atoi(t);
+                       break;
+             case 'P': priority = atoi(t);
+                       break;
              case '@': free(aux);
                        aux = strdup(t);
                        break;
@@ -403,9 +469,46 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   if (channelID.Valid())
      fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
   event->Dump(f, Prefix, true);
+  fprintf(f, "%sF %.10g\n", Prefix, framesPerSecond);
+  fprintf(f, "%sP %d\n", Prefix, priority);
+  fprintf(f, "%sL %d\n", Prefix, lifetime);
   if (aux)
      fprintf(f, "%s@ %s\n", Prefix, aux);
   return true;
+}
+
+bool cRecordingInfo::Read(void)
+{
+  bool Result = false;
+  if (fileName) {
+     FILE *f = fopen(fileName, "r");
+     if (f) {
+        if (Read(f))
+           Result = true;
+        else
+           esyslog("ERROR: EPG data problem in file %s", fileName);
+        fclose(f);
+        }
+     else if (errno != ENOENT)
+        LOG_ERROR_STR(fileName);
+     }
+  return Result;
+}
+
+bool cRecordingInfo::Write(void) const
+{
+  bool Result = false;
+  if (fileName) {
+     cSafeFile f(fileName);
+     if (f.Open()) {
+        if (Write(f))
+           Result = true;
+        f.Close();
+        }
+     else
+        LOG_ERROR_STR(fileName);
+     }
+  return Result;
 }
 
 // --- cRecording ------------------------------------------------------------
@@ -497,6 +600,10 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   fileName = NULL;
   name = NULL;
   fileSizeMB = -1; // unknown
+  channel = Timer->Channel()->Number();
+  resumeId = Setup.ResumeID;
+  isPesRecording = false;
+  framesPerSecond = DEFAULTFRAMESPERSECOND;
   deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
@@ -542,12 +649,20 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   // handle info:
   info = new cRecordingInfo(Timer->Channel(), Event);
   info->SetAux(Timer->Aux());
+  info->priority = priority;
+  info->lifetime = lifetime;
 }
 
 cRecording::cRecording(const char *FileName)
 {
   resume = RESUME_NOT_INITIALIZED;
   fileSizeMB = -1; // unknown
+  channel = -1;
+  resumeId = -1;
+  priority = MAXPRIORITY; // assume maximum in case there is no info file
+  lifetime = MAXLIFETIME;
+  isPesRecording = false;
+  framesPerSecond = DEFAULTFRAMESPERSECOND;
   deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
@@ -562,7 +677,8 @@ cRecording::cRecording(const char *FileName)
      struct tm tm_r;
      struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
      t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
-     if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
+     if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &resumeId)
+      || 7 == sscanf(p + 1, DATAFORMATPES, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;
         t.tm_sec = 0;
@@ -571,14 +687,22 @@ cRecording::cRecording(const char *FileName)
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
+        isPesRecording = resumeId < 0;
         }
+     else
+        return;
      GetResume();
      // read an optional info file:
-     cString InfoFileName = cString::sprintf("%s%s", fileName, INFOFILESUFFIX);
+     cString InfoFileName = cString::sprintf("%s%s", fileName, isPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX);
      FILE *f = fopen(InfoFileName, "r");
      if (f) {
         if (!info->Read(f))
            esyslog("ERROR: EPG data problem in file %s", *InfoFileName);
+        else if (!isPesRecording) {
+           priority = info->priority;
+           lifetime = info->lifetime;
+           framesPerSecond = info->framesPerSecond;
+           }
         fclose(f);
         }
      else if (errno != ENOENT)
@@ -683,7 +807,7 @@ char *cRecording::SortName(void) const
 int cRecording::GetResume(void) const
 {
   if (resume == RESUME_NOT_INITIALIZED) {
-     cResumeFile ResumeFile(FileName());
+     cResumeFile ResumeFile(FileName(), isPesRecording);
      resume = ResumeFile.Read();
      }
   return resume;
@@ -700,8 +824,11 @@ const char *cRecording::FileName(void) const
   if (!fileName) {
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
+     const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
+     int ch = isPesRecording ? priority : channel;
+     int ri = isPesRecording ? lifetime : resumeId;
      name = ExchangeChars(name, true);
-     fileName = strdup(cString::sprintf(NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime));
+     fileName = strdup(cString::sprintf(fmt, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
      name = ExchangeChars(name, false);
      }
   return fileName;
@@ -789,7 +916,7 @@ bool cRecording::IsEdited(void) const
 
 bool cRecording::WriteInfo(void)
 {
-  cString InfoFileName = cString::sprintf("%s%s", fileName, INFOFILESUFFIX);
+  cString InfoFileName = cString::sprintf("%s%s", fileName, isPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX);
   FILE *f = fopen(InfoFileName, "w");
   if (f) {
      info->Write(f);
@@ -1061,10 +1188,14 @@ void cRecordings::ResetResume(const char *ResumeFileName)
 
 // --- cMark -----------------------------------------------------------------
 
-cMark::cMark(int Position, const char *Comment)
+double MarkFramesPerSecond = DEFAULTFRAMESPERSECOND;
+cMutex MutexMarkFramesPerSecond;
+
+cMark::cMark(int Position, const char *Comment, double FramesPerSecond)
 {
   position = Position;
   comment = Comment ? strdup(Comment) : NULL;
+  framesPerSecond = FramesPerSecond;
 }
 
 cMark::~cMark()
@@ -1074,14 +1205,15 @@ cMark::~cMark()
 
 cString cMark::ToText(void)
 {
-  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
+  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), comment ? " " : "", comment ? comment : "");
 }
 
 bool cMark::Parse(const char *s)
 {
   free(comment);
   comment = NULL;
-  position = HMSFToIndex(s);
+  framesPerSecond = MarkFramesPerSecond;
+  position = HMSFToIndex(s, framesPerSecond);
   const char *p = strchr(s, ' ');
   if (p) {
      p = skipspace(p);
@@ -1098,9 +1230,12 @@ bool cMark::Save(FILE *f)
 
 // --- cMarks ----------------------------------------------------------------
 
-bool cMarks::Load(const char *RecordingFileName)
+bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool IsPesRecording)
 {
-  if (cConfig<cMark>::Load(AddDirectory(RecordingFileName, MARKSFILESUFFIX))) {
+  cMutexLock MutexLock(&MutexMarkFramesPerSecond);
+  framesPerSecond = FramesPerSecond;
+  MarkFramesPerSecond = framesPerSecond;
+  if (cConfig<cMark>::Load(AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX))) {
      Sort();
      return true;
      }
@@ -1123,7 +1258,7 @@ cMark *cMarks::Add(int Position)
 {
   cMark *m = Get(Position);
   if (!m) {
-     cConfig<cMark>::Add(m = new cMark(Position));
+     cConfig<cMark>::Add(m = new cMark(Position, NULL, framesPerSecond));
      Sort();
      }
   return m;
@@ -1169,12 +1304,9 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
      }
 }
 
-// --- XXX+
-
-//XXX+ somewhere else???
 // --- cIndexFile ------------------------------------------------------------
 
-#define INDEXFILESUFFIX     "/index.vdr"
+#define INDEXFILESUFFIX     "/index"
 
 // The number of frames to stay off the end in case of time shift:
 #define INDEXSAFETYLIMIT 150 // frames
@@ -1185,33 +1317,56 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 // The minimum age of an index file for considering it no longer to be written:
 #define MININDEXAGE    3600 // seconds
 
-cIndexFile::cIndexFile(const char *FileName, bool Record)
-:resumeFile(FileName)
+struct tIndexPes {
+  uint32_t offset;
+  uchar type;
+  uchar number;
+  uint16_t reserved;
+  };
+
+struct tIndexTs {
+  uint64_t offset:40; // up to 1TB per file (not using off_t here - must definitely be exactly 64 bit!)
+  int reserved:7;     // reserved for future use
+  int independent:1;  // marks frames that can be displayed by themselves (for trick modes)
+  uint16_t number:16; // up to 64K files per recording
+  tIndexTs(off_t Offset, bool Independent, uint16_t Number)
+  {
+    offset = Offset;
+    reserved = 0;
+    independent = Independent;
+    number = Number;
+  }
+  };
+
+cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
+:resumeFile(FileName, IsPesRecording)
 {
   f = -1;
   fileName = NULL;
   size = 0;
   last = -1;
   index = NULL;
+  isPesRecording = IsPesRecording;
   if (FileName) {
-     fileName = MALLOC(char, strlen(FileName) + strlen(INDEXFILESUFFIX) + 1);
+     const char *Suffix = isPesRecording ? INDEXFILESUFFIX ".vdr" : INDEXFILESUFFIX;
+     fileName = MALLOC(char, strlen(FileName) + strlen(Suffix) + 1);
      if (fileName) {
         strcpy(fileName, FileName);
         char *pFileExt = fileName + strlen(fileName);
-        strcpy(pFileExt, INDEXFILESUFFIX);
+        strcpy(pFileExt, Suffix);
         int delta = 0;
         if (access(fileName, R_OK) == 0) {
            struct stat buf;
            if (stat(fileName, &buf) == 0) {
-              delta = buf.st_size % sizeof(tIndex);
+              delta = buf.st_size % sizeof(tIndexTs);
               if (delta) {
-                 delta = sizeof(tIndex) - delta;
-                 esyslog("ERROR: invalid file size (%ld) in '%s'", buf.st_size, fileName);
+                 delta = sizeof(tIndexTs) - delta;
+                 esyslog("ERROR: invalid file size (%lld) in '%s'", buf.st_size, fileName);
                  }
-              last = (buf.st_size + delta) / sizeof(tIndex) - 1;
+              last = (buf.st_size + delta) / sizeof(tIndexTs) - 1;
               if (!Record && last >= 0) {
                  size = last + 1;
-                 index = MALLOC(tIndex, size);
+                 index = MALLOC(tIndexTs, size);
                  if (index) {
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
@@ -1223,12 +1378,14 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                           f = -1;
                           }
                        // we don't close f here, see CatchUp()!
+                       else if (isPesRecording)
+                          ConvertFromPes(index, size);
                        }
                     else
                        LOG_ERROR_STR(fileName);
                     }
                  else
-                    esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndex), fileName);
+                    esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), fileName);
                  }
               }
            else
@@ -1261,6 +1418,18 @@ cIndexFile::~cIndexFile()
   free(index);
 }
 
+void cIndexFile::ConvertFromPes(tIndexTs *IndexTs, int Count)
+{
+  tIndexPes IndexPes;
+  while (Count-- > 0) {
+        memcpy(&IndexPes, IndexTs, sizeof(IndexPes));
+        IndexTs->offset = IndexPes.offset;
+        IndexTs->independent = IndexPes.type == 1; // I_FRAME
+        IndexTs->number = IndexPes.number;
+        IndexTs++;
+        }
+}
+
 bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
@@ -1275,17 +1444,17 @@ bool cIndexFile::CatchUp(int Index)
                f = -1;
                break;
                }
-            int newLast = buf.st_size / sizeof(tIndex) - 1;
+            int newLast = buf.st_size / sizeof(tIndexTs) - 1;
             if (newLast > last) {
                if (size <= newLast) {
                   size *= 2;
                   if (size <= newLast)
                      size = newLast + 1;
                   }
-               index = (tIndex *)realloc(index, size * sizeof(tIndex));
+               index = (tIndexTs *)realloc(index, size * sizeof(tIndexTs));
                if (index) {
-                  int offset = (last + 1) * sizeof(tIndex);
-                  int delta = (newLast - last) * sizeof(tIndex);
+                  int offset = (last + 1) * sizeof(tIndexTs);
+                  int delta = (newLast - last) * sizeof(tIndexTs);
                   if (lseek(f, offset, SEEK_SET) == offset) {
                      if (safe_read(f, &index[last + 1], delta) != delta) {
                         esyslog("ERROR: can't read from index");
@@ -1295,6 +1464,8 @@ bool cIndexFile::CatchUp(int Index)
                         f = -1;
                         break;
                         }
+                     if (isPesRecording)
+                        ConvertFromPes(&index[last + 1], newLast - last);
                      last = newLast;
                      }
                   else
@@ -1314,10 +1485,10 @@ bool cIndexFile::CatchUp(int Index)
   return index != NULL;
 }
 
-bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
+bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
 {
   if (f >= 0) {
-     tIndex i = { FileOffset, PictureType, FileNumber, 0 };
+     tIndexTs i(FileOffset, Independent, FileNumber);
      if (safe_write(f, &i, sizeof(i)) < 0) {
         LOG_ERROR_STR(fileName);
         close(f);
@@ -1329,14 +1500,14 @@ bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
   return f >= 0;
 }
 
-bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
+bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length)
 {
   if (CatchUp(Index)) {
      if (Index >= 0 && Index < last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
-        if (PictureType)
-           *PictureType = index[Index].type;
+        if (Independent)
+           *Independent = index[Index].independent;
         if (Length) {
            int fn = index[Index + 1].number;
            int fo = index[Index + 1].offset;
@@ -1351,24 +1522,24 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
   return false;
 }
 
-int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
+int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off_t *FileOffset, int *Length, bool StayOffEnd)
 {
   if (CatchUp()) {
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
          if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? INDEXSAFETYLIMIT : 0)) {
-            if (index[Index].type == I_FRAME) {
-               if (FileNumber)
-                  *FileNumber = index[Index].number;
-               else
-                  FileNumber = &index[Index].number;
-               if (FileOffset)
-                  *FileOffset = index[Index].offset;
-               else
-                  FileOffset = &index[Index].offset;
+            if (index[Index].independent) {
+               uint16_t fn;
+               if (!FileNumber)
+                  FileNumber = &fn;
+               off_t fo;
+               if (!FileOffset)
+                  FileOffset = &fo;
+               *FileNumber = index[Index].number;
+               *FileOffset = index[Index].offset;
                if (Length) {
-                  // all recordings end with a non-I_FRAME, so the following should be safe:
+                  // all recordings end with a non-independent frame, so the following should be safe:
                   int fn = index[Index + 1].number;
                   int fo = index[Index + 1].offset;
                   if (fn == *FileNumber)
@@ -1388,13 +1559,13 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
   return -1;
 }
 
-int cIndexFile::Get(uchar FileNumber, int FileOffset)
+int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)
 {
   if (CatchUp()) {
      //TODO implement binary search!
      int i;
      for (i = 0; i < last; i++) {
-         if (index[i].number > FileNumber || (index[i].number == FileNumber) && index[i].offset >= FileOffset)
+         if (index[i].number > FileNumber || (index[i].number == FileNumber) && off_t(index[i].offset) >= FileOffset)
             break;
          }
      return i;
@@ -1409,16 +1580,19 @@ bool cIndexFile::IsStillRecording()
 
 // --- cFileName -------------------------------------------------------------
 
-#define MAXFILESPERRECORDING 255
-#define RECORDFILESUFFIX    "/%03d.vdr"
+#define MAXFILESPERRECORDINGPES 255
+#define RECORDFILESUFFIXPES     "/%03d.vdr"
+#define MAXFILESPERRECORDINGTS  65535
+#define RECORDFILESUFFIXTS      "/%05d.ts"
 #define RECORDFILESUFFIXLEN 20 // some additional bytes for safety...
 
-cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
+cFileName::cFileName(const char *FileName, bool Record, bool Blocking, bool IsPesRecording)
 {
   file = NULL;
   fileNumber = 0;
   record = Record;
   blocking = Blocking;
+  isPesRecording = IsPesRecording;
   // Prepare the file name:
   fileName = MALLOC(char, strlen(FileName) + RECORDFILESUFFIXLEN);
   if (!fileName) {
@@ -1442,14 +1616,14 @@ cUnbufferedFile *cFileName::Open(void)
      int BlockingFlag = blocking ? 0 : O_NONBLOCK;
      if (record) {
         dsyslog("recording to '%s'", fileName);
-        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | BlockingFlag);
+        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_LARGEFILE | BlockingFlag);
         if (!file)
            LOG_ERROR_STR(fileName);
         }
      else {
         if (access(fileName, R_OK) == 0) {
            dsyslog("playing '%s'", fileName);
-           file = cUnbufferedFile::Create(fileName, O_RDONLY | BlockingFlag);
+           file = cUnbufferedFile::Create(fileName, O_RDONLY | O_LARGEFILE | BlockingFlag);
            if (!file)
               LOG_ERROR_STR(fileName);
            }
@@ -1469,13 +1643,14 @@ void cFileName::Close(void)
      }
 }
 
-cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
+cUnbufferedFile *cFileName::SetOffset(int Number, off_t Offset)
 {
   if (fileNumber != Number)
      Close();
-  if (0 < Number && Number <= MAXFILESPERRECORDING) {
+  int MaxFilesPerRecording = isPesRecording ? MAXFILESPERRECORDINGPES : MAXFILESPERRECORDINGTS;
+  if (0 < Number && Number <= MaxFilesPerRecording) {
      fileNumber = Number;
-     sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
+     sprintf(pFileNumber, isPesRecording ? RECORDFILESUFFIXPES : RECORDFILESUFFIXTS, fileNumber);
      if (record) {
         if (access(fileName, F_OK) == 0) {
            // files exists, check if it has non-zero size
@@ -1506,7 +1681,7 @@ cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
         }
      return file;
      }
-  esyslog("ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+  esyslog("ERROR: max number of files (%d) exceeded", MaxFilesPerRecording);
   return NULL;
 }
 
@@ -1517,11 +1692,12 @@ cUnbufferedFile *cFileName::NextFile(void)
 
 // --- Index stuff -----------------------------------------------------------
 
-cString IndexToHMSF(int Index, bool WithFrame)
+cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 {
   char buffer[16];
-  int f = (Index % FRAMESPERSEC) + 1;
-  int s = (Index / FRAMESPERSEC);
+  double Seconds;
+  int f = modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1;
+  int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
   s %= 60;
@@ -1529,17 +1705,20 @@ cString IndexToHMSF(int Index, bool WithFrame)
   return buffer;
 }
 
-int HMSFToIndex(const char *HMSF)
+int HMSFToIndex(const char *HMSF, double FramesPerSecond)
 {
-  int h, m, s, f = 0;
-  if (3 <= sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f))
-     return (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
+  int h, m, s, f = 1;
+  int n = sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f);
+  if (n == 1)
+     return h - 1; // plain frame number
+  if (n >= 3)
+     return int(round((h * 3600 + m * 60 + s) * FramesPerSecond)) + f - 1;
   return 0;
 }
 
-int SecondsToFrames(int Seconds)
+int SecondsToFrames(int Seconds, double FramesPerSecond)
 {
-  return Seconds * FRAMESPERSEC;
+  return round(Seconds * FramesPerSecond);
 }
 
 // --- ReadFrame -------------------------------------------------------------

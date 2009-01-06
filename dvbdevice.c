@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.8 2008/12/28 10:59:51 kls Exp $
+ * $Id: dvbdevice.c 2.9 2009/01/05 16:08:18 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1213,7 +1213,11 @@ void cDvbDevice::Mute(void)
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)
 {
-  if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
+  if (Data[0] == 0x47) {
+     // TS data
+     cDevice::StillPicture(Data, Length);
+     }
+  else if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
      // PES data
      char *buf = MALLOC(char, Length);
      if (!buf)
@@ -1331,8 +1335,8 @@ int cDvbDevice::PlayTsVideo(const uchar *Data, int Length)
 
 int cDvbDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  Length = TsGetPayload(&Data);
-  return PlayAudio(Data, Length, 0);
+  int w = PlayAudio(Data, TsGetPayload(&Data), 0);
+  return w >= 0 ? Length : w;
 }
 
 bool cDvbDevice::OpenDvr(void)

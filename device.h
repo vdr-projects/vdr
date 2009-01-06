@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.3 2008/09/14 13:44:54 kls Exp $
+ * $Id: device.h 2.4 2009/01/05 16:28:06 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -518,8 +518,7 @@ protected:
        ///< Data points to exactly one complete TS packet of the given Length
        ///< (which is always TS_SIZE).
        ///< PlayTsVideo() shall process the packet either as a whole (returning
-       ///< a positive number, which needs not necessarily be Length) or not at all
-       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and calls PlayVideo() with the resulting packet.
   virtual int PlayTsAudio(const uchar *Data, int Length);
@@ -527,8 +526,7 @@ protected:
        ///< Data points to exactly one complete TS packet of the given Length
        ///< (which is always TS_SIZE).
        ///< PlayTsAudio() shall process the packet either as a whole (returning
-       ///< a positive number, which needs not necessarily be Length) or not at all
-       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and calls PlayAudio() with the resulting packet.
   virtual int PlayTsSubtitle(const uchar *Data, int Length);
@@ -536,8 +534,7 @@ protected:
        ///< Data points to exactly one complete TS packet of the given Length
        ///< (which is always TS_SIZE).
        ///< PlayTsSubtitle() shall process the packet either as a whole (returning
-       ///< a positive number, which needs not necessarily be Length) or not at all
-       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and displays the resulting subtitle via the OSD.
 public:
@@ -573,6 +570,10 @@ public:
        ///< all registered cAudio objects are notified.
   virtual void StillPicture(const uchar *Data, int Length);
        ///< Displays the given I-frame as a still picture.
+       ///< Data points either to TS (first byte is 0x47) or PES (first byte
+       ///< is 0x00) data of the given Length. The default implementation
+       ///< converts TS to PES and calls itself again, allowing a derived class
+       ///< to display PES if it can't handle TS directly.
   virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
        ///< Returns true if the device itself or any of the file handles in
        ///< Poller is ready for further action.
@@ -600,12 +601,14 @@ public:
        ///< which is necessary for trick modes like 'fast forward'.
        ///< Data points to a single TS packet, Length is always TS_SIZE (the total
        ///< size of a single TS packet).
+       ///< If Data is NULL any leftover data from a previous call will be
+       ///< discarded.
        ///< A derived device can reimplement this function to handle the
        ///< TS packets itself. Any packets the derived function can't handle
        ///< must be sent to the base class function. This applies especially
        ///< to the PAT/PMT packets.
        ///< Returns -1 in case of error, otherwise the number of actually
-       ///< processed bytes is returned, which may be less than Length.
+       ///< processed bytes is returned, which must be Length.
        ///< PlayTs() shall process the packet either as a whole (returning
        ///< a positive number, which needs not necessarily be Length) or not at all
        ///< (returning 0 or -1 and setting 'errno' to EAGAIN).

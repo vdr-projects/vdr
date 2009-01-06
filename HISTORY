@@ -5849,7 +5849,7 @@ Video Disk Recorder Revision History
   the patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_v4ldvb_api5_audiobuf_test_1.diff
   to the driver (thanks to Oliver Endriss).
 
-2008-12-28: Version 1.7.3
+2009-01-06: Version 1.7.3
 
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 - Fixed handling the 'pointer field' in generating and parsing PAT/PMT (thanks to
@@ -5859,3 +5859,50 @@ Video Disk Recorder Revision History
 - Added a poll to cDvbDevice::PlayVideo() and cDvbDevice::PlayAudio() to avoid
   excessive CPU load (this is just a makeshift solution until the FF DVB cards
   can play TS directly).
+- The recording format is now Transport Stream. Existing recordings in PES format
+  can still be replayed and edited, but new recordings are done in TS.
+  All code for recording in PES has been removed.
+  The following changes were made to switch to TS recording format:
+  + The index file format has been changed to support file sizes of up to 1TB
+    (previously 2GB), and up to 65535 separate files per recording (previously
+    255).
+  + The recording file names are now of the form 00001.ts (previously 001.vdr).
+  + The frame rate is now detected by looking at two subsequent PTS values.
+    The "frame duration" (in multiples of 1/90000) is stored in the info.vdr
+    file using the new tag F (thanks to Artur Skawina for helping to get the
+    IndexToHMSF() calculation right).
+  + Several functions now have an additional parameter FramesPerSecond.
+  + Several functions now have an additional parameter IsPesRecording.
+  + The functionality of cFileWriter was moved into cRecorder, and cRemux is
+    now obsolete. This also avoids one level of data copying while recording.
+  + cRemux, cRingBufferLinearPes, cTS2PES and all c*Repacker classes have been
+    removed.
+  + A PAT/PMT is inserted before every independent frame, so that no extra
+    measures need to be taken when editing a recording.
+  + The directory name for a recording has been changed from
+    YYYY-MM-DD-hh[.:]mm.pr.lt.rec (pr=priority, lt=lifetime) to
+    YYYY-MM-DD-hh.mm.ch-ri.rec (ch=channel, ri=resumeId).
+    Priority and Lifetime are now stored in the info.vdr file with the new
+    tags P and L (if no such file exists, the maximum values are assumed by
+    default, which avoids inadvertently deleting a recording if disk space
+    is low). No longer storing Priority and Lifetime in the directory name
+    avoids starting a new recording if one of these is changed in the timer
+    and the recording is re-started for some reason.
+    Instead of Priority and Lifetime, the directory name now contains the
+    channel number from which the recording was made, and the "resume id" of
+    this instance of VDR. This avoids problems if several VDR instances record
+    the same show on different channels, or even on the same channel.
+    The '-' between channel number and resumeId prevents older versions of
+    VDR from "seeing" these recordings, which makes sure they won't even try
+    to replay them, or remove them in case the disk runs full.
+  + The semantics of PlayTs*() have been changed. These functions are now
+    required to return the given Length (which is TS_SIZE) if they have
+    processed the TS packet.
+  + The files "index", "info", "marks" and "resume" within a TS recording
+    directory are now created without the ".vdr" extension.
+  + The "resume" file is no longer a binary file, but contains tagged lines
+    to be able to store additional information, like the selected audio or
+    subtitle track.
+  + cDevice::StillPicture() will now be called with either TS or PES data.
+  + cDvbPlayer::Goto() no longer appends a "sequence end code" to the data.
+    If the output device needs this, it has to take care of it by itself.

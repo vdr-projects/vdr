@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 1.5 2007/01/07 14:44:05 kls Exp $
+ * $Id: recorder.h 2.1 2009/01/06 10:44:58 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -16,13 +16,19 @@
 #include "ringbuffer.h"
 #include "thread.h"
 
-class cFileWriter;
-
 class cRecorder : public cReceiver, cThread {
 private:
   cRingBufferLinear *ringBuffer;
-  cRemux *remux;
-  cFileWriter *writer;
+  cFrameDetector *frameDetector;
+  cPatPmtGenerator patPmtGenerator;
+  cFileName *fileName;
+  cIndexFile *index;
+  cUnbufferedFile *recordFile;
+  cRecordingInfo recordingInfo;
+  off_t fileSize;
+  time_t lastDiskSpaceCheck;
+  bool RunningLowOnDiskSpace(void);
+  bool NextFile(void);
 protected:
   virtual void Activate(bool On);
   virtual void Receive(uchar *Data, int Length);
