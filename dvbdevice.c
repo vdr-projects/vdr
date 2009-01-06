@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.10 2009/01/06 14:52:54 kls Exp $
+ * $Id: dvbdevice.c 2.11 2009/01/06 16:54:52 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -26,13 +26,6 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
-
-// FIXME: temporary workaround until the S2API driver supports detecting
-// S2 capability in a clean way. This macro allows compiling VDR with an
-// unpatched driver. However, with an unpatched driver it will not support
-// DVB-S2 hardware. If you have DVB-S2 hardware you need to either patch
-// the driver or modify the line that uses this macro in cDvbDevice::cDvbDevice().
-#define FE_CAN_2ND_GEN_MODULATION 0x10000000
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1

@@ -5911,3 +5911,8 @@ Video Disk Recorder Revision History
 - cDvbDevice now uses the FE_CAN_2G_MODULATION flag to determine whether a device
   can handle DVB-S2. The #define is still there to allow people with older drivers
   who don't need DVB-S2 to use this version without pathcing.
+
+2009-01-06: Version 1.7.4
+
+- Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
+  flag is now in the driver, anyway.
