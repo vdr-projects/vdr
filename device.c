@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.4 2008/12/13 14:30:28 kls Exp $
+ * $Id: device.c 2.5 2009/01/06 09:55:13 kls Exp $
  */
 
 #include "device.h"
@@ -1014,6 +1014,48 @@ void cDevice::Mute(void)
 
 void cDevice::StillPicture(const uchar *Data, int Length)
 {
+  if (Data[0] == 0x47) {
+     // TS data
+     cTsToPes TsToPes;
+     uchar *buf = NULL;
+     int Size = 0;
+     while (Length >= TS_SIZE) {
+           int PayloadOffset = TsPayloadOffset(Data);
+           int Pid = TsPid(Data);
+           if (Pid == 0)
+              patPmtParser.ParsePat(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+           else if (Pid == patPmtParser.PmtPid())
+              patPmtParser.ParsePmt(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+           else if (Pid == patPmtParser.Vpid()) {
+              if (TsPayloadStart(Data)) {
+                 int l;
+                 while (const uchar *p = TsToPes.GetPes(l)) {
+                       int Offset = Size;
+                       Size += l;
+                       buf = (uchar *)realloc(buf, Size);
+                       if (!buf)
+                          return;
+                       memcpy(buf + Offset, p, l);
+                       }
+                 TsToPes.Reset();
+                 }
+              TsToPes.PutTs(Data, TS_SIZE);
+              }
+           Length -= TS_SIZE;
+           Data += TS_SIZE;
+           }
+     int l;
+     while (const uchar *p = TsToPes.GetPes(l)) {
+           int Offset = Size;
+           Size += l;
+           buf = (uchar *)realloc(buf, Size);
+           if (!buf)
+              return;
+           memcpy(buf + Offset, p, l);
+           }
+     StillPicture(buf, Size);
+     free(buf);
+     }
 }
 
 bool cDevice::Replaying(void) const
@@ -1301,6 +1343,11 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         return Length;
         }
      }
+  else if (Data == NULL) {
+     tsToPesVideo.Reset();
+     tsToPesAudio.Reset();
+     tsToPesSubtitle.Reset();
+     }
   return -1;
 }
 
@@ -1328,7 +1375,6 @@ bool cDevice::Receiving(bool CheckAny) const
   return false;
 }
 
-#define TS_SCRAMBLING_CONTROL  0xC0
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
 #define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
 

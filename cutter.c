@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.0 2008/01/13 12:22:21 kls Exp $
+ * $Id: cutter.c 2.1 2009/01/06 14:40:48 kls Exp $
  */
 
 #include "cutter.h"
@@ -37,12 +37,14 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
   fromFile = toFile = NULL;
   fromFileName = toFileName = NULL;
   fromIndex = toIndex = NULL;
-  if (fromMarks.Load(FromFileName) && fromMarks.Count()) {
-     fromFileName = new cFileName(FromFileName, false, true);
-     toFileName = new cFileName(ToFileName, true, true);
-     fromIndex = new cIndexFile(FromFileName, false);
-     toIndex = new cIndexFile(ToFileName, true);
-     toMarks.Load(ToFileName); // doesn't actually load marks, just sets the file name
+  cRecording Recording(FromFileName);
+  bool isPesRecording = Recording.IsPesRecording();
+  if (fromMarks.Load(FromFileName, Recording.FramesPerSecond(), isPesRecording) && fromMarks.Count()) {
+     fromFileName = new cFileName(FromFileName, false, true, isPesRecording);
+     toFileName = new cFileName(ToFileName, true, true, isPesRecording);
+     fromIndex = new cIndexFile(FromFileName, false, isPesRecording);
+     toIndex = new cIndexFile(ToFileName, true, isPesRecording);
+     toMarks.Load(ToFileName, Recording.FramesPerSecond(), isPesRecording); // doesn't actually load marks, just sets the file name
      Start();
      }
   else
@@ -69,7 +71,7 @@ void cCuttingThread::Action(void)
      fromFile->SetReadAhead(MEGABYTE(20));
      int Index = Mark->position;
      Mark = fromMarks.Next(Mark);
-     int FileSize = 0;
+     off_t FileSize = 0;
      int CurrentFileNumber = 0;
      int LastIFrame = 0;
      toMarks.Add(0);
@@ -78,9 +80,10 @@ void cCuttingThread::Action(void)
      bool LastMark = false;
      bool cutIn = true;
      while (Running()) {
-           uchar FileNumber;
-           int FileOffset, Length;
-           uchar PictureType;
+           uint16_t FileNumber;
+           off_t FileOffset;
+           int Length;
+           bool Independent;
 
            // Make sure there is enough disk space:
 
@@ -88,7 +91,7 @@ void cCuttingThread::Action(void)
 
            // Read one frame:
 
-           if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &PictureType, &Length)) {
+           if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &Independent, &Length)) {
               if (FileNumber != CurrentFileNumber) {
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
                  fromFile->SetReadAhead(MEGABYTE(20));
@@ -119,7 +122,7 @@ void cCuttingThread::Action(void)
 
            // Write one frame:
 
-           if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
+           if (Independent) { // every file shall start with an independent frame
               if (LastMark) // edited version shall end before next I-frame
                  break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
@@ -141,7 +144,7 @@ void cCuttingThread::Action(void)
               error = "safe_write";
               break;
               }
-           if (!toIndex->Write(PictureType, toFileName->Number(), FileSize)) {
+           if (!toIndex->Write(Independent, toFileName->Number(), FileSize)) {
               error = "toIndex";
               break;
               }

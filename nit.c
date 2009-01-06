@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.2 2008/12/06 15:46:50 kls Exp $
+ * $Id: nit.c 2.3 2008/12/20 10:57:50 kls Exp $
  */
 
 #include "nit.h"
@@ -129,7 +129,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  char Polarization = Polarizations[sd->getPolarization()];
                  static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_8_9, FEC_3_5, FEC_4_5, FEC_9_10, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  int CodeRate = CodeRates[sd->getFecInner()];
-                 static int Modulations[] = { QPSK, PSK_8, QAM_16 };
+                 static int Modulations[] = { QAM_AUTO, QPSK, PSK_8, QAM_16 };
                  int Modulation = Modulations[sd->getModulationType()];
                  int System = sd->getModulationSystem() ? SYS_DVBS2 : SYS_DVBS;
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };

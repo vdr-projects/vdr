@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.5 2008/11/22 15:23:10 kls Exp $
+.\" $Id: vdr.5 2.6 2009/01/06 12:37:35 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -334,7 +334,7 @@ of these cannot be determined, \fBTITLE\fR will default to the channel name, and
 An arbitrary string that can be used by external applications to store any
 kind of data related to this timer. The string must not contain any newline
 characters. If this field is not empty, its contents will be written into the
-\fIinfo.vdr\fR file of the recording with the '@' tag.
+\fIinfo\fR file of the recording with the '@' tag.
 .SS SOURCES
 The file \fIsources.conf\fR defines the codes to be used in the \fBSource\fR field
 of channels in \fIchannels.conf\fR and assigns descriptive texts to them.
@@ -558,41 +558,55 @@ messages file will be actually used.
 If a theme file doesn't contain a Description, the name of the theme (as
 given in the theme's file name) will be used.
 .SS AUDIO/VIDEO DATA
-The files \fI001.vdr\fR...\fI255.vdr\fR are the actual recorded MPEG data
+The files \fI00001.ts\fR...\fI65535.ts\fR are the actual recorded data
 files. In order to keep the size of an individual file below a given limit,
-a recording is split into several files. The contents of these files is
-\fBPacketized Elementary Stream\fR (PES) and contains ES packets with ids
-0xE0...0xEF for video (only one of these may actually occur in a file),
-0xC0...0xDF for audio 1...32 (up to 32 audio tracks may occur).
-Dolby Digital data is stored in packets with ids 0xBD ("Private Stream 1")
-and substream ids 0x80...0x87.
-DVB subtitle data is stored in packets with ids 0xBD ("Private Stream 1")
-and substream ids 0x20...0x27.
+a recording may be split into several files. The contents of these files is
+\fBTransport Stream\fR (TS) and contains data packets that are each 188 byte
+long and start with 0x47. Data is stored exactly as it is broadcast, with
+a generated PAT/PMT inserted right before every independent frame.
 .SS INDEX
-The file \fIindex.vdr\fR (if present in a recording directory) contains
+The file \fIindex\fR (if present in a recording directory) contains
 the (binary) index data into each of the the recording files
-\fI001.vdr\fR...\fI255.vdr\fR. It is used during replay to determine
+\fI00001.ts\fR...\fI65535.ts\fR. It is used during replay to determine
 the current position within the recording, and to implement skipping
 and fast forward/back functions.
 See the definition of the \fBcIndexFile\fR class for details about the
 actual contents of this file.
 .SS INFO
-The file \fIinfo.vdr\fR (if present in a recording directory) contains
+The file \fIinfo\fR (if present in a recording directory) contains
 a description of the recording, derived from the EPG data at recording time
 (if such data was available). The \fBAux\fR field of the corresponding
 timer (if given) is copied into this file, using the '@' tag.
 This is a plain ASCII file and contains tagged lines like the \fBEPG DATA\fR
 file (see the description of the \fIepg.data\fR file). Note that the lowercase
-tags ('c' and 'e') will not appear in an \fIinfo.vdr\fR file.
+tags ('c' and 'e') will not appear in an \fIinfo\fR file.
 Lines tagged with '#' are ignored and can be used by external tools to
 store arbitrary information.
+
+In addition to the tags used in the \fIepg.data\fR file, the following tag
+characters are defined:
+.TS
+tab (|);
+l l.
+\fBF\fR|<frame duration>
+\fBL\fR|<lifetime>
+\fBP\fR|<priority>
+\fB@\fR|<auxiliary data>
+.TE
 .SS RESUME
-The file \fIresume.vdr\fR (if present in a recording directory) contains
+The file \fIresume\fR (if present in a recording directory) contains
 the position within the recording where the last replay session left off.
-The data is a four byte (binary) integer value and defines an offset into
-the file \fIindex.vdr\fR.
+The file consists of tagged lines that describe the various parameters
+necessary to pick up replay where it left off.
+
+The following tag characters are defined:
+.TS
+tab (@);
+l l.
+\fBI\fR@<offset into the file \fIindex\fR>
+.TE
 .SS MARKS
-The file \fImarks.vdr\fR (if present in a recording directory) contains
+The file \fImarks\fR (if present in a recording directory) contains
 the editing marks defined for this recording.
 Each line contains the definition of one mark in the following format:
 
@@ -641,8 +655,6 @@ All other tags are optional (although every event
 should at least have a \fBT\fR entry).
 There may be several \fBX\fR tags, depending on the number of tracks (video, audio etc.)
 the event provides.
-The special tag character \fB@\fR is used to mark the \fBauxiliary data\fR from
-a timer definition in the \fIinfo.vdr\fR file.
 
 .TS
 tab (@);

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.1 2008/05/02 14:15:38 kls Exp $
+ * $Id: svdrp.c 2.2 2009/01/06 14:35:45 kls Exp $
  */
 
 #include "svdrp.h"
@@ -701,7 +701,7 @@ void cSVDRP::CmdEDIT(const char *Option)
         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            cMarks Marks;
-           if (Marks.Load(recording->FileName()) && Marks.Count()) {
+           if (Marks.Load(recording->FileName(), recording->FramesPerSecond(), recording->IsPesRecording()) && Marks.Count()) {
               if (!cCutter::Active()) {
                  if (cCutter::Start(recording->FileName()))
                     Reply(250, "Editing recording \"%s\" [%s]", Option, recording->Title());
@@ -1338,15 +1338,9 @@ void cSVDRP::CmdPLAY(const char *Option)
            cControl::Shutdown();
            if (*option) {
               int pos = 0;
-              if (strcasecmp(option, "BEGIN") != 0) {
-                 int h, m = 0, s = 0, f = 1;
-                 int x = sscanf(option, "%d:%d:%d.%d", &h, &m, &s, &f);
-                 if (x == 1)
-                    pos = h;
-                 else if (x >= 3)
-                    pos = (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
-                 }
-              cResumeFile resume(recording->FileName());
+              if (strcasecmp(option, "BEGIN") != 0)
+                 pos = HMSFToIndex(option, recording->FramesPerSecond());
+              cResumeFile resume(recording->FileName(), recording->IsPesRecording());
               if (pos <= 0)
                  resume.Delete();
               else

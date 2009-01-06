@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.3 2008/11/22 15:18:00 kls Exp $
+ * $Id: menu.c 2.4 2009/01/06 14:34:17 kls Exp $
  */
 
 #include "menu.h"
@@ -1989,10 +1989,13 @@ eOSState cMenuRecordings::Rewind(void)
      return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
-     cDevice::PrimaryDevice()->StopReplay(); // must do this first to be able to rewind the currently replayed recording
-     cResumeFile ResumeFile(ri->FileName());
-     ResumeFile.Delete();
-     return Play();
+     cRecording *recording = GetRecording(ri);
+     if (recording) {
+        cDevice::PrimaryDevice()->StopReplay(); // must do this first to be able to rewind the currently replayed recording
+        cResumeFile ResumeFile(ri->FileName(), recording->IsPesRecording());
+        ResumeFile.Delete();
+        return Play();
+        }
      }
   return osContinue;
 }
@@ -4014,9 +4017,9 @@ cReplayControl::cReplayControl(void)
   lastSpeed = -2; // an invalid value
   timeoutShow = 0;
   timeSearchActive = false;
-  marks.Load(fileName);
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
+  marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
   SetTrackDescriptions(false);
 }
 
@@ -4126,7 +4129,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         lastCurrent = lastTotal = -1;
         }
      if (Total != lastTotal) {
-        displayReplay->SetTotal(IndexToHMSF(Total));
+        displayReplay->SetTotal(IndexToHMSF(Total, false, FramesPerSecond()));
         if (!Initial)
            displayReplay->Flush();
         }
@@ -4134,7 +4137,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         displayReplay->SetProgress(Current, Total);
         if (!Initial)
            displayReplay->Flush();
-        displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames));
+        displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
         displayReplay->Flush();
         lastCurrent = Current;
         }
@@ -4167,8 +4170,8 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
 {
 #define STAY_SECONDS_OFF_END 10
   int Seconds = (timeSearchTime >> 24) * 36000 + ((timeSearchTime & 0x00FF0000) >> 16) * 3600 + ((timeSearchTime & 0x0000FF00) >> 8) * 600 + (timeSearchTime & 0x000000FF) * 60;
-  int Current = (lastCurrent / FRAMESPERSEC);
-  int Total = (lastTotal / FRAMESPERSEC);
+  int Current = (lastCurrent / FramesPerSecond());
+  int Total = (lastTotal / FramesPerSecond());
   switch (Key) {
     case k0 ... k9:
          if (timeSearchPos < 4) {
@@ -4195,7 +4198,7 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kDown:
     case kOk:
          Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-         Goto(Seconds * FRAMESPERSEC, Key == kDown || Key == kPause || Key == kOk);
+         Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
          timeSearchActive = false;
          break;
     default:
@@ -4317,7 +4320,7 @@ void cReplayControl::EditTest(void)
         if ((m->Index() & 0x01) != 0)
            m = marks.Next(m);
         if (m) {
-           Goto(m->position - SecondsToFrames(3));
+           Goto(m->position - SecondsToFrames(3, FramesPerSecond()));
            Play();
            }
         }

@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.6 2008/12/13 14:38:07 kls Exp $
+ * $Id: dvbdevice.c 2.10 2009/01/06 14:52:54 kls Exp $
  */
 
 #include "dvbdevice.h"
 #include <errno.h>
 #include <limits.h>
-#include <linux/videodev.h>
+#include <linux/videodev2.h>
 #include <linux/dvb/audio.h>
 #include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
@@ -491,7 +491,7 @@ cDvbDevice::cDvbDevice(int n)
   if (fd_frontend >= 0) {
      if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) >= 0) {
         switch (frontendInfo.type) {
-          case FE_QPSK: frontendType = (frontendInfo.caps & FE_CAN_2ND_GEN_MODULATION) ? SYS_DVBS2 : SYS_DVBS; break;
+          case FE_QPSK: frontendType = (frontendInfo.caps & FE_CAN_2G_MODULATION) ? SYS_DVBS2 : SYS_DVBS; break;
           case FE_OFDM: frontendType = SYS_DVBT; break;
           case FE_QAM:  frontendType = SYS_DVBC_ANNEX_AC; break;
           case FE_ATSC: frontendType = SYS_ATSC; break;
@@ -604,69 +604,103 @@ uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int S
   int videoDev = open(buffer, O_RDWR);
   if (videoDev >= 0) {
      uchar *result = NULL;
-     struct video_mbuf mbuf;
-     if (ioctl(videoDev, VIDIOCGMBUF, &mbuf) == 0) {
-        int msize = mbuf.size;
-        unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
-        if (mem && mem != (unsigned char *)-1) {
-           // set up the size and RGB
-           struct video_capability vc;
-           if (ioctl(videoDev, VIDIOCGCAP, &vc) == 0) {
-              struct video_mmap vm;
-              vm.frame = 0;
-              if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
-                  (SizeY > 0) && (SizeY <= vc.maxheight)) {
-                 vm.width = SizeX;
-                 vm.height = SizeY;
-                 }
-              else {
-                 vm.width = vc.maxwidth;
-                 vm.height = vc.maxheight;
-                 }
-              vm.format = VIDEO_PALETTE_RGB24;
-              if (ioctl(videoDev, VIDIOCMCAPTURE, &vm) == 0 && ioctl(videoDev, VIDIOCSYNC, &vm.frame) == 0) {
-                 // make RGB out of BGR:
-                 int memsize = vm.width * vm.height;
-                 unsigned char *mem1 = mem;
-                 for (int i = 0; i < memsize; i++) {
-                     unsigned char tmp = mem1[2];
-                     mem1[2] = mem1[0];
-                     mem1[0] = tmp;
-                     mem1 += 3;
-                     }
+     // set up the size and RGB
+     v4l2_format fmt;
+     memset(&fmt, 0, sizeof(fmt));
+     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+     fmt.fmt.pix.width = SizeX;
+     fmt.fmt.pix.height = SizeY;
+     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
+     fmt.fmt.pix.field = V4L2_FIELD_ANY;
+     if (ioctl(videoDev, VIDIOC_S_FMT, &fmt) == 0) {
+        v4l2_requestbuffers reqBuf;
+        memset(&reqBuf, 0, sizeof(reqBuf));
+        reqBuf.count = 2;
+        reqBuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        reqBuf.memory = V4L2_MEMORY_MMAP;
+        if (ioctl(videoDev, VIDIOC_REQBUFS, &reqBuf) >= 0) {
+           v4l2_buffer mbuf;
+           memset(&mbuf, 0, sizeof(mbuf));
+           mbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+           mbuf.memory = V4L2_MEMORY_MMAP;
+           if (ioctl(videoDev, VIDIOC_QUERYBUF, &mbuf) == 0) {
+              int msize = mbuf.length;
+              unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
+              if (mem && mem != (unsigned char *)-1) {
+                 v4l2_buffer buf;
+                 memset(&buf, 0, sizeof(buf));
+                 buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                 buf.memory = V4L2_MEMORY_MMAP;
+                 buf.index = 0;
+                 if (ioctl(videoDev, VIDIOC_QBUF, &buf) == 0) {
+                    v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                    if (ioctl (videoDev, VIDIOC_STREAMON, &type) == 0) {
+                       memset(&buf, 0, sizeof(buf));
+                       buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                       buf.memory = V4L2_MEMORY_MMAP;
+                       buf.index = 0;
+                       if (ioctl(videoDev, VIDIOC_DQBUF, &buf) == 0) {
+                          if (ioctl(videoDev, VIDIOC_STREAMOFF, &type) == 0) {
+                             // make RGB out of BGR:
+                             int memsize = fmt.fmt.pix.width * fmt.fmt.pix.height;
+                             unsigned char *mem1 = mem;
+                             for (int i = 0; i < memsize; i++) {
+                                 unsigned char tmp = mem1[2];
+                                 mem1[2] = mem1[0];
+                                 mem1[0] = tmp;
+                                 mem1 += 3;
+                                 }
 
-                 if (Quality < 0)
-                    Quality = 100;
+                             if (Quality < 0)
+                                Quality = 100;
 
-                 dsyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
-                 if (Jpeg) {
-                    // convert to JPEG:
-                    result = RgbToJpeg(mem, vm.width, vm.height, Size, Quality);
-                    if (!result)
-                       esyslog("ERROR: failed to convert image to JPEG");
-                    }
-                 else {
-                    // convert to PNM:
-                    char buf[32];
-                    snprintf(buf, sizeof(buf), "P6\n%d\n%d\n255\n", vm.width, vm.height);
-                    int l = strlen(buf);
-                    int bytes = memsize * 3;
-                    Size = l + bytes;
-                    result = MALLOC(uchar, Size);
-                    if (result) {
-                       memcpy(result, buf, l);
-                       memcpy(result + l, mem, bytes);
+                             dsyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, fmt.fmt.pix.width, fmt.fmt.pix.height);
+                             if (Jpeg) {
+                                // convert to JPEG:
+                                result = RgbToJpeg(mem, fmt.fmt.pix.width, fmt.fmt.pix.height, Size, Quality);
+                                if (!result)
+                                   esyslog("ERROR: failed to convert image to JPEG");
+                                }
+                             else {
+                                // convert to PNM:
+                                char buf[32];
+                                snprintf(buf, sizeof(buf), "P6\n%d\n%d\n255\n", fmt.fmt.pix.width, fmt.fmt.pix.height);
+                                int l = strlen(buf);
+                                int bytes = memsize * 3;
+                                Size = l + bytes;
+                                result = MALLOC(uchar, Size);
+                                if (result) {
+                                   memcpy(result, buf, l);
+                                   memcpy(result + l, mem, bytes);
+                                   }
+                                else
+                                   esyslog("ERROR: failed to convert image to PNM");
+                                }
+                             }
+                          else
+                             esyslog("ERROR: video device VIDIOC_STREAMOFF failed");
+                          }
+                       else
+                          esyslog("ERROR: video device VIDIOC_DQBUF failed");
                        }
                     else
-                       esyslog("ERROR: failed to convert image to PNM");
+                       esyslog("ERROR: video device VIDIOC_STREAMON failed");
                     }
+                 else
+                    esyslog("ERROR: video device VIDIOC_QBUF failed");
+                 munmap(mem, msize);
                  }
+              else
+                 esyslog("ERROR: failed to memmap video device");
               }
-           munmap(mem, msize);
+           else
+              esyslog("ERROR: video device VIDIOC_QUERYBUF failed");
            }
         else
-           esyslog("ERROR: failed to memmap video device");
+           esyslog("ERROR: video device VIDIOC_REQBUFS failed");
         }
+     else
+        esyslog("ERROR: video device VIDIOC_S_FMT failed");
      close(videoDev);
      return result;
      }
@@ -1179,7 +1213,11 @@ void cDvbDevice::Mute(void)
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)
 {
-  if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
+  if (Data[0] == 0x47) {
+     // TS data
+     cDevice::StillPicture(Data, Length);
+     }
+  else if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
      // PES data
      char *buf = MALLOC(char, Length);
      if (!buf)
@@ -1269,6 +1307,10 @@ int cDvbDevice::PlayVideo(const uchar *Data, int Length)
   int w;
   do {
      w = WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
+     if (w < 0 && errno == EAGAIN) {
+        cPoller Poller(fd_video, true);
+        Poller.Poll(200);
+        }
      } while (w != Length);
   return w;
 }
@@ -1278,6 +1320,10 @@ int cDvbDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
   int w;
   do {
      w = WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
+     if (w < 0 && errno == EAGAIN) {
+        cPoller Poller(fd_audio, true);
+        Poller.Poll(200);
+        }
      } while (w != Length);
   return w;
 }
@@ -1289,8 +1335,8 @@ int cDvbDevice::PlayTsVideo(const uchar *Data, int Length)
 
 int cDvbDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  Length = TsGetPayload(&Data);
-  return PlayAudio(Data, Length, 0);
+  int w = PlayAudio(Data, TsGetPayload(&Data), 0);
+  return w >= 0 ? Length : w;
 }
 
 bool cDvbDevice::OpenDvr(void)

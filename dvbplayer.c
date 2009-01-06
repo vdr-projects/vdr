@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.0 2008/02/09 15:10:54 kls Exp $
+ * $Id: dvbplayer.c 2.1 2009/01/05 16:52:40 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -182,8 +182,8 @@ bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 
 #define PLAYERBUFSIZE  MEGABYTE(1)
 
-// The number of frames to back up when resuming an interrupted replay session:
-#define RESUMEBACKUP (10 * FRAMESPERSEC)
+// The number of seconds to back up when resuming an interrupted replay session:
+#define RESUMEBACKUP 10
 
 class cDvbPlayer : public cPlayer, cThread {
 private:
@@ -196,6 +196,8 @@ private:
   cFileName *fileName;
   cIndexFile *index;
   cUnbufferedFile *replayFile;
+  double framesPerSecond;
+  bool isPesRecording;
   bool eof;
   bool firstPacket;
   ePlayModes playMode;
@@ -223,6 +225,7 @@ public:
   int SkipFrames(int Frames);
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
+  virtual double FramesPerSecond(void) { return framesPerSecond; }
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
   };
@@ -240,6 +243,9 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   ringBuffer = NULL;
   backTrace = NULL;
   index = NULL;
+  cRecording Recording(FileName);
+  framesPerSecond = Recording.FramesPerSecond();
+  isPesRecording = Recording.IsPesRecording();
   eof = false;
   firstPacket = true;
   playMode = pmPlay;
@@ -249,13 +255,13 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   readFrame = NULL;
   playFrame = NULL;
   isyslog("replay %s", FileName);
-  fileName = new cFileName(FileName, false);
+  fileName = new cFileName(FileName, false, false, isPesRecording);
   replayFile = fileName->Open();
   if (!replayFile)
      return;
   ringBuffer = new cRingBufferFrame(PLAYERBUFSIZE);
   // Create the index file:
-  index = new cIndexFile(FileName, false);
+  index = new cIndexFile(FileName, false, isPesRecording);
   if (!index)
      esyslog("ERROR: can't allocate index");
   else if (!index->Ok()) {
@@ -327,8 +333,8 @@ int cDvbPlayer::Resume(void)
   if (index) {
      int Index = index->GetResume();
      if (Index >= 0) {
-        uchar FileNumber;
-        int FileOffset;
+        uint16_t FileNumber;
+        off_t FileOffset;
         if (index->Get(Index, &FileNumber, &FileOffset) && NextFile(FileNumber, FileOffset))
            return Index;
         }
@@ -341,7 +347,7 @@ bool cDvbPlayer::Save(void)
   if (index) {
      int Index = writeIndex;
      if (Index >= 0) {
-        Index -= RESUMEBACKUP;
+        Index -= RESUMEBACKUP * framesPerSecond;
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false);
         else
@@ -371,7 +377,7 @@ void cDvbPlayer::Action(void)
 
   readIndex = Resume();
   if (readIndex >= 0)
-     isyslog("resuming replay at index %d (%s)", readIndex, *IndexToHMSF(readIndex, true));
+     isyslog("resuming replay at index %d (%s)", readIndex, *IndexToHMSF(readIndex, true, framesPerSecond));
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;
@@ -397,8 +403,8 @@ void cDvbPlayer::Action(void)
               if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
-                       uchar FileNumber;
-                       int FileOffset;
+                       uint16_t FileNumber;
+                       off_t FileOffset;
                        bool TimeShiftMode = index->IsStillRecording();
                        int Index = -1;
                        if (DeviceHasIBPTrickSpeed() && playDir == pdForward) {
@@ -435,8 +441,8 @@ void cDvbPlayer::Action(void)
                        readIndex = Index;
                        }
                     else if (index) {
-                       uchar FileNumber;
-                       int FileOffset;
+                       uint16_t FileNumber;
+                       off_t FileOffset;
                        readIndex++;
                        if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset))) {
                           readIndex = -1;
@@ -496,14 +502,22 @@ void cDvbPlayer::Action(void)
                  pc = playFrame->Count();
                  if (p) {
                     if (firstPacket) {
-                       PlayPes(NULL, 0);
-                       cRemux::SetBrokenLink(p, pc);
+                       if (isPesRecording) {
+                          PlayPes(NULL, 0);
+                          cRemux::SetBrokenLink(p, pc);
+                          }
+                       else
+                          PlayTs(NULL, 0);
                        firstPacket = false;
                        }
                     }
                  }
               if (p) {
-                 int w = PlayPes(p, pc, playMode != pmPlay);
+                 int w;
+                 if (isPesRecording)
+                    w = PlayPes(p, pc, playMode != pmPlay);
+                 else
+                    w = PlayTs(p, TS_SIZE, playMode != pmPlay);
                  if (w > 0) {
                     p += w;
                     pc -= w;
@@ -513,7 +527,7 @@ void cDvbPlayer::Action(void)
                     break;
                     }
                  }
-              if (pc == 0) {
+              if (pc <= 0) {
                  writeIndex = playFrame->Index();
                  backTrace->Add(playFrame->Index(), playFrame->Count());
                  ringBuffer->Drop(playFrame);
@@ -678,7 +692,7 @@ void cDvbPlayer::SkipSeconds(int Seconds)
      Empty();
      int Index = writeIndex;
      if (Index >= 0) {
-        Index = max(Index + Seconds * FRAMESPERSEC, 0);
+        Index = max(Index + SecondsToFrames(Seconds, framesPerSecond), 0);
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false, NULL, NULL, NULL, true);
         if (Index >= 0)
@@ -695,38 +709,16 @@ void cDvbPlayer::Goto(int Index, bool Still)
      Empty();
      if (++Index <= 0)
         Index = 1; // not '0', to allow GetNextIFrame() below to work!
-     uchar FileNumber;
-     int FileOffset, Length;
+     uint16_t FileNumber;
+     off_t FileOffset;
+     int Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        uchar b[MAXFRAMESIZE + 4 + 5 + 4];
+        uchar b[MAXFRAMESIZE];
         int r = ReadFrame(replayFile, b, Length, sizeof(b));
         if (r > 0) {
            if (playMode == pmPause)
               DevicePlay();
-           // append sequence end code to get the image shown immediately with softdevices
-           if (r > 6 && (b[3] & 0xF0) == 0xE0) { // make sure to append it only to a video packet
-              b[r++] = 0x00;
-              b[r++] = 0x00;
-              b[r++] = 0x01;
-              b[r++] = b[3];
-              if (b[6] & 0x80) { // MPEG 2
-                 b[r++] = 0x00;
-                 b[r++] = 0x07;
-                 b[r++] = 0x80;
-                 b[r++] = 0x00;
-                 b[r++] = 0x00;
-                 }
-              else { // MPEG 1
-                 b[r++] = 0x00;
-                 b[r++] = 0x05;
-                 b[r++] = 0x0F;
-                 }
-              b[r++] = 0x00;
-              b[r++] = 0x00;
-              b[r++] = 0x01;
-              b[r++] = 0xB7;
-              }
            DeviceStillPicture(b, r);
            }
         playMode = pmStill;
