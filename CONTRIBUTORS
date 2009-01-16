@@ -660,6 +660,8 @@ Oliver Endriss <o.endriss@gmx.de>
  the call to cStatus::MsgSetVolume()
  for providing a driver patch that allows replaying TS->PES converted video in
  Transfer Mode
+ for providing a driver patch that allows direct replaying of TS video on full-featured
+ DVB cards
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

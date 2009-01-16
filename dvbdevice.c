@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.11 2009/01/06 16:54:52 kls Exp $
+ * $Id: dvbdevice.c 2.12 2009/01/10 10:07:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1297,39 +1297,22 @@ bool cDvbDevice::Flush(int TimeoutMs)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  int w;
-  do {
-     w = WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
-     if (w < 0 && errno == EAGAIN) {
-        cPoller Poller(fd_video, true);
-        Poller.Poll(200);
-        }
-     } while (w != Length);
-  return w;
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 {
-  int w;
-  do {
-     w = WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
-     if (w < 0 && errno == EAGAIN) {
-        cPoller Poller(fd_audio, true);
-        Poller.Poll(200);
-        }
-     } while (w != Length);
-  return w;
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayTsVideo(const uchar *Data, int Length)
 {
-  return cDevice::PlayTsVideo(Data, Length);
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  int w = PlayAudio(Data, TsGetPayload(&Data), 0);
-  return w >= 0 ? Length : w;
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 bool cDvbDevice::OpenDvr(void)

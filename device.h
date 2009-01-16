@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.4 2009/01/05 16:28:06 kls Exp $
+ * $Id: device.h 2.5 2009/01/10 10:04:30 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -487,7 +487,7 @@ protected:
        ///< Plays the given data block as video.
        ///< Data points to exactly one complete PES packet of the given Length.
        ///< PlayVideo() shall process the packet either as a whole (returning
-       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< \return Returns the number of bytes actually taken from Data, or -1
        ///< in case of an error.
   virtual int PlayAudio(const uchar *Data, int Length, uchar Id);
@@ -498,14 +498,14 @@ protected:
        ///< TS replay). Plugins that need to know this Id shall read it from the
        ///< actual PES data (it's the 4th byte).
        ///< PlayAudio() shall process the packet either as a whole (returning
-       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< \return Returns the number of bytes actually taken from Data, or -1
        ///< in case of an error.
   virtual int PlaySubtitle(const uchar *Data, int Length);
        ///< Plays the given data block as a subtitle.
        ///< Data points to exactly one complete PES packet of the given Length.
        ///< PlaySubtitle() shall process the packet either as a whole (returning
-       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< \return Returns the number of bytes actually taken from Data, or -1
        ///< in case of an error.
   virtual int PlayPesPacket(const uchar *Data, int Length, bool VideoOnly = false);
@@ -610,8 +610,7 @@ public:
        ///< Returns -1 in case of error, otherwise the number of actually
        ///< processed bytes is returned, which must be Length.
        ///< PlayTs() shall process the packet either as a whole (returning
-       ///< a positive number, which needs not necessarily be Length) or not at all
-       ///< (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< Length) or not at all returning 0 or -1 and setting 'errno' accordingly).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;

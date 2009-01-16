@@ -5912,7 +5912,13 @@ Video Disk Recorder Revision History
   can handle DVB-S2. The #define is still there to allow people with older drivers
   who don't need DVB-S2 to use this version without pathcing.
 
-2009-01-06: Version 1.7.4
+2009-01-16: Version 1.7.4
 
 - Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
   flag is now in the driver, anyway.
+- The full-featured DVB cards are now given the TS data directly for replay
+  (thanks to Oliver Endriss for enhancing the av7110 driver to make it replay
+  TS data). The patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_ts_replay__1.diff
+  implements this change in the driver.
+  The the patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
+  is no longer necessary.
