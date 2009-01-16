@@ -1488,6 +1488,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  to avoid unnecessary OSD access
  for changing cDvbDevice::GrabImage() to use V4L2
  for adding a missing Detach() in cTransfer::Activate()
+ for adding clearing the TS buffers in cDevice::Detach()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
