@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.4 2009/01/06 14:41:11 kls Exp $
+ * $Id: recording.c 2.5 2009/01/16 15:55:18 kls Exp $
  */
 
 #include "recording.h"
@@ -154,9 +154,10 @@ void AssertFreeDiskSpace(int Priority, bool Force)
                     }
                  r = DeletedRecordings.Next(r);
                  }
-           if (r0 && r0->Remove()) {
+           if (r0) {
+              if (r0->Remove())
+                 LastFreeDiskCheck += REMOVELATENCY / Factor;
               DeletedRecordings.Del(r0);
-              LastFreeDiskCheck += REMOVELATENCY / Factor;
               return;
               }
            }

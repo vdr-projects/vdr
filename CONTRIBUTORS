@@ -1192,6 +1192,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing cPatPmtParser::ParsePmt() to reset vpid and vtype when switching from
  a video to an audio channel
  for fixing returning complete PES packets in cTsToPes::GetPes()
+ for reporting a possible problem with removing deleted recordings
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

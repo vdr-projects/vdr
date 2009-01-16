@@ -5931,3 +5931,7 @@ Video Disk Recorder Revision History
 - Added clearing the TS buffers in cDevice::Detach() (thanks to Marco Schlüßler).
 - Fixed incrementing the continuity counter in cPatPmtGenerator::GetPmt() (thanks
   to Johann Friedrichs).
+- Fixed removing deleted recordings in case there is a problem. Once a recording
+  caused a problem with removing, no others were removed any more and an ongoing
+  recording could fill up the disk and cause other recordings to be deleted
+  automatically (reported by Reinhard Nissl).
