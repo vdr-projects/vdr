@@ -5922,3 +5922,5 @@ Video Disk Recorder Revision History
   implements this change in the driver.
   The the patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
   is no longer necessary.
+- Added a typecast in cUnbufferedFile::Write() to avoid an error message when
+  compiling on 64 bit systems.
