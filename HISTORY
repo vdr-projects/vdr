@@ -5927,3 +5927,4 @@ Video Disk Recorder Revision History
 - Added some missing 'const' statements to cBitmap (thanks to Andreas Regel).
 - Fixed returning complete PES packets in cTsToPes::GetPes() (thanks to Reinhard
   Nissl).
+- Added a missing Detach() in cTransfer::Activate() (thanks to Marco Schlüßler).

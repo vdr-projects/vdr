@@ -1487,6 +1487,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing setting the date in the channel display of the classic and sttng skins,
  to avoid unnecessary OSD access
  for changing cDvbDevice::GrabImage() to use V4L2
+ for adding a missing Detach() in cTransfer::Activate()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
