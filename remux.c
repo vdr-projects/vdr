@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.6 2009/01/16 14:43:15 kls Exp $
+ * $Id: remux.c 2.7 2009/01/16 15:25:42 kls Exp $
  */
 
 #include "remux.h"
@@ -320,7 +320,7 @@ uchar *cPatPmtGenerator::GetPat(void)
 uchar *cPatPmtGenerator::GetPmt(int &Index)
 {
   if (Index < numPmtPackets) {
-     IncCounter(patCounter, pmt[Index]);
+     IncCounter(pmtCounter, pmt[Index]);
      return pmt[Index++];
      }
   return NULL;

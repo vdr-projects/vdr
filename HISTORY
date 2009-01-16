@@ -5929,3 +5929,5 @@ Video Disk Recorder Revision History
   Nissl).
 - Added a missing Detach() in cTransfer::Activate() (thanks to Marco Schlüßler).
 - Added clearing the TS buffers in cDevice::Detach() (thanks to Marco Schlüßler).
+- Fixed incrementing the continuity counter in cPatPmtGenerator::GetPmt() (thanks
+  to Johann Friedrichs).

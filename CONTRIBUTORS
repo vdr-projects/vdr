@@ -2398,3 +2398,6 @@ Niels Wagenaar <n.wagenaar@xs4all.nl>
 
 Edgar Hucek <gimli@dark-green.com>
  for a patch that was used to convert VDR to the S2API driver API
+
+Johann Friedrichs <johann.friedrichs@web.de>
+ for fixing incrementing the continuity counter in cPatPmtGenerator::GetPmt()
