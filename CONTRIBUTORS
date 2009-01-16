@@ -1315,6 +1315,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for implementing palette replace mode in the OSD bitmaps
  for fixing handling numeric keys in the channel display after switching channel
  groups
+ for adding some missing 'const' statements to cBitmap
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

@@ -5924,3 +5924,4 @@ Video Disk Recorder Revision History
   is no longer necessary.
 - Added a typecast in cUnbufferedFile::Write() to avoid an error message when
   compiling on 64 bit systems.
+- Added some missing 'const' statements to cBitmap (thanks to Andreas Regel).

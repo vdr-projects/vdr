@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.58 2007/10/12 14:28:44 kls Exp $
+ * $Id: osd.h 2.1 2009/01/16 14:37:03 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -231,9 +231,9 @@ public:
        ///< 5: vertical,   rising,  upper
        ///< 6: vertical,   falling, lower
        ///< 7: vertical,   falling, upper
-  const tIndex *Data(int x, int y);
+  const tIndex *Data(int x, int y) const;
        ///< Returns the address of the index byte at the given coordinates.
-  tColor GetColor(int x, int y) { return Color(*Data(x, y)); }
+  tColor GetColor(int x, int y) const { return Color(*Data(x, y)); }
        ///< Returns the color at the given coordinates.
   void ReduceBpp(const cPalette &Palette);
        ///< Reduces the color depth of the bitmap to that of the given Palette.
