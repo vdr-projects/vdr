@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.5 2009/01/06 14:46:21 kls Exp $
+ * $Id: remux.c 2.6 2009/01/16 14:43:15 kls Exp $
  */
 
 #include "remux.h"
@@ -559,8 +559,10 @@ const uchar *cTsToPes::GetPes(int &Length)
         }
      else {
         Length = PesLength(data);
-        offset = Length; // to make sure we break out in case of garbage data
-        return data;
+        if (Length <= length) {
+           offset = Length; // to make sure we break out in case of garbage data
+           return data;
+           }
         }
      }
   return NULL;

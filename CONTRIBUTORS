@@ -1191,6 +1191,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting the missing description of the 'S' channel parameter in vdr.5
  for fixing cPatPmtParser::ParsePmt() to reset vpid and vtype when switching from
  a video to an audio channel
+ for fixing returning complete PES packets in cTsToPes::GetPes()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
