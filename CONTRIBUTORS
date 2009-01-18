@@ -1193,6 +1193,8 @@ Reinhard Nissl <rnissl@gmx.de>
  a video to an audio channel
  for fixing returning complete PES packets in cTsToPes::GetPes()
  for reporting a possible problem with removing deleted recordings
+ for pointing out that a check of mutexCurrentAudioTrack needs to be done in
+ to cDevice::PlayTs()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

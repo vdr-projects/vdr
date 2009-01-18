@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.6 2009/01/16 15:20:21 kls Exp $
+ * $Id: device.c 2.7 2009/01/18 11:42:22 kls Exp $
  */
 
 #include "device.h"
@@ -1322,6 +1322,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         return Length; // silently ignore TS packets w/o payload
      int PayloadOffset = TsPayloadOffset(Data);
      if (PayloadOffset < Length) {
+        cMutexLock MutexLock(&mutexCurrentAudioTrack);
         int Pid = TsPid(Data);
         if (Pid == 0)
            patPmtParser.ParsePat(Data + PayloadOffset, Length - PayloadOffset);

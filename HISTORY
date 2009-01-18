@@ -5943,3 +5943,5 @@ Video Disk Recorder Revision History
   be used to distinguish recordings of the same broadcast made by different instances
   of VDR (suggested by Frank Schmirler). This replaces the use of the "resume id"
   that was introduced in version 1.7.3.
+- Added checking mutexCurrentAudioTrack to cDevice::PlayTs() (thanks to Reinhard
+  Nissl for pointing this out).
