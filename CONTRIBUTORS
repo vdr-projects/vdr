@@ -2402,3 +2402,6 @@ Edgar Hucek <gimli@dark-green.com>
 
 Johann Friedrichs <johann.friedrichs@web.de>
  for fixing incrementing the continuity counter in cPatPmtGenerator::GetPmt()
+ for pointing out that "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+ -D_LARGEFILE64_SOURCE" should be added to Make.config.
+  to Make.config.template (thanks to Johann Friedrichs for pointing this out).

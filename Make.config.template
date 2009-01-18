@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.16 2008/01/13 12:54:09 kls Exp $
+# $Id: Make.config.template 2.1 2009/01/18 10:46:13 kls Exp $
 
 ### The C compiler and options:
 
@@ -19,6 +19,7 @@ CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 ifdef PLUGIN
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
+DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 endif
 
 ### The directory environment:

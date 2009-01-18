@@ -5912,7 +5912,7 @@ Video Disk Recorder Revision History
   can handle DVB-S2. The #define is still there to allow people with older drivers
   who don't need DVB-S2 to use this version without pathcing.
 
-2009-01-16: Version 1.7.4
+2009-01-18: Version 1.7.4
 
 - Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
   flag is now in the driver, anyway.
@@ -5935,3 +5935,7 @@ Video Disk Recorder Revision History
   caused a problem with removing, no others were removed any more and an ongoing
   recording could fill up the disk and cause other recordings to be deleted
   automatically (reported by Reinhard Nissl).
+- Added "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"
+  to Make.config.template (thanks to Johann Friedrichs for pointing this out).
+  Plugin authors should add this line to their Makefile or Make.config if they use
+  file access functions that need special versions for 64 bit offsets.
