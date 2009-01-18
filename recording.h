@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.1 2009/01/06 10:49:59 kls Exp $
+ * $Id: recording.h 2.2 2009/01/18 11:02:00 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -19,6 +19,7 @@
 #include "tools.h"
 
 extern bool VfatFileSystem;
+extern int InstanceId;
 
 void RemoveDeletedRecordings(void);
 void AssertFreeDiskSpace(int Priority = 0, bool Force = false);
@@ -82,7 +83,7 @@ private:
   mutable char *name;
   mutable int fileSizeMB;
   int channel;
-  int resumeId;
+  int instanceId;
   bool isPesRecording;
   double framesPerSecond;
   cRecordingInfo *info;

@@ -2214,6 +2214,8 @@ Frank Schmirler <vdr@schmirler.de>
  allowed characters
  for fixing handling address masks in SVDRP host settings
  for fixing handling the 'pointer field' in generating and parsing PAT/PMT
+ for suggesting to use an "instance id" instead of the "resume id" to distinguish
+ recordings of the same broadcast made by different instances of VDR
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while

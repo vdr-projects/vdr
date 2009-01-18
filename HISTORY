@@ -5939,3 +5939,7 @@ Video Disk Recorder Revision History
   to Make.config.template (thanks to Johann Friedrichs for pointing this out).
   Plugin authors should add this line to their Makefile or Make.config if they use
   file access functions that need special versions for 64 bit offsets.
+- The new command line option -i can be used to set an "instance id", which will
+  be used to distinguish recordings of the same broadcast made by different instances
+  of VDR (suggested by Frank Schmirler). This replaces the use of the "resume id"
+  that was introduced in version 1.7.3.

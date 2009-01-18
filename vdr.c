@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.3 2008/09/06 14:08:44 kls Exp $
+ * $Id: vdr.c 2.4 2009/01/18 11:02:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -223,6 +223,7 @@ int main(int argc, char *argv[])
       { "epgfile",  required_argument, NULL, 'E' },
       { "grab",     required_argument, NULL, 'g' },
       { "help",     no_argument,       NULL, 'h' },
+      { "instance", required_argument, NULL, 'i' },
       { "lib",      required_argument, NULL, 'L' },
       { "lirc",     optional_argument, NULL, 'l' | 0x100 },
       { "localedir",required_argument, NULL, 'l' | 0x200 },
@@ -245,7 +246,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hl:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hi:l:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
                     break;
@@ -268,6 +269,13 @@ int main(int argc, char *argv[])
                     break;
           case 'h': DisplayHelp = true;
                     break;
+          case 'i': if (isnumber(optarg)) {
+                       InstanceId = atoi(optarg);
+                       if (InstanceId >= 0)
+                          break;
+                       }
+                    fprintf(stderr, "vdr: invalid instance id: %s\n", optarg);
+                    return 2;
           case 'l': {
                       char *p = strchr(optarg, '.');
                       if (p)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.5 2009/01/16 15:55:18 kls Exp $
+ * $Id: recording.c 2.6 2009/01/18 11:02:09 kls Exp $
  */
 
 #include "recording.h"
@@ -64,6 +64,7 @@
 #define MAX_LINK_LEVEL  6
 
 bool VfatFileSystem = false;
+int InstanceId = 0;
 
 cRecordings DeletedRecordings(true);
 
@@ -602,7 +603,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   name = NULL;
   fileSizeMB = -1; // unknown
   channel = Timer->Channel()->Number();
-  resumeId = Setup.ResumeID;
+  instanceId = InstanceId;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   deleted = 0;
@@ -659,7 +660,7 @@ cRecording::cRecording(const char *FileName)
   resume = RESUME_NOT_INITIALIZED;
   fileSizeMB = -1; // unknown
   channel = -1;
-  resumeId = -1;
+  instanceId = -1;
   priority = MAXPRIORITY; // assume maximum in case there is no info file
   lifetime = MAXLIFETIME;
   isPesRecording = false;
@@ -678,7 +679,7 @@ cRecording::cRecording(const char *FileName)
      struct tm tm_r;
      struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
      t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
-     if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &resumeId)
+     if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &instanceId)
       || 7 == sscanf(p + 1, DATAFORMATPES, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;
@@ -688,7 +689,7 @@ cRecording::cRecording(const char *FileName)
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
-        isPesRecording = resumeId < 0;
+        isPesRecording = instanceId < 0;
         }
      else
         return;
@@ -827,7 +828,7 @@ const char *cRecording::FileName(void) const
      struct tm *t = localtime_r(&start, &tm_r);
      const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
      int ch = isPesRecording ? priority : channel;
-     int ri = isPesRecording ? lifetime : resumeId;
+     int ri = isPesRecording ? lifetime : instanceId;
      name = ExchangeChars(name, true);
      fileName = strdup(cString::sprintf(fmt, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
      name = ExchangeChars(name, false);

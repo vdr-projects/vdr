@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.33 2008/03/09 16:07:06 kls Exp $
+.\" $Id: vdr.1 2.1 2009/01/18 11:05:56 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -70,6 +70,15 @@ grabbing images to disk is disabled.
 .TP
 .B \-h, \-\-help
 Print a help message and exit.
+.TP
+.BI \-i\  instance ,\ \-\-instance= instance
+Use \fIinstance\fR as the id of this VDR instance (default is 0).
+In an environment where several instances of VDR use the same video
+directory, this parameter can be set to a positive integer value
+that's unique for each instance, so that they won't interfere with
+each other in case they record exactly the same broadcast.
+The number given here will be part of the directory name in which
+the recordings will be stored.
 .TP
 .BI \-l\  level ,\ \-\-log= level
 Set logging to \fIlevel\fR.
