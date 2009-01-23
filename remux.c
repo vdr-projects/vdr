@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.7 2009/01/16 15:25:42 kls Exp $
+ * $Id: remux.c 2.8 2009/01/23 14:17:07 kls Exp $
  */
 
 #include "remux.h"
@@ -359,8 +359,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
 {
   // The PMT may extend over several TS packets, so we need to assemble them
   if (pmtSize == 0) {
-     Data += Data[0] + 1; // this is the first packet
      Length -= Data[0] + 1;
+     Data += Data[0] + 1; // this is the first packet
      if (SectionLength(Data, Length) > Length) {
         if (Length <= int(sizeof(pmt))) {
            memcpy(pmt, Data, Length);
