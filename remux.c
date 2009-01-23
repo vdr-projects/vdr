@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.10 2009/01/23 16:43:23 kls Exp $
+ * $Id: remux.c 2.11 2009/01/23 16:44:29 kls Exp $
  */
 
 #include "remux.h"
@@ -111,13 +111,14 @@ void cRemux::SetBrokenLink(uchar *Data, int Length)
 
 // --- cPatPmtGenerator ------------------------------------------------------
 
-cPatPmtGenerator::cPatPmtGenerator(void)
+cPatPmtGenerator::cPatPmtGenerator(cChannel *Channel)
 {
   numPmtPackets = 0;
   patCounter = pmtCounter = 0;
   patVersion = pmtVersion = 0;
+  pmtPid = 0;
   esInfoLength = NULL;
-  GeneratePat();
+  SetChannel(Channel);
 }
 
 void cPatPmtGenerator::IncCounter(int &Counter, uchar *TsPacket)
@@ -206,8 +207,23 @@ int cPatPmtGenerator::MakeCRC(uchar *Target, const uchar *Data, int Length)
 }
 
 #define P_TSID    0x8008 // pseudo TS ID
-#define P_PNR     0x0084 // pseudo Program Number
 #define P_PMT_PID 0x0084 // pseudo PMT pid
+#define MAXPID    0x2000 // the maximum possible number of pids
+
+void cPatPmtGenerator::GeneratePmtPid(cChannel *Channel)
+{
+  bool Used[MAXPID] = { false };
+#define SETPID(p) { if ((p) >= 0 && (p) < MAXPID) Used[p] = true; }
+#define SETPIDS(l) { const int *p = l; while (*p) { SETPID(*p); p++; } }
+  SETPID(Channel->Vpid());
+  SETPID(Channel->Ppid());
+  SETPID(Channel->Tpid());
+  SETPIDS(Channel->Apids());
+  SETPIDS(Channel->Dpids());
+  SETPIDS(Channel->Spids());
+  for (pmtPid = P_PMT_PID; Used[pmtPid]; pmtPid++)
+      ;
+}
 
 void cPatPmtGenerator::GeneratePat(void)
 {
@@ -229,22 +245,21 @@ void cPatPmtGenerator::GeneratePat(void)
   p[i++] = 0xC1 | (patVersion << 1); // dummy (2), version number (5), current/next indicator (1)
   p[i++] = 0x00; // section number
   p[i++] = 0x00; // last section number
-  p[i++] = P_PNR >> 8;   // program number hi
-  p[i++] = P_PNR & 0xFF; // program number lo
-  p[i++] = 0xE0 | (P_PMT_PID >> 8); // dummy (3), PMT pid hi (5)
-  p[i++] = P_PMT_PID & 0xFF; // PMT pid lo
+  p[i++] = pmtPid >> 8;   // program number hi
+  p[i++] = pmtPid & 0xFF; // program number lo
+  p[i++] = 0xE0 | (pmtPid >> 8); // dummy (3), PMT pid hi (5)
+  p[i++] = pmtPid & 0xFF; // PMT pid lo
   pat[SectionLength] = i - SectionLength - 1 + 4; // -2 = SectionLength storage, +4 = length of CRC
   MakeCRC(pat + i, pat + PayloadStart, i - PayloadStart);
   IncVersion(patVersion);
 }
 
-void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
+void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
 {
   // generate the complete PMT section:
   uchar buf[MAX_SECTION_SIZE];
   memset(buf, 0xFF, sizeof(buf));
   numPmtPackets = 0;
-  cChannel *Channel = Channels.GetByChannelID(ChannelID);
   if (Channel) {
      int Vpid = Channel->Vpid();
      uchar *p = buf;
@@ -253,8 +268,8 @@ void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
      int SectionLength = i;
      p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
      p[i++] = 0x00; // section length lo (filled in later)
-     p[i++] = P_PNR >> 8;   // program number hi
-     p[i++] = P_PNR & 0xFF; // program number lo
+     p[i++] = pmtPid >> 8;   // program number hi
+     p[i++] = pmtPid & 0xFF; // program number lo
      p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
      p[i++] = 0x00; // section number
      p[i++] = 0x00; // last section number
@@ -293,8 +308,8 @@ void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
            uchar *p = pmt[numPmtPackets++];
            int j = 0;
            p[j++] = TS_SYNC_BYTE; // TS indicator
-           p[j++] = (pusi ? TS_PAYLOAD_START : 0x00) | (P_PNR >> 8); // flags (3), pid hi (5)
-           p[j++] = P_PNR & 0xFF; // pid lo
+           p[j++] = (pusi ? TS_PAYLOAD_START : 0x00) | (pmtPid >> 8); // flags (3), pid hi (5)
+           p[j++] = pmtPid & 0xFF; // pid lo
            p[j++] = 0x10; // flags (4), continuity counter (4)
            if (pusi) {
               p[j++] = 0x00; // pointer field (payload unit start indicator is set)
@@ -307,8 +322,15 @@ void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
            }
      IncVersion(pmtVersion);
      }
-  else
-     esyslog("ERROR: can't find channel %s", *ChannelID.ToString());
+}
+
+void cPatPmtGenerator::SetChannel(cChannel *Channel)
+{
+  if (Channel) {
+     GeneratePmtPid(Channel);
+     GeneratePat();
+     GeneratePmt(Channel);
+     }
 }
 
 uchar *cPatPmtGenerator::GetPat(void)

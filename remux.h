@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.5 2009/01/23 16:40:27 kls Exp $
+ * $Id: remux.h 2.6 2009/01/23 16:44:46 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -153,6 +153,7 @@ private:
   int pmtCounter;
   int patVersion;
   int pmtVersion;
+  int pmtPid;
   uchar *esInfoLength;
   void IncCounter(int &Counter, uchar *TsPacket);
   void IncVersion(int &Version);
@@ -163,14 +164,18 @@ protected:
   int MakeSubtitlingDescriptor(uchar *Target, const char *Language);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
-public:
-  cPatPmtGenerator(void);
+  void GeneratePmtPid(cChannel *Channel);
+       ///< Generates a PMT pid that doesn't collide with any of the actual
+       ///< pids of the Channel.
   void GeneratePat(void);
        ///< Generates a PAT section for later use with GetPat().
-       ///< This function is called by default from the constructor.
-  void GeneratePmt(tChannelID ChannelID);
-       ///< Generates a PMT section for the given ChannelId, for later use
+  void GeneratePmt(cChannel *Channel);
+       ///< Generates a PMT section for the given Channel, for later use
        ///< with GetPmt().
+public:
+  cPatPmtGenerator(cChannel *Channel = NULL);
+  void SetChannel(cChannel *Channel);
+       ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
        ///< Returns a pointer to the PAT section, which consists of exactly
        ///< one TS packet.

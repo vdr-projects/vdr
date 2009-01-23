@@ -5952,3 +5952,5 @@ Video Disk Recorder Revision History
   Schmirler).
 - Checking the pointer field in cPatPmtParser::ParsePmt() only in 'payload start'
   packets (suggested by Frank Schmirler).
+- Changed cPatPmtGenerator to make sure the PMT pid doesn't collide with any of
+  the actual pids of the channel.
