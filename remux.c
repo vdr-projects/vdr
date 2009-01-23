@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.8 2009/01/23 14:17:07 kls Exp $
+ * $Id: remux.c 2.9 2009/01/23 14:31:43 kls Exp $
  */
 
 #include "remux.h"
@@ -338,6 +338,8 @@ cPatPmtParser::cPatPmtParser(void)
 void cPatPmtParser::ParsePat(const uchar *Data, int Length)
 {
   // The PAT is always assumed to fit into a single TS packet
+  if ((Length -= Data[0] + 1) <= 0)
+     return;
   Data += Data[0] + 1; // process pointer_field
   SI::PAT Pat(Data, false);
   if (Pat.CheckCRCAndParse()) {
@@ -359,7 +361,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
 {
   // The PMT may extend over several TS packets, so we need to assemble them
   if (pmtSize == 0) {
-     Length -= Data[0] + 1;
+     if ((Length -= Data[0] + 1) <= 0)
+        return;
      Data += Data[0] + 1; // this is the first packet
      if (SectionLength(Data, Length) > Length) {
         if (Length <= int(sizeof(pmt))) {

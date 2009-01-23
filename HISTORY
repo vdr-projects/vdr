@@ -5947,3 +5947,6 @@ Video Disk Recorder Revision History
   Nissl for pointing this out).
 - Fixed handling the pointer field in cPatPmtParser::ParsePmt() (thanks to Frank
   Schmirler - sorry I swapped two lines whan adopting the original patch).
+- Checking the remaining packet length after processing the pointer field in
+  cPatPmtParser::ParsePat() and cPatPmtParser::ParsePmt() (suggested by Frank
+  Schmirler).
