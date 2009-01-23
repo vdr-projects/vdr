@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.7 2009/01/18 11:42:22 kls Exp $
+ * $Id: device.c 2.8 2009/01/23 16:02:21 kls Exp $
  */
 
 #include "device.h"
@@ -1020,12 +1020,11 @@ void cDevice::StillPicture(const uchar *Data, int Length)
      uchar *buf = NULL;
      int Size = 0;
      while (Length >= TS_SIZE) {
-           int PayloadOffset = TsPayloadOffset(Data);
            int Pid = TsPid(Data);
            if (Pid == 0)
-              patPmtParser.ParsePat(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+              patPmtParser.ParsePat(Data, TS_SIZE);
            else if (Pid == patPmtParser.PmtPid())
-              patPmtParser.ParsePmt(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+              patPmtParser.ParsePmt(Data, TS_SIZE);
            else if (Pid == patPmtParser.Vpid()) {
               if (TsPayloadStart(Data)) {
                  int l;
@@ -1325,9 +1324,9 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         cMutexLock MutexLock(&mutexCurrentAudioTrack);
         int Pid = TsPid(Data);
         if (Pid == 0)
-           patPmtParser.ParsePat(Data + PayloadOffset, Length - PayloadOffset);
+           patPmtParser.ParsePat(Data, Length);
         else if (Pid == patPmtParser.PmtPid())
-           patPmtParser.ParsePmt(Data + PayloadOffset, Length - PayloadOffset);
+           patPmtParser.ParsePmt(Data, Length);
         else if (Pid == patPmtParser.Vpid())
            return PlayTsVideo(Data, Length);
         else if (Pid == availableTracks[currentAudioTrack].id) {

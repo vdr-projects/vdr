@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.9 2009/01/23 14:31:43 kls Exp $
+ * $Id: remux.c 2.10 2009/01/23 16:43:23 kls Exp $
  */
 
 #include "remux.h"
@@ -214,8 +214,8 @@ void cPatPmtGenerator::GeneratePat(void)
   memset(pat, 0xFF, sizeof(pat));
   uchar *p = pat;
   int i = 0;
-  p[i++] = 0x47; // TS indicator
-  p[i++] = 0x40; // flags (3), pid hi (5)
+  p[i++] = TS_SYNC_BYTE; // TS indicator
+  p[i++] = TS_PAYLOAD_START; // flags (3), pid hi (5)
   p[i++] = 0x00; // pid lo
   p[i++] = 0x10; // flags (4), continuity counter (4)
   p[i++] = 0x00; // pointer field (payload unit start indicator is set)
@@ -292,8 +292,8 @@ void cPatPmtGenerator::GeneratePmt(tChannelID ChannelID)
      while (i > 0) {
            uchar *p = pmt[numPmtPackets++];
            int j = 0;
-           p[j++] = 0x47; // TS indicator
-           p[j++] = (pusi ? 0x40 : 0x00) | (P_PNR >> 8); // flags (3), pid hi (5)
+           p[j++] = TS_SYNC_BYTE; // TS indicator
+           p[j++] = (pusi ? TS_PAYLOAD_START : 0x00) | (P_PNR >> 8); // flags (3), pid hi (5)
            p[j++] = P_PNR & 0xFF; // pid lo
            p[j++] = 0x10; // flags (4), continuity counter (4)
            if (pusi) {
@@ -337,6 +337,10 @@ cPatPmtParser::cPatPmtParser(void)
 
 void cPatPmtParser::ParsePat(const uchar *Data, int Length)
 {
+  // Unpack the TS packet:
+  int PayloadOffset = TsPayloadOffset(Data);
+  Data += PayloadOffset;
+  Length -= PayloadOffset;
   // The PAT is always assumed to fit into a single TS packet
   if ((Length -= Data[0] + 1) <= 0)
      return;
@@ -359,8 +363,14 @@ void cPatPmtParser::ParsePat(const uchar *Data, int Length)
 
 void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
 {
+  // Unpack the TS packet:
+  bool PayloadStart = TsPayloadStart(Data);
+  int PayloadOffset = TsPayloadOffset(Data);
+  Data += PayloadOffset;
+  Length -= PayloadOffset;
   // The PMT may extend over several TS packets, so we need to assemble them
-  if (pmtSize == 0) {
+  if (PayloadStart) {
+     pmtSize = 0;
      if ((Length -= Data[0] + 1) <= 0)
         return;
      Data += Data[0] + 1; // this is the first packet
@@ -375,7 +385,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
         }
      // the packet contains the entire PMT section, so we run into the actual parsing
      }
-  else {
+  else if (pmtSize > 0) {
      // this is a following packet, so we add it to the pmt storage
      if (Length <= int(sizeof(pmt)) - pmtSize) {
         memcpy(pmt + pmtSize, Data, Length);
@@ -390,6 +400,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      // the PMT section is now complete, so we run into the actual parsing
      Data = pmt;
      }
+  else
+     return; // fragment of broken packet - ignore
   SI::PMT Pmt(Data, false);
   if (Pmt.CheckCRCAndParse()) {
      dbgpatpmt("PMT: sid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pmt.getServiceId(), Pmt.getCurrentNextIndicator(), Pmt.getVersionNumber(), Pmt.getSectionNumber(), Pmt.getLastSectionNumber());

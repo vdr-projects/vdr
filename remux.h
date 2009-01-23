@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.4 2009/01/06 12:40:43 kls Exp $
+ * $Id: remux.h 2.5 2009/01/23 16:40:27 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -172,7 +172,7 @@ public:
        ///< Generates a PMT section for the given ChannelId, for later use
        ///< with GetPmt().
   uchar *GetPat(void);
-       ///< Returns a pointer to the PAT section, which consist of exactly
+       ///< Returns a pointer to the PAT section, which consists of exactly
        ///< one TS packet.
   uchar *GetPmt(int &Index);
        ///< Returns a pointer to the Index'th TS packet of the PMT section.
@@ -195,11 +195,12 @@ protected:
 public:
   cPatPmtParser(void);
   void ParsePat(const uchar *Data, int Length);
-       ///< Parses the given PAT Data, which is the payload of a single TS packet
-       ///< from the PAT stream. The PAT may consist only of a single TS packet.
+       ///< Parses the PAT data from the single TS packet in Data.
+       ///< Length is always TS_SIZE.
   void ParsePmt(const uchar *Data, int Length);
-       ///< Parses the given PMT Data, which is the payload of a single TS packet
-       ///< from the PMT stream. The PMT may consist of several TS packets, which
+       ///< Parses the PMT data from the single TS packet in Data.
+       ///< Length is always TS_SIZE.
+       ///< The PMT may consist of several TS packets, which
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.

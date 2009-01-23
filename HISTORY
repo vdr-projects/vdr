@@ -5950,3 +5950,5 @@ Video Disk Recorder Revision History
 - Checking the remaining packet length after processing the pointer field in
   cPatPmtParser::ParsePat() and cPatPmtParser::ParsePmt() (suggested by Frank
   Schmirler).
+- Checking the pointer field in cPatPmtParser::ParsePmt() only in 'payload start'
+  packets (suggested by Frank Schmirler).
