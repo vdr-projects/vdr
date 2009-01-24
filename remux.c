@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.11 2009/01/23 16:44:29 kls Exp $
+ * $Id: remux.c 2.12 2009/01/24 12:29:19 kls Exp $
  */
 
 #include "remux.h"
@@ -742,6 +742,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                       if (frameDuration) {
                          newFrame = true;
                          independentFrame = true;
+                         scanning = false;
                          }
                       else
                          framesPerPayloadUnit = 1;

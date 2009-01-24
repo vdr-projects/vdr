@@ -5958,3 +5958,4 @@ Video Disk Recorder Revision History
   PlayVideo() didn't play anything.
 - Added an 'int' typecast to calculations involving FramesPerSecond() to avoid
   compiler warnings.
+- Fixed detecting frames for pure audio recordings.
