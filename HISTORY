@@ -5956,3 +5956,5 @@ Video Disk Recorder Revision History
   the actual pids of the channel.
 - Fixed cDevice::PlayTsAudio() and made cDevice::PlayTsVideo() return 0 if
   PlayVideo() didn't play anything.
+- Added an 'int' typecast to calculations involving FramesPerSecond() to avoid
+  compiler warnings.

@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.1 2009/01/05 16:52:40 kls Exp $
+ * $Id: dvbplayer.c 2.2 2009/01/24 11:42:07 kls Exp $
  */
 
 #include "dvbplayer.h"
+#include <math.h>
 #include <stdlib.h>
 #include "recording.h"
 #include "remux.h"
@@ -347,7 +348,7 @@ bool cDvbPlayer::Save(void)
   if (index) {
      int Index = writeIndex;
      if (Index >= 0) {
-        Index -= RESUMEBACKUP * framesPerSecond;
+        Index -= int(round(RESUMEBACKUP * framesPerSecond));
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false);
         else
