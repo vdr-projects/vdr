@@ -5920,8 +5920,8 @@ Video Disk Recorder Revision History
   (thanks to Oliver Endriss for enhancing the av7110 driver to make it replay
   TS data). The patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_ts_replay__1.diff
   implements this change in the driver.
-  The the patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
-  is no longer necessary.
+  The patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
+  is still necessary to avoid audio and video glitches on some channels.
 - Added a typecast in cUnbufferedFile::Write() to avoid an error message when
   compiling on 64 bit systems.
 - Added some missing 'const' statements to cBitmap (thanks to Andreas Regel).
