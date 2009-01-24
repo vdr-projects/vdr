@@ -5965,3 +5965,4 @@ Video Disk Recorder Revision History
   it's an I-frame or not.
 - The PAT/PMT is now only processed if its version changes (reported by Reinhard
   Nissl).
+- Fixed handling the maximum video file size (reported by Udo Richter).

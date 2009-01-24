@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.161 2008/02/17 13:39:00 kls Exp $
+ * $Id: config.c 2.1 2009/01/24 15:05:32 kls Exp $
  */
 
 #include "config.h"
@@ -275,7 +275,7 @@ cSetup::cSetup(void)
   FontOsdSize = 22;
   FontSmlSize = 18;
   FontFixSize = 20;
-  MaxVideoFileSize = MAXVIDEOFILESIZE;
+  MaxVideoFileSize = MAXVIDEOFILESIZEDEFAULT;
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 300;

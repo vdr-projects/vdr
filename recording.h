@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.3 2009/01/24 13:05:03 kls Exp $
+ * $Id: recording.h 2.4 2009/01/24 15:24:19 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -209,13 +209,14 @@ public:
 #define MAXFRAMESIZE  KILOBYTE(512)
 
 // The maximum file size is limited by the range that can be covered
-// with 'int'. 4GB might be possible (if the range is considered
-// 'unsigned'), 2GB should be possible (even if the range is considered
-// 'signed'), so let's use 2000MB for absolute safety (the actual file size
-// may be slightly higher because we stop recording only before the next
-// 'I' frame, to have a complete Group Of Pictures):
-#define MAXVIDEOFILESIZE 2000 // MB
-#define MINVIDEOFILESIZE  100 // MB
+// with a 40 bit 'unsigned int', which is 1TB. The actual maximum value
+// used is 6MB below the theoretical maximum, to have some safety (the
+// actual file size may be slightly higher because we stop recording only
+// before the next independent frame, to have a complete Group Of Pictures):
+#define MAXVIDEOFILESIZETS  1048570 // MB
+#define MAXVIDEOFILESIZEPES    2000 // MB
+#define MINVIDEOFILESIZE        100 // MB
+#define MAXVIDEOFILESIZEDEFAULT MAXVIDEOFILESIZEPES
 
 struct tIndexTs;
 
