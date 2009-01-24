@@ -1195,6 +1195,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a possible problem with removing deleted recordings
  for pointing out that a check of mutexCurrentAudioTrack needs to be done in
  to cDevice::PlayTs()
+ for reporting that the PAT/PMT is processed too often, even if its version
+ hasn't changed
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

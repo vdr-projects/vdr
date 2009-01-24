@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.9 2009/01/24 11:16:31 kls Exp $
+ * $Id: device.c 2.10 2009/01/24 13:40:54 kls Exp $
  */
 
 #include "device.h"
@@ -1340,6 +1340,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         }
      }
   else if (Data == NULL) {
+     patPmtParser.Reset();
      tsToPesVideo.Reset();
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();

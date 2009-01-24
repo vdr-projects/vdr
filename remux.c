@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.12 2009/01/24 12:29:19 kls Exp $
+ * $Id: remux.c 2.13 2009/01/24 13:44:45 kls Exp $
  */
 
 #include "remux.h"
@@ -352,7 +352,13 @@ uchar *cPatPmtGenerator::GetPmt(int &Index)
 
 cPatPmtParser::cPatPmtParser(void)
 {
+  Reset();
+}
+
+void cPatPmtParser::Reset(void)
+{
   pmtSize = 0;
+  patVersion = pmtVersion = -1;
   pmtPid = -1;
   vpid = vtype = 0;
 }
@@ -370,6 +376,8 @@ void cPatPmtParser::ParsePat(const uchar *Data, int Length)
   SI::PAT Pat(Data, false);
   if (Pat.CheckCRCAndParse()) {
      dbgpatpmt("PAT: TSid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pat.getTransportStreamId(), Pat.getCurrentNextIndicator(), Pat.getVersionNumber(), Pat.getSectionNumber(), Pat.getLastSectionNumber());
+     if (patVersion == Pat.getVersionNumber())
+        return;
      SI::PAT::Association assoc;
      for (SI::Loop::Iterator it; Pat.associationLoop.getNext(assoc, it); ) {
          dbgpatpmt("     isNITPid = %d\n", assoc.isNITPid());
@@ -378,6 +386,7 @@ void cPatPmtParser::ParsePat(const uchar *Data, int Length)
             dbgpatpmt("     service id = %d, pid = %d\n", assoc.getServiceId(), assoc.getPid());
             }
          }
+     patVersion = Pat.getVersionNumber();
      }
   else
      esyslog("ERROR: can't parse PAT");
@@ -428,6 +437,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   if (Pmt.CheckCRCAndParse()) {
      dbgpatpmt("PMT: sid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pmt.getServiceId(), Pmt.getCurrentNextIndicator(), Pmt.getVersionNumber(), Pmt.getSectionNumber(), Pmt.getLastSectionNumber());
      dbgpatpmt("     pcr = %d\n", Pmt.getPCRPid());
+     if (pmtVersion == Pmt.getVersionNumber())
+        return;
      cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
      int NumApids = 0;
      int NumDpids = 0;
@@ -533,6 +544,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
          cDevice::PrimaryDevice()->EnsureAudioTrack(true);
          cDevice::PrimaryDevice()->EnsureSubtitleTrack();
          }
+     pmtVersion = Pmt.getVersionNumber();
      }
   else
      esyslog("ERROR: can't parse PMT");

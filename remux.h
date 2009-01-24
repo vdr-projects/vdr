@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.6 2009/01/23 16:44:46 kls Exp $
+ * $Id: remux.h 2.7 2009/01/24 13:38:10 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -192,6 +192,8 @@ class cPatPmtParser {
 private:
   uchar pmt[MAX_SECTION_SIZE];
   int pmtSize;
+  int patVersion;
+  int pmtVersion;
   int pmtPid;
   int vpid;
   int vtype;
@@ -199,6 +201,9 @@ protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
 public:
   cPatPmtParser(void);
+  void Reset(void);
+       ///< Resets the parser. This function must be called whenever a new
+       ///< stream is parsed.
   void ParsePat(const uchar *Data, int Length);
        ///< Parses the PAT data from the single TS packet in Data.
        ///< Length is always TS_SIZE.
