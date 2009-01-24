@@ -5957,7 +5957,7 @@ Video Disk Recorder Revision History
 - Fixed cDevice::PlayTsAudio() and made cDevice::PlayTsVideo() return 0 if
   PlayVideo() didn't play anything.
 - Added an 'int' typecast to calculations involving FramesPerSecond() to avoid
-  compiler warnings.
+  compiler warnings (reported by Winfried Koehler).
 - Fixed detecting frames for pure audio recordings.
 - Fixed editing PES recordings. The frame type in the index.vdr file generated for
   the edited PES recording is set to 1 for I-frames and 2 for all others (P- and
