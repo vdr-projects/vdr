@@ -5912,7 +5912,7 @@ Video Disk Recorder Revision History
   can handle DVB-S2. The #define is still there to allow people with older drivers
   who don't need DVB-S2 to use this version without pathcing.
 
-2009-01-23: Version 1.7.4
+2009-01-24: Version 1.7.4
 
 - Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
   flag is now in the driver, anyway.
@@ -5954,3 +5954,5 @@ Video Disk Recorder Revision History
   packets (suggested by Frank Schmirler).
 - Changed cPatPmtGenerator to make sure the PMT pid doesn't collide with any of
   the actual pids of the channel.
+- Fixed cDevice::PlayTsAudio() and made cDevice::PlayTsVideo() return 0 if
+  PlayVideo() didn't play anything.

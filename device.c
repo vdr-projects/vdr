@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.8 2009/01/23 16:02:21 kls Exp $
+ * $Id: device.c 2.9 2009/01/24 11:16:31 kls Exp $
  */
 
 #include "device.h"
@@ -1273,7 +1273,7 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
      int l;
      while (const uchar *p = tsToPesVideo.GetPes(l)) {
            int w = PlayVideo(p, l);
-           if (w < 0)
+           if (w <= 0)
               return w;
            }
      tsToPesVideo.Reset();
@@ -1284,20 +1284,15 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
 
 int cDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  bool PayloadStart = TsPayloadStart(Data);
-  for (int Pass = 0; Pass < 2; Pass++) {
-      if (Pass == 0 && !PayloadStart) // if no new payload is started, we can always put the packet into the converter
-         tsToPesAudio.PutTs(Data, Length);
-      if (const uchar *p = tsToPesAudio.GetPes(Length)) {
-         int w = PlayAudio(p, Length, 0);
-         if (w > 0)
-            tsToPesAudio.Reset();
-         else if (PayloadStart)
-            return w; // must get out the old packet before starting a new one
-         }
-      if (Pass == 0 && PayloadStart)
-         tsToPesAudio.PutTs(Data, Length);
-      }
+  // Audio PES always has an explicit length and consists of single packets:
+  int l;
+  if (const uchar *p = tsToPesAudio.GetPes(l)) {
+     int w = PlayAudio(p, l, 0);
+     if (w <= 0)
+        return w;
+     tsToPesAudio.Reset();
+     }
+  tsToPesAudio.PutTs(Data, Length);
   return Length;
 }
 
