@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.7 2009/01/24 11:31:16 kls Exp $
+ * $Id: recording.c 2.8 2009/01/24 13:11:04 kls Exp $
  */
 
 #include "recording.h"
@@ -1432,6 +1432,19 @@ void cIndexFile::ConvertFromPes(tIndexTs *IndexTs, int Count)
         }
 }
 
+void cIndexFile::ConvertToPes(tIndexTs *IndexTs, int Count)
+{
+  tIndexPes IndexPes;
+  while (Count-- > 0) {
+        IndexPes.offset = uint32_t(IndexTs->offset);
+        IndexPes.type = IndexTs->independent ? 1 : 2; // I_FRAME : "not I_FRAME" (exact frame type doesn't matter)
+        IndexPes.number = IndexTs->number;
+        IndexPes.reserved = 0;
+        memcpy(IndexTs, &IndexPes, sizeof(*IndexTs));
+        IndexTs++;
+        }
+}
+
 bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
@@ -1491,6 +1504,8 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
 {
   if (f >= 0) {
      tIndexTs i(FileOffset, Independent, FileNumber);
+     if (isPesRecording)
+        ConvertToPes(&i, 1);
      if (safe_write(f, &i, sizeof(i)) < 0) {
         LOG_ERROR_STR(fileName);
         close(f);

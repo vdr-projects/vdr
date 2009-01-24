@@ -5959,3 +5959,7 @@ Video Disk Recorder Revision History
 - Added an 'int' typecast to calculations involving FramesPerSecond() to avoid
   compiler warnings.
 - Fixed detecting frames for pure audio recordings.
+- Fixed editing PES recordings. The frame type in the index.vdr file generated for
+  the edited PES recording is set to 1 for I-frames and 2 for all others (P- and
+  B-frames). The exact frame type doesn't matter for VDR, it only needs to know if
+  it's an I-frame or not.

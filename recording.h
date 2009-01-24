@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.2 2009/01/18 11:02:00 kls Exp $
+ * $Id: recording.h 2.3 2009/01/24 13:05:03 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -229,6 +229,7 @@ private:
   cResumeFile resumeFile;
   cMutex mutex;
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
+  void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
 public:
   cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false);
