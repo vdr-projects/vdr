@@ -5910,7 +5910,7 @@ Video Disk Recorder Revision History
   a video to an audio channel (thanks to Reinhard Nissl).
 - cDvbDevice now uses the FE_CAN_2G_MODULATION flag to determine whether a device
   can handle DVB-S2. The #define is still there to allow people with older drivers
-  who don't need DVB-S2 to use this version without pathcing.
+  who don't need DVB-S2 to use this version without patching.
 
 2009-01-25: Version 1.7.4
 
@@ -5946,7 +5946,7 @@ Video Disk Recorder Revision History
 - Added checking mutexCurrentAudioTrack to cDevice::PlayTs() (thanks to Reinhard
   Nissl for pointing this out).
 - Fixed handling the pointer field in cPatPmtParser::ParsePmt() (thanks to Frank
-  Schmirler - sorry I swapped two lines whan adopting the original patch).
+  Schmirler - sorry I swapped two lines when adopting the original patch).
 - Checking the remaining packet length after processing the pointer field in
   cPatPmtParser::ParsePat() and cPatPmtParser::ParsePmt() (suggested by Frank
   Schmirler).
