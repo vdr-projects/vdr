@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.4 2009/01/06 14:41:11 kls Exp $
+ * $Id: recording.c 2.8 2009/01/24 13:11:04 kls Exp $
  */
 
 #include "recording.h"
@@ -64,6 +64,7 @@
 #define MAX_LINK_LEVEL  6
 
 bool VfatFileSystem = false;
+int InstanceId = 0;
 
 cRecordings DeletedRecordings(true);
 
@@ -154,9 +155,10 @@ void AssertFreeDiskSpace(int Priority, bool Force)
                     }
                  r = DeletedRecordings.Next(r);
                  }
-           if (r0 && r0->Remove()) {
+           if (r0) {
+              if (r0->Remove())
+                 LastFreeDiskCheck += REMOVELATENCY / Factor;
               DeletedRecordings.Del(r0);
-              LastFreeDiskCheck += REMOVELATENCY / Factor;
               return;
               }
            }
@@ -601,7 +603,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   name = NULL;
   fileSizeMB = -1; // unknown
   channel = Timer->Channel()->Number();
-  resumeId = Setup.ResumeID;
+  instanceId = InstanceId;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   deleted = 0;
@@ -658,7 +660,7 @@ cRecording::cRecording(const char *FileName)
   resume = RESUME_NOT_INITIALIZED;
   fileSizeMB = -1; // unknown
   channel = -1;
-  resumeId = -1;
+  instanceId = -1;
   priority = MAXPRIORITY; // assume maximum in case there is no info file
   lifetime = MAXLIFETIME;
   isPesRecording = false;
@@ -677,7 +679,7 @@ cRecording::cRecording(const char *FileName)
      struct tm tm_r;
      struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
      t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
-     if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &resumeId)
+     if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &instanceId)
       || 7 == sscanf(p + 1, DATAFORMATPES, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;
@@ -687,7 +689,7 @@ cRecording::cRecording(const char *FileName)
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
-        isPesRecording = resumeId < 0;
+        isPesRecording = instanceId < 0;
         }
      else
         return;
@@ -826,7 +828,7 @@ const char *cRecording::FileName(void) const
      struct tm *t = localtime_r(&start, &tm_r);
      const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
      int ch = isPesRecording ? priority : channel;
-     int ri = isPesRecording ? lifetime : resumeId;
+     int ri = isPesRecording ? lifetime : instanceId;
      name = ExchangeChars(name, true);
      fileName = strdup(cString::sprintf(fmt, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
      name = ExchangeChars(name, false);
@@ -1430,6 +1432,19 @@ void cIndexFile::ConvertFromPes(tIndexTs *IndexTs, int Count)
         }
 }
 
+void cIndexFile::ConvertToPes(tIndexTs *IndexTs, int Count)
+{
+  tIndexPes IndexPes;
+  while (Count-- > 0) {
+        IndexPes.offset = uint32_t(IndexTs->offset);
+        IndexPes.type = IndexTs->independent ? 1 : 2; // I_FRAME : "not I_FRAME" (exact frame type doesn't matter)
+        IndexPes.number = IndexTs->number;
+        IndexPes.reserved = 0;
+        memcpy(IndexTs, &IndexPes, sizeof(*IndexTs));
+        IndexTs++;
+        }
+}
+
 bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
@@ -1489,6 +1504,8 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
 {
   if (f >= 0) {
      tIndexTs i(FileOffset, Independent, FileNumber);
+     if (isPesRecording)
+        ConvertToPes(&i, 1);
      if (safe_write(f, &i, sizeof(i)) < 0) {
         LOG_ERROR_STR(fileName);
         close(f);
@@ -1696,7 +1713,7 @@ cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 {
   char buffer[16];
   double Seconds;
-  int f = modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1;
+  int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
@@ -1718,7 +1735,7 @@ int HMSFToIndex(const char *HMSF, double FramesPerSecond)
 
 int SecondsToFrames(int Seconds, double FramesPerSecond)
 {
-  return round(Seconds * FramesPerSecond);
+  return int(round(Seconds * FramesPerSecond));
 }
 
 // --- ReadFrame -------------------------------------------------------------

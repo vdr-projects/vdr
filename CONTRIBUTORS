@@ -660,6 +660,8 @@ Oliver Endriss <o.endriss@gmx.de>
  the call to cStatus::MsgSetVolume()
  for providing a driver patch that allows replaying TS->PES converted video in
  Transfer Mode
+ for providing a driver patch that allows direct replaying of TS video on full-featured
+ DVB cards
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1189,6 +1191,12 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting the missing description of the 'S' channel parameter in vdr.5
  for fixing cPatPmtParser::ParsePmt() to reset vpid and vtype when switching from
  a video to an audio channel
+ for fixing returning complete PES packets in cTsToPes::GetPes()
+ for reporting a possible problem with removing deleted recordings
+ for pointing out that a check of mutexCurrentAudioTrack needs to be done in
+ to cDevice::PlayTs()
+ for reporting that the PAT/PMT is processed too often, even if its version
+ hasn't changed
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1313,6 +1321,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for implementing palette replace mode in the OSD bitmaps
  for fixing handling numeric keys in the channel display after switching channel
  groups
+ for adding some missing 'const' statements to cBitmap
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1483,6 +1492,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing setting the date in the channel display of the classic and sttng skins,
  to avoid unnecessary OSD access
  for changing cDvbDevice::GrabImage() to use V4L2
+ for adding a missing Detach() in cTransfer::Activate()
+ for adding clearing the TS buffers in cDevice::Detach()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1594,6 +1605,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing error handling in cCuttingThread::Action()
  for suppressing the automatic shutdown if the remote control is currently disabled
  for fixing a problem with calling isyslog() from within the SignalHandler()
+ for reporting a problem with handling the maximum video file size
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2207,6 +2219,8 @@ Frank Schmirler <vdr@schmirler.de>
  allowed characters
  for fixing handling address masks in SVDRP host settings
  for fixing handling the 'pointer field' in generating and parsing PAT/PMT
+ for suggesting to use an "instance id" instead of the "resume id" to distinguish
+ recordings of the same broadcast made by different instances of VDR
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2331,6 +2345,7 @@ Benjamin Hess <benjamin.h@gmx.ch>
 
 Winfried Koehler <w_koehl@gmx.de>
  for fixing finding new transponders
+ for reporting a compiler warning in calculations involving FramesPerSecond()
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
@@ -2392,3 +2407,9 @@ Niels Wagenaar <n.wagenaar@xs4all.nl>
 
 Edgar Hucek <gimli@dark-green.com>
  for a patch that was used to convert VDR to the S2API driver API
+
+Johann Friedrichs <johann.friedrichs@web.de>
+ for fixing incrementing the continuity counter in cPatPmtGenerator::GetPmt()
+ for pointing out that "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+ -D_LARGEFILE64_SOURCE" should be added to Make.config.
+  to Make.config.template (thanks to Johann Friedrichs for pointing this out).

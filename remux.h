@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.4 2009/01/06 12:40:43 kls Exp $
+ * $Id: remux.h 2.7 2009/01/24 13:38:10 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -153,6 +153,7 @@ private:
   int pmtCounter;
   int patVersion;
   int pmtVersion;
+  int pmtPid;
   uchar *esInfoLength;
   void IncCounter(int &Counter, uchar *TsPacket);
   void IncVersion(int &Version);
@@ -163,16 +164,20 @@ protected:
   int MakeSubtitlingDescriptor(uchar *Target, const char *Language);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
-public:
-  cPatPmtGenerator(void);
+  void GeneratePmtPid(cChannel *Channel);
+       ///< Generates a PMT pid that doesn't collide with any of the actual
+       ///< pids of the Channel.
   void GeneratePat(void);
        ///< Generates a PAT section for later use with GetPat().
-       ///< This function is called by default from the constructor.
-  void GeneratePmt(tChannelID ChannelID);
-       ///< Generates a PMT section for the given ChannelId, for later use
+  void GeneratePmt(cChannel *Channel);
+       ///< Generates a PMT section for the given Channel, for later use
        ///< with GetPmt().
+public:
+  cPatPmtGenerator(cChannel *Channel = NULL);
+  void SetChannel(cChannel *Channel);
+       ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
-       ///< Returns a pointer to the PAT section, which consist of exactly
+       ///< Returns a pointer to the PAT section, which consists of exactly
        ///< one TS packet.
   uchar *GetPmt(int &Index);
        ///< Returns a pointer to the Index'th TS packet of the PMT section.
@@ -187,6 +192,8 @@ class cPatPmtParser {
 private:
   uchar pmt[MAX_SECTION_SIZE];
   int pmtSize;
+  int patVersion;
+  int pmtVersion;
   int pmtPid;
   int vpid;
   int vtype;
@@ -194,12 +201,16 @@ protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
 public:
   cPatPmtParser(void);
+  void Reset(void);
+       ///< Resets the parser. This function must be called whenever a new
+       ///< stream is parsed.
   void ParsePat(const uchar *Data, int Length);
-       ///< Parses the given PAT Data, which is the payload of a single TS packet
-       ///< from the PAT stream. The PAT may consist only of a single TS packet.
+       ///< Parses the PAT data from the single TS packet in Data.
+       ///< Length is always TS_SIZE.
   void ParsePmt(const uchar *Data, int Length);
-       ///< Parses the given PMT Data, which is the payload of a single TS packet
-       ///< from the PMT stream. The PMT may consist of several TS packets, which
+       ///< Parses the PMT data from the single TS packet in Data.
+       ///< Length is always TS_SIZE.
+       ///< The PMT may consist of several TS packets, which
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.

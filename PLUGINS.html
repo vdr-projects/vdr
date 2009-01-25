@@ -16,7 +16,10 @@ html, body {
     text-align: center;
 }
 .code {
-    background-color: #f0f0f0;
+    background-color: #F0F0F0;
+}
+.modified {
+    background-color: #FFDDDD;
 }
 </style>
 </head>
@@ -25,12 +28,15 @@ html, body {
 <div class="center">
 <h1>The VDR Plugin System</h1>
 
-<b>Version 1.6</b>
+<b>Version 1.7</b>
 <p>
-Copyright &copy; 2008 Klaus Schmidinger<br>
+Copyright &copy; 2009 Klaus Schmidinger<br>
 <a href="mailto:kls@cadsoft.de">kls@cadsoft.de</a><br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </div>
+<div class="modified">
+Important modifications introduced since version 1.6 are marked like this.
+</div modified>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -1844,6 +1850,9 @@ virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
+<div class="modified">
+virtual bool IsPlayingVideo(void) const;
+</div modified>
 virtual bool HasIBPTrickSpeed(void);
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);

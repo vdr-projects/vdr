@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.1 2008/12/24 15:25:15 kls Exp $
+ * $Id: tools.c 2.2 2009/01/16 14:29:08 kls Exp $
  */
 
 #include "tools.h"
@@ -1608,7 +1608,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
               // kind of write gathering enabled), but the syncs cause (io) load..
               // Uncomment the next line if you think you need them.
               //fdatasync(fd);
-              off_t headdrop = min(curpos - totwritten, off_t(totwritten * 2));
+              off_t headdrop = min(off_t(curpos - totwritten), off_t(totwritten * 2));
               posix_fadvise(fd, curpos - totwritten - headdrop, totwritten + headdrop, POSIX_FADV_DONTNEED);
               totwritten = 0;
               }

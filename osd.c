@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.0 2007/10/12 12:38:36 kls Exp $
+ * $Id: osd.c 2.1 2009/01/16 14:34:32 kls Exp $
  */
 
 #include "osd.h"
@@ -635,7 +635,7 @@ void cBitmap::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
      }
 }
 
-const tIndex *cBitmap::Data(int x, int y)
+const tIndex *cBitmap::Data(int x, int y) const
 {
   return &bitmap[y * width + x];
 }

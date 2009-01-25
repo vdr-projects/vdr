@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.1 2008/08/15 14:32:12 kls Exp $
+ * $Id: transfer.c 2.3 2009/01/23 15:34:26 kls Exp $
  */
 
 #include "transfer.h"
@@ -14,7 +14,7 @@
 cTransfer::cTransfer(tChannelID ChannelID, int VPid, const int *APids, const int *DPids, const int *SPids)
 :cReceiver(ChannelID, -1, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 {
-  patPmtGenerator.GeneratePmt(ChannelID);
+  patPmtGenerator.SetChannel(Channels.GetByChannelID(ChannelID));
 }
 
 cTransfer::~cTransfer()
@@ -31,6 +31,8 @@ void cTransfer::Activate(bool On)
      while (uchar *pmt = patPmtGenerator.GetPmt(Index))
            PlayTs(pmt, TS_SIZE);
      }
+  else
+     cPlayer::Detach();
 }
 
 void cTransfer::Receive(uchar *Data, int Length)

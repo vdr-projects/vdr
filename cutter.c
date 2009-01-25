@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.1 2009/01/06 14:40:48 kls Exp $
+ * $Id: cutter.c 2.2 2009/01/24 15:19:26 kls Exp $
  */
 
 #include "cutter.h"
@@ -22,6 +22,7 @@ private:
   cFileName *fromFileName, *toFileName;
   cIndexFile *fromIndex, *toIndex;
   cMarks fromMarks, toMarks;
+  off_t maxVideoFileSize;
 protected:
   virtual void Action(void);
 public:
@@ -45,6 +46,9 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
      fromIndex = new cIndexFile(FromFileName, false, isPesRecording);
      toIndex = new cIndexFile(ToFileName, true, isPesRecording);
      toMarks.Load(ToFileName, Recording.FramesPerSecond(), isPesRecording); // doesn't actually load marks, just sets the file name
+     maxVideoFileSize = MEGABYTE(Setup.MaxVideoFileSize);
+     if (isPesRecording && maxVideoFileSize > MEGABYTE(MAXVIDEOFILESIZEPES))
+        maxVideoFileSize = MEGABYTE(MAXVIDEOFILESIZEPES);
      Start();
      }
   else
@@ -125,7 +129,7 @@ void cCuttingThread::Action(void)
            if (Independent) { // every file shall start with an independent frame
               if (LastMark) // edited version shall end before next I-frame
                  break;
-              if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
+              if (FileSize > maxVideoFileSize) {
                  toFile = toFileName->NextFile();
                  if (!toFile) {
                     error = "toFile 1";

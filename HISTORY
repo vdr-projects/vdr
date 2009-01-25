@@ -5868,9 +5868,9 @@ Video Disk Recorder Revision History
     255).
   + The recording file names are now of the form 00001.ts (previously 001.vdr).
   + The frame rate is now detected by looking at two subsequent PTS values.
-    The "frame duration" (in multiples of 1/90000) is stored in the info.vdr
-    file using the new tag F (thanks to Artur Skawina for helping to get the
-    IndexToHMSF() calculation right).
+    The "frames per second" is stored in the "info" file using the new tag F
+    (thanks to Artur Skawina for helping to get the IndexToHMSF() calculation
+    right).
   + Several functions now have an additional parameter FramesPerSecond.
   + Several functions now have an additional parameter IsPesRecording.
   + The functionality of cFileWriter was moved into cRecorder, and cRemux is
@@ -5882,7 +5882,7 @@ Video Disk Recorder Revision History
   + The directory name for a recording has been changed from
     YYYY-MM-DD-hh[.:]mm.pr.lt.rec (pr=priority, lt=lifetime) to
     YYYY-MM-DD-hh.mm.ch-ri.rec (ch=channel, ri=resumeId).
-    Priority and Lifetime are now stored in the info.vdr file with the new
+    Priority and Lifetime are now stored in the "info" file with the new
     tags P and L (if no such file exists, the maximum values are assumed by
     default, which avoids inadvertently deleting a recording if disk space
     is low). No longer storing Priority and Lifetime in the directory name
@@ -5910,4 +5910,71 @@ Video Disk Recorder Revision History
   a video to an audio channel (thanks to Reinhard Nissl).
 - cDvbDevice now uses the FE_CAN_2G_MODULATION flag to determine whether a device
   can handle DVB-S2. The #define is still there to allow people with older drivers
-  who don't need DVB-S2 to use this version without pathcing.
+  who don't need DVB-S2 to use this version without patching.
+
+2009-01-25: Version 1.7.4
+
+- Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
+  flag is now in the driver, anyway.
+- The full-featured DVB cards are now given the TS data directly for replay
+  (thanks to Oliver Endriss for enhancing the av7110 driver to make it replay
+  TS data). The patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_ts_replay__1.diff
+  implements this change in the driver.
+  The patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
+  is still necessary to avoid audio and video glitches on some channels.
+- Added a typecast in cUnbufferedFile::Write() to avoid an error message when
+  compiling on 64 bit systems.
+- Added some missing 'const' statements to cBitmap (thanks to Andreas Regel).
+- Fixed returning complete PES packets in cTsToPes::GetPes() (thanks to Reinhard
+  Nissl).
+- Added a missing Detach() in cTransfer::Activate() (thanks to Marco Schlüßler).
+- Added clearing the TS buffers in cDevice::Detach() (thanks to Marco Schlüßler).
+- Fixed incrementing the continuity counter in cPatPmtGenerator::GetPmt() (thanks
+  to Johann Friedrichs).
+- Fixed removing deleted recordings in case there is a problem. Once a recording
+  caused a problem with removing, no others were removed any more and an ongoing
+  recording could fill up the disk and cause other recordings to be deleted
+  automatically (reported by Reinhard Nissl).
+- Added "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"
+  to Make.config.template (thanks to Johann Friedrichs for pointing this out).
+  Plugin authors should add this line to their Makefile or Make.config if they use
+  file access functions that need special versions for 64 bit offsets.
+- The new command line option -i can be used to set an "instance id", which will
+  be used to distinguish recordings of the same broadcast made by different instances
+  of VDR (suggested by Frank Schmirler). This replaces the use of the "resume id"
+  that was introduced in version 1.7.3.
+- Added checking mutexCurrentAudioTrack to cDevice::PlayTs() (thanks to Reinhard
+  Nissl for pointing this out).
+- Fixed handling the pointer field in cPatPmtParser::ParsePmt() (thanks to Frank
+  Schmirler - sorry I swapped two lines when adopting the original patch).
+- Checking the remaining packet length after processing the pointer field in
+  cPatPmtParser::ParsePat() and cPatPmtParser::ParsePmt() (suggested by Frank
+  Schmirler).
+- Checking the pointer field in cPatPmtParser::ParsePmt() only in 'payload start'
+  packets (suggested by Frank Schmirler).
+- Changed cPatPmtGenerator to make sure the PMT pid doesn't collide with any of
+  the actual pids of the channel.
+- Fixed cDevice::PlayTsAudio() and made cDevice::PlayTsVideo() return 0 if
+  PlayVideo() didn't play anything.
+- Added an 'int' typecast to calculations involving FramesPerSecond() to avoid
+  compiler warnings (reported by Winfried Koehler).
+- Fixed detecting frames for pure audio recordings.
+- Fixed editing PES recordings. The frame type in the index.vdr file generated for
+  the edited PES recording is set to 1 for I-frames and 2 for all others (P- and
+  B-frames). The exact frame type doesn't matter for VDR, it only needs to know if
+  it's an I-frame or not.
+- The PAT/PMT is now only processed if its version changes (reported by Reinhard
+  Nissl).
+- Fixed handling the maximum video file size (reported by Udo Richter).
+- Improved fast-forward/-rewind for audio recordings. The actual data is now sent
+  to the output device, so that it can be replayed and thus cause the proper delay.
+  For pure audio recordings the audio is no longer muted in fast-forward/-rewind
+  mode, so that some orientation regarding the position within the recording is
+  possible. There may still be some offset in the replay position displayed by the
+  progress indicator when switching from fast-forward/-rewind to play mode, as well
+  as in the current position during normal play mode. This is due to the various
+  buffers between the player and the output device and will be addressed later.
+  Note the new function cDevice::IsPlayingVideo(), which is used to inform the
+  player whether there is video data in the currently replayed stream. If a derived
+  cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
+  new function works as expected.

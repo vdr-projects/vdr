@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.5 2009/01/06 09:55:13 kls Exp $
+ * $Id: device.c 2.11 2009/01/25 11:10:56 kls Exp $
  */
 
 #include "device.h"
@@ -81,6 +81,7 @@ cDevice::cDevice(void)
   startScrambleDetection = 0;
 
   player = NULL;
+  isPlayingVideo = false;
   ClrAvailableTracks();
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
@@ -1020,12 +1021,11 @@ void cDevice::StillPicture(const uchar *Data, int Length)
      uchar *buf = NULL;
      int Size = 0;
      while (Length >= TS_SIZE) {
-           int PayloadOffset = TsPayloadOffset(Data);
            int Pid = TsPid(Data);
            if (Pid == 0)
-              patPmtParser.ParsePat(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+              patPmtParser.ParsePat(Data, TS_SIZE);
            else if (Pid == patPmtParser.PmtPid())
-              patPmtParser.ParsePmt(Data + PayloadOffset, TS_SIZE - PayloadOffset);
+              patPmtParser.ParsePmt(Data, TS_SIZE);
            else if (Pid == patPmtParser.Vpid()) {
               if (TsPayloadStart(Data)) {
                  int l;
@@ -1098,7 +1098,9 @@ void cDevice::Detach(cPlayer *Player)
      dvbSubtitleConverter = NULL;
      SetPlayMode(pmNone);
      SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
+     PlayTs(NULL, 0);
      Audios.ClearAudio();
+     isPlayingVideo = false;
      }
 }
 
@@ -1151,6 +1153,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
         switch (c) {
           case 0xBE:          // padding stream, needed for MPEG1
           case 0xE0 ... 0xEF: // video
+               isPlayingVideo = true;
                w = PlayVideo(Start, d);
                break;
           case 0xC0 ... 0xDF: // audio
@@ -1273,7 +1276,7 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
      int l;
      while (const uchar *p = tsToPesVideo.GetPes(l)) {
            int w = PlayVideo(p, l);
-           if (w < 0)
+           if (w <= 0)
               return w;
            }
      tsToPesVideo.Reset();
@@ -1284,20 +1287,15 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
 
 int cDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  bool PayloadStart = TsPayloadStart(Data);
-  for (int Pass = 0; Pass < 2; Pass++) {
-      if (Pass == 0 && !PayloadStart) // if no new payload is started, we can always put the packet into the converter
-         tsToPesAudio.PutTs(Data, Length);
-      if (const uchar *p = tsToPesAudio.GetPes(Length)) {
-         int w = PlayAudio(p, Length, 0);
-         if (w > 0)
-            tsToPesAudio.Reset();
-         else if (PayloadStart)
-            return w; // must get out the old packet before starting a new one
-         }
-      if (Pass == 0 && PayloadStart)
-         tsToPesAudio.PutTs(Data, Length);
-      }
+  // Audio PES always has an explicit length and consists of single packets:
+  int l;
+  if (const uchar *p = tsToPesAudio.GetPes(l)) {
+     int w = PlayAudio(p, l, 0);
+     if (w <= 0)
+        return w;
+     tsToPesAudio.Reset();
+     }
+  tsToPesAudio.PutTs(Data, Length);
   return Length;
 }
 
@@ -1321,13 +1319,16 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         return Length; // silently ignore TS packets w/o payload
      int PayloadOffset = TsPayloadOffset(Data);
      if (PayloadOffset < Length) {
+        cMutexLock MutexLock(&mutexCurrentAudioTrack);
         int Pid = TsPid(Data);
         if (Pid == 0)
-           patPmtParser.ParsePat(Data + PayloadOffset, Length - PayloadOffset);
+           patPmtParser.ParsePat(Data, Length);
         else if (Pid == patPmtParser.PmtPid())
-           patPmtParser.ParsePmt(Data + PayloadOffset, Length - PayloadOffset);
-        else if (Pid == patPmtParser.Vpid())
+           patPmtParser.ParsePmt(Data, Length);
+        else if (Pid == patPmtParser.Vpid()) {
+           isPlayingVideo = true;
            return PlayTsVideo(Data, Length);
+           }
         else if (Pid == availableTracks[currentAudioTrack].id) {
            if (!VideoOnly || HasIBPTrickSpeed()) {
               int w = PlayTsAudio(Data, Length);
@@ -1344,6 +1345,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
         }
      }
   else if (Data == NULL) {
+     patPmtParser.Reset();
      tsToPesVideo.Reset();
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();

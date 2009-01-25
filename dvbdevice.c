@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.10 2009/01/06 14:52:54 kls Exp $
+ * $Id: dvbdevice.c 2.12 2009/01/10 10:07:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -26,13 +26,6 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
-
-// FIXME: temporary workaround until the S2API driver supports detecting
-// S2 capability in a clean way. This macro allows compiling VDR with an
-// unpatched driver. However, with an unpatched driver it will not support
-// DVB-S2 hardware. If you have DVB-S2 hardware you need to either patch
-// the driver or modify the line that uses this macro in cDvbDevice::cDvbDevice().
-#define FE_CAN_2ND_GEN_MODULATION 0x10000000
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1
@@ -1304,39 +1297,22 @@ bool cDvbDevice::Flush(int TimeoutMs)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  int w;
-  do {
-     w = WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
-     if (w < 0 && errno == EAGAIN) {
-        cPoller Poller(fd_video, true);
-        Poller.Poll(200);
-        }
-     } while (w != Length);
-  return w;
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 {
-  int w;
-  do {
-     w = WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
-     if (w < 0 && errno == EAGAIN) {
-        cPoller Poller(fd_audio, true);
-        Poller.Poll(200);
-        }
-     } while (w != Length);
-  return w;
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayTsVideo(const uchar *Data, int Length)
 {
-  return cDevice::PlayTsVideo(Data, Length);
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayTsAudio(const uchar *Data, int Length)
 {
-  int w = PlayAudio(Data, TsGetPayload(&Data), 0);
-  return w >= 0 ? Length : w;
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 bool cDvbDevice::OpenDvr(void)

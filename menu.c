@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.4 2009/01/06 14:34:17 kls Exp $
+ * $Id: menu.c 2.6 2009/01/24 15:05:43 kls Exp $
  */
 
 #include "menu.h"
 #include <ctype.h>
 #include <limits.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2697,7 +2698,7 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
   Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord)));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZETS));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
 }
 
@@ -4170,8 +4171,8 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
 {
 #define STAY_SECONDS_OFF_END 10
   int Seconds = (timeSearchTime >> 24) * 36000 + ((timeSearchTime & 0x00FF0000) >> 16) * 3600 + ((timeSearchTime & 0x0000FF00) >> 8) * 600 + (timeSearchTime & 0x000000FF) * 60;
-  int Current = (lastCurrent / FramesPerSecond());
-  int Total = (lastTotal / FramesPerSecond());
+  int Current = int(round(lastCurrent / FramesPerSecond()));
+  int Total = int(round(lastTotal / FramesPerSecond()));
   switch (Key) {
     case k0 ... k9:
          if (timeSearchPos < 4) {
