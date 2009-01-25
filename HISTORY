@@ -5912,7 +5912,7 @@ Video Disk Recorder Revision History
   can handle DVB-S2. The #define is still there to allow people with older drivers
   who don't need DVB-S2 to use this version without pathcing.
 
-2009-01-24: Version 1.7.4
+2009-01-25: Version 1.7.4
 
 - Removed the '#define FE_CAN_2ND_GEN_MODULATION', since it was wrong and the
   flag is now in the driver, anyway.
@@ -5966,3 +5966,15 @@ Video Disk Recorder Revision History
 - The PAT/PMT is now only processed if its version changes (reported by Reinhard
   Nissl).
 - Fixed handling the maximum video file size (reported by Udo Richter).
+- Improved fast-forward/-rewind for audio recordings. The actual data is now sent
+  to the output device, so that it can be replayed and thus cause the proper delay.
+  For pure audio recordings the audio is no longer muted in fast-forward/-rewind
+  mode, so that some orientation regarding the position within the recording is
+  possible. There may still be some offset in the replay position displayed by the
+  progress indicator when switching from fast-forward/-rewind to play mode, as well
+  as in the current position during normal play mode. This is due to the various
+  buffers between the player and the output device and will be addressed later.
+  Note the new function cDevice::IsPlayingVideo(), which is used to inform the
+  player whether there is video data in the currently replayed stream. If a derived
+  cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
+  new function works as expected.

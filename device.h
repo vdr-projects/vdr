@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.5 2009/01/10 10:04:30 kls Exp $
+ * $Id: device.h 2.6 2009/01/25 11:04:39 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -477,6 +477,7 @@ private:
   cTsToPes tsToPesVideo;
   cTsToPes tsToPesAudio;
   cTsToPes tsToPesSubtitle;
+  bool isPlayingVideo;
 protected:
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
@@ -542,6 +543,9 @@ public:
        ///< Gets the current System Time Counter, which can be used to
        ///< synchronize audio and video. If this device is unable to
        ///< provide the STC, -1 will be returned.
+  virtual bool IsPlayingVideo(void) const { return isPlayingVideo; }
+       ///< \return Returns true if the currently attached player has delivered
+       ///< any video packets.
   virtual bool HasIBPTrickSpeed(void) { return false; }
        ///< Returns true if this device can handle all frames in 'fast forward'
        ///< trick speeds.

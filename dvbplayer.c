@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.2 2009/01/24 11:42:07 kls Exp $
+ * $Id: dvbplayer.c 2.3 2009/01/25 11:11:39 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -412,8 +412,12 @@ void cDvbPlayer::Action(void)
                           if (index->Get(readIndex + 1, &FileNumber, &FileOffset, NULL, &Length))
                              Index = readIndex + 1;
                           }
-                       else
-                          Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                       else {
+                          int d = int(round(0.4 * framesPerSecond));
+                          if (playDir != pdForward)
+                             d = -d;
+                          Index = index->GetNextIFrame(readIndex + d, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                          }
                        if (Index >= 0) {
                           if (!NextFile(FileNumber, FileOffset)) {
                              readIndex = Index;
@@ -516,9 +520,9 @@ void cDvbPlayer::Action(void)
               if (p) {
                  int w;
                  if (isPesRecording)
-                    w = PlayPes(p, pc, playMode != pmPlay);
+                    w = PlayPes(p, pc, playMode != pmPlay && DeviceIsPlayingVideo());
                  else
-                    w = PlayTs(p, TS_SIZE, playMode != pmPlay);
+                    w = PlayTs(p, TS_SIZE, playMode != pmPlay && DeviceIsPlayingVideo());
                  if (w > 0) {
                     p += w;
                     pc -= w;
@@ -593,7 +597,8 @@ void cDvbPlayer::Forward(void)
             LOCK_THREAD;
             if (!(DeviceHasIBPTrickSpeed() && playDir == pdForward))
                Empty();
-            DeviceMute();
+            if (DeviceIsPlayingVideo())
+               DeviceMute();
             playMode = pmFast;
             playDir = pdForward;
             trickSpeed = NORMAL_SPEED;
@@ -639,7 +644,8 @@ void cDvbPlayer::Backward(void)
        case pmPlay: {
             LOCK_THREAD;
             Empty();
-            DeviceMute();
+            if (DeviceIsPlayingVideo())
+               DeviceMute();
             playMode = pmFast;
             playDir = pdBackward;
             trickSpeed = NORMAL_SPEED;

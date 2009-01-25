@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.10 2009/01/24 13:40:54 kls Exp $
+ * $Id: device.c 2.11 2009/01/25 11:10:56 kls Exp $
  */
 
 #include "device.h"
@@ -81,6 +81,7 @@ cDevice::cDevice(void)
   startScrambleDetection = 0;
 
   player = NULL;
+  isPlayingVideo = false;
   ClrAvailableTracks();
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
@@ -1099,6 +1100,7 @@ void cDevice::Detach(cPlayer *Player)
      SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      PlayTs(NULL, 0);
      Audios.ClearAudio();
+     isPlayingVideo = false;
      }
 }
 
@@ -1151,6 +1153,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
         switch (c) {
           case 0xBE:          // padding stream, needed for MPEG1
           case 0xE0 ... 0xEF: // video
+               isPlayingVideo = true;
                w = PlayVideo(Start, d);
                break;
           case 0xC0 ... 0xDF: // audio
@@ -1322,8 +1325,10 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
            patPmtParser.ParsePat(Data, Length);
         else if (Pid == patPmtParser.PmtPid())
            patPmtParser.ParsePmt(Data, Length);
-        else if (Pid == patPmtParser.Vpid())
+        else if (Pid == patPmtParser.Vpid()) {
+           isPlayingVideo = true;
            return PlayTsVideo(Data, Length);
+           }
         else if (Pid == availableTracks[currentAudioTrack].id) {
            if (!VideoOnly || HasIBPTrickSpeed()) {
               int w = PlayTsAudio(Data, Length);
