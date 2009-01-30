@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.11 2009/01/25 11:10:56 kls Exp $
+ * $Id: device.c 2.12 2009/01/30 16:01:53 kls Exp $
  */
 
 #include "device.h"
@@ -1304,8 +1304,9 @@ int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
   if (!dvbSubtitleConverter)
      dvbSubtitleConverter = new cDvbSubtitleConverter;
   tsToPesSubtitle.PutTs(Data, Length);
-  if (const uchar *p = tsToPesSubtitle.GetPes(Length)) {
-     dvbSubtitleConverter->Convert(p, Length);
+  int l;
+  if (const uchar *p = tsToPesSubtitle.GetPes(l)) {
+     dvbSubtitleConverter->Convert(p, l);
      tsToPesSubtitle.Reset();
      }
   return Length;
