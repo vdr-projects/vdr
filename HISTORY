@@ -5983,3 +5983,4 @@ Video Disk Recorder Revision History
 
 - Fixed a hangup when replaying a TS recording with subtitles activated (reported
   by Timo Helkio).
+- Fixed handling the 'new' indicator in the recordings menu for TS recordings.
