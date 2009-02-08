@@ -2416,3 +2416,6 @@ Johann Friedrichs <johann.friedrichs@web.de>
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
+
+Derek Kelly (user.vdr@gmail.com)
+ for fixing handling the 'new' indicator in the recordings menu for TS recordings
