@@ -5987,3 +5987,4 @@ Video Disk Recorder Revision History
   (thanks to Derek Kelly).
 - Added cap_sys_nice to the capabilities that are not dropped (thanks to Rolf
   Ahrenberg).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
