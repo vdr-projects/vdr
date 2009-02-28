@@ -5979,7 +5979,7 @@ Video Disk Recorder Revision History
   cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
   new function works as expected.
 
-2009-02-01: Version 1.7.5
+2009-02-28: Version 1.7.5
 
 - Fixed a hangup when replaying a TS recording with subtitles activated (reported
   by Timo Helkio).
@@ -5988,3 +5988,4 @@ Video Disk Recorder Revision History
 - Added cap_sys_nice to the capabilities that are not dropped (thanks to Rolf
   Ahrenberg).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Added cRecordingInfo::GetEvent() (thanks to Marcel Unbehaun).

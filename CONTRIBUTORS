@@ -2419,3 +2419,6 @@ Timo Helkio <timolavi@mbnet.fi>
 
 Derek Kelly (user.vdr@gmail.com)
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
+
+Marcel Unbehaun <frostworks@gmx.de>
+ for adding cRecordingInfo::GetEvent()
