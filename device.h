@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.6 2009/01/25 11:04:39 kls Exp $
+ * $Id: device.h 2.7 2009/03/01 11:20:34 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -543,6 +543,13 @@ public:
        ///< Gets the current System Time Counter, which can be used to
        ///< synchronize audio and video. If this device is unable to
        ///< provide the STC, -1 will be returned.
+       ///< The value returned doesn't need to be an actual "clock" value,
+       ///< it is sufficient if it holds the PTS (Presentation Time Stamp) of
+       ///< the most recently presented frame. A proper value must be returned
+       ///< in normal replay mode as well as in any trick modes (like slow motion,
+       ///< fast forward/rewind).
+       ///< Only the lower 32 bit of this value are actually used, since some
+       ///< devices can't handle the msb correctly.
   virtual bool IsPlayingVideo(void) const { return isPlayingVideo; }
        ///< \return Returns true if the currently attached player has delivered
        ///< any video packets.

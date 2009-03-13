@@ -5979,7 +5979,7 @@ Video Disk Recorder Revision History
   cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
   new function works as expected.
 
-2009-02-28: Version 1.7.5
+2009-03-13: Version 1.7.5
 
 - Fixed a hangup when replaying a TS recording with subtitles activated (reported
   by Timo Helkio).
@@ -5989,3 +5989,14 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added cRecordingInfo::GetEvent() (thanks to Marcel Unbehaun).
+- Improved synchronizing the progress display, trick modes and subtitle display
+  to the actual audio/video. This now works independent of any buffer sizes the
+  output device might use.
+  + The cBackTrace class has been replaced with cPtsIndex, which keeps track
+    of the PTS timestamps of recently played frames.
+  + cDevice::GetSTC() is now required to deliver the STC even in trick modes.
+    It is sufficient if it returns the PTS of the most recently presented
+    audio/video frame.
+  + The full-featured DVB cards need an improved firmware in order to return
+    proper STC values in trick modes (thanks to Oliver Endriss for enhancing the
+    av7110 firmware).

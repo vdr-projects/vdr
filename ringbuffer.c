@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.25 2007/11/17 13:49:34 kls Exp $
+ * $Id: ringbuffer.c 2.1 2009/03/01 11:20:34 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -335,11 +335,12 @@ void cRingBufferLinear::Del(int Count)
 
 // --- cFrame ----------------------------------------------------------------
 
-cFrame::cFrame(const uchar *Data, int Count, eFrameType Type, int Index)
+cFrame::cFrame(const uchar *Data, int Count, eFrameType Type, int Index, uint32_t Pts)
 {
   count = abs(Count);
   type = Type;
   index = Index;
+  pts = Pts;
   if (Count < 0)
      data = (uchar *)Data;
   else {

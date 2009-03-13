@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.13 2009/01/24 13:44:45 kls Exp $
+ * $Id: remux.c 2.14 2009/03/08 12:12:17 kls Exp $
  */
 
 #include "remux.h"
@@ -107,6 +107,21 @@ void cRemux::SetBrokenLink(uchar *Data, int Length)
      }
   else
      dsyslog("SetBrokenLink: no video packet in frame");
+}
+
+// --- Some TS handling tools ------------------------------------------------
+
+int64_t TsGetPts(const uchar *p, int l)
+{
+  // Find the first packet with a PTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasPts(d))
+           return PesGetPts(d);
+        p += TS_SIZE;
+        l -= TS_SIZE;
+        }
+  return -1;
 }
 
 // --- cPatPmtGenerator ------------------------------------------------------

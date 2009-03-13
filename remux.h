@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.7 2009/01/24 13:38:10 kls Exp $
+ * $Id: remux.h 2.8 2009/03/08 12:05:12 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -100,6 +100,10 @@ inline int TsGetAdaptationField(const uchar *p)
 {
   return TsHasAdaptationField(p) ? p[5] : 0x00;
 }
+
+// The following functions all take a pointer to a sequence of complete TS packets.
+
+int64_t TsGetPts(const uchar *p, int l);
 
 // Some PES handling tools:
 // The following functions that take a pointer to PES data all assume that
