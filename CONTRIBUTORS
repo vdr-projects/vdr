@@ -2426,3 +2426,6 @@ Derek Kelly (user.vdr@gmail.com)
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
+
+Günter Niedermeier <linuxtv@ncs-online.de>
+ for reporting a problem with file I/O overhead during recording in TS format

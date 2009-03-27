@@ -6003,3 +6003,6 @@ Video Disk Recorder Revision History
 - Adapted cFrameDetector::Analyze() to HD NTSC broadcasts that split frames over
   several payload units (thanks to Derek Kelly for reporting this and helping in
   testing).
+- Modified cFrameDetector::Analyze() to make it process whole frames at once, so
+  that file I/O overhead is minimized during recording (reported by Günter
+  Niedermeier).
