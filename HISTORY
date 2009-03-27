@@ -5979,7 +5979,7 @@ Video Disk Recorder Revision History
   cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
   new function works as expected.
 
-2009-03-13: Version 1.7.5
+2009-03-27: Version 1.7.5
 
 - Fixed a hangup when replaying a TS recording with subtitles activated (reported
   by Timo Helkio).
@@ -6000,3 +6000,6 @@ Video Disk Recorder Revision History
   + The full-featured DVB cards need an improved firmware in order to return
     proper STC values in trick modes (thanks to Oliver Endriss for enhancing the
     av7110 firmware).
+- Adapted cFrameDetector::Analyze() to HD NTSC broadcasts that split frames over
+  several payload units (thanks to Derek Kelly for reporting this and helping in
+  testing).

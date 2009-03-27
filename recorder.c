@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.2 2009/01/23 16:44:29 kls Exp $
+ * $Id: recorder.c 2.3 2009/03/20 15:49:02 kls Exp $
  */
 
 #include "recorder.h"
@@ -113,7 +113,6 @@ void cRecorder::Receive(uchar *Data, int Length)
 void cRecorder::Action(void)
 {
   time_t t = time(NULL);
-  bool Synced = false;
   bool InfoWritten = false;
   while (Running()) {
         int r;
@@ -123,7 +122,7 @@ void cRecorder::Action(void)
            if (Count) {
               if (!Running() && frameDetector->IndependentFrame()) // finish the recording before the next independent frame
                  break;
-              if (Synced |= frameDetector->IndependentFrame()) { // start with first independent frame
+              if (frameDetector->Synced()) {
                  if (!InfoWritten) {
                     if (recordingInfo.Read()) {
                        if (frameDetector->FramesPerSecond() > 0 && recordingInfo.FramesPerSecond() != frameDetector->FramesPerSecond()) {
