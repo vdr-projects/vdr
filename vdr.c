@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.5 2009/02/01 10:13:48 kls Exp $
+ * $Id: vdr.c 2.6 2009/03/27 15:54:05 kls Exp $
  */
 
 #include <getopt.h>
@@ -416,6 +416,7 @@ int main(int argc, char *argv[])
                "                           existing directory, without any \"..\", double '/'\n"
                "                           or symlinks (default: none, same as -g-)\n"
                "  -h,       --help         print this help and exit\n"
+               "  -i ID,    --instance=ID  use ID as the id of this VDR instance (default: 0)\n"
                "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                "                           0 = no logging, 1 = errors only,\n"
                "                           2 = errors and info, 3 = errors, info and debug\n"
