@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.5 2009/03/28 17:13:23 kls Exp $
+ * $Id: dvbplayer.c 2.6 2009/03/28 21:56:56 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -555,8 +555,11 @@ void cDvbPlayer::Action(void)
            // Handle hitting begin/end of recording:
 
            if (HitBegin || HitEnd) {
-              if (DeviceFlush(10)) // give device a chance to display the last frame
+              if (DeviceFlush(10)) { // give device a chance to display the last frame
                  cCondWait::SleepMs(10); // don't get into a tight loop
+                 }
+              else
+                 HitBegin = HitEnd = false;
               }
            if (HitBegin) {
               if (ptsIndex.FindIndex(DeviceGetSTC()) <= 0) {
