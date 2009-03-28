@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.4 2009/03/13 14:42:56 kls Exp $
+ * $Id: dvbplayer.c 2.5 2009/03/28 17:13:23 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -220,7 +220,7 @@ private:
   cFrame *playFrame;
   void TrickSpeed(int Increment);
   void Empty(void);
-  bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
+  bool NextFile(uint16_t FileNumber = 0, off_t FileOffset = -1);
   int Resume(void);
   bool Save(void);
 protected:
@@ -328,7 +328,7 @@ void cDvbPlayer::Empty(void)
   firstPacket = true;
 }
 
-bool cDvbPlayer::NextFile(uchar FileNumber, int FileOffset)
+bool cDvbPlayer::NextFile(uint16_t FileNumber, off_t FileOffset)
 {
   if (FileNumber > 0)
      replayFile = fileName->SetOffset(FileNumber, FileOffset);
