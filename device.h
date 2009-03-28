@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.7 2009/03/01 11:20:34 kls Exp $
+ * $Id: device.h 2.8 2009/03/28 21:53:26 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -595,7 +595,7 @@ public:
        ///< data which was bufferd so far has been processed.
        ///< If TimeoutMs is not zero, the device will wait up to the given
        ///< number of milliseconds before returning in case there is still
-       ///< data in the buffers..
+       ///< data in the buffers.
   virtual int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
        ///< Plays all valid PES packets in Data with the given Length.
        ///< If Data is NULL any leftover data from a previous call will be
