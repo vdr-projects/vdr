@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.1 2009/01/16 14:37:03 kls Exp $
+ * $Id: osd.h 2.2 2009/04/05 10:16:05 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -62,6 +62,7 @@ protected:
 public:
   cPalette(int Bpp = 8);
         ///< Initializes the palette with the given color depth.
+  virtual ~cPalette();
   void SetAntiAliasGranularity(uint FixedColors, uint BlendColors);
         ///< Allows the system to optimize utilization of the limited color
         ///< palette entries when generating blended colors for anti-aliasing.

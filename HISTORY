@@ -6014,3 +6014,4 @@ Video Disk Recorder Revision History
   has been played. cDvbPlayer::Action() no longer calls DeviceFlush() (thanks to
   Reinhard Nissl for making sure vdr-xine no longer needs this).
 - Added missing '[]' to the delete operator in cMenuEditStrItem::~cMenuEditStrItem().
+- Added missing virtual destructor to cPalette.
