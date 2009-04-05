@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.10 2009/04/05 12:29:27 kls Exp $
+ * $Id: dvbplayer.c 2.11 2009/04/05 13:04:33 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -456,7 +456,7 @@ void cDvbPlayer::Action(void)
                           eof = true;
                        }
                     else // allows replay even if the index file is missing
-                       Length = MAXFRAMESIZE;
+                       Length = MAXFRAMESIZE / TS_SIZE * TS_SIZE;// FIXME: use a linear ringbuffer in this case, and fix cDevice::PlayPes()
                     if (Length == -1)
                        Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
                     else if (Length > MAXFRAMESIZE) {
@@ -470,11 +470,11 @@ void cDvbPlayer::Action(void)
                     if (r > 0) {
                        WaitingForData = false;
                        uint32_t Pts = 0;
-                       if (readIndependent)
+                       if (readIndependent) {
                           Pts = isPesRecording ? PesGetPts(b) : TsGetPts(b, r);
-                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
-                       if (readIndependent)
                           LastReadIFrame = readIndex;
+                          }
+                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
                        b = NULL;
                        }
                     else if (r == 0)
