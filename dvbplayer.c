@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.6 2009/03/28 21:56:56 kls Exp $
+ * $Id: dvbplayer.c 2.7 2009/04/05 09:05:54 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -18,7 +18,7 @@
 
 // --- cPtsIndex -------------------------------------------------------------
 
-#define PTSINDEX_ENTRIES 100
+#define PTSINDEX_ENTRIES 500
 
 class cPtsIndex {
 private:
@@ -194,7 +194,7 @@ bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 #define PLAYERBUFSIZE  MEGABYTE(1)
 
 #define RESUMEBACKUP 10 // number of seconds to back up when resuming an interrupted replay session
-#define MAXSTUCKATEND 3 // max. number of seconds to wait in case the device doesn't play the last frame
+#define MAXSTUCKATEOF 3 // max. number of seconds to wait in case the device doesn't play the last frame
 
 class cDvbPlayer : public cPlayer, cThread {
 private:
@@ -393,9 +393,11 @@ void cDvbPlayer::Action(void)
   int Length = 0;
   bool Sleep = false;
   bool WaitingForData = false;
-  time_t StuckAtEnd = 0;
+  time_t StuckAtEof = 0;
+  uint32_t LastStc = 0;
+  int LastReadIFrame = -1;
 
-  while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
+  while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
         if (Sleep) {
            if (WaitingForData)
               nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
@@ -407,8 +409,6 @@ void cDvbPlayer::Action(void)
         if (DevicePoll(Poller, 100)) {
 
            LOCK_THREAD;
-           bool HitBegin = false;
-           bool HitEnd = false;
 
            // Read the next frame from the file:
 
@@ -429,7 +429,10 @@ void cDvbPlayer::Action(void)
                           int d = int(round(0.4 * framesPerSecond));
                           if (playDir != pdForward)
                              d = -d;
-                          Index = index->GetNextIFrame(readIndex + d, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                          int NewIndex = readIndex + d;
+                          if (NewIndex <= 0 && readIndex > 0)
+                             NewIndex = 1; // make sure the very first frame is delivered
+                          Index = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
                           readIndependent = true;
                           }
                        if (Index >= 0) {
@@ -437,27 +440,16 @@ void cDvbPlayer::Action(void)
                           if (!NextFile(FileNumber, FileOffset))
                              continue;
                           }
-                       else {
-                          if (playDir == pdForward) {
-                             if (!TimeShiftMode) {
-                                // hit end of recording: signal end of file but don't change playMode
-                                eof = true;
-                                HitEnd = true;
-                                }
-                             }
-                          else
-                             HitBegin = true; // hit begin of recording - trigger wait until device has replayed the very first frame:
-                          }
+                       else if (playDir != pdForward || !TimeShiftMode)
+                          eof = true;
                        }
                     else if (index) {
                        uint16_t FileNumber;
                        off_t FileOffset;
                        if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
                           readIndex++;
-                       else {
+                       else
                           eof = true;
-                          HitEnd = true;
-                          }
                        }
                     else // allows replay even if the index file is missing
                        Length = MAXFRAMESIZE;
@@ -476,7 +468,9 @@ void cDvbPlayer::Action(void)
                        uint32_t Pts = 0;
                        if (readIndependent)
                           Pts = isPesRecording ? PesGetPts(b) : TsGetPts(b, r);
-                       readFrame = new cFrame(b, -r, ftUnknown, readIndependent ? readIndex : -1, Pts); // hands over b to the ringBuffer
+                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
+                       if (readIndependent)
+                          LastReadIFrame = readIndex;
                        b = NULL;
                        }
                     else if (r == 0)
@@ -529,22 +523,28 @@ void cDvbPlayer::Action(void)
                     }
                  }
               if (p) {
-                 int w;
-                 if (isPesRecording)
-                    w = PlayPes(p, pc, playMode != pmPlay && DeviceIsPlayingVideo());
-                 else
-                    w = PlayTs(p, TS_SIZE, playMode != pmPlay && DeviceIsPlayingVideo());
-                 if (w > 0) {
-                    p += w;
-                    pc -= w;
-                    }
-                 else if (w < 0 && FATALERRNO) {
-                    LOG_ERROR;
-                    break;
-                    }
+                 //XXX maybe make PlayTs() play as much as possible, until w == 0? would save this extra code here (and the goto)...
+                 while (pc > 0) {
+                       int w;
+                       if (isPesRecording)
+                          w = PlayPes(p, pc, playMode != pmPlay && DeviceIsPlayingVideo());
+                       else
+                          w = PlayTs(p, TS_SIZE, playMode != pmPlay && DeviceIsPlayingVideo());
+                       if (w > 0) {
+                          p += w;
+                          pc -= w;
+                          }
+                       else if (w == 0)
+                          break;
+                       else if (w < 0 && FATALERRNO) {
+                          LOG_ERROR;
+                          goto End;
+                          }
+                       }
                  }
               if (pc <= 0) {
-                 ringBuffer->Drop(playFrame);
+                 if (!eof || (playDir != pdForward && playFrame->Index() > 0) || (playDir == pdForward && playFrame->Index() < readIndex))
+                    ringBuffer->Drop(playFrame); // the very first and last frame are continously repeated to flush data through the device
                  playFrame = NULL;
                  p = NULL;
                  }
@@ -554,34 +554,36 @@ void cDvbPlayer::Action(void)
 
            // Handle hitting begin/end of recording:
 
-           if (HitBegin || HitEnd) {
-              if (DeviceFlush(10)) { // give device a chance to display the last frame
-                 cCondWait::SleepMs(10); // don't get into a tight loop
+           if (eof) {
+              bool SwitchToPlay = false;
+              uint32_t Stc = DeviceGetSTC();
+              if (Stc != LastStc)
+                 StuckAtEof = 0;
+              else if (!StuckAtEof)
+                 StuckAtEof = time(NULL);
+              else if (time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
+                 if (playDir == pdForward)
+                    break; // automatically stop at end of recording
+                 SwitchToPlay = true;
                  }
-              else
-                 HitBegin = HitEnd = false;
-              }
-           if (HitBegin) {
-              if (ptsIndex.FindIndex(DeviceGetSTC()) <= 0) {
+              LastStc = Stc;
+              int Index = ptsIndex.FindIndex(Stc);
+              if (playDir == pdForward) {
+                 if (Index >= LastReadIFrame)
+                    break; // automatically stop at end of recording
+                 }
+              else if (Index <= 0)
+                 SwitchToPlay = true;
+              if (SwitchToPlay) {
                  Empty();
                  DevicePlay();
                  playMode = pmPlay;
                  playDir = pdForward;
                  }
               }
-           else if (HitEnd) {
-              if (ptsIndex.FindIndex(DeviceGetSTC()) >= readIndex)
-                 break;
-              else if (!StuckAtEnd)
-                 StuckAtEnd = time(NULL);
-              else if (time(NULL) - StuckAtEnd > MAXSTUCKATEND)
-                 break;
-              }
-           else
-              StuckAtEnd = 0;
            }
         }
-
+End:
   cNonBlockingFileReader *nbfr = nonBlockingFileReader;
   nonBlockingFileReader = NULL;
   delete nbfr;
