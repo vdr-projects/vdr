@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.8 2009/04/05 10:11:26 kls Exp $
+ * $Id: dvbplayer.c 2.9 2009/04/05 10:55:11 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -531,9 +531,9 @@ void cDvbPlayer::Action(void)
                  while (pc > 0) {
                        int w;
                        if (isPesRecording)
-                          w = PlayPes(p, pc, playMode != pmPlay && DeviceIsPlayingVideo());
+                          w = PlayPes(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
                        else
-                          w = PlayTs(p, TS_SIZE, playMode != pmPlay && DeviceIsPlayingVideo());
+                          w = PlayTs(p, TS_SIZE, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
                        if (w > 0) {
                           p += w;
                           pc -= w;

@@ -1201,6 +1201,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting that the PAT/PMT is processed too often, even if its version
  hasn't changed
  for making sure vdr-xine no longer needs cDvbPlayer::Action() to call DeviceFlush()
+ for fixing the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
+ cDvbPlayer::Action()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

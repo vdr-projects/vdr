@@ -6018,3 +6018,5 @@ Video Disk Recorder Revision History
 - Now freeing configDirectory before setting it to a new value in
   cPlugin::SetConfigDirectory().
 - Fixed a crash when jumping to an editing mark in an audio recording.
+- Fixed the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
+  cDvbPlayer::Action() (thanks to Reinhard Nissl).
