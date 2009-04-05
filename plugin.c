@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.28 2008/02/17 13:32:12 kls Exp $
+ * $Id: plugin.c 2.1 2009/04/05 10:21:20 kls Exp $
  */
 
 #include "plugin.h"
@@ -137,6 +137,7 @@ void cPlugin::RegisterI18n(const void *)
 
 void cPlugin::SetConfigDirectory(const char *Dir)
 {
+  free(configDirectory);
   configDirectory = strdup(Dir);
 }
 

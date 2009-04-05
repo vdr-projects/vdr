@@ -6015,3 +6015,5 @@ Video Disk Recorder Revision History
   Reinhard Nissl for making sure vdr-xine no longer needs this).
 - Added missing '[]' to the delete operator in cMenuEditStrItem::~cMenuEditStrItem().
 - Added missing virtual destructor to cPalette.
+- Now freeing configDirectory before setting it to a new value in
+  cPlugin::SetConfigDirectory().
