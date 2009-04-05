@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.12 2009/01/30 16:01:53 kls Exp $
+ * $Id: device.c 2.13 2009/04/05 12:15:41 kls Exp $
  */
 
 #include "device.h"
@@ -1315,43 +1315,54 @@ int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
 //TODO detect and report continuity errors?
 int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 {
-  if (Length == TS_SIZE) {
-     if (!TsHasPayload(Data))
-        return Length; // silently ignore TS packets w/o payload
-     int PayloadOffset = TsPayloadOffset(Data);
-     if (PayloadOffset < Length) {
-        cMutexLock MutexLock(&mutexCurrentAudioTrack);
-        int Pid = TsPid(Data);
-        if (Pid == 0)
-           patPmtParser.ParsePat(Data, Length);
-        else if (Pid == patPmtParser.PmtPid())
-           patPmtParser.ParsePmt(Data, Length);
-        else if (Pid == patPmtParser.Vpid()) {
-           isPlayingVideo = true;
-           return PlayTsVideo(Data, Length);
-           }
-        else if (Pid == availableTracks[currentAudioTrack].id) {
-           if (!VideoOnly || HasIBPTrickSpeed()) {
-              int w = PlayTsAudio(Data, Length);
-              if (w > 0)
-                 Audios.PlayTsAudio(Data, Length);
-              return w;
-              }
-           }
-        else if (Pid == availableTracks[currentSubtitleTrack].id) {
-           if (!VideoOnly || HasIBPTrickSpeed())
-              return PlayTsSubtitle(Data, Length);
-           }
-        return Length;
-        }
-     }
-  else if (Data == NULL) {
+  int Played = 0;
+  if (Data == NULL) {
      patPmtParser.Reset();
      tsToPesVideo.Reset();
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();
      }
-  return -1;
+  else {
+     cMutexLock MutexLock(&mutexCurrentAudioTrack);
+     while (Length >= TS_SIZE) {
+           if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
+              int PayloadOffset = TsPayloadOffset(Data);
+              if (PayloadOffset < TS_SIZE) {
+                 int Pid = TsPid(Data);
+                 if (Pid == 0)
+                    patPmtParser.ParsePat(Data, TS_SIZE);
+                 else if (Pid == patPmtParser.PmtPid())
+                    patPmtParser.ParsePmt(Data, TS_SIZE);
+                 else if (Pid == patPmtParser.Vpid()) {
+                    isPlayingVideo = true;
+                    int w = PlayTsVideo(Data, TS_SIZE);
+                    if (w < 0)
+                       return Played ? Played : w;
+                    if (w == 0)
+                       break;
+                    }
+                 else if (Pid == availableTracks[currentAudioTrack].id) {
+                    if (!VideoOnly || HasIBPTrickSpeed()) {
+                       int w = PlayTsAudio(Data, TS_SIZE);
+                       if (w < 0)
+                          return Played ? Played : w;
+                       if (w == 0)
+                          break;
+                       Audios.PlayTsAudio(Data, TS_SIZE);
+                       }
+                    }
+                 else if (Pid == availableTracks[currentSubtitleTrack].id) {
+                    if (!VideoOnly || HasIBPTrickSpeed())
+                       PlayTsSubtitle(Data, TS_SIZE);
+                    }
+                 }
+              }
+           Played += TS_SIZE;
+           Length -= TS_SIZE;
+           Data += TS_SIZE;
+           }
+     }
+  return Played;
 }
 
 int cDevice::Priority(void) const

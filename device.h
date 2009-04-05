@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.8 2009/03/28 21:53:26 kls Exp $
+ * $Id: device.h 2.9 2009/04/05 12:12:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -619,9 +619,9 @@ public:
        ///< must be sent to the base class function. This applies especially
        ///< to the PAT/PMT packets.
        ///< Returns -1 in case of error, otherwise the number of actually
-       ///< processed bytes is returned, which must be Length.
-       ///< PlayTs() shall process the packet either as a whole (returning
-       ///< Length) or not at all returning 0 or -1 and setting 'errno' accordingly).
+       ///< processed bytes is returned.
+       ///< PlayTs() shall process the TS packets either as a whole (returning
+       ///< n*TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;

@@ -6020,3 +6020,4 @@ Video Disk Recorder Revision History
 - Fixed a crash when jumping to an editing mark in an audio recording.
 - Fixed the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
   cDvbPlayer::Action() (thanks to Reinhard Nissl).
+- cDevice::PlayTs() now plays as many TS packets as possible in one call.

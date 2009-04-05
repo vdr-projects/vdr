@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.9 2009/04/05 10:55:11 kls Exp $
+ * $Id: dvbplayer.c 2.10 2009/04/05 12:29:27 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -527,24 +527,17 @@ void cDvbPlayer::Action(void)
                     }
                  }
               if (p) {
-                 //XXX maybe make PlayTs() play as much as possible, until w == 0? would save this extra code here (and the goto)...
-                 while (pc > 0) {
-                       int w;
-                       if (isPesRecording)
-                          w = PlayPes(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
-                       else
-                          w = PlayTs(p, TS_SIZE, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
-                       if (w > 0) {
-                          p += w;
-                          pc -= w;
-                          }
-                       else if (w == 0)
-                          break;
-                       else if (w < 0 && FATALERRNO) {
-                          LOG_ERROR;
-                          goto End;
-                          }
-                       }
+                 int w;
+                 if (isPesRecording)
+                    w = PlayPes(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
+                 else
+                    w = PlayTs(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
+                 if (w > 0) {
+                    p += w;
+                    pc -= w;
+                    }
+                 else if (w < 0 && FATALERRNO)
+                    LOG_ERROR;
                  }
               if (pc <= 0) {
                  if (!eof || (playDir != pdForward && playFrame->Index() > 0) || (playDir == pdForward && playFrame->Index() < readIndex))
@@ -589,7 +582,7 @@ void cDvbPlayer::Action(void)
               }
            }
         }
-End:
+
   cNonBlockingFileReader *nbfr = nonBlockingFileReader;
   nonBlockingFileReader = NULL;
   delete nbfr;
