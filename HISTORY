@@ -6021,3 +6021,6 @@ Video Disk Recorder Revision History
 - Fixed the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
   cDvbPlayer::Action() (thanks to Reinhard Nissl).
 - cDevice::PlayTs() now plays as many TS packets as possible in one call.
+- Making sure any floating point numbers written use a decimal point (thanks to
+  Oliver Endriss for pointing out a problem with the F record in the info file of
+  a recording).

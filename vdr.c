@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.6 2009/03/27 15:54:05 kls Exp $
+ * $Id: vdr.c 2.7 2009/04/05 13:21:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -534,6 +534,7 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
+  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Initialize internationalization:
 

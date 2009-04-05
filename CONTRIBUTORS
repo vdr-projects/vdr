@@ -664,6 +664,8 @@ Oliver Endriss <o.endriss@gmx.de>
  DVB cards
  for improving the firmware of FF DVB cards to allow getting the current STC value
  even in trick modes
+ for pointing out a problem with the decimal point of the F record in the info file of
+ a recording
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
