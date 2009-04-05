@@ -6013,3 +6013,4 @@ Video Disk Recorder Revision History
   frame is now sent to the output device repeatedly until GetSTC() reports that it
   has been played. cDvbPlayer::Action() no longer calls DeviceFlush() (thanks to
   Reinhard Nissl for making sure vdr-xine no longer needs this).
+- Added missing '[]' to the delete operator in cMenuEditStrItem::~cMenuEditStrItem().
