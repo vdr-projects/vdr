@@ -6024,3 +6024,4 @@ Video Disk Recorder Revision History
 - Making sure any floating point numbers written use a decimal point (thanks to
   Oliver Endriss for pointing out a problem with the F record in the info file of
   a recording).
+- Fixed detecting the frame rate for radio recordings.

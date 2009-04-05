@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.16 2009/03/27 13:49:58 kls Exp $
+ * $Id: remux.c 2.17 2009/04/05 14:07:48 kls Exp $
  */
 
 #include "remux.h"
@@ -758,7 +758,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                  if (DebugFrames && !synced)
                     dbgframes("/");
                  }
-              for (int i = PayloadOffset; i < TS_SIZE; i++) {
+              for (int i = PayloadOffset; scanning && i < TS_SIZE; i++) {
                   scanner <<= 8;
                   scanner |= Data[i];
                   switch (type) {
@@ -813,12 +813,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                             return Processed;
                          newFrame = true;
                          independentFrame = true;
-                         if (synced)
-                            scanning = false;
-                         else {
+                         if (!synced) {
                             framesInPayloadUnit = 1;
-                            numIFrames++;
+                            if (TsPayloadStart(Data))
+                               numIFrames++;
                             }
+                         scanning = false;
                          break;
                     default: esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
                              pid = 0; // let's just ignore any further data
