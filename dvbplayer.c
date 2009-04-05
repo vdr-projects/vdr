@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.7 2009/04/05 09:05:54 kls Exp $
+ * $Id: dvbplayer.c 2.8 2009/04/05 10:11:26 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -396,6 +396,7 @@ void cDvbPlayer::Action(void)
   time_t StuckAtEof = 0;
   uint32_t LastStc = 0;
   int LastReadIFrame = -1;
+  int SwitchToPlayFrame = 0;
 
   while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
         if (Sleep) {
@@ -415,7 +416,7 @@ void cDvbPlayer::Action(void)
            if (playMode != pmStill && playMode != pmPause) {
               if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
-                    if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
+                    if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
                        uint16_t FileNumber;
                        off_t FileOffset;
                        bool TimeShiftMode = index->IsStillRecording();
@@ -432,7 +433,10 @@ void cDvbPlayer::Action(void)
                           int NewIndex = readIndex + d;
                           if (NewIndex <= 0 && readIndex > 0)
                              NewIndex = 1; // make sure the very first frame is delivered
-                          Index = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                          NewIndex = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                          if (NewIndex < 0 && TimeShiftMode && playDir == pdForward)
+                             SwitchToPlayFrame = Index;
+                          Index = NewIndex;
                           readIndependent = true;
                           }
                        if (Index >= 0) {
@@ -440,7 +444,7 @@ void cDvbPlayer::Action(void)
                           if (!NextFile(FileNumber, FileOffset))
                              continue;
                           }
-                       else if (playDir != pdForward || !TimeShiftMode)
+                       else
                           eof = true;
                        }
                     else if (index) {
@@ -554,7 +558,7 @@ void cDvbPlayer::Action(void)
 
            // Handle hitting begin/end of recording:
 
-           if (eof) {
+           if (eof || SwitchToPlayFrame) {
               bool SwitchToPlay = false;
               uint32_t Stc = DeviceGetSTC();
               if (Stc != LastStc)
@@ -568,17 +572,19 @@ void cDvbPlayer::Action(void)
                  }
               LastStc = Stc;
               int Index = ptsIndex.FindIndex(Stc);
-              if (playDir == pdForward) {
+              if (playDir == pdForward && !SwitchToPlayFrame) {
                  if (Index >= LastReadIFrame)
                     break; // automatically stop at end of recording
                  }
-              else if (Index <= 0)
+              else if (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame)
                  SwitchToPlay = true;
               if (SwitchToPlay) {
-                 Empty();
+                 if (!SwitchToPlayFrame)
+                    Empty();
                  DevicePlay();
                  playMode = pmPlay;
                  playDir = pdForward;
+                 SwitchToPlayFrame = 0;
                  }
               }
            }
