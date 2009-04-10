@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.4 2008/12/13 11:42:15 kls Exp $
+ * $Id: channels.c 2.5 2009/04/10 11:29:55 kls Exp $
  */
 
 #include "channels.h"
@@ -724,7 +724,7 @@ cString cChannel::ToText(const cChannel *Channel)
      q += snprintf(q, sizeof(vpidbuf), "%d", Channel->vpid);
      if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
-     if (Channel->vtype)
+     if (Channel->vpid && Channel->vtype)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "=%d", Channel->vtype);
      *q = 0;
      const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia

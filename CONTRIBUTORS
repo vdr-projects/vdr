@@ -667,6 +667,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for pointing out a problem with the decimal point of the F record in the info file of
  a recording
  for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
+ for reporting that the video type is unnecessarily written into channels.conf if
+ VPID is 0
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

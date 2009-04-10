@@ -6027,3 +6027,5 @@ Video Disk Recorder Revision History
 - Fixed detecting the frame rate for radio recordings.
 - Added missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice (thanks to Oliver
   Endriss).
+- No longer writing the video type into channels.conf if VPID is 0 (thanks to
+  Oliver Endriss for reporting this).
