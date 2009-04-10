@@ -16,8 +16,7 @@ to Make.config and adjust the definition of DVBDIR in that file.
 
 Refer to http://linuxtv.org for more information about the Linux-DVB driver.
 
-VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
-to work properly.
+VDR requires the Linux-DVB driver version that supports the S2API interface.
 
 You will also need to install the following libraries, as well as their
 "devel" packages to get the necessary header files for compiling VDR:
