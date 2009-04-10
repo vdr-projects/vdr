@@ -5979,7 +5979,7 @@ Video Disk Recorder Revision History
   cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
   new function works as expected.
 
-2009-04-05: Version 1.7.5
+2009-04-10: Version 1.7.5
 
 - Fixed a hangup when replaying a TS recording with subtitles activated (reported
   by Timo Helkio).
@@ -6025,3 +6025,5 @@ Video Disk Recorder Revision History
   Oliver Endriss for pointing out a problem with the F record in the info file of
   a recording).
 - Fixed detecting the frame rate for radio recordings.
+- Added missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice (thanks to Oliver
+  Endriss).
