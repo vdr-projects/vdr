@@ -12,18 +12,21 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2008-12-14 16:10+0100\n"
-"PO-Revision-Date: 2008-08-25 02:36+0100\n"
+"PO-Revision-Date: 2009-02-08 18:58+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 msgid "off"
 msgstr "off"
 
 msgid "on"
-msgstr ""
+msgstr "on"
 
 msgid "auto"
 msgstr "automatico"
@@ -58,7 +61,7 @@ msgid "Phase 1: Detecting RC code type"
 msgstr "Fase 1: Rilevamento tipo codice RC"
 
 msgid "Press any key on the RC unit"
-msgstr "Premi un tasto dell'unità RC"
+msgstr "Premi un tasto dell'unitÃ  RC"
 
 msgid "RC code detected!"
 msgstr "Codice RC rilevato!"
@@ -77,13 +80,13 @@ msgid "Press 'Up' to confirm"
 msgstr "Premi 'Su' per confermare"
 
 msgid "Press 'Down' to continue"
-msgstr "Premi 'Giù' per continuare"
+msgstr "Premi 'GiÃ¹' per continuare"
 
 msgid "(press 'Up' to go back)"
 msgstr "(premi 'Su' per tornare indietro)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(premi 'Giù' per concludere definizione tasti)"
+msgstr "(premi 'GiÃ¹' per concludere definizione tasti)"
 
 msgid "(press 'Menu' to skip this key)"
 msgstr "(premi 'Menu' per saltare questo tasto)"
@@ -95,13 +98,13 @@ msgid "Phase 3: Saving key codes"
 msgstr "Fase 3: Salvataggio codici tasti"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Premi 'Su' per salvare, 'Giù' per annullare"
+msgstr "Premi 'Su' per salvare, 'GiÃ¹' per annullare"
 
 msgid "Key$Up"
 msgstr "Su"
 
 msgid "Key$Down"
-msgstr "Giù"
+msgstr "GiÃ¹"
 
 msgid "Key$Menu"
 msgstr "Menu"
@@ -290,7 +293,7 @@ msgid "Polarization"
 msgstr "Polarizzazione"
 
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 msgid "Srate"
 msgstr "SymbolRate"
@@ -320,7 +323,7 @@ msgid "Hierarchy"
 msgstr "Gerarchia"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
@@ -368,7 +371,7 @@ msgid "VPS"
 msgstr "VPS"
 
 msgid "Priority"
-msgstr "Priorità"
+msgstr "PrioritÃ "
 
 msgid "Lifetime"
 msgstr "Scadenza"
@@ -377,7 +380,7 @@ msgid "File"
 msgstr "Nome"
 
 msgid "First day"
-msgstr "1° giorno"
+msgstr "1Â° giorno"
 
 msgid "Timers"
 msgstr "Timer"
@@ -682,10 +685,10 @@ msgid "CAM reset"
 msgstr "Reimposta la CAM"
 
 msgid "CAM present"
-msgstr "La CAM è presente"
+msgstr "La CAM Ã¨ presente"
 
 msgid "CAM ready"
-msgstr "La CAM è pronta"
+msgstr "La CAM Ã¨ pronta"
 
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
@@ -703,7 +706,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossibile aprire il menu CAM!"
 
 msgid "CAM is in use - really reset?"
-msgstr "La CAM è in uso - vuoi reimpostarla?"
+msgstr "La CAM Ã¨ in uso - vuoi reimpostarla?"
 
 msgid "Can't reset CAM!"
 msgstr "Impossibile reimpostare il modulo CAM!"
@@ -721,13 +724,13 @@ msgid "Setup.Recording$Primary limit"
 msgstr "Limite primario"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Priorità predefinita"
+msgstr "PrioritÃ  predefinita"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Scadenza predefinita (gg)"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorità di pausa"
+msgstr "PrioritÃ  di pausa"
 
 msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Scadenza pausa (gg)"
@@ -760,10 +763,10 @@ msgid "Replay"
 msgstr "Riproduzione"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Modalità multispeed"
+msgstr "ModalitÃ  multispeed"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Mostra modalità riproduzione"
+msgstr "Mostra modalitÃ  riproduzione"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"
@@ -775,7 +778,7 @@ msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Scadenza min. evento (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Periodo min. inattività (min)"
+msgstr "Periodo min. inattivitÃ  (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Scadenza SVDRP (s)"
@@ -884,16 +887,16 @@ msgid "Editing process started"
 msgstr "Processo di modifica avviato"
 
 msgid "Editing process already active!"
-msgstr "Processo di modifica già attivo!"
+msgstr "Processo di modifica giÃ  attivo!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&°"
+msgstr " aÃ¡Ã bcdeÃ©Ã¨fghiÃ¬Ã®jklmnoÃ²pqrstuÃ¹vwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&Â°"
 
 msgid "yes"
-msgstr "sì"
+msgstr "sÃ¬"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+°?{}/:%@&\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+Â°?{}/:%@&\taÃ bc2\tdeÃ¨f3\tghiÃ¬4\tjkl5\tmnoÃ²6\tpqrs7\ttuÃ¹v8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
@@ -908,7 +911,7 @@ msgid "Plugin"
 msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Su/Giù per nuova posizione - OK per spostare"
+msgstr "Su/GiÃ¹ per nuova posizione - OK per spostare"
 
 msgid "Channel locked (recording)!"
 msgstr "Canale bloccato (in registrazione)!"
@@ -964,19 +967,19 @@ msgid "MonTueWedThuFriSatSun"
 msgstr "LunMarMerGioVenSabDom"
 
 msgid "Monday"
-msgstr "Lunedì"
+msgstr "LunedÃ¬"
 
 msgid "Tuesday"
-msgstr "Martedì"
+msgstr "MartedÃ¬"
 
 msgid "Wednesday"
-msgstr "Mercoledì"
+msgstr "MercoledÃ¬"
 
 msgid "Thursday"
-msgstr "Giovedì"
+msgstr "GiovedÃ¬"
 
 msgid "Friday"
-msgstr "Venerdì"
+msgstr "VenerdÃ¬"
 
 msgid "Saturday"
 msgstr "Sabato"
@@ -991,7 +994,7 @@ msgid "Recording started"
 msgstr "Registrazione avviata"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR si spegnerà più tardi - premi Power per forzare"
+msgstr "VDR si spegnerÃ  piÃ¹ tardi - premi Power per forzare"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Premi un tasto per annullare lo spegnimento"
@@ -1010,4 +1013,4 @@ msgstr "Premi un tasto per annullare il riavvio"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR si spegnerà tra %s minuti"
+msgstr "VDR si spegnerÃ  tra %s minuti"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.6 2009/01/25 11:04:39 kls Exp $
+ * $Id: device.h 2.9 2009/04/05 12:12:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -543,6 +543,13 @@ public:
        ///< Gets the current System Time Counter, which can be used to
        ///< synchronize audio and video. If this device is unable to
        ///< provide the STC, -1 will be returned.
+       ///< The value returned doesn't need to be an actual "clock" value,
+       ///< it is sufficient if it holds the PTS (Presentation Time Stamp) of
+       ///< the most recently presented frame. A proper value must be returned
+       ///< in normal replay mode as well as in any trick modes (like slow motion,
+       ///< fast forward/rewind).
+       ///< Only the lower 32 bit of this value are actually used, since some
+       ///< devices can't handle the msb correctly.
   virtual bool IsPlayingVideo(void) const { return isPlayingVideo; }
        ///< \return Returns true if the currently attached player has delivered
        ///< any video packets.
@@ -588,7 +595,7 @@ public:
        ///< data which was bufferd so far has been processed.
        ///< If TimeoutMs is not zero, the device will wait up to the given
        ///< number of milliseconds before returning in case there is still
-       ///< data in the buffers..
+       ///< data in the buffers.
   virtual int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
        ///< Plays all valid PES packets in Data with the given Length.
        ///< If Data is NULL any leftover data from a previous call will be
@@ -612,9 +619,9 @@ public:
        ///< must be sent to the base class function. This applies especially
        ///< to the PAT/PMT packets.
        ///< Returns -1 in case of error, otherwise the number of actually
-       ///< processed bytes is returned, which must be Length.
-       ///< PlayTs() shall process the packet either as a whole (returning
-       ///< Length) or not at all returning 0 or -1 and setting 'errno' accordingly).
+       ///< processed bytes is returned.
+       ///< PlayTs() shall process the TS packets either as a whole (returning
+       ///< n*TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;

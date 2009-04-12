@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 2.0 2007/11/17 13:49:34 kls Exp $
+ * $Id: ringbuffer.h 2.1 2009/02/24 11:31:32 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -108,8 +108,9 @@ private:
   int count;
   eFrameType type;
   int index;
+  uint32_t pts;
 public:
-  cFrame(const uchar *Data, int Count, eFrameType = ftUnknown, int Index = -1);
+  cFrame(const uchar *Data, int Count, eFrameType = ftUnknown, int Index = -1, uint32_t Pts = 0);
     ///< Creates a new cFrame object.
     ///< If Count is negative, the cFrame object will take ownership of the given
     ///< Data. Otherwise it will allocate Count bytes of memory and copy Data.
@@ -118,6 +119,7 @@ public:
   int Count(void) const { return count; }
   eFrameType Type(void) const { return type; }
   int Index(void) const { return index; }
+  uint32_t Pts(void) const { return pts; }
   };
 
 class cRingBufferFrame : public cRingBuffer {

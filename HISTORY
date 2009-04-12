@@ -5978,3 +5978,55 @@ Video Disk Recorder Revision History
   player whether there is video data in the currently replayed stream. If a derived
   cDevice class reimplements PlayTs() or PlayPes(), it also needs to make sure this
   new function works as expected.
+
+2009-04-12: Version 1.7.5
+
+- Fixed a hangup when replaying a TS recording with subtitles activated (reported
+  by Timo Helkio).
+- Fixed handling the 'new' indicator in the recordings menu for TS recordings
+  (thanks to Derek Kelly).
+- Added cap_sys_nice to the capabilities that are not dropped (thanks to Rolf
+  Ahrenberg).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Added cRecordingInfo::GetEvent() (thanks to Marcel Unbehaun).
+- Improved synchronizing the progress display, trick modes and subtitle display
+  to the actual audio/video. This now works independent of any buffer sizes the
+  output device might use.
+  + The cBackTrace class has been replaced with cPtsIndex, which keeps track
+    of the PTS timestamps of recently played frames.
+  + cDevice::GetSTC() is now required to deliver the STC even in trick modes.
+    It is sufficient if it returns the PTS of the most recently presented
+    audio/video frame.
+  + The full-featured DVB cards need an improved firmware in order to return
+    proper STC values in trick modes (thanks to Oliver Endriss for enhancing the
+    av7110 firmware).
+- Adapted cFrameDetector::Analyze() to HD NTSC broadcasts that split frames over
+  several payload units (thanks to Derek Kelly for reporting this and helping in
+  testing).
+- Modified cFrameDetector::Analyze() to make it process whole frames at once, so
+  that file I/O overhead is minimized during recording (reported by Günter
+  Niedermeier).
+- Added command line help for the '-i' option.
+- Fixed cDvbPlayer::NextFile() to handle files larger than 2GB (thanks to Jose
+  Alberto Reguero).
+- Improved replay at the begin and end of a recording. The very first and very last
+  frame is now sent to the output device repeatedly until GetSTC() reports that it
+  has been played. cDvbPlayer::Action() no longer calls DeviceFlush() (thanks to
+  Reinhard Nissl for making sure vdr-xine no longer needs this).
+- Added missing '[]' to the delete operator in cMenuEditStrItem::~cMenuEditStrItem().
+- Added missing virtual destructor to cPalette.
+- Now freeing configDirectory before setting it to a new value in
+  cPlugin::SetConfigDirectory().
+- Fixed a crash when jumping to an editing mark in an audio recording.
+- Fixed the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
+  cDvbPlayer::Action() (thanks to Reinhard Nissl).
+- cDevice::PlayTs() now plays as many TS packets as possible in one call.
+- Making sure any floating point numbers written use a decimal point (thanks to
+  Oliver Endriss for pointing out a problem with the F record in the info file of
+  a recording).
+- Fixed detecting the frame rate for radio recordings.
+- Added missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice (thanks to Oliver
+  Endriss).
+- No longer writing the video type into channels.conf if VPID is 0 (thanks to
+  Oliver Endriss for reporting this).
+- Improved efficiency of cEIT::cEIT() (thanks to Tobias Bratfisch).

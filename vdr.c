@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.4 2009/01/18 11:02:37 kls Exp $
+ * $Id: vdr.c 2.7 2009/04/05 13:21:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -112,10 +112,10 @@ static bool SetUser(const char *UserName, bool UserDump)//XXX name?
   return true;
 }
 
-static bool SetCapSysTime(void)
+static bool DropCaps(void)
 {
-  // drop all capabilities except cap_sys_time
-  cap_t caps = cap_from_text("= cap_sys_time=ep");
+  // drop all capabilities except selected ones
+  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time=ep");
   if (!caps) {
      fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
      return false;
@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
            return 2;
         if (!SetKeepCaps(false))
            return 2;
-        if (!SetCapSysTime())
+        if (!DropCaps())
            return 2;
         }
      }
@@ -416,6 +416,7 @@ int main(int argc, char *argv[])
                "                           existing directory, without any \"..\", double '/'\n"
                "                           or symlinks (default: none, same as -g-)\n"
                "  -h,       --help         print this help and exit\n"
+               "  -i ID,    --instance=ID  use ID as the id of this VDR instance (default: 0)\n"
                "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                "                           0 = no logging, 1 = errors only,\n"
                "                           2 = errors and info, 3 = errors, info and debug\n"
@@ -533,6 +534,7 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
+  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Initialize internationalization:
 

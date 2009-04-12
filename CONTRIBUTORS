@@ -662,6 +662,13 @@ Oliver Endriss <o.endriss@gmx.de>
  Transfer Mode
  for providing a driver patch that allows direct replaying of TS video on full-featured
  DVB cards
+ for improving the firmware of FF DVB cards to allow getting the current STC value
+ even in trick modes
+ for pointing out a problem with the decimal point of the F record in the info file of
+ a recording
+ for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
+ for reporting that the video type is unnecessarily written into channels.conf if
+ VPID is 0
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1061,6 +1068,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  the last replayed recording was in a subdirectory, and pressing Back
  for setting the thread name, so that it can be seen in 'top -H'
  for replacing the Finnish language code "smi" with "suo"
+ for adding cap_sys_nice to the capabilities that are not dropped
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1197,6 +1205,9 @@ Reinhard Nissl <rnissl@gmx.de>
  to cDevice::PlayTs()
  for reporting that the PAT/PMT is processed too often, even if its version
  hasn't changed
+ for making sure vdr-xine no longer needs cDvbPlayer::Action() to call DeviceFlush()
+ for fixing the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
+ cDvbPlayer::Action()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -2279,6 +2290,7 @@ Alexander Riedel <alexander-riedel@t-online.de>
 
 Jose Alberto Reguero <jareguero@telefonica.net>
  for a patch that fixed part of a crash in i18n character set conversion
+ for fixing cDvbPlayer::NextFile() to handle files larger than 2GB
 
 Patrice Staudt <staudt@engsystem.net>
  for adding full weekday names to i18n.c for plugins to use
@@ -2290,6 +2302,7 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
  for optimizing cMenuEditChrItem::Set()
  for optimizing cNitFilter::Process()
  for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
+ for improving efficiency of cEIT::cEIT()
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language
@@ -2412,4 +2425,17 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing incrementing the continuity counter in cPatPmtGenerator::GetPmt()
  for pointing out that "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
  -D_LARGEFILE64_SOURCE" should be added to Make.config.
-  to Make.config.template (thanks to Johann Friedrichs for pointing this out).
+
+Timo Helkio <timolavi@mbnet.fi>
+ for reporting a hangup when replaying a TS recording with subtitles activated
+
+Derek Kelly (user.vdr@gmail.com)
+ for fixing handling the 'new' indicator in the recordings menu for TS recordings
+ for reporting a problem with HD NTSC broadcasts that split frames over several payload
+ units
+
+Marcel Unbehaun <frostworks@gmx.de>
+ for adding cRecordingInfo::GetEvent()
+
+Günter Niedermeier <linuxtv@ncs-online.de>
+ for reporting a problem with file I/O overhead during recording in TS format

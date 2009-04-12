@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.1 2009/01/16 14:34:32 kls Exp $
+ * $Id: osd.c 2.2 2009/04/05 10:17:25 kls Exp $
  */
 
 #include "osd.h"
@@ -22,6 +22,10 @@ cPalette::cPalette(int Bpp)
 {
   SetBpp(Bpp);
   SetAntiAliasGranularity(10, 10);
+}
+
+cPalette::~cPalette()
+{
 }
 
 void cPalette::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)

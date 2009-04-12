@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 2.3 2009/01/25 11:03:44 kls Exp $
+ * $Id: player.h 2.4 2009/03/08 12:29:10 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -34,6 +34,7 @@ protected:
   void DeviceMute(void) { if (device) device->Mute(); }
   void DeviceSetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat) { if (device) device->SetVideoDisplayFormat(VideoDisplayFormat); }
   void DeviceStillPicture(const uchar *Data, int Length) { if (device) device->StillPicture(Data, Length); }
+  uint64_t DeviceGetSTC(void) { return device ? device->GetSTC() : -1; }
   void Detach(void);
   virtual void Activate(bool On) {}
        // This function is called right after the cPlayer has been attached to

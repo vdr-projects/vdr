@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.8 2009/01/24 13:11:04 kls Exp $
+ * $Id: recording.c 2.9 2009/01/30 16:27:19 kls Exp $
  */
 
 #include "recording.h"
@@ -286,6 +286,7 @@ bool cResumeFile::Save(int Index)
         if (f) {
            fprintf(f, "I %d\n", Index);
            fclose(f);
+           Recordings.ResetResume(fileName);
            }
         else
            LOG_ERROR_STR(fileName);

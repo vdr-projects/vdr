@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.7 2009/01/24 13:38:10 kls Exp $
+ * $Id: remux.h 2.9 2009/03/27 13:38:59 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -100,6 +100,10 @@ inline int TsGetAdaptationField(const uchar *p)
 {
   return TsHasAdaptationField(p) ? p[5] : 0x00;
 }
+
+// The following functions all take a pointer to a sequence of complete TS packets.
+
+int64_t TsGetPts(const uchar *p, int l);
 
 // Some PES handling tools:
 // The following functions that take a pointer to PES data all assume that
@@ -263,14 +267,22 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 class cFrameDetector {
 private:
+  enum { MaxPtsValues = 150 };
   int pid;
   int type;
+  bool synced;
   bool newFrame;
   bool independentFrame;
-  int64_t lastPts;
+  uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
+  int numPtsValues;
+  int numIFrames;
   bool isVideo;
   int frameDuration;
-  int framesPerPayloadUnit;
+  int framesInPayloadUnit;
+  int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
+                            // some put an entire GOP into one payload unit (> 1), and
+                            // some spread a single frame over several payload units (< 0).
+  int payloadUnitOfFrame;
   bool scanning;
   uint32_t scanner;
 public:
@@ -278,10 +290,11 @@ public:
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of 188.
-      ///< Returns the number of bytes that have been analyzed and may be written
-      ///< to the recording file. If the return value is 0, the data was not
-      ///< sufficient for analyzing and Analyze() needs to be called again with
-      ///< more actual data.
+      ///< Returns the number of bytes that have been analyzed.
+      ///< If the return value is 0, the data was not sufficient for analyzing and
+      ///< Analyze() needs to be called again with more actual data.
+  bool Synced(void) { return synced; }
+      ///< Returns true if the frame detector has synced on the data stream.
   bool NewFrame(void) { return newFrame; }
       ///< Returns true if the data given to the last call to Analyze() started a
       ///< new frame.
