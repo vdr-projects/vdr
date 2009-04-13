@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.13 2009/04/05 12:15:41 kls Exp $
+ * $Id: device.c 2.14 2009/04/13 11:08:05 kls Exp $
  */
 
 #include "device.h"
@@ -1322,9 +1322,20 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();
      }
+  else if (Length < TS_SIZE) {
+     esyslog("ERROR: skipped %d bytes of TS fragment", Length);
+     return Length;
+     }
   else {
      cMutexLock MutexLock(&mutexCurrentAudioTrack);
      while (Length >= TS_SIZE) {
+           if (Data[0] != TS_SYNC_BYTE) {
+              int Skipped = 1;
+              while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
+                    Skipped++;
+              esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
+              return Played + Skipped;
+              }
            if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
               int PayloadOffset = TsPayloadOffset(Data);
               if (PayloadOffset < TS_SIZE) {

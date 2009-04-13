@@ -6031,7 +6031,8 @@ Video Disk Recorder Revision History
   Oliver Endriss for reporting this).
 - Improved efficiency of cEIT::cEIT() (thanks to Tobias Bratfisch).
 
-2009-04-12: Version 1.7.6
+2009-04-13: Version 1.7.6
 
 - No longer checking for deleted recordings to be removed from the foreground
   thread, to avoid blocking the main loop for too long (thanks to Rolf Ahrenberg).
+- cDevice::PlayTs() now syncs on the TS packet sync bytes.
