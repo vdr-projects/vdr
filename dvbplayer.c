@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.11 2009/04/05 13:04:33 kls Exp $
+ * $Id: dvbplayer.c 2.12 2009/04/13 11:10:50 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -456,7 +456,7 @@ void cDvbPlayer::Action(void)
                           eof = true;
                        }
                     else // allows replay even if the index file is missing
-                       Length = MAXFRAMESIZE / TS_SIZE * TS_SIZE;// FIXME: use a linear ringbuffer in this case, and fix cDevice::PlayPes()
+                       Length = MAXFRAMESIZE;
                     if (Length == -1)
                        Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
                     else if (Length > MAXFRAMESIZE) {
