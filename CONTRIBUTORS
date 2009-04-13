@@ -599,6 +599,7 @@ Helmut Auer <vdr@helmutauer.de>
  currently disabled
  for suggesting to improve logging system time changes to avoid problems on slow
  systems under heavy load
+ for making the SVDRP command PUTE support reading the EPG data from a given file
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

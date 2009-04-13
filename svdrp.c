@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.2 2009/01/06 14:35:45 kls Exp $
+ * $Id: svdrp.c 2.3 2009/04/13 13:35:29 kls Exp $
  */
 
 #include "svdrp.h"
@@ -288,11 +288,14 @@ const char *HelpPages[] = {
   "    If 'help' is followed by a command, the detailed help for that command is\n"
   "    given. The keyword 'main' initiates a call to the main menu function of the\n"
   "    given plugin.\n",
-  "PUTE\n"
+  "PUTE [ file ]\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
-  "    entered data is buffered until the terminating '.' is seen).",
+  "    entered data is buffered until the terminating '.' is seen).\n"
+  "    If a file name is given, epg data will be read from this file (which\n"
+  "    must be accessible under the given name from the machine VDR is running\n"
+  "    on). In case of file input, no terminating '.' shall be given.\n",
   "REMO [ on | off ]\n"
   "    Turns the remote control on or off. Without a parameter, the current\n"
   "    status of the remote control is reported.",
@@ -1435,11 +1438,27 @@ void cSVDRP::CmdPLUG(const char *Option)
 
 void cSVDRP::CmdPUTE(const char *Option)
 {
-  delete PUTEhandler;
-  PUTEhandler = new cPUTEhandler;
-  Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
-  if (PUTEhandler->Status() != 354)
-     DELETENULL(PUTEhandler);
+  if (*Option) {
+     FILE *f = fopen(Option, "r");
+     if (f) {
+        if (cSchedules::Read(f)) {
+           cSchedules::Cleanup(true);
+           Reply(250, "EPG data processed from \"%s\"", Option);
+           }
+        else
+           Reply(451, "Error while processing EPG from \"%s\"", Option);
+        fclose(f);
+        }
+     else
+        Reply(501, "Cannot open file \"%s\"", Option);
+     }
+  else {     
+     delete PUTEhandler;
+     PUTEhandler = new cPUTEhandler;
+     Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
+     if (PUTEhandler->Status() != 354)
+        DELETENULL(PUTEhandler);
+     }
 }
 
 void cSVDRP::CmdREMO(const char *Option)

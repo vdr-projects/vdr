@@ -6037,3 +6037,5 @@ Video Disk Recorder Revision History
 - Made MAXFRAMESIZE a multiple of TS_SIZE to avoid breaking up TS packets.
 - No longer resetting the patPmtParser in cDevice::PlayTs(), because this
   caused the selected audio and subtitle tracks to fall back to the default.
+- The SVDRP command PUTE now supports reading the EPG data from a given file
+  (thanks to Helmut Auer).
