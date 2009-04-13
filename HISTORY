@@ -6035,3 +6035,5 @@ Video Disk Recorder Revision History
 
 - cDevice::PlayTs() now syncs on the TS packet sync bytes.
 - Made MAXFRAMESIZE a multiple of TS_SIZE to avoid breaking up TS packets.
+- No longer resetting the patPmtParser in cDevice::PlayTs(), because this
+  caused the selected audio and subtitle tracks to fall back to the default.

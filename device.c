@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.14 2009/04/13 11:08:05 kls Exp $
+ * $Id: device.c 2.15 2009/04/13 12:53:09 kls Exp $
  */
 
 #include "device.h"
@@ -1317,7 +1317,6 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 {
   int Played = 0;
   if (Data == NULL) {
-     patPmtParser.Reset();
      tsToPesVideo.Reset();
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();
