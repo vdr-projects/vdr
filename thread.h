@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.39 2007/02/24 16:13:28 kls Exp $
+ * $Id: thread.h 2.1 2009/04/13 13:50:39 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -87,6 +87,7 @@ private:
   static void *StartThread(cThread *Thread);
 protected:
   void SetPriority(int Priority);
+  void SetIOPriority(int Priority);
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
   virtual void Action(void) = 0;

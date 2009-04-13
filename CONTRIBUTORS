@@ -1070,6 +1070,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for setting the thread name, so that it can be seen in 'top -H'
  for replacing the Finnish language code "smi" with "suo"
  for adding cap_sys_nice to the capabilities that are not dropped
+ for adding cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

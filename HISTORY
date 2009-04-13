@@ -6039,3 +6039,5 @@ Video Disk Recorder Revision History
   caused the selected audio and subtitle tracks to fall back to the default.
 - The SVDRP command PUTE now supports reading the EPG data from a given file
   (thanks to Helmut Auer).
+- Added cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
+  (thanks to Rolf Ahrenberg).
