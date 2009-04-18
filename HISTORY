@@ -6031,7 +6031,7 @@ Video Disk Recorder Revision History
   Oliver Endriss for reporting this).
 - Improved efficiency of cEIT::cEIT() (thanks to Tobias Bratfisch).
 
-2009-04-13: Version 1.7.6
+2009-04-18: Version 1.7.6
 
 - cDevice::PlayTs() now syncs on the TS packet sync bytes.
 - Made MAXFRAMESIZE a multiple of TS_SIZE to avoid breaking up TS packets.
@@ -6041,3 +6041,5 @@ Video Disk Recorder Revision History
   (thanks to Helmut Auer).
 - Added cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
   (thanks to Rolf Ahrenberg).
+- Fixed the MEGABYTE() macro to make it correctly handle parameters resulting in
+  values larger than 2GB.
