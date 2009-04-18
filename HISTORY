@@ -6043,3 +6043,5 @@ Video Disk Recorder Revision History
   (thanks to Rolf Ahrenberg).
 - Fixed the MEGABYTE() macro to make it correctly handle parameters resulting in
   values larger than 2GB.
+- Added cDevice::NumProvidedSystems() to PLUGINS.html (was missing since it had
+  been implemented).
