@@ -6045,3 +6045,4 @@ Video Disk Recorder Revision History
   values larger than 2GB.
 - Added cDevice::NumProvidedSystems() to PLUGINS.html (was missing since it had
   been implemented).
+- Fixed distortions when switching to the next file during replay.

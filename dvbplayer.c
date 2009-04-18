@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.12 2009/04/13 11:10:50 kls Exp $
+ * $Id: dvbplayer.c 2.13 2009/04/18 14:18:22 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -398,189 +398,191 @@ void cDvbPlayer::Action(void)
   int LastReadIFrame = -1;
   int SwitchToPlayFrame = 0;
 
-  while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
-        if (Sleep) {
-           if (WaitingForData)
-              nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
-           else
-              cCondWait::SleepMs(3); // this keeps the CPU load low
+  while (Running()) {
+        if (WaitingForData)
+           nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
+        else if (Sleep) {
+           cPoller Poller;
+           DevicePoll(Poller, 10);
            Sleep = false;
            }
-        cPoller Poller;
-        if (DevicePoll(Poller, 100)) {
+        {
+          LOCK_THREAD;
 
-           LOCK_THREAD;
+          // Read the next frame from the file:
 
-           // Read the next frame from the file:
+          if (playMode != pmStill && playMode != pmPause) {
+             if (!readFrame && (replayFile || readIndex >= 0)) {
+                if (!nonBlockingFileReader->Reading()) {
+                   if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
+                      uint16_t FileNumber;
+                      off_t FileOffset;
+                      bool TimeShiftMode = index->IsStillRecording();
+                      int Index = -1;
+                      readIndependent = false;
+                      if (DeviceHasIBPTrickSpeed() && playDir == pdForward) {
+                         if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length))
+                            Index = readIndex + 1;
+                         }
+                      else {
+                         int d = int(round(0.4 * framesPerSecond));
+                         if (playDir != pdForward)
+                            d = -d;
+                         int NewIndex = readIndex + d;
+                         if (NewIndex <= 0 && readIndex > 0)
+                            NewIndex = 1; // make sure the very first frame is delivered
+                         NewIndex = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                         if (NewIndex < 0 && TimeShiftMode && playDir == pdForward)
+                            SwitchToPlayFrame = Index;
+                         Index = NewIndex;
+                         readIndependent = true;
+                         }
+                      if (Index >= 0) {
+                         readIndex = Index;
+                         if (!NextFile(FileNumber, FileOffset))
+                            continue;
+                         }
+                      else
+                         eof = true;
+                      }
+                   else if (index) {
+                      uint16_t FileNumber;
+                      off_t FileOffset;
+                      if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
+                         readIndex++;
+                      else
+                         eof = true;
+                      }
+                   else // allows replay even if the index file is missing
+                      Length = MAXFRAMESIZE;
+                   if (Length == -1)
+                      Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
+                   else if (Length > MAXFRAMESIZE) {
+                      esyslog("ERROR: frame larger than buffer (%d > %d)", Length, MAXFRAMESIZE);
+                      Length = MAXFRAMESIZE;
+                      }
+                   b = MALLOC(uchar, Length);
+                   }
+                if (!eof) {
+                   int r = nonBlockingFileReader->Read(replayFile, b, Length);
+                   if (r > 0) {
+                      WaitingForData = false;
+                      uint32_t Pts = 0;
+                      if (readIndependent) {
+                         Pts = isPesRecording ? PesGetPts(b) : TsGetPts(b, r);
+                         LastReadIFrame = readIndex;
+                         }
+                      readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
+                      b = NULL;
+                      }
+                   else if (r == 0)
+                      eof = true;
+                   else if (r < 0 && errno == EAGAIN)
+                      WaitingForData = true;
+                   else if (r < 0 && FATALERRNO) {
+                      LOG_ERROR;
+                      break;
+                      }
+                   }
+                }
 
-           if (playMode != pmStill && playMode != pmPause) {
-              if (!readFrame && (replayFile || readIndex >= 0)) {
-                 if (!nonBlockingFileReader->Reading()) {
-                    if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
-                       uint16_t FileNumber;
-                       off_t FileOffset;
-                       bool TimeShiftMode = index->IsStillRecording();
-                       int Index = -1;
-                       readIndependent = false;
-                       if (DeviceHasIBPTrickSpeed() && playDir == pdForward) {
-                          if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length))
-                             Index = readIndex + 1;
-                          }
-                       else {
-                          int d = int(round(0.4 * framesPerSecond));
-                          if (playDir != pdForward)
-                             d = -d;
-                          int NewIndex = readIndex + d;
-                          if (NewIndex <= 0 && readIndex > 0)
-                             NewIndex = 1; // make sure the very first frame is delivered
-                          NewIndex = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
-                          if (NewIndex < 0 && TimeShiftMode && playDir == pdForward)
-                             SwitchToPlayFrame = Index;
-                          Index = NewIndex;
-                          readIndependent = true;
-                          }
-                       if (Index >= 0) {
-                          readIndex = Index;
-                          if (!NextFile(FileNumber, FileOffset))
-                             continue;
-                          }
-                       else
-                          eof = true;
-                       }
-                    else if (index) {
-                       uint16_t FileNumber;
-                       off_t FileOffset;
-                       if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
-                          readIndex++;
-                       else
-                          eof = true;
-                       }
-                    else // allows replay even if the index file is missing
-                       Length = MAXFRAMESIZE;
-                    if (Length == -1)
-                       Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
-                    else if (Length > MAXFRAMESIZE) {
-                       esyslog("ERROR: frame larger than buffer (%d > %d)", Length, MAXFRAMESIZE);
-                       Length = MAXFRAMESIZE;
-                       }
-                    b = MALLOC(uchar, Length);
-                    }
-                 if (!eof) {
-                    int r = nonBlockingFileReader->Read(replayFile, b, Length);
-                    if (r > 0) {
-                       WaitingForData = false;
-                       uint32_t Pts = 0;
-                       if (readIndependent) {
-                          Pts = isPesRecording ? PesGetPts(b) : TsGetPts(b, r);
-                          LastReadIFrame = readIndex;
-                          }
-                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
-                       b = NULL;
-                       }
-                    else if (r == 0)
-                       eof = true;
-                    else if (r < 0 && errno == EAGAIN)
-                       WaitingForData = true;
-                    else if (r < 0 && FATALERRNO) {
-                       LOG_ERROR;
-                       break;
-                       }
-                    }
-                 }
+             // Store the frame in the buffer:
 
-              // Store the frame in the buffer:
+             if (readFrame) {
+                if (ringBuffer->Put(readFrame))
+                   readFrame = NULL;
+                else
+                   Sleep = true;
+                }
+             }
+          else
+             Sleep = true;
 
-              if (readFrame) {
-                 if (ringBuffer->Put(readFrame))
-                    readFrame = NULL;
-                 }
-              }
-           else
-              Sleep = true;
+          // Get the next frame from the buffer:
 
-           // Get the next frame from the buffer:
+          if (!playFrame) {
+             playFrame = ringBuffer->Get();
+             p = NULL;
+             pc = 0;
+             }
 
-           if (!playFrame) {
-              playFrame = ringBuffer->Get();
-              p = NULL;
-              pc = 0;
-              }
+          // Play the frame:
 
-           // Play the frame:
+          if (playFrame) {
+             if (!p) {
+                p = playFrame->Data();
+                pc = playFrame->Count();
+                if (p) {
+                   if (playFrame->Index() >= 0)
+                      ptsIndex.Put(playFrame->Pts(), playFrame->Index());
+                   if (firstPacket) {
+                      if (isPesRecording) {
+                         PlayPes(NULL, 0);
+                         cRemux::SetBrokenLink(p, pc);
+                         }
+                      else
+                         PlayTs(NULL, 0);
+                      firstPacket = false;
+                      }
+                   }
+                }
+             if (p) {
+                int w;
+                if (isPesRecording)
+                   w = PlayPes(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
+                else
+                   w = PlayTs(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
+                if (w > 0) {
+                   p += w;
+                   pc -= w;
+                   }
+                else if (w < 0 && FATALERRNO)
+                   LOG_ERROR;
+                else
+                   Sleep = true;
+                }
+             if (pc <= 0) {
+                if (!eof || (playDir != pdForward && playFrame->Index() > 0) || (playDir == pdForward && playFrame->Index() < readIndex))
+                   ringBuffer->Drop(playFrame); // the very first and last frame are continously repeated to flush data through the device
+                playFrame = NULL;
+                p = NULL;
+                }
+             }
+          else
+             Sleep = true;
 
-           if (playFrame) {
-              if (!p) {
-                 p = playFrame->Data();
-                 pc = playFrame->Count();
-                 if (p) {
-                    if (playFrame->Index() >= 0)
-                       ptsIndex.Put(playFrame->Pts(), playFrame->Index());
-                    if (firstPacket) {
-                       if (isPesRecording) {
-                          PlayPes(NULL, 0);
-                          cRemux::SetBrokenLink(p, pc);
-                          }
-                       else
-                          PlayTs(NULL, 0);
-                       firstPacket = false;
-                       }
-                    }
-                 }
-              if (p) {
-                 int w;
-                 if (isPesRecording)
-                    w = PlayPes(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
-                 else
-                    w = PlayTs(p, pc, playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo());
-                 if (w > 0) {
-                    p += w;
-                    pc -= w;
-                    }
-                 else if (w < 0 && FATALERRNO)
-                    LOG_ERROR;
-                 }
-              if (pc <= 0) {
-                 if (!eof || (playDir != pdForward && playFrame->Index() > 0) || (playDir == pdForward && playFrame->Index() < readIndex))
-                    ringBuffer->Drop(playFrame); // the very first and last frame are continously repeated to flush data through the device
-                 playFrame = NULL;
-                 p = NULL;
-                 }
-              }
-           else
-              Sleep = true;
+          // Handle hitting begin/end of recording:
 
-           // Handle hitting begin/end of recording:
-
-           if (eof || SwitchToPlayFrame) {
-              bool SwitchToPlay = false;
-              uint32_t Stc = DeviceGetSTC();
-              if (Stc != LastStc)
-                 StuckAtEof = 0;
-              else if (!StuckAtEof)
-                 StuckAtEof = time(NULL);
-              else if (time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
-                 if (playDir == pdForward)
-                    break; // automatically stop at end of recording
-                 SwitchToPlay = true;
-                 }
-              LastStc = Stc;
-              int Index = ptsIndex.FindIndex(Stc);
-              if (playDir == pdForward && !SwitchToPlayFrame) {
-                 if (Index >= LastReadIFrame)
-                    break; // automatically stop at end of recording
-                 }
-              else if (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame)
-                 SwitchToPlay = true;
-              if (SwitchToPlay) {
-                 if (!SwitchToPlayFrame)
-                    Empty();
-                 DevicePlay();
-                 playMode = pmPlay;
-                 playDir = pdForward;
-                 SwitchToPlayFrame = 0;
-                 }
-              }
-           }
+          if (eof || SwitchToPlayFrame) {
+             bool SwitchToPlay = false;
+             uint32_t Stc = DeviceGetSTC();
+             if (Stc != LastStc)
+                StuckAtEof = 0;
+             else if (!StuckAtEof)
+                StuckAtEof = time(NULL);
+             else if (time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
+                if (playDir == pdForward)
+                   break; // automatically stop at end of recording
+                SwitchToPlay = true;
+                }
+             LastStc = Stc;
+             int Index = ptsIndex.FindIndex(Stc);
+             if (playDir == pdForward && !SwitchToPlayFrame) {
+                if (Index >= LastReadIFrame)
+                   break; // automatically stop at end of recording
+                }
+             else if (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame)
+                SwitchToPlay = true;
+             if (SwitchToPlay) {
+                if (!SwitchToPlayFrame)
+                   Empty();
+                DevicePlay();
+                playMode = pmPlay;
+                playDir = pdForward;
+                SwitchToPlayFrame = 0;
+                }
+             }
+        }
         }
 
   cNonBlockingFileReader *nbfr = nonBlockingFileReader;
