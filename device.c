@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.15 2009/04/13 12:53:09 kls Exp $
+ * $Id: device.c 2.16 2009/04/18 09:41:00 kls Exp $
  */
 
 #include "device.h"
@@ -1075,6 +1075,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
         Detach(player);
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
+     patPmtParser.Reset();
      player = Player;
      if (!Transferring())
         ClrAvailableTracks(false, true);
@@ -1099,6 +1100,7 @@ void cDevice::Detach(cPlayer *Player)
      SetPlayMode(pmNone);
      SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      PlayTs(NULL, 0);
+     patPmtParser.Reset();
      Audios.ClearAudio();
      isPlayingVideo = false;
      }
