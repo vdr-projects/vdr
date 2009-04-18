@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.17 2009/04/05 14:07:48 kls Exp $
+ * $Id: remux.c 2.18 2009/04/18 14:53:42 kls Exp $
  */
 
 #include "remux.h"
@@ -732,6 +732,10 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                           frameDuration = 3600; // PAL, 25 fps
                        else if (Delta % 3003 == 0)
                           frameDuration = 3003; // NTSC, 29.97 fps
+                       else if (Delta == 1800) {
+                          frameDuration = 3600; // PAL, 25 fps
+                          framesPerPayloadUnit = -2;
+                          }
                        else if (Delta == 1501) {
                           frameDuration = 3003; // NTSC, 29.97 fps
                           framesPerPayloadUnit = -2;

@@ -6046,3 +6046,5 @@ Video Disk Recorder Revision History
 - Added cDevice::NumProvidedSystems() to PLUGINS.html (was missing since it had
   been implemented).
 - Fixed distortions when switching to the next file during replay.
+- Fixed detecting the frame rate for streams with PTS distances of 1800, which
+  apparently split one frame over two payload units.
