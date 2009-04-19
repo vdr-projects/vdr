@@ -6049,3 +6049,8 @@ Video Disk Recorder Revision History
 - Fixed detecting the frame rate for streams with PTS distances of 1800, which
   apparently split one frame over two payload units.
 - Added missing 'const' to cRecording::FramesPerSecond() (thanks to Joachim Wilke).
+- Any TS packets in the first "frame" after a cut in an edited recording that don't
+  belong to a payload unit that started in that frame now get their TEI flag set,
+  so that a decoder will ignore them together with any PES data collected for that
+  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbences at
+  editing points in TS recordings).

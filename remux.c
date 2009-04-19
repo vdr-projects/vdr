@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.18 2009/04/18 14:53:42 kls Exp $
+ * $Id: remux.c 2.19 2009/04/19 10:59:56 kls Exp $
  */
 
 #include "remux.h"
@@ -122,6 +122,24 @@ int64_t TsGetPts(const uchar *p, int l)
         l -= TS_SIZE;
         }
   return -1;
+}
+
+void TsSetTeiOnBrokenPackets(uchar *p, int l)
+{
+  bool Processed[MAXPID] = { false };
+  while (l >= TS_SIZE) {
+        if (*p != TS_SYNC_BYTE)
+           break;
+        int Pid = TsPid(p);
+        if (!Processed[Pid]) {
+           if (!TsPayloadStart(p))
+              p[1] |= TS_ERROR;
+           else
+              Processed[Pid] = true;
+           }
+        l -= TS_SIZE;
+        p += TS_SIZE;
+        }
 }
 
 // --- cPatPmtGenerator ------------------------------------------------------
@@ -582,6 +600,10 @@ cTsToPes::~cTsToPes()
 
 void cTsToPes::PutTs(const uchar *Data, int Length)
 {
+  if (TsError(Data)) {
+     Reset();
+     return; // ignore packets with TEI set, and drop any PES data collected so far
+     }
   if (TsPayloadStart(Data))
      Reset();
   else if (!size)

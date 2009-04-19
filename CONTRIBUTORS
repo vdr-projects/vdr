@@ -670,6 +670,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
  for reporting that the video type is unnecessarily written into channels.conf if
  VPID is 0
+ for reporting chirping sound disturbences at editing points in TS recordings
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

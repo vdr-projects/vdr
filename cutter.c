@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.2 2009/01/24 15:19:26 kls Exp $
+ * $Id: cutter.c 2.3 2009/04/19 10:56:33 kls Exp $
  */
 
 #include "cutter.h"
@@ -18,6 +18,7 @@
 class cCuttingThread : public cThread {
 private:
   const char *error;
+  bool isPesRecording;
   cUnbufferedFile *fromFile, *toFile;
   cFileName *fromFileName, *toFileName;
   cIndexFile *fromIndex, *toIndex;
@@ -39,7 +40,7 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
   fromFileName = toFileName = NULL;
   fromIndex = toIndex = NULL;
   cRecording Recording(FromFileName);
-  bool isPesRecording = Recording.IsPesRecording();
+  isPesRecording = Recording.IsPesRecording();
   if (fromMarks.Load(FromFileName, Recording.FramesPerSecond(), isPesRecording) && fromMarks.Count()) {
      fromFileName = new cFileName(FromFileName, false, true, isPesRecording);
      toFileName = new cFileName(ToFileName, true, true, isPesRecording);
@@ -140,7 +141,10 @@ void cCuttingThread::Action(void)
               LastIFrame = 0;
 
               if (cutIn) {
-                 cRemux::SetBrokenLink(buffer, Length);
+                 if (isPesRecording)
+                    cRemux::SetBrokenLink(buffer, Length);
+                 else
+                    TsSetTeiOnBrokenPackets(buffer, Length);
                  cutIn = false;
                  }
               }
