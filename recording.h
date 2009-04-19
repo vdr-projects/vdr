@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.6 2009/04/13 11:10:50 kls Exp $
+ * $Id: recording.h 2.7 2009/04/19 09:00:45 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -109,7 +109,7 @@ public:
   const char *PrefixFileName(char Prefix);
   int HierarchyLevels(void) const;
   void ResetResume(void) const;
-  double FramesPerSecond(void) { return framesPerSecond; }
+  double FramesPerSecond(void) const { return framesPerSecond; }
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }

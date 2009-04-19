@@ -6031,7 +6031,7 @@ Video Disk Recorder Revision History
   Oliver Endriss for reporting this).
 - Improved efficiency of cEIT::cEIT() (thanks to Tobias Bratfisch).
 
-2009-04-18: Version 1.7.6
+2009-04-19: Version 1.7.6
 
 - cDevice::PlayTs() now syncs on the TS packet sync bytes.
 - Made MAXFRAMESIZE a multiple of TS_SIZE to avoid breaking up TS packets.
@@ -6048,3 +6048,4 @@ Video Disk Recorder Revision History
 - Fixed distortions when switching to the next file during replay.
 - Fixed detecting the frame rate for streams with PTS distances of 1800, which
   apparently split one frame over two payload units.
+- Added missing 'const' to cRecording::FramesPerSecond() (thanks to Joachim Wilke).

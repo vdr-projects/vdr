@@ -1654,6 +1654,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  one that fits the input
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
  for reporting a missing install-i18n in the install target in the Makefile
+ for adding a missing 'const' to cRecording::FramesPerSecond()
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
