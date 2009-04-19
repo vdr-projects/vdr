@@ -6056,3 +6056,4 @@ Video Disk Recorder Revision History
   editing points in TS recordings).
 - cDvbPlayer::Empty() subtracts 1 from readIndex, because Action() will first
   increment it.
+- Only storing non-zero Pts values in ptsIndex.

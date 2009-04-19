@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.14 2009/04/19 15:17:17 kls Exp $
+ * $Id: dvbplayer.c 2.15 2009/04/19 15:19:10 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -513,7 +513,7 @@ void cDvbPlayer::Action(void)
                 p = playFrame->Data();
                 pc = playFrame->Count();
                 if (p) {
-                   if (playFrame->Index() >= 0)
+                   if (playFrame->Index() >= 0 && playFrame->Pts() != 0)
                       ptsIndex.Put(playFrame->Pts(), playFrame->Index());
                    if (firstPacket) {
                       if (isPesRecording) {
