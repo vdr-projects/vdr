@@ -6054,3 +6054,5 @@ Video Disk Recorder Revision History
   so that a decoder will ignore them together with any PES data collected for that
   PID so far (thanks to Oliver Endriss for reporting chirping sound disturbences at
   editing points in TS recordings).
+- cDvbPlayer::Empty() subtracts 1 from readIndex, because Action() will first
+  increment it.

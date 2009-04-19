@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.13 2009/04/18 14:18:22 kls Exp $
+ * $Id: dvbplayer.c 2.14 2009/04/19 15:17:17 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -318,7 +318,7 @@ void cDvbPlayer::Empty(void)
   if (nonBlockingFileReader)
      nonBlockingFileReader->Clear();
   if (!firstPacket) // don't set the readIndex twice if Empty() is called more than once
-     readIndex = ptsIndex.FindIndex(DeviceGetSTC());
+     readIndex = ptsIndex.FindIndex(DeviceGetSTC()) - 1;  // Action() will first increment it!
   delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
