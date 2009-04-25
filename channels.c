@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.5 2009/04/10 11:29:55 kls Exp $
+ * $Id: channels.c 2.6 2009/04/25 13:57:32 kls Exp $
  */
 
 #include "channels.h"
@@ -535,7 +535,7 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][
 
 void cChannel::SetCaIds(const int *CaIds)
 {
-  if (caids[0] && caids[0] <= 0x00FF)
+  if (caids[0] && caids[0] <= CA_USER_MAX)
      return; // special values will not be overwritten
   if (IntArraysDiffer(caids, CaIds)) {
      char OldCaIdsBuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
@@ -864,7 +864,7 @@ bool cChannel::Parse(const char *s)
               while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                     if (NumCaIds < MAXCAIDS) {
                        caids[NumCaIds++] = strtol(q, NULL, 16) & 0xFFFF;
-                       if (NumCaIds == 1 && caids[0] <= 0x00FF)
+                       if (NumCaIds == 1 && caids[0] <= CA_USER_MAX)
                           break;
                        }
                     else
