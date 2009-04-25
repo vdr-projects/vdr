@@ -1620,6 +1620,8 @@ Udo Richter <udo_richter@gmx.de>
  for suppressing the automatic shutdown if the remote control is currently disabled
  for fixing a problem with calling isyslog() from within the SignalHandler()
  for reporting a problem with handling the maximum video file size
+ for suggesting to add a note to the INSTALL file about using subdirectories to
+ split a large disk into separate areas for VDR's video data and other stuff
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
