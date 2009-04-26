@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.9 2009/03/27 13:38:59 kls Exp $
+ * $Id: remux.h 2.10 2009/04/19 10:57:09 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -48,6 +48,8 @@ public:
 #define TS_ADAPT_SPLICING     0x04
 #define TS_ADAPT_TP_PRIVATE   0x02
 #define TS_ADAPT_EXTENSION    0x01
+
+#define MAXPID 0x2000 // for arrays that use a PID as the index
 
 inline bool TsHasPayload(const uchar *p)
 {
@@ -104,6 +106,7 @@ inline int TsGetAdaptationField(const uchar *p)
 // The following functions all take a pointer to a sequence of complete TS packets.
 
 int64_t TsGetPts(const uchar *p, int l);
+void TsSetTeiOnBrokenPackets(uchar *p, int l);
 
 // Some PES handling tools:
 // The following functions that take a pointer to PES data all assume that

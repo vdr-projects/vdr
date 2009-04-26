@@ -599,6 +599,7 @@ Helmut Auer <vdr@helmutauer.de>
  currently disabled
  for suggesting to improve logging system time changes to avoid problems on slow
  systems under heavy load
+ for making the SVDRP command PUTE support reading the EPG data from a given file
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -669,6 +670,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
  for reporting that the video type is unnecessarily written into channels.conf if
  VPID is 0
+ for reporting chirping sound disturbences at editing points in TS recordings
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1069,6 +1071,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for setting the thread name, so that it can be seen in 'top -H'
  for replacing the Finnish language code "smi" with "suo"
  for adding cap_sys_nice to the capabilities that are not dropped
+ for adding cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1617,6 +1620,8 @@ Udo Richter <udo_richter@gmx.de>
  for suppressing the automatic shutdown if the remote control is currently disabled
  for fixing a problem with calling isyslog() from within the SignalHandler()
  for reporting a problem with handling the maximum video file size
+ for suggesting to add a note to the INSTALL file about using subdirectories to
+ split a large disk into separate areas for VDR's video data and other stuff
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1652,6 +1657,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  one that fits the input
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
  for reporting a missing install-i18n in the install target in the Makefile
+ for adding a missing 'const' to cRecording::FramesPerSecond()
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu

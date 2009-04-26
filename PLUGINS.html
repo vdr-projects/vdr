@@ -1802,6 +1802,9 @@ If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
 <p><table><tr><td class="code"><pre>
+<div class="modified">
+virtual int NumProvidedSystems(void) const;
+</div modified>
 virtual bool ProvidesSource(int Source) const;
 virtual bool ProvidesTransponder(const cChannel *Channel) const;
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;

@@ -6030,3 +6030,33 @@ Video Disk Recorder Revision History
 - No longer writing the video type into channels.conf if VPID is 0 (thanks to
   Oliver Endriss for reporting this).
 - Improved efficiency of cEIT::cEIT() (thanks to Tobias Bratfisch).
+
+2009-04-26: Version 1.7.6
+
+- cDevice::PlayTs() now syncs on the TS packet sync bytes.
+- Made MAXFRAMESIZE a multiple of TS_SIZE to avoid breaking up TS packets.
+- No longer resetting the patPmtParser in cDevice::PlayTs(), because this
+  caused the selected audio and subtitle tracks to fall back to the default.
+- The SVDRP command PUTE now supports reading the EPG data from a given file
+  (thanks to Helmut Auer).
+- Added cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
+  (thanks to Rolf Ahrenberg).
+- Fixed the MEGABYTE() macro to make it correctly handle parameters resulting in
+  values larger than 2GB.
+- Added cDevice::NumProvidedSystems() to PLUGINS.html (was missing since it had
+  been implemented).
+- Fixed distortions when switching to the next file during replay.
+- Fixed detecting the frame rate for streams with PTS distances of 1800, which
+  apparently split one frame over two payload units.
+- Added missing 'const' to cRecording::FramesPerSecond() (thanks to Joachim Wilke).
+- Any TS packets in the first "frame" after a cut in an edited recording that don't
+  belong to a payload unit that started in that frame now get their TEI flag set,
+  so that a decoder will ignore them together with any PES data collected for that
+  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbences at
+  editing points in TS recordings).
+- cDvbPlayer::Empty() subtracts 1 from readIndex, because Action() will first
+  increment it.
+- Only storing non-zero Pts values in ptsIndex.
+- Added a note to the INSTALL file about using subdirectories to split a large
+  disk into separate areas for VDR's video data and other stuff (suggested by
+  Udo Richter).

@@ -324,7 +324,14 @@ with the name of the basic directory when running 'vdr':
 Note that you should not copy any non-VDR files into the /videoX directories,
 since this might cause a lot of unnecessary disk access when VDR cleans up those
 directories and there is a large number of files and/or subdirectories in
-there.
+there. If you have a large disk that you want to use for VDR's video data as
+well as other stuff, you may want to create a subdirectory for VDR, as in
+
+   /mydisk/video0
+
+and put your other stuff into, say,
+
+   /mydisk/otherstuff
 
 If your video directory is mounted via a Samba share, and you are experiencing
 problems with replaying in fast forward mode, you can comment out the line
