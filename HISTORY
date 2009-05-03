@@ -6072,3 +6072,5 @@ Video Disk Recorder Revision History
   screen OSD on HD systems.
 - The OSD size is now automatically adjusted to the actual video display
   (provided the output device implements the GetVideoSize() function).
+- cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
+  Oliver Endriss for reporting broken index generation after a buffer overflow).
