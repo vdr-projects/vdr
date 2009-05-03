@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.19 2009/04/19 10:59:56 kls Exp $
+ * $Id: remux.c 2.20 2009/05/03 14:43:25 kls Exp $
  */
 
 #include "remux.h"
@@ -722,6 +722,13 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
   int Processed = 0;
   newFrame = independentFrame = false;
   while (Length >= TS_SIZE) {
+        if (Data[0] != TS_SYNC_BYTE) {
+           int Skipped = 1;
+           while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
+                 Skipped++;
+           esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
+           return Processed + Skipped;
+           }
         if (TsHasPayload(Data) && !TsIsScrambled(Data) && TsPid(Data) == pid) {
            if (TsPayloadStart(Data)) {
               if (!frameDuration) {

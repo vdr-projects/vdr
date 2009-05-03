@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.1 2008/04/12 12:03:59 kls Exp $
+ * $Id: menuitems.h 2.2 2009/05/03 12:50:34 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -61,6 +61,18 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditNumItem(const char *Name, char *Value, int Length, bool Blind = false);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditPrcItem : public cMenuEditItem {
+protected:
+  double *value;
+  double min, max;
+  int decimals;
+  int factor;
+  virtual void Set(void);
+public:
+  cMenuEditPrcItem(const char *Name, double *Value, double Min = 0.0, double Max = 1.0, int Decimals = 0);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

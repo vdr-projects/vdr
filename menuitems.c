@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.3 2009/04/05 10:15:12 kls Exp $
+ * $Id: menuitems.c 2.4 2009/05/03 13:37:55 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
+#include <math.h>
 #include <wctype.h>
 #include "i18n.h"
 #include "plugin.h"
@@ -195,6 +196,71 @@ eOSState cMenuEditNumItem::ProcessKey(eKeys Key)
        default: return state;
        }
      Set();
+     state = osContinue;
+     }
+  return state;
+}
+
+// --- cMenuEditPrcItem ------------------------------------------------------
+
+cMenuEditPrcItem::cMenuEditPrcItem(const char *Name, double *Value, double Min, double Max, int Decimals)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  min = Min;
+  max = Max;
+  decimals = Decimals;
+  factor = 100;
+  while (Decimals-- > 0)
+        factor *= 10;
+  if (*value < min)
+     *value = min;
+  else if (*value > max)
+     *value = max;
+  Set();
+}
+
+void cMenuEditPrcItem::Set(void)
+{
+  char buf[16];
+  snprintf(buf, sizeof(buf), "%.*f", decimals, *value * 100);
+  SetValue(buf);
+}
+
+eOSState cMenuEditPrcItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     double newValue = round(*value * factor); // avoids precision problems
+     Key = NORMALKEY(Key);
+     switch (Key) {
+       case kNone: break;
+       case k0 ... k9:
+            if (fresh) {
+               newValue = 0;
+               fresh = false;
+               }
+            newValue = newValue * 10 + (Key - k0);
+            break;
+       case kLeft: // TODO might want to increase the delta if repeated quickly?
+            newValue--;
+            fresh = true;
+            break;
+       case kRight:
+            newValue++;
+            fresh = true;
+            break;
+       default:
+            if (*value < min) { *value = min; Set(); }
+            if (*value > max) { *value = max; Set(); }
+            return state;
+       }
+     newValue /= factor;
+     if (newValue != *value && (!fresh || min <= newValue) && newValue <= max) {
+        *value = newValue;
+        Set();
+        }
      state = osContinue;
      }
   return state;

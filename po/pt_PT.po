@@ -492,17 +492,17 @@ msgstr "Skin"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Esquerda"
+msgid "Setup.OSD$Left (%)"
+msgstr "Esquerda (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Topo"
+msgid "Setup.OSD$Top (%)"
+msgstr "Topo (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Largura"
+msgid "Setup.OSD$Width (%)"
+msgstr "Largura (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Altura"
+msgid "Setup.OSD$Height (%)"
+msgstr "Altura (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Duração das mensagem (s)"
@@ -522,14 +522,14 @@ msgstr "Fonte pequena"
 msgid "Setup.OSD$Fixed font"
 msgstr "Fonte Fixa"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Tamanho por defeito de fonte (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Tamanho por defeito de fonte (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Tamanho da fonte pequena (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Tamanho da fonte pequena (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Tamanho da fonte fixa (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Tamanho da fonte fixa (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posição de info dos canais"

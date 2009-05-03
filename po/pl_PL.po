@@ -493,17 +493,17 @@ msgstr "Skórka"
 msgid "Setup.OSD$Theme"
 msgstr "Motyw"
 
-msgid "Setup.OSD$Left"
-msgstr "Od lewej"
+msgid "Setup.OSD$Left (%)"
+msgstr "Od lewej (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Od góry"
+msgid "Setup.OSD$Top (%)"
+msgstr "Od góry (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Szeroko¶æ"
+msgid "Setup.OSD$Width (%)"
+msgstr "Szeroko¶æ (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Wysoko¶æ"
+msgid "Setup.OSD$Height (%)"
+msgstr "Wysoko¶æ (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Czas trwania wiadomo¶ci (s)"
@@ -523,14 +523,14 @@ msgstr "Ma³a czcionka"
 msgid "Setup.OSD$Fixed font"
 msgstr "Sta³a czcionka"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Standardowa czcionka wyj¶ciowa (pixle)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Standardowa czcionka wyj¶ciowa (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Ma³a czcionka wyj¶ciowa (pixle)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Ma³a czcionka wyj¶ciowa (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Ustalona czcionka wyj¶ciowa (pixle)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Ustalona czcionka wyj¶ciowa (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozycja informacji o kanale"

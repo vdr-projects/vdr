@@ -495,17 +495,17 @@ msgstr "Ulkoasu"
 msgid "Setup.OSD$Theme"
 msgstr "Teema"
 
-msgid "Setup.OSD$Left"
-msgstr "Vaakakeskitys"
+msgid "Setup.OSD$Left (%)"
+msgstr "Vaakakeskitys (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Pystykeskitys"
+msgid "Setup.OSD$Top (%)"
+msgstr "Pystykeskitys (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Leveys"
+msgid "Setup.OSD$Width (%)"
+msgstr "Leveys (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Korkeus"
+msgid "Setup.OSD$Height (%)"
+msgstr "Korkeus (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Viestien esitysaika (s)"
@@ -525,14 +525,14 @@ msgstr "Pieni kirjasintyyppi"
 msgid "Setup.OSD$Fixed font"
 msgstr "Tasavälinen kirjasintyyppi"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Oletuskirjasintyypin koko (px)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Oletuskirjasintyypin koko (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Pienen kirjasintyypin koko (px)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Pienen kirjasintyypin koko (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Tasavälisen kirjasintyypin koko (px)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Tasavälisen kirjasintyypin koko (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanavatiedon sijainti"

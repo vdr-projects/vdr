@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.6 2009/01/24 15:05:43 kls Exp $
+ * $Id: menu.c 2.7 2009/05/03 13:30:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2197,19 +2197,19 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
   if (themes.NumThemes())
   Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Left"),                   &data.OSDLeft, 0, MAXOSDWIDTH));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Top"),                    &data.OSDTop, 0, MAXOSDHEIGHT));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDWidth, MINOSDWIDTH, MAXOSDWIDTH));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDHeight, MINOSDHEIGHT, MAXOSDHEIGHT));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Left (%)"),               &data.OSDLeftP, 0.0, 0.5));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Top (%)"),                &data.OSDTopP, 0.0, 0.5));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Width (%)"),              &data.OSDWidthP, 0.5, 1.0));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Height (%)"),             &data.OSDHeightP, 0.5, 1.0));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Use small font"),         &data.UseSmallFont, 3, useSmallFontTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Anti-alias"),             &data.AntiAlias));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Default font"),           &fontOsdIndex, fontOsdNames.Size(), &fontOsdNames[0]));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Small font"),             &fontSmlIndex, fontSmlNames.Size(), &fontSmlNames[0]));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Fixed font"),             &fontFixIndex, fontFixNames.Size(), &fontFixNames[0]));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Default font size (pixel)"), &data.FontOsdSize, 10, MAXFONTSIZE));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Small font size (pixel)"),&data.FontSmlSize, 10, MAXFONTSIZE));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Fixed font size (pixel)"),&data.FontFixSize, 10, MAXFONTSIZE));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Default font size (%)"),  &data.FontOsdSizeP, 0.01, 0.1, 1));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Small font size (%)"),    &data.FontSmlSizeP, 0.01, 0.1, 1));
+  Add(new cMenuEditPrcItem( tr("Setup.OSD$Fixed font size (%)"),    &data.FontFixSizeP, 0.01, 0.1, 1));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Channel info time (s)"),  &data.ChannelInfoTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
@@ -2224,7 +2224,7 @@ void cMenuSetupOSD::Set(void)
 
 eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
 {
-  bool ModifiedApperance = false;
+  bool ModifiedAppearance = false;
 
   if (Key == kOk) {
      I18nSetLocale(data.OSDLanguage);
@@ -2233,43 +2233,37 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         if (Skin) {
            Utf8Strn0Cpy(data.OSDSkin, Skin->Name(), sizeof(data.OSDSkin));
            Skins.SetCurrent(Skin->Name());
-           ModifiedApperance = true;
+           ModifiedAppearance = true;
            }
         }
      if (themes.NumThemes() && Skins.Current()->Theme()) {
         Skins.Current()->Theme()->Load(themes.FileName(themeIndex));
         Utf8Strn0Cpy(data.OSDTheme, themes.Name(themeIndex), sizeof(data.OSDTheme));
-        ModifiedApperance |= themeIndex != originalThemeIndex;
+        ModifiedAppearance |= themeIndex != originalThemeIndex;
         }
-     if (data.OSDLeft != Setup.OSDLeft || data.OSDTop != Setup.OSDTop || data.OSDWidth != Setup.OSDWidth || data.OSDHeight != Setup.OSDHeight) {
-        data.OSDWidth &= ~0x07; // OSD width must be a multiple of 8
-        ModifiedApperance = true;
-        }
+     if (data.OSDLeftP != Setup.OSDLeftP || data.OSDTopP != Setup.OSDTopP || data.OSDWidthP != Setup.OSDWidthP || data.OSDHeightP != Setup.OSDHeightP)
+        ModifiedAppearance = true;
      if (data.UseSmallFont != Setup.UseSmallFont || data.AntiAlias != Setup.AntiAlias)
-        ModifiedApperance = true;
+        ModifiedAppearance = true;
      Utf8Strn0Cpy(data.FontOsd, fontOsdNames[fontOsdIndex], sizeof(data.FontOsd));
      Utf8Strn0Cpy(data.FontSml, fontSmlNames[fontSmlIndex], sizeof(data.FontSml));
      Utf8Strn0Cpy(data.FontFix, fontFixNames[fontFixIndex], sizeof(data.FontFix));
-     if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSize != Setup.FontOsdSize) {
-        cFont::SetFont(fontOsd, data.FontOsd, data.FontOsdSize);
-        ModifiedApperance = true;
-        }
-     if (strcmp(data.FontSml, Setup.FontSml) || data.FontSmlSize != Setup.FontSmlSize) {
-        cFont::SetFont(fontSml, data.FontSml, data.FontSmlSize);
-        ModifiedApperance = true;
-        }
-     if (strcmp(data.FontFix, Setup.FontFix) || data.FontFixSize != Setup.FontFixSize) {
-        cFont::SetFont(fontFix, data.FontFix, data.FontFixSize);
-        ModifiedApperance = true;
-        }
+     if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSizeP != Setup.FontOsdSizeP)
+        ModifiedAppearance = true;
+     if (strcmp(data.FontSml, Setup.FontSml) || data.FontSmlSizeP != Setup.FontSmlSizeP)
+        ModifiedAppearance = true;
+     if (strcmp(data.FontFix, Setup.FontFix) || data.FontFixSizeP != Setup.FontFixSizeP)
+        ModifiedAppearance = true;
      }
 
   int oldSkinIndex = skinIndex;
   int oldOsdLanguageIndex = osdLanguageIndex;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
-  if (ModifiedApperance)
+  if (ModifiedAppearance) {
+     cOsdProvider::UpdateOsdSize(true);
      SetDisplayMenu();
+     }
 
   if (osdLanguageIndex != oldOsdLanguageIndex || skinIndex != oldSkinIndex) {
      strn0cpy(data.OSDLanguage, I18nLocale(osdLanguageIndex), sizeof(data.OSDLanguage));

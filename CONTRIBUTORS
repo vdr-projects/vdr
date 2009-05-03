@@ -671,6 +671,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting that the video type is unnecessarily written into channels.conf if
  VPID is 0
  for reporting chirping sound disturbences at editing points in TS recordings
+ for reporting broken index generation in TS recordings after a buffer overflow
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

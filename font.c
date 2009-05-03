@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 2.1 2008/05/02 16:16:51 kls Exp $
+ * $Id: font.c 2.2 2009/05/03 11:15:39 kls Exp $
  */
 
 #include "font.h"
@@ -145,7 +145,7 @@ cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
                                     0,    // horizontal device resolution
                                     0);   // vertical device resolution
            if (!error) {
-              height = ((face->size->metrics.ascender-face->size->metrics.descender) + 63) / 64;
+              height = (face->size->metrics.ascender - face->size->metrics.descender + 63) / 64;
               bottom = abs((face->size->metrics.descender - 63) / 64);
               }
            else
@@ -328,7 +328,7 @@ cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
-  cFont *f = CreateFont(Name, CharHeight);
+  cFont *f = CreateFont(Name, min(max(CharHeight, MINFONTSIZE), MAXFONTSIZE));
   if (!f || !f->Height())
      f = new cDummyFont;
   delete fonts[Font];

@@ -495,17 +495,17 @@ msgstr "Menü nézet"
 msgid "Setup.OSD$Theme"
 msgstr "Téma"
 
-msgid "Setup.OSD$Left"
-msgstr "Balra"
+msgid "Setup.OSD$Left (%)"
+msgstr "Balra (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Fent"
+msgid "Setup.OSD$Top (%)"
+msgstr "Fent (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Szélesség"
+msgid "Setup.OSD$Width (%)"
+msgstr "Szélesség (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Magasság"
+msgid "Setup.OSD$Height (%)"
+msgstr "Magasság (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Információ feltûntetésének idõtartama"
@@ -525,14 +525,14 @@ msgstr "Kis betûtipus"
 msgid "Setup.OSD$Fixed font"
 msgstr "Kötött betûtipus"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Alapértelmezett betûtipus méret (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Alapértelmezett betûtipus méret (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Kis betûtipus méret (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Kis betûtipus méret (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Kötött betûtipus méret (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Kötött betûtipus méret (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Adásinformáció poziciója"

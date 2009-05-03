@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.7 2009/04/05 13:21:46 kls Exp $
+ * $Id: vdr.c 2.8 2009/05/03 10:33:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -747,6 +747,12 @@ int main(int argc, char *argv[])
               CheckHasProgramme = false;
               }
            }
+        // Update the OSD size:
+        {
+          static time_t lastOsdSizeUpdate = 0;
+          if (Now != lastOsdSizeUpdate) // once per second
+             cOsdProvider::UpdateOsdSize();
+        }
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);

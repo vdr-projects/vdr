@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.1 2009/01/24 15:05:32 kls Exp $
+ * $Id: config.c 2.2 2009/05/03 13:58:08 kls Exp $
  */
 
 #include "config.h"
@@ -262,6 +262,10 @@ cSetup::cSetup(void)
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;
+  OSDLeftP = 0.08;
+  OSDTopP = 0.08;
+  OSDWidthP = 0.87;
+  OSDHeightP = 0.84;
   OSDLeft = 54;
   OSDTop = 45;
   OSDWidth = 624;
@@ -272,6 +276,9 @@ cSetup::cSetup(void)
   strcpy(FontOsd, DefaultFontOsd);
   strcpy(FontSml, DefaultFontSml);
   strcpy(FontFix, DefaultFontFix);
+  FontOsdSizeP = 0.038;
+  FontSmlSizeP = 0.035;
+  FontFixSizeP = 0.031;
   FontOsdSize = 22;
   FontSmlSize = 18;
   FontFixSize = 20;
@@ -322,6 +329,11 @@ void cSetup::Store(const char *Name, const char *Value, const char *Plugin, bool
 void cSetup::Store(const char *Name, int Value, const char *Plugin)
 {
   Store(Name, cString::sprintf("%d", Value), Plugin);
+}
+
+void cSetup::Store(const char *Name, double &Value, const char *Plugin)
+{
+  Store(Name, cString::sprintf("%f", Value), Plugin);
 }
 
 bool cSetup::Load(const char *FileName)
@@ -435,16 +447,23 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
+  else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atof(Value);
+  else if (!strcasecmp(Name, "OSDTopP"))             OSDTopP            = atof(Value);
+  else if (!strcasecmp(Name, "OSDWidthP"))           OSDWidthP          = atof(Value);
+  else if (!strcasecmp(Name, "OSDHeightP"))          OSDHeightP         = atof(Value);
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
-  else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); if (OSDWidth  < 100) OSDWidth  *= 12; OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
-  else if (!strcasecmp(Name, "OSDHeight"))         { OSDHeight          = atoi(Value); if (OSDHeight < 100) OSDHeight *= 27; }
+  else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
+  else if (!strcasecmp(Name, "OSDHeight"))           OSDHeight          = atoi(Value);
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
   else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
   else if (!strcasecmp(Name, "AntiAlias"))           AntiAlias          = atoi(Value);
   else if (!strcasecmp(Name, "FontOsd"))             Utf8Strn0Cpy(FontOsd, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontSml"))             Utf8Strn0Cpy(FontSml, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontFix"))             Utf8Strn0Cpy(FontFix, Value, MAXFONTNAME);
+  else if (!strcasecmp(Name, "FontOsdSizeP"))        FontOsdSizeP       = atof(Value);
+  else if (!strcasecmp(Name, "FontSmlSizeP"))        FontSmlSizeP       = atof(Value);
+  else if (!strcasecmp(Name, "FontFixSizeP"))        FontFixSizeP       = atof(Value);
   else if (!strcasecmp(Name, "FontOsdSize"))         FontOsdSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);
@@ -518,6 +537,10 @@ bool cSetup::Save(void)
   Store("UseDolbyDigital",    UseDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
   Store("ChannelInfoTime",    ChannelInfoTime);
+  Store("OSDLeftP",           OSDLeftP);
+  Store("OSDTopP",            OSDTopP);
+  Store("OSDWidthP",          OSDWidthP);
+  Store("OSDHeightP",         OSDHeightP);
   Store("OSDLeft",            OSDLeft);
   Store("OSDTop",             OSDTop);
   Store("OSDWidth",           OSDWidth);
@@ -528,6 +551,9 @@ bool cSetup::Save(void)
   Store("FontOsd",            FontOsd);
   Store("FontSml",            FontSml);
   Store("FontFix",            FontFix);
+  Store("FontOsdSizeP",       FontOsdSizeP);
+  Store("FontSmlSizeP",       FontSmlSizeP);
+  Store("FontFixSizeP",       FontFixSizeP);
   Store("FontOsdSize",        FontOsdSize);
   Store("FontSmlSize",        FontSmlSize);
   Store("FontFixSize",        FontFixSize);

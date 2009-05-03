@@ -499,17 +499,17 @@ msgstr "Stile interfaccia"
 msgid "Setup.OSD$Theme"
 msgstr "Tema colori"
 
-msgid "Setup.OSD$Left"
-msgstr "Sinistra"
+msgid "Setup.OSD$Left (%)"
+msgstr "Sinistra (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "In alto"
+msgid "Setup.OSD$Top (%)"
+msgstr "In alto (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Larghezza OSD"
+msgid "Setup.OSD$Width (%)"
+msgstr "Larghezza OSD (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Altezza OSD"
+msgid "Setup.OSD$Height (%)"
+msgstr "Altezza OSD (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Durata del messaggio (s)"
@@ -529,14 +529,14 @@ msgstr "Caratteri piccoli"
 msgid "Setup.OSD$Fixed font"
 msgstr "Caratteri fissi"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Dim. caratteri pred. (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Dim. caratteri pred. (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Dim. caratteri piccoli (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Dim. caratteri piccoli (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Dim. caratteri fissi (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Dim. caratteri fissi (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posizione info canale"

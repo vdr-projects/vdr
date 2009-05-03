@@ -492,17 +492,17 @@ msgstr "Стиль"
 msgid "Setup.OSD$Theme"
 msgstr "Тема"
 
-msgid "Setup.OSD$Left"
-msgstr "Відступ зліва"
+msgid "Setup.OSD$Left (%)"
+msgstr "Відступ зліва (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Відступ зверху"
+msgid "Setup.OSD$Top (%)"
+msgstr "Відступ зверху (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Ширина"
+msgid "Setup.OSD$Width (%)"
+msgstr "Ширина (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Висота"
+msgid "Setup.OSD$Height (%)"
+msgstr "Висота (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Тривалість показу повідомлень (сек)"
@@ -522,14 +522,14 @@ msgstr "Малий фонт"
 msgid "Setup.OSD$Fixed font"
 msgstr "Фіксований фонт"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Размір фонта для меню (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Размір фонта для меню (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Размір малого фонта (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Размір малого фонта (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Размір фіксованого фонта (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Размір фіксованого фонта (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Положення вікна інформації про канал"

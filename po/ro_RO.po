@@ -495,17 +495,17 @@ msgstr "Skin"
 msgid "Setup.OSD$Theme"
 msgstr "Temã"
 
-msgid "Setup.OSD$Left"
-msgstr "Stânga"
+msgid "Setup.OSD$Left (%)"
+msgstr "Stânga (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Sus"
+msgid "Setup.OSD$Top (%)"
+msgstr "Sus (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Lãþime OSD"
+msgid "Setup.OSD$Width (%)"
+msgstr "Lãþime OSD (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Înãlþime OSD"
+msgid "Setup.OSD$Height (%)"
+msgstr "Înãlþime OSD (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Timp afiºare mesaje (sec)"
@@ -525,14 +525,14 @@ msgstr "Font mic"
 msgid "Setup.OSD$Fixed font"
 msgstr "Font cu lãþime fixã"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Mãrimea implicitã a fontului (pixeli)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Mãrimea implicitã a fontului (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Mãrimea 'micã' a fontului (pixeli)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Mãrimea 'micã' a fontului (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Mãrimea 'fixã' a fontului (pixeli)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Mãrimea 'fixã' a fontului (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Poziþia informaþiilor despre canal"

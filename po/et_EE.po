@@ -492,17 +492,17 @@ msgstr "Kest"
 msgid "Setup.OSD$Theme"
 msgstr "Teema"
 
-msgid "Setup.OSD$Left"
-msgstr "Vasakule"
+msgid "Setup.OSD$Left (%)"
+msgstr "Vasakule (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Ülesse"
+msgid "Setup.OSD$Top (%)"
+msgstr "Ülesse (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Laius"
+msgid "Setup.OSD$Width (%)"
+msgstr "Laius (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Kõrgus"
+msgid "Setup.OSD$Height (%)"
+msgstr "Kõrgus (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Teate esitusaeg (s)"
@@ -522,14 +522,14 @@ msgstr "Väike font"
 msgid "Setup.OSD$Fixed font"
 msgstr "Fikseeritud font"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Vaikefondi suurus (px)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Vaikefondi suurus (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Väikese fondi suurus (px)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Väikese fondi suurus (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Fiks. fondi suurus (px)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Fiks. fondi suurus (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanaliinfo asukoht"

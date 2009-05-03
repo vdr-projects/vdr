@@ -493,17 +493,17 @@ msgstr "Vzhled"
 msgid "Setup.OSD$Theme"
 msgstr "Téma"
 
-msgid "Setup.OSD$Left"
-msgstr "Vlevo"
+msgid "Setup.OSD$Left (%)"
+msgstr "Vlevo (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Nahoøe"
+msgid "Setup.OSD$Top (%)"
+msgstr "Nahoøe (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "©íøka"
+msgid "Setup.OSD$Width (%)"
+msgstr "©íøka (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Vý¹ka"
+msgid "Setup.OSD$Height (%)"
+msgstr "Vý¹ka (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Èas zobrazení zpávy (s)"
@@ -523,14 +523,14 @@ msgstr "Malé písmo"
 msgid "Setup.OSD$Fixed font"
 msgstr "Fixní písmo"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Velikost výchozího písma (pixely)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Velikost výchozího písma (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Velikost malého písma (pixely)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Velikost malého písma (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Velikost fixního písma (pixely)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Velikost fixního písma (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozice informace o kanálu"
