@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.16 2009/04/18 09:41:00 kls Exp $
+ * $Id: device.c 2.17 2009/05/02 12:17:39 kls Exp $
  */
 
 #include "device.h"
@@ -18,6 +18,11 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+const char *VideoAspectString[] = { "4:3",
+                                    "16:9",
+                                    "2.21:9"
+                                  };
 
 // --- cLiveSubtitle ---------------------------------------------------------
 
@@ -382,6 +387,13 @@ void cDevice::SetVideoFormat(bool VideoFormat16_9)
 eVideoSystem cDevice::GetVideoSystem(void)
 {
   return vsPAL;
+}
+
+void cDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
+{
+  Width = MINOSDWIDTH;
+  Height = MINOSDHEIGHT;
+  Aspect = va4_3;
 }
 
 //#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }

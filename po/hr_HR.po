@@ -494,17 +494,17 @@ msgstr "Povr¹ina"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Lijevo"
+msgid "Setup.OSD$Left (%)"
+msgstr "Lijevo (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Gore"
+msgid "Setup.OSD$Top (%)"
+msgstr "Gore (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "©irina"
+msgid "Setup.OSD$Width (%)"
+msgstr "©irina (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Visina"
+msgid "Setup.OSD$Height (%)"
+msgstr "Visina (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Vrijeme prikaza poruka (s)"
@@ -524,14 +524,14 @@ msgstr "Maleni font"
 msgid "Setup.OSD$Fixed font"
 msgstr "Nepromjenjiv font"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Velièina zadanog fonta (piksel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Velièina zadanog fonta (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Velièina malenog fonta (piksel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Velièina malenog fonta (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Velièina nepromjenjivog fonta (piksel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Velièina nepromjenjivog fonta (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozicija informacija o programu"

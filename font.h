@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.20 2007/06/23 10:09:14 kls Exp $
+ * $Id: font.h 2.1 2009/05/03 11:00:19 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -15,6 +15,7 @@
 #include "tools.h"
 
 #define MAXFONTNAME 64
+#define MINFONTSIZE 10
 #define MAXFONTSIZE 64
 
 enum eDvbFont {

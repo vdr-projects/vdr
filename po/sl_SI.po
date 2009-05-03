@@ -493,17 +493,17 @@ msgstr "Preobleka"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Levo"
+msgid "Setup.OSD$Left (%)"
+msgstr "Levo (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Zgoraj"
+msgid "Setup.OSD$Top (%)"
+msgstr "Zgoraj (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "©irina"
+msgid "Setup.OSD$Width (%)"
+msgstr "©irina (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Vi¹ina"
+msgid "Setup.OSD$Height (%)"
+msgstr "Vi¹ina (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Èas prikaza sporoèila (s)"
@@ -523,14 +523,14 @@ msgstr "Mala pisava"
 msgid "Setup.OSD$Fixed font"
 msgstr "Fiksna pisava"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Privzeta velikost pisave (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Privzeta velikost pisave (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Majhna velikost pisave (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Majhna velikost pisave (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Pozicija informacije o kanalu"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr ""
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozicija informacije o kanalu"

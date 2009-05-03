@@ -495,17 +495,17 @@ msgstr "Aparença"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Esquerra"
+msgid "Setup.OSD$Left (%)"
+msgstr "Esquerra (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "A dalt"
+msgid "Setup.OSD$Top (%)"
+msgstr "A dalt (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Amplada"
+msgid "Setup.OSD$Width (%)"
+msgstr "Amplada (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Alçada"
+msgid "Setup.OSD$Height (%)"
+msgstr "Alçada (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Durada dels missatges (s)"
@@ -525,14 +525,14 @@ msgstr "Font petita"
 msgid "Setup.OSD$Fixed font"
 msgstr "Font fixa"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Mida font predeterminada (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Mida font predeterminada (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Mida font petita"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Mida font petita (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Mida font fixa"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Mida font fixa (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Posició de la informació del canal"

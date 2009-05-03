@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.9 2009/04/05 12:12:44 kls Exp $
+ * $Id: device.h 2.10 2009/05/02 12:16:20 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -55,6 +55,13 @@ enum ePlayMode { pmNone,           // audio/video from decoder
 enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
+
+enum eVideoAspect { va4_3,
+                    va16_9,
+                    va221_9
+                  };
+
+extern const char *VideoAspectString[];
 
 enum eVideoDisplayFormat { vdfPanAndScan,
                            vdfLetterBox,
@@ -377,6 +384,9 @@ public:
   virtual eVideoSystem GetVideoSystem(void);
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
+  virtual void GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect);
+         ///< Returns the With, Height and Aspect ratio of the currently
+         ///< displayed material.
 
 // Track facilities
 

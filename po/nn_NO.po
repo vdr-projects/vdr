@@ -493,17 +493,17 @@ msgstr ""
 msgid "Setup.OSD$Theme"
 msgstr ""
 
-msgid "Setup.OSD$Left"
+msgid "Setup.OSD$Left (%)"
 msgstr ""
 
-msgid "Setup.OSD$Top"
+msgid "Setup.OSD$Top (%)"
 msgstr ""
 
-msgid "Setup.OSD$Width"
-msgstr "Bredde"
+msgid "Setup.OSD$Width (%)"
+msgstr "Bredde (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Høyde"
+msgid "Setup.OSD$Height (%)"
+msgstr "Høyde (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Tid meldinger skal vises (s)"
@@ -523,13 +523,13 @@ msgstr ""
 msgid "Setup.OSD$Fixed font"
 msgstr ""
 
-msgid "Setup.OSD$Default font size (pixel)"
+msgid "Setup.OSD$Default font size (%)"
 msgstr ""
 
-msgid "Setup.OSD$Small font size (pixel)"
+msgid "Setup.OSD$Small font size (%)"
 msgstr ""
 
-msgid "Setup.OSD$Fixed font size (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
 msgstr ""
 
 msgid "Setup.OSD$Channel info position"

@@ -492,17 +492,17 @@ msgstr "Yüzey"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Sol"
+msgid "Setup.OSD$Left (%)"
+msgstr "Sol (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Üst"
+msgid "Setup.OSD$Top (%)"
+msgstr "Üst (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Geniþlik"
+msgid "Setup.OSD$Width (%)"
+msgstr "Geniþlik (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Yükseklik"
+msgid "Setup.OSD$Height (%)"
+msgstr "Yükseklik (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Mesaj gösterme zamaný (sn)"
@@ -522,14 +522,14 @@ msgstr "Küçük font"
 msgid "Setup.OSD$Fixed font"
 msgstr "Çakýlý font"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Olaðan font boyutu (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Olaðan font boyutu (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Küçük font boyutu (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Küçük font boyutu (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Çakýlý font boyutu (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Çakýlý font boyutu (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanal bilgi pozisyonu"

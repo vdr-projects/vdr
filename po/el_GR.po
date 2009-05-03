@@ -492,17 +492,17 @@ msgstr "Επιφάνεια"
 msgid "Setup.OSD$Theme"
 msgstr "Θέμα"
 
-msgid "Setup.OSD$Left"
-msgstr "Αριστερά"
+msgid "Setup.OSD$Left (%)"
+msgstr "Αριστερά (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Επάνω"
+msgid "Setup.OSD$Top (%)"
+msgstr "Επάνω (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Μάκρος"
+msgid "Setup.OSD$Width (%)"
+msgstr "Μάκρος (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Ύψος"
+msgid "Setup.OSD$Height (%)"
+msgstr "Ύψος (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Χρόνος ένδειξης μυνημάτων (δ)"
@@ -522,13 +522,13 @@ msgstr ""
 msgid "Setup.OSD$Fixed font"
 msgstr ""
 
-msgid "Setup.OSD$Default font size (pixel)"
+msgid "Setup.OSD$Default font size (%)"
 msgstr ""
 
-msgid "Setup.OSD$Small font size (pixel)"
+msgid "Setup.OSD$Small font size (%)"
 msgstr ""
 
-msgid "Setup.OSD$Fixed font size (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
 msgstr ""
 
 msgid "Setup.OSD$Channel info position"

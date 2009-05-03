@@ -489,12 +489,13 @@ Version 1.6
 
   Theme = Default        Defines the "theme" to use with the current skin.
 
-  Left = 54              The top and left offset of the OSD.
-  Top = 45               The valid ranges are left=0...672, top=0...567.
+  Left = 8               The left and top offset of the OSD, in percent of the
+  Top = 8                total video display width and height, respectively.
+                         The valid range is 0...50%.
 
-  Width = 624            The width and height of the OSD.
-  Height = 486           The valid ranges are width=480...672, height=324...567.
-                         The Width must be a multiple of 8.
+  Width = 87             The width and height of the OSD, in percent of the
+  Height = 84            total video display width and height, respectively.
+                         The valid range is 50...100%.
 
   Message time = 1       The time (in seconds) how long an informational
                          message shall be displayed on the OSD. The valid range
@@ -516,11 +517,12 @@ Version 1.6
   Fixed font = Courier:Bold
                          The names of the various fonts to use.
 
-  Default font size = 22
-  Small font size = 18
-  Fixed font size = 20
-                         The sizes (in pixel) of the various fonts. Valid range is
-                         10...64.
+  Default font size = 3.8
+  Small font size = 3.5
+  Fixed font size = 3.1
+                         The sizes (in percent of the total video display height)
+                         of the various fonts. The valid range is 1...10%, at
+                         a resolution of 0.1%.
 
   Channel info position = bottom
                          The position of the channel info window in the OSD

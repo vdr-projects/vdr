@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.8 2009/04/12 14:20:52 kls Exp $
+ * $Id: config.h 2.9 2009/05/03 13:15:35 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.6"
-#define VDRVERSNUM   10706  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.7"
+#define VDRVERSNUM   10707  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.6"
-#define APIVERSNUM   10706  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.7"
+#define APIVERSNUM   10707  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -39,10 +39,10 @@
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
 
-#define MINOSDWIDTH  480
-#define MAXOSDWIDTH  672
-#define MINOSDHEIGHT 324
-#define MAXOSDHEIGHT 567
+#define MINOSDWIDTH   480
+#define MAXOSDWIDTH  1920
+#define MINOSDHEIGHT  324
+#define MAXOSDHEIGHT 1080
 
 #define MaxFileName 256
 #define MaxSkinName 16
@@ -195,6 +195,7 @@ private:
   cSetupLine *Get(const char *Name, const char *Plugin = NULL);
   void Store(const char *Name, const char *Value, const char *Plugin = NULL, bool AllowMultiple = false);
   void Store(const char *Name, int Value, const char *Plugin = NULL);
+  void Store(const char *Name, double &Value, const char *Plugin = NULL);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
   int __BeginData__;
@@ -243,6 +244,7 @@ public:
   int UseDolbyDigital;
   int ChannelInfoPos;
   int ChannelInfoTime;
+  double OSDLeftP, OSDTopP, OSDWidthP, OSDHeightP;
   int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
   int UseSmallFont;
@@ -250,6 +252,9 @@ public:
   char FontOsd[MAXFONTNAME];
   char FontSml[MAXFONTNAME];
   char FontFix[MAXFONTNAME];
+  double FontOsdSizeP;
+  double FontSmlSizeP;
+  double FontFixSizeP;
   int FontOsdSize;
   int FontSmlSize;
   int FontFixSize;

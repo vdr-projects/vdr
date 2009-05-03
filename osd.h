@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.2 2009/04/05 10:16:05 kls Exp $
+ * $Id: osd.h 2.3 2009/05/03 13:52:10 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -406,6 +406,9 @@ public:
 class cOsdProvider {
 private:
   static cOsdProvider *osdProvider;
+  static int oldWidth;
+  static int oldHeight;
+  static int oldAspect;
 protected:
   virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located
@@ -420,6 +423,11 @@ public:
       ///< caller must delete it. If the OSD is already in use, or there is no OSD
       ///< provider, a dummy OSD is returned so that the caller may always use the
       ///< returned pointer without having to check it every time it is accessed.
+  static void UpdateOsdSize(bool Force = false);
+      ///< Inquires the actual size of the video display and adjusts the OSD and
+      ///< font sizes accordingly. If Force is true, all settings are recalculated,
+      ///< even if the video resolution hasn't changed since the last call to
+      ///< this funtion.
   static void Shutdown(void);
       ///< Shuts down the OSD provider facility by deleting the current OSD provider.
   };

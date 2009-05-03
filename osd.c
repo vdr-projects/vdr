@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.2 2009/04/05 10:17:25 kls Exp $
+ * $Id: osd.c 2.3 2009/05/03 13:52:47 kls Exp $
  */
 
 #include "osd.h"
@@ -14,6 +14,7 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/unistd.h>
+#include "device.h"
 #include "tools.h"
 
 // --- cPalette --------------------------------------------------------------
@@ -880,6 +881,9 @@ void cOsd::Flush(void)
 // --- cOsdProvider ----------------------------------------------------------
 
 cOsdProvider *cOsdProvider::osdProvider = NULL;
+int cOsdProvider::oldWidth = 0;
+int cOsdProvider::oldHeight = 0;
+int cOsdProvider::oldAspect = va4_3;
 
 cOsdProvider::cOsdProvider(void)
 {
@@ -909,6 +913,30 @@ cOsd *cOsdProvider::NewOsd(int Left, int Top, uint Level)
   else
      esyslog("ERROR: no OSD provider available - using dummy OSD!");
   return new cOsd(Left, Top, 999); // create a dummy cOsd, so that access won't result in a segfault
+}
+
+void cOsdProvider::UpdateOsdSize(bool Force)
+{
+  int Width;
+  int Height;
+  eVideoAspect Aspect;
+  cDevice::PrimaryDevice()->GetVideoSize(Width, Height, Aspect);
+  if (Width != oldWidth || Height != oldHeight || Aspect != oldAspect || Force) {
+     Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
+     Setup.OSDTop = int(round(Height * Setup.OSDTopP));
+     Setup.OSDWidth = int(round(Width * Setup.OSDWidthP)) & ~0x07; // OSD width must be a multiple of 8
+     Setup.OSDHeight = int(round(Height * Setup.OSDHeightP));
+     Setup.FontOsdSize = int(round(Height * Setup.FontOsdSizeP));
+     Setup.FontFixSize = int(round(Height * Setup.FontFixSizeP));
+     Setup.FontSmlSize = int(round(Height * Setup.FontSmlSizeP));
+     cFont::SetFont(fontOsd, Setup.FontOsd, Setup.FontOsdSize);
+     cFont::SetFont(fontFix, Setup.FontFix, Setup.FontFixSize);
+     cFont::SetFont(fontSml, Setup.FontSml, Setup.FontSmlSize);
+     oldWidth = Width;
+     oldHeight = Height;
+     oldAspect = Aspect;
+     dsyslog("OSD size changed to %dx%d @ %s", Width, Height, VideoAspectString[Aspect]);
+     }
 }
 
 void cOsdProvider::Shutdown(void)

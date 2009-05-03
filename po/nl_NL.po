@@ -496,17 +496,17 @@ msgstr "Skin"
 msgid "Setup.OSD$Theme"
 msgstr "Thema"
 
-msgid "Setup.OSD$Left"
-msgstr "Links"
+msgid "Setup.OSD$Left (%)"
+msgstr "Links (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Boven"
+msgid "Setup.OSD$Top (%)"
+msgstr "Boven (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Breedte"
+msgid "Setup.OSD$Width (%)"
+msgstr "Breedte (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Hoogte"
+msgid "Setup.OSD$Height (%)"
+msgstr "Hoogte (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Weergave duur van berichten (s)"
@@ -526,14 +526,14 @@ msgstr "Kleine lettertype"
 msgid "Setup.OSD$Fixed font"
 msgstr "Letter met vaste breedte"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Afmetingen standaard lettertype (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Afmetingen standaard lettertype (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Afmetingen klein lettertype (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Afmetingen klein lettertype (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Afmetingen lettertype met vaste breedte (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Afmetingen lettertype met vaste breedte (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanaal info positie"

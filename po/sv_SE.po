@@ -495,17 +495,17 @@ msgstr "Skin"
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
-msgid "Setup.OSD$Left"
-msgstr "Vänster"
+msgid "Setup.OSD$Left (%)"
+msgstr "Vänster (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "Övre"
+msgid "Setup.OSD$Top (%)"
+msgstr "Övre (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "Bredd"
+msgid "Setup.OSD$Width (%)"
+msgstr "Bredd (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "Höjd"
+msgid "Setup.OSD$Height (%)"
+msgstr "Höjd (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "Tid för meddelanden (sek)"
@@ -525,14 +525,14 @@ msgstr "Små typsnitt"
 msgid "Setup.OSD$Fixed font"
 msgstr "Fast typsnitt"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "Fontstorlek standard (pixel)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "Fontstorlek standard (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "Fontstorlek liten text (pixel)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "Fontstorlek liten text (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "Fast fontstorlek (pixel)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "Fast fontstorlek (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Placering av kanalinformation"

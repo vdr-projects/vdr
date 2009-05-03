@@ -495,17 +495,17 @@ msgstr "外壳"
 msgid "Setup.OSD$Theme"
 msgstr "主题"
 
-msgid "Setup.OSD$Left"
-msgstr "左"
+msgid "Setup.OSD$Left (%)"
+msgstr "左 (%)"
 
-msgid "Setup.OSD$Top"
-msgstr "顶部"
+msgid "Setup.OSD$Top (%)"
+msgstr "顶部 (%)"
 
-msgid "Setup.OSD$Width"
-msgstr "宽"
+msgid "Setup.OSD$Width (%)"
+msgstr "宽 (%)"
 
-msgid "Setup.OSD$Height"
-msgstr "高"
+msgid "Setup.OSD$Height (%)"
+msgstr "高 (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "时间信息 (s)"
@@ -525,14 +525,14 @@ msgstr "小字体"
 msgid "Setup.OSD$Fixed font"
 msgstr "固定字体"
 
-msgid "Setup.OSD$Default font size (pixel)"
-msgstr "默认字体大小 (像素)"
+msgid "Setup.OSD$Default font size (%)"
+msgstr "默认字体大小 (%)"
 
-msgid "Setup.OSD$Small font size (pixel)"
-msgstr "小字体 (像素)"
+msgid "Setup.OSD$Small font size (%)"
+msgstr "小字体 (%)"
 
-msgid "Setup.OSD$Fixed font size (pixel)"
-msgstr "固定的字体 (像素)"
+msgid "Setup.OSD$Fixed font size (%)"
+msgstr "固定的字体 (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "频道信息位置"

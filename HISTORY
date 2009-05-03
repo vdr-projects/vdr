@@ -6060,3 +6060,15 @@ Video Disk Recorder Revision History
 - Added a note to the INSTALL file about using subdirectories to split a large
   disk into separate areas for VDR's video data and other stuff (suggested by
   Udo Richter).
+
+2009-05-03: Version 1.7.7
+
+- The new function cDevice::GetVideoSize() returns the size and aspect ratio
+  of the video material currently displayed. This function is used to determine
+  the proper size of the OSD. Plugin authors should implement this function in
+  classes derived from cDevice, if they are able to replay video.
+- The OSD and font sizes are now defined in percent of the actual video display
+  size. The maximum OSD size has been raised to 1920x1080, to allow full
+  screen OSD on HD systems.
+- The OSD size is now automatically adjusted to the actual video display
+  (provided the output device implements the GetVideoSize() function).
