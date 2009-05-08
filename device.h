@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.10 2009/05/02 12:16:20 kls Exp $
+ * $Id: device.h 2.11 2009/05/08 13:28:09 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -58,7 +58,7 @@ enum eVideoSystem { vsPAL,
 
 enum eVideoAspect { va4_3,
                     va16_9,
-                    va221_9
+                    va221_1
                   };
 
 extern const char *VideoAspectString[];

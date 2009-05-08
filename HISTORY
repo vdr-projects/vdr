@@ -6074,3 +6074,7 @@ Video Disk Recorder Revision History
   (provided the output device implements the GetVideoSize() function).
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
+
+2009-05-08: Version 1.7.8
+
+- Fixed a typo in aspect ratio 2.21:1 (reported by Reinhard Nissl).

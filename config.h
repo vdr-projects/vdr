@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.9 2009/05/03 13:15:35 kls Exp $
+ * $Id: config.h 2.10 2009/05/08 13:28:32 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.7"
-#define VDRVERSNUM   10707  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.8"
+#define VDRVERSNUM   10708  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.7"
-#define APIVERSNUM   10707  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.8"
+#define APIVERSNUM   10708  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
