@@ -6081,10 +6081,10 @@ Video Disk Recorder Revision History
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
   for its purpose of defining the optimum size of the OSD for the current
   output device. Therefore a new function named cDevice::GetOsdSize() has
-  been introduced. Plugin authors should implement this function in
-  classes derived from cDevice, if they are able to replay video.
-  cDevice::GetVideoSize() still exists and should return the size of the
-  video material that is currently replayed.
+  been introduced (suggested by Rolf Ahrenberg). Plugin authors should
+  implement this function in classes derived from cDevice, if they are able
+  to replay video. cDevice::GetVideoSize() still exists and should return the
+  actual size of the video material that is currently replayed.
 - Fixed the way the OSD size is determined on full featured DVB cards (thanks
   to Oliver Endriss).
 - Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).
