@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.12 2006/04/17 11:00:00 kls Exp $
+ * $Id: dvbspu.h 2.1 2009/05/09 16:26:45 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -32,10 +32,10 @@ typedef struct sDvbSpuRect {
     int x1, y1;
     int x2, y2;
 
-    int width() {
+    int width() const {
         return x2 - x1 + 1;
     };
-    int height() {
+    int height() const {
         return y2 - y1 + 1;
     };
 
@@ -63,8 +63,6 @@ class cDvbSpuPalette {
 // --- cDvbSpuBitmap----------------------------------------------------------
 
 class cDvbSpuBitmap {
-
-  public:
   private:
     sDvbSpuRect bmpsize;
     sDvbSpuRect minsize[4];
