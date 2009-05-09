@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.4 2009/05/08 15:29:20 kls Exp $
+ * $Id: osd.c 2.5 2009/05/09 10:42:35 kls Exp $
  */
 
 #include "osd.h"
@@ -926,6 +926,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      Setup.OSDTop = int(round(Height * Setup.OSDTopP));
      Setup.OSDWidth = int(round(Width * Setup.OSDWidthP)) & ~0x07; // OSD width must be a multiple of 8
      Setup.OSDHeight = int(round(Height * Setup.OSDHeightP));
+     Setup.OSDAspect = Aspect;
      Setup.FontOsdSize = int(round(Height * Setup.FontOsdSizeP));
      Setup.FontFixSize = int(round(Height * Setup.FontFixSizeP));
      Setup.FontSmlSize = int(round(Height * Setup.FontSmlSizeP));

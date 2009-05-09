@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.2 2009/05/03 13:58:08 kls Exp $
+ * $Id: config.c 2.3 2009/05/09 10:41:50 kls Exp $
  */
 
 #include "config.h"
@@ -270,6 +270,7 @@ cSetup::cSetup(void)
   OSDTop = 45;
   OSDWidth = 624;
   OSDHeight = 486;
+  OSDAspect = 1.0;
   OSDMessageTime = 1;
   UseSmallFont = 1;
   AntiAlias = 1;
@@ -455,6 +456,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
   else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
   else if (!strcasecmp(Name, "OSDHeight"))           OSDHeight          = atoi(Value);
+  else if (!strcasecmp(Name, "OSDAspect"))           OSDAspect          = atof(Value);
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
   else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
   else if (!strcasecmp(Name, "AntiAlias"))           AntiAlias          = atoi(Value);
@@ -545,6 +547,7 @@ bool cSetup::Save(void)
   Store("OSDTop",             OSDTop);
   Store("OSDWidth",           OSDWidth);
   Store("OSDHeight",          OSDHeight);
+  Store("OSDAspect",          OSDAspect);
   Store("OSDMessageTime",     OSDMessageTime);
   Store("UseSmallFont",       UseSmallFont);
   Store("AntiAlias",          AntiAlias);

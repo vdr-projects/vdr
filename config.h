@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.11 2009/05/09 10:26:37 kls Exp $
+ * $Id: config.h 2.12 2009/05/09 10:40:04 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -246,6 +246,7 @@ public:
   int ChannelInfoTime;
   double OSDLeftP, OSDTopP, OSDWidthP, OSDHeightP;
   int OSDLeft, OSDTop, OSDWidth, OSDHeight;
+  double OSDAspect;
   int OSDMessageTime;
   int UseSmallFont;
   int AntiAlias;
