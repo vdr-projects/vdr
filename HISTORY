@@ -6087,3 +6087,4 @@ Video Disk Recorder Revision History
   video material that is currently replayed.
 - Fixed the way the OSD size is determined on full featured DVB cards (thanks
   to Oliver Endriss).
+- Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).

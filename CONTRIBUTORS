@@ -1955,6 +1955,7 @@ Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
 
 Nicolas Huillard <nhuillard@e-dition.fr>
  for translating OSD texts to the French language
+ for suggesting to increase MAXOSDHEIGHT to 1200
 
 Patrick Fischer <patrick_fischer@gmx.de>
  for reporting an error in the cFilter example in PLUGINS.html

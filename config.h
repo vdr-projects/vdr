@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.10 2009/05/08 13:28:32 kls Exp $
+ * $Id: config.h 2.11 2009/05/09 10:26:37 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -42,7 +42,7 @@
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920
 #define MINOSDHEIGHT  324
-#define MAXOSDHEIGHT 1080
+#define MAXOSDHEIGHT 1200
 
 #define MaxFileName 256
 #define MaxSkinName 16
