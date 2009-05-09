@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.4 2009/05/02 10:44:40 kls Exp $
+ * $Id: dvbdevice.h 2.5 2009/05/08 13:33:46 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -108,6 +108,7 @@ public:
   virtual void SetVideoFormat(bool VideoFormat16_9);
   virtual eVideoSystem GetVideoSystem(void);
   virtual void GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect);
+  virtual void GetOsdSize(int &Width, int &Height, double &Aspect);
 
 // Track facilities
 

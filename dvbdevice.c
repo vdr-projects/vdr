@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.15 2009/05/03 13:49:41 kls Exp $
+ * $Id: dvbdevice.c 2.16 2009/05/08 14:54:27 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -751,16 +751,31 @@ void cDvbDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
   video_size_t vs;
   if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
      Width = vs.w;
-     if (Width < 720) // FIXME: some channels result in a With of, e.g. 544, but the final video *is* 720 wide
-        Width = 720;
      Height = vs.h;
      Aspect = eVideoAspect(vs.aspect_ratio);
+     return;
+     }
+  else
+     LOG_ERROR;
+  cDevice::GetVideoSize(Width, Height, Aspect);
+}
+
+void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
+{
+  video_size_t vs;
+  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+     Width = 720;
+     if (vs.h != 480 && vs.h != 240)
+        Height = 576; // PAL
+     else
+        Height = 480; // NTSC
+     Aspect = 1.0;
      if (Width >= MINOSDWIDTH && Width <= MAXOSDWIDTH && Height >= MINOSDHEIGHT && Height <= MAXOSDHEIGHT)
         return;
      }
   else
      LOG_ERROR;
-  cDevice::GetVideoSize(Width, Height, Aspect);
+  cDevice::GetOsdSize(Width, Height, Aspect);
 }
 
 bool cDvbDevice::SetAudioBypass(bool On)

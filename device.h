@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.11 2009/05/08 13:28:09 kls Exp $
+ * $Id: device.h 2.12 2009/05/08 13:39:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -386,7 +386,18 @@ public:
          ///< (default is PAL).
   virtual void GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect);
          ///< Returns the With, Height and Aspect ratio of the currently
-         ///< displayed material.
+         ///< displayed material. The data returned by this function is
+         ///< only used for informational purposes (if any).
+         ///< The default implementation returns 0 for Width and Height.
+  virtual void GetOsdSize(int &Width, int &Height, double &Aspect);
+         ///< Returns the With, Height and Aspect ratio the OSD should use
+         ///< to best fit the resolution of the output device. If Aspect
+         ///< is not 1.0, the OSD may take this as a hint to stretch its
+         ///< graphics in a way that, e.g., a square area will actually
+         ///< show up as a square on the screen, and not as a rectangle.
+         ///< Values greater than 1.0 will stretch the graphics in the
+         ///< vertical direction. Note that the OSD is not guaranteed to
+         ///< actually use this hint.
 
 // Track facilities
 

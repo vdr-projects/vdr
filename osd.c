@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.3 2009/05/03 13:52:47 kls Exp $
+ * $Id: osd.c 2.4 2009/05/08 15:29:20 kls Exp $
  */
 
 #include "osd.h"
@@ -883,7 +883,7 @@ void cOsd::Flush(void)
 cOsdProvider *cOsdProvider::osdProvider = NULL;
 int cOsdProvider::oldWidth = 0;
 int cOsdProvider::oldHeight = 0;
-int cOsdProvider::oldAspect = va4_3;
+double cOsdProvider::oldAspect = 1.0;
 
 cOsdProvider::cOsdProvider(void)
 {
@@ -919,8 +919,8 @@ void cOsdProvider::UpdateOsdSize(bool Force)
 {
   int Width;
   int Height;
-  eVideoAspect Aspect;
-  cDevice::PrimaryDevice()->GetVideoSize(Width, Height, Aspect);
+  double Aspect;
+  cDevice::PrimaryDevice()->GetOsdSize(Width, Height, Aspect);
   if (Width != oldWidth || Height != oldHeight || Aspect != oldAspect || Force) {
      Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
      Setup.OSDTop = int(round(Height * Setup.OSDTopP));
@@ -935,7 +935,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      oldWidth = Width;
      oldHeight = Height;
      oldAspect = Aspect;
-     dsyslog("OSD size changed to %dx%d @ %s", Width, Height, VideoAspectString[Aspect]);
+     dsyslog("OSD size changed to %dx%d @ %g", Width, Height, Aspect);
      }
 }
 

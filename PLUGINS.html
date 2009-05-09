@@ -1944,10 +1944,10 @@ In order to be able to determine the proper size of the OSD, the device
 should implement the function
 
 <p><table><tr><td class="code"><pre>
-virtual void GetVideoSize(int &amp;Width, int &amp;Height, eVideoAspect &amp;Aspect);
+virtual void GetOsdSize(int &amp;Width, int &amp;Height, double &amp;Aspect);
 </pre></td></tr></table><p>
 
-By default, an OSD size of 480x324 with an aspect ratio of 4:3 is assumed.
+By default, an OSD size of 720x480 with an aspect ratio of 1.0 is assumed.
 </div modified>
 
 <p>
