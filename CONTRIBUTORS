@@ -2450,3 +2450,7 @@ Marcel Unbehaun <frostworks@gmx.de>
 
 Günter Niedermeier <linuxtv@ncs-online.de>
  for reporting a problem with file I/O overhead during recording in TS format
+
+Martin Neuditschko <yosuke.tomoe@gmx.net>
+ for reporting a problem with error messages from cDvbDevice::GetVideoSize()
+ on systems with no real primary replay device

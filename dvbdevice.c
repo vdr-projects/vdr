@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.16 2009/05/08 14:54:27 kls Exp $
+ * $Id: dvbdevice.c 2.17 2009/05/10 13:13:04 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -736,45 +736,51 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 eVideoSystem cDvbDevice::GetVideoSystem(void)
 {
   eVideoSystem VideoSystem = vsPAL;
-  video_size_t vs;
-  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-     if (vs.h == 480 || vs.h == 240)
-        VideoSystem = vsNTSC;
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        if (vs.h == 480 || vs.h == 240)
+           VideoSystem = vsNTSC;
+        }
+     else
+        LOG_ERROR;
      }
-  else
-     LOG_ERROR;
   return VideoSystem;
 }
 
 void cDvbDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
 {
-  video_size_t vs;
-  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-     Width = vs.w;
-     Height = vs.h;
-     Aspect = eVideoAspect(vs.aspect_ratio);
-     return;
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        Width = vs.w;
+        Height = vs.h;
+        Aspect = eVideoAspect(vs.aspect_ratio);
+        return;
+        }
+     else
+        LOG_ERROR;
      }
-  else
-     LOG_ERROR;
   cDevice::GetVideoSize(Width, Height, Aspect);
 }
 
 void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
 {
-  video_size_t vs;
-  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-     Width = 720;
-     if (vs.h != 480 && vs.h != 240)
-        Height = 576; // PAL
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        Width = 720;
+        if (vs.h != 480 && vs.h != 240)
+           Height = 576; // PAL
+        else
+           Height = 480; // NTSC
+        Aspect = 1.0;
+        if (Width >= MINOSDWIDTH && Width <= MAXOSDWIDTH && Height >= MINOSDHEIGHT && Height <= MAXOSDHEIGHT)
+           return;
+        }
      else
-        Height = 480; // NTSC
-     Aspect = 1.0;
-     if (Width >= MINOSDWIDTH && Width <= MAXOSDWIDTH && Height >= MINOSDHEIGHT && Height <= MAXOSDHEIGHT)
-        return;
+        LOG_ERROR;
      }
-  else
-     LOG_ERROR;
   cDevice::GetOsdSize(Width, Height, Aspect);
 }
 

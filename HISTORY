@@ -6075,7 +6075,7 @@ Video Disk Recorder Revision History
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
 
-2009-05-08: Version 1.7.8
+2009-05-10: Version 1.7.8
 
 - Fixed a typo in aspect ratio 2.21:1 (reported by Reinhard Nissl).
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
@@ -6089,3 +6089,5 @@ Video Disk Recorder Revision History
   to Oliver Endriss).
 - Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).
 - Removed limitation to PAL resolution from SPU handling.
+- Checking fd_video in cDvbDevice::GetVideoSize() to avoid error messages on
+  systems with no real primary replay device (reported by Martin Neuditschko).
