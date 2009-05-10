@@ -6094,3 +6094,4 @@ Video Disk Recorder Revision History
 - Added a note to cTsToPes::GetPes() about having to call it repeatedly, once
   it has returned a non-NULL value.
 - Added MPEG 1 handling to remux.c (thanks to Ales Jurik).
+- Fixed use of time_t in cEIT::cEIT() (thanks to Tobias Bratfisch).

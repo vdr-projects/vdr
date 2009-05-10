@@ -2314,6 +2314,7 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
  for optimizing cNitFilter::Process()
  for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
  for improving efficiency of cEIT::cEIT()
+ for fixing the use of time_t in cEIT::cEIT()
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language
