@@ -2398,6 +2398,7 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
  character set to ISO-8859-9
+ for adding MPEG 1 handling to remux.c
 
 Magnus Andersson <svankan@bahnhof.se>
  for translating OSD texts to the Swedish language

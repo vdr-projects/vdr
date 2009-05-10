@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.20 2009/05/03 14:43:25 kls Exp $
+ * $Id: remux.c 2.21 2009/05/10 14:30:00 kls Exp $
  */
 
 #include "remux.h"
@@ -481,6 +481,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
          switch (stream.getStreamType()) {
+           case 0x01: // STREAMTYPE_11172_VIDEO
            case 0x02: // STREAMTYPE_13818_VIDEO
            case 0x1B: // MPEG4
                       vpid = stream.getPid();
@@ -702,7 +703,7 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   newFrame = independentFrame = false;
   numPtsValues = 0;
   numIFrames = 0;
-  isVideo = type == 0x02 || type == 0x1B; // MPEG 2 or MPEG 4
+  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
   frameDuration = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
   payloadUnitOfFrame = 0;
@@ -795,6 +796,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                   scanner <<= 8;
                   scanner |= Data[i];
                   switch (type) {
+                    case 0x01: // MPEG 1 video
                     case 0x02: // MPEG 2 video
                          if (scanner == 0x00000100) { // Picture Start Code
                             if (synced && Processed)

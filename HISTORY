@@ -6093,3 +6093,4 @@ Video Disk Recorder Revision History
   systems with no real primary replay device (reported by Martin Neuditschko).
 - Added a note to cTsToPes::GetPes() about having to call it repeatedly, once
   it has returned a non-NULL value.
+- Added MPEG 1 handling to remux.c (thanks to Ales Jurik).
