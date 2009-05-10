@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.10 2009/04/19 10:57:09 kls Exp $
+ * $Id: remux.h 2.11 2009/05/10 13:43:52 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -254,6 +254,11 @@ public:
        ///< is not complete yet. If the packet is complete, Length will contain
        ///< the total packet length. The returned pointer is only valid until
        ///< the next call to PutTs() or Reset(), or until this object is destroyed.
+       ///< Once GetPes() has returned a non-NULL value, it must be called
+       ///< repeatedly, and the data processed, until it returns NULL. This
+       ///< is because video packets may be larger than the data a single
+       ///< PES packet with an actual length field can hold, and are therefore
+       ///< split into several PES packates with smaller sizes.
   void Reset(void);
        ///< Resets the converter. This needs to be called after a PES packet has
        ///< been fetched by a call to GetPes(), and before the next call to

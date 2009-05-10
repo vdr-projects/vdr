@@ -6091,3 +6091,5 @@ Video Disk Recorder Revision History
 - Removed limitation to PAL resolution from SPU handling.
 - Checking fd_video in cDvbDevice::GetVideoSize() to avoid error messages on
   systems with no real primary replay device (reported by Martin Neuditschko).
+- Added a note to cTsToPes::GetPes() about having to call it repeatedly, once
+  it has returned a non-NULL value.
