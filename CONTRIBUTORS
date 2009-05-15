@@ -2315,6 +2315,7 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
  for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
  for improving efficiency of cEIT::cEIT()
  for fixing the use of time_t in cEIT::cEIT()
+ for making EIT events be processed only if a plausible system time is available
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language

@@ -6075,7 +6075,7 @@ Video Disk Recorder Revision History
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
 
-2009-05-12: Version 1.7.8
+2009-05-15: Version 1.7.8
 
 - Fixed a typo in aspect ratio 2.21:1 (reported by Reinhard Nissl).
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
@@ -6096,3 +6096,5 @@ Video Disk Recorder Revision History
 - Added MPEG 1 handling to remux.c (thanks to Ales Jurik).
 - Fixed use of time_t in cEIT::cEIT() (thanks to Tobias Bratfisch).
 - Added missing update of lastOsdSizeUpdate.
+- EIT events are now only processed if a plausible system time is available, to
+  avoid wrong handling of PDC descriptors (thanks to Tobias Bratfisch).

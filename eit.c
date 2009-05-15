@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.4 2009/05/10 14:47:31 kls Exp $
+ * $Id: eit.c 2.5 2009/05/15 12:34:43 kls Exp $
  */
 
 #include "eit.h"
@@ -16,6 +16,8 @@
 #include "i18n.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+
+#define VALID_TIME (31536000 * 2) // two years
 
 // --- cEIT ------------------------------------------------------------------
 
@@ -45,6 +47,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   time_t Now = time(NULL);
   struct tm tm_r;
   struct tm t = *localtime_r(&Now, &tm_r); // this initializes the time zone in 't'
+
+  if (Now < VALID_TIME)
+     return; // we need the current time for handling PDC descriptors
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
