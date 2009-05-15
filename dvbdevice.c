@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.17 2009/05/10 13:13:04 kls Exp $
+ * $Id: dvbdevice.c 2.18 2009/05/15 11:08:18 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -775,8 +775,7 @@ void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
         else
            Height = 480; // NTSC
         Aspect = 1.0;
-        if (Width >= MINOSDWIDTH && Width <= MAXOSDWIDTH && Height >= MINOSDHEIGHT && Height <= MAXOSDHEIGHT)
-           return;
+        return;
         }
      else
         LOG_ERROR;
