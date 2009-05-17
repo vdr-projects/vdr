@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.21 2009/05/10 14:30:00 kls Exp $
+ * $Id: remux.c 2.22 2009/05/17 09:46:10 kls Exp $
  */
 
 #include "remux.h"
@@ -591,7 +591,6 @@ cTsToPes::cTsToPes(void)
 {
   data = NULL;
   size = length = offset = 0;
-  synced = false;
 }
 
 cTsToPes::~cTsToPes()

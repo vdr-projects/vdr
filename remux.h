@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.11 2009/05/10 13:43:52 kls Exp $
+ * $Id: remux.h 2.12 2009/05/17 09:45:53 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -239,7 +239,6 @@ private:
   int size;
   int length;
   int offset;
-  bool synced;
 public:
   cTsToPes(void);
   ~cTsToPes();
