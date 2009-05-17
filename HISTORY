@@ -6101,3 +6101,5 @@ Video Disk Recorder Revision History
 - Removed unused 'synced' member from cTsToPes (reported by Christoph Haubrich).
 - Added a note to cTsToPes about all TS packets having to belong to the same PID
   (suggested by Christoph Haubrich).
+- Added a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
+  (thanks to Rolf Ahrenberg).
