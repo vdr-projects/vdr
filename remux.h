@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.13 2009/05/17 09:52:56 kls Exp $
+ * $Id: remux.h 2.14 2009/05/17 10:09:35 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -261,7 +261,7 @@ public:
        ///< repeatedly, and the data processed, until it returns NULL. This
        ///< is because video packets may be larger than the data a single
        ///< PES packet with an actual length field can hold, and are therefore
-       ///< split into several PES packates with smaller sizes.
+       ///< split into several PES packets with smaller sizes.
   void Reset(void);
        ///< Resets the converter. This needs to be called after a PES packet has
        ///< been fetched by a call to GetPes(), and before the next call to
