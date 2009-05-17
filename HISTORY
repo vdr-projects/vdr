@@ -6099,3 +6099,5 @@ Video Disk Recorder Revision History
 - EIT events are now only processed if a plausible system time is available, to
   avoid wrong handling of PDC descriptors (thanks to Tobias Bratfisch).
 - Removed unused 'synced' member from cTsToPes (reported by Christoph Haubrich).
+- Added a note to cTsToPes about all TS packets having to belong to the same PID
+  (suggested by Christoph Haubrich).

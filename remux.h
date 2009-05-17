@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.12 2009/05/17 09:45:53 kls Exp $
+ * $Id: remux.h 2.13 2009/05/17 09:52:56 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -248,6 +248,10 @@ public:
        ///< If the given TS packet starts a new PES payload packet, the converter
        ///< will be automatically reset. Any packets before the first one that starts
        ///< a new PES payload packet will be ignored.
+       ///< Once a TS packet has been put into a cTsToPes converter, all subsequent
+       ///< packets until the next call to Reset() must belong to the same PID as
+       ///< the first packet. There is no check whether this actually is the case, so
+       ///< the caller is responsible for making sure this condition is met.
   const uchar *GetPes(int &Length);
        ///< Gets a pointer to the complete PES packet, or NULL if the packet
        ///< is not complete yet. If the packet is complete, Length will contain

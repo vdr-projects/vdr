@@ -2131,6 +2131,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for changing cBitmap::DrawText() to always draw the background unless ColorBg
  is clrTransparent
  for reporting unused 'synced' member in cTsToPes
+ for suggesting to add a note to cTsToPes about all TS packets having to belong to
+ the same PID
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
