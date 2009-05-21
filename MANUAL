@@ -748,6 +748,13 @@ Version 1.6
   Pause priority = 10    The Priority and Lifetime values used when pausing live
   Pause lifetime = 1     video.
 
+  Pause key handling = 3 Defines what happens if the Pause key on the remote control
+                         is pressed during live tv.
+                         0 = do not pause live video
+                         1 = confirm pause live video
+                         2 = pause live video
+                         The default is 2.
+
   Use episode name = yes Repeating timers use the EPG's 'Episode name' information
                          to create recording file names in a hierarchical structure
                          (for instance to gather all episodes of a series in a

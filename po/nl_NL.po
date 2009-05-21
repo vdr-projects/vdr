@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch\n"
@@ -708,6 +708,15 @@ msgstr "CAM wordt gebruikt - werkelijk herstarten?"
 msgid "Can't reset CAM!"
 msgstr "Kan CAM niet herstarten!"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Opname"
 
@@ -725,6 +734,9 @@ msgstr "Standaard prioriteit"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Standaard levensduur (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pauze prioriteit"
@@ -986,6 +998,9 @@ msgstr "Zondag"
 
 msgid "Upcoming recording!"
 msgstr "Opname start binnenkort!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Opname is gestart!"

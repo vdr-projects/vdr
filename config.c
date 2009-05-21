@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.3 2009/05/09 10:41:50 kls Exp $
+ * $Id: config.c 2.4 2009/05/21 11:10:38 kls Exp $
  */
 
 #include "config.h"
@@ -250,6 +250,7 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 99;
+  PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;
   UseSubtitle = 1;
@@ -436,6 +437,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+  else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
@@ -527,6 +529,7 @@ bool cSetup::Save(void)
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
+  Store("PauseKeyHandling",   PauseKeyHandling);
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);
   Store("UseSubtitle",        UseSubtitle);

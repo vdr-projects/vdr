@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian\n"
@@ -706,6 +706,15 @@ msgstr "CAM se koristi - ponovno pokrenuti unatoè?"
 msgid "Can't reset CAM!"
 msgstr "Ponovno pokretanje CAM-a neuspje¹no!"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Snimanje"
 
@@ -723,6 +732,9 @@ msgstr "Zadani prioritet"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Zadano trajanje (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Prioritet pauze"
@@ -984,6 +996,9 @@ msgstr "Nedjelja"
 
 msgid "Upcoming recording!"
 msgstr "Obnovljena snimka!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Snimanje zapoèelo"

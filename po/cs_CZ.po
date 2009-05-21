@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-02-28 15:00+0200\n"
 "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrý <jdobry@centrum.cz>\n"
 "Language-Team: Czech\n"
@@ -705,6 +705,15 @@ msgstr "CAM se pou¾ívá - opravdu restartovat?"
 msgid "Can't reset CAM!"
 msgstr "CAM modul nelze restartovat!"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Nahrávání"
 
@@ -722,6 +731,9 @@ msgstr "Výchozí priorita"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Výchozí ¾ivotnost"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorita pøeru¹ení"
@@ -983,6 +995,9 @@ msgstr "Nedìle"
 
 msgid "Upcoming recording!"
 msgstr "Brzo zaène nahrávání!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Zaèalo nahrávání"
