@@ -6075,7 +6075,7 @@ Video Disk Recorder Revision History
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
 
-2009-05-21: Version 1.7.8
+2009-05-23: Version 1.7.8
 
 - Fixed a typo in aspect ratio 2.21:1 (reported by Reinhard Nissl).
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
@@ -6108,3 +6108,4 @@ Video Disk Recorder Revision History
 - The new setup option "Recording/Pause key handling" can be used to define
   what happens if the Pause key on the remote control is pressed during
   live tv (thanks to Timo Eskola).
+- Added a note about cFont::GetFont() not being thread-safe.
