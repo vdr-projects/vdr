@@ -6099,8 +6099,10 @@ Video Disk Recorder Revision History
 - EIT events are now only processed if a plausible system time is available, to
   avoid wrong handling of PDC descriptors (thanks to Tobias Bratfisch).
 - Removed unused 'synced' member from cTsToPes (reported by Christoph Haubrich).
-- Added a note to cTsToPes about all TS packets having to belong to the same PID
-  (suggested by Christoph Haubrich).
+- Added a note to cTsToPes about all TS packets having to belong to the same PID,
+  and that for video data GetPes() may only be called if the next TS packet that
+  will be given to PutTs() has the "payload start" flag set (suggested by Christoph
+  Haubrich).
 - Added a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
   (thanks to Rolf Ahrenberg).
 - The new setup option "Recording/Pause key handling" can be used to define

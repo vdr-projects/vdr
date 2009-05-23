@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.14 2009/05/17 10:09:35 kls Exp $
+ * $Id: remux.h 2.15 2009/05/23 09:51:45 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -262,6 +262,10 @@ public:
        ///< is because video packets may be larger than the data a single
        ///< PES packet with an actual length field can hold, and are therefore
        ///< split into several PES packets with smaller sizes.
+       ///< Note that for video data GetPes() may only be called if the next
+       ///< TS packet that will be given to PutTs() has the "payload start" flag
+       ///< set, because this is the only way to determine the end of a video PES
+       ///< packet.
   void Reset(void);
        ///< Resets the converter. This needs to be called after a PES packet has
        ///< been fetched by a call to GetPes(), and before the next call to
