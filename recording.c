@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.12 2009/04/13 13:50:39 kls Exp $
+ * $Id: recording.c 2.13 2009/05/24 15:11:28 kls Exp $
  */
 
 #include "recording.h"
@@ -20,6 +20,7 @@
 #include "channels.h"
 #include "i18n.h"
 #include "interface.h"
+#include "remux.h"
 #include "skins.h"
 #include "tools.h"
 #include "videodir.h"
@@ -1627,6 +1628,57 @@ cFileName::~cFileName()
 {
   Close();
   free(fileName);
+}
+
+bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
+{
+  if (fileName && !isPesRecording) {
+     // Find the last recording file:
+     int Number = 1;
+     for (; Number <= MAXFILESPERRECORDINGTS + 1; Number++) { // +1 to correctly set Number in case there actually are that many files
+         sprintf(pFileNumber, RECORDFILESUFFIXTS, Number);
+         if (access(fileName, F_OK) != 0) { // file doesn't exist
+            Number--;
+            break;
+            }
+         }
+     for (; Number > 0; Number--) {
+         // Search for a PAT packet from the end of the file:
+         cPatPmtParser PatPmtParser;
+         sprintf(pFileNumber, RECORDFILESUFFIXTS, Number);
+         int fd = open(fileName, O_RDONLY | O_LARGEFILE, DEFFILEMODE);
+         if (fd >= 0) {
+            off_t pos = lseek(fd, -TS_SIZE, SEEK_END);
+            while (pos >= 0) {
+                  // Read and parse the PAT/PMT:
+                  uchar buf[TS_SIZE];
+                  while (read(fd, buf, sizeof(buf)) == sizeof(buf)) {
+                        if (buf[0] == TS_SYNC_BYTE) {
+                           int Pid = TsPid(buf);
+                           if (Pid == 0)
+                              PatPmtParser.ParsePat(buf, sizeof(buf));
+                           else if (Pid == PatPmtParser.PmtPid()) {
+                              PatPmtParser.ParsePmt(buf, sizeof(buf));
+                              if (PatPmtParser.GetVersions(PatVersion, PmtVersion)) {
+                                 close(fd);
+                                 return true;
+                                 }
+                              }
+                           else
+                              break; // PAT/PMT is always in one sequence
+                           }
+                        else
+                           return false;
+                        }
+                  pos = lseek(fd, pos - TS_SIZE, SEEK_SET);
+                  }
+            close(fd);
+            }
+         else
+            break;
+         }
+     }
+  return false;
 }
 
 cUnbufferedFile *cFileName::Open(void)

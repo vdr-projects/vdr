@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.3 2009/03/20 15:49:02 kls Exp $
+ * $Id: recorder.c 2.4 2009/05/23 12:18:25 kls Exp $
  */
 
 #include "recorder.h"
@@ -44,12 +44,14 @@ cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, i
      Type = 0x06;
      }
   frameDetector = new cFrameDetector(Pid, Type);
-  patPmtGenerator.SetChannel(Channel);
-  fileName = NULL;
   index = NULL;
   fileSize = 0;
   lastDiskSpaceCheck = time(NULL);
   fileName = new cFileName(FileName, true);
+  int PatVersion, PmtVersion;
+  if (fileName->GetLastPatPmtVersions(PatVersion, PmtVersion))
+     patPmtGenerator.SetVersions(PatVersion + 1, PmtVersion + 1);
+  patPmtGenerator.SetChannel(Channel);
   recordFile = fileName->Open();
   if (!recordFile)
      return;

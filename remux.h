@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.15 2009/05/23 09:51:45 kls Exp $
+ * $Id: remux.h 2.16 2009/05/24 15:07:44 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -181,6 +181,15 @@ protected:
        ///< with GetPmt().
 public:
   cPatPmtGenerator(cChannel *Channel = NULL);
+  void SetVersions(int PatVersion, int PmtVersion);
+       ///< Sets the version numbers for the generated PAT and PMT, in case
+       ///< this generator is used to, e.g.,  continue a previously interrupted
+       ///< recording (in which case the numbers given should be derived from
+       ///< the PAT/PMT versions last used in the existing recording, incremented
+       ///< by 1. If the given numbers exceed the allowed range of 0..31, the
+       ///< higher bits will automatically be cleared.
+       ///< SetVersions() needs to be called before SetChannel() in order to
+       ///< have an effect from the very start.
   void SetChannel(cChannel *Channel);
        ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
@@ -221,6 +230,9 @@ public:
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.
+  bool GetVersions(int &PatVersion, int &PmtVersion);
+       ///< Returns true if a valid PAT/PMT has been parsed and stores
+       ///< the current version numbers in the given variables.
   int PmtPid(void) { return pmtPid; }
        ///< Returns the PMT pid as defined by the current PAT.
        ///< If no PAT has been received yet, -1 will be returned.

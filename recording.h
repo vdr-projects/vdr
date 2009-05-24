@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.7 2009/04/19 09:00:45 kls Exp $
+ * $Id: recording.h 2.8 2009/05/23 12:14:42 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -260,6 +260,7 @@ public:
   ~cFileName();
   const char *Name(void) { return fileName; }
   int Number(void) { return fileNumber; }
+  bool GetLastPatPmtVersions(int &PatVersion, int &PmtVersion);
   cUnbufferedFile *Open(void);
   void Close(void);
   cUnbufferedFile *SetOffset(int Number, off_t Offset = 0);

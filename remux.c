@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.22 2009/05/17 09:46:10 kls Exp $
+ * $Id: remux.c 2.23 2009/05/24 11:44:54 kls Exp $
  */
 
 #include "remux.h"
@@ -357,6 +357,12 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
      }
 }
 
+void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
+{
+  patVersion = PatVersion & 0x1F;
+  pmtVersion = PmtVersion & 0x1F;
+}
+
 void cPatPmtGenerator::SetChannel(cChannel *Channel)
 {
   if (Channel) {
@@ -583,6 +589,13 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   else
      esyslog("ERROR: can't parse PMT");
   pmtSize = 0;
+}
+
+bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
+{
+  PatVersion = patVersion;
+  PmtVersion = pmtVersion;
+  return patVersion >= 0 && pmtVersion >= 0;
 }
 
 // --- cTsToPes --------------------------------------------------------------
