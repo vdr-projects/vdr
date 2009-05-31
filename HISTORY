@@ -6112,3 +6112,5 @@ Video Disk Recorder Revision History
 - Fixed generating PAT/PMT version numbers in case the PIDs change during
   recording (reported by Reinhard Nissl).
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Fixed a memory leak when reaching the end of a recording during replay (reported
+  by Reinhard Nissl).

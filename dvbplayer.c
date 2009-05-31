@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.15 2009/04/19 15:19:10 kls Exp $
+ * $Id: dvbplayer.c 2.16 2009/05/31 09:59:43 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -461,9 +461,11 @@ void cDvbPlayer::Action(void)
                       esyslog("ERROR: frame larger than buffer (%d > %d)", Length, MAXFRAMESIZE);
                       Length = MAXFRAMESIZE;
                       }
-                   b = MALLOC(uchar, Length);
+                   b = NULL;
                    }
-                if (!eof) {
+                if (!eof && Length > 0) {
+                   if (!b)
+                      b = MALLOC(uchar, Length);
                    int r = nonBlockingFileReader->Read(replayFile, b, Length);
                    if (r > 0) {
                       WaitingForData = false;
@@ -475,13 +477,17 @@ void cDvbPlayer::Action(void)
                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
                       b = NULL;
                       }
-                   else if (r == 0)
-                      eof = true;
                    else if (r < 0 && errno == EAGAIN)
                       WaitingForData = true;
-                   else if (r < 0 && FATALERRNO) {
-                      LOG_ERROR;
-                      break;
+                   else {
+                      free(b);
+                      b = NULL;
+                      if (r == 0)
+                         eof = true;
+                      else if (r < 0 && FATALERRNO) {
+                         LOG_ERROR;
+                         break;
+                         }
                       }
                    }
                 }

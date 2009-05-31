@@ -1217,6 +1217,7 @@ Reinhard Nissl <rnissl@gmx.de>
  cDvbPlayer::Action()
  for reporting a typo in aspect ratio 2.21:1
  for reporting a problem in case the PIDs change during recording
+ for reporting a memory leak when reaching the end of a recording during replay
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
