@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
 "POT-Creation-Date: 2009-05-31 11:11+0200\n"
-"PO-Revision-Date: 2009-05-30 14:17+0200\n"
-"Last-Translator: Yarema Aka Knedlyk <yupadmin@gmail.com>\n"
+"PO-Revision-Date: 2009-05-31 13:17+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -238,7 +238,7 @@ msgid "encrypted"
 msgstr "закодовано"
 
 msgid "Edit channel"
-msgstr "Редактування каналу"
+msgstr "Редагування каналу"
 
 msgid "Name"
 msgstr "Назва"
@@ -268,10 +268,10 @@ msgid "Dpid2"
 msgstr "Dpid2 (AC3 2)"
 
 msgid "Spid1"
-msgstr "Субтитри ПІД1"
+msgstr "Субтитри 1"
 
 msgid "Spid2"
-msgstr "Субтитри ПІД2"
+msgstr "Субтитри 2"
 
 msgid "Tpid"
 msgstr "Tpid (телетекст)"
@@ -316,7 +316,7 @@ msgid "Hierarchy"
 msgstr "Ієрархія"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Крен"
 
 msgid "Channel settings are not unique!"
 msgstr "Настройки каналу не єдині!"
@@ -325,7 +325,7 @@ msgid "Channels"
 msgstr "Канали"
 
 msgid "Button$Edit"
-msgstr "Редактувати"
+msgstr "Редагувати"
 
 msgid "Button$New"
 msgstr "Додати"
@@ -337,7 +337,7 @@ msgid "Button$Mark"
 msgstr "Перемістити"
 
 msgid "Channel is being used by a timer!"
-msgstr "Канал занятий таймером!"
+msgstr "Канал зайнятий таймером!"
 
 msgid "Delete channel?"
 msgstr "Видалити канал?"
@@ -436,10 +436,10 @@ msgstr "Всі передачі - всі канали"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Натисніть %d цифри"
+msgstr "Натисніть %d цифри!"
 
 msgid "CAM not responding!"
-msgstr "CAM не відповідає"
+msgstr "CAM не відповідає!"
 
 msgid "Recording info"
 msgstr "Про запис"
@@ -481,7 +481,7 @@ msgid "always"
 msgstr "завжди"
 
 msgid "OSD"
-msgstr "Меню"
+msgstr "OSD меню"
 
 msgid "Setup.OSD$Language"
 msgstr "Мова"
@@ -508,10 +508,10 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Тривалість показу повідомлень (сек)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Використовувати малий шрифт"
+msgstr "Використовувати малий фонт"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Згладживання шрифтів"
+msgstr "Згладжування фонтів"
 
 msgid "Setup.OSD$Default font"
 msgstr "Стандартний фонт"
@@ -544,7 +544,7 @@ msgid "Setup.OSD$Channel info time (s)"
 msgstr "Показ інформації про канал (сек)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Показувати інформацію про канал"
+msgstr "Показ канал-інфо при переключанні "
 
 msgid "Setup.OSD$Timeout requested channel info"
 msgstr "Інформацію про канал закрити"
@@ -588,7 +588,7 @@ msgstr "Бажані мови (телегід)"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "Вибрано"
+msgstr "Бажана мова (телегід)"
 
 msgid "pan&scan"
 msgstr "панорамувати"
@@ -597,7 +597,7 @@ msgid "letterbox"
 msgstr "зменшувати"
 
 msgid "center cut out"
-msgstr "обрізати збоку"
+msgstr "обрізати по боках"
 
 msgid "no"
 msgstr "ні"
@@ -627,10 +627,10 @@ msgid "Setup.DVB$Video format"
 msgstr "Формат відео"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Широкоекране зображення"
+msgstr "Формат зображення відео"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Включити Dolby Digital"
+msgstr "Використовувати Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
 msgstr "Оновлювати настройки каналів"
@@ -639,7 +639,7 @@ msgid "Setup.DVB$Audio languages"
 msgstr "Бажані мови (звук)"
 
 msgid "Setup.DVB$Audio language"
-msgstr "Вибрано"
+msgstr "Мова аудіо"
 
 msgid "Setup.DVB$Display subtitles"
 msgstr "Показувати субтитри"
@@ -693,7 +693,7 @@ msgid "Button$Reset"
 msgstr "Скинути"
 
 msgid "Opening CAM menu..."
-msgstr "Відкриваю меню модуля умовного доступу (CAM)"
+msgstr "Відкриваю меню CAM-модуля..."
 
 msgid "Can't open CAM menu!"
 msgstr "Меню CAM-модуля недоступне!"
@@ -705,13 +705,13 @@ msgid "Can't reset CAM!"
 msgstr "Помилка перезапуску CAM-модуля!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "не призупиняти перегляд"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "підтвердити призупинення перегляду"
 
 msgid "pause live video"
-msgstr ""
+msgstr "призупинити перегляд"
 
 msgid "Recording"
 msgstr "Запис"
@@ -729,16 +729,16 @@ msgid "Setup.Recording$Default priority"
 msgstr "Пріоритет таймера по замовчуванню"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Строк зберігання запису по замовчуванню (д)"
+msgstr "Строк зберігання запису по замовчуванню (дні)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Обробка клавіші відкладеного перегляду"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Пріоритет відкладеного перегляду"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Зберігання відкладеного перегляду (д)"
+msgstr "Зберігання відкладеного перегляду (дні)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Використовувати назву епізоду"
@@ -762,7 +762,7 @@ msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Макс. размір відеофайлу (Мб)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Ділити відредактовані файли"
+msgstr "Ділити відредаговані файли"
 
 msgid "Replay"
 msgstr "Перегляд"
@@ -942,7 +942,7 @@ msgstr "дійсно виключити?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s проснеться через %ld хвилин - продовжити?"
+msgstr "Модуль %s включиться через %ld хвилин - продовжити?"
 
 msgid "Editing - restart anyway?"
 msgstr "Процес монтажу - дійсно перезапустити?"
@@ -999,7 +999,7 @@ msgid "Pause live video?"
 msgstr "Режим відкладеного перегляду..."
 
 msgid "Recording started"
-msgstr ""
+msgstr "Запис почався"
 
 msgid "VDR will shut down later - press Power to force"
 msgstr "VDR виключиться ппізніше - натисніть Power для пришвидшення"
