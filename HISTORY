@@ -6114,3 +6114,4 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Fixed a memory leak when reaching the end of a recording during replay (reported
   by Reinhard Nissl).
+- Fixed calling close(-1) in cUnbufferedFile::Close() (reported by Reinhard Nissl).

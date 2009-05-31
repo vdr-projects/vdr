@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.2 2009/01/16 14:29:08 kls Exp $
+ * $Id: tools.c 2.3 2009/05/31 11:43:24 kls Exp $
  */
 
 #include "tools.h"
@@ -1473,16 +1473,18 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
 
 int cUnbufferedFile::Close(void)
 {
-#ifdef USE_FADVISE
   if (fd >= 0) {
+#ifdef USE_FADVISE
      if (totwritten)    // if we wrote anything make sure the data has hit the disk before
         fdatasync(fd);  // calling fadvise, as this is our last chance to un-cache it.
      posix_fadvise(fd, 0, 0, POSIX_FADV_DONTNEED);
-     }
 #endif
-  int OldFd = fd;
-  fd = -1;
-  return close(OldFd);
+     int OldFd = fd;
+     fd = -1;
+     return close(OldFd);
+     }
+  errno = EBADF;
+  return -1;
 }
 
 // When replaying and going e.g. FF->PLAY the position jumps back 2..8M
