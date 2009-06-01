@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.20 2009/06/01 14:08:45 kls Exp $
+ * $Id: device.c 2.21 2009/06/01 15:07:03 kls Exp $
  */
 
 #include "device.h"
@@ -18,11 +18,6 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
-
-const char *VideoAspectString[] = { "4:3",
-                                    "16:9",
-                                    "2.21:1"
-                                  };
 
 // --- cLiveSubtitle ---------------------------------------------------------
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.13 2009/06/01 14:07:55 kls Exp $
+ * $Id: device.h 2.14 2009/06/01 15:07:10 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -55,8 +55,6 @@ enum ePlayMode { pmNone,           // audio/video from decoder
 enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
-
-extern const char *VideoAspectString[];
 
 enum eVideoDisplayFormat { vdfPanAndScan,
                            vdfLetterBox,
