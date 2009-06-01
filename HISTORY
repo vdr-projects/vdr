@@ -6117,3 +6117,4 @@ Video Disk Recorder Revision History
 - Fixed calling close(-1) in cUnbufferedFile::Close() (reported by Reinhard Nissl).
 - Added a workaround for the broken linux-dvb driver header files (based on a patch
   from Tobias Grimm).
+- Fixed handling the length of DiSEqC command sequences (reported by Reinhard Nissl).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.18 2009/05/15 11:08:18 kls Exp $
+ * $Id: dvbdevice.c 2.19 2009/06/01 11:42:06 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -232,8 +232,8 @@ bool cDvbTuner::SetFrontend(void)
                          uchar *codes = diseqc->Codes(n);
                          if (codes) {
                             struct dvb_diseqc_master_cmd cmd;
-                            memcpy(cmd.msg, codes, min(n, int(sizeof(cmd.msg))));
-                            cmd.msg_len = n;
+                            cmd.msg_len = min(n, int(sizeof(cmd.msg)));
+                            memcpy(cmd.msg, codes, cmd.msg_len);
                             CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
                             }
                          }
