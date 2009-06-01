@@ -6118,3 +6118,5 @@ Video Disk Recorder Revision History
 - Added a workaround for the broken linux-dvb driver header files (based on a patch
   from Tobias Grimm).
 - Fixed handling the length of DiSEqC command sequences (reported by Reinhard Nissl).
+- Fixed cOsdMenu::Display() in case the menu size has changed (thanks to
+  Reinhard Nissl).
