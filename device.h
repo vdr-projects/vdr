@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.12 2009/05/08 13:39:08 kls Exp $
+ * $Id: device.h 2.13 2009/06/01 14:07:55 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -54,11 +54,6 @@ enum ePlayMode { pmNone,           // audio/video from decoder
 
 enum eVideoSystem { vsPAL,
                     vsNTSC
-                  };
-
-enum eVideoAspect { va4_3,
-                    va16_9,
-                    va221_1
                   };
 
 extern const char *VideoAspectString[];
@@ -384,17 +379,20 @@ public:
   virtual eVideoSystem GetVideoSystem(void);
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
-  virtual void GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect);
+  virtual void GetVideoSize(int &Width, int &Height, double &Aspect);
          ///< Returns the With, Height and Aspect ratio of the currently
          ///< displayed material. The data returned by this function is
-         ///< only used for informational purposes (if any).
-         ///< The default implementation returns 0 for Width and Height.
+         ///< only used for informational purposes (if any). Width and
+         ///< Height are given in pixel (e.g. 720x576) and Aspect is
+         ///< e.g. 1.3333x33 for a 4:3 broadcast, or 1.77778 for 16:9.
+         ///< The default implementation returns 0 for Width and Height
+         ///< and 1.0 for Aspect.
   virtual void GetOsdSize(int &Width, int &Height, double &Aspect);
          ///< Returns the With, Height and Aspect ratio the OSD should use
          ///< to best fit the resolution of the output device. If Aspect
          ///< is not 1.0, the OSD may take this as a hint to stretch its
-         ///< graphics in a way that, e.g., a square area will actually
-         ///< show up as a square on the screen, and not as a rectangle.
+         ///< graphics in a way that, e.g., a circle will actually
+         ///< show up as a circle on the screen, and not as an ellipse.
          ///< Values greater than 1.0 will stretch the graphics in the
          ///< vertical direction. Note that the OSD is not guaranteed to
          ///< actually use this hint.

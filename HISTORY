@@ -6084,7 +6084,11 @@ Video Disk Recorder Revision History
   been introduced (suggested by Rolf Ahrenberg). Plugin authors should
   implement this function in classes derived from cDevice, if they are able
   to replay video. cDevice::GetVideoSize() still exists and should return the
-  actual size of the video material that is currently replayed.
+  actual size of the video material that is currently replayed. Note that
+  because of the many possible aspect ratios for video material, the type
+  of the Aspect parameter of GetVideoSize() has been changed to 'double'
+  (suggested by Reinhard Nissl). Thanks to Oliver Endriss for his input on
+  calculating the Aspect factor in GetOsdSize().
 - Fixed the way the OSD size is determined on full featured DVB cards (thanks
   to Oliver Endriss).
 - Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).

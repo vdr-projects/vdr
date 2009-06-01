@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.19 2009/05/09 10:02:58 kls Exp $
+ * $Id: device.c 2.20 2009/06/01 14:08:45 kls Exp $
  */
 
 #include "device.h"
@@ -389,11 +389,11 @@ eVideoSystem cDevice::GetVideoSystem(void)
   return vsPAL;
 }
 
-void cDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
+void cDevice::GetVideoSize(int &Width, int &Height, double &Aspect)
 {
   Width = 0;
   Height = 0;
-  Aspect = va4_3;
+  Aspect = 1.0;
 }
 
 void cDevice::GetOsdSize(int &Width, int &Height, double &Aspect)

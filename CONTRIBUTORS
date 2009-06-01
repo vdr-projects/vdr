@@ -673,6 +673,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting chirping sound disturbences at editing points in TS recordings
  for reporting broken index generation in TS recordings after a buffer overflow
  for fixing the way the OSD size is determined on full featured DVB cards
+ for his input on calculating the Aspect factor in GetOsdSize()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1221,6 +1222,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a call to close(-1) in cUnbufferedFile::Close()
  for reporting a possible problem in handling the length of DiSEqC command sequences
  for fixing cOsdMenu::Display() in case the menu size has changed
+ for suggesting to change the type of the Aspect parameter of GetVideoSize()
+ to 'double'
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

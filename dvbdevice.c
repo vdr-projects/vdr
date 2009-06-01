@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.19 2009/06/01 11:42:06 kls Exp $
+ * $Id: dvbdevice.c 2.20 2009/06/01 14:44:54 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -748,14 +748,19 @@ eVideoSystem cDvbDevice::GetVideoSystem(void)
   return VideoSystem;
 }
 
-void cDvbDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
+void cDvbDevice::GetVideoSize(int &Width, int &Height, double &Aspect)
 {
   if (fd_video >= 0) {
      video_size_t vs;
      if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
         Width = vs.w;
         Height = vs.h;
-        Aspect = eVideoAspect(vs.aspect_ratio);
+        switch (vs.aspect_ratio) {
+          default:
+          case VIDEO_FORMAT_4_3:   Aspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_16_9:  Aspect = 16.0 / 9.0; break;
+          case VIDEO_FORMAT_221_1: Aspect =       2.21; break;
+          }
         return;
         }
      else
@@ -774,7 +779,13 @@ void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
            Height = 576; // PAL
         else
            Height = 480; // NTSC
-        Aspect = 1.0;
+        switch (Setup.VideoFormat ? vs.aspect_ratio : VIDEO_FORMAT_4_3) {
+          default:
+          case VIDEO_FORMAT_4_3:   Aspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_221_1: // FF DVB cards only distinguish between 4:3 and 16:9
+          case VIDEO_FORMAT_16_9:  Aspect = 16.0 / 9.0; break;
+          }
+        Aspect /= double(Width) / Height;
         return;
         }
      else
