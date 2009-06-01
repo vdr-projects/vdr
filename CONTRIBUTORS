@@ -2175,6 +2175,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for fixing a signed character used as index in cBase64Encoder::NextLine()
  for fixing formatting the name section in the VDR man pages
  for reporting unneeded include files <linux/dvb/dmx.h> und <time.h> in remux.h
+ for a patch that added a workaround for the broken linux-dvb driver header files
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown

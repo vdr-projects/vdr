@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.5 2009/05/08 13:33:46 kls Exp $
+ * $Id: dvbdevice.h 2.6 2009/06/01 11:20:32 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
+#include <sys/mman.h> // FIXME: workaround for broken linux-dvb header files
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/version.h>
 #include "device.h"
