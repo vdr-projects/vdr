@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.23 2009/05/24 11:44:54 kls Exp $
+ * $Id: remux.c 2.24 2009/06/06 13:24:57 kls Exp $
  */
 
 #include "remux.h"
@@ -389,8 +389,9 @@ uchar *cPatPmtGenerator::GetPmt(int &Index)
 
 // --- cPatPmtParser ---------------------------------------------------------
 
-cPatPmtParser::cPatPmtParser(void)
+cPatPmtParser::cPatPmtParser(bool UpdatePrimaryDevice)
 {
+  updatePrimaryDevice = UpdatePrimaryDevice;
   Reset();
 }
 
@@ -478,7 +479,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      dbgpatpmt("     pcr = %d\n", Pmt.getPCRPid());
      if (pmtVersion == Pmt.getVersionNumber())
         return;
-     cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
+     if (updatePrimaryDevice)
+        cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
      int NumApids = 0;
      int NumDpids = 0;
      int NumSpids = 0;
@@ -522,7 +524,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                }
                              delete d;
                              }
-                         cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
+                         if (updatePrimaryDevice)
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
                          NumApids++;
                          }
                       }
@@ -557,7 +560,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                               break;
                                            }
                                         }
-                                    cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
+                                    if (updatePrimaryDevice)
+                                       cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
                                     NumSpids++;
                                     }
                                  break;
@@ -573,7 +577,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                           }
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
-                            cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
+                            if (updatePrimaryDevice)
+                               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
                             }
                          }
@@ -581,8 +586,10 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       break;
            }
          dbgpatpmt("\n");
-         cDevice::PrimaryDevice()->EnsureAudioTrack(true);
-         cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+         if (updatePrimaryDevice) {
+            cDevice::PrimaryDevice()->EnsureAudioTrack(true);
+            cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+            }
          }
      pmtVersion = Pmt.getVersionNumber();
      }

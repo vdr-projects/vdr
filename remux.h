@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.16 2009/05/24 15:07:44 kls Exp $
+ * $Id: remux.h 2.17 2009/06/06 13:26:23 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -213,10 +213,11 @@ private:
   int pmtPid;
   int vpid;
   int vtype;
+  bool updatePrimaryDevice;
 protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
 public:
-  cPatPmtParser(void);
+  cPatPmtParser(bool UpdatePrimaryDevice = false);
   void Reset(void);
        ///< Resets the parser. This function must be called whenever a new
        ///< stream is parsed.

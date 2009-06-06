@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.22 2009/06/06 11:17:05 kls Exp $
+ * $Id: device.c 2.23 2009/06/06 13:25:58 kls Exp $
  */
 
 #include "device.h"
@@ -61,6 +61,7 @@ cDevice *cDevice::primaryDevice = NULL;
 cDevice *cDevice::avoidDevice = NULL;
 
 cDevice::cDevice(void)
+:patPmtParser(true)
 {
   cardIndex = nextCardIndex++;
 
