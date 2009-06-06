@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.21 2009/06/01 15:07:03 kls Exp $
+ * $Id: device.c 2.22 2009/06/06 11:17:05 kls Exp $
  */
 
 #include "device.h"
@@ -384,18 +384,18 @@ eVideoSystem cDevice::GetVideoSystem(void)
   return vsPAL;
 }
 
-void cDevice::GetVideoSize(int &Width, int &Height, double &Aspect)
+void cDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
   Width = 0;
   Height = 0;
-  Aspect = 1.0;
+  VideoAspect = 1.0;
 }
 
-void cDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
+void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
 {
   Width = 720;
   Height = 480;
-  Aspect = 1.0;
+  PixelAspect = 1.0;
 }
 
 //#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }

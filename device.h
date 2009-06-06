@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.14 2009/06/01 15:07:10 kls Exp $
+ * $Id: device.h 2.15 2009/06/06 11:15:49 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -377,23 +377,25 @@ public:
   virtual eVideoSystem GetVideoSystem(void);
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
-  virtual void GetVideoSize(int &Width, int &Height, double &Aspect);
-         ///< Returns the With, Height and Aspect ratio of the currently
-         ///< displayed material. The data returned by this function is
+  virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
+         ///< Returns the With, Height and VideoAspect ratio of the currently
+         ///< displayed video material. The data returned by this function is
          ///< only used for informational purposes (if any). Width and
-         ///< Height are given in pixel (e.g. 720x576) and Aspect is
-         ///< e.g. 1.3333x33 for a 4:3 broadcast, or 1.77778 for 16:9.
+         ///< Height are given in pixel (e.g. 720x576) and VideoAspect is
+         ///< e.g. 1.33333 for a 4:3 broadcast, or 1.77778 for 16:9.
          ///< The default implementation returns 0 for Width and Height
-         ///< and 1.0 for Aspect.
-  virtual void GetOsdSize(int &Width, int &Height, double &Aspect);
-         ///< Returns the With, Height and Aspect ratio the OSD should use
-         ///< to best fit the resolution of the output device. If Aspect
-         ///< is not 1.0, the OSD may take this as a hint to stretch its
+         ///< and 1.0 for VideoAspect.
+  virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
+         ///< Returns the With, Height and PixelAspect ratio the OSD should use
+         ///< to best fit the resolution of the output device. If PixelAspect
+         ///< is not 1.0, the OSD may take this as a hint to scale its
          ///< graphics in a way that, e.g., a circle will actually
          ///< show up as a circle on the screen, and not as an ellipse.
-         ///< Values greater than 1.0 will stretch the graphics in the
-         ///< vertical direction. Note that the OSD is not guaranteed to
-         ///< actually use this hint.
+         ///< Values greater than 1.0 mean to stretch the graphics in the
+         ///< vertical direction (or shrink it in the horizontal direction,
+         ///< depending on which dimension shall be fixed). Values less than
+         ///< 1.0 work the other way round. Note that the OSD is not guaranteed
+         ///< to actually use this hint.
 
 // Track facilities
 

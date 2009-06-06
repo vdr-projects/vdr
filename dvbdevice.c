@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.20 2009/06/01 14:44:54 kls Exp $
+ * $Id: dvbdevice.c 2.21 2009/06/06 11:17:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -748,7 +748,7 @@ eVideoSystem cDvbDevice::GetVideoSystem(void)
   return VideoSystem;
 }
 
-void cDvbDevice::GetVideoSize(int &Width, int &Height, double &Aspect)
+void cDvbDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
   if (fd_video >= 0) {
      video_size_t vs;
@@ -757,19 +757,19 @@ void cDvbDevice::GetVideoSize(int &Width, int &Height, double &Aspect)
         Height = vs.h;
         switch (vs.aspect_ratio) {
           default:
-          case VIDEO_FORMAT_4_3:   Aspect =  4.0 / 3.0; break;
-          case VIDEO_FORMAT_16_9:  Aspect = 16.0 / 9.0; break;
-          case VIDEO_FORMAT_221_1: Aspect =       2.21; break;
+          case VIDEO_FORMAT_4_3:   VideoAspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_16_9:  VideoAspect = 16.0 / 9.0; break;
+          case VIDEO_FORMAT_221_1: VideoAspect =       2.21; break;
           }
         return;
         }
      else
         LOG_ERROR;
      }
-  cDevice::GetVideoSize(Width, Height, Aspect);
+  cDevice::GetVideoSize(Width, Height, VideoAspect);
 }
 
-void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
+void cDvbDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
 {
   if (fd_video >= 0) {
      video_size_t vs;
@@ -781,17 +781,17 @@ void cDvbDevice::GetOsdSize(int &Width, int &Height, double &Aspect)
            Height = 480; // NTSC
         switch (Setup.VideoFormat ? vs.aspect_ratio : VIDEO_FORMAT_4_3) {
           default:
-          case VIDEO_FORMAT_4_3:   Aspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_4_3:   PixelAspect =  4.0 / 3.0; break;
           case VIDEO_FORMAT_221_1: // FF DVB cards only distinguish between 4:3 and 16:9
-          case VIDEO_FORMAT_16_9:  Aspect = 16.0 / 9.0; break;
+          case VIDEO_FORMAT_16_9:  PixelAspect = 16.0 / 9.0; break;
           }
-        Aspect /= double(Width) / Height;
+        PixelAspect /= double(Width) / Height;
         return;
         }
      else
         LOG_ERROR;
      }
-  cDevice::GetOsdSize(Width, Height, Aspect);
+  cDevice::GetOsdSize(Width, Height, PixelAspect);
 }
 
 bool cDvbDevice::SetAudioBypass(bool On)

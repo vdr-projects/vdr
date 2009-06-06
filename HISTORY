@@ -6077,7 +6077,6 @@ Video Disk Recorder Revision History
 
 2009-06-01: Version 1.7.8
 
-- Fixed a typo in aspect ratio 2.21:1 (reported by Reinhard Nissl).
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
   for its purpose of defining the optimum size of the OSD for the current
   output device. Therefore a new function named cDevice::GetOsdSize() has
@@ -6086,9 +6085,11 @@ Video Disk Recorder Revision History
   to replay video. cDevice::GetVideoSize() still exists and should return the
   actual size of the video material that is currently replayed. Note that
   because of the many possible aspect ratios for video material, the type
-  of the Aspect parameter of GetVideoSize() has been changed to 'double'
-  (suggested by Reinhard Nissl). Thanks to Oliver Endriss for his input on
-  calculating the Aspect factor in GetOsdSize().
+  of the Aspect parameter of GetVideoSize() has been changed to 'double',
+  and the Aspect parameter in both functions is named differently, because
+  it returns different values (suggested by Reinhard Nissl).
+  Thanks to Oliver Endriss for his input on calculating the Aspect factor in
+  GetOsdSize().
 - Fixed the way the OSD size is determined on full featured DVB cards (thanks
   to Oliver Endriss).
 - Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).

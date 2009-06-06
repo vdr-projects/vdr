@@ -1216,7 +1216,6 @@ Reinhard Nissl <rnissl@gmx.de>
  for making sure vdr-xine no longer needs cDvbPlayer::Action() to call DeviceFlush()
  for fixing the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
  cDvbPlayer::Action()
- for reporting a typo in aspect ratio 2.21:1
  for reporting a problem in case the PIDs change during recording
  for reporting a memory leak when reaching the end of a recording during replay
  for reporting a call to close(-1) in cUnbufferedFile::Close()
@@ -1224,6 +1223,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing cOsdMenu::Display() in case the menu size has changed
  for suggesting to change the type of the Aspect parameter of GetVideoSize()
  to 'double'
+ for suggesting to use different names for the Aspect parameter in GetVideoSize()
+ and GetOsdSize()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
