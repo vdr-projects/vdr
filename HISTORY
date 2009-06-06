@@ -6129,3 +6129,5 @@ Video Disk Recorder Revision History
   (thanks to Ville Skyttä and Ludwig Nussel).
 - Modified cSVDRP::CmdGRAB() to avoid writing into const data (reported by
   Ludwig Nussel).
+- Fixed calculating menu colum widths in case the font has a size other than the
+  default size (reported by Reinhard Nissl).

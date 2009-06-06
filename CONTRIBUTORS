@@ -1227,6 +1227,8 @@ Reinhard Nissl <rnissl@gmx.de>
  to 'double'
  for suggesting to use different names for the Aspect parameter in GetVideoSize()
  and GetOsdSize()
+ for reporting a problem with calculating menu colum widths in case the font has a
+ size other than the default size
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
