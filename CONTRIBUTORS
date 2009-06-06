@@ -921,6 +921,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for adding some missing 'const' keywords
  for pointing out that "%016llX" should be used instead of "%016LX"
  for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
+ for reporting that cSVDRP::CmdGRAB() writes into const data
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

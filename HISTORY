@@ -6127,3 +6127,5 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
   (thanks to Ville Skyttä and Ludwig Nussel).
+- Modified cSVDRP::CmdGRAB() to avoid writing into const data (reported by
+  Ludwig Nussel).
