@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.3 2009/04/13 13:35:29 kls Exp $
+ * $Id: svdrp.c 2.4 2009/06/06 13:42:52 kls Exp $
  */
 
 #include "svdrp.h"
@@ -739,7 +739,7 @@ void cSVDRP::CmdGRAB(const char *Option)
      char *strtok_next;
      FileName = strtok_r(p, delim, &strtok_next);
      // image type:
-     char *Extension = strrchr(FileName, '.');
+     const char *Extension = strrchr(FileName, '.');
      if (Extension) {
         if (strcasecmp(Extension, ".jpg") == 0 || strcasecmp(Extension, ".jpeg") == 0)
            Jpeg = true;

@@ -920,6 +920,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for a hint on using _nl_msg_cat_cntr
  for adding some missing 'const' keywords
  for pointing out that "%016llX" should be used instead of "%016LX"
+ for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1827,6 +1828,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  menu
  for adding missing #include <limits.h> to epg.c and menuitems.h
  for fixing various spelling errors and improving PLUGINS.html
+ for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

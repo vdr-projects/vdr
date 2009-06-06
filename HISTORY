@@ -6125,3 +6125,5 @@ Video Disk Recorder Revision History
 - Fixed handling the length of DiSEqC command sequences (reported by Reinhard Nissl).
 - Fixed cOsdMenu::Display() in case the menu size has changed (thanks to
   Reinhard Nissl).
+- Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
+  (thanks to Ville Skyttä and Ludwig Nussel).
