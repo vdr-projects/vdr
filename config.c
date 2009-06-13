@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.4 2009/05/21 11:10:38 kls Exp $
+ * $Id: config.c 2.5 2009/06/13 10:25:05 kls Exp $
  */
 
 #include "config.h"
@@ -19,6 +19,8 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
+
+#define ChkDoublePlausibility(Variable, Default) { if (Variable < 0.00001) Variable = Default; }
 
 // --- cCommand --------------------------------------------------------------
 
@@ -452,8 +454,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atof(Value);
   else if (!strcasecmp(Name, "OSDTopP"))             OSDTopP            = atof(Value);
-  else if (!strcasecmp(Name, "OSDWidthP"))           OSDWidthP          = atof(Value);
-  else if (!strcasecmp(Name, "OSDHeightP"))          OSDHeightP         = atof(Value);
+  else if (!strcasecmp(Name, "OSDWidthP"))         { OSDWidthP          = atof(Value); ChkDoublePlausibility(OSDWidthP, 0.87); }
+  else if (!strcasecmp(Name, "OSDHeightP"))        { OSDHeightP         = atof(Value); ChkDoublePlausibility(OSDHeightP, 0.84); }
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
   else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
@@ -465,9 +467,9 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "FontOsd"))             Utf8Strn0Cpy(FontOsd, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontSml"))             Utf8Strn0Cpy(FontSml, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontFix"))             Utf8Strn0Cpy(FontFix, Value, MAXFONTNAME);
-  else if (!strcasecmp(Name, "FontOsdSizeP"))        FontOsdSizeP       = atof(Value);
-  else if (!strcasecmp(Name, "FontSmlSizeP"))        FontSmlSizeP       = atof(Value);
-  else if (!strcasecmp(Name, "FontFixSizeP"))        FontFixSizeP       = atof(Value);
+  else if (!strcasecmp(Name, "FontOsdSizeP"))      { FontOsdSizeP       = atof(Value); ChkDoublePlausibility(FontOsdSizeP, 0.038); }
+  else if (!strcasecmp(Name, "FontSmlSizeP"))      { FontSmlSizeP       = atof(Value); ChkDoublePlausibility(FontSmlSizeP, 0.035); }
+  else if (!strcasecmp(Name, "FontFixSizeP"))      { FontFixSizeP       = atof(Value); ChkDoublePlausibility(FontFixSizeP, 0.031); }
   else if (!strcasecmp(Name, "FontOsdSize"))         FontOsdSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);

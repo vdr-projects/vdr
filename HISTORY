@@ -6075,7 +6075,7 @@ Video Disk Recorder Revision History
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
 
-2009-06-01: Version 1.7.8
+2009-06-13: Version 1.7.8
 
 - The name of the function cDevice::GetVideoSize() wasn't very well chosen
   for its purpose of defining the optimum size of the OSD for the current
@@ -6131,3 +6131,6 @@ Video Disk Recorder Revision History
   Ludwig Nussel).
 - Fixed calculating menu colum widths in case the font has a size other than the
   default size (reported by Reinhard Nissl).
+- Added a plausibility check for the OSD percentage parameters
+  to avoid problems in case the values are stored in the setup.conf
+  file in a  wrong way.
