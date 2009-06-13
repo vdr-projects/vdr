@@ -6133,5 +6133,5 @@ Video Disk Recorder Revision History
   default size (reported by Reinhard Nissl).
 - Added a plausibility check for the OSD percentage parameters
   to avoid problems in case the values are stored in the setup.conf
-  file in a  wrong way.
+  file in a wrong way.
 - Fixed variable types in cIndexFile (reported by Udo Richter).
