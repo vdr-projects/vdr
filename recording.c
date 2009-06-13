@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.15 2009/06/13 12:23:25 kls Exp $
+ * $Id: recording.c 2.16 2009/06/13 13:34:08 kls Exp $
  */
 
 #include "recording.h"
@@ -1529,8 +1529,8 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
         if (Independent)
            *Independent = index[Index].independent;
         if (Length) {
-           int fn = index[Index + 1].number;
-           int fo = index[Index + 1].offset;
+           uint16_t fn = index[Index + 1].number;
+           off_t fo = index[Index + 1].offset;
            if (fn == *FileNumber)
               *Length = fo - *FileOffset;
            else

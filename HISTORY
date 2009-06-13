@@ -6134,5 +6134,4 @@ Video Disk Recorder Revision History
 - Added a plausibility check for the OSD percentage parameters
   to avoid problems in case the values are stored in the setup.conf
   file in a  wrong way.
-- Fixed index types in cIndexFile::GetNextIFrame() (reported by
-  Udo Richter).
+- Fixed variable types in cIndexFile (reported by Udo Richter).
