@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.14 2009/06/06 13:39:40 kls Exp $
+ * $Id: recording.c 2.15 2009/06/13 12:23:25 kls Exp $
  */
 
 #include "recording.h"
@@ -1560,8 +1560,8 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
                *FileOffset = index[Index].offset;
                if (Length) {
                   // all recordings end with a non-independent frame, so the following should be safe:
-                  int fn = index[Index + 1].number;
-                  int fo = index[Index + 1].offset;
+                  uint16_t fn = index[Index + 1].number;
+                  off_t fo = index[Index + 1].offset;
                   if (fn == *FileNumber)
                      *Length = fo - *FileOffset;
                   else {
