@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.12 2009/04/13 13:50:39 kls Exp $
+ * $Id: recording.c 2.16 2009/06/13 13:34:08 kls Exp $
  */
 
 #include "recording.h"
@@ -20,6 +20,7 @@
 #include "channels.h"
 #include "i18n.h"
 #include "interface.h"
+#include "remux.h"
 #include "skins.h"
 #include "tools.h"
 #include "videodir.h"
@@ -622,8 +623,8 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      Utf8Strn0Cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
      Subtitle = SubtitleBuffer;
      }
-  char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
-  char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
+  const char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
+  const char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
   if (macroTITLE || macroEPISODE) {
      name = strdup(Timer->File());
      name = strreplace(name, TIMERMACRO_TITLE, Title);
@@ -672,7 +673,7 @@ cRecording::cRecording(const char *FileName)
   sortBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(VideoDirectory) + 1;
-  char *p = strrchr(FileName, '/');
+  const char *p = strrchr(FileName, '/');
 
   name = NULL;
   info = new cRecordingInfo;
@@ -1528,8 +1529,8 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
         if (Independent)
            *Independent = index[Index].independent;
         if (Length) {
-           int fn = index[Index + 1].number;
-           int fo = index[Index + 1].offset;
+           uint16_t fn = index[Index + 1].number;
+           off_t fo = index[Index + 1].offset;
            if (fn == *FileNumber)
               *Length = fo - *FileOffset;
            else
@@ -1559,8 +1560,8 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
                *FileOffset = index[Index].offset;
                if (Length) {
                   // all recordings end with a non-independent frame, so the following should be safe:
-                  int fn = index[Index + 1].number;
-                  int fo = index[Index + 1].offset;
+                  uint16_t fn = index[Index + 1].number;
+                  off_t fo = index[Index + 1].offset;
                   if (fn == *FileNumber)
                      *Length = fo - *FileOffset;
                   else {
@@ -1627,6 +1628,57 @@ cFileName::~cFileName()
 {
   Close();
   free(fileName);
+}
+
+bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
+{
+  if (fileName && !isPesRecording) {
+     // Find the last recording file:
+     int Number = 1;
+     for (; Number <= MAXFILESPERRECORDINGTS + 1; Number++) { // +1 to correctly set Number in case there actually are that many files
+         sprintf(pFileNumber, RECORDFILESUFFIXTS, Number);
+         if (access(fileName, F_OK) != 0) { // file doesn't exist
+            Number--;
+            break;
+            }
+         }
+     for (; Number > 0; Number--) {
+         // Search for a PAT packet from the end of the file:
+         cPatPmtParser PatPmtParser;
+         sprintf(pFileNumber, RECORDFILESUFFIXTS, Number);
+         int fd = open(fileName, O_RDONLY | O_LARGEFILE, DEFFILEMODE);
+         if (fd >= 0) {
+            off_t pos = lseek(fd, -TS_SIZE, SEEK_END);
+            while (pos >= 0) {
+                  // Read and parse the PAT/PMT:
+                  uchar buf[TS_SIZE];
+                  while (read(fd, buf, sizeof(buf)) == sizeof(buf)) {
+                        if (buf[0] == TS_SYNC_BYTE) {
+                           int Pid = TsPid(buf);
+                           if (Pid == 0)
+                              PatPmtParser.ParsePat(buf, sizeof(buf));
+                           else if (Pid == PatPmtParser.PmtPid()) {
+                              PatPmtParser.ParsePmt(buf, sizeof(buf));
+                              if (PatPmtParser.GetVersions(PatVersion, PmtVersion)) {
+                                 close(fd);
+                                 return true;
+                                 }
+                              }
+                           else
+                              break; // PAT/PMT is always in one sequence
+                           }
+                        else
+                           return false;
+                        }
+                  pos = lseek(fd, pos - TS_SIZE, SEEK_SET);
+                  }
+            close(fd);
+            }
+         else
+            break;
+         }
+     }
+  return false;
 }
 
 cUnbufferedFile *cFileName::Open(void)

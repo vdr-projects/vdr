@@ -6074,3 +6074,64 @@ Video Disk Recorder Revision History
   (provided the output device implements the GetVideoSize() function).
 - cFrameDetector::Analyze() now syncs on the TS packet sync bytes (thanks to
   Oliver Endriss for reporting broken index generation after a buffer overflow).
+
+2009-06-13: Version 1.7.8
+
+- The name of the function cDevice::GetVideoSize() wasn't very well chosen
+  for its purpose of defining the optimum size of the OSD for the current
+  output device. Therefore a new function named cDevice::GetOsdSize() has
+  been introduced (suggested by Rolf Ahrenberg). Plugin authors should
+  implement this function in classes derived from cDevice, if they are able
+  to replay video. cDevice::GetVideoSize() still exists and should return the
+  actual size of the video material that is currently replayed. Note that
+  because of the many possible aspect ratios for video material, the type
+  of the Aspect parameter of GetVideoSize() has been changed to 'double',
+  and the Aspect parameter in both functions is named differently, because
+  it returns different values (suggested by Reinhard Nissl).
+  Thanks to Oliver Endriss for his input on calculating the Aspect factor in
+  GetOsdSize().
+- Fixed the way the OSD size is determined on full featured DVB cards (thanks
+  to Oliver Endriss).
+- Increased MAXOSDHEIGHT to 1200 (suggested by Nicolas Huillard).
+- Removed limitation to PAL resolution from SPU handling.
+- Checking fd_video in cDvbDevice::GetVideoSize() to avoid error messages on
+  systems with no real primary replay device (reported by Martin Neuditschko).
+- Added a note to cTsToPes::GetPes() about having to call it repeatedly, once
+  it has returned a non-NULL value.
+- Added MPEG 1 handling to remux.c (thanks to Ales Jurik).
+- Fixed use of time_t in cEIT::cEIT() (thanks to Tobias Bratfisch).
+- Added missing update of lastOsdSizeUpdate.
+- EIT events are now only processed if a plausible system time is available, to
+  avoid wrong handling of PDC descriptors (thanks to Tobias Bratfisch).
+- Removed unused 'synced' member from cTsToPes (reported by Christoph Haubrich).
+- Added a note to cTsToPes about all TS packets having to belong to the same PID,
+  and that for video data GetPes() may only be called if the next TS packet that
+  will be given to PutTs() has the "payload start" flag set (suggested by Christoph
+  Haubrich).
+- Added a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
+  (thanks to Rolf Ahrenberg).
+- The new setup option "Recording/Pause key handling" can be used to define
+  what happens if the Pause key on the remote control is pressed during
+  live tv (thanks to Timo Eskola).
+- Added a note about cFont::GetFont() not being thread-safe.
+- Fixed generating PAT/PMT version numbers in case the PIDs change during
+  recording (reported by Reinhard Nissl).
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Fixed a memory leak when reaching the end of a recording during replay (reported
+  by Reinhard Nissl).
+- Fixed calling close(-1) in cUnbufferedFile::Close() (reported by Reinhard Nissl).
+- Added a workaround for the broken linux-dvb driver header files (based on a patch
+  from Tobias Grimm).
+- Fixed handling the length of DiSEqC command sequences (reported by Reinhard Nissl).
+- Fixed cOsdMenu::Display() in case the menu size has changed (thanks to
+  Reinhard Nissl).
+- Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
+  (thanks to Ville Skyttä and Ludwig Nussel).
+- Modified cSVDRP::CmdGRAB() to avoid writing into const data (reported by
+  Ludwig Nussel).
+- Fixed calculating menu colum widths in case the font has a size other than the
+  default size (reported by Reinhard Nissl).
+- Added a plausibility check for the OSD percentage parameters
+  to avoid problems in case the values are stored in the setup.conf
+  file in a  wrong way.
+- Fixed variable types in cIndexFile (reported by Udo Richter).

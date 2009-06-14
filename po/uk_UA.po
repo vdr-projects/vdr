@@ -5,261 +5,261 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
-"PO-Revision-Date: 2008-03-07 14:17+0200\n"
-"Last-Translator: Yarema Aka Knedlyk <yupadmin@gmail.com>\n"
+"POT-Creation-Date: 2009-05-31 11:11+0200\n"
+"PO-Revision-Date: 2009-05-31 13:17+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-5\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "off"
-msgstr "ТШЪЫ"
+msgstr "РІРёРєР»"
 
 msgid "on"
-msgstr ""
+msgstr "РІРєР»"
 
 msgid "auto"
-msgstr "РТвЮ"
+msgstr "Р°РІС‚Рѕ"
 
 msgid "none"
-msgstr "ЭцзЮУЮ"
+msgstr "РЅС–С‡РѕРіРѕ"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** ЅХЯаРТШЫмЭШЩ ЪРЭРЫ ***"
+msgstr "*** РќРµРїСЂР°РІРёР»СЊРЅРёР№ РєР°РЅР°Р» ***"
 
 msgid "Channel not available!"
-msgstr "єРЭРЫ ЭХФЮбвгЯЭШЩ!"
+msgstr "РљР°РЅР°Р» РЅРµРґРѕСЃС‚СѓРїРЅРёР№!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "ЅХЬЮЦЫШТЮ ТЪЫозШвШ аХЦШЬ ЯаЮЯгбЪг!"
+msgstr "РќРµРјРѕР¶Р»РёРІРѕ РІРєР»СЋС‡РёС‚Рё СЂРµР¶РёРј РїСЂРѕРїСѓСЃРєСѓ!"
 
 msgid "Starting EPG scan"
-msgstr "їЮзШЭРо EPG-бЪРЭгТРЭЭп"
+msgstr "РџРѕС‡РёРЅР°СЋ EPG-СЃРєР°РЅСѓРІР°РЅРЅСЏ"
 
 msgid "No title"
-msgstr "±ХЧ ЭРЧТШ"
+msgstr "Р‘РµР· РЅР°Р·РІРё"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "ГЪаРчЭбмЪР"
+msgstr "РЈРєСЂР°С—РЅСЃСЊРєР°"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
 msgstr "ukr"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "єаЮЪ 1: ІШЧЭРзХЭЭп вШЯг ЪЮФг ЯгЫмвР"
+msgstr "РљСЂРѕРє 1: Р’РёР·РЅР°С‡РµРЅРЅСЏ С‚РёРїСѓ РєРѕРґСѓ РїСѓР»СЊС‚Р°"
 
 msgid "Press any key on the RC unit"
-msgstr "ЅРвШбЭцвм СгФм-пЪг ЪЭЮЯЪг ЭР ЯгЫмвц"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ Р±СѓРґСЊ-СЏРєСѓ РєРЅРѕРїРєСѓ РЅР° РїСѓР»СЊС‚С–"
 
 msgid "RC code detected!"
-msgstr "ІШЧЭРзХЭЮ ЪЮФ ЯгЫмвР!"
+msgstr "Р’РёР·РЅР°С‡РµРЅРѕ РєРѕРґ РїСѓР»СЊС‚Р°!"
 
 msgid "Do not press any key..."
-msgstr "ЅХ ЭРвШбЪРЩвХ ЪЭЮЯЪШ..."
+msgstr "РќРµ РЅР°С‚РёСЃРєР°Р№С‚Рµ РєРЅРѕРїРєРё..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "єаЮЪ 2: їаШЯШбгТРЭЭп ЪЮФцТ ФЫп ТцФЯЮТцФЭШе ЪЭЮЯЮЪ"
+msgstr "РљСЂРѕРє 2: РџСЂРёРїРёСЃСѓРІР°РЅРЅСЏ РєРѕРґС–РІ РґР»СЏ РІС–РґРїРѕРІС–РґРЅРёС… РєРЅРѕРїРѕРє"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "ЅРвШбЭцвм ЪЭЮЯЪг '%s'"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ РєРЅРѕРїРєСѓ '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "ЅРвШбЭцвм 'ІТХае' ФЫп ЯцФвТХаФЦХЭЭп"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ 'Р’РІРµСЂС…' РґР»СЏ РїС–РґС‚РІРµСЂРґР¶РµРЅРЅСЏ"
 
 msgid "Press 'Down' to continue"
-msgstr "ЅРвШбЭцвм 'ІЭШЧ' ФЫп ЯаЮФЮТЦХЭЭп"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ 'Р’РЅРёР·' РґР»СЏ РїСЂРѕРґРѕРІР¶РµРЅРЅСЏ"
 
 msgid "(press 'Up' to go back)"
-msgstr "(ЅРвШбЭцвм 'ІТХае' ФЫп ЯЮТХаЭХЭЭп)"
+msgstr "(РќР°С‚РёСЃРЅС–С‚СЊ 'Р’РІРµСЂС…' РґР»СЏ РїРѕРІРµСЂРЅРµРЅРЅСЏ)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(ЅРвШбЭцвм 'ІЭШЧ' ФЫп ЧРЪцЭзХЭЭп ЭРбваЮЩЪШ ЯгЫмвР)"
+msgstr "(РќР°С‚РёСЃРЅС–С‚СЊ 'Р’РЅРёР·' РґР»СЏ Р·Р°РєС–РЅС‡РµРЅРЅСЏ РЅР°СЃС‚СЂРѕР№РєРё РїСѓР»СЊС‚Р°)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(ЅРвШбЭцвм 'јХЭо' йЮС ЯаЮЯгбвШвШ ЪЭЮЯЪг)"
+msgstr "(РќР°С‚РёСЃРЅС–С‚СЊ 'РњРµРЅСЋ' С‰РѕР± РїСЂРѕРїСѓСЃС‚РёС‚Рё РєРЅРѕРїРєСѓ)"
 
 msgid "Learning Remote Control Keys"
-msgstr "ЅРТзРЭЭп ЯгЫмвР"
+msgstr "РќР°РІС‡Р°РЅРЅСЏ РїСѓР»СЊС‚Р°"
 
 msgid "Phase 3: Saving key codes"
-msgstr "єаЮЪ 3: ·РЯРЬ'пвЮТгТРЭЭп ЪЮФцТ ЪЭЮЯЮЪ"
+msgstr "РљСЂРѕРє 3: Р—Р°РїР°Рј'СЏС‚РѕРІСѓРІР°РЅРЅСЏ РєРѕРґС–РІ РєРЅРѕРїРѕРє"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "ЅРвШбЭцвм 'ІТХае' ФЫп ЧРЪцЭзХЭЭп, 'ІЭШЧ' ФЫп ТцФЬЮТШ"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ 'Р’РІРµСЂС…' РґР»СЏ Р·Р°РєС–РЅС‡РµРЅРЅСЏ, 'Р’РЅРёР·' РґР»СЏ РІС–РґРјРѕРІРё"
 
 msgid "Key$Up"
-msgstr "ІТХае"
+msgstr "Р’РІРµСЂС…"
 
 msgid "Key$Down"
-msgstr "ІЭШЧ"
+msgstr "Р’РЅРёР·"
 
 msgid "Key$Menu"
-msgstr "јХЭо"
+msgstr "РњРµРЅСЋ"
 
 msgid "Key$Ok"
 msgstr "Ok"
 
 msgid "Key$Back"
-msgstr "ЅРЧРФ"
+msgstr "РќР°Р·Р°Рґ"
 
 msgid "Key$Left"
-msgstr "ЅРЫцТЮ"
+msgstr "РќР°Р»С–РІРѕ"
 
 msgid "Key$Right"
-msgstr "ЅРЯаРТЮ"
+msgstr "РќР°РїСЂР°РІРѕ"
 
 msgid "Key$Red"
-msgstr "ЗХаТЮЭР"
+msgstr "Р§РµСЂРІРѕРЅР°"
 
 msgid "Key$Green"
-msgstr "·ХЫХЭР"
+msgstr "Р—РµР»РµРЅР°"
 
 msgid "Key$Yellow"
-msgstr "¶ЮТвР"
+msgstr "Р–РѕРІС‚Р°"
 
 msgid "Key$Blue"
-msgstr "БШЭп"
+msgstr "РЎРёРЅСЏ"
 
 msgid "Key$Info"
-msgstr "¦ЭдЮ"
+msgstr "Р†РЅС„Рѕ"
 
 msgid "Key$Play"
-msgstr "їаЮУаРТРЭЭп"
+msgstr "РџСЂРѕРіСЂР°РІР°РЅРЅСЏ"
 
 msgid "Key$Pause"
-msgstr "їРгЧР"
+msgstr "РџР°СѓР·Р°"
 
 msgid "Key$Stop"
-msgstr "БвЮЯ"
+msgstr "РЎС‚РѕРї"
 
 msgid "Key$Record"
-msgstr "·РЯШб"
+msgstr "Р—Р°РїРёСЃ"
 
 msgid "Key$FastFwd"
-msgstr "їаЮЪагвЪР ТЯХаХФ"
+msgstr "РџСЂРѕРєСЂСѓС‚РєР° РІРїРµСЂРµРґ"
 
 msgid "Key$FastRew"
-msgstr "їаЮЪагвЪР ЭРЧРФ"
+msgstr "РџСЂРѕРєСЂСѓС‚РєР° РЅР°Р·Р°Рґ"
 
 msgid "Key$Next"
-msgstr "ІЯХаХФ"
+msgstr "Р’РїРµСЂРµРґ"
 
 msgid "Key$Prev"
-msgstr "ЅРЧРФ"
+msgstr "РќР°Р·Р°Рґ"
 
 msgid "Key$Power"
-msgstr "ІШЪЫозШвШ"
+msgstr "Р’РёРєР»СЋС‡РёС‚Рё"
 
 msgid "Key$Channel+"
-msgstr "єРЭРЫ +"
+msgstr "РљР°РЅР°Р» +"
 
 msgid "Key$Channel-"
-msgstr "єРЭРЫ -"
+msgstr "РљР°РЅР°Р» -"
 
 msgid "Key$PrevChannel"
-msgstr "їЮЯХаХФЭцЩ ЪРЭРЫ"
+msgstr "РџРѕРїРµСЂРµРґРЅС–Р№ РєР°РЅР°Р»"
 
 msgid "Key$Volume+"
-msgstr "ігзЭцбвм +"
+msgstr "Р“СѓС‡РЅС–СЃС‚СЊ +"
 
 msgid "Key$Volume-"
-msgstr "ігзЭцбвм -"
+msgstr "Р“СѓС‡РЅС–СЃС‚СЊ -"
 
 msgid "Key$Mute"
-msgstr "ІШЪЫозШвШ ЧТгЪ"
+msgstr "Р’РёРєР»СЋС‡РёС‚Рё Р·РІСѓРє"
 
 msgid "Key$Audio"
-msgstr "јЮТР"
+msgstr "РњРѕРІР°"
 
 msgid "Key$Subtitles"
-msgstr "БгСвШваШ"
+msgstr "РЎСѓР±С‚РёС‚СЂРё"
 
 msgid "Key$Schedule"
-msgstr "ВХЫХУцФ"
+msgstr "РўРµР»РµРіС–Рґ"
 
 msgid "Key$Channels"
-msgstr "єРЭРЫШ"
+msgstr "РљР°РЅР°Р»Рё"
 
 msgid "Key$Timers"
-msgstr "ВРЩЬХаШ"
+msgstr "РўР°Р№РјРµСЂРё"
 
 msgid "Key$Recordings"
-msgstr "·РЯШбШ"
+msgstr "Р—Р°РїРёСЃРё"
 
 msgid "Key$Setup"
-msgstr "ЅРЫРивгТРЭЭп"
+msgstr "РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ"
 
 msgid "Key$Commands"
-msgstr "єЮЬРЭФШ"
+msgstr "РљРѕРјР°РЅРґРё"
 
 msgid "Key$User1"
-msgstr "єЮаШбвгТРз1"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡1"
 
 msgid "Key$User2"
-msgstr "єЮаШбвгТРз2"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡2"
 
 msgid "Key$User3"
-msgstr "єЮаШбвгТРз3"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡3"
 
 msgid "Key$User4"
-msgstr "єЮаШбвгТРз4"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡4"
 
 msgid "Key$User5"
-msgstr "єЮаШбвгТРз5"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡5"
 
 msgid "Key$User6"
-msgstr "єЮаШбвгТРз6"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡6"
 
 msgid "Key$User7"
-msgstr "єЮаШбвгТРз7"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡7"
 
 msgid "Key$User8"
-msgstr "єЮаШбвгТРз8"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡8"
 
 msgid "Key$User9"
-msgstr "єЮаШбвгТРз8"
+msgstr "РљРѕСЂРёСЃС‚СѓРІР°С‡8"
 
 msgid "Disk"
-msgstr "ґШбЪ"
+msgstr "Р”РёСЃРє"
 
 msgid "free"
-msgstr "ТцЫмЭЮ"
+msgstr "РІС–Р»СЊРЅРѕ"
 
 msgid "Free To Air"
-msgstr "FTA (ЭХЧРЪЮФЮТРЭЮ)"
+msgstr "FTA (РЅРµР·Р°РєРѕРґРѕРІР°РЅРѕ)"
 
 msgid "encrypted"
-msgstr "ЧРЪЮФЮТРЭЮ"
+msgstr "Р·Р°РєРѕРґРѕРІР°РЅРѕ"
 
 msgid "Edit channel"
-msgstr "АХФРЪвгТРЭЭп ЪРЭРЫг"
+msgstr "Р РµРґР°РіСѓРІР°РЅРЅСЏ РєР°РЅР°Р»Сѓ"
 
 msgid "Name"
-msgstr "ЅРЧТР"
+msgstr "РќР°Р·РІР°"
 
 msgid "Source"
-msgstr "ґЦХаХЫЮ"
+msgstr "Р”Р¶РµСЂРµР»Рѕ"
 
 msgid "Frequency"
-msgstr "ЗРбвЮвР"
+msgstr "Р§Р°СЃС‚РѕС‚Р°"
 
 msgid "Vpid"
-msgstr "Vpid (ТцФХЮ)"
+msgstr "Vpid (РІС–РґРµРѕ)"
 
 msgid "Ppid"
 msgstr "Ppid"
 
 msgid "Apid1"
-msgstr "Apid1 (РгФцЮ 1)"
+msgstr "Apid1 (Р°СѓРґС–Рѕ 1)"
 
 msgid "Apid2"
-msgstr "Apid2 (РгФцЮ 2)"
+msgstr "Apid2 (Р°СѓРґС–Рѕ 2)"
 
 msgid "Dpid1"
 msgstr "Dpid1 (AC3 1)"
@@ -268,31 +268,31 @@ msgid "Dpid2"
 msgstr "Dpid2 (AC3 2)"
 
 msgid "Spid1"
-msgstr "БгСвШваШ ї¦ґ1"
+msgstr "РЎСѓР±С‚РёС‚СЂРё 1"
 
 msgid "Spid2"
-msgstr "БгСвШваШ ї¦ґ2"
+msgstr "РЎСѓР±С‚РёС‚СЂРё 2"
 
 msgid "Tpid"
-msgstr "Tpid (вХЫХвХЪбв)"
+msgstr "Tpid (С‚РµР»РµС‚РµРєСЃС‚)"
 
 msgid "CA"
-msgstr "CA (ФХЪЮФХа)"
+msgstr "CA (РґРµРєРѕРґРµСЂ)"
 
 msgid "Sid"
 msgstr "Sid"
 
 msgid "Polarization"
-msgstr "їЮЫпаШЧРжцп"
+msgstr "РџРѕР»СЏСЂРёР·Р°С†С–СЏ"
 
 msgid "System"
-msgstr ""
+msgstr "РЎРёСЃС‚РµРјР°"
 
 msgid "Srate"
-msgstr "БШЬТ. иТШФЪцбвм"
+msgstr "РЎРёРјРІ. С€РІРёРґРєС–СЃС‚СЊ"
 
 msgid "Inversion"
-msgstr "¦ЭТХабцп"
+msgstr "Р†РЅРІРµСЂСЃС–СЏ"
 
 msgid "CoderateH"
 msgstr "CoderateH"
@@ -301,709 +301,724 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "јЮФгЫпжцп"
+msgstr "РњРѕРґСѓР»СЏС†С–СЏ"
 
 msgid "Bandwidth"
-msgstr "ґцРЯРЧЮЭ"
+msgstr "Р”С–Р°РїР°Р·РѕРЅ"
 
 msgid "Transmission"
-msgstr "їХаХФРзР"
+msgstr "РџРµСЂРµРґР°С‡Р°"
 
 msgid "Guard"
-msgstr "·РеШбв"
+msgstr "Р—Р°С…РёСЃС‚"
 
 msgid "Hierarchy"
-msgstr "¦фаРаецп"
+msgstr "Р†С”СЂР°СЂС…С–СЏ"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "РљСЂРµРЅ"
 
 msgid "Channel settings are not unique!"
-msgstr "ЅРбваЮЩЪШ ЪРЭРЫг ЭХ фФШЭц!"
+msgstr "РќР°СЃС‚СЂРѕР№РєРё РєР°РЅР°Р»Сѓ РЅРµ С”РґРёРЅС–!"
 
 msgid "Channels"
-msgstr "єРЭРЫШ"
+msgstr "РљР°РЅР°Р»Рё"
 
 msgid "Button$Edit"
-msgstr "АХФРЪвгТРвШ"
+msgstr "Р РµРґР°РіСѓРІР°С‚Рё"
 
 msgid "Button$New"
-msgstr "ґЮФРвШ"
+msgstr "Р”РѕРґР°С‚Рё"
 
 msgid "Button$Delete"
-msgstr "ІШФРЫШвШ"
+msgstr "Р’РёРґР°Р»РёС‚Рё"
 
 msgid "Button$Mark"
-msgstr "їХаХЬцбвШвШ"
+msgstr "РџРµСЂРµРјС–СЃС‚РёС‚Рё"
 
 msgid "Channel is being used by a timer!"
-msgstr "єРЭРЫ ЧРЭпвШЩ вРЩЬХаЮЬ!"
+msgstr "РљР°РЅР°Р» Р·Р°Р№РЅСЏС‚РёР№ С‚Р°Р№РјРµСЂРѕРј!"
 
 msgid "Delete channel?"
-msgstr "ІШФРЫШвШ ЪРЭРЫ?"
+msgstr "Р’РёРґР°Р»РёС‚Рё РєР°РЅР°Р»?"
 
 msgid "Edit timer"
-msgstr "ЅРЫРивгТРЭЭп вРЩЬХаР"
+msgstr "РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ С‚Р°Р№РјРµСЂР°"
 
 msgid "Active"
-msgstr "°ЪвШТЮТРЭЮ"
+msgstr "РђРєС‚РёРІРѕРІР°РЅРѕ"
 
 msgid "Channel"
-msgstr "єРЭРЫ"
+msgstr "РљР°РЅР°Р»"
 
 msgid "Day"
-msgstr "ґХЭм"
+msgstr "Р”РµРЅСЊ"
 
 msgid "Start"
-msgstr "їЮзРвЮЪ"
+msgstr "РџРѕС‡Р°С‚РѕРє"
 
 msgid "Stop"
-msgstr "єцЭХжм"
+msgstr "РљС–РЅРµС†СЊ"
 
 msgid "VPS"
-msgstr "VPS ЯЮЯаРТЪР"
+msgstr "VPS РїРѕРїСЂР°РІРєР°"
 
 msgid "Priority"
-msgstr "їацЮаШвХв"
+msgstr "РџСЂС–РѕСЂРёС‚РµС‚"
 
 msgid "Lifetime"
-msgstr "БваЮЪ ЧСХацУРЭЭп"
+msgstr "РЎС‚СЂРѕРє Р·Р±РµСЂС–РіР°РЅРЅСЏ"
 
 msgid "File"
-msgstr "ДРЩЫ"
+msgstr "Р¤Р°Р№Р»"
 
 msgid "First day"
-msgstr "їХаиШЩ ФХЭм"
+msgstr "РџРµСЂС€РёР№ РґРµРЅСЊ"
 
 msgid "Timers"
-msgstr "ВРЩЬХаШ"
+msgstr "РўР°Р№РјРµСЂРё"
 
 msgid "Button$On/Off"
-msgstr "ІЪЫ/ІШЪЫ"
+msgstr "Р’РєР»/Р’РёРєР»"
 
 msgid "Button$Info"
-msgstr "¦ЭдЮ"
+msgstr "Р†РЅС„Рѕ"
 
 msgid "Delete timer?"
-msgstr "ІШФРЫШвШ вРЩЬХа?"
+msgstr "Р’РёРґР°Р»РёС‚Рё С‚Р°Р№РјРµСЂ?"
 
 msgid "Timer still recording - really delete?"
-msgstr "№ФХ ЧРЯШб ЯЮ вРЩЬХаг - ФцЩбЭЮ ТШФРЫШвШ?"
+msgstr "Р™РґРµ Р·Р°РїРёСЃ РїРѕ С‚Р°Р№РјРµСЂСѓ - РґС–Р№СЃРЅРѕ РІРёРґР°Р»РёС‚Рё?"
 
 msgid "Event"
-msgstr "їХаХФРзР"
+msgstr "РџРµСЂРµРґР°С‡Р°"
 
 msgid "Button$Timer"
-msgstr "ВРЩЬХа"
+msgstr "РўР°Р№РјРµСЂ"
 
 msgid "Button$Record"
-msgstr "·РЯШб"
+msgstr "Р—Р°РїРёСЃ"
 
 msgid "Button$Switch"
-msgstr "їХаХЪЫозШвШ"
+msgstr "РџРµСЂРµРєР»СЋС‡РёС‚Рё"
 
 msgid "What's on now?"
-msgstr "·РаРЧ Т Хдцац:"
+msgstr "Р—Р°СЂР°Р· РІ РµС„С–СЂС–:"
 
 msgid "What's on next?"
-msgstr "ґРЫц Т ЯаЮУаРЬц:"
+msgstr "Р”Р°Р»С– РІ РїСЂРѕРіСЂР°РјС–:"
 
 msgid "Button$Next"
-msgstr "ґРЫц"
+msgstr "Р”Р°Р»С–"
 
 msgid "Button$Now"
-msgstr "·РаРЧ"
+msgstr "Р—Р°СЂР°Р·"
 
 msgid "Button$Schedule"
-msgstr "їаЮУаРЬР"
+msgstr "РџСЂРѕРіСЂР°РјР°"
 
 msgid "Can't switch channel!"
-msgstr "ЅХЬЮЦЫШТЮ ЯХаХЪЫозШвШ ЪРЭРЫ!"
+msgstr "РќРµРјРѕР¶Р»РёРІРѕ РїРµСЂРµРєР»СЋС‡РёС‚Рё РєР°РЅР°Р»!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "їаЮУаРЬР - %s"
+msgstr "РџСЂРѕРіСЂР°РјР° - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "Жп ЯХаХФРзР - %s"
+msgstr "Р¦СЏ РїРµСЂРµРґР°С‡Р° - %s"
 
 msgid "This event - all channels"
-msgstr "Жп ЯХаХФРзР - Тбц ЪРЭРЫШ"
+msgstr "Р¦СЏ РїРµСЂРµРґР°С‡Р° - РІСЃС– РєР°РЅР°Р»Рё"
 
 msgid "All events - all channels"
-msgstr "Ібц ЯХаХФРзц - Тбц ЪРЭРЫШ"
+msgstr "Р’СЃС– РїРµСЂРµРґР°С‡С– - РІСЃС– РєР°РЅР°Р»Рё"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "ЅРвШбЭцвм %d жШдаШ"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ %d С†РёС„СЂРё!"
 
 msgid "CAM not responding!"
-msgstr "CAM ЭХ ТцФЯЮТцФРф"
+msgstr "CAM РЅРµ РІС–РґРїРѕРІС–РґР°С”!"
 
 msgid "Recording info"
-msgstr "їаЮ ЧРЯШб"
+msgstr "РџСЂРѕ Р·Р°РїРёСЃ"
 
 msgid "Button$Play"
-msgstr "їаЮУаРТРвШ"
+msgstr "РџСЂРѕРіСЂР°РІР°С‚Рё"
 
 msgid "Button$Rewind"
-msgstr "ЅРЧРФ"
+msgstr "РќР°Р·Р°Рґ"
 
 msgid "Recordings"
-msgstr "·РЯШбШ"
+msgstr "Р—Р°РїРёСЃРё"
 
 msgid "Button$Open"
-msgstr "ІцФЪаШвШ"
+msgstr "Р’С–РґРєСЂРёС‚Рё"
 
 msgid "Commands"
-msgstr "єЮЬРЭФШ"
+msgstr "РљРѕРјР°РЅРґРё"
 
 msgid "Error while accessing recording!"
-msgstr "їЮЬШЫЪР ФЮбвгЯг ФЮ ЧРЯШбг!"
+msgstr "РџРѕРјРёР»РєР° РґРѕСЃС‚СѓРїСѓ РґРѕ Р·Р°РїРёСЃСѓ!"
 
 msgid "Delete recording?"
-msgstr "ІШвХавШ ЧРЯШб?"
+msgstr "Р’РёС‚РµСЂС‚Рё Р·Р°РїРёСЃ?"
 
 msgid "Error while deleting recording!"
-msgstr "їЮЬШЫЪР ТШФРЫХЭЭп ЧРЯШбг!"
+msgstr "РџРѕРјРёР»РєР° РІРёРґР°Р»РµРЅРЅСЏ Р·Р°РїРёСЃСѓ!"
 
 msgid "Recording commands"
-msgstr "єЮЬРЭФШ ЧРЯШбг"
+msgstr "РљРѕРјР°РЅРґРё Р·Р°РїРёСЃСѓ"
 
 msgid "never"
-msgstr "ЭцЪЮЫШ"
+msgstr "РЅС–РєРѕР»Рё"
 
 msgid "skin dependent"
-msgstr "ЧУцФЭЮ Ч бвШЫХЬ"
+msgstr "Р·РіС–РґРЅРѕ Р· СЃС‚РёР»РµРј"
 
 msgid "always"
-msgstr "ЧРТЦФШ"
+msgstr "Р·Р°РІР¶РґРё"
 
 msgid "OSD"
-msgstr "јХЭо"
+msgstr "OSD РјРµРЅСЋ"
 
 msgid "Setup.OSD$Language"
-msgstr "јЮТР"
+msgstr "РњРѕРІР°"
 
 msgid "Setup.OSD$Skin"
-msgstr "БвШЫм"
+msgstr "РЎС‚РёР»СЊ"
 
 msgid "Setup.OSD$Theme"
-msgstr "ВХЬР"
+msgstr "РўРµРјР°"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "ІцФбвгЯ ЧЫцТР (%)"
+msgstr "Р’С–РґСЃС‚СѓРї Р·Р»С–РІР° (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "ІцФбвгЯ ЧТХаег (%)"
+msgstr "Р’С–РґСЃС‚СѓРї Р·РІРµСЂС…Сѓ (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "ИШаШЭР (%)"
+msgstr "РЁРёСЂРёРЅР° (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "ІШбЮвР (%)"
+msgstr "Р’РёСЃРѕС‚Р° (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "ВаШТРЫцбвм ЯЮЪРЧг ЯЮТцФЮЬЫХЭм (бХЪ)"
+msgstr "РўСЂРёРІР°Р»С–СЃС‚СЊ РїРѕРєР°Р·Сѓ РїРѕРІС–РґРѕРјР»РµРЅСЊ (СЃРµРє)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "ІШЪЮаШбвЮТгТРвШ ЬРЫШЩ иаШдв"
+msgstr "Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё РјР°Р»РёР№ С„РѕРЅС‚"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "·УЫРФЦШТРЭЭп иаШдвцТ"
+msgstr "Р—РіР»Р°РґР¶СѓРІР°РЅРЅСЏ С„РѕРЅС‚С–РІ"
 
 msgid "Setup.OSD$Default font"
-msgstr "БвРЭФРавЭШЩ дЮЭв"
+msgstr "РЎС‚Р°РЅРґР°СЂС‚РЅРёР№ С„РѕРЅС‚"
 
 msgid "Setup.OSD$Small font"
-msgstr "јРЫШЩ дЮЭв"
+msgstr "РњР°Р»РёР№ С„РѕРЅС‚"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "ДцЪбЮТРЭШЩ дЮЭв"
+msgstr "Р¤С–РєСЃРѕРІР°РЅРёР№ С„РѕРЅС‚"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "АРЧЬца дЮЭвР ФЫп ЬХЭо (%)"
+msgstr "Р Р°Р·РјС–СЂ С„РѕРЅС‚Р° РґР»СЏ РјРµРЅСЋ (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "АРЧЬца ЬРЫЮУЮ дЮЭвР (%)"
+msgstr "Р Р°Р·РјС–СЂ РјР°Р»РѕРіРѕ С„РѕРЅС‚Р° (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "АРЧЬца дцЪбЮТРЭЮУЮ дЮЭвР (%)"
+msgstr "Р Р°Р·РјС–СЂ С„С–РєСЃРѕРІР°РЅРѕРіРѕ С„РѕРЅС‚Р° (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "їЮЫЮЦХЭЭп ТцЪЭР цЭдЮаЬРжцч ЯаЮ ЪРЭРЫ"
+msgstr "РџРѕР»РѕР¶РµРЅРЅСЏ РІС–РєРЅР° С–РЅС„РѕСЂРјР°С†С–С— РїСЂРѕ РєР°РЅР°Р»"
 
 msgid "bottom"
-msgstr "ТЭШЧг"
+msgstr "РІРЅРёР·Сѓ"
 
 msgid "top"
-msgstr "ТТХаег"
+msgstr "РІРІРµСЂС…Сѓ"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "їЮЪРЧ цЭдЮаЬРжцч ЯаЮ ЪРЭРЫ (бХЪ)"
+msgstr "РџРѕРєР°Р· С–РЅС„РѕСЂРјР°С†С–С— РїСЂРѕ РєР°РЅР°Р» (СЃРµРє)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "їЮЪРЧгТРвШ цЭдЮаЬРжцо ЯаЮ ЪРЭРЫ"
+msgstr "РџРѕРєР°Р· РєР°РЅР°Р»-С–РЅС„Рѕ РїСЂРё РїРµСЂРµРєР»СЋС‡Р°РЅРЅС– "
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "¦ЭдЮаЬРжцо ЯаЮ ЪРЭРЫ ЧРЪаШвШ"
+msgstr "Р†РЅС„РѕСЂРјР°С†С–СЋ РїСЂРѕ РєР°РЅР°Р» Р·Р°РєСЂРёС‚Рё"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "їаЮЪагвЪР бвЮацЭЮЪ ЬХЭо"
+msgstr "РџСЂРѕРєСЂСѓС‚РєР° СЃС‚РѕСЂС–РЅРѕРє РјРµРЅСЋ"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "ЖШЪЫцзЭР ЯаЮЪагвЪР"
+msgstr "Р¦РёРєР»С–С‡РЅР° РїСЂРѕРєСЂСѓС‚РєР°"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "єЭЮЯЪг јХЭо ЧРЪаШвШ"
+msgstr "РљРЅРѕРїРєСѓ РњРµРЅСЋ Р·Р°РєСЂРёС‚Рё"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "єРвРЫЮУШ ЧСХацУРЭЭп ЧРЯШбцТ"
+msgstr "РљР°С‚Р°Р»РѕРіРё Р·Р±РµСЂС–РіР°РЅРЅСЏ Р·Р°РїРёСЃС–РІ"
 
 msgid "EPG"
-msgstr "ВХЫХУцФ"
+msgstr "РўРµР»РµРіС–Рґ"
 
 msgid "Button$Scan"
-msgstr "БЪРЭгаЮТРвШ"
+msgstr "РЎРєР°РЅСѓРІР°С‚Рё"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "·РваШЬЪР бЪРЭгТРЭЭп вХЫХУцФР (з)"
+msgstr "Р—Р°С‚СЂРёРјРєР° СЃРєР°РЅСѓРІР°РЅРЅСЏ С‚РµР»РµРіС–РґР° (С‡)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "АцТХЭм ЪЮаХЪжцч ЯЮЬШЫЮЪ"
+msgstr "Р С–РІРµРЅСЊ РєРѕСЂРµРєС†С–С— РїРѕРјРёР»РѕРє"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "·СХацУРЭЭп ЧРбвРацЫШе ФРЭШе (еТ)"
+msgstr "Р—Р±РµСЂС–РіР°РЅРЅСЏ Р·Р°СЃС‚Р°СЂС–Р»РёС… РґР°РЅРёС… (С…РІ)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "ІвРЭЮТШвШ бШбвХЬШЩ зРб"
+msgstr "Р’СЃС‚Р°РЅРѕРІРёС‚Рё СЃРёСЃС‚РµРјРёР№ С‡Р°СЃ"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "ІШЪЮаШбвРвШ зРб ваРЭбЯЮЭФХаР"
+msgstr "Р’РёРєРѕСЂРёСЃС‚Р°С‚Рё С‡Р°СЃ С‚СЂР°РЅСЃРїРѕРЅРґРµСЂР°"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "±РЦРЭц ЬЮТШ (вХЫХУцФ)"
+msgstr "Р‘Р°Р¶Р°РЅС– РјРѕРІРё (С‚РµР»РµРіС–Рґ)"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "ІШСаРЭЮ"
+msgstr "Р‘Р°Р¶Р°РЅР° РјРѕРІР° (С‚РµР»РµРіС–Рґ)"
 
 msgid "pan&scan"
-msgstr "ЯРЭЮаРЬгТРвШ"
+msgstr "РїР°РЅРѕСЂР°РјСѓРІР°С‚Рё"
 
 msgid "letterbox"
-msgstr "ЧЬХЭигТРвШ"
+msgstr "Р·РјРµРЅС€СѓРІР°С‚Рё"
 
 msgid "center cut out"
-msgstr "ЮСацЧРвШ ЧСЮЪг"
+msgstr "РѕР±СЂС–Р·Р°С‚Рё РїРѕ Р±РѕРєР°С…"
 
 msgid "no"
-msgstr "Эц"
+msgstr "РЅС–"
 
 msgid "names only"
-msgstr "вцЫмЪШ ЭРЧТШ"
+msgstr "С‚С–Р»СЊРєРё РЅР°Р·РІРё"
 
 msgid "PIDs only"
-msgstr "ВцЫмЪШ PIDШ"
+msgstr "РўС–Р»СЊРєРё PIDРё"
 
 msgid "names and PIDs"
-msgstr "ЭРЧТШ ц PIDШ"
+msgstr "РЅР°Р·РІРё С– PIDРё"
 
 msgid "add new channels"
-msgstr "ФЮФРвШ ЭЮТц ЪРЭРЫШ"
+msgstr "РґРѕРґР°С‚Рё РЅРѕРІС– РєР°РЅР°Р»Рё"
 
 msgid "add new transponders"
-msgstr "ФЮФРвШ ЭЮТц ваРЭбЯЮЭФХаШ"
+msgstr "РґРѕРґР°С‚Рё РЅРѕРІС– С‚СЂР°РЅСЃРїРѕРЅРґРµСЂРё"
 
 msgid "DVB"
 msgstr "DVB"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "ѕбЭЮТЭШЩ DVB-ЯаШбвацЩ"
+msgstr "РћСЃРЅРѕРІРЅРёР№ DVB-РїСЂРёСЃС‚СЂС–Р№"
 
 msgid "Setup.DVB$Video format"
-msgstr "ДЮаЬРв ТцФХЮ"
+msgstr "Р¤РѕСЂРјР°С‚ РІС–РґРµРѕ"
 
 msgid "Setup.DVB$Video display format"
-msgstr "ИШаЮЪЮХЪаРЭХ ЧЮСаРЦХЭЭп"
+msgstr "Р¤РѕСЂРјР°С‚ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ РІС–РґРµРѕ"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "ІЪЫозШвШ Dolby Digital"
+msgstr "Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "ѕЭЮТЫоТРвШ ЭРбваЮЩЪШ ЪРЭРЫцТ"
+msgstr "РћРЅРѕРІР»СЋРІР°С‚Рё РЅР°СЃС‚СЂРѕР№РєРё РєР°РЅР°Р»С–РІ"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "±РЦРЭц ЬЮТШ (ЧТгЪ)"
+msgstr "Р‘Р°Р¶Р°РЅС– РјРѕРІРё (Р·РІСѓРє)"
 
 msgid "Setup.DVB$Audio language"
-msgstr "ІШСаРЭЮ"
+msgstr "РњРѕРІР° Р°СѓРґС–Рѕ"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "їЮЪРЧгТРвШ бгСвШваШ"
+msgstr "РџРѕРєР°Р·СѓРІР°С‚Рё СЃСѓР±С‚РёС‚СЂРё"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "јЮТШ бгСвШвацТ"
+msgstr "РњРѕРІРё СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "јЮТР бгСвШвацТ"
+msgstr "РњРѕРІР° СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "ІцФбвгЯ бгСвШвацТ"
+msgstr "Р’С–РґСЃС‚СѓРї СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "їаЮЧЮацбвм ЯХаХФЭмЮУЮ ЯЫРЭг бгСвШвацТ"
+msgstr "РџСЂРѕР·РѕСЂС–СЃС‚СЊ РїРµСЂРµРґРЅСЊРѕРіРѕ РїР»Р°РЅСѓ СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "їаЮЧЮацбвм ЧРФЭмЮУЮ ЯЫРЭг бгСвШвацТ"
+msgstr "РџСЂРѕР·РѕСЂС–СЃС‚СЊ Р·Р°РґРЅСЊРѕРіРѕ РїР»Р°РЅСѓ СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "LNB"
-msgstr "єЮЭТХавХа"
+msgstr "РљРѕРЅРІРµСЂС‚РµСЂ"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "ІШЪЮаШбвЮТгТРвШ DiSEqC"
+msgstr "Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
-msgstr "ЗРбвЮвР ЯХаХЪЫозРЭЭп (SLOF) (јіж)"
+msgstr "Р§Р°СЃС‚РѕС‚Р° РїРµСЂРµРєР»СЋС‡Р°РЅРЅСЏ (SLOF) (РњР“С†)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "ЅШЦЭп зРбвЮвР ЪЮЭТХавХаР (јіж)"
+msgstr "РќРёР¶РЅСЏ С‡Р°СЃС‚РѕС‚Р° РєРѕРЅРІРµСЂС‚РµСЂР° (РњР“С†)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "ІХаеЭп зРбвЮвР ЪЮЭТХавХаР (јіж)"
+msgstr "Р’РµСЂС…РЅСЏ С‡Р°СЃС‚РѕС‚Р° РєРѕРЅРІРµСЂС‚РµСЂР° (РњР“С†)"
 
 msgid "CAM reset"
-msgstr "їХаХЧРТРЭвРЦХЭЭп CAM"
+msgstr "РџРµСЂРµР·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ CAM"
 
 msgid "CAM present"
-msgstr "CAM ЯаШбгвЭцЩ"
+msgstr "CAM РїСЂРёСЃСѓС‚РЅС–Р№"
 
 msgid "CAM ready"
-msgstr "CAM УЮвЮТШЩ"
+msgstr "CAM РіРѕС‚РѕРІРёР№"
 
 msgid "CAM"
-msgstr "ГЬЮТЭШЩ ФЮбвгЯ"
+msgstr "CAM (РЈРјРѕРІРЅРёР№ РґРѕСЃС‚СѓРї)"
 
 msgid "Button$Menu"
-msgstr "јХЭо"
+msgstr "РњРµРЅСЋ"
 
 msgid "Button$Reset"
-msgstr "БЪШЭгвШ"
+msgstr "РЎРєРёРЅСѓС‚Рё"
 
 msgid "Opening CAM menu..."
-msgstr "ІцФЪаШТРо ЬХЭо ЬЮФгЫп гЬЮТЭЮУЮ ФЮбвгЯг (CAM)"
+msgstr "Р’С–РґРєСЂРёРІР°СЋ РјРµРЅСЋ CAM-РјРѕРґСѓР»СЏ..."
 
 msgid "Can't open CAM menu!"
-msgstr "јХЭо CAM-ЬЮФгЫп ЭХФЮбвгЯЭХ!"
+msgstr "РњРµРЅСЋ CAM-РјРѕРґСѓР»СЏ РЅРµРґРѕСЃС‚СѓРїРЅРµ!"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM ТШЪЮаШбвЮТгфвмбп - ФцЩбЭЮ ЯХаХЧРТРЭвРЦШвШ?"
+msgstr "CAM РІРёРєРѕСЂРёСЃС‚РѕРІСѓС”С‚СЊСЃСЏ - РґС–Р№СЃРЅРѕ РїРµСЂРµР·Р°РІР°РЅС‚Р°Р¶РёС‚Рё?"
 
 msgid "Can't reset CAM!"
-msgstr "їЮЬШЫЪР ЯХаХЧРЯгбЪг CAM-ЬЮФгЫп!"
+msgstr "РџРѕРјРёР»РєР° РїРµСЂРµР·Р°РїСѓСЃРєСѓ CAM-РјРѕРґСѓР»СЏ!"
+
+msgid "do not pause live video"
+msgstr "РЅРµ РїСЂРёР·СѓРїРёРЅСЏС‚Рё РїРµСЂРµРіР»СЏРґ"
+
+msgid "confirm pause live video"
+msgstr "РїС–РґС‚РІРµСЂРґРёС‚Рё РїСЂРёР·СѓРїРёРЅРµРЅРЅСЏ РїРµСЂРµРіР»СЏРґСѓ"
+
+msgid "pause live video"
+msgstr "РїСЂРёР·СѓРїРёРЅРёС‚Рё РїРµСЂРµРіР»СЏРґ"
 
 msgid "Recording"
-msgstr "·РЯШб"
+msgstr "Р—Р°РїРёСЃ"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "ІШЯХаХФЦХЭЭп ЯЮзРвЪг ЧРЯШбг (еТ)"
+msgstr "Р’РёРїРµСЂРµРґР¶РµРЅРЅСЏ РїРѕС‡Р°С‚РєСѓ Р·Р°РїРёСЃСѓ (С…РІ)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "·РЯцЧЭХЭЭп ЧгЯШЭЪШ ЧРЯШбг (еТ)"
+msgstr "Р—Р°РїС–Р·РЅРµРЅРЅСЏ Р·СѓРїРёРЅРєРё Р·Р°РїРёСЃСѓ (С…РІ)"
 
 msgid "Setup.Recording$Primary limit"
-msgstr "јцЭ. ЯацЮаШвХв ЧРеЮЯЫХЭЭп ЮбЭ. ЯаШбваЮо"
+msgstr "РњС–РЅ. РїСЂС–РѕСЂРёС‚РµС‚ Р·Р°С…РѕРїР»РµРЅРЅСЏ РѕСЃРЅ. РїСЂРёСЃС‚СЂРѕСЋ"
 
 msgid "Setup.Recording$Default priority"
-msgstr "їацЮаШвХв вРЩЬХаР ЯЮ ЧРЬЮТзгТРЭЭо"
+msgstr "РџСЂС–РѕСЂРёС‚РµС‚ С‚Р°Р№РјРµСЂР° РїРѕ Р·Р°РјРѕРІС‡СѓРІР°РЅРЅСЋ"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "БваЮЪ ЧСХацУРЭЭп ЧРЯШбг ЯЮ ЧРЬЮТзгТРЭЭо (Ф)"
+msgstr "РЎС‚СЂРѕРє Р·Р±РµСЂС–РіР°РЅРЅСЏ Р·Р°РїРёСЃСѓ РїРѕ Р·Р°РјРѕРІС‡СѓРІР°РЅРЅСЋ (РґРЅС–)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr "РћР±СЂРѕР±РєР° РєР»Р°РІС–С€С– РІС–РґРєР»Р°РґРµРЅРѕРіРѕ РїРµСЂРµРіР»СЏРґСѓ"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "їацЮаШвХв ТцФЪЫРФХЭЮУЮ ЯХаХУЫпФг"
+msgstr "РџСЂС–РѕСЂРёС‚РµС‚ РІС–РґРєР»Р°РґРµРЅРѕРіРѕ РїРµСЂРµРіР»СЏРґСѓ"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "·СХацУРЭЭп ТцФЪЫРФХЭЮУЮ ЯХаХУЫпФг (Ф)"
+msgstr "Р—Р±РµСЂС–РіР°РЅРЅСЏ РІС–РґРєР»Р°РґРµРЅРѕРіРѕ РїРµСЂРµРіР»СЏРґСѓ (РґРЅС–)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "іагЯгТРвШ дРЩЫШ ЯЮ ХЯцЧЮФРе"
+msgstr "Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё РЅР°Р·РІСѓ РµРїС–Р·РѕРґСѓ"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "ІШЪЮаШбвЮТгТРвШ бШУЭРЫШ VPS"
+msgstr "Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё СЃРёРіРЅР°Р»Рё VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "±гдХаЭШЩ зРб VPS (бХЪ)"
+msgstr "Р‘СѓС„РµСЂРЅРёР№ С‡Р°СЃ VPS (СЃРµРє)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "ІцФЬцзРвШ ЧаЮСЫХЭц ТагзЭг ЧРЯШбШ"
+msgstr "РџРѕРјС–С‚РёС‚Рё Р·СЂРѕР±Р»РµРЅС– РІСЂСѓС‡РЅСѓ Р·Р°РїРёСЃРё"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "БеХЬР ЭРЩЬХЭгТРЭм агзЭШе ЧРЯШбцТ"
+msgstr "РЎС…РµРјР° РЅР°Р№РјРµРЅСѓРІР°РЅСЊ СЂСѓС‡РЅРёС… Р·Р°РїРёСЃС–РІ"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "їаЮвпЦЭцбвм агзЭЮУЮ ЧРЯШбг (еТ)"
+msgstr "РџСЂРѕС‚СЏР¶РЅС–СЃС‚СЊ СЂСѓС‡РЅРѕРіРѕ Р·Р°РїРёСЃСѓ (С…РІ)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "јРЪб. аРЧЬца ТцФХЮдРЩЫг (јС)"
+msgstr "РњР°РєСЃ. СЂР°Р·РјС–СЂ РІС–РґРµРѕС„Р°Р№Р»Сѓ (РњР±)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "ґцЫШвШ ТцФаХФРЪвЮТРЭц дРЩЫШ"
+msgstr "Р”С–Р»РёС‚Рё РІС–РґСЂРµРґР°РіРѕРІР°РЅС– С„Р°Р№Р»Рё"
 
 msgid "Replay"
-msgstr "їХаХУЫпФ"
+msgstr "РџРµСЂРµРіР»СЏРґ"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "±РУРвЮиТШФЪцбЭШЩ аХЦШЬ"
+msgstr "Р‘Р°РіР°С‚РѕС€РІРёРґРєС–СЃРЅРёР№ СЂРµР¶РёРј"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "ІцЮСаРЦРвШ аХЦШЬ ЯХаХУЫпФг"
+msgstr "Р’С–РѕР±СЂР°Р¶Р°С‚Рё СЂРµР¶РёРј РїРµСЂРµРіР»СЏРґСѓ"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID ЯХаХУЫпФг"
+msgstr "ID РїРµСЂРµРіР»СЏРґСѓ"
 
 msgid "Miscellaneous"
-msgstr "АцЧЭХ"
+msgstr "Р С–Р·РЅРµ"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "јцЭ. зРб ЮзцЪгТРЭЭп ЯЮФцч (еТ)"
+msgstr "РњС–РЅ. С‡Р°СЃ РѕС‡С–РєСѓРІР°РЅРЅСЏ РїРѕРґС–С— (С…РІ)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "јцЭ. зРб ЮзцЪгТРЭЭп ТТЮФг (еТ)"
+msgstr "РњС–РЅ. С‡Р°СЃ РѕС‡С–РєСѓРІР°РЅРЅСЏ РІРІРѕРґСѓ (С…РІ)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "·РваШЬЪЪР ЮСаШТг Ч'фФЭРЭЭп SVDRP (бХЪ)"
+msgstr "Р—Р°С‚СЂРёРјРєРєР° РѕР±СЂРёРІСѓ Р·'С”РґРЅР°РЅРЅСЏ SVDRP (СЃРµРє)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "·РваШЬЪР ЯХаХЪЫозРЭЭп ЪРЭРЫг (бХЪ)"
+msgstr "Р—Р°С‚СЂРёРјРєР° РїРµСЂРµРєР»СЋС‡Р°РЅРЅСЏ РєР°РЅР°Р»Сѓ (СЃРµРє)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "·РваШЬЪР зРбг ФЫп ТЯаЮТРФЦХЭЭп ЪРЭРЫг (ms)"
+msgstr "Р—Р°С‚СЂРёРјРєР° С‡Р°СЃСѓ РґР»СЏ РІРїСЂРѕРІР°РґР¶РµРЅРЅСЏ РєР°РЅР°Р»Сѓ (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr "єРЭРЫ ЯаШ ТЪЫозРЭЭо"
+msgstr "РљР°РЅР°Р» РїСЂРё РІРєР»СЋС‡РµРЅРЅС–"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "пЪ аРЭциХ"
+msgstr "СЏРє СЂР°РЅС–С€Рµ"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr "ігзЭцбвм ЯаШ ТЪЫозХЭЭц"
+msgstr "Р“СѓС‡РЅС–СЃС‚СЊ РїСЂРё РІРєР»СЋС‡РµРЅРЅС–"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "°ТРацЩЭШЩ ТШецФ"
+msgstr "РђРІР°СЂС–Р№РЅРёР№ РІРёС…С–Рґ"
 
 msgid "Plugins"
-msgstr "јЮФгЫц аЮЧиШаХЭЭп"
+msgstr "РњРѕРґСѓР»С– СЂРѕР·С€РёСЂРµРЅРЅСЏ"
 
 msgid "This plugin has no setup parameters!"
-msgstr "јЮФгЫм ЭХ ЬРф ЯРаРЬХвацТ ЭРЫРивгТРЭм!"
+msgstr "РњРѕРґСѓР»СЊ РЅРµ РјР°С” РїР°СЂР°РјРµС‚СЂС–РІ РЅР°Р»Р°С€С‚СѓРІР°РЅСЊ!"
 
 msgid "Setup"
-msgstr "ЅРЫРивгТРЭЭп"
+msgstr "РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ"
 
 msgid "Restart"
-msgstr "їХаХЧРЯгбвШвШ"
+msgstr "РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рё"
 
 msgid "Really restart?"
-msgstr "ґцЩбЭЮ ЯХаХЧРЯгбвШвШ?"
+msgstr "Р”С–Р№СЃРЅРѕ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рё?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " ·гЯШЭШвШ ЧРЯШб "
+msgstr " Р—СѓРїРёРЅРёС‚Рё Р·Р°РїРёСЃ "
 
 msgid "Schedule"
-msgstr "ВХЫХУцФ"
+msgstr "РўРµР»РµРіС–Рґ"
 
 msgid "VDR"
 msgstr "VDR"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " ·гЯШЭШвШ ЯаЮУаРТРЭЭп"
+msgstr " Р—СѓРїРёРЅРёС‚Рё РїСЂРѕРіСЂР°РІР°РЅРЅСЏ"
 
 msgid "Button$Audio"
-msgstr "јЮТР"
+msgstr "РњРѕРІР° Р°СѓРґС–Рѕ"
 
 msgid "Button$Pause"
-msgstr "їРгЧР"
+msgstr "РџР°СѓР·Р°"
 
 msgid "Button$Stop"
-msgstr "БвЮЯ"
+msgstr "РЎС‚РѕРї"
 
 msgid "Button$Resume"
-msgstr "їаЮФЮТЦШвШ"
+msgstr "РџСЂРѕРґРѕРІР¶РёС‚Рё"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " їХаХаТРвШ ЬЮЭвРЦ ЧРЯШбг"
+msgstr " РџРµСЂРµСЂРІР°С‚Рё РјРѕРЅС‚Р°Р¶ Р·Р°РїРёСЃСѓ"
 
 msgid "Stop recording?"
-msgstr "їаШЯШЭШвШ ЧРЯШб?"
+msgstr "РџСЂРёРїРёРЅРёС‚Рё Р·Р°РїРёСЃ?"
 
 msgid "Cancel editing?"
-msgstr "їХаХаТРвШ аХФРЪвгТРЭЭп?"
+msgstr "РџРµСЂРµСЂРІР°С‚Рё СЂРµРґР°РєС‚СѓРІР°РЅРЅСЏ?"
 
 msgid "No audio available!"
-msgstr "ІцФбгвЭцЩ ЧТгЪ!"
+msgstr "Р’С–РґСЃСѓС‚РЅС–Р№ Р·РІСѓРє!"
 
 msgid "No subtitles"
-msgstr "ЅХЬРф бгСвШвацТ"
+msgstr "РќРµРјР°С” СЃСѓР±С‚РёС‚СЂС–РІ"
 
 msgid "Button$Subtitles"
-msgstr "БгСвШваШ"
+msgstr "РЎСѓР±С‚РёС‚СЂРё"
 
 msgid "No subtitles available!"
-msgstr "БгСвШвацТ ЭХЬРф!"
+msgstr "РЎСѓР±С‚РёС‚СЂС–РІ РЅРµРјР°С”!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "ЅХФЮбвРвЭмЮ Ьцбжп ЭР ФШбЪг ФЫп ЯЮзРвЪг ЧРЯШбг"
+msgstr "РќРµРґРѕСЃС‚Р°С‚РЅСЊРѕ РјС–СЃС†СЏ РЅР° РґРёСЃРєСѓ РґР»СЏ РїРѕС‡Р°С‚РєСѓ Р·Р°РїРёСЃСѓ"
 
 msgid "No free DVB device to record!"
-msgstr "ЅХЬРф ТцЫмЭЮУЮ DVB-ЯаШбваЮо ФЫп ЧРЯШбг!"
+msgstr "РќРµРјР°С” РІС–Р»СЊРЅРѕРіРѕ DVB-РїСЂРёСЃС‚СЂРѕСЋ РґР»СЏ Р·Р°РїРёСЃСѓ!"
 
 msgid "Pausing live video..."
-msgstr "АХЦШЬ ТцФЪЫРФХЭЮУЮ ЯХаХУЫпФг..."
+msgstr "Р РµР¶РёРј РІС–РґРєР»Р°РґРµРЅРѕРіРѕ РїРµСЂРµРіР»СЏРґСѓ..."
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "їХаХЩвШ: "
+msgstr "РџРµСЂРµР№С‚Рё: "
 
 msgid "No editing marks defined!"
-msgstr "ЅХ ЧРФРЭЮ ЬцвЮЪ ФЫп ЬЮЭвРЦг!"
+msgstr "РќРµ Р·Р°РґР°РЅРѕ РјС–С‚РѕРє РґР»СЏ РјРѕРЅС‚Р°Р¶Сѓ!"
 
 msgid "Can't start editing process!"
-msgstr "ЅХЬЮЦЫШТЮ ЯЮзРвШ ЬЮЭвРЦ ЧРЯШбг!"
+msgstr "РќРµРјРѕР¶Р»РёРІРѕ РїРѕС‡Р°С‚Рё РјРѕРЅС‚Р°Р¶ Р·Р°РїРёСЃСѓ!"
 
 msgid "Editing process started"
-msgstr "јЮЭвРЦ ЧРЯШбг ЯЮзРТбп"
+msgstr "РњРѕРЅС‚Р°Р¶ Р·Р°РїРёСЃСѓ РїРѕС‡Р°РІСЃСЏ"
 
 msgid "Editing process already active!"
-msgstr "їаЮжХб ТцФХЮЬЮЭвРЦг ТЦХ ЧРЯгйХЭШЩ!"
+msgstr "РџСЂРѕС†РµСЃ РІС–РґРµРѕРјРѕРЅС‚Р°Р¶Сѓ РІР¶Рµ Р·Р°РїСѓС‰РµРЅРёР№!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " abcdefghijklmnopqrstuvwxyzРСТУФХфсЦЧШцчЩЪЫЬЭЮЯабвгдежзийклмоп0123456789-.#~,/_@"
+msgstr " abcdefghijklmnopqrstuvwxyzР°Р±РІРіРґРµС”С‘Р¶Р·РёС–С—Р№РєР»РјРЅРѕРїСЂСЃС‚СѓС„С…С†С‡С€С‰СЉС‹СЊСЋСЏ0123456789-.#~,/_@"
 
 msgid "yes"
-msgstr "вРЪ"
+msgstr "С‚Р°Рє"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.#~,/_@1\tabcРСТУ2\tdefФХфсЦЧ3\tghiШцчЩЪЫ4\tjklЬЭЮ5\tmnoЯаб6\tpqrsвгде7\ttuvжзийк8\twxyzлмноп9"
+msgstr " 0\t-.#~,/_@1\tabcР°Р±РІРі2\tdefРґРµС”С‘Р¶Р·3\tghiРёС–С—Р№РєР»4\tjklРјРЅРѕ5\tmnoРїСЂСЃ6\tpqrsС‚СѓС„С…7\ttuvС†С‡С€С‰СЉ8\twxyzС‹СЊСЌСЋСЏ9"
 
 msgid "Button$ABC/abc"
-msgstr "°±І/РСТ"
+msgstr "РђР‘Р’/Р°Р±РІ"
 
 msgid "Button$Overwrite"
-msgstr "·РЬцЭР"
+msgstr "Р—Р°РјС–РЅР°"
 
 msgid "Button$Insert"
-msgstr "ІбвРТЪР"
+msgstr "Р’СЃС‚Р°РІРєР°"
 
 msgid "Plugin"
-msgstr "јЮФгЫм"
+msgstr "РњРѕРґСѓР»СЊ"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "ЅРвШбЪРЩвХ \"ІТХае\"/\"ІЭШЧ\" ФЫп ТШСЮаг ЯЮЧШжцч, Р ЯЮвцЬ \"OK\""
+msgstr "РќР°С‚РёСЃРєР°Р№С‚Рµ \"Р’РІРµСЂС…\"/\"Р’РЅРёР·\" РґР»СЏ РІРёР±РѕСЂСѓ РїРѕР·РёС†С–С—, Р° РїРѕС‚С–Рј \"OK\""
 
 msgid "Channel locked (recording)!"
-msgstr "єРЭРЫ ЧРСЫЮЪЮТРЭЮ (ЩФХ ЧРЯШб)!"
+msgstr "РљР°РЅР°Р» Р·Р°Р±Р»РѕРєРѕРІР°РЅРѕ (Р№РґРµ Р·Р°РїРёСЃ)!"
 
 msgid "Low disk space!"
-msgstr "ЅХФЮбвРвЭмЮ Ьцбжп ЭР ФШбЪг!"
+msgstr "РќРµРґРѕСЃС‚Р°С‚РЅСЊРѕ РјС–СЃС†СЏ РЅР° РґРёСЃРєСѓ!"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "ІШЪЫозХЭЭЭп ЭХЬЮЦЫШТХ - ЭХ ЧРФРЭЮ ЯРаРЬХва '-s'!"
+msgstr "Р’РёРєР»СЋС‡РµРЅРЅРЅСЏ РЅРµРјРѕР¶Р»РёРІРµ - РЅРµ Р·Р°РґР°РЅРѕ РїР°СЂР°РјРµС‚СЂ '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "№ФХ ЬЮЭвРЦ - ФцЩбЭЮ ТШЪЫозШвШ?"
+msgstr "Р™РґРµ РјРѕРЅС‚Р°Р¶ - РґС–Р№СЃРЅРѕ РІРёРєР»СЋС‡РёС‚Рё?"
 
 msgid "Recording - shut down anyway?"
-msgstr "№ФХ ЧРЯШб - ФцЩбЭЮ ТШЪЫозШвШ?"
+msgstr "Р™РґРµ Р·Р°РїРёСЃ - РґС–Р№СЃРЅРѕ РІРёРєР»СЋС‡РёС‚Рё?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "ЗХаХЧ %ld еТШЫШЭ ЯЮзЭХвмбп ЧРЯШб - ФцЩбЭЮ ТШЪЫозШвШ?"
+msgstr "Р§РµСЂРµР· %ld С…РІРёР»РёРЅ РїРѕС‡РЅРµС‚СЊСЃСЏ Р·Р°РїРёСЃ - РґС–Р№СЃРЅРѕ РІРёРєР»СЋС‡РёС‚Рё?"
 
 msgid "shut down anyway?"
-msgstr "ФцЩбЭЮ ТШЪЫозШвШ?"
+msgstr "РґС–Р№СЃРЅРѕ РІРёРєР»СЋС‡РёС‚Рё?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s ЯаЮбЭХвмбп зХаХЧ %ld еТШЫШЭ - ЯаЮФЮТЦШвШ?"
+msgstr "РњРѕРґСѓР»СЊ %s РІРєР»СЋС‡РёС‚СЊСЃСЏ С‡РµСЂРµР· %ld С…РІРёР»РёРЅ - РїСЂРѕРґРѕРІР¶РёС‚Рё?"
 
 msgid "Editing - restart anyway?"
-msgstr "їаЮжХб ЬЮЭвРЦг - ФцЩбЭЮ ЯХаХЧРЯгбвШвШ?"
+msgstr "РџСЂРѕС†РµСЃ РјРѕРЅС‚Р°Р¶Сѓ - РґС–Р№СЃРЅРѕ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рё?"
 
 msgid "Recording - restart anyway?"
-msgstr "№ФХ ЧРЯШб - ФцЩбЭЮ ЯХаХЧРЯгбвШвШ?"
+msgstr "Р™РґРµ Р·Р°РїРёСЃ - РґС–Р№СЃРЅРѕ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рё?"
 
 msgid "restart anyway?"
-msgstr "ФцЩбЭЮ ЯХаХЧРЯгбвШвШ?"
+msgstr "РґС–Р№СЃРЅРѕ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рё?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "ігзЭцбвм "
+msgstr "Р“СѓС‡РЅС–СЃС‚СЊ "
 
 msgid "Classic VDR"
-msgstr "єЫРбШзЭШЩ"
+msgstr "РљР»Р°СЃРёС‡РЅРёР№ VDR"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG ЯРЭХЫц"
+msgstr "ST:TNG РїР°РЅРµР»С–"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "їІБЗїБЅ"
+msgstr "РџР’РЎР§РџРЎРќ"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "їЮЭІваБаФЗвТївЭБгСЅХФ"
+msgstr "РџРѕРЅР’С‚СЂРЎСЂРґР§С‚РІРџС‚РЅРЎСѓР±РќРµРґ"
 
 msgid "Monday"
-msgstr "їЮЭХФцЫЮЪ"
+msgstr "РџРѕРЅРµРґС–Р»РѕРє"
 
 msgid "Tuesday"
-msgstr "ІцТвЮаЮЪ"
+msgstr "Р’С–РІС‚РѕСЂРѕРє"
 
 msgid "Wednesday"
-msgstr "БХаХФР"
+msgstr "РЎРµСЂРµРґР°"
 
 msgid "Thursday"
-msgstr "ЗХвТХа"
+msgstr "Р§РµС‚РІРµСЂ"
 
 msgid "Friday"
-msgstr "ї'пвЭШжп"
+msgstr "Рџ'СЏС‚РЅРёС†СЏ"
 
 msgid "Saturday"
-msgstr "БгСЮвР"
+msgstr "РЎСѓР±РѕС‚Р°"
 
 msgid "Sunday"
-msgstr "ЅХФцЫп"
+msgstr "РќРµРґС–Р»СЏ"
 
 msgid "Upcoming recording!"
-msgstr "·РЯШб бЪЮаЮ ЯЮзЭХвмбп"
+msgstr "Р—Р°РїРёСЃ СЃРєРѕСЂРѕ РїРѕС‡РЅРµС‚СЊСЃСЏ"
+
+msgid "Pause live video?"
+msgstr "Р РµР¶РёРј РІС–РґРєР»Р°РґРµРЅРѕРіРѕ РїРµСЂРµРіР»СЏРґСѓ..."
 
 msgid "Recording started"
-msgstr "·РЯШб ЯЮзРТбп"
+msgstr "Р—Р°РїРёСЃ РїРѕС‡Р°РІСЃСЏ"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR ТШЪЫозШвмбп ЯЯцЧЭциХ - ЭРвШбЭцвм Power ФЫп ЯаШиТШФиХЭЭп"
+msgstr "VDR РІРёРєР»СЋС‡РёС‚СЊСЃСЏ РїРїС–Р·РЅС–С€Рµ - РЅР°С‚РёСЃРЅС–С‚СЊ Power РґР»СЏ РїСЂРёС€РІРёРґС€РµРЅРЅСЏ"
 
 msgid "Press any key to cancel shutdown"
-msgstr "ЅРвШбЭцвм СгФм-пЪг ЪЭЮЯЪг ФЫп ТцФЬцЭШ ТШЪЫозХЭЭп."
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ Р±СѓРґСЊ-СЏРєСѓ РєРЅРѕРїРєСѓ РґР»СЏ РІС–РґРјС–РЅРё РІРёРєР»СЋС‡РµРЅРЅСЏ."
 
 msgid "Switching primary DVB..."
-msgstr "·ЬцЭР ЮбЭЮТЭЮУЮ DVB-ЯаШбваЮо..."
+msgstr "Р—РјС–РЅР° РѕСЃРЅРѕРІРЅРѕРіРѕ DVB-РїСЂРёСЃС‚СЂРѕСЋ..."
 
 msgid "Editing process failed!"
-msgstr "їЮЬШЫЪР ЯцФ зРб ЬЮЭвРЦг ЧРЯШбг!"
+msgstr "РџРѕРјРёР»РєР° РїС–Рґ С‡Р°СЃ РјРѕРЅС‚Р°Р¶Сѓ Р·Р°РїРёСЃСѓ!"
 
 msgid "Editing process finished"
-msgstr "јЮЭвРЦ ЧРЪцЭзХЭЮ"
+msgstr "РњРѕРЅС‚Р°Р¶ Р·Р°РєС–РЅС‡РµРЅРѕ"
 
 msgid "Press any key to cancel restart"
-msgstr "ЅРвШбЭцвм СгФм-пЪг ЪЭЮЯЪг ФЫп ТцФЬцЭШ ЯХаХЧРТРЭвРЦХЭЭп"
+msgstr "РќР°С‚РёСЃРЅС–С‚СЊ Р±СѓРґСЊ-СЏРєСѓ РєРЅРѕРїРєСѓ РґР»СЏ РІС–РґРјС–РЅРё РїРµСЂРµР·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR ТШЪЫозШвмбп зХаХЧ %s еТШЫШЭ"
+msgstr "VDR РІРёРєР»СЋС‡РёС‚СЊСЃСЏ С‡РµСЂРµР· %s С…РІРёР»РёРЅ"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.7 2009/05/03 13:30:13 kls Exp $
+ * $Id: menu.c 2.8 2009/05/21 11:10:38 kls Exp $
  */
 
 #include "menu.h"
@@ -2672,18 +2672,24 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
 // --- cMenuSetupRecord ------------------------------------------------------
 
 class cMenuSetupRecord : public cMenuSetupBase {
+private:
+  const char *pauseKeyHandlingTexts[3];
 public:
   cMenuSetupRecord(void);
   };
 
 cMenuSetupRecord::cMenuSetupRecord(void)
 {
+  pauseKeyHandlingTexts[0] = tr("do not pause live video");
+  pauseKeyHandlingTexts[1] = tr("confirm pause live video");
+  pauseKeyHandlingTexts[2] = tr("pause live video");
   SetSection(tr("Recording"));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditStraItem(tr("Setup.Recording$Pause key handling"),        &data.PauseKeyHandling, 3, pauseKeyHandlingTexts));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause priority"),            &data.PausePriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause lifetime (d)"),        &data.PauseLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));

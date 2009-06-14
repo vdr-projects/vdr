@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.17 2009/05/02 12:17:39 kls Exp $
+ * $Id: device.c 2.23 2009/06/06 13:25:58 kls Exp $
  */
 
 #include "device.h"
@@ -18,11 +18,6 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
-
-const char *VideoAspectString[] = { "4:3",
-                                    "16:9",
-                                    "2.21:9"
-                                  };
 
 // --- cLiveSubtitle ---------------------------------------------------------
 
@@ -66,6 +61,7 @@ cDevice *cDevice::primaryDevice = NULL;
 cDevice *cDevice::avoidDevice = NULL;
 
 cDevice::cDevice(void)
+:patPmtParser(true)
 {
   cardIndex = nextCardIndex++;
 
@@ -389,11 +385,18 @@ eVideoSystem cDevice::GetVideoSystem(void)
   return vsPAL;
 }
 
-void cDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
+void cDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
-  Width = MINOSDWIDTH;
-  Height = MINOSDHEIGHT;
-  Aspect = va4_3;
+  Width = 0;
+  Height = 0;
+  VideoAspect = 1.0;
+}
+
+void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
+{
+  Width = 720;
+  Height = 480;
+  PixelAspect = 1.0;
 }
 
 //#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }

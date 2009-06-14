@@ -672,6 +672,8 @@ Oliver Endriss <o.endriss@gmx.de>
  VPID is 0
  for reporting chirping sound disturbences at editing points in TS recordings
  for reporting broken index generation in TS recordings after a buffer overflow
+ for fixing the way the OSD size is determined on full featured DVB cards
+ for his input on calculating the Aspect factor in GetOsdSize()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -918,6 +920,8 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for a hint on using _nl_msg_cat_cntr
  for adding some missing 'const' keywords
  for pointing out that "%016llX" should be used instead of "%016LX"
+ for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
+ for reporting that cSVDRP::CmdGRAB() writes into const data
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -1073,6 +1077,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for replacing the Finnish language code "smi" with "suo"
  for adding cap_sys_nice to the capabilities that are not dropped
  for adding cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
+ for suggesting to introduce cDevice::GetOsdSize()
+ for adding a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1212,6 +1218,17 @@ Reinhard Nissl <rnissl@gmx.de>
  for making sure vdr-xine no longer needs cDvbPlayer::Action() to call DeviceFlush()
  for fixing the 'VideoOnly' condition in the PlayPes() and PlayTs() calls in
  cDvbPlayer::Action()
+ for reporting a problem in case the PIDs change during recording
+ for reporting a memory leak when reaching the end of a recording during replay
+ for reporting a call to close(-1) in cUnbufferedFile::Close()
+ for reporting a possible problem in handling the length of DiSEqC command sequences
+ for fixing cOsdMenu::Display() in case the menu size has changed
+ for suggesting to change the type of the Aspect parameter of GetVideoSize()
+ to 'double'
+ for suggesting to use different names for the Aspect parameter in GetVideoSize()
+ and GetOsdSize()
+ for reporting a problem with calculating menu colum widths in case the font has a
+ size other than the default size
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1623,6 +1640,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with handling the maximum video file size
  for suggesting to add a note to the INSTALL file about using subdirectories to
  split a large disk into separate areas for VDR's video data and other stuff
+ for reporting wrong variable types in cIndexFile
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1814,6 +1832,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  menu
  for adding missing #include <limits.h> to epg.c and menuitems.h
  for fixing various spelling errors and improving PLUGINS.html
+ for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1953,6 +1972,7 @@ Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
 
 Nicolas Huillard <nhuillard@e-dition.fr>
  for translating OSD texts to the French language
+ for suggesting to increase MAXOSDHEIGHT to 1200
 
 Patrick Fischer <patrick_fischer@gmx.de>
  for reporting an error in the cFilter example in PLUGINS.html
@@ -2126,6 +2146,9 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  check to it
  for changing cBitmap::DrawText() to always draw the background unless ColorBg
  is clrTransparent
+ for reporting unused 'synced' member in cTsToPes
+ for suggesting to add a note to cTsToPes about all TS packets having to belong to
+ the same PID
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2164,6 +2187,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for fixing a signed character used as index in cBase64Encoder::NextLine()
  for fixing formatting the name section in the VDR man pages
  for reporting unneeded include files <linux/dvb/dmx.h> und <time.h> in remux.h
+ for a patch that added a workaround for the broken linux-dvb driver header files
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2310,6 +2334,8 @@ Tobias Bratfisch <tobias@reel-multimedia.com>
  for optimizing cNitFilter::Process()
  for reducing the number of time(NULL) calls in vdr.c's main loop to a single call
  for improving efficiency of cEIT::cEIT()
+ for fixing the use of time_t in cEIT::cEIT()
+ for making EIT events be processed only if a plausible system time is available
 
 Bruno Roussel <bruno.roussel@free.fr>
  for translating OSD texts to the French language
@@ -2331,6 +2357,7 @@ Diego Pierotto <vdr-italian@tiscali.it>
 Timo Eskola <timo@tolleri.net>
  for implementing sending all frames to devices that can handle them in fast forward
  trick speeds
+ for implementing the setup option "Recording/Pause key handling"
 
 Elias Luttinen <el@iki.fi>
  for improving the description of where logging goes in the INSTALL file
@@ -2394,6 +2421,7 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
  character set to ISO-8859-9
+ for adding MPEG 1 handling to remux.c
 
 Magnus Andersson <svankan@bahnhof.se>
  for translating OSD texts to the Swedish language
@@ -2446,3 +2474,7 @@ Marcel Unbehaun <frostworks@gmx.de>
 
 Günter Niedermeier <linuxtv@ncs-online.de>
  for reporting a problem with file I/O overhead during recording in TS format
+
+Martin Neuditschko <yosuke.tomoe@gmx.net>
+ for reporting a problem with error messages from cDvbDevice::GetVideoSize()
+ on systems with no real primary replay device

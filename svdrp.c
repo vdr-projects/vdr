@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.3 2009/04/13 13:35:29 kls Exp $
+ * $Id: svdrp.c 2.5 2009/06/06 14:03:55 kls Exp $
  */
 
 #include "svdrp.h"
@@ -739,7 +739,7 @@ void cSVDRP::CmdGRAB(const char *Option)
      char *strtok_next;
      FileName = strtok_r(p, delim, &strtok_next);
      // image type:
-     char *Extension = strrchr(FileName, '.');
+     const char *Extension = strrchr(FileName, '.');
      if (Extension) {
         if (strcasecmp(Extension, ".jpg") == 0 || strcasecmp(Extension, ".jpeg") == 0)
            Jpeg = true;
@@ -798,16 +798,17 @@ void cSVDRP::CmdGRAB(const char *Option)
      char RealFileName[PATH_MAX];
      if (FileName) {
         if (grabImageDir) {
-           cString s;
-           char *slash = strrchr(FileName, '/');
+           cString s(FileName);
+           FileName = s;
+           const char *slash = strrchr(FileName, '/');
            if (!slash) {
               s = AddDirectory(grabImageDir, FileName);
               FileName = s;
               }
            slash = strrchr(FileName, '/'); // there definitely is one
-           *slash = 0;
-           char *r = realpath(FileName, RealFileName);
-           *slash = '/';
+           cString t(s);
+           t.Truncate(slash - FileName);
+           char *r = realpath(t, RealFileName);
            if (!r) {
               LOG_ERROR_STR(FileName);
               Reply(501, "Invalid file name \"%s\"", FileName);

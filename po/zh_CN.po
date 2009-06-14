@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-03-21 08:44+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese\n"
@@ -707,6 +707,15 @@ msgstr "CAM正在使用-是否重启？"
 msgid "Can't reset CAM!"
 msgstr "不能重启CAM"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "记录中"
 
@@ -724,6 +733,9 @@ msgstr "默认优先"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "默认终身 (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "暂停优先"
@@ -985,6 +997,9 @@ msgstr "星期天"
 
 msgid "Upcoming recording!"
 msgstr "即将的记录！"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "记录开始！"

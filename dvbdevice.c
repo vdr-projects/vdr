@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.15 2009/05/03 13:49:41 kls Exp $
+ * $Id: dvbdevice.c 2.21 2009/06/06 11:17:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -232,8 +232,8 @@ bool cDvbTuner::SetFrontend(void)
                          uchar *codes = diseqc->Codes(n);
                          if (codes) {
                             struct dvb_diseqc_master_cmd cmd;
-                            memcpy(cmd.msg, codes, min(n, int(sizeof(cmd.msg))));
-                            cmd.msg_len = n;
+                            cmd.msg_len = min(n, int(sizeof(cmd.msg)));
+                            memcpy(cmd.msg, codes, cmd.msg_len);
                             CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
                             }
                          }
@@ -736,31 +736,62 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 eVideoSystem cDvbDevice::GetVideoSystem(void)
 {
   eVideoSystem VideoSystem = vsPAL;
-  video_size_t vs;
-  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-     if (vs.h == 480 || vs.h == 240)
-        VideoSystem = vsNTSC;
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        if (vs.h == 480 || vs.h == 240)
+           VideoSystem = vsNTSC;
+        }
+     else
+        LOG_ERROR;
      }
-  else
-     LOG_ERROR;
   return VideoSystem;
 }
 
-void cDvbDevice::GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect)
+void cDvbDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
-  video_size_t vs;
-  if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-     Width = vs.w;
-     if (Width < 720) // FIXME: some channels result in a With of, e.g. 544, but the final video *is* 720 wide
-        Width = 720;
-     Height = vs.h;
-     Aspect = eVideoAspect(vs.aspect_ratio);
-     if (Width >= MINOSDWIDTH && Width <= MAXOSDWIDTH && Height >= MINOSDHEIGHT && Height <= MAXOSDHEIGHT)
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        Width = vs.w;
+        Height = vs.h;
+        switch (vs.aspect_ratio) {
+          default:
+          case VIDEO_FORMAT_4_3:   VideoAspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_16_9:  VideoAspect = 16.0 / 9.0; break;
+          case VIDEO_FORMAT_221_1: VideoAspect =       2.21; break;
+          }
         return;
+        }
+     else
+        LOG_ERROR;
      }
-  else
-     LOG_ERROR;
-  cDevice::GetVideoSize(Width, Height, Aspect);
+  cDevice::GetVideoSize(Width, Height, VideoAspect);
+}
+
+void cDvbDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
+{
+  if (fd_video >= 0) {
+     video_size_t vs;
+     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
+        Width = 720;
+        if (vs.h != 480 && vs.h != 240)
+           Height = 576; // PAL
+        else
+           Height = 480; // NTSC
+        switch (Setup.VideoFormat ? vs.aspect_ratio : VIDEO_FORMAT_4_3) {
+          default:
+          case VIDEO_FORMAT_4_3:   PixelAspect =  4.0 / 3.0; break;
+          case VIDEO_FORMAT_221_1: // FF DVB cards only distinguish between 4:3 and 16:9
+          case VIDEO_FORMAT_16_9:  PixelAspect = 16.0 / 9.0; break;
+          }
+        PixelAspect /= double(Width) / Height;
+        return;
+        }
+     else
+        LOG_ERROR;
+     }
+  cDevice::GetOsdSize(Width, Height, PixelAspect);
 }
 
 bool cDvbDevice::SetAudioBypass(bool On)

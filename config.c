@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.2 2009/05/03 13:58:08 kls Exp $
+ * $Id: config.c 2.5 2009/06/13 10:25:05 kls Exp $
  */
 
 #include "config.h"
@@ -19,6 +19,8 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
+
+#define ChkDoublePlausibility(Variable, Default) { if (Variable < 0.00001) Variable = Default; }
 
 // --- cCommand --------------------------------------------------------------
 
@@ -250,6 +252,7 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 99;
+  PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;
   UseSubtitle = 1;
@@ -270,6 +273,7 @@ cSetup::cSetup(void)
   OSDTop = 45;
   OSDWidth = 624;
   OSDHeight = 486;
+  OSDAspect = 1.0;
   OSDMessageTime = 1;
   UseSmallFont = 1;
   AntiAlias = 1;
@@ -435,6 +439,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+  else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
@@ -449,21 +454,22 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atof(Value);
   else if (!strcasecmp(Name, "OSDTopP"))             OSDTopP            = atof(Value);
-  else if (!strcasecmp(Name, "OSDWidthP"))           OSDWidthP          = atof(Value);
-  else if (!strcasecmp(Name, "OSDHeightP"))          OSDHeightP         = atof(Value);
+  else if (!strcasecmp(Name, "OSDWidthP"))         { OSDWidthP          = atof(Value); ChkDoublePlausibility(OSDWidthP, 0.87); }
+  else if (!strcasecmp(Name, "OSDHeightP"))        { OSDHeightP         = atof(Value); ChkDoublePlausibility(OSDHeightP, 0.84); }
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
   else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
   else if (!strcasecmp(Name, "OSDHeight"))           OSDHeight          = atoi(Value);
+  else if (!strcasecmp(Name, "OSDAspect"))           OSDAspect          = atof(Value);
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
   else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
   else if (!strcasecmp(Name, "AntiAlias"))           AntiAlias          = atoi(Value);
   else if (!strcasecmp(Name, "FontOsd"))             Utf8Strn0Cpy(FontOsd, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontSml"))             Utf8Strn0Cpy(FontSml, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontFix"))             Utf8Strn0Cpy(FontFix, Value, MAXFONTNAME);
-  else if (!strcasecmp(Name, "FontOsdSizeP"))        FontOsdSizeP       = atof(Value);
-  else if (!strcasecmp(Name, "FontSmlSizeP"))        FontSmlSizeP       = atof(Value);
-  else if (!strcasecmp(Name, "FontFixSizeP"))        FontFixSizeP       = atof(Value);
+  else if (!strcasecmp(Name, "FontOsdSizeP"))      { FontOsdSizeP       = atof(Value); ChkDoublePlausibility(FontOsdSizeP, 0.038); }
+  else if (!strcasecmp(Name, "FontSmlSizeP"))      { FontSmlSizeP       = atof(Value); ChkDoublePlausibility(FontSmlSizeP, 0.035); }
+  else if (!strcasecmp(Name, "FontFixSizeP"))      { FontFixSizeP       = atof(Value); ChkDoublePlausibility(FontFixSizeP, 0.031); }
   else if (!strcasecmp(Name, "FontOsdSize"))         FontOsdSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);
@@ -525,6 +531,7 @@ bool cSetup::Save(void)
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
+  Store("PauseKeyHandling",   PauseKeyHandling);
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);
   Store("UseSubtitle",        UseSubtitle);
@@ -545,6 +552,7 @@ bool cSetup::Save(void)
   Store("OSDTop",             OSDTop);
   Store("OSDWidth",           OSDWidth);
   Store("OSDHeight",          OSDHeight);
+  Store("OSDAspect",          OSDAspect);
   Store("OSDMessageTime",     OSDMessageTime);
   Store("UseSmallFont",       UseSmallFont);
   Store("AntiAlias",          AntiAlias);

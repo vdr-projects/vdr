@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.20 2009/05/03 14:43:25 kls Exp $
+ * $Id: remux.c 2.24 2009/06/06 13:24:57 kls Exp $
  */
 
 #include "remux.h"
@@ -357,6 +357,12 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
      }
 }
 
+void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
+{
+  patVersion = PatVersion & 0x1F;
+  pmtVersion = PmtVersion & 0x1F;
+}
+
 void cPatPmtGenerator::SetChannel(cChannel *Channel)
 {
   if (Channel) {
@@ -383,8 +389,9 @@ uchar *cPatPmtGenerator::GetPmt(int &Index)
 
 // --- cPatPmtParser ---------------------------------------------------------
 
-cPatPmtParser::cPatPmtParser(void)
+cPatPmtParser::cPatPmtParser(bool UpdatePrimaryDevice)
 {
+  updatePrimaryDevice = UpdatePrimaryDevice;
   Reset();
 }
 
@@ -472,7 +479,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      dbgpatpmt("     pcr = %d\n", Pmt.getPCRPid());
      if (pmtVersion == Pmt.getVersionNumber())
         return;
-     cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
+     if (updatePrimaryDevice)
+        cDevice::PrimaryDevice()->ClrAvailableTracks(false, true);
      int NumApids = 0;
      int NumDpids = 0;
      int NumSpids = 0;
@@ -481,6 +489,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
          switch (stream.getStreamType()) {
+           case 0x01: // STREAMTYPE_11172_VIDEO
            case 0x02: // STREAMTYPE_13818_VIDEO
            case 0x1B: // MPEG4
                       vpid = stream.getPid();
@@ -515,7 +524,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                }
                              delete d;
                              }
-                         cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
+                         if (updatePrimaryDevice)
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
                          NumApids++;
                          }
                       }
@@ -550,7 +560,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                               break;
                                            }
                                         }
-                                    cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
+                                    if (updatePrimaryDevice)
+                                       cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
                                     NumSpids++;
                                     }
                                  break;
@@ -566,7 +577,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                           }
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
-                            cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
+                            if (updatePrimaryDevice)
+                               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
                             }
                          }
@@ -574,8 +586,10 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       break;
            }
          dbgpatpmt("\n");
-         cDevice::PrimaryDevice()->EnsureAudioTrack(true);
-         cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+         if (updatePrimaryDevice) {
+            cDevice::PrimaryDevice()->EnsureAudioTrack(true);
+            cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+            }
          }
      pmtVersion = Pmt.getVersionNumber();
      }
@@ -584,13 +598,19 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   pmtSize = 0;
 }
 
+bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
+{
+  PatVersion = patVersion;
+  PmtVersion = pmtVersion;
+  return patVersion >= 0 && pmtVersion >= 0;
+}
+
 // --- cTsToPes --------------------------------------------------------------
 
 cTsToPes::cTsToPes(void)
 {
   data = NULL;
   size = length = offset = 0;
-  synced = false;
 }
 
 cTsToPes::~cTsToPes()
@@ -702,7 +722,7 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   newFrame = independentFrame = false;
   numPtsValues = 0;
   numIFrames = 0;
-  isVideo = type == 0x02 || type == 0x1B; // MPEG 2 or MPEG 4
+  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
   frameDuration = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
   payloadUnitOfFrame = 0;
@@ -795,6 +815,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                   scanner <<= 8;
                   scanner |= Data[i];
                   switch (type) {
+                    case 0x01: // MPEG 1 video
                     case 0x02: // MPEG 2 video
                          if (scanner == 0x00000100) { // Picture Start Code
                             if (synced && Processed)

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
@@ -707,6 +707,15 @@ msgstr "CA-moduuli käytössä - nollataanko?"
 msgid "Can't reset CAM!"
 msgstr "CA-moduulin nollaus epäonnistui!"
 
+msgid "do not pause live video"
+msgstr "älä pysäytä lähetystä"
+
+msgid "confirm pause live video"
+msgstr "varmista lähetyksen pysäyttäminen"
+
+msgid "pause live video"
+msgstr "pysäytä lähetys"
+
 msgid "Recording"
 msgstr "Tallennus"
 
@@ -724,6 +733,9 @@ msgstr "Tallenteen oletusprioriteetti"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Tallenteen oletuselinikä (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr "Taukonäppäimen toiminta"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Taukotallenteen prioriteetti"
@@ -985,6 +997,9 @@ msgstr "Sunnuntai"
 
 msgid "Upcoming recording!"
 msgstr "Tallennus on alkamassa!"
+
+msgid "Pause live video?"
+msgstr "Pysäytetäänkö lähetys?"
 
 msgid "Recording started"
 msgstr "Tallennus aloitettu"

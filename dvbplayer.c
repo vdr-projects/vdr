@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.15 2009/04/19 15:19:10 kls Exp $
+ * $Id: dvbplayer.c 2.17 2009/05/31 14:12:42 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -89,7 +89,6 @@ private:
   uchar *buffer;
   int wanted;
   int length;
-  bool hasData;
   cCondWait newSet;
   cCondVar newDataCond;
   cMutex newDataMutex;
@@ -99,7 +98,8 @@ public:
   cNonBlockingFileReader(void);
   ~cNonBlockingFileReader();
   void Clear(void);
-  int Read(cUnbufferedFile *File, uchar *Buffer, int Length);
+  void Request(cUnbufferedFile *File, int Length);
+  int Result(uchar **Buffer);
   bool Reading(void) { return buffer; }
   bool WaitForDataMs(int msToWait);
   };
@@ -110,7 +110,6 @@ cNonBlockingFileReader::cNonBlockingFileReader(void)
   f = NULL;
   buffer = NULL;
   wanted = length = 0;
-  hasData = false;
   Start();
 }
 
@@ -128,29 +127,27 @@ void cNonBlockingFileReader::Clear(void)
   free(buffer);
   buffer = NULL;
   wanted = length = 0;
-  hasData = false;
+  Unlock();
+}
+
+void cNonBlockingFileReader::Request(cUnbufferedFile *File, int Length)
+{
+  Lock();
+  Clear();
+  wanted = Length;
+  buffer = MALLOC(uchar, wanted);
+  f = File;
   Unlock();
   newSet.Signal();
 }
 
-int cNonBlockingFileReader::Read(cUnbufferedFile *File, uchar *Buffer, int Length)
+int cNonBlockingFileReader::Result(uchar **Buffer)
 {
-  if (hasData && buffer) {
-     if (buffer != Buffer) {
-        esyslog("ERROR: cNonBlockingFileReader::Read() called with different buffer!");
-        errno = EINVAL;
-        return -1;
-        }
+  LOCK_THREAD;
+  if (buffer && length == wanted) {
+     *Buffer = buffer;
      buffer = NULL;
-     return length;
-     }
-  if (!buffer) {
-     f = File;
-     buffer = Buffer;
-     wanted = Length;
-     length = 0;
-     hasData = false;
-     newSet.Signal();
+     return wanted;
      }
   errno = EAGAIN;
   return -1;
@@ -160,20 +157,23 @@ void cNonBlockingFileReader::Action(void)
 {
   while (Running()) {
         Lock();
-        if (!hasData && f && buffer) {
+        if (f && buffer && length < wanted) {
            int r = f->Read(buffer + length, wanted - length);
-           if (r >= 0) {
+           if (r > 0)
               length += r;
-              if (!r || length == wanted) { // r == 0 means EOF
-                 cMutexLock NewDataLock(&newDataMutex);
-                 hasData = true;
-                 newDataCond.Broadcast();
-                 }
+           else if (r == 0) { // r == 0 means EOF
+              if (length > 0)
+                 wanted = length; // already read something, so return the rest
+              else
+                 length = wanted = 0; // report EOF
               }
-           else if (r < 0 && FATALERRNO) {
+           else if (FATALERRNO) {
               LOG_ERROR;
-              length = r; // this will forward the error status to the caller
-              hasData = true;
+              length = wanted = r; // this will forward the error status to the caller
+              }
+           if (length == wanted) {
+              cMutexLock NewDataLock(&newDataMutex);
+              newDataCond.Broadcast();
               }
            }
         Unlock();
@@ -184,7 +184,7 @@ void cNonBlockingFileReader::Action(void)
 bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 {
   cMutexLock NewDataLock(&newDataMutex);
-  if (hasData)
+  if (buffer && length == wanted)
      return true;
   return newDataCond.TimedWait(newDataMutex, msToWait);
 }
@@ -381,7 +381,6 @@ void cDvbPlayer::Activate(bool On)
 
 void cDvbPlayer::Action(void)
 {
-  uchar *b = NULL;
   uchar *p = NULL;
   int pc = 0;
 
@@ -461,10 +460,12 @@ void cDvbPlayer::Action(void)
                       esyslog("ERROR: frame larger than buffer (%d > %d)", Length, MAXFRAMESIZE);
                       Length = MAXFRAMESIZE;
                       }
-                   b = MALLOC(uchar, Length);
+                   if (!eof)
+                      nonBlockingFileReader->Request(replayFile, Length);
                    }
                 if (!eof) {
-                   int r = nonBlockingFileReader->Read(replayFile, b, Length);
+                   uchar *b = NULL;
+                   int r = nonBlockingFileReader->Result(&b);
                    if (r > 0) {
                       WaitingForData = false;
                       uint32_t Pts = 0;
@@ -473,15 +474,16 @@ void cDvbPlayer::Action(void)
                          LastReadIFrame = readIndex;
                          }
                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
-                      b = NULL;
                       }
-                   else if (r == 0)
-                      eof = true;
                    else if (r < 0 && errno == EAGAIN)
                       WaitingForData = true;
-                   else if (r < 0 && FATALERRNO) {
-                      LOG_ERROR;
-                      break;
+                   else {
+                      if (r == 0)
+                         eof = true;
+                      else if (r < 0 && FATALERRNO) {
+                         LOG_ERROR;
+                         break;
+                         }
                       }
                    }
                 }

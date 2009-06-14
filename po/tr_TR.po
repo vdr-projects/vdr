@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish\n"
@@ -704,6 +704,15 @@ msgstr "CAM kullanýlýyor - gerçekden sýfýrla?"
 msgid "Can't reset CAM!"
 msgstr "CAM sýfýrlanamadý!"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Kayýt"
 
@@ -721,6 +730,9 @@ msgstr "Olaðan priorite"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Olaðan çekim ömrü (gün)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Duraklama prioritesi"
@@ -982,6 +994,9 @@ msgstr "Pazar"
 
 msgid "Upcoming recording!"
 msgstr "Çekim yakýnda baþlýyor!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Kayýt baþlandý"

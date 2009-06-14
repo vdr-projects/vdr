@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.1 2009/05/03 11:00:19 kls Exp $
+ * $Id: font.h 2.2 2009/05/23 10:10:40 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -55,9 +55,11 @@ public:
   static const cFont *GetFont(eDvbFont Font);
           ///< Gets the given Font, which was previously set by a call to SetFont().
           ///< If no SetFont() call has been made, the font as defined in the setup is returned.
-          ///< The caller must not use the returned font outside the scope in which
-          ///< it was retrieved by the call to GetFont(), because a call to SetFont()
-          ///< may delete an existing font.
+          ///< GetFont() is not thread-safe, and shall only be called from the main
+          ///< thread! A font returned by GetFont() must only be used locally inside the
+          ///< function it was retrieved from, and no long term pointer to it shall be kept,
+          ///< because the cFont object may become invalid at any time after the
+          ///< function that called GetFont() has returned.
   static cFont *CreateFont(const char *Name, int CharHeight, int CharWidth = 0);
           ///< Creates a new font object with the given Name and makes its characters
           ///< CharHeight pixels high. If CharWidth is given, it overwrites the font's

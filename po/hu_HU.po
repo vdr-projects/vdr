@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2007-12-01 21:42+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian\n"
@@ -707,6 +707,15 @@ msgstr "CAM használatban - valóban újraindítjuk?"
 msgid "Can't reset CAM!"
 msgstr "A CAM újraindítás nem sikerült"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Felvétel"
 
@@ -724,6 +733,9 @@ msgstr "Alapértelmezett prioritás"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Alapértelmezett élettartam"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Szünet prioritás"
@@ -985,6 +997,9 @@ msgstr "Vasárnap"
 
 msgid "Upcoming recording!"
 msgstr "Felvétel rögtön kezdõdik!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "A felvétel elindítva"

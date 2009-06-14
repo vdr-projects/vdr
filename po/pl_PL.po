@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
 "Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
 "Language-Team:  Polish\n"
@@ -705,6 +705,15 @@ msgstr "CAM jest w u¿yciu - naprawdê zresetowaæ?"
 msgid "Can't reset CAM!"
 msgstr "Nie mo¿na zresetowaæ CAM!"
 
+msgid "do not pause live video"
+msgstr ""
+
+msgid "confirm pause live video"
+msgstr ""
+
+msgid "pause live video"
+msgstr ""
+
 msgid "Recording"
 msgstr "Nagranie"
 
@@ -722,6 +731,9 @@ msgstr "Domy¶lny priorytet"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Domy¶lny czas ¿ycia (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorytet pauzy"
@@ -983,6 +995,9 @@ msgstr "Niedziela"
 
 msgid "Upcoming recording!"
 msgstr "Wkrótce nagranie!"
+
+msgid "Pause live video?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Rozpoczêto nagrywanie"

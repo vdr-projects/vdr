@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.3 2009/05/03 13:52:10 kls Exp $
+ * $Id: osd.h 2.4 2009/05/08 13:41:03 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -408,7 +408,7 @@ private:
   static cOsdProvider *osdProvider;
   static int oldWidth;
   static int oldHeight;
-  static int oldAspect;
+  static double oldAspect;
 protected:
   virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located

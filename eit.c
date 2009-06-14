@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.3 2009/04/11 10:03:24 kls Exp $
+ * $Id: eit.c 2.5 2009/05/15 12:34:43 kls Exp $
  */
 
 #include "eit.h"
@@ -16,6 +16,8 @@
 #include "i18n.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+
+#define VALID_TIME (31536000 * 2) // two years
 
 // --- cEIT ------------------------------------------------------------------
 
@@ -46,10 +48,13 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   struct tm tm_r;
   struct tm t = *localtime_r(&Now, &tm_r); // this initializes the time zone in 't'
 
+  if (Now < VALID_TIME)
+     return; // we need the current time for handling PDC descriptors
+
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
       bool ExternalData = false;
-      int StartTime = SiEitEvent.getStartTime();
+      time_t StartTime = SiEitEvent.getStartTime();
       int Duration = SiEitEvent.getDuration();
       // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
       if (StartTime == 0 || StartTime > 0 && Duration == 0)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.10 2009/04/19 10:57:09 kls Exp $
+ * $Id: remux.h 2.17 2009/06/06 13:26:23 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -181,6 +181,15 @@ protected:
        ///< with GetPmt().
 public:
   cPatPmtGenerator(cChannel *Channel = NULL);
+  void SetVersions(int PatVersion, int PmtVersion);
+       ///< Sets the version numbers for the generated PAT and PMT, in case
+       ///< this generator is used to, e.g.,  continue a previously interrupted
+       ///< recording (in which case the numbers given should be derived from
+       ///< the PAT/PMT versions last used in the existing recording, incremented
+       ///< by 1. If the given numbers exceed the allowed range of 0..31, the
+       ///< higher bits will automatically be cleared.
+       ///< SetVersions() needs to be called before SetChannel() in order to
+       ///< have an effect from the very start.
   void SetChannel(cChannel *Channel);
        ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
@@ -204,10 +213,11 @@ private:
   int pmtPid;
   int vpid;
   int vtype;
+  bool updatePrimaryDevice;
 protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
 public:
-  cPatPmtParser(void);
+  cPatPmtParser(bool UpdatePrimaryDevice = false);
   void Reset(void);
        ///< Resets the parser. This function must be called whenever a new
        ///< stream is parsed.
@@ -221,6 +231,9 @@ public:
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.
+  bool GetVersions(int &PatVersion, int &PmtVersion);
+       ///< Returns true if a valid PAT/PMT has been parsed and stores
+       ///< the current version numbers in the given variables.
   int PmtPid(void) { return pmtPid; }
        ///< Returns the PMT pid as defined by the current PAT.
        ///< If no PAT has been received yet, -1 will be returned.
@@ -239,7 +252,6 @@ private:
   int size;
   int length;
   int offset;
-  bool synced;
 public:
   cTsToPes(void);
   ~cTsToPes();
@@ -249,11 +261,24 @@ public:
        ///< If the given TS packet starts a new PES payload packet, the converter
        ///< will be automatically reset. Any packets before the first one that starts
        ///< a new PES payload packet will be ignored.
+       ///< Once a TS packet has been put into a cTsToPes converter, all subsequent
+       ///< packets until the next call to Reset() must belong to the same PID as
+       ///< the first packet. There is no check whether this actually is the case, so
+       ///< the caller is responsible for making sure this condition is met.
   const uchar *GetPes(int &Length);
        ///< Gets a pointer to the complete PES packet, or NULL if the packet
        ///< is not complete yet. If the packet is complete, Length will contain
        ///< the total packet length. The returned pointer is only valid until
        ///< the next call to PutTs() or Reset(), or until this object is destroyed.
+       ///< Once GetPes() has returned a non-NULL value, it must be called
+       ///< repeatedly, and the data processed, until it returns NULL. This
+       ///< is because video packets may be larger than the data a single
+       ///< PES packet with an actual length field can hold, and are therefore
+       ///< split into several PES packets with smaller sizes.
+       ///< Note that for video data GetPes() may only be called if the next
+       ///< TS packet that will be given to PutTs() has the "payload start" flag
+       ///< set, because this is the only way to determine the end of a video PES
+       ///< packet.
   void Reset(void);
        ///< Resets the converter. This needs to be called after a PES packet has
        ///< been fetched by a call to GetPes(), and before the next call to

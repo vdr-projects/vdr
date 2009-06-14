@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.4 2009/05/02 10:44:40 kls Exp $
+ * $Id: dvbdevice.h 2.8 2009/06/06 11:16:47 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
+#include <sys/mman.h> // FIXME: workaround for broken linux-dvb header files
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/version.h>
 #include "device.h"
@@ -107,7 +108,8 @@ public:
   virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
   virtual void SetVideoFormat(bool VideoFormat16_9);
   virtual eVideoSystem GetVideoSystem(void);
-  virtual void GetVideoSize(int &Width, int &Height, eVideoAspect &Aspect);
+  virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
+  virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
 
 // Track facilities
 

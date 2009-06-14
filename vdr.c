@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 2.8 2009/05/03 10:33:06 kls Exp $
+ * $Id: vdr.c 2.10 2009/05/21 11:14:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -750,8 +750,10 @@ int main(int argc, char *argv[])
         // Update the OSD size:
         {
           static time_t lastOsdSizeUpdate = 0;
-          if (Now != lastOsdSizeUpdate) // once per second
+          if (Now != lastOsdSizeUpdate) { // once per second
              cOsdProvider::UpdateOsdSize();
+             lastOsdSizeUpdate = Now;
+             }
         }
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
@@ -1060,8 +1062,12 @@ int main(int argc, char *argv[])
           case kPause:
                if (!cControl::Control()) {
                   DELETE_MENU;
-                  if (!cRecordControls::PauseLiveVideo())
-                     Skins.Message(mtError, tr("No free DVB device to record!"));
+                  if (Setup.PauseKeyHandling) {
+                     if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?"))) {
+                        if (!cRecordControls::PauseLiveVideo())
+                           Skins.Message(mtError, tr("No free DVB device to record!"));
+                        }
+                     }
                   key = kNone; // nobody else needs to see this key
                   }
                break;

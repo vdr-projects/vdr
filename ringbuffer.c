@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 2.1 2009/02/24 11:32:14 kls Exp $
+ * $Id: ringbuffer.c 2.2 2009/05/17 10:05:17 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -43,7 +43,7 @@ void cRingBuffer::UpdatePercentage(int Fill)
 {
   if (Fill > maxFill)
      maxFill = Fill;
-  int percent = Fill * 100 / (Size() - 1) / PERCENTAGEDELTA * PERCENTAGEDELTA;
+  int percent = Fill * 100 / (Size() - 1) / PERCENTAGEDELTA * PERCENTAGEDELTA; // clamp down to nearest quantum
   if (percent != lastPercent) {
      if (percent >= PERCENTAGETHRESHOLD && percent > lastPercent || percent < PERCENTAGETHRESHOLD && lastPercent >= PERCENTAGETHRESHOLD) {
         dsyslog("buffer usage: %d%% (tid=%d)", percent, getThreadTid);

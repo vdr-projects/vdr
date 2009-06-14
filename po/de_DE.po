@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2008-12-14 16:10+0100\n"
+"POT-Creation-Date: 2009-05-21 13:18+0200\n"
 "PO-Revision-Date: 2007-11-25 15:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: German\n"
@@ -704,6 +704,15 @@ msgstr "CAM wird benutzt - wirklich zurücksetzen?"
 msgid "Can't reset CAM!"
 msgstr "Zurücksetzen des CAM fehlgeschlagen!"
 
+msgid "do not pause live video"
+msgstr "Live-Signal nicht anhalten"
+
+msgid "confirm pause live video"
+msgstr "Anhalten des Live-Signals bestätigen"
+
+msgid "pause live video"
+msgstr "Live-Signal anhalten"
+
 msgid "Recording"
 msgstr "Aufnahme"
 
@@ -721,6 +730,9 @@ msgstr "Default-Priorität"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Default-Lebensdauer (d)"
+
+msgid "Setup.Recording$Pause key handling"
+msgstr "Funktion der Pause-Taste"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pause-Priorität"
@@ -982,6 +994,9 @@ msgstr "Sonntag"
 
 msgid "Upcoming recording!"
 msgstr "Aufnahme beginnt in Kürze!"
+
+msgid "Pause live video?"
+msgstr "Live-Signal anhalten?"
 
 msgid "Recording started"
 msgstr "Aufzeichnung gestartet"
