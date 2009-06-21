@@ -1643,6 +1643,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to add a note to the INSTALL file about using subdirectories to
  split a large disk into separate areas for VDR's video data and other stuff
  for reporting wrong variable types in cIndexFile
+ for reporting a problem with cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in
+ case only part of the buffer has been accepted by the device
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

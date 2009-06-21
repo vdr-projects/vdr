@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.24 2009/06/06 13:24:57 kls Exp $
+ * $Id: remux.c 2.25 2009/06/21 13:30:03 kls Exp $
  */
 
 #include "remux.h"
@@ -610,7 +610,8 @@ bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
 cTsToPes::cTsToPes(void)
 {
   data = NULL;
-  size = length = offset = 0;
+  size = 0;
+  Reset();
 }
 
 cTsToPes::~cTsToPes()
@@ -641,6 +642,11 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
 
 const uchar *cTsToPes::GetPes(int &Length)
 {
+  if (repeatLast) {
+     repeatLast = false;
+     Length = lastLength;
+     return lastData;
+     }
   if (offset < length && PesLongEnough(length)) {
      if (!PesHasLength(data)) // this is a video PES packet with undefined length
         offset = 6; // trigger setting PES length for initial slice
@@ -661,12 +667,16 @@ const uchar *cTsToPes::GetPes(int &Length)
         p[4] = l / 256;
         p[5] = l & 0xFF;
         Length = l + 6;
+        lastLength = Length;
+        lastData = p;
         return p;
         }
      else {
         Length = PesLength(data);
         if (Length <= length) {
            offset = Length; // to make sure we break out in case of garbage data
+           lastLength = Length;
+           lastData = data;
            return data;
            }
         }
@@ -674,9 +684,17 @@ const uchar *cTsToPes::GetPes(int &Length)
   return NULL;
 }
 
+void cTsToPes::SetRepeatLast(void)
+{
+  repeatLast = true;
+}
+
 void cTsToPes::Reset(void)
 {
   length = offset = 0;
+  lastData = NULL;
+  lastLength = 0;
+  repeatLast = false;
 }
 
 // --- Some helper functions for debugging -----------------------------------

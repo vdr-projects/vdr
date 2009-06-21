@@ -6140,3 +6140,5 @@ Video Disk Recorder Revision History
 
 - Fixed storing the current OSD size in case the device has
   changed it in its setup menu (reported by Reinhard Nissl).
+- Fixed cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in case only part of the
+  buffer has been accepted by the device (reported by Udo Richter).
