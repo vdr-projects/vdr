@@ -6144,3 +6144,5 @@ Video Disk Recorder Revision History
   buffer has been accepted by the device (reported by Udo Richter).
 - Changed the EIT filter setup to save a few handles on devices that do hardware
   filtering.
+- Fixed deleting expired timers if they have the VPS flag set, but the event they
+  are assigned to doesn't have a VPS tag.
