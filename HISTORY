@@ -6142,3 +6142,5 @@ Video Disk Recorder Revision History
   changed it in its setup menu (reported by Reinhard Nissl).
 - Fixed cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in case only part of the
   buffer has been accepted by the device (reported by Udo Richter).
+- Changed the EIT filter setup to save a few handles on devices that do hardware
+  filtering.

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.5 2009/05/15 12:34:43 kls Exp $
+ * $Id: eit.c 2.6 2009/06/21 13:46:20 kls Exp $
  */
 
 #include "eit.h"
@@ -322,29 +322,30 @@ cTDT::cTDT(const u_char *Data)
 
 cEitFilter::cEitFilter(void)
 {
-  Set(0x12, 0x4E, 0xFE);  // event info, actual(0x4E)/other(0x4F) TS, present/following
-  Set(0x12, 0x50, 0xF0);  // event info, actual TS, schedule(0x50)/schedule for future days(0x5X)
-  Set(0x12, 0x60, 0xF0);  // event info, other  TS, schedule(0x60)/schedule for future days(0x6X)
-  Set(0x14, 0x70);        // TDT
+  Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
+  if (Setup.SetSystemTime && Setup.TimeTransponder)
+     Set(0x14, 0x70);     // TDT
 }
 
 void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
   switch (Pid) {
     case 0x12: {
-         cSchedulesLock SchedulesLock(true, 10);
-         cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
-         if (Schedules)
-            cEIT EIT(Schedules, Source(), Tid, Data);
-         else {
-            // If we don't get a write lock, let's at least get a read lock, so
-            // that we can set the running status and 'seen' timestamp (well, actually
-            // with a read lock we shouldn't be doing that, but it's only integers that
-            // get changed, so it should be ok)
-            cSchedulesLock SchedulesLock;
+         if (Tid >= 0x4E && Tid <= 0x6F) {
+            cSchedulesLock SchedulesLock(true, 10);
             cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
             if (Schedules)
-               cEIT EIT(Schedules, Source(), Tid, Data, true);
+               cEIT EIT(Schedules, Source(), Tid, Data);
+            else {
+               // If we don't get a write lock, let's at least get a read lock, so
+               // that we can set the running status and 'seen' timestamp (well, actually
+               // with a read lock we shouldn't be doing that, but it's only integers that
+               // get changed, so it should be ok)
+               cSchedulesLock SchedulesLock;
+               cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
+               if (Schedules)
+                  cEIT EIT(Schedules, Source(), Tid, Data, true);
+               }
             }
          }
          break;
