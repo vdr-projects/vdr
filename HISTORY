@@ -6135,3 +6135,8 @@ Video Disk Recorder Revision History
   to avoid problems in case the values are stored in the setup.conf
   file in a wrong way.
 - Fixed variable types in cIndexFile (reported by Udo Richter).
+
+2009-06-21: Version 1.7.9
+
+- Fixed storing the current OSD size in case the device has
+  changed it in its setup menu (reported by Reinhard Nissl).
