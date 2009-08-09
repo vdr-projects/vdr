@@ -6136,7 +6136,7 @@ Video Disk Recorder Revision History
   file in a wrong way.
 - Fixed variable types in cIndexFile (reported by Udo Richter).
 
-2009-06-21: Version 1.7.9
+2009-08-09: Version 1.7.9
 
 - Fixed storing the current OSD size in case the device has
   changed it in its setup menu (reported by Reinhard Nissl).
@@ -6146,3 +6146,5 @@ Video Disk Recorder Revision History
   filtering.
 - Fixed deleting expired timers if they have the VPS flag set, but the event they
   are assigned to doesn't have a VPS tag.
+- Fixed handling file name length on VFAT systems in case they
+  contain UTF-8 characters (thanks to Rolf Ahrenberg).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.2 2009/06/21 14:06:33 kls Exp $
+ * $Id: timers.c 2.3 2009/08/09 12:43:20 kls Exp $
  */
 
 #include "timers.h"
@@ -51,6 +51,11 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   event = NULL;
   if (Instant && channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
+  if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
+     dsyslog("timer file name too long for VFAT file system: '%s'", file);
+     file[Utf8SymChars(file, VFAT_MAX_FILENAME)] = 0;
+     dsyslog("timer file name truncated to '%s'", file);
+     }
 }
 
 cTimer::cTimer(const cEvent *Event)
@@ -83,6 +88,11 @@ cTimer::cTimer(const cEvent *Event)
   const char *Title = Event->Title();
   if (!isempty(Title))
      Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
+  if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
+     dsyslog("timer file name too long for VFAT file system: '%s'", file);
+     file[Utf8SymChars(file, VFAT_MAX_FILENAME)] = 0;
+     dsyslog("timer file name truncated to '%s'", file);
+     }
   aux = NULL;
   event = NULL; // let SetEvent() be called to get a log message
 }
@@ -296,13 +306,13 @@ bool cTimer::Parse(const char *s)
            p++;
         else
            p = filebuffer;
-        if (strlen(p) > VFAT_MAX_FILENAME) {
+        if (Utf8StrLen(p) > VFAT_MAX_FILENAME) {
            dsyslog("timer file name too long for VFAT file system: '%s'", p);
-           p[VFAT_MAX_FILENAME] = 0;
+           p[Utf8SymChars(p, VFAT_MAX_FILENAME)] = 0;
            dsyslog("timer file name truncated to '%s'", p);
            }
         }
-     Utf8Strn0Cpy(file, filebuffer, MaxFileName);
+     Utf8Strn0Cpy(file, filebuffer, sizeof(file));
      strreplace(file, '|', ':');
      if (isnumber(channelbuffer))
         channel = Channels.GetByNumber(atoi(channelbuffer));
