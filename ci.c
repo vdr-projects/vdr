@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.1 2008/04/13 13:28:52 kls Exp $
+ * $Id: ci.c 2.2 2009/08/15 11:16:27 kls Exp $
  */
 
 #include "ci.h"
@@ -551,6 +551,8 @@ bool cCiApplicationInformation::EnterMenu(void)
 
 // --- cCiCaPmt --------------------------------------------------------------
 
+#define MAXCASYSTEMIDS 64
+
 // Ca Pmt List Management:
 
 #define CPLM_MORE    0x00
@@ -574,9 +576,10 @@ private:
   int length;
   int esInfoLengthPos;
   uint8_t capmt[2048]; ///< XXX is there a specified maximum?
-  int caDescriptorsLength;
-  uint8_t caDescriptors[2048];
-  bool streamFlag;
+  int source;
+  int transponder;
+  int programNumber;
+  int caSystemIds[MAXCASYSTEMIDS + 1]; // list is zero terminated!
   void AddCaDescriptors(int Length, const uint8_t *Data);
 public:
   cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds);
@@ -589,7 +592,17 @@ public:
 cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds)
 {
   cmdId = CmdId;
-  caDescriptorsLength = GetCaDescriptors(Source, Transponder, ProgramNumber, CaSystemIds, sizeof(caDescriptors), caDescriptors, streamFlag);
+  source = Source;
+  transponder = Transponder;
+  programNumber = ProgramNumber;
+  int i = 0;
+  if (CaSystemIds) {
+     for (; CaSystemIds[i]; i++)
+         caSystemIds[i] = CaSystemIds[i];
+     }
+  caSystemIds[i] = 0;
+  uint8_t caDescriptors[512];
+  int caDescriptorsLength = GetCaDescriptors(source, transponder, programNumber, caSystemIds, sizeof(caDescriptors), caDescriptors, 0);
   length = 0;
   capmt[length++] = CPLM_ONLY;
   capmt[length++] = (ProgramNumber >> 8) & 0xFF;
@@ -598,7 +611,7 @@ cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber
   esInfoLengthPos = length;
   capmt[length++] = 0x00; // program_info_length H (at program level)
   capmt[length++] = 0x00; // program_info_length L
-  if (!streamFlag)
+  if (caDescriptorsLength > 0)
      AddCaDescriptors(caDescriptorsLength, caDescriptors);
 }
 
@@ -610,6 +623,8 @@ void cCiCaPmt::SetListManagement(uint8_t ListManagement)
 void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
 {
   if (Pid) {
+     uint8_t caDescriptors[512];
+     int caDescriptorsLength = GetCaDescriptors(source, transponder, programNumber, caSystemIds, sizeof(caDescriptors), caDescriptors, Pid);
      //XXX buffer overflow check???
      capmt[length++] = StreamType;
      capmt[length++] = (Pid >> 8) & 0xFF;
@@ -617,7 +632,7 @@ void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
      esInfoLengthPos = length;
      capmt[length++] = 0x00; // ES_info_length H (at ES level)
      capmt[length++] = 0x00; // ES_info_length L
-     if (streamFlag)
+     if (caDescriptorsLength > 0)
         AddCaDescriptors(caDescriptorsLength, caDescriptors);
      }
 }
@@ -642,8 +657,6 @@ void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 }
 
 // --- cCiConditionalAccessSupport -------------------------------------------
-
-#define MAXCASYSTEMIDS 64
 
 // CA Enable Ids:
 
