@@ -6153,3 +6153,5 @@ Video Disk Recorder Revision History
 - Updated vdr.1 to use the new file names in recording directories.
 - Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
   (thanks to Matthias Schwarzott).
+- Increased the value of MAXFRAMESIZE to better suit HD recordings (thanks to
+  Reinhard Nissl).

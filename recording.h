@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.8 2009/05/23 12:14:42 kls Exp $
+ * $Id: recording.h 2.9 2009/08/16 10:45:00 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -207,7 +207,7 @@ public:
   };
 
 // The maximum size of a single frame (up to HDTV 1920x1080):
-#define MAXFRAMESIZE  (KILOBYTE(512) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE to avoid breaking up TS packets
+#define MAXFRAMESIZE  (KILOBYTE(1024) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE to avoid breaking up TS packets
 
 // The maximum file size is limited by the range that can be covered
 // with a 40 bit 'unsigned int', which is 1TB. The actual maximum value
