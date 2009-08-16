@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.24 2009/06/21 13:26:06 kls Exp $
+ * $Id: device.c 2.25 2009/08/16 10:54:36 kls Exp $
  */
 
 #include "device.h"
@@ -1293,10 +1293,10 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
      int l;
      while (const uchar *p = tsToPesVideo.GetPes(l)) {
            int w = PlayVideo(p, l);
-           if (w == 0)
+           if (w <= 0) {
               tsToPesVideo.SetRepeatLast();
-           if (w <= 0)
               return w;
+              }
            }
      tsToPesVideo.Reset();
      }
@@ -1310,10 +1310,10 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
   int l;
   if (const uchar *p = tsToPesAudio.GetPes(l)) {
      int w = PlayAudio(p, l, 0);
-     if (w == 0)
+     if (w <= 0) {
         tsToPesAudio.SetRepeatLast();
-     if (w <= 0)
         return w;
+        }
      tsToPesAudio.Reset();
      }
   tsToPesAudio.PutTs(Data, Length);
