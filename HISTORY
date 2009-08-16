@@ -6155,3 +6155,4 @@ Video Disk Recorder Revision History
   (thanks to Matthias Schwarzott).
 - Increased the value of MAXFRAMESIZE to better suit HD recordings (thanks to
   Reinhard Nissl).
+- Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).

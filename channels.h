@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.4 2008/11/22 13:35:52 kls Exp $
+ * $Id: channels.h 2.5 2009/08/16 14:58:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -129,6 +129,9 @@ private:
   char dlangs[MAXDPIDS][MAXLANGCODE2];
   int spids[MAXSPIDS + 1]; // list is zero-terminated
   char slangs[MAXSPIDS][MAXLANGCODE2];
+  uchar subtitlingTypes[MAXSPIDS];
+  uint16_t compositionPageIds[MAXSPIDS];
+  uint16_t ancillaryPageIds[MAXSPIDS];
   int tpid;
   int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
@@ -185,6 +188,9 @@ public:
   const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
   const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
   const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
+  uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS ? subtitlingTypes[i] : 0); }
+  uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS ? compositionPageIds[i] : 0); }
+  uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS ? ancillaryPageIds[i] : 0); }
   int Tpid(void) const { return tpid; }
   const int *Caids(void) const { return caids; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
@@ -226,6 +232,7 @@ public:
   void SetCaDescriptors(int Level);
   void SetLinkChannels(cLinkChannels *LinkChannels);
   void SetRefChannel(cChannel *RefChannel);
+  void SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds);
   };
 
 class cChannels : public cRwLock, public cConfig<cChannel> {

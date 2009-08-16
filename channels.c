@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.6 2009/04/25 13:57:32 kls Exp $
+ * $Id: channels.c 2.7 2009/08/16 15:08:49 kls Exp $
  */
 
 #include "channels.h"
@@ -530,6 +530,22 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][
      tpid = Tpid;
      modification |= mod;
      Channels.SetModified();
+     }
+}
+
+void cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds)
+{
+  if (SubtitlingTypes) {
+     for (int i = 0; i < MAXSPIDS; i++)
+         subtitlingTypes[i] = SubtitlingTypes[i];
+     }
+  if (CompositionPageIds) {
+     for (int i = 0; i < MAXSPIDS; i++)
+         compositionPageIds[i] = CompositionPageIds[i];
+     }
+  if (AncillaryPageIds) {
+     for (int i = 0; i < MAXSPIDS; i++)
+         ancillaryPageIds[i] = AncillaryPageIds[i];
      }
 }
 

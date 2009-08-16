@@ -2486,3 +2486,6 @@ Günter Niedermeier <linuxtv@ncs-online.de>
 Martin Neuditschko <yosuke.tomoe@gmx.net>
  for reporting a problem with error messages from cDvbDevice::GetVideoSize()
  on systems with no real primary replay device
+
+Mikko Tuumanen <mikko.tuumanen@utu.fi>
+ for implementing full handling of subtitling descriptors

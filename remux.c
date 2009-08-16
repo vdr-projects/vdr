@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.25 2009/06/21 13:30:03 kls Exp $
+ * $Id: remux.c 2.26 2009/08/16 15:13:42 kls Exp $
  */
 
 #include "remux.h"
@@ -198,7 +198,7 @@ int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target)
   return i;
 }
 
-int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Language)
+int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId)
 {
   int i = 0;
   Target[i++] = SI::SubtitlingDescriptorTag;
@@ -206,11 +206,11 @@ int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Langua
   Target[i++] = *Language++;
   Target[i++] = *Language++;
   Target[i++] = *Language++;
-  Target[i++] = 0x00; // subtitling type
-  Target[i++] = 0x00; // composition page id hi
-  Target[i++] = 0x01; // composition page id lo
-  Target[i++] = 0x00; // ancillary page id hi
-  Target[i++] = 0x01; // ancillary page id lo
+  Target[i++] = SubtitlingType;
+  Target[i++] = CompositionPageId >> 8;
+  Target[i++] = CompositionPageId & 0xFF;
+  Target[i++] = AncillaryPageId >> 8;
+  Target[i++] = AncillaryPageId & 0xFF;
   IncEsInfoLength(i);
   return i;
 }
@@ -327,7 +327,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
          }
      for (int n = 0; Channel->Spid(n); n++) {
          i += MakeStream(buf + i, 0x06, Channel->Spid(n));
-         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n));
+         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
          }
 
      int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC

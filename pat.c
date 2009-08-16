@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.3 2009/08/15 22:16:02 kls Exp $
+ * $Id: pat.c 2.4 2009/08/16 15:01:03 kls Exp $
  */
 
 #include "pat.h"
@@ -334,6 +334,9 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Apids[MAXAPIDS + 1] = { 0 }; // these lists are zero-terminated
         int Dpids[MAXDPIDS + 1] = { 0 };
         int Spids[MAXSPIDS + 1] = { 0 };
+        uchar SubtitlingTypes[MAXSPIDS + 1] = { 0 };
+        uint16_t CompositionPageIds[MAXSPIDS + 1] = { 0 };
+        uint16_t AncillaryPageIds[MAXSPIDS + 1] = { 0 };
         char ALangs[MAXAPIDS][MAXLANGCODE2] = { "" };
         char DLangs[MAXDPIDS][MAXLANGCODE2] = { "" };
         char SLangs[MAXSPIDS][MAXLANGCODE2] = { "" };
@@ -405,6 +408,9 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                     int n = 0;
                                     for (SI::Loop::Iterator it; sd->subtitlingLoop.getNext(sub, it); ) {
                                         if (sub.languageCode[0]) {
+                                           SubtitlingTypes[NumSpids] = sub.getSubtitlingType();
+                                           CompositionPageIds[NumSpids] = sub.getCompositionPageId();
+                                           AncillaryPageIds[NumSpids] = sub.getAncillaryPageId();
                                            if (n > 0)
                                               *s++ = '+';
                                            strn0cpy(s, I18nNormalizeLanguageCode(sub.languageCode), MAXLANGCODE1);
@@ -447,6 +453,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         if (Setup.UpdateChannels >= 2) {
            Channel->SetPids(Vpid, Ppid, Vtype, Apids, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
+           Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
            }
         Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
         }
