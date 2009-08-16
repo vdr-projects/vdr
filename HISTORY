@@ -6151,3 +6151,5 @@ Video Disk Recorder Revision History
 - Fixed generating CaPmts in case audio and video are encrypted using different
   ECM pids.
 - Updated vdr.1 to use the new file names in recording directories.
+- Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
+  (thanks to Matthias Schwarzott).

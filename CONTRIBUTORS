@@ -2287,6 +2287,7 @@ Matthias Schwarzott <zzam@gentoo.org>
  for adding DESTDIR and PREFIX handling to the Makefile
  for fixing some compiler warnings with gcc-4.2.0
  for fixing setting the locale file name in i18n-to-gettext.pl
+ for fixing cRecordings::DelByName() to avoid compilation errors with gcc 4.4
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems

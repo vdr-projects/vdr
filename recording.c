@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.16 2009/06/13 13:34:08 kls Exp $
+ * $Id: recording.c 2.17 2009/08/16 10:39:43 kls Exp $
  */
 
 #include "recording.h"
@@ -1156,7 +1156,7 @@ void cRecordings::DelByName(const char *FileName)
   if (recording) {
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      Del(recording, false);
-     char *ext = strrchr(recording->FileName(), '.');
+     char *ext = strrchr(recording->fileName, '.');
      if (ext) {
         strncpy(ext, DELEXT, strlen(ext));
         recording->fileSizeMB = DirSizeMB(recording->FileName());
