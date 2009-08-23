@@ -6136,7 +6136,7 @@ Video Disk Recorder Revision History
   file in a wrong way.
 - Fixed variable types in cIndexFile (reported by Udo Richter).
 
-2009-08-16: Version 1.7.9
+2009-08-23: Version 1.7.9
 
 - Fixed storing the current OSD size in case the device has
   changed it in its setup menu (reported by Reinhard Nissl).
