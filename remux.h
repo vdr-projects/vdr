@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.17 2009/06/06 13:26:23 kls Exp $
+ * $Id: remux.h 2.19 2009/08/16 15:15:33 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -168,7 +168,7 @@ private:
 protected:
   int MakeStream(uchar *Target, uchar Type, int Pid);
   int MakeAC3Descriptor(uchar *Target);
-  int MakeSubtitlingDescriptor(uchar *Target, const char *Language);
+  int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
   void GeneratePmtPid(cChannel *Channel);
@@ -252,6 +252,9 @@ private:
   int size;
   int length;
   int offset;
+  uchar *lastData;
+  int lastLength;
+  bool repeatLast;
 public:
   cTsToPes(void);
   ~cTsToPes();
@@ -279,6 +282,9 @@ public:
        ///< TS packet that will be given to PutTs() has the "payload start" flag
        ///< set, because this is the only way to determine the end of a video PES
        ///< packet.
+  void SetRepeatLast(void);
+       ///< Makes the next call to GetPes() return exactly the same data as the
+       ///< last one (provided there was no call to Reset() in the meantime).
   void Reset(void);
        ///< Resets the converter. This needs to be called after a PES packet has
        ///< been fetched by a call to GetPes(), and before the next call to

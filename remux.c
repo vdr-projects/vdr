@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.24 2009/06/06 13:24:57 kls Exp $
+ * $Id: remux.c 2.26 2009/08/16 15:13:42 kls Exp $
  */
 
 #include "remux.h"
@@ -198,7 +198,7 @@ int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target)
   return i;
 }
 
-int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Language)
+int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId)
 {
   int i = 0;
   Target[i++] = SI::SubtitlingDescriptorTag;
@@ -206,11 +206,11 @@ int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Langua
   Target[i++] = *Language++;
   Target[i++] = *Language++;
   Target[i++] = *Language++;
-  Target[i++] = 0x00; // subtitling type
-  Target[i++] = 0x00; // composition page id hi
-  Target[i++] = 0x01; // composition page id lo
-  Target[i++] = 0x00; // ancillary page id hi
-  Target[i++] = 0x01; // ancillary page id lo
+  Target[i++] = SubtitlingType;
+  Target[i++] = CompositionPageId >> 8;
+  Target[i++] = CompositionPageId & 0xFF;
+  Target[i++] = AncillaryPageId >> 8;
+  Target[i++] = AncillaryPageId & 0xFF;
   IncEsInfoLength(i);
   return i;
 }
@@ -327,7 +327,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
          }
      for (int n = 0; Channel->Spid(n); n++) {
          i += MakeStream(buf + i, 0x06, Channel->Spid(n));
-         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n));
+         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
          }
 
      int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
@@ -610,7 +610,8 @@ bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
 cTsToPes::cTsToPes(void)
 {
   data = NULL;
-  size = length = offset = 0;
+  size = 0;
+  Reset();
 }
 
 cTsToPes::~cTsToPes()
@@ -641,6 +642,11 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
 
 const uchar *cTsToPes::GetPes(int &Length)
 {
+  if (repeatLast) {
+     repeatLast = false;
+     Length = lastLength;
+     return lastData;
+     }
   if (offset < length && PesLongEnough(length)) {
      if (!PesHasLength(data)) // this is a video PES packet with undefined length
         offset = 6; // trigger setting PES length for initial slice
@@ -661,12 +667,16 @@ const uchar *cTsToPes::GetPes(int &Length)
         p[4] = l / 256;
         p[5] = l & 0xFF;
         Length = l + 6;
+        lastLength = Length;
+        lastData = p;
         return p;
         }
      else {
         Length = PesLength(data);
         if (Length <= length) {
            offset = Length; // to make sure we break out in case of garbage data
+           lastLength = Length;
+           lastData = data;
            return data;
            }
         }
@@ -674,9 +684,17 @@ const uchar *cTsToPes::GetPes(int &Length)
   return NULL;
 }
 
+void cTsToPes::SetRepeatLast(void)
+{
+  repeatLast = true;
+}
+
 void cTsToPes::Reset(void)
 {
   length = offset = 0;
+  lastData = NULL;
+  lastLength = 0;
+  repeatLast = false;
 }
 
 // --- Some helper functions for debugging -----------------------------------

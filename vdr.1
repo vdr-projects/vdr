@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.1 2009/01/18 11:05:56 kls Exp $
+.\" $Id: vdr.1 2.2 2009/08/16 10:28:39 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -205,16 +205,16 @@ User definable commands (executed from the \fBCommands\fR menu).
 SVDRP host configuration, defining which hosts or networks are given
 access to the SVDRP port.
 .TP
-.I marks.vdr
+.I marks
 Contains the editing marks defined for a recording.
 .TP
-.I info.vdr
+.I info
 Contains a description of the recording.
 .TP
-.I resume.vdr
+.I resume
 Contains the index into the recording where the last replay session left off.
 .TP
-.I index.vdr
+.I index
 Contains the file number, offset and type of each frame of the recording.
 .TP
 .I remote.conf
@@ -223,7 +223,7 @@ Contains the key assignments for the remote control.
 .I keymacros.conf
 Contains user defined remote control key macros.
 .TP
-.IR 001.vdr\  ...\  255.vdr
+.IR 00001.ts\  ...\  65535.ts
 The actual data files of a recording.
 .TP
 .I epg.data

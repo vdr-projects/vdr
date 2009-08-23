@@ -1079,6 +1079,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding cThread::SetIOPriority() and using it in cRemoveDeletedRecordingsThread
  for suggesting to introduce cDevice::GetOsdSize()
  for adding a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
+ for fixing handling file name length on VFAT systems in case they
+ contain UTF-8 characters
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1229,6 +1231,9 @@ Reinhard Nissl <rnissl@gmx.de>
  and GetOsdSize()
  for reporting a problem with calculating menu colum widths in case the font has a
  size other than the default size
+ for reporting a bug in storing the current OSD size in case the
+ device has changed it in its setup menu
+ for increasing the value of MAXFRAMESIZE to better suit HD recordings
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1641,6 +1646,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to add a note to the INSTALL file about using subdirectories to
  split a large disk into separate areas for VDR's video data and other stuff
  for reporting wrong variable types in cIndexFile
+ for reporting a problem with cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in
+ case only part of the buffer has been accepted by the device
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2281,6 +2288,7 @@ Matthias Schwarzott <zzam@gentoo.org>
  for adding DESTDIR and PREFIX handling to the Makefile
  for fixing some compiler warnings with gcc-4.2.0
  for fixing setting the locale file name in i18n-to-gettext.pl
+ for fixing cRecordings::DelByName() to avoid compilation errors with gcc 4.4
 
 Martin Ostermann <martin@familie-ostermann.de>
  for fixing processing the PDCDescriptor in 'libsi' on big endian systems
@@ -2478,3 +2486,6 @@ Günter Niedermeier <linuxtv@ncs-online.de>
 Martin Neuditschko <yosuke.tomoe@gmx.net>
  for reporting a problem with error messages from cDvbDevice::GetVideoSize()
  on systems with no real primary replay device
+
+Mikko Tuumanen <mikko.tuumanen@utu.fi>
+ for implementing full handling of subtitling descriptors

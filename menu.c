@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.8 2009/05/21 11:10:38 kls Exp $
+ * $Id: menu.c 2.9 2009/06/21 09:56:06 kls Exp $
  */
 
 #include "menu.h"
@@ -2133,6 +2133,7 @@ cMenuSetupBase::cMenuSetupBase(void)
 void cMenuSetupBase::Store(void)
 {
   Setup = data;
+  cOsdProvider::UpdateOsdSize(true);
   Setup.Save();
 }
 

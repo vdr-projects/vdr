@@ -6133,5 +6133,26 @@ Video Disk Recorder Revision History
   default size (reported by Reinhard Nissl).
 - Added a plausibility check for the OSD percentage parameters
   to avoid problems in case the values are stored in the setup.conf
-  file in a  wrong way.
+  file in a wrong way.
 - Fixed variable types in cIndexFile (reported by Udo Richter).
+
+2009-08-23: Version 1.7.9
+
+- Fixed storing the current OSD size in case the device has
+  changed it in its setup menu (reported by Reinhard Nissl).
+- Fixed cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in case only part of the
+  buffer has been accepted by the device (reported by Udo Richter).
+- Changed the EIT filter setup to save a few handles on devices that do hardware
+  filtering.
+- Fixed deleting expired timers if they have the VPS flag set, but the event they
+  are assigned to doesn't have a VPS tag.
+- Fixed handling file name length on VFAT systems in case they
+  contain UTF-8 characters (thanks to Rolf Ahrenberg).
+- Fixed generating CaPmts in case audio and video are encrypted using different
+  ECM pids.
+- Updated vdr.1 to use the new file names in recording directories.
+- Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
+  (thanks to Matthias Schwarzott).
+- Increased the value of MAXFRAMESIZE to better suit HD recordings (thanks to
+  Reinhard Nissl).
+- Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
