@@ -6156,3 +6156,7 @@ Video Disk Recorder Revision History
 - Increased the value of MAXFRAMESIZE to better suit HD recordings (thanks to
   Reinhard Nissl).
 - Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
+
+2009-08-29: Version 1.7.10
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
