@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.5 2009/08/16 14:58:26 kls Exp $
+ * $Id: channels.h 2.6 2009/08/30 11:05:54 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -188,9 +188,9 @@ public:
   const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
   const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
   const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
-  uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS ? subtitlingTypes[i] : 0); }
-  uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS ? compositionPageIds[i] : 0); }
-  uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS ? ancillaryPageIds[i] : 0); }
+  uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : 0; }
+  uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : 0; }
+  uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : 0; }
   int Tpid(void) const { return tpid; }
   const int *Caids(void) const { return caids; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
