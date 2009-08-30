@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.7 2009/08/16 15:08:49 kls Exp $
+ * $Id: channels.c 2.8 2009/08/30 11:25:50 kls Exp $
  */
 
 #include "channels.h"
@@ -508,7 +508,8 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][
      q = NewSpidsBuf;
      q += IntArrayToString(q, Spids, 10, SLangs);
      *q = 0;
-     dsyslog("changing pids of channel %d from %d+%d=%d:%s:%s:%d to %d+%d=%d:%s:%s:%d", Number(), vpid, ppid, vtype, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, Vtype, NewApidsBuf, NewSpidsBuf, Tpid);
+     if (Number())
+        dsyslog("changing pids of channel %d from %d+%d=%d:%s:%s:%d to %d+%d=%d:%s:%s:%d", Number(), vpid, ppid, vtype, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, Vtype, NewApidsBuf, NewSpidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
      vtype = Vtype;
@@ -558,7 +559,8 @@ void cChannel::SetCaIds(const int *CaIds)
      char NewCaIdsBuf[MAXCAIDS * 5 + 10];
      IntArrayToString(OldCaIdsBuf, caids, 16);
      IntArrayToString(NewCaIdsBuf, CaIds, 16);
-     dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
+     if (Number())
+        dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
      for (int i = 0; i <= MAXCAIDS; i++) { // <= to copy the terminating 0
          caids[i] = CaIds[i];
          if (!CaIds[i])
@@ -574,7 +576,7 @@ void cChannel::SetCaDescriptors(int Level)
   if (Level > 0) {
      modification |= CHANNELMOD_CA;
      Channels.SetModified();
-     if (Level > 1)
+     if (Number() && Level > 1)
         dsyslog("changing ca descriptors of channel %d", Number());
      }
 }
@@ -622,7 +624,8 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
      }
   else
      q += sprintf(q, " none");
-  dsyslog(buffer);
+  if (Number())
+     dsyslog(buffer);
 }
 
 void cChannel::SetRefChannel(cChannel *RefChannel)

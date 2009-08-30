@@ -2490,3 +2490,7 @@ Martin Neuditschko <yosuke.tomoe@gmx.net>
 
 Mikko Tuumanen <mikko.tuumanen@utu.fi>
  for implementing full handling of subtitling descriptors
+
+Timothy D. Lenz <tlenz@vorgon.com>
+ for reporting a problem with logging changes for channels that
+ have no number

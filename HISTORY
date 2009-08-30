@@ -6162,3 +6162,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
   (thanks to Rolf Ahrenberg).
+- Fixed not logging changes for channels that have no number
+  (reportted by Timothy D. Lenz).
