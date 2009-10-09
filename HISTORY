@@ -6163,4 +6163,4 @@ Video Disk Recorder Revision History
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
   (thanks to Rolf Ahrenberg).
 - Fixed not logging changes for channels that have no number
-  (reportted by Timothy D. Lenz).
+  (reported by Timothy D. Lenz).
