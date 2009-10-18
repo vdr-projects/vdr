@@ -6165,3 +6165,4 @@ Video Disk Recorder Revision History
 - Fixed not logging changes for channels that have no number
   (reported by Timothy D. Lenz).
 - Changed the project's URLs and email to tvdr.de.
+- Added Lithuanian language translations (thanks to Valdemaras Pipiras).
