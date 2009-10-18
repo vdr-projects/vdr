@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 1.6 2007/11/04 10:57:36 kls Exp $
+# $Id: i18n-to-gettext.pl 2.1 2009/10/18 14:07:49 kls Exp $
 
 # How to convert an actual plugin:
 #
@@ -87,7 +87,7 @@ die "can't find internationalized texts!" unless ($I18NFILE);
 # Plugin specific information:
 
 $TITLE = "VDR plugin language source file";
-$COPYRIGHT = "2007 Klaus Schmidinger <kls\@cadsoft.de>";
+$COPYRIGHT = "2007 Klaus Schmidinger <kls\@tvdr.de>";
 $PACKAGE = "VDR";
 $VERSION = "1.5.7";
 $MSGIDBUGS = "" || die "enter your email address here"; # escape the '@', as in "user\@domain.tld"
@@ -152,8 +152,8 @@ $POTFILE = "$PODIR/$PLUGIN.pot";
   );
 
 @TRANSLATORS = (
-  "Klaus Schmidinger <kls\@cadsoft.de>, 2000",
-  "Klaus Schmidinger <kls\@cadsoft.de>, 2000",
+  "Klaus Schmidinger <kls\@tvdr.de>, 2000",
+  "Klaus Schmidinger <kls\@tvdr.de>, 2000",
   "Miha Setina <mihasetina\@softhome.net>, 2000; Matjaz Thaler <matjaz.thaler\@guest.arnes.si>, 2003",
   "Alberto Carraro <bertocar\@tin.it>, 2001; Antonio Ospite <ospite\@studenti.unina.it>, 2003; Sean Carlos <seanc\@libero.it>, 2005",
   "Arnold Niessen <niessen\@iae.nl> <arnold.niessen\@philips.com>, 2001; Hans Dingemans <hans.dingemans\@tacticalops.nl>, 2003; Maarten Wisse <Maarten.Wisse\@urz.uni-hd.de>, 2005",
@@ -177,8 +177,8 @@ $POTFILE = "$PODIR/$PLUGIN.pot";
   );
 
 @LASTTRANSLATOR = (
-  "Klaus Schmidinger <kls\@cadsoft.de>",
-  "Klaus Schmidinger <kls\@cadsoft.de>",
+  "Klaus Schmidinger <kls\@tvdr.de>",
+  "Klaus Schmidinger <kls\@tvdr.de>",
   "Matjaz Thaler <matjaz.thaler\@guest.arnes.si>",
   "Sean Carlos <seanc\@libero.it>",
   "Maarten Wisse <Maarten.Wisse\@urz.uni-hd.de>",

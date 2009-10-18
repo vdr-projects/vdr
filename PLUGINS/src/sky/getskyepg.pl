@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.7 2008/03/22 10:17:42 kls Exp $
+# $Id: getskyepg.pl 2.1 2009/10/18 14:05:47 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -35,10 +35,10 @@ $User   = $opt_U;
 
 # See "Rules for using this data" on http://bleb.org/tv/data/listings.
 # In case you modify this script in a way that changes its behavior
-# towards the www.bleb.org website, please replace 'vdrbugs@cadsoft.de'
+# towards the www.bleb.org website, please replace 'vdr-bugs@tvdr.de'
 # with your own email address! That way Andrew Flegg <andrew@bleb.org>,
 # who runs that web site, can contact you in case of problems.
-$IDENT = "VDR::getskyepg.pl, http://www.cadsoft.de/vdr - vdrbugs\@cadsoft.de";
+$IDENT = "VDR::getskyepg.pl, http://www.tvdr.de - vdr-bugs\@tvdr.de";
 $GAP = 2;
 
 $SkyWebPage = "www.bleb.org/tv/data/listings";

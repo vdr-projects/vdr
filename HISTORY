@@ -922,7 +922,7 @@ Video Disk Recorder Revision History
   give the user some feedback in case this takes longer.
 - Status messages are now displayed centered.
 - Removed the 'Tools' subdirectory from the VDR archive. All contributed tools
-  can now be found at ftp://ftp.cadsoft.de/pub/people/kls/vdr/Tools.
+  can now be found at ftp://ftp.tvdr.de/vdr/Tools.
 
 2002-01-29: Version 0.99pre3
 
@@ -5839,14 +5839,14 @@ Video Disk Recorder Revision History
   DVB API in the kernel (based on patches from Igor M. Liplianin, Niels Wagenaar
   and Edgar Hucek). VDR now uses the S2API driver from http://linuxtv.org/hg/v4l-dvb.
   In order to correctly detect DVB-S2 capable devices, you need to apply the patch
-  from ftp://ftp.cadsoft.de/vdr/Developer/v4l-dvb-s2api-add-s2-capability.diff to
+  from ftp://ftp.tvdr.de/vdr/Developer/v4l-dvb-s2api-add-s2-capability.diff to
   the driver source, because the S2API doesn't provide a way of telling whether a
   device can handle DVB-S2 transponders.
 - The cDvbTuner::IsTunedTo() function now also checks the symbol rate in case of
   DVB-S and DVB-C.
 - Improved handling PES video packets with zero length when converting from TS to PES.
   For good replay in Transfer Mode on full featured DVB cards you may want to apply
-  the patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_v4ldvb_api5_audiobuf_test_1.diff
+  the patch from ftp://ftp.tvdr.de/vdr/Developer/av7110_v4ldvb_api5_audiobuf_test_1.diff
   to the driver (thanks to Oliver Endriss).
 
 2009-01-06: Version 1.7.3
@@ -5918,7 +5918,7 @@ Video Disk Recorder Revision History
   flag is now in the driver, anyway.
 - The full-featured DVB cards are now given the TS data directly for replay
   (thanks to Oliver Endriss for enhancing the av7110 driver to make it replay
-  TS data). The patch from ftp://ftp.cadsoft.de/vdr/Developer/av7110_ts_replay__1.diff
+  TS data). The patch from ftp://ftp.tvdr.de/vdr/Developer/av7110_ts_replay__1.diff
   implements this change in the driver.
   The patch av7110_v4ldvb_api5_audiobuf_test_1.diff mentioned in version 1.7.2
   is still necessary to avoid audio and video glitches on some channels.
@@ -6157,10 +6157,11 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
 
-2009-08-30: Version 1.7.10
+2009-10-18: Version 1.7.10
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
   (thanks to Rolf Ahrenberg).
 - Fixed not logging changes for channels that have no number
   (reported by Timothy D. Lenz).
+- Changed the project's URLs and email to tvdr.de.

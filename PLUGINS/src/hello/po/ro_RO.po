@@ -1,5 +1,5 @@
 # VDR plugin language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
 # Lucian Muresan <lucianm@users.sourceforge.net>, 2004
@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
-"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2007-10-13 11:52+0200\n"
 "PO-Revision-Date: 2007-08-11 12:34+0200\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"

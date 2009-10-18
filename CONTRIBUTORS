@@ -1,7 +1,7 @@
 Tons of suggestions, bugreports, patches and other contributions have been
 provided by the people on the 'linux-dvb' and 'vdr' mailing lists
 Special thanks go to the following individuals (if your name is missing here,
-please send an email to kls@cadsoft.de):
+please send an email to kls@tvdr.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
@@ -526,7 +526,7 @@ Andreas Böttger <fboettger@t-online.de>
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
 
-Rudi Hofer (Rudi.Hofer@cadsoft.de)
+Rudi Hofer (Rudi.Hofer@gmx.de)
  for his help in keeping 'channels.conf' up to date
 
 Gregoire Favre <greg@ulima.unil.ch>

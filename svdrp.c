@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.5 2009/06/06 14:03:55 kls Exp $
+ * $Id: svdrp.c 2.6 2009/10/18 14:08:58 kls Exp $
  */
 
 #include "svdrp.h"
@@ -887,7 +887,7 @@ void cSVDRP::CmdHELP(const char *Option)
          PrintHelpTopics(hp);
          }
      Reply(-214, "To report bugs in the implementation send email to");
-     Reply(-214, "    vdr-bugs@cadsoft.de");
+     Reply(-214, "    vdr-bugs@tvdr.de");
      }
   Reply(214, "End of HELP info");
 }
