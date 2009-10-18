@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
-"PO-Revision-Date: 2008-03-21 08:44+0800\n"
+"POT-Creation-Date: 2009-02-09 12:37+0800\n"
+"PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgid "off"
 msgstr "关"
 
 msgid "on"
-msgstr ""
+msgstr "开"
 
 msgid "auto"
 msgstr "自动"
@@ -31,7 +31,7 @@ msgid "none"
 msgstr "无"
 
 msgid "*** Invalid Channel ***"
-msgstr "***无效频道 ***"
+msgstr "***无效的频道 ***"
 
 msgid "Channel not available!"
 msgstr "频道不可用!"
@@ -47,7 +47,7 @@ msgstr "没有标题"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "中文"
+msgstr "简体中文"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
@@ -63,7 +63,7 @@ msgid "RC code detected!"
 msgstr "发现RC代码!"
 
 msgid "Do not press any key..."
-msgstr "不按下任何键... "
+msgstr "不要按下任何键... "
 
 msgid "Phase 2: Learning specific key codes"
 msgstr "阶段 2: 学习特殊的按键代码"
@@ -94,7 +94,7 @@ msgid "Phase 3: Saving key codes"
 msgstr "阶段 3: 保存代码"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "请按上保存，按下取消"
+msgstr "请按上保存,按下取消."
 
 msgid "Key$Up"
 msgstr "上"
@@ -229,10 +229,10 @@ msgid "Key$User9"
 msgstr "用户9"
 
 msgid "Disk"
-msgstr "磁盘"
+msgstr "硬盘已使用"
 
 msgid "free"
-msgstr "剩余"
+msgstr "可录像时间"
 
 msgid "Free To Air"
 msgstr "剩余空间"
@@ -247,7 +247,7 @@ msgid "Name"
 msgstr "名字"
 
 msgid "Source"
-msgstr "来源"
+msgstr "卫星源"
 
 msgid "Frequency"
 msgstr "频率"
@@ -286,16 +286,16 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Polarization"
-msgstr "极化"
+msgstr "极化方式"
 
 msgid "System"
-msgstr ""
+msgstr "卫星系统"
 
 msgid "Srate"
-msgstr "比率"
+msgstr "符号率"
 
 msgid "Inversion"
-msgstr "倒置"
+msgstr "反向"
 
 msgid "CoderateH"
 msgstr "高符号频率"
@@ -319,13 +319,13 @@ msgid "Hierarchy"
 msgstr "层次"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "越零率"
 
 msgid "Channel settings are not unique!"
 msgstr "频道设置不是唯一的！"
 
 msgid "Channels"
-msgstr "频道"
+msgstr "频道列表"
 
 msgid "Button$Edit"
 msgstr "编辑"
@@ -340,7 +340,7 @@ msgid "Button$Mark"
 msgstr "标记"
 
 msgid "Channel is being used by a timer!"
-msgstr "频道正在使用定时器！"
+msgstr "频道正在录像！"
 
 msgid "Delete channel?"
 msgstr "是否删除频道？"
@@ -379,7 +379,7 @@ msgid "First day"
 msgstr "第一天"
 
 msgid "Timers"
-msgstr "计时器"
+msgstr "录像中列表"
 
 msgid "Button$On/Off"
 msgstr "开/关"
@@ -391,7 +391,7 @@ msgid "Delete timer?"
 msgstr "是否删除时间？"
 
 msgid "Timer still recording - really delete?"
-msgstr "计时器仍在录制-真的删除？ "
+msgstr "录像中-是否的删除？ "
 
 msgid "Event"
 msgstr "事件"
@@ -400,7 +400,7 @@ msgid "Button$Timer"
 msgstr "时间"
 
 msgid "Button$Record"
-msgstr "记录"
+msgstr "录像"
 
 msgid "Button$Switch"
 msgstr "开关"
@@ -409,7 +409,7 @@ msgid "What's on now?"
 msgstr "现在播放的节目?"
 
 msgid "What's on next?"
-msgstr "下一播放的节目?"
+msgstr "下一个播放的节目?"
 
 msgid "Button$Next"
 msgstr "下一步"
@@ -418,14 +418,14 @@ msgid "Button$Now"
 msgstr "现在"
 
 msgid "Button$Schedule"
-msgstr "任务表"
+msgstr "任务列表"
 
 msgid "Can't switch channel!"
 msgstr "不能切换频道"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "时间表 - %s"
+msgstr "任务列表 - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -445,31 +445,31 @@ msgid "CAM not responding!"
 msgstr "CAM 没有响应！"
 
 msgid "Recording info"
-msgstr "记录信息"
+msgstr "录像信息"
 
 msgid "Button$Play"
 msgstr "播放"
 
 msgid "Button$Rewind"
-msgstr "重绕"
+msgstr "重放"
 
 msgid "Recordings"
-msgstr "记录"
+msgstr "录像回放列表"
 
 msgid "Button$Open"
 msgstr "打开"
 
 msgid "Commands"
-msgstr "命令"
+msgstr "常用操作命令"
 
 msgid "Error while accessing recording!"
-msgstr "存取记录错误！"
+msgstr "存取录像错误！"
 
 msgid "Delete recording?"
-msgstr "是否删除记录？"
+msgstr "是否删除录像？"
 
 msgid "Error while deleting recording!"
-msgstr "删除记录错误！"
+msgstr "删除录像错误！"
 
 msgid "Recording commands"
 msgstr "记录命令"
@@ -478,52 +478,52 @@ msgid "never"
 msgstr "从不"
 
 msgid "skin dependent"
-msgstr "外壳选择"
+msgstr "皮肤选择"
 
 msgid "always"
 msgstr "总是"
 
 msgid "OSD"
-msgstr "OSD"
+msgstr "系统菜单设置"
 
 msgid "Setup.OSD$Language"
-msgstr "语言"
+msgstr "语言选择"
 
 msgid "Setup.OSD$Skin"
-msgstr "外壳"
+msgstr "皮肤选择"
 
 msgid "Setup.OSD$Theme"
-msgstr "主题"
+msgstr "主题选择"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "左 (%)"
+msgstr "左边距离设置 (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "顶部 (%)"
+msgstr "顶部距离设置 (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "宽 (%)"
+msgstr "宽度设置 (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "高 (%)"
+msgstr "高度设置 (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "时间信息 (s)"
+msgstr "显示信息时间(秒)"
 
 msgid "Setup.OSD$Use small font"
 msgstr "使用小字体"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "抗锯齿"
+msgstr "抗锯齿选择"
 
 msgid "Setup.OSD$Default font"
-msgstr "默认字体"
+msgstr "默认字体选择"
 
 msgid "Setup.OSD$Small font"
-msgstr "小字体"
+msgstr "小字体选择"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "固定字体"
+msgstr "固定字体选择"
 
 msgid "Setup.OSD$Default font size (%)"
 msgstr "默认字体大小 (%)"
@@ -559,13 +559,13 @@ msgid "Setup.OSD$Scroll wraps"
 msgstr "滚动限制"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "彩单关闭结束"
+msgstr "菜单关闭结束"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "记录目录"
+msgstr "录像目录"
 
 msgid "EPG"
-msgstr "节目单"
+msgstr "电子节目单设置"
 
 msgid "Button$Scan"
 msgstr "扫描"
@@ -594,25 +594,25 @@ msgid "Setup.EPG$Preferred language"
 msgstr "首选语言"
 
 msgid "pan&scan"
-msgstr "pan&scan"
+msgstr "pan&scan模式"
 
 msgid "letterbox"
-msgstr "小盒子模式"
+msgstr "letterbox模式"
 
 msgid "center cut out"
-msgstr "Center-cut-out"
+msgstr "Center-cut-out模式"
 
 msgid "no"
 msgstr "不"
 
 msgid "names only"
-msgstr "names only"
+msgstr "仅是名字"
 
 msgid "PIDs only"
-msgstr "PIDs only"
+msgstr "仅是PIDs"
 
 msgid "names and PIDs"
-msgstr "names and PIDs"
+msgstr "名字和PIDs"
 
 msgid "add new channels"
 msgstr "添加新频道"
@@ -621,10 +621,10 @@ msgid "add new transponders"
 msgstr "添加新转发器"
 
 msgid "DVB"
-msgstr "DVB"
+msgstr "卫星卡设置"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "主要DVB接口"
+msgstr "使用中卫星卡接口"
 
 msgid "Setup.DVB$Video format"
 msgstr "视频格式"
@@ -663,13 +663,13 @@ msgid "Setup.DVB$Subtitle background transparency"
 msgstr "字幕背景透明度"
 
 msgid "LNB"
-msgstr "高频头"
+msgstr "切换器设置"
 
 msgid "Setup.LNB$Use DiSEqC"
 msgstr "使用切换器"
 
 msgid "Setup.LNB$SLOF (MHz)"
-msgstr "SLOF (MHz)"
+msgstr "切换频率 (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
 msgstr "低本振频率 (MHz)"
@@ -678,22 +678,22 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "高本振频率 (MHz)"
 
 msgid "CAM reset"
-msgstr "CAM 重置"
+msgstr "CAM重置"
 
 msgid "CAM present"
-msgstr "现在的CAM"
+msgstr "存在的CAM"
 
 msgid "CAM ready"
-msgstr "CAM 准备"
+msgstr "CAM准备"
 
 msgid "CAM"
-msgstr "CAM"
+msgstr "CAM设置"
 
 msgid "Button$Menu"
 msgstr "菜单"
 
 msgid "Button$Reset"
-msgstr "重启"
+msgstr "重新启动系统"
 
 msgid "Opening CAM menu..."
 msgstr "打开CAM菜单..."
@@ -717,7 +717,7 @@ msgid "pause live video"
 msgstr ""
 
 msgid "Recording"
-msgstr "记录中"
+msgstr "录像设置"
 
 msgid "Setup.Recording$Margin at start (min)"
 msgstr "时间正在开始 (min)"
@@ -735,7 +735,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "默认终身 (d)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "暂停关键的处理"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "暂停优先"
@@ -768,7 +768,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "分离编辑文件"
 
 msgid "Replay"
-msgstr "回放"
+msgstr "回放设置"
 
 msgid "Setup.Replay$Multi speed mode"
 msgstr "媒体速度模式"
@@ -780,7 +780,7 @@ msgid "Setup.Replay$Resume ID"
 msgstr "恢复 ID"
 
 msgid "Miscellaneous"
-msgstr "混杂的"
+msgstr "其它设置"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Min. 结果超时 (min)"
@@ -810,26 +810,26 @@ msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "突发事件退出"
 
 msgid "Plugins"
-msgstr "插件"
+msgstr "插件设置"
 
 msgid "This plugin has no setup parameters!"
 msgstr "这个插件没有设置参数!"
 
 msgid "Setup"
-msgstr "设置"
+msgstr "VDR系统设置"
 
 msgid "Restart"
-msgstr "重启"
+msgstr " 重启VDR系统"
 
 msgid "Really restart?"
 msgstr "是否重启？"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr "停止记录"
+msgstr "是否停止录像?"
 
 msgid "Schedule"
-msgstr "时间表"
+msgstr "任务列表"
 
 msgid "VDR"
 msgstr "VDR"
@@ -855,13 +855,13 @@ msgid " Cancel editing"
 msgstr "取消编辑"
 
 msgid "Stop recording?"
-msgstr "停止记录"
+msgstr "停止录像"
 
 msgid "Cancel editing?"
 msgstr "取消编辑"
 
 msgid "No audio available!"
-msgstr "声道不可用"
+msgstr "音频不可用"
 
 msgid "No subtitles"
 msgstr "没有字幕"
@@ -873,10 +873,10 @@ msgid "No subtitles available!"
 msgstr "字幕不可用"
 
 msgid "Not enough disk space to start recording!"
-msgstr "没有足够的空间记录"
+msgstr "没有足够的空间录像"
 
 msgid "No free DVB device to record!"
-msgstr "没有空闲的DVB设备记录"
+msgstr "没有空闲的DVB设备录像"
 
 msgid "Pausing live video..."
 msgstr "暂停当前视频"
@@ -922,10 +922,10 @@ msgid "Up/Dn for new location - OK to move"
 msgstr "上/下 新的定位 - OK 移动"
 
 msgid "Channel locked (recording)!"
-msgstr "频道已经锁定 (记录)!"
+msgstr "频道已经锁定 (录像)!"
 
 msgid "Low disk space!"
-msgstr "低磁盘空间!"
+msgstr "磁盘空间不足!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "不能关机 - 操作 '-s' 不允许!"
@@ -934,45 +934,45 @@ msgid "Editing - shut down anyway?"
 msgstr "编辑-立即关机?"
 
 msgid "Recording - shut down anyway?"
-msgstr "录像-立即关机?"
+msgstr "录像中,是否立即关机?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "记录在 %ld 分钟，立即关机?"
+msgstr "录像已有 %ld 分钟，立即关机?"
 
 msgid "shut down anyway?"
-msgstr "立即关机?"
+msgstr "是否立即关机?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "插件 %s 唤醒在 %ld 分钟，是否继续?"
 
 msgid "Editing - restart anyway?"
-msgstr "编辑 - 现在重启?"
+msgstr "编辑中,是否现在重启?"
 
 msgid "Recording - restart anyway?"
-msgstr "记录 - 现在重启？"
+msgstr "录像中,是否现在重启?"
 
 msgid "restart anyway?"
-msgstr "现在重启？"
+msgstr "现在重启?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "音量"
+msgstr "音量调整"
 
 msgid "Classic VDR"
-msgstr "经典 VDR"
+msgstr "经典VDR面板"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG 面板"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "MDMDFSS"
+msgstr "MTWTFSS"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "一二三四五六日"
+msgstr "星期一星期二星期三星期四星期五星期六星期天"
 
 msgid "Monday"
 msgstr "星期一"
@@ -996,22 +996,22 @@ msgid "Sunday"
 msgstr "星期天"
 
 msgid "Upcoming recording!"
-msgstr "即将的记录！"
+msgstr "准备录像！"
 
 msgid "Pause live video?"
 msgstr ""
 
 msgid "Recording started"
-msgstr "记录开始！"
+msgstr "录像开始！"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR即将关闭 - 按电源强制关闭"
+msgstr "VDR即将关闭 - 按电源强制关闭！"
 
 msgid "Press any key to cancel shutdown"
 msgstr "按下任何键即可取消关机"
 
 msgid "Switching primary DVB..."
-msgstr "切换主要的DVB.."
+msgstr "切换主要的DVB设备."
 
 msgid "Editing process failed!"
 msgstr "编辑过程失败"
@@ -1024,4 +1024,4 @@ msgstr "请按任意键重启"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR将要在%s分钟关闭"
+msgstr "VDR系统将要在%s分钟关闭"

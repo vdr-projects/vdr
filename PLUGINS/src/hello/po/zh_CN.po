@@ -1,0 +1,38 @@
+# VDR plugin language source file.
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# This file is distributed under the same license as the VDR package.
+# Marc Rovira Vall <tm05462@salleURL.edu>, 2003
+# Ramon Roca <ramon.roca@xcombo.com>, 2003
+# Jordi Vilà <jvila@tinet.org>, 2003
+# Nan Feng VDR <nfgx@21cn.com>, 2009.2
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.6.0\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2007-10-13 11:52+0200\n"
+"PO-Revision-Date: 2009-01-23 09:48+0800\n"
+"Last-Translator: senin\n"
+"Language-Team: Catalanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A friendly greeting"
+msgstr "友好的问候"
+
+msgid "Hello"
+msgstr "你好"
+
+msgid "Greeting time (s)"
+msgstr "问候时间 (s)"
+
+msgid "Use alternate greeting"
+msgstr "使用替代贺卡"
+
+msgid "Howdy folks!"
+msgstr "你好人！"
+
+msgid "Hello world!"
+msgstr "世界您好！"
+
