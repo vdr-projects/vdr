@@ -6170,3 +6170,5 @@ Video Disk Recorder Revision History
 - Only checking DVB_API_VERSION to be >=5 in order to stay compileable in case
   the DVB API version number is increased (the API claims to always be backward
   compatible).
+- Fixed saving terminal settings when running in background (thanks to Manuel
+  Reimer).

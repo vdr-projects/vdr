@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.11 2009/10/18 14:09:22 kls Exp $
+ * $Id: vdr.c 2.12 2009/10/25 14:45:47 kls Exp $
  */
 
 #include <getopt.h>
@@ -507,6 +507,7 @@ int main(int argc, char *argv[])
      stdout = freopen(Terminal, "w", stdout);
      stderr = freopen(Terminal, "w", stderr);
      HasStdin = true;
+     tcgetattr(STDIN_FILENO, &savedTm);
      }
 
   isyslog("VDR version %s started", VDRVERSION);

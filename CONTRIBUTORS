@@ -2497,3 +2497,6 @@ Timothy D. Lenz <tlenz@vorgon.com>
 
 Valdemaras Pipiras <valdemaras@ambernet.lt>
  for translating OSD texts to the Lithuanian language
+
+Manuel Reimer <Manuel.Reimer@gmx.de>
+ for fixing saving terminal settings when running in background
