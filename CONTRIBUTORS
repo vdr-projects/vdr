@@ -2504,3 +2504,6 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
  cPatPmtGenerator::GeneratePmt()
+
+Milan Hrala <hrala.milan@gmail.com>
+ for translating OSD texts to the Slovakian language

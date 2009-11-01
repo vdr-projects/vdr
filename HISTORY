@@ -6176,3 +6176,4 @@ Video Disk Recorder Revision History
   is not detectable from the first TS packet of a frame.
 - Fixed writing the PCR pid into the PMT in cPatPmtGenerator::GeneratePmt()
   (reported by Rene van den Braken).
+- Added Slovakian language texts (thanks to Milan Hrala).

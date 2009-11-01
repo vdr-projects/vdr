@@ -1,0 +1,32 @@
+# VDR plugin language source file.
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# This file is distributed under the same license as the VDR package.
+# Klaus Schmidinger <kls@tvdr.de>, 2008
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.6.0\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2008-01-12 17:38+0100\n"
+"PO-Revision-Date: 2009-09-30 12:54+0100\n"
+"Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
+"Language-Team: Slovak\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pictures"
+msgstr "Obrázky"
+
+msgid "A simple picture viewer"
+msgstr "Jednoduchý prehliadaè obrázkov"
+
+msgid "Picture directory"
+msgstr "Umiestnenie obrázkov"
+
+msgid "Slide show delay (s)"
+msgstr "Oneskorenie prezentácia (s)"
+
+msgid "No picture directory has been defined!"
+msgstr "Neboli preukázané ¾iadne fotky v adresári!"
+
