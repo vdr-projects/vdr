@@ -6157,7 +6157,7 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
 
-2009-10-25: Version 1.7.10
+2009-11-01: Version 1.7.10
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
@@ -6172,3 +6172,5 @@ Video Disk Recorder Revision History
   compatible).
 - Fixed saving terminal settings when running in background (thanks to Manuel
   Reimer).
+- Fixed cFrameDetector::Analyze() to handle video streams where the frame type
+  is not detectable from the first TS packet of a frame.

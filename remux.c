@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.26 2009/08/16 15:13:42 kls Exp $
+ * $Id: remux.c 2.27 2009/11/01 12:25:17 kls Exp $
  */
 
 #include "remux.h"
@@ -769,8 +769,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
            }
         if (TsHasPayload(Data) && !TsIsScrambled(Data) && TsPid(Data) == pid) {
            if (TsPayloadStart(Data)) {
+              if (synced && Processed)
+                 return Processed;
+              if (Length < 2 * TS_SIZE)
+                 return 0; // need more data, in case the frame type is stored in the second TS packet
               if (!frameDuration) {
-                 // frame duration unknown, so collect a sequenece of PTS values:
+                 // frame duration unknown, so collect a sequence of PTS values:
                  if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                     const uchar *Pes = Data + TsPayloadOffset(Data);
                     if (PesHasPts(Pes)) {
@@ -836,8 +840,6 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     case 0x01: // MPEG 1 video
                     case 0x02: // MPEG 2 video
                          if (scanner == 0x00000100) { // Picture Start Code
-                            if (synced && Processed)
-                               return Processed;
                             newFrame = true;
                             independentFrame = ((Data[i + 2] >> 3) & 0x07) == 1; // I-Frame
                             if (synced) {
@@ -851,12 +853,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                dbgframes("%d ", (Data[i + 2] >> 3) & 0x07);
                                }
                             scanner = 0;
+                            if (synced && Processed)
+                               return Processed;
                             }
                          break;
                     case 0x1B: // MPEG 4 video
                          if (scanner == 0x00000109) { // Access Unit Delimiter
-                            if (synced && Processed)
-                               return Processed;
                             newFrame = true;
                             independentFrame = Data[i + 1] == 0x10;
                             if (synced) {
@@ -876,13 +878,13 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                   numIFrames++;
                                dbgframes("%02X ", Data[i + 1]);
                                }
+                            if (synced && Processed)
+                               return Processed;
                             scanner = 0;
                             }
                          break;
                     case 0x04: // MPEG audio
                     case 0x06: // AC3 audio
-                         if (synced && Processed)
-                            return Processed;
                          newFrame = true;
                          independentFrame = true;
                          if (!synced) {
@@ -891,6 +893,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                numIFrames++;
                             }
                          scanning = false;
+                         if (synced && Processed)
+                            return Processed;
                          break;
                     default: esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
                              pid = 0; // let's just ignore any further data
