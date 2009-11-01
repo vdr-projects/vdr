@@ -6174,3 +6174,5 @@ Video Disk Recorder Revision History
   Reimer).
 - Fixed cFrameDetector::Analyze() to handle video streams where the frame type
   is not detectable from the first TS packet of a frame.
+- Fixed writing the PCR pid into the PMT in cPatPmtGenerator::GeneratePmt()
+  (reported by Rene van den Braken).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.27 2009/11/01 12:25:17 kls Exp $
+ * $Id: remux.c 2.28 2009/11/01 15:33:32 kls Exp $
  */
 
 #include "remux.h"
@@ -295,6 +295,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
   numPmtPackets = 0;
   if (Channel) {
      int Vpid = Channel->Vpid();
+     int Ppid = Channel->Ppid();
      uchar *p = buf;
      int i = 0;
      p[i++] = 0x02; // table id
@@ -306,8 +307,8 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
      p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
      p[i++] = 0x00; // section number
      p[i++] = 0x00; // last section number
-     p[i++] = 0xE0 | (Vpid >> 8); // dummy (3), PCR pid hi (5)
-     p[i++] = Vpid; // PCR pid lo
+     p[i++] = 0xE0 | (Ppid >> 8); // dummy (3), PCR pid hi (5)
+     p[i++] = Ppid; // PCR pid lo
      p[i++] = 0xF0; // dummy (4), program info length hi (4)
      p[i++] = 0x00; // program info length lo
 
