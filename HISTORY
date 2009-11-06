@@ -6157,7 +6157,7 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
 
-2009-11-01: Version 1.7.10
+2009-11-06: Version 1.7.10
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
@@ -6177,3 +6177,5 @@ Video Disk Recorder Revision History
 - Fixed writing the PCR pid into the PMT in cPatPmtGenerator::GeneratePmt()
   (reported by Rene van den Braken).
 - Added Slovakian language texts (thanks to Milan Hrala).
+- Fixed EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0 (thanks
+  to Frank Schmirler).

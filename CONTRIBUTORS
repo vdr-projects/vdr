@@ -2271,6 +2271,7 @@ Frank Schmirler <vdr@schmirler.de>
  for fixing handling the 'pointer field' in generating and parsing PAT/PMT
  for suggesting to use an "instance id" instead of the "resume id" to distinguish
  recordings of the same broadcast made by different instances of VDR
+ for fixing EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
