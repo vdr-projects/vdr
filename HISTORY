@@ -6191,3 +6191,4 @@ Video Disk Recorder Revision History
 - Fixed handling DVB subtitles for PES recordings (thanks to Rolf Ahrenberg).
 - Added the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()
   (thanks to Andreas Schaefers).
+- Fixed references to old *.vdr file names in MANUAL (reported by Arthur Konovalov).

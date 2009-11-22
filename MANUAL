@@ -804,7 +804,7 @@ Version 1.6
                          During the actual editing process VDR writes the result
                          into files that may grow up to MaxVideoFileSize. If you
                          prefer to have each marked sequence stored in a separate
-                         file (named 001.vdr, 002.vdr, ...) you can set this
+                         file (named 00001.ts, 00002.ts, ...) you can set this
                          option to 'yes'.
 
   Replay:
@@ -819,8 +819,8 @@ Version 1.6
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with
-                         0 resulting in a file named 'resume.vdr', and any other
-                         value resulting in 'resume.n.vdr'.
+                         0 resulting in a file named 'resume', and any other
+                         value resulting in 'resume.n'.
 
   Miscellaneous:
 

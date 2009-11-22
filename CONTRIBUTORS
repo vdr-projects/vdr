@@ -1575,6 +1575,7 @@ Arthur Konovalov <kasjas@hot.ee>
  for fixing a missing ',' in the Greek OSD texts
  for fixing a missing ',' in the Swedish OSD texts
  for reporting problems with CAMs when checking the CAM status too frequently
+ for reporting references to old *.vdr file names in MANUAL
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
