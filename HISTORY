@@ -6196,3 +6196,7 @@ Video Disk Recorder Revision History
   cause nothing but trouble. Besides, the core VDR doesn't use this, anyway.
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
+
+2009-11-22: Version 1.7.11
+
+- Fixed resetting the file size when regenerating the index file.

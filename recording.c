@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.18 2009/11/22 11:20:53 kls Exp $
+ * $Id: recording.c 2.19 2009/11/22 19:38:04 kls Exp $
  */
 
 #include "recording.h"
@@ -1412,8 +1412,11 @@ void cIndexFileGenerator::Action(void)
         // Read data:
         else if (ReplayFile) {
            int Result = Buffer.Read(ReplayFile, BufferChunks);
-           if (Result == 0) // EOF
+           if (Result == 0) { // EOF
               ReplayFile = FileName.NextFile();
+              FileSize = 0;
+              FrameOffset = -1;
+              }
            }
         // Recording has been processed:
         else {
