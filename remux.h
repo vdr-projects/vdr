@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.19 2009/08/16 15:15:33 kls Exp $
+ * $Id: remux.h 2.20 2009/11/21 15:55:34 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -49,6 +49,7 @@ public:
 #define TS_ADAPT_TP_PRIVATE   0x02
 #define TS_ADAPT_EXTENSION    0x01
 
+#define PATPID 0x0000 // PAT PID (constant 0)
 #define MAXPID 0x2000 // for arrays that use a PID as the index
 
 inline bool TsHasPayload(const uchar *p)
@@ -238,8 +239,11 @@ public:
        ///< Returns the PMT pid as defined by the current PAT.
        ///< If no PAT has been received yet, -1 will be returned.
   int Vpid(void) { return vpid; }
-       ///< Returns the video pid as defined by the current PMT.
+       ///< Returns the video pid as defined by the current PMT, or 0 if no video
+       ///< pid has been detected, yet.
   int Vtype(void) { return vtype; }
+       ///< Returns the video stream type as defined by the current PMT, or 0 if no video
+       ///< stream type has been detected, yet.
   };
 
 // TS to PES converter:
@@ -299,6 +303,8 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 2
+
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
@@ -320,7 +326,15 @@ private:
   bool scanning;
   uint32_t scanner;
 public:
-  cFrameDetector(int Pid, int Type);
+  cFrameDetector(int Pid = 0, int Type = 0);
+      ///< Sets up a frame detector for the given Pid and stream Type.
+      ///< If no Pid and Type is given, they need to be set by a separate
+      ///< call to SetPid().
+  void SetPid(int Pid, int Type);
+      ///< Sets the Pid and stream Type to detect frames for.
+  void Reset(void);
+      ///< Resets any counters and flags used while syncing and prepares
+      ///< the frame detector for actual work.
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of 188.

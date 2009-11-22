@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-02-09 12:37+0800\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese\n"
@@ -926,6 +926,12 @@ msgstr "频道已经锁定 (录像)!"
 
 msgid "Low disk space!"
 msgstr "磁盘空间不足!"
+
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "不能关机 - 操作 '-s' 不允许!"

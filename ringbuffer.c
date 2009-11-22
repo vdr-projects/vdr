@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 2.2 2009/05/17 10:05:17 kls Exp $
+ * $Id: ringbuffer.c 2.3 2009/11/22 11:14:36 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -200,7 +200,7 @@ int cRingBufferLinear::Available(void)
 
 void cRingBufferLinear::Clear(void)
 {
-  tail = head;
+  tail = head = margin;
 #ifdef DEBUGRINGBUFFERS
   lastHead = head;
   lastTail = tail;
@@ -217,11 +217,50 @@ int cRingBufferLinear::Read(int FileHandle, int Max)
   int free = (diff > 0) ? diff - 1 : Size() - head;
   if (Tail <= margin)
      free--;
-  int Count = 0;
+  int Count = -1;
+  errno = EAGAIN;
   if (free > 0) {
      if (0 < Max && Max < free)
         free = Max;
      Count = safe_read(FileHandle, buffer + head, free);
+     if (Count > 0) {
+        int Head = head + Count;
+        if (Head >= Size())
+           Head = margin;
+        head = Head;
+        if (statistics) {
+           int fill = head - Tail;
+           if (fill < 0)
+              fill = Size() + fill;
+           else if (fill >= Size())
+              fill = Size() - 1;
+           UpdatePercentage(fill);
+           }
+        }
+     }
+#ifdef DEBUGRINGBUFFERS
+  lastHead = head;
+  lastPut = Count;
+#endif
+  EnableGet();
+  if (free == 0)
+     WaitForPut();
+  return Count;
+}
+
+int cRingBufferLinear::Read(cUnbufferedFile *File, int Max)
+{
+  int Tail = tail;
+  int diff = Tail - head;
+  int free = (diff > 0) ? diff - 1 : Size() - head;
+  if (Tail <= margin)
+     free--;
+  int Count = -1;
+  errno = EAGAIN;
+  if (free > 0) {
+     if (0 < Max && Max < free)
+        free = Max;
+     Count = File->Read(buffer + head, free);
      if (Count > 0) {
         int Head = head + Count;
         if (Head >= Size())

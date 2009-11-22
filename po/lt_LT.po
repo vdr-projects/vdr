@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.9\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-08-27 22:29+0300\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2009-10-17 14:19+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian\n"
@@ -923,6 +923,12 @@ msgstr "Kanalas užblokuotas (įrašinėjama)!"
 
 msgid "Low disk space!"
 msgstr "Mažai vietos diske!"
+
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sistemos negalima išjungti, nes starto metu nebuvo komandinėj eilutėj paduota savybė '-s'!"

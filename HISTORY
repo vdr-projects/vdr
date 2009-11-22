@@ -6157,7 +6157,7 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Implemented full handling of subtitling descriptors (thanks to Mikko Tuumanen).
 
-2009-11-15: Version 1.7.10
+2009-11-22: Version 1.7.10
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed wrong bracketing in cChannel::SubtitlingType() etc.
@@ -6180,3 +6180,11 @@ Video Disk Recorder Revision History
 - Fixed EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0 (thanks
   to Frank Schmirler).
 - Fixed starting a recording at an I-frame.
+- Fixed generating the index for recordings from channels that put a whole
+  GOP into one payload unit.
+- The index file for TS recordings is now regenerated on-the-fly if a
+  recording is replayed that has no index. This can also be used to
+  re-create a broken index file by manually deleting the index file and then
+  replaying the recording (at least until the index file has been generated).
+- The cRingBufferLinear::Read() function now returns -1 and sets errno to
+  EAGAIN if the buffer is already full.

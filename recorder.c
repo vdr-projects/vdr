@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.5 2009/11/15 15:27:08 kls Exp $
+ * $Id: recorder.c 2.6 2009/11/21 15:58:12 kls Exp $
  */
 
 #include "recorder.h"
@@ -30,7 +30,7 @@ cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, i
 
   SpinUpDisk(FileName);
 
-  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, TS_SIZE * 2, true, "Recorder");
+  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
   cChannel *Channel = Channels.GetByChannelID(ChannelID);
   int Pid = VPid;

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
@@ -926,6 +926,12 @@ msgstr "Kanava lukittu (tallennus käynnissä)!"
 
 msgid "Low disk space!"
 msgstr "Tallennustila loppumassa!"
+
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sammutus ei onnistu - '-s' parametri puuttuu!"

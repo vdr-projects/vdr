@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2007-11-25 15:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German\n"
@@ -923,6 +923,12 @@ msgstr "Kanal blockiert (zeichnet auf)!"
 
 msgid "Low disk space!"
 msgstr "Platte beinahe voll!"
+
+msgid "Regenerating index file"
+msgstr "Index-Datei wird regeneriert"
+
+msgid "Index file regeneration complete"
+msgstr "Regenerierung der Index-Datei abgeschlossen"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Ausschalten unmöglich - Option '-s' fehlt!"
