@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.25 2009/08/16 10:54:36 kls Exp $
+ * $Id: device.c 2.26 2009/11/22 13:19:03 kls Exp $
  */
 
 #include "device.h"
@@ -1309,7 +1309,7 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
   // Audio PES always has an explicit length and consists of single packets:
   int l;
   if (const uchar *p = tsToPesAudio.GetPes(l)) {
-     int w = PlayAudio(p, l, 0);
+     int w = PlayAudio(p, l, p[3]);
      if (w <= 0) {
         tsToPesAudio.SetRepeatLast();
         return w;

@@ -2509,3 +2509,6 @@ Rene van den Braken <rene@vandenbraken.name>
 
 Milan Hrala <hrala.milan@gmail.com>
  for translating OSD texts to the Slovakian language
+
+Andreas Schaefers <andreas_schaefers@gmx.de>
+ for adding the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()

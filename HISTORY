@@ -6189,3 +6189,5 @@ Video Disk Recorder Revision History
 - The cRingBufferLinear::Read() function now returns -1 and sets errno to
   EAGAIN if the buffer is already full.
 - Fixed handling DVB subtitles for PES recordings (thanks to Rolf Ahrenberg).
+- Added the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()
+  (thanks to Andreas Schaefers).
