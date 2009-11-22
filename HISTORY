@@ -6192,3 +6192,5 @@ Video Disk Recorder Revision History
 - Added the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()
   (thanks to Andreas Schaefers).
 - Fixed references to old *.vdr file names in MANUAL (reported by Arthur Konovalov).
+- Reverted "Removed limitation to PAL resolution from SPU handling" because it
+  cause nothing but trouble. Besides, the core VDR doesn't use this, anyway.

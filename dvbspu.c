@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.1 2009/05/09 16:25:59 kls Exp $
+ * $Id: dvbspu.c 2.2 2009/11/22 14:17:59 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -55,6 +55,9 @@ void cDvbSpuPalette::setPalette(const uint32_t * pal)
 #define setMin(a, b) if (a > b) a = b
 #define setMax(a, b) if (a < b) a = b
 
+#define spuXres   720
+#define spuYres   576
+
 #define revRect(r1, r2) { r1.x1 = r2.x2; r1.y1 = r2.y2; r1.x2 = r2.x1; r1.y2 = r2.y1; }
 
 cDvbSpuBitmap::cDvbSpuBitmap(sDvbSpuRect size,
@@ -63,8 +66,8 @@ cDvbSpuBitmap::cDvbSpuBitmap(sDvbSpuRect size,
 {
     size.x1 = max(size.x1, 0);
     size.y1 = max(size.y1, 0);
-    size.x2 = min(size.x2, Setup.OSDWidth);
-    size.y2 = min(size.y2, Setup.OSDHeight);
+    size.x2 = min(size.x2, spuXres - 1);
+    size.y2 = min(size.y2, spuYres - 1);
 
     bmpsize = size;
     revRect(minsize[0], size);
@@ -72,7 +75,7 @@ cDvbSpuBitmap::cDvbSpuBitmap(sDvbSpuRect size,
     revRect(minsize[2], size);
     revRect(minsize[3], size);
 
-    int MemSize = bmpsize.width() * bmpsize.height() * sizeof(uint8_t);
+    int MemSize = spuXres * spuYres * sizeof(uint8_t);
     bmp = new uint8_t[MemSize];
 
     if (bmp)
@@ -93,10 +96,10 @@ cBitmap *cDvbSpuBitmap::getBitmap(const aDvbSpuPalDescr paldescr,
     int h = size.height();
     int w = size.width();
 
-    if (size.y1 + h >= bmpsize.height())
-        h = bmpsize.height() - size.y1 - 1;
-    if (size.x1 + w >= bmpsize.width())
-        w = bmpsize.width() - size.x1 - 1;
+    if (size.y1 + h >= spuYres)
+        h = spuYres - size.y1 - 1;
+    if (size.x1 + w >= spuXres)
+        w = spuXres - size.x1 - 1;
 
     if (w & 0x03)
         w += 4 - (w & 0x03);
@@ -111,11 +114,13 @@ cBitmap *cDvbSpuBitmap::getBitmap(const aDvbSpuPalDescr paldescr,
     }
 
     // set the content
-    for (int yp = 0; yp < h; yp++) {
-        for (int xp = 0; xp < w; xp++) {
-            uint8_t idx = bmp[(size.y1 + yp) * bmpsize.width() + size.x1 + xp];
-            ret->SetIndex(xp, yp, idx);
-        }
+    if (bmp) {
+       for (int yp = 0; yp < h; yp++) {
+           for (int xp = 0; xp < w; xp++) {
+               uint8_t idx = bmp[(size.y1 + yp) * spuXres + size.x1 + xp];
+               ret->SetIndex(xp, yp, idx);
+           }
+       }
     }
     return ret;
 }
@@ -149,7 +154,8 @@ bool cDvbSpuBitmap::getMinSize(const aDvbSpuPalDescr paldescr,
 
 void cDvbSpuBitmap::putPixel(int xp, int yp, int len, uint8_t colorid)
 {
-    memset(bmp + bmpsize.width() * yp + xp, colorid, len);
+    if (bmp)
+       memset(bmp + spuXres * yp + xp, colorid, len);
     setMin(minsize[colorid].x1, xp);
     setMin(minsize[colorid].y1, yp);
     setMax(minsize[colorid].x2, xp + len - 1);
