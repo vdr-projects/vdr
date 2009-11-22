@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.26 2009/08/16 15:13:42 kls Exp $
+ * $Id: remux.c 2.29 2009/11/22 11:23:27 kls Exp $
  */
 
 #include "remux.h"
@@ -264,8 +264,8 @@ void cPatPmtGenerator::GeneratePat(void)
   uchar *p = pat;
   int i = 0;
   p[i++] = TS_SYNC_BYTE; // TS indicator
-  p[i++] = TS_PAYLOAD_START; // flags (3), pid hi (5)
-  p[i++] = 0x00; // pid lo
+  p[i++] = TS_PAYLOAD_START | (PATPID >> 8); // flags (3), pid hi (5)
+  p[i++] = PATPID & 0xFF; // pid lo
   p[i++] = 0x10; // flags (4), continuity counter (4)
   p[i++] = 0x00; // pointer field (payload unit start indicator is set)
   int PayloadStart = i;
@@ -295,6 +295,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
   numPmtPackets = 0;
   if (Channel) {
      int Vpid = Channel->Vpid();
+     int Ppid = Channel->Ppid();
      uchar *p = buf;
      int i = 0;
      p[i++] = 0x02; // table id
@@ -306,8 +307,8 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
      p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
      p[i++] = 0x00; // section number
      p[i++] = 0x00; // last section number
-     p[i++] = 0xE0 | (Vpid >> 8); // dummy (3), PCR pid hi (5)
-     p[i++] = Vpid; // PCR pid lo
+     p[i++] = 0xE0 | (Ppid >> 8); // dummy (3), PCR pid hi (5)
+     p[i++] = Ppid; // PCR pid lo
      p[i++] = 0xF0; // dummy (4), program info length hi (4)
      p[i++] = 0x00; // program info length lo
 
@@ -732,20 +733,20 @@ void PesDump(const char *Name, const u_char *Data, int Length)
 
 // --- cFrameDetector --------------------------------------------------------
 
+#define EMPTY_SCANNER (0xFFFFFFFF)
+
 cFrameDetector::cFrameDetector(int Pid, int Type)
 {
-  pid = Pid;
-  type = Type;
+  SetPid(Pid, Type);
   synced = false;
   newFrame = independentFrame = false;
   numPtsValues = 0;
   numIFrames = 0;
-  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
   frameDuration = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
   payloadUnitOfFrame = 0;
   scanning = false;
-  scanner = 0;
+  scanner = EMPTY_SCANNER;
 }
 
 static int CmpUint32(const void *p1, const void *p2)
@@ -755,8 +756,24 @@ static int CmpUint32(const void *p1, const void *p2)
   return 0;
 }
 
+void cFrameDetector::SetPid(int Pid, int Type)
+{
+  pid = Pid;
+  type = Type;
+  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
+}
+
+void cFrameDetector::Reset(void)
+{
+  newFrame = independentFrame = false;
+  payloadUnitOfFrame = 0;
+  scanning = false;
+  scanner = EMPTY_SCANNER;
+}
+
 int cFrameDetector::Analyze(const uchar *Data, int Length)
 {
+  int SeenPayloadStart = false;
   int Processed = 0;
   newFrame = independentFrame = false;
   while (Length >= TS_SIZE) {
@@ -767,140 +784,156 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
            esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
            return Processed + Skipped;
            }
-        if (TsHasPayload(Data) && !TsIsScrambled(Data) && TsPid(Data) == pid) {
-           if (TsPayloadStart(Data)) {
-              if (!frameDuration) {
-                 // frame duration unknown, so collect a sequenece of PTS values:
-                 if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
-                    const uchar *Pes = Data + TsPayloadOffset(Data);
-                    if (PesHasPts(Pes)) {
-                       ptsValues[numPtsValues] = PesGetPts(Pes);
-                       // check for rollover:
-                       if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
-                          dbgframes("#");
-                          numPtsValues = 0;
-                          numIFrames = 0;
-                          }
-                       else
-                          numPtsValues++;
-                       }
-                    }
-                 else {
-                    // find the smallest PTS delta:
-                    qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                    numPtsValues--;
-                    for (int i = 0; i < numPtsValues; i++)
-                        ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
-                    qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                    uint32_t Delta = ptsValues[0];
-                    // determine frame info:
-                    if (isVideo) {
-                       if (Delta % 3600 == 0)
-                          frameDuration = 3600; // PAL, 25 fps
-                       else if (Delta % 3003 == 0)
-                          frameDuration = 3003; // NTSC, 29.97 fps
-                       else if (Delta == 1800) {
-                          frameDuration = 3600; // PAL, 25 fps
-                          framesPerPayloadUnit = -2;
-                          }
-                       else if (Delta == 1501) {
-                          frameDuration = 3003; // NTSC, 29.97 fps
-                          framesPerPayloadUnit = -2;
-                          }
-                       else {
-                          frameDuration = 3600; // unknown, assuming 25 fps
-                          dsyslog("unknown frame duration (%d), assuming 25 fps", Delta);
-                          }
-                       }
-                    else // audio
-                       frameDuration = Delta; // PTS of audio frames is always increasing
-                    dbgframes("\nframe duration = %d  FPS = %5.2f  FPPU = %d\n", frameDuration, 90000.0 / frameDuration, framesPerPayloadUnit);
-                    }
-                 }
-              scanner = 0;
-              scanning = true;
-              }
-           if (scanning) {
-              int PayloadOffset = TsPayloadOffset(Data);
+        if (TsHasPayload(Data) && !TsIsScrambled(Data)) {
+           int Pid = TsPid(Data);
+           if (Pid == pid) {
               if (TsPayloadStart(Data)) {
-                 PayloadOffset += PesPayloadOffset(Data + PayloadOffset);
-                 if (!framesPerPayloadUnit)
-                    framesPerPayloadUnit = framesInPayloadUnit;
-                 if (DebugFrames && !synced)
-                    dbgframes("/");
-                 }
-              for (int i = PayloadOffset; scanning && i < TS_SIZE; i++) {
-                  scanner <<= 8;
-                  scanner |= Data[i];
-                  switch (type) {
-                    case 0x01: // MPEG 1 video
-                    case 0x02: // MPEG 2 video
-                         if (scanner == 0x00000100) { // Picture Start Code
-                            if (synced && Processed)
-                               return Processed;
-                            newFrame = true;
-                            independentFrame = ((Data[i + 2] >> 3) & 0x07) == 1; // I-Frame
-                            if (synced) {
-                               if (framesPerPayloadUnit <= 1)
-                                  scanning = false;
-                               }
-                            else {
-                               framesInPayloadUnit++;
-                               if (independentFrame)
-                                  numIFrames++;
-                               dbgframes("%d ", (Data[i + 2] >> 3) & 0x07);
-                               }
-                            scanner = 0;
-                            }
-                         break;
-                    case 0x1B: // MPEG 4 video
-                         if (scanner == 0x00000109) { // Access Unit Delimiter
-                            if (synced && Processed)
-                               return Processed;
-                            newFrame = true;
-                            independentFrame = Data[i + 1] == 0x10;
-                            if (synced) {
-                               if (framesPerPayloadUnit < 0) {
-                                  payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
-                                  if (payloadUnitOfFrame != 0 && independentFrame)
-                                     payloadUnitOfFrame = 0;
-                                  if (payloadUnitOfFrame)
-                                     newFrame = false;
-                                  }
-                               if (framesPerPayloadUnit <= 1)
-                                  scanning = false;
-                               }
-                            else {
-                               framesInPayloadUnit++;
-                               if (independentFrame)
-                                  numIFrames++;
-                               dbgframes("%02X ", Data[i + 1]);
-                               }
-                            scanner = 0;
-                            }
-                         break;
-                    case 0x04: // MPEG audio
-                    case 0x06: // AC3 audio
-                         if (synced && Processed)
-                            return Processed;
-                         newFrame = true;
-                         independentFrame = true;
-                         if (!synced) {
-                            framesInPayloadUnit = 1;
-                            if (TsPayloadStart(Data))
-                               numIFrames++;
-                            }
-                         scanning = false;
-                         break;
-                    default: esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
-                             pid = 0; // let's just ignore any further data
+                 SeenPayloadStart = true;
+                 if (synced && Processed)
+                    return Processed;
+                 if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
+                    return 0; // need more data, in case the frame type is not stored in the first TS packet
+                 if (!frameDuration) {
+                    // frame duration unknown, so collect a sequence of PTS values:
+                    if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
+                       const uchar *Pes = Data + TsPayloadOffset(Data);
+                       if (PesHasPts(Pes)) {
+                          ptsValues[numPtsValues] = PesGetPts(Pes);
+                          // check for rollover:
+                          if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
+                             dbgframes("#");
+                             numPtsValues = 0;
+                             numIFrames = 0;
+                             }
+                          else
+                             numPtsValues++;
+                          }
+                       }
+                    else {
+                       // find the smallest PTS delta:
+                       qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
+                       numPtsValues--;
+                       for (int i = 0; i < numPtsValues; i++)
+                           ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
+                       qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
+                       uint32_t Delta = ptsValues[0];
+                       // determine frame info:
+                       if (isVideo) {
+                          if (Delta % 3600 == 0)
+                             frameDuration = 3600; // PAL, 25 fps
+                          else if (Delta % 3003 == 0)
+                             frameDuration = 3003; // NTSC, 29.97 fps
+                          else if (Delta == 1800) {
+                             frameDuration = 3600; // PAL, 25 fps
+                             framesPerPayloadUnit = -2;
+                             }
+                          else if (Delta == 1501) {
+                             frameDuration = 3003; // NTSC, 29.97 fps
+                             framesPerPayloadUnit = -2;
+                             }
+                          else {
+                             frameDuration = 3600; // unknown, assuming 25 fps
+                             dsyslog("unknown frame duration (%d), assuming 25 fps", Delta);
+                             }
+                          }
+                       else // audio
+                          frameDuration = Delta; // PTS of audio frames is always increasing
+                       dbgframes("\nframe duration = %d  FPS = %5.2f  FPPU = %d\n", frameDuration, 90000.0 / frameDuration, framesPerPayloadUnit);
+                       }
                     }
-                  }
-              if (!synced && frameDuration && independentFrame) {
-                 synced = true;
-                 dbgframes("*");
+                 scanner = EMPTY_SCANNER;
+                 scanning = true;
+                 }
+              if (scanning) {
+                 int PayloadOffset = TsPayloadOffset(Data);
+                 if (TsPayloadStart(Data)) {
+                    PayloadOffset += PesPayloadOffset(Data + PayloadOffset);
+                    if (!framesPerPayloadUnit)
+                       framesPerPayloadUnit = framesInPayloadUnit;
+                    if (DebugFrames && !synced)
+                       dbgframes("/");
+                    }
+                 for (int i = PayloadOffset; scanning && i < TS_SIZE; i++) {
+                     scanner <<= 8;
+                     scanner |= Data[i];
+                     switch (type) {
+                       case 0x01: // MPEG 1 video
+                       case 0x02: // MPEG 2 video
+                            if (scanner == 0x00000100) { // Picture Start Code
+                               scanner = EMPTY_SCANNER;
+                               if (synced && !SeenPayloadStart && Processed)
+                                  return Processed; // flush everything before this new frame
+                               newFrame = true;
+                               independentFrame = ((Data[i + 2] >> 3) & 0x07) == 1; // I-Frame
+                               if (synced) {
+                                  if (framesPerPayloadUnit <= 1)
+                                     scanning = false;
+                                  }
+                               else {
+                                  framesInPayloadUnit++;
+                                  if (independentFrame)
+                                     numIFrames++;
+                                  dbgframes("%d ", (Data[i + 2] >> 3) & 0x07);
+                                  }
+                               if (synced)
+                                  return Processed + TS_SIZE; // flag this new frame
+                               }
+                            break;
+                       case 0x1B: // MPEG 4 video
+                            if (scanner == 0x00000109) { // Access Unit Delimiter
+                               scanner = EMPTY_SCANNER;
+                               if (synced && !SeenPayloadStart && Processed)
+                                  return Processed; // flush everything before this new frame
+                               newFrame = true;
+                               independentFrame = Data[i + 1] == 0x10;
+                               if (synced) {
+                                  if (framesPerPayloadUnit < 0) {
+                                     payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
+                                     if (payloadUnitOfFrame != 0 && independentFrame)
+                                        payloadUnitOfFrame = 0;
+                                     if (payloadUnitOfFrame)
+                                        newFrame = false;
+                                     }
+                                  if (framesPerPayloadUnit <= 1)
+                                     scanning = false;
+                                  }
+                               else {
+                                  framesInPayloadUnit++;
+                                  if (independentFrame)
+                                     numIFrames++;
+                                  dbgframes("%02X ", Data[i + 1]);
+                                  }
+                               if (synced)
+                                  return Processed + TS_SIZE; // flag this new frame
+                               }
+                            break;
+                       case 0x04: // MPEG audio
+                       case 0x06: // AC3 audio
+                            if (synced && Processed)
+                               return Processed;
+                            newFrame = true;
+                            independentFrame = true;
+                            if (!synced) {
+                               framesInPayloadUnit = 1;
+                               if (TsPayloadStart(Data))
+                                  numIFrames++;
+                               }
+                            scanning = false;
+                            break;
+                       default: esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
+                                pid = 0; // let's just ignore any further data
+                       }
+                     }
+                 if (!synced && frameDuration && independentFrame) {
+                    synced = true;
+                    dbgframes("*");
+                    Reset();
+                    return Processed + TS_SIZE;
+                    }
                  }
               }
+           else if (Pid == PATPID && synced && Processed)
+              return Processed; // allow the caller to see any PAT packets
            }
         Data += TS_SIZE;
         Length -= TS_SIZE;

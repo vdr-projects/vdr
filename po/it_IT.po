@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Alberto Carraro <bertocar@tin.it>, 2001
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
@@ -10,9 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
-"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
-"PO-Revision-Date: 2009-02-08 18:58+0100\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
+"PO-Revision-Date: 2009-08-29 11:16+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -712,13 +712,13 @@ msgid "Can't reset CAM!"
 msgstr "Impossibile reimpostare il modulo CAM!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "non pausare video dal vivo"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "conferma pausa video dal vivo"
 
 msgid "pause live video"
-msgstr ""
+msgstr "pausa video dal vivo"
 
 msgid "Recording"
 msgstr "Registrazione"
@@ -739,7 +739,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Scadenza predefinita (gg)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Gestione tasto Pausa"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorità di pausa"
@@ -931,6 +931,12 @@ msgstr "Canale bloccato (in registrazione)!"
 msgid "Low disk space!"
 msgstr "Poco spazio su disco!"
 
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
+
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Impossibile spegnere - parametro '-s' non assegnato!"
 
@@ -1003,7 +1009,7 @@ msgid "Upcoming recording!"
 msgstr "Registrazione imminente!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Pausare video dal vivo?"
 
 msgid "Recording started"
 msgstr "Registrazione avviata"

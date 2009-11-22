@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Tomas Prybil <tomas@prybil.se>, 2002, 2003, 2005, 2006
 # Jan Ekholm <chakie@infa.abo.fi>, 2003
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
-"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2008-03-12 18:25+0100\n"
 "Last-Translator: Magnus Andersson <svankan@bahnhof.se>\n"
 "Language-Team: Swedish\n"
@@ -926,6 +926,12 @@ msgstr "Kanalen är låst (inspelning pågår)!"
 
 msgid "Low disk space!"
 msgstr "Lågt diskutrymme!"
+
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Kan inte avsluta, måste använda parameter '-s'"

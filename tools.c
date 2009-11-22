@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.3 2009/05/31 11:43:24 kls Exp $
+ * $Id: tools.c 2.4 2009/11/06 15:21:17 kls Exp $
  */
 
 #include "tools.h"
@@ -279,11 +279,11 @@ cString itoa(int n)
 
 bool EntriesOnSameFileSystem(const char *File1, const char *File2)
 {
-  struct statfs statFs;
-  if (statfs(File1, &statFs) == 0) {
-     fsid_t fsid1 = statFs.f_fsid;
-     if (statfs(File2, &statFs) == 0)
-        return memcmp(&statFs.f_fsid, &fsid1, sizeof(fsid1)) == 0;
+  struct stat st;
+  if (stat(File1, &st) == 0) {
+     dev_t dev1 = st.st_dev;
+     if (stat(File2, &st) == 0)
+        return st.st_dev == dev1;
      else
         LOG_ERROR_STR(File2);
      }

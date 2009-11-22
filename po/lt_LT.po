@@ -1,298 +1,298 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2009 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Arthur Konovalov <kasjas@hot.ee>, 2004, 2005, 2006, 2007
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.9\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2009-11-22 12:28+0100\n"
-"PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
-"Language-Team: Estonian\n"
+"PO-Revision-Date: 2009-10-17 14:19+0200\n"
+"Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
+"Language-Team: Lithuanian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "off"
-msgstr "v�ljas"
+msgstr "įjungt"
 
 msgid "on"
-msgstr ""
+msgstr "išjungt"
 
 msgid "auto"
-msgstr "automaatne"
+msgstr "auto"
 
 msgid "none"
-msgstr "puudu"
+msgstr "nėra"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** Vigane kanal ***"
+msgstr "*** Klaidingas kanalas ***"
 
 msgid "Channel not available!"
-msgstr "Kanal ei ole k�ttesaadav!"
+msgstr "Kanalas neegzistuoja!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Siirdemooduse start eba�nnestus!"
+msgstr "Negali pradėti perdavimo"
 
 msgid "Starting EPG scan"
-msgstr "EPG skaneerimine k�ivitatud"
+msgstr "Pradedamas EPG skanavimas"
 
 msgid "No title"
-msgstr "Pealkiri puudub"
+msgstr "Be pavadinimo"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "eesti"
+msgstr "Lietuviškai"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "est"
+msgstr "lit"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Samm 1: Kodeerimiss�steemi tuvastamine"
+msgstr "1 žingsnis: Nustatinėjamas distancinio pulto kodo tipas"
 
 msgid "Press any key on the RC unit"
-msgstr "Vajuta puldil suvalist klahvi"
+msgstr "Spauskite bet kurį distancinio pulto mygtuką"
 
 msgid "RC code detected!"
-msgstr "Kodeerimiss�steem tuvastatud!"
+msgstr "Gautas distancinio pulto mygtuko kodas!"
 
 msgid "Do not press any key..."
-msgstr "�ra vajuta puldil �htki klahvi..."
+msgstr "Nekiškite nagų prie distancinio pulto..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Samm 2: Klahvide �petamine"
+msgstr "2 žingsnis: Atskirų mygtukų kodų nuskaitymas"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Vajuta klahvile '%s'"
+msgstr "Spauskite '%s' mygtuką"
 
 msgid "Press 'Up' to confirm"
-msgstr "Kinnitamiseks vajuta '�les'"
+msgstr "Patvirtinimui, spausti mygtuką 'į viršų'"
 
 msgid "Press 'Down' to continue"
-msgstr "J�tkamiseks vajuta 'Alla'"
+msgstr "Jei norite tęsti, spauskite mygtuką 'į apačią'"
 
 msgid "(press 'Up' to go back)"
-msgstr "(tagasiminekuks vajuta '�les')"
+msgstr "Grįžimui atgal, spausti mygtuką 'į viršų'"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(l�petamiseks vajuta 'Alla')"
+msgstr "Norėdami baigti mygtukų nustaymus, spauskite mygtuką 'į apačią'"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(selle klahvi vahelej�tmiseks vajuta 'Men��')"
+msgstr "Spauskit 'Meniu', jei norit praleisti šį mygtuką"
 
 msgid "Learning Remote Control Keys"
-msgstr "Kaugjuhtimispuldi �petamine"
+msgstr "Distancinio pulto mygtukų kodų nuskaitymas"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Samm 3: Klavhikoodide salvestamine"
+msgstr "3 žingsnis: Mygtukų kodų užsaugojimas"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Salvestamiseks vajuta '�les' ja katkestamiseks 'Alla'"
+msgstr "Spausti 'į viršų' kad užsaugoti, 'į apačią' kad atmesti"
 
 msgid "Key$Up"
-msgstr "�les"
+msgstr "Į viršų"
 
 msgid "Key$Down"
-msgstr "Alla"
+msgstr "Į apačią"
 
 msgid "Key$Menu"
-msgstr "Men��"
+msgstr "Meniu"
 
 msgid "Key$Ok"
 msgstr "Ok"
 
 msgid "Key$Back"
-msgstr "Tagasi"
+msgstr "Atgal"
 
 msgid "Key$Left"
-msgstr "Vasakule"
+msgstr "Į kairę"
 
 msgid "Key$Right"
-msgstr "Paremale"
+msgstr "Į dešinę"
 
 msgid "Key$Red"
-msgstr "Punane"
+msgstr "Raudona"
 
 msgid "Key$Green"
-msgstr "Roheline"
+msgstr "Žalia"
 
 msgid "Key$Yellow"
-msgstr "Kollane"
+msgstr "Geltona"
 
 msgid "Key$Blue"
-msgstr "Sinine"
+msgstr "Mėlyna"
 
 msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play"
-msgstr "Start"
+msgstr "Grona"
 
 msgid "Key$Pause"
-msgstr "Paus"
+msgstr "Pristabdyti"
 
 msgid "Key$Stop"
-msgstr "Stopp"
+msgstr "Sustabdyti"
 
 msgid "Key$Record"
-msgstr "Salvestamine"
+msgstr "Įrašyti"
 
 msgid "Key$FastFwd"
-msgstr "Edasikerimine"
+msgstr "Prasukimas į priekimas"
 
 msgid "Key$FastRew"
-msgstr "Tagasikerimine"
+msgstr "Persukimas atgal"
 
 msgid "Key$Next"
-msgstr "J�rgmine"
+msgstr "Sekantis"
 
 msgid "Key$Prev"
-msgstr "Eelmine"
+msgstr "Prieš einantis"
 
 msgid "Key$Power"
-msgstr "Toide"
+msgstr "Išjungti"
 
 msgid "Key$Channel+"
-msgstr "Kanal+"
+msgstr "Kanalas +"
 
 msgid "Key$Channel-"
-msgstr "Kanal-"
+msgstr "Kanalas -"
 
 msgid "Key$PrevChannel"
-msgstr "Eelmine kanal"
+msgstr "Priš tai buvęs"
 
 msgid "Key$Volume+"
-msgstr "Helitugevus+"
+msgstr "Garsas +"
 
 msgid "Key$Volume-"
-msgstr "Helitugevus-"
+msgstr "Garsas -"
 
 msgid "Key$Mute"
-msgstr "H��letu"
+msgstr "Nutildymas"
 
 msgid "Key$Audio"
 msgstr "Audio"
 
 msgid "Key$Subtitles"
-msgstr "Subtiitrid"
+msgstr "Subtitrai"
 
 msgid "Key$Schedule"
-msgstr "Kava"
+msgstr "Programa"
 
 msgid "Key$Channels"
-msgstr "Kanalid"
+msgstr "Kanalai"
 
 msgid "Key$Timers"
-msgstr "Taimer"
+msgstr "Laikmačiai"
 
 msgid "Key$Recordings"
-msgstr "Salvestused"
+msgstr "Įrašai"
 
 msgid "Key$Setup"
-msgstr "S�tted"
+msgstr "Nustatymai"
 
 msgid "Key$Commands"
-msgstr "K�sud"
+msgstr "Komandos"
 
 msgid "Key$User1"
-msgstr "Lisaklahv1"
+msgstr "Vartotojas1"
 
 msgid "Key$User2"
-msgstr "Lisaklahv2"
+msgstr "Vartotojas2"
 
 msgid "Key$User3"
-msgstr "Lisaklahv3"
+msgstr "Vartotojas3"
 
 msgid "Key$User4"
-msgstr "Lisaklahv4"
+msgstr "Vartotojas4"
 
 msgid "Key$User5"
-msgstr "Lisaklahv5"
+msgstr "Vartotojas5"
 
 msgid "Key$User6"
-msgstr "Lisaklahv6"
+msgstr "Vartotojas6"
 
 msgid "Key$User7"
-msgstr "Lisaklahv7"
+msgstr "Vartotojas7"
 
 msgid "Key$User8"
-msgstr "Lisaklahv8"
+msgstr "Vartotojas8"
 
 msgid "Key$User9"
-msgstr "Lisaklahv9"
+msgstr "Vartotojas9"
 
 msgid "Disk"
-msgstr "Ketas"
+msgstr "Diskas"
 
 msgid "free"
-msgstr "vaba"
+msgstr "laisva"
 
 msgid "Free To Air"
-msgstr "FTA"
+msgstr "Nekoduotas kanalas"
 
 msgid "encrypted"
-msgstr "kr�ptitud"
+msgstr "koduota"
 
 msgid "Edit channel"
-msgstr "Kanali muutmine"
+msgstr "Koreguoti kanalą"
 
 msgid "Name"
-msgstr "Nimi"
+msgstr "Pavadinimas"
 
 msgid "Source"
-msgstr "Allikas"
+msgstr "Šaltinis"
 
 msgid "Frequency"
-msgstr "Sagedus"
+msgstr "Dažnis"
 
 msgid "Vpid"
-msgstr "Vpid"
+msgstr "Vpid (video)"
 
 msgid "Ppid"
 msgstr "Ppid"
 
 msgid "Apid1"
-msgstr "Apid1"
+msgstr "Apid1 (aidio 1)"
 
 msgid "Apid2"
-msgstr "Apid2"
+msgstr "Apid2 (aidio 2)"
 
 msgid "Dpid1"
-msgstr "Dpid1"
+msgstr "Dpid1 (AC3 1)"
 
 msgid "Dpid2"
-msgstr "Dpid2"
+msgstr "Dpid2 (AC3 2)"
 
 msgid "Spid1"
-msgstr "Spid1"
+msgstr "Subtitrų pid1"
 
 msgid "Spid2"
-msgstr "Spid2"
+msgstr "Subtitrų pid2"
 
 msgid "Tpid"
-msgstr "Tpid"
+msgstr "Tpid (teletekstas)"
 
 msgid "CA"
-msgstr "CA"
+msgstr "CA (dekodavimo sistema)"
 
 msgid "Sid"
-msgstr "Sid"
+msgstr "Serviso id"
 
 msgid "Polarization"
-msgstr "Polarisatsioon"
+msgstr "Poliarizacija"
 
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 msgid "Srate"
-msgstr "Srate"
+msgstr "Perdavimo greitis (Symbol rate)"
 
 msgid "Inversion"
-msgstr "Inversioon"
+msgstr "Inversija"
 
 msgid "CoderateH"
 msgstr "CoderateH"
@@ -301,297 +301,297 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulatsioon"
+msgstr "Moduliacija"
 
 msgid "Bandwidth"
-msgstr "Ribalaius"
+msgstr "Pralaidumas"
 
 msgid "Transmission"
-msgstr "Transmissioon"
+msgstr "Perdavimas"
 
 msgid "Guard"
-msgstr "Guard"
+msgstr "Apsauga"
 
 msgid "Hierarchy"
-msgstr "Hierarhia"
+msgstr "Hierarchija"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
-msgstr "Kanaliseaded ei ole unikaalsed!"
+msgstr "Kanalų nustatymai neunikalūs!"
 
 msgid "Channels"
-msgstr "Kanalid"
+msgstr "Kanalai"
 
 msgid "Button$Edit"
-msgstr "Muuda"
+msgstr "Koreguoti"
 
 msgid "Button$New"
-msgstr "Uus"
+msgstr "Naujas"
 
 msgid "Button$Delete"
-msgstr "Kustuta"
+msgstr "Trinti"
 
 msgid "Button$Mark"
-msgstr "Siirda"
+msgstr "Žymėti"
 
 msgid "Channel is being used by a timer!"
-msgstr "Kanal on taimeri kasutuses!"
+msgstr "Kanalą šiuo metu naudoja laikmačio procesas!"
 
 msgid "Delete channel?"
-msgstr "Kustutada kanal?"
+msgstr "Ištrinti kanalą?"
 
 msgid "Edit timer"
-msgstr "Taimeri muutmine"
+msgstr "Koreguoti laikmatį"
 
 msgid "Active"
-msgstr "Aktiivne"
+msgstr "Aktyvus"
 
 msgid "Channel"
-msgstr "Kanal"
+msgstr "Kanalas"
 
 msgid "Day"
-msgstr "P�ev"
+msgstr "Diena"
 
 msgid "Start"
-msgstr "Start"
+msgstr "Pradžia"
 
 msgid "Stop"
-msgstr "Stopp"
+msgstr "Sabaiga"
 
 msgid "VPS"
 msgstr "VPS"
 
 msgid "Priority"
-msgstr "Prioriteet"
+msgstr "Prioritetas"
 
 msgid "Lifetime"
-msgstr "Eluiga"
+msgstr "Galiojimas"
 
 msgid "File"
-msgstr "Fail"
+msgstr "Failas"
 
 msgid "First day"
-msgstr "Esimene p�ev"
+msgstr "Pirma diena"
 
 msgid "Timers"
-msgstr "Taimer"
+msgstr "Laikmačiai"
 
 msgid "Button$On/Off"
-msgstr "On/Off"
+msgstr "Įj/Išj"
 
 msgid "Button$Info"
 msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "Kustutada taimer?"
+msgstr "Ištrinti laikmatį?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Salvestus aktiivne - kustutada?"
+msgstr "Laikmatis vis dar vykdo įrašymą - vistiek ištrinti?"
 
 msgid "Event"
-msgstr "Saade"
+msgstr "Laida"
 
 msgid "Button$Timer"
-msgstr "Taimer"
+msgstr "Laikmatis"
 
 msgid "Button$Record"
-msgstr "Salvesta"
+msgstr "Įrašymas"
 
 msgid "Button$Switch"
-msgstr "Vali"
+msgstr "Perjungti"
 
 msgid "What's on now?"
-msgstr "Hetkel eetris"
+msgstr "Kas transliuojama šiuo metu?"
 
 msgid "What's on next?"
-msgstr "J�rgmisena eetris"
+msgstr "Kas bus transliuojama vėliau?"
 
 msgid "Button$Next"
-msgstr "Tulekul"
+msgstr "Sekantis"
 
 msgid "Button$Now"
-msgstr "Hetkel"
+msgstr "Dabar"
 
 msgid "Button$Schedule"
-msgstr "Ajakava"
+msgstr "Programa"
 
 msgid "Can't switch channel!"
-msgstr "Kanali vahetus ei ole v�imalik!"
+msgstr "Negali perjunti kanalo!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "Ajakava - %s"
+msgstr "Programa - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "Sama saade - %s"
+msgstr "Ši laida - %s"
 
 msgid "This event - all channels"
-msgstr "Sama saade - k�ik kanalid"
+msgstr "Ši laida - visi kanalai"
 
 msgid "All events - all channels"
-msgstr "K�ik saated - k�ik kanalid"
+msgstr "Visos laidos - visi kanalai"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Palun sisesta %d numbrit!"
+msgstr "Įveskite %d skaičius!"
 
 msgid "CAM not responding!"
-msgstr "CAM ei vasta"
+msgstr "Dekodavimo modulis (CAM) neveikia!"
 
 msgid "Recording info"
-msgstr "Salvestuse info"
+msgstr "Informacija apie įrašus"
 
 msgid "Button$Play"
-msgstr "Start"
+msgstr "Groti"
 
 msgid "Button$Rewind"
-msgstr "Algusesse"
+msgstr "Atsukti"
 
 msgid "Recordings"
-msgstr "Salvestused"
+msgstr "Įrašai"
 
 msgid "Button$Open"
-msgstr "Ava"
+msgstr "Atidaryti"
 
 msgid "Commands"
-msgstr "K�sud"
+msgstr "Komandos"
 
 msgid "Error while accessing recording!"
-msgstr "Salvestuse taasesitus eba�nnestus!"
+msgstr "Klaida atidarant įrašą!"
 
 msgid "Delete recording?"
-msgstr "Kustutada salvestus?"
+msgstr "Ištrinti įrašą?"
 
 msgid "Error while deleting recording!"
-msgstr "Salvestuse kustutamine eba�nnestus!"
+msgstr "Klaida trinant įrašą!"
 
 msgid "Recording commands"
-msgstr "Salvestuse k�sud"
+msgstr "Įrašymo komandos"
 
 msgid "never"
-msgstr "ei"
+msgstr "niekada"
 
 msgid "skin dependent"
-msgstr "kestast s�ltuv"
+msgstr "priklauso nuo stiliaus"
 
 msgid "always"
-msgstr "alati"
+msgstr "visada"
 
 msgid "OSD"
-msgstr "Ekraanimen��"
+msgstr "OSD (ekrano užsklanda)"
 
 msgid "Setup.OSD$Language"
-msgstr "Keel"
+msgstr "Kalba"
 
 msgid "Setup.OSD$Skin"
-msgstr "Kest"
+msgstr "Stilius"
 
 msgid "Setup.OSD$Theme"
-msgstr "Teema"
+msgstr "Tema"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "Vasakule (%)"
+msgstr "Atitraukimas nuo kairės (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "�lesse (%)"
+msgstr "Atitraukimas nuo viršaus (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "Laius (%)"
+msgstr "Plotis (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "K�rgus (%)"
+msgstr "Aukštis (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Teate esitusaeg (s)"
+msgstr "Žinutės parodymo laikas (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "V�ikese fondi kasutamine"
+msgstr "Naudoti mažą šriftą"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Fondi silumine"
+msgstr "Šriftų pagražinimas"
 
 msgid "Setup.OSD$Default font"
-msgstr "Vaikefont"
+msgstr "Numatytas šriftas"
 
 msgid "Setup.OSD$Small font"
-msgstr "V�ike font"
+msgstr "Mažas šriftas"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Fikseeritud font"
+msgstr "Nustatyto dydžio šriftas"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Vaikefondi suurus (%)"
+msgstr "Numatyto šrifto dydis  (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "V�ikese fondi suurus (%)"
+msgstr "Mažo šrifto dydis (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Fiks. fondi suurus (%)"
+msgstr "Nustatyto dydžio šrifto dydis (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Kanaliinfo asukoht"
+msgstr "Kanalo informacijos lango pozicija"
 
 msgid "bottom"
-msgstr "all"
+msgstr "iš apačios"
 
 msgid "top"
-msgstr "�leval"
+msgstr "iš viršaus"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Kanaliinfo esitusaeg (s)"
+msgstr "Kanalo informacijos lango rodymo laikas (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Kanaliinfo kuvamine"
+msgstr "Rodyti informacijos perjungiant kanalą"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Kanaliinfo ajapiirang"
+msgstr "Uždaryti informaciją apie kanalą"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "Lehek�lje kerimine"
+msgstr "Pereiti/Persukti per puslapius"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Ridade kerimine"
+msgstr "Cikliškai pereiti"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Sulgemine Men�� klahviga"
+msgstr "Uždaryti Meniu mygtuku"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Kausta nime salvestamine"
+msgstr "Įrašų katalogai"
 
 msgid "EPG"
-msgstr "EPG"
+msgstr "Elektroninis programų gidas (EPG)"
 
 msgid "Button$Scan"
-msgstr "Uuenda"
+msgstr "Skanuoti"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "EPG skaneerimise viide (h)"
+msgstr "EPG skanavimo užlaikymas (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "EPG veaparandustase"
+msgstr "EPG klaidų taisymo lygis"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Vana EPG viide (min)"
+msgstr "Pasenusių EPG duomenų saugojomas (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Kella s�nkroniseerimine"
+msgstr "Nustatyti sistemos laiką"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "S�nkroniseerimise transponder"
+msgstr "Naudoti siųstuvo laiką"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "Eelistatuid keeli"
+msgstr "Pageidaujamos kalbos"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "Eelistatud keel"
+msgstr "Pageidaujama kalba"
 
 msgid "pan&scan"
-msgstr "pan&scan"
+msgstr "panŲscan"
 
 msgid "letterbox"
 msgstr "letterbox"
@@ -600,329 +600,329 @@ msgid "center cut out"
 msgstr "center cut out"
 
 msgid "no"
-msgstr "ei"
+msgstr "ne"
 
 msgid "names only"
-msgstr "nimed"
+msgstr "tik pavadinimai"
 
 msgid "PIDs only"
-msgstr "PID-id"
+msgstr "tik PID'ai"
 
 msgid "names and PIDs"
-msgstr "nimed ja PID-id"
+msgstr "pavadinimai ir PID'ai"
 
 msgid "add new channels"
-msgstr "kanalite lisamine"
+msgstr "pridėti naujų kanalų"
 
 msgid "add new transponders"
-msgstr "transponderite lisamine"
+msgstr "pridėti naujų siųstuvų"
 
 msgid "DVB"
 msgstr "DVB"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "Esmane DVB seade"
+msgstr "Pirminiė DVB įvestis"
 
 msgid "Setup.DVB$Video format"
-msgstr "TV k�lgsuhe"
+msgstr "Video formatas"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Video kuvamise formaat"
+msgstr "Plačiaekranis formatas"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Dolby Digital kasutamine"
+msgstr "Įjungti Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Kanalite uuendamine"
+msgstr "Atnaujinti kanalus"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "Audio keeli"
+msgstr "Garso takeliai"
 
 msgid "Setup.DVB$Audio language"
-msgstr "Audio keel"
+msgstr "Garso takelis"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "Subtiitrite kuvamine"
+msgstr "Rodyti subtitrus"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "Subtiitrite keeli"
+msgstr "Subtitrų kalbos"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "Subtiitri keel"
+msgstr "Subtitrų kalba"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Subtiitrite nihe"
+msgstr "Subtitrų pozicionavimo nuokrypis"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Subtiitri l�bipaistvus"
+msgstr "Subtitrų priekinio vaizdo permatomumas"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Subtiitri tausta l�bipaistvus"
+msgstr "Subtitrų fono permatomumas"
 
 msgid "LNB"
-msgstr "LNB"
+msgstr "Konverteris (LNB)"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "DiSEqC kasutamine"
+msgstr "Įjungti DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "SLOF (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "LO LNB sagedus (MHz)"
+msgstr "Žemasis LNB dažnis (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "HI LNB sagedus (MHz)"
+msgstr "Aukštasis LNB dažnis (MHz)"
 
 msgid "CAM reset"
-msgstr "CAM taask�ivitamine"
+msgstr "Dekodavimo modulis (CAM) perkrautas"
 
 msgid "CAM present"
-msgstr "CAM esitletud"
+msgstr "Dekodavimo modulis (CAM) įjungtas"
 
 msgid "CAM ready"
-msgstr "CAM t��valmis"
+msgstr "Dekodavimo modulis (CAM) paruoštas darbui"
 
 msgid "CAM"
-msgstr "CAM"
+msgstr "Dekodavimo modulis (CAM)"
 
 msgid "Button$Menu"
-msgstr "Men��"
+msgstr "Meniu"
 
 msgid "Button$Reset"
-msgstr "Nullimine"
+msgstr "Perkrauti"
 
 msgid "Opening CAM menu..."
-msgstr "CAM-men�� avamine..."
+msgstr "Atidaromas dekodavimo modulio meniu..."
 
 msgid "Can't open CAM menu!"
-msgstr "Ei saa avada CAM men��d!"
+msgstr "Negali atidaryti dekodavimo modulio meniu!"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM on kasutuses - taask�ivitada?"
+msgstr "Dekodavimo modulis šiuo metu naudojamas - tikrai perkrauti?"
 
 msgid "Can't reset CAM!"
-msgstr "CAM mooduli taask�ivitus eba�nnestus!"
+msgstr "Negali perkrauti dekodavimo modulio!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "nepristabdyti 'gyvo' video srauto"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "patvirtinti 'gyvo' video srauto pristabdymą"
 
 msgid "pause live video"
-msgstr ""
+msgstr "pristabdyti 'gyvą' video srautą"
 
 msgid "Recording"
-msgstr "Salvestamine"
+msgstr "Įrašymas"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Salvestamise algusvaru (min)"
+msgstr "Įrašo pradžios užlaikymo laikas (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Salvestamise l�puvaru (min)"
+msgstr "Įrašo pabaigos užlaikymo laikas (min)"
 
 msgid "Setup.Recording$Primary limit"
-msgstr "Esmane prioriteet"
+msgstr "Pagrindinio įvesties įrenginio suderinimo prioritetas"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Vaikimisi prioriteet"
+msgstr "Numatytas laikmačio prioritetas"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Salvestuse eluiga (p�evi)"
+msgstr "Numatytasis įrašo saugojimo laikas (d)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Pauzės mygtuko interpretavimas"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Pausi prioriteet"
+msgstr "Atidėtos peržiūros prioritetas"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Pausi eluiga (p�evi)"
+msgstr "Atidėtos peržiūroso saugojimas (d)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Episoodi nime kasutamine"
+msgstr "Grupuoti pagal epizodus"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "VPS-i kasutamine"
+msgstr "Naudoti VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "VPS-i algusvaru (s)"
+msgstr "VPS buferio laikas (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Otsesalvestuse m�rgistamine"
+msgstr "Pažymėti rankiniu būdu vykdomus įrašus"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Otsesalvestuse nimi"
+msgstr "Rankiniu būdu vykdomų įrašų įvardinimo schama"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Otsesalvestuse kestus (min)"
+msgstr "Rankiniu būdu vykdomo įrašo laikas (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Maksimaalne failisuurus (MB)"
+msgstr "Maks. video failo dydis (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Failide t�keldamine"
+msgstr "Suskaidyti koreguotus failus"
 
 msgid "Replay"
-msgstr "Taasesitus"
+msgstr "Pakartoti"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Multi-kiiruse moodus"
+msgstr "Daugiagreitis ręžimas"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Korduse moodus"
+msgstr "Rodyti atvaizdavimo ręžimą"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "J�tkamise ID"
+msgstr "Kūrinio ID"
 
 msgid "Miscellaneous"
-msgstr "Muud s�tted"
+msgstr "Kiti"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. s�ndmuse kestus (min)"
+msgstr "Min. įvykio laukimo laikas (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Min. kasutaja tegevusetus (min)"
+msgstr "Min. įvesties laukimo laikas (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP ooteaeg (s)"
+msgstr "SVDRP užlaikymas (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Kanalivahetuse ooteaeg (s)"
+msgstr "Kanalo perjungimo užlaikymas (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Kanali sisestamise ajalimiit (ms)"
+msgstr "Užlaikymas (ms) kanalo įvedimui"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr "Kanal k�ivitamisel"
+msgstr "Kanalas įjungimo metu"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "nagu enne"
+msgstr "kaip anksčiau"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr "Helitugevus k�ivitamisel"
+msgstr "Garsas įjungimo metu"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "H�dav�ljumine"
+msgstr "Avarinis išėjimas"
 
 msgid "Plugins"
-msgstr "Laiendusmoodulid"
+msgstr "Įskiepai"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Sellel laienudusmoodulil ei ole seadeid!"
+msgstr "Šis įskiepas neturi nustatymo parametrų!"
 
 msgid "Setup"
-msgstr "S�tted"
+msgstr "Nustatymai"
 
 msgid "Restart"
-msgstr "Restart"
+msgstr "Perkrauti"
 
 msgid "Really restart?"
-msgstr "Restart?"
+msgstr "Tikrai perkrauti?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " L�petada salvestamine "
+msgstr " Sustabdyti įrašinėjimą "
 
 msgid "Schedule"
-msgstr "Kava"
+msgstr "Programa"
 
 msgid "VDR"
 msgstr "VDR"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " L�petada taasesitamine"
+msgstr " Sustabdyti kartojimą"
 
 msgid "Button$Audio"
-msgstr "Audio"
+msgstr "Garsas"
 
 msgid "Button$Pause"
-msgstr "Paus"
+msgstr "Pristabdyti"
 
 msgid "Button$Stop"
-msgstr "Stopp"
+msgstr "Sustabdyti"
 
 msgid "Button$Resume"
-msgstr "J�tka"
+msgstr "Pradėti"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Katkestada redigeerimine"
+msgstr " Sustabdyti koregavimą"
 
 msgid "Stop recording?"
-msgstr "L�petada salvestamine?"
+msgstr "Sustabdyti įrašinėjimą?"
 
 msgid "Cancel editing?"
-msgstr "T�histada muudatus?"
+msgstr "Atmesti koregavimą?"
 
 msgid "No audio available!"
-msgstr "Audio k�ttesaamatu!"
+msgstr "Garsas nepateikiamas!"
 
 msgid "No subtitles"
-msgstr "Subtiitrid v�ljas"
+msgstr "Nėra subtitrų"
 
 msgid "Button$Subtitles"
-msgstr "Subtiitrid"
+msgstr "Subtitrai"
 
 msgid "No subtitles available!"
-msgstr "Subtiitrid puuduvad"
+msgstr "Subtitrai nepateikiami!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Ebapiisavalt kettaruumi salvestamise alustamiseks!"
+msgstr "Nepakanka vietos diske,  kad būtų galima įrašinėti!"
 
 msgid "No free DVB device to record!"
-msgstr "Puudub vaba DVB seade salvestamiseks!"
+msgstr "Nėra laisvų DVB įrenginių, kad būtų galima įrašinėti!"
 
 msgid "Pausing live video..."
-msgstr "Saate edastamise peatamine..."
+msgstr "Sustabdomas 'gyvo' video grojimas..."
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "H�pe: "
+msgstr "Peršokti: "
 
 msgid "No editing marks defined!"
-msgstr "Redigeerimise markerid puuduvad!"
+msgstr "Nenustatytos koregavimo žymės!"
 
 msgid "Can't start editing process!"
-msgstr "Redigeerimise start eba�nnestus!"
+msgstr "Negali pradėti koregavimo!"
 
 msgid "Editing process started"
-msgstr "Redigeerimine algas"
+msgstr "Koregavimo procesas prasidėjo"
 
 msgid "Editing process already active!"
-msgstr "Redigeerimine juba aktiivne!"
+msgstr "Koregavimo procesas jau aktyvus!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " abcdefghijklmnopqrs�z�tuvw����xy0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aąbcčdeęėfghiįjklmnopqrsštuųūvwxyzž0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "yes"
-msgstr "jah"
+msgstr "taip"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc�2\tdef3\tghi4\tjkl5\tmno��6\tpqrs�7\ttuv�8\twxyz�9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taąbcč2\tdeęėf3\tghiį4\tjkl5\tmno6\tpqrsš7\ttuųūv8\twxyzž9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
-msgstr "Asenda (OVR)"
+msgstr "Perrąšyti"
 
 msgid "Button$Insert"
-msgstr "Lisa (INS)"
+msgstr "Įterpti"
 
 msgid "Plugin"
-msgstr "Laiendusmoodul"
+msgstr "Įskiepas"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "'�les/Alla' uus asukoht - 'OK' kinnitus"
+msgstr "Spauskite mygtukus į viršų / į apačią ir OK kad perkelti į kitą vietą"
 
 msgid "Channel locked (recording)!"
-msgstr "Kanal lukus (salvestamine aktiivne)!"
+msgstr "Kanalas užblokuotas (įrašinėjama)!"
 
 msgid "Low disk space!"
-msgstr "K�vaketas t�is!"
+msgstr "Mažai vietos diske!"
 
 msgid "Regenerating index file"
 msgstr ""
@@ -931,100 +931,100 @@ msgid "Index file regeneration complete"
 msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "V�ljal�litamine eba�nnestus - '-s' parameeter puudub!"
+msgstr "Sistemos negalima išjungti, nes starto metu nebuvo komandinėj eilutėj paduota savybė '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Redigeerimine aktiive - l�litada v�lja?"
+msgstr "Koreguojama - išjungti vistiek?"
 
 msgid "Recording - shut down anyway?"
-msgstr "Salvestamine aktiivne - l�litada v�lja?"
+msgstr "Įrašinėjama - išjungti vistiek?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Salvestamine algab %ld minuti p�rast - l�litada v�lja?"
+msgstr "Įrašas prasidės po %ld minučių, išjungti vistiek?"
 
 msgid "shut down anyway?"
-msgstr "l�litada v�lja?"
+msgstr "išjungti bet kokiu atveju?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Laiendusmoodul %s �rkab %ld minuti p�rast, j�tkata?"
+msgstr "Įskiepas %s aktyvuosis po %ld min, tęsti toliau?"
 
 msgid "Editing - restart anyway?"
-msgstr "Redigeerimine aktiivne - restart?"
+msgstr "Koreguojama - perkrauti vistiek?"
 
 msgid "Recording - restart anyway?"
-msgstr "Salvestamine aktiivne - restart?"
+msgstr "Įrašinėjama - perkrauti vistiek?"
 
 msgid "restart anyway?"
-msgstr "restart?"
+msgstr "perkrati bet kokiu atveju?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "Helitugevus "
+msgstr "Garsas "
 
 msgid "Classic VDR"
-msgstr "Klassikaline VDR"
+msgstr "Klasikinis VDR"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG konsool"
+msgstr "ST:TNG Skydeliai"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "ETKNRLP"
+msgstr "PATKPŠS"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr " E  T  K  N  R  L  P "
+msgstr "PirAntTreKetPenŠešSek"
 
 msgid "Monday"
-msgstr "Esmasp�ev"
+msgstr "Pirmadienis"
 
 msgid "Tuesday"
-msgstr "Teisip�ev"
+msgstr "Antradienis"
 
 msgid "Wednesday"
-msgstr "Kolmap�ev"
+msgstr "Trečiadienis"
 
 msgid "Thursday"
-msgstr "Neljap�ev"
+msgstr "Ketvirtadienis"
 
 msgid "Friday"
-msgstr "Reede"
+msgstr "Penktadienis"
 
 msgid "Saturday"
-msgstr "Laup�ev"
+msgstr "Šeštadienis"
 
 msgid "Sunday"
-msgstr "P�hap�ev"
+msgstr "Sekmadienis"
 
 msgid "Upcoming recording!"
-msgstr "Salvestamine tulekul!"
+msgstr "Tuoj įsijungs įrašinėjimas!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Sustabdyti 'gyvą' video srautą?"
 
 msgid "Recording started"
-msgstr "Salvestamine algas"
+msgstr "Įrašymas prasidėjo"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR l�litub v�lja hiljem - vajuta Power kiirendamiseks"
+msgstr "VDR išsijungs vėliau - paspauskite Power mygtuką kad padarytumėte tai dabar"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Vajuta suvalist klahvi v�ljal�litamise t�histamiseks"
+msgstr "Paspauskit bet kurį mygtuką kad sustabdytumėte sistemos išjungimą"
 
 msgid "Switching primary DVB..."
-msgstr "Esmase DVB seadme �mberl�litus..."
+msgstr "Sukeičiamas pirminis DVB įrenginys..."
 
 msgid "Editing process failed!"
-msgstr "Redigeerimine eba�nnestus"
+msgstr "Koregavimas nepavyko!"
 
 msgid "Editing process finished"
-msgstr "Redigeerimine l�petatud"
+msgstr "Koregavimas baigtas"
 
 msgid "Press any key to cancel restart"
-msgstr "Restardi katkestamiseks vajuta suvalist klahvi"
+msgstr "Paspauskit bet kurį mygtuką kad sustabdytumėte perkrovimą"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR l�litub v�lja %s minuti p�rast"
+msgstr "VDR išsijungs per %s minutes"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.9 2009/08/16 15:35:30 kls Exp $
+ * $Id: recording.h 2.10 2009/11/21 16:12:55 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -220,6 +220,7 @@ public:
 #define MAXVIDEOFILESIZEDEFAULT MAXVIDEOFILESIZEPES
 
 struct tIndexTs;
+class cIndexFileGenerator;
 
 class cIndexFile {
 private:
@@ -229,6 +230,7 @@ private:
   tIndexTs *index;
   bool isPesRecording;
   cResumeFile resumeFile;
+  cIndexFileGenerator *indexFileGenerator;
   cMutex mutex;
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
   void ConvertToPes(tIndexTs *IndexTs, int Count);
@@ -245,6 +247,7 @@ public:
   int GetResume(void) { return resumeFile.Read(); }
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);
+  void Delete(void);
   };
 
 class cFileName {

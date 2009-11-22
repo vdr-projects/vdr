@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@cadsoft.de>
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Vyacheslav Dikonov <sdiconov@mail.ru>, 2004, 2005
 # Oleg Roitburd <oleg@roitburd.de>, 2005, 2006, 2007, 2008
@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
-"Report-Msgid-Bugs-To: <vdr-bugs@cadsoft.de>\n"
-"POT-Creation-Date: 2009-05-21 13:18+0200\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
@@ -924,6 +924,12 @@ msgstr "Канал заблокирован (идёт запись)!"
 
 msgid "Low disk space!"
 msgstr "Недостаточно места на диске!"
+
+msgid "Regenerating index file"
+msgstr ""
+
+msgid "Index file regeneration complete"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Выключение невозможно - не задан параметр '-s'!"

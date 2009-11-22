@@ -47,7 +47,7 @@ to one of the following values in the 'make' call to make the respective control
 the default:
 
   REMOTE=RCU    control via the "Remote Control Unit" receiver
-                (see http://www.cadsoft.de/vdr/remote.htm)
+                (see http://www.tvdr.de/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)
 

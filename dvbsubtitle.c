@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.1 2008/05/25 14:36:24 kls Exp $
+ * $Id: dvbsubtitle.c 2.2 2009/11/22 12:28:53 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -699,7 +699,7 @@ int cDvbSubtitleConverter::ConvertFragments(const uchar *Data, int Length)
         }
 
      if (Length > PayloadOffset + SubstreamHeaderLength) {
-        int64_t pts = PesGetPts(Data);
+        int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : 0;
         if (pts)
            dbgconverter("Converter PTS: %lld\n", pts);
         const uchar *data = Data + PayloadOffset + SubstreamHeaderLength; // skip substream header

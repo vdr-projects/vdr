@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.4 2009/05/23 12:18:25 kls Exp $
+ * $Id: recorder.c 2.6 2009/11/21 15:58:12 kls Exp $
  */
 
 #include "recorder.h"
@@ -30,7 +30,7 @@ cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, i
 
   SpinUpDisk(FileName);
 
-  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, TS_SIZE * 2, true, "Recorder");
+  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
   cChannel *Channel = Channels.GetByChannelID(ChannelID);
   int Pid = VPid;
@@ -116,6 +116,7 @@ void cRecorder::Action(void)
 {
   time_t t = time(NULL);
   bool InfoWritten = false;
+  bool FirstIframeSeen = false;
   while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
@@ -134,25 +135,28 @@ void cRecorder::Action(void)
                        }
                     InfoWritten = true;
                     }
-                 if (!NextFile())
-                    break;
-                 if (index && frameDetector->NewFrame())
-                    index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
-                 if (frameDetector->IndependentFrame()) {
-                    recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
-                    fileSize += TS_SIZE;
-                    int Index = 0;
-                    while (uchar *pmt = patPmtGenerator.GetPmt(Index)) {
-                          recordFile->Write(pmt, TS_SIZE);
-                          fileSize += TS_SIZE;
-                          }
+                 if (FirstIframeSeen || frameDetector->IndependentFrame()) {
+                    FirstIframeSeen = true; // start recording with the first I-frame
+                    if (!NextFile())
+                       break;
+                    if (index && frameDetector->NewFrame())
+                       index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
+                    if (frameDetector->IndependentFrame()) {
+                       recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
+                       fileSize += TS_SIZE;
+                       int Index = 0;
+                       while (uchar *pmt = patPmtGenerator.GetPmt(Index)) {
+                             recordFile->Write(pmt, TS_SIZE);
+                             fileSize += TS_SIZE;
+                             }
+                       }
+                    if (recordFile->Write(b, Count) < 0) {
+                       LOG_ERROR_STR(fileName->Name());
+                       break;
+                       }
+                    fileSize += Count;
+                    t = time(NULL);
                     }
-                 if (recordFile->Write(b, Count) < 0) {
-                    LOG_ERROR_STR(fileName->Name());
-                    break;
-                    }
-                 fileSize += Count;
-                 t = time(NULL);
                  }
               ringBuffer->Del(Count);
               }

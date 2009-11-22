@@ -1,33 +1,32 @@
 # VDR plugin language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Alexander Gross <Bikalexander@gmail.com>, 2008
+# Klaus Schmidinger <kls@tvdr.de>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2008-01-12 17:38+0100\n"
-"PO-Revision-Date: 2008-03-14 00:45+0100\n"
-"Last-Translator: Alexander Gross <Bikalexander@gmail.com>\n"
-"Language-Team: Russian\n"
+"PO-Revision-Date: 2009-09-30 12:54+0100\n"
+"Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
+"Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-5\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
 
 msgid "Pictures"
-msgstr "Изображения"
+msgstr "Obrсzky"
 
 msgid "A simple picture viewer"
-msgstr "Простая программа просмотра изображений"
+msgstr "Jednoduch§ prehliadaш obrсzkov"
 
 msgid "Picture directory"
-msgstr "Каталог изображений"
+msgstr "Umiestnenie obrсzkov"
 
 msgid "Slide show delay (s)"
-msgstr "Задержка  слайд-шоу (сек)"
+msgstr "Oneskorenie prezentсcia (s)"
 
 msgid "No picture directory has been defined!"
-msgstr "Не определён каталог изображений!"
+msgstr "Neboli preukсzanщ Оiadne fotky v adresсri!"
+

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.3 2008/12/24 15:21:09 kls Exp $
+# $Id: Makefile 2.4 2009/10/18 13:59:25 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -110,7 +110,7 @@ I18Npot   = $(PODIR)/vdr.pot
 	msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@cadsoft.de>' -o $@ $^
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
 
 %.po: $(I18Npot)
 	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<

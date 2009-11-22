@@ -1,7 +1,7 @@
 Tons of suggestions, bugreports, patches and other contributions have been
 provided by the people on the 'linux-dvb' and 'vdr' mailing lists
 Special thanks go to the following individuals (if your name is missing here,
-please send an email to kls@cadsoft.de):
+please send an email to kls@tvdr.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
@@ -526,7 +526,7 @@ Andreas Böttger <fboettger@t-online.de>
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
 
-Rudi Hofer (Rudi.Hofer@cadsoft.de)
+Rudi Hofer (Rudi.Hofer@gmx.de)
  for his help in keeping 'channels.conf' up to date
 
 Gregoire Favre <greg@ulima.unil.ch>
@@ -1081,6 +1081,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding a note about the meaning of PERCENTAGEDELTA in cRingBuffer::UpdatePercentage()
  for fixing handling file name length on VFAT systems in case they
  contain UTF-8 characters
+ for fixing wrong bracketing in cChannel::SubtitlingType() etc.
+ for fixing handling DVB subtitles for PES recordings
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1573,6 +1575,7 @@ Arthur Konovalov <kasjas@hot.ee>
  for fixing a missing ',' in the Greek OSD texts
  for fixing a missing ',' in the Swedish OSD texts
  for reporting problems with CAMs when checking the CAM status too frequently
+ for reporting references to old *.vdr file names in MANUAL
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -2270,6 +2273,7 @@ Frank Schmirler <vdr@schmirler.de>
  for fixing handling the 'pointer field' in generating and parsing PAT/PMT
  for suggesting to use an "instance id" instead of the "resume id" to distinguish
  recordings of the same broadcast made by different instances of VDR
+ for fixing EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2361,6 +2365,7 @@ Denis Knauf <denis.knauf@gmail.com>
 
 Diego Pierotto <vdr-italian@tiscali.it>
  for translating OSD texts to the Italian language
+ for reporting a wrong default value for "Pause key handling" in the MANUAL
 
 Timo Eskola <timo@tolleri.net>
  for implementing sending all frames to devices that can handle them in fast forward
@@ -2489,3 +2494,23 @@ Martin Neuditschko <yosuke.tomoe@gmx.net>
 
 Mikko Tuumanen <mikko.tuumanen@utu.fi>
  for implementing full handling of subtitling descriptors
+
+Timothy D. Lenz <tlenz@vorgon.com>
+ for reporting a problem with logging changes for channels that
+ have no number
+
+Valdemaras Pipiras <valdemaras@ambernet.lt>
+ for translating OSD texts to the Lithuanian language
+
+Manuel Reimer <Manuel.Reimer@gmx.de>
+ for fixing saving terminal settings when running in background
+
+Rene van den Braken <rene@vandenbraken.name>
+ for reporting a bug in writing the PCR pid into the PMT in
+ cPatPmtGenerator::GeneratePmt()
+
+Milan Hrala <hrala.milan@gmail.com>
+ for translating OSD texts to the Slovakian language
+
+Andreas Schaefers <andreas_schaefers@gmx.de>
+ for adding the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()

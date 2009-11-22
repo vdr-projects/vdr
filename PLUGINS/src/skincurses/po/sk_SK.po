@@ -1,28 +1,29 @@
 # VDR plugin language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Diego Pierotto <vdr-italian@tiscali.it>, 2008
+# Klaus Schmidinger <kls@tvdr.de>, 2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2007-08-15 16:04+0200\n"
-"PO-Revision-Date: 2008-01-27 20:35+0100\n"
-"Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
-"Language-Team: Italian\n"
+"PO-Revision-Date: 2009-09-30 12:52+0100\n"
+"Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
+"Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "A text only skin"
-msgstr "Una interfaccia solo testo"
+msgstr "Iba text vzhµadu"
 
 msgid "Key$Mute"
-msgstr "Muto"
+msgstr "Stlmi» zvuk"
 
 msgid "Volume "
-msgstr "Volume "
+msgstr "Hlasitos»"
 
 msgid "Text mode"
-msgstr "Modalità testo"
+msgstr "Textový re¾im"
+

@@ -1,36 +1,35 @@
 # VDR plugin language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Marc Rovira Vall <tm05462@salleURL.edu>, 2003
-# Ramon Roca <ramon.roca@xcombo.com>, 2003
-# Jordi Vilà <jvila@tinet.org>, 2003
+# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2007-10-13 11:52+0200\n"
-"PO-Revision-Date: 2007-08-11 12:34+0200\n"
-"Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
-"Language-Team: Catalanian\n"
+"PO-Revision-Date: 2009-09-30 09:48+0100\n"
+"Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
+"Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "A friendly greeting"
-msgstr ""
+msgstr "Priateµský pozdrav"
 
 msgid "Hello"
-msgstr ""
+msgstr "Ahoj"
 
 msgid "Greeting time (s)"
-msgstr ""
+msgstr "Èas pozdravu (s)"
 
 msgid "Use alternate greeting"
-msgstr ""
+msgstr "Pou¾i» náhradný pozdrav"
 
 msgid "Howdy folks!"
-msgstr ""
+msgstr "Ahojte v¹etci!"
 
 msgid "Hello world!"
-msgstr ""
+msgstr "Ahoj svet!"
+

@@ -1,256 +1,254 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Nan Feng <nfgx@21cn.com>, 2008
+# Vladim�r B�rta <vladimir.barta@k2atmitec.cz>, 2006, 2008
+# Ji�� Dobr� <jdobry@centrum.cz>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2009-11-22 12:28+0100\n"
-"PO-Revision-Date: 2009-09-23 23:50+0800\n"
-"Last-Translator: Nan Feng <nfgx@21cn.com>\n"
-"Language-Team: Chinese\n"
+"PO-Revision-Date: 2009-09-30 12:50+0100\n"
+"Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
+"Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
 
 msgid "off"
-msgstr "关"
+msgstr "vypnut�"
 
 msgid "on"
-msgstr "开"
+msgstr "zapnut�"
 
 msgid "auto"
-msgstr "自动"
+msgstr "automaticky"
 
 msgid "none"
-msgstr "无"
+msgstr "�iadny"
 
 msgid "*** Invalid Channel ***"
-msgstr "***无效的频道 ***"
+msgstr "*** Neplatn� kan�l ***"
 
 msgid "Channel not available!"
-msgstr "频道不可用!"
+msgstr "Kan�l nie je dostupn�!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "不能启动传送模式"
+msgstr "Nem��e spusti� prenos!"
 
 msgid "Starting EPG scan"
-msgstr "开始节目单扫描"
+msgstr "Za��na preh�ad�va� EPG"
 
 msgid "No title"
-msgstr "没有标题"
+msgstr "Bez n�zvu"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "简体中文"
+msgstr "Slovensky"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "中文"
+msgstr "sk"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "阶段 1: 检测RC代码类型"
+msgstr "F�za 1: Detekcia typu k�du"
 
 msgid "Press any key on the RC unit"
-msgstr "请按在RC单元下按任意键"
+msgstr "Stla�te �ubovoln� kl�vesu ovl�dania"
 
 msgid "RC code detected!"
-msgstr "发现RC代码!"
+msgstr "K�d bol zisten�!"
 
 msgid "Do not press any key..."
-msgstr "不要按下任何键... "
+msgstr "Nestl��ajte �iadne kl�vesy..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "阶段 2: 学习特殊的按键代码"
+msgstr "F�za 2: Ur�enie konkr�tneho k�du kl�ves"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "请按 '%s' 键"
+msgstr "Stla�te kl�vesu pre '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "请按 '上' 确认"
+msgstr "Stla�te 'Hore' pre potvrdenie"
 
 msgid "Press 'Down' to continue"
-msgstr "请按 '下' 继续"
+msgstr "Stla�te 'Dole' pre pokra�ovanie"
 
 msgid "(press 'Up' to go back)"
-msgstr "(请按上返回)"
+msgstr "(stla�te 'hore' pre n�vrat)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(请按下结束键定义)"
+msgstr "(stla�te 'dole' pre skon�enie)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(请按菜单键跳过)"
+msgstr "(stla�te 'Menu' pre presko�enie defin�cie kl�vesy)"
 
 msgid "Learning Remote Control Keys"
-msgstr "学习遥控控制按键"
+msgstr "Ur�enie k�du dia�kov�ho ovl�dania"
 
 msgid "Phase 3: Saving key codes"
-msgstr "阶段 3: 保存代码"
+msgstr "F�za 3: Ulo�enie k�du"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "请按上保存,按下取消."
+msgstr "Stla�te 'hore' pre ulo�enie, 'Dole' pre zru�enie"
 
 msgid "Key$Up"
-msgstr "上"
+msgstr "Hore"
 
 msgid "Key$Down"
-msgstr "下"
+msgstr "Dole"
 
 msgid "Key$Menu"
-msgstr "菜单"
+msgstr "Menu"
 
 msgid "Key$Ok"
 msgstr "Ok"
 
 msgid "Key$Back"
-msgstr "返回"
+msgstr "Sp�"
 
 msgid "Key$Left"
-msgstr "左"
+msgstr "V�avo"
 
 msgid "Key$Right"
-msgstr "右"
+msgstr "Vpravo"
 
 msgid "Key$Red"
-msgstr "红"
+msgstr "�erven�"
 
 msgid "Key$Green"
-msgstr "绿"
+msgstr "Zelen�"
 
 msgid "Key$Yellow"
-msgstr "黄"
+msgstr "�lt�"
 
 msgid "Key$Blue"
-msgstr "蓝"
+msgstr "Modr�"
 
 msgid "Key$Info"
-msgstr "信息"
+msgstr "Info"
 
 msgid "Key$Play"
-msgstr "播放"
+msgstr "Prehra�"
 
 msgid "Key$Pause"
-msgstr "暂停"
+msgstr "Preru�i�"
 
 msgid "Key$Stop"
-msgstr "停止"
+msgstr "Zastavi�"
 
 msgid "Key$Record"
-msgstr "回放列表"
+msgstr "Nahra�"
 
 msgid "Key$FastFwd"
-msgstr "快速往前"
+msgstr "Preto�i� dopredu"
 
 msgid "Key$FastRew"
-msgstr "快速往后"
+msgstr "Preto�i� sp�"
 
 msgid "Key$Next"
-msgstr "下一段"
+msgstr "�alej"
 
 msgid "Key$Prev"
-msgstr "普遍"
+msgstr "Sp�"
 
 msgid "Key$Power"
-msgstr "电源"
+msgstr "Vyp�na�"
 
 msgid "Key$Channel+"
-msgstr "频道+"
+msgstr "Kan�l+"
 
 msgid "Key$Channel-"
-msgstr "频道-"
+msgstr "Kan�l-"
 
 msgid "Key$PrevChannel"
-msgstr "节目"
+msgstr "Predch�dzaj�ci kan�l"
 
 msgid "Key$Volume+"
-msgstr "音量+"
+msgstr "Hlasitos�+"
 
 msgid "Key$Volume-"
-msgstr "音量-"
+msgstr "Hlasitos� -"
 
 msgid "Key$Mute"
-msgstr "静音"
+msgstr "Ticho"
 
 msgid "Key$Audio"
-msgstr "声道"
+msgstr "Zvuk"
 
 msgid "Key$Subtitles"
-msgstr "字幕"
+msgstr "Titulky"
 
 msgid "Key$Schedule"
-msgstr "附表"
+msgstr "Program (EPG)"
 
 msgid "Key$Channels"
-msgstr "频道列表"
+msgstr "Kan�ly"
 
 msgid "Key$Timers"
-msgstr "时间"
+msgstr "Pl�ny nahr�vania"
 
 msgid "Key$Recordings"
-msgstr "录像"
+msgstr "Z�znamy"
 
 msgid "Key$Setup"
-msgstr "设置"
+msgstr "Nastavenie"
 
 msgid "Key$Commands"
-msgstr "命令"
+msgstr "Pr�kazy"
 
 msgid "Key$User1"
-msgstr "用户1"
+msgstr "U��vate�1"
 
 msgid "Key$User2"
-msgstr "用户2"
+msgstr "U��vate�2"
 
 msgid "Key$User3"
-msgstr "用户3"
+msgstr "U��vate�3"
 
 msgid "Key$User4"
-msgstr "用户4"
+msgstr "U��vate�4"
 
 msgid "Key$User5"
-msgstr "用户5"
+msgstr "U��vate�5"
 
 msgid "Key$User6"
-msgstr "用户6"
+msgstr "U��vate�6"
 
 msgid "Key$User7"
-msgstr "用户7"
+msgstr "U��vate�7"
 
 msgid "Key$User8"
-msgstr "用户8"
+msgstr "U��vate�8"
 
 msgid "Key$User9"
-msgstr "用户9"
+msgstr "U��vate�9"
 
 msgid "Disk"
-msgstr "硬盘已使用"
+msgstr "Disk"
 
 msgid "free"
-msgstr "可录像时间"
+msgstr "volne"
 
 msgid "Free To Air"
-msgstr "剩余空间"
+msgstr "volne ��rite�n�"
 
 msgid "encrypted"
-msgstr "加密"
+msgstr "k�dovan�"
 
 msgid "Edit channel"
-msgstr "编辑频道"
+msgstr "�pravy kan�lu"
 
 msgid "Name"
-msgstr "名字"
+msgstr "N�zov"
 
 msgid "Source"
-msgstr "卫星源"
+msgstr "Zdroj"
 
 msgid "Frequency"
-msgstr "频率"
+msgstr "Frekvencia"
 
 msgid "Vpid"
 msgstr "Vpid"
@@ -286,646 +284,646 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Polarization"
-msgstr "极化方式"
+msgstr "Polariz�cia"
 
 msgid "System"
-msgstr "卫星系统"
+msgstr "syst�m"
 
 msgid "Srate"
-msgstr "符号率"
+msgstr "Srate"
 
 msgid "Inversion"
-msgstr "反向"
+msgstr "Inversion"
 
 msgid "CoderateH"
-msgstr "高符号频率"
+msgstr "CoderateH"
 
 msgid "CoderateL"
-msgstr "论符号频率"
+msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "调制"
+msgstr "Modul�cia"
 
 msgid "Bandwidth"
-msgstr "带宽"
+msgstr "��rka p�sma"
 
 msgid "Transmission"
-msgstr "传送"
+msgstr "Prenos"
 
 msgid "Guard"
-msgstr "防护"
+msgstr "Ochrana"
 
 msgid "Hierarchy"
-msgstr "层次"
+msgstr "Hierarchia"
 
 msgid "Rolloff"
-msgstr "越零率"
+msgstr ""
 
 msgid "Channel settings are not unique!"
-msgstr "频道设置不是唯一的！"
+msgstr "Nastavenia kan�lu nie s� oby�ajn�!"
 
 msgid "Channels"
-msgstr "频道列表"
+msgstr "Kan�ly"
 
 msgid "Button$Edit"
-msgstr "编辑"
+msgstr "�pravy"
 
 msgid "Button$New"
-msgstr "新增"
+msgstr "Nov�"
 
 msgid "Button$Delete"
-msgstr "删除"
+msgstr "Zmaza�"
 
 msgid "Button$Mark"
-msgstr "标记"
+msgstr "Ozna�i�"
 
 msgid "Channel is being used by a timer!"
-msgstr "频道正在录像！"
+msgstr "Pl�n nahr�vania pr�ve pou��va kan�l!"
 
 msgid "Delete channel?"
-msgstr "是否删除频道？"
+msgstr "Odstr�ni� kan�l?"
 
 msgid "Edit timer"
-msgstr "编辑计时器"
+msgstr "�prava pl�nu nahr�vania"
 
 msgid "Active"
-msgstr "活跃的"
+msgstr "V �innosti"
 
 msgid "Channel"
-msgstr "频道"
+msgstr "Kan�l"
 
 msgid "Day"
-msgstr "天"
+msgstr "De�"
 
 msgid "Start"
-msgstr "开始"
+msgstr "Za�iatok"
 
 msgid "Stop"
-msgstr "停止"
+msgstr "Koniec"
 
 msgid "VPS"
 msgstr "VPS"
 
 msgid "Priority"
-msgstr "优先"
+msgstr "Priorita"
 
 msgid "Lifetime"
-msgstr "终生"
+msgstr "�ivotnos�"
 
 msgid "File"
-msgstr "文件"
+msgstr "S�bor"
 
 msgid "First day"
-msgstr "第一天"
+msgstr "Prv� de�"
 
 msgid "Timers"
-msgstr "录像中列表"
+msgstr "Pl�ny nahr�vania"
 
 msgid "Button$On/Off"
-msgstr "开/关"
+msgstr "Zap./Vyp."
 
 msgid "Button$Info"
-msgstr "信息"
+msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "是否删除时间？"
+msgstr "Zmaza� pl�n nahr�vania?"
 
 msgid "Timer still recording - really delete?"
-msgstr "录像中-是否的删除？ "
+msgstr "Pr�ve nahr�va- naozaj zmaza�?"
 
 msgid "Event"
-msgstr "事件"
+msgstr "Udalosti"
 
 msgid "Button$Timer"
-msgstr "时间"
+msgstr "Pl�ny"
 
 msgid "Button$Record"
-msgstr "录像"
+msgstr "Nahra�"
 
 msgid "Button$Switch"
-msgstr "开关"
+msgstr "Prepn��"
 
 msgid "What's on now?"
-msgstr "现在播放的节目?"
+msgstr "Aktu�lny program"
 
 msgid "What's on next?"
-msgstr "下一个播放的节目?"
+msgstr "N�sleduj�ci program"
 
 msgid "Button$Next"
-msgstr "下一步"
+msgstr "�alej"
 
 msgid "Button$Now"
-msgstr "现在"
+msgstr "Teraz"
 
 msgid "Button$Schedule"
-msgstr "任务列表"
+msgstr "TV program"
 
 msgid "Can't switch channel!"
-msgstr "不能切换频道"
+msgstr "Kan�l nejde prepn��!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "任务列表 - %s"
+msgstr "TV program - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "这个事件- %s"
+msgstr "Tato udalos� - %s"
 
 msgid "This event - all channels"
-msgstr "这个事件-所有频道"
+msgstr "Tato udalos� - v�etky kan�ly"
 
 msgid "All events - all channels"
-msgstr "所有事件-所有频道"
+msgstr "V�etky udalosti - v�etky kan�ly"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "请输入 %d 数字!"
+msgstr "Pros�m vlo�te %d znakov!"
 
 msgid "CAM not responding!"
-msgstr "CAM 没有响应！"
+msgstr "CAM neodpoved�!"
 
 msgid "Recording info"
-msgstr "录像信息"
+msgstr "Podrobnosti z�znamu"
 
 msgid "Button$Play"
-msgstr "播放"
+msgstr "Prehra�"
 
 msgid "Button$Rewind"
-msgstr "重放"
+msgstr "Na za�iatok"
 
 msgid "Recordings"
-msgstr "录像回放列表"
+msgstr "Z�znamy"
 
 msgid "Button$Open"
-msgstr "打开"
+msgstr "Otvori�"
 
 msgid "Commands"
-msgstr "常用操作命令"
+msgstr "Pr�kazy"
 
 msgid "Error while accessing recording!"
-msgstr "存取录像错误！"
+msgstr "Chyba pri pr�stupe k z�znamom!"
 
 msgid "Delete recording?"
-msgstr "是否删除录像？"
+msgstr "Zmaza� z�znam?"
 
 msgid "Error while deleting recording!"
-msgstr "删除录像错误！"
+msgstr "Pri vymaz�van� z�znamu pri�lo k chybe!"
 
 msgid "Recording commands"
-msgstr "记录命令"
+msgstr "Pr�kazy nahr�vania"
 
 msgid "never"
-msgstr "从不"
+msgstr "nikdy"
 
 msgid "skin dependent"
-msgstr "皮肤选择"
+msgstr "pod�a vzh�adu"
 
 msgid "always"
-msgstr "总是"
+msgstr "v�dy"
 
 msgid "OSD"
-msgstr "系统菜单设置"
+msgstr "OSD"
 
 msgid "Setup.OSD$Language"
-msgstr "语言选择"
+msgstr "Jazyk"
 
 msgid "Setup.OSD$Skin"
-msgstr "皮肤选择"
+msgstr "Vzh�ad"
 
 msgid "Setup.OSD$Theme"
-msgstr "主题选择"
+msgstr "T�ma"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "左边距离设置 (%)"
+msgstr "V�avo (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "顶部距离设置 (%)"
+msgstr "Navrchu (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "宽度设置 (%)"
+msgstr "��rka (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "高度设置 (%)"
+msgstr "V��ka (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "显示信息时间(秒)"
+msgstr "�as zobrazenia spr�vy (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "使用小字体"
+msgstr "Pou��va� mal� p�smo"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "抗锯齿选择"
+msgstr "Vyhladi� p�smo"
 
 msgid "Setup.OSD$Default font"
-msgstr "默认字体选择"
+msgstr "Predvolen� p�smo"
 
 msgid "Setup.OSD$Small font"
-msgstr "小字体选择"
+msgstr "Mal� p�smo"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "固定字体选择"
+msgstr "Ur�en� p�smo"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "默认字体大小 (%)"
+msgstr "Ve�kos� predvolen�ho p�sma (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "小字体 (%)"
+msgstr "Ve�kos� mal�ho p�sma (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "固定的字体 (%)"
+msgstr "Ve�kos� ur�en�ho p�sma (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "频道信息位置"
+msgstr "Poz�cia inform�ci� o kan�le"
 
 msgid "bottom"
-msgstr "底部"
+msgstr "na spodku"
 
 msgid "top"
-msgstr "头部"
+msgstr "na vrchu"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "频道时间信息 (s)"
+msgstr "�as zobr. inform�ci� o kan�le (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "频道信息开关"
+msgstr "Inform�cie pri zmene kan�lu"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "超时需求频道信息"
+msgstr "�asov� limit na inform�ciu o kan�le"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "滚动页"
+msgstr "Rolova� strany"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "滚动限制"
+msgstr "Z konca na za�iatok"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "菜单关闭结束"
+msgstr "Kl�vesa Menu zaviera"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "录像目录"
+msgstr "Zoznam z�znamov"
 
 msgid "EPG"
-msgstr "电子节目单设置"
+msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "扫描"
+msgstr "Sn�ma�"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "节目单扫描超时 (h)"
+msgstr "�asov� limit pre sn�manie EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "节目单问题修复级别"
+msgstr "EPG �rove� chyb"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "节目单停留时间 (min)"
+msgstr "Ukazova� star�ie EPG d�ta (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "设置系统时间"
+msgstr "Nastavi� syst�mov� �as"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "转发器使用时间"
+msgstr "Pou�i� �as z kan�lu"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "首选语种 "
+msgstr "Uprednost�ova� jazyky"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "首选语言"
+msgstr "Uprednostni� jazyk"
 
 msgid "pan&scan"
-msgstr "pan&scan模式"
+msgstr "pan&scan"
 
 msgid "letterbox"
-msgstr "letterbox模式"
+msgstr "letterbox"
 
 msgid "center cut out"
-msgstr "Center-cut-out模式"
+msgstr "oreza� do stredu"
 
 msgid "no"
-msgstr "不"
+msgstr "nie"
 
 msgid "names only"
-msgstr "仅是名字"
+msgstr "iba n�zvy"
 
 msgid "PIDs only"
-msgstr "仅是PIDs"
+msgstr "iba PID-y"
 
 msgid "names and PIDs"
-msgstr "名字和PIDs"
+msgstr "n�zvy a PID-y"
 
 msgid "add new channels"
-msgstr "添加新频道"
+msgstr "prida� nov� kan�ly"
 
 msgid "add new transponders"
-msgstr "添加新转发器"
+msgstr "prida� nov� transpond�ry"
 
 msgid "DVB"
-msgstr "卫星卡设置"
+msgstr "DVB"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "使用中卫星卡接口"
+msgstr "Hlavn� DVB rozhranie"
 
 msgid "Setup.DVB$Video format"
-msgstr "视频格式"
+msgstr "Form�t videa"
 
 msgid "Setup.DVB$Video display format"
-msgstr "视频显示格式"
+msgstr "Form�t zobrazenia videa"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "杜比-数码-使用"
+msgstr "Pou��va� zvuk v Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "更新频道"
+msgstr "Aktualiz�cia kan�lov"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "声道语言"
+msgstr "Jazyky zvuku"
 
 msgid "Setup.DVB$Audio language"
-msgstr "声道语言"
+msgstr "Jazyk zvuku"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "显示字幕"
+msgstr "Zobrazova� titulky"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "字幕语种"
+msgstr "Jazyky titulkov"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "字幕语言"
+msgstr "Jazyk titulkov"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "字幕关闭"
+msgstr "Posunutie titulkov"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "字幕前景透明度"
+msgstr "Prieh�adnos� p�sma titulkov"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "字幕背景透明度"
+msgstr "Prieh�adnos� pozadia titulkov"
 
 msgid "LNB"
-msgstr "切换器设置"
+msgstr "LNB"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "使用切换器"
+msgstr "Pou��va� DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
-msgstr "切换频率 (MHz)"
+msgstr "SLOF (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "低本振频率 (MHz)"
+msgstr "Doln� frekvencia LNB (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "高本振频率 (MHz)"
+msgstr "Horn� frekvencia LNB (MHz)"
 
 msgid "CAM reset"
-msgstr "CAM重置"
+msgstr "Reset CAMu"
 
 msgid "CAM present"
-msgstr "存在的CAM"
+msgstr "CAM pr�tomn�"
 
 msgid "CAM ready"
-msgstr "CAM准备"
+msgstr "CAM pripraven�"
 
 msgid "CAM"
-msgstr "CAM设置"
+msgstr "CAM"
 
 msgid "Button$Menu"
-msgstr "菜单"
+msgstr "Menu"
 
 msgid "Button$Reset"
-msgstr "重新启动系统"
+msgstr "Reset"
 
 msgid "Opening CAM menu..."
-msgstr "打开CAM菜单..."
+msgstr "Otv�ra sa menu CAM..."
 
 msgid "Can't open CAM menu!"
-msgstr "不能打开CAM菜单"
+msgstr "Menu CAM nie je dostupn�"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM正在使用-是否重启？"
+msgstr "CAM sa pou��va - naozaj re�tartova�?"
 
 msgid "Can't reset CAM!"
-msgstr "不能重启CAM"
+msgstr "CAM modul nejde re�tartova�!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "nepreru�ova� �iv� vysielanie"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "Potrdi� preru�enie �iv�ho vysielania"
 
 msgid "pause live video"
-msgstr ""
+msgstr "Preru�i� �iv� vysielanie"
 
 msgid "Recording"
-msgstr "录像设置"
+msgstr "Nahr�vanie"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "时间正在开始 (min)"
+msgstr "Nahr�va� pred za�iatkom (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "时间正在停止 (min)"
+msgstr "Nahr�va� po konci (min)"
 
 msgid "Setup.Recording$Primary limit"
-msgstr "主要限制"
+msgstr "Hlavn� limit"
 
 msgid "Setup.Recording$Default priority"
-msgstr "默认优先"
+msgstr "Predvolen� priorita"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "默认终身 (d)"
+msgstr "Predvolen� �ivotnos�"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "暂停关键的处理"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
-msgstr "暂停优先"
+msgstr "Priorita preru�enia"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "暂停终身 (d)"
+msgstr "�ivotnos� preru�enia (d)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "插入使用名字"
+msgstr "Pou��va� n�zov epiz�dy"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "使用VPS"
+msgstr "Pou��va� VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "VPS 时间 (s)"
+msgstr "�asov� rezerva pre VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "标记直接记录"
+msgstr "Ozna�i� okam�it� nahr�vky"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "名字直接记录"
+msgstr "Premenova� okam�it� nahr�vky"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "直接录像时间(min)"
+msgstr "D�ka okam�it�ho nahr�vania (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "最大的视频文件容量 (MB)"
+msgstr "Maxim�lna ve�kos� nahr�vky (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "分离编辑文件"
+msgstr "Deli� upravovan� s�bory"
 
 msgid "Replay"
-msgstr "回放设置"
+msgstr "Prehr�vanie"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "媒体速度模式"
+msgstr "Viac r�chlostn� re�im"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "显示回放模式"
+msgstr "Zobrazi� sp�sob prehr�vania"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "恢复 ID"
+msgstr "ID obnovenie"
 
 msgid "Miscellaneous"
-msgstr "其它设置"
+msgstr "R�zne"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. 结果超时 (min)"
+msgstr "Min. pauza medzi udalos�ami (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Min. 使用者静止 (min)"
+msgstr "�asov� limit ne�innosti (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP 超时 (s)"
+msgstr "�asov� limit SVDRP (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Zap 超时 (s)"
+msgstr "�asov� limit Zap (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "频道进入超时 (ms)"
+msgstr "�as pri vo�be kan�la (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr "初始频道"
+msgstr "Kan�l po spusten�"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "之前"
+msgstr "ako naposledy"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr "初始化声音"
+msgstr "Hlasitos� po spusten�"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "突发事件退出"
+msgstr "N�dzov� ukon�enie"
 
 msgid "Plugins"
-msgstr "插件设置"
+msgstr "Moduly"
 
 msgid "This plugin has no setup parameters!"
-msgstr "这个插件没有设置参数!"
+msgstr "Modul nem� konfigura�n� parametre!"
 
 msgid "Setup"
-msgstr "VDR系统设置"
+msgstr "Nastavenie"
 
 msgid "Restart"
-msgstr " 重启VDR系统"
+msgstr "Re�tart"
 
 msgid "Really restart?"
-msgstr "是否重启？"
+msgstr "Opravdu re�tartova�?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr "是否停止录像?"
+msgstr " Zastavi� nahr�vanie"
 
 msgid "Schedule"
-msgstr "任务列表"
+msgstr "TV program"
 
 msgid "VDR"
 msgstr "VDR"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr "停止回放"
+msgstr " Zastavi� prehr�vanie"
 
 msgid "Button$Audio"
-msgstr "声道"
+msgstr "Zvuk"
 
 msgid "Button$Pause"
-msgstr "暂停"
+msgstr "Pozastavi�"
 
 msgid "Button$Stop"
-msgstr "停止"
+msgstr "Zastavi�"
 
 msgid "Button$Resume"
-msgstr "重置"
+msgstr "Pokra�ova�"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr "取消编辑"
+msgstr " Zru�i� �pravu"
 
 msgid "Stop recording?"
-msgstr "停止录像"
+msgstr "Ukon�i� nahr�vanie?"
 
 msgid "Cancel editing?"
-msgstr "取消编辑"
+msgstr "Zru�i� �pravy?"
 
 msgid "No audio available!"
-msgstr "音频不可用"
+msgstr "Zvuk nie je dostupn�!"
 
 msgid "No subtitles"
-msgstr "没有字幕"
+msgstr "Bez titulkov"
 
 msgid "Button$Subtitles"
-msgstr "字幕"
+msgstr "Titulky"
 
 msgid "No subtitles available!"
-msgstr "字幕不可用"
+msgstr "�iadne dostupn� titulky!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "没有足够的空间录像"
+msgstr "M�lo voln�ho miesta na nahr�vanie!"
 
 msgid "No free DVB device to record!"
-msgstr "没有空闲的DVB设备录像"
+msgstr "�iadna DVB karta nie je voln� pre nahr�vanie"
 
 msgid "Pausing live video..."
-msgstr "暂停当前视频"
+msgstr "Preru�uje sa be�iaci program ..."
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "跳过: "
+msgstr "Skok: "
 
 msgid "No editing marks defined!"
-msgstr "无编辑标记定义!"
+msgstr "Nie s� ur�en� upravovan� zna�ky!"
 
 msgid "Can't start editing process!"
-msgstr "不能开始编辑处理"
+msgstr "Nem��e za�a� spracovanie �prav!"
 
 msgid "Editing process started"
-msgstr "编辑处理开始"
+msgstr "Spracovanie �prav za�alo"
 
 msgid "Editing process already active!"
-msgstr "编辑处理已经激活"
+msgstr "Spracovanie �prav je v �innosti!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr "abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " a��bc�d�e�fghi�jkl�mn�o��pqr�s�t�u�vwxy�z�0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "yes"
-msgstr "是"
+msgstr "�no"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr "0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc��2\tdef���3\tghi�4\tjkl5\tmno��6\tpqrs��7\ttuv���8\twxyz��9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
-msgstr "覆盖"
+msgstr "Prep�sa�"
 
 msgid "Button$Insert"
-msgstr "插入"
+msgstr "Vlo�i�"
 
 msgid "Plugin"
-msgstr "插件"
+msgstr "Modul"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "上/下 新的定位 - OK 移动"
+msgstr "Hore/Dole na nov� poz�ciu - Ok presune"
 
 msgid "Channel locked (recording)!"
-msgstr "频道已经锁定 (录像)!"
+msgstr "Kan�l je zamknut� (nahr�va sa)!"
 
 msgid "Low disk space!"
-msgstr "磁盘空间不足!"
+msgstr "Za chv��ku bude pln� disk!"
 
 msgid "Regenerating index file"
 msgstr ""
@@ -934,100 +932,100 @@ msgid "Index file regeneration complete"
 msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "不能关机 - 操作 '-s' 不允许!"
+msgstr "Vypnutie nie je mo�n� - ch�ba vo�ba '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "编辑-立即关机?"
+msgstr "Upravujem - aj tak vypn��?"
 
 msgid "Recording - shut down anyway?"
-msgstr "录像中,是否立即关机?"
+msgstr "Nahr�va - aj tak vypn��?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "录像已有 %ld 分钟，立即关机?"
+msgstr "Nahr�vanie za�ne za %ld min�t - aj tak vypn��?"
 
 msgid "shut down anyway?"
-msgstr "是否立即关机?"
+msgstr "Aj tak vypn��?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "插件 %s 唤醒在 %ld 分钟，是否继续?"
+msgstr "Modul %s �tartuje za %ld min., pokra�ova�?"
 
 msgid "Editing - restart anyway?"
-msgstr "编辑中,是否现在重启?"
+msgstr "Upravuje sa - aj tak re�tartova�?"
 
 msgid "Recording - restart anyway?"
-msgstr "录像中,是否现在重启?"
+msgstr "Nahr�va - aj tak re�tartova�?"
 
 msgid "restart anyway?"
-msgstr "现在重启?"
+msgstr "Aj tak re�tartova�?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "音量调整"
+msgstr "Hlasitos�"
 
 msgid "Classic VDR"
-msgstr "经典VDR面板"
+msgstr "Klasick� VDR"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG 面板"
+msgstr "ST:TNG konzola"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "MTWTFSS"
+msgstr "P�S�PSN"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "星期一星期二星期三星期四星期五星期六星期天"
+msgstr "Po Ut St �t Pi So Ne "
 
 msgid "Monday"
-msgstr "星期一"
+msgstr "Pondelok"
 
 msgid "Tuesday"
-msgstr "星期二"
+msgstr "Utorok"
 
 msgid "Wednesday"
-msgstr "星期三"
+msgstr "Streda"
 
 msgid "Thursday"
-msgstr "星期四"
+msgstr "�tvrtok"
 
 msgid "Friday"
-msgstr "星期五"
+msgstr "Piatok"
 
 msgid "Saturday"
-msgstr "星期六"
+msgstr "Sobota"
 
 msgid "Sunday"
-msgstr "星期天"
+msgstr "Nede�a"
 
 msgid "Upcoming recording!"
-msgstr "准备录像！"
+msgstr "Onedlho za�ne nahr�vanie!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Preru�i� �iv� vysielanie?"
 
 msgid "Recording started"
-msgstr "录像开始！"
+msgstr "Za�alo nahr�vanie"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR即将关闭 - 按电源强制关闭！"
+msgstr "Vypnutie VDR bude odlo�en� - vypnete kl�vesou Power"
 
 msgid "Press any key to cancel shutdown"
-msgstr "按下任何键即可取消关机"
+msgstr "Ktor�ko�vek kl�vesa zru�� vypnutie"
 
 msgid "Switching primary DVB..."
-msgstr "切换主要的DVB设备."
+msgstr "Prep�na hlavn� DVB..."
 
 msgid "Editing process failed!"
-msgstr "编辑过程失败"
+msgstr "Spracovanie �prav zlyhalo!"
 
 msgid "Editing process finished"
-msgstr "编辑过程完毕"
+msgstr "Spracovanie �prav skon�ilo"
 
 msgid "Press any key to cancel restart"
-msgstr "请按任意键重启"
+msgstr "ktor�ko�vek  kl�vesa zru�� re�tart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR系统将要在%s分钟关闭"
+msgstr "VDR sa vypne za %s min�t"
