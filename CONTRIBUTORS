@@ -2365,6 +2365,7 @@ Denis Knauf <denis.knauf@gmail.com>
 
 Diego Pierotto <vdr-italian@tiscali.it>
  for translating OSD texts to the Italian language
+ for reporting a wrong default value for "Pause key handling" in the MANUAL
 
 Timo Eskola <timo@tolleri.net>
  for implementing sending all frames to devices that can handle them in fast forward

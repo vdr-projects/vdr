@@ -748,7 +748,7 @@ Version 1.6
   Pause priority = 10    The Priority and Lifetime values used when pausing live
   Pause lifetime = 1     video.
 
-  Pause key handling = 3 Defines what happens if the Pause key on the remote control
+  Pause key handling = 2 Defines what happens if the Pause key on the remote control
                          is pressed during live tv.
                          0 = do not pause live video
                          1 = confirm pause live video

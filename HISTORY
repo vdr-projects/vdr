@@ -6194,3 +6194,5 @@ Video Disk Recorder Revision History
 - Fixed references to old *.vdr file names in MANUAL (reported by Arthur Konovalov).
 - Reverted "Removed limitation to PAL resolution from SPU handling" because it
   cause nothing but trouble. Besides, the core VDR doesn't use this, anyway.
+- Fixed the default value for "Pause key handling" in the MANUAL (reported by
+  Diego Pierotto).
