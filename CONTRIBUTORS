@@ -1082,6 +1082,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing handling file name length on VFAT systems in case they
  contain UTF-8 characters
  for fixing wrong bracketing in cChannel::SubtitlingType() etc.
+ for fixing handling DVB subtitles for PES recordings
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
