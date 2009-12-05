@@ -6206,3 +6206,4 @@ Video Disk Recorder Revision History
 - The PCR pid in generated PMTs is now set to 0x1FFF ("no PCR pid") in
   cPatPmtGenerator::GeneratePmt(), because VDR doesn't record the PCR pid.
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- The 'sky' plugin is no longer part of the VDR source.
