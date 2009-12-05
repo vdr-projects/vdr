@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.16 2009/11/22 13:21:00 kls Exp $
+ * $Id: device.h 2.17 2009/12/04 15:03:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -498,6 +498,9 @@ private:
   cTsToPes tsToPesSubtitle;
   bool isPlayingVideo;
 protected:
+  const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
+       ///< Returns a pointer to the patPmtParser, so that a derived device
+       ///< can use the stream information from it.
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
   virtual bool SetPlayMode(ePlayMode PlayMode);

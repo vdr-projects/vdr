@@ -6197,6 +6197,8 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-11-22: Version 1.7.11
+2009-12-05: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
+- The new function cDevice::PatPmtParser() can be used in derived devices to access
+  the PAT/PMT of the currently replayed material.

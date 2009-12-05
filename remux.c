@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.29 2009/11/22 11:23:27 kls Exp $
+ * $Id: remux.c 2.30 2009/12/04 15:05:35 kls Exp $
  */
 
 #include "remux.h"
@@ -599,7 +599,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   pmtSize = 0;
 }
 
-bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
+bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion) const
 {
   PatVersion = patVersion;
   PmtVersion = pmtVersion;

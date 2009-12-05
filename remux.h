@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.20 2009/11/21 15:55:34 kls Exp $
+ * $Id: remux.h 2.21 2009/12/04 15:04:43 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -232,16 +232,16 @@ public:
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.
-  bool GetVersions(int &PatVersion, int &PmtVersion);
+  bool GetVersions(int &PatVersion, int &PmtVersion) const;
        ///< Returns true if a valid PAT/PMT has been parsed and stores
        ///< the current version numbers in the given variables.
-  int PmtPid(void) { return pmtPid; }
+  int PmtPid(void) const { return pmtPid; }
        ///< Returns the PMT pid as defined by the current PAT.
        ///< If no PAT has been received yet, -1 will be returned.
-  int Vpid(void) { return vpid; }
+  int Vpid(void) const { return vpid; }
        ///< Returns the video pid as defined by the current PMT, or 0 if no video
        ///< pid has been detected, yet.
-  int Vtype(void) { return vtype; }
+  int Vtype(void) const { return vtype; }
        ///< Returns the video stream type as defined by the current PMT, or 0 if no video
        ///< stream type has been detected, yet.
   };
