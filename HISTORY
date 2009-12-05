@@ -6202,3 +6202,4 @@ Video Disk Recorder Revision History
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
   the PAT/PMT of the currently replayed material.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
