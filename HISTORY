@@ -6205,3 +6205,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - The PCR pid in generated PMTs is now set to 0x1FFF ("no PCR pid") in
   cPatPmtGenerator::GeneratePmt(), because VDR doesn't record the PCR pid.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

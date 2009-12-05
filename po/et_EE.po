@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Arthur Konovalov <kasjas@hot.ee>, 2004, 2005, 2006, 2007
+# Arthur Konovalov <artlov@gmail.com>, 2004-2009
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2009-11-22 12:28+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
-"Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
+"Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-13\n"
@@ -19,7 +19,7 @@ msgid "off"
 msgstr "väljas"
 
 msgid "on"
-msgstr ""
+msgstr "sees"
 
 msgid "auto"
 msgstr "automaatne"
@@ -34,7 +34,7 @@ msgid "Channel not available!"
 msgstr "Kanal ei ole kättesaadav!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Siirdemooduse start ebaõnnestus!"
+msgstr "Siirdemooduse start nurjus!"
 
 msgid "Starting EPG scan"
 msgstr "EPG skaneerimine käivitatud"
@@ -286,7 +286,7 @@ msgid "Polarization"
 msgstr "Polarisatsioon"
 
 msgid "System"
-msgstr ""
+msgstr "Süsteem"
 
 msgid "Srate"
 msgstr "Srate"
@@ -316,7 +316,7 @@ msgid "Hierarchy"
 msgstr "Hierarhia"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaliseaded ei ole unikaalsed!"
@@ -325,16 +325,16 @@ msgid "Channels"
 msgstr "Kanalid"
 
 msgid "Button$Edit"
-msgstr "Muuda"
+msgstr "Muutmine"
 
 msgid "Button$New"
 msgstr "Uus"
 
 msgid "Button$Delete"
-msgstr "Kustuta"
+msgstr "Kustutada"
 
 msgid "Button$Mark"
-msgstr "Siirda"
+msgstr "Märkimine"
 
 msgid "Channel is being used by a timer!"
 msgstr "Kanal on taimeri kasutuses!"
@@ -343,7 +343,7 @@ msgid "Delete channel?"
 msgstr "Kustutada kanal?"
 
 msgid "Edit timer"
-msgstr "Taimeri muutmine"
+msgstr "Taimeri redigeerimine"
 
 msgid "Active"
 msgstr "Aktiivne"
@@ -397,10 +397,10 @@ msgid "Button$Timer"
 msgstr "Taimer"
 
 msgid "Button$Record"
-msgstr "Salvesta"
+msgstr "Salvestada"
 
 msgid "Button$Switch"
-msgstr "Vali"
+msgstr "Valida"
 
 msgid "What's on now?"
 msgstr "Hetkel eetris"
@@ -436,7 +436,7 @@ msgstr "Kõik saated - kõik kanalid"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Palun sisesta %d numbrit!"
+msgstr "Palun sisestada %d numbrit!"
 
 msgid "CAM not responding!"
 msgstr "CAM ei vasta"
@@ -454,19 +454,19 @@ msgid "Recordings"
 msgstr "Salvestused"
 
 msgid "Button$Open"
-msgstr "Ava"
+msgstr "Avada"
 
 msgid "Commands"
 msgstr "Käsud"
 
 msgid "Error while accessing recording!"
-msgstr "Salvestuse taasesitus ebaõnnestus!"
+msgstr "Salvestuse taasesitus nurjus!"
 
 msgid "Delete recording?"
 msgstr "Kustutada salvestus?"
 
 msgid "Error while deleting recording!"
-msgstr "Salvestuse kustutamine ebaõnnestus!"
+msgstr "Salvestuse kustutamine nurjus!"
 
 msgid "Recording commands"
 msgstr "Salvestuse käsud"
@@ -505,10 +505,10 @@ msgid "Setup.OSD$Height (%)"
 msgstr "Kõrgus (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Teate esitusaeg (s)"
+msgstr "Teate kuvamisaeg (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Väikese fondi kasutamine"
+msgstr "Väikese fondi kasutus"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Fondi silumine"
@@ -541,7 +541,7 @@ msgid "top"
 msgstr "üleval"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Kanaliinfo esitusaeg (s)"
+msgstr "Kanaliinfo kuvamisaeg (s)"
 
 msgid "Setup.OSD$Info on channel switch"
 msgstr "Kanaliinfo kuvamine"
@@ -565,7 +565,7 @@ msgid "EPG"
 msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "Uuenda"
+msgstr "Uuendada"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "EPG skaneerimise viide (h)"
@@ -609,13 +609,13 @@ msgid "PIDs only"
 msgstr "PID-id"
 
 msgid "names and PIDs"
-msgstr "nimed ja PID-id"
+msgstr "nimed,PID-id"
 
 msgid "add new channels"
-msgstr "kanalite lisamine"
+msgstr "uued kanalid"
 
 msgid "add new transponders"
-msgstr "transponderite lisamine"
+msgstr "uued transponderid"
 
 msgid "DVB"
 msgstr "DVB"
@@ -690,7 +690,7 @@ msgid "Button$Menu"
 msgstr "Menüü"
 
 msgid "Button$Reset"
-msgstr "Nullimine"
+msgstr "Reset"
 
 msgid "Opening CAM menu..."
 msgstr "CAM-menüü avamine..."
@@ -702,16 +702,16 @@ msgid "CAM is in use - really reset?"
 msgstr "CAM on kasutuses - taaskäivitada?"
 
 msgid "Can't reset CAM!"
-msgstr "CAM mooduli taaskäivitus ebaõnnestus!"
+msgstr "CAM mooduli taaskäivitus nurjus!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "mitte peatada"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "peatam. kinnitus"
 
 msgid "pause live video"
-msgstr ""
+msgstr "peatada"
 
 msgid "Recording"
 msgstr "Salvestamine"
@@ -732,7 +732,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Salvestuse eluiga (päevi)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Pausi klahvi käsitsemine"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pausi prioriteet"
@@ -741,7 +741,7 @@ msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Pausi eluiga (päevi)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Episoodi nime kasutamine"
+msgstr "Episoodinime kasutamine"
 
 msgid "Setup.Recording$Use VPS"
 msgstr "VPS-i kasutamine"
@@ -750,19 +750,19 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "VPS-i algusvaru (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Otsesalvestuse märgistamine"
+msgstr "Kiirsalvestuse märgistamine"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Otsesalvestuse nimi"
+msgstr "Kiirsalvestuse nimi"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Otsesalvestuse kestus (min)"
+msgstr "Kiirsalvestuse kestus (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Maksimaalne failisuurus (MB)"
+msgstr "Maks. failisuurus (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Failide tükeldamine"
+msgstr "Failide jupitamine"
 
 msgid "Replay"
 msgstr "Taasesitus"
@@ -780,7 +780,7 @@ msgid "Miscellaneous"
 msgstr "Muud sätted"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. sündmuse kestus (min)"
+msgstr "Min. saate taimaut (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "Min. kasutaja tegevusetus (min)"
@@ -798,7 +798,7 @@ msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanal käivitamisel"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "nagu enne"
+msgstr "endine"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Helitugevus käivitamisel"
@@ -845,7 +845,7 @@ msgid "Button$Stop"
 msgstr "Stopp"
 
 msgid "Button$Resume"
-msgstr "Jätka"
+msgstr "Jätkata"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
@@ -855,7 +855,7 @@ msgid "Stop recording?"
 msgstr "Lõpetada salvestamine?"
 
 msgid "Cancel editing?"
-msgstr "Tühistada muudatus?"
+msgstr "Tühistada redigeermine?"
 
 msgid "No audio available!"
 msgstr "Audio kättesaamatu!"
@@ -876,7 +876,7 @@ msgid "No free DVB device to record!"
 msgstr "Puudub vaba DVB seade salvestamiseks!"
 
 msgid "Pausing live video..."
-msgstr "Saate edastamise peatamine..."
+msgstr "Otseülekande peatamine..."
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -886,10 +886,10 @@ msgid "No editing marks defined!"
 msgstr "Redigeerimise markerid puuduvad!"
 
 msgid "Can't start editing process!"
-msgstr "Redigeerimise start ebaõnnestus!"
+msgstr "Redigeerimise start nurjus!"
 
 msgid "Editing process started"
-msgstr "Redigeerimine algas"
+msgstr "Redigeerimine käivitatud"
 
 msgid "Editing process already active!"
 msgstr "Redigeerimine juba aktiivne!"
@@ -925,13 +925,13 @@ msgid "Low disk space!"
 msgstr "Kõvaketas täis!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Indeksfaili regenereerimine"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Indeksfaili regenereerimine lõpetatud"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Väljalülitamine ebaõnnestus - '-s' parameeter puudub!"
+msgstr "Väljalülitamine nurjus - '-s' parameeter puudub!"
 
 msgid "Editing - shut down anyway?"
 msgstr "Redigeerimine aktiive - lülitada välja?"
@@ -964,10 +964,10 @@ msgid "Volume "
 msgstr "Helitugevus "
 
 msgid "Classic VDR"
-msgstr "Klassikaline VDR"
+msgstr "Classic VDR"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG konsool"
+msgstr "ST:TNG Panels"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
@@ -1002,10 +1002,10 @@ msgid "Upcoming recording!"
 msgstr "Salvestamine tulekul!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Peatada otseülekanne?"
 
 msgid "Recording started"
-msgstr "Salvestamine algas"
+msgstr "Salvestamine käivitatud"
 
 msgid "VDR will shut down later - press Power to force"
 msgstr "VDR lülitub välja hiljem - vajuta Power kiirendamiseks"
@@ -1017,7 +1017,7 @@ msgid "Switching primary DVB..."
 msgstr "Esmase DVB seadme ümberlülitus..."
 
 msgid "Editing process failed!"
-msgstr "Redigeerimine ebaõnnestus"
+msgstr "Redigeerimine nurjus"
 
 msgid "Editing process finished"
 msgstr "Redigeerimine lõpetatud"
