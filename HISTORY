@@ -6203,3 +6203,5 @@ Video Disk Recorder Revision History
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
   the PAT/PMT of the currently replayed material.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The PCR pid in generated PMTs is now set to 0x1FFF ("no PCR pid") in
+  cPatPmtGenerator::GeneratePmt(), because VDR doesn't record the PCR pid.
