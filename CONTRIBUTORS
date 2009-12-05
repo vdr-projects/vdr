@@ -2514,3 +2514,6 @@ Milan Hrala <hrala.milan@gmail.com>
 
 Andreas Schaefers <andreas_schaefers@gmx.de>
  for adding the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()
+
+Matthieu Castet <castet.matthieu@free.fr>
+ for improving SPU handling on devices with limited OSD capabilities

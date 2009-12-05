@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.2 2009/11/22 14:17:59 kls Exp $
+ * $Id: dvbspu.c 2.3 2009/12/05 14:41:40 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -340,6 +340,35 @@ sDvbSpuRect cDvbSpuDecoder::CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDv
     return size;
 }
 
+int cDvbSpuBitmap::getMinBpp(const aDvbSpuPalDescr paldescr)
+{
+    int col = 1;
+    for (int i = 0; i < 4; i++) {
+        if (paldescr[i].trans != 0) {
+                col++;
+        }
+    }
+    return col > 2 ? 2 : 1;
+}
+
+int cDvbSpuDecoder::CalcAreaBpp(cBitmap *fgbmp, cBitmap *bgbmp)
+{
+        int fgbpp = 0;
+        int bgbpp = 0;
+        int ret;
+    if (fgbmp) {
+            fgbpp = spubmp->getMinBpp(hlpDescr);
+    }
+    if (bgbmp) {
+            bgbpp = spubmp->getMinBpp(palDescr);
+    }
+    ret = fgbpp + bgbpp;
+    if (ret > 2)
+            ret = 4;
+    return ret;
+}
+
+
 void cDvbSpuDecoder::Draw(void)
 {
     cMutexLock MutexLock(&mutex);
@@ -347,43 +376,89 @@ void cDvbSpuDecoder::Draw(void)
         Hide();
         return;
     }
-
+    sDvbSpuRect bgsize;
     cBitmap *fg = NULL;
     cBitmap *bg = NULL;
-    sDvbSpuRect bgsize;
-    sDvbSpuRect hlsize;
-
-    hlsize.x1 = hlpsize.x1;
-    hlsize.y1 = hlpsize.y1;
-    hlsize.x2 = hlpsize.x2;
-    hlsize.y2 = hlpsize.y2;
 
     if (highlight)
-        fg = spubmp->getBitmap(hlpDescr, palette, hlsize);
+        fg = spubmp->getBitmap(hlpDescr, palette, hlpsize);
 
     if (spubmp->getMinSize(palDescr, bgsize))
         bg = spubmp->getBitmap(palDescr, palette, bgsize);
 
-    sDvbSpuRect areaSize = CalcAreaSize(hlsize, fg, bgsize, bg);
+    if (osd == NULL) {
+            restricted_osd = false;
+            osd = cOsdProvider::NewOsd(0, 0);
 
-    if (!fg || !bg || !osd) {
-       Hide();
-       }
+            tArea Area = { size.x1, size.y1, size.x2, size.y2, 4};
+            if (osd->CanHandleAreas(&Area, 1) != oeOk)
+                    restricted_osd = true;
+            else
+                osd->SetAreas(&Area, 1);
+    }
+    if (restricted_osd) {
+            sDvbSpuRect hlsize;
+            bool setarea = false;
+            /* reduce fg area (only valid if there is no bg below) */
+            if (fg) {
+                    spubmp->getMinSize(hlpDescr,hlsize);
+                    /* clip to the highligh area */
+                    setMax(hlsize.x1, hlpsize.x1);
+                    setMax(hlsize.y1, hlpsize.y1);
+                    setMin(hlsize.x2, hlpsize.x2);
+                    setMin(hlsize.y2, hlpsize.y2);
+                    if (hlsize.x1 > hlsize.x2 || hlsize.y1 > hlsize.y2) {
+                            hlsize.x1 = hlsize.x2 = hlsize.y1 = hlsize.y2 = 0;
+                    }
+            }
+            sDvbSpuRect areaSize = CalcAreaSize((fg && bg) ? hlpsize : hlsize, fg, bgsize, bg);
 
-    if (bg || fg) {
-        if (osd == NULL) {
-           osd = cOsdProvider::NewOsd(0, 0);
-           if ((areaSize.width() & 3) != 0)
-              areaSize.x2 += 4 - (areaSize.width() & 3);
-           tArea Area = { areaSize.x1, areaSize.y1, areaSize.x2, areaSize.y2, (fg && bg) ? 4 : 2 };
-           if (osd->SetAreas(&Area, 1) != oeOk)
+#define DIV(a, b) (a/b)?:1
+            for (int d = 1; !setarea && d <= 2; d++) {
+
+                    /* first try old behaviour */
+                    tArea Area = { areaSize.x1, areaSize.y1, areaSize.x2, areaSize.y2, DIV(CalcAreaBpp(fg, bg), d) };
+
+                    if ((Area.Width() & 7) != 0)
+                            Area.x2 += 8 - (Area.Width() & 7);
+
+                    if (osd->CanHandleAreas(&Area, 1) == oeOk &&
+                        osd->SetAreas(&Area, 1) == oeOk)
+                            setarea = true;
+
+                    /* second try to split area if there is both area */
+                    if (!setarea && fg && bg) {
+                            tArea Area_Both [2] = {
+                                    {bgsize.x1, bgsize.y1, bgsize.x2, bgsize.y2, DIV(CalcAreaBpp(0, bg), d)},
+                                    {hlpsize.x1, hlpsize.y1, hlpsize.x2, hlpsize.y2, DIV(CalcAreaBpp(fg, 0), d)}
+                            };
+                            if (!Area_Both[0].Intersects(Area_Both[1])) {
+                                    /* there is no intersection. We can reduce hl */
+                                    Area_Both[1].x1 = hlsize.x1;
+                                    Area_Both[1].y1 = hlsize.y1;
+                                    Area_Both[1].x2 = hlsize.x2;
+                                    Area_Both[1].y2 = hlsize.y2;
+
+                                    if ((Area_Both[0].Width() & 7) != 0)
+                                            Area_Both[0].x2 += 8 - (Area_Both[0].Width() & 7);
+                                    if ((Area_Both[1].Width() & 7) != 0)
+                                            Area_Both[1].x2 += 8 - (Area_Both[1].Width() & 7);
+                                    if (osd->CanHandleAreas(Area_Both, 2) == oeOk &&
+                                        osd->SetAreas(Area_Both, 2) == oeOk)
+                                            setarea = true;
+                            }
+                    }
+            }
+            if (!setarea)
               dsyslog("dvbspu: AreaSize (%d, %d) (%d, %d) Bpp %d", areaSize.x1, areaSize.y1, areaSize.x2, areaSize.y2, (fg && bg) ? 4 : 2 );
-           }
+    }
 
+    /* we could draw use DrawPixel on osd */
+    if (bg || fg) {
         if (bg)
            osd->DrawBitmap(bgsize.x1, bgsize.y1, *bg);
         if (fg)
-           osd->DrawBitmap(hlsize.x1, hlsize.y1, *fg);
+           osd->DrawBitmap(hlpsize.x1, hlpsize.y1, *fg);
         delete fg;
         delete bg;
 
@@ -514,6 +589,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
                 }
             }
             if (fodd != 0 && feven != 0) {
+                Hide();
                 delete spubmp;
                 spubmp = new cDvbSpuBitmap(size, spu + fodd, spu + feven,
                                            spu + feven, spu + cmdOffs());
