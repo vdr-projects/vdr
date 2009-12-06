@@ -6210,3 +6210,5 @@ Video Disk Recorder Revision History
 - Improved SPU handling on devices with limited OSD capabilities (thanks to
   Matthieu Castet).
 - Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).
+- Added stream type 11172 AUDIO to cPatPmtParser::ParsePmt() (thanks to Johann
+  Friedrichs).
