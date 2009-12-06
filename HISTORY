@@ -6213,3 +6213,4 @@ Video Disk Recorder Revision History
 - Added stream type 11172 AUDIO to cPatPmtParser::ParsePmt() (thanks to Johann
   Friedrichs).
 - Removed debug output of '-' from cTransfer::Receive().
+- Added defines for large files to the 'newplugin' script (reported by Udo Richter).
