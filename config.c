@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.5 2009/06/13 10:25:05 kls Exp $
+ * $Id: config.c 2.6 2009/12/05 15:30:30 kls Exp $
  */
 
 #include "config.h"
@@ -76,7 +76,7 @@ const char *cCommand::Execute(const char *Parameters)
      while ((c = fgetc(p)) != EOF) {
            if (l % 20 == 0)
               result = (char *)realloc(result, l + 21);
-           result[l++] = c;
+           result[l++] = char(c);
            }
      if (result)
         result[l] = 0;

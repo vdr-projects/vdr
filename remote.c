@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.59 2008/02/23 14:14:46 kls Exp $
+ * $Id: remote.c 2.1 2009/12/06 12:08:03 kls Exp $
  */
 
 #include "remote.h"
@@ -287,7 +287,9 @@ int cKbdRemote::MapCodeToFunc(uint64_t Code)
       if (p->code == Code)
          return p->func;
       }
-  return (Code <= 0xFF) ? Code : kfNone;
+  if (Code <= 0xFF)
+     return Code;
+  return kfNone;
 }
 
 int cKbdRemote::ReadKey(void)
@@ -337,9 +339,11 @@ uint64_t cKbdRemote::ReadKeySequence(void)
                                 k |= key1 & 0xFF;
                                 } while (key1 != 0x7E);
                              break;
+                        default: ;
                         }
                       }
                    break;
+              default: ;
               }
             }
         }

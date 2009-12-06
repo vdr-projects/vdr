@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.3 2008/12/20 10:57:50 kls Exp $
+ * $Id: nit.c 2.4 2009/12/06 11:36:16 kls Exp $
  */
 
 #include "nit.h"
@@ -110,6 +110,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                   case 1: f = BCD2INT(f) / 100; break;
                   case 2: f = BCD2INT(f) / 10; break;
                   case 3: f = f * 10;  break;
+                  default: ;
                   }
                 Frequencies[n++] = f;
                 }

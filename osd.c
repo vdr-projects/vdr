@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.5 2009/05/09 10:42:35 kls Exp $
+ * $Id: osd.c 2.6 2009/12/06 11:33:47 kls Exp $
  */
 
 #include "osd.h"
@@ -101,6 +101,7 @@ void cPalette::Take(const cPalette &Palette, tIndexes *Indexes, tColor ColorFg, 
          switch (i) {
            case 0: Color = ColorBg; break;
            case 1: Color = ColorFg; break;
+           default: ;
            }
          }
       int n = Index(Color);
@@ -532,6 +533,7 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
     case 6:          cy = y2; rx /= 2; break;
     case 7: cx = x2;          ry /= 2; break;
     case 8:          cy = y1; rx /= 2; break;
+    default: ;
     }
   int TwoASquare = 2 * rx * rx;
   int TwoBSquare = 2 * ry * ry;
@@ -557,6 +559,7 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
           case -2: DrawRectangle(x1,     cy - y, cx - x, cy - y, Color); break;
           case -3: DrawRectangle(x1,     cy + y, cx - x, cy + y, Color); break;
           case -4: DrawRectangle(cx + x, cy + y, x2,     cy + y, Color); break;
+          default: ;
           }
         y++;
         StoppingY += TwoASquare;
@@ -591,6 +594,7 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
           case -2: DrawRectangle(x1,     cy - y, cx - x, cy - y, Color); break;
           case -3: DrawRectangle(x1,     cy + y, cx - x, cy + y, Color); break;
           case -4: DrawRectangle(cx + x, cy + y, x2,     cy + y, Color); break;
+          default: ;
           }
         x++;
         StoppingX += TwoBSquare;
@@ -921,7 +925,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
   int Height;
   double Aspect;
   cDevice::PrimaryDevice()->GetOsdSize(Width, Height, Aspect);
-  if (Width != oldWidth || Height != oldHeight || Aspect != oldAspect || Force) {
+  if (Width != oldWidth || Height != oldHeight || !DoubleEqual(Aspect, oldAspect) || Force) {
      Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
      Setup.OSDTop = int(round(Height * Setup.OSDTopP));
      Setup.OSDWidth = int(round(Width * Setup.OSDWidthP)) & ~0x07; // OSD width must be a multiple of 8

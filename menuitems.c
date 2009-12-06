@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.4 2009/05/03 13:37:55 kls Exp $
+ * $Id: menuitems.c 2.5 2009/12/06 11:31:20 kls Exp $
  */
 
 #include "menuitems.h"
@@ -257,7 +257,7 @@ eOSState cMenuEditPrcItem::ProcessKey(eKeys Key)
             return state;
        }
      newValue /= factor;
-     if (newValue != *value && (!fresh || min <= newValue) && newValue <= max) {
+     if (!DoubleEqual(newValue, *value) && (!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();
         }
@@ -666,6 +666,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                                           return ProcessKey(kYellow);
                                           }
                                        break;
+                            default: ;
                             }
                           }
                        }
@@ -675,6 +676,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                          case kfEnd:  pos = lengthUtf8 - 1; break;
                          case kfIns:  return ProcessKey(kGreen);
                          case kfDel:  return ProcessKey(kYellow);
+                         default: ;
                          }
                        }
                     }
@@ -975,6 +977,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
                      pos++;
                      }
                   break;
+          default: ;
           }
         }
      else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?

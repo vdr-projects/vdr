@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.12 2009/10/25 14:45:47 kls Exp $
+ * $Id: vdr.c 2.13 2009/12/06 12:20:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
       { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
       { "watchdog", required_argument, NULL, 'w' },
-      { NULL }
+      { NULL,       no_argument,       NULL,  0  }
     };
 
   int c;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.3 2009/08/16 13:21:07 kls Exp $
+ * $Id: ci.c 2.4 2009/12/05 15:51:12 kls Exp $
  */
 
 #include "ci.h"
@@ -1424,6 +1424,15 @@ bool cCiTransportConnection::Process(cTPDU *TPDU)
                    SendTPDU(T_DTC_REPLY);
                    state = stIDLE;
                    return true;
+              case T_RCV:
+              case T_CREATE_TC:
+              case T_CTC_REPLY:
+              case T_DTC_REPLY:
+              case T_NEW_TC:
+              case T_TC_ERROR:
+                   break;
+              default:
+                   esyslog("ERROR: unknown TPDU tag: 0x%02X (%s)", TPDU->Tag(), __FUNCTION__);
               }
             }
          else if (timer.TimedOut())
@@ -1443,6 +1452,8 @@ bool cCiTransportConnection::Process(cTPDU *TPDU)
             state = stIDLE;
             }
          return true;
+    default:
+         esyslog("ERROR: unknown state: %d (%s)", state, __FUNCTION__);
     }
   return true;
 }
@@ -1668,6 +1679,8 @@ void cCamSlot::Process(cTPDU *TPDU)
                NewConnection();
                resendPmt = caProgramList.Count() > 0;
                break;
+          default:
+               esyslog("ERROR: unknown module status %d (%s)", ms, __FUNCTION__);
           }
         lastModuleStatus = ms;
         }

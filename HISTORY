@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-05: Version 1.7.11
+2009-12-06: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6209,3 +6209,4 @@ Video Disk Recorder Revision History
 - The 'sky' plugin is no longer part of the VDR source.
 - Improved SPU handling on devices with limited OSD capabilities (thanks to
   Matthieu Castet).
+- Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).

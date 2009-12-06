@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 2.2 2009/12/05 14:40:08 kls Exp $
+ * $Id: dvbspu.h 2.3 2009/12/05 15:17:08 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -197,8 +197,7 @@ inline uint32_t cDvbSpuPalette::yuv2rgb(uint32_t yuv_color)
 
 inline uint32_t cDvbSpuPalette::getColor(uint8_t idx, uint8_t trans) const
 {
-    uint8_t t = trans == 0x0f ? 0xff : trans << 4;
-    return palette[idx] | (t << 24);
+    return palette[idx] | (trans == 0x0f) ? 0xff000000 : (trans << 28);
 }
 
 #endif                          // __DVBSPU_H

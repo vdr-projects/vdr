@@ -2459,6 +2459,7 @@ Michael Nork <mnork0@gmx.net>
 
 Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
+ for making several code modifications to avoid compiler warnings
 
 Igor M. Liplianin <liplianin@tut.by>
  for a patch that was used to convert VDR to the S2API driver API

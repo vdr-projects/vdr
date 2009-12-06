@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.2 2009/04/14 20:41:39 kls Exp $
+ * $Id: tools.h 2.3 2009/12/06 11:24:12 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -13,7 +13,9 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <float.h>
 #include <iconv.h>
+#include <math.h>
 #include <poll.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -60,7 +62,7 @@ void syslog_with_tid(int priority, const char *format, ...) __attribute__ ((form
 int BCD2INT(int x);
 
 // Unfortunately there are no platform independent macros for unaligned
-// access. so we do it this way:
+// access, so we do it this way:
 
 template<class T> inline T get_unaligned(T *p)
 {
@@ -72,6 +74,14 @@ template<class T> inline void put_unaligned(unsigned int v, T* p)
 {
   struct s { T v; } __attribute__((packed));
   ((s *)p)->v = v;
+}
+
+// Comparing doubles for equality is unsafe, but unfortunately we can't
+// overwrite operator==(double, double), so this will have to do:
+
+inline bool DoubleEqual(double a, double b)
+{
+  return fabs(a - b) <= DBL_EPSILON;
 }
 
 // When handling strings that might contain UTF-8 characters, it may be necessary

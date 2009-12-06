@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.19 2009/11/22 19:38:04 kls Exp $
+ * $Id: recording.c 2.20 2009/12/06 12:55:36 kls Exp $
  */
 
 #include "recording.h"
@@ -260,6 +260,7 @@ int cResumeFile::Read(void)
                  switch (*s) {
                    case 'I': resume = atoi(t);
                              break;
+                   default: ;
                    }
                  }
            fclose(f);
@@ -443,8 +444,8 @@ bool cRecordingInfo::Read(FILE *f)
                             ownEvent->SetEventID(EventID);
                             ownEvent->SetStartTime(StartTime);
                             ownEvent->SetDuration(Duration);
-                            ownEvent->SetTableID(TableID);
-                            ownEvent->SetVersion(Version);
+                            ownEvent->SetTableID(uchar(TableID));
+                            ownEvent->SetVersion(uchar(Version));
                             }
                        }
                        break;
@@ -570,7 +571,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                      if (strlen(p) > 2 && isxdigit(*(p + 1)) && isxdigit(*(p + 2))) {
                         char buf[3];
                         sprintf(buf, "%c%c", *(p + 1), *(p + 2));
-                        unsigned char c = strtol(buf, NULL, 16);
+                        uchar c = uchar(strtol(buf, NULL, 16));
                         if (c) {
                            *p = c;
                            memmove(p + 1, p + 3, strlen(p) - 2);
@@ -582,6 +583,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                 case '\x01': *p = '\''; break;
                 case '\x02': *p = '/';  break;
                 case '\x03': *p = ':';  break;
+                default: ;
                 }
               }
            }
@@ -1501,19 +1503,19 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
         if (access(fileName, R_OK) == 0) {
            struct stat buf;
            if (stat(fileName, &buf) == 0) {
-              delta = buf.st_size % sizeof(tIndexTs);
+              delta = int(buf.st_size % sizeof(tIndexTs));
               if (delta) {
                  delta = sizeof(tIndexTs) - delta;
                  esyslog("ERROR: invalid file size (%lld) in '%s'", buf.st_size, fileName);
                  }
-              last = (buf.st_size + delta) / sizeof(tIndexTs) - 1;
+              last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
               if (!Record && last >= 0) {
                  size = last + 1;
                  index = MALLOC(tIndexTs, size);
                  if (index) {
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
-                       if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
+                       if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
                           esyslog("ERROR: can't read from file '%s'", fileName);
                           free(index);
                           index = NULL;
@@ -1579,8 +1581,8 @@ void cIndexFile::ConvertToPes(tIndexTs *IndexTs, int Count)
   tIndexPes IndexPes;
   while (Count-- > 0) {
         IndexPes.offset = uint32_t(IndexTs->offset);
-        IndexPes.type = IndexTs->independent ? 1 : 2; // I_FRAME : "not I_FRAME" (exact frame type doesn't matter)
-        IndexPes.number = IndexTs->number;
+        IndexPes.type = uchar(IndexTs->independent ? 1 : 2); // I_FRAME : "not I_FRAME" (exact frame type doesn't matter)
+        IndexPes.number = uchar(IndexTs->number);
         IndexPes.reserved = 0;
         memcpy(IndexTs, &IndexPes, sizeof(*IndexTs));
         IndexTs++;
@@ -1601,7 +1603,7 @@ bool cIndexFile::CatchUp(int Index)
                f = -1;
                break;
                }
-            int newLast = buf.st_size / sizeof(tIndexTs) - 1;
+            int newLast = int(buf.st_size / sizeof(tIndexTs) - 1);
             if (newLast > last) {
                if (size <= newLast) {
                   size *= 2;
@@ -1671,7 +1673,7 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
            uint16_t fn = index[Index + 1].number;
            off_t fo = index[Index + 1].offset;
            if (fn == *FileNumber)
-              *Length = fo - *FileOffset;
+              *Length = int(fo - *FileOffset);
            else
               *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
            }
@@ -1702,7 +1704,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
                   uint16_t fn = index[Index + 1].number;
                   off_t fo = index[Index + 1].offset;
                   if (fn == *FileNumber)
-                     *Length = fo - *FileOffset;
+                     *Length = int(fo - *FileOffset);
                   else {
                      esyslog("ERROR: 'I' frame at end of file #%d", *FileNumber);
                      *Length = -1;
@@ -1871,11 +1873,11 @@ cUnbufferedFile *cFileName::SetOffset(int Number, off_t Offset)
      Close();
   int MaxFilesPerRecording = isPesRecording ? MAXFILESPERRECORDINGPES : MAXFILESPERRECORDINGTS;
   if (0 < Number && Number <= MaxFilesPerRecording) {
-     fileNumber = Number;
+     fileNumber = uint16_t(Number);
      sprintf(pFileNumber, isPesRecording ? RECORDFILESUFFIXPES : RECORDFILESUFFIXTS, fileNumber);
      if (record) {
         if (access(fileName, F_OK) == 0) {
-           // files exists, check if it has non-zero size
+           // file exists, check if it has non-zero size
            struct stat buf;
            if (stat(fileName, &buf) == 0) {
               if (buf.st_size != 0)

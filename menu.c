@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.9 2009/06/21 09:56:06 kls Exp $
+ * $Id: menu.c 2.10 2009/12/06 11:29:05 kls Exp $
  */
 
 #include "menu.h"
@@ -1373,6 +1373,7 @@ eOSState cMenuSchedule::Number(void)
     case cMenuScheduleItem::ssmThisThis: PrepareScheduleThisThis(Event, Channel); break;
     case cMenuScheduleItem::ssmThisAll:  PrepareScheduleThisAll(Event, Channel); break;
     case cMenuScheduleItem::ssmAllAll:   PrepareScheduleAllAll(Event, Channel); break;
+    default: esyslog("ERROR: unknown SortMode %d (%s %d)", cMenuScheduleItem::SortMode(), __FUNCTION__, __LINE__);
     }
   CurrentItem = (cMenuScheduleItem *)Get(Current());
   Sort();
@@ -1897,6 +1898,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 1: SetHelp(tr("Button$Open")); break;
        case 2:
        case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Button$Info") : NULL);
+       default: ;
        }
      helpKeys = NewHelpKeys;
      }
@@ -2242,18 +2244,18 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         Utf8Strn0Cpy(data.OSDTheme, themes.Name(themeIndex), sizeof(data.OSDTheme));
         ModifiedAppearance |= themeIndex != originalThemeIndex;
         }
-     if (data.OSDLeftP != Setup.OSDLeftP || data.OSDTopP != Setup.OSDTopP || data.OSDWidthP != Setup.OSDWidthP || data.OSDHeightP != Setup.OSDHeightP)
+     if (!(DoubleEqual(data.OSDLeftP, Setup.OSDLeftP) && DoubleEqual(data.OSDTopP, Setup.OSDTopP) && DoubleEqual(data.OSDWidthP, Setup.OSDWidthP) && DoubleEqual(data.OSDHeightP, Setup.OSDHeightP)))
         ModifiedAppearance = true;
      if (data.UseSmallFont != Setup.UseSmallFont || data.AntiAlias != Setup.AntiAlias)
         ModifiedAppearance = true;
      Utf8Strn0Cpy(data.FontOsd, fontOsdNames[fontOsdIndex], sizeof(data.FontOsd));
      Utf8Strn0Cpy(data.FontSml, fontSmlNames[fontSmlIndex], sizeof(data.FontSml));
      Utf8Strn0Cpy(data.FontFix, fontFixNames[fontFixIndex], sizeof(data.FontFix));
-     if (strcmp(data.FontOsd, Setup.FontOsd) || data.FontOsdSizeP != Setup.FontOsdSizeP)
+     if (strcmp(data.FontOsd, Setup.FontOsd) || !DoubleEqual(data.FontOsdSizeP, Setup.FontOsdSizeP))
         ModifiedAppearance = true;
-     if (strcmp(data.FontSml, Setup.FontSml) || data.FontSmlSizeP != Setup.FontSmlSizeP)
+     if (strcmp(data.FontSml, Setup.FontSml) || !DoubleEqual(data.FontSmlSizeP, Setup.FontSmlSizeP))
         ModifiedAppearance = true;
-     if (strcmp(data.FontFix, Setup.FontFix) || data.FontFixSizeP != Setup.FontFixSizeP)
+     if (strcmp(data.FontFix, Setup.FontFix) || !DoubleEqual(data.FontFixSizeP, Setup.FontFixSizeP))
         ModifiedAppearance = true;
      }
 
@@ -3152,6 +3154,7 @@ static void SetTrackDescriptions(int LiveChannel)
                    break;
            case 4: cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
                    break;
+           default: ;
            }
          }
      }

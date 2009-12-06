@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 2.2 2009/05/03 11:15:39 kls Exp $
+ * $Id: font.c 2.3 2009/12/05 16:19:00 kls Exp $
  */
 
 #include "font.h"
@@ -346,6 +346,7 @@ const cFont *cFont::GetFont(eDvbFont Font)
        case fontOsd: SetFont(Font, Setup.FontOsd, Setup.FontOsdSize); break;
        case fontSml: SetFont(Font, Setup.FontSml, Setup.FontSmlSize); break;
        case fontFix: SetFont(Font, Setup.FontFix, Setup.FontFixSize); break;
+       default: esyslog("ERROR: unknown Font %d (%s %d)", Font, __FUNCTION__, __LINE__);
        }
      }
   return fonts[Font];

@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.2 2009/11/22 12:28:53 kls Exp $
+ * $Id: dvbsubtitle.c 2.3 2009/12/05 16:11:54 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -160,21 +160,22 @@ void cSubtitleObject::DecodeSubBlock(const uchar *Data, int Length, bool Even)
                    ;
              break;
         case 0x20: //TODO
-             dbgobjects("sub block 2 to 4 map");
+             dbgobjects("sub block 2 to 4 map\n");
              index += 4;
              break;
         case 0x21: //TODO
-             dbgobjects("sub block 2 to 8 map");
+             dbgobjects("sub block 2 to 8 map\n");
              index += 4;
              break;
         case 0x22: //TODO
-             dbgobjects("sub block 4 to 8 map");
+             dbgobjects("sub block 4 to 8 map\n");
              index += 16;
              break;
         case 0xF0:
              x = 0;
              y += 2;
              break;
+        default: dbgobjects("unknown sub block %s %d\n", __FUNCTION__, __LINE__);
         }
       }
 }
@@ -233,7 +234,7 @@ bool cSubtitleObject::Decode2BppCodeString(const uchar *Data, int &Index, int &x
         rl = 1; //color 0
      else {
         code = Get2Bits(Data, Index);
-        switch (code & 0x3) { //switch_3
+        switch (code & 3) { //switch_3
           case 0:
                return false;
           case 1:
@@ -247,6 +248,7 @@ bool cSubtitleObject::Decode2BppCodeString(const uchar *Data, int &Index, int &x
                rl = (Get2Bits(Data, Index) << 6) + (Get2Bits(Data, Index) << 4) + (Get2Bits(Data, Index) << 2) + Get2Bits(Data, Index) + 29;
                color = Get2Bits(Data, Index);
                break;
+          default: ;
           }
         }
      }
@@ -283,6 +285,7 @@ bool cSubtitleObject::Decode4BppCodeString(const uchar *Data, int &Index, int &x
                   rl = (Get4Bits(Data, Index) << 4) + Get4Bits(Data, Index) + 25;
                   color = Get4Bits(Data, Index);
                   break;
+             default: ;
              }
            }
         else {
@@ -516,6 +519,7 @@ void cDvbSubtitlePage::SetState(int State)
          break;
     case 3: // reserved
          break;
+    default: dbgpages("unknown page state (%s %d)\n", __FUNCTION__, __LINE__);
     }
 }
 
@@ -900,6 +904,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                  case 2: region->FillRegion((Data[6 + 9] & 0x0C) >> 2); break;
                  case 4: region->FillRegion((Data[6 + 9] & 0xF0) >> 4); break;
                  case 8: region->FillRegion(Data[6 + 8]); break;
+                 default: dbgregions("unknown bpp %d (%s %d)\n", region->Bpp(), __FUNCTION__, __LINE__);
                  }
                }
             for (int i = 6 + 10; i < segmentLength; i += 6) {

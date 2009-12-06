@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.28 2008/02/23 10:23:44 kls Exp $
+ * $Id: skinsttng.c 2.1 2009/12/06 12:12:03 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -1068,6 +1068,7 @@ void cSkinSTTNGDisplayTracks::SetAudioChannel(int AudioChannel)
     case 0: bm = &bmAudioStereo; break;
     case 1: bm = &bmAudioLeft;   break;
     case 2: bm = &bmAudioRight;  break;
+    default: ;
     }
   if (bm)
      osd->DrawBitmap(x3 + 5, y6 + (y7 - y6 - bm->Height()) / 2, *bm, Theme.Color(clrChannelSymbolOn), frameColor);

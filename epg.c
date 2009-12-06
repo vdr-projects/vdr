@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.1 2008/05/01 14:53:55 kls Exp $
+ * $Id: epg.c 2.2 2009/12/05 16:17:08 kls Exp $
  */
 
 #include "epg.h"
@@ -603,6 +603,7 @@ void cEvent::FixEpgBugs(void)
                      case 0x0F: p->description = strdup("HD 16:9"); break;
                      case 0x0C:
                      case 0x10: p->description = strdup("HD >16:9"); break;
+                     default: ;
                      }
                    EpgBugFixStat(9, ChannelID());
                    }
@@ -621,12 +622,13 @@ void cEvent::FixEpgBugs(void)
                 if (!p->description) {
                    switch (p->type) {
                      case 0x05: p->description = strdup("Dolby Digital"); break;
-                     // all others will just display the language
+                     default: ; // all others will just display the language
                      }
                    EpgBugFixStat(11, ChannelID());
                    }
                 }
                 break;
+           default: ;
            }
          }
      }
@@ -863,6 +865,7 @@ void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtT
                p->Dump(f, Prefix);
             }
             break;
+       default: esyslog("ERROR: unknown DumpMode %d (%s %d)", DumpMode, __FUNCTION__, __LINE__);
        }
      fprintf(f, "%sc\n", Prefix);
      }

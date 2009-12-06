@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.6 2009/06/21 13:46:20 kls Exp $
+ * $Id: eit.c 2.7 2009/12/05 16:13:22 kls Exp $
  */
 
 #include "eit.h"
@@ -354,5 +354,6 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             cTDT TDT(Data);
          }
          break;
+    default: ;
     }
 }

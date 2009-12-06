@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.26 2009/11/22 13:19:03 kls Exp $
+ * $Id: device.c 2.27 2009/12/05 15:52:54 kls Exp $
  */
 
 #include "device.h"
@@ -371,6 +371,7 @@ void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
                case vdfCenterCutOut:
                     spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
                     break;
+               default: esyslog("ERROR: invalid value for VideoDisplayFormat '%d'", VideoDisplayFormat);
                }
         }
      }
@@ -611,6 +612,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
         case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
                               return false;
         case scrFailed:       break; // loop will retry
+        default:              esyslog("ERROR: invalid return value from SetChannel");
         }
       esyslog("retrying");
       }

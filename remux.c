@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.31 2009/12/05 13:15:10 kls Exp $
+ * $Id: remux.c 2.32 2009/12/06 12:10:44 kls Exp $
  */
 
 #include "remux.h"
@@ -585,6 +585,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          }
                       }
                       break;
+           default: ;
            }
          dbgpatpmt("\n");
          if (updatePrimaryDevice) {

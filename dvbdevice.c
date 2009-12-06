@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.21 2009/06/06 11:17:20 kls Exp $
+ * $Id: dvbdevice.c 2.22 2009/12/05 16:02:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -238,6 +238,7 @@ bool cDvbTuner::SetFrontend(void)
                             }
                          }
                          break;
+                    default: esyslog("ERROR: unknown diseqc command %d", da);
                     }
                   }
               diseqcCommands = diseqc->Commands();
@@ -383,6 +384,8 @@ void cDvbTuner::Action(void)
                   lastTimeoutReport = 0;
                   continue;
                   }
+               break;
+          default: esyslog("ERROR: unknown tuner status %d", tunerStatus);
           }
 
         if (tunerStatus != tsTuned)
@@ -720,6 +723,7 @@ void cDvbDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
           case vdfCenterCutOut:
                CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_CENTER_CUT_OUT));
                break;
+          default: esyslog("ERROR: unknown video display format %d", VideoDisplayFormat);
           }
         }
      }
@@ -1179,6 +1183,7 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          close(fd_audio);
          fd_video = fd_audio = -1;
          break;
+    default: esyslog("ERROR: unknown playmode %d", PlayMode);
     }
   playMode = PlayMode;
   return true;

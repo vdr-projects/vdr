@@ -63,6 +63,10 @@ VDR Plugin 'hello' Revision History
 
 - Updated the Croatian language texts (thanks to Adrian Caval).
 
-2008-009-06 Version 0.2.3
+2008-09-06: Version 0.2.3
 
 - Updated the Turkish language texts (thanks to Oktay Yolgeçen).
+
+2009-12-06: Version 0.2.4
+
+- Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).
