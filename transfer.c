@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.3 2009/01/23 16:44:29 kls Exp $
+ * $Id: transfer.c 2.4 2009/12/06 14:22:23 kls Exp $
  */
 
 #include "transfer.h"
@@ -45,7 +45,6 @@ void cTransfer::Receive(uchar *Data, int Length)
      for (int i = 0; i < 100; i++) {
          if (PlayTs(Data, Length) > 0)
             return;
-         fprintf(stderr, "-");//XXX just for testing - remove when stable
          cCondWait::SleepMs(10);
          }
      esyslog("ERROR: TS packet not accepted in Transfer Mode");

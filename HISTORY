@@ -6212,3 +6212,4 @@ Video Disk Recorder Revision History
 - Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).
 - Added stream type 11172 AUDIO to cPatPmtParser::ParsePmt() (thanks to Johann
   Friedrichs).
+- Removed debug output of '-' from cTransfer::Receive().
