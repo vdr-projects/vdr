@@ -6217,3 +6217,4 @@ Video Disk Recorder Revision History
 - Removed the workaround for short channel names of "Kabel Deutschland", because
   apparently they now have their data according to the DVB standard (thanks to
   Johann Friedrichs).
+- Some fixes to dvbspu.[hc] (thanks to Johann Friedrichs).
