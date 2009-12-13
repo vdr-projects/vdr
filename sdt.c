@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 2.2 2009/12/06 12:11:23 kls Exp $
+ * $Id: sdt.c 2.3 2009/12/13 11:54:33 kls Exp $
  */
 
 #include "sdt.h"
@@ -65,11 +65,8 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         char *ps = compactspace(ShortNameBuf);
                         if (!*ps && cSource::IsCable(Source())) {
                            // Some cable providers don't mark short channel names according to the
-                           // standard, but rather go their own way and use "name>short name" or
-                           // "name, short name":
+                           // standard, but rather go their own way and use "name>short name":
                            char *p = strchr(pn, '>'); // fix for UPC Wien
-                           if (!p)
-                              p = strchr(pn, ','); // fix for "Kabel Deutschland"
                            if (p && p > pn) {
                               *p++ = 0;
                               strcpy(ShortNameBuf, skipspace(p));

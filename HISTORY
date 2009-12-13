@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-06: Version 1.7.11
+2009-12-13: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6214,3 +6214,6 @@ Video Disk Recorder Revision History
   Friedrichs).
 - Removed debug output of '-' from cTransfer::Receive().
 - Added defines for large files to the 'newplugin' script (reported by Udo Richter).
+- Removed the workaround for short channel names of "Kabel Deutschland", because
+  apparently they now have their data according to the DVB standard (thanks to
+  Johann Friedrichs).
