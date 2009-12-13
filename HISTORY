@@ -6218,3 +6218,4 @@ Video Disk Recorder Revision History
   apparently they now have their data according to the DVB standard (thanks to
   Johann Friedrichs).
 - Some fixes to dvbspu.[hc] (thanks to Johann Friedrichs).
+- Fixed a busy loop when moving editing marks (thanks to Johann Friedrichs).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.18 2009/12/05 16:04:04 kls Exp $
+ * $Id: dvbplayer.c 2.19 2009/12/13 13:49:56 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -404,6 +404,8 @@ void cDvbPlayer::Action(void)
            cPoller Poller;
            DevicePoll(Poller, 10);
            Sleep = false;
+           if (playMode == pmStill || playMode==pmPause)
+              cCondWait::SleepMs(3);
            }
         {
           LOCK_THREAD;
