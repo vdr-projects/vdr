@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.5 2009/12/06 12:19:56 kls Exp $
+ * $Id: tools.c 2.6 2009/12/23 15:12:15 kls Exp $
  */
 
 #include "tools.h"
@@ -769,10 +769,10 @@ char *cCharSetConv::systemCharacterTable = NULL;
 cCharSetConv::cCharSetConv(const char *FromCode, const char *ToCode)
 {
   if (!FromCode)
-     FromCode = systemCharacterTable;
+     FromCode = systemCharacterTable ? systemCharacterTable : "UTF-8";
   if (!ToCode)
      ToCode = "UTF-8";
-  cd = (FromCode && ToCode) ? iconv_open(ToCode, FromCode) : (iconv_t)-1;
+  cd = iconv_open(ToCode, FromCode);
   result = NULL;
   length = 0;
 }

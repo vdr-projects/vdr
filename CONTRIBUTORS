@@ -1688,6 +1688,8 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
  for reporting a missing install-i18n in the install target in the Makefile
  for adding a missing 'const' to cRecording::FramesPerSecond()
+ for modifying cCharSetConv so that it can be used to convert from "whatever VDR uses"
+ to a given code
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu

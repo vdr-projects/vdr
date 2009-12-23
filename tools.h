@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.3 2009/12/06 11:24:12 kls Exp $
+ * $Id: tools.h 2.4 2009/12/23 15:14:39 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -142,7 +142,8 @@ private:
 public:
   cCharSetConv(const char *FromCode = NULL, const char *ToCode = NULL);
      ///< Sets up a character set converter to convert from FromCode to ToCode.
-     ///< If FromCode is NULL, the previously set systemCharacterTable is used.
+     ///< If FromCode is NULL, the previously set systemCharacterTable is used
+     ///< (or "UTF-8" if no systemCharacterTable has been set).
      ///< If ToCode is NULL, "UTF-8" is used.
   ~cCharSetConv();
   const char *Convert(const char *From, char *To = NULL, size_t ToLength = 0);
