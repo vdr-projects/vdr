@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-13: Version 1.7.11
+2009-12-20: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6219,3 +6219,4 @@ Video Disk Recorder Revision History
   Johann Friedrichs).
 - Some fixes to dvbspu.[hc] (thanks to Johann Friedrichs).
 - Fixed a busy loop when moving editing marks (thanks to Johann Friedrichs).
+- Updated sources.conf (thanks to Derek Kelly).

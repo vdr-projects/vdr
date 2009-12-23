@@ -2487,6 +2487,7 @@ Derek Kelly (user.vdr@gmail.com)
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
+ for updating sources.conf
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
