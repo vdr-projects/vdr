@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.27 2009/12/05 15:52:54 kls Exp $
+ * $Id: device.c 2.28 2009/12/24 11:13:53 kls Exp $
  */
 
 #include "device.h"
@@ -64,6 +64,7 @@ cDevice::cDevice(void)
 :patPmtParser(true)
 {
   cardIndex = nextCardIndex++;
+  dsyslog("new device number %d", CardIndex() + 1);
 
   SetDescription("receiver on device %d", CardIndex() + 1);
 

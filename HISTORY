@@ -6224,3 +6224,4 @@ Video Disk Recorder Revision History
   to a given code (thanks to Joachim Wilke).
 - Channel names containing commas are now handled correctly in channels.conf.
   If a channel's short name contains a comma, it is replaced with a '.'.
+- cDevice now logs the device number when a new device is created.
