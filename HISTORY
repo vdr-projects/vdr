@@ -6227,3 +6227,6 @@ Video Disk Recorder Revision History
 - cDevice now logs the device number when a new device is created.
 - Fixed handling STREAMTYPE_11172_AUDIO in cPatPmtParser::ParsePmt().
 - cParsePatPmt now has functions to retrieve the audio, dolby and subtitle pids.
+- cPatFilter::Process() now only stores CA descriptors for video and audio pids
+  (thanks to Francesco Saverio Schiavarelli for reporting a problem with channels
+  that have some encrypted components that VDR doesn't use).

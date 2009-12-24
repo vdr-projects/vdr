@@ -2526,3 +2526,7 @@ Andreas Schaefers <andreas_schaefers@gmx.de>
 
 Matthieu Castet <castet.matthieu@free.fr>
  for improving SPU handling on devices with limited OSD capabilities
+
+Francesco Saverio Schiavarelli <fschiava@libero.it>
+  for reporting a problem with channels that have some encrypted components that
+  VDR doesn't use

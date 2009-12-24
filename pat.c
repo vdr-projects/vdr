@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.5 2009/12/06 11:39:17 kls Exp $
+ * $Id: pat.c 2.6 2009/12/24 13:01:18 kls Exp $
  */
 
 #include "pat.h"
@@ -345,6 +345,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int NumDpids = 0;
         int NumSpids = 0;
         for (SI::Loop::Iterator it; pmt.streamLoop.getNext(stream, it); ) {
+            bool ProcessCaDescriptors = false;
             int esPid = stream.getPid();
             switch (stream.getStreamType()) {
               case 1: // STREAMTYPE_11172_VIDEO
@@ -353,6 +354,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       Vpid = esPid;
                       Ppid = pmt.getPCRPid();
                       Vtype = stream.getStreamType();
+                      ProcessCaDescriptors = true;
                       break;
               case 3: // STREAMTYPE_11172_AUDIO
               case 4: // STREAMTYPE_13818_AUDIO
@@ -385,6 +387,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                              }
                          NumApids++;
                          }
+                      ProcessCaDescriptors = true;
                       }
                       break;
               case 5: // STREAMTYPE_13818_PRIVATE
@@ -398,6 +401,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                           switch (d->getDescriptorTag()) {
                             case SI::AC3DescriptorTag:
                                  dpid = esPid;
+                                 ProcessCaDescriptors = true;
                                  break;
                             case SI::SubtitlingDescriptorTag:
                                  if (NumSpids < MAXSPIDS) {
@@ -445,10 +449,12 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       break;
               default: ;//printf("PID: %5d %5d %2d %3d %3d\n", pmt.getServiceId(), stream.getPid(), stream.getStreamType(), pmt.getVersionNumber(), Channel->Number());
               }
-            for (SI::Loop::Iterator it; (d = (SI::CaDescriptor*)stream.streamDescriptors.getNext(it, SI::CaDescriptorTag)); ) {
-                CaDescriptors->AddCaDescriptor(d, esPid);
-                delete d;
-                }
+            if (ProcessCaDescriptors) {
+               for (SI::Loop::Iterator it; (d = (SI::CaDescriptor*)stream.streamDescriptors.getNext(it, SI::CaDescriptorTag)); ) {
+                   CaDescriptors->AddCaDescriptor(d, esPid);
+                   delete d;
+                   }
+               }
             }
         if (Setup.UpdateChannels >= 2) {
            Channel->SetPids(Vpid, Ppid, Vtype, Apids, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
