@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.21 2009/12/04 15:04:43 kls Exp $
+ * $Id: remux.h 2.22 2009/12/24 12:04:47 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -214,6 +214,15 @@ private:
   int pmtPid;
   int vpid;
   int vtype;
+  int apids[MAXAPIDS + 1]; // list is zero-terminated
+  char alangs[MAXAPIDS][MAXLANGCODE2];
+  int dpids[MAXDPIDS + 1]; // list is zero-terminated
+  char dlangs[MAXDPIDS][MAXLANGCODE2];
+  int spids[MAXSPIDS + 1]; // list is zero-terminated
+  char slangs[MAXSPIDS][MAXLANGCODE2];
+  uchar subtitlingTypes[MAXSPIDS];
+  uint16_t compositionPageIds[MAXSPIDS];
+  uint16_t ancillaryPageIds[MAXSPIDS];
   bool updatePrimaryDevice;
 protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
@@ -244,6 +253,18 @@ public:
   int Vtype(void) const { return vtype; }
        ///< Returns the video stream type as defined by the current PMT, or 0 if no video
        ///< stream type has been detected, yet.
+  const int *Apids(void) const { return apids; }
+  const int *Dpids(void) const { return dpids; }
+  const int *Spids(void) const { return spids; }
+  int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
+  int Dpid(int i) const { return (0 <= i && i < MAXDPIDS) ? dpids[i] : 0; }
+  int Spid(int i) const { return (0 <= i && i < MAXSPIDS) ? spids[i] : 0; }
+  const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
+  const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
+  const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
+  uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
+  uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
+  uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
   };
 
 // TS to PES converter:

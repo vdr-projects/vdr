@@ -6226,3 +6226,4 @@ Video Disk Recorder Revision History
   If a channel's short name contains a comma, it is replaced with a '.'.
 - cDevice now logs the device number when a new device is created.
 - Fixed handling STREAMTYPE_11172_AUDIO in cPatPmtParser::ParsePmt().
+- cParsePatPmt now has functions to retrieve the audio, dolby and subtitle pids.
