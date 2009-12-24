@@ -6225,3 +6225,4 @@ Video Disk Recorder Revision History
 - Channel names containing commas are now handled correctly in channels.conf.
   If a channel's short name contains a comma, it is replaced with a '.'.
 - cDevice now logs the device number when a new device is created.
+- Fixed handling STREAMTYPE_11172_AUDIO in cPatPmtParser::ParsePmt().

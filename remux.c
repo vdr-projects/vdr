@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.33 2009/12/06 14:04:08 kls Exp $
+ * $Id: remux.c 2.34 2009/12/24 11:36:38 kls Exp $
  */
 
 #include "remux.h"
@@ -492,11 +492,11 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
          switch (stream.getStreamType()) {
            case 0x01: // STREAMTYPE_11172_VIDEO
            case 0x02: // STREAMTYPE_13818_VIDEO
-           case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x1B: // MPEG4
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
                       break;
+           case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
                       {
                       if (NumApids < MAXAPIDS) {
