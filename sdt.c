@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 2.3 2009/12/13 11:54:33 kls Exp $
+ * $Id: sdt.c 2.4 2009/12/23 16:02:47 kls Exp $
  */
 
 #include "sdt.h"
@@ -72,6 +72,11 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                               strcpy(ShortNameBuf, skipspace(p));
                               }
                            }
+                        // Avoid ',' in short name (would cause trouble in channels.conf):
+                        for (char *p = ShortNameBuf; *p; p++) {
+                            if (*p == ',')
+                               *p = '.';
+                            }
                         sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
                         char *pp = compactspace(ProviderNameBuf);
                         if (channel) {

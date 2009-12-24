@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-23: Version 1.7.11
+2009-12-24: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6222,4 +6222,5 @@ Video Disk Recorder Revision History
 - Updated sources.conf (thanks to Derek Kelly).
 - Modified cCharSetConv so that it can be used to convert from "whatever VDR uses"
   to a given code (thanks to Joachim Wilke).
-
+- Channel names containing commas are now handled correctly in channels.conf.
+  If a channel's short name contains a comma, it is replaced with a '.'.

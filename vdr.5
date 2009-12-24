@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.7 2009/10/18 14:09:07 kls Exp $
+.\" $Id: vdr.5 2.8 2009/12/24 10:47:38 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -64,6 +64,10 @@ for this channel, it follows the full name and is delimited by a comma,
 as in
 
 \fBRTL Television,RTL:...\fR
+
+If the short name itself would contain a comma, it is replaced with a '.'.
+Note that some long channel names may contain a comma, so the delimiting comma
+is always the rightmost one.
 
 If present, the name of the service provider or "bouquet" is appended
 to the channel name, separated by a semicolon, as in

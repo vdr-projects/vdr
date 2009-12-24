@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.9 2009/12/05 15:28:32 kls Exp $
+ * $Id: channels.c 2.10 2009/12/23 15:56:03 kls Exp $
  */
 
 #include "channels.h"
@@ -727,6 +727,8 @@ cString cChannel::ToText(const cChannel *Channel)
   q += sprintf(q, "%s", Channel->name);
   if (!isempty(Channel->shortName))
      q += sprintf(q, ",%s", Channel->shortName);
+  else if (strchr(Channel->name, ','))
+     q += sprintf(q, ",");
   if (!isempty(Channel->provider))
      q += sprintf(q, ";%s", Channel->provider);
   *q = 0;
@@ -901,7 +903,7 @@ bool cChannel::Parse(const char *s)
            *p++ = 0;
            provider = strcpyrealloc(provider, p);
            }
-        p = strchr(namebuf, ',');
+        p = strrchr(namebuf, ','); // long name might contain a ',', so search for the rightmost one
         if (p) {
            *p++ = 0;
            shortName = strcpyrealloc(shortName, p);
