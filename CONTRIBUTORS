@@ -1361,6 +1361,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for fixing handling numeric keys in the channel display after switching channel
  groups
  for adding some missing 'const' statements to cBitmap
+ for making cDevice::AddPid() store the stream type of the given pid
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

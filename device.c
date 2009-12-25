@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.28 2009/12/24 11:13:53 kls Exp $
+ * $Id: device.c 2.29 2009/12/25 15:24:02 kls Exp $
  */
 
 #include "device.h"
@@ -413,7 +413,7 @@ bool cDevice::HasPid(int Pid) const
   return false;
 }
 
-bool cDevice::AddPid(int Pid, ePidType PidType)
+bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 {
   if (Pid || PidType == ptPcr) {
      int n = -1;
@@ -460,6 +460,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         }
      if (n >= 0) {
         pidHandles[n].pid = Pid;
+        pidHandles[n].streamType = StreamType;
         pidHandles[n].used = 1;
         PRINTPIDS("C");
         if (!SetPid(&pidHandles[n], n, true)) {

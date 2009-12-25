@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.17 2009/12/04 15:03:16 kls Exp $
+ * $Id: device.h 2.18 2009/12/25 15:09:18 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -277,14 +277,15 @@ protected:
   class cPidHandle {
   public:
     int pid;
+    int streamType;
     int handle;
     int used;
-    cPidHandle(void) { pid = used = 0; handle = -1; }
+    cPidHandle(void) { pid = streamType = used = 0; handle = -1; }
     };
   cPidHandle pidHandles[MAXPIDHANDLES];
   bool HasPid(int Pid) const;
          ///< Returns true if this device is currently receiving the given PID.
-  bool AddPid(int Pid, ePidType PidType = ptOther);
+  bool AddPid(int Pid, ePidType PidType = ptOther, int StreamType = 0);
          ///< Adds a PID to the set of PIDs this device shall receive.
   void DelPid(int Pid, ePidType PidType = ptOther);
          ///< Deletes a PID from the set of PIDs this device shall receive.

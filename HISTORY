@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-24: Version 1.7.11
+2009-12-25: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6230,3 +6230,5 @@ Video Disk Recorder Revision History
 - cPatFilter::Process() now only stores CA descriptors for video and audio pids
   (thanks to Francesco Saverio Schiavarelli for reporting a problem with channels
   that have some encrypted components that VDR doesn't use).
+- cDevice::AddPid() now stores the stream type of the given pid (thanks to Andreas
+  Regel).
