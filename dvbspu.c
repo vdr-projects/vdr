@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.6 2009/12/24 10:52:23 kls Exp $
+ * $Id: dvbspu.c 2.7 2009/12/26 15:51:15 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -16,7 +16,6 @@
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
-#include "device.h"
 
 /*
  * cDvbSpubitmap:
