@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.35 2009/12/24 12:24:02 kls Exp $
+ * $Id: remux.c 2.36 2009/12/29 15:46:12 kls Exp $
  */
 
 #include "remux.h"
@@ -486,6 +486,9 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      int NumDpids = 0;
      int NumSpids = 0;
      vpid = vtype = 0;
+     apids[0] = 0;
+     dpids[0] = 0;
+     spids[0] = 0;
      SI::PMT::Stream stream;
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
@@ -530,6 +533,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          if (updatePrimaryDevice)
                             cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, apids[NumApids], alangs[NumApids]);
                          NumApids++;
+                         apids[NumApids]= 0;
                          }
                       }
                       break;
@@ -573,6 +577,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                     if (updatePrimaryDevice)
                                        cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, spids[NumSpids], slangs[NumSpids]);
                                     NumSpids++;
+                                    spids[NumSpids]= 0;
                                     }
                                  break;
                             case SI::ISO639LanguageDescriptorTag: {
@@ -592,6 +597,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             if (updatePrimaryDevice)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
+                            dpids[NumDpids]= 0;
                             }
                          }
                       }
