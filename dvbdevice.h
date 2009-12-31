@@ -1,10 +1,10 @@
 /*
- * dvbdevice.h: The DVB device interface
+ * dvbdevice.h: The DVB device tuner interface
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.9 2009/10/25 13:58:20 kls Exp $
+ * $Id: dvbdevice.h 2.10 2009/12/31 15:38:05 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,7 +14,6 @@
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/version.h>
 #include "device.h"
-#include "dvbspu.h"
 
 #if DVB_API_VERSION < 5
 #error VDR requires Linux DVB driver API version 5.0 or higher!
@@ -22,13 +21,26 @@
 
 #define MAXDVBDEVICES  8
 
+#define DEV_VIDEO         "/dev/video"
+#define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
+#define DEV_DVB_OSD       "osd"
+#define DEV_DVB_FRONTEND  "frontend"
+#define DEV_DVB_DVR       "dvr"
+#define DEV_DVB_DEMUX     "demux"
+#define DEV_DVB_VIDEO     "video"
+#define DEV_DVB_AUDIO     "audio"
+#define DEV_DVB_CA        "ca"
+
 class cDvbTuner;
 
 /// The cDvbDevice implements a DVB device which can be accessed through the Linux DVB driver API.
 
 class cDvbDevice : public cDevice {
+protected:
+  static cString DvbName(const char *Name, int n);
+  static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false);
 private:
-  static bool Probe(const char *FileName);
+  static bool Probe(int Adapter);
          ///< Probes for existing DVB devices.
 public:
   static bool Initialize(void);
@@ -39,32 +51,21 @@ private:
   dvb_frontend_info frontendInfo;
   int numProvidedSystems;
   fe_delivery_system frontendType;
-  int fd_osd, fd_audio, fd_video, fd_dvr, fd_stc, fd_ca;
-protected:
-  virtual void MakePrimaryDevice(bool On);
+  int fd_dvr, fd_ca;
 public:
   cDvbDevice(int n);
   virtual ~cDvbDevice();
   virtual bool Ready(void);
-  virtual bool HasDecoder(void) const;
 
 // Common Interface facilities:
 
 private:
   cCiAdapter *ciAdapter;
 
-// SPU facilities
-
-private:
-  cDvbSpuDecoder *spuDecoder;
-public:
-  virtual cSpuDecoder *GetSpuDecoder(void);
-
 // Channel facilities
 
 private:
   cDvbTuner *dvbTuner;
-  void TurnOffLiveMode(bool LiveView);
 public:
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
@@ -78,8 +79,6 @@ public:
 
 // PID handle facilities
 
-private:
-  bool SetAudioBypass(bool On);
 protected:
   virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 
@@ -94,66 +93,17 @@ protected:
 public:
   virtual bool HasCi(void);
 
-// Image Grab facilities
-
-private:
-  static int devVideoOffset;
-  int devVideoIndex;
-public:
-  virtual uchar *GrabImage(int &Size, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
-
-// Video format facilities
-
-public:
-  virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
-  virtual void SetVideoFormat(bool VideoFormat16_9);
-  virtual eVideoSystem GetVideoSystem(void);
-  virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
-  virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
-
-// Track facilities
-
-protected:
-  virtual void SetAudioTrackDevice(eTrackType Type);
-
 // Audio facilities
 
-private:
-  bool digitalAudio;
-  static int setTransferModeForDolbyDigital;
 protected:
-  virtual int GetAudioChannelDevice(void);
-  virtual void SetAudioChannelDevice(int AudioChannel);
-  virtual void SetVolumeDevice(int Volume);
-  virtual void SetDigitalAudioDevice(bool On);
+  static int setTransferModeForDolbyDigital;
 public:
-  static void SetTransferModeForDolbyDigital(int Mode);
+  static void SetTransferModeForDolbyDigital(int Mode); // needs to be here for backwards compatibilty
          ///< Controls how the DVB device handles Transfer Mode when replaying
          ///< Dolby Digital audio.
          ///< 0 = don't set "audio bypass" in driver/firmware, don't force Transfer Mode
          ///< 1 = set "audio bypass" in driver/firmware, force Transfer Mode (default)
          ///< 2 = don't set "audio bypass" in driver/firmware, force Transfer Mode
-
-// Player facilities
-
-protected:
-  ePlayMode playMode;
-  virtual bool CanReplay(void) const;
-  virtual bool SetPlayMode(ePlayMode PlayMode);
-  virtual int PlayVideo(const uchar *Data, int Length);
-  virtual int PlayAudio(const uchar *Data, int Length, uchar Id);
-  virtual int PlayTsVideo(const uchar *Data, int Length);
-  virtual int PlayTsAudio(const uchar *Data, int Length);
-public:
-  virtual int64_t GetSTC(void);
-  virtual void TrickSpeed(int Speed);
-  virtual void Clear(void);
-  virtual void Play(void);
-  virtual void Freeze(void);
-  virtual void Mute(void);
-  virtual void StillPicture(const uchar *Data, int Length);
-  virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
-  virtual bool Flush(int TimeoutMs = 0);
 
 // Receiver facilities
 
@@ -164,5 +114,23 @@ protected:
   virtual void CloseDvr(void);
   virtual bool GetTSPacket(uchar *&Data);
   };
+
+// A plugin that implements a DVB device derived from cDvbDevice needs to create
+// a cDvbDeviceProbe derived object on the heap in order to have its Probe()
+// function called, where it can actually create the appropriate device.
+// The cDvbDeviceProbe object must be created in the plugin's constructor,
+// and deleted in its destructor.
+
+class cDvbDeviceProbe : public cListObject {
+public:
+  cDvbDeviceProbe(void);
+  virtual ~cDvbDeviceProbe();
+  virtual bool Probe(int Adapter) = 0;
+     ///< Probes for a DVB device at the given Adapter and creates the appropriate
+     ///< object derived from cDvbDevice if applicable.
+     ///< Returns true if a device has been created.
+  };
+
+extern cList<cDvbDeviceProbe> DvbDeviceProbes;
 
 #endif //__DVBDEVICE_H

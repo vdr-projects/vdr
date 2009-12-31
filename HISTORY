@@ -6234,3 +6234,9 @@ Video Disk Recorder Revision History
   Regel).
 - Added cFont::FontName() and cFont::Size() (thanks to Andreas Regel).
 - cPatPmtParser now also stores the audio stream types.
+- The support for full featured DVB cards of the TT/FuSi design has been moved
+  into the new plugin 'dvbsddevice'. On systems that use such a card as their
+  primary device, this plugin now needs to be loaded when running VDR in order
+  to view live or recorded video. If the plugin is not loaded, the card will
+  be treated like a budget DVB card, and there will be no OSD or viewing
+  capability.
