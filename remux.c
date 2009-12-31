@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.36 2009/12/29 15:46:12 kls Exp $
+ * $Id: remux.c 2.37 2009/12/31 15:35:37 kls Exp $
  */
 
 #include "remux.h"
@@ -489,6 +489,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      apids[0] = 0;
      dpids[0] = 0;
      spids[0] = 0;
+     atypes[0] = 0;
+     dtypes[0] = 0;
      SI::PMT::Stream stream;
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
@@ -504,6 +506,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       {
                       if (NumApids < MAXAPIDS) {
                          apids[NumApids] = stream.getPid();
+                         atypes[NumApids] = stream.getStreamType();
                          *alangs[NumApids] = 0;
                          SI::Descriptor *d;
                          for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
@@ -593,6 +596,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
                             dpids[NumDpids] = dpid;
+                            dtypes[NumDpids] = stream.getStreamType();
                             strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
                             if (updatePrimaryDevice)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);

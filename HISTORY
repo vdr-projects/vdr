@@ -6233,3 +6233,4 @@ Video Disk Recorder Revision History
 - cDevice::AddPid() now stores the stream type of the given pid (thanks to Andreas
   Regel).
 - Added cFont::FontName() and cFont::Size() (thanks to Andreas Regel).
+- cPatPmtParser now also stores the audio stream types.

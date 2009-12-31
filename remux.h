@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.22 2009/12/24 12:04:47 kls Exp $
+ * $Id: remux.h 2.23 2009/12/31 15:35:37 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -215,8 +215,10 @@ private:
   int vpid;
   int vtype;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
+  int atypes[MAXAPIDS + 1]; // list is zero-terminated
   char alangs[MAXAPIDS][MAXLANGCODE2];
   int dpids[MAXDPIDS + 1]; // list is zero-terminated
+  int dtypes[MAXDPIDS + 1]; // list is zero-terminated
   char dlangs[MAXDPIDS][MAXLANGCODE2];
   int spids[MAXSPIDS + 1]; // list is zero-terminated
   char slangs[MAXSPIDS][MAXLANGCODE2];
@@ -259,6 +261,8 @@ public:
   int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
   int Dpid(int i) const { return (0 <= i && i < MAXDPIDS) ? dpids[i] : 0; }
   int Spid(int i) const { return (0 <= i && i < MAXSPIDS) ? spids[i] : 0; }
+  int Atype(int i) const { return (0 <= i && i < MAXAPIDS) ? atypes[i] : 0; }
+  int Dtype(int i) const { return (0 <= i && i < MAXDPIDS) ? dtypes[i] : 0; }
   const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
   const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
   const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
