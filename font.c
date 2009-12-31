@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 2.3 2009/12/05 16:19:00 kls Exp $
+ * $Id: font.c 2.4 2009/12/31 14:49:59 kls Exp $
  */
 
 #include "font.h"
@@ -93,6 +93,8 @@ void cGlyph::SetKerningCache(uint PrevSym, int Kerning)
 
 class cFreetypeFont : public cFont {
 private:
+  cString fontName;
+  int size;
   int height;
   int bottom;
   FT_Library library; ///< Handle to library
@@ -105,6 +107,8 @@ private:
 public:
   cFreetypeFont(const char *Name, int CharHeight, int CharWidth = 0);
   virtual ~cFreetypeFont();
+  virtual const char *FontName(void) const { return fontName; }
+  virtual int Size(void) const { return size; }
   virtual int Width(uint c) const;
   virtual int Width(const char *s) const;
   virtual int Height(void) const { return height; }
@@ -113,6 +117,8 @@ public:
 
 cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
 {
+  fontName = Name;
+  size = CharHeight;
   height = 0;
   bottom = 0;
   int error = FT_Init_FreeType(&library);

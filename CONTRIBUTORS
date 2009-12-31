@@ -1362,6 +1362,7 @@ Andreas Regel <andreas.regel@gmx.de>
  groups
  for adding some missing 'const' statements to cBitmap
  for making cDevice::AddPid() store the stream type of the given pid
+ for adding cFont::FontName() and cFont::Size()
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
