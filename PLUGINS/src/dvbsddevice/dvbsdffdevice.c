@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.23 2009/12/31 15:36:56 kls Exp $
+ * $Id: dvbsdffdevice.c 2.24 2010/01/01 15:03:02 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -82,6 +82,7 @@ void cDvbSdFfDevice::MakePrimaryDevice(bool On)
 {
   if (On)
      new cDvbOsdProvider(fd_osd);
+  cDvbDevice::MakePrimaryDevice(On);
 }
 
 bool cDvbSdFfDevice::HasDecoder(void) const

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.29 2009/12/25 15:24:02 kls Exp $
+ * $Id: device.c 2.30 2010/01/01 15:03:36 kls Exp $
  */
 
 #include "device.h"
@@ -154,6 +154,10 @@ int cDevice::DeviceNumber(void) const
 
 void cDevice::MakePrimaryDevice(bool On)
 {
+  if (!On) {
+     DELETENULL(liveSubtitle);
+     DELETENULL(dvbSubtitleConverter);
+     }
 }
 
 bool cDevice::SetPrimaryDevice(int n)

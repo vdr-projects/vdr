@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.18 2009/12/25 15:09:18 kls Exp $
+ * $Id: device.h 2.19 2010/01/01 15:04:27 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -176,6 +176,8 @@ protected:
          ///< anything the device needs to set up when it becomes the primary
          ///< device (On = true) or to shut down when it no longer is the primary
          ///< device (On = false), it should do so in this function.
+         ///< A derived class must call the MakePrimaryDevice() function of its
+         ///< base class.
 public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }

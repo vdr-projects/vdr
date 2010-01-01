@@ -6242,3 +6242,8 @@ Video Disk Recorder Revision History
   capability.
 - Fixed handling the "CA PMT" generation (revised a change not mentioned in version
   1.7.9's changes, which caused a malfunction with Conax and Viaccess CAMs).
+- Fixed stopping subtitle display when switching the primary device (thanks to
+  Anssi Hannula).
+  IMPORTANT NOTE TO PLUGIN AUTHORS: a plugin that implements a derived cDevice
+  class that can replay video must now call the MakePrimaryDevice() function of
+  its base class.
