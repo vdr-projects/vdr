@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2009-12-31: Version 1.7.11
+2010-01-01: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6240,3 +6240,5 @@ Video Disk Recorder Revision History
   to view live or recorded video. If the plugin is not loaded, the card will
   be treated like a budget DVB card, and there will be no OSD or viewing
   capability.
+- Fixed handling the "CA PMT" generation (revised a change not mentioned in version
+  1.7.9's changes, which caused a malfunction with Conax and Viaccess CAMs).

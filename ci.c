@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.4 2009/12/05 15:51:12 kls Exp $
+ * $Id: ci.c 2.5 2010/01/01 13:38:02 kls Exp $
  */
 
 #include "ci.h"
@@ -610,10 +610,8 @@ cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber
   capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
   esInfoLengthPos = length;
   capmt[length++] = 0x00; // program_info_length H (at program level)
-  capmt[length++] = 0x01; // program_info_length L
-  capmt[length++] = cmdId;
-  if (caDescriptorsLength > 0)
-     AddCaDescriptors(caDescriptorsLength, caDescriptors);
+  capmt[length++] = 0x00; // program_info_length L
+  AddCaDescriptors(caDescriptorsLength, caDescriptors);
 }
 
 void cCiCaPmt::SetListManagement(uint8_t ListManagement)
@@ -632,10 +630,8 @@ void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
      capmt[length++] =  Pid       & 0xFF;
      esInfoLengthPos = length;
      capmt[length++] = 0x00; // ES_info_length H (at ES level)
-     capmt[length++] = 0x01; // ES_info_length L
-     capmt[length++] = cmdId;
-     if (caDescriptorsLength > 0)
-        AddCaDescriptors(caDescriptorsLength, caDescriptors);
+     capmt[length++] = 0x00; // ES_info_length L
+     AddCaDescriptors(caDescriptorsLength, caDescriptors);
      }
 }
 
@@ -643,6 +639,7 @@ void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 {
   if (esInfoLengthPos) {
      if (length + Length <= int(sizeof(capmt))) {
+        capmt[length++] = cmdId;
         memcpy(capmt + length, Data, Length);
         length += Length;
         int l = length - esInfoLengthPos - 2;
