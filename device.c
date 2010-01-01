@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.30 2010/01/01 15:03:36 kls Exp $
+ * $Id: device.c 2.31 2010/01/01 15:40:35 kls Exp $
  */
 
 #include "device.h"
@@ -405,7 +405,7 @@ void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
   PixelAspect = 1.0;
 }
 
-//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
+//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog("%s", b); }
 #define PRINTPIDS(s)
 
 bool cDevice::HasPid(int Pid) const

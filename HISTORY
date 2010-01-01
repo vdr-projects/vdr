@@ -6247,3 +6247,5 @@ Video Disk Recorder Revision History
   IMPORTANT NOTE TO PLUGIN AUTHORS: a plugin that implements a derived cDevice
   class that can replay video must now call the MakePrimaryDevice() function of
   its base class.
+- Fixed compiler warnings "format not a string literal and no format arguments"
+  in some syslog calls (thanks to Rolf Ahrenberg).

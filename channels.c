@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.10 2009/12/23 15:56:03 kls Exp $
+ * $Id: channels.c 2.11 2010/01/01 15:38:18 kls Exp $
  */
 
 #include "channels.h"
@@ -626,7 +626,7 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
   else
      q += sprintf(q, " none");
   if (Number())
-     dsyslog(buffer);
+     dsyslog("%s", buffer);
 }
 
 void cChannel::SetRefChannel(cChannel *RefChannel)

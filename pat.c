@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.6 2009/12/24 13:01:18 kls Exp $
+ * $Id: pat.c 2.7 2010/01/01 15:40:05 kls Exp $
  */
 
 #include "pat.h"
@@ -144,7 +144,7 @@ void cCaDescriptors::AddCaDescriptor(SI::CaDescriptor *d, int EsPid)
   q += sprintf(q, "CAM: %04X %5d %5d %04X %04X -", source, transponder, serviceId, d->getCaType(), EsPid);
   for (int i = 0; i < nca->Length(); i++)
       q += sprintf(q, " %02X", nca->Data()[i]);
-  dsyslog(buffer);
+  dsyslog("%s", buffer);
 #endif
 }
 
