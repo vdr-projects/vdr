@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.5 2010/01/01 13:38:02 kls Exp $
+ * $Id: ci.c 2.6 2010/01/02 10:39:50 kls Exp $
  */
 
 #include "ci.h"
@@ -638,13 +638,15 @@ void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
 void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 {
   if (esInfoLengthPos) {
-     if (length + Length <= int(sizeof(capmt))) {
-        capmt[length++] = cmdId;
-        memcpy(capmt + length, Data, Length);
-        length += Length;
-        int l = length - esInfoLengthPos - 2;
-        capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
-        capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+     if (length + Length < int(sizeof(capmt))) {
+        if (Length || cmdId == CPCI_QUERY) {
+           capmt[length++] = cmdId;
+           memcpy(capmt + length, Data, Length);
+           length += Length;
+           int l = length - esInfoLengthPos - 2;
+           capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
+           capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+           }
         }
      else
         esyslog("ERROR: buffer overflow in CA descriptor");
