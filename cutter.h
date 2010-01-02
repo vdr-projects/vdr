@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.h 1.1 2002/06/22 10:03:15 kls Exp $
+ * $Id: cutter.h 2.1 2010/01/02 12:09:54 kls Exp $
  */
 
 #ifndef __CUTTER_H
@@ -25,5 +25,7 @@ public:
   static bool Error(void);
   static bool Ended(void);
   };
+
+bool CutRecording(const char *FileName);
 
 #endif //__CUTTER_H

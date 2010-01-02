@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.3 2009/10/18 14:09:03 kls Exp $
+.\" $Id: vdr.1 2.4 2010/01/02 12:08:40 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -54,12 +54,28 @@ Run in daemon mode (implies \-\-no\-kbd).
 Use only the given DVB device (\fInum\fR = 0, 1, 2...).
 There may be several \fB\-D\fR options (by default all DVB devices will be used).
 .TP
+.BI \-\-edit= rec
+Edit the given recording.
+\fIrec\fR must be the full path name of an existing recording.
+The program will return immediately after editing the recording.
+.TP
 .BI \-E\  file ,\ \-\-epgfile= file
 Write the EPG data into the given \fIfile\fR
 (default is \fI/video/epg.data\fR).
 Use \fB\-E\-\fR to disable this.
 If \fIfile\fR is a directory, the file \fIepg.data\fR
 will be created in that directory.
+.TP
+.BI \-\-genindex= rec
+Generate the index file for the given recording.
+\fIrec\fR must be the full path name of an existing recording.
+The recording must be in TS format.
+If the recording already has an index file, it will be deleted
+before creating the new one.
+The program will return immediately after generating the index.
+Note that using this option while another instance of VDR is
+currently replaying the given recording, or if the recording
+has not been finished yet, may lead to unexpected results.
 .TP
 .BI \-g,\ \-\-grab= dir
 Write images from the SVDRP command GRAB into the

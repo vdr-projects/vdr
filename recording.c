@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.20 2009/12/06 12:55:36 kls Exp $
+ * $Id: recording.c 2.21 2010/01/02 13:46:05 kls Exp $
  */
 
 #include "recording.h"
@@ -674,7 +674,9 @@ cRecording::cRecording(const char *FileName)
   deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
-  fileName = strdup(FileName);
+  FileName = fileName = strdup(FileName);
+  if (*(fileName + strlen(fileName) - 1) == '/')
+     *(fileName + strlen(fileName) - 1) = 0;
   FileName += strlen(VideoDirectory) + 1;
   const char *p = strrchr(FileName, '/');
 
@@ -1749,6 +1751,33 @@ void cIndexFile::Delete(void)
         }
      unlink(fileName);
      }
+}
+
+bool GenerateIndex(const char *FileName) 
+{
+  if (DirectoryOk(FileName)) {
+     cRecording Recording(FileName);
+     if (Recording.Name()) {
+        if (!Recording.IsPesRecording()) {
+           cString IndexFileName = AddDirectory(FileName, INDEXFILESUFFIX);
+           unlink(IndexFileName);
+           cIndexFileGenerator *IndexFileGenerator = new cIndexFileGenerator(FileName);
+           while (IndexFileGenerator->Active())
+                 cCondWait::SleepMs(INDEXFILECHECKINTERVAL);
+           if (access(IndexFileName, R_OK) == 0)
+              return true;
+           else
+              fprintf(stderr, "cannot create '%s'\n", *IndexFileName);
+           }
+        else
+           fprintf(stderr, "'%s' is not a TS recording\n", FileName);
+        }
+     else
+        fprintf(stderr, "'%s' is not a recording\n", FileName);
+     }
+  else
+     fprintf(stderr, "'%s' is not a directory\n", FileName);
+  return false;
 }
 
 // --- cFileName -------------------------------------------------------------

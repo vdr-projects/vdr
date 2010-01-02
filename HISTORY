@@ -6249,3 +6249,6 @@ Video Disk Recorder Revision History
   its base class.
 - Fixed compiler warnings "format not a string literal and no format arguments"
   in some syslog calls (thanks to Rolf Ahrenberg).
+- The new command line options --edit and --genindex can be used to edit a
+  recording or generate its index without actually starting the entire VDR
+  (based on a patch from Helmut Auer).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.3 2009/04/19 10:56:33 kls Exp $
+ * $Id: cutter.c 2.4 2010/01/02 13:08:08 kls Exp $
  */
 
 #include "cutter.h"
@@ -273,4 +273,32 @@ bool cCutter::Ended(void)
   bool result = ended;
   ended = false;
   return result;
+}
+
+#define CUTTINGCHECKINTERVAL 500 // ms between checks for the active cutting process
+
+bool CutRecording(const char *FileName)
+{
+  if (DirectoryOk(FileName)) {
+     cRecording Recording(FileName);
+     if (Recording.Name()) {
+        cMarks Marks;
+        if (Marks.Load(FileName, Recording.FramesPerSecond(), Recording.IsPesRecording()) && Marks.Count()) {
+           if (cCutter::Start(FileName)) {
+              while (cCutter::Active())
+                    cCondWait::SleepMs(CUTTINGCHECKINTERVAL);
+              return true;
+              }
+           else
+              fprintf(stderr, "can't start editing process\n");
+           }
+        else
+           fprintf(stderr, "'%s' has no editing marks\n", FileName);
+        }
+     else
+        fprintf(stderr, "'%s' is not a recording\n", FileName);
+     }
+  else
+     fprintf(stderr, "'%s' is not a directory\n", FileName);
+  return false;
 }

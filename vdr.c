@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.13 2009/12/06 12:20:43 kls Exp $
+ * $Id: vdr.c 2.14 2010/01/02 11:52:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -220,7 +220,9 @@ int main(int argc, char *argv[])
       { "config",   required_argument, NULL, 'c' },
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
+      { "edit",     required_argument, NULL, 'e' | 0x100 },
       { "epgfile",  required_argument, NULL, 'E' },
+      { "genindex", required_argument, NULL, 'g' | 0x100 },
       { "grab",     required_argument, NULL, 'g' },
       { "help",     no_argument,       NULL, 'h' },
       { "instance", required_argument, NULL, 'i' },
@@ -246,7 +248,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hi:l:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:e:E:g:hi:l:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
                     break;
@@ -263,8 +265,12 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
                     return 2;
                     break;
+          case 'e' | 0x100:
+                    return CutRecording(optarg) ? 0 : 2;
           case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
                     break;
+          case 'g' | 0x100:
+                    return GenerateIndex(optarg) ? 0 : 2;
           case 'g': cSVDRP::SetGrabImageDir(*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
@@ -406,11 +412,13 @@ int main(int argc, char *argv[])
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
+               "            --edit=REC     cut recording REC and exit\n"
                "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
                "                           '%s' in the video directory)\n"
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
+               "            --genindex=REC generate index for recording REC and exit\n"
                "  -g DIR,   --grab=DIR     write images from the SVDRP command GRAB into the\n"
                "                           given DIR; DIR must be the full path name of an\n"
                "                           existing directory, without any \"..\", double '/'\n"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.11 2009/12/06 12:46:31 kls Exp $
+ * $Id: recording.h 2.12 2010/01/02 12:10:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -284,5 +284,7 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // specific representation (depending on ToFileSystem). The given string will
       // be modified and may be reallocated if more space is needed. The return
       // value points to the resulting string, which may be different from s.
+
+bool GenerateIndex(const char *FileName);
 
 #endif //__RECORDING_H
