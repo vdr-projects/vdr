@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2010-01-01: Version 1.7.11
+2010-01-02: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6252,3 +6252,5 @@ Video Disk Recorder Revision History
 - The new command line options --edit and --genindex can be used to edit a
   recording or generate its index without actually starting the entire VDR
   (based on a patch from Helmut Auer).
+- Improved the description of the transponder parameters in vdr.5 (thanks to
+  Winfried Köhler).
