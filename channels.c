@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.11 2010/01/01 15:38:18 kls Exp $
+ * $Id: channels.c 2.12 2010/01/02 17:38:40 kls Exp $
  */
 
 #include "channels.h"
@@ -809,7 +809,7 @@ bool cChannel::Parse(const char *s)
            tpid = 0;
            }
         vpid = ppid = 0;
-        vtype = 2; // default is MPEG-2
+        vtype = 0;
         apids[0] = 0;
         dpids[0] = 0;
         ok = false;
@@ -831,6 +831,8 @@ bool cChannel::Parse(const char *s)
               return false;
            if (!ppid)
               ppid = vpid;
+           if (vpid && !vtype)
+              vtype = 2; // default is MPEG-2
 
            char *dpidbuf = strchr(apidbuf, ';');
            if (dpidbuf)
