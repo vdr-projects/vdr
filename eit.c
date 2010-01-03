@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.9 2010/01/03 13:39:48 kls Exp $
+ * $Id: eit.c 2.10 2010/01/03 15:35:21 kls Exp $
  */
 
 #include "eit.h"
@@ -351,6 +351,8 @@ cTDT::cTDT(const u_char *Data)
 
 // --- cEitFilter ------------------------------------------------------------
 
+time_t cEitFilter::disableUntil = 0;
+
 cEitFilter::cEitFilter(void)
 {
   Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
@@ -358,8 +360,19 @@ cEitFilter::cEitFilter(void)
      Set(0x14, 0x70);     // TDT
 }
 
+void cEitFilter::SetDisableUntil(time_t Time)
+{
+  disableUntil = Time;
+}
+
 void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
+  if (disableUntil) {
+     if (time(NULL) > disableUntil)
+        disableUntil = 0;
+     else
+        return;
+     }
   switch (Pid) {
     case 0x12: {
          if (Tid >= 0x4E && Tid <= 0x6F) {

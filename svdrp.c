@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.6 2009/10/18 14:08:58 kls Exp $
+ * $Id: svdrp.c 2.7 2010/01/03 15:41:26 kls Exp $
  */
 
 #include "svdrp.h"
@@ -179,6 +179,8 @@ bool cPUTEhandler::Process(const char *s)
 // --- cSVDRP ----------------------------------------------------------------
 
 #define MAXHELPTOPIC 10
+#define EITDISABLETIME 10 // seconds until EIT processing is enabled again after a CLRE command
+                          // adjust the help for CLRE accordingly if changing this!
 
 const char *HelpPages[] = {
   "CHAN [ + | - | <number> | <name> | <id> ]\n"
@@ -187,7 +189,10 @@ const char *HelpPages[] = {
   "    it returns the current channel number and name.",
   "CLRE [ <number> | <name> | <id> ]\n"
   "    Clear the EPG list of the given channel number, name or id.\n"
-  "    Without option it clears the entire EPG list.",
+  "    Without option it clears the entire EPG list.\n"
+  "    After a CLRE command, no further EPG processing is done for 10\n"
+  "    seconds, so that data sent with subsequent PUTE commands doesn't\n"
+  "    interfere with data from the broadcasters.",
   "DELC <number>\n"
   "    Delete channel.",
   "DELR <number>\n"
@@ -574,6 +579,7 @@ void cSVDRP::CmdCLRE(const char *Option)
                }
            if (Schedule) {
               Schedule->Cleanup(INT_MAX);
+              cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
               Reply(250, "EPG data of channel \"%s\" cleared", Option);
               }
            else {
@@ -589,6 +595,7 @@ void cSVDRP::CmdCLRE(const char *Option)
      }
   else {
      cSchedules::ClearAll();
+     cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
      Reply(250, "EPG data cleared");
      }
 }

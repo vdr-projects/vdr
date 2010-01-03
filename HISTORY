@@ -6267,3 +6267,6 @@ Video Disk Recorder Revision History
   IMPORTANT NOTE: if VDR doesn't display a parental rating, this does not
   necessarily mean that the given programme is suitable for all audiences!
 - Rearranged cEvent members to minimize memory waste.
+- After a CLRE command, no further EPG processing is now done for 10 seconds,
+  so that data sent with subsequent PUTE commands doesn't interfere with data
+  from the broadcasters (suggested by Helmut Auer).
