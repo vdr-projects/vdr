@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.27 2008/02/23 10:31:58 kls Exp $
+ * $Id: skinclassic.c 2.1 2010/01/03 11:28:24 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -353,6 +353,14 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
      ts.Set(osd, x1, y, x2 - x1, y3 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
+  for (int i = 0; Event->Contents(i); i++) {
+      const char *s = Event->ContentToString(Event->Contents(i));
+      if (!isempty(s)) {
+         const cFont *font = cFont::GetFont(fontSml);
+         ts.Set(osd, x1, y, x2 - x1, y3 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
+         y += ts.Height();
+         }
+      }
   y += font->Height();
   if (!isempty(Event->Description())) {
      textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Event->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));

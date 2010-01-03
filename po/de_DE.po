@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-11-22 12:28+0100\n"
+"POT-Creation-Date: 2010-01-03 12:41+0100\n"
 "PO-Revision-Date: 2007-11-25 15:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German\n"
@@ -38,6 +38,243 @@ msgstr "Transfer-Mode kann nicht gestartet werden!"
 
 msgid "Starting EPG scan"
 msgstr "Aktualisiere EPG-Daten"
+
+msgid "Content$Movie/Drama"
+msgstr "Film/Drama"
+
+msgid "Content$Detective/Thriller"
+msgstr "Detektiv/Thriller"
+
+msgid "Content$Adventure/Western/War"
+msgstr "Abenteuer/Western/Krieg"
+
+msgid "Content$Science Fiction/Fantasy/Horror"
+msgstr "Science-Fiction/Fantasy/Horror"
+
+msgid "Content$Comedy"
+msgstr "Komödie"
+
+msgid "Content$Soap/Melodrama/Folkloric"
+msgstr "Seife/Melodram/Folklore"
+
+msgid "Content$Romance"
+msgstr "Romanze"
+
+msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Ernst/Klassik/Religion/Historischer Film/Drama"
+
+msgid "Content$Adult Movie/Drama"
+msgstr "Erwachsenen-Film/Drama"
+
+msgid "Content$News/Current Affairs"
+msgstr "Aktuelle Angelegenheiten"
+
+msgid "Content$News/Weather Report"
+msgstr "Wetterbericht"
+
+msgid "Content$News Magazine"
+msgstr "Nachrichtenmagazin"
+
+msgid "Content$Documentary"
+msgstr "Dokumentation"
+
+msgid "Content$Discussion/Inverview/Debate"
+msgstr "Diskussion/Interview/Debatte"
+
+msgid "Content$Show/Game Show"
+msgstr "Show/Spielshow"
+
+msgid "Content$Game Show/Quiz/Contest"
+msgstr "Spielshow/Quiz/Wettbewerb"
+
+msgid "Content$Variety Show"
+msgstr "Variete-Show"
+
+msgid "Content$Talk Show"
+msgstr "Talkshow"
+
+msgid "Content$Sports"
+msgstr "Sport"
+
+msgid "Content$Special Event"
+msgstr "Besonderes Ereignis"
+
+msgid "Content$Sport Magazine"
+msgstr "Sportmagazin"
+
+msgid "Content$Football/Soccer"
+msgstr "Football/Fußball"
+
+msgid "Content$Tennis/Squash"
+msgstr "Tennis/Squash"
+
+msgid "Content$Team Sports"
+msgstr "Mannschaftssport"
+
+msgid "Content$Athletics"
+msgstr "Athletik"
+
+msgid "Content$Motor Sport"
+msgstr "Motorsport"
+
+msgid "Content$Water Sport"
+msgstr "Wassersport"
+
+msgid "Content$Winter Sports"
+msgstr "Wintersport"
+
+msgid "Content$Equestrian"
+msgstr "Reitsport"
+
+msgid "Content$Martial Sports"
+msgstr "Kampfsport"
+
+msgid "Content$Children's/Youth Programme"
+msgstr "Kinder/Jugendprogramm"
+
+msgid "Content$Pre-school Children's Programme"
+msgstr "Programm für Vorschulkinder"
+
+msgid "Content$Entertainment Programme for 6 to 14"
+msgstr "Unterhaltungsprogramm für 6 bis 14"
+
+msgid "Content$Entertainment Programme for 10 to 16"
+msgstr "Unterhaltungsprogramm für 10 bis 16"
+
+msgid "Content$Informational/Educational/School Programme"
+msgstr "Informations/Lehr/Schul-Programm"
+
+msgid "Content$Cartoons/Puppets"
+msgstr "Zeichentrick/Puppen"
+
+msgid "Content$Music/Ballet/Dance"
+msgstr "Musik/Ballett/Tanz"
+
+msgid "Content$Rock/Pop"
+msgstr "Rock/Pop"
+
+msgid "Content$Serious/Classical Music"
+msgstr "Ernste/Klassische Musik"
+
+msgid "Content$Folk/Tradional Music"
+msgstr "Volks/Traditionelle Musik"
+
+msgid "Content$Jazz"
+msgstr "Jazz"
+
+msgid "Content$Musical/Opera"
+msgstr "Musical/Oper"
+
+msgid "Content$Ballet"
+msgstr "Ballett"
+
+msgid "Content$Arts/Culture"
+msgstr "Kunst/Kultur"
+
+msgid "Content$Performing Arts"
+msgstr "Darstellende Künste"
+
+msgid "Content$Fine Arts"
+msgstr "Bildende Künste"
+
+msgid "Content$Religion"
+msgstr "Religion"
+
+msgid "Content$Popular Culture/Traditional Arts"
+msgstr "Pop-Kultur/Traditionelle Künste"
+
+msgid "Content$Literature"
+msgstr "Literatur"
+
+msgid "Content$Film/Cinema"
+msgstr "Film/Kino"
+
+msgid "Content$Experimental Film/Video"
+msgstr "Experimentalfilm/Video"
+
+msgid "Content$Broadcasting/Press"
+msgstr "Rundfunk/Presse"
+
+msgid "Content$New Media"
+msgstr "Neue Medien"
+
+msgid "Content$Arts/Culture Magazine"
+msgstr "Kunst/Kulturmagazin"
+
+msgid "Content$Fashion"
+msgstr "Mode"
+
+msgid "Content$Social/Political/Economics"
+msgstr "Gesellschaft/Politik/Wirtschaft"
+
+msgid "Content$Magazine/Report/Documentary"
+msgstr "Magazin/Bericht/Dokumentation"
+
+msgid "Content$Economics/Social Advisory"
+msgstr "Wirtschafts/Gesellschaftsberatung"
+
+msgid "Content$Remarkable People"
+msgstr "Bemerkenswerte Leute"
+
+msgid "Content$Education/Science/Factual"
+msgstr "Ausbildung/Wissenschaft/Sachlich"
+
+msgid "Content$Nature/Animals/Environment"
+msgstr "Natur/Tiere/Umwelt"
+
+msgid "Content$Technology/Natural Sciences"
+msgstr "Technik/Naturwissenschaften"
+
+msgid "Content$Medicine/Physiology/Psychology"
+msgstr "Medizin/Physiologie/Psychologie"
+
+msgid "Content$Foreign Countries/Expeditions"
+msgstr "Ausland/Expeditionen"
+
+msgid "Content$Social/Spiritual Sciences"
+msgstr "Sozial/Geisteswissenschaften"
+
+msgid "Content$Further Education"
+msgstr "Weiterbildung"
+
+msgid "Content$Languages"
+msgstr "Sprachen"
+
+msgid "Content$Leisure/Hobbies"
+msgstr "Freizeit/Hobbies"
+
+msgid "Content$Tourism/Travel"
+msgstr "Tourismus/Reisen"
+
+msgid "Content$Handicraft"
+msgstr "Handwerk"
+
+msgid "Content$Motoring"
+msgstr "Autofahren"
+
+msgid "Content$Fitness & Health"
+msgstr "Fitness & Gesundheit"
+
+msgid "Content$Cooking"
+msgstr "Kochen"
+
+msgid "Content$Advertisement/Shopping"
+msgstr "Werbung/Einkaufen"
+
+msgid "Content$Gardening"
+msgstr "Gartenbau"
+
+msgid "Content$Original Language"
+msgstr "Originalsprache"
+
+msgid "Content$Black & White"
+msgstr "Schwarz-weiß"
+
+msgid "Content$Unpublished"
+msgstr "Unveröffentlicht"
+
+msgid "Content$Live Broadcast"
+msgstr "Live-Sendung"
 
 msgid "No title"
 msgstr "Kein Titel"

@@ -1087,6 +1087,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing handling DVB subtitles for PES recordings
  for fixing compiler warnings "format not a string literal and no format arguments"
  in some syslog calls
+ for a patch that was used to implement handling the "component descriptor" ("genre")
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

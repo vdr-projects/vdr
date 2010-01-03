@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.9 2010/01/02 14:50:29 kls Exp $
+.\" $Id: vdr.5 2.10 2010/01/03 11:23:16 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -695,6 +695,7 @@ l l.
 \fBT\fR@<title>
 \fBS\fR@<short text>
 \fBD\fR@<description>
+\fBG\fR@<genre> <genre>...
 \fBX\fR@<stream> <type> <language> <descr>
 \fBV\fR@<vps time>
 \fBe\fR@
@@ -707,6 +708,7 @@ of one or more \fBC\fR...\fBc\fR (Channel) entries. Inside these any number of
 \fBE\fR...\fBe\fR (Event) entries are allowed.
 All other tags are optional (although every event
 should at least have a \fBT\fR entry).
+
 There may be several \fBX\fR tags, depending on the number of tracks (video, audio etc.)
 the event provides.
 
@@ -723,6 +725,7 @@ l l.
 <title>        @is the title of the event
 <short text>   @is the short text of the event (typically the name of the episode etc.)
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
+<genre>        @is a two digit hex code, as defined in  ETSI EN 300 468, table 28 (up to 4 genre codes are supported)
 <stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles, 4 = AC3)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')

@@ -79,3 +79,7 @@ VDR Plugin 'skincurses' Revision History
 2008-03-14: Version 0.1.7
 
 - Added Russian translations (thanks to Alexander Gross).
+
+2010-01-03: Version 0.1.8
+
+- Displaying "genre" in event descriptions.

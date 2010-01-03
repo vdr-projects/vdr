@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.7 2009/12/05 16:13:22 kls Exp $
+ * $Id: eit.c 2.8 2010/01/03 11:18:56 kls Exp $
  */
 
 #include "eit.h"
@@ -153,7 +153,19 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                     }
                  }
                  break;
-            case SI::ContentDescriptorTag:
+            case SI::ContentDescriptorTag: {
+                 SI::ContentDescriptor *cd = (SI::ContentDescriptor *)d;
+                 SI::ContentDescriptor::Nibble Nibble;
+                 int NumContents = 0;
+                 uchar Contents[MAXEVCONTENTS] = { 0 };
+                 for (SI::Loop::Iterator it3; cd->nibbleLoop.getNext(Nibble, it3); ) {
+                     if (NumContents < MAXEVCONTENTS) {
+                        Contents[NumContents] = ((Nibble.getContentNibbleLevel1() & 0xF) << 4) | (Nibble.getContentNibbleLevel2() & 0xF);
+                        NumContents++;
+                        }
+                     }
+                 pEvent->SetContents(Contents);
+                 }
                  break;
             case SI::ParentalRatingDescriptorTag:
                  break;
