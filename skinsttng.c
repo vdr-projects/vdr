@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.2 2010/01/03 10:46:09 kls Exp $
+ * $Id: skinsttng.c 2.3 2010/01/03 14:08:11 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -593,6 +593,15 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
      osd->DrawEllipse  (x6, y, x7 - 1, yb - 1, frameColor, 5);
      }
   y += ts.Height();
+  if (Event->ParentalRating()) {
+     cString buffer = cString::sprintf(" %s ", *Event->GetParentalRatingString());
+     const cFont *font = cFont::GetFont(fontSml);
+     int w = font->Width(buffer);
+     osd->DrawText(x4 - w, y, buffer, Theme.Color(clrMenuEventVps), frameColor, font, w);
+     int yb = y + font->Height();
+     osd->DrawRectangle(x5, y, x6 - 1, yb - 1, frameColor);
+     osd->DrawEllipse  (x6, y, x7 - 1, yb - 1, frameColor, 5);
+     }
   y += font->Height();
   ts.Set(osd, xl, y, x4 - xl, y4 - y, Event->Title(), font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
   y += ts.Height();

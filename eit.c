@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.8 2010/01/03 11:18:56 kls Exp $
+ * $Id: eit.c 2.9 2010/01/03 13:39:48 kls Exp $
  */
 
 #include "eit.h"
@@ -167,7 +167,26 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  pEvent->SetContents(Contents);
                  }
                  break;
-            case SI::ParentalRatingDescriptorTag:
+            case SI::ParentalRatingDescriptorTag: {
+                 int LanguagePreferenceRating = -1;
+                 SI::ParentalRatingDescriptor *prd = (SI::ParentalRatingDescriptor *)d;
+                 SI::ParentalRatingDescriptor::Rating Rating;
+                 for (SI::Loop::Iterator it3; prd->ratingLoop.getNext(Rating, it3); ) {
+                     if (I18nIsPreferredLanguage(Setup.EPGLanguages, Rating.languageCode, LanguagePreferenceRating)) {
+                        int ParentalRating = (Rating.getRating() & 0xFF);
+                        switch (ParentalRating) {
+                          // values defined by the DVB standard (minimum age = rating + 3 years):
+                          case 0x01 ... 0x0F: ParentalRating += 3; break;
+                          // values defined by broadcaster CSAT (now why didn't they just use 0x07, 0x09 and 0x0D?):
+                          case 0x11:          ParentalRating = 10; break;
+                          case 0x12:          ParentalRating = 12; break;
+                          case 0x13:          ParentalRating = 16; break;
+                          default:            ParentalRating = 0;
+                          }
+                        pEvent->SetParentalRating(ParentalRating);
+                        }
+                     }
+                 }
                  break;
             case SI::PDCDescriptorTag: {
                  SI::PDCDescriptor *pd = (SI::PDCDescriptor *)d;

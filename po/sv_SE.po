@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 12:41+0100\n"
+"POT-Creation-Date: 2010-01-03 15:10+0100\n"
 "PO-Revision-Date: 2008-03-12 18:25+0100\n"
 "Last-Translator: Magnus Andersson <svankan@bahnhof.se>\n"
 "Language-Team: Swedish\n"
@@ -277,6 +277,10 @@ msgid "Content$Unpublished"
 msgstr ""
 
 msgid "Content$Live Broadcast"
+msgstr ""
+
+#, c-format
+msgid "ParentalRating$from %d"
 msgstr ""
 
 msgid "No title"

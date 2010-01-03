@@ -6260,3 +6260,9 @@ Video Disk Recorder Revision History
   Ahrenberg). The 'classic', 'sttng' and 'curses' skins display the textual
   representation of the content descriptors as "genre". The epg.data file stores
   the genre using the tag character 'G'.
+- Implemented handling the "Parental Rating Descriptor" (based on a patch from Rolf
+  Ahrenberg). The 'classic', 'sttng' and 'curses' skins display the parental
+  rating (if given) in their event displays. The epg.data file stores
+  the parental rating using the tag character 'R'.
+  IMPORTANT NOTE: if VDR doesn't display a parental rating, this does not
+  necessarily mean that the given programme is suitable for all audiences!

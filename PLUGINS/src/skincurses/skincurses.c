@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.1 2010/01/03 11:05:44 kls Exp $
+ * $Id: skincurses.c 2.2 2010/01/03 14:08:04 kls Exp $
  */
 
 #include <ncurses.h>
@@ -402,6 +402,10 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
      osd->DrawText(ScOsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
      }
   y += ts.Height();
+  if (Event->ParentalRating()) {
+     cString buffer = cString::sprintf(" %s ", *Event->GetParentalRatingString());
+     osd->DrawText(ScOsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
+     }
   y += 1;
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Event->Title(), &Font, clrCyan, clrBackground);
   y += ts.Height();

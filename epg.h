@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.1 2010/01/03 11:17:20 kls Exp $
+ * $Id: epg.h 2.2 2010/01/03 14:01:55 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -77,6 +77,7 @@ private:
   char *description;       // Description of this event
   cComponents *components; // The stream components of this event
   uchar contents[MAXEVCONTENTS]; // Contents of this event
+  int parentalRating;      // Parental rating of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
@@ -96,6 +97,7 @@ public:
   const char *Description(void) const { return description; }
   const cComponents *Components(void) const { return components; }
   uchar Contents(int i = 0) const { return (0 <= i && i < MAXEVCONTENTS) ? contents[i] : 0; }
+  int ParentalRating(void) const { return parentalRating; }
   time_t StartTime(void) const { return startTime; }
   time_t EndTime(void) const { return startTime + duration; }
   int Duration(void) const { return duration; }
@@ -105,6 +107,7 @@ public:
   bool HasTimer(void) const;
   bool IsRunning(bool OrAboutToStart = false) const;
   static const char *ContentToString(uchar Content);
+  cString GetParentalRatingString(void) const;
   cString GetDateString(void) const;
   cString GetTimeString(void) const;
   cString GetEndTimeString(void) const;
@@ -118,6 +121,7 @@ public:
   void SetDescription(const char *Description);
   void SetComponents(cComponents *Components); // Will take ownership of Components!
   void SetContents(uchar *Contents);
+  void SetParentalRating(int ParentalRating);
   void SetStartTime(time_t StartTime);
   void SetDuration(int Duration);
   void SetVps(time_t Vps);

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.3 2010/01/03 11:28:38 kls Exp $
+ * $Id: epg.c 2.4 2010/01/03 14:10:20 kls Exp $
  */
 
 #include "epg.h"
@@ -113,6 +113,7 @@ cEvent::cEvent(tEventID EventID)
   description = NULL;
   components = NULL;
   memset(contents, 0, sizeof(contents));
+  parentalRating = 0;
   startTime = 0;
   duration = 0;
   vps = 0;
@@ -191,6 +192,11 @@ void cEvent::SetContents(uchar *Contents)
 {
   for (int i = 0; i < MAXEVCONTENTS; i++)
       contents[i] = Contents[i];
+}
+
+void cEvent::SetParentalRating(int ParentalRating)
+{
+  parentalRating = ParentalRating;
 }
 
 void cEvent::SetStartTime(time_t StartTime)
@@ -383,6 +389,13 @@ const char *cEvent::ContentToString(uchar Content)
   return "";
 }
 
+cString cEvent::GetParentalRatingString(void) const
+{
+  if (parentalRating)
+     return cString::sprintf(tr("ParentalRating$from %d"), parentalRating);
+  return NULL;
+}
+
 cString cEvent::GetDateString(void) const
 {
   return DateString(startTime);
@@ -425,6 +438,8 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
             fprintf(f, " %02X", Contents(i));
         fprintf(f, "\n");
         }
+     if (parentalRating)
+        fprintf(f, "%sR %d\n", Prefix, parentalRating);
      if (components) {
         for (int i = 0; i < components->NumComponents(); i++) {
             tComponent *p = components->Component(i);
@@ -464,6 +479,8 @@ bool cEvent::Parse(char *s)
                        break;
                     }
               }
+              break;
+    case 'R': SetParentalRating(atoi(t));
               break;
     case 'X': if (!components)
                  components = new cComponents;

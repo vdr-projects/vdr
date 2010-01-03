@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 12:41+0100\n"
+"POT-Creation-Date: 2010-01-03 15:10+0100\n"
 "PO-Revision-Date: 2007-11-25 15:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German\n"
@@ -275,6 +275,10 @@ msgstr "Unveröffentlicht"
 
 msgid "Content$Live Broadcast"
 msgstr "Live-Sendung"
+
+#, c-format
+msgid "ParentalRating$from %d"
+msgstr "ab %d"
 
 msgid "No title"
 msgstr "Kein Titel"
