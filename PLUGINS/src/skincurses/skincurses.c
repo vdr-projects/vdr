@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.2 2010/01/03 14:08:04 kls Exp $
+ * $Id: skincurses.c 2.3 2010/01/03 14:59:16 kls Exp $
  */
 
 #include <ncurses.h>
@@ -438,6 +438,10 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   y += ts.Height();
+  if (Info->GetEvent()->ParentalRating()) {
+     cString buffer = cString::sprintf(" %s ", *Info->GetEvent()->GetParentalRatingString());
+     osd->DrawText(ScOsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
+     }
   y += 1;
   const char *Title = Info->Title();
   if (isempty(Title))
@@ -448,6 +452,13 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
      ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, Info->ShortText(), &Font, clrYellow, clrBackground);
      y += ts.Height();
      }
+  for (int i = 0; Info->GetEvent()->Contents(i); i++) {
+      const char *s = Info->GetEvent()->ContentToString(Info->GetEvent()->Contents(i));
+      if (!isempty(s)) {
+         ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, s, &Font, clrYellow, clrBackground);
+         y += 1;
+         }
+      }
   y += 1;
   if (!isempty(Info->Description())) {
      textScroller.Set(osd, 0, y, ScOsdWidth - 2, ScOsdHeight - y - 2, Info->Description(), &Font, clrCyan, clrBackground);
