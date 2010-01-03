@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.2 2010/01/03 14:01:55 kls Exp $
+ * $Id: epg.h 2.3 2010/01/03 14:39:14 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -67,17 +67,18 @@ typedef u_int32_t tEventID;
 class cEvent : public cListObject {
   friend class cSchedule;
 private:
+  // The sequence of these parameters is optimized for minimal memory waste!
   cSchedule *schedule;     // The Schedule this event belongs to
   tEventID eventID;        // Event ID of this event
   uchar tableID;           // Table ID this event came from
   uchar version;           // Version number of section this event came from
-  int runningStatus;       // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
+  uchar runningStatus;     // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
+  uchar parentalRating;    // Parental rating of this event
   char *title;             // Title of this event
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
   cComponents *components; // The stream components of this event
   uchar contents[MAXEVCONTENTS]; // Contents of this event
-  int parentalRating;      // Parental rating of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
