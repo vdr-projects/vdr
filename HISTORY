@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2010-01-03: Version 1.7.11
+2010-01-04: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6270,3 +6270,6 @@ Video Disk Recorder Revision History
 - After a CLRE command, no further EPG processing is now done for 10 seconds,
   so that data sent with subsequent PUTE commands doesn't interfere with data
   from the broadcasters (suggested by Helmut Auer).
+- Added support for DVB cards with multiple fontends. Note that this only
+  works for DVB cards where each frontend can be used independently of all
+  the others on the same adapter.

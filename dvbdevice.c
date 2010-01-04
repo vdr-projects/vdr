@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.23 2009/12/31 15:38:18 kls Exp $
+ * $Id: dvbdevice.c 2.24 2010/01/04 14:06:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -31,7 +31,7 @@ class cDvbTuner : public cThread {
 private:
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
   int fd_frontend;
-  int cardIndex;
+  int adapter, frontend;
   int tuneTimeout;
   int lockTimeout;
   time_t lastTimeoutReport;
@@ -46,17 +46,18 @@ private:
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(int Fd_Frontend, int CardIndex, fe_delivery_system FrontendType);
+  cDvbTuner(int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
   };
 
-cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_delivery_system FrontendType)
+cDvbTuner::cDvbTuner(int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
 {
   fd_frontend = Fd_Frontend;
-  cardIndex = CardIndex;
+  adapter = Adapter;
+  frontend = Frontend;
   frontendType = FrontendType;
   tuneTimeout = 0;
   lockTimeout = 0;
@@ -65,7 +66,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_delivery_system Frontend
   tunerStatus = tsIdle;
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2)
      CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
-  SetDescription("tuner on device %d", cardIndex + 1);
+  SetDescription("tuner on frontend %d/%d", adapter, frontend);
   Start();
 }
 
@@ -154,7 +155,7 @@ bool cDvbTuner::SetFrontend(void)
 #define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
                        Frontend[CmdSeq.num].u.data = (d);\
                        if (CmdSeq.num++ > MAXFRONTENDCMDS) {\
-                          esyslog("ERROR: too many tuning commands on frontend %d", cardIndex);\
+                          esyslog("ERROR: too many tuning commands on frontend %d/%d", adapter, frontend);\
                           return false;\
                           }\
                      }
@@ -165,7 +166,7 @@ bool cDvbTuner::SetFrontend(void)
   CmdSeq.props = Frontend;
   SETCMD(DTV_CLEAR, 0);
   if (ioctl(fd_frontend, FE_SET_PROPERTY, &CmdSeq) < 0) {
-     esyslog("ERROR: frontend %d: %m", cardIndex);
+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
      return false;
      }
   CmdSeq.num = 0;
@@ -239,7 +240,7 @@ bool cDvbTuner::SetFrontend(void)
            SETCMD(DTV_ROLLOFF, channel.RollOff());
            }
         else {
-           esyslog("ERROR: frontend %d doesn't provide DVB-S2", cardIndex);
+           esyslog("ERROR: frontend %d/%d doesn't provide DVB-S2", adapter, frontend);
            return false;
            }
         }
@@ -285,7 +286,7 @@ bool cDvbTuner::SetFrontend(void)
      }
   SETCMD(DTV_TUNE, 0);
   if (ioctl(fd_frontend, FE_SET_PROPERTY, &CmdSeq) < 0) {
-     esyslog("ERROR: frontend %d: %m", cardIndex);
+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
      return false;
      }
   return true;
@@ -313,7 +314,7 @@ void cDvbTuner::Action(void)
                   tunerStatus = tsSet;
                   diseqcCommands = NULL;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
-                     isyslog("frontend %d timed out while tuning to channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                     isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
                   continue;
@@ -322,13 +323,13 @@ void cDvbTuner::Action(void)
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
                   diseqcCommands = NULL;
-                  isyslog("frontend %d was reinitialized", cardIndex);
+                  isyslog("frontend %d/%d was reinitialized", adapter, frontend);
                   lastTimeoutReport = 0;
                   continue;
                   }
                else if (Status & FE_HAS_LOCK) {
                   if (LostLock) {
-                     isyslog("frontend %d regained lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                     isyslog("frontend %d/%d regained lock on channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      LostLock = false;
                      }
                   tunerStatus = tsLocked;
@@ -337,7 +338,7 @@ void cDvbTuner::Action(void)
                   }
                else if (tunerStatus == tsLocked) {
                   LostLock = true;
-                  isyslog("frontend %d lost lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                  isyslog("frontend %d/%d lost lock on channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                   tunerStatus = tsTuned;
                   Timer.Set(lockTimeout);
                   lastTimeoutReport = 0;
@@ -376,8 +377,10 @@ const char *DeliverySystems[] = {
   NULL
   };
 
-cDvbDevice::cDvbDevice(int n)
+cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 {
+  adapter = Adapter;
+  frontend = Frontend;
   ciAdapter = NULL;
   dvbTuner = NULL;
   frontendType = SYS_UNDEFINED;
@@ -385,11 +388,11 @@ cDvbDevice::cDvbDevice(int n)
 
   // Devices that are present on all card types:
 
-  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK);
+  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, adapter, frontend, O_RDWR | O_NONBLOCK);
 
   // Common Interface:
 
-  fd_ca       = DvbOpen(DEV_DVB_CA,     n, O_RDWR);
+  fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
   if (fd_ca >= 0)
      ciAdapter = cDvbCiAdapter::CreateCiAdapter(this, fd_ca);
 
@@ -406,7 +409,7 @@ cDvbDevice::cDvbDevice(int n)
           case FE_OFDM: frontendType = SYS_DVBT; break;
           case FE_QAM:  frontendType = SYS_DVBC_ANNEX_AC; break;
           case FE_ATSC: frontendType = SYS_ATSC; break;
-          default: esyslog("ERROR: unknown frontend type %d on device %d", frontendInfo.type, CardIndex() + 1);
+          default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
           }
         }
      else
@@ -415,12 +418,12 @@ cDvbDevice::cDvbDevice(int n)
         numProvidedSystems++;
         if (frontendType == SYS_DVBS2)
            numProvidedSystems++;
-        isyslog("device %d provides %s (\"%s\")", CardIndex() + 1, DeliverySystems[frontendType], frontendInfo.name);
-        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType);
+        isyslog("frontend %d/%d provides %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], frontendInfo.name);
+        dvbTuner = new cDvbTuner(fd_frontend, adapter, frontend, frontendType);
         }
      }
   else
-     esyslog("ERROR: can't open DVB device %d", n);
+     esyslog("ERROR: can't open DVB device %d/%d", adapter, frontend);
 
   StartSectionHandler();
 }
@@ -434,34 +437,27 @@ cDvbDevice::~cDvbDevice()
   // caused segfaults. Besides, the program is about to terminate anyway...
 }
 
-cString cDvbDevice::DvbName(const char *Name, int n)
+cString cDvbDevice::DvbName(const char *Name, int Adapter, int Frontend)
 {
-  return cString::sprintf("%s%d/%s%d", DEV_DVB_ADAPTER, n, Name, 0);
+  return cString::sprintf("%s%d/%s%d", DEV_DVB_ADAPTER, Adapter, Name, Frontend);
 }
 
-int cDvbDevice::DvbOpen(const char *Name, int n, int Mode, bool ReportError)
+int cDvbDevice::DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError)
 {
-  cString FileName = DvbName(Name, n);
+  cString FileName = DvbName(Name, Adapter, Frontend);
   int fd = open(FileName, Mode);
   if (fd < 0 && ReportError)
      LOG_ERROR_STR(*FileName);
   return fd;
 }
 
-bool cDvbDevice::Probe(int Adapter)
+bool cDvbDevice::Exists(int Adapter, int Frontend)
 {
-  cString FileName = DvbName(DEV_DVB_FRONTEND, Adapter);
+  cString FileName = DvbName(DEV_DVB_FRONTEND, Adapter, Frontend);
   if (access(FileName, F_OK) == 0) {
-     dsyslog("probing %s", *FileName);
      int f = open(FileName, O_RDONLY);
      if (f >= 0) {
         close(f);
-        for (cDvbDeviceProbe *dp = DvbDeviceProbes.First(); dp; dp = DvbDeviceProbes.Next(dp)) {
-            if (dp->Probe(Adapter))
-               return true; // a plugin has created the actual device
-            }
-        dsyslog("creating cDvbDevice");
-        new cDvbDevice(Adapter); // it's a "budget" device
         return true;
         }
      else if (errno != ENODEV && errno != EINVAL)
@@ -472,26 +468,49 @@ bool cDvbDevice::Probe(int Adapter)
   return false;
 }
 
+bool cDvbDevice::Probe(int Adapter, int Frontend)
+{
+  cString FileName = DvbName(DEV_DVB_FRONTEND, Adapter, Frontend);
+  dsyslog("probing %s", *FileName);
+  for (cDvbDeviceProbe *dp = DvbDeviceProbes.First(); dp; dp = DvbDeviceProbes.Next(dp)) {
+      if (dp->Probe(Adapter, Frontend))
+         return true; // a plugin has created the actual device
+      }
+  dsyslog("creating cDvbDevice");
+  new cDvbDevice(Adapter, Frontend); // it's a "budget" device
+  return true;
+}
+
 bool cDvbDevice::Initialize(void)
 {
-  int found = 0;
-  int i;
-  for (i = 0; i < MAXDVBDEVICES; i++) {
-      if (UseDevice(NextCardIndex())) {
-         if (Probe(i))
-            found++;
-         else
-            break;
-         }
-      else
-         NextCardIndex(1); // skips this one
+  int Checked = 0;
+  int Found = 0;
+  for (int Adapter = 0; ; Adapter++) {
+      for (int Frontend = 0; ; Frontend++) {
+          if (Exists(Adapter, Frontend)) {
+             if (Checked++ < MAXDVBDEVICES) {
+                if (UseDevice(NextCardIndex())) {
+                   if (Probe(Adapter, Frontend))
+                      Found++;
+                   }
+                else
+                   NextCardIndex(1); // skips this one
+                }
+             }
+          else if (Frontend == 0)
+             goto LastAdapter;
+          else
+             goto NextAdapter;
+          }
+      NextAdapter: ;
       }
-  NextCardIndex(MAXDVBDEVICES - i); // skips the rest
-  if (found > 0)
-     isyslog("found %d video device%s", found, found > 1 ? "s" : "");
+LastAdapter:
+  NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
+  if (Found > 0)
+     isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
   else
      isyslog("no DVB device found");
-  return found > 0;
+  return Found > 0;
 }
 
 bool cDvbDevice::Ready(void)
@@ -513,7 +532,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
      memset(&pesFilterParams, 0, sizeof(pesFilterParams));
      if (On) {
         if (Handle->handle < 0) {
-           Handle->handle = DvbOpen(DEV_DVB_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
+           Handle->handle = DvbOpen(DEV_DVB_DEMUX, adapter, frontend, O_RDWR | O_NONBLOCK, true);
            if (Handle->handle < 0) {
               LOG_ERROR;
               return false;
@@ -548,7 +567,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
 int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
-  cString FileName = DvbName(DEV_DVB_DEMUX, CardIndex());
+  cString FileName = DvbName(DEV_DVB_DEMUX, adapter, frontend);
   int f = open(FileName, O_RDWR | O_NONBLOCK);
   if (f >= 0) {
      dmx_sct_filter_params sctFilterParams;
@@ -658,7 +677,7 @@ void cDvbDevice::SetTransferModeForDolbyDigital(int Mode)
 bool cDvbDevice::OpenDvr(void)
 {
   CloseDvr();
-  fd_dvr = DvbOpen(DEV_DVB_DVR, CardIndex(), O_RDONLY | O_NONBLOCK, true);
+  fd_dvr = DvbOpen(DEV_DVB_DVR, adapter, frontend, O_RDONLY | O_NONBLOCK, true);
   if (fd_dvr >= 0)
      tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(2), CardIndex() + 1);
   return fd_dvr >= 0;

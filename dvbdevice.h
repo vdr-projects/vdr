@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.10 2009/12/31 15:38:05 kls Exp $
+ * $Id: dvbdevice.h 2.11 2010/01/04 14:07:12 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -37,23 +37,27 @@ class cDvbTuner;
 
 class cDvbDevice : public cDevice {
 protected:
-  static cString DvbName(const char *Name, int n);
-  static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false);
+  static cString DvbName(const char *Name, int Adapter, int Frontend);
+  static int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError = false);
 private:
-  static bool Probe(int Adapter);
+  static bool Exists(int Adapter, int Frontend);
+         ///< Checks whether the given adapter/frontend exists.
+  static bool Probe(int Adapter, int Frontend);
          ///< Probes for existing DVB devices.
 public:
   static bool Initialize(void);
          ///< Initializes the DVB devices.
          ///< Must be called before accessing any DVB functions.
          ///< \return True if any devices are available.
+protected:
+  int adapter, frontend;
 private:
   dvb_frontend_info frontendInfo;
   int numProvidedSystems;
   fe_delivery_system frontendType;
   int fd_dvr, fd_ca;
 public:
-  cDvbDevice(int n);
+  cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
   virtual bool Ready(void);
 
@@ -125,7 +129,7 @@ class cDvbDeviceProbe : public cListObject {
 public:
   cDvbDeviceProbe(void);
   virtual ~cDvbDeviceProbe();
-  virtual bool Probe(int Adapter) = 0;
+  virtual bool Probe(int Adapter, int Frontend) = 0;
      ///< Probes for a DVB device at the given Adapter and creates the appropriate
      ///< object derived from cDvbDevice if applicable.
      ///< Returns true if a device has been created.

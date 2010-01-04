@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.10 2009/12/31 15:36:56 kls Exp $
+ * $Id: dvbsdffdevice.h 2.11 2010/01/04 11:01:14 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -20,7 +20,7 @@ private:
 protected:
   virtual void MakePrimaryDevice(bool On);
 public:
-  cDvbSdFfDevice(int n);
+  cDvbSdFfDevice(int Adapter, int Frontend);
   virtual ~cDvbSdFfDevice();
   virtual bool HasDecoder(void) const;
 
@@ -101,7 +101,7 @@ public:
 
 class cDvbSdFfDeviceProbe : public cDvbDeviceProbe {
 public:
-  virtual bool Probe(int Adapter);
+  virtual bool Probe(int Adapter, int Frontend);
   };
  
 #endif //__DVBSDFFDEVICE_H

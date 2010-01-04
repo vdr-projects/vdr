@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.24 2010/01/01 15:03:02 kls Exp $
+ * $Id: dvbsdffdevice.c 2.25 2010/01/04 12:56:56 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -23,8 +23,8 @@
 
 int cDvbSdFfDevice::devVideoOffset = -1;
 
-cDvbSdFfDevice::cDvbSdFfDevice(int n)
-:cDvbDevice(n)
+cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend)
+:cDvbDevice(Adapter, Frontend)
 {
   spuDecoder = NULL;
   digitalAudio = false;
@@ -32,10 +32,10 @@ cDvbSdFfDevice::cDvbSdFfDevice(int n)
 
   // Devices that are only present on cards with decoders:
 
-  fd_osd      = DvbOpen(DEV_DVB_OSD,    n, O_RDWR);
-  fd_video    = DvbOpen(DEV_DVB_VIDEO,  n, O_RDWR | O_NONBLOCK);
-  fd_audio    = DvbOpen(DEV_DVB_AUDIO,  n, O_RDWR | O_NONBLOCK);
-  fd_stc      = DvbOpen(DEV_DVB_DEMUX,  n, O_RDWR);
+  fd_osd      = DvbOpen(DEV_DVB_OSD,    adapter, frontend, O_RDWR);
+  fd_video    = DvbOpen(DEV_DVB_VIDEO,  adapter, frontend, O_RDWR | O_NONBLOCK);
+  fd_audio    = DvbOpen(DEV_DVB_AUDIO,  adapter, frontend, O_RDWR | O_NONBLOCK);
+  fd_stc      = DvbOpen(DEV_DVB_DEMUX,  adapter, frontend, O_RDWR);
 
   // The offset of the /dev/video devices:
 
@@ -317,7 +317,7 @@ bool cDvbSdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
      memset(&pesFilterParams, 0, sizeof(pesFilterParams));
      if (On) {
         if (Handle->handle < 0) {
-           Handle->handle = DvbOpen(DEV_DVB_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
+           Handle->handle = DvbOpen(DEV_DVB_DEMUX, adapter, frontend, O_RDWR | O_NONBLOCK, true);
            if (Handle->handle < 0) {
               LOG_ERROR;
               return false;
@@ -507,8 +507,8 @@ bool cDvbSdFfDevice::SetPlayMode(ePlayMode PlayMode)
 {
   if (PlayMode != pmExtern_THIS_SHOULD_BE_AVOIDED && fd_video < 0 && fd_audio < 0) {
      // reopen the devices
-     fd_video = DvbOpen(DEV_DVB_VIDEO,  CardIndex(), O_RDWR | O_NONBLOCK);
-     fd_audio = DvbOpen(DEV_DVB_AUDIO,  CardIndex(), O_RDWR | O_NONBLOCK);
+     fd_video = DvbOpen(DEV_DVB_VIDEO, adapter, frontend, O_RDWR | O_NONBLOCK);
+     fd_audio = DvbOpen(DEV_DVB_AUDIO, adapter, frontend, O_RDWR | O_NONBLOCK);
      SetVideoFormat(Setup.VideoFormat);
      }
 
@@ -756,7 +756,7 @@ int cDvbSdFfDevice::PlayTsAudio(const uchar *Data, int Length)
 
 // --- cDvbSdFfDeviceProbe ---------------------------------------------------
 
-bool cDvbSdFfDeviceProbe::Probe(int Adapter)
+bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
 {
   static uint32_t SubsystemIds[] = {
     0x110A0000, // Fujitsu Siemens DVB-C
@@ -776,13 +776,13 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter)
   cReadLine ReadLine;
   FILE *f = NULL;
   uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend0/device/subsystem_vendor", Adapter);
+  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
   if ((f = fopen(FileName, "r")) != NULL) {
      if (char *s = ReadLine.Read(f))
         SubsystemId = strtoul(s, NULL, 0) << 16;
      fclose(f);
      }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend0/device/subsystem_device", Adapter);
+  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
   if ((f = fopen(FileName, "r")) != NULL) {
      if (char *s = ReadLine.Read(f))
         SubsystemId |= strtoul(s, NULL, 0);
@@ -791,7 +791,7 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter)
   for (uint32_t *sid = SubsystemIds; *sid; sid++) {
       if (*sid == SubsystemId) {
          dsyslog("creating cDvbSdFfDevice");
-         new cDvbSdFfDevice(Adapter);
+         new cDvbSdFfDevice(Adapter, Frontend);
          return true;
          }
       }
