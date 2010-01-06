@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: pictures.c 2.0 2008/03/14 12:57:19 kls Exp $
+ * $Id: pictures.c 2.1 2009/12/06 12:30:21 kls Exp $
  */
 
 #include <getopt.h>
@@ -11,7 +11,7 @@
 #include "menu.h"
 #include "player.h"
 
-static const char *VERSION       = "0.0.7";
+static const char *VERSION       = "0.0.8";
 static const char *DESCRIPTION   = trNOOP("A simple picture viewer");
 static const char *MAINMENUENTRY = trNOOP("Pictures");
 
@@ -82,7 +82,7 @@ bool cPluginPictures::ProcessArgs(int argc, char *argv[])
   // Implement command line argument processing here if applicable.
   static struct option long_options[] = {
        { "dir",      required_argument, NULL, 'd' },
-       { NULL }
+       { NULL,       no_argument,       NULL,  0  }
      };
 
   int c;

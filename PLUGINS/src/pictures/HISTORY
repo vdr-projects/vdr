@@ -33,3 +33,7 @@ VDR Plugin 'pictures' Revision History
 2008-03-14: Version 0.0.7
 
 - Added Russian translations (thanks to Alexander Gross).
+
+2009-12-06: Version 0.0.8
+
+- Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).

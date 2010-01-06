@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.10 2009/11/21 16:12:55 kls Exp $
+ * $Id: recording.h 2.12 2010/01/02 12:10:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -253,7 +253,7 @@ public:
 class cFileName {
 private:
   cUnbufferedFile *file;
-  int fileNumber;
+  uint16_t fileNumber;
   char *fileName, *pFileNumber;
   bool record;
   bool blocking;
@@ -262,11 +262,11 @@ public:
   cFileName(const char *FileName, bool Record, bool Blocking = false, bool IsPesRecording = false);
   ~cFileName();
   const char *Name(void) { return fileName; }
-  int Number(void) { return fileNumber; }
+  uint16_t Number(void) { return fileNumber; }
   bool GetLastPatPmtVersions(int &PatVersion, int &PmtVersion);
   cUnbufferedFile *Open(void);
   void Close(void);
-  cUnbufferedFile *SetOffset(int Number, off_t Offset = 0);
+  cUnbufferedFile *SetOffset(int Number, off_t Offset = 0); // yes, Number is int for easier internal calculating
   cUnbufferedFile *NextFile(void);
   };
 
@@ -284,5 +284,7 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // specific representation (depending on ToFileSystem). The given string will
       // be modified and may be reallocated if more space is needed. The return
       // value points to the resulting string, which may be different from s.
+
+bool GenerateIndex(const char *FileName);
 
 #endif //__RECORDING_H

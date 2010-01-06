@@ -1,0 +1,12 @@
+VDR Plugin 'dvbsddevice' Revision History
+-----------------------------------------
+
+2009-12-28: Version 0.0.1
+
+- Initial revision.
+
+2010-01-04: Version 0.0.2
+
+- Calling the MakePrimaryDevice() function of the base class to allow
+  the cDevice to stop displaying subtitles.
+- Added support for DVB cards with multiple fontends.

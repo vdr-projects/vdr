@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.8 2009/08/30 11:25:50 kls Exp $
+ * $Id: channels.c 2.12 2010/01/02 17:38:40 kls Exp $
  */
 
 #include "channels.h"
@@ -24,14 +24,14 @@ const tChannelParameterMap InversionValues[] = {
   {   0, INVERSION_OFF,  trNOOP("off") },
   {   1, INVERSION_ON,   trNOOP("on") },
   { 999, INVERSION_AUTO, trNOOP("auto") },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap BandwidthValues[] = {
   {   6, 6000000, "6 MHz" },
   {   7, 7000000, "7 MHz" },
   {   8, 8000000, "8 MHz" },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap CoderateValues[] = {
@@ -47,7 +47,7 @@ const tChannelParameterMap CoderateValues[] = {
   {  89, FEC_8_9,  "8/9" },
   { 910, FEC_9_10, "9/10" },
   { 999, FEC_AUTO, trNOOP("auto") },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap ModulationValues[] = {
@@ -62,20 +62,20 @@ const tChannelParameterMap ModulationValues[] = {
   {  10, VSB_8,    "VSB8" },
   {  11, VSB_16,   "VSB16" },
   { 998, QAM_AUTO, "QAMAUTO" },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap SystemValues[] = {
   {   0, SYS_DVBS,  "DVB-S" },
   {   1, SYS_DVBS2, "DVB-S2" },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap TransmissionValues[] = {
   {   2, TRANSMISSION_MODE_2K,   "2K" },
   {   8, TRANSMISSION_MODE_8K,   "8K" },
   { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap GuardValues[] = {
@@ -84,7 +84,7 @@ const tChannelParameterMap GuardValues[] = {
   {  16, GUARD_INTERVAL_1_16, "1/16" },
   {  32, GUARD_INTERVAL_1_32, "1/32" },
   { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap HierarchyValues[] = {
@@ -93,7 +93,7 @@ const tChannelParameterMap HierarchyValues[] = {
   {   2, HIERARCHY_2,    "2" },
   {   4, HIERARCHY_4,    "4" },
   { 999, HIERARCHY_AUTO, trNOOP("auto") },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 const tChannelParameterMap RollOffValues[] = {
@@ -101,7 +101,7 @@ const tChannelParameterMap RollOffValues[] = {
   {  20, ROLLOFF_20, "0.20" },
   {  25, ROLLOFF_25, "0.25" },
   {  35, ROLLOFF_35, "0.35" },
-  { -1 }
+  {  -1, 0, NULL }
   };
 
 int UserIndex(int Value, const tChannelParameterMap *Map)
@@ -259,6 +259,7 @@ int cChannel::Transponder(int Frequency, char Polarization)
     case 'v': Frequency += 200000; break;
     case 'l': Frequency += 300000; break;
     case 'r': Frequency += 400000; break;
+    default: esyslog("ERROR: invalid value for Polarization '%c'", Polarization);
     }
   return Frequency;
 }
@@ -625,7 +626,7 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
   else
      q += sprintf(q, " none");
   if (Number())
-     dsyslog(buffer);
+     dsyslog("%s", buffer);
 }
 
 void cChannel::SetRefChannel(cChannel *RefChannel)
@@ -726,6 +727,8 @@ cString cChannel::ToText(const cChannel *Channel)
   q += sprintf(q, "%s", Channel->name);
   if (!isempty(Channel->shortName))
      q += sprintf(q, ",%s", Channel->shortName);
+  else if (strchr(Channel->name, ','))
+     q += sprintf(q, ",");
   if (!isempty(Channel->provider))
      q += sprintf(q, ";%s", Channel->provider);
   *q = 0;
@@ -806,7 +809,7 @@ bool cChannel::Parse(const char *s)
            tpid = 0;
            }
         vpid = ppid = 0;
-        vtype = 2; // default is MPEG-2
+        vtype = 0;
         apids[0] = 0;
         dpids[0] = 0;
         ok = false;
@@ -828,6 +831,8 @@ bool cChannel::Parse(const char *s)
               return false;
            if (!ppid)
               ppid = vpid;
+           if (vpid && !vtype)
+              vtype = 2; // default is MPEG-2
 
            char *dpidbuf = strchr(apidbuf, ';');
            if (dpidbuf)
@@ -900,7 +905,7 @@ bool cChannel::Parse(const char *s)
            *p++ = 0;
            provider = strcpyrealloc(provider, p);
            }
-        p = strchr(namebuf, ',');
+        p = strrchr(namebuf, ','); // long name might contain a ',', so search for the rightmost one
         if (p) {
            *p++ = 0;
            shortName = strcpyrealloc(shortName, p);

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.0 2008/03/05 17:00:55 kls Exp $
+ *   $Id: si.c 2.1 2009/12/05 16:20:12 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -720,6 +720,7 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
             break;
       }
       break;
+   default: ; // unknown domain, nothing to do
    }
    d->setData(da);
    return d;

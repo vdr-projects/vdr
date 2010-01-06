@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.26 2009/11/22 13:19:03 kls Exp $
+ * $Id: device.c 2.31 2010/01/01 15:40:35 kls Exp $
  */
 
 #include "device.h"
@@ -64,6 +64,7 @@ cDevice::cDevice(void)
 :patPmtParser(true)
 {
   cardIndex = nextCardIndex++;
+  dsyslog("new device number %d", CardIndex() + 1);
 
   SetDescription("receiver on device %d", CardIndex() + 1);
 
@@ -153,6 +154,10 @@ int cDevice::DeviceNumber(void) const
 
 void cDevice::MakePrimaryDevice(bool On)
 {
+  if (!On) {
+     DELETENULL(liveSubtitle);
+     DELETENULL(dvbSubtitleConverter);
+     }
 }
 
 bool cDevice::SetPrimaryDevice(int n)
@@ -371,6 +376,7 @@ void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
                case vdfCenterCutOut:
                     spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
                     break;
+               default: esyslog("ERROR: invalid value for VideoDisplayFormat '%d'", VideoDisplayFormat);
                }
         }
      }
@@ -399,7 +405,7 @@ void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
   PixelAspect = 1.0;
 }
 
-//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
+//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog("%s", b); }
 #define PRINTPIDS(s)
 
 bool cDevice::HasPid(int Pid) const
@@ -411,7 +417,7 @@ bool cDevice::HasPid(int Pid) const
   return false;
 }
 
-bool cDevice::AddPid(int Pid, ePidType PidType)
+bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 {
   if (Pid || PidType == ptPcr) {
      int n = -1;
@@ -458,6 +464,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         }
      if (n >= 0) {
         pidHandles[n].pid = Pid;
+        pidHandles[n].streamType = StreamType;
         pidHandles[n].used = 1;
         PRINTPIDS("C");
         if (!SetPid(&pidHandles[n], n, true)) {
@@ -611,6 +618,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
         case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
                               return false;
         case scrFailed:       break; // loop will retry
+        default:              esyslog("ERROR: invalid return value from SetChannel");
         }
       esyslog("retrying");
       }

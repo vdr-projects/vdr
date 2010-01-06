@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.3 2009/08/16 13:21:07 kls Exp $
+ * $Id: ci.c 2.6 2010/01/02 10:39:50 kls Exp $
  */
 
 #include "ci.h"
@@ -610,10 +610,8 @@ cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber
   capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
   esInfoLengthPos = length;
   capmt[length++] = 0x00; // program_info_length H (at program level)
-  capmt[length++] = 0x01; // program_info_length L
-  capmt[length++] = cmdId;
-  if (caDescriptorsLength > 0)
-     AddCaDescriptors(caDescriptorsLength, caDescriptors);
+  capmt[length++] = 0x00; // program_info_length L
+  AddCaDescriptors(caDescriptorsLength, caDescriptors);
 }
 
 void cCiCaPmt::SetListManagement(uint8_t ListManagement)
@@ -632,22 +630,23 @@ void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
      capmt[length++] =  Pid       & 0xFF;
      esInfoLengthPos = length;
      capmt[length++] = 0x00; // ES_info_length H (at ES level)
-     capmt[length++] = 0x01; // ES_info_length L
-     capmt[length++] = cmdId;
-     if (caDescriptorsLength > 0)
-        AddCaDescriptors(caDescriptorsLength, caDescriptors);
+     capmt[length++] = 0x00; // ES_info_length L
+     AddCaDescriptors(caDescriptorsLength, caDescriptors);
      }
 }
 
 void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 {
   if (esInfoLengthPos) {
-     if (length + Length <= int(sizeof(capmt))) {
-        memcpy(capmt + length, Data, Length);
-        length += Length;
-        int l = length - esInfoLengthPos - 2;
-        capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
-        capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+     if (length + Length < int(sizeof(capmt))) {
+        if (Length || cmdId == CPCI_QUERY) {
+           capmt[length++] = cmdId;
+           memcpy(capmt + length, Data, Length);
+           length += Length;
+           int l = length - esInfoLengthPos - 2;
+           capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
+           capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+           }
         }
      else
         esyslog("ERROR: buffer overflow in CA descriptor");
@@ -1424,6 +1423,15 @@ bool cCiTransportConnection::Process(cTPDU *TPDU)
                    SendTPDU(T_DTC_REPLY);
                    state = stIDLE;
                    return true;
+              case T_RCV:
+              case T_CREATE_TC:
+              case T_CTC_REPLY:
+              case T_DTC_REPLY:
+              case T_NEW_TC:
+              case T_TC_ERROR:
+                   break;
+              default:
+                   esyslog("ERROR: unknown TPDU tag: 0x%02X (%s)", TPDU->Tag(), __FUNCTION__);
               }
             }
          else if (timer.TimedOut())
@@ -1443,6 +1451,8 @@ bool cCiTransportConnection::Process(cTPDU *TPDU)
             state = stIDLE;
             }
          return true;
+    default:
+         esyslog("ERROR: unknown state: %d (%s)", state, __FUNCTION__);
     }
   return true;
 }
@@ -1668,6 +1678,8 @@ void cCamSlot::Process(cTPDU *TPDU)
                NewConnection();
                resendPmt = caProgramList.Count() > 0;
                break;
+          default:
+               esyslog("ERROR: unknown module status %d (%s)", ms, __FUNCTION__);
           }
         lastModuleStatus = ms;
         }

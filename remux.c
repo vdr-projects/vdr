@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.29 2009/11/22 11:23:27 kls Exp $
+ * $Id: remux.c 2.37 2009/12/29 15:56:33 kls Exp $
  */
 
 #include "remux.h"
@@ -295,7 +295,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
   numPmtPackets = 0;
   if (Channel) {
      int Vpid = Channel->Vpid();
-     int Ppid = Channel->Ppid();
+     int Ppid = 0x1FFF; // no PCR pid
      uchar *p = buf;
      int i = 0;
      p[i++] = 0x02; // table id
@@ -486,6 +486,11 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      int NumDpids = 0;
      int NumSpids = 0;
      vpid = vtype = 0;
+     apids[0] = 0;
+     dpids[0] = 0;
+     spids[0] = 0;
+     atypes[0] = 0;
+     dtypes[0] = 0;
      SI::PMT::Stream stream;
      for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
          dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
@@ -496,17 +501,20 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
                       break;
+           case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
                       {
                       if (NumApids < MAXAPIDS) {
-                         char ALangs[MAXLANGCODE2] = "";
+                         apids[NumApids] = stream.getPid();
+                         atypes[NumApids] = stream.getStreamType();
+                         *alangs[NumApids] = 0;
                          SI::Descriptor *d;
                          for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                              switch (d->getDescriptorTag()) {
                                case SI::ISO639LanguageDescriptorTag: {
                                     SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
                                     SI::ISO639LanguageDescriptor::Language l;
-                                    char *s = ALangs;
+                                    char *s = alangs[NumApids];
                                     int n = 0;
                                     for (SI::Loop::Iterator it; ld->languageLoop.getNext(l, it); ) {
                                         if (*ld->languageCode != '-') { // some use "---" to indicate "none"
@@ -526,8 +534,9 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                              delete d;
                              }
                          if (updatePrimaryDevice)
-                            cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, stream.getPid(), ALangs);
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, apids[NumApids], alangs[NumApids]);
                          NumApids++;
+                         apids[NumApids]= 0;
                          }
                       }
                       break;
@@ -545,14 +554,21 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             case SI::SubtitlingDescriptorTag:
                                  dbgpatpmt(" subtitling");
                                  if (NumSpids < MAXSPIDS) {
+                                    spids[NumSpids] = stream.getPid();
+                                    *slangs[NumSpids] = 0;
+                                    subtitlingTypes[NumSpids] = 0;
+                                    compositionPageIds[NumSpids] = 0;
+                                    ancillaryPageIds[NumSpids] = 0;
                                     SI::SubtitlingDescriptor *sd = (SI::SubtitlingDescriptor *)d;
                                     SI::SubtitlingDescriptor::Subtitling sub;
-                                    char SLangs[MAXLANGCODE2] = "";
-                                    char *s = SLangs;
+                                    char *s = slangs[NumSpids];
                                     int n = 0;
                                     for (SI::Loop::Iterator it; sd->subtitlingLoop.getNext(sub, it); ) {
                                         if (sub.languageCode[0]) {
                                            dbgpatpmt(" '%s'", sub.languageCode);
+                                           subtitlingTypes[NumSpids] = sub.getSubtitlingType();
+                                           compositionPageIds[NumSpids] = sub.getCompositionPageId();
+                                           ancillaryPageIds[NumSpids] = sub.getAncillaryPageId();
                                            if (n > 0)
                                               *s++ = '+';
                                            strn0cpy(s, I18nNormalizeLanguageCode(sub.languageCode), MAXLANGCODE1);
@@ -562,8 +578,9 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                            }
                                         }
                                     if (updatePrimaryDevice)
-                                       cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), SLangs);
+                                       cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, spids[NumSpids], slangs[NumSpids]);
                                     NumSpids++;
+                                    spids[NumSpids]= 0;
                                     }
                                  break;
                             case SI::ISO639LanguageDescriptorTag: {
@@ -578,13 +595,18 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                           }
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
+                            dpids[NumDpids] = dpid;
+                            dtypes[NumDpids] = stream.getStreamType();
+                            strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
                             if (updatePrimaryDevice)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
+                            dpids[NumDpids]= 0;
                             }
                          }
                       }
                       break;
+           default: ;
            }
          dbgpatpmt("\n");
          if (updatePrimaryDevice) {
@@ -599,7 +621,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   pmtSize = 0;
 }
 
-bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion)
+bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion) const
 {
   PatVersion = patVersion;
   PmtVersion = pmtVersion;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.4 2009/11/06 15:21:17 kls Exp $
+ * $Id: tools.c 2.6 2009/12/23 15:12:15 kls Exp $
  */
 
 #include "tools.h"
@@ -633,6 +633,7 @@ uint Utf8CharGet(const char *s, int Length)
     case 2: return ((*s & 0x1F) <<  6) |  (*(s + 1) & 0x3F);
     case 3: return ((*s & 0x0F) << 12) | ((*(s + 1) & 0x3F) <<  6) |  (*(s + 2) & 0x3F);
     case 4: return ((*s & 0x07) << 18) | ((*(s + 1) & 0x3F) << 12) | ((*(s + 2) & 0x3F) << 6) | (*(s + 3) & 0x3F);
+    default: ;
     }
   return *s;
 }
@@ -768,10 +769,10 @@ char *cCharSetConv::systemCharacterTable = NULL;
 cCharSetConv::cCharSetConv(const char *FromCode, const char *ToCode)
 {
   if (!FromCode)
-     FromCode = systemCharacterTable;
+     FromCode = systemCharacterTable ? systemCharacterTable : "UTF-8";
   if (!ToCode)
      ToCode = "UTF-8";
-  cd = (FromCode && ToCode) ? iconv_open(ToCode, FromCode) : (iconv_t)-1;
+  cd = iconv_open(ToCode, FromCode);
   result = NULL;
   length = 0;
 }
@@ -942,8 +943,8 @@ cString WeekDayNameFull(int WeekDay)
     case 4: return tr("Friday");
     case 5: return tr("Saturday");
     case 6: return tr("Sunday");
+    default: return "???";
     }
-  return "???";
 }
 
 cString WeekDayNameFull(time_t t)

@@ -1,26 +1,24 @@
 /*
- * dvbosd.c: Implementation of the DVB On Screen Display
+ * dvbsdffosd.c: Implementation of the DVB SD Full Featured On Screen Display
  *
- * See the main source file 'vdr.c' for copyright information and
- * how to reach the author.
+ * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbosd.c 2.0 2007/09/16 08:55:54 kls Exp $
+ * $Id: dvbsdffosd.c 2.1 2009/12/29 11:52:48 kls Exp $
  */
 
-#include "dvbosd.h"
+#include "dvbsdffosd.h"
 #include <linux/dvb/osd.h>
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/unistd.h>
-#include "dvbdevice.h"
-#include "tools.h"
+#include "vdr/tools.h"
 
-// --- cDvbOsd ---------------------------------------------------------------
+// --- cDvbSdFfOsd -----------------------------------------------------------
 
 #define MAXNUMWINDOWS 7 // OSD windows are counted 1...7
 #define MAXOSDMEMORY  92000 // number of bytes available to the OSD (for unmodified DVB cards)
 
-class cDvbOsd : public cOsd {
+class cDvbSdFfOsd : public cOsd {
 private:
   int osdDev;
   int osdMem;
@@ -29,14 +27,14 @@ private:
 protected:
   virtual void SetActive(bool On);
 public:
-  cDvbOsd(int Left, int Top, int OsdDev, uint Level);
-  virtual ~cDvbOsd();
+  cDvbSdFfOsd(int Left, int Top, int OsdDev, uint Level);
+  virtual ~cDvbSdFfOsd();
   virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
   virtual eOsdError SetAreas(const tArea *Areas, int NumAreas);
   virtual void Flush(void);
   };
 
-cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev, uint Level)
+cDvbSdFfOsd::cDvbSdFfOsd(int Left, int Top, int OsdDev, uint Level)
 :cOsd(Left, Top, Level)
 {
   osdDev = OsdDev;
@@ -55,12 +53,12 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev, uint Level)
      }
 }
 
-cDvbOsd::~cDvbOsd()
+cDvbSdFfOsd::~cDvbSdFfOsd()
 {
   SetActive(false);
 }
 
-void cDvbOsd::SetActive(bool On)
+void cDvbSdFfOsd::SetActive(bool On)
 {
   if (On != Active()) {
      cOsd::SetActive(On);
@@ -85,7 +83,7 @@ void cDvbOsd::SetActive(bool On)
      }
 }
 
-eOsdError cDvbOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
+eOsdError cDvbSdFfOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
 {
   eOsdError Result = cOsd::CanHandleAreas(Areas, NumAreas);
   if (Result == oeOk) {
@@ -107,7 +105,7 @@ eOsdError cDvbOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
   return Result;
 }
 
-eOsdError cDvbOsd::SetAreas(const tArea *Areas, int NumAreas)
+eOsdError cDvbSdFfOsd::SetAreas(const tArea *Areas, int NumAreas)
 {
   if (shown) {
      cBitmap *Bitmap;
@@ -120,7 +118,7 @@ eOsdError cDvbOsd::SetAreas(const tArea *Areas, int NumAreas)
   return cOsd::SetAreas(Areas, NumAreas);
 }
 
-void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
+void cDvbSdFfOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
 {
   if (osdDev >= 0) {
      osd_cmd_t dc;
@@ -135,7 +133,7 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      }
 }
 
-void cDvbOsd::Flush(void)
+void cDvbSdFfOsd::Flush(void)
 {
   if (!Active())
      return;
@@ -211,5 +209,5 @@ cDvbOsdProvider::cDvbOsdProvider(int OsdDev)
 
 cOsd *cDvbOsdProvider::CreateOsd(int Left, int Top, uint Level)
 {
-  return new cDvbOsd(Left, Top, osdDev, Level);
+  return new cDvbSdFfOsd(Left, Top, osdDev, Level);
 }

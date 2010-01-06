@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 2.1 2009/05/09 16:26:45 kls Exp $
+ * $Id: dvbspu.h 2.4 2009/12/13 12:07:00 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -80,6 +80,7 @@ class cDvbSpuBitmap {
 
     bool getMinSize(const aDvbSpuPalDescr paldescr,
                     sDvbSpuRect & size) const;
+    int getMinBpp(const aDvbSpuPalDescr paldescr);
     cBitmap *getBitmap(const aDvbSpuPalDescr paldescr,
                        const cDvbSpuPalette & pal,
                        sDvbSpuRect & size) const;
@@ -97,6 +98,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
     uint32_t spupts;
     bool clean;
     bool ready;
+    bool restricted_osd;
 
     enum spFlag { spNONE, spHIDE, spSHOW, spMENU };
     spFlag state;
@@ -129,6 +131,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
     };
 
     sDvbSpuRect CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDvbSpuRect bgsize, cBitmap *bgbmp);
+    int CalcAreaBpp(cBitmap *fgbmp, cBitmap *bgbmp);
 
   public:
     cDvbSpuDecoder();
@@ -194,8 +197,7 @@ inline uint32_t cDvbSpuPalette::yuv2rgb(uint32_t yuv_color)
 
 inline uint32_t cDvbSpuPalette::getColor(uint8_t idx, uint8_t trans) const
 {
-    uint8_t t = trans == 0x0f ? 0xff : trans << 4;
-    return palette[idx] | (t << 24);
+    return palette[idx] | ((trans == 0x0f) ? 0xff000000 : (trans << 28));
 }
 
 #endif                          // __DVBSPU_H

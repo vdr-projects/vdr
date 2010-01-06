@@ -6196,3 +6196,82 @@ Video Disk Recorder Revision History
   cause nothing but trouble. Besides, the core VDR doesn't use this, anyway.
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
+
+2010-01-06: Version 1.7.11
+
+- Fixed resetting the file size when regenerating the index file.
+- The new function cDevice::PatPmtParser() can be used in derived devices to access
+  the PAT/PMT of the currently replayed material.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- The PCR pid in generated PMTs is now set to 0x1FFF ("no PCR pid") in
+  cPatPmtGenerator::GeneratePmt(), because VDR doesn't record the PCR pid.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- The 'sky' plugin is no longer part of the VDR source.
+- Improved SPU handling on devices with limited OSD capabilities (thanks to
+  Matthieu Castet).
+- Several code modifications to avoid compiler warnings (thanks to Winfried Köhler).
+- Added stream type 11172 AUDIO to cPatPmtParser::ParsePmt() (thanks to Johann
+  Friedrichs).
+- Removed debug output of '-' from cTransfer::Receive().
+- Added defines for large files to the 'newplugin' script (reported by Udo Richter).
+- Removed the workaround for short channel names of "Kabel Deutschland", because
+  apparently they now have their data according to the DVB standard (thanks to
+  Johann Friedrichs).
+- Some fixes to dvbspu.[hc] (thanks to Johann Friedrichs).
+- Fixed a busy loop when moving editing marks (thanks to Johann Friedrichs).
+- Updated sources.conf (thanks to Derek Kelly).
+- Modified cCharSetConv so that it can be used to convert from "whatever VDR uses"
+  to a given code (thanks to Joachim Wilke).
+- Channel names containing commas are now handled correctly in channels.conf.
+  If a channel's short name contains a comma, it is replaced with a '.'.
+- cDevice now logs the device number when a new device is created.
+- Fixed handling STREAMTYPE_11172_AUDIO in cPatPmtParser::ParsePmt().
+- cParsePatPmt now has functions to retrieve the audio, dolby and subtitle pids.
+- cPatFilter::Process() now only stores CA descriptors for video and audio pids
+  (thanks to Francesco Saverio Schiavarelli for reporting a problem with channels
+  that have some encrypted components that VDR doesn't use).
+- cDevice::AddPid() now stores the stream type of the given pid (thanks to Andreas
+  Regel).
+- Added cFont::FontName() and cFont::Size() (thanks to Andreas Regel).
+- cPatPmtParser now also stores the audio stream types.
+- The support for full featured DVB cards of the TT/FuSi design has been moved
+  into the new plugin 'dvbsddevice'. On systems that use such a card as their
+  primary device, this plugin now needs to be loaded when running VDR in order
+  to view live or recorded video. If the plugin is not loaded, the card will
+  be treated like a budget DVB card, and there will be no OSD or viewing
+  capability.
+- Fixed handling the "CA PMT" generation (revised a change not mentioned in version
+  1.7.9's changes, which caused a malfunction with Conax and Viaccess CAMs).
+- Fixed stopping subtitle display when switching the primary device (thanks to
+  Anssi Hannula).
+  IMPORTANT NOTE TO PLUGIN AUTHORS: a plugin that implements a derived cDevice
+  class that can replay video must now call the MakePrimaryDevice() function of
+  its base class.
+- Fixed compiler warnings "format not a string literal and no format arguments"
+  in some syslog calls (thanks to Rolf Ahrenberg).
+- The new command line options --edit and --genindex can be used to edit a
+  recording or generate its index without actually starting the entire VDR
+  (based on a patch from Helmut Auer).
+- Improved the description of the transponder parameters in vdr.5 (thanks to
+  Winfried Köhler).
+- Avoiding setting the video stream type to 2 if the vpid is 0 (problem reported
+  by Arthur Konovalov).
+- Implemented handling the "Content Descriptor" (based on a patch from Rolf
+  Ahrenberg). The 'classic', 'sttng' and 'curses' skins display the textual
+  representation of the content descriptors as "genre". The epg.data file stores
+  the genre using the tag character 'G'.
+- Implemented handling the "Parental Rating Descriptor" (based on a patch from Rolf
+  Ahrenberg). The 'classic', 'sttng' and 'curses' skins display the parental
+  rating (if given) in their event displays. The epg.data file stores
+  the parental rating using the tag character 'R'.
+  IMPORTANT NOTE: if VDR doesn't display a parental rating, this does not
+  necessarily mean that the given programme is suitable for all audiences!
+- Rearranged cEvent members to minimize memory waste.
+- After a CLRE command, no further EPG processing is now done for 10 seconds,
+  so that data sent with subsequent PUTE commands doesn't interfere with data
+  from the broadcasters (suggested by Helmut Auer).
+- Added support for DVB cards with multiple fontends. Note that this only
+  works for DVB cards where each frontend can be used independently of all
+  the others on the same adapter.
+- Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
+  Anssi Hannula).

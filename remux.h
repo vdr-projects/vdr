@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.20 2009/11/21 15:55:34 kls Exp $
+ * $Id: remux.h 2.23 2009/12/29 15:53:54 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -214,6 +214,17 @@ private:
   int pmtPid;
   int vpid;
   int vtype;
+  int apids[MAXAPIDS + 1]; // list is zero-terminated
+  int atypes[MAXAPIDS + 1]; // list is zero-terminated
+  char alangs[MAXAPIDS][MAXLANGCODE2];
+  int dpids[MAXDPIDS + 1]; // list is zero-terminated
+  int dtypes[MAXDPIDS + 1]; // list is zero-terminated
+  char dlangs[MAXDPIDS][MAXLANGCODE2];
+  int spids[MAXSPIDS + 1]; // list is zero-terminated
+  char slangs[MAXSPIDS][MAXLANGCODE2];
+  uchar subtitlingTypes[MAXSPIDS];
+  uint16_t compositionPageIds[MAXSPIDS];
+  uint16_t ancillaryPageIds[MAXSPIDS];
   bool updatePrimaryDevice;
 protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
@@ -232,18 +243,32 @@ public:
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.
-  bool GetVersions(int &PatVersion, int &PmtVersion);
+  bool GetVersions(int &PatVersion, int &PmtVersion) const;
        ///< Returns true if a valid PAT/PMT has been parsed and stores
        ///< the current version numbers in the given variables.
-  int PmtPid(void) { return pmtPid; }
+  int PmtPid(void) const { return pmtPid; }
        ///< Returns the PMT pid as defined by the current PAT.
        ///< If no PAT has been received yet, -1 will be returned.
-  int Vpid(void) { return vpid; }
+  int Vpid(void) const { return vpid; }
        ///< Returns the video pid as defined by the current PMT, or 0 if no video
        ///< pid has been detected, yet.
-  int Vtype(void) { return vtype; }
+  int Vtype(void) const { return vtype; }
        ///< Returns the video stream type as defined by the current PMT, or 0 if no video
        ///< stream type has been detected, yet.
+  const int *Apids(void) const { return apids; }
+  const int *Dpids(void) const { return dpids; }
+  const int *Spids(void) const { return spids; }
+  int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
+  int Dpid(int i) const { return (0 <= i && i < MAXDPIDS) ? dpids[i] : 0; }
+  int Spid(int i) const { return (0 <= i && i < MAXSPIDS) ? spids[i] : 0; }
+  int Atype(int i) const { return (0 <= i && i < MAXAPIDS) ? atypes[i] : 0; }
+  int Dtype(int i) const { return (0 <= i && i < MAXDPIDS) ? dtypes[i] : 0; }
+  const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
+  const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
+  const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
+  uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
+  uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
+  uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
   };
 
 // TS to PES converter:

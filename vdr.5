@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.7 2009/10/18 14:09:07 kls Exp $
+.\" $Id: vdr.5 2.11 2010/01/03 13:37:07 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -45,7 +45,7 @@ Such a delimiter will not appear in the Channels menu.
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
-\fBRTL Television,RTL:12188:h:S19.2E:27500:163:104:105:0:12003:1:1089:0\fR
+\fBRTL Television,RTL;RTL World:12187:hC34M2O0S0:S19.2E:27500:163=2:104=deu;106=deu:105:0:12003:1:1089:0\fR
 
 The line number of a channel definition (not counting group separators,
 and based on a possible previous '@...' parameter)
@@ -64,6 +64,10 @@ for this channel, it follows the full name and is delimited by a comma,
 as in
 
 \fBRTL Television,RTL:...\fR
+
+If the short name itself would contain a comma, it is replaced with a '.'.
+Note that some long channel names may contain a comma, so the delimiting comma
+is always the rightmost one.
 
 If present, the name of the service provider or "bouquet" is appended
 to the channel name, separated by a semicolon, as in
@@ -99,6 +103,47 @@ l l.
 \fBY\fR@hierarchY (0, 1, 2, 4)
 .TE
 
+\fBBandwidth:\fR The bandwidth of the channel in MHz (DVB-T only).
+
+\fBCode rate high priority:\fR Forward Error Correction (FEC) of the high priority stream (DVB-T).
+For DVB-S/DVB-S2 this parameter specifies the inner FEC scheme.
+12 = 1/2, 23 = 2/3, 34 = 3/4, ...
+
+\fBCode rate low priority:\fR Forward Error Correction (FEC) of the low priority stream (DVB-T only).
+If no hierarchy is used, set to 0.
+
+\fBGuard interval:\fR The guard interval value (DVB-T only): 4 = 1/4, 8 = 1/8, 16 = 1/16, 32 = 1/32.
+
+\fBInversion:\fR Specifes whether the DVB frontend needs spectral inversion (DVB-T and DVB-C only). This is frontend specific, if in doubt, omit.
+
+\fBModulation:\fR Specifies the modulation/constellation of the channel as follows:
+.TS
+tab (@);
+l l.
+\fB2\fR@QPSK (DVB-S, DVB-S2, DVB-T)
+\fB5\fR@8PSK (DVB-S2)
+\fB6\fR@16APSK (DVB-S2)
+\fB10\fR@VSB8 (ATSC aerial)
+\fB11\fR@VSB16 (ATSC aerial)
+\fB16\fR@QAM16 (DVB-T)
+\fB64\fR@QAM64 (DVB-C, DVB-T)
+\fB128\fR@QAM128 (DVB-C)
+\fB256\fR@QAM256 (DVB-C)
+.TE
+
+\fBRolloff:\fR The Nyquist filter rolloff factor for DVB-S (\fB35\fR) and DVB-S2 (\fB35\fR, 25, 20),
+35 = 0.35, 25 = 0.25, 20 = 0.20, DVB-S/DVB-S2 default value is 0.35
+
+\fBTransmission mode:\fR Number of DVB-T OFDM carriers, 8 = 8k, 2 = 2k. If in doubt, try 8k.
+
+\fBHierarchy:\fR If set to 1, this transponder uses two streams, high priority and low priority.
+If in doubt, try 0 (off). (DVB-T only).
+
+\fBDelivery System:\fR The satellite delivery system (0 = DVB-S, 1 = DVB-S2).
+
+\fBPolarization:\fR Satellite antenna polarization.
+h = horizontal, v = vertical, r = circular right, l = circular left.
+
 The polarization parameters have no integer numbers following them. This is for
 compatibility with files from older versions and also to keep the DVB-S entries
 as simple as possible.
@@ -107,8 +152,17 @@ The special value \fB999\fR is used for "automatic", which means the driver
 will automatically determine the proper value (if possible).
 
 An example of a parameter field for a DVB-T channel might look like this:
+\fBB8C23D12G8M16T8Y0\fR
 
-\fBB8C23D12M64T2G32Y0\fR
+An example of a parameter field for a DVB-C channel might look like this:
+\fBC0M64\fR
+
+An example of a parameter field for a DVB-S channel might look like this:
+\fBhC56M2O35S0\fR
+
+An example of a parameter field for a DVB-S2 channel might look like this:
+\fBhC910M2O35S1\fR
+
 .TP
 .B Source
 The signal source of this channel, as defined in the file \fIsources.conf\fR.
@@ -641,6 +695,8 @@ l l.
 \fBT\fR@<title>
 \fBS\fR@<short text>
 \fBD\fR@<description>
+\fBG\fR@<genre> <genre>...
+\fBR\fR@<parental rating>
 \fBX\fR@<stream> <type> <language> <descr>
 \fBV\fR@<vps time>
 \fBe\fR@
@@ -653,6 +709,7 @@ of one or more \fBC\fR...\fBc\fR (Channel) entries. Inside these any number of
 \fBE\fR...\fBe\fR (Event) entries are allowed.
 All other tags are optional (although every event
 should at least have a \fBT\fR entry).
+
 There may be several \fBX\fR tags, depending on the number of tracks (video, audio etc.)
 the event provides.
 
@@ -669,6 +726,8 @@ l l.
 <title>        @is the title of the event
 <short text>   @is the short text of the event (typically the name of the episode etc.)
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
+<genre>        @is a two digit hex code, as defined in  ETSI EN 300 468, table 28 (up to 4 genre codes are supported)
+<parental rating>@is the minimum age of the intended audience
 <stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles, 4 = AC3)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')

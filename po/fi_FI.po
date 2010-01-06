@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2009-11-22 12:28+0100\n"
+"POT-Creation-Date: 2010-01-03 15:10+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
@@ -41,6 +41,247 @@ msgstr "Siirtotilan aloitus epäonnistui!"
 
 msgid "Starting EPG scan"
 msgstr "Ohjelmaoppaan päivitys aloitettu"
+
+msgid "Content$Movie/Drama"
+msgstr "Elokuva/draama"
+
+msgid "Content$Detective/Thriller"
+msgstr "Etsivä/trilleri"
+
+msgid "Content$Adventure/Western/War"
+msgstr "Seikkailu/western/sota"
+
+msgid "Content$Science Fiction/Fantasy/Horror"
+msgstr "Scifi/fantasia/kauhu"
+
+msgid "Content$Comedy"
+msgstr "Komedia"
+
+msgid "Content$Soap/Melodrama/Folkloric"
+msgstr "Saippua/melodraama/kansanperinne"
+
+msgid "Content$Romance"
+msgstr "Romanssi"
+
+msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Vakava/klassinen/uskonnollinen/historiallinen elokuva/draama"
+
+msgid "Content$Adult Movie/Drama"
+msgstr "Aikuiselokuva/draama"
+
+msgid "Content$News/Current Affairs"
+msgstr "Uutiset/ajankohtaisohjelma"
+
+msgid "Content$News/Weather Report"
+msgstr "Uutiset/säätiedot"
+
+msgid "Content$News Magazine"
+msgstr "Uutismakasiini"
+
+msgid "Content$Documentary"
+msgstr "Dokumentti"
+
+msgid "Content$Discussion/Inverview/Debate"
+msgstr "Keskustelu/haastattelu/väittely"
+
+msgid "Content$Show/Game Show"
+msgstr "Show/visailu"
+
+msgid "Content$Game Show/Quiz/Contest"
+msgstr "Visailu/kilpailu"
+
+msgid "Content$Variety Show"
+msgstr "Varietee"
+
+msgid "Content$Talk Show"
+msgstr "Keskusteluohjelma"
+
+msgid "Content$Sports"
+msgstr "Urheilua"
+
+msgid "Content$Special Event"
+msgstr "Erikoistapahtuma"
+
+msgid "Content$Sport Magazine"
+msgstr "Urheilumakasiini"
+
+msgid "Content$Football/Soccer"
+msgstr "Jalkapallo"
+
+msgid "Content$Tennis/Squash"
+msgstr "Tennis/Squash"
+
+msgid "Content$Team Sports"
+msgstr "Joukkueurheilua"
+
+msgid "Content$Athletics"
+msgstr "Yleisurheilua"
+
+msgid "Content$Motor Sport"
+msgstr "Moottoriurheilua"
+
+msgid "Content$Water Sport"
+msgstr "Vesiurheilua"
+
+msgid "Content$Winter Sports"
+msgstr "Talviurheilua"
+
+msgid "Content$Equestrian"
+msgstr "Ratsastusta"
+
+msgid "Content$Martial Sports"
+msgstr "Kamppailu-urheilua"
+
+msgid "Content$Children's/Youth Programme"
+msgstr "Lasten ja nuorten ohjelma"
+
+msgid "Content$Pre-school Children's Programme"
+msgstr "Alle kouluikäisten ohjelma"
+
+msgid "Content$Entertainment Programme for 6 to 14"
+msgstr "Viihdeohjelma 6-14 vuotiaille"
+
+msgid "Content$Entertainment Programme for 10 to 16"
+msgstr "Viihdeohjelma 10-16 vuotiaille"
+
+msgid "Content$Informational/Educational/School Programme"
+msgstr "Opetus/kouluohjelma"
+
+msgid "Content$Cartoons/Puppets"
+msgstr "Piirretty/nukke-esitys"
+
+msgid "Content$Music/Ballet/Dance"
+msgstr "Musiikki/baletti/tanssi"
+
+msgid "Content$Rock/Pop"
+msgstr "Rock/pop"
+
+msgid "Content$Serious/Classical Music"
+msgstr "Vakava/klassinen musiikki"
+
+msgid "Content$Folk/Tradional Music"
+msgstr "Folk/kansanmusiikki"
+
+msgid "Content$Jazz"
+msgstr "Jazz"
+
+msgid "Content$Musical/Opera"
+msgstr "Musikaali/ooppera"
+
+msgid "Content$Ballet"
+msgstr "Baletti"
+
+msgid "Content$Arts/Culture"
+msgstr "Taide/kulttuuri"
+
+msgid "Content$Performing Arts"
+msgstr "Performanssitaide"
+
+msgid "Content$Fine Arts"
+msgstr "Kuvataide"
+
+msgid "Content$Religion"
+msgstr "Uskonto"
+
+msgid "Content$Popular Culture/Traditional Arts"
+msgstr "Populaarikulttuuri/perinnetaiteet"
+
+msgid "Content$Literature"
+msgstr "Kirjallisuus"
+
+msgid "Content$Film/Cinema"
+msgstr "Elokuvataide"
+
+msgid "Content$Experimental Film/Video"
+msgstr "Kokeellinen elokuva/video"
+
+msgid "Content$Broadcasting/Press"
+msgstr "Televisio/radio/lehdistö"
+
+msgid "Content$New Media"
+msgstr "Uusmedia"
+
+msgid "Content$Arts/Culture Magazine"
+msgstr "Taide/kulttuurimakasiini"
+
+msgid "Content$Fashion"
+msgstr "Muoti"
+
+msgid "Content$Social/Political/Economics"
+msgstr "Yhteiskunta/politiikka/talous"
+
+msgid "Content$Magazine/Report/Documentary"
+msgstr "Makasiini/reportaasi/dokumentti"
+
+msgid "Content$Economics/Social Advisory"
+msgstr "Talous/yhteiskunnallinen neuvonta"
+
+msgid "Content$Remarkable People"
+msgstr "Merkittävät henkilöt"
+
+msgid "Content$Education/Science/Factual"
+msgstr "Koulutus/tiede"
+
+msgid "Content$Nature/Animals/Environment"
+msgstr "Luonto/eläimet/ympäristö"
+
+msgid "Content$Technology/Natural Sciences"
+msgstr "Teknologia/luonnontiede"
+
+msgid "Content$Medicine/Physiology/Psychology"
+msgstr "Lääketiede/fysiologia/psykologia"
+
+msgid "Content$Foreign Countries/Expeditions"
+msgstr "Vieraat maat/tutkimusretket"
+
+msgid "Content$Social/Spiritual Sciences"
+msgstr "Yhteiskunta/hengelliset tieteet"
+
+msgid "Content$Further Education"
+msgstr "Jatkokoulutus"
+
+msgid "Content$Languages"
+msgstr "Kielet"
+
+msgid "Content$Leisure/Hobbies"
+msgstr "Vapaa-aika ja harrastukset"
+
+msgid "Content$Tourism/Travel"
+msgstr "Turismi/matkustaminen"
+
+msgid "Content$Handicraft"
+msgstr "Käsityöt"
+
+msgid "Content$Motoring"
+msgstr "Autoilu"
+
+msgid "Content$Fitness & Health"
+msgstr "Kuntoilu & terveys"
+
+msgid "Content$Cooking"
+msgstr "Ruuanlaitto"
+
+msgid "Content$Advertisement/Shopping"
+msgstr "Mainostaminen/ostaminen"
+
+msgid "Content$Gardening"
+msgstr "Puutarhanhoito"
+
+msgid "Content$Original Language"
+msgstr "Alkuperäiskieli"
+
+msgid "Content$Black & White"
+msgstr "Mustavalkoinen"
+
+msgid "Content$Unpublished"
+msgstr "Julkaisematon"
+
+msgid "Content$Live Broadcast"
+msgstr "Suoralähetys"
+
+#, c-format
+msgid "ParentalRating$from %d"
+msgstr ""
 
 msgid "No title"
 msgstr "Ei esitystä"

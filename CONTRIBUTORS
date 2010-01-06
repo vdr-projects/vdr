@@ -600,6 +600,9 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to improve logging system time changes to avoid problems on slow
  systems under heavy load
  for making the SVDRP command PUTE support reading the EPG data from a given file
+ for a patch that was used to implement the command line options --edit and
+ --genindex
+ for suggesting to disable EPG processing for a while after a CLRE command
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1083,6 +1086,10 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  contain UTF-8 characters
  for fixing wrong bracketing in cChannel::SubtitlingType() etc.
  for fixing handling DVB subtitles for PES recordings
+ for fixing compiler warnings "format not a string literal and no format arguments"
+ in some syslog calls
+ for a patch that was used to implement handling the "component descriptor" ("genre")
+ for a patch that was used to implement handling the "parental rating descriptor"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1361,6 +1368,8 @@ Andreas Regel <andreas.regel@gmx.de>
  for fixing handling numeric keys in the channel display after switching channel
  groups
  for adding some missing 'const' statements to cBitmap
+ for making cDevice::AddPid() store the stream type of the given pid
+ for adding cFont::FontName() and cFont::Size()
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1570,12 +1579,13 @@ Dick Streefland <Dick.Streefland@xs4all.nl>
 Kimmo Tykkala <tykkala@iki.fi>
  for pointing out a problem in showing the replay mode if the OSD is currently in use
 
-Arthur Konovalov <kasjas@hot.ee>
+Arthur Konovalov <artlov@gmail.com>
  for translating OSD texts to the Estonian language
  for fixing a missing ',' in the Greek OSD texts
  for fixing a missing ',' in the Swedish OSD texts
  for reporting problems with CAMs when checking the CAM status too frequently
  for reporting references to old *.vdr file names in MANUAL
+ for reporting that the video stream type was set to 2 even if the vpid was 0
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -1651,6 +1661,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting wrong variable types in cIndexFile
  for reporting a problem with cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in
  case only part of the buffer has been accepted by the device
+ for reporting missing defines for large files in the 'newplugin' script
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1687,6 +1698,8 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting a problem with cStatus::MsgOsdTextItem() being called without a text
  for reporting a missing install-i18n in the install target in the Makefile
  for adding a missing 'const' to cRecording::FramesPerSecond()
+ for modifying cCharSetConv so that it can be used to convert from "whatever VDR uses"
+ to a given code
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -2250,6 +2263,8 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for suggesting to change the default for LOCDIR in Makefile and Make.config.template
  to "./locale", so that internationalization works by default when running VDR
  from within its source directory
+ for fixing stopping subtitle display when switching the primary device
+ for fixing plugin arguments corruption with glibc 2.11 on x86_64
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2459,6 +2474,8 @@ Michael Nork <mnork0@gmx.net>
 
 Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
+ for making several code modifications to avoid compiler warnings
+ for improving the description of the transponder parameters in vdr.5
 
 Igor M. Liplianin <liplianin@tut.by>
  for a patch that was used to convert VDR to the S2API driver API
@@ -2473,6 +2490,10 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing incrementing the continuity counter in cPatPmtGenerator::GetPmt()
  for pointing out that "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
  -D_LARGEFILE64_SOURCE" should be added to Make.config.
+ for adding stream type 11172 AUDIO to cPatPmtParser::ParsePmt()
+ for removing the workaround for short channel names of "Kabel Deutschland"
+ for some fixes to dvbspu.[hc]
+ for fixing a busy loop when moving editing marks
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -2481,6 +2502,7 @@ Derek Kelly (user.vdr@gmail.com)
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
+ for updating sources.conf
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2514,3 +2536,10 @@ Milan Hrala <hrala.milan@gmail.com>
 
 Andreas Schaefers <andreas_schaefers@gmx.de>
  for adding the audio id to the call of PlayAudio() in cDevice::PlayTsAudio()
+
+Matthieu Castet <castet.matthieu@free.fr>
+ for improving SPU handling on devices with limited OSD capabilities
+
+Francesco Saverio Schiavarelli <fschiava@libero.it>
+  for reporting a problem with channels that have some encrypted components that
+  VDR doesn't use

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.16 2009/11/22 13:21:00 kls Exp $
+ * $Id: device.h 2.19 2010/01/01 15:04:27 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -176,6 +176,8 @@ protected:
          ///< anything the device needs to set up when it becomes the primary
          ///< device (On = true) or to shut down when it no longer is the primary
          ///< device (On = false), it should do so in this function.
+         ///< A derived class must call the MakePrimaryDevice() function of its
+         ///< base class.
 public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
@@ -277,14 +279,15 @@ protected:
   class cPidHandle {
   public:
     int pid;
+    int streamType;
     int handle;
     int used;
-    cPidHandle(void) { pid = used = 0; handle = -1; }
+    cPidHandle(void) { pid = streamType = used = 0; handle = -1; }
     };
   cPidHandle pidHandles[MAXPIDHANDLES];
   bool HasPid(int Pid) const;
          ///< Returns true if this device is currently receiving the given PID.
-  bool AddPid(int Pid, ePidType PidType = ptOther);
+  bool AddPid(int Pid, ePidType PidType = ptOther, int StreamType = 0);
          ///< Adds a PID to the set of PIDs this device shall receive.
   void DelPid(int Pid, ePidType PidType = ptOther);
          ///< Deletes a PID from the set of PIDs this device shall receive.
@@ -498,6 +501,9 @@ private:
   cTsToPes tsToPesSubtitle;
   bool isPlayingVideo;
 protected:
+  const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
+       ///< Returns a pointer to the patPmtParser, so that a derived device
+       ///< can use the stream information from it.
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
   virtual bool SetPlayMode(ePlayMode PlayMode);

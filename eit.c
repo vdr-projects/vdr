@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.6 2009/06/21 13:46:20 kls Exp $
+ * $Id: eit.c 2.10 2010/01/03 15:35:21 kls Exp $
  */
 
 #include "eit.h"
@@ -153,9 +153,40 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                     }
                  }
                  break;
-            case SI::ContentDescriptorTag:
+            case SI::ContentDescriptorTag: {
+                 SI::ContentDescriptor *cd = (SI::ContentDescriptor *)d;
+                 SI::ContentDescriptor::Nibble Nibble;
+                 int NumContents = 0;
+                 uchar Contents[MAXEVCONTENTS] = { 0 };
+                 for (SI::Loop::Iterator it3; cd->nibbleLoop.getNext(Nibble, it3); ) {
+                     if (NumContents < MAXEVCONTENTS) {
+                        Contents[NumContents] = ((Nibble.getContentNibbleLevel1() & 0xF) << 4) | (Nibble.getContentNibbleLevel2() & 0xF);
+                        NumContents++;
+                        }
+                     }
+                 pEvent->SetContents(Contents);
+                 }
                  break;
-            case SI::ParentalRatingDescriptorTag:
+            case SI::ParentalRatingDescriptorTag: {
+                 int LanguagePreferenceRating = -1;
+                 SI::ParentalRatingDescriptor *prd = (SI::ParentalRatingDescriptor *)d;
+                 SI::ParentalRatingDescriptor::Rating Rating;
+                 for (SI::Loop::Iterator it3; prd->ratingLoop.getNext(Rating, it3); ) {
+                     if (I18nIsPreferredLanguage(Setup.EPGLanguages, Rating.languageCode, LanguagePreferenceRating)) {
+                        int ParentalRating = (Rating.getRating() & 0xFF);
+                        switch (ParentalRating) {
+                          // values defined by the DVB standard (minimum age = rating + 3 years):
+                          case 0x01 ... 0x0F: ParentalRating += 3; break;
+                          // values defined by broadcaster CSAT (now why didn't they just use 0x07, 0x09 and 0x0D?):
+                          case 0x11:          ParentalRating = 10; break;
+                          case 0x12:          ParentalRating = 12; break;
+                          case 0x13:          ParentalRating = 16; break;
+                          default:            ParentalRating = 0;
+                          }
+                        pEvent->SetParentalRating(ParentalRating);
+                        }
+                     }
+                 }
                  break;
             case SI::PDCDescriptorTag: {
                  SI::PDCDescriptor *pd = (SI::PDCDescriptor *)d;
@@ -320,6 +351,8 @@ cTDT::cTDT(const u_char *Data)
 
 // --- cEitFilter ------------------------------------------------------------
 
+time_t cEitFilter::disableUntil = 0;
+
 cEitFilter::cEitFilter(void)
 {
   Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
@@ -327,8 +360,19 @@ cEitFilter::cEitFilter(void)
      Set(0x14, 0x70);     // TDT
 }
 
+void cEitFilter::SetDisableUntil(time_t Time)
+{
+  disableUntil = Time;
+}
+
 void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
+  if (disableUntil) {
+     if (time(NULL) > disableUntil)
+        disableUntil = 0;
+     else
+        return;
+     }
   switch (Pid) {
     case 0x12: {
          if (Tid >= 0x4E && Tid <= 0x6F) {
@@ -354,5 +398,6 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             cTDT TDT(Data);
          }
          break;
+    default: ;
     }
 }

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 2.1 2008/09/06 12:44:06 kls Exp $
+ *   $Id: si.h 2.2 2009/12/06 11:37:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -411,6 +411,8 @@ public:
             return data.FourBytes(index);
          case 8:
             return (SixtyFourBit(data.FourBytes(index)) << 32) | data.FourBytes(index+4);
+         default:
+            return 0; // just to avoid a compiler warning
          }
          return 0; // just to avoid a compiler warning
       }
