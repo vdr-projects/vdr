@@ -6197,7 +6197,7 @@ Video Disk Recorder Revision History
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
-2010-01-04: Version 1.7.11
+2010-01-06: Version 1.7.11
 
 - Fixed resetting the file size when regenerating the index file.
 - The new function cDevice::PatPmtParser() can be used in derived devices to access
@@ -6273,3 +6273,5 @@ Video Disk Recorder Revision History
 - Added support for DVB cards with multiple fontends. Note that this only
   works for DVB cards where each frontend can be used independently of all
   the others on the same adapter.
+- Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
+  Anssi Hannula).
