@@ -6275,3 +6275,7 @@ Video Disk Recorder Revision History
   the others on the same adapter.
 - Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
   Anssi Hannula).
+
+2010-01-08: Version 1.7.12
+
+- Changed the EVCONTENTMASK_* macros to enums and changed "mask" to "group".
