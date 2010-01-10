@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Arthur Konovalov <artlov@gmail.com>, 2004-2009
+# Arthur Konovalov <artlov@gmail.com>, 2004-2010
 #
 msgid ""
 msgstr ""
@@ -34,251 +34,251 @@ msgid "Channel not available!"
 msgstr "Kanal ei ole kättesaadav!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Siirdemooduse start nurjus!"
+msgstr "Ülekandemooduse start nurjus!"
 
 msgid "Starting EPG scan"
 msgstr "EPG skaneerimine käivitatud"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Film/draama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Krimi/triller"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Seiklus/western/sõda"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Scifi/fantaasia/õudus"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Komöödia"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Sari/Melodraama/pärimuslik"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romanss"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Tõsine/klassikaline/religioosne/ajaloofilm/draama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Täiskasvanutele/draama"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Uudised/päevakajaline"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Uudised/ilmateade"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Uudisteajakiri"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Dokumentaal"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Diskussioon/intervjuu/debatt"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Meelelahutus"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Sõumäng/mälumäng/võistlus"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Varietee"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Vestlussaade"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sport"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Erisündmus"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Spordiajakiri"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Jalgpall"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tennis/squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Meeskonnasport"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Kergejõustik"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Autosport"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Veesport"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Talvesport"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Ratsutamine"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Võitluskunst"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Laste- ja noortesaade"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Koolieelikutele"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Meelelahutus 6-14 aastastele"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Meelelahutus 10-16 aastastele"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Õppe- ja haridussaade"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Joonisfilm/Nukufilm"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Muusika/ballett/tants"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Klassikaline muusika"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Folk/rahvamuusika"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Muusikal/ooper"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Ballett"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Kunst/kultuur"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Performance"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Kaunid kunstid"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religioon"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Rahvakultuur/traditsiooniline kunst"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Kirjandus"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Filmikunst"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Eksperimentaalfilm/video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "TV/raadio/ajakirjandus"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Uus meedia"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Kultuuriajakiri"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Mood"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Ühiskond/poliitika/majandus"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Ajakiri/reportaaþ/dokumentaal"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Majandus/majandusnõuanne"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Tähelepanuväärsed isikud"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Haridus/teadus/faktid"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Loodus/loomad/keskkond"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Tehnoloogia/loodusteadus"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Meditsiin/füsioloogia/psühholoogia"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Välisriigid/ekspeditsioon"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Ühiskondlik/Hingeteadus"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Täiendõpe"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Keeled"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Vaba aeg/hobi"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turism/reisimine"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Käsitöö"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Autondus"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Tervis"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Kokasaade"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Reklaam/teleturg"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Aiandus"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Originaalkeel"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Mustvalge"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Avaldamata"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Otseülekanne"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "alates %d"
 
 msgid "No title"
 msgstr "Pealkiri puudub"
