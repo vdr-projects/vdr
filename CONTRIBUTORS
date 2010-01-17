@@ -2550,3 +2550,6 @@ Matthieu Castet <castet.matthieu@free.fr>
 Francesco Saverio Schiavarelli <fschiava@libero.it>
  for reporting a problem with channels that have some encrypted components that
  VDR doesn't use
+
+Matti Lehtimäki <matti.lehtimaki@gmail.com>
+ for implementing the setup option "Miscellaneous/Channels wrap"

@@ -877,6 +877,11 @@ Version 1.6
                          VDR was stopped will be used. The valid range is from
                          0 (silent) to 255 (loudest).
 
+  Channels wrap = no     During zapping with the "Up" and "Down" keys (or the
+                         "Channel+" and "Channel-" keys) the current channel will
+                         wrap around the beginning or end of the channel list if
+                         this parameter is set to 'yes'.
+
   Emergency exit = yes   If, for some reason, a recording fails because the video
                          data stream is broken, or the CAM doesn't decrypt etc.,
                          VDR automatically exits in order to allow the surrounding

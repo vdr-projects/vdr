@@ -6291,3 +6291,6 @@ Video Disk Recorder Revision History
   by Rolf Ahrenberg).
 - cPalette::ClosestColor() now treats fully transparent colors as "equal"; improved
   cDvbSpuBitmap::getMinBpp() (thanks to Matthieu Castet and Johann Friedrichs).
+- The new setup option "Miscellaneous/Channels wrap" controls whether the current
+  channel wraps around the beginning or end of the channel list when zapping (thanks
+  to Matti Lehtimäki).
