@@ -6283,3 +6283,5 @@ Video Disk Recorder Revision History
 - The "Edit timer" menu can now set the folder for the recording from a list of
   folders stored in "folders.conf".
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- If svdrphosts.conf contains only the address of the local host, the SVDRP port
+  is opened only for the local host (thanks to Manuel Reimer).

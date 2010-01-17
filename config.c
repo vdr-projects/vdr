@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.7 2010/01/16 14:27:29 kls Exp $
+ * $Id: config.c 2.8 2010/01/17 12:22:56 kls Exp $
  */
 
 #include "config.h"
@@ -116,6 +116,11 @@ bool cSVDRPhost::Parse(const char *s)
   if (p)
      *(char *)p = '/'; // there it is again
   return result != 0 && (mask != 0 || addr.s_addr == 0);
+}
+
+bool cSVDRPhost::IsLocalhost(void)
+{
+  return addr.s_addr == htonl(INADDR_LOOPBACK);
 }
 
 bool cSVDRPhost::Accepts(in_addr_t Address)
@@ -275,6 +280,17 @@ cCommands RecordingCommands;
 // --- cSVDRPhosts -----------------------------------------------------------
 
 cSVDRPhosts SVDRPhosts;
+
+bool cSVDRPhosts::LocalhostOnly(void)
+{
+  cSVDRPhost *h = First();
+  while (h) {
+        if (!h->IsLocalhost())
+           return false;
+        h = (cSVDRPhost *)h->Next();
+        }
+  return true;
+}
 
 bool cSVDRPhosts::Acceptable(in_addr_t Address)
 {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.18 2010/01/16 13:33:10 kls Exp $
+ * $Id: config.h 2.19 2010/01/17 12:22:21 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -72,6 +72,7 @@ private:
 public:
   cSVDRPhost(void);
   bool Parse(const char *s);
+  bool IsLocalhost(void);
   bool Accepts(in_addr_t Address);
   };
 
@@ -190,6 +191,7 @@ class cCommands : public cConfig<cCommand> {};
 
 class cSVDRPhosts : public cConfig<cSVDRPhost> {
 public:
+  bool LocalhostOnly(void);
   bool Acceptable(in_addr_t Address);
   };
 

@@ -2526,6 +2526,8 @@ Valdemaras Pipiras <valdemaras@ambernet.lt>
 
 Manuel Reimer <Manuel.Reimer@gmx.de>
  for fixing saving terminal settings when running in background
+ for making the SVDRP port open only for the local host if svdrphosts.conf
+ contains only the address of the local host
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
