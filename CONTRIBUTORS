@@ -2548,5 +2548,5 @@ Matthieu Castet <castet.matthieu@free.fr>
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
 
 Francesco Saverio Schiavarelli <fschiava@libero.it>
-  for reporting a problem with channels that have some encrypted components that
-  VDR doesn't use
+ for reporting a problem with channels that have some encrypted components that
+ VDR doesn't use
