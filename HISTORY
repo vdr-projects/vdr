@@ -6289,3 +6289,5 @@ Video Disk Recorder Revision History
   in 'make install' (thanks to Martin Dauskardt).
 - Added plain text error messages to log entries from cOsd::SetAreas() (suggested
   by Rolf Ahrenberg).
+- cPalette::ClosestColor() now treats fully transparent colors as "equal"; improved
+  cDvbSpuBitmap::getMinBpp() (thanks to Matthieu Castet and Johann Friedrichs).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.7 2010/01/17 13:27:24 kls Exp $
+ * $Id: osd.c 2.8 2010/01/17 13:43:02 kls Exp $
  */
 
 #include "osd.h"
@@ -145,12 +145,14 @@ int cPalette::ClosestColor(tColor Color, int MaxDiff) const
   int R1 = (Color & 0x00FF0000) >> 16;
   int G1 = (Color & 0x0000FF00) >>  8;
   int B1 = (Color & 0x000000FF);
-  for (int i = 0; i < numColors; i++) {
+  for (int i = 0; i < numColors && d > 0; i++) {
       int A2 = (color[i] & 0xFF000000) >> 24;
       int R2 = (color[i] & 0x00FF0000) >> 16;
       int G2 = (color[i] & 0x0000FF00) >>  8;
       int B2 = (color[i] & 0x000000FF);
-      int diff = (abs(A1 - A2) << 1) + (abs(R1 - R2) << 1) + (abs(G1 - G2) << 1) + (abs(B1 - B2) << 1);
+      int diff = 0;
+      if (A1 && A2) // fully transparent colors are considered equal
+         diff = (abs(A1 - A2) << 1) + (abs(R1 - R2) << 1) + (abs(G1 - G2) << 1) + (abs(B1 - B2) << 1);
       if (diff < d) {
          d = diff;
          n = i;

@@ -2497,6 +2497,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for removing the workaround for short channel names of "Kabel Deutschland"
  for some fixes to dvbspu.[hc]
  for fixing a busy loop when moving editing marks
+ for making cPalette::ClosestColor() treat fully transparent colors as "equal"
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -2544,6 +2545,7 @@ Andreas Schaefers <andreas_schaefers@gmx.de>
 
 Matthieu Castet <castet.matthieu@free.fr>
  for improving SPU handling on devices with limited OSD capabilities
+ for making cPalette::ClosestColor() treat fully transparent colors as "equal"
 
 Francesco Saverio Schiavarelli <fschiava@libero.it>
   for reporting a problem with channels that have some encrypted components that
