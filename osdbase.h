@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.17 2007/11/03 14:50:52 kls Exp $
+ * $Id: osdbase.h 2.1 2010/01/16 14:25:31 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -102,6 +102,7 @@ protected:
   void SetCols(int c0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   void SetHasHotkeys(bool HasHotkeys = true);
   virtual void Clear(void);
+  const char *Title(void) { return title; }
   bool SelectableItem(int idx);
   void SetCurrent(cOsdItem *Item);
   void RefreshCurrent(void);
@@ -116,6 +117,7 @@ protected:
   eOSState AddSubMenu(cOsdMenu *SubMenu);
   eOSState CloseSubMenu();
   bool HasSubMenu(void) { return subMenu; }
+  cOsdMenu *SubMenu(void) { return subMenu; }
   void SetStatus(const char *s);
   void SetTitle(const char *Title);
   void SetHelp(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 13:05+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian\n"
@@ -583,6 +583,31 @@ msgstr "Kanal on taimeri kasutuses!"
 msgid "Delete channel?"
 msgstr "Kustutada kanal?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Taimeri redigeerimine"
 
@@ -613,8 +638,14 @@ msgstr "Eluiga"
 msgid "File"
 msgstr "Fail"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Esimene päev"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Taimer"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.6 2009/12/05 15:30:30 kls Exp $
+ * $Id: config.c 2.7 2010/01/16 14:27:29 kls Exp $
  */
 
 #include "config.h"
@@ -122,6 +122,150 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
 {
   return (Address & mask) == (addr.s_addr & mask);
 }
+
+// --- cNestedItem -----------------------------------------------------------
+
+cNestedItem::cNestedItem(const char *Text, bool WithSubItems)
+{
+  text = strdup(Text ? Text : "");
+  subItems = WithSubItems ? new cList<cNestedItem> : NULL;
+}
+
+cNestedItem::~cNestedItem()
+{
+  delete subItems;
+  free(text);
+}
+
+int cNestedItem::Compare(const cListObject &ListObject) const
+{
+  return strcasecmp(text, ((cNestedItem *)&ListObject)->text);
+}
+
+void cNestedItem::AddSubItem(cNestedItem *Item)
+{
+  if (!subItems)
+     subItems = new cList<cNestedItem>;
+  if (Item)
+     subItems->Add(Item);
+}
+
+void cNestedItem::SetText(const char *Text)
+{
+  free(text);
+  text = strdup(Text ? Text : "");
+}
+
+void cNestedItem::SetSubItems(bool On)
+{
+  if (On && !subItems)
+     subItems = new cList<cNestedItem>;
+  else if (!On && subItems) {
+     delete subItems;
+     subItems = NULL;
+     }
+}
+
+// --- cNestedItemList -------------------------------------------------------
+
+cNestedItemList::cNestedItemList(void)
+{
+  fileName = NULL;
+}
+
+cNestedItemList::~cNestedItemList()
+{
+  free(fileName);
+}
+
+bool cNestedItemList::Parse(FILE *f, cList<cNestedItem> *List, int &Line)
+{
+  char *s;
+  cReadLine ReadLine;
+  while ((s = ReadLine.Read(f)) != NULL) {
+        Line++;
+        char *p = strchr(s, '#');
+        if (p)
+           *p = 0;
+        s = skipspace(stripspace(s));
+        if (!isempty(s)) {
+           if ((p = strchr(s, '{')) != NULL) {
+              *p = 0;
+              stripspace(s);
+              cNestedItem *Item = new cNestedItem(s, true);
+              List->Add(Item);
+              if (!Parse(f, Item->SubItems(), Line))
+                 return false;
+              }
+           else if (*s == '}')
+              break;
+           else
+              List->Add(new cNestedItem(s));
+           }
+        }
+  return true;
+}
+
+bool cNestedItemList::Write(FILE *f, cList<cNestedItem> *List, int Indent)
+{
+  for (cNestedItem *Item = List->First(); Item; Item = List->Next(Item)) {
+      if (Item->SubItems()) {
+         fprintf(f, "%*s%s {\n", Indent, "", Item->Text());
+         Write(f, Item->SubItems(), Indent + 2);
+         fprintf(f, "%*s}\n", Indent + 2, "");
+         }
+      else
+         fprintf(f, "%*s%s\n", Indent, "", Item->Text());
+      }
+  return true;
+}
+
+void cNestedItemList::Clear(void)
+{
+  free(fileName);
+  fileName = NULL;
+  cList<cNestedItem>::Clear();
+}
+
+bool cNestedItemList::Load(const char *FileName)
+{
+  cList<cNestedItem>::Clear();
+  if (FileName) {
+     free(fileName);
+     fileName = strdup(FileName);
+     }
+  bool result = false;
+  if (fileName && access(fileName, F_OK) == 0) {
+     isyslog("loading %s", fileName);
+     FILE *f = fopen(fileName, "r");
+     if (f) {
+        int Line = 0;
+        result = Parse(f, this, Line);
+        fclose(f);
+        }
+     else {
+        LOG_ERROR_STR(fileName);
+        result = false;
+        }
+     }
+  return result;
+}
+
+bool cNestedItemList::Save(void)
+{
+  bool result = true;
+  cSafeFile f(fileName);
+  if (f.Open()) {
+     result = Write(f, this);
+     if (!f.Close())
+        result = false;
+     }
+  else
+     result = false;
+  return result;
+}
+
+cNestedItemList Folders;
 
 // --- cCommands -------------------------------------------------------------
 

@@ -6276,7 +6276,9 @@ Video Disk Recorder Revision History
 - Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
   Anssi Hannula).
 
-2010-01-10: Version 1.7.12
+2010-01-17: Version 1.7.12
 
 - Changed the EVCONTENTMASK_* macros to enums and changed "mask" to "group".
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- The "Edit timer" menu can now set the folder for the recording from a list of
+  folders stored in "folders.conf".

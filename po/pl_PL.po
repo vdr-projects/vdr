@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 13:05+0100\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
 "Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
 "Language-Team:  Polish\n"
@@ -584,6 +584,31 @@ msgstr "Kana³ jest u¿ywany przez timer!"
 msgid "Delete channel?"
 msgstr "Usun±æ kana³?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Edycja timera"
 
@@ -614,8 +639,14 @@ msgstr "Czas ¿ycia"
 msgid "File"
 msgstr "Plik"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Pierwszy dzieñ"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Timery"

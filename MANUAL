@@ -474,6 +474,23 @@ Version 1.6
   A timer can also be programmed by pressing the "Red" key on the "Schedule",
   "Now", "Next" or "Event" menus.
 
+  The "Red" key in the "Edit timer" menu opens a list of folders, which can be
+  used to define the file name in which the recording will be stored.
+
+* Managing folders
+
+  The "Select folder" menu, which can be accessed by pressing the "Red" key in
+  the "Edit timer" menu, offers a list of folders that can be used for storing
+  a recording. In this menu, the "Green" key allows you to define a new folder
+  within the current one; if the "Sub folder" option is set to "yes", this will
+  be a folder that contains other folders (indicated by "..." following the
+  folder name in the list). The "Yellow" key deletes the current folder (note
+  that this will merely delete the folder definition stored in 'folders.conf'
+  and has no effect on existing timers or recordings). The "Blue" key can be
+  used to edit an existing folder definition. The "Red" key selects the current
+  folder, or enters a sub folder. Once a folder has been selected, the entire
+  path of the timer's file name will be replaced with the selected folder.
+
 * Parameters in the "Setup" menu
 
   Select "Setup" from the "VDR" menu to enter the setup menu. From there you can

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.17 2010/01/08 15:21:44 kls Exp $
+ * $Id: config.h 2.18 2010/01/16 13:33:10 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -158,6 +158,34 @@ public:
   }
   };
 
+class cNestedItem : public cListObject {
+private:
+  char *text;
+  cList<cNestedItem> *subItems;
+public:
+  cNestedItem(const char *Text, bool WithSubItems = false);
+  virtual ~cNestedItem();
+  virtual int Compare(const cListObject &ListObject) const;
+  const char *Text(void) const { return text; }
+  cList<cNestedItem> *SubItems(void) { return subItems; }
+  void AddSubItem(cNestedItem *Item);
+  void SetText(const char *Text);
+  void SetSubItems(bool On);
+  };
+
+class cNestedItemList : public cList<cNestedItem> {
+private:
+  char *fileName;
+  bool Parse(FILE *f, cList<cNestedItem> *List, int &Line);
+  bool Write(FILE *f, cList<cNestedItem> *List, int Indent = 0);
+public:
+  cNestedItemList(void);
+  virtual ~cNestedItemList();
+  void Clear(void);
+  bool Load(const char *FileName);
+  bool Save(void);
+  };
+
 class cCommands : public cConfig<cCommand> {};
 
 class cSVDRPhosts : public cConfig<cSVDRPhost> {
@@ -165,6 +193,7 @@ public:
   bool Acceptable(in_addr_t Address);
   };
 
+extern cNestedItemList Folders;
 extern cCommands Commands;
 extern cCommands RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.9\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 13:05+0100\n"
 "PO-Revision-Date: 2009-10-17 14:19+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian\n"
@@ -583,6 +583,31 @@ msgstr "Kanalą šiuo metu naudoja laikmačio procesas!"
 msgid "Delete channel?"
 msgstr "Ištrinti kanalą?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Koreguoti laikmatį"
 
@@ -613,8 +638,14 @@ msgstr "Galiojimas"
 msgid "File"
 msgstr "Failas"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Pirma diena"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Laikmačiai"
