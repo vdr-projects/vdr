@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.6 2009/12/06 11:33:47 kls Exp $
+ * $Id: osd.c 2.7 2010/01/17 13:27:24 kls Exp $
  */
 
 #include "osd.h"
@@ -724,6 +724,18 @@ void cBitmap::ShrinkBpp(int NewBpp)
 
 // --- cOsd ------------------------------------------------------------------
 
+static const char *OsdErrorTexts[] = {
+  "ok",
+  "too many areas",
+  "too many colors",
+  "bpp not supported",
+  "areas overlap",
+  "wrong alignment",
+  "out of memory",
+  "wrong area size",
+  "unknown",
+  };
+
 int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
@@ -814,7 +826,7 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
          }
      }
   else
-     esyslog("ERROR: cOsd::SetAreas returned %d", Result);
+     esyslog("ERROR: cOsd::SetAreas returned %d (%s)", Result, Result < oeUnknown ? OsdErrorTexts[Result] : OsdErrorTexts[oeUnknown]);
   return Result;
 }
 

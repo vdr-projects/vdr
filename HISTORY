@@ -6287,3 +6287,5 @@ Video Disk Recorder Revision History
   is opened only for the local host (thanks to Manuel Reimer).
 - Renamed 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
   in 'make install' (thanks to Martin Dauskardt).
+- Added plain text error messages to log entries from cOsd::SetAreas() (suggested
+  by Rolf Ahrenberg).
