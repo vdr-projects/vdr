@@ -6285,3 +6285,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - If svdrphosts.conf contains only the address of the local host, the SVDRP port
   is opened only for the local host (thanks to Manuel Reimer).
+- Renamed 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
+  in 'make install' (thanks to Martin Dauskardt).

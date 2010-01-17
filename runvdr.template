@@ -20,10 +20,20 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.19 2006/05/14 16:02:05 kls Exp $
+# $Id: runvdr.template 2.1 2010/01/17 12:39:27 kls Exp $
 
 VDRPRG="./vdr"
-VDRCMD="$VDRPRG -w 60 $*"
+
+VDROPTIONS="-w 60"
+# For other options see manpage vdr.1
+
+VDRPLUGINS=""
+# You will need to select your output device plugin if you want
+# to use VDR to watch video. For instance, for a "Full Featured"
+# DVB card that would be
+# VDRPLUGINS="-P dvbsddevice"
+
+VDRCMD="$VDRPRG $VDROPTIONS $VDRPLUGINS $*"
 
 KILL="/usr/bin/killall -q -TERM"
 
