@@ -6300,3 +6300,5 @@ Video Disk Recorder Revision History
   in most cases is the same as the video pid. For channels that use a separate
   PCR pid, no TS packets are recorded from that PID (I have yet to see a case where
   this actually is a problem).
+- Fixed determining the frame duration on channels where the PTS deltas jitter by
+  +/-1 around 3600.

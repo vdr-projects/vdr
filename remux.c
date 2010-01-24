@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.39 2010/01/24 15:18:29 kls Exp $
+ * $Id: remux.c 2.40 2010/01/24 16:13:12 kls Exp $
  */
 
 #include "remux.h"
@@ -842,7 +842,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        // determine frame info:
                        if (isVideo) {
                           if (Delta % 3600 == 0)
-                             frameDuration = 3600; // PAL, 25 fps
+                             frameDuration = 3600; // PAL, 25 fps, exact timing
+                          else if (abs(Delta % 3600) == 3599 || abs(Delta % 3600) == 1)
+                             frameDuration = 3600; // PAL, 25 fps, timing with jitter
                           else if (Delta % 3003 == 0)
                              frameDuration = 3003; // NTSC, 29.97 fps
                           else if (abs(Delta - 1800) <= 1) {
