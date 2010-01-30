@@ -6276,7 +6276,7 @@ Video Disk Recorder Revision History
 - Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
   Anssi Hannula).
 
-2010-01-24: Version 1.7.12
+2010-01-30: Version 1.7.12
 
 - Changed the EVCONTENTMASK_* macros to enums and changed "mask" to "group".
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6296,9 +6296,13 @@ Video Disk Recorder Revision History
   to Matti Lehtimäki).
 - Fixed determining the frame duration on channels where the PTS deltas jitter by
   +/-1 around 1800.
-- The PCR pid in generated PMTs is now set to the channel's PCR pid again, which
-  in most cases is the same as the video pid. For channels that use a separate
-  PCR pid, no TS packets are recorded from that PID (I have yet to see a case where
-  this actually is a problem).
+- The PCR pid in generated PMTs is now set to the channel's PCR pid again.
 - Fixed determining the frame duration on channels where the PTS deltas jitter by
   +/-1 around 3600.
+- The PCR pid is now recorded for channels where this is different from the video
+  PID. To facilitate this, the interfaces of cTransfer, cTransferControl, cRecorder
+  and cReceiver have been modified, so that the PIDs are no longer given in separate
+  parameters, but rather the whole channel is handed down for processing. The old
+  constructor of cReceiver is still available, but it is recommended to plugin authors
+  that they switch to the new interface as soon as possible.
+  When replaying such a recording, the PCR packets are sent to PlayTsVideo()

@@ -4,17 +4,17 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.4 2009/12/06 14:22:23 kls Exp $
+ * $Id: transfer.c 2.5 2010/01/30 11:10:25 kls Exp $
  */
 
 #include "transfer.h"
 
 // --- cTransfer -------------------------------------------------------------
 
-cTransfer::cTransfer(tChannelID ChannelID, int VPid, const int *APids, const int *DPids, const int *SPids)
-:cReceiver(ChannelID, -1, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
+cTransfer::cTransfer(const cChannel *Channel)
+:cReceiver(Channel)
 {
-  patPmtGenerator.SetChannel(Channels.GetByChannelID(ChannelID));
+  patPmtGenerator.SetChannel(Channel);
 }
 
 cTransfer::~cTransfer()
@@ -55,8 +55,8 @@ void cTransfer::Receive(uchar *Data, int Length)
 
 cDevice *cTransferControl::receiverDevice = NULL;
 
-cTransferControl::cTransferControl(cDevice *ReceiverDevice, tChannelID ChannelID, int VPid, const int *APids, const int *DPids, const int *SPids)
-:cControl(transfer = new cTransfer(ChannelID, VPid, APids, DPids, SPids), true)
+cTransferControl::cTransferControl(cDevice *ReceiverDevice, const cChannel *Channel)
+:cControl(transfer = new cTransfer(Channel), true)
 {
   ReceiverDevice->AttachReceiver(transfer);
   receiverDevice = ReceiverDevice;

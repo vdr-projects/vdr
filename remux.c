@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.40 2010/01/24 16:13:12 kls Exp $
+ * $Id: remux.c 2.41 2010/01/30 10:43:12 kls Exp $
  */
 
 #include "remux.h"
@@ -144,7 +144,7 @@ void TsSetTeiOnBrokenPackets(uchar *p, int l)
 
 // --- cPatPmtGenerator ------------------------------------------------------
 
-cPatPmtGenerator::cPatPmtGenerator(cChannel *Channel)
+cPatPmtGenerator::cPatPmtGenerator(const cChannel *Channel)
 {
   numPmtPackets = 0;
   patCounter = pmtCounter = 0;
@@ -243,7 +243,7 @@ int cPatPmtGenerator::MakeCRC(uchar *Target, const uchar *Data, int Length)
 #define P_PMT_PID 0x0084 // pseudo PMT pid
 #define MAXPID    0x2000 // the maximum possible number of pids
 
-void cPatPmtGenerator::GeneratePmtPid(cChannel *Channel)
+void cPatPmtGenerator::GeneratePmtPid(const cChannel *Channel)
 {
   bool Used[MAXPID] = { false };
 #define SETPID(p) { if ((p) >= 0 && (p) < MAXPID) Used[p] = true; }
@@ -287,7 +287,7 @@ void cPatPmtGenerator::GeneratePat(void)
   IncVersion(patVersion);
 }
 
-void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
+void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
 {
   // generate the complete PMT section:
   uchar buf[MAX_SECTION_SIZE];
@@ -364,7 +364,7 @@ void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
   pmtVersion = PmtVersion & 0x1F;
 }
 
-void cPatPmtGenerator::SetChannel(cChannel *Channel)
+void cPatPmtGenerator::SetChannel(const cChannel *Channel)
 {
   if (Channel) {
      GeneratePmtPid(Channel);
@@ -402,6 +402,7 @@ void cPatPmtParser::Reset(void)
   patVersion = pmtVersion = -1;
   pmtPid = -1;
   vpid = vtype = 0;
+  ppid = 0;
 }
 
 void cPatPmtParser::ParsePat(const uchar *Data, int Length)
@@ -486,6 +487,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      int NumDpids = 0;
      int NumSpids = 0;
      vpid = vtype = 0;
+     ppid = 0;
      apids[0] = 0;
      dpids[0] = 0;
      spids[0] = 0;
@@ -500,6 +502,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
            case 0x1B: // MPEG4
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
+                      ppid = Pmt.getPCRPid();
                       break;
            case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
