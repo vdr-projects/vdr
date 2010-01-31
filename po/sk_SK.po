@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 16:18+0100\n"
 "PO-Revision-Date: 2009-09-30 12:50+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak\n"
@@ -584,6 +584,31 @@ msgstr "Plán nahrávania práve pou¾íva kanál!"
 msgid "Delete channel?"
 msgstr "Odstráni» kanál?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Úprava plánu nahrávania"
 
@@ -614,8 +639,14 @@ msgstr "®ivotnos»"
 msgid "File"
 msgstr "Súbor"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Prvý deò"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Plány nahrávania"
@@ -1044,6 +1075,9 @@ msgstr "ako naposledy"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitos» po spustení"
+
+msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Núdzové ukonèenie"

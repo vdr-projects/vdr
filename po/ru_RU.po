@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 16:18+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
@@ -584,6 +584,31 @@ msgstr "Канал занят таймером!"
 msgid "Delete channel?"
 msgstr "Удалить канал?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Установка таймера"
 
@@ -614,8 +639,14 @@ msgstr "Срок хранения"
 msgid "File"
 msgstr "Файл"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Первый день"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Таймеры"
@@ -1044,6 +1075,9 @@ msgstr "как раньше"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Громкость при включении"
+
+msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Аварийный выход"

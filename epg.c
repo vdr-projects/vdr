@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.4 2010/01/03 14:10:20 kls Exp $
+ * $Id: epg.c 2.5 2010/01/08 15:20:28 kls Exp $
  */
 
 #include "epg.h"
@@ -190,7 +190,7 @@ void cEvent::SetComponents(cComponents *Components)
 
 void cEvent::SetContents(uchar *Contents)
 {
-  for (int i = 0; i < MAXEVCONTENTS; i++)
+  for (int i = 0; i < MaxEventContents; i++)
       contents[i] = Contents[i];
 }
 
@@ -250,7 +250,7 @@ bool cEvent::IsRunning(bool OrAboutToStart) const
 const char *cEvent::ContentToString(uchar Content)
 {
   switch (Content & 0xF0) {
-    case EVCONTENTMASK_MOVIEDRAMA:
+    case ecgMovieDrama:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Movie/Drama");
@@ -264,7 +264,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x08: return tr("Content$Adult Movie/Drama");
            }
          break;
-    case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
+    case ecgNewsCurrentAffairs:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$News/Current Affairs");
@@ -274,7 +274,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x04: return tr("Content$Discussion/Inverview/Debate");
            }
          break;
-    case EVCONTENTMASK_SHOW:
+    case ecgShow:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Show/Game Show");
@@ -283,7 +283,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x03: return tr("Content$Talk Show");
            }
          break;
-    case EVCONTENTMASK_SPORTS:
+    case ecgSports:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Sports");
@@ -300,7 +300,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x0B: return tr("Content$Martial Sports");
            }
          break;
-    case EVCONTENTMASK_CHILDRENYOUTH:
+    case ecgChildrenYouth:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Children's/Youth Programme");
@@ -311,7 +311,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x05: return tr("Content$Cartoons/Puppets");
            }
          break;
-    case EVCONTENTMASK_MUSICBALLETDANCE:
+    case ecgMusicBalletDance:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Music/Ballet/Dance");
@@ -323,7 +323,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x06: return tr("Content$Ballet");
            }
          break;
-    case EVCONTENTMASK_ARTSCULTURE:
+    case ecgArtsCulture:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Arts/Culture");
@@ -340,7 +340,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x0B: return tr("Content$Fashion");
            }
          break;
-    case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
+    case ecgSocialPoliticalEconomics:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Social/Political/Economics");
@@ -349,7 +349,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x03: return tr("Content$Remarkable People");
            }
          break;
-    case EVCONTENTMASK_EDUCATIONALSCIENCE:
+    case ecgEducationalScience:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Education/Science/Factual");
@@ -362,7 +362,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x07: return tr("Content$Languages");
            }
          break;
-    case EVCONTENTMASK_LEISUREHOBBIES:
+    case ecgLeisureHobbies:
          switch (Content & 0x0F) {
            default:
            case 0x00: return tr("Content$Leisure/Hobbies");
@@ -375,7 +375,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x07: return tr("Content$Gardening");
            }
          break;
-    case EVCONTENTMASK_SPECIAL:
+    case ecgSpecial:
          switch (Content & 0x0F) {
            case 0x00: return tr("Content$Original Language");
            case 0x01: return tr("Content$Black & White");
@@ -468,7 +468,7 @@ bool cEvent::Parse(char *s)
               break;
     case 'G': {
                 memset(contents, 0, sizeof(contents));
-                for (int i = 0; i < MAXEVCONTENTS; i++) {
+                for (int i = 0; i < MaxEventContents; i++) {
                     char *tail = NULL;
                     int c = strtol(t, &tail, 16);
                     if (0x00 < c && c <= 0xFF) {

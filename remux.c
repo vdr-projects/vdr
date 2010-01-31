@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.37 2009/12/29 15:56:33 kls Exp $
+ * $Id: remux.c 2.41 2010/01/30 10:43:12 kls Exp $
  */
 
 #include "remux.h"
@@ -144,7 +144,7 @@ void TsSetTeiOnBrokenPackets(uchar *p, int l)
 
 // --- cPatPmtGenerator ------------------------------------------------------
 
-cPatPmtGenerator::cPatPmtGenerator(cChannel *Channel)
+cPatPmtGenerator::cPatPmtGenerator(const cChannel *Channel)
 {
   numPmtPackets = 0;
   patCounter = pmtCounter = 0;
@@ -243,7 +243,7 @@ int cPatPmtGenerator::MakeCRC(uchar *Target, const uchar *Data, int Length)
 #define P_PMT_PID 0x0084 // pseudo PMT pid
 #define MAXPID    0x2000 // the maximum possible number of pids
 
-void cPatPmtGenerator::GeneratePmtPid(cChannel *Channel)
+void cPatPmtGenerator::GeneratePmtPid(const cChannel *Channel)
 {
   bool Used[MAXPID] = { false };
 #define SETPID(p) { if ((p) >= 0 && (p) < MAXPID) Used[p] = true; }
@@ -287,7 +287,7 @@ void cPatPmtGenerator::GeneratePat(void)
   IncVersion(patVersion);
 }
 
-void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
+void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
 {
   // generate the complete PMT section:
   uchar buf[MAX_SECTION_SIZE];
@@ -295,7 +295,7 @@ void cPatPmtGenerator::GeneratePmt(cChannel *Channel)
   numPmtPackets = 0;
   if (Channel) {
      int Vpid = Channel->Vpid();
-     int Ppid = 0x1FFF; // no PCR pid
+     int Ppid = Channel->Ppid();
      uchar *p = buf;
      int i = 0;
      p[i++] = 0x02; // table id
@@ -364,7 +364,7 @@ void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
   pmtVersion = PmtVersion & 0x1F;
 }
 
-void cPatPmtGenerator::SetChannel(cChannel *Channel)
+void cPatPmtGenerator::SetChannel(const cChannel *Channel)
 {
   if (Channel) {
      GeneratePmtPid(Channel);
@@ -402,6 +402,7 @@ void cPatPmtParser::Reset(void)
   patVersion = pmtVersion = -1;
   pmtPid = -1;
   vpid = vtype = 0;
+  ppid = 0;
 }
 
 void cPatPmtParser::ParsePat(const uchar *Data, int Length)
@@ -486,6 +487,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
      int NumDpids = 0;
      int NumSpids = 0;
      vpid = vtype = 0;
+     ppid = 0;
      apids[0] = 0;
      dpids[0] = 0;
      spids[0] = 0;
@@ -500,6 +502,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
            case 0x1B: // MPEG4
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
+                      ppid = Pmt.getPCRPid();
                       break;
            case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
@@ -842,10 +845,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        // determine frame info:
                        if (isVideo) {
                           if (Delta % 3600 == 0)
-                             frameDuration = 3600; // PAL, 25 fps
+                             frameDuration = 3600; // PAL, 25 fps, exact timing
+                          else if (abs(Delta % 3600) == 3599 || abs(Delta % 3600) == 1)
+                             frameDuration = 3600; // PAL, 25 fps, timing with jitter
                           else if (Delta % 3003 == 0)
                              frameDuration = 3003; // NTSC, 29.97 fps
-                          else if (Delta == 1800) {
+                          else if (abs(Delta - 1800) <= 1) {
                              frameDuration = 3600; // PAL, 25 fps
                              framesPerPayloadUnit = -2;
                              }

@@ -10,3 +10,8 @@ VDR Plugin 'dvbsddevice' Revision History
 - Calling the MakePrimaryDevice() function of the base class to allow
   the cDevice to stop displaying subtitles.
 - Added support for DVB cards with multiple fontends.
+
+2010-01-30: Version 0.0.3
+
+- The PCR pid is now recorded for channels where this is different from the
+  video PID.

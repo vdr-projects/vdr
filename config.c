@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.6 2009/12/05 15:30:30 kls Exp $
+ * $Id: config.c 2.10 2010/01/31 12:36:36 kls Exp $
  */
 
 #include "config.h"
@@ -21,71 +21,6 @@
 // value!
 
 #define ChkDoublePlausibility(Variable, Default) { if (Variable < 0.00001) Variable = Default; }
-
-// --- cCommand --------------------------------------------------------------
-
-char *cCommand::result = NULL;
-
-cCommand::cCommand(void)
-{
-  title = command = NULL;
-  confirm = false;
-}
-
-cCommand::~cCommand()
-{
-  free(title);
-  free(command);
-}
-
-bool cCommand::Parse(const char *s)
-{
-  const char *p = strchr(s, ':');
-  if (p) {
-     int l = p - s;
-     if (l > 0) {
-        title = MALLOC(char, l + 1);
-        stripspace(strn0cpy(title, s, l + 1));
-        if (!isempty(title)) {
-           int l = strlen(title);
-           if (l > 1 && title[l - 1] == '?') {
-              confirm = true;
-              title[l - 1] = 0;
-              }
-           command = stripspace(strdup(skipspace(p + 1)));
-           return !isempty(command);
-           }
-        }
-     }
-  return false;
-}
-
-const char *cCommand::Execute(const char *Parameters)
-{
-  free(result);
-  result = NULL;
-  cString cmdbuf;
-  if (Parameters)
-     cmdbuf = cString::sprintf("%s %s", command, Parameters);
-  const char *cmd = *cmdbuf ? *cmdbuf : command;
-  dsyslog("executing command '%s'", cmd);
-  cPipe p;
-  if (p.Open(cmd, "r")) {
-     int l = 0;
-     int c;
-     while ((c = fgetc(p)) != EOF) {
-           if (l % 20 == 0)
-              result = (char *)realloc(result, l + 21);
-           result[l++] = char(c);
-           }
-     if (result)
-        result[l] = 0;
-     p.Close();
-     }
-  else
-     esyslog("ERROR: can't open pipe for command '%s'", cmd);
-  return result;
-}
 
 // --- cSVDRPhost ------------------------------------------------------------
 
@@ -118,19 +53,179 @@ bool cSVDRPhost::Parse(const char *s)
   return result != 0 && (mask != 0 || addr.s_addr == 0);
 }
 
+bool cSVDRPhost::IsLocalhost(void)
+{
+  return addr.s_addr == htonl(INADDR_LOOPBACK);
+}
+
 bool cSVDRPhost::Accepts(in_addr_t Address)
 {
   return (Address & mask) == (addr.s_addr & mask);
 }
 
-// --- cCommands -------------------------------------------------------------
+// --- cNestedItem -----------------------------------------------------------
 
-cCommands Commands;
-cCommands RecordingCommands;
+cNestedItem::cNestedItem(const char *Text, bool WithSubItems)
+{
+  text = strdup(Text ? Text : "");
+  subItems = WithSubItems ? new cList<cNestedItem> : NULL;
+}
+
+cNestedItem::~cNestedItem()
+{
+  delete subItems;
+  free(text);
+}
+
+int cNestedItem::Compare(const cListObject &ListObject) const
+{
+  return strcasecmp(text, ((cNestedItem *)&ListObject)->text);
+}
+
+void cNestedItem::AddSubItem(cNestedItem *Item)
+{
+  if (!subItems)
+     subItems = new cList<cNestedItem>;
+  if (Item)
+     subItems->Add(Item);
+}
+
+void cNestedItem::SetText(const char *Text)
+{
+  free(text);
+  text = strdup(Text ? Text : "");
+}
+
+void cNestedItem::SetSubItems(bool On)
+{
+  if (On && !subItems)
+     subItems = new cList<cNestedItem>;
+  else if (!On && subItems) {
+     delete subItems;
+     subItems = NULL;
+     }
+}
+
+// --- cNestedItemList -------------------------------------------------------
+
+cNestedItemList::cNestedItemList(void)
+{
+  fileName = NULL;
+}
+
+cNestedItemList::~cNestedItemList()
+{
+  free(fileName);
+}
+
+bool cNestedItemList::Parse(FILE *f, cList<cNestedItem> *List, int &Line)
+{
+  char *s;
+  cReadLine ReadLine;
+  while ((s = ReadLine.Read(f)) != NULL) {
+        Line++;
+        char *p = strchr(s, '#');
+        if (p)
+           *p = 0;
+        s = skipspace(stripspace(s));
+        if (!isempty(s)) {
+           p = s + strlen(s) - 1;
+           if (*p == '{') {
+              *p = 0;
+              stripspace(s);
+              cNestedItem *Item = new cNestedItem(s, true);
+              List->Add(Item);
+              if (!Parse(f, Item->SubItems(), Line))
+                 return false;
+              }
+           else if (*s == '}')
+              break;
+           else
+              List->Add(new cNestedItem(s));
+           }
+        }
+  return true;
+}
+
+bool cNestedItemList::Write(FILE *f, cList<cNestedItem> *List, int Indent)
+{
+  for (cNestedItem *Item = List->First(); Item; Item = List->Next(Item)) {
+      if (Item->SubItems()) {
+         fprintf(f, "%*s%s {\n", Indent, "", Item->Text());
+         Write(f, Item->SubItems(), Indent + 2);
+         fprintf(f, "%*s}\n", Indent + 2, "");
+         }
+      else
+         fprintf(f, "%*s%s\n", Indent, "", Item->Text());
+      }
+  return true;
+}
+
+void cNestedItemList::Clear(void)
+{
+  free(fileName);
+  fileName = NULL;
+  cList<cNestedItem>::Clear();
+}
+
+bool cNestedItemList::Load(const char *FileName)
+{
+  cList<cNestedItem>::Clear();
+  if (FileName) {
+     free(fileName);
+     fileName = strdup(FileName);
+     }
+  bool result = false;
+  if (fileName && access(fileName, F_OK) == 0) {
+     isyslog("loading %s", fileName);
+     FILE *f = fopen(fileName, "r");
+     if (f) {
+        int Line = 0;
+        result = Parse(f, this, Line);
+        fclose(f);
+        }
+     else {
+        LOG_ERROR_STR(fileName);
+        result = false;
+        }
+     }
+  return result;
+}
+
+bool cNestedItemList::Save(void)
+{
+  bool result = true;
+  cSafeFile f(fileName);
+  if (f.Open()) {
+     result = Write(f, this);
+     if (!f.Close())
+        result = false;
+     }
+  else
+     result = false;
+  return result;
+}
+
+// --- Folders and Commands --------------------------------------------------
+
+cNestedItemList Folders;
+cNestedItemList Commands;
+cNestedItemList RecordingCommands;
 
 // --- cSVDRPhosts -----------------------------------------------------------
 
 cSVDRPhosts SVDRPhosts;
+
+bool cSVDRPhosts::LocalhostOnly(void)
+{
+  cSVDRPhost *h = First();
+  while (h) {
+        if (!h->IsLocalhost())
+           return false;
+        h = (cSVDRPhost *)h->Next();
+        }
+  return true;
+}
 
 bool cSVDRPhosts::Acceptable(in_addr_t Address)
 {
@@ -299,6 +394,7 @@ cSetup::cSetup(void)
   CurrentDolby = 0;
   InitialChannel = 0;
   InitialVolume = -1;
+  ChannelsWrap = 0;
   EmergencyExit = 1;
 }
 
@@ -486,6 +582,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = atoi(Value);
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
+  else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
   else
      return false;
@@ -578,6 +675,7 @@ bool cSetup::Save(void)
   Store("CurrentDolby",       CurrentDolby);
   Store("InitialChannel",     InitialChannel);
   Store("InitialVolume",      InitialVolume);
+  Store("ChannelsWrap",       ChannelsWrap);
   Store("EmergencyExit",      EmergencyExit);
 
   Sort();

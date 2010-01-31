@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.16 2009/11/22 19:55:04 kls Exp $
+ * $Id: config.h 2.21 2010/01/31 11:14:02 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.11"
-#define VDRVERSNUM   10711  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.12"
+#define VDRVERSNUM   10712  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.11"
-#define APIVERSNUM   10711  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.12"
+#define APIVERSNUM   10712  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -48,21 +48,6 @@
 #define MaxSkinName 16
 #define MaxThemeName 16
 
-class cCommand : public cListObject {
-private:
-  char *title;
-  char *command;
-  bool confirm;
-  static char *result;
-public:
-  cCommand(void);
-  virtual ~cCommand();
-  bool Parse(const char *s);
-  const char *Title(void) { return title; }
-  bool Confirm(void) { return confirm; }
-  const char *Execute(const char *Parameters = NULL);
-  };
-
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 
 class cSVDRPhost : public cListObject {
@@ -72,6 +57,7 @@ private:
 public:
   cSVDRPhost(void);
   bool Parse(const char *s);
+  bool IsLocalhost(void);
   bool Accepts(in_addr_t Address);
   };
 
@@ -158,15 +144,43 @@ public:
   }
   };
 
-class cCommands : public cConfig<cCommand> {};
+class cNestedItem : public cListObject {
+private:
+  char *text;
+  cList<cNestedItem> *subItems;
+public:
+  cNestedItem(const char *Text, bool WithSubItems = false);
+  virtual ~cNestedItem();
+  virtual int Compare(const cListObject &ListObject) const;
+  const char *Text(void) const { return text; }
+  cList<cNestedItem> *SubItems(void) { return subItems; }
+  void AddSubItem(cNestedItem *Item);
+  void SetText(const char *Text);
+  void SetSubItems(bool On);
+  };
+
+class cNestedItemList : public cList<cNestedItem> {
+private:
+  char *fileName;
+  bool Parse(FILE *f, cList<cNestedItem> *List, int &Line);
+  bool Write(FILE *f, cList<cNestedItem> *List, int Indent = 0);
+public:
+  cNestedItemList(void);
+  virtual ~cNestedItemList();
+  void Clear(void);
+  bool Load(const char *FileName);
+  bool Save(void);
+  };
 
 class cSVDRPhosts : public cConfig<cSVDRPhost> {
 public:
+  bool LocalhostOnly(void);
   bool Acceptable(in_addr_t Address);
   };
 
-extern cCommands Commands;
-extern cCommands RecordingCommands;
+extern cNestedItemList Folders;
+extern cNestedItemList Commands;
+extern cNestedItemList RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;
 
 class cSetupLine : public cListObject {
@@ -272,6 +286,7 @@ public:
   int CurrentDolby;
   int InitialChannel;
   int InitialVolume;
+  int ChannelsWrap;
   int EmergencyExit;
   int __EndData__;
   cSetup(void);

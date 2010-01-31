@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 2.1 2009/01/06 10:44:58 kls Exp $
+ * $Id: recorder.h 2.2 2010/01/29 16:32:32 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -34,9 +34,9 @@ protected:
   virtual void Receive(uchar *Data, int Length);
   virtual void Action(void);
 public:
-  cRecorder(const char *FileName, tChannelID ChannelID, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids);
-               // Creates a new recorder for the channel with the given ChannelID and
-               // the given Priority that will record the given PIDs into the file FileName.
+  cRecorder(const char *FileName, const cChannel *Channel, int Priority);
+               // Creates a new recorder for the given Channel and
+               // the given Priority that will record into the file FileName.
   virtual ~cRecorder();
   };
 

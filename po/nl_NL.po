@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 16:18+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch\n"
@@ -587,6 +587,31 @@ msgstr "Kanaal wordt gebruikt door een timer!"
 msgid "Delete channel?"
 msgstr "Kanaal verwijderen?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Timer veranderen"
 
@@ -617,8 +642,14 @@ msgstr "Bewaarduur"
 msgid "File"
 msgstr "Bestandnaam"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "Eerste dag"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Timers"
@@ -1047,6 +1078,9 @@ msgstr "zoals eerder"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
+
+msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Nooduitgang"

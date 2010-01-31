@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.11 2010/01/03 13:37:07 kls Exp $
+.\" $Id: vdr.5 2.13 2010/01/31 12:59:50 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -489,6 +489,46 @@ Note that the color keys will only execute their macro function
 in "normal viewing" mode (i.e. when no other menu or player is active). The
 \fIUser1\fR...\fIUser9\fR keys will always execute their macro function.
 There may be up to 15 keys in such a key sequence.
+.SS FOLDERS
+The file \fIfolders.conf\fR contains the definitions of folders that can be used
+in the "Edit timer" menu. Each line contains one folder definition. Leading whitespace
+and everything after and including a '#' is ignored. A line ending with '{'
+defines a sub folder (i.e. a folder that contains other folders), and a line
+consisting of only '}' ends the definition of a sub folder.
+
+Example:
+
+Daily {
+.br
+  News
+.br
+  Soaps
+.br
+  }
+.br
+Archive {
+.br
+  Movies
+.br
+  Sports
+.br
+  Sci-Fi {
+.br
+    Star Trek
+.br
+    U.F.O.
+.br
+    }
+.br
+  }
+.br
+Comedy
+.br
+Science
+
+Note that these folder definitions are only used to set the file name under which
+a timer will store its recording. Changing these definitions in any way has no
+effect on existing timers or recordings.
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.
@@ -505,6 +545,24 @@ used for commands that might have serious results (like deleting files etc)
 to make sure they are not executed inadvertently.
 
 Everything following (and including) a '#' character is considered to be comment.
+
+You can have nested layers of command menus by surrounding a sequence of
+commands with '{'...'}' and giving it a title, as in
+
+My Commands {
+.br
+  First list {
+    Do something: some command
+    Do something else: another command
+    }
+  Second list {
+    Even more: yet another command
+    So much more: and yet another one
+    }
+.br
+  }
+
+Command lists can be nested to any depth.
 
 By default the menu entries in the "Commands" menu will be numbered '1'...'9'
 to make them selectable by pressing the corresponding number key. If you want

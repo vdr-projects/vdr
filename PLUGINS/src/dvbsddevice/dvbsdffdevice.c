@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.25 2010/01/04 12:56:56 kls Exp $
+ * $Id: dvbsdffdevice.c 2.26 2010/01/30 10:05:23 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -434,7 +434,7 @@ bool cDvbSdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->GetChannelID(), vpid, Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+     cControl::Launch(new cTransferControl(this, Channel));
 
   return true;
 }

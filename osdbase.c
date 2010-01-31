@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.1 2009/06/01 11:54:50 kls Exp $
+ * $Id: osdbase.c 2.2 2010/01/17 11:36:12 kls Exp $
  */
 
 #include "osdbase.h"
@@ -41,7 +41,7 @@ cOsdItem::~cOsdItem()
 void cOsdItem::SetText(const char *Text, bool Copy)
 {
   free(text);
-  text = Copy ? strdup(Text) : (char *)Text; // text assumes ownership!
+  text = Copy ? strdup(Text ? Text : "") : (char *)Text; // text assumes ownership!
 }
 
 void cOsdItem::SetSelectable(bool Selectable)

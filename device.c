@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.31 2010/01/01 15:40:35 kls Exp $
+ * $Id: device.c 2.32 2010/01/30 11:06:51 kls Exp $
  */
 
 #include "device.h"
@@ -30,8 +30,8 @@ public:
   };
 
 cLiveSubtitle::cLiveSubtitle(int SPid)
-:cReceiver(tChannelID(), -1, SPid)
 {
+  AddPid(SPid);
 }
 
 cLiveSubtitle::~cLiveSubtitle()
@@ -676,7 +676,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (Device && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (Device->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(Device, Channel->GetChannelID(), Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+           cControl::Launch(new cTransferControl(Device, Channel));
         else
            Result = scrNoTransfer;
         }
@@ -1364,10 +1364,10 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
               esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
               return Played + Skipped;
               }
+           int Pid = TsPid(Data);
            if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
               int PayloadOffset = TsPayloadOffset(Data);
               if (PayloadOffset < TS_SIZE) {
-                 int Pid = TsPid(Data);
                  if (Pid == 0)
                     patPmtParser.ParsePat(Data, TS_SIZE);
                  else if (Pid == patPmtParser.PmtPid())
@@ -1395,6 +1395,13 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
                        PlayTsSubtitle(Data, TS_SIZE);
                     }
                  }
+              }
+           else if (Pid == patPmtParser.Ppid()) {
+              int w = PlayTsVideo(Data, TS_SIZE);
+              if (w < 0)
+                 return Played ? Played : w;
+              if (w == 0)
+                 break;
               }
            Played += TS_SIZE;
            Length -= TS_SIZE;

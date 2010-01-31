@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.0 2008/02/10 16:01:53 kls Exp $
+ * $Id: menu.h 2.1 2010/01/17 11:21:42 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -31,14 +31,39 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
+class cMenuFolder : public cOsdMenu {
+private:
+  cNestedItemList *nestedItemList;
+  cList<cNestedItem> *list;
+  cString dir;
+  cOsdItem *firstFolder;
+  bool editing;
+  void SetHelpKeys(void);
+  void Set(const char *CurrentFolder = NULL);
+  void DescendPath(const char *Path);
+  eOSState SetFolder(void);
+  eOSState Select(void);
+  eOSState New(void);
+  eOSState Delete(void);
+  eOSState Edit(void);
+  cMenuFolder(const char *Title, cList<cNestedItem> *List, cNestedItemList *NestedItemList, const char *Dir, const char *Path = NULL);
+public:
+  cMenuFolder(const char *Title, cNestedItemList *NestedItemList, const char *Path = NULL);
+  cString GetFolder(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
 class cMenuEditTimer : public cOsdMenu {
 private:
   cTimer *timer;
   cTimer data;
   int channel;
   bool addIfConfirmed;
+  cMenuEditStrItem *file;
   cMenuEditDateItem *firstday;
+  eOSState SetFolder(void);
   void SetFirstDayItem(void);
+  void SetHelpKeys(void);
 public:
   cMenuEditTimer(cTimer *Timer, bool New = false);
   virtual ~cMenuEditTimer();

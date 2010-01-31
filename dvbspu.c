@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.7 2009/12/26 15:51:15 kls Exp $
+ * $Id: dvbspu.c 2.8 2010/01/17 13:43:27 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -347,7 +347,7 @@ int cDvbSpuBitmap::getMinBpp(const aDvbSpuPalDescr paldescr)
                 col++;
         }
     }
-    return col > 2 ? 4 : 2;
+    return col > 2 ? 2 : 1;
 }
 
 int cDvbSpuDecoder::CalcAreaBpp(cBitmap *fgbmp, cBitmap *bgbmp)

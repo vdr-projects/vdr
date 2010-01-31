@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.23 2009/12/29 15:53:54 kls Exp $
+ * $Id: remux.h 2.24 2010/01/29 16:51:26 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -172,16 +172,16 @@ protected:
   int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
-  void GeneratePmtPid(cChannel *Channel);
+  void GeneratePmtPid(const cChannel *Channel);
        ///< Generates a PMT pid that doesn't collide with any of the actual
        ///< pids of the Channel.
   void GeneratePat(void);
        ///< Generates a PAT section for later use with GetPat().
-  void GeneratePmt(cChannel *Channel);
+  void GeneratePmt(const cChannel *Channel);
        ///< Generates a PMT section for the given Channel, for later use
        ///< with GetPmt().
 public:
-  cPatPmtGenerator(cChannel *Channel = NULL);
+  cPatPmtGenerator(const cChannel *Channel = NULL);
   void SetVersions(int PatVersion, int PmtVersion);
        ///< Sets the version numbers for the generated PAT and PMT, in case
        ///< this generator is used to, e.g.,  continue a previously interrupted
@@ -191,7 +191,7 @@ public:
        ///< higher bits will automatically be cleared.
        ///< SetVersions() needs to be called before SetChannel() in order to
        ///< have an effect from the very start.
-  void SetChannel(cChannel *Channel);
+  void SetChannel(const cChannel *Channel);
        ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
        ///< Returns a pointer to the PAT section, which consists of exactly
@@ -213,6 +213,7 @@ private:
   int pmtVersion;
   int pmtPid;
   int vpid;
+  int ppid;
   int vtype;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
   int atypes[MAXAPIDS + 1]; // list is zero-terminated
@@ -251,6 +252,9 @@ public:
        ///< If no PAT has been received yet, -1 will be returned.
   int Vpid(void) const { return vpid; }
        ///< Returns the video pid as defined by the current PMT, or 0 if no video
+       ///< pid has been detected, yet.
+  int Ppid(void) const { return ppid; }
+       ///< Returns the PCR pid as defined by the current PMT, or 0 if no PCR
        ///< pid has been detected, yet.
   int Vtype(void) const { return vtype; }
        ///< Returns the video stream type as defined by the current PMT, or 0 if no video

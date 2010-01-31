@@ -1090,6 +1090,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  in some syslog calls
  for a patch that was used to implement handling the "component descriptor" ("genre")
  for a patch that was used to implement handling the "parental rating descriptor"
+ suggesting to add plain text error messages to log entries from cOsd::SetAreas()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1562,6 +1563,8 @@ Martin Dauskardt <md001@gmx.de>
  recorded
  for suggesting to add a table of the used trick speed values to the description of
  cDevice::TrickSpeed()
+ for renaming 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
+ in 'make install'
 
 Maynard Cedric <maynard.cedric@wanadoo.fr>
  for reporting a problem in handling the color button texts in cMenuEditStrItem
@@ -2494,6 +2497,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for removing the workaround for short channel names of "Kabel Deutschland"
  for some fixes to dvbspu.[hc]
  for fixing a busy loop when moving editing marks
+ for making cPalette::ClosestColor() treat fully transparent colors as "equal"
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -2526,6 +2530,8 @@ Valdemaras Pipiras <valdemaras@ambernet.lt>
 
 Manuel Reimer <Manuel.Reimer@gmx.de>
  for fixing saving terminal settings when running in background
+ for making the SVDRP port open only for the local host if svdrphosts.conf
+ contains only the address of the local host
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
@@ -2539,7 +2545,11 @@ Andreas Schaefers <andreas_schaefers@gmx.de>
 
 Matthieu Castet <castet.matthieu@free.fr>
  for improving SPU handling on devices with limited OSD capabilities
+ for making cPalette::ClosestColor() treat fully transparent colors as "equal"
 
 Francesco Saverio Schiavarelli <fschiava@libero.it>
-  for reporting a problem with channels that have some encrypted components that
-  VDR doesn't use
+ for reporting a problem with channels that have some encrypted components that
+ VDR doesn't use
+
+Matti Lehtimäki <matti.lehtimaki@gmail.com>
+ for implementing the setup option "Miscellaneous/Channels wrap"

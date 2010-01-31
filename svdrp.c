@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.7 2010/01/03 15:41:26 kls Exp $
+ * $Id: svdrp.c 2.8 2010/01/17 12:23:31 kls Exp $
  */
 
 #include "svdrp.h"
@@ -79,7 +79,7 @@ bool cSocket::Open(void)
      struct sockaddr_in name;
      name.sin_family = AF_INET;
      name.sin_port = htons(port);
-     name.sin_addr.s_addr = htonl(INADDR_ANY);
+     name.sin_addr.s_addr = SVDRPhosts.LocalhostOnly() ? htonl(INADDR_LOOPBACK) : htonl(INADDR_ANY);
      if (bind(sock, (struct sockaddr *)&name, sizeof(name)) < 0) {
         LOG_ERROR;
         Close();

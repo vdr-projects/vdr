@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.14 2010/01/02 11:52:40 kls Exp $
+ * $Id: vdr.c 2.16 2010/01/31 11:14:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -582,11 +582,12 @@ int main(int argc, char *argv[])
   Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC);
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true);
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
-  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
-  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
+  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
+  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"));
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
   KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
+  Folders.Load(AddDirectory(ConfigDirectory, "folders.conf"));
 
   if (!*cFont::GetFontFileName(Setup.FontOsd)) {
      const char *msg = "no fonts available - OSD will not show any text!";

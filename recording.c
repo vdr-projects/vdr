@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.21 2010/01/02 13:46:05 kls Exp $
+ * $Id: recording.c 2.22 2010/01/16 11:18:30 kls Exp $
  */
 
 #include "recording.h"
@@ -524,8 +524,8 @@ bool cRecordingInfo::Write(void) const
 
 struct tCharExchange { char a; char b; };
 tCharExchange CharExchange[] = {
-  { '~',  '/'    },
-  { '/',  '~'    },
+  { FOLDERDELIMCHAR,  '/' },
+  { '/',  FOLDERDELIMCHAR },
   { ' ',  '_'    },
   // backwards compatibility:
   { '\'', '\''   },
@@ -546,10 +546,10 @@ char *ExchangeChars(char *s, bool ToFileSystem)
               switch (*p) {
                      // characters that can be mapped to other characters:
                      case ' ': *p = '_'; break;
-                     case '~': *p = '/'; break;
+                     case FOLDERDELIMCHAR: *p = '/'; break;
                      // characters that have to be encoded:
                      default:
-                       if (strchr(InvalidChars, *p) || *p == '.' && (!*(p + 1) || *(p + 1) == '~')) { // Windows can't handle '.' at the end of file/directory names
+                       if (strchr(InvalidChars, *p) || *p == '.' && (!*(p + 1) || *(p + 1) == FOLDERDELIMCHAR)) { // Windows can't handle '.' at the end of file/directory names
                           int l = p - s;
                           s = (char *)realloc(s, strlen(s) + 10);
                           p = s + l;
@@ -565,7 +565,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
               switch (*p) {
                 // mapped characters:
                 case '_': *p = ' '; break;
-                case '/': *p = '~'; break;
+                case '/': *p = FOLDERDELIMCHAR; break;
                 // encoded characters:
                 case '#': {
                      if (strlen(p) > 2 && isxdigit(*(p + 1)) && isxdigit(*(p + 2))) {
@@ -635,7 +635,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      // avoid blanks at the end:
      int l = strlen(name);
      while (l-- > 2) {
-           if (name[l] == ' ' && name[l - 1] != '~')
+           if (name[l] == ' ' && name[l - 1] != FOLDERDELIMCHAR)
               name[l] = 0;
            else
               break;
@@ -853,7 +853,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
      char *s;
-     if (Level > 0 && (s = strrchr(name, '~')) != NULL)
+     if (Level > 0 && (s = strrchr(name, FOLDERDELIMCHAR)) != NULL)
         s++;
      else
         s = name;
@@ -867,18 +867,18 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                             New,
                             Delimiter,
                             s));
-     // let's not display a trailing '~':
+     // let's not display a trailing FOLDERDELIMCHAR:
      if (!NewIndicator)
         stripspace(titleBuffer);
      s = &titleBuffer[strlen(titleBuffer) - 1];
-     if (*s == '~')
+     if (*s == FOLDERDELIMCHAR)
         *s = 0;
      }
   else if (Level < HierarchyLevels()) {
      const char *s = name;
      const char *p = s;
      while (*++s) {
-           if (*s == '~') {
+           if (*s == FOLDERDELIMCHAR) {
               if (Level--)
                  p = s + 1;
               else
@@ -911,7 +911,7 @@ int cRecording::HierarchyLevels(void) const
   const char *s = name;
   int level = 0;
   while (*++s) {
-        if (*s == '~')
+        if (*s == FOLDERDELIMCHAR)
            level++;
         }
   return level;
@@ -919,7 +919,7 @@ int cRecording::HierarchyLevels(void) const
 
 bool cRecording::IsEdited(void) const
 {
-  const char *s = strrchr(name, '~');
+  const char *s = strrchr(name, FOLDERDELIMCHAR);
   s = !s ? name : s + 1;
   return *s == '%';
 }

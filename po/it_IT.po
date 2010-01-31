@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
-"PO-Revision-Date: 2009-11-28 22:50+0100\n"
+"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"PO-Revision-Date: 2010-01-12 23:53+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -47,245 +47,245 @@ msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Film/Dramma"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Investigativo/Giallo"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Avventura/Western/Guerra"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Finzione/Fantasia/Horror"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Commedia"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Telenovella/Melodramma/Folcloristico"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romanzo"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Serio/Classico/Religioso/Film storico/Dramma"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Film per adulti/Dramma"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Notizie/Ultima ora"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Notizie/Previsioni meteo"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Settimanale di attualità"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Documentario"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Discussione/Intervista/Dibattito"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Spettacolo/Gioco a premi"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Gioco a premi/Quiz/Gara"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Spettacolo di varietà"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Talk Show"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sport"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Evento speciale"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Settimanale di sport"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Calcio"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Sport di squadra"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Atletica"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Sport motoristici"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Sport acquatici"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Sport invernali"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Equitazione"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Arti marziali"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Programmi per ragazzi/giovani"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Programmi per ragazzi prescolastici"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Programmi di intrattenimento da 6 a 14"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Programmi di intrattenimento da 10 a 16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informativo/Educativo/Programma scolastico"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Cartoni/Pupazzi"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Musica/Balletto/Danza"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Musica Classica/Seria"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Musica Tradizionale/Folclore"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Musical/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Balletto"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Arte/Cultura"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Arti di rendimento"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Arti fine"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religione"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Cultura popolare/Arti tradizionali"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Letteratura"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Film/Cinema"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Film sperimentale/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Trasmissione/Stampa"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Nuovo programma"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Arte/Settimanale di cultura"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Moda"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Società/Politica/Economia"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Settimanale/Reportage/Documentario"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Economia/Consulenza sociale"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Personaggi importanti"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Educazione/Scienza/Fatti"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Natura/Animali/Ambiente"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Tecnologia/Scienze naturali"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicina/Filosofia/Psicologia"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Paesi esteri/Spedizioni"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Società/Scienze spirituali"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Altra educazione"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Lingue"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Tempo libero/Hobby"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turismo/Viaggi"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Artigianato"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motori"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Culturismo & Salute"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Cucina"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Pubblicità/Acquisti"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Giardinaggio"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Lingua madre"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Bianco & Nero"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Non pubblicato"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Trasmissione dal vivo"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "da %d"
 
 msgid "No title"
 msgstr "Senza titolo"
@@ -590,6 +590,31 @@ msgstr "Canale occupato da un timer!"
 msgid "Delete channel?"
 msgstr "Eliminare il canale?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Modifica timer"
 
@@ -620,8 +645,14 @@ msgstr "Scadenza"
 msgid "File"
 msgstr "Nome"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "1° giorno"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Timer"
@@ -1050,6 +1081,9 @@ msgstr "come prima"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
+
+msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Uscita di emergenza"

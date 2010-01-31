@@ -6275,3 +6275,36 @@ Video Disk Recorder Revision History
   the others on the same adapter.
 - Fixed plugin arguments corruption with glibc 2.11 on x86_64 (thanks to
   Anssi Hannula).
+
+2010-01-31: Version 1.7.12
+
+- Changed the EVCONTENTMASK_* macros to enums and changed "mask" to "group".
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- The "Edit timer" menu can now set the folder for the recording from a list of
+  folders stored in "folders.conf".
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- If svdrphosts.conf contains only the address of the local host, the SVDRP port
+  is opened only for the local host (thanks to Manuel Reimer).
+- Renamed 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
+  in 'make install' (thanks to Martin Dauskardt).
+- Added plain text error messages to log entries from cOsd::SetAreas() (suggested
+  by Rolf Ahrenberg).
+- cPalette::ClosestColor() now treats fully transparent colors as "equal"; improved
+  cDvbSpuBitmap::getMinBpp() (thanks to Matthieu Castet and Johann Friedrichs).
+- The new setup option "Miscellaneous/Channels wrap" controls whether the current
+  channel wraps around the beginning or end of the channel list when zapping (thanks
+  to Matti Lehtimäki).
+- Fixed determining the frame duration on channels where the PTS deltas jitter by
+  +/-1 around 1800.
+- The PCR pid in generated PMTs is now set to the channel's PCR pid again.
+- Fixed determining the frame duration on channels where the PTS deltas jitter by
+  +/-1 around 3600.
+- The PCR pid is now recorded for channels where this is different from the video
+  PID. To facilitate this, the interfaces of cTransfer, cTransferControl, cRecorder
+  and cReceiver have been modified, so that the PIDs are no longer given in separate
+  parameters, but rather the whole channel is handed down for processing. The old
+  constructor of cReceiver is still available, but it is recommended to plugin authors
+  that they switch to the new interface as soon as possible.
+  When replaying such a recording, the PCR packets are sent to PlayTsVideo()
+- The files "commands.conf" and "reccmd.conf" can now contain nested lists of
+  commands. See vdr.5 for information about the new file format.

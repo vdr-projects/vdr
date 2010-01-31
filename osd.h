@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.4 2009/05/08 13:41:03 kls Exp $
+ * $Id: osd.h 2.5 2010/01/17 13:23:50 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -36,7 +36,7 @@ enum {
   clrWhite       = 0xFFFCFCFC,
   };
 
-enum eOsdError { oeOk,
+enum eOsdError { oeOk, // see also OsdErrorTexts in osd.c
                  oeTooManyAreas,
                  oeTooManyColors,
                  oeBppNotSupported,

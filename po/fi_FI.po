@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-03 15:10+0100\n"
+"POT-Creation-Date: 2010-01-17 16:18+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
@@ -586,6 +586,31 @@ msgstr "Kanava on ajastimen käytössä!"
 msgid "Delete channel?"
 msgstr "Poistetaanko kanava?"
 
+msgid "Edit folder"
+msgstr ""
+
+msgid "New folder"
+msgstr ""
+
+msgid "Sub folder"
+msgstr ""
+
+msgid "Folder name already exists!"
+msgstr ""
+
+#, c-format
+msgid "Folder name must not contain '%c'!"
+msgstr ""
+
+msgid "Button$Select"
+msgstr ""
+
+msgid "Delete folder and all sub folders?"
+msgstr ""
+
+msgid "Delete folder?"
+msgstr ""
+
 msgid "Edit timer"
 msgstr "Muokkaa ajastinta"
 
@@ -616,8 +641,14 @@ msgstr "Elinikä"
 msgid "File"
 msgstr "Tiedosto"
 
+msgid "Button$Folder"
+msgstr ""
+
 msgid "First day"
 msgstr "1. päivä"
+
+msgid "Select folder"
+msgstr ""
 
 msgid "Timers"
 msgstr "Ajastimet"
@@ -1046,6 +1077,9 @@ msgstr "edellinen"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Äänenvoimakkuus käynnistettäessä"
+
+msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Käytä hätäsammutusta"

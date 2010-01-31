@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.3 2010/01/03 14:39:14 kls Exp $
+ * $Id: epg.h 2.4 2010/01/08 15:20:34 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -19,19 +19,22 @@
 
 #define MAXEPGBUGFIXLEVEL 3
 
-#define MAXEVCONTENTS                          4
-#define EVCONTENTMASK_MOVIEDRAMA               0x10
-#define EVCONTENTMASK_NEWSCURRENTAFFAIRS       0x20
-#define EVCONTENTMASK_SHOW                     0x30
-#define EVCONTENTMASK_SPORTS                   0x40
-#define EVCONTENTMASK_CHILDRENYOUTH            0x50
-#define EVCONTENTMASK_MUSICBALLETDANCE         0x60
-#define EVCONTENTMASK_ARTSCULTURE              0x70
-#define EVCONTENTMASK_SOCIALPOLITICALECONOMICS 0x80
-#define EVCONTENTMASK_EDUCATIONALSCIENCE       0x90
-#define EVCONTENTMASK_LEISUREHOBBIES           0xA0
-#define EVCONTENTMASK_SPECIAL                  0xB0
-#define EVCONTENTMASK_USERDEFINED              0xF0
+enum { MaxEventContents = 4 };
+
+enum eEventContentGroup {
+  ecgMovieDrama               = 0x10,
+  ecgNewsCurrentAffairs       = 0x20,
+  ecgShow                     = 0x30,
+  ecgSports                   = 0x40,
+  ecgChildrenYouth            = 0x50,
+  ecgMusicBalletDance         = 0x60,
+  ecgArtsCulture              = 0x70,
+  ecgSocialPoliticalEconomics = 0x80,
+  ecgEducationalScience       = 0x90,
+  ecgLeisureHobbies           = 0xA0,
+  ecgSpecial                  = 0xB0,
+  ecgUserDefined              = 0xF0
+  };
 
 enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 
@@ -78,7 +81,7 @@ private:
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
   cComponents *components; // The stream components of this event
-  uchar contents[MAXEVCONTENTS]; // Contents of this event
+  uchar contents[MaxEventContents]; // Contents of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
@@ -97,7 +100,7 @@ public:
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
   const cComponents *Components(void) const { return components; }
-  uchar Contents(int i = 0) const { return (0 <= i && i < MAXEVCONTENTS) ? contents[i] : 0; }
+  uchar Contents(int i = 0) const { return (0 <= i && i < MaxEventContents) ? contents[i] : 0; }
   int ParentalRating(void) const { return parentalRating; }
   time_t StartTime(void) const { return startTime; }
   time_t EndTime(void) const { return startTime + duration; }

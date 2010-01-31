@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.7 2009/12/06 11:34:41 kls Exp $
+ * $Id: recorder.c 2.8 2010/01/29 16:37:22 kls Exp $
  */
 
 #include "recorder.h"
@@ -21,8 +21,8 @@
 
 // --- cRecorder -------------------------------------------------------------
 
-cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids)
-:cReceiver(ChannelID, Priority, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
+cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority)
+:cReceiver(Channel, Priority)
 ,cThread("recording")
 ,recordingInfo(FileName)
 {
@@ -32,15 +32,15 @@ cRecorder::cRecorder(const char *FileName, tChannelID ChannelID, int Priority, i
 
   ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
-  cChannel *Channel = Channels.GetByChannelID(ChannelID);
-  int Pid = VPid;
-  int Type = Channel ? Channel->Vtype() : 0;
-  if (!Pid && APids) {
-     Pid = APids[0];
+
+  int Pid = Channel->Vpid();
+  int Type = Channel->Vtype();
+  if (!Pid && Channel->Apid(0)) {
+     Pid = Channel->Apid(0);
      Type = 0x04;
      }
-  if (!Pid && DPids) {
-     Pid = DPids[0];
+  if (!Pid && Channel->Dpid(0)) {
+     Pid = Channel->Dpid(0);
      Type = 0x06;
      }
   frameDetector = new cFrameDetector(Pid, Type);

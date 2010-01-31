@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.12 2010/01/02 12:10:07 kls Exp $
+ * $Id: recording.h 2.13 2010/01/16 11:16:20 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -17,6 +17,8 @@
 #include "thread.h"
 #include "timers.h"
 #include "tools.h"
+
+#define FOLDERDELIMCHAR '~'
 
 extern bool VfatFileSystem;
 extern int InstanceId;

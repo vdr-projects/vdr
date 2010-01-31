@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.3 2009/08/09 12:43:20 kls Exp $
+ * $Id: timers.c 2.4 2010/01/16 11:18:53 kls Exp $
  */
 
 #include "timers.h"
@@ -301,7 +301,7 @@ bool cTimer::Parse(const char *s)
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
      if (VfatFileSystem) {
-        char *p = strrchr(filebuffer, '~');
+        char *p = strrchr(filebuffer, FOLDERDELIMCHAR);
         if (p)
            p++;
         else
