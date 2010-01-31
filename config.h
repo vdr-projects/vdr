@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.20 2010/01/17 15:08:32 kls Exp $
+ * $Id: config.h 2.21 2010/01/31 11:14:02 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -47,21 +47,6 @@
 #define MaxFileName 256
 #define MaxSkinName 16
 #define MaxThemeName 16
-
-class cCommand : public cListObject {
-private:
-  char *title;
-  char *command;
-  bool confirm;
-  static char *result;
-public:
-  cCommand(void);
-  virtual ~cCommand();
-  bool Parse(const char *s);
-  const char *Title(void) { return title; }
-  bool Confirm(void) { return confirm; }
-  const char *Execute(const char *Parameters = NULL);
-  };
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 
@@ -187,8 +172,6 @@ public:
   bool Save(void);
   };
 
-class cCommands : public cConfig<cCommand> {};
-
 class cSVDRPhosts : public cConfig<cSVDRPhost> {
 public:
   bool LocalhostOnly(void);
@@ -196,8 +179,8 @@ public:
   };
 
 extern cNestedItemList Folders;
-extern cCommands Commands;
-extern cCommands RecordingCommands;
+extern cNestedItemList Commands;
+extern cNestedItemList RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;
 
 class cSetupLine : public cListObject {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.13 2010/01/29 16:36:57 kls Exp $
+ * $Id: menu.c 2.14 2010/01/31 12:43:24 kls Exp $
  */
 
 #include "menu.h"
@@ -1783,44 +1783,100 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 
 class cMenuCommands : public cOsdMenu {
 private:
-  cCommands *commands;
-  char *parameters;
+  cList<cNestedItem> *commands;
+  cString parameters;
+  cString title;
+  cString command;
+  bool confirm;
+  char *result;
+  bool Parse(const char *s);
   eOSState Execute(void);
 public:
-  cMenuCommands(const char *Title, cCommands *Commands, const char *Parameters = NULL);
+  cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters = NULL);
   virtual ~cMenuCommands();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuCommands::cMenuCommands(const char *Title, cCommands *Commands, const char *Parameters)
+cMenuCommands::cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters)
 :cOsdMenu(Title)
 {
+  result = NULL;
   SetHasHotkeys();
   commands = Commands;
-  parameters = Parameters ? strdup(Parameters) : NULL;
-  for (cCommand *command = commands->First(); command; command = commands->Next(command))
-      Add(new cOsdItem(hk(command->Title())));
+  parameters = Parameters;
+  for (cNestedItem *Command = commands->First(); Command; Command = commands->Next(Command)) {
+      const char *s = Command->Text();
+      if (Command->SubItems())
+         Add(new cOsdItem(hk(cString::sprintf("%s...", s))));
+      else if (Parse(s))
+         Add(new cOsdItem(hk(title)));
+      }
 }
 
 cMenuCommands::~cMenuCommands()
 {
-  free(parameters);
+  free(result);
+}
+
+bool cMenuCommands::Parse(const char *s)
+{
+  const char *p = strchr(s, ':');
+  if (p) {
+     int l = p - s;
+     if (l > 0) {
+        char t[l + 1];
+        stripspace(strn0cpy(t, s, l + 1));
+        l = strlen(t);
+        if (l > 1 && t[l - 1] == '?') {
+           t[l - 1] = 0;
+           confirm = true;
+           }
+        else
+           confirm = false;
+        title = t;
+        command = skipspace(p + 1);
+        return true;
+        }
+     }
+  return false;
 }
 
 eOSState cMenuCommands::Execute(void)
 {
-  cCommand *command = commands->Get(Current());
-  if (command) {
-     bool confirmed = true;
-     if (command->Confirm())
-        confirmed = Interface->Confirm(cString::sprintf("%s?", command->Title()));
-     if (confirmed) {
-        Skins.Message(mtStatus, cString::sprintf("%s...", command->Title()));
-        const char *Result = command->Execute(parameters);
-        Skins.Message(mtStatus, NULL);
-        if (Result)
-           return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
-        return osEnd;
+  cNestedItem *Command = commands->Get(Current());
+  if (Command) {
+     if (Command->SubItems())
+        return AddSubMenu(new cMenuCommands(Title(), Command->SubItems(), parameters));
+     if (Parse(Command->Text())) {
+        if (!confirm || Interface->Confirm(cString::sprintf("%s?", *title))) {
+           Skins.Message(mtStatus, cString::sprintf("%s...", *title));
+           free(result);
+           result = NULL;
+           cString cmdbuf;
+           if (!isempty(parameters))
+              cmdbuf = cString::sprintf("%s %s", *command, *parameters);
+           const char *cmd = *cmdbuf ? *cmdbuf : *command;
+           dsyslog("executing command '%s'", cmd);
+           cPipe p;
+           if (p.Open(cmd, "r")) {
+              int l = 0;
+              int c;
+              while ((c = fgetc(p)) != EOF) {
+                    if (l % 20 == 0)
+                       result = (char *)realloc(result, l + 21);
+                    result[l++] = char(c);
+                    }
+              if (result)
+                 result[l] = 0;
+              p.Close();
+              }
+           else
+              esyslog("ERROR: can't open pipe for command '%s'", cmd);
+           Skins.Message(mtStatus, NULL);
+           if (result)
+              return AddSubMenu(new cMenuText(title, result, fontFix));
+           return osEnd;
+           }
         }
      }
   return osContinue;
