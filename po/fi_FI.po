@@ -281,7 +281,7 @@ msgstr "Suoralähetys"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "K-%d"
 
 msgid "No title"
 msgstr "Ei esitystä"
@@ -587,29 +587,29 @@ msgid "Delete channel?"
 msgstr "Poistetaanko kanava?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Muokkaa kansiota"
 
 msgid "New folder"
-msgstr ""
+msgstr "Uusi kansio"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Alikansio"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Kansio on jo olemassa!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Kansion nimessä ei saa olla '%c'-merkkiä!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Valitse"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Poistetaanko kansio alikansioineen?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Poistetaanko kansio?"
 
 msgid "Edit timer"
 msgstr "Muokkaa ajastinta"
@@ -642,13 +642,13 @@ msgid "File"
 msgstr "Tiedosto"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Kansio"
 
 msgid "First day"
 msgstr "1. päivä"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Valitse kansio"
 
 msgid "Timers"
 msgstr "Ajastimet"
@@ -1079,7 +1079,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Äänenvoimakkuus käynnistettäessä"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Kanavien rullaus"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Käytä hätäsammutusta"
@@ -1203,10 +1203,10 @@ msgid "Low disk space!"
 msgstr "Tallennustila loppumassa!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Luodaan indeksitiedosto uudelleen"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Indeksitiedosto valmistui"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sammutus ei onnistu - '-s' parametri puuttuu!"
