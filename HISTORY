@@ -6312,3 +6312,4 @@ Video Disk Recorder Revision History
 2010-02-05: Version 1.7.13
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Changed the position of Sirius 4 to S4.8E in sources.conf (thanks to Alexander Gross).
