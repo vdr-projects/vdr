@@ -6308,3 +6308,7 @@ Video Disk Recorder Revision History
   When replaying such a recording, the PCR packets are sent to PlayTsVideo()
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
+
+2010-02-05: Version 1.7.13
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
