@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 1.2 2002/12/07 13:54:02 kls Exp $
+ * $Id: diseqc.h 2.1 2010/02/06 15:14:42 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -26,6 +26,7 @@ public:
     };
   enum { MaxDiseqcCodes = 6 };
 private:
+  int devices;
   int source;
   int slof;
   char polarization;
@@ -48,6 +49,7 @@ public:
       // it. Call Execute() repeatedly (always providing the same CurrentAction pointer)
       // until it returns daNone. After a successful execution of all commands
       // *CurrentAction points to the value 0x00.
+  int Devices(void) const { return devices; }
   int Source(void) const { return source; }
   int Slof(void) const { return slof; }
   char Polarization(void) const { return polarization; }
@@ -58,7 +60,7 @@ public:
 
 class cDiseqcs : public cConfig<cDiseqc> {
 public:
-  cDiseqc *Get(int Source, int Frequency, char Polarization);
+  cDiseqc *Get(int Device, int Source, int Frequency, char Polarization);
   };
 
 extern cDiseqcs Diseqcs;

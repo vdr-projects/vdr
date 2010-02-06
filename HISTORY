@@ -6350,3 +6350,5 @@ Video Disk Recorder Revision History
 
    -include $(VDRDIR)/Make.config
   ------------------------------------------------------------
+- Added device definitions to the diseqc.conf file format, so that certain satellite
+  positions can be limited to a given list of devices.

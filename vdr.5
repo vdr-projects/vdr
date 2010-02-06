@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.13 2010/01/31 12:59:50 kls Exp $
+.\" $Id: vdr.5 2.14 2010/02/06 15:52:38 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -452,6 +452,15 @@ l l.
 There can be any number of actions in a line, including none at all - in which case
 the entry would be used only to set the LOF to use for the given frequency range
 and polarization.
+
+By default it is assumed that every DVB-S device can receive every satellite.
+If this is not the case in a particular setup, lines of the form
+
+\fB1 2 4:\fR
+
+may be inserted in the \fIdiseqc.conf\fR file, defining the devices that are able
+to receive the satellites following thereafter. In this case, only the devices
+1, 2 and 4 would be able to receive any satellites following this line.
 .SS REMOTE CONTROL KEYS
 The file \fIremote.conf\fR contains the key assignments for all remote control
 units. Each line consists of one key assignment in the following format:

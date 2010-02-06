@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.26 2010/02/06 14:38:44 kls Exp $
+ * $Id: dvbdevice.c 2.27 2010/02/06 15:34:14 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -30,6 +30,7 @@
 class cDvbTuner : public cThread {
 private:
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  int device;
   int fd_frontend;
   int adapter, frontend;
   int tuneTimeout;
@@ -46,7 +47,7 @@ private:
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
+  cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
   virtual ~cDvbTuner();
   const cChannel *GetTransponder(void) const { return &channel; }
   bool IsTunedTo(const cChannel *Channel) const;
@@ -54,8 +55,9 @@ public:
   bool Locked(int TimeoutMs = 0);
   };
 
-cDvbTuner::cDvbTuner(int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
+cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
 {
+  device = Device;
   fd_frontend = Fd_Frontend;
   adapter = Adapter;
   frontend = Frontend;
@@ -175,7 +177,7 @@ bool cDvbTuner::SetFrontend(void)
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        cDiseqc *diseqc = Diseqcs.Get(channel.Source(), channel.Frequency(), channel.Polarization());
+        cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), channel.Polarization());
         if (diseqc) {
            if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
               cDiseqc::eDiseqcActions da;
@@ -420,7 +422,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         if (frontendType == SYS_DVBS2)
            numProvidedSystems++;
         isyslog("frontend %d/%d provides %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], frontendInfo.name);
-        dvbTuner = new cDvbTuner(fd_frontend, adapter, frontend, frontendType);
+        dvbTuner = new cDvbTuner(DeviceNumber(), fd_frontend, adapter, frontend, frontendType);
         }
      }
   else
@@ -612,7 +614,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return DeviceHooksProvidesTransponder(Channel); // source is sufficient for non sat
   if (frontendType == SYS_DVBS && Channel->System() == SYS_DVBS2)
      return false; // requires modulation system which frontend doesn't provide
-  if (!Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()))
+  if (!Setup.DiSEqC || Diseqcs.Get(DeviceNumber(), Channel->Source(), Channel->Frequency(), Channel->Polarization()))
      return DeviceHooksProvidesTransponder(Channel);
   return false;
 }
