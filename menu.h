@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.1 2010/01/17 11:21:42 kls Exp $
+ * $Id: menu.h 2.2 2010/02/06 10:17:24 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -50,6 +50,22 @@ private:
 public:
   cMenuFolder(const char *Title, cNestedItemList *NestedItemList, const char *Path = NULL);
   cString GetFolder(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuCommands : public cOsdMenu {
+private:
+  cList<cNestedItem> *commands;
+  cString parameters;
+  cString title;
+  cString command;
+  bool confirm;
+  char *result;
+  bool Parse(const char *s);
+  eOSState Execute(void);
+public:
+  cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters = NULL);
+  virtual ~cMenuCommands();
   virtual eOSState ProcessKey(eKeys Key);
   };
 

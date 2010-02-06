@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.14 2010/01/31 12:43:24 kls Exp $
+ * $Id: menu.c 2.15 2010/02/06 10:16:15 kls Exp $
  */
 
 #include "menu.h"
@@ -1780,22 +1780,6 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 }
 
 // --- cMenuCommands ---------------------------------------------------------
-
-class cMenuCommands : public cOsdMenu {
-private:
-  cList<cNestedItem> *commands;
-  cString parameters;
-  cString title;
-  cString command;
-  bool confirm;
-  char *result;
-  bool Parse(const char *s);
-  eOSState Execute(void);
-public:
-  cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters = NULL);
-  virtual ~cMenuCommands();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
 
 cMenuCommands::cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters)
 :cOsdMenu(Title)
