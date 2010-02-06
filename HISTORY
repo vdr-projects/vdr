@@ -6315,3 +6315,5 @@ Video Disk Recorder Revision History
 - Changed the position of Sirius 4 to S4.8E in sources.conf (thanks to Alexander Gross).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Moved the declaration of cMenuCommands to menu.h, so that plugins can use it.
+- Added a note to the MANUAL, saying that adding new transponders only works if the
+  "EPG scan" is active (suggested by Halim Sahim).

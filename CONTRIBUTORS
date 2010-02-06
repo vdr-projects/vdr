@@ -2377,6 +2377,8 @@ Matthias Becker <becker.matthias@gmail.com>
 Halim Sahin <halim.sahin@t-online.de>
  for reporting that the channels.conf file was not written when stopping VDR after
  deleting or moving a channel in the Channels menu
+ for suggesting to add a note to the MANUAL, saying that adding new transponders only
+ works if the "EPG scan" is active
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
