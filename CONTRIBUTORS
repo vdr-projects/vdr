@@ -1246,6 +1246,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for increasing the value of MAXFRAMESIZE to better suit HD recordings
  for improving handling frames at the beginning and end of a recording in cDvbPlayer
  for devices with large buffers
+ for implementing cDeviceHook
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

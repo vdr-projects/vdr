@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.32 2010/01/30 11:06:51 kls Exp $
+ * $Id: device.c 2.33 2010/02/06 13:55:50 kls Exp $
  */
 
 #include "device.h"
@@ -44,6 +44,18 @@ void cLiveSubtitle::Receive(uchar *Data, int Length)
   cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
+// --- cDeviceHook -----------------------------------------------------------
+
+cDeviceHook::cDeviceHook(void)
+{
+  cDevice::deviceHooks.Add(this);
+}
+
+bool cDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
+{
+  return true;
+}
+
 // --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
@@ -59,6 +71,7 @@ int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
 cDevice *cDevice::avoidDevice = NULL;
+cList<cDeviceHook> cDevice::deviceHooks;
 
 cDevice::cDevice(void)
 :patPmtParser(true)
@@ -568,6 +581,17 @@ void cDevice::Detach(cFilter *Filter)
 bool cDevice::ProvidesSource(int Source) const
 {
   return false;
+}
+
+bool cDevice::DeviceHooksProvidesTransponder(const cChannel *Channel) const
+{
+  cDeviceHook *Hook = deviceHooks.First();
+  while (Hook) {
+        if (!Hook->DeviceProvidesTransponder(this, Channel))
+           return false;
+        Hook = deviceHooks.Next(Hook);
+        }
+  return true;
 }
 
 bool cDevice::ProvidesTransponder(const cChannel *Channel) const

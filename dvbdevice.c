@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.24 2010/01/04 14:06:24 kls Exp $
+ * $Id: dvbdevice.c 2.25 2010/02/06 13:44:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -608,10 +608,12 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
   if (!ProvidesSource(Channel->Source()))
      return false; // doesn't provide source
   if (!cSource::IsSat(Channel->Source()))
-     return true; // source is sufficient for non sat
+     return DeviceHooksProvidesTransponder(Channel); // source is sufficient for non sat
   if (frontendType == SYS_DVBS && Channel->System() == SYS_DVBS2)
      return false; // requires modulation system which frontend doesn't provide
-  return !Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization());
+  if (!Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()))
+     return DeviceHooksProvidesTransponder(Channel);
+  return false;
 }
 
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const

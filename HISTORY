@@ -6319,3 +6319,5 @@ Video Disk Recorder Revision History
   "EPG scan" is active (suggested by Halim Sahim).
 - Improved handling frames at the beginning and end of a recording in cDvbPlayer for
   devices with large buffers (thanks to Reinhard Nissl).
+- Implemented cDeviceHook to allow plugins more control over which device can
+  provide which transponder (thanks to Reinhard Nissl).
