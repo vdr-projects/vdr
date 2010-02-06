@@ -1244,6 +1244,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a bug in storing the current OSD size in case the
  device has changed it in its setup menu
  for increasing the value of MAXFRAMESIZE to better suit HD recordings
+ for improving handling frames at the beginning and end of a recording in cDvbPlayer
+ for devices with large buffers
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
