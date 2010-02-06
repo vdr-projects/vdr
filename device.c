@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.33 2010/02/06 13:55:50 kls Exp $
+ * $Id: device.c 2.34 2010/02/06 14:34:18 kls Exp $
  */
 
 #include "device.h"
@@ -616,6 +616,11 @@ bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Needs
 int cDevice::NumProvidedSystems(void) const
 {
   return 0;
+}
+
+const cChannel *cDevice::GetCurrentlyTunedTransponder(void) const
+{
+  return NULL;
 }
 
 bool cDevice::IsTunedToTransponder(const cChannel *Channel)

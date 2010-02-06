@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.25 2010/02/06 13:44:08 kls Exp $
+ * $Id: dvbdevice.c 2.26 2010/02/06 14:38:44 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -48,6 +48,7 @@ private:
 public:
   cDvbTuner(int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
   virtual ~cDvbTuner();
+  const cChannel *GetTransponder(void) const { return &channel; }
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
@@ -653,6 +654,11 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 int cDvbDevice::NumProvidedSystems(void) const
 {
   return numProvidedSystems;
+}
+
+const cChannel *cDvbDevice::GetCurrentlyTunedTransponder(void) const
+{
+  return dvbTuner->GetTransponder(); 
 }
 
 bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel)

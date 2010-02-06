@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.20 2010/02/06 13:55:41 kls Exp $
+ * $Id: device.h 2.21 2010/02/06 14:34:41 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -247,6 +247,11 @@ public:
          ///< actually provide channels must implement this function.
          ///< The result of this function is used when selecting a device, in order
          ///< to avoid devices that provide more than one system.
+  virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
+         ///< Returns a pointer to the currently tuned transponder.
+         ///< This is not one of the channels in the global cChannels list, but rather
+         ///< a local copy. The result may be NULL if the device is not tuned to any
+         ///< transponder.
   virtual bool IsTunedToTransponder(const cChannel *Channel);
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.

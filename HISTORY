@@ -6321,3 +6321,4 @@ Video Disk Recorder Revision History
   devices with large buffers (thanks to Reinhard Nissl).
 - Implemented cDeviceHook to allow plugins more control over which device can
   provide which transponder (thanks to Reinhard Nissl).
+- Implemented cDevice::GetCurrentlyTunedTransponder() (thanks to Reinhard Nissl).
