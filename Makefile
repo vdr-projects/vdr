@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.6 2010/01/17 12:32:18 kls Exp $
+# $Id: Makefile 2.7 2010/02/06 14:50:03 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -32,6 +32,7 @@ CONFDIR  = $(VIDEODIR)
 DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile
 
+include Make.global
 -include Make.config
 
 SILIB    = $(LSIDIR)/libsi.a
@@ -59,8 +60,6 @@ RCU_DEVICE  ?= /dev/ttyS1
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
 
 DEFINES += -D_GNU_SOURCE
-
-DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"

@@ -6322,3 +6322,31 @@ Video Disk Recorder Revision History
 - Implemented cDeviceHook to allow plugins more control over which device can
   provide which transponder (thanks to Reinhard Nissl).
 - Implemented cDevice::GetCurrentlyTunedTransponder() (thanks to Reinhard Nissl).
+- Moved strictly necessary Makefile options into Make.global, which is included
+  by all plugins (thanks to Paul Menzel). The Makefiles of existing plugins should be
+  modified like this:
+
+  ------------------------------------------------------------
+  --- PLUGINS/src/hello/Makefile  2009/10/18 14:00:07      2.1
+  +++ PLUGINS/src/hello/Makefile  2010/02/06 14:50:03      2.2
+  @@ -18,7 +18,7 @@
+   ### The C++ compiler and options:
+
+   CXX      ?= g++
+  -CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+  +CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+
+   ### The directory environment:
+
+  @@ -26,6 +26,10 @@
+   LIBDIR = ../../lib
+   TMPDIR = /tmp
+
+  +### Make sure that necessary options are included:
+  +
+  +include $(VDRDIR)/Make.global
+  +
+   ### Allow user defined options to overwrite defaults:
+
+   -include $(VDRDIR)/Make.config
+  ------------------------------------------------------------
