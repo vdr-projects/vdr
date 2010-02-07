@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.3 2009/12/05 16:11:54 kls Exp $
+ * $Id: dvbsubtitle.c 2.4 2010/02/07 12:08:13 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -658,6 +658,7 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
 {
   dvbSubtitleAssembler = new cDvbSubtitleAssembler;
   osd = NULL;
+  frozen = false;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -685,6 +686,7 @@ void cDvbSubtitleConverter::Reset(void)
   pages->Clear();
   bitmaps->Clear();
   DELETENULL(osd);
+  frozen = false;
   Unlock();
 }
 
@@ -776,46 +778,48 @@ void cDvbSubtitleConverter::Action(void)
   int LastSetupLevel = setupLevel;
   cTimeMs Timeout;
   while (Running()) {
-        if (osd) {
-           int NewSetupLevel = setupLevel;
-           if (Timeout.TimedOut() || LastSetupLevel != NewSetupLevel) {
-              DELETENULL(osd);
-              }
-           LastSetupLevel = NewSetupLevel;
-           }
         int WaitMs = 100;
-        Lock();
-        if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
-           int64_t STC = cDevice::PrimaryDevice()->GetSTC();
-           int64_t Delta = 0;
-           if (STC >= 0) {
-              Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
-              if (Delta > (int64_t(1) << 31))
-                 Delta -= (int64_t(1) << 32);
-              else if (Delta < -((int64_t(1) << 31) - 1))
-                 Delta += (int64_t(1) << 32);
-              }
-           else {
-              //TODO sync on PTS? are there actually devices that don't deliver an STC?
-              }
-           Delta /= 90; // STC and PTS are in 1/90000s
-           if (Delta <= MAXDELTA) {
-              if (Delta <= 0) {
-                 dbgconverter("Got %d bitmaps, showing #%d\n", bitmaps->Count(), sb->Index() + 1);
-                 if (AssertOsd()) {
-                    sb->Draw(osd);
-                    Timeout.Set(sb->Timeout() * 1000);
-                    dbgconverter("PTS: %lld  STC: %lld (%lld) timeout: %d\n", sb->Pts(), cDevice::PrimaryDevice()->GetSTC(), Delta, sb->Timeout());
-                    }
-                 bitmaps->Del(sb);
+        if (!frozen) {
+           if (osd) {
+              int NewSetupLevel = setupLevel;
+              if (Timeout.TimedOut() || LastSetupLevel != NewSetupLevel) {
+                 DELETENULL(osd);
                  }
-              else if (Delta < WaitMs)
-                 WaitMs = Delta;
+              LastSetupLevel = NewSetupLevel;
               }
-           else
-              bitmaps->Del(sb);
+           Lock();
+           if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
+              int64_t STC = cDevice::PrimaryDevice()->GetSTC();
+              int64_t Delta = 0;
+              if (STC >= 0) {
+                 Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
+                 if (Delta > (int64_t(1) << 31))
+                    Delta -= (int64_t(1) << 32);
+                 else if (Delta < -((int64_t(1) << 31) - 1))
+                    Delta += (int64_t(1) << 32);
+                 }
+              else {
+                 //TODO sync on PTS? are there actually devices that don't deliver an STC?
+                 }
+              Delta /= 90; // STC and PTS are in 1/90000s
+              if (Delta <= MAXDELTA) {
+                 if (Delta <= 0) {
+                    dbgconverter("Got %d bitmaps, showing #%d\n", bitmaps->Count(), sb->Index() + 1);
+                    if (AssertOsd()) {
+                       sb->Draw(osd);
+                       Timeout.Set(sb->Timeout() * 1000);
+                       dbgconverter("PTS: %lld  STC: %lld (%lld) timeout: %d\n", sb->Pts(), cDevice::PrimaryDevice()->GetSTC(), Delta, sb->Timeout());
+                       }
+                    bitmaps->Del(sb);
+                    }
+                 else if (Delta < WaitMs)
+                    WaitMs = Delta;
+                 }
+              else
+                 bitmaps->Del(sb);
+              }
+           Unlock();
            }
-        Unlock();
         cCondWait::SleepMs(WaitMs);
         }
 }

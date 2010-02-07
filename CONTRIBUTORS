@@ -1091,6 +1091,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for a patch that was used to implement handling the "component descriptor" ("genre")
  for a patch that was used to implement handling the "parental rating descriptor"
  suggesting to add plain text error messages to log entries from cOsd::SetAreas()
+ for keeping subtitles visible when pausing replay
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

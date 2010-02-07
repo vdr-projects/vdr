@@ -6309,7 +6309,7 @@ Video Disk Recorder Revision History
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
 
-2010-02-06: Version 1.7.13
+2010-02-07: Version 1.7.13
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Changed the position of Sirius 4 to S4.8E in sources.conf (thanks to Alexander Gross).
@@ -6352,3 +6352,4 @@ Video Disk Recorder Revision History
   ------------------------------------------------------------
 - Added device definitions to the diseqc.conf file format, so that certain satellite
   positions can be limited to a given list of devices.
+- Keeping subtitles visible when pausing replay (thanks to Rolf Ahrenberg).

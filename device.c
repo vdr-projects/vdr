@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.34 2010/02/06 14:34:18 kls Exp $
+ * $Id: device.c 2.35 2010/02/07 11:54:42 kls Exp $
  */
 
 #include "device.h"
@@ -1053,11 +1053,15 @@ void cDevice::Clear(void)
 void cDevice::Play(void)
 {
   Audios.MuteAudio(mute);
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->Freeze(false);
 }
 
 void cDevice::Freeze(void)
 {
   Audios.MuteAudio(true);
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->Freeze(true);
 }
 
 void cDevice::Mute(void)

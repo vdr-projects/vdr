@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 2.1 2008/05/25 14:36:52 kls Exp $
+ * $Id: dvbsubtitle.h 2.2 2010/02/07 11:55:14 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -25,6 +25,7 @@ private:
   static int setupLevel;
   cDvbSubtitleAssembler *dvbSubtitleAssembler;
   cOsd *osd;
+  bool frozen;
   cList<cDvbSubtitlePage> *pages;
   cList<cDvbSubtitleBitmaps> *bitmaps;
   tColor yuv2rgb(int Y, int Cb, int Cr);
@@ -36,6 +37,7 @@ public:
   virtual ~cDvbSubtitleConverter();
   void Action(void);
   void Reset(void);
+  void Freeze(bool Status) { frozen = Status; }
   int ConvertFragments(const uchar *Data, int Length); // for legacy PES recordings
   int Convert(const uchar *Data, int Length);
   static void SetupChanged(void);
