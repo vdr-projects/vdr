@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.27 2010/02/06 15:34:14 kls Exp $
+ * $Id: dvbdevice.c 2.28 2010/02/07 13:21:05 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -422,7 +422,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         if (frontendType == SYS_DVBS2)
            numProvidedSystems++;
         isyslog("frontend %d/%d provides %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], frontendInfo.name);
-        dvbTuner = new cDvbTuner(DeviceNumber(), fd_frontend, adapter, frontend, frontendType);
+        dvbTuner = new cDvbTuner(CardIndex() + 1, fd_frontend, adapter, frontend, frontendType);
         }
      }
   else
@@ -614,7 +614,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return DeviceHooksProvidesTransponder(Channel); // source is sufficient for non sat
   if (frontendType == SYS_DVBS && Channel->System() == SYS_DVBS2)
      return false; // requires modulation system which frontend doesn't provide
-  if (!Setup.DiSEqC || Diseqcs.Get(DeviceNumber(), Channel->Source(), Channel->Frequency(), Channel->Polarization()))
+  if (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), Channel->Polarization()))
      return DeviceHooksProvidesTransponder(Channel);
   return false;
 }
