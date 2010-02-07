@@ -6353,3 +6353,5 @@ Video Disk Recorder Revision History
 - Added device definitions to the diseqc.conf file format, so that certain satellite
   positions can be limited to a given list of devices.
 - Keeping subtitles visible when pausing replay (thanks to Rolf Ahrenberg).
+- Fixed adding new transponders in case there is only a single channel in the
+  channel list (reported by Halim Sahin).

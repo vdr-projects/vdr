@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.30 2006/01/07 14:10:17 kls Exp $
+ * $Id: eitscan.c 2.1 2010/02/07 12:12:05 kls Exp $
  */
 
 #include "eitscan.h"
@@ -127,7 +127,7 @@ void cEITScanner::Activity(void)
 
 void cEITScanner::Process(void)
 {
-  if ((Setup.EPGScanTimeout || !lastActivity) && Channels.MaxNumber() > 1) { // !lastActivity means a scan was forced
+  if (Setup.EPGScanTimeout || !lastActivity) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         if (Channels.Lock(false, 10)) {

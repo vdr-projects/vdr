@@ -2384,6 +2384,8 @@ Halim Sahin <halim.sahin@t-online.de>
  deleting or moving a channel in the Channels menu
  for suggesting to add a note to the MANUAL, saying that adding new transponders only
  works if the "EPG scan" is active
+ for reporting a problem with adding new transponders in case there is only a single
+ channel in the channel list
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
