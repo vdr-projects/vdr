@@ -6355,3 +6355,6 @@ Video Disk Recorder Revision History
 - Keeping subtitles visible when pausing replay (thanks to Rolf Ahrenberg).
 - Fixed adding new transponders in case there is only a single channel in the
   channel list (reported by Halim Sahin).
+- The file name in the "Timers" menu now shows only the base name of the recording
+  without the folder path (if any). Otherwise with long folder paths the actual
+  recording name was not visible at all.
