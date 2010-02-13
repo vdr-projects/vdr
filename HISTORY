@@ -6360,3 +6360,4 @@ Video Disk Recorder Revision History
   recording name was not visible at all.
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Exported some libsi functions (thanks to Lucian Muresan).
+- Improved scalability of the default skins.
