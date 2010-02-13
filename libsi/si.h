@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 2.2 2009/12/06 11:37:35 kls Exp $
+ *   $Id: si.h 2.3 2010/02/13 10:31:34 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -492,6 +492,13 @@ protected:
 // like "iso8859-15" or "utf-8" (case insensitive).
 // Returns true if the character table was recognized.
 bool SetSystemCharacterTable(const char *CharacterTable);
+// Determines the character table used in the given buffer and returns
+// a string indicating that table. If no table can be determined, the
+// default ISO6937 is returned. If a table can be determined, the buffer
+// and length are adjusted accordingly.
+const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL);
+bool convertCharacterTable(const char *from, size_t fromLength, char *to, size_t toLength, const char *fromCode);
+bool systemCharacterTableIsSingleByte(void);
 
 } //end of namespace
 

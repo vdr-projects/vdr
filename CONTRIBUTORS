@@ -1683,6 +1683,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for suggesting to make the function ExchangeChars()
  for reporting duplicate texts in i18n.c
  for suggesting to use 'gettext' for internationalization
+ for exporting some libsi functions
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem

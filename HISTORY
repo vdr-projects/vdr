@@ -6359,3 +6359,4 @@ Video Disk Recorder Revision History
   without the folder path (if any). Otherwise with long folder paths the actual
   recording name was not visible at all.
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Exported some libsi functions (thanks to Lucian Muresan).
