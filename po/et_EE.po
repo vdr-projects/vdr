@@ -530,16 +530,16 @@ msgid "System"
 msgstr "Süsteem"
 
 msgid "Srate"
-msgstr "Srate"
+msgstr "Sümbolikiirus"
 
 msgid "Inversion"
 msgstr "Inversioon"
 
 msgid "CoderateH"
-msgstr "CoderateH"
+msgstr "VeaparandusH"
 
 msgid "CoderateL"
-msgstr "CoderateL"
+msgstr "VeaparandusL"
 
 msgid "Modulation"
 msgstr "Modulatsioon"
@@ -551,7 +551,7 @@ msgid "Transmission"
 msgstr "Transmissioon"
 
 msgid "Guard"
-msgstr "Guard"
+msgstr "Kaitseintervall"
 
 msgid "Hierarchy"
 msgstr "Hierarhia"
@@ -584,29 +584,29 @@ msgid "Delete channel?"
 msgstr "Kustutada kanal?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Kausta muutmine"
 
 msgid "New folder"
-msgstr ""
+msgstr "Uus kaust"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Uus alamkaust"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Sellenimeline kaust juba olemas!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Kausta nimi ei saa sisaldada '%c' sümbolit!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Vali"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Kustutada kaust ja kõik alamkaustad?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Kustutada kaust?"
 
 msgid "Edit timer"
 msgstr "Taimeri redigeerimine"
@@ -639,13 +639,13 @@ msgid "File"
 msgstr "Fail"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Kaust"
 
 msgid "First day"
 msgstr "Esimene päev"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Kausta valik"
 
 msgid "Timers"
 msgstr "Taimer"
@@ -765,10 +765,10 @@ msgid "Setup.OSD$Theme"
 msgstr "Teema"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "Vasakule (%)"
+msgstr "Nihe paremale (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "Ülesse (%)"
+msgstr "Nihe alla (%)"
 
 msgid "Setup.OSD$Width (%)"
 msgstr "Laius (%)"
@@ -825,7 +825,7 @@ msgid "Setup.OSD$Scroll pages"
 msgstr "Lehekülje kerimine"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Ridade kerimine"
+msgstr "Ridade ringkerimine"
 
 msgid "Setup.OSD$Menu key closes"
 msgstr "Sulgemine Menüü klahviga"
@@ -1076,7 +1076,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Helitugevus käivitamisel"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Kanalite ringkerimine"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Hädaväljumine"
