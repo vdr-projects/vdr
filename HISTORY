@@ -6309,7 +6309,7 @@ Video Disk Recorder Revision History
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
 
-2010-02-21: Version 1.7.13
+2010-02-28: Version 1.7.13
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Changed the position of Sirius 4 to S4.8E in sources.conf (thanks to Alexander Gross).
@@ -6364,3 +6364,15 @@ Video Disk Recorder Revision History
 - Fixed the German translation of "Folder name must not contain '%c'!" (thanks to
   Frank Schmirler).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Plugins can now define new sources. In order to implement this, the following
+  changes were made:
+  + The transponder parameter string is no longer interpreted by cChannel, but rather
+    stored as is and used only by the respective device. That way plugins can use a
+    channel's parameter string to store arbitrary data (see vdr.5).
+  + The new class cSourceParam can be used by plugins to define new sources, and to
+    implement OSD items that will be used in the channel editor for editing the source
+    specific parameters of a channel (see dvbdevice.c for an example of how this is
+    done for the default DVB devices).
+  + Purely numerical values are no longer accepted in the 'source' parameter of a
+    channel.
+  This obsoletes the PLUGINPARAM patch.

@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.28 2010/02/07 13:21:05 kls Exp $
+ * $Id: dvbdevice.c 2.29 2010/02/21 17:10:35 kls Exp $
  */
 
 #include "dvbdevice.h"
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <linux/dvb/dmx.h>
@@ -17,6 +18,8 @@
 #include "channels.h"
 #include "diseqc.h"
 #include "dvbci.h"
+#include "menuitems.h"
+#include "sourceparams.h"
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -24,6 +27,217 @@
 #define DVBC_LOCK_TIMEOUT  2000 //ms
 #define DVBT_TUNE_TIMEOUT  9000 //ms
 #define DVBT_LOCK_TIMEOUT  2000 //ms
+
+// --- DVB Parameter Maps ----------------------------------------------------
+
+const tDvbParameterMap InversionValues[] = {
+  {   0, INVERSION_OFF,  trNOOP("off") },
+  {   1, INVERSION_ON,   trNOOP("on") },
+  { 999, INVERSION_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap BandwidthValues[] = {
+  {   6, 6000000, "6 MHz" },
+  {   7, 7000000, "7 MHz" },
+  {   8, 8000000, "8 MHz" },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap CoderateValues[] = {
+  {   0, FEC_NONE, trNOOP("none") },
+  {  12, FEC_1_2,  "1/2" },
+  {  23, FEC_2_3,  "2/3" },
+  {  34, FEC_3_4,  "3/4" },
+  {  35, FEC_3_5,  "3/5" },
+  {  45, FEC_4_5,  "4/5" },
+  {  56, FEC_5_6,  "5/6" },
+  {  67, FEC_6_7,  "6/7" },
+  {  78, FEC_7_8,  "7/8" },
+  {  89, FEC_8_9,  "8/9" },
+  { 910, FEC_9_10, "9/10" },
+  { 999, FEC_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap ModulationValues[] = {
+  {  16, QAM_16,   "QAM16" },
+  {  32, QAM_32,   "QAM32" },
+  {  64, QAM_64,   "QAM64" },
+  { 128, QAM_128,  "QAM128" },
+  { 256, QAM_256,  "QAM256" },
+  {   2, QPSK,     "QPSK" },
+  {   5, PSK_8,    "8PSK" },
+  {   6, APSK_16,  "16APSK" },
+  {  10, VSB_8,    "VSB8" },
+  {  11, VSB_16,   "VSB16" },
+  { 998, QAM_AUTO, "QAMAUTO" },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap SystemValues[] = {
+  {   0, SYS_DVBS,  "DVB-S" },
+  {   1, SYS_DVBS2, "DVB-S2" },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap TransmissionValues[] = {
+  {   2, TRANSMISSION_MODE_2K,   "2K" },
+  {   8, TRANSMISSION_MODE_8K,   "8K" },
+  { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap GuardValues[] = {
+  {   4, GUARD_INTERVAL_1_4,  "1/4" },
+  {   8, GUARD_INTERVAL_1_8,  "1/8" },
+  {  16, GUARD_INTERVAL_1_16, "1/16" },
+  {  32, GUARD_INTERVAL_1_32, "1/32" },
+  { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap HierarchyValues[] = {
+  {   0, HIERARCHY_NONE, trNOOP("none") },
+  {   1, HIERARCHY_1,    "1" },
+  {   2, HIERARCHY_2,    "2" },
+  {   4, HIERARCHY_4,    "4" },
+  { 999, HIERARCHY_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap RollOffValues[] = {
+  {   0, ROLLOFF_AUTO, trNOOP("auto") },
+  {  20, ROLLOFF_20, "0.20" },
+  {  25, ROLLOFF_25, "0.25" },
+  {  35, ROLLOFF_35, "0.35" },
+  {  -1, 0, NULL }
+  };
+
+int UserIndex(int Value, const tDvbParameterMap *Map)
+{
+  const tDvbParameterMap *map = Map;
+  while (map && map->userValue != -1) {
+        if (map->userValue == Value)
+           return map - Map;
+        map++;
+        }
+  return -1;
+}
+
+int DriverIndex(int Value, const tDvbParameterMap *Map)
+{
+  const tDvbParameterMap *map = Map;
+  while (map && map->userValue != -1) {
+        if (map->driverValue == Value)
+           return map - Map;
+        map++;
+        }
+  return -1;
+}
+
+int MapToUser(int Value, const tDvbParameterMap *Map, const char **String)
+{
+  int n = DriverIndex(Value, Map);
+  if (n >= 0) {
+     if (String)
+        *String = tr(Map[n].userString);
+     return Map[n].userValue;
+     }
+  return -1;
+}
+
+int MapToDriver(int Value, const tDvbParameterMap *Map)
+{
+  int n = UserIndex(Value, Map);
+  if (n >= 0)
+     return Map[n].driverValue;
+  return -1;
+}
+
+// --- cDvbTransponderParameters ---------------------------------------------
+
+cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
+{
+  polarization = 0;
+  inversion    = INVERSION_AUTO;
+  bandwidth    = 8000000;
+  coderateH    = FEC_AUTO;
+  coderateL    = FEC_AUTO;
+  modulation   = QPSK;
+  system       = SYS_DVBS;
+  transmission = TRANSMISSION_MODE_AUTO;
+  guard        = GUARD_INTERVAL_AUTO;
+  hierarchy    = HIERARCHY_AUTO;
+  rollOff      = ROLLOFF_AUTO;
+  Parse(Parameters);
+}
+
+int cDvbTransponderParameters::PrintParameter(char *p, char Name, int Value) const
+{
+  return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
+}
+
+cString cDvbTransponderParameters::ToString(char Type) const
+{
+#define ST(s) if (strchr(s, Type))
+  char buffer[64];
+  char *q = buffer;
+  *q = 0;
+  ST(" S ")  q += sprintf(q, "%c", polarization);
+  ST("  T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
+  ST("CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
+  ST("  T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
+  ST("  T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
+  ST("CST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
+  ST("CST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
+  ST(" S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
+  ST(" S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
+  ST("  T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
+  ST("  T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
+  return buffer;
+}
+
+const char *cDvbTransponderParameters::ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map)
+{
+  if (*++s) {
+     char *p = NULL;
+     errno = 0;
+     int n = strtol(s, &p, 10);
+     if (!errno && p != s) {
+        Value = MapToDriver(n, Map);
+        if (Value >= 0)
+           return p;
+        }
+     }
+  esyslog("ERROR: invalid value for parameter '%c'", *(s - 1));
+  return NULL;
+}
+
+bool cDvbTransponderParameters::Parse(const char *s)
+{
+  while (s && *s) {
+        switch (toupper(*s)) {
+          case 'B': s = ParseParameter(s, bandwidth, BandwidthValues); break;
+          case 'C': s = ParseParameter(s, coderateH, CoderateValues); break;
+          case 'D': s = ParseParameter(s, coderateL, CoderateValues); break;
+          case 'G': s = ParseParameter(s, guard, GuardValues); break;
+          case 'H': polarization = *s++; break;
+          case 'I': s = ParseParameter(s, inversion, InversionValues); break;
+          case 'L': polarization = *s++; break;
+          case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
+          case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
+          case 'R': polarization = *s++; break;
+          case 'S': s = ParseParameter(s, system, SystemValues); break;
+          case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
+          case 'V': polarization = *s++; break;
+          case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
+          default: esyslog("ERROR: unknown parameter key '%c'", *s);
+                   return false;
+          }
+        }
+  return true;
+}
 
 // --- cDvbTuner -------------------------------------------------------------
 
@@ -87,21 +301,8 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
      return false; // not tuned to
   if (channel.Source() != Channel->Source() || channel.Transponder() != Channel->Transponder())
      return false; // sufficient mismatch
-  char Type = **cSource::ToString(Channel->Source());
-#define ST(s, p) if (strchr(s, Type)) if (channel.p() != Channel->p()) return false;
   // Polarization is already checked as part of the Transponder.
-  ST("  T", Bandwidth);
-  ST("CST", CoderateH);
-  ST("  T", CoderateL);
-  ST("  T", Guard);
-  ST("CST", Inversion);
-  ST("CST", Modulation);
-  ST(" S ", RollOff);
-  ST(" S ", System);
-  ST("CS ", Srate);
-  ST("  T", Transmission);
-  ST("  T", Hierarchy);
-  return true;
+  return strcmp(channel.Parameters(), Channel->Parameters()) == 0;
 }
 
 void cDvbTuner::Set(const cChannel *Channel)
@@ -174,10 +375,12 @@ bool cDvbTuner::SetFrontend(void)
      }
   CmdSeq.num = 0;
 
+  cDvbTransponderParameters dtp(channel.Parameters());
+
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), channel.Polarization());
+        cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), dtp.Polarization());
         if (diseqc) {
            if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
               cDiseqc::eDiseqcActions da;
@@ -223,24 +426,24 @@ bool cDvbTuner::SetFrontend(void)
            frequency -= Setup.LnbFrequHi;
            tone = SEC_TONE_ON;
            }
-        int volt = (channel.Polarization() == 'v' || channel.Polarization() == 'V' || channel.Polarization() == 'r' || channel.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+        int volt = (dtp.Polarization() == 'v' || dtp.Polarization() == 'V' || dtp.Polarization() == 'r' || dtp.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
         CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
         CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
         }
      frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
 
      // DVB-S/DVB-S2 (common parts)
-     SETCMD(DTV_DELIVERY_SYSTEM, channel.System());
+     SETCMD(DTV_DELIVERY_SYSTEM, dtp.System());
      SETCMD(DTV_FREQUENCY, frequency * 1000UL);
-     SETCMD(DTV_MODULATION, channel.Modulation());
+     SETCMD(DTV_MODULATION, dtp.Modulation());
      SETCMD(DTV_SYMBOL_RATE, channel.Srate() * 1000UL);
-     SETCMD(DTV_INNER_FEC, channel.CoderateH());
-     SETCMD(DTV_INVERSION, channel.Inversion());
-     if (channel.System() == SYS_DVBS2) {
+     SETCMD(DTV_INNER_FEC, dtp.CoderateH());
+     SETCMD(DTV_INVERSION, dtp.Inversion());
+     if (dtp.System() == SYS_DVBS2) {
         if (frontendType == SYS_DVBS2) {
            // DVB-S2
            SETCMD(DTV_PILOT, PILOT_AUTO);
-           SETCMD(DTV_ROLLOFF, channel.RollOff());
+           SETCMD(DTV_ROLLOFF, dtp.RollOff());
            }
         else {
            esyslog("ERROR: frontend %d/%d doesn't provide DVB-S2", adapter, frontend);
@@ -259,10 +462,10 @@ bool cDvbTuner::SetFrontend(void)
      // DVB-C
      SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
-     SETCMD(DTV_INVERSION, channel.Inversion());
+     SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_SYMBOL_RATE, channel.Srate() * 1000UL);
-     SETCMD(DTV_INNER_FEC, channel.CoderateH());
-     SETCMD(DTV_MODULATION, channel.Modulation());
+     SETCMD(DTV_INNER_FEC, dtp.CoderateH());
+     SETCMD(DTV_MODULATION, dtp.Modulation());
 
      tuneTimeout = DVBC_TUNE_TIMEOUT;
      lockTimeout = DVBC_LOCK_TIMEOUT;
@@ -271,14 +474,14 @@ bool cDvbTuner::SetFrontend(void)
      // DVB-T
      SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
-     SETCMD(DTV_INVERSION, channel.Inversion());
-     SETCMD(DTV_BANDWIDTH_HZ, channel.Bandwidth());
-     SETCMD(DTV_CODE_RATE_HP, channel.CoderateH());
-     SETCMD(DTV_CODE_RATE_LP, channel.CoderateL());
-     SETCMD(DTV_MODULATION, channel.Modulation());
-     SETCMD(DTV_TRANSMISSION_MODE, channel.Transmission());
-     SETCMD(DTV_GUARD_INTERVAL, channel.Guard());
-     SETCMD(DTV_HIERARCHY, channel.Hierarchy());
+     SETCMD(DTV_INVERSION, dtp.Inversion());
+     SETCMD(DTV_BANDWIDTH_HZ, dtp.Bandwidth());
+     SETCMD(DTV_CODE_RATE_HP, dtp.CoderateH());
+     SETCMD(DTV_CODE_RATE_LP, dtp.CoderateL());
+     SETCMD(DTV_MODULATION, dtp.Modulation());
+     SETCMD(DTV_TRANSMISSION_MODE, dtp.Transmission());
+     SETCMD(DTV_GUARD_INTERVAL, dtp.Guard());
+     SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
@@ -354,6 +557,62 @@ void cDvbTuner::Action(void)
         if (tunerStatus != tsTuned)
            newSet.TimedWait(mutex, 1000);
         }
+}
+
+// --- cDvbSourceParam -------------------------------------------------------
+
+class cDvbSourceParam : public cSourceParam {
+private:
+  int param;
+  cChannel data;
+  cDvbTransponderParameters dtp;
+public:
+  cDvbSourceParam(char Source, const char *Description);
+  virtual void SetData(cChannel *Channel);
+  virtual void GetData(cChannel *Channel);
+  virtual cOsdItem *GetOsdItem(void);
+  };
+
+cDvbSourceParam::cDvbSourceParam(char Source, const char *Description)
+:cSourceParam(Source, Description)
+{
+  param = 0;
+}
+
+void cDvbSourceParam::SetData(cChannel *Channel)
+{
+  data = *Channel;
+  dtp.Parse(data.Parameters());
+  param = 0;
+}
+
+void cDvbSourceParam::GetData(cChannel *Channel)
+{
+  data.SetTransponderData(Channel->Source(), Channel->Frequency(), data.Srate(), dtp.ToString(Source()), true);
+  *Channel = data;
+}
+
+cOsdItem *cDvbSourceParam::GetOsdItem(void)
+{
+  char type = Source();
+#undef ST
+#define ST(s) if (strchr(s, type))
+  switch (param++) {
+    case  0: ST(" S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "hvlr");             else return GetOsdItem();
+    case  1: ST(" S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
+    case  2: ST("CS ")  return new cMenuEditIntItem( tr("Srate"),        &data.srate);                           else return GetOsdItem();
+    case  3: ST("CST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
+    case  4: ST("CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
+    case  5: ST("  T")  return new cMenuEditMapItem( tr("CoderateL"),    &dtp.coderateL,    CoderateValues);     else return GetOsdItem();
+    case  6: ST("CST")  return new cMenuEditMapItem( tr("Modulation"),   &dtp.modulation,   ModulationValues);   else return GetOsdItem();
+    case  7: ST("  T")  return new cMenuEditMapItem( tr("Bandwidth"),    &dtp.bandwidth,    BandwidthValues);    else return GetOsdItem();
+    case  8: ST("  T")  return new cMenuEditMapItem( tr("Transmission"), &dtp.transmission, TransmissionValues); else return GetOsdItem();
+    case  9: ST("  T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
+    case 10: ST("  T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
+    case 11: ST(" S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
+    default: return NULL;
+    }
+  return NULL;
 }
 
 // --- cDvbDevice ------------------------------------------------------------
@@ -486,6 +745,9 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
 
 bool cDvbDevice::Initialize(void)
 {
+  new cDvbSourceParam('C', "DVB-C");
+  new cDvbSourceParam('S', "DVB-S");
+  new cDvbSourceParam('T', "DVB-T");
   int Checked = 0;
   int Found = 0;
   for (int Adapter = 0; ; Adapter++) {
@@ -612,9 +874,10 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return false; // doesn't provide source
   if (!cSource::IsSat(Channel->Source()))
      return DeviceHooksProvidesTransponder(Channel); // source is sufficient for non sat
-  if (frontendType == SYS_DVBS && Channel->System() == SYS_DVBS2)
+  cDvbTransponderParameters dtp(Channel->Parameters());
+  if (frontendType == SYS_DVBS && dtp.System() == SYS_DVBS2)
      return false; // requires modulation system which frontend doesn't provide
-  if (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), Channel->Polarization()))
+  if (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
      return DeviceHooksProvidesTransponder(Channel);
   return false;
 }

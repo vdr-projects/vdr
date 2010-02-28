@@ -8,13 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-5\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Неправильный канал ***"
+
+msgid "Channel not available!"
+msgstr "Канал недоступен!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Невозможно включить режим пропуска!"
 
 msgid "off"
 msgstr "выкл"
@@ -28,14 +37,41 @@ msgstr "авто"
 msgid "none"
 msgstr "ничего"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Неправильный канал ***"
+msgid "Polarization"
+msgstr "Поляризация"
 
-msgid "Channel not available!"
-msgstr "Канал недоступен!"
+msgid "System"
+msgstr "Система"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Невозможно включить режим пропуска!"
+msgid "Srate"
+msgstr "Симв. скорость"
+
+msgid "Inversion"
+msgstr "Инверсия"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Модуляция"
+
+msgid "Bandwidth"
+msgstr "Диапазон"
+
+msgid "Transmission"
+msgstr "Передача"
+
+msgid "Guard"
+msgstr "Защита"
+
+msgid "Hierarchy"
+msgstr "Иерархия"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "Начинаю EPG-сканирование"
@@ -523,42 +559,6 @@ msgstr "CA (декодер)"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Поляризация"
-
-msgid "System"
-msgstr "Система"
-
-msgid "Srate"
-msgstr "Симв. скорость"
-
-msgid "Inversion"
-msgstr "Инверсия"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Модуляция"
-
-msgid "Bandwidth"
-msgstr "Диапазон"
-
-msgid "Transmission"
-msgstr "Передача"
-
-msgid "Guard"
-msgstr "Защита"
-
-msgid "Hierarchy"
-msgstr "Иерархия"
-
-msgid "Rolloff"
-msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Настройки канала не уникальны!"

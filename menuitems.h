@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.2 2009/05/03 12:50:34 kls Exp $
+ * $Id: menuitems.h 2.3 2010/02/21 13:58:21 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
 #include <limits.h>
+#include "dvbdevice.h"
 #include "osdbase.h"
 
 extern const char *FileNameChars;
@@ -175,11 +176,11 @@ public:
 class cMenuEditMapItem : public cMenuEditItem {
 protected:
   int *value;
-  const tChannelParameterMap *map;
+  const tDvbParameterMap *map;
   const char *zeroString;
   virtual void Set(void);
 public:
-  cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString = NULL);
+  cMenuEditMapItem(const char *Name, int *Value, const tDvbParameterMap *Map, const char *ZeroString = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

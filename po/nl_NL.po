@@ -11,13 +11,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Ongeldig kanaal ***"
+
+msgid "Channel not available!"
+msgstr "Kanaal niet beschikbaar"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Kan Transfer-Mode niet starten"
 
 msgid "off"
 msgstr "uit"
@@ -31,14 +40,41 @@ msgstr "auto"
 msgid "none"
 msgstr "geen"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Ongeldig kanaal ***"
+msgid "Polarization"
+msgstr "Polarisatie"
 
-msgid "Channel not available!"
-msgstr "Kanaal niet beschikbaar"
+msgid "System"
+msgstr ""
 
-msgid "Can't start Transfer Mode!"
-msgstr "Kan Transfer-Mode niet starten"
+msgid "Srate"
+msgstr "Srate"
+
+msgid "Inversion"
+msgstr "Inversion"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulatie"
+
+msgid "Bandwidth"
+msgstr "Bandbreedte"
+
+msgid "Transmission"
+msgstr "Transmissie"
+
+msgid "Guard"
+msgstr "Guard"
+
+msgid "Hierarchy"
+msgstr "Hierarchie"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Bezig met starten EPG scan"
@@ -526,42 +562,6 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Polarisatie"
-
-msgid "System"
-msgstr ""
-
-msgid "Srate"
-msgstr "Srate"
-
-msgid "Inversion"
-msgstr "Inversion"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulatie"
-
-msgid "Bandwidth"
-msgstr "Bandbreedte"
-
-msgid "Transmission"
-msgstr "Transmissie"
-
-msgid "Guard"
-msgstr "Guard"
-
-msgid "Hierarchy"
-msgstr "Hierarchie"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaalinstellingen zijn niet uniek!"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2010-02-11 13:38+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian\n"
@@ -17,6 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Romanian\n"
 "X-Poedit-Country: ROMANIA\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Canal invalid ***"
+
+msgid "Channel not available!"
+msgstr "Canal indisponibil"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Nu pot porni modul de transfer!"
 
 msgid "off"
 msgstr "oprit"
@@ -30,14 +39,41 @@ msgstr "automat"
 msgid "none"
 msgstr "niciuna(ul)"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Canal invalid ***"
+msgid "Polarization"
+msgstr "Polarizare"
 
-msgid "Channel not available!"
-msgstr "Canal indisponibil"
+msgid "System"
+msgstr "Sistem"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Nu pot porni modul de transfer!"
+msgid "Srate"
+msgstr "Ratã simboluri"
+
+msgid "Inversion"
+msgstr "Inversiune"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulaþie"
+
+msgid "Bandwidth"
+msgstr "Lãrgime de bandã"
+
+msgid "Transmission"
+msgstr "Transmisie"
+
+msgid "Guard"
+msgstr "Guard"
+
+msgid "Hierarchy"
+msgstr "Ierarhie"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "Pornesc achiziþia EPG"
@@ -525,42 +561,6 @@ msgstr "CA (Acces Condiþional)"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Polarizare"
-
-msgid "System"
-msgstr "Sistem"
-
-msgid "Srate"
-msgstr "Ratã simboluri"
-
-msgid "Inversion"
-msgstr "Inversiune"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulaþie"
-
-msgid "Bandwidth"
-msgstr "Lãrgime de bandã"
-
-msgid "Transmission"
-msgstr "Transmisie"
-
-msgid "Guard"
-msgstr "Guard"
-
-msgid "Hierarchy"
-msgstr "Ierarhie"
-
-msgid "Rolloff"
-msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametrii canalului nu sunt univoci!"

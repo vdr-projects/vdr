@@ -7,13 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.9\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2009-10-17 14:19+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Klaidingas kanalas ***"
+
+msgid "Channel not available!"
+msgstr "Kanalas neegzistuoja!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Negali pradėti perdavimo"
 
 msgid "off"
 msgstr "įjungt"
@@ -27,14 +36,41 @@ msgstr "auto"
 msgid "none"
 msgstr "nėra"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Klaidingas kanalas ***"
+msgid "Polarization"
+msgstr "Poliarizacija"
 
-msgid "Channel not available!"
-msgstr "Kanalas neegzistuoja!"
+msgid "System"
+msgstr "Sistema"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Negali pradėti perdavimo"
+msgid "Srate"
+msgstr "Perdavimo greitis (Symbol rate)"
+
+msgid "Inversion"
+msgstr "Inversija"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Moduliacija"
+
+msgid "Bandwidth"
+msgstr "Pralaidumas"
+
+msgid "Transmission"
+msgstr "Perdavimas"
+
+msgid "Guard"
+msgstr "Apsauga"
+
+msgid "Hierarchy"
+msgstr "Hierarchija"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
@@ -522,42 +558,6 @@ msgstr "CA (dekodavimo sistema)"
 
 msgid "Sid"
 msgstr "Serviso id"
-
-msgid "Polarization"
-msgstr "Poliarizacija"
-
-msgid "System"
-msgstr "Sistema"
-
-msgid "Srate"
-msgstr "Perdavimo greitis (Symbol rate)"
-
-msgid "Inversion"
-msgstr "Inversija"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Moduliacija"
-
-msgid "Bandwidth"
-msgstr "Pralaidumas"
-
-msgid "Transmission"
-msgstr "Perdavimas"
-
-msgid "Guard"
-msgstr "Apsauga"
-
-msgid "Hierarchy"
-msgstr "Hierarchija"
-
-msgid "Rolloff"
-msgstr "Rolloff"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanalų nustatymai neunikalūs!"

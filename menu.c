@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.16 2010/02/07 13:31:49 kls Exp $
+ * $Id: menu.c 2.17 2010/02/21 14:09:19 kls Exp $
  */
 
 #include "menu.h"
@@ -24,6 +24,7 @@
 #include "recording.h"
 #include "remote.h"
 #include "shutdown.h"
+#include "sourceparams.h"
 #include "sources.h"
 #include "status.h"
 #include "themes.h"
@@ -189,6 +190,7 @@ class cMenuEditChannel : public cOsdMenu {
 private:
   cChannel *channel;
   cChannel data;
+  cSourceParam *sourceParam;
   char name[256];
   void Setup(void);
 public:
@@ -200,6 +202,7 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 :cOsdMenu(tr("Edit channel"), 16)
 {
   channel = Channel;
+  sourceParam = NULL;
   if (channel) {
      data = *channel;
      if (New) {
@@ -215,8 +218,6 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 void cMenuEditChannel::Setup(void)
 {
   int current = Current();
-  char type = **cSource::ToString(data.source);
-#define ST(s) if (strchr(s, type))
 
   Clear();
 
@@ -242,18 +243,13 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
   XXX*/
   // Parameters for specific types of sources:
-  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hvlr"));
-  ST(" S ")  Add(new cMenuEditMapItem( tr("System"),       &data.system,       SystemValues));
-  ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
-  ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues));
-  ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("CoderateL"),    &data.coderateL,    CoderateValues));
-  ST("CST")  Add(new cMenuEditMapItem( tr("Modulation"),   &data.modulation,   ModulationValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Bandwidth"),    &data.bandwidth,    BandwidthValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Transmission"), &data.transmission, TransmissionValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Guard"),        &data.guard,        GuardValues));
-  ST("  T")  Add(new cMenuEditMapItem( tr("Hierarchy"),    &data.hierarchy,    HierarchyValues));
-  ST(" S ")  Add(new cMenuEditMapItem( tr("Rolloff"),      &data.rollOff,      RollOffValues));
+  sourceParam = SourceParams.Get(**cSource::ToString(data.source));
+  if (sourceParam) {
+     sourceParam->SetData(&data);
+     cOsdItem *Item;
+     while ((Item = sourceParam->GetOsdItem()) != NULL)
+           Add(Item);
+     }
 
   SetCurrent(Get(current));
   Display();
@@ -266,6 +262,8 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      if (Key == kOk) {
+        if (sourceParam)
+           sourceParam->GetData(&data);
         if (Channels.HasUniqueChannelID(&data, channel)) {
            data.name = strcpyrealloc(data.name, name);
            if (channel) {
@@ -289,8 +287,11 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            }
         }
      }
-  if (Key != kNone && (data.source & cSource::st_Mask) != (oldSource & cSource::st_Mask))
+  if (Key != kNone && (data.source & cSource::st_Mask) != (oldSource & cSource::st_Mask)) {
+     if (sourceParam)
+        sourceParam->GetData(&data);
      Setup();
+     }
   return state;
 }
 

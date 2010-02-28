@@ -7,13 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Geçersiz kanal ***"
+
+msgid "Channel not available!"
+msgstr "Kanal kullanýlamýyor!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Transfer modu baþlatýlamýyor!"
 
 msgid "off"
 msgstr "kapalý"
@@ -27,14 +36,41 @@ msgstr "otomatik"
 msgid "none"
 msgstr "hiç"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Geçersiz kanal ***"
+msgid "Polarization"
+msgstr "Kutuplaþma"
 
-msgid "Channel not available!"
-msgstr "Kanal kullanýlamýyor!"
+msgid "System"
+msgstr ""
 
-msgid "Can't start Transfer Mode!"
-msgstr "Transfer modu baþlatýlamýyor!"
+msgid "Srate"
+msgstr "Srate"
+
+msgid "Inversion"
+msgstr "Ýnversiyon"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modülasyon"
+
+msgid "Bandwidth"
+msgstr "Bant geniþliði"
+
+msgid "Transmission"
+msgstr "Ýletim"
+
+msgid "Guard"
+msgstr "Koruma"
+
+msgid "Hierarchy"
+msgstr "Hiyerarþi"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "EPG tarama baþlýyor"
@@ -522,42 +558,6 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Kutuplaþma"
-
-msgid "System"
-msgstr ""
-
-msgid "Srate"
-msgstr "Srate"
-
-msgid "Inversion"
-msgstr "Ýnversiyon"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modülasyon"
-
-msgid "Bandwidth"
-msgstr "Bant geniþliði"
-
-msgid "Transmission"
-msgstr "Ýletim"
-
-msgid "Guard"
-msgstr "Koruma"
-
-msgid "Hierarchy"
-msgstr "Hiyerarþi"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Kanal ayarlarý belli deðýl!"

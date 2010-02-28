@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.5 2009/12/06 11:31:20 kls Exp $
+ * $Id: menuitems.c 2.6 2010/02/16 14:44:35 kls Exp $
  */
 
 #include "menuitems.h"
@@ -1007,7 +1007,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
 
 // --- cMenuEditMapItem ------------------------------------------------------
 
-cMenuEditMapItem::cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString)
+cMenuEditMapItem::cMenuEditMapItem(const char *Name, int *Value, const tDvbParameterMap *Map, const char *ZeroString)
 :cMenuEditItem(Name)
 {
   value = Value;
