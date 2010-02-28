@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.41 2010/01/30 10:43:12 kls Exp $
+ * $Id: remux.c 2.42 2010/02/28 14:42:07 kls Exp $
  */
 
 #include "remux.h"
@@ -601,7 +601,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             dpids[NumDpids] = dpid;
                             dtypes[NumDpids] = stream.getStreamType();
                             strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
-                            if (updatePrimaryDevice)
+                            if (updatePrimaryDevice && Setup.UseDolbyDigital)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
                             dpids[NumDpids]= 0;

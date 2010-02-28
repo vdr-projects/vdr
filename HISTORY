@@ -6380,3 +6380,6 @@ Video Disk Recorder Revision History
   This obsoletes the PLUGINPARAM patch.
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - cSafeFile::Close() now flushes the file (suggested by Stephan Austermühle).
+- The option "Setup/DVB/Use Dolby Digital" now only controls whether Dolby Digital
+  tracks appear in the "Audio" menu. Dolby Digital is always recorded.
+  This obsoletes the DOLBYINREC patch.
