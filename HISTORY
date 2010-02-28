@@ -6317,7 +6317,7 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Moved the declaration of cMenuCommands to menu.h, so that plugins can use it.
 - Added a note to the MANUAL, saying that adding new transponders only works if the
-  "EPG scan" is active (suggested by Halim Sahim).
+  "EPG scan" is active (suggested by Halim Sahin).
 - Improved handling frames at the beginning and end of a recording in cDvbPlayer for
   devices with large buffers (thanks to Reinhard Nissl).
 - Implemented cDeviceHook to allow plugins more control over which device can
