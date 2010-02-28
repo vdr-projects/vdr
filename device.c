@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.32 2010/01/30 11:06:51 kls Exp $
+ * $Id: device.c 2.35 2010/02/07 11:54:42 kls Exp $
  */
 
 #include "device.h"
@@ -44,6 +44,18 @@ void cLiveSubtitle::Receive(uchar *Data, int Length)
   cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
+// --- cDeviceHook -----------------------------------------------------------
+
+cDeviceHook::cDeviceHook(void)
+{
+  cDevice::deviceHooks.Add(this);
+}
+
+bool cDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
+{
+  return true;
+}
+
 // --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
@@ -59,6 +71,7 @@ int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
 cDevice *cDevice::avoidDevice = NULL;
+cList<cDeviceHook> cDevice::deviceHooks;
 
 cDevice::cDevice(void)
 :patPmtParser(true)
@@ -570,6 +583,17 @@ bool cDevice::ProvidesSource(int Source) const
   return false;
 }
 
+bool cDevice::DeviceHooksProvidesTransponder(const cChannel *Channel) const
+{
+  cDeviceHook *Hook = deviceHooks.First();
+  while (Hook) {
+        if (!Hook->DeviceProvidesTransponder(this, Channel))
+           return false;
+        Hook = deviceHooks.Next(Hook);
+        }
+  return true;
+}
+
 bool cDevice::ProvidesTransponder(const cChannel *Channel) const
 {
   return false;
@@ -592,6 +616,11 @@ bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Needs
 int cDevice::NumProvidedSystems(void) const
 {
   return 0;
+}
+
+const cChannel *cDevice::GetCurrentlyTunedTransponder(void) const
+{
+  return NULL;
 }
 
 bool cDevice::IsTunedToTransponder(const cChannel *Channel)
@@ -1024,11 +1053,15 @@ void cDevice::Clear(void)
 void cDevice::Play(void)
 {
   Audios.MuteAudio(mute);
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->Freeze(false);
 }
 
 void cDevice::Freeze(void)
 {
   Audios.MuteAudio(true);
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->Freeze(true);
 }
 
 void cDevice::Mute(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.4 2010/01/03 14:51:35 kls Exp $
+ * $Id: skinsttng.c 2.5 2010/02/13 13:30:59 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -49,9 +49,12 @@
 #include "symbols/teletext.xpm"
 #include "symbols/volume.xpm"
 
-#define Roundness   10
-#define Gap          5
-#define ScrollWidth  5
+#define Roundness     (Setup.FontOsdSize / 2)
+#define Gap           (Setup.FontOsdSize / 5)
+#define ScrollWidth   (Setup.FontOsdSize / 4)
+#define TextFrame     (Setup.FontOsdSize / 10)
+#define TextSpacing   (Setup.FontOsdSize / 4)
+#define SymbolSpacing (Setup.FontOsdSize / 4)
 
 static cTheme Theme;
 
@@ -161,7 +164,7 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
   message = false;
   if (withInfo) {
      x0 = 0;
-     x1 = x0 + font->Width("00:00") + 4;
+     x1 = x0 + font->Width("00:00") + 2 * TextFrame;
      x2 = x1 + Roundness;
      x3 = x2 + Gap;
      x7 = cOsd::OsdWidth();
@@ -240,28 +243,27 @@ cSkinSTTNGDisplayChannel::~cSkinSTTNGDisplayChannel()
 void cSkinSTTNGDisplayChannel::SetChannel(const cChannel *Channel, int Number)
 {
   osd->DrawRectangle(x3, y0, x4 - 1, y1 - 1, frameColor);
-  int x = x4 - 5;
+  int x = x4 - SymbolSpacing;
   if (Channel && !Channel->GroupSep()) {
-     int d = 3;
      bool rec = cRecordControls::Active();
-     x -= bmRecording.Width() + d;
+     x -= bmRecording.Width() + SymbolSpacing;
      osd->DrawBitmap(x, y0 + (y1 - y0 - bmRecording.Height()) / 2, bmRecording, Theme.Color(rec ? clrChannelSymbolRecFg : clrChannelSymbolOff), rec ? Theme.Color(clrChannelSymbolRecBg) : frameColor);
-     x -= bmEncrypted.Width() + d;
+     x -= bmEncrypted.Width() + SymbolSpacing;
      osd->DrawBitmap(x, y0 + (y1 - y0 - bmEncrypted.Height()) / 2, bmEncrypted, Theme.Color(Channel->Ca() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
-     x -= bmDolbyDigital.Width() + d;
+     x -= bmDolbyDigital.Width() + SymbolSpacing;
      osd->DrawBitmap(x, y0 + (y1 - y0 - bmDolbyDigital.Height()) / 2, bmDolbyDigital, Theme.Color(Channel->Dpid(0) ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
-     x -= bmAudio.Width() + d;
+     x -= bmAudio.Width() + SymbolSpacing;
      osd->DrawBitmap(x, y0 + (y1 - y0 - bmAudio.Height()) / 2, bmAudio, Theme.Color(Channel->Apid(1) ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
      if (Channel->Vpid()) {
-        x -= bmTeletext.Width() + d;
+        x -= bmTeletext.Width() + SymbolSpacing;
         osd->DrawBitmap(x, y0 + (y1 - y0 - bmTeletext.Height()) / 2, bmTeletext, Theme.Color(Channel->Tpid() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
         }
      else if (Channel->Apid(0)) {
-        x -= bmRadio.Width() + d;
+        x -= bmRadio.Width() + SymbolSpacing;
         osd->DrawBitmap(x, y0 + (y1 - y0 - bmRadio.Height()) / 2, bmRadio, Theme.Color(clrChannelSymbolOn), frameColor);
         }
      }
-  osd->DrawText(x3 + 2, y0, ChannelString(Channel, Number), Theme.Color(clrChannelName), frameColor, cFont::GetFont(fontOsd), x - x3 - 2);
+  osd->DrawText(x3 + TextFrame, y0, ChannelString(Channel, Number), Theme.Color(clrChannelName), frameColor, cFont::GetFont(fontOsd), x - x3 - TextFrame);
 }
 
 void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -276,9 +278,9 @@ void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Fo
   for (int i = 0; i < 2; i++) {
       const cEvent *e = !i ? Present : Following;
       if (e) {
-         osd->DrawText(x0 + 2, y3 + 2 * i * lineHeight, e->GetTimeString(), Theme.Color(clrChannelEpgTime), frameColor, cFont::GetFont(fontOsd));
-         osd->DrawText(x3 + 2, y3 + 2 * i * lineHeight, e->Title(), Theme.Color(clrChannelEpgTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd), x4 - x3 - 2);
-         osd->DrawText(x3 + 2, y3 + (2 * i + 1) * lineHeight, e->ShortText(), Theme.Color(clrChannelEpgShortText), Theme.Color(clrBackground), cFont::GetFont(fontSml), x4 - x3 - 2);
+         osd->DrawText(x0 + TextFrame, y3 + 2 * i * lineHeight, e->GetTimeString(), Theme.Color(clrChannelEpgTime), frameColor, cFont::GetFont(fontOsd));
+         osd->DrawText(x3 + TextFrame, y3 + 2 * i * lineHeight, e->Title(), Theme.Color(clrChannelEpgTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd), x4 - x3 - TextFrame);
+         osd->DrawText(x3 + TextFrame, y3 + (2 * i + 1) * lineHeight, e->ShortText(), Theme.Color(clrChannelEpgShortText), Theme.Color(clrBackground), cFont::GetFont(fontSml), x4 - x3 - TextFrame);
          }
       }
 }
@@ -309,13 +311,13 @@ void cSkinSTTNGDisplayChannel::Flush(void)
         cString date = DayDateTime();
         int w = font->Width(date);
         if (!*lastDate || strcmp(date, lastDate)) {
-           osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
+           osd->DrawText(x4 - w - TextFrame, y7 - font->Height(), date, Theme.Color(clrChannelDate), frameColor, font, w);
            lastDate = date;
            }
         cDevice *Device = cDevice::PrimaryDevice();
         const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
         if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
-           osd->DrawText(x3 + 2, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 4);
+           osd->DrawText(x3 + TextFrame, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 2 * TextFrame);
            strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
            }
         }
@@ -493,7 +495,7 @@ void cSkinSTTNGDisplayMenu::SetTitle(const char *Title)
   const cFont *font = cFont::GetFont(fontOsd);
   const char *VDR = " VDR";
   int w = font->Width(VDR);
-  osd->DrawText(x3 + 5, y0, Title, Theme.Color(clrMenuTitle), frameColor, font, x4 - w - x3 - 5);
+  osd->DrawText(x3 + TextSpacing, y0, Title, Theme.Color(clrMenuTitle), frameColor, font, x4 - w - x3 - TextSpacing);
   osd->DrawText(x4 - w, y0, VDR, frameColor, clrBlack, font, w, lineHeight);
 }
 
@@ -501,9 +503,9 @@ void cSkinSTTNGDisplayMenu::SetButtons(const char *Red, const char *Green, const
 {
   cString date = DayDateTime();
   const cFont *font = cFont::GetFont(fontSml);
-  int d = 10;
+  int d = 2 * Gap;
   int d2 = d / 2;
-  int t4 = x4 - font->Width(date) - 2;
+  int t4 = x4 - font->Width(date) - TextFrame;
   int w = t4 - x3;
   int t0 = x3 + d2;
   int t1 = x3 + w / 4;
@@ -558,13 +560,13 @@ void cSkinSTTNGDisplayMenu::SetItem(const char *Text, int Index, bool Current, b
   for (int i = 0; i < MaxTabs; i++) {
       const char *s = GetTabbedText(Text, i);
       if (s) {
-         int xt = x3 + 5 + Tab(i);
+         int xt = x3 + TextSpacing + Tab(i);
          osd->DrawText(xt, y, s, ColorFg, ColorBg, font, x4 - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(x4 - x3 - 5 - Tab(1));
+  SetEditableWidth(x4 - x3 - TextSpacing - Tab(1));
 }
 
 void cSkinSTTNGDisplayMenu::SetScrollbar(int Total, int Offset)
@@ -577,7 +579,7 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
   if (!Event)
      return;
   const cFont *font = cFont::GetFont(fontOsd);
-  int xl = x3 + 5;
+  int xl = x3 + TextSpacing;
   int y = y3;
   cTextScroller ts;
   char t[32];
@@ -637,7 +639,7 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
      return;
   const cRecordingInfo *Info = Recording->Info();
   const cFont *font = cFont::GetFont(fontOsd);
-  int xl = x3 + 5;
+  int xl = x3 + TextSpacing;
   int y = y3;
   cTextScroller ts;
   char t[32];
@@ -710,7 +712,7 @@ void cSkinSTTNGDisplayMenu::Flush(void)
      if (!*lastDate || strcmp(date, lastDate)) {
         const cFont *font = cFont::GetFont(fontSml);
         int w = font->Width(date);
-        osd->DrawText(x4 - w - 2, y7 - font->Height(), date, Theme.Color(clrMenuDate), frameColor, font, w);
+        osd->DrawText(x4 - w - TextFrame, y7 - font->Height(), date, Theme.Color(clrMenuDate), frameColor, font, w);
         lastDate = date;
         }
      }
@@ -806,7 +808,7 @@ cSkinSTTNGDisplayReplay::~cSkinSTTNGDisplayReplay()
 
 void cSkinSTTNGDisplayReplay::SetTitle(const char *Title)
 {
-  osd->DrawText(x3 + 5, y0, Title, Theme.Color(clrReplayTitle), frameColor, cFont::GetFont(fontSml), x4 - x3 - 5);
+  osd->DrawText(x3 + TextSpacing, y0, Title, Theme.Color(clrReplayTitle), frameColor, cFont::GetFont(fontSml), x4 - x3 - TextSpacing);
 }
 
 static const char *const *ReplaySymbols[2][2][5] = {
@@ -844,7 +846,7 @@ void cSkinSTTNGDisplayReplay::SetTotal(const char *Total)
 {
   const cFont *font = cFont::GetFont(fontSml);
   int w = font->Width(Total);
-  osd->DrawText(x4 - w - 5, y6, Total, Theme.Color(clrReplayTotal), frameColor, font, w);
+  osd->DrawText(x4 - w - TextSpacing, y6, Total, Theme.Color(clrReplayTotal), frameColor, font, w);
 }
 
 void cSkinSTTNGDisplayReplay::SetJump(const char *Jump)
@@ -924,10 +926,10 @@ cSkinSTTNGDisplayVolume::~cSkinSTTNGDisplayVolume()
 
 void cSkinSTTNGDisplayVolume::SetVolume(int Current, int Total, bool Mute)
 {
-  int xl = x3 + 5;
-  int xr = x4 - 5;
-  int yt = y0 + 3;
-  int yb = y1 - 3;
+  int xl = x3 + TextSpacing;
+  int xr = x4 - TextSpacing;
+  int yt = y0 + TextFrame;
+  int yb = y1 - TextFrame;
   if (mute != Mute) {
      osd->DrawRectangle(x3, y0, x4 - 1, y1 - 1, frameColor);
      mute = Mute;
@@ -935,9 +937,9 @@ void cSkinSTTNGDisplayVolume::SetVolume(int Current, int Total, bool Mute)
   cBitmap bm(Mute ? mute_xpm : volume_xpm);
   osd->DrawBitmap(xl, y0 + (y1 - y0 - bm.Height()) / 2, bm, Theme.Color(clrVolumeSymbol), frameColor);
   if (!Mute) {
-     xl += bm.Width() + 5;
+     xl += bm.Width() + TextSpacing;
      int w = (y1 - y0) / 3;
-     int d = 3;
+     int d = TextFrame;
      int n = (xr - xl + d) / (w + d);
      int x = xr - n * (w + d);
      tColor Color = Theme.Color(clrVolumeBarLower);
@@ -988,7 +990,7 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   int ItemsWidth = font->Width(Title);
   for (int i = 0; i < NumTracks; i++)
       ItemsWidth = max(ItemsWidth, font->Width(Tracks[i]));
-  ItemsWidth += 10;
+  ItemsWidth += 2 * TextSpacing;
   x0 = 0;
   x1 = lineHeight / 2;
   x3 = (x1 + Roundness + Gap + 7) & ~0x07; // must be multiple of 8
@@ -1052,7 +1054,7 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   osd->DrawRectangle(x3, y6, x4 - 1, y7 - 1, frameColor);
   osd->DrawRectangle(x5, y6, x6 - 1, y7 - 1, frameColor);
   osd->DrawEllipse  (x6, y6, x7 - 1, y7 - 1, frameColor, 5);
-  osd->DrawText(x3 + 5, y0, Title, Theme.Color(clrMenuTitle), frameColor, font, x4 - x3 - 5);
+  osd->DrawText(x3 + TextSpacing, y0, Title, Theme.Color(clrMenuTitle), frameColor, font, x4 - x3 - TextSpacing);
   for (int i = 0; i < NumTracks; i++)
       SetItem(Tracks[i], i, false);
 }
@@ -1084,7 +1086,7 @@ void cSkinSTTNGDisplayTracks::SetItem(const char *Text, int Index, bool Current)
         }
      }
   const cFont *font = cFont::GetFont(fontOsd);
-  int xt = x3 + 5;
+  int xt = x3 + TextSpacing;
   osd->DrawText(xt, y, Text, ColorFg, ColorBg, font, x4 - xt);
 }
 
@@ -1105,7 +1107,7 @@ void cSkinSTTNGDisplayTracks::SetAudioChannel(int AudioChannel)
     default: ;
     }
   if (bm)
-     osd->DrawBitmap(x3 + 5, y6 + (y7 - y6 - bm->Height()) / 2, *bm, Theme.Color(clrChannelSymbolOn), frameColor);
+     osd->DrawBitmap(x3 + TextSpacing, y6 + (y7 - y6 - bm->Height()) / 2, *bm, Theme.Color(clrChannelSymbolOn), frameColor);
   else
      osd->DrawRectangle(x3, y6, x4 - 1, y7 - 1, frameColor);
 }

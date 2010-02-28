@@ -2,14 +2,14 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
-# Lucian Muresan <lucianm@users.sourceforge.net>, 2004, 2005, 2006, 2008
+# Lucian Muresan <lucianm@users.sourceforge.net>, 2004, 2005, 2006, 2008, 2010
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
-"PO-Revision-Date: 2008-02-25 00:39+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"PO-Revision-Date: 2010-02-11 13:38+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,18 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Romanian\n"
 "X-Poedit-Country: ROMANIA\n"
-
-msgid "off"
-msgstr "inactiv"
-
-msgid "on"
-msgstr ""
-
-msgid "auto"
-msgstr "automat"
-
-msgid "none"
-msgstr "niciuna(ul)"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
@@ -39,249 +27,297 @@ msgstr "Canal indisponibil"
 msgid "Can't start Transfer Mode!"
 msgstr "Nu pot porni modul de transfer!"
 
+msgid "off"
+msgstr "oprit"
+
+msgid "on"
+msgstr "pornit"
+
+msgid "auto"
+msgstr "automat"
+
+msgid "none"
+msgstr "niciuna(ul)"
+
+msgid "Polarization"
+msgstr "Polarizare"
+
+msgid "System"
+msgstr "Sistem"
+
+msgid "Srate"
+msgstr "Ratã simboluri"
+
+msgid "Inversion"
+msgstr "Inversiune"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulaþie"
+
+msgid "Bandwidth"
+msgstr "Lãrgime de bandã"
+
+msgid "Transmission"
+msgstr "Transmisie"
+
+msgid "Guard"
+msgstr "Guard"
+
+msgid "Hierarchy"
+msgstr "Ierarhie"
+
+msgid "Rolloff"
+msgstr "Rolloff"
+
 msgid "Starting EPG scan"
 msgstr "Pornesc achiziþia EPG"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Film/Dramã"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Poliþist/Suspense"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Aventuri/Western/Rãzboi"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science-Fiction/Fantastic/Groazã"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Comedie"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Telenovelã/Melodramã/Folclor"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Film romantic"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Film serios/clasic/religios/istoric/Dramã"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Film pentru adulþi/Dramã"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "ªtiri/Actualitãþi"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "ªtiri/Buletin meteorologic"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Magazin de ºtiri"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Documentar"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Discuþie/Interviu/Dezbatere"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Show/Jocuri"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Emisiune jocuri/quiz/concurs"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Varietãþi"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Talk Show"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sport"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Eveniment special"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Magazin sportiv"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Football/fotbal"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tenis/Squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Sporturi de echipã"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Atletism"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Sport cu motor"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Sporturi acvatice"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Sporturi de iarnã"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Echitaþie"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Arte marþiale"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Emisiune pentru copii/tineret"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Emisiune pentru copii preºcolari"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Divertisment pentru copii intre 6 - 16 ani"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Divertisment pentru copii intre 10 - 16 ani"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informaþional/Educaþional/Emisiune ºcoalã"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Desene animate/Teatru de pãpuºi"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Muzicã/Balet/Dans"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Muzicã clasicã/serioasã"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Muzicã folk/tradiþionalã"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Teatru muzical/Operã/Operetã"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Balet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Artã/Culturã"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Spectacole"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Belle arte"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religie"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Culturã Pop/Arte tradiþionale"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literaturã"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Film/Cinema"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Film experimental/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Radiodifuziune/Presã"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Medii noi"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Artã/Magazin cultural"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Modã"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Social/Politic/Economie"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Magazin/Reportaj/Documentar"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Economie/Consiliere socialã"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Oameni remarcabili"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Educaþie/ªtiinþã/Practic"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Naturã/Animale/Mediu"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Tehnologie/ªtiinþe naturale"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicinã/Fiziologie/Psihologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Þãri strãine/Expediþii"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Social/ªtiinþe spirituale"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Cursuri de aprofundare"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Limbi"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Timp liber/Hobby"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turism/Cãlãtorie"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Meºteºug"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motoare"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Miºcare & Sãnãtate"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Gãtit"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Publicitate/Cumpãrãturi"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Grãdinãrit"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Limba originalã"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Alb-Negru"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Nepublicat"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Transmisie în direct"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "de la %d ani"
 
 msgid "No title"
 msgstr "Fãrã titlu"
@@ -526,42 +562,6 @@ msgstr "CA (Acces Condiþional)"
 msgid "Sid"
 msgstr "Sid"
 
-msgid "Polarization"
-msgstr "Polarizare"
-
-msgid "System"
-msgstr ""
-
-msgid "Srate"
-msgstr "Ratã simboluri"
-
-msgid "Inversion"
-msgstr "Inversiune"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulaþie"
-
-msgid "Bandwidth"
-msgstr "Lãrgime de bandã"
-
-msgid "Transmission"
-msgstr "Transmisie"
-
-msgid "Guard"
-msgstr "Guard"
-
-msgid "Hierarchy"
-msgstr "Ierarhie"
-
-msgid "Rolloff"
-msgstr ""
-
 msgid "Channel settings are not unique!"
 msgstr "Parametrii canalului nu sunt univoci!"
 
@@ -587,29 +587,29 @@ msgid "Delete channel?"
 msgstr "ªterg canalul?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Editeazã directorul"
 
 msgid "New folder"
-msgstr ""
+msgstr "Director nou"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Sub-director"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Un director cu acelaºi nume existã!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Numele directorului nu poate sã conþinã '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Selecteazã"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "ªterg directorul ºi toate sub-directoarele?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "ªterg directorul?"
 
 msgid "Edit timer"
 msgstr "Modificare timer"
@@ -642,13 +642,13 @@ msgid "File"
 msgstr "Fiºier"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Director"
 
 msgid "First day"
 msgstr "Prima zi"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Selecteazã directorul"
 
 msgid "Timers"
 msgstr "Timer-e"
@@ -953,7 +953,7 @@ msgid "CAM reset"
 msgstr "Resetare CAM"
 
 msgid "CAM present"
-msgstr "CAM preyent"
+msgstr "CAM prezent"
 
 msgid "CAM ready"
 msgstr "CAM pregãtit"
@@ -980,13 +980,13 @@ msgid "Can't reset CAM!"
 msgstr "Nu pot reseta CAM"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "nu înregistra emisiunea"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "confirmã înregistrarea emisiunii"
 
 msgid "pause live video"
-msgstr ""
+msgstr "înregistreazã emisiunea"
 
 msgid "Recording"
 msgstr "Înregistrare"
@@ -1007,7 +1007,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Timp de pãstrare predefinit (zile)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Funcþia tastei 'pauzã'"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Prioritate pauzã"
@@ -1079,7 +1079,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumul la pornire"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Lista de canale în buclã"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Oprire de urgenþã"
@@ -1203,10 +1203,10 @@ msgid "Low disk space!"
 msgstr "Spaþiul pe disc e foarte scãzut!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Generez index"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Generarea indexului s-a incheiat"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nu pot închide - vezi opþiunea '-s'"
@@ -1280,7 +1280,7 @@ msgid "Upcoming recording!"
 msgstr "Urmeazã o înregistrare!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Înregistrez emisiunea?"
 
 msgid "Recording started"
 msgstr "A început înregistrarea"

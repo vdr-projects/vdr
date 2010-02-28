@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.4 2009/12/06 11:36:16 kls Exp $
+ * $Id: nit.c 2.5 2010/02/16 15:37:05 kls Exp $
  */
 
 #include "nit.h"
 #include <linux/dvb/frontend.h>
 #include "channels.h"
+#include "dvbdevice.h"
 #include "eitscan.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
@@ -124,21 +125,22 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
           switch (d->getDescriptorTag()) {
             case SI::SatelliteDeliverySystemDescriptorTag: {
                  SI::SatelliteDeliverySystemDescriptor *sd = (SI::SatelliteDeliverySystemDescriptor *)d;
+                 cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stSat, BCD2INT(sd->getOrbitalPosition()), sd->getWestEastFlag());
                  int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 100;
-                 static char Polarizations[] = { 'h', 'v', 'l', 'r' };
-                 char Polarization = Polarizations[sd->getPolarization()];
+                 static char Polarizations[] = { 'H', 'V', 'L', 'R' };
+                 dtp.SetPolarization(Polarizations[sd->getPolarization()]);
                  static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_8_9, FEC_3_5, FEC_4_5, FEC_9_10, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
-                 int CodeRate = CodeRates[sd->getFecInner()];
+                 dtp.SetCoderateH(CodeRates[sd->getFecInner()]);
                  static int Modulations[] = { QAM_AUTO, QPSK, PSK_8, QAM_16 };
-                 int Modulation = Modulations[sd->getModulationType()];
-                 int System = sd->getModulationSystem() ? SYS_DVBS2 : SYS_DVBS;
+                 dtp.SetModulation(Modulations[sd->getModulationType()]);
+                 dtp.SetSystem(sd->getModulationSystem() ? SYS_DVBS2 : SYS_DVBS);
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
-                 int RollOff = sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO;
+                 dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
-                        if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], Polarization), Transponder())) {
+                        if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], dtp.Polarization()), Transponder())) {
                            nits[ThisNIT].hasTransponder = true;
                            //printf("has transponder %d\n", Transponder());
                            break;
@@ -152,23 +154,23 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
                            found = true;
-                           if (!ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), transponder)) {
+                           if (!ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
-                                  if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], Polarization), transponder)) {
+                                  if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], dtp.Polarization()), transponder)) {
                                      Frequency = Frequencies[n];
                                      break;
                                      }
                                   }
                               }
-                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate, Modulation, System, RollOff);
+                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) // only modify channels if we're actually receiving this transponder
+                              Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
                            }
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
-                           if (Channel->SetSatTransponderData(Source, Frequencies[n], Polarization, SymbolRate, CodeRate, Modulation, System, RollOff))
+                           if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('S')))
                               EITScanner.AddTransponder(Channel);
                            else
                               delete Channel;
@@ -179,13 +181,14 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  break;
             case SI::CableDeliverySystemDescriptorTag: {
                  SI::CableDeliverySystemDescriptor *sd = (SI::CableDeliverySystemDescriptor *)d;
+                 cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stCable);
                  int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 10;
                  //XXX FEC_outer???
                  static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_8_9, FEC_3_5, FEC_4_5, FEC_9_10, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
-                 int CodeRate = CodeRates[sd->getFecInner()];
+                 dtp.SetCoderateH(CodeRates[sd->getFecInner()]);
                  static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256, QAM_AUTO };
-                 int Modulation = Modulations[min(sd->getModulation(), 6)];
+                 dtp.SetModulation(Modulations[min(sd->getModulation(), 6)]);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
@@ -212,14 +215,14 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate);
+                              Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
                            }
                         }
                     if (!found) {
                         for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
-                           if (Channel->SetCableTransponderData(Source, Frequencies[n], Modulation, SymbolRate, CodeRate))
+                           if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('C')))
                               EITScanner.AddTransponder(Channel);
                            else
                               delete Channel;
@@ -230,21 +233,22 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
                  SI::TerrestrialDeliverySystemDescriptor *sd = (SI::TerrestrialDeliverySystemDescriptor *)d;
+                 cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stTerr);
                  int Frequency = Frequencies[0] = sd->getFrequency() * 10;
                  static int Bandwidths[] = { 8000000, 7000000, 6000000, 0, 0, 0, 0, 0 };
-                 int Bandwidth = Bandwidths[sd->getBandwidth()];
+                 dtp.SetBandwidth(Bandwidths[sd->getBandwidth()]);
                  static int Constellations[] = { QPSK, QAM_16, QAM_64, QAM_AUTO };
-                 int Constellation = Constellations[sd->getConstellation()];
+                 dtp.SetModulation(Constellations[sd->getConstellation()]);
                  static int Hierarchies[] = { HIERARCHY_NONE, HIERARCHY_1, HIERARCHY_2, HIERARCHY_4, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO };
-                 int Hierarchy = Hierarchies[sd->getHierarchy()];
+                 dtp.SetHierarchy(Hierarchies[sd->getHierarchy()]);
                  static int CodeRates[] = { FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO };
-                 int CodeRateHP = CodeRates[sd->getCodeRateHP()];
-                 int CodeRateLP = CodeRates[sd->getCodeRateLP()];
+                 dtp.SetCoderateH(CodeRates[sd->getCodeRateHP()]);
+                 dtp.SetCoderateL(CodeRates[sd->getCodeRateLP()]);
                  static int GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4 };
-                 int GuardInterval = GuardIntervals[sd->getGuardInterval()];
+                 dtp.SetGuard(GuardIntervals[sd->getGuardInterval()]);
                  static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
-                 int TransmissionMode = TransmissionModes[sd->getTransmissionMode()];
+                 dtp.SetTransmission(TransmissionModes[sd->getTransmissionMode()]);
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
                         if (ISTRANSPONDER(Frequencies[n] / 1000000, Transponder())) {
@@ -270,14 +274,14 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode);
+                              Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
                            }
                         }
                     if (!found) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
-                           if (Channel->SetTerrTransponderData(Source, Frequencies[n], Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode))
+                           if (Channel->SetTransponderData(Source, Frequencies[n], 0, dtp.ToString('T')))
                               EITScanner.AddTransponder(Channel);
                            else
                               delete Channel;

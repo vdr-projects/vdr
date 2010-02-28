@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
-"PO-Revision-Date: 2010-01-12 23:53+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"PO-Revision-Date: 2010-01-31 23:06+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,15 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Canale NON valido ***"
+
+msgid "Channel not available!"
+msgstr "Canale non disponibile!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Impossibile avviare mod. trasferimento!"
 
 msgid "off"
 msgstr "off"
@@ -34,14 +43,41 @@ msgstr "automatico"
 msgid "none"
 msgstr "nessuno"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Canale NON valido ***"
+msgid "Polarization"
+msgstr "Polarizzazione"
 
-msgid "Channel not available!"
-msgstr "Canale non disponibile!"
+msgid "System"
+msgstr "Sistema"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Impossibile avviare mod. trasferimento!"
+msgid "Srate"
+msgstr "SymbolRate"
+
+msgid "Inversion"
+msgstr "Inversione"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulazione"
+
+msgid "Bandwidth"
+msgstr "Banda passante"
+
+msgid "Transmission"
+msgstr "Trasmissione"
+
+msgid "Guard"
+msgstr "Guard"
+
+msgid "Hierarchy"
+msgstr "Gerarchia"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -530,42 +566,6 @@ msgstr "CA"
 msgid "Sid"
 msgstr "Sid"
 
-msgid "Polarization"
-msgstr "Polarizzazione"
-
-msgid "System"
-msgstr "Sistema"
-
-msgid "Srate"
-msgstr "SymbolRate"
-
-msgid "Inversion"
-msgstr "Inversione"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulazione"
-
-msgid "Bandwidth"
-msgstr "Banda passante"
-
-msgid "Transmission"
-msgstr "Trasmissione"
-
-msgid "Guard"
-msgstr "Guard"
-
-msgid "Hierarchy"
-msgstr "Gerarchia"
-
-msgid "Rolloff"
-msgstr "Rolloff"
-
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
 
@@ -591,29 +591,29 @@ msgid "Delete channel?"
 msgstr "Eliminare il canale?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Modifica cartella"
 
 msgid "New folder"
-msgstr ""
+msgstr "Nuova cartella"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Sotto cartella"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Nome cartella già esistente!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Il nome cartella non deve contenere '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Seleziona"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Eliminare la cartella e sue sottocartelle?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Eliminare la cartella?"
 
 msgid "Edit timer"
 msgstr "Modifica timer"
@@ -646,13 +646,13 @@ msgid "File"
 msgstr "Nome"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Cartella"
 
 msgid "First day"
 msgstr "1° giorno"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Seleziona cartella"
 
 msgid "Timers"
 msgstr "Timer"
@@ -1083,7 +1083,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Riavvolgimento canali"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Uscita di emergenza"

@@ -1,0 +1,34 @@
+# VDR plugin language source file.
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# This file is distributed under the same license as the VDR package.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.7.10\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2007-10-13 11:52+0200\n"
+"PO-Revision-Date: 2009-12-08 12:18+0200\n"
+"Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
+"Language-Team: Lietuviai\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A friendly greeting"
+msgstr "Draugiškas labas"
+
+msgid "Hello"
+msgstr "Labas!"
+
+msgid "Greeting time (s)"
+msgstr "Pasveikinomo laikas (s)"
+
+msgid "Use alternate greeting"
+msgstr "Naudoti alternatyvų pasveikinimą"
+
+msgid "Howdy folks!"
+msgstr "Kaip yr chebryte?"
+
+msgid "Hello world!"
+msgstr "Labas pasauli!"

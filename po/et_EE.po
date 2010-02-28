@@ -7,13 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-13\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Vigane kanal ***"
+
+msgid "Channel not available!"
+msgstr "Kanal ei ole kättesaadav!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Ülekandemooduse start nurjus!"
 
 msgid "off"
 msgstr "väljas"
@@ -27,14 +36,41 @@ msgstr "automaatne"
 msgid "none"
 msgstr "puudu"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Vigane kanal ***"
+msgid "Polarization"
+msgstr "Polarisatsioon"
 
-msgid "Channel not available!"
-msgstr "Kanal ei ole kättesaadav!"
+msgid "System"
+msgstr "Süsteem"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Ülekandemooduse start nurjus!"
+msgid "Srate"
+msgstr "Sümbolikiirus"
+
+msgid "Inversion"
+msgstr "Inversioon"
+
+msgid "CoderateH"
+msgstr "VeaparandusH"
+
+msgid "CoderateL"
+msgstr "VeaparandusL"
+
+msgid "Modulation"
+msgstr "Modulatsioon"
+
+msgid "Bandwidth"
+msgstr "Ribalaius"
+
+msgid "Transmission"
+msgstr "Transmissioon"
+
+msgid "Guard"
+msgstr "Kaitseintervall"
+
+msgid "Hierarchy"
+msgstr "Hierarhia"
+
+msgid "Rolloff"
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "EPG skaneerimine käivitatud"
@@ -523,42 +559,6 @@ msgstr "CA"
 msgid "Sid"
 msgstr "Sid"
 
-msgid "Polarization"
-msgstr "Polarisatsioon"
-
-msgid "System"
-msgstr "Süsteem"
-
-msgid "Srate"
-msgstr "Srate"
-
-msgid "Inversion"
-msgstr "Inversioon"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulatsioon"
-
-msgid "Bandwidth"
-msgstr "Ribalaius"
-
-msgid "Transmission"
-msgstr "Transmissioon"
-
-msgid "Guard"
-msgstr "Guard"
-
-msgid "Hierarchy"
-msgstr "Hierarhia"
-
-msgid "Rolloff"
-msgstr "Rolloff"
-
 msgid "Channel settings are not unique!"
 msgstr "Kanaliseaded ei ole unikaalsed!"
 
@@ -584,29 +584,29 @@ msgid "Delete channel?"
 msgstr "Kustutada kanal?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Kausta muutmine"
 
 msgid "New folder"
-msgstr ""
+msgstr "Uus kaust"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Uus alamkaust"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Sellenimeline kaust juba olemas!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Kausta nimi ei saa sisaldada '%c' sümbolit!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Vali"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Kustutada kaust ja kõik alamkaustad?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Kustutada kaust?"
 
 msgid "Edit timer"
 msgstr "Taimeri redigeerimine"
@@ -639,13 +639,13 @@ msgid "File"
 msgstr "Fail"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Kaust"
 
 msgid "First day"
 msgstr "Esimene päev"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Kausta valik"
 
 msgid "Timers"
 msgstr "Taimer"
@@ -765,10 +765,10 @@ msgid "Setup.OSD$Theme"
 msgstr "Teema"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "Vasakule (%)"
+msgstr "Nihe paremale (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "Ülesse (%)"
+msgstr "Nihe alla (%)"
 
 msgid "Setup.OSD$Width (%)"
 msgstr "Laius (%)"
@@ -825,7 +825,7 @@ msgid "Setup.OSD$Scroll pages"
 msgstr "Lehekülje kerimine"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Ridade kerimine"
+msgstr "Ridade ringkerimine"
 
 msgid "Setup.OSD$Menu key closes"
 msgstr "Sulgemine Menüü klahviga"
@@ -1076,7 +1076,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Helitugevus käivitamisel"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Kanalite ringkerimine"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Hädaväljumine"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.6 2009/12/23 15:12:15 kls Exp $
+ * $Id: tools.c 2.7 2010/02/28 13:31:46 kls Exp $
  */
 
 #include "tools.h"
@@ -1423,6 +1423,8 @@ bool cSafeFile::Close(void)
         LOG_ERROR_STR(tempName);
         result = false;
         }
+     fflush(f);
+     fsync(fileno(f));
      if (fclose(f) < 0) {
         LOG_ERROR_STR(tempName);
         result = false;

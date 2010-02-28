@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.1 2009/12/05 16:20:12 kls Exp $
+ *   $Id: si.c 2.2 2010/02/13 10:31:52 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -311,6 +311,11 @@ static const char *CharacterTables2[] = {
 static const char *SystemCharacterTable = NULL;
 bool SystemCharacterTableIsSingleByte = true;
 
+bool systemCharacterTableIsSingleByte(void)
+{
+  return SystemCharacterTableIsSingleByte;
+}
+
 bool SetSystemCharacterTable(const char *CharacterTable) {
    if (CharacterTable) {
       for (unsigned int i = 0; i < NumEntries(CharacterTables1); i++) {
@@ -335,11 +340,7 @@ bool SetSystemCharacterTable(const char *CharacterTable) {
    return false;
 }
 
-// Determines the character table used in the given buffer and returns
-// a string indicating that table. If no table can be determined, the
-// default ISO6937 is returned. If a table can be determined, the buffer
-// and length are adjusted accordingly.
-static const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL) {
+const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte) {
    const char *cs = "ISO6937";
    // Workaround for broadcaster stupidity: according to
    // "ETSI EN 300 468" the default character set is ISO6937. But unfortunately some
@@ -375,7 +376,7 @@ static const char *getCharacterTable(const unsigned char *&buffer, int &length, 
    return cs;
 }
 
-static bool convertCharacterTable(const char *from, size_t fromLength, char *to, size_t toLength, const char *fromCode)
+bool convertCharacterTable(const char *from, size_t fromLength, char *to, size_t toLength, const char *fromCode)
 {
   if (SystemCharacterTable) {
      iconv_t cd = iconv_open(SystemCharacterTable, fromCode);

@@ -1091,6 +1091,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for a patch that was used to implement handling the "component descriptor" ("genre")
  for a patch that was used to implement handling the "parental rating descriptor"
  suggesting to add plain text error messages to log entries from cOsd::SetAreas()
+ for keeping subtitles visible when pausing replay
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1244,6 +1245,10 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a bug in storing the current OSD size in case the
  device has changed it in its setup menu
  for increasing the value of MAXFRAMESIZE to better suit HD recordings
+ for improving handling frames at the beginning and end of a recording in cDvbPlayer
+ for devices with large buffers
+ for implementing cDeviceHook
+ for implementing cDevice::GetCurrentlyTunedTransponder()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1678,6 +1683,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for suggesting to make the function ExchangeChars()
  for reporting duplicate texts in i18n.c
  for suggesting to use 'gettext' for internationalization
+ for exporting some libsi functions
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -2292,6 +2298,7 @@ Frank Schmirler <vdr@schmirler.de>
  for suggesting to use an "instance id" instead of the "resume id" to distinguish
  recordings of the same broadcast made by different instances of VDR
  for fixing EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0
+ for fixing the German translation of "Folder name must not contain '%c'!"
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2377,6 +2384,10 @@ Matthias Becker <becker.matthias@gmail.com>
 Halim Sahin <halim.sahin@t-online.de>
  for reporting that the channels.conf file was not written when stopping VDR after
  deleting or moving a channel in the Channels menu
+ for suggesting to add a note to the MANUAL, saying that adding new transponders only
+ works if the "EPG scan" is active
+ for reporting a problem with adding new transponders in case there is only a single
+ channel in the channel list
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
@@ -2459,6 +2470,7 @@ Magnus Andersson <svankan@bahnhof.se>
 
 Alexander Gross <Bikalexander@gmail.com>
  for adding Russian translations to the 'skincurses' and 'pictures' plugins
+ for changing the position of Sirius 4 to S4.8E in sources.conf
 
 Adrian Caval <anrxc@sysphere.org>
  for translating OSD texts to the Croatian language
@@ -2553,3 +2565,6 @@ Francesco Saverio Schiavarelli <fschiava@libero.it>
 
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for implementing the setup option "Miscellaneous/Channels wrap"
+
+Stephan Austermühle <au@hcsd.de>
+ for suggesting to flush the file in cSafeFile::Close()

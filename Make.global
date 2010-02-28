@@ -1,0 +1,17 @@
+#
+# Strictly necessary Makefile options for the Video Disk Recorder
+#
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
+#
+# $Id: Make.global 1.1 2010/02/06 14:54:12 kls Exp $
+
+# Plugins need to be compiled with position independent code, otherwise linking
+# VDR against it will fail.
+
+ifdef PLUGIN
+CFLAGS   += -fPIC
+CXXFLAGS += -fPIC
+endif
+
+DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE

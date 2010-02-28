@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.0 2005/05/14 09:30:41 kls Exp $
+ * $Id: sources.h 2.1 2010/02/21 16:11:19 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -15,19 +15,19 @@
 class cSource : public cListObject {
 public:
   enum eSourceType {
-    stNone  = 0x0000,
-    stCable = 0x4000,
-    stSat   = 0x8000,
-    stTerr  = 0xC000,
-    st_Mask = 0xC000,
-    st_Neg  = 0x0800,
-    st_Pos  = 0x07FF,
+    stNone  = 0x00000000,
+    stCable = ('C' << 24),
+    stSat   = ('S' << 24),
+    stTerr  = ('T' << 24),
+    st_Mask = 0xFF000000,
+    st_Pos  = 0x0000FFFF,
     };
 private:
   int code;
   char *description;
 public:
   cSource(void);
+  cSource(char Source, const char *Description);
   ~cSource();
   int Code(void) const { return code; }
   const char *Description(void) const { return description; }

@@ -1,31 +1,19 @@
 # VDR language source file.
 # Copyright (C) 2009 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Valdemaras Pipiras <varas@ambernet.lt>, 2009.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.9\n"
+"Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2010-01-17 16:18+0100\n"
-"PO-Revision-Date: 2009-10-17 14:19+0200\n"
+"PO-Revision-Date: 2010-02-22 18:05+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "off"
-msgstr "įjungt"
-
-msgid "on"
-msgstr "išjungt"
-
-msgid "auto"
-msgstr "auto"
-
-msgid "none"
-msgstr "nėra"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Klaidingas kanalas ***"
@@ -36,249 +24,297 @@ msgstr "Kanalas neegzistuoja!"
 msgid "Can't start Transfer Mode!"
 msgstr "Negali pradėti perdavimo"
 
+msgid "off"
+msgstr "įjungti"
+
+msgid "on"
+msgstr "išjungti"
+
+msgid "auto"
+msgstr "auto"
+
+msgid "none"
+msgstr "nėra"
+
+msgid "Polarization"
+msgstr "Poliarizacija"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Srate"
+msgstr "Perdavimo greitis (Symbol rate)"
+
+msgid "Inversion"
+msgstr "Inversija"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Moduliacija"
+
+msgid "Bandwidth"
+msgstr "Pralaidumas"
+
+msgid "Transmission"
+msgstr "Perdavimas"
+
+msgid "Guard"
+msgstr "Apsauga"
+
+msgid "Hierarchy"
+msgstr "Hierarchija"
+
+msgid "Rolloff"
+msgstr "Rolloff"
+
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Drama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Detektyvas/Trileris"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Nuotykinis/Vesternas"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Mokslinė fantastika/Fentezi/Siaubo"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Komedija"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Muilo opera/Melodrama/Tautinio pobūdžio"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romantika"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Rimta/Klasika/Religija/Istorinis/Drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Filas suaugusiems"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Naujienos"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Naujenos/Orų prognozė"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Naujienų žurnalas"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Dokumentika"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Diskusijos/Interviu"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Laidos/Žaidimai"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Žaidimų laidos/Konkursas"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Įv. laida"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Pokalbių laida"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sportas"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Specialus įvykis"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Sporto žurnalas"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Futbolas"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tenisas/Skvošas"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Komandinis sportas"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Lengvoji atletika"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Auto sportas"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Vandens sportas"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Žiemos sportas"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Jojimas"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Karo žaidimai"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Vaikams/paaugliams skirta programa"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Ikimokyklininkams skirta programa"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Pramogos vaikams nuo 6 iki 14"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Pramogos vaikams nuo 10 iki 16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informacinė/Mokomoji programa"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Animacija"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Muzika/Baletas/Šokis"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Klasikinė muzika"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Folk/Tradizinė muzika"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Džazas"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Muziklas/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Baletas"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Menas/Kultūra"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Vaizduojamasis menas"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Dailė"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religija"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Populiarioji kultūra/Tradiciniai menai"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literatūra"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Filmas/Kinas"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Ekspermentinis filmas"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Transliavimas"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Naujoji media"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Menai/Kultūros žurnalas"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Mada"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Socialinis/Politinis/Ekonominis"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Žurnalas/Reportažas/Dokumentika"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Ekonomika/Socialinė patariamoji programa"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Puikūs žmonės"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Išsilavinimas/Mokslas"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Gamta/Gyvūvai/Aplinka"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Technologijos/Gamtos mokslai"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicina/Psichologija/Filosofija"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Užsienio šalys/Ekspedicijos"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Socialiniai/Dvasiniai mokslai"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Platesnis išsilavinimas"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Kalbos"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Poilsis/Hobis"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turizmas/Kelionės"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Amatai"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Autosportas"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitnesas ir sveikata"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Maiso ruošimas"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Reklama/Prekyba"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Sodininkystė"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Orginali kalba"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Juoda ir balta"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Nepublikuota"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Tiesioginė transliacija"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "nuo %d"
 
 msgid "No title"
 msgstr "Be pavadinimo"
@@ -523,42 +559,6 @@ msgstr "CA (dekodavimo sistema)"
 msgid "Sid"
 msgstr "Serviso id"
 
-msgid "Polarization"
-msgstr "Poliarizacija"
-
-msgid "System"
-msgstr "Sistema"
-
-msgid "Srate"
-msgstr "Perdavimo greitis (Symbol rate)"
-
-msgid "Inversion"
-msgstr "Inversija"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Moduliacija"
-
-msgid "Bandwidth"
-msgstr "Pralaidumas"
-
-msgid "Transmission"
-msgstr "Perdavimas"
-
-msgid "Guard"
-msgstr "Apsauga"
-
-msgid "Hierarchy"
-msgstr "Hierarchija"
-
-msgid "Rolloff"
-msgstr "Rolloff"
-
 msgid "Channel settings are not unique!"
 msgstr "Kanalų nustatymai neunikalūs!"
 
@@ -584,29 +584,29 @@ msgid "Delete channel?"
 msgstr "Ištrinti kanalą?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Koreguoti katalogą"
 
 msgid "New folder"
-msgstr ""
+msgstr "Naujas katalogas"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Pakatalogis"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Toks katalogo vardas jau egzistuoja!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Katalogo pavadinimas turi būti sudarytas iš '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Pasirinkti"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Ištrinti katalogą ir jo visus pakatalogius?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Ištrinti katalogą?"
 
 msgid "Edit timer"
 msgstr "Koreguoti laikmatį"
@@ -639,13 +639,13 @@ msgid "File"
 msgstr "Failas"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Katalogas"
 
 msgid "First day"
 msgstr "Pirma diena"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Pasirinkite katalogą"
 
 msgid "Timers"
 msgstr "Laikmačiai"
@@ -1076,7 +1076,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Garsas įjungimo metu"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Kanalų pridengimas"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Avarinis išėjimas"
@@ -1200,10 +1200,10 @@ msgid "Low disk space!"
 msgstr "Mažai vietos diske!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Pergeneruojamas index failas"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Index failo pergeneravimas baigtas"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sistemos negalima išjungti, nes starto metu nebuvo komandinėj eilutėj paduota savybė '-s'!"

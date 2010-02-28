@@ -1970,6 +1970,46 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
+<div class="modified">
+<p>
+<b>Device hooks</b>
+<p>
+VDR has builtin facilities that select which device is able to provide a given
+transponder. However, there may be situations where the setup is so special
+that it requires considerations that exceed the scope of the core VDR code.
+This is where <i>device hooks</i> can be used. 
+
+<p><table><tr><td class="code"><pre>
+class cMyDeviceHook : public cDeviceHook {
+public:
+  cMyDeviceHook(void);
+  virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
+  };
+</pre></td></tr></table><p>
+
+In its <tt>DeviceProvidesTransponder()</tt> function the device hook can take
+whatever actions are necessary to determine whether the given Device can
+provide the given Channel's transponder, as in
+
+<p><table><tr><td class="code"><pre>
+void cMyDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
+{
+  if (<i>condition where Device can't provide Channel</i>)
+     return false;
+  return true;
+}
+</pre></td></tr></table><p>
+
+A plugin that creates a derived cDeviceHook shall do so in its <tt>Initialize()</tt>
+function, as in
+
+<p><table><tr><td class="code"><pre>
+new cMyDeviceHook;
+</pre></td></tr></table><p>
+
+and shall not delete this object. It will be automatically deleted when the program ends.
+</div modified>
+
 <hr><h2><a name="Audio">Audio</a></h2>
 
 <div class="blurb">"The stereo effect may only be experienced if stereo equipment is used!"</div><p>

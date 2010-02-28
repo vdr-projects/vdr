@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.19 2009/12/13 13:49:56 kls Exp $
+ * $Id: dvbplayer.c 2.20 2010/02/06 12:34:28 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -396,6 +396,7 @@ void cDvbPlayer::Action(void)
   uint32_t LastStc = 0;
   int LastReadIFrame = -1;
   int SwitchToPlayFrame = 0;
+  cFrame *DropFrame = NULL;
 
   while (Running()) {
         if (WaitingForData)
@@ -502,6 +503,13 @@ void cDvbPlayer::Action(void)
           else
              Sleep = true;
 
+          if (DropFrame) {
+             if (!eof || (playDir != pdForward && DropFrame->Index() > 0) || (playDir == pdForward && DropFrame->Index() < readIndex)) {
+                ringBuffer->Drop(DropFrame); // the very first and last frame are continously repeated to flush data through the device
+                DropFrame = NULL;
+                }
+             }
+
           // Get the next frame from the buffer:
 
           if (!playFrame) {
@@ -546,8 +554,7 @@ void cDvbPlayer::Action(void)
                    Sleep = true;
                 }
              if (pc <= 0) {
-                if (!eof || (playDir != pdForward && playFrame->Index() > 0) || (playDir == pdForward && playFrame->Index() < readIndex))
-                   ringBuffer->Drop(playFrame); // the very first and last frame are continously repeated to flush data through the device
+                DropFrame = playFrame;
                 playFrame = NULL;
                 p = NULL;
                 }

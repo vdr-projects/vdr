@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.1 2009/12/05 15:57:02 kls Exp $
+ * $Id: diseqc.c 2.2 2010/02/06 15:43:31 kls Exp $
  */
 
 #include "diseqc.h"
@@ -16,6 +16,11 @@
 
 cDiseqc::cDiseqc(void)
 {
+  devices = 0;
+  source = 0;
+  slof = 0;
+  polarization = 0;
+  lof = 0;
   commands = NULL;
   parsing = false;
   numCodes = 0;
@@ -30,6 +35,21 @@ bool cDiseqc::Parse(const char *s)
 {
   bool result = false;
   char *sourcebuf = NULL;
+  if (*s && s[strlen(s) - 1] == ':') {
+     const char *p = s;
+     while (*p && *p != ':') {
+           char *t = NULL;
+           int d = strtol(p, &t, 10);
+           p = t;
+           if (0 < d && d < 32)
+              devices |= (1 << d - 1);
+           else {
+              esyslog("ERROR: invalid device number %d in '%s'", d, s);
+              return false;
+              }
+           }
+     return true;
+     }
   int fields = sscanf(s, "%a[^ ] %d %c %d %a[^\n]", &sourcebuf, &slof, &polarization, &lof, &commands);
   if (fields == 4)
      commands = NULL; //XXX Apparently sscanf() doesn't work correctly if the last %a argument results in an empty string
@@ -126,9 +146,16 @@ cDiseqc::eDiseqcActions cDiseqc::Execute(char **CurrentAction)
 
 cDiseqcs Diseqcs;
 
-cDiseqc *cDiseqcs::Get(int Source, int Frequency, char Polarization)
+cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polarization)
 {
+  int Devices = 0;
   for (cDiseqc *p = First(); p; p = Next(p)) {
+      if (p->Devices()) {
+         Devices = p->Devices();
+         continue;
+         }
+      if (Devices && !(Devices & (1 << Device - 1)))
+         continue;
       if (p->Source() == Source && p->Slof() > Frequency && p->Polarization() == toupper(Polarization))
         return p;
       }

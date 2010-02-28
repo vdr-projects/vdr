@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.11 2010/01/04 14:07:12 kls Exp $
+ * $Id: dvbdevice.h 2.13 2010/02/21 14:06:08 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -30,6 +30,71 @@
 #define DEV_DVB_VIDEO     "video"
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
+
+struct tDvbParameterMap {
+  int userValue;
+  int driverValue;
+  const char *userString;
+  };
+
+int MapToUser(int Value, const tDvbParameterMap *Map, const char **String = NULL);
+int MapToDriver(int Value, const tDvbParameterMap *Map);
+int UserIndex(int Value, const tDvbParameterMap *Map);
+int DriverIndex(int Value, const tDvbParameterMap *Map);
+
+extern const tDvbParameterMap InversionValues[];
+extern const tDvbParameterMap BandwidthValues[];
+extern const tDvbParameterMap CoderateValues[];
+extern const tDvbParameterMap ModulationValues[];
+extern const tDvbParameterMap SystemValues[];
+extern const tDvbParameterMap TransmissionValues[];
+extern const tDvbParameterMap GuardValues[];
+extern const tDvbParameterMap HierarchyValues[];
+extern const tDvbParameterMap RollOffValues[];
+
+class cDvbTransponderParameters {
+friend class cDvbSourceParam;
+private:
+  char polarization;
+  int inversion;
+  int bandwidth;
+  int coderateH;
+  int coderateL;
+  int modulation;
+  int system;
+  int transmission;
+  int guard;
+  int hierarchy;
+  int rollOff;
+  int PrintParameter(char *p, char Name, int Value) const;
+  const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map);
+public:
+  cDvbTransponderParameters(const char *Parameters = NULL);
+  char Polarization(void) const { return polarization; }
+  int Inversion(void) const { return inversion; }
+  int Bandwidth(void) const { return bandwidth; }
+  int CoderateH(void) const { return coderateH; }
+  int CoderateL(void) const { return coderateL; }
+  int Modulation(void) const { return modulation; }
+  int System(void) const { return system; }
+  int Transmission(void) const { return transmission; }
+  int Guard(void) const { return guard; }
+  int Hierarchy(void) const { return hierarchy; }
+  int RollOff(void) const { return rollOff; }
+  void SetPolarization(char Polarization) { polarization = Polarization; }
+  void SetInversion(int Inversion) { inversion = Inversion; }
+  void SetBandwidth(int Bandwidth) { bandwidth = Bandwidth; }
+  void SetCoderateH(int CoderateH) { coderateH = CoderateH; }
+  void SetCoderateL(int CoderateL) { coderateL = CoderateL; }
+  void SetModulation(int Modulation) { modulation = Modulation; }
+  void SetSystem(int System) { system = System; }
+  void SetTransmission(int Transmission) { transmission = Transmission; }
+  void SetGuard(int Guard) { guard = Guard; }
+  void SetHierarchy(int Hierarchy) { hierarchy = Hierarchy; }
+  void SetRollOff(int RollOff) { rollOff = RollOff; }
+  cString ToString(char Type) const;
+  bool Parse(const char *s);
+  };
 
 class cDvbTuner;
 
@@ -75,6 +140,7 @@ public:
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
   virtual int NumProvidedSystems(void) const;
+  virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
   virtual bool IsTunedToTransponder(const cChannel *Channel);
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);

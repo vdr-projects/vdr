@@ -1,0 +1,32 @@
+# VDR plugin language source file.
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# This file is distributed under the same license as the VDR package.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 1.7.10\n"
+"Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
+"POT-Creation-Date: 2008-01-12 17:38+0100\n"
+"PO-Revision-Date: 2009-12-08 12:41+0100\n"
+"Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>, 2009\n"
+"Language-Team: Lietuviai\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Pictures"
+msgstr "Nuotraukos"
+
+msgid "A simple picture viewer"
+msgstr "Paprasta nuotraukų naršyklė"
+
+msgid "Picture directory"
+msgstr "Nuotraukų katalogas"
+
+msgid "Slide show delay (s)"
+msgstr "Skaidrių peržiūros užlaikymas (s)"
+
+msgid "No picture directory has been defined!"
+msgstr "Nenustatytas nuotraukų katalogas!"

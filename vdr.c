@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.16 2010/01/31 11:14:40 kls Exp $
+ * $Id: vdr.c 2.17 2010/02/21 14:08:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -58,6 +58,7 @@
 #include "shutdown.h"
 #include "skinclassic.h"
 #include "skinsttng.h"
+#include "sourceparams.h"
 #include "sources.h"
 #include "themes.h"
 #include "timers.h"
@@ -1303,6 +1304,7 @@ Exit:
   Remotes.Clear();
   Audios.Clear();
   Skins.Clear();
+  SourceParams.Clear();
   if (ShutdownHandler.GetExitCode() != 2) {
      Setup.CurrentChannel = cDevice::CurrentChannel();
      Setup.CurrentVolume  = cDevice::CurrentVolume();

@@ -8,13 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2009-09-30 12:50+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Neplatný kanál ***"
+
+msgid "Channel not available!"
+msgstr "Kanál nie je dostupný!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "Nemô¾e spusti» prenos!"
 
 msgid "off"
 msgstr "vypnuté"
@@ -28,14 +37,41 @@ msgstr "automaticky"
 msgid "none"
 msgstr "¾iadny"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Neplatný kanál ***"
+msgid "Polarization"
+msgstr "Polarizácia"
 
-msgid "Channel not available!"
-msgstr "Kanál nie je dostupný!"
+msgid "System"
+msgstr "systém"
 
-msgid "Can't start Transfer Mode!"
-msgstr "Nemô¾e spusti» prenos!"
+msgid "Srate"
+msgstr "Srate"
+
+msgid "Inversion"
+msgstr "Inversion"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulácia"
+
+msgid "Bandwidth"
+msgstr "©írka pásma"
+
+msgid "Transmission"
+msgstr "Prenos"
+
+msgid "Guard"
+msgstr "Ochrana"
+
+msgid "Hierarchy"
+msgstr "Hierarchia"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Zaèína prehµadáva» EPG"
@@ -523,42 +559,6 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Polarizácia"
-
-msgid "System"
-msgstr "systém"
-
-msgid "Srate"
-msgstr "Srate"
-
-msgid "Inversion"
-msgstr "Inversion"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulácia"
-
-msgid "Bandwidth"
-msgstr "©írka pásma"
-
-msgid "Transmission"
-msgstr "Prenos"
-
-msgid "Guard"
-msgstr "Ochrana"
-
-msgid "Hierarchy"
-msgstr "Hierarchia"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Nastavenia kanálu nie sú obyèajné!"

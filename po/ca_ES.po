@@ -10,13 +10,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-01-17 16:18+0100\n"
+"POT-Creation-Date: 2010-02-28 13:19+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalanian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Canal incorrecte ***"
+
+msgid "Channel not available!"
+msgstr "Canal no disponible!"
+
+msgid "Can't start Transfer Mode!"
+msgstr "No puc iniciar el mode de transferència!"
 
 msgid "off"
 msgstr "off"
@@ -30,14 +39,41 @@ msgstr "auto"
 msgid "none"
 msgstr "cap"
 
-msgid "*** Invalid Channel ***"
-msgstr "*** Canal incorrecte ***"
+msgid "Polarization"
+msgstr "Polarització"
 
-msgid "Channel not available!"
-msgstr "Canal no disponible!"
+msgid "System"
+msgstr ""
 
-msgid "Can't start Transfer Mode!"
-msgstr "No puc iniciar el mode de transferència!"
+msgid "Srate"
+msgstr "Srate"
+
+msgid "Inversion"
+msgstr "Inversió"
+
+msgid "CoderateH"
+msgstr "CoderateH"
+
+msgid "CoderateL"
+msgstr "CoderateL"
+
+msgid "Modulation"
+msgstr "Modulació"
+
+msgid "Bandwidth"
+msgstr "Amplada de banda"
+
+msgid "Transmission"
+msgstr "Transmissió"
+
+msgid "Guard"
+msgstr "Protegir"
+
+msgid "Hierarchy"
+msgstr "Jerarquia"
+
+msgid "Rolloff"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Iniciant exploració EPG"
@@ -525,42 +561,6 @@ msgstr "Accés Condicional"
 
 msgid "Sid"
 msgstr "Sid"
-
-msgid "Polarization"
-msgstr "Polarització"
-
-msgid "System"
-msgstr ""
-
-msgid "Srate"
-msgstr "Srate"
-
-msgid "Inversion"
-msgstr "Inversió"
-
-msgid "CoderateH"
-msgstr "CoderateH"
-
-msgid "CoderateL"
-msgstr "CoderateL"
-
-msgid "Modulation"
-msgstr "Modulació"
-
-msgid "Bandwidth"
-msgstr "Amplada de banda"
-
-msgid "Transmission"
-msgstr "Transmissió"
-
-msgid "Guard"
-msgstr "Protegir"
-
-msgid "Hierarchy"
-msgstr "Jerarquia"
-
-msgid "Rolloff"
-msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Propietats del canal duplicades!"

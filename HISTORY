@@ -6308,3 +6308,78 @@ Video Disk Recorder Revision History
   When replaying such a recording, the PCR packets are sent to PlayTsVideo()
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
+  This obsoletes the CMDSUBMENU patch.
+
+2010-02-28: Version 1.7.13
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Changed the position of Sirius 4 to S4.8E in sources.conf (thanks to Alexander Gross).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Moved the declaration of cMenuCommands to menu.h, so that plugins can use it.
+- Added a note to the MANUAL, saying that adding new transponders only works if the
+  "EPG scan" is active (suggested by Halim Sahim).
+- Improved handling frames at the beginning and end of a recording in cDvbPlayer for
+  devices with large buffers (thanks to Reinhard Nissl).
+- Implemented cDeviceHook to allow plugins more control over which device can
+  provide which transponder (thanks to Reinhard Nissl).
+- Implemented cDevice::GetCurrentlyTunedTransponder() (thanks to Reinhard Nissl).
+- Moved strictly necessary Makefile options into Make.global, which is included
+  by all plugins (thanks to Paul Menzel). The Makefiles of existing plugins should be
+  modified like this:
+
+  ------------------------------------------------------------
+  --- PLUGINS/src/hello/Makefile  2009/10/18 14:00:07      2.1
+  +++ PLUGINS/src/hello/Makefile  2010/02/06 14:50:03      2.2
+  @@ -18,7 +18,7 @@
+   ### The C++ compiler and options:
+
+   CXX      ?= g++
+  -CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+  +CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+
+   ### The directory environment:
+
+  @@ -26,6 +26,10 @@
+   LIBDIR = ../../lib
+   TMPDIR = /tmp
+
+  +### Make sure that necessary options are included:
+  +
+  +include $(VDRDIR)/Make.global
+  +
+   ### Allow user defined options to overwrite defaults:
+
+   -include $(VDRDIR)/Make.config
+  ------------------------------------------------------------
+- Added device definitions to the diseqc.conf file format, so that certain satellite
+  positions can be limited to a given list of devices.
+  This obsoletes the SOURCECAPS patch.
+- Keeping subtitles visible when pausing replay (thanks to Rolf Ahrenberg).
+- Fixed adding new transponders in case there is only a single channel in the
+  channel list (reported by Halim Sahin).
+- The file name in the "Timers" menu now shows only the base name of the recording
+  without the folder path (if any). Otherwise with long folder paths the actual
+  recording name was not visible at all.
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Exported some libsi functions (thanks to Lucian Muresan).
+- Improved scalability of the default skins.
+- Fixed the German translation of "Folder name must not contain '%c'!" (thanks to
+  Frank Schmirler).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Plugins can now define new sources. In order to implement this, the following
+  changes were made:
+  + The transponder parameter string is no longer interpreted by cChannel, but rather
+    stored as is and used only by the respective device. That way plugins can use a
+    channel's parameter string to store arbitrary data (see vdr.5).
+  + The new class cSourceParam can be used by plugins to define new sources, and to
+    implement OSD items that will be used in the channel editor for editing the source
+    specific parameters of a channel (see dvbdevice.c for an example of how this is
+    done for the default DVB devices).
+  + Purely numerical values are no longer accepted in the 'source' parameter of a
+    channel.
+  This obsoletes the PLUGINPARAM patch.
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- cSafeFile::Close() now flushes the file (suggested by Stephan Austermühle).
+- The option "Setup/DVB/Use Dolby Digital" now only controls whether Dolby Digital
+  tracks appear in the "Audio" menu. Dolby Digital is always recorded.
+  This obsoletes the DOLBYINREC patch.

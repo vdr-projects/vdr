@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.12 2010/01/02 17:38:40 kls Exp $
+ * $Id: channels.c 2.13 2010/02/21 13:36:04 kls Exp $
  */
 
 #include "channels.h"
-#include <linux/dvb/frontend.h>
 #include <ctype.h>
 #include "device.h"
 #include "epg.h"
@@ -17,133 +16,6 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
-
-// --- Channel Parameter Maps ------------------------------------------------
-
-const tChannelParameterMap InversionValues[] = {
-  {   0, INVERSION_OFF,  trNOOP("off") },
-  {   1, INVERSION_ON,   trNOOP("on") },
-  { 999, INVERSION_AUTO, trNOOP("auto") },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap BandwidthValues[] = {
-  {   6, 6000000, "6 MHz" },
-  {   7, 7000000, "7 MHz" },
-  {   8, 8000000, "8 MHz" },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap CoderateValues[] = {
-  {   0, FEC_NONE, trNOOP("none") },
-  {  12, FEC_1_2,  "1/2" },
-  {  23, FEC_2_3,  "2/3" },
-  {  34, FEC_3_4,  "3/4" },
-  {  35, FEC_3_5,  "3/5" },
-  {  45, FEC_4_5,  "4/5" },
-  {  56, FEC_5_6,  "5/6" },
-  {  67, FEC_6_7,  "6/7" },
-  {  78, FEC_7_8,  "7/8" },
-  {  89, FEC_8_9,  "8/9" },
-  { 910, FEC_9_10, "9/10" },
-  { 999, FEC_AUTO, trNOOP("auto") },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap ModulationValues[] = {
-  {  16, QAM_16,   "QAM16" },
-  {  32, QAM_32,   "QAM32" },
-  {  64, QAM_64,   "QAM64" },
-  { 128, QAM_128,  "QAM128" },
-  { 256, QAM_256,  "QAM256" },
-  {   2, QPSK,     "QPSK" },
-  {   5, PSK_8,    "8PSK" },
-  {   6, APSK_16,  "16APSK" },
-  {  10, VSB_8,    "VSB8" },
-  {  11, VSB_16,   "VSB16" },
-  { 998, QAM_AUTO, "QAMAUTO" },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap SystemValues[] = {
-  {   0, SYS_DVBS,  "DVB-S" },
-  {   1, SYS_DVBS2, "DVB-S2" },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap TransmissionValues[] = {
-  {   2, TRANSMISSION_MODE_2K,   "2K" },
-  {   8, TRANSMISSION_MODE_8K,   "8K" },
-  { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap GuardValues[] = {
-  {   4, GUARD_INTERVAL_1_4,  "1/4" },
-  {   8, GUARD_INTERVAL_1_8,  "1/8" },
-  {  16, GUARD_INTERVAL_1_16, "1/16" },
-  {  32, GUARD_INTERVAL_1_32, "1/32" },
-  { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap HierarchyValues[] = {
-  {   0, HIERARCHY_NONE, trNOOP("none") },
-  {   1, HIERARCHY_1,    "1" },
-  {   2, HIERARCHY_2,    "2" },
-  {   4, HIERARCHY_4,    "4" },
-  { 999, HIERARCHY_AUTO, trNOOP("auto") },
-  {  -1, 0, NULL }
-  };
-
-const tChannelParameterMap RollOffValues[] = {
-  {   0, ROLLOFF_AUTO, trNOOP("auto") },
-  {  20, ROLLOFF_20, "0.20" },
-  {  25, ROLLOFF_25, "0.25" },
-  {  35, ROLLOFF_35, "0.35" },
-  {  -1, 0, NULL }
-  };
-
-int UserIndex(int Value, const tChannelParameterMap *Map)
-{
-  const tChannelParameterMap *map = Map;
-  while (map && map->userValue != -1) {
-        if (map->userValue == Value)
-           return map - Map;
-        map++;
-        }
-  return -1;
-}
-
-int DriverIndex(int Value, const tChannelParameterMap *Map)
-{
-  const tChannelParameterMap *map = Map;
-  while (map && map->userValue != -1) {
-        if (map->driverValue == Value)
-           return map - Map;
-        map++;
-        }
-  return -1;
-}
-
-int MapToUser(int Value, const tChannelParameterMap *Map, const char **String)
-{
-  int n = DriverIndex(Value, Map);
-  if (n >= 0) {
-     if (String)
-        *String = tr(Map[n].userString);
-     return Map[n].userValue;
-     }
-  return -1;
-}
-
-int MapToDriver(int Value, const tChannelParameterMap *Map)
-{
-  int n = UserIndex(Value, Map);
-  if (n >= 0)
-     return Map[n].driverValue;
-  return -1;
-}
 
 // --- tChannelID ------------------------------------------------------------
 
@@ -189,16 +61,6 @@ cChannel::cChannel(void)
   provider = strdup("");
   portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
-  inversion    = INVERSION_AUTO;
-  bandwidth    = 8000000;
-  coderateH    = FEC_AUTO;
-  coderateL    = FEC_AUTO;
-  modulation   = QPSK;
-  system       = SYS_DVBS;
-  transmission = TRANSMISSION_MODE_AUTO;
-  guard        = GUARD_INTERVAL_AUTO;
-  hierarchy    = HIERARCHY_AUTO;
-  rollOff      = ROLLOFF_AUTO;
   modification = CHANNELMOD_NONE;
   schedule     = NULL;
   linkChannels = NULL;
@@ -248,17 +110,18 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   provider = strcpyrealloc(provider, Channel.provider);
   portalName = strcpyrealloc(portalName, Channel.portalName);
   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
+  parameters = Channel.parameters;
   return *this;
 }
 
 int cChannel::Transponder(int Frequency, char Polarization)
 {
   // some satellites have transponders at the same frequency, just with different polarization:
-  switch (tolower(Polarization)) {
-    case 'h': Frequency += 100000; break;
-    case 'v': Frequency += 200000; break;
-    case 'l': Frequency += 300000; break;
-    case 'r': Frequency += 400000; break;
+  switch (toupper(Polarization)) {
+    case 'H': Frequency += 100000; break;
+    case 'V': Frequency += 200000; break;
+    case 'L': Frequency += 300000; break;
+    case 'R': Frequency += 400000; break;
     default: esyslog("ERROR: invalid value for Polarization '%c'", Polarization);
     }
   return Frequency;
@@ -269,8 +132,11 @@ int cChannel::Transponder(void) const
   int tf = frequency;
   while (tf > 20000)
         tf /= 1000;
-  if (IsSat())
-     tf = Transponder(tf, polarization);
+  if (IsSat()) {
+     const char *p = strpbrk(parameters, "HVLRhvlr"); // lowercase for backwards compatibility
+     if (p)
+        tf = Transponder(tf, *p);
+     }
   return tf;
 }
 
@@ -296,22 +162,16 @@ void cChannel::CopyTransponderData(const cChannel *Channel)
      frequency    = Channel->frequency;
      source       = Channel->source;
      srate        = Channel->srate;
-     polarization = Channel->polarization;
-     inversion    = Channel->inversion;
-     bandwidth    = Channel->bandwidth;
-     coderateH    = Channel->coderateH;
-     coderateL    = Channel->coderateL;
-     modulation   = Channel->modulation;
-     system       = Channel->system;
-     transmission = Channel->transmission;
-     guard        = Channel->guard;
-     hierarchy    = Channel->hierarchy;
-     rollOff      = Channel->rollOff;
+     parameters   = Channel->parameters;
      }
 }
 
-bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, int Modulation, int System, int RollOff)
+bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const char *Parameters, bool Quiet)
 {
+  if (strchr(Parameters, ':')) {
+     esyslog("ERROR: parameter string '%s' contains ':'", Parameters);
+     return false;
+     }
   // Workarounds for broadcaster stupidity:
   // Some providers broadcast the transponder frequency of their channels with two different
   // values (like 12551 and 12552), so we need to allow for a little tolerance here
@@ -324,60 +184,14 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
   if (abs(srate - Srate) <= 1)
      Srate = srate;
 
-  if (source != Source || frequency != Frequency || polarization != Polarization || srate != Srate || coderateH != CoderateH || modulation != Modulation || system != System || rollOff != RollOff) {
+  if (source != Source || frequency != Frequency || srate != Srate || strcmp(parameters, Parameters)) {
      cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
-     polarization = Polarization;
      srate = Srate;
-     coderateH = CoderateH;
-     modulation = Modulation;
-     system = System;
-     rollOff = RollOff;
+     parameters = Parameters;
      schedule = NULL;
-     if (Number()) {
-        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
-        modification |= CHANNELMOD_TRANSP;
-        Channels.SetModified();
-        }
-     }
-  return true;
-}
-
-bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH)
-{
-  if (source != Source || frequency != Frequency || modulation != Modulation || srate != Srate || coderateH != CoderateH) {
-     cString OldTransponderData = TransponderDataToString();
-     source = Source;
-     frequency = Frequency;
-     modulation = Modulation;
-     srate = Srate;
-     coderateH = CoderateH;
-     schedule = NULL;
-     if (Number()) {
-        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
-        modification |= CHANNELMOD_TRANSP;
-        Channels.SetModified();
-        }
-     }
-  return true;
-}
-
-bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CoderateH, int CoderateL, int Guard, int Transmission)
-{
-  if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission) {
-     cString OldTransponderData = TransponderDataToString();
-     source = Source;
-     frequency = Frequency;
-     bandwidth = Bandwidth;
-     modulation = Modulation;
-     hierarchy = Hierarchy;
-     coderateH = CoderateH;
-     coderateL = CoderateL;
-     guard = Guard;
-     transmission = Transmission;
-     schedule = NULL;
-     if (Number()) {
+     if (Number() && !Quiet) {
         dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
@@ -634,90 +448,11 @@ void cChannel::SetRefChannel(cChannel *RefChannel)
   refChannel = RefChannel;
 }
 
-static int PrintParameter(char *p, char Name, int Value)
-{
-  return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
-}
-
 cString cChannel::TransponderDataToString(void) const
 {
   if (cSource::IsTerr(source))
-     return cString::sprintf("%d:%s:%s", frequency, *ParametersToString(), *cSource::ToString(source));
-  return cString::sprintf("%d:%s:%s:%d", frequency, *ParametersToString(), *cSource::ToString(source), srate);
-}
-
-cString cChannel::ParametersToString(void) const
-{
-  char type = **cSource::ToString(source);
-  if (isdigit(type))
-     type = 'S';
-#define ST(s) if (strchr(s, type))
-  char buffer[64];
-  char *q = buffer;
-  *q = 0;
-  ST(" S ")  q += sprintf(q, "%c", polarization);
-  ST("  T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
-  ST("CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
-  ST("  T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
-  ST("  T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
-  ST("CST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
-  ST("CST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
-  ST(" S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST(" S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
-  ST("  T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
-  ST("  T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
-  return buffer;
-}
-
-static const char *ParseParameter(const char *s, int &Value, const tChannelParameterMap *Map)
-{
-  if (*++s) {
-     char *p = NULL;
-     errno = 0;
-     int n = strtol(s, &p, 10);
-     if (!errno && p != s) {
-        Value = MapToDriver(n, Map);
-        if (Value >= 0)
-           return p;
-        }
-     }
-  esyslog("ERROR: invalid value for parameter '%c'", *(s - 1));
-  return NULL;
-}
-
-static const char *SkipDigits(const char *s)
-{
-  while (*++s && isdigit(*s))
-        ;
-  return s;
-}
-
-bool cChannel::StringToParameters(const char *s)
-{
-  while (s && *s) {
-        switch (toupper(*s)) {
-          case 'A': s = SkipDigits(s); break; // for compatibility with the "multiproto" approach - may be removed in future versions
-          case 'B': s = ParseParameter(s, bandwidth, BandwidthValues); break;
-          case 'C': s = ParseParameter(s, coderateH, CoderateValues); break;
-          case 'D': s = ParseParameter(s, coderateL, CoderateValues); break;
-          case 'G': s = ParseParameter(s, guard, GuardValues); break;
-          case 'H': polarization = *s++; break;
-          case 'I': s = ParseParameter(s, inversion, InversionValues); break;
-          case 'L': polarization = *s++; break;
-          case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
-          case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
-          case 'P': s = SkipDigits(s); break; // for compatibility with the "multiproto" approach - may be removed in future versions
-          case 'R': polarization = *s++; break;
-          case 'S': s = ParseParameter(s, system, SystemValues); break;
-          case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
-          case 'V': polarization = *s++; break;
-          case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
-          case 'Z': s = SkipDigits(s); break; // for compatibility with the original DVB-S2 patch - may be removed in future versions
-          default: esyslog("ERROR: unknown parameter key '%c'", *s);
-                   return false;
-          }
-        }
-  return true;
+     return cString::sprintf("%d:%s:%s", frequency, *parameters, *cSource::ToString(source));
+  return cString::sprintf("%d:%s:%s:%d", frequency, *parameters, *cSource::ToString(source), srate);
 }
 
 cString cChannel::ToText(const cChannel *Channel)
@@ -762,7 +497,7 @@ cString cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->ParametersToString(), *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -814,7 +549,8 @@ bool cChannel::Parse(const char *s)
         dpids[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
-           ok = StringToParameters(parambuf) && (source = cSource::FromString(sourcebuf)) >= 0;
+           parameters = parambuf;
+           ok = (source = cSource::FromString(sourcebuf)) >= 0;
 
            char *p;
            if ((p = strchr(vpidbuf, '=')) != NULL) {

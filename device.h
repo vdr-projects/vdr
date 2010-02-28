@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.19 2010/01/01 15:04:27 kls Exp $
+ * $Id: device.h 2.21 2010/02/06 14:34:41 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -88,10 +88,18 @@ class cPlayer;
 class cReceiver;
 class cLiveSubtitle;
 
+class cDeviceHook : public cListObject {
+public:
+  cDeviceHook(void);
+  virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
+          ///< Returns true if the given Device can provide the given Channel's transponder.
+  };
+
 /// The cDevice class is the base from which actual devices can be derived.
 
 class cDevice : public cThread {
   friend class cLiveSubtitle;
+  friend class cDeviceHook;
 private:
   static int numDevices;
   static int useDevice;
@@ -187,6 +195,13 @@ public:
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
 
+// Device hooks
+
+private:
+  static cList<cDeviceHook> deviceHooks;
+protected:
+  bool DeviceHooksProvidesTransponder(const cChannel *Channel) const;
+
 // SPU facilities
 
 private:
@@ -232,6 +247,11 @@ public:
          ///< actually provide channels must implement this function.
          ///< The result of this function is used when selecting a device, in order
          ///< to avoid devices that provide more than one system.
+  virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
+         ///< Returns a pointer to the currently tuned transponder.
+         ///< This is not one of the channels in the global cChannels list, but rather
+         ///< a local copy. The result may be NULL if the device is not tuned to any
+         ///< transponder.
   virtual bool IsTunedToTransponder(const cChannel *Channel);
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.
