@@ -84,3 +84,7 @@ VDR Plugin 'skincurses' Revision History
 
 - Displaying "genre" in event descriptions.
 - Displaying "parental rating" in event descriptions.
+
+2010-02-28: Version 0.1.9
+
+- Added Lithuanian language translations (thanks to Valdemaras Pipiras).

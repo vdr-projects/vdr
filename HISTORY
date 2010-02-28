@@ -6378,3 +6378,4 @@ Video Disk Recorder Revision History
   + Purely numerical values are no longer accepted in the 'source' parameter of a
     channel.
   This obsoletes the PLUGINPARAM patch.
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
