@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 2.1 2010/02/28 12:00:31 kls Exp $
+ * $Id: sources.c 2.2 2010/02/28 15:15:39 kls Exp $
  */
 
 #include "sources.h"
@@ -55,35 +55,37 @@ cString cSource::ToString(int Code)
 
 int cSource::FromString(const char *s)
 {
-  if ('A' <= *s && *s <= 'Z') {
-     int code = int(*s) << 24;
-     if (code == stSat) {
-        int pos = 0;
-        bool dot = false;
-        bool neg = false;
-        while (*++s) {
-              switch (*s) {
-                case '0' ... '9': pos *= 10;
-                                  pos += *s - '0';
-                                  break;
-                case '.':         dot = true;
-                                  break;
-                case 'E':         neg = true; // fall through to 'W'
-                case 'W':         if (!dot)
-                                     pos *= 10;
-                                  break;
-                default: esyslog("ERROR: unknown source character '%c'", *s);
-                         return stNone;
-                }
-              }
-        if (neg)
-           pos = -pos;
-        code |= (pos & st_Pos);
+  if (!isempty(s)) {
+     if ('A' <= *s && *s <= 'Z') {
+        int code = int(*s) << 24;
+        if (code == stSat) {
+           int pos = 0;
+           bool dot = false;
+           bool neg = false;
+           while (*++s) {
+                 switch (*s) {
+                   case '0' ... '9': pos *= 10;
+                                     pos += *s - '0';
+                                     break;
+                   case '.':         dot = true;
+                                     break;
+                   case 'E':         neg = true; // fall through to 'W'
+                   case 'W':         if (!dot)
+                                        pos *= 10;
+                                     break;
+                   default: esyslog("ERROR: unknown source character '%c'", *s);
+                            return stNone;
+                   }
+                 }
+           if (neg)
+              pos = -pos;
+           code |= (pos & st_Pos);
+           }
+        return code;
         }
-     return code;
+     else
+       esyslog("ERROR: unknown source key '%c'", *s);
      }
-  else
-    esyslog("ERROR: unknown source key '%c'", *s);
   return stNone;
 }
 

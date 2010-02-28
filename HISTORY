@@ -6383,3 +6383,7 @@ Video Disk Recorder Revision History
 - The option "Setup/DVB/Use Dolby Digital" now only controls whether Dolby Digital
   tracks appear in the "Audio" menu. Dolby Digital is always recorded.
   This obsoletes the DOLBYINREC patch.
+
+2010-02-28: Version 1.7.14
+
+- Fixed handling empty strings in cSource::FromString().
