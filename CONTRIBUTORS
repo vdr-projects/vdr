@@ -2565,3 +2565,6 @@ Francesco Saverio Schiavarelli <fschiava@libero.it>
 
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for implementing the setup option "Miscellaneous/Channels wrap"
+
+Stephan Austermühle <au@hcsd.de>
+ for suggesting to flush the file in cSafeFile::Close()

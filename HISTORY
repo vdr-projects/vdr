@@ -6379,3 +6379,4 @@ Video Disk Recorder Revision History
     channel.
   This obsoletes the PLUGINPARAM patch.
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- cSafeFile::Close() now flushes the file (suggested by Stephan Austermühle).
