@@ -6308,6 +6308,7 @@ Video Disk Recorder Revision History
   When replaying such a recording, the PCR packets are sent to PlayTsVideo()
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
+  This obsoletes the CMDSUBMENU patch.
 
 2010-02-28: Version 1.7.13
 
@@ -6352,6 +6353,7 @@ Video Disk Recorder Revision History
   ------------------------------------------------------------
 - Added device definitions to the diseqc.conf file format, so that certain satellite
   positions can be limited to a given list of devices.
+  This obsoletes the SOURCECAPS patch.
 - Keeping subtitles visible when pausing replay (thanks to Rolf Ahrenberg).
 - Fixed adding new transponders in case there is only a single channel in the
   channel list (reported by Halim Sahin).
