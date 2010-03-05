@@ -6384,6 +6384,7 @@ Video Disk Recorder Revision History
   tracks appear in the "Audio" menu. Dolby Digital is always recorded.
   This obsoletes the DOLBYINREC patch.
 
-2010-02-28: Version 1.7.14
+2010-03-05: Version 1.7.14
 
 - Fixed handling empty strings in cSource::FromString().
+- Assigned the source character 'I' to "IPTV" (suggested by Rolf Ahrenberg).
