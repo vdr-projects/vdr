@@ -2569,3 +2569,6 @@ Matti Lehtimäki <matti.lehtimaki@gmail.com>
 
 Stephan Austermühle <au@hcsd.de>
  for suggesting to flush the file in cSafeFile::Close()
+
+Lars Hanisch <dvb@flensrocker.de>
+ for suggesting to assign the source character 'V' to "Analog Video"

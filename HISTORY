@@ -6388,3 +6388,4 @@ Video Disk Recorder Revision History
 
 - Fixed handling empty strings in cSource::FromString().
 - Assigned the source character 'I' to "IPTV" (suggested by Rolf Ahrenberg).
+- Assigned the source character 'V' to "Analog Video" (suggested by Lars Hanisch).
