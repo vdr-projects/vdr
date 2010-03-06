@@ -2389,6 +2389,8 @@ Halim Sahin <halim.sahin@t-online.de>
  works if the "EPG scan" is active
  for reporting a problem with adding new transponders in case there is only a single
  channel in the channel list
+ for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
+ list of sources
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts

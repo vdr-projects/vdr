@@ -6391,3 +6391,5 @@ Video Disk Recorder Revision History
 - Assigned the source character 'V' to "Analog Video" (suggested by Lars Hanisch).
 - Added support for ATSC devices (thanks to Alex Lasnier).
   This obsoletes the ATSC patch.
+- The "Source" item in the "Edit channel" menu now wraps around the list of sources
+  (suggested by Halim Sahin).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.17 2010/02/21 14:09:19 kls Exp $
+ * $Id: menu.c 2.18 2010/03/06 12:43:15 kls Exp $
  */
 
 #include "menu.h"
@@ -160,16 +160,23 @@ eOSState cMenuEditSrcItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
-     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        if (source && source->Prev()) {
-           source = (cSource *)source->Prev();
+     bool IsRepeat = Key & k_Repeat;
+     Key = NORMALKEY(Key);
+     if (Key == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (source) {
+           if (source->Prev())
+              source = (cSource *)source->Prev();
+           else if (!IsRepeat)
+              source = Sources.Last();
            *value = source->Code();
            }
         }
-     else if (NORMALKEY(Key) == kRight) {
+     else if (Key == kRight) {
         if (source) {
            if (source->Next())
               source = (cSource *)source->Next();
+           else if (!IsRepeat)
+              source = Sources.First();
            }
         else
            source = Sources.First();
