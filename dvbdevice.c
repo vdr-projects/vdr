@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.29 2010/02/21 17:10:35 kls Exp $
+ * $Id: dvbdevice.c 2.30 2010/03/06 11:07:05 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -27,6 +27,8 @@
 #define DVBC_LOCK_TIMEOUT  2000 //ms
 #define DVBT_TUNE_TIMEOUT  9000 //ms
 #define DVBT_LOCK_TIMEOUT  2000 //ms
+#define ATSC_TUNE_TIMEOUT  9000 //ms
+#define ATSC_LOCK_TIMEOUT  2000 //ms
 
 // --- DVB Parameter Maps ----------------------------------------------------
 
@@ -184,17 +186,17 @@ cString cDvbTransponderParameters::ToString(char Type) const
   char buffer[64];
   char *q = buffer;
   *q = 0;
-  ST(" S ")  q += sprintf(q, "%c", polarization);
-  ST("  T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
-  ST("CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
-  ST("  T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
-  ST("  T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
-  ST("CST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
-  ST("CST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
-  ST(" S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST(" S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
-  ST("  T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
-  ST("  T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
+  ST("  S ")  q += sprintf(q, "%c", polarization);
+  ST("   T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
+  ST(" CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
+  ST("   T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
+  ST("   T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
+  ST("ACST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
+  ST("ACST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
+  ST("  S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
+  ST("  S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
+  ST("   T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
+  ST("   T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
   return buffer;
 }
 
@@ -486,6 +488,16 @@ bool cDvbTuner::SetFrontend(void)
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
      }
+  else if (frontendType == SYS_ATSC) {
+     // ATSC
+     SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
+     SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
+     SETCMD(DTV_INVERSION, dtp.Inversion());
+     SETCMD(DTV_MODULATION, dtp.Modulation());
+     
+     tuneTimeout = ATSC_TUNE_TIMEOUT;
+     lockTimeout = ATSC_LOCK_TIMEOUT;     
+     }
   else {
      esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
      return false;
@@ -598,18 +610,18 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 #undef ST
 #define ST(s) if (strchr(s, type))
   switch (param++) {
-    case  0: ST(" S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "hvlr");             else return GetOsdItem();
-    case  1: ST(" S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
-    case  2: ST("CS ")  return new cMenuEditIntItem( tr("Srate"),        &data.srate);                           else return GetOsdItem();
-    case  3: ST("CST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
-    case  4: ST("CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
-    case  5: ST("  T")  return new cMenuEditMapItem( tr("CoderateL"),    &dtp.coderateL,    CoderateValues);     else return GetOsdItem();
-    case  6: ST("CST")  return new cMenuEditMapItem( tr("Modulation"),   &dtp.modulation,   ModulationValues);   else return GetOsdItem();
-    case  7: ST("  T")  return new cMenuEditMapItem( tr("Bandwidth"),    &dtp.bandwidth,    BandwidthValues);    else return GetOsdItem();
-    case  8: ST("  T")  return new cMenuEditMapItem( tr("Transmission"), &dtp.transmission, TransmissionValues); else return GetOsdItem();
-    case  9: ST("  T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
-    case 10: ST("  T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
-    case 11: ST(" S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
+    case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "hvlr");             else return GetOsdItem();
+    case  1: ST("  S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
+    case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &data.srate);                           else return GetOsdItem();
+    case  3: ST("ACST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
+    case  4: ST(" CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
+    case  5: ST("   T")  return new cMenuEditMapItem( tr("CoderateL"),    &dtp.coderateL,    CoderateValues);     else return GetOsdItem();
+    case  6: ST("ACST")  return new cMenuEditMapItem( tr("Modulation"),   &dtp.modulation,   ModulationValues);   else return GetOsdItem();
+    case  7: ST("   T")  return new cMenuEditMapItem( tr("Bandwidth"),    &dtp.bandwidth,    BandwidthValues);    else return GetOsdItem();
+    case  8: ST("   T")  return new cMenuEditMapItem( tr("Transmission"), &dtp.transmission, TransmissionValues); else return GetOsdItem();
+    case  9: ST("   T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
+    case 10: ST("   T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
+    case 11: ST("  S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
     default: return NULL;
     }
   return NULL;
@@ -745,6 +757,7 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
 
 bool cDvbDevice::Initialize(void)
 {
+  new cDvbSourceParam('A', "ATSC");
   new cDvbSourceParam('C', "DVB-C");
   new cDvbSourceParam('S', "DVB-S");
   new cDvbSourceParam('T', "DVB-T");
@@ -863,6 +876,7 @@ bool cDvbDevice::ProvidesSource(int Source) const
 {
   int type = Source & cSource::st_Mask;
   return type == cSource::stNone
+      || type == cSource::stAtsc  && (frontendType == SYS_ATSC)
       || type == cSource::stCable && (frontendType == SYS_DVBC_ANNEX_AC || frontendType == SYS_DVBC_ANNEX_B)
       || type == cSource::stSat   && (frontendType == SYS_DVBS || frontendType == SYS_DVBS2)
       || type == cSource::stTerr  && (frontendType == SYS_DVBT);

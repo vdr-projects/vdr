@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.1 2010/02/21 16:11:19 kls Exp $
+ * $Id: sources.h 2.2 2010/03/06 11:53:54 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -16,6 +16,7 @@ class cSource : public cListObject {
 public:
   enum eSourceType {
     stNone  = 0x00000000,
+    stAtsc  = ('A' << 24),
     stCable = ('C' << 24),
     stSat   = ('S' << 24),
     stTerr  = ('T' << 24),
@@ -35,6 +36,7 @@ public:
   static cString ToString(int Code);
   static int FromString(const char *s);
   static int FromData(eSourceType SourceType, int Position = 0, bool East = false);
+  static bool IsAtsc(int Code) { return (Code & st_Mask) == stAtsc; }
   static bool IsCable(int Code) { return (Code & st_Mask) == stCable; }
   static bool IsSat(int Code) { return (Code & st_Mask) == stSat; }
   static bool IsTerr(int Code) { return (Code & st_Mask) == stTerr; }
