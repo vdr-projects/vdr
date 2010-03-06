@@ -6389,6 +6389,7 @@ Video Disk Recorder Revision History
 - Fixed handling empty strings in cSource::FromString().
 - Assigned the source character 'I' to "IPTV" (suggested by Rolf Ahrenberg).
 - Assigned the source character 'V' to "Analog Video" (suggested by Lars Hanisch).
+  This obsoletes the ANALOGTV patch.
 - Added support for ATSC devices (thanks to Alex Lasnier).
   This obsoletes the ATSC patch.
 - The "Source" item in the "Edit channel" menu now wraps around the list of sources
