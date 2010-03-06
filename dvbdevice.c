@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.30 2010/03/06 11:07:05 kls Exp $
+ * $Id: dvbdevice.c 2.31 2010/03/06 15:19:17 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -576,7 +576,7 @@ void cDvbTuner::Action(void)
 class cDvbSourceParam : public cSourceParam {
 private:
   int param;
-  cChannel data;
+  int srate;
   cDvbTransponderParameters dtp;
 public:
   cDvbSourceParam(char Source, const char *Description);
@@ -589,19 +589,19 @@ cDvbSourceParam::cDvbSourceParam(char Source, const char *Description)
 :cSourceParam(Source, Description)
 {
   param = 0;
+  srate = 0;
 }
 
 void cDvbSourceParam::SetData(cChannel *Channel)
 {
-  data = *Channel;
-  dtp.Parse(data.Parameters());
+  srate = Channel->Srate();
+  dtp.Parse(Channel->Parameters());
   param = 0;
 }
 
 void cDvbSourceParam::GetData(cChannel *Channel)
 {
-  data.SetTransponderData(Channel->Source(), Channel->Frequency(), data.Srate(), dtp.ToString(Source()), true);
-  *Channel = data;
+  Channel->SetTransponderData(Channel->Source(), Channel->Frequency(), srate, dtp.ToString(Source()), true);
 }
 
 cOsdItem *cDvbSourceParam::GetOsdItem(void)
@@ -612,7 +612,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
   switch (param++) {
     case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "hvlr");             else return GetOsdItem();
     case  1: ST("  S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
-    case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &data.srate);                           else return GetOsdItem();
+    case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &srate);                                else return GetOsdItem();
     case  3: ST("ACST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
     case  4: ST(" CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
     case  5: ST("   T")  return new cMenuEditMapItem( tr("CoderateL"),    &dtp.coderateL,    CoderateValues);     else return GetOsdItem();

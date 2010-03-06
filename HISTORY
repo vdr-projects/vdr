@@ -6394,3 +6394,4 @@ Video Disk Recorder Revision History
   This obsoletes the ATSC patch.
 - The "Source" item in the "Edit channel" menu now wraps around the list of sources
   (suggested by Halim Sahin).
+- Fixed editing channel parameters.
