@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.16 2010/03/06 12:01:00 kls Exp $
+.\" $Id: vdr.5 2.17 2010/03/06 14:04:54 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -411,6 +411,7 @@ l l.
 and is followed by further data pertaining to that particular source. In case of
 \fBS\fRatellite this is the orbital position in degrees, followed by \fBE\fR for
 east or \fBW\fR for west.
+Plugins may define additional sources, using other characters in the range 'A'...'Z'.
 .SS DISEQC
 The file \fIdiseqc.conf\fR defines the \fBDiSEqC\fR control sequences to be sent
 to the DVB-S card in order to access a given satellite position and/or band.
