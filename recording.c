@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.22 2010/01/16 11:18:30 kls Exp $
+ * $Id: recording.c 2.23 2010/03/07 14:06:04 kls Exp $
  */
 
 #include "recording.h"
@@ -57,9 +57,6 @@
 #define DELETEDLIFETIME   300 // seconds after which a deleted recording will be actually removed
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
-
-#define TIMERMACRO_TITLE    "TITLE"
-#define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MAX_SUBTITLE_LENGTH  40
 

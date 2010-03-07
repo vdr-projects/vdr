@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.19 2010/03/07 12:32:28 kls Exp $
+ * $Id: menu.c 2.20 2010/03/07 14:08:15 kls Exp $
  */
 
 #include "menu.h"
@@ -1053,7 +1053,7 @@ void cMenuTimerItem::Set(void)
      day = buffer;
      }
   const char *File = strrchr(timer->File(), FOLDERDELIMCHAR);
-  if (File)
+  if (File && strcmp(File + 1, TIMERMACRO_TITLE) && strcmp(File + 1, TIMERMACRO_EPISODE))
      File++;
   else
      File = timer->File();

@@ -1671,6 +1671,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in
  case only part of the buffer has been accepted by the device
  for reporting missing defines for large files in the 'newplugin' script
+ for pointing out that the full timer file name should be displayed if it ends with
+ "TITLE" or "EPISODE"
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

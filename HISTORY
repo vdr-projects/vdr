@@ -6404,3 +6404,5 @@ Video Disk Recorder Revision History
   deleted.
 - Added cChannel::IsSourceType() to test if a channel's source is of a given type.
 - Changed the polarization characters in cDvbSourceParam::GetOsdItem() to uppercase.
+- The full timer file name is now displayed if it ends with "TITLE" or "EPISODE"
+  (pointed out by Udo Richter).
