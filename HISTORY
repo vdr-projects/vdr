@@ -6402,3 +6402,4 @@ Video Disk Recorder Revision History
   patch: 0 means timeshift recordings are not automatically deleted (the default behavior
   as in previous versions), while 1 means to ask the user whether the recording shall be
   deleted.
+- Added cChannel::IsSourceType() to test if a channel's source is of a given type.

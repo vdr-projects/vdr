@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.2 2010/03/06 11:53:54 kls Exp $
+ * $Id: sources.h 2.3 2010/03/07 13:53:11 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -40,6 +40,7 @@ public:
   static bool IsCable(int Code) { return (Code & st_Mask) == stCable; }
   static bool IsSat(int Code) { return (Code & st_Mask) == stSat; }
   static bool IsTerr(int Code) { return (Code & st_Mask) == stTerr; }
+  static bool IsType(int Code, char Source) { return int(Code & st_Mask) == (int(Source) << 24); }
   };
 
 class cSources : public cConfig<cSource> {
