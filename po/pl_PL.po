@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
 "Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
 "Language-Team:  Polish\n"
@@ -986,6 +986,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "tak"
+
 msgid "Recording"
 msgstr "Nagranie"
 
@@ -1036,6 +1042,9 @@ msgstr "Maksymalny rozmiar pliku (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Dziel edytowane pliki"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Odtwarzanie"
@@ -1154,6 +1163,9 @@ msgstr "Brak wolnej karty DVB do nagrywania!"
 msgid "Pausing live video..."
 msgstr "Pauzujê program na ¿ywo..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skok: "
@@ -1172,9 +1184,6 @@ msgstr "Proces edycji jest ju¿ aktywny!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " a±bcædeêfghijkl³mnñoópqrs¶tuvwxyz¼¿0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "tak"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2±æ\tdef3ê\tghi4\tjkl5³\tmno6ñó\tpqrs7¶\ttuv8\twxyz9¼¿"

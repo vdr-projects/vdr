@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.18 2010/03/06 12:43:15 kls Exp $
+ * $Id: menu.c 2.19 2010/03/07 12:32:28 kls Exp $
  */
 
 #include "menu.h"
@@ -3023,6 +3023,7 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
 class cMenuSetupRecord : public cMenuSetupBase {
 private:
   const char *pauseKeyHandlingTexts[3];
+  const char *delTimeshiftRecTexts[3];
 public:
   cMenuSetupRecord(void);
   };
@@ -3032,6 +3033,9 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   pauseKeyHandlingTexts[0] = tr("do not pause live video");
   pauseKeyHandlingTexts[1] = tr("confirm pause live video");
   pauseKeyHandlingTexts[2] = tr("pause live video");
+  delTimeshiftRecTexts[0] = tr("no");
+  delTimeshiftRecTexts[1] = tr("confirm");
+  delTimeshiftRecTexts[2] = tr("yes");
   SetSection(tr("Recording"));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
@@ -3049,6 +3053,7 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZETS));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
+  Add(new cMenuEditStraItem(tr("Setup.Recording$Delete timeshift recording"),&data.DelTimeshiftRec, 3, delTimeshiftRecTexts));
 }
 
 // --- cMenuSetupReplay ------------------------------------------------------
@@ -4163,14 +4168,15 @@ bool cRecordControl::GetEvent(void)
   return false;
 }
 
-void cRecordControl::Stop(void)
+void cRecordControl::Stop(bool ExecuteUserCommand)
 {
   if (timer) {
      DELETENULL(recorder);
      timer->SetRecording(false);
      timer = NULL;
      cStatus::MsgRecording(device, NULL, fileName, false);
-     cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
+     if (ExecuteUserCommand)
+        cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }
 
@@ -4294,10 +4300,12 @@ const char *cRecordControls::GetInstantId(const char *LastInstantId)
 
 cRecordControl *cRecordControls::GetRecordControl(const char *FileName)
 {
-  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
-      if (RecordControls[i] && strcmp(RecordControls[i]->FileName(), FileName) == 0)
-         return RecordControls[i];
-      }
+  if (FileName) {
+     for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+         if (RecordControls[i] && strcmp(RecordControls[i]->FileName(), FileName) == 0)
+            return RecordControls[i];
+         }
+     }
   return NULL;
 }
 
@@ -4384,6 +4392,38 @@ cReplayControl::~cReplayControl()
   Stop();
   if (currentReplayControl == this)
      currentReplayControl = NULL;
+}
+
+void cReplayControl::Stop(void)
+{
+  if (Setup.DelTimeshiftRec && fileName) {
+     cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
+     if (rc && rc->InstantId()) {
+        if (Active()) {
+           if (Setup.DelTimeshiftRec == 2 || Interface->Confirm(tr("Delete timeshift recording?"))) {
+              cTimer *timer = rc->Timer();
+              rc->Stop(false); // don't execute user command
+              if (timer) {
+                 isyslog("deleting timer %s", *timer->ToDescr());
+                 Timers.Del(timer);
+                 Timers.SetModified();
+                 }
+              cDvbPlayerControl::Stop();
+              cRecording *recording = Recordings.GetByName(fileName);;
+              if (recording) {
+                 if (recording->Delete()) {
+                    Recordings.DelByName(fileName);
+                    ClearLastReplayed(fileName);
+                    }
+                 else
+                    Skins.Message(mtError, tr("Error while deleting recording!"));
+                 }
+              return;
+              }
+           }
+        }
+     }
+  cDvbPlayerControl::Stop();
 }
 
 void cReplayControl::SetRecording(const char *FileName, const char *Title)
@@ -4766,7 +4806,11 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    return osRecordings;
+            case kBack:    if (Setup.DelTimeshiftRec) { 
+                              cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
+                              return rc && rc->InstantId() ? osEnd : osRecordings;
+                              }
+                           return osRecordings;
             default:       return osUnknown;
             }
           }

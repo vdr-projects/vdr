@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian\n"
@@ -986,6 +986,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "да"
+
 msgid "Recording"
 msgstr "Запись"
 
@@ -1036,6 +1042,9 @@ msgstr "Макс. размер видеофайла (Мб)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Делить отредактированные файлы"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Воспроизведение"
@@ -1154,6 +1163,9 @@ msgstr "Нет свободного DVB-устройства для записи!"
 msgid "Pausing live video..."
 msgstr "Режим отложенного просмотра..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Перейти: "
@@ -1172,9 +1184,6 @@ msgstr "Процесс видеомонтажа уже запущен!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьюя0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "да"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcабвг2\tdefдеёжз3\tghiийкл4\tjklмно5\tmnoпрс6\tpqrsтуфх7\ttuvцчшщъ8\twxyzыьэюя9"

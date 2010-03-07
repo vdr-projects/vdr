@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.10 2010/01/31 12:36:36 kls Exp $
+ * $Id: config.c 2.11 2010/03/06 15:29:17 kls Exp $
  */
 
 #include "config.h"
@@ -383,6 +383,7 @@ cSetup::cSetup(void)
   FontFixSize = 20;
   MaxVideoFileSize = MAXVIDEOFILESIZEDEFAULT;
   SplitEditedFiles = 0;
+  DelTimeshiftRec = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 300;
   NextWakeupTime = 0;
@@ -571,6 +572,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);
   else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
   else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
+  else if (!strcasecmp(Name, "DelTimeshiftRec"))     DelTimeshiftRec    = atoi(Value);
   else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
   else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
   else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
@@ -664,6 +666,7 @@ bool cSetup::Save(void)
   Store("FontFixSize",        FontFixSize);
   Store("MaxVideoFileSize",   MaxVideoFileSize);
   Store("SplitEditedFiles",   SplitEditedFiles);
+  Store("DelTimeshiftRec",    DelTimeshiftRec);
   Store("MinEventTimeout",    MinEventTimeout);
   Store("MinUserInactivity",  MinUserInactivity);
   Store("NextWakeupTime",     NextWakeupTime);

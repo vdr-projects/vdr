@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2009-09-30 12:50+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak\n"
@@ -986,6 +986,12 @@ msgstr "Potrdi» preru¹enie ¾ivého vysielania"
 msgid "pause live video"
 msgstr "Preru¹i» ¾ivé vysielanie"
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "áno"
+
 msgid "Recording"
 msgstr "Nahrávanie"
 
@@ -1036,6 +1042,9 @@ msgstr "Maximálna veµkos» nahrávky (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Deli» upravované súbory"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Prehrávanie"
@@ -1154,6 +1163,9 @@ msgstr "®iadna DVB karta nie je volná pre nahrávanie"
 msgid "Pausing live video..."
 msgstr "Preru¹uje sa be¾iaci program ..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skok: "
@@ -1172,9 +1184,6 @@ msgstr "Spracovanie úprav je v èinnosti!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aáäbcèdïeéfghiíjklåµmnòoóôpqràs¹t»uúvwxyýz¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "áno"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcáè2\tdefïéì3\tghií4\tjkl5\tmnoòó6\tpqrsø¹7\ttuv»úù8\twxyzý¾9"

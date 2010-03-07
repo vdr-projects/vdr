@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2007-12-01 21:42+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian\n"
@@ -988,6 +988,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "igen"
+
 msgid "Recording"
 msgstr "Felvétel"
 
@@ -1038,6 +1044,9 @@ msgstr "Max. video File-terjedelem (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Feldolgozott File-k felosztása"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Lejátszás"
@@ -1156,6 +1165,9 @@ msgstr "Nincs szabad DVB kártya a felvételhez!"
 msgid "Pausing live video..."
 msgstr "Az élõ adás megállítva..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Ugrás: "
@@ -1174,9 +1186,6 @@ msgstr "A vágás már aktív!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aábcdeéfghiíjklmnoóöõpqrstuúüûvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "igen"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taábc2\tdeéf3\tghií4\tjkl5\tmnoóöõ6\tpqrs7\ttuúüûv8\twxyz9"

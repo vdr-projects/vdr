@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.2 2010/02/06 10:17:24 kls Exp $
+ * $Id: menu.h 2.3 2010/03/06 16:15:59 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -226,7 +226,7 @@ public:
   virtual ~cRecordControl();
   bool Process(time_t t);
   cDevice *Device(void) { return device; }
-  void Stop(void);
+  void Stop(bool ExecuteUserCommand = true);
   const char *InstantId(void) { return instantId; }
   const char *FileName(void) { return fileName; }
   cTimer *Timer(void) { return timer; }
@@ -278,6 +278,7 @@ private:
 public:
   cReplayControl(void);
   virtual ~cReplayControl();
+  void Stop(void);
   virtual cOsdObject *GetInfo(void);
   virtual eOSState ProcessKey(eKeys Key);
   virtual void Show(void);

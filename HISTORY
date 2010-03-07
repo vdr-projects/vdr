@@ -6395,3 +6395,10 @@ Video Disk Recorder Revision History
 - The "Source" item in the "Edit channel" menu now wraps around the list of sources
   (suggested by Halim Sahin).
 - Fixed editing channel parameters.
+- The new setup option "Recording/Delete timeshift recording" controls whether a timeshift
+  recording is automatically deleted after viewing it.
+  This obsoletes the DELTIMESHIFTREC patch.
+  Note that the meaning of the values for this option is different from the DELTIMESHIFTREC
+  patch: 0 means timeshift recordings are not automatically deleted (the default behavior
+  as in previous versions), while 1 means to ask the user whether the recording shall be
+  deleted.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.23 2010/02/28 15:18:31 kls Exp $
+ * $Id: config.h 2.24 2010/03/06 15:29:46 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -276,6 +276,7 @@ public:
   int FontFixSize;
   int MaxVideoFileSize;
   int SplitEditedFiles;
+  int DelTimeshiftRec;
   int MinEventTimeout, MinUserInactivity;
   time_t NextWakeupTime;
   int MultiSpeedMode;

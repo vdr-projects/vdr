@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2010-02-11 13:38+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian\n"
@@ -988,6 +988,12 @@ msgstr "confirmã înregistrarea emisiunii"
 msgid "pause live video"
 msgstr "înregistreazã emisiunea"
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "da"
+
 msgid "Recording"
 msgstr "Înregistrare"
 
@@ -1038,6 +1044,9 @@ msgstr "Dimensiune maximã a fiºierului video (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Separare fiºiere montate"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Redare"
@@ -1156,6 +1165,9 @@ msgstr "Nu mai sunt dispozitive DVB disponibile pentru înregistrare!"
 msgid "Pausing live video..."
 msgstr "Trec în pauzã emisiunea transmisã..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Salt la: "
@@ -1174,9 +1186,6 @@ msgstr "Montajul înregistrãrii este deja activ!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aãâbcdefghiîjklmnopqrsºtþuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "da"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttþuv8\twxyz9"

@@ -824,6 +824,14 @@ Version 1.6
                          file (named 00001.ts, 00002.ts, ...) you can set this
                          option to 'yes'.
 
+  Delete timeshift recording = 0
+                         Controls whether a timeshift recording is deleted after
+                         viewing it.
+                         0 = no
+                         1 = confirm
+                         2 = yes
+                         The default is 0.
+
   Replay:
 
   Multi speed mode = no  Defines the function of the "Left" and "Right" keys in

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-07 13:36+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
 "Language-Team: Norwegian\n"
@@ -986,6 +986,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "ja"
+
 msgid "Recording"
 msgstr "Opptak"
 
@@ -1036,6 +1042,9 @@ msgstr "Maksimal størrelse på videofiler (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Splitt redigerte filer"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Spill av"
@@ -1154,6 +1163,9 @@ msgstr "Ingen ledige DVB enheter for opptak!"
 msgid "Pausing live video..."
 msgstr ""
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Hopp: "
@@ -1172,9 +1184,6 @@ msgstr "Redigeringsprosessen er allerede aktiv!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr ""
-
-msgid "yes"
-msgstr "ja"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr ""
