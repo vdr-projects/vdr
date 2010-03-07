@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.20 2010/02/06 12:34:28 kls Exp $
+ * $Id: dvbplayer.c 2.21 2010/03/07 14:24:26 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -218,6 +218,7 @@ private:
   bool readIndependent;
   cFrame *readFrame;
   cFrame *playFrame;
+  cFrame *dropFrame;
   void TrickSpeed(int Increment);
   void Empty(void);
   bool NextFile(uint16_t FileNumber = 0, off_t FileOffset = -1);
@@ -266,6 +267,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   readIndependent = false;
   readFrame = NULL;
   playFrame = NULL;
+  dropFrame = NULL;
   isyslog("replay %s", FileName);
   fileName = new cFileName(FileName, false, false, isPesRecording);
   replayFile = fileName->Open();
@@ -322,6 +324,7 @@ void cDvbPlayer::Empty(void)
   delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
+  dropFrame = NULL;
   ringBuffer->Clear();
   ptsIndex.Clear();
   DeviceClear();
@@ -396,7 +399,6 @@ void cDvbPlayer::Action(void)
   uint32_t LastStc = 0;
   int LastReadIFrame = -1;
   int SwitchToPlayFrame = 0;
-  cFrame *DropFrame = NULL;
 
   while (Running()) {
         if (WaitingForData)
@@ -503,10 +505,10 @@ void cDvbPlayer::Action(void)
           else
              Sleep = true;
 
-          if (DropFrame) {
-             if (!eof || (playDir != pdForward && DropFrame->Index() > 0) || (playDir == pdForward && DropFrame->Index() < readIndex)) {
-                ringBuffer->Drop(DropFrame); // the very first and last frame are continously repeated to flush data through the device
-                DropFrame = NULL;
+          if (dropFrame) {
+             if (!eof || (playDir != pdForward && dropFrame->Index() > 0) || (playDir == pdForward && dropFrame->Index() < readIndex)) {
+                ringBuffer->Drop(dropFrame); // the very first and last frame are continously repeated to flush data through the device
+                dropFrame = NULL;
                 }
              }
 
@@ -554,7 +556,7 @@ void cDvbPlayer::Action(void)
                    Sleep = true;
                 }
              if (pc <= 0) {
-                DropFrame = playFrame;
+                dropFrame = playFrame;
                 playFrame = NULL;
                 p = NULL;
                 }

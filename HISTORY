@@ -6406,3 +6406,5 @@ Video Disk Recorder Revision History
 - Changed the polarization characters in cDvbSourceParam::GetOsdItem() to uppercase.
 - The full timer file name is now displayed if it ends with "TITLE" or "EPISODE"
   (pointed out by Udo Richter).
+- Fixed "attempt to drop wrong frame from ring buffer" when skipping +/- one minute
+  during replay.
