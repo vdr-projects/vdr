@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.31 2010/03/06 15:19:17 kls Exp $
+ * $Id: dvbdevice.c 2.32 2010/03/07 13:58:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -610,7 +610,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 #undef ST
 #define ST(s) if (strchr(s, type))
   switch (param++) {
-    case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "hvlr");             else return GetOsdItem();
+    case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "HVLR");             else return GetOsdItem();
     case  1: ST("  S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
     case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &srate);                                else return GetOsdItem();
     case  3: ST("ACST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
