@@ -6384,7 +6384,7 @@ Video Disk Recorder Revision History
   tracks appear in the "Audio" menu. Dolby Digital is always recorded.
   This obsoletes the DOLBYINREC patch.
 
-2010-03-06: Version 1.7.14
+2010-03-12: Version 1.7.14
 
 - Fixed handling empty strings in cSource::FromString().
 - Assigned the source character 'I' to "IPTV" (suggested by Rolf Ahrenberg).
@@ -6408,3 +6408,5 @@ Video Disk Recorder Revision History
   (pointed out by Udo Richter).
 - Fixed "attempt to drop wrong frame from ring buffer" when skipping +/- one minute
   during replay.
+- The new setup option "Folders in timer menu" controls whether the file names in
+  the timer menu are shown with their full folder path.

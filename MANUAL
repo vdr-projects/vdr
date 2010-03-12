@@ -584,6 +584,10 @@ Version 1.6
                          Turns displaying the Recordings menu as a hierarchical
                          directory structure on or off.
 
+  Folders in timer menu = yes
+                         Controls whether the full folder path is shown in the
+                         "Timers" menu, or just the basic recording name.
+
   EPG:
 
   EPG scan timeout = 5   The time (in hours) of user inactivity after which the

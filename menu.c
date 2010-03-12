@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.20 2010/03/07 14:08:15 kls Exp $
+ * $Id: menu.c 2.21 2010/03/12 16:03:07 kls Exp $
  */
 
 #include "menu.h"
@@ -1052,7 +1052,7 @@ void cMenuTimerItem::Set(void)
      strftime(buffer, sizeof(buffer), "%Y%m%d", &tm_r);
      day = buffer;
      }
-  const char *File = strrchr(timer->File(), FOLDERDELIMCHAR);
+  const char *File = Setup.FoldersInTimerMenu ? NULL : strrchr(timer->File(), FOLDERDELIMCHAR);
   if (File && strcmp(File + 1, TIMERMACRO_TITLE) && strcmp(File + 1, TIMERMACRO_EPISODE))
      File++;
   else
@@ -2567,6 +2567,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll wraps"),           &data.MenuScrollWrap));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu key closes"),        &data.MenuKeyCloses));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
   SetCurrent(Get(current));
   Display();
 }

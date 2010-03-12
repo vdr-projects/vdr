@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-07 13:36+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian\n"
@@ -834,6 +834,9 @@ msgstr "Tipka Izbornik zatvara"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Imenik za snimke"
+
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
 
 msgid "EPG"
 msgstr "EPG (elektronski programski vodiè)"

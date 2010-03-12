@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-07 13:36+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-02-28 15:00+0200\n"
 "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrý <jdobry@centrum.cz>\n"
 "Language-Team: Czech\n"
@@ -833,6 +833,9 @@ msgstr "Klávesa Menu zavírá"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Seznam nahrávek"
+
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
 
 msgid "EPG"
 msgstr "EPG"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.11 2010/03/06 15:29:17 kls Exp $
+ * $Id: config.c 2.12 2010/03/12 16:41:37 kls Exp $
  */
 
 #include "config.h"
@@ -354,6 +354,7 @@ cSetup::cSetup(void)
   UseVps = 0;
   VpsMargin = 120;
   RecordingDirs = 1;
+  FoldersInTimerMenu = 1;
   VideoDisplayFormat = 1;
   VideoFormat = 0;
   UpdateChannels = 5;
@@ -543,6 +544,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UseVps"))              UseVps             = atoi(Value);
   else if (!strcasecmp(Name, "VpsMargin"))           VpsMargin          = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
+  else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
   else if (!strcasecmp(Name, "VideoDisplayFormat"))  VideoDisplayFormat = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
@@ -637,6 +639,7 @@ bool cSetup::Save(void)
   Store("UseVps",             UseVps);
   Store("VpsMargin",          VpsMargin);
   Store("RecordingDirs",      RecordingDirs);
+  Store("FoldersInTimerMenu", FoldersInTimerMenu);
   Store("VideoDisplayFormat", VideoDisplayFormat);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);

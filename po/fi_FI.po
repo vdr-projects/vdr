@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-07 13:36+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
@@ -835,6 +835,9 @@ msgstr "Sulje valikkonäppäimellä"
 
 msgid "Setup.OSD$Recording directories"
 msgstr "Näytä tallennehakemistot"
+
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
 
 msgid "EPG"
 msgstr "Ohjelmaopas"
