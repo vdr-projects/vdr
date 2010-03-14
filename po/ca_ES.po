@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalanian\n"
@@ -836,6 +836,9 @@ msgstr "Tecla menu tanca"
 msgid "Setup.OSD$Recording directories"
 msgstr "Gravacions en subcarpetes"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "Guia de Programes"
 
@@ -988,6 +991,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "sí"
+
 msgid "Recording"
 msgstr "Opcions de Gravació"
 
@@ -1038,6 +1047,9 @@ msgstr "Mida màxima de l'arxiu (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Separar arxius"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Opcions de Reproducció"
@@ -1156,6 +1168,9 @@ msgstr "No hi ha cap dispositiu DVB lliure per gravar!"
 msgid "Pausing live video..."
 msgstr "Pausa d'emissió en directe..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Salta a:"
@@ -1174,9 +1189,6 @@ msgstr "Procés d'edició iniciat anteriorment!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&·"
-
-msgid "yes"
-msgstr "sí"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcáç2\tdefé3\tghií4\tjkl5\tmnoñó6\tpqrs7\ttuvú8\twxyz9"

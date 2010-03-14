@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2010-01-31 23:06+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
@@ -840,6 +840,9 @@ msgstr "Tasto Menu per chiudere"
 msgid "Setup.OSD$Recording directories"
 msgstr "Directory di registrazione"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "Guida programmi EPG"
 
@@ -992,6 +995,12 @@ msgstr "conferma pausa video dal vivo"
 msgid "pause live video"
 msgstr "pausa video dal vivo"
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "sì"
+
 msgid "Recording"
 msgstr "Registrazione"
 
@@ -1042,6 +1051,9 @@ msgstr "Dim. massima file video (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Dividi i file modificati"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Riproduzione"
@@ -1160,6 +1172,9 @@ msgstr "Nessuna periferica DVB disponibile per registrare!"
 msgid "Pausing live video..."
 msgstr "Pausa del canale in visione..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Vai a: "
@@ -1178,9 +1193,6 @@ msgstr "Processo di modifica già attivo!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&°"
-
-msgid "yes"
-msgstr "sì"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+°?{}/:%@&\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"

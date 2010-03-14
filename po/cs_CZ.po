@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-02-28 15:00+0200\n"
 "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrý <jdobry@centrum.cz>\n"
 "Language-Team: Czech\n"
@@ -834,6 +834,9 @@ msgstr "Klávesa Menu zavírá"
 msgid "Setup.OSD$Recording directories"
 msgstr "Seznam nahrávek"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "EPG"
 
@@ -986,6 +989,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "ano"
+
 msgid "Recording"
 msgstr "Nahrávání"
 
@@ -1036,6 +1045,9 @@ msgstr "Maximální velikost nahrávky (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Dìlit editované soubory"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Pøehrávání"
@@ -1154,6 +1166,9 @@ msgstr "®ádná DVB karta není volná pro nahrávání"
 msgid "Pausing live video..."
 msgstr "Pøeru¹uje se bì¾ící program ..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skok: "
@@ -1172,9 +1187,6 @@ msgstr "Editaèní proces je ji¾ aktivní!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aábcèdïeéìfghiíjklmnòoópqrøs¹t»uúùvwxyýz¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "ano"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcáè2\tdefïéì3\tghií4\tjkl5\tmnoòó6\tpqrsø¹7\ttuv»úù8\twxyzý¾9"

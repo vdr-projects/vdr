@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.13 2010/01/16 11:16:20 kls Exp $
+ * $Id: recording.h 2.14 2010/03/07 14:06:15 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -19,6 +19,8 @@
 #include "tools.h"
 
 #define FOLDERDELIMCHAR '~'
+#define TIMERMACRO_TITLE    "TITLE"
+#define TIMERMACRO_EPISODE  "EPISODE"
 
 extern bool VfatFileSystem;
 extern int InstanceId;

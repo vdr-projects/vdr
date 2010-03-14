@@ -1092,6 +1092,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for a patch that was used to implement handling the "parental rating descriptor"
  suggesting to add plain text error messages to log entries from cOsd::SetAreas()
  for keeping subtitles visible when pausing replay
+ for suggesting to assign the source character 'I' to "IPTV"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1670,6 +1671,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with cDevice::PlayTsVideo() and cDevice::PlayTsAudio() in
  case only part of the buffer has been accepted by the device
  for reporting missing defines for large files in the 'newplugin' script
+ for pointing out that the full timer file name should be displayed if it ends with
+ "TITLE" or "EPISODE"
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2388,6 +2391,8 @@ Halim Sahin <halim.sahin@t-online.de>
  works if the "EPG scan" is active
  for reporting a problem with adding new transponders in case there is only a single
  channel in the channel list
+ for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
+ list of sources
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
@@ -2568,3 +2573,9 @@ Matti Lehtimäki <matti.lehtimaki@gmail.com>
 
 Stephan Austermühle <au@hcsd.de>
  for suggesting to flush the file in cSafeFile::Close()
+
+Lars Hanisch <dvb@flensrocker.de>
+ for suggesting to assign the source character 'V' to "Analog Video"
+
+Alex Lasnier <alex@fepg.org>
+ for adding tuning support for ATSC devices

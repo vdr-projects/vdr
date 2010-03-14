@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sourceparams.c 1.1 2010/02/28 12:15:49 kls Exp $
+ * $Id: sourceparams.c 1.2 2010/03/06 11:13:39 kls Exp $
  */
 
 #include "sourceparams.h"
@@ -21,7 +21,7 @@ cSourceParam::cSourceParam(char Source, const char *Description)
         return;
         }
      SourceParams.Add(this);
-     if (Source != 'C' && Source != 'S' && Source != 'T')
+     if (!strchr("ACST", Source)) // no, it's not "ATSC" ;-)
         Sources.Add(new cSource(Source, Description));
      dsyslog("registered source parameters for '%c - %s'", source, Description);
      }

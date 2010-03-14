@@ -6317,7 +6317,7 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Moved the declaration of cMenuCommands to menu.h, so that plugins can use it.
 - Added a note to the MANUAL, saying that adding new transponders only works if the
-  "EPG scan" is active (suggested by Halim Sahim).
+  "EPG scan" is active (suggested by Halim Sahin).
 - Improved handling frames at the beginning and end of a recording in cDvbPlayer for
   devices with large buffers (thanks to Reinhard Nissl).
 - Implemented cDeviceHook to allow plugins more control over which device can
@@ -6383,3 +6383,30 @@ Video Disk Recorder Revision History
 - The option "Setup/DVB/Use Dolby Digital" now only controls whether Dolby Digital
   tracks appear in the "Audio" menu. Dolby Digital is always recorded.
   This obsoletes the DOLBYINREC patch.
+
+2010-03-12: Version 1.7.14
+
+- Fixed handling empty strings in cSource::FromString().
+- Assigned the source character 'I' to "IPTV" (suggested by Rolf Ahrenberg).
+- Assigned the source character 'V' to "Analog Video" (suggested by Lars Hanisch).
+  This obsoletes the ANALOGTV patch.
+- Added support for ATSC devices (thanks to Alex Lasnier).
+  This obsoletes the ATSC patch.
+- The "Source" item in the "Edit channel" menu now wraps around the list of sources
+  (suggested by Halim Sahin).
+- Fixed editing channel parameters.
+- The new setup option "Recording/Delete timeshift recording" controls whether a timeshift
+  recording is automatically deleted after viewing it.
+  This obsoletes the DELTIMESHIFTREC patch.
+  Note that the meaning of the values for this option is different from the DELTIMESHIFTREC
+  patch: 0 means timeshift recordings are not automatically deleted (the default behavior
+  as in previous versions), while 1 means to ask the user whether the recording shall be
+  deleted.
+- Added cChannel::IsSourceType() to test if a channel's source is of a given type.
+- Changed the polarization characters in cDvbSourceParam::GetOsdItem() to uppercase.
+- The full timer file name is now displayed if it ends with "TITLE" or "EPISODE"
+  (pointed out by Udo Richter).
+- Fixed "attempt to drop wrong frame from ring buffer" when skipping +/- one minute
+  during replay.
+- The new setup option "Folders in timer menu" controls whether the file names in
+  the timer menu are shown with their full folder path.

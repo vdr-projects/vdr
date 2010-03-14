@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German\n"
@@ -595,7 +595,7 @@ msgstr "Unterverzeichnis"
 msgid "Folder name already exists!"
 msgstr "Verzeichnisname existiert bereits!"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Folder name must not contain '%c'!"
 msgstr "Verzeichnisname darf kein '%c' enthalten!"
 
@@ -833,6 +833,9 @@ msgstr "Menu-Taste schließt"
 msgid "Setup.OSD$Recording directories"
 msgstr "Aufnahmeverzeichnisse"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr "Verzeichnisse im Timer-Menü"
+
 msgid "EPG"
 msgstr "EPG"
 
@@ -985,6 +988,12 @@ msgstr "Anhalten des Live-Signals bestätigen"
 msgid "pause live video"
 msgstr "Live-Signal anhalten"
 
+msgid "confirm"
+msgstr "bestätigen"
+
+msgid "yes"
+msgstr "ja"
+
 msgid "Recording"
 msgstr "Aufnahme"
 
@@ -1035,6 +1044,9 @@ msgstr "Max. Videodateigröße (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Editierte Dateien aufteilen"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr "Zeitversetzte Aufnahme löschen"
 
 msgid "Replay"
 msgstr "Wiedergabe"
@@ -1153,6 +1165,9 @@ msgstr "Keine freie DVB-Karte zum Aufnehmen!"
 msgid "Pausing live video..."
 msgstr "Live-Signal wird angehalten..."
 
+msgid "Delete timeshift recording?"
+msgstr "Zeitversetzte Aufnahme löschen?"
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Springen: "
@@ -1171,9 +1186,6 @@ msgstr "Schnitt bereits aktiv!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aäbcdefghijklmnoöpqrsßtuüvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "ja"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrsß7\ttuvü8\twxyz9"

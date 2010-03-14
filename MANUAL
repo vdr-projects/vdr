@@ -584,6 +584,10 @@ Version 1.6
                          Turns displaying the Recordings menu as a hierarchical
                          directory structure on or off.
 
+  Folders in timer menu = yes
+                         Controls whether the full folder path is shown in the
+                         "Timers" menu, or just the basic recording name.
+
   EPG:
 
   EPG scan timeout = 5   The time (in hours) of user inactivity after which the
@@ -823,6 +827,14 @@ Version 1.6
                          prefer to have each marked sequence stored in a separate
                          file (named 00001.ts, 00002.ts, ...) you can set this
                          option to 'yes'.
+
+  Delete timeshift recording = 0
+                         Controls whether a timeshift recording is deleted after
+                         viewing it.
+                         0 = no
+                         1 = confirm
+                         2 = yes
+                         The default is 0.
 
   Replay:
 

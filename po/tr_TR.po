@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish\n"
@@ -833,6 +833,9 @@ msgstr "Menü düðmesi kapatýyor"
 msgid "Setup.OSD$Recording directories"
 msgstr "Kayýt dizinleri"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "EPG"
 
@@ -985,6 +988,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "evet"
+
 msgid "Recording"
 msgstr "Kayýt"
 
@@ -1035,6 +1044,9 @@ msgstr "Maksimum Video kütük büyüklügü (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Düzenlenmiþ kütükleri ayýr"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Tekrar"
@@ -1153,6 +1165,9 @@ msgstr "Kullanýlmayan DVB kartý bulunmadý!"
 msgid "Pausing live video..."
 msgstr "Naklen yayýn duraklatýlýyor..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Atla: "
@@ -1171,9 +1186,6 @@ msgstr "Kesim henüz aktif!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " abcçdefgðhýijklmnoöprsþtuüvyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "evet"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcç2\tdef3\tgðhýi4\tjkl5\tmnoö6\tprsþ7\ttuüv8\tyz9"

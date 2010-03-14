@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian\n"
@@ -835,6 +835,9 @@ msgstr "Tipka Izbornik zatvara"
 msgid "Setup.OSD$Recording directories"
 msgstr "Imenik za snimke"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "EPG (elektronski programski vodiè)"
 
@@ -987,6 +990,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "da"
+
 msgid "Recording"
 msgstr "Snimanje"
 
@@ -1037,6 +1046,9 @@ msgstr "Maksimalna velièina datoteke (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Podijeli ureðene datoteke"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Reprodukcija"
@@ -1155,6 +1167,9 @@ msgstr "Nema slobodnog DVB ureðaja za snimanje!"
 msgid "Pausing live video..."
 msgstr "Zaustavljanje izravnog prijenosa..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skoèi: "
@@ -1173,9 +1188,6 @@ msgstr "Ureðivanje je veæ u tijeku!!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr "abcèædðefghijklmnopqrs¹tuvwxyz¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "da"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr "0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"

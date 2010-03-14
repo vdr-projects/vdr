@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish\n"
@@ -833,6 +833,9 @@ msgstr "Menu taste lukker"
 msgid "Setup.OSD$Recording directories"
 msgstr "Optagelser i foldere"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "EPG"
 
@@ -985,6 +988,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "ja"
+
 msgid "Recording"
 msgstr "Optagelse"
 
@@ -1035,6 +1044,9 @@ msgstr "Max. video filstørrelse (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Opdel redigerede filer"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Afspilning"
@@ -1153,6 +1165,9 @@ msgstr "Ingen fri DVB enhed til optagelse!"
 msgid "Pausing live video..."
 msgstr "Pausere live udsendelse..."
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Hop: "
@@ -1171,9 +1186,6 @@ msgstr "Redigeringsproces er allerede aktiv!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " abcdefghijklmnopqrstuvwxyzæøå0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-
-msgid "yes"
-msgstr "ja"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcæå2\tdef3\tghi4\tjkl5\tmnoø6\tpqrs7\ttuv8\twxyz9"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.8 2010/02/21 14:05:49 kls Exp $
+ * $Id: channels.h 2.10 2010/03/07 13:47:13 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -172,9 +172,11 @@ public:
   const char *Parameters(void) const { return parameters; }
   const cLinkChannels* LinkChannels(void) const { return linkChannels; }
   const cChannel *RefChannel(void) const { return refChannel; }
+  bool IsAtsc(void) const { return cSource::IsAtsc(source); }
   bool IsCable(void) const { return cSource::IsCable(source); }
   bool IsSat(void) const { return cSource::IsSat(source); }
   bool IsTerr(void) const { return cSource::IsTerr(source); }
+  bool IsSourceType(char Source) const { return cSource::IsType(source, Source); }
   tChannelID GetChannelID(void) const { return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid); }
   bool HasTimer(void) const;
   int Modification(int Mask = CHANNELMOD_ALL);

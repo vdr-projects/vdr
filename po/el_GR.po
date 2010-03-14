@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-02-28 13:19+0100\n"
+"POT-Creation-Date: 2010-03-12 16:49+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek\n"
@@ -833,6 +833,9 @@ msgstr ""
 msgid "Setup.OSD$Recording directories"
 msgstr "Φάκελοι εγγραφών"
 
+msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
 msgid "EPG"
 msgstr "Ηλεκτρονικός οδηγός προγράμματος"
 
@@ -985,6 +988,12 @@ msgstr ""
 msgid "pause live video"
 msgstr ""
 
+msgid "confirm"
+msgstr ""
+
+msgid "yes"
+msgstr "ναί"
+
 msgid "Recording"
 msgstr "Εγγραφή"
 
@@ -1035,6 +1044,9 @@ msgstr "Μέγιστο μέγεθος αρχείου (MB)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Διαμέλισμός επεξεργασμένων αρχείων"
+
+msgid "Setup.Recording$Delete timeshift recording"
+msgstr ""
 
 msgid "Replay"
 msgstr "Αναπαραγωγή"
@@ -1153,6 +1165,9 @@ msgstr "Ανεπάρκεια DVB Κάρτας γιά εγγραφή!"
 msgid "Pausing live video..."
 msgstr "Πάγωμα ζωντανού σήματος"
 
+msgid "Delete timeshift recording?"
+msgstr ""
+
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Τοποθέτηση: "
@@ -1171,9 +1186,6 @@ msgstr "Επεξεργασία βρίσκεται σέ εξέλιξη!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " αάβγδεέζηήθιίκλμνξοόπρσςτυύφχψωώ0123456789-.,#~\\^$[]|()*+?{}/:%@&abcdefghijklmnopqrstuvwxyz"
-
-msgid "yes"
-msgstr "ναί"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr ""
