@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.8 2010/03/06 12:00:30 kls Exp $
+ * $Id: pat.c 2.9 2010/03/27 15:17:46 kls Exp $
  */
 
 #include "pat.h"
@@ -400,6 +400,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                           switch (d->getDescriptorTag()) {
                             case SI::AC3DescriptorTag:
+                            case SI::EnhancedAC3DescriptorTag:
                                  dpid = esPid;
                                  ProcessCaDescriptors = true;
                                  break;
