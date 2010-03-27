@@ -6410,3 +6410,7 @@ Video Disk Recorder Revision History
   during replay.
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
+
+2010-03-27: Version 1.7.15
+
+- Added Macedonian language texts (thanks to Dimitar Petrovski).
