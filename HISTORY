@@ -6419,3 +6419,4 @@ Video Disk Recorder Revision History
 - Added handling of EnhancedAC3DescriptorTag (thanks to Eric Valette).
 - The default SVDRP port is now 6419 (registered with ICANN/IANA by Christian Tramnitz).
   Use '-p 2001' to switch back to the old port if necessary.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
