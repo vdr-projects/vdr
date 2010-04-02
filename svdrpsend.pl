@@ -7,13 +7,13 @@ $Usage = qq{
 Usage: $0 options command...
 
 Options: -d hostname        destination hostname (default: localhost)
-         -p port            SVDRP port number (default: 2001)
+         -p port            SVDRP port number (default: 6419)
 };
 
 die $Usage if (!$ARGV[0] || !getopts("d:p:"));
 
 $Dest = $opt_d  || "localhost";
-$Port = $opt_p  || 2001;
+$Port = $opt_p  || 6419;
 $Cmd  = "@ARGV" || Error("missing command");
 
 $Timeout = 10; # max. seconds to wait for response

@@ -1358,6 +1358,7 @@ Christian Tramnitz <maillist@tramnitz.com>
  for terrestrial transponders
  for his support in debugging a problem in setting the source type for newly
  detected terrestrial transponders
+ for registering the default SVDRP port (6419) with ICANN/IANA
 
 Jens Rosenboom <me@jayr.de>
  for fixing the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case

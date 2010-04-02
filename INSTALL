@@ -66,7 +66,7 @@ messages (tail -f /var/log/messages) to see if there are any problems.
 
 The program can be controlled via a network connection to its SVDRP
 port ("Simple Video Disk Recorder Protocol"). By default, it listens
-on port 2001 (use the --port=PORT option to change this). For details
+on port 6419 (use the --port=PORT option to change this). For details
 about the SVDRP syntax see the source file 'svdrp.c'.
 
 WARNING: DUE TO THE OPEN SVDRP PORT THIS PROGRAM MAY CONSTITUTE A

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.17 2010/02/21 14:08:09 kls Exp $
+ * $Id: vdr.c 2.18 2010/04/02 12:22:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
-#define DEFAULTSVDRPPORT 2001
+#define DEFAULTSVDRPPORT 6419
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTCONFDIR CONFDIR
 #define DEFAULTPLUGINDIR PLUGINDIR
