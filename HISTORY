@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-04-02: Version 1.7.15
+2010-04-04: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6420,3 +6420,5 @@ Video Disk Recorder Revision History
 - The default SVDRP port is now 6419 (registered with ICANN/IANA by Christian Tramnitz).
   Use '-p 2001' to switch back to the old port if necessary.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- cDvbDevice::ProvidesTransponder() now checks the modulation capabilities of the
+  device (as far as the driver allows this).

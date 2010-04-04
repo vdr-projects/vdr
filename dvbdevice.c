@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.32 2010/03/07 13:58:24 kls Exp $
+ * $Id: dvbdevice.c 2.33 2010/04/04 11:15:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -889,7 +889,16 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
   if (!cSource::IsSat(Channel->Source()))
      return DeviceHooksProvidesTransponder(Channel); // source is sufficient for non sat
   cDvbTransponderParameters dtp(Channel->Parameters());
-  if (frontendType == SYS_DVBS && dtp.System() == SYS_DVBS2)
+  if (dtp.System() == SYS_DVBS2 && frontendType == SYS_DVBS ||
+     dtp.Modulation() == QPSK && !(frontendInfo.caps & FE_CAN_QPSK) ||
+     dtp.Modulation() == QAM_16 && !(frontendInfo.caps & FE_CAN_QAM_16) ||
+     dtp.Modulation() == QAM_32 && !(frontendInfo.caps & FE_CAN_QAM_32) ||
+     dtp.Modulation() == QAM_64 && !(frontendInfo.caps & FE_CAN_QAM_64) ||
+     dtp.Modulation() == QAM_128 && !(frontendInfo.caps & FE_CAN_QAM_128) ||
+     dtp.Modulation() == QAM_256 && !(frontendInfo.caps & FE_CAN_QAM_256) ||
+     dtp.Modulation() == QAM_AUTO && !(frontendInfo.caps & FE_CAN_QAM_AUTO) ||
+     dtp.Modulation() == VSB_8 && !(frontendInfo.caps & FE_CAN_8VSB) ||
+     dtp.Modulation() == VSB_16 && !(frontendInfo.caps & FE_CAN_16VSB))
      return false; // requires modulation system which frontend doesn't provide
   if (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
      return DeviceHooksProvidesTransponder(Channel);
