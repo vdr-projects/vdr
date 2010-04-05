@@ -1,10 +1,10 @@
 /*
- * remux.h: Tools for detecting frames and handling PAT/PMT
+ * remux.c: Tools for detecting frames and handling PAT/PMT
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.42 2010/02/28 14:42:07 kls Exp $
+ * $Id: remux.c 2.43 2010/04/05 09:32:57 kls Exp $
  */
 
 #include "remux.h"
@@ -817,7 +817,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                  if (synced && Processed)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
-                    return 0; // need more data, in case the frame type is not stored in the first TS packet
+                    return Processed; // need more data, in case the frame type is not stored in the first TS packet
                  if (!frameDuration) {
                     // frame duration unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames

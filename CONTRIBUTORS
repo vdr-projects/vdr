@@ -2525,6 +2525,7 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
  for updating sources.conf
+ for reporting a problem where the frame rate was not detected correctly
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()

@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-04-04: Version 1.7.15
+2010-04-05: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6422,3 +6422,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - cDvbDevice::ProvidesTransponder() now checks the modulation capabilities of the
   device (as far as the driver allows this).
+- Fixed cFrameDetector::Analyze() in case part of the data has been processed and
+  there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
