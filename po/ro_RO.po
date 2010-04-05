@@ -478,6 +478,9 @@ msgstr "Configuraþie"
 msgid "Key$Commands"
 msgstr "Comenzi"
 
+msgid "Key$User0"
+msgstr "Utilizator0"
+
 msgid "Key$User1"
 msgstr "Utilizator1"
 

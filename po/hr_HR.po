@@ -477,6 +477,9 @@ msgstr "Postavke"
 msgid "Key$Commands"
 msgstr "Naredbe"
 
+msgid "Key$User0"
+msgstr "Korisnik0"
+
 msgid "Key$User1"
 msgstr "Korisnik1"
 

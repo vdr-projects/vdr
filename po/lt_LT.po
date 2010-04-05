@@ -475,6 +475,9 @@ msgstr "Nustatymai"
 msgid "Key$Commands"
 msgstr "Komandos"
 
+msgid "Key$User0"
+msgstr "Vartotojas0"
+
 msgid "Key$User1"
 msgstr "Vartotojas1"
 

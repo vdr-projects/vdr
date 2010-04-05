@@ -478,6 +478,9 @@ msgstr "Configuració"
 msgid "Key$Commands"
 msgstr "Ordres"
 
+msgid "Key$User0"
+msgstr "Usuari 0"
+
 msgid "Key$User1"
 msgstr "Usuari 1"
 

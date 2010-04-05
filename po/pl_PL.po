@@ -476,6 +476,9 @@ msgstr "Ustawienia"
 msgid "Key$Commands"
 msgstr "Polecenia"
 
+msgid "Key$User0"
+msgstr "U¿ytkownik 0"
+
 msgid "Key$User1"
 msgstr "U¿ytkownik 1"
 

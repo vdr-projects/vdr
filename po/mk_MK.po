@@ -476,6 +476,9 @@ msgstr "Уредување"
 msgid "Key$Commands"
 msgstr "Наредби"
 
+msgid "Key$User0"
+msgstr "Корисник0"
+
 msgid "Key$User1"
 msgstr "Корисник1"
 

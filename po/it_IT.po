@@ -482,6 +482,9 @@ msgstr "Opzioni"
 msgid "Key$Commands"
 msgstr "Comandi"
 
+msgid "Key$User0"
+msgstr "Utente0"
+
 msgid "Key$User1"
 msgstr "Utente1"
 

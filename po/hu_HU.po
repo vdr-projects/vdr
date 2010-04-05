@@ -478,6 +478,9 @@ msgstr "Beállítások"
 msgid "Key$Commands"
 msgstr "Parancsok"
 
+msgid "Key$User0"
+msgstr "Felhasználó0"
+
 msgid "Key$User1"
 msgstr "Felhasználó1"
 

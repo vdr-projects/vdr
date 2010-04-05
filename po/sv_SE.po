@@ -478,6 +478,9 @@ msgstr "Inställningar"
 msgid "Key$Commands"
 msgstr "Kommandon"
 
+msgid "Key$User0"
+msgstr "Användare0"
+
 msgid "Key$User1"
 msgstr "Användare1"
 

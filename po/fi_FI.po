@@ -478,6 +478,9 @@ msgstr "Asetukset"
 msgid "Key$Commands"
 msgstr "Komennot"
 
+msgid "Key$User0"
+msgstr "Lisänäppäin 0"
+
 msgid "Key$User1"
 msgstr "Lisänäppäin 1"
 

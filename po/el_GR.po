@@ -475,6 +475,9 @@ msgstr "Ρυθμισεις"
 msgid "Key$Commands"
 msgstr "Εντολές"
 
+msgid "Key$User0"
+msgstr ""
+
 msgid "Key$User1"
 msgstr ""
 

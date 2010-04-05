@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.18 2010/04/02 12:22:11 kls Exp $
+ * $Id: vdr.c 2.19 2010/04/05 10:06:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -992,7 +992,7 @@ int main(int argc, char *argv[])
           case kRecordings: DirectMainFunction(osRecordings); break;
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
-          case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
+          case kUser0 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
                const char *PluginName = cRemote::GetPlugin();
                if (PluginName) {

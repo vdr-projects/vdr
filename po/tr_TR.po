@@ -475,6 +475,9 @@ msgstr "Ayarlar"
 msgid "Key$Commands"
 msgstr "Komutlar"
 
+msgid "Key$User0"
+msgstr "Kullanýcý0"
+
 msgid "Key$User1"
 msgstr "Kullanýcý1"
 

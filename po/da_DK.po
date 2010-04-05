@@ -475,6 +475,9 @@ msgstr "Indstillinger"
 msgid "Key$Commands"
 msgstr "Kommandoer"
 
+msgid "Key$User0"
+msgstr "Bruger0"
+
 msgid "Key$User1"
 msgstr "Bruger1"
 

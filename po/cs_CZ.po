@@ -476,6 +476,9 @@ msgstr "Nastavení"
 msgid "Key$Commands"
 msgstr "Pøíkazy"
 
+msgid "Key$User0"
+msgstr "U¾ivatel0"
+
 msgid "Key$User1"
 msgstr "U¾ivatel1"
 
