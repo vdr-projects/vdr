@@ -6424,3 +6424,4 @@ Video Disk Recorder Revision History
   device (as far as the driver allows this).
 - Fixed cFrameDetector::Analyze() in case part of the data has been processed and
   there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
+- Added a note about not deleting cDeviceHook objects to device.h.
