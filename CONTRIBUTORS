@@ -2588,3 +2588,6 @@ Dimitar Petrovski <dimeptr@gmail.com>
 
 Eric Valette <eric.valette@free.fr>
  for adding handling of EnhancedAC3DescriptorTag
+
+Paul Menzel <paulepanter@users.sourceforge.net>
+ for making include paths be added instead of overwriting INCLUDES in the Makefile

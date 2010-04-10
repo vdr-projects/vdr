@@ -6430,3 +6430,5 @@ Video Disk Recorder Revision History
   there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
 - Added a note about not deleting cDeviceHook objects to device.h.
 - Added user defined key kUser0 (suggested by Ulf Kiener).
+- Include paths are now added instead of overwriting INCLUDES in the Makefile (thanks
+  to Paul Menzel).
