@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.34 2010/04/05 20:13:05 kls Exp $
+ * $Id: dvbdevice.c 2.35 2010/04/10 10:36:27 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -20,6 +20,8 @@
 #include "dvbci.h"
 #include "menuitems.h"
 #include "sourceparams.h"
+
+#define FE_CAN_PSK_8  0x8000000 // TODO: remove this once it is defined in the driver
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -896,7 +898,8 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      dtp.Modulation() == QAM_256 && !(frontendInfo.caps & FE_CAN_QAM_256) ||
      dtp.Modulation() == QAM_AUTO && !(frontendInfo.caps & FE_CAN_QAM_AUTO) ||
      dtp.Modulation() == VSB_8 && !(frontendInfo.caps & FE_CAN_8VSB) ||
-     dtp.Modulation() == VSB_16 && !(frontendInfo.caps & FE_CAN_16VSB))
+     dtp.Modulation() == VSB_16 && !(frontendInfo.caps & FE_CAN_16VSB) ||
+     dtp.Modulation() == PSK_8 && !(frontendInfo.caps & FE_CAN_PSK_8))
      return false; // requires modulation system which frontend doesn't provide
   if (!cSource::IsSat(Channel->Source()) ||
      !Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
