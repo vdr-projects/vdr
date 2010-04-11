@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.35 2010/04/10 10:36:27 kls Exp $
+ * $Id: dvbdevice.c 2.36 2010/04/11 10:47:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -149,6 +149,14 @@ int MapToUser(int Value, const tDvbParameterMap *Map, const char **String)
      return Map[n].userValue;
      }
   return -1;
+}
+
+const char *MapToUserString(int Value, const tDvbParameterMap *Map)
+{
+  int n = DriverIndex(Value, Map);
+  if (n >= 0)
+     return Map[n].userString;
+  return "???";
 }
 
 int MapToDriver(int Value, const tDvbParameterMap *Map)
@@ -694,7 +702,22 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         numProvidedSystems++;
         if (frontendType == SYS_DVBS2)
            numProvidedSystems++;
-        isyslog("frontend %d/%d provides %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], frontendInfo.name);
+        char Modulations[64];
+        char *p = Modulations;
+        if (frontendInfo.caps & FE_CAN_QPSK)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QPSK, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_QAM_16)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_16, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_QAM_32)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_32, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_QAM_64)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_64, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_QAM_128) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_128, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_QAM_256) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_256, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_8VSB)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_8, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_16VSB)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_16, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_PSK_8)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(PSK_8, ModulationValues)); }
+        if (p != Modulations)
+           p = Modulations + 1; // skips first ','
+        else
+           p = (char *)"unknown modulations";
+        isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], p, frontendInfo.name);
         dvbTuner = new cDvbTuner(CardIndex() + 1, fd_frontend, adapter, frontend, frontendType);
         }
      }

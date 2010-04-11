@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.13 2010/02/21 14:06:08 kls Exp $
+ * $Id: dvbdevice.h 2.14 2010/04/11 10:29:37 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -37,6 +37,7 @@ struct tDvbParameterMap {
   const char *userString;
   };
 
+const char *MapToUserString(int Value, const tDvbParameterMap *Map);
 int MapToUser(int Value, const tDvbParameterMap *Map, const char **String = NULL);
 int MapToDriver(int Value, const tDvbParameterMap *Map);
 int UserIndex(int Value, const tDvbParameterMap *Map);

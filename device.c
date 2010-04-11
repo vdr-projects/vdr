@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.35 2010/02/07 11:54:42 kls Exp $
+ * $Id: device.c 2.36 2010/04/11 10:45:15 kls Exp $
  */
 
 #include "device.h"
@@ -215,7 +215,7 @@ cDevice *cDevice::GetDevice(int Index)
 
 static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
 {
-  int MaxNumProvidedSystems = 1 << AvailableBits;
+  int MaxNumProvidedSystems = (1 << AvailableBits) - 1;
   int NumProvidedSystems = Device->NumProvidedSystems();
   if (NumProvidedSystems > MaxNumProvidedSystems) {
      esyslog("ERROR: device %d supports %d modulation systems but cDevice::GetDevice() currently only supports %d delivery systems which should be fixed", Device->CardIndex() + 1, NumProvidedSystems, MaxNumProvidedSystems);
@@ -281,7 +281,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
-             imp <<= 2; imp |= GetClippedNumProvidedSystems(2, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
+             imp <<= 4; imp |= GetClippedNumProvidedSystems(4, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
              imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
