@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.43 2010/04/05 09:32:57 kls Exp $
+ * $Id: remux.c 2.44 2010/04/18 13:40:20 kls Exp $
  */
 
 #include "remux.h"
@@ -219,11 +219,17 @@ int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language
 {
   int i = 0;
   Target[i++] = SI::ISO639LanguageDescriptorTag;
-  Target[i++] = 0x04; // length
-  Target[i++] = *Language++;
-  Target[i++] = *Language++;
-  Target[i++] = *Language++;
-  Target[i++] = 0x01; // audio type
+  int Length = i++;
+  Target[Length] = 0x00; // length
+  for (const char *End = Language + strlen(Language); Language < End; ) {
+      Target[i++] = *Language++;
+      Target[i++] = *Language++;
+      Target[i++] = *Language++;
+      Target[i++] = 0x01;     // audio type
+      Target[Length] += 0x04; // length
+      if (*Language == '+')
+         Language++;
+      }
   IncEsInfoLength(i);
   return i;
 }
@@ -318,8 +324,6 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
          i += MakeStream(buf + i, 0x04, Channel->Apid(n));
          const char *Alang = Channel->Alang(n);
          i += MakeLanguageDescriptor(buf + i, Alang);
-         if (Alang[3] == '+')
-            i += MakeLanguageDescriptor(buf + i, Alang + 3);
          }
      for (int n = 0; Channel->Dpid(n); n++) {
          i += MakeStream(buf + i, 0x06, Channel->Dpid(n));

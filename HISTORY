@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-04-11: Version 1.7.15
+2010-04-18: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6435,3 +6435,5 @@ Video Disk Recorder Revision History
 - The various modulation types are now taken into account when selecting a device for
   a recording or live viewing, so that devices that provide more capabilities are
   spared.
+- Fixed generating PMT language descriptors for multi language PIDs (thanks to Rolf
+  Ahrenberg).

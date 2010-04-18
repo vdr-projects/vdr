@@ -1093,6 +1093,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  suggesting to add plain text error messages to log entries from cOsd::SetAreas()
  for keeping subtitles visible when pausing replay
  for suggesting to assign the source character 'I' to "IPTV"
+ for fixing generating PMT language descriptors for multi language PIDs
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
