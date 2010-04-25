@@ -2528,6 +2528,7 @@ Derek Kelly (user.vdr@gmail.com)
  units
  for updating sources.conf
  for reporting a problem where the frame rate was not detected correctly
+ for testing the implementation of FE_CAN_TURBO_FEC
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()

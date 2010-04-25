@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.36 2010/04/11 10:47:00 kls Exp $
+ * $Id: dvbdevice.c 2.37 2010/04/25 12:36:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -21,7 +21,7 @@
 #include "menuitems.h"
 #include "sourceparams.h"
 
-#define FE_CAN_PSK_8  0x8000000 // TODO: remove this once it is defined in the driver
+#define FE_CAN_TURBO_FEC  0x8000000 // TODO: remove this once it is defined in the driver
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -712,7 +712,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         if (frontendInfo.caps & FE_CAN_QAM_256) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_256, ModulationValues)); }
         if (frontendInfo.caps & FE_CAN_8VSB)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_8, ModulationValues)); }
         if (frontendInfo.caps & FE_CAN_16VSB)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_16, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_PSK_8)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(PSK_8, ModulationValues)); }
+        if (frontendInfo.caps & FE_CAN_TURBO_FEC){numProvidedSystems++; p += sprintf(p, ",%s", "TURBO FEC"); }
         if (p != Modulations)
            p = Modulations + 1; // skips first ','
         else
@@ -922,7 +922,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      dtp.Modulation() == QAM_AUTO && !(frontendInfo.caps & FE_CAN_QAM_AUTO) ||
      dtp.Modulation() == VSB_8 && !(frontendInfo.caps & FE_CAN_8VSB) ||
      dtp.Modulation() == VSB_16 && !(frontendInfo.caps & FE_CAN_16VSB) ||
-     dtp.Modulation() == PSK_8 && !(frontendInfo.caps & FE_CAN_PSK_8))
+     dtp.Modulation() == PSK_8 && dtp.System() == SYS_DVBS && !(frontendInfo.caps & FE_CAN_TURBO_FEC)); // "turbo fec" is a non standard FEC used by North American broadcasters - this is a best guess to determine this conditin
      return false; // requires modulation system which frontend doesn't provide
   if (!cSource::IsSat(Channel->Source()) ||
      !Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
