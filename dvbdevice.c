@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.37 2010/04/25 12:36:24 kls Exp $
+ * $Id: dvbdevice.c 2.38 2010/05/01 09:47:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -712,7 +712,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         if (frontendInfo.caps & FE_CAN_QAM_256) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_256, ModulationValues)); }
         if (frontendInfo.caps & FE_CAN_8VSB)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_8, ModulationValues)); }
         if (frontendInfo.caps & FE_CAN_16VSB)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_16, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_TURBO_FEC){numProvidedSystems++; p += sprintf(p, ",%s", "TURBO FEC"); }
+        if (frontendInfo.caps & FE_CAN_TURBO_FEC){numProvidedSystems++; p += sprintf(p, ",%s", "TURBO_FEC"); }
         if (p != Modulations)
            p = Modulations + 1; // skips first ','
         else
@@ -913,16 +913,16 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return false; // doesn't provide source
   cDvbTransponderParameters dtp(Channel->Parameters());
   if (dtp.System() == SYS_DVBS2 && frontendType == SYS_DVBS ||
-     dtp.Modulation() == QPSK && !(frontendInfo.caps & FE_CAN_QPSK) ||
-     dtp.Modulation() == QAM_16 && !(frontendInfo.caps & FE_CAN_QAM_16) ||
-     dtp.Modulation() == QAM_32 && !(frontendInfo.caps & FE_CAN_QAM_32) ||
-     dtp.Modulation() == QAM_64 && !(frontendInfo.caps & FE_CAN_QAM_64) ||
-     dtp.Modulation() == QAM_128 && !(frontendInfo.caps & FE_CAN_QAM_128) ||
-     dtp.Modulation() == QAM_256 && !(frontendInfo.caps & FE_CAN_QAM_256) ||
+     dtp.Modulation() == QPSK     && !(frontendInfo.caps & FE_CAN_QPSK) ||
+     dtp.Modulation() == QAM_16   && !(frontendInfo.caps & FE_CAN_QAM_16) ||
+     dtp.Modulation() == QAM_32   && !(frontendInfo.caps & FE_CAN_QAM_32) ||
+     dtp.Modulation() == QAM_64   && !(frontendInfo.caps & FE_CAN_QAM_64) ||
+     dtp.Modulation() == QAM_128  && !(frontendInfo.caps & FE_CAN_QAM_128) ||
+     dtp.Modulation() == QAM_256  && !(frontendInfo.caps & FE_CAN_QAM_256) ||
      dtp.Modulation() == QAM_AUTO && !(frontendInfo.caps & FE_CAN_QAM_AUTO) ||
-     dtp.Modulation() == VSB_8 && !(frontendInfo.caps & FE_CAN_8VSB) ||
-     dtp.Modulation() == VSB_16 && !(frontendInfo.caps & FE_CAN_16VSB) ||
-     dtp.Modulation() == PSK_8 && dtp.System() == SYS_DVBS && !(frontendInfo.caps & FE_CAN_TURBO_FEC)); // "turbo fec" is a non standard FEC used by North American broadcasters - this is a best guess to determine this conditin
+     dtp.Modulation() == VSB_8    && !(frontendInfo.caps & FE_CAN_8VSB) ||
+     dtp.Modulation() == VSB_16   && !(frontendInfo.caps & FE_CAN_16VSB) ||
+     dtp.Modulation() == PSK_8    && !(frontendInfo.caps & FE_CAN_TURBO_FEC) && dtp.System() == SYS_DVBS) // "turbo fec" is a non standard FEC used by North American broadcasters - this is a best guess to determine this condition
      return false; // requires modulation system which frontend doesn't provide
   if (!cSource::IsSat(Channel->Source()) ||
      !Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
