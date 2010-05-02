@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.9 2010/01/22 15:58:39 kls Exp $
+ * $Id: osd.c 2.10 2010/05/02 13:56:53 kls Exp $
  */
 
 #include "osd.h"
@@ -360,10 +360,10 @@ bool cBitmap::SetXpm(const char *const Xpm[], bool IgnoreNone)
          }
       s = skipspace(s + 1);
       if (strcasecmp(s, "none") == 0) {
-         s = "#00000000";
          NoneColorIndex = i;
-         if (IgnoreNone)
-            continue;
+         if (!IgnoreNone)
+            SetColor(i, clrTransparent);
+         continue;
          }
       if (*s != '#') {
          esyslog("ERROR: unknown color code in XPM: '%c'", *s);

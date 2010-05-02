@@ -1954,6 +1954,7 @@ Thomas Günther <tom1@toms-cafe.de>
  strings
  for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
  which results in using tr(FileNameChars)
+ for fixing handling "none" color entries in XPM files
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
