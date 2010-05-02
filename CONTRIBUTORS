@@ -2397,6 +2397,7 @@ Halim Sahin <halim.sahin@t-online.de>
  channel in the channel list
  for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
  list of sources
+ for reporting a crash when creating a new channel if the channel list is empty
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts

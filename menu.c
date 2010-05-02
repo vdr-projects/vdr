@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.21 2010/03/12 16:03:07 kls Exp $
+ * $Id: menu.c 2.22 2010/05/02 14:28:26 kls Exp $
  */
 
 #include "menu.h"
@@ -212,14 +212,15 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
   sourceParam = NULL;
   if (channel) {
      data = *channel;
+     strn0cpy(name, data.name, sizeof(name));
      if (New) {
         channel = NULL;
         data.nid = 0;
         data.tid = 0;
         data.rid = 0;
         }
-     Setup();
      }
+  Setup();
 }
 
 void cMenuEditChannel::Setup(void)
@@ -229,7 +230,6 @@ void cMenuEditChannel::Setup(void)
   Clear();
 
   // Parameters for all types of sources:
-  strn0cpy(name, data.name, sizeof(name));
   Add(new cMenuEditStrItem( tr("Name"),          name, sizeof(name)));
   Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
