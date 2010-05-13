@@ -1,381 +1,382 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006, 2008
-# Jiøí Dobrı <jdobry@centrum.cz>, 2008
+# VladimÃ­r BÃ¡rta <vladimir.barta@k2atmitec.cz>, 2006, 2008
+# JiÅ™Ã­ DobrÃ½ <jdobry@centrum.cz>, 2008
+# Radek Å Å¥astnÃ½ <dedkus@gmail.com>, 2010
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2010-03-12 16:49+0100\n"
-"PO-Revision-Date: 2008-02-28 15:00+0200\n"
-"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>, Jiøí Dobrı <jdobry@centrum.cz>\n"
+"PO-Revision-Date: 2010-05-06 11:00+0200\n"
+"Last-Translator: Radek Å Å¥astnÃ½ <dedkus@gmail.com>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** Neplatnı kanál ***"
+msgstr "*** NeplatnÃ½ kanÃ¡l ***"
 
 msgid "Channel not available!"
-msgstr "Kanál není dostupnı!"
+msgstr "KanÃ¡l nenÃ­ dostupnÃ½!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Nelze zaèít s pøenosem"
+msgstr "Nelze zaÄÃ­t s pÅ™enosem"
 
 msgid "off"
 msgstr "vyp."
 
 msgid "on"
-msgstr ""
+msgstr "zap. "
 
 msgid "auto"
 msgstr "auto"
 
 msgid "none"
-msgstr "¾ádnı"
+msgstr "Å¾Ã¡dnÃ½"
 
 msgid "Polarization"
 msgstr "Polarizace"
 
 msgid "System"
-msgstr ""
+msgstr "SystÃ©m"
 
 msgid "Srate"
-msgstr "Srate"
+msgstr ""
 
 msgid "Inversion"
-msgstr "Inversion"
+msgstr ""
 
 msgid "CoderateH"
-msgstr "CoderateH"
+msgstr ""
 
 msgid "CoderateL"
-msgstr "CoderateL"
+msgstr ""
 
 msgid "Modulation"
 msgstr "Modulace"
 
 msgid "Bandwidth"
-msgstr "©íøka pásma"
+msgstr "Å Ã­Å™ka pÃ¡sma"
 
 msgid "Transmission"
-msgstr "Pøenos"
+msgstr "PÅ™enos"
 
 msgid "Guard"
-msgstr "Guard"
+msgstr "OchrannÃ½ interval"
 
 msgid "Hierarchy"
-msgstr "Hierarchy"
+msgstr "HierarchickÃ½ mÃ³d"
 
 msgid "Rolloff"
 msgstr ""
 
 msgid "Starting EPG scan"
-msgstr "Zaèíná prohledávání EPG"
+msgstr "ZaÄÃ­nÃ¡ prohledÃ¡vÃ¡nÃ­ EPG"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "drama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "thriller"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "dobrodruÅ™nÃ½/western/vÃ¡leÄnÃ½"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasy/Horror"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "komedie"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "mÃ½dlovÃ¡ opera/melodrama/folklornÃ­"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "romantickÃ½"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "skuteÄnÃ½/klasickÃ½/nÃ¡boÅ¾enstvÃ­/historickÃ½ film/drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "film pro dospÄ›lÃ©/drama"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "aktuÃ¡lnÃ­ udÃ¡losti"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "poÄasÃ­"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "zprÃ¡vy"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "dokumentÃ¡rnÃ­"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "diskuze/rozhovor/debata"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "zÃ¡bavnÃ© hry"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "soutÄ›Å¾nÃ­/vÄ›domostnÃ­/soutÄ›Å¾nÃ­ hra"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "varietÃ©"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "diskuznÃ­ poÅ™ad"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "sport"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "zvlÃ¡Å¡tnÃ­ udÃ¡lost"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "sportovnÃ­ poÅ™ad"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "fotbal"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "tÃ½movÃ© sporty"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "atletika"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "motorismus"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "vodnÃ­ sporty"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "zimnÃ­ sporty"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "jezdectvÃ­"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "bojovÃ© sporty"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "pro dÄ›ti a mlÃ¡deÅ¾"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "pro pÅ™edÅ¡klonÃ­ dÄ›ti"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "zÃ¡bavnÃ© pro dÄ›ti od 6 do 14 let"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "zÃ¡bavnÃ© pro dÄ›ti od 10 do 16 let"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "informaÄnÃ­/zpravdajskÃ½/Å¡kolnÃ­ program"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "kreslenÃ© / loutky"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "hudba/balet/tanec"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "rock/pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "vÃ¡Å¾nÃ¡/klasickÃ¡ hudba"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "folk/country"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "muzikÃ¡l/opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "balet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "umÄ›nÃ­/kultura"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "mÃºzickÃ© umÄ›nÃ­"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "vÃ½tvarnÃ© umÄ›nÃ­"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "nÃ¡boÅ¾enstvÃ­"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "populÃ¡rnÃ­ kultura/tradiÄnÃ­ umÄ›nÃ­"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "literatura"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "film/kino"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "experimentÃ¡lnÃ­ film/video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "vysÃ­lÃ¡nÃ­/tisk"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "novÃ¡ mÃ©dia"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "kulturnÃ­ magazÃ­n"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "mÃ³da"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "sociÃ¡lnÃ­/politickÃ©/ekonomickÃ©"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Äasopis/report/dokumentÃ¡rnÃ­"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "ekonomika/sociÃ¡lnÃ­ poradenstvÃ­"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "vÃ½znamnÃ© osobnosti"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "vzdÄ›lÃ¡vÃ¡nÃ­/vÄ›da/fakta"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "pÅ™Ã­roda/zvÃ­Å™ata/Å¾ivotnÃ­ prostÅ™edÃ­"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "technologie/pÅ™Ã­rodnÃ­ vÄ›dy"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "medicÃ­na/filozofie/psychologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "zahraniÄÃ­/expedice"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "sociÃ¡lnÃ­ / duchovnÃ­ vÄ›dy"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "dalÅ¡Ã­ vzdÄ›lÃ¡vÃ¡nÃ­"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "jazyky"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "volnÃ½ Äas/konÃ­Äky"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "turistika/cestovÃ¡nÃ­"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Å™emesla"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "motorismus"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "fittens a zdravÃ­"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "vaÅ™enÃ­"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "reklama"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "zahradnictvÃ­"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "pÅ¯vodnÃ­ jazyky"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "ÄernobÃ­lÃ©"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "nepublikovanÃ©"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Å¾ivÃ© vysÃ­lÃ¡nÃ­"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "RodiÄovkÃ¡ kontrola od %d"
 
 msgid "No title"
-msgstr "Bez názvu"
+msgstr "Bez nÃ¡zvu"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "Èesky"
+msgstr "ÄŒesky"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
 msgstr "cze"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Fáze 1: Detekce typu kódu"
+msgstr "FÃ¡ze 1: Detekce typu kÃ³du"
 
 msgid "Press any key on the RC unit"
-msgstr "Stisknìte libovolnou klávesu ovládání"
+msgstr "StisknÄ›te libovolnou klÃ¡vesu ovlÃ¡dÃ¡nÃ­"
 
 msgid "RC code detected!"
-msgstr "Kód byl detekován!"
+msgstr "KÃ³d byl detekovÃ¡n!"
 
 msgid "Do not press any key..."
-msgstr "Nemaèkejte ¾ádné klávesy..."
+msgstr "NemaÄkejte Å¾Ã¡dnÃ© klÃ¡vesy..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fáze 2: Uèení konkrétního kódu kláves"
+msgstr "FÃ¡ze 2: UÄenÃ­ konkrÃ©tnÃ­ho kÃ³du klÃ¡ves"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Stisknìte klávesu pro '%s'"
+msgstr "StisknÄ›te klÃ¡vesu pro '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Stisknìte 'Nahoru' pro potvrzení"
+msgstr "StisknÄ›te 'Nahoru' pro potvrzenÃ­"
 
 msgid "Press 'Down' to continue"
-msgstr "Stisknìte 'Dolù' pro pokraèování"
+msgstr "StisknÄ›te 'DolÅ¯' pro pokraÄovÃ¡nÃ­"
 
 msgid "(press 'Up' to go back)"
-msgstr "(stisknìte 'Nahoru' pro zpìt)"
+msgstr "(stisknÄ›te 'Nahoru' pro zpÄ›t)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(stisknìte 'Dolù' pro ukonèení)"
+msgstr "(stisknÄ›te 'DolÅ¯' pro ukonÄenÃ­)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(stisknìte 'Menu' pro pøeskoèení definice klávesy)"
+msgstr "(stisknÄ›te 'Menu' pro pÅ™eskoÄenÃ­ definice klÃ¡vesy)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Uèení kódù dálkového ovládání"
+msgstr "UÄenÃ­ kÃ³dÅ¯ dÃ¡lkovÃ©ho ovlÃ¡dÃ¡nÃ­"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Fáze 3: Ulo¾ení kódù"
+msgstr "FÃ¡ze 3: UloÅ¾enÃ­ kÃ³dÅ¯"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Stisknìte 'Nahoru' pro ulo¾ení, 'Dolù' pro zru¹ení"
+msgstr "StisknÄ›te 'Nahoru' pro uloÅ¾enÃ­, 'DolÅ¯' pro zruÅ¡enÃ­"
 
 msgid "Key$Up"
 msgstr "Nahoru"
 
 msgid "Key$Down"
-msgstr "Dolù"
+msgstr "DolÅ¯"
 
 msgid "Key$Menu"
 msgstr "Menu"
@@ -384,7 +385,7 @@ msgid "Key$Ok"
 msgstr "Ok"
 
 msgid "Key$Back"
-msgstr "Zpìt"
+msgstr "ZpÄ›t"
 
 msgid "Key$Left"
 msgstr "Vlevo"
@@ -393,55 +394,55 @@ msgid "Key$Right"
 msgstr "Vpravo"
 
 msgid "Key$Red"
-msgstr "Èervenı"
+msgstr "ÄŒervenÃ½"
 
 msgid "Key$Green"
-msgstr "Zelenı"
+msgstr "ZelenÃ½"
 
 msgid "Key$Yellow"
-msgstr "®lutı"
+msgstr "Å½lutÃ½"
 
 msgid "Key$Blue"
-msgstr "Modrı"
+msgstr "ModrÃ½"
 
 msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play"
-msgstr "Pøehrát"
+msgstr "PÅ™ehrÃ¡t"
 
 msgid "Key$Pause"
-msgstr "Pøeru¹it"
+msgstr "PÅ™eruÅ¡it"
 
 msgid "Key$Stop"
 msgstr "Zastavit"
 
 msgid "Key$Record"
-msgstr "Nahrát"
+msgstr "NahrÃ¡t"
 
 msgid "Key$FastFwd"
-msgstr "Dopøedu"
+msgstr "DopÅ™edu"
 
 msgid "Key$FastRew"
 msgstr "Dozadu"
 
 msgid "Key$Next"
-msgstr "Dále"
+msgstr "DÃ¡le"
 
 msgid "Key$Prev"
-msgstr "Zpìt"
+msgstr "ZpÄ›t"
 
 msgid "Key$Power"
-msgstr "Vypínaè"
+msgstr "VypÃ­naÄ"
 
 msgid "Key$Channel+"
-msgstr "Kanál+"
+msgstr "KanÃ¡l+"
 
 msgid "Key$Channel-"
-msgstr "Kanál-"
+msgstr "KanÃ¡l-"
 
 msgid "Key$PrevChannel"
-msgstr "Pøedcházející kanál"
+msgstr "PÅ™edchÃ¡zejÃ­cÃ­ kanÃ¡l"
 
 msgid "Key$Volume+"
 msgstr "Hlasitost+"
@@ -462,49 +463,49 @@ msgid "Key$Schedule"
 msgstr "Program (EPG)"
 
 msgid "Key$Channels"
-msgstr "Kanály"
+msgstr "KanÃ¡ly"
 
 msgid "Key$Timers"
-msgstr "Èasovaèe"
+msgstr "ÄŒasovaÄe"
 
 msgid "Key$Recordings"
-msgstr "Nahrávky"
+msgstr "NahrÃ¡vky"
 
 msgid "Key$Setup"
-msgstr "Nastavení"
+msgstr "NastavenÃ­"
 
 msgid "Key$Commands"
-msgstr "Pøíkazy"
+msgstr "PÅ™Ã­kazy"
 
 msgid "Key$User0"
-msgstr "U¾ivatel0"
+msgstr "UÅ¾ivatel0"
 
 msgid "Key$User1"
-msgstr "U¾ivatel1"
+msgstr "UÅ¾ivatel1"
 
 msgid "Key$User2"
-msgstr "U¾ivatel2"
+msgstr "UÅ¾ivatel2"
 
 msgid "Key$User3"
-msgstr "U¾ivatel3"
+msgstr "UÅ¾ivatel3"
 
 msgid "Key$User4"
-msgstr "U¾ivatel4"
+msgstr "UÅ¾ivatel4"
 
 msgid "Key$User5"
-msgstr "U¾ivatel5"
+msgstr "UÅ¾ivatel5"
 
 msgid "Key$User6"
-msgstr "U¾ivatel6"
+msgstr "UÅ¾ivatel6"
 
 msgid "Key$User7"
-msgstr "U¾ivatel7"
+msgstr "UÅ¾ivatel7"
 
 msgid "Key$User8"
-msgstr "U¾ivatel8"
+msgstr "UÅ¾ivatel8"
 
 msgid "Key$User9"
-msgstr "U¾ivatel9"
+msgstr "UÅ¾ivatel9"
 
 msgid "Disk"
 msgstr "Disk"
@@ -513,16 +514,16 @@ msgid "free"
 msgstr "volno"
 
 msgid "Free To Air"
-msgstr "volnı"
+msgstr "volnÃ½"
 
 msgid "encrypted"
-msgstr "kódovanı"
+msgstr "kÃ³dovanÃ½"
 
 msgid "Edit channel"
-msgstr "Editace kanálu"
+msgstr "Editace kanÃ¡lu"
 
 msgid "Name"
-msgstr "Název"
+msgstr "NÃ¡zev"
 
 msgid "Source"
 msgstr "Zdroj"
@@ -564,68 +565,68 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Channel settings are not unique!"
-msgstr "Nastavení kanálù nejsou unikátní!"
+msgstr "NastavenÃ­ kanÃ¡lu nenÃ­ jedineÄnÃ©!"
 
 msgid "Channels"
-msgstr "Kanály"
+msgstr "KanÃ¡ly"
 
 msgid "Button$Edit"
 msgstr "Editace"
 
 msgid "Button$New"
-msgstr "Novı"
+msgstr "NovÃ½"
 
 msgid "Button$Delete"
 msgstr "Smazat"
 
 msgid "Button$Mark"
-msgstr "Oznaèit"
+msgstr "OznaÄit"
 
 msgid "Channel is being used by a timer!"
-msgstr "Kanál je dr¾enı èasovaèem nahrávek!"
+msgstr "Na kanÃ¡lu se prÃ¡vÄ› nahrÃ¡vÃ¡!!"
 
 msgid "Delete channel?"
-msgstr "Smazat kanál?"
+msgstr "Smazat kanÃ¡l?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "ZmÄ›na sloÅ¾ky"
 
 msgid "New folder"
-msgstr ""
+msgstr "NovÃ¡ sloÅ¾ka"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "PodsloÅ¾ka"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "SloÅ¾ka jiÅ¾ existuje!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "JmÃ©no sloÅ¾ky nesmÃ­ obsahovat '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Vybrat"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Smazat sloÅ¾ku vÄetnÄ› podsloÅ¾ek?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Smazat sloÅ¾ku?"
 
 msgid "Edit timer"
-msgstr "Editace èasovaèe"
+msgstr "Editace nahrÃ¡vÃ¡nÃ­"
 
 msgid "Active"
-msgstr "Aktivní"
+msgstr "AktivnÃ­"
 
 msgid "Channel"
-msgstr "Kanál"
+msgstr "KanÃ¡l"
 
 msgid "Day"
 msgstr "Den"
 
 msgid "Start"
-msgstr "Zaèátek"
+msgstr "ZaÄÃ¡tek"
 
 msgid "Stop"
 msgstr "Konec"
@@ -637,22 +638,22 @@ msgid "Priority"
 msgstr "Priorita"
 
 msgid "Lifetime"
-msgstr "®ivotnost"
+msgstr "Å½ivotnost"
 
 msgid "File"
 msgstr "Soubor"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "SloÅ¾ka"
 
 msgid "First day"
-msgstr "První den"
+msgstr "PrvnÃ­ den"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Vybrat sloÅ¾ku"
 
 msgid "Timers"
-msgstr "Èasovaèe"
+msgstr "NahrÃ¡vÃ¡nÃ­"
 
 msgid "Button$On/Off"
 msgstr "Zap./Vyp."
@@ -661,40 +662,40 @@ msgid "Button$Info"
 msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "Smazat èasovaè?"
+msgstr "Smazat nahrÃ¡vÃ¡nÃ­?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Probíhá nahrávání - opravdu smazat?"
+msgstr "ProbÃ­hÃ¡ nahrÃ¡vÃ¡nÃ­ - opravdu smazat?"
 
 msgid "Event"
-msgstr "Událost"
+msgstr "UdÃ¡lost"
 
 msgid "Button$Timer"
-msgstr "Èasovaè"
+msgstr "NahrÃ¡vÃ¡nÃ­"
 
 msgid "Button$Record"
-msgstr "Nahrát"
+msgstr "NahrÃ¡t"
 
 msgid "Button$Switch"
-msgstr "Pøepnout"
+msgstr "PÅ™epnout"
 
 msgid "What's on now?"
-msgstr "Aktuální program"
+msgstr "AktuÃ¡lnÃ­ program"
 
 msgid "What's on next?"
-msgstr "Následující program"
+msgstr "NÃ¡sledujÃ­cÃ­ program"
 
 msgid "Button$Next"
-msgstr "Dal¹í"
+msgstr "DalÅ¡Ã­"
 
 msgid "Button$Now"
-msgstr "Nyní"
+msgstr "NynÃ­"
 
 msgid "Button$Schedule"
 msgstr "Program"
 
 msgid "Can't switch channel!"
-msgstr "Kanál nelze pøepnout!"
+msgstr "KanÃ¡l nelze pÅ™epnout!"
 
 #, c-format
 msgid "Schedule - %s"
@@ -702,50 +703,50 @@ msgstr "Program - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "Tato událost - %s"
+msgstr "Tato udÃ¡lost - %s"
 
 msgid "This event - all channels"
-msgstr "Tato událost - v¹echny kanály"
+msgstr "Tato udÃ¡lost - vÅ¡echny kanÃ¡ly"
 
 msgid "All events - all channels"
-msgstr "V¹echny událost - v¹echny kanály"
+msgstr "VÅ¡echny udÃ¡losti - vÅ¡echny kanÃ¡ly"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Prosím vlo¾te %d znakù!"
+msgstr "ProsÃ­m vloÅ¾te %d znakÅ¯!"
 
 msgid "CAM not responding!"
-msgstr "CAM neodpovídá!"
+msgstr "CAM neodpovÃ­dÃ¡!"
 
 msgid "Recording info"
-msgstr "Detail nahrávky"
+msgstr "Detail nahrÃ¡vky"
 
 msgid "Button$Play"
-msgstr "Pøehrát"
+msgstr "PÅ™ehrÃ¡t"
 
 msgid "Button$Rewind"
-msgstr "Na zaèátek"
+msgstr "Na zaÄÃ¡tek"
 
 msgid "Recordings"
-msgstr "Nahrávky"
+msgstr "NahrÃ¡vky"
 
 msgid "Button$Open"
-msgstr "Otevøít"
+msgstr "OtevÅ™Ã­t"
 
 msgid "Commands"
-msgstr "Pøíkazy"
+msgstr "PÅ™Ã­kazy"
 
 msgid "Error while accessing recording!"
-msgstr "Chyba pøi pøístupu k nahrávkám!"
+msgstr "Chyba pÅ™i pÅ™Ã­stupu k nahrÃ¡vkÃ¡m!"
 
 msgid "Delete recording?"
-msgstr "Smazat nahrávku?"
+msgstr "Smazat nahrÃ¡vku?"
 
 msgid "Error while deleting recording!"
-msgstr "Chyba pøi mazání nahrávky!"
+msgstr "Chyba pÅ™i mazÃ¡nÃ­ nahrÃ¡vky!"
 
 msgid "Recording commands"
-msgstr "Pøíkazy nahrávání"
+msgstr "PÅ™Ã­kazy nahrÃ¡vÃ¡nÃ­"
 
 msgid "never"
 msgstr "nikdy"
@@ -754,7 +755,7 @@ msgid "skin dependent"
 msgstr "podle vzhledu"
 
 msgid "always"
-msgstr "v¾dy"
+msgstr "vÅ¾dy"
 
 msgid "OSD"
 msgstr "OSD"
@@ -766,108 +767,108 @@ msgid "Setup.OSD$Skin"
 msgstr "Vzhled"
 
 msgid "Setup.OSD$Theme"
-msgstr "Téma"
+msgstr "TÃ©ma"
 
 msgid "Setup.OSD$Left (%)"
 msgstr "Vlevo (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr "Nahoøe (%)"
+msgstr "NahoÅ™e (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "©íøka (%)"
+msgstr "Å Ã­Å™ka (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "Vı¹ka (%)"
+msgstr "VÃ½Å¡ka (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Èas zobrazení zpávy (s)"
+msgstr "ÄŒas zobrazenÃ­ zprÃ¡vy (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Pou¾ívat malé písmo"
+msgstr "PouÅ¾Ã­vat malÃ© pÃ­smo"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Vyhladit písmo"
+msgstr "Vyhladit pÃ­smo"
 
 msgid "Setup.OSD$Default font"
-msgstr "Vıchozí písmo"
+msgstr "VÃ½chozÃ­ pÃ­smo"
 
 msgid "Setup.OSD$Small font"
-msgstr "Malé písmo"
+msgstr "MalÃ© pÃ­smo"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Fixní písmo"
+msgstr "FixnÃ­ pÃ­smo"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Velikost vıchozího písma (%)"
+msgstr "Velikost vÃ½chozÃ­ho pÃ­sma (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "Velikost malého písma (%)"
+msgstr "Velikost malÃ©ho pÃ­sma (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Velikost fixního písma (%)"
+msgstr "Velikost fixnÃ­ho pÃ­sma (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Pozice informace o kanálu"
+msgstr "Pozice informace o kanÃ¡lu"
 
 msgid "bottom"
 msgstr "dole"
 
 msgid "top"
-msgstr "hahoøe"
+msgstr "hahoÅ™e"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Èas zobr. informace o kanálu (s)"
+msgstr "ÄŒas zobr. informace o kanÃ¡lu (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Informace pøi zmìnì kanálu"
+msgstr "Informace pÅ™i zmÄ›nÄ› kanÃ¡lu"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Èasovı limit informace o kanálu"
+msgstr "ÄŒasovÃ½ limit informace o kanÃ¡lu"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Rolovat strany"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Z konce na zaèátek"
+msgstr "Z konce na zaÄÃ¡tek"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Klávesa Menu zavírá"
+msgstr "KlÃ¡vesa Menu zavÃ­rÃ¡"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Seznam nahrávek"
+msgstr "Seznam nahrÃ¡vek"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "SloÅ¾ky v menu ÄasovaÄe"
 
 msgid "EPG"
 msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "Snímat"
+msgstr "SnÃ­mat"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Èasovı limit pro snímání EPG (h)"
+msgstr "ÄŒasovÃ½ limit pro snÃ­mÃ¡nÃ­ EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "EPG úroveò chyb"
+msgstr "EPG ÃºroveÅˆ chyb"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Ukazovat star¹í EPG data (min)"
+msgstr "Ukazovat starÅ¡Ã­ EPG data (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Nastavit systémovı èas"
+msgstr "Nastavit systÃ©movÃ½ Äas"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "Pou¾ít èas z kanálu"
+msgstr "PouÅ¾Ã­t Äas z kanÃ¡lu"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "Preferované jazyky"
+msgstr "PreferovanÃ© jazyky"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "Preferovanı jazyk"
+msgstr "PreferovanÃ½ jazyk"
 
 msgid "pan&scan"
 msgstr "pan&scan"
@@ -876,43 +877,43 @@ msgid "letterbox"
 msgstr "letterbox"
 
 msgid "center cut out"
-msgstr "dostøedu oøíznout"
+msgstr "dostÅ™edu oÅ™Ã­znout"
 
 msgid "no"
 msgstr "ne"
 
 msgid "names only"
-msgstr "jen názvy"
+msgstr "jen nÃ¡zvy"
 
 msgid "PIDs only"
-msgstr "jen PIDs"
+msgstr "jen PID"
 
 msgid "names and PIDs"
-msgstr "názvy a PIDs"
+msgstr "nÃ¡zvy a PID"
 
 msgid "add new channels"
-msgstr "pøidat nové kanály"
+msgstr "pÅ™idat novÃ© kanÃ¡ly"
 
 msgid "add new transponders"
-msgstr "pøidat nové transpondéry"
+msgstr "pÅ™idat novÃ© transpondÃ©ry"
 
 msgid "DVB"
 msgstr "DVB"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "Primární DVB interface"
+msgstr "PrimÃ¡rnÃ­ DVB zaÅ™Ã­zenÃ­"
 
 msgid "Setup.DVB$Video format"
-msgstr "Formát videa"
+msgstr "FormÃ¡t videa"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Formát zobrazení videa"
+msgstr "FormÃ¡t zobrazenÃ­ videa"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Pou¾ívat zvuk v Dolby Digital"
+msgstr "PouÅ¾Ã­vat zvuk v Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Aktualizace kanálù"
+msgstr "Aktualizace kanÃ¡lÅ¯"
 
 msgid "Setup.DVB$Audio languages"
 msgstr "Jazyky zvuku"
@@ -924,43 +925,43 @@ msgid "Setup.DVB$Display subtitles"
 msgstr "Zobrazovat titulky"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "Jazyky titulkù"
+msgstr "Jazyky titulkÅ¯"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "Jazyk titulkù"
+msgstr "Jazyk titulkÅ¯"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Posunutí titulkù"
+msgstr "PosunutÃ­ titulkÅ¯"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Prùhlednost písma titulkù"
+msgstr "PrÅ¯hlednost pÃ­sma titulkÅ¯"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Prùhlednost pozadí titulkù"
+msgstr "PrÅ¯hlednost pozadÃ­ titulkÅ¯"
 
 msgid "LNB"
 msgstr "LNB"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "Pou¾ívat DiSEqC"
+msgstr "PouÅ¾Ã­vat DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "SLOF (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "Dolní frekvence LNB (MHz)"
+msgstr "DolnÃ­ frekvence LNB (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "Horní frekvence LNB (MHz)"
+msgstr "HornÃ­ frekvence LNB (MHz)"
 
 msgid "CAM reset"
 msgstr "Reset CAMu"
 
 msgid "CAM present"
-msgstr "CAM pøítomen"
+msgstr "CAM pÅ™Ã­tomen"
 
 msgid "CAM ready"
-msgstr "CAM pøipraven"
+msgstr "CAM pÅ™ipraven"
 
 msgid "CAM"
 msgstr "CAM"
@@ -972,139 +973,139 @@ msgid "Button$Reset"
 msgstr "Reset"
 
 msgid "Opening CAM menu..."
-msgstr "Otevírá se menu CAM..."
+msgstr "OtevÃ­rÃ¡ se menu CAM..."
 
 msgid "Can't open CAM menu!"
-msgstr "Menu CAM není dostupné"
+msgstr "Menu CAM nenÃ­ dostupnÃ©"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM se pou¾ívá - opravdu restartovat?"
+msgstr "CAM se pouÅ¾Ã­vÃ¡ - opravdu restartovat?"
 
 msgid "Can't reset CAM!"
 msgstr "CAM modul nelze restartovat!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "nepÅ™erusovat bÄ›Å¾Ã­cÃ­ program"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "potvdit pÅ™eruÅ¡enÃ­ bÄ›Å¾Ã­cÃ­ho programu"
 
 msgid "pause live video"
-msgstr ""
+msgstr "pÅ™eruÅ¡it bÄ›Å¾Ã­cÃ­ program"
 
 msgid "confirm"
-msgstr ""
+msgstr "potvrdit"
 
 msgid "yes"
 msgstr "ano"
 
 msgid "Recording"
-msgstr "Nahrávání"
+msgstr "NahrÃ¡vÃ¡nÃ­"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Nahrávat pøed zaèátkem (min)"
+msgstr "NahrÃ¡vat pÅ™ed zaÄÃ¡tkem (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Nahrávat po konci (min)"
+msgstr "NahrÃ¡vat po konci (min)"
 
 msgid "Setup.Recording$Primary limit"
-msgstr "Primární limit"
+msgstr "PrimÃ¡rnÃ­ limit"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Vıchozí priorita"
+msgstr "VÃ½chozÃ­ priorita"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Vıchozí ¾ivotnost"
+msgstr "VÃ½chozÃ­ Å¾ivotnost"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "ChovÃ¡nÃ­ klÃ¡vesy PÅ™eruÅ¡enÃ­"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorita pøeru¹ení"
+msgstr "Priorita pÅ™eruÅ¡enÃ­"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "®ivotnost pøeru¹ení (d)"
+msgstr "Å½ivotnost pÅ™eruÅ¡enÃ­ (d)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Pou¾ívat název epizody"
+msgstr "PouÅ¾Ã­vat nÃ¡zev epizody"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "Pou¾ívat VPS"
+msgstr "PouÅ¾Ã­vat VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "Èasová rezerva pro VPS (s)"
+msgstr "ÄŒasovÃ¡ rezerva pro VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Oznaèit okam¾ité nahrávky"
+msgstr "OznaÄit okamÅ¾itÃ© nahrÃ¡vky"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Pojmenovat okam¾ité nahrávky"
+msgstr "Pojmenovat okamÅ¾itÃ© nahrÃ¡vky"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Délka okam¾itého nahrávání (min)"
+msgstr "DÃ©lka okamÅ¾itÃ©ho nahrÃ¡vÃ¡nÃ­ (min)"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Maximální velikost nahrávky (MB)"
+msgstr "MaximÃ¡lnÃ­ velikost nahrÃ¡vky (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Dìlit editované soubory"
+msgstr "DÄ›lit editovanÃ© soubory"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Mazat nahrÃ¡vky Timeshift"
 
 msgid "Replay"
-msgstr "Pøehrávání"
+msgstr "PÅ™ehrÃ¡vÃ¡nÃ­"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Vícerychlostní mód"
+msgstr "VÃ­cerychlostnÃ­ mÃ³d"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Zobrazit re¾im pøehrávání"
+msgstr "Zobrazit reÅ¾im pÅ™ehrÃ¡vÃ¡nÃ­"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID obnovení"
+msgstr "ID obnovenÃ­"
 
 msgid "Miscellaneous"
-msgstr "Rùzné"
+msgstr "RÅ¯znÃ©"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. pauza mezi událostmi (min)"
+msgstr "Min. pauza mezi udÃ¡lostmi (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Èasovı limit neaktivnosti (min)"
+msgstr "ÄŒasovÃ½ limit neaktivnosti (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "Èasovı limit SVDRP (s)"
+msgstr "ÄŒasovÃ½ limit SVDRP (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Èasovı limit Zap (s)"
+msgstr "ÄŒasovÃ½ limit Zap (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Prodleva pøi volbì kanálu (ms)"
+msgstr "Prodleva pÅ™i volbÄ› kanÃ¡lu (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr "Kanál po spu¹tìní"
+msgstr "KanÃ¡l po spuÅ¡tÄ›nÃ­"
 
 msgid "Setup.Miscellaneous$as before"
 msgstr "jako naposledy"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr "Hlasitost po spu¹tìní"
+msgstr "Hlasitost po spuÅ¡tÄ›nÃ­"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "Nouzové ukonèení"
+msgstr "NouzovÃ© ukonÄenÃ­"
 
 msgid "Plugins"
 msgstr "Moduly"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Modul nemá konfiguraèní parametry!"
+msgstr "Modul nemÃ¡ konfiguraÄnÃ­ parametry!"
 
 msgid "Setup"
-msgstr "Nastavení"
+msgstr "NastavenÃ­"
 
 msgid "Restart"
 msgstr "Restart"
@@ -1114,7 +1115,7 @@ msgstr "Opravdu restartovat?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Zastavit nahrávání "
+msgstr " Zastavit nahrÃ¡vÃ¡nÃ­ "
 
 msgid "Schedule"
 msgstr "Program (EPG)"
@@ -1124,197 +1125,197 @@ msgstr "VDR"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " Zastavit pøehrávání"
+msgstr " Zastavit pÅ™ehrÃ¡vÃ¡nÃ­"
 
 msgid "Button$Audio"
 msgstr "Zvuk"
 
 msgid "Button$Pause"
-msgstr "Zastavit"
+msgstr "PÅ™eruÅ¡it"
 
 msgid "Button$Stop"
-msgstr "Ukonèit"
+msgstr "UkonÄit"
 
 msgid "Button$Resume"
-msgstr "Pokraèovat"
+msgstr "PokraÄovat"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Zru¹it editaci"
+msgstr " ZruÅ¡it editaci"
 
 msgid "Stop recording?"
-msgstr "Ukonèit nahrávání?"
+msgstr "UkonÄit nahrÃ¡vÃ¡nÃ­?"
 
 msgid "Cancel editing?"
-msgstr "Zru¹it editaci?"
+msgstr "ZruÅ¡it editaci?"
 
 msgid "No audio available!"
-msgstr "Zvuk není dostupnı!"
+msgstr "Zvuk nenÃ­ dostupnÃ½!"
 
 msgid "No subtitles"
-msgstr "Bez titulkù"
+msgstr "Bez titulkÅ¯"
 
 msgid "Button$Subtitles"
 msgstr "Titulky"
 
 msgid "No subtitles available!"
-msgstr "®ádné dostupné titulky!"
+msgstr "Å½Ã¡dnÃ© dostupnÃ© titulky!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Nedostatek volného místa k zapoèetí nahrávání!"
+msgstr "Nedostatek volnÃ©ho mÃ­sta k zapoÄetÃ­ nahrÃ¡vÃ¡nÃ­!"
 
 msgid "No free DVB device to record!"
-msgstr "®ádná DVB karta není volná pro nahrávání"
+msgstr "Å½Ã¡dnÃ¡ DVB karta nenÃ­ volnÃ¡ pro nahrÃ¡vÃ¡nÃ­"
 
 msgid "Pausing live video..."
-msgstr "Pøeru¹uje se bì¾ící program ..."
+msgstr "PÅ™eruÅ¡uje se bÄ›Å¾Ã­cÃ­ program ..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Smazat Timeshift nahrÃ¡vku?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skok: "
 
 msgid "No editing marks defined!"
-msgstr "Nejsou definovány editaèní znaèky!"
+msgstr "Nejsou definovÃ¡ny editaÄnÃ­ znaÄky!"
 
 msgid "Can't start editing process!"
-msgstr "Nelze zaèít editaèní proces!"
+msgstr "Nelze zaÄÃ­t editaÄnÃ­ proces!"
 
 msgid "Editing process started"
-msgstr "Editaèní proces zaèal"
+msgstr "EditaÄnÃ­ proces zaÄal"
 
 msgid "Editing process already active!"
-msgstr "Editaèní proces je ji¾ aktivní!"
+msgstr "EditaÄnÃ­ proces je jiÅ¾ aktivnÃ­!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aábcèdïeéìfghiíjklmnòoópqrøs¹t»uúùvwxyız¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aÃ¡bcÄdÄeÃ©Ä›fghiÃ­jklmnÅˆoÃ³pqrÅ™sÅ¡tÅ¥uÃºÅ¯vwxyÃ½zÅ¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcáè2\tdefïéì3\tghií4\tjkl5\tmnoòó6\tpqrsø¹7\ttuv»úù8\twxyzı¾9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcÃ¡Ä2\tdefÄÃ©Ä›3\tghiÃ­4\tjkl5\tmnoÅˆÃ³6\tpqrsÅ™Å¡7\ttuvÅ¥ÃºÅ¯8\twxyzÃ½Å¾9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
-msgstr "Pøepsat"
+msgstr "PÅ™epsat"
 
 msgid "Button$Insert"
-msgstr "Vlo¾it"
+msgstr "VloÅ¾it"
 
 msgid "Plugin"
 msgstr "Modul"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Nahoru/Dolu pro novou pozici - Ok pøesune"
+msgstr "Nahoru/Dolu pro novou pozici - Ok pÅ™esune"
 
 msgid "Channel locked (recording)!"
-msgstr "Kanál je blokovanı (nahrává se)!"
+msgstr "KanÃ¡l je blokovanÃ½ (nahrÃ¡vÃ¡ se)!"
 
 msgid "Low disk space!"
-msgstr "Disk bude brzy zaplnìn!"
+msgstr "Disk bude brzy zaplnÄ›n!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "GenerovÃ¡nÃ­ index souboru"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "GenerovÃ¡nÃ­ index souboru dokonÄeno"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Vypnutí není mo¾né - chybí volba '-s'!"
+msgstr "VypnutÃ­ nenÃ­ moÅ¾nÃ© - chybÃ­ volba '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Edituji - pøesto vypnout?"
+msgstr "Edituji - pÅ™esto vypnout?"
 
 msgid "Recording - shut down anyway?"
-msgstr "Systém je zaneprázdnìn - pøesto vypnout?"
+msgstr "SystÃ©m nahrÃ¡vÃ¡ - pÅ™esto vypnout?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Nahrávání zaène za %ld minut - pøesto vypnout?"
+msgstr "NahrÃ¡vÃ¡nÃ­ zaÄne za %ld minut - pÅ™esto vypnout?"
 
 msgid "shut down anyway?"
-msgstr "pøesto vypnout?"
+msgstr "pÅ™esto vypnout?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Modul %s startuje za %ld min., pokraèovat?"
+msgstr "Modul %s startuje za %ld min., pokraÄovat?"
 
 msgid "Editing - restart anyway?"
-msgstr "Edituji - pøesto restartovat?"
+msgstr "Edituji - pÅ™esto restartovat?"
 
 msgid "Recording - restart anyway?"
-msgstr "Systém je zaneprázdnìn - pøesto restartovat?"
+msgstr "NahrÃ¡vÃ¡nÃ­ - pÅ™esto restartovat?"
 
 msgid "restart anyway?"
-msgstr "pøesto restartovat?"
+msgstr "pÅ™esto restartovat?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
 msgstr "Hlasitost "
 
 msgid "Classic VDR"
-msgstr "Klasické VDR"
+msgstr "KlasickÃ© VDR"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konzola"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "PÚSÈPSN"
+msgstr "PÃšSÄŒPSN"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "Po Út St Èt Pá So Ne "
+msgstr "Po Ãšt St ÄŒt PÃ¡ So Ne "
 
 msgid "Monday"
-msgstr "Pondìlí"
+msgstr "PondÄ›lÃ­"
 
 msgid "Tuesday"
-msgstr "Úterı"
+msgstr "ÃšterÃ½"
 
 msgid "Wednesday"
-msgstr "Støeda"
+msgstr "StÅ™eda"
 
 msgid "Thursday"
-msgstr "Ètvrtek"
+msgstr "ÄŒtvrtek"
 
 msgid "Friday"
-msgstr "Pátek"
+msgstr "PÃ¡tek"
 
 msgid "Saturday"
 msgstr "Sobota"
 
 msgid "Sunday"
-msgstr "Nedìle"
+msgstr "NedÄ›le"
 
 msgid "Upcoming recording!"
-msgstr "Brzo zaène nahrávání!"
+msgstr "Brzo zaÄne nahrÃ¡vÃ¡nÃ­!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "PÅ™eruÅ¡it bÄ›Å¾Ã­cÃ­ program?"
 
 msgid "Recording started"
-msgstr "Zaèalo nahrávání"
+msgstr "ZaÄalo nahrÃ¡vÃ¡nÃ­"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "Vypnutí VDR bude odlo¾eno - vypnete klávesou Power"
+msgstr "VypnutÃ­ VDR bude odloÅ¾eno - vypnete klÃ¡vesou Power"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Jakákoliv klávesa zru¹í vypnutí"
+msgstr "JakÃ¡koliv klÃ¡vesa zruÅ¡Ã­ vypnutÃ­"
 
 msgid "Switching primary DVB..."
-msgstr "Pøepnout primární DVB..."
+msgstr "PÅ™epnout primÃ¡rnÃ­ DVB..."
 
 msgid "Editing process failed!"
-msgstr "Editaèní proces selhal!"
+msgstr "EditaÄnÃ­ proces selhal!"
 
 msgid "Editing process finished"
-msgstr "Editaèní proces skonèil"
+msgstr "EditaÄnÃ­ proces skonÄil"
 
 msgid "Press any key to cancel restart"
-msgstr "Jakákoliv klávesa zru¹í restart"
+msgstr "JakÃ¡koliv klÃ¡vesa zruÅ¡Ã­ restart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"

@@ -2595,3 +2595,6 @@ Eric Valette <eric.valette@free.fr>
 
 Paul Menzel <paulepanter@users.sourceforge.net>
  for making include paths be added instead of overwriting INCLUDES in the Makefile
+
+Radek Stastny <dedkus@gmail.com>
+ for translating OSD texts to the Czech language

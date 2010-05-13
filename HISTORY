@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-05-02: Version 1.7.15
+2010-05-13: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6450,3 +6450,4 @@ Video Disk Recorder Revision History
 - Fixed handling "none" color entries in XPM files (thanks to Thomas Günther).
 - Fixed a crash when creating a new channel if the channel list is empty (reported
   by Halim Sahin).
+- Updated the Czech OSD texts (thanks to Radek Stastny).
