@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.44 2010/04/18 13:40:20 kls Exp $
+ * $Id: remux.c 2.45 2010/05/13 14:16:56 kls Exp $
  */
 
 #include "remux.h"
@@ -663,6 +663,10 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
   if (length + Length > size) {
      size = max(KILOBYTE(2), length + Length);
      data = (uchar *)realloc(data, size);
+     if (!data) {
+        Reset();
+        return;
+        }
      }
   memcpy(data + length, Data, Length);
   length += Length;

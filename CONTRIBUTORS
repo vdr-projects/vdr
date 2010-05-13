@@ -1094,6 +1094,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for keeping subtitles visible when pausing replay
  for suggesting to assign the source character 'I' to "IPTV"
  for fixing generating PMT language descriptors for multi language PIDs
+ for reporting a possible out of buffer memory access in case of bad TS data
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

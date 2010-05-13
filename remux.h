@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.24 2010/01/29 16:51:26 kls Exp $
+ * $Id: remux.h 2.25 2010/05/13 14:29:45 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -84,7 +84,8 @@ inline bool TsIsScrambled(const uchar *p)
 
 inline int TsPayloadOffset(const uchar *p)
 {
-  return (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  int o = (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  return o <= TS_SIZE ? o : TS_SIZE;
 }
 
 inline int TsGetPayload(const uchar **p)

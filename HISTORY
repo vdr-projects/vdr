@@ -6451,3 +6451,5 @@ Video Disk Recorder Revision History
 - Fixed a crash when creating a new channel if the channel list is empty (reported
   by Halim Sahin).
 - Updated the Czech OSD texts (thanks to Radek Stastny).
+- Fixed a possible out of buffer memory access in case of bad TS data (reported
+  by Rolf Ahrenberg).
