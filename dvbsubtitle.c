@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.4 2010/02/07 12:08:13 kls Exp $
+ * $Id: dvbsubtitle.c 2.5 2010/05/13 14:43:44 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -17,6 +17,7 @@
 #define REGION_COMPOSITION_SEGMENT 0x11
 #define CLUT_DEFINITION_SEGMENT    0x12
 #define OBJECT_DATA_SEGMENT        0x13
+#define DISPLAY_DEFINITION_SEGMENT 0x14
 #define END_OF_DISPLAY_SET_SEGMENT 0x80
 
 // Set these to 'true' for debug output:
@@ -659,6 +660,11 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   dvbSubtitleAssembler = new cDvbSubtitleAssembler;
   osd = NULL;
   frozen = false;
+  ddsVersionNumber = 0;
+  displayWidth = 720;
+  displayHeight = 576;
+  displayHorizontalOffset = 0;
+  displayVerticalOffset = 0;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -687,6 +693,11 @@ void cDvbSubtitleConverter::Reset(void)
   bitmaps->Clear();
   DELETENULL(osd);
   frozen = false;
+  ddsVersionNumber = 0;
+  displayWidth = 720;
+  displayHeight = 576;
+  displayHorizontalOffset = 0;
+  displayVerticalOffset = 0;
   Unlock();
 }
 
@@ -842,7 +853,7 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
 
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
-  return osd || (osd = cOsdProvider::NewOsd(0, Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  return osd || (osd = cOsdProvider::NewOsd(displayHorizontalOffset, displayVerticalOffset + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -998,6 +1009,20 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                }
             else if (codingMethod == 1) { // coded as a string of characters
                //TODO implement textual subtitles
+               }
+            break;
+            }
+       case DISPLAY_DEFINITION_SEGMENT: {
+            dbgsegments("DISPLAY_DEFINITION_SEGMENT\n");
+            int version = (Data[6] & 0xF0) >> 4;
+            if (version != ddsVersionNumber) {
+               int displayWindowFlag   = (Data[6] & 0x08) >> 3;
+               displayWidth            = (Data[7] << 8) | Data[8];
+               displayHeight           = (Data[9] << 8) | Data[10];
+               displayHorizontalOffset = displayWindowFlag ? Data[11] : 0; // displayWindowHorizontalPositionMinimum
+               displayVerticalOffset   = displayWindowFlag ? Data[13] : 0; // displayWindowVerticalPositionMinimum
+               SetupChanged();
+               ddsVersionNumber = version;
                }
             break;
             }

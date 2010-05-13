@@ -6453,3 +6453,5 @@ Video Disk Recorder Revision History
 - Updated the Czech OSD texts (thanks to Radek Stastny).
 - Fixed a possible out of buffer memory access in case of bad TS data (reported
   by Rolf Ahrenberg).
+- Implemented handling of HD resolution subtitles according to v1.3.1 of
+  ETSI EN 300 743, chapter 7.2.1 (thanks to Rolf Ahrenberg).

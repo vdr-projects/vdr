@@ -1095,6 +1095,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to assign the source character 'I' to "IPTV"
  for fixing generating PMT language descriptors for multi language PIDs
  for reporting a possible out of buffer memory access in case of bad TS data
+ for implementing handling of HD resolution subtitles according to v1.3.1 of
+ ETSI EN 300 743, chapter 7.2.1
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
