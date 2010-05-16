@@ -6462,3 +6462,4 @@ Video Disk Recorder Revision History
   and "ISO/IEC 13818-7 Audio with ADTS transport sytax" (suggested by Luis Fernandes).
   See man vdr(5) on how the APID section of channels has been extended to store
   this information.
+- Added detecting channels that use service type 0x16.
