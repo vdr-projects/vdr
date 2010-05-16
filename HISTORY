@@ -6456,3 +6456,5 @@ Video Disk Recorder Revision History
 - Implemented handling of HD resolution subtitles according to v1.3.1 of
   ETSI EN 300 743, chapter 7.2.1 (thanks to Rolf Ahrenberg).
 - The EPG data now handles stream components 5 (H.264-video) and 6 (HEAAC-audio).
+- Fixed a problem with external Dolby Digital processing via the '-a' option in live
+  mode and with TS recordings (reported by Christopher Reimer).

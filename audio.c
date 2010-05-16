@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: audio.c 2.1 2008/07/06 11:42:58 kls Exp $
+ * $Id: audio.c 2.2 2010/05/16 11:00:52 kls Exp $
  */
 
 #include "audio.h"
@@ -56,6 +56,7 @@ cExternalAudio::cExternalAudio(const char *Command)
 {
   command = strdup(Command);
   mute = false;
+  cDvbDevice::SetTransferModeForDolbyDigital(2);
 }
 
 cExternalAudio::~cExternalAudio()
@@ -68,7 +69,6 @@ void cExternalAudio::Play(const uchar *Data, int Length, uchar Id)
   if (command && !mute) {
      if (pipe || pipe.Open(command, "w")) {
         if (0x80 <= Id && Id <= 0x87 || Id == 0xBD) { // AC3
-           cDvbDevice::SetTransferModeForDolbyDigital(2);
            int written = Data[8] + 9; // skips the PES header
            if (Id != 0xBD)
               written += 4; // skips AC3 bytes
