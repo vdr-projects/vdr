@@ -6458,3 +6458,7 @@ Video Disk Recorder Revision History
 - The EPG data now handles stream components 5 (H.264-video) and 6 (HEAAC-audio).
 - Fixed a problem with external Dolby Digital processing via the '-a' option in live
   mode and with TS recordings (reported by Christopher Reimer).
+- Added handling MPEG audio types "ISO/IEC 14496-3 Audio with LATM transport syntax"
+  and "ISO/IEC 13818-7 Audio with ADTS transport sytax" (suggested by Luis Fernandes).
+  See man vdr(5) on how the APID section of channels has been extended to store
+  this information.

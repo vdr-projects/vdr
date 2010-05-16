@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.9 2010/03/27 15:17:46 kls Exp $
+ * $Id: pat.c 2.10 2010/05/16 11:12:57 kls Exp $
  */
 
 #include "pat.h"
@@ -332,6 +332,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Ppid = 0;
         int Vtype = 0;
         int Apids[MAXAPIDS + 1] = { 0 }; // these lists are zero-terminated
+        int Atypes[MAXDPIDS + 1] = { 0 };
         int Dpids[MAXDPIDS + 1] = { 0 };
         int Spids[MAXSPIDS + 1] = { 0 };
         uchar SubtitlingTypes[MAXSPIDS + 1] = { 0 };
@@ -358,9 +359,12 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       break;
               case 3: // STREAMTYPE_11172_AUDIO
               case 4: // STREAMTYPE_13818_AUDIO
+              case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport sytax
+              case 0x11: // ISO/IEC 14496-3 Audio with LATM transport syntax
                       {
                       if (NumApids < MAXAPIDS) {
                          Apids[NumApids] = esPid;
+                         Atypes[NumApids] = stream.getStreamType();
                          SI::Descriptor *d;
                          for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                              switch (d->getDescriptorTag()) {
@@ -481,7 +485,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                }
             }
         if (Setup.UpdateChannels >= 2) {
-           Channel->SetPids(Vpid, Ppid, Vtype, Apids, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
+           Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
            Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
            }

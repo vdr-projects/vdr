@@ -2602,6 +2602,10 @@ Paul Menzel <paulepanter@users.sourceforge.net>
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
 
+Luis Fernandes <telping@gmail.com>
+ for suggesting to add handling MPEG audio type "ISO/IEC 14496-3 Audio with LATM
+ transport syntax"
+
 Christopher Reimer <reimer.christopher@freenet.de>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings

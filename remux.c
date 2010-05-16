@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.45 2010/05/13 14:16:56 kls Exp $
+ * $Id: remux.c 2.46 2010/05/16 12:23:12 kls Exp $
  */
 
 #include "remux.h"
@@ -321,7 +321,7 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
      if (Vpid)
         i += MakeStream(buf + i, Channel->Vtype(), Vpid);
      for (int n = 0; Channel->Apid(n); n++) {
-         i += MakeStream(buf + i, 0x04, Channel->Apid(n));
+         i += MakeStream(buf + i, Channel->Atype(n), Channel->Apid(n));
          const char *Alang = Channel->Alang(n);
          i += MakeLanguageDescriptor(buf + i, Alang);
          }
@@ -510,6 +510,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       break;
            case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
+           case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport sytax
+           case 0x11: // ISO/IEC 14496-3 Audio with LATM transport syntax
                       {
                       if (NumApids < MAXAPIDS) {
                          apids[NumApids] = stream.getPid();

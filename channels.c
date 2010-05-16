@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.14 2010/05/02 15:07:38 kls Exp $
+ * $Id: channels.c 2.15 2010/05/16 11:44:31 kls Exp $
  */
 
 #include "channels.h"
@@ -271,14 +271,21 @@ static int IntArraysDiffer(const int *a, const int *b, const char na[][MAXLANGCO
   return result;
 }
 
-static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][MAXLANGCODE2] = NULL)
+static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][MAXLANGCODE2] = NULL, const int *t = NULL)
 {
   char *q = s;
   int i = 0;
   while (a[i] || i == 0) {
         q += sprintf(q, Base == 16 ? "%s%X" : "%s%d", i ? "," : "", a[i]);
-        if (a[i] && n && *n[i])
-           q += sprintf(q, "=%s", n[i]);
+        const char *Delim = "=";
+        if (a[i]) {
+           if (n && *n[i]) {
+              q += sprintf(q, "%s%s", Delim, n[i]);
+              Delim = "";
+              }
+           if (t && t[i])
+              q += sprintf(q, "%s@%d", Delim, t[i]);
+           }
         if (!a[i])
            break;
         i++;
@@ -287,29 +294,29 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
+void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
   if (vpid != Vpid || ppid != Ppid || vtype != Vtype || tpid != Tpid)
      mod |= CHANNELMOD_PIDS;
-  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(spids, Spids, slangs, SLangs);
+  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(atypes, Atypes) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
      mod |= CHANNELMOD_LANGS;
   if (m & VALDIFF)
      mod |= CHANNELMOD_PIDS;
   if (mod) {
-     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia
+     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2 + 5) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod@type', +10: paranoia
      char OldApidsBuf[BufferSize];
      char NewApidsBuf[BufferSize];
      char *q = OldApidsBuf;
-     q += IntArrayToString(q, apids, 10, alangs);
+     q += IntArrayToString(q, apids, 10, alangs, atypes);
      if (dpids[0]) {
         *q++ = ';';
         q += IntArrayToString(q, dpids, 10, dlangs);
         }
      *q = 0;
      q = NewApidsBuf;
-     q += IntArrayToString(q, Apids, 10, ALangs);
+     q += IntArrayToString(q, Apids, 10, ALangs, Atypes);
      if (Dpids[0]) {
         *q++ = ';';
         q += IntArrayToString(q, Dpids, 10, DLangs);
@@ -331,6 +338,7 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, char ALangs[][
      vtype = Vtype;
      for (int i = 0; i < MAXAPIDS; i++) {
          apids[i] = Apids[i];
+         atypes[i] = Atypes[i];
          strn0cpy(alangs[i], ALangs[i], MAXLANGCODE2);
          }
      apids[MAXAPIDS] = 0;
@@ -485,10 +493,10 @@ cString cChannel::ToText(const cChannel *Channel)
      if (Channel->vpid && Channel->vtype)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "=%d", Channel->vtype);
      *q = 0;
-     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia
+     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2 + 5) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod@type', +10: paranoia
      char apidbuf[BufferSize];
      q = apidbuf;
-     q += IntArrayToString(q, Channel->apids, 10, Channel->alangs);
+     q += IntArrayToString(q, Channel->apids, 10, Channel->alangs, Channel->atypes);
      if (Channel->dpids[0]) {
         *q++ = ';';
         q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs);
@@ -547,6 +555,7 @@ bool cChannel::Parse(const char *s)
         vpid = ppid = 0;
         vtype = 0;
         apids[0] = 0;
+        atypes[0] = 0;
         dpids[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
@@ -580,9 +589,15 @@ bool cChannel::Parse(const char *s)
            char *strtok_next;
            while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                  if (NumApids < MAXAPIDS) {
+                    atypes[NumApids] = 4; // backwards compatibility
                     char *l = strchr(q, '=');
                     if (l) {
                        *l++ = 0;
+                       char *t = strchr(l, '@');
+                       if (t) {
+                          *t++ = 0;
+                          atypes[NumApids] = strtol(t, NULL, 10);
+                          }
                        strn0cpy(alangs[NumApids], l, MAXLANGCODE2);
                        }
                     else
@@ -594,6 +609,7 @@ bool cChannel::Parse(const char *s)
                  p = NULL;
                  }
            apids[NumApids] = 0;
+           atypes[NumApids] = 0;
            if (dpidbuf) {
               char *p = dpidbuf;
               char *q;
