@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.36 2010/04/11 10:45:15 kls Exp $
+ * $Id: device.c 2.37 2010/06/03 13:35:02 kls Exp $
  */
 
 #include "device.h"
@@ -152,7 +152,7 @@ int cDevice::NextCardIndex(int n)
         esyslog("ERROR: nextCardIndex too big (%d)", nextCardIndex);
      }
   else if (n < 0)
-     esyslog("ERROR: invalid value in IncCardIndex(%d)", n);
+     esyslog("ERROR: invalid value in nextCardIndex(%d)", n);
   return nextCardIndex;
 }
 
