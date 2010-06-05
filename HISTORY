@@ -6463,3 +6463,5 @@ Video Disk Recorder Revision History
   See man vdr(5) on how the APID section of channels has been extended to store
   this information.
 - Added detecting channels that use service type 0x16.
+- Added full handling of the stream types of Dolby Digital pids
+  (thanks to Jose Alberto Reguero).

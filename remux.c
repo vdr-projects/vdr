@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.46 2010/05/16 12:23:12 kls Exp $
+ * $Id: remux.c 2.47 2010/06/05 13:32:15 kls Exp $
  */
 
 #include "remux.h"
@@ -188,10 +188,10 @@ int cPatPmtGenerator::MakeStream(uchar *Target, uchar Type, int Pid)
   return i;
 }
 
-int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target)
+int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target, uchar Type)
 {
   int i = 0;
-  Target[i++] = SI::AC3DescriptorTag;
+  Target[i++] = Type;
   Target[i++] = 0x01; // length
   Target[i++] = 0x00;
   IncEsInfoLength(i);
@@ -327,7 +327,7 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
          }
      for (int n = 0; Channel->Dpid(n); n++) {
          i += MakeStream(buf + i, 0x06, Channel->Dpid(n));
-         i += MakeAC3Descriptor(buf + i);
+         i += MakeAC3Descriptor(buf + i, Channel->Dtype(n));
          i += MakeLanguageDescriptor(buf + i, Channel->Dlang(n));
          }
      for (int n = 0; Channel->Spid(n); n++) {
@@ -552,13 +552,16 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
            case 0x06: // STREAMTYPE_13818_PES_PRIVATE
                       {
                       int dpid = 0;
+                      int dtype = 0;
                       char lang[MAXLANGCODE1] = "";
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                           switch (d->getDescriptorTag()) {
                             case SI::AC3DescriptorTag:
+                            case SI::EnhancedAC3DescriptorTag:
                                  dbgpatpmt(" AC3");
                                  dpid = stream.getPid();
+                                 dtype = d->getDescriptorTag();
                                  break;
                             case SI::SubtitlingDescriptorTag:
                                  dbgpatpmt(" subtitling");
@@ -605,7 +608,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
                             dpids[NumDpids] = dpid;
-                            dtypes[NumDpids] = stream.getStreamType();
+                            dtypes[NumDpids] = dtype;
                             strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
                             if (updatePrimaryDevice && Setup.UseDolbyDigital)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);

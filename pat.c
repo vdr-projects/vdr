@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.10 2010/05/16 11:12:57 kls Exp $
+ * $Id: pat.c 2.11 2010/06/05 13:26:47 kls Exp $
  */
 
 #include "pat.h"
@@ -334,6 +334,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Apids[MAXAPIDS + 1] = { 0 }; // these lists are zero-terminated
         int Atypes[MAXDPIDS + 1] = { 0 };
         int Dpids[MAXDPIDS + 1] = { 0 };
+        int Dtypes[MAXDPIDS + 1] = { 0 };
         int Spids[MAXSPIDS + 1] = { 0 };
         uchar SubtitlingTypes[MAXSPIDS + 1] = { 0 };
         uint16_t CompositionPageIds[MAXSPIDS + 1] = { 0 };
@@ -399,6 +400,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
               //XXX case 8: // STREAMTYPE_13818_DSMCC
                       {
                       int dpid = 0;
+                      int dtype = 0;
                       char lang[MAXLANGCODE1] = { 0 };
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
@@ -406,6 +408,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                             case SI::AC3DescriptorTag:
                             case SI::EnhancedAC3DescriptorTag:
                                  dpid = esPid;
+                                 dtype = d->getDescriptorTag();
                                  ProcessCaDescriptors = true;
                                  break;
                             case SI::SubtitlingDescriptorTag:
@@ -446,6 +449,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
                             Dpids[NumDpids] = dpid;
+                            Dtypes[NumDpids] = dtype;
                             strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
                             NumDpids++;
                             }
@@ -485,7 +489,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                }
             }
         if (Setup.UpdateChannels >= 2) {
-           Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, DLangs, Spids, SLangs, Tpid);
+           Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, Dtypes, DLangs, Spids, SLangs, Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
            Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
            }

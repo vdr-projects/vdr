@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.15 2010/05/16 11:44:31 kls Exp $
+ * $Id: channels.c 2.16 2010/06/05 13:33:57 kls Exp $
  */
 
 #include "channels.h"
 #include <ctype.h>
 #include "device.h"
 #include "epg.h"
+#include "libsi/si.h"
 #include "timers.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
@@ -294,12 +295,12 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
+void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
   if (vpid != Vpid || ppid != Ppid || vtype != Vtype || tpid != Tpid)
      mod |= CHANNELMOD_PIDS;
-  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(atypes, Atypes) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(spids, Spids, slangs, SLangs);
+  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(atypes, Atypes) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(dtypes, Dtypes) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
      mod |= CHANNELMOD_LANGS;
   if (m & VALDIFF)
@@ -312,14 +313,14 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      q += IntArrayToString(q, apids, 10, alangs, atypes);
      if (dpids[0]) {
         *q++ = ';';
-        q += IntArrayToString(q, dpids, 10, dlangs);
+        q += IntArrayToString(q, dpids, 10, dlangs, dtypes);
         }
      *q = 0;
      q = NewApidsBuf;
      q += IntArrayToString(q, Apids, 10, ALangs, Atypes);
      if (Dpids[0]) {
         *q++ = ';';
-        q += IntArrayToString(q, Dpids, 10, DLangs);
+        q += IntArrayToString(q, Dpids, 10, DLangs, Dtypes);
         }
      *q = 0;
      const int SBufferSize = MAXSPIDS * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
@@ -344,6 +345,7 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      apids[MAXAPIDS] = 0;
      for (int i = 0; i < MAXDPIDS; i++) {
          dpids[i] = Dpids[i];
+         dtypes[i] = Dtypes[i];
          strn0cpy(dlangs[i], DLangs[i], MAXLANGCODE2);
          }
      dpids[MAXDPIDS] = 0;
@@ -499,7 +501,7 @@ cString cChannel::ToText(const cChannel *Channel)
      q += IntArrayToString(q, Channel->apids, 10, Channel->alangs, Channel->atypes);
      if (Channel->dpids[0]) {
         *q++ = ';';
-        q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs);
+        q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs, Channel->dtypes);
         }
      *q = 0;
      char caidbuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
@@ -557,6 +559,7 @@ bool cChannel::Parse(const char *s)
         apids[0] = 0;
         atypes[0] = 0;
         dpids[0] = 0;
+        dtypes[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            parameters = parambuf;
@@ -617,9 +620,15 @@ bool cChannel::Parse(const char *s)
               char *strtok_next;
               while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                     if (NumDpids < MAXDPIDS) {
+                       dtypes[NumDpids] = SI::AC3DescriptorTag; // backwards compatibility
                        char *l = strchr(q, '=');
                        if (l) {
                           *l++ = 0;
+                          char *t = strchr(l, '@');
+                          if (t) {
+                             *t++ = 0;
+                             dtypes[NumDpids] = strtol(t, NULL, 10);
+                             }
                           strn0cpy(dlangs[NumDpids], l, MAXLANGCODE2);
                           }
                        else
@@ -631,6 +640,7 @@ bool cChannel::Parse(const char *s)
                     p = NULL;
                     }
               dpids[NumDpids] = 0;
+              dtypes[NumDpids] = 0;
               }
 
            if (caidbuf) {
