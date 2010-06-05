@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.5 2010/05/13 14:43:44 kls Exp $
+ * $Id: dvbsubtitle.c 2.6 2010/06/05 14:03:55 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1017,10 +1017,16 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             int version = (Data[6] & 0xF0) >> 4;
             if (version != ddsVersionNumber) {
                int displayWindowFlag   = (Data[6] & 0x08) >> 3;
-               displayWidth            = (Data[7] << 8) | Data[8];
-               displayHeight           = (Data[9] << 8) | Data[10];
-               displayHorizontalOffset = displayWindowFlag ? Data[11] : 0; // displayWindowHorizontalPositionMinimum
-               displayVerticalOffset   = displayWindowFlag ? Data[13] : 0; // displayWindowVerticalPositionMinimum
+               displayHorizontalOffset = 0;
+               displayVerticalOffset   = 0;
+               displayWidth            = ((Data[7] << 8) | Data[8]) + 1;
+               displayHeight           = ((Data[9] << 8) | Data[10]) + 1;
+               if (displayWindowFlag) { 
+                  displayHorizontalOffset = (Data[11] << 8) | Data[12];                                 // displayWindowHorizontalPositionMinimum
+                  displayWidth            = ((Data[13] << 8) | Data[14]) - displayHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+                  displayVerticalOffset   = (Data[15] << 8) | Data[16];                                 // displayWindowVerticalPositionMinimum
+                  displayHeight           = ((Data[17] << 8) | Data[18]) - displayVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
+                  }
                SetupChanged();
                ddsVersionNumber = version;
                }
