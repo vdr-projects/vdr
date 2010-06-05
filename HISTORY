@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-05-16: Version 1.7.15
+2010-06-05: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6459,7 +6459,7 @@ Video Disk Recorder Revision History
 - Fixed a problem with external Dolby Digital processing via the '-a' option in live
   mode and with TS recordings (reported by Christopher Reimer).
 - Added handling MPEG audio types "ISO/IEC 14496-3 Audio with LATM transport syntax"
-  and "ISO/IEC 13818-7 Audio with ADTS transport sytax" (suggested by Luis Fernandes).
+  and "ISO/IEC 13818-7 Audio with ADTS transport syntax" (suggested by Luis Fernandes).
   See man vdr(5) on how the APID section of channels has been extended to store
   this information.
 - Added detecting channels that use service type 0x16.
