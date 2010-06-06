@@ -6422,10 +6422,6 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - cDvbDevice::ProvidesTransponder() now checks the modulation capabilities of the
   device (as far as the driver allows this).
-  If you have a device that provides PSK_8 modulation you may want to apply the
-  patch from ftp://ftp.tvdr.de/vdr/Developer/v4l-dvb-add-FE_CAN_PSK_8.diff to your
-  driver source. Otherwise VDR won't be able to detect whether a device is capable
-  of handling PSK_8.
 - Fixed cFrameDetector::Analyze() in case part of the data has been processed and
   there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
 - Added a note about not deleting cDeviceHook objects to device.h.
