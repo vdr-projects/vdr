@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.26 2010/03/27 14:35:14 kls Exp $
+ * $Id: config.h 2.27 2010/06/06 09:53:02 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -254,6 +254,7 @@ public:
   int VpsMargin;
   int RecordingDirs;
   int FoldersInTimerMenu;
+  int NumberKeysForChars;
   int VideoDisplayFormat;
   int VideoFormat;
   int UpdateChannels;

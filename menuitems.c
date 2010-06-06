@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.6 2010/02/16 14:44:35 kls Exp $
+ * $Id: menuitems.c 2.7 2010/06/06 10:37:08 kls Exp $
  */
 
 #include "menuitems.h"
@@ -488,6 +488,20 @@ uint cMenuEditStrItem::Inc(uint c, bool Up)
   return *p;
 }
 
+void cMenuEditStrItem::Type(uint c)
+{
+  if (insert && lengthUtf8 < length - 1)
+     Insert();
+  valueUtf8[pos] = c;
+  if (pos < length - 2)
+     pos++;
+  if (pos >= lengthUtf8) {
+     valueUtf8[pos] = ' ';
+     valueUtf8[pos + 1] = 0;
+     lengthUtf8 = pos + 1;
+     }
+}
+
 void cMenuEditStrItem::Insert(void)
 {
   memmove(valueUtf8 + pos + 1, valueUtf8 + pos, (lengthUtf8 - pos + 1) * sizeof(*valueUtf8));
@@ -597,39 +611,43 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case k0|k_Repeat ... k9|k_Repeat:
     case k0 ... k9: {
                  if (InEditMode()) {
-                    if (!SameKey) {
-                       if (!newchar)
-                          AdvancePos();
-                       currentCharUtf8 = NULL;
-                       }
-                    if (!currentCharUtf8 || !*currentCharUtf8 || *currentCharUtf8 == '\t') {
-                       // find the beginning of the character map entry for Key
-                       int n = NORMALKEY(Key) - k0;
-                       currentCharUtf8 = charMapUtf8;
-                       while (n > 0 && *currentCharUtf8) {
-                             if (*currentCharUtf8++ == '\t')
-                                n--;
-                             }
-                       // find first allowed character
-                       while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8))
-                             currentCharUtf8++;
-                       }
-                    if (*currentCharUtf8 && *currentCharUtf8 != '\t') {
-                       if (insert && newchar) {
-                          // create a new character in insert mode
-                          if (lengthUtf8 < length - 1)
-                             Insert();
+                    if (Setup.NumberKeysForChars) {
+                       if (!SameKey) {
+                          if (!newchar)
+                             AdvancePos();
+                          currentCharUtf8 = NULL;
                           }
-                       valueUtf8[pos] = *currentCharUtf8;
-                       if (uppercase)
-                          valueUtf8[pos] = Utf8to(upper, valueUtf8[pos]);
-                       // find next allowed character
-                       do {
-                          currentCharUtf8++;
-                          } while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8));
-                       newchar = false;
-                       autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
+                       if (!currentCharUtf8 || !*currentCharUtf8 || *currentCharUtf8 == '\t') {
+                          // find the beginning of the character map entry for Key
+                          int n = NORMALKEY(Key) - k0;
+                          currentCharUtf8 = charMapUtf8;
+                          while (n > 0 && *currentCharUtf8) {
+                                if (*currentCharUtf8++ == '\t')
+                                   n--;
+                                }
+                          // find first allowed character
+                          while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8))
+                                currentCharUtf8++;
+                          }
+                       if (*currentCharUtf8 && *currentCharUtf8 != '\t') {
+                          if (insert && newchar) {
+                             // create a new character in insert mode
+                             if (lengthUtf8 < length - 1)
+                                Insert();
+                             }
+                          valueUtf8[pos] = *currentCharUtf8;
+                          if (uppercase)
+                             valueUtf8[pos] = Utf8to(upper, valueUtf8[pos]);
+                          // find next allowed character
+                          do {
+                             currentCharUtf8++;
+                             } while (*currentCharUtf8 && *currentCharUtf8 != '\t' && !IsAllowed(*currentCharUtf8));
+                          newchar = false;
+                          autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
+                          }
                        }
+                    else
+                       Type('0' + NORMALKEY(Key) - k0);
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);
@@ -645,19 +663,8 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     default:     if (InEditMode() && BASICKEY(Key) == kKbd) {
                     int c = KEYKBD(Key);
                     if (c <= 0xFF) { // FIXME what about other UTF-8 characters?
-                       uint *p = IsAllowed(Utf8to(lower, c));
-                       if (p) {
-                          if (insert && lengthUtf8 < length - 1)
-                             Insert();
-                          valueUtf8[pos] = c;
-                          if (pos < length - 2)
-                             pos++;
-                          if (pos >= lengthUtf8) {
-                             valueUtf8[pos] = ' ';
-                             valueUtf8[pos + 1] = 0;
-                             lengthUtf8 = pos + 1;
-                             }
-                          }
+                       if (IsAllowed(Utf8to(lower, c)))
+                          Type(c);
                        else {
                           switch (c) {
                             case 0x7F: // backspace

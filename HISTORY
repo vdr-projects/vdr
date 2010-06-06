@@ -6411,7 +6411,7 @@ Video Disk Recorder Revision History
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
 
-2010-06-05: Version 1.7.15
+2010-06-06: Version 1.7.15
 
 - Added Macedonian language texts (thanks to Dimitar Petrovski).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -6465,3 +6465,6 @@ Video Disk Recorder Revision History
 - Added detecting channels that use service type 0x16.
 - Added full handling of the stream types of Dolby Digital pids
   (thanks to Jose Alberto Reguero).
+- The new setup option "OSD/Number keys for characters" can be used to control whether
+  the number keys can be used to enter characters in a text input field (suggested
+  by Stefan Huskamp).

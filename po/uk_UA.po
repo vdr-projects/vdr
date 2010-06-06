@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-04-25 15:45+0200\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2010-04-25 16:35+0200\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian\n"
@@ -838,6 +838,9 @@ msgstr "Каталоги зберігання записів"
 
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Каталоги в меню таймера"
+
+msgid "Setup.OSD$Number keys for characters"
+msgstr ""
 
 msgid "EPG"
 msgstr "Телегід (EPG)"
