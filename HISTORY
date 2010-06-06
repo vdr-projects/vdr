@@ -6410,3 +6410,57 @@ Video Disk Recorder Revision History
   during replay.
 - The new setup option "Folders in timer menu" controls whether the file names in
   the timer menu are shown with their full folder path.
+
+2010-06-06: Version 1.7.15
+
+- Added Macedonian language texts (thanks to Dimitar Petrovski).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added handling of EnhancedAC3DescriptorTag (thanks to Eric Valette).
+- The default SVDRP port is now 6419 (registered with ICANN/IANA by Christian Tramnitz).
+  Use '-p 2001' to switch back to the old port if necessary.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- cDvbDevice::ProvidesTransponder() now checks the modulation capabilities of the
+  device (as far as the driver allows this).
+- Fixed cFrameDetector::Analyze() in case part of the data has been processed and
+  there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
+- Added a note about not deleting cDeviceHook objects to device.h.
+- Added user defined key kUser0 (suggested by Ulf Kiener).
+- Include paths are now added instead of overwriting INCLUDES in the Makefile (thanks
+  to Paul Menzel).
+- The various modulation types are now taken into account when selecting a device for
+  a recording or live viewing, so that devices that provide more capabilities are
+  spared.
+- Fixed generating PMT language descriptors for multi language PIDs (thanks to Rolf
+  Ahrenberg).
+- Transponders that use "8psk turbo fec" (a non-standard mode used by North American
+  providers) are now identified by assuming that all 8psk transponders on DVB-S use
+  "turbo fec". In order to determine whether a certain device can handle "turbo fec",
+  the new driver flag FE_CAN_TURBO_FEC is checked. If your device can handle "turbo
+  fec", and your driver doesn't have that flag, yet, you can apply the patch from
+  ftp://ftp.tvdr.de/vdr/Developer/v4l-dvb-add-FE_CAN_TURBO_FEC.diff. A temporary
+  macro in dvbdevice.c defines the flag for all those who don't need this in the
+  driver, so that they can continue using an unmodified driver.
+  Thanks to Derek Kelly for testing this.
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Fixed handling "none" color entries in XPM files (thanks to Thomas Günther).
+- Fixed a crash when creating a new channel if the channel list is empty (reported
+  by Halim Sahin).
+- Updated the Czech OSD texts (thanks to Radek Stastny).
+- Fixed a possible out of buffer memory access in case of bad TS data (reported
+  by Rolf Ahrenberg).
+- Implemented handling of HD resolution subtitles according to v1.3.1 of
+  ETSI EN 300 743, chapter 7.2.1 (thanks to Rolf Ahrenberg).
+- The EPG data now handles stream components 5 (H.264-video) and 6 (HEAAC-audio).
+- Fixed a problem with external Dolby Digital processing via the '-a' option in live
+  mode and with TS recordings (reported by Christopher Reimer).
+- Added handling MPEG audio types "ISO/IEC 14496-3 Audio with LATM transport syntax"
+  and "ISO/IEC 13818-7 Audio with ADTS transport syntax" (suggested by Luis Fernandes).
+  See man vdr(5) on how the APID section of channels has been extended to store
+  this information.
+- Added detecting channels that use service type 0x16.
+- Added full handling of the stream types of Dolby Digital pids
+  (thanks to Jose Alberto Reguero).
+- The new setup option "OSD/Number keys for characters" can be used to control whether
+  the number keys can be used to enter characters in a text input field (suggested
+  by Stefan Huskamp).

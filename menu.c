@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.21 2010/03/12 16:03:07 kls Exp $
+ * $Id: menu.c 2.24 2010/06/06 09:56:16 kls Exp $
  */
 
 #include "menu.h"
@@ -210,16 +210,18 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 {
   channel = Channel;
   sourceParam = NULL;
+  *name = 0;
   if (channel) {
      data = *channel;
+     strn0cpy(name, data.name, sizeof(name));
      if (New) {
         channel = NULL;
         data.nid = 0;
         data.tid = 0;
         data.rid = 0;
         }
-     Setup();
      }
+  Setup();
 }
 
 void cMenuEditChannel::Setup(void)
@@ -229,7 +231,6 @@ void cMenuEditChannel::Setup(void)
   Clear();
 
   // Parameters for all types of sources:
-  strn0cpy(name, data.name, sizeof(name));
   Add(new cMenuEditStrItem( tr("Name"),          name, sizeof(name)));
   Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
@@ -2568,6 +2569,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu key closes"),        &data.MenuKeyCloses));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Number keys for characters"), &data.NumberKeysForChars));
   SetCurrent(Get(current));
   Display();
 }

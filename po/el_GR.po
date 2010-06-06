@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek\n"
@@ -475,6 +475,9 @@ msgstr "Ρυθμισεις"
 msgid "Key$Commands"
 msgstr "Εντολές"
 
+msgid "Key$User0"
+msgstr ""
+
 msgid "Key$User1"
 msgstr ""
 
@@ -834,6 +837,9 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Φάκελοι εγγραφών"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"

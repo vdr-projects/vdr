@@ -2,7 +2,7 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Hannu Savolainen <hannu@opensound.com>, 2002
-# Jaakko Hyv‰tti <jaakko@hyvatti.iki.fi>, 2002, 2003
+# Jaakko Hyv√§tti <jaakko@hyvatti.iki.fi>, 2002, 2003
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
 # Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003, 2004, 2005, 2006, 2007, 2008
 #
@@ -10,34 +10,34 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Virheellinen kanavavalinta ***"
 
 msgid "Channel not available!"
-msgstr "Kanava ei ole k‰ytett‰viss‰!"
+msgstr "Kanava ei ole k√§ytett√§viss√§!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Siirtotilan aloitus ep‰onnistui!"
+msgstr "Siirtotilan aloitus ep√§onnistui!"
 
 msgid "off"
 msgstr "poissa"
 
 msgid "on"
-msgstr "p‰‰ll‰"
+msgstr "p√§√§ll√§"
 
 msgid "auto"
 msgstr "auto"
 
 msgid "none"
-msgstr "tyhj‰"
+msgstr "tyhj√§"
 
 msgid "Polarization"
 msgstr "Polarisaatio"
@@ -67,7 +67,7 @@ msgid "Transmission"
 msgstr "Transmissio"
 
 msgid "Guard"
-msgstr "Suojav‰li"
+msgstr "Suojav√§li"
 
 msgid "Hierarchy"
 msgstr "Hierarkia"
@@ -76,13 +76,13 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "Starting EPG scan"
-msgstr "Ohjelmaoppaan p‰ivitys aloitettu"
+msgstr "Ohjelmaoppaan p√§ivitys aloitettu"
 
 msgid "Content$Movie/Drama"
 msgstr "Elokuva/draama"
 
 msgid "Content$Detective/Thriller"
-msgstr "Etsiv‰/trilleri"
+msgstr "Etsiv√§/trilleri"
 
 msgid "Content$Adventure/Western/War"
 msgstr "Seikkailu/western/sota"
@@ -109,7 +109,7 @@ msgid "Content$News/Current Affairs"
 msgstr "Uutiset/ajankohtaisohjelma"
 
 msgid "Content$News/Weather Report"
-msgstr "Uutiset/s‰‰tiedot"
+msgstr "Uutiset/s√§√§tiedot"
 
 msgid "Content$News Magazine"
 msgstr "Uutismakasiini"
@@ -118,7 +118,7 @@ msgid "Content$Documentary"
 msgstr "Dokumentti"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr "Keskustelu/haastattelu/v‰ittely"
+msgstr "Keskustelu/haastattelu/v√§ittely"
 
 msgid "Content$Show/Game Show"
 msgstr "Show/visailu"
@@ -172,7 +172,7 @@ msgid "Content$Children's/Youth Programme"
 msgstr "Lasten ja nuorten ohjelma"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr "Alle kouluik‰isten ohjelma"
+msgstr "Alle kouluik√§isten ohjelma"
 
 msgid "Content$Entertainment Programme for 6 to 14"
 msgstr "Viihdeohjelma 6-14 vuotiaille"
@@ -232,7 +232,7 @@ msgid "Content$Experimental Film/Video"
 msgstr "Kokeellinen elokuva/video"
 
 msgid "Content$Broadcasting/Press"
-msgstr "Televisio/radio/lehdistˆ"
+msgstr "Televisio/radio/lehdist√∂"
 
 msgid "Content$New Media"
 msgstr "Uusmedia"
@@ -253,19 +253,19 @@ msgid "Content$Economics/Social Advisory"
 msgstr "Talous/yhteiskunnallinen neuvonta"
 
 msgid "Content$Remarkable People"
-msgstr "Merkitt‰v‰t henkilˆt"
+msgstr "Merkitt√§v√§t henkil√∂t"
 
 msgid "Content$Education/Science/Factual"
 msgstr "Koulutus/tiede"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr "Luonto/el‰imet/ymp‰ristˆ"
+msgstr "Luonto/el√§imet/ymp√§rist√∂"
 
 msgid "Content$Technology/Natural Sciences"
 msgstr "Teknologia/luonnontiede"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr "L‰‰ketiede/fysiologia/psykologia"
+msgstr "L√§√§ketiede/fysiologia/psykologia"
 
 msgid "Content$Foreign Countries/Expeditions"
 msgstr "Vieraat maat/tutkimusretket"
@@ -286,7 +286,7 @@ msgid "Content$Tourism/Travel"
 msgstr "Turismi/matkustaminen"
 
 msgid "Content$Handicraft"
-msgstr "K‰sityˆt"
+msgstr "K√§sity√∂t"
 
 msgid "Content$Motoring"
 msgstr "Autoilu"
@@ -304,7 +304,7 @@ msgid "Content$Gardening"
 msgstr "Puutarhanhoito"
 
 msgid "Content$Original Language"
-msgstr "Alkuper‰iskieli"
+msgstr "Alkuper√§iskieli"
 
 msgid "Content$Black & White"
 msgstr "Mustavalkoinen"
@@ -313,14 +313,14 @@ msgid "Content$Unpublished"
 msgstr "Julkaisematon"
 
 msgid "Content$Live Broadcast"
-msgstr "Suoral‰hetys"
+msgstr "Suoral√§hetys"
 
 #, c-format
 msgid "ParentalRating$from %d"
 msgstr "K-%d"
 
 msgid "No title"
-msgstr "Ei esityst‰"
+msgstr "Ei esityst√§"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
@@ -334,47 +334,47 @@ msgid "Phase 1: Detecting RC code type"
 msgstr "Vaihe 1: Koodauksen tunnistaminen"
 
 msgid "Press any key on the RC unit"
-msgstr "Paina mit‰ tahansa kaukos‰‰timen n‰pp‰int‰"
+msgstr "Paina mit√§ tahansa kaukos√§√§timen n√§pp√§int√§"
 
 msgid "RC code detected!"
-msgstr "N‰pp‰inpainallus vastaanotettu!"
+msgstr "N√§pp√§inpainallus vastaanotettu!"
 
 msgid "Do not press any key..."
-msgstr "ƒl‰ paina kaukos‰‰timen n‰pp‰imi‰..."
+msgstr "√Ñl√§ paina kaukos√§√§timen n√§pp√§imi√§..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Vaihe 2: N‰pp‰inkoodien opettelu"
+msgstr "Vaihe 2: N√§pp√§inkoodien opettelu"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Paina n‰pp‰int‰ toiminnolle '%s'"
+msgstr "Paina n√§pp√§int√§ toiminnolle '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Hyv‰ksy painamalla 'Ylˆs'"
+msgstr "Hyv√§ksy painamalla 'Yl√∂s'"
 
 msgid "Press 'Down' to continue"
 msgstr "Jatka painamalla 'Alas'"
 
 msgid "(press 'Up' to go back)"
-msgstr "(palaa takaisin painamalla 'Ylˆs')"
+msgstr "(palaa takaisin painamalla 'Yl√∂s')"
 
 msgid "(press 'Down' to end key definition)"
 msgstr "(lopeta opettaminen painamalla 'Alas')"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "n‰pp‰imen puuttuessa paina 'Valikko'"
+msgstr "n√§pp√§imen puuttuessa paina 'Valikko'"
 
 msgid "Learning Remote Control Keys"
-msgstr "Kaukos‰‰timen opettaminen"
+msgstr "Kaukos√§√§timen opettaminen"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Vaihe 3: N‰pp‰inkoodien tallentaminen"
+msgstr "Vaihe 3: N√§pp√§inkoodien tallentaminen"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Paina 'Ylˆs' tallentaaksesi ja 'Alas' peruuttaaksesi"
+msgstr "Paina 'Yl√∂s' tallentaaksesi ja 'Alas' peruuttaaksesi"
 
 msgid "Key$Up"
-msgstr "Ylˆs"
+msgstr "Yl√∂s"
 
 msgid "Key$Down"
 msgstr "Alas"
@@ -398,7 +398,7 @@ msgid "Key$Red"
 msgstr "Punainen"
 
 msgid "Key$Green"
-msgstr "Vihre‰"
+msgstr "Vihre√§"
 
 msgid "Key$Yellow"
 msgstr "Keltainen"
@@ -446,16 +446,16 @@ msgid "Key$PrevChannel"
 msgstr "Edellinen kanava"
 
 msgid "Key$Volume+"
-msgstr "ƒ‰nenvoimakkuus +"
+msgstr "√Ñ√§nenvoimakkuus +"
 
 msgid "Key$Volume-"
-msgstr "ƒ‰nenvoimakkuus -"
+msgstr "√Ñ√§nenvoimakkuus -"
 
 msgid "Key$Mute"
 msgstr "Mykistys"
 
 msgid "Key$Audio"
-msgstr "ƒ‰ni"
+msgstr "√Ñ√§ni"
 
 msgid "Key$Subtitles"
 msgstr "Tekstitys"
@@ -478,32 +478,35 @@ msgstr "Asetukset"
 msgid "Key$Commands"
 msgstr "Komennot"
 
+msgid "Key$User0"
+msgstr "Lis√§n√§pp√§in 0"
+
 msgid "Key$User1"
-msgstr "Lis‰n‰pp‰in 1"
+msgstr "Lis√§n√§pp√§in 1"
 
 msgid "Key$User2"
-msgstr "Lis‰n‰pp‰in 2"
+msgstr "Lis√§n√§pp√§in 2"
 
 msgid "Key$User3"
-msgstr "Lis‰n‰pp‰in 3"
+msgstr "Lis√§n√§pp√§in 3"
 
 msgid "Key$User4"
-msgstr "Lis‰n‰pp‰in 4"
+msgstr "Lis√§n√§pp√§in 4"
 
 msgid "Key$User5"
-msgstr "Lis‰n‰pp‰in 5"
+msgstr "Lis√§n√§pp√§in 5"
 
 msgid "Key$User6"
-msgstr "Lis‰n‰pp‰in 6"
+msgstr "Lis√§n√§pp√§in 6"
 
 msgid "Key$User7"
-msgstr "Lis‰n‰pp‰in 7"
+msgstr "Lis√§n√§pp√§in 7"
 
 msgid "Key$User8"
-msgstr "Lis‰n‰pp‰in 8"
+msgstr "Lis√§n√§pp√§in 8"
 
 msgid "Key$User9"
-msgstr "Lis‰n‰pp‰in 9"
+msgstr "Lis√§n√§pp√§in 9"
 
 msgid "Disk"
 msgstr "Levy"
@@ -524,7 +527,7 @@ msgid "Name"
 msgstr "Nimi"
 
 msgid "Source"
-msgstr "L‰hde"
+msgstr "L√§hde"
 
 msgid "Frequency"
 msgstr "Taajuus"
@@ -536,10 +539,10 @@ msgid "Ppid"
 msgstr "PCR-PID"
 
 msgid "Apid1"
-msgstr "ƒ‰ni-PID (1)"
+msgstr "√Ñ√§ni-PID (1)"
 
 msgid "Apid2"
-msgstr "ƒ‰ni-PID (2)"
+msgstr "√Ñ√§ni-PID (2)"
 
 msgid "Dpid1"
 msgstr "Dolby-PID (1)"
@@ -563,7 +566,7 @@ msgid "Sid"
 msgstr "Palvelu-ID"
 
 msgid "Channel settings are not unique!"
-msgstr "Kanava-asetukset eiv‰t ole yksilˆlliset!"
+msgstr "Kanava-asetukset eiv√§t ole yksil√∂lliset!"
 
 msgid "Channels"
 msgstr "Kanavat"
@@ -578,10 +581,10 @@ msgid "Button$Delete"
 msgstr "Poista"
 
 msgid "Button$Mark"
-msgstr "Siirr‰"
+msgstr "Siirr√§"
 
 msgid "Channel is being used by a timer!"
-msgstr "Kanava on ajastimen k‰ytˆss‰!"
+msgstr "Kanava on ajastimen k√§yt√∂ss√§!"
 
 msgid "Delete channel?"
 msgstr "Poistetaanko kanava?"
@@ -600,7 +603,7 @@ msgstr "Kansio on jo olemassa!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "Kansion nimess‰ ei saa olla '%c'-merkki‰!"
+msgstr "Kansion nimess√§ ei saa olla '%c'-merkki√§!"
 
 msgid "Button$Select"
 msgstr "Valitse"
@@ -621,7 +624,7 @@ msgid "Channel"
 msgstr "Kanava"
 
 msgid "Day"
-msgstr "P‰iv‰"
+msgstr "P√§iv√§"
 
 msgid "Start"
 msgstr "Aloitus"
@@ -636,7 +639,7 @@ msgid "Priority"
 msgstr "Prioriteetti"
 
 msgid "Lifetime"
-msgstr "Elinik‰"
+msgstr "Elinik√§"
 
 msgid "File"
 msgstr "Tiedosto"
@@ -645,7 +648,7 @@ msgid "Button$Folder"
 msgstr "Kansio"
 
 msgid "First day"
-msgstr "1. p‰iv‰"
+msgstr "1. p√§iv√§"
 
 msgid "Select folder"
 msgstr "Valitse kansio"
@@ -654,7 +657,7 @@ msgid "Timers"
 msgstr "Ajastimet"
 
 msgid "Button$On/Off"
-msgstr "P‰‰ll‰/Pois"
+msgstr "P√§√§ll√§/Pois"
 
 msgid "Button$Info"
 msgstr "Tiedot"
@@ -663,7 +666,7 @@ msgid "Delete timer?"
 msgstr "Poistetaanko ajastin?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Ajastettu tallennus k‰ynniss‰ - poistetaanko silti?"
+msgstr "Ajastettu tallennus k√§ynniss√§ - poistetaanko silti?"
 
 msgid "Event"
 msgstr "Tapahtuma"
@@ -701,17 +704,17 @@ msgstr "Ohjelmisto - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "T‰m‰ tapahtuma - %s"
+msgstr "T√§m√§ tapahtuma - %s"
 
 msgid "This event - all channels"
-msgstr "T‰m‰ tapahtuma - kaikki kanavat"
+msgstr "T√§m√§ tapahtuma - kaikki kanavat"
 
 msgid "All events - all channels"
 msgstr "Kaikki tapahtumat - kaikki kanavat"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Syˆt‰ %d numeroa!"
+msgstr "Sy√∂t√§ %d numeroa!"
 
 msgid "CAM not responding!"
 msgstr "CA-moduuli ei vastaa!"
@@ -735,13 +738,13 @@ msgid "Commands"
 msgstr "Komennot"
 
 msgid "Error while accessing recording!"
-msgstr "Tallenteen toistaminen ep‰onnistui!"
+msgstr "Tallenteen toistaminen ep√§onnistui!"
 
 msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
 
 msgid "Error while deleting recording!"
-msgstr "Tallenteen poistaminen ep‰onnistui!"
+msgstr "Tallenteen poistaminen ep√§onnistui!"
 
 msgid "Recording commands"
 msgstr "Tallennekomennot"
@@ -756,7 +759,7 @@ msgid "always"
 msgstr "aina"
 
 msgid "OSD"
-msgstr "Kuvaruutun‰yttˆ"
+msgstr "Kuvaruutun√§ytt√∂"
 
 msgid "Setup.OSD$Language"
 msgstr "Kieli"
@@ -783,10 +786,10 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Viestien esitysaika (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "K‰yt‰ pieni‰ kirjasimia"
+msgstr "K√§yt√§ pieni√§ kirjasimia"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "K‰yt‰ reunan pehmennyst‰"
+msgstr "K√§yt√§ reunan pehmennyst√§"
 
 msgid "Setup.OSD$Default font"
 msgstr "Oletuskirjasintyyppi"
@@ -795,7 +798,7 @@ msgid "Setup.OSD$Small font"
 msgstr "Pieni kirjasintyyppi"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Tasav‰linen kirjasintyyppi"
+msgstr "Tasav√§linen kirjasintyyppi"
 
 msgid "Setup.OSD$Default font size (%)"
 msgstr "Oletuskirjasintyypin koko (%)"
@@ -804,7 +807,7 @@ msgid "Setup.OSD$Small font size (%)"
 msgstr "Pienen kirjasintyypin koko (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Tasav‰lisen kirjasintyypin koko (%)"
+msgstr "Tasav√§lisen kirjasintyypin koko (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanavatiedon sijainti"
@@ -813,13 +816,13 @@ msgid "bottom"
 msgstr "alareuna"
 
 msgid "top"
-msgstr "yl‰reuna"
+msgstr "yl√§reuna"
 
 msgid "Setup.OSD$Channel info time (s)"
 msgstr "Kanavatiedon esitysaika (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "N‰yt‰ kanavatieto vaihdettaessa"
+msgstr "N√§yt√§ kanavatieto vaihdettaessa"
 
 msgid "Setup.OSD$Timeout requested channel info"
 msgstr "Sulje erikseen avattu kanavatieto"
@@ -828,31 +831,34 @@ msgid "Setup.OSD$Scroll pages"
 msgstr "Valikoiden vieritys sivuttain"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Valikoiden vieritys ymp‰ri"
+msgstr "Valikoiden vieritys ymp√§ri"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Sulje valikkon‰pp‰imell‰"
+msgstr "Sulje valikkon√§pp√§imell√§"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "N‰yt‰ tallennehakemistot"
+msgstr "N√§yt√§ tallennehakemistot"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr "N√§yt√§ kansiot ajastinvalikossa"
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"
 msgstr "Ohjelmaopas"
 
 msgid "Button$Scan"
-msgstr "P‰ivit‰"
+msgstr "P√§ivit√§"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Ohjelmaoppaan taustap‰ivitys (h)"
+msgstr "Ohjelmaoppaan taustap√§ivitys (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Ohjelmaoppaan korjaustaso"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Vanha tieto n‰kyy (min)"
+msgstr "Vanha tieto n√§kyy (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Tahdista kellonaika"
@@ -905,22 +911,22 @@ msgid "Setup.DVB$Video format"
 msgstr "Kuvasuhde"
 
 msgid "Setup.DVB$Video display format"
-msgstr "N‰yttˆmuoto"
+msgstr "N√§ytt√∂muoto"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "K‰yt‰ Dolby Digital -‰‰nt‰"
+msgstr "K√§yt√§ Dolby Digital -√§√§nt√§"
 
 msgid "Setup.DVB$Update channels"
-msgstr "P‰ivit‰ kanavat"
+msgstr "P√§ivit√§ kanavat"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "ƒ‰nen kielet"
+msgstr "√Ñ√§nen kielet"
 
 msgid "Setup.DVB$Audio language"
-msgstr "ƒ‰nen kieli"
+msgstr "√Ñ√§nen kieli"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "N‰yt‰ tekstitys"
+msgstr "N√§yt√§ tekstitys"
 
 msgid "Setup.DVB$Subtitle languages"
 msgstr "Tekstityskielet"
@@ -932,16 +938,16 @@ msgid "Setup.DVB$Subtitle offset"
 msgstr "Tekstityksen tasaus"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Tekstityksen l‰pin‰kyvyys"
+msgstr "Tekstityksen l√§pin√§kyvyys"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Tekstityksen taustan l‰pin‰kyvyys"
+msgstr "Tekstityksen taustan l√§pin√§kyvyys"
 
 msgid "LNB"
 msgstr "LNB"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "K‰yt‰ DiSEqC-kytkint‰"
+msgstr "K√§yt√§ DiSEqC-kytkint√§"
 
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "LNB-rajataajuus (MHz)"
@@ -950,7 +956,7 @@ msgid "Setup.LNB$Low LNB frequency (MHz)"
 msgstr "LNB-alataajuus (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "LNB-yl‰taajuus (MHz)"
+msgstr "LNB-yl√§taajuus (MHz)"
 
 msgid "CAM reset"
 msgstr "CAM nollaus"
@@ -977,25 +983,25 @@ msgid "Can't open CAM menu!"
 msgstr "CA-moduulin valikko ei saatavilla"
 
 msgid "CAM is in use - really reset?"
-msgstr "CA-moduuli k‰ytˆss‰ - nollataanko?"
+msgstr "CA-moduuli k√§yt√∂ss√§ - nollataanko?"
 
 msgid "Can't reset CAM!"
-msgstr "CA-moduulin nollaus ep‰onnistui!"
+msgstr "CA-moduulin nollaus ep√§onnistui!"
 
 msgid "do not pause live video"
-msgstr "‰l‰ pys‰yt‰ l‰hetyst‰"
+msgstr "√§l√§ pys√§yt√§ l√§hetyst√§"
 
 msgid "confirm pause live video"
-msgstr "varmista l‰hetyksen pys‰ytt‰minen"
+msgstr "varmista l√§hetyksen pys√§ytt√§minen"
 
 msgid "pause live video"
-msgstr "pys‰yt‰ l‰hetys"
+msgstr "pys√§yt√§ l√§hetys"
 
 msgid "confirm"
-msgstr ""
+msgstr "varmista"
 
 msgid "yes"
-msgstr "kyll‰"
+msgstr "kyll√§"
 
 msgid "Recording"
 msgstr "Tallennus"
@@ -1013,22 +1019,22 @@ msgid "Setup.Recording$Default priority"
 msgstr "Tallenteen oletusprioriteetti"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Tallenteen oletuselinik‰ (d)"
+msgstr "Tallenteen oletuselinik√§ (d)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Taukon‰pp‰imen toiminta"
+msgstr "Taukon√§pp√§imen toiminta"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Taukotallenteen prioriteetti"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Taukotallenteen elinik‰ (d)"
+msgstr "Taukotallenteen elinik√§ (d)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "K‰yt‰ jakson nime‰"
+msgstr "K√§yt√§ jakson nime√§"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "K‰yt‰ VPS-toimintoa"
+msgstr "K√§yt√§ VPS-toimintoa"
 
 msgid "Setup.Recording$VPS margin (s)"
 msgstr "VPS-toiminnon aloitusmarginaali (s)"
@@ -1037,7 +1043,7 @@ msgid "Setup.Recording$Mark instant recording"
 msgstr "Merkitse pikatallenne"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Nime‰ pikatallenne"
+msgstr "Nime√§ pikatallenne"
 
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Pikatallennuksen kesto (min)"
@@ -1049,16 +1055,16 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Jaottele muokatut tallenteet"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Poista ajansiirtotallenne"
 
 msgid "Replay"
 msgstr "Toisto"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "K‰yt‰ toiston moninopeustilaa"
+msgstr "K√§yt√§ toiston moninopeustilaa"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "N‰yt‰ toiston tila"
+msgstr "N√§yt√§ toiston tila"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
@@ -1070,7 +1076,7 @@ msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Tapahtuman odotusaika (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "K‰ytt‰j‰toiminnon odotusaika (min)"
+msgstr "K√§ytt√§j√§toiminnon odotusaika (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP-komennon odotusaika (s)"
@@ -1079,37 +1085,37 @@ msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Kanavavalinnan odotusaika (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Kanavasyˆtteen odotusaika (ms)"
+msgstr "Kanavasy√∂tteen odotusaika (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
-msgstr "Kanava k‰ynnistett‰ess‰"
+msgstr "Kanava k√§ynnistett√§ess√§"
 
 msgid "Setup.Miscellaneous$as before"
 msgstr "edellinen"
 
 msgid "Setup.Miscellaneous$Initial volume"
-msgstr "ƒ‰nenvoimakkuus k‰ynnistett‰ess‰"
+msgstr "√Ñ√§nenvoimakkuus k√§ynnistett√§ess√§"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanavien rullaus"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "K‰yt‰ h‰t‰sammutusta"
+msgstr "K√§yt√§ h√§t√§sammutusta"
 
 msgid "Plugins"
 msgstr "Laajennokset"
 
 msgid "This plugin has no setup parameters!"
-msgstr "T‰ll‰ laajennoksella ei ole asetuksia!"
+msgstr "T√§ll√§ laajennoksella ei ole asetuksia!"
 
 msgid "Setup"
 msgstr "Asetukset"
 
 msgid "Restart"
-msgstr "K‰ynnist‰ uudelleen"
+msgstr "K√§ynnist√§ uudelleen"
 
 msgid "Really restart?"
-msgstr "K‰ynnistet‰‰nkˆ uudelleen?"
+msgstr "K√§ynnistet√§√§nk√∂ uudelleen?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
@@ -1126,7 +1132,7 @@ msgid " Stop replaying"
 msgstr " Lopeta toisto"
 
 msgid "Button$Audio"
-msgstr "ƒ‰ni"
+msgstr "√Ñ√§ni"
 
 msgid "Button$Pause"
 msgstr "Tauko"
@@ -1148,10 +1154,10 @@ msgid "Cancel editing?"
 msgstr "Perutaanko muokkaus?"
 
 msgid "No audio available!"
-msgstr "ƒ‰nen kieli ei ole valittavissa!"
+msgstr "√Ñ√§nen kieli ei ole valittavissa!"
 
 msgid "No subtitles"
-msgstr "Ei tekstityst‰"
+msgstr "Ei tekstityst√§"
 
 msgid "Button$Subtitles"
 msgstr "Tekstitys"
@@ -1160,38 +1166,38 @@ msgid "No subtitles available!"
 msgstr "Tekstitys ei ole valittavissa!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Tallennustilan puute est‰‰ tallennuksen!"
+msgstr "Tallennustilan puute est√§√§ tallennuksen!"
 
 msgid "No free DVB device to record!"
-msgstr "Ei vapaata DVB-viritint‰ tallennukselle!"
+msgstr "Ei vapaata DVB-viritint√§ tallennukselle!"
 
 msgid "Pausing live video..."
-msgstr "Pys‰ytet‰‰n l‰hetys..."
+msgstr "Pys√§ytet√§√§n l√§hetys..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Poistetaanko ajansiirtotallenne?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Siirry: "
 
 msgid "No editing marks defined!"
-msgstr "Muokkausmerkinn‰t puuttuvat!"
+msgstr "Muokkausmerkinn√§t puuttuvat!"
 
 msgid "Can't start editing process!"
-msgstr "Muokkauksen aloitus ep‰onnistui!"
+msgstr "Muokkauksen aloitus ep√§onnistui!"
 
 msgid "Editing process started"
 msgstr "Muokkaus aloitettu"
 
 msgid "Editing process already active!"
-msgstr "Muokkaus on jo k‰ynniss‰!"
+msgstr "Muokkaus on jo k√§ynniss√§!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " abcdefghijklmnopqrstuvwxyzÂ‰ˆ0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " abcdefghijklmnopqrstuvwxyz√•√§√∂0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc‰Â2\tdef3\tghi4\tjkl5\tmnoˆ6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc√§√•2\tdef3\tghi4\tjkl5\tmno√∂6\tpqrs7\ttuv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
@@ -1200,16 +1206,16 @@ msgid "Button$Overwrite"
 msgstr "Korvaa"
 
 msgid "Button$Insert"
-msgstr "Lis‰‰"
+msgstr "Lis√§√§"
 
 msgid "Plugin"
 msgstr "Laajennos"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "'Ylˆs/Alas' uusi paikka - 'OK' hyv‰ksy"
+msgstr "'Yl√∂s/Alas' uusi paikka - 'OK' hyv√§ksy"
 
 msgid "Channel locked (recording)!"
-msgstr "Kanava lukittu (tallennus k‰ynniss‰)!"
+msgstr "Kanava lukittu (tallennus k√§ynniss√§)!"
 
 msgid "Low disk space!"
 msgstr "Tallennustila loppumassa!"
@@ -1238,20 +1244,20 @@ msgstr "sammutetaanko?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Laajennos %s her‰‰ %ld minuutin kuluttua - sammutetaanko?"
+msgstr "Laajennos %s her√§√§ %ld minuutin kuluttua - sammutetaanko?"
 
 msgid "Editing - restart anyway?"
-msgstr "Muokkaus kesken - k‰ynnistet‰‰nkˆ uudelleen?"
+msgstr "Muokkaus kesken - k√§ynnistet√§√§nk√∂ uudelleen?"
 
 msgid "Recording - restart anyway?"
-msgstr "Tallennus kesken - k‰ynnistet‰‰nkˆ uudelleen?"
+msgstr "Tallennus kesken - k√§ynnistet√§√§nk√∂ uudelleen?"
 
 msgid "restart anyway?"
-msgstr "k‰ynnistet‰‰nkˆ uudelleen?"
+msgstr "k√§ynnistet√§√§nk√∂ uudelleen?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "ƒ‰nenvoimakkuus "
+msgstr "√Ñ√§nenvoimakkuus "
 
 msgid "Classic VDR"
 msgstr "Klassinen VDR"
@@ -1292,28 +1298,28 @@ msgid "Upcoming recording!"
 msgstr "Tallennus on alkamassa!"
 
 msgid "Pause live video?"
-msgstr "Pys‰ytet‰‰nkˆ l‰hetys?"
+msgstr "Pys√§ytet√§√§nk√∂ l√§hetys?"
 
 msgid "Recording started"
 msgstr "Tallennus aloitettu"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR sammuu myˆhemmin - pakota virtan‰pp‰imell‰"
+msgstr "VDR sammuu my√∂hemmin - pakota virtan√§pp√§imell√§"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Peru sammutus painamalla mit‰ tahansa n‰pp‰int‰"
+msgstr "Peru sammutus painamalla mit√§ tahansa n√§pp√§int√§"
 
 msgid "Switching primary DVB..."
 msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
 
 msgid "Editing process failed!"
-msgstr "Muokkaus ep‰onnistui!"
+msgstr "Muokkaus ep√§onnistui!"
 
 msgid "Editing process finished"
 msgstr "Muokkaus valmis"
 
 msgid "Press any key to cancel restart"
-msgstr "Peru uudelleenk‰ynnistys painamalla mit‰ tahansa n‰pp‰int‰"
+msgstr "Peru uudelleenk√§ynnistys painamalla mit√§ tahansa n√§pp√§int√§"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"

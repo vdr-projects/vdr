@@ -1,14 +1,14 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007, 2008
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007, 2008, 2010
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
-"PO-Revision-Date: 2009-05-31 13:17+0200\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
+"PO-Revision-Date: 2010-04-25 16:35+0200\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "auto"
 msgstr "авто"
 
 msgid "none"
-msgstr "нічого"
+msgstr "нема"
 
 msgid "Polarization"
 msgstr "Поляризація"
@@ -76,245 +76,245 @@ msgid "Starting EPG scan"
 msgstr "Починаю EPG-сканування"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Фільм/Драма"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Детектив/Тріллер"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Пригоди/Вестерн/Війна"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Наукова фантастика/Фантастика/Жахи"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Комедія"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Мильна опера/Мелодрама/Фольклор"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Романс"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Серйозне/Класика/Релігія/Історія/Драма"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Кіно для дорослих/Драма"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Новини/Поточні події"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Новини/Спорт"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Журнал новин"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Документальне"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Дискусія/Інтерв’ю/Дебати"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Шоу//Ігри"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Ігрове шоу/Тести"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Вар’єте"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Ток шоу"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Спорт"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Спеціальні події"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Спортивний журнал"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Футбол"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Теніс/Сквош"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Спортивні команди"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Атлетика"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Моторний спорт"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Водний спорт"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Зимовий спорт"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Кінний спорт"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Військовий спорт"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Дитяче/Молодіжні програми"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Дошкільні дитячі програми"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Програми для дітей від 6 до 14 років"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Програми для дітей від 10 до 16 років"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Інформаційні/Навчальні/Шкільна програма"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Мультфільми"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Музика/Балет/Танці"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Рок/Поп"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Серйозна/Класична музика"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Фльк/Традиційна музика"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Джаз"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Мюзикл/Опера"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Балет"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Мистецтво/Культура"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Дресирування"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Образотворче мистецтво"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Релігія"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Популярна культура/Традиційне мистецтво"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Література"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Кінофільм"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Експериментальний фільм/Відео"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Трансляція/Преса"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Нові медія"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Мистецтво/Культурний журнал"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Мода"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Соцільне/Політичне/Економічне"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Журнал/Рапорт/Документальне"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Економіка/Соціальний порадник"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Незвичайні люди"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Навчання/Наука/Факти"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Природа/Тварини/Навколишнє оточення"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Технологія/Природничі науки"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Медицина/Фізіологія/Психологія"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Зарубіжні країни/Експедиції"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Соціальна/Духовна наука"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Дальше навчання"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Мови"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Відпочинок/Хоббі"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Туризм/Подорожі"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Ремісниче"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Автомобільна справа"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Фітнес і здоров’я"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Готування їжі"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Реклама/Закупи"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Сад/Город"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Оригінальна мова"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Чорне і біле"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Неопубліковане"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Трансляція"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "з %d"
 
 msgid "No title"
 msgstr "Без назви"
@@ -337,7 +337,7 @@ msgid "RC code detected!"
 msgstr "Визначено код пульта!"
 
 msgid "Do not press any key..."
-msgstr "Не натискайте кнопки..."
+msgstr "Не натискайте жодної кнопки..."
 
 msgid "Phase 2: Learning specific key codes"
 msgstr "Крок 2: Приписування кодів для відповідних кнопок"
@@ -458,7 +458,7 @@ msgid "Key$Subtitles"
 msgstr "Субтитри"
 
 msgid "Key$Schedule"
-msgstr "Телегід"
+msgstr "Програма"
 
 msgid "Key$Channels"
 msgstr "Канали"
@@ -474,6 +474,9 @@ msgstr "Налаштування"
 
 msgid "Key$Commands"
 msgstr "Команди"
+
+msgid "Key$User0"
+msgstr "Користувач0"
 
 msgid "Key$User1"
 msgstr "Користувач1"
@@ -575,7 +578,7 @@ msgid "Button$Delete"
 msgstr "Видалити"
 
 msgid "Button$Mark"
-msgstr "Перемістити"
+msgstr "Помітити"
 
 msgid "Channel is being used by a timer!"
 msgstr "Канал зайнятий таймером!"
@@ -584,29 +587,29 @@ msgid "Delete channel?"
 msgstr "Видалити канал?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Редагувати каталог"
 
 msgid "New folder"
-msgstr ""
+msgstr "Новий каталог"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Підкаталог"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Назва каталогу вже існує!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Назва каталогу не повинна містити '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Вибрати"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Видалити каталог і всі підкаталоги?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Видалити каталог?"
 
 msgid "Edit timer"
 msgstr "Налаштування таймера"
@@ -639,13 +642,13 @@ msgid "File"
 msgstr "Файл"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Каталог"
 
 msgid "First day"
 msgstr "Перший день"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Вибрати каталог"
 
 msgid "Timers"
 msgstr "Таймери"
@@ -708,7 +711,7 @@ msgstr "Всі передачі - всі канали"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Натисніть %d цифри!"
+msgstr "Введіть %d цифри!"
 
 msgid "CAM not responding!"
 msgstr "CAM не відповідає!"
@@ -753,7 +756,7 @@ msgid "always"
 msgstr "завжди"
 
 msgid "OSD"
-msgstr "OSD меню"
+msgstr "Меню"
 
 msgid "Setup.OSD$Language"
 msgstr "Мова"
@@ -777,10 +780,10 @@ msgid "Setup.OSD$Height (%)"
 msgstr "Висота (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Тривалість показу повідомлень (сек)"
+msgstr "Час показу повідомлень (сек)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Використовувати малий фонт"
+msgstr "Викор. малий фонт"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Згладжування фонтів"
@@ -795,7 +798,7 @@ msgid "Setup.OSD$Fixed font"
 msgstr "Фіксований фонт"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Размір фонта для меню (%)"
+msgstr "Розмір типового фонта (%)"
 
 msgid "Setup.OSD$Small font size (%)"
 msgstr "Размір малого фонта (%)"
@@ -804,7 +807,7 @@ msgid "Setup.OSD$Fixed font size (%)"
 msgstr "Размір фіксованого фонта (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Положення вікна інформації про канал"
+msgstr "Положення інформації про канал"
 
 msgid "bottom"
 msgstr "внизу"
@@ -816,10 +819,10 @@ msgid "Setup.OSD$Channel info time (s)"
 msgstr "Показ інформації про канал (сек)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Показ канал-інфо при переключанні "
+msgstr "Інфо при переключанні каналу"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Інформацію про канал закрити"
+msgstr "Час очікування інфо про канал"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Прокрутка сторінок меню"
@@ -834,19 +837,22 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Каталоги зберігання записів"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr "Каталоги в меню таймера"
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"
-msgstr "Телегід"
+msgstr "Телегід (EPG)"
 
 msgid "Button$Scan"
 msgstr "Сканувати"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Затримка сканування телегіда (ч)"
+msgstr "Затримка сканування телегіда (г)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "Рівень корекції помилок"
+msgstr "Рівень корекції помилок EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Зберігання застарілих даних (хв)"
@@ -855,7 +861,7 @@ msgid "Setup.EPG$Set system time"
 msgstr "Встановити системий час"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "Використати час транспондера"
+msgstr "Викор. час з транспондера"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
@@ -905,10 +911,10 @@ msgid "Setup.DVB$Video display format"
 msgstr "Формат зображення відео"
 
 msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Використовувати Dolby Digital"
+msgstr "Викор. Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Оновлювати настройки каналів"
+msgstr "Оновлювати канали"
 
 msgid "Setup.DVB$Audio languages"
 msgstr "Бажані мови (звук)"
@@ -974,7 +980,7 @@ msgid "Can't open CAM menu!"
 msgstr "Меню CAM-модуля недоступне!"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM використовується - дійсно перезавантажити?"
+msgstr "CAM використовується - дійсно перезапустити?"
 
 msgid "Can't reset CAM!"
 msgstr "Помилка перезапуску CAM-модуля!"
@@ -989,7 +995,7 @@ msgid "pause live video"
 msgstr "призупинити перегляд"
 
 msgid "confirm"
-msgstr ""
+msgstr "підтвердити"
 
 msgid "yes"
 msgstr "так"
@@ -1022,10 +1028,10 @@ msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Зберігання відкладеного перегляду (дні)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Використовувати назву епізоду"
+msgstr "Викор. назву епізоду"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "Використовувати сигнали VPS"
+msgstr "Викор. VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
 msgstr "Буферний час VPS (сек)"
@@ -1043,10 +1049,10 @@ msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Макс. размір відеофайлу (Мб)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Ділити відредаговані файли"
+msgstr "Поділити відредаговані файли"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Видалити записи з зсувом по часу"
 
 msgid "Replay"
 msgstr "Перегляд"
@@ -1058,7 +1064,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Віображати режим перегляду"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID перегляду"
+msgstr "ID продовження"
 
 msgid "Miscellaneous"
 msgstr "Різне"
@@ -1088,7 +1094,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Гучність при включенні"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Кінець каналів"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Аварійний вихід"
@@ -1136,13 +1142,13 @@ msgstr "Продовжити"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Перервати монтаж запису"
+msgstr " Перервати монтаж"
 
 msgid "Stop recording?"
 msgstr "Припинити запис?"
 
 msgid "Cancel editing?"
-msgstr "Перервати редактування?"
+msgstr "Перервати монтаж?"
 
 msgid "No audio available!"
 msgstr "Відсутній звук!"
@@ -1166,7 +1172,7 @@ msgid "Pausing live video..."
 msgstr "Режим відкладеного перегляду..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Видалити запис з часовим зсувом?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1212,10 +1218,10 @@ msgid "Low disk space!"
 msgstr "Недостатньо місця на диску!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Регенерація файлу індексів"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Регенерацію файлу індексу завершено"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Виключенння неможливе - не задано параметр '-s'!"
@@ -1286,10 +1292,10 @@ msgid "Sunday"
 msgstr "Неділя"
 
 msgid "Upcoming recording!"
-msgstr "Запис скоро почнеться"
+msgstr "Запис скоро почнеться!"
 
 msgid "Pause live video?"
-msgstr "Режим відкладеного перегляду..."
+msgstr "Призупинити перегляд?"
 
 msgid "Recording started"
 msgstr "Запис почався"

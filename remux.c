@@ -1,10 +1,10 @@
 /*
- * remux.h: Tools for detecting frames and handling PAT/PMT
+ * remux.c: Tools for detecting frames and handling PAT/PMT
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.42 2010/02/28 14:42:07 kls Exp $
+ * $Id: remux.c 2.47 2010/06/05 13:32:15 kls Exp $
  */
 
 #include "remux.h"
@@ -188,10 +188,10 @@ int cPatPmtGenerator::MakeStream(uchar *Target, uchar Type, int Pid)
   return i;
 }
 
-int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target)
+int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target, uchar Type)
 {
   int i = 0;
-  Target[i++] = SI::AC3DescriptorTag;
+  Target[i++] = Type;
   Target[i++] = 0x01; // length
   Target[i++] = 0x00;
   IncEsInfoLength(i);
@@ -219,11 +219,17 @@ int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language
 {
   int i = 0;
   Target[i++] = SI::ISO639LanguageDescriptorTag;
-  Target[i++] = 0x04; // length
-  Target[i++] = *Language++;
-  Target[i++] = *Language++;
-  Target[i++] = *Language++;
-  Target[i++] = 0x01; // audio type
+  int Length = i++;
+  Target[Length] = 0x00; // length
+  for (const char *End = Language + strlen(Language); Language < End; ) {
+      Target[i++] = *Language++;
+      Target[i++] = *Language++;
+      Target[i++] = *Language++;
+      Target[i++] = 0x01;     // audio type
+      Target[Length] += 0x04; // length
+      if (*Language == '+')
+         Language++;
+      }
   IncEsInfoLength(i);
   return i;
 }
@@ -315,15 +321,13 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
      if (Vpid)
         i += MakeStream(buf + i, Channel->Vtype(), Vpid);
      for (int n = 0; Channel->Apid(n); n++) {
-         i += MakeStream(buf + i, 0x04, Channel->Apid(n));
+         i += MakeStream(buf + i, Channel->Atype(n), Channel->Apid(n));
          const char *Alang = Channel->Alang(n);
          i += MakeLanguageDescriptor(buf + i, Alang);
-         if (Alang[3] == '+')
-            i += MakeLanguageDescriptor(buf + i, Alang + 3);
          }
      for (int n = 0; Channel->Dpid(n); n++) {
          i += MakeStream(buf + i, 0x06, Channel->Dpid(n));
-         i += MakeAC3Descriptor(buf + i);
+         i += MakeAC3Descriptor(buf + i, Channel->Dtype(n));
          i += MakeLanguageDescriptor(buf + i, Channel->Dlang(n));
          }
      for (int n = 0; Channel->Spid(n); n++) {
@@ -506,6 +510,8 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       break;
            case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
+           case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport sytax
+           case 0x11: // ISO/IEC 14496-3 Audio with LATM transport syntax
                       {
                       if (NumApids < MAXAPIDS) {
                          apids[NumApids] = stream.getPid();
@@ -546,13 +552,16 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
            case 0x06: // STREAMTYPE_13818_PES_PRIVATE
                       {
                       int dpid = 0;
+                      int dtype = 0;
                       char lang[MAXLANGCODE1] = "";
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                           switch (d->getDescriptorTag()) {
                             case SI::AC3DescriptorTag:
+                            case SI::EnhancedAC3DescriptorTag:
                                  dbgpatpmt(" AC3");
                                  dpid = stream.getPid();
+                                 dtype = d->getDescriptorTag();
                                  break;
                             case SI::SubtitlingDescriptorTag:
                                  dbgpatpmt(" subtitling");
@@ -599,7 +608,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
                             dpids[NumDpids] = dpid;
-                            dtypes[NumDpids] = stream.getStreamType();
+                            dtypes[NumDpids] = dtype;
                             strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
                             if (updatePrimaryDevice && Setup.UseDolbyDigital)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
@@ -659,6 +668,10 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
   if (length + Length > size) {
      size = max(KILOBYTE(2), length + Length);
      data = (uchar *)realloc(data, size);
+     if (!data) {
+        Reset();
+        return;
+        }
      }
   memcpy(data + length, Data, Length);
   length += Length;
@@ -817,7 +830,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                  if (synced && Processed)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
-                    return 0; // need more data, in case the frame type is not stored in the first TS packet
+                    return Processed; // need more data, in case the frame type is not stored in the first TS packet
                  if (!frameDuration) {
                     // frame duration unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames

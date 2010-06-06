@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch\n"
@@ -479,6 +479,9 @@ msgstr "Instellingen"
 msgid "Key$Commands"
 msgstr "Commando's"
 
+msgid "Key$User0"
+msgstr "Gebruiker0"
+
 msgid "Key$User1"
 msgstr "Gebruiker1"
 
@@ -838,6 +841,9 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Opname mappen"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"

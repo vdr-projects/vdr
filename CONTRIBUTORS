@@ -1093,6 +1093,10 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  suggesting to add plain text error messages to log entries from cOsd::SetAreas()
  for keeping subtitles visible when pausing replay
  for suggesting to assign the source character 'I' to "IPTV"
+ for fixing generating PMT language descriptors for multi language PIDs
+ for reporting a possible out of buffer memory access in case of bad TS data
+ for implementing handling of HD resolution subtitles according to v1.3.1 of
+ ETSI EN 300 743, chapter 7.2.1
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1358,6 +1362,7 @@ Christian Tramnitz <maillist@tramnitz.com>
  for terrestrial transponders
  for his support in debugging a problem in setting the source type for newly
  detected terrestrial transponders
+ for registering the default SVDRP port (6419) with ICANN/IANA
 
 Jens Rosenboom <me@jayr.de>
  for fixing the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case
@@ -1952,6 +1957,7 @@ Thomas Günther <tom1@toms-cafe.de>
  strings
  for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
  which results in using tr(FileNameChars)
+ for fixing handling "none" color entries in XPM files
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -2336,6 +2342,7 @@ Boguslaw Juza <bogdan@uci.agh.edu.pl>
 Ulf Kiener <webmaster@ulf-kiener.de>
  for reporting a problem with audio track descriptions in the DVD plugin after a
  replay has been stopped
+ for suggesting to add user defined key kUser0
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
@@ -2362,6 +2369,7 @@ Alexander Riedel <alexander-riedel@t-online.de>
 Jose Alberto Reguero <jareguero@telefonica.net>
  for a patch that fixed part of a crash in i18n character set conversion
  for fixing cDvbPlayer::NextFile() to handle files larger than 2GB
+ for implementing full handling of the stream types of Dolby Digital pids
 
 Patrice Staudt <staudt@engsystem.net>
  for adding full weekday names to i18n.c for plugins to use
@@ -2393,6 +2401,7 @@ Halim Sahin <halim.sahin@t-online.de>
  channel in the channel list
  for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
  list of sources
+ for reporting a crash when creating a new channel if the channel list is empty
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
@@ -2524,6 +2533,8 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
  for updating sources.conf
+ for reporting a problem where the frame rate was not detected correctly
+ for testing the implementation of FE_CAN_TURBO_FEC
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2579,3 +2590,27 @@ Lars Hanisch <dvb@flensrocker.de>
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
+
+Dimitar Petrovski <dimeptr@gmail.com>
+ for translating OSD texts to the Macedonian language
+
+Eric Valette <eric.valette@free.fr>
+ for adding handling of EnhancedAC3DescriptorTag
+
+Paul Menzel <paulepanter@users.sourceforge.net>
+ for making include paths be added instead of overwriting INCLUDES in the Makefile
+
+Radek Stastny <dedkus@gmail.com>
+ for translating OSD texts to the Czech language
+
+Luis Fernandes <telping@gmail.com>
+ for suggesting to add handling MPEG audio type "ISO/IEC 14496-3 Audio with LATM
+ transport syntax"
+
+Christopher Reimer <reimer.christopher@freenet.de>
+ for reporting a problem with external Dolby Digital processing via the '-a' option
+ in live mode and with TS recordings
+
+Stefan Huskamp <coca_cola1@gmx.de>
+ for suggesting to make entering characters via the number keys
+ configurable

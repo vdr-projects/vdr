@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian\n"
@@ -475,6 +475,9 @@ msgstr "Sätted"
 msgid "Key$Commands"
 msgstr "Käsud"
 
+msgid "Key$User0"
+msgstr "Lisaklahv0"
+
 msgid "Key$User1"
 msgstr "Lisaklahv1"
 
@@ -834,6 +837,9 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Kausta nime salvestamine"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr "Kaustad taimeri menüüs"
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"
@@ -911,7 +917,7 @@ msgid "Setup.DVB$Update channels"
 msgstr "Kanalite uuendamine"
 
 msgid "Setup.DVB$Audio languages"
-msgstr "Audio keeli"
+msgstr "Audio keeled"
 
 msgid "Setup.DVB$Audio language"
 msgstr "Audio keel"
@@ -920,7 +926,7 @@ msgid "Setup.DVB$Display subtitles"
 msgstr "Subtiitrite kuvamine"
 
 msgid "Setup.DVB$Subtitle languages"
-msgstr "Subtiitrite keeli"
+msgstr "Subtiitrite keeled"
 
 msgid "Setup.DVB$Subtitle language"
 msgstr "Subtiitri keel"
@@ -989,7 +995,7 @@ msgid "pause live video"
 msgstr "peatada"
 
 msgid "confirm"
-msgstr ""
+msgstr "kinnitada"
 
 msgid "yes"
 msgstr "jah"
@@ -1046,13 +1052,13 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Failide jupitamine"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Kustutada ajanihke salvestus"
 
 msgid "Replay"
 msgstr "Taasesitus"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Multi-kiiruse moodus"
+msgstr "Mitmekiiruse moodus"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Korduse moodus"
@@ -1166,7 +1172,7 @@ msgid "Pausing live video..."
 msgstr "Otseülekande peatamine..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Kustutada ajanihke salvestus?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "

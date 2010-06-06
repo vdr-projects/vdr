@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 2.2 2010/02/07 11:55:14 kls Exp $
+ * $Id: dvbsubtitle.h 2.3 2010/05/13 14:43:44 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -26,6 +26,11 @@ private:
   cDvbSubtitleAssembler *dvbSubtitleAssembler;
   cOsd *osd;
   bool frozen;
+  int ddsVersionNumber;
+  int displayWidth;
+  int displayHeight;
+  int displayHorizontalOffset;
+  int displayVerticalOffset;
   cList<cDvbSubtitlePage> *pages;
   cList<cDvbSubtitleBitmaps> *bitmaps;
   tColor yuv2rgb(int Y, int Cb, int Cr);

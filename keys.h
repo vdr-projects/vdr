@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 2.0 2007/08/26 12:34:50 kls Exp $
+ * $Id: keys.h 2.1 2010/04/05 10:06:04 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -50,7 +50,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kRecordings,
              kSetup,
              kCommands,
-             kUser1, kUser2, kUser3, kUser4, kUser5, kUser6, kUser7, kUser8, kUser9,
+             kUser0, kUser1, kUser2, kUser3, kUser4, kUser5, kUser6, kUser7, kUser8, kUser9,
              kNone,
              kKbd,
              // The following codes are used internally:

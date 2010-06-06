@@ -5,14 +5,14 @@
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
 # Nino Gerbino <ngerb@interfree.it>, 2006
-# Diego Pierotto <vdr-italian@tiscali.it>, 2007, 2008
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007, 2008, 2010
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
-"PO-Revision-Date: 2010-01-31 23:06+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
+"PO-Revision-Date: 2010-03-28 22:49+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -482,6 +482,9 @@ msgstr "Opzioni"
 msgid "Key$Commands"
 msgstr "Comandi"
 
+msgid "Key$User0"
+msgstr "Utente0"
+
 msgid "Key$User1"
 msgstr "Utente1"
 
@@ -841,6 +844,9 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Directory di registrazione"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr "Cartelle nel menu timer"
+
+msgid "Setup.OSD$Number keys for characters"
 msgstr ""
 
 msgid "EPG"
@@ -996,7 +1002,7 @@ msgid "pause live video"
 msgstr "pausa video dal vivo"
 
 msgid "confirm"
-msgstr ""
+msgstr "conferma"
 
 msgid "yes"
 msgstr "sì"
@@ -1053,7 +1059,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Dividi i file modificati"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Elimina registrazione timeshift"
 
 msgid "Replay"
 msgstr "Riproduzione"
@@ -1173,7 +1179,7 @@ msgid "Pausing live video..."
 msgstr "Pausa del canale in visione..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Eliminare registrazione timeshift?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1192,10 +1198,10 @@ msgid "Editing process already active!"
 msgstr "Processo di modifica già attivo!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aáàbcdeéèfghiìîjklmnoòpqrstuùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&°"
+msgstr " aáàbcdeéèfghiíìjklmnoóòpqrstuúùvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&°"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+°?{}/:%@&\taàbc2\tdeèf3\tghiì4\tjkl5\tmnoò6\tpqrs7\ttuùv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+°?{}/:%@&\taáàbc2\tdeéèf3\tghiíì4\tjkl5\tmnoóò6\tpqrs7\ttuúùv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"

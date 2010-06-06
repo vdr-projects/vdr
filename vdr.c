@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.17 2010/02/21 14:08:09 kls Exp $
+ * $Id: vdr.c 2.19 2010/04/05 10:06:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
-#define DEFAULTSVDRPPORT 2001
+#define DEFAULTSVDRPPORT 6419
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTCONFDIR CONFDIR
 #define DEFAULTPLUGINDIR PLUGINDIR
@@ -992,7 +992,7 @@ int main(int argc, char *argv[])
           case kRecordings: DirectMainFunction(osRecordings); break;
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
-          case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
+          case kUser0 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
                const char *PluginName = cRemote::GetPlugin();
                if (PluginName) {

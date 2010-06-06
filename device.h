@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.21 2010/02/06 14:34:41 kls Exp $
+ * $Id: device.h 2.22 2010/04/05 09:51:29 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -91,6 +91,9 @@ class cLiveSubtitle;
 class cDeviceHook : public cListObject {
 public:
   cDeviceHook(void);
+          ///< Creates a new device hook object.
+          ///< Do not delete this object - it will be automatically deleted when the
+          ///< program ends.
   virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
           ///< Returns true if the given Device can provide the given Channel's transponder.
   };

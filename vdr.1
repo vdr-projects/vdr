@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.4 2010/01/02 12:08:40 kls Exp $
+.\" $Id: vdr.1 2.5 2010/04/02 12:22:08 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -37,7 +37,7 @@ It can be controlled by the PC keyboard, a home built "Remote Control Unit"
 (RCU) or the "Linux Infrared Remote Control" (LIRC).
 
 Remote access is possible via the "Simple Video Disk Recorder Protocol" (SVDRP),
-which can be accessed on port 2001, for instance by \fBtelnet\fR.
+which can be accessed on port 6419, for instance by \fBtelnet\fR.
 .SH OPTIONS
 .TP
 .BI \-a\  cmd ,\ \-\-audio= cmd
@@ -124,7 +124,7 @@ Don't use the keyboard as an input device.
 .TP
 .BI \-p\  port ,\ \-\-port= port
 Use \fIport\fR for SVDRP. A value of \fB0\fR turns off SVDRP.
-The default SVDRP port is \fB2001\fR.
+The default SVDRP port is \fB6419\fR.
 You need to edit the file \fIsvdrphosts.conf\fR in order to enable
 access to the SVDRP port.
 .TP

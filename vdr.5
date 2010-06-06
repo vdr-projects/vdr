@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.17 2010/03/06 14:04:54 kls Exp $
+.\" $Id: vdr.5 2.19 2010/05/16 12:15:48 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -203,6 +203,13 @@ Some channels broadcast two different languages in the two stereo channels, whic
 can be indicated by adding a second language code, delimited by a '+' sign, as in
 
 .B ...:101=deu,102=eng+spa;103=deu,104=eng:...
+
+The audio type is appended with a separating '@' character, as in
+
+.B ...:101=deu@4,102=eng+spa@4,105=@4:...
+
+Note that if there is no language code, there still is the separating '='
+if there is an audio type.
 
 .TP
 .B TPID
@@ -463,7 +470,9 @@ If this is not the case in a particular setup, lines of the form
 
 may be inserted in the \fIdiseqc.conf\fR file, defining the devices that are able
 to receive the satellites following thereafter. In this case, only the devices
-1, 2 and 4 would be able to receive any satellites following this line.
+1, 2 and 4 would be able to receive any satellites following this line and up
+to the next such line, or the end of the file. Devices may be listed more than
+once.
 .SS REMOTE CONTROL KEYS
 The file \fIremote.conf\fR contains the key assignments for all remote control
 units. Each line consists of one key assignment in the following format:

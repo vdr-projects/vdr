@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-03-12 16:49+0100\n"
+"POT-Creation-Date: 2010-06-06 12:52+0200\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German\n"
@@ -475,6 +475,9 @@ msgstr "Einstellungen"
 msgid "Key$Commands"
 msgstr "Befehle"
 
+msgid "Key$User0"
+msgstr "Benutzer0"
+
 msgid "Key$User1"
 msgstr "Benutzer1"
 
@@ -835,6 +838,9 @@ msgstr "Aufnahmeverzeichnisse"
 
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Verzeichnisse im Timer-Menü"
+
+msgid "Setup.OSD$Number keys for characters"
+msgstr "Nummerntasten für Zeichen"
 
 msgid "EPG"
 msgstr "EPG"

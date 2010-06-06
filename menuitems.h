@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.3 2010/02/21 13:58:21 kls Exp $
+ * $Id: menuitems.h 2.4 2010/06/06 10:32:38 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -108,6 +108,7 @@ private:
   void AdvancePos(void);
   virtual void Set(void);
   uint Inc(uint c, bool Up);
+  void Type(uint c);
   void Insert(void);
   void Delete(void);
 protected:

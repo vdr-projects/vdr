@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.24 2010/01/29 16:51:26 kls Exp $
+ * $Id: remux.h 2.26 2010/06/05 13:27:55 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -84,7 +84,8 @@ inline bool TsIsScrambled(const uchar *p)
 
 inline int TsPayloadOffset(const uchar *p)
 {
-  return (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  int o = (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  return o <= TS_SIZE ? o : TS_SIZE;
 }
 
 inline int TsGetPayload(const uchar **p)
@@ -168,7 +169,7 @@ private:
   void IncEsInfoLength(int Length);
 protected:
   int MakeStream(uchar *Target, uchar Type, int Pid);
-  int MakeAC3Descriptor(uchar *Target);
+  int MakeAC3Descriptor(uchar *Target, uchar Type);
   int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
