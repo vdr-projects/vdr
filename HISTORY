@@ -6464,3 +6464,7 @@ Video Disk Recorder Revision History
 - The new setup option "OSD/Number keys for characters" can be used to control whether
   the number keys can be used to enter characters in a text input field (suggested
   by Stefan Huskamp).
+
+2010-06-11: Version 1.7.16
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
