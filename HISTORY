@@ -6472,3 +6472,5 @@ Video Disk Recorder Revision History
 - Updated the Portuguese language texts (thanks to Cristiano A.
   Silva).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed the array size of Atypes in cPatFilter::Process() (thanks to
+  Rolf Ahrenberg).
