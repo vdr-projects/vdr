@@ -843,7 +843,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Näytä kansiot ajastinvalikossa"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Käytä numeronäppäimiä tekstisyötteessä"
 
 msgid "EPG"
 msgstr "Ohjelmaopas"
