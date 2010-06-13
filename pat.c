@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.11 2010/06/05 13:26:47 kls Exp $
+ * $Id: pat.c 2.12 2010/06/13 10:28:19 kls Exp $
  */
 
 #include "pat.h"
@@ -473,6 +473,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                              }
                          if (NumDpids < MAXDPIDS) {
                             Dpids[NumDpids] = esPid;
+                            Dtypes[NumDpids] = SI::AC3DescriptorTag;
                             strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
                             NumDpids++;
                             }

@@ -2590,6 +2590,7 @@ Lars Hanisch <dvb@flensrocker.de>
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
+ for adding missing Dtypes for ATSC
 
 Dimitar Petrovski <dimeptr@gmail.com>
  for translating OSD texts to the Macedonian language
