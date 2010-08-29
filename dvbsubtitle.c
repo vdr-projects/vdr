@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.6 2010/06/05 14:03:55 kls Exp $
+ * $Id: dvbsubtitle.c 2.7 2010/08/29 14:08:23 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -660,7 +660,7 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   dvbSubtitleAssembler = new cDvbSubtitleAssembler;
   osd = NULL;
   frozen = false;
-  ddsVersionNumber = 0;
+  ddsVersionNumber = -1;
   displayWidth = 720;
   displayHeight = 576;
   displayHorizontalOffset = 0;
@@ -693,7 +693,7 @@ void cDvbSubtitleConverter::Reset(void)
   bitmaps->Clear();
   DELETENULL(osd);
   frozen = false;
-  ddsVersionNumber = 0;
+  ddsVersionNumber = -1;
   displayWidth = 720;
   displayHeight = 576;
   displayHorizontalOffset = 0;
