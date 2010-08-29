@@ -984,6 +984,7 @@ Andreas Mair <andreas@vdr-developer.org>
  option ':groups' is given
  for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
  for fixing initializing the timer's flags in the cTimer copy constructor
+ for reporting a crash in case CutRecording() is called from a plugin
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
