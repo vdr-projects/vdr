@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.7 2010/02/28 13:31:46 kls Exp $
+ * $Id: tools.c 2.8 2010/08/29 15:03:08 kls Exp $
  */
 
 #include "tools.h"
@@ -367,22 +367,31 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                  if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
                     cString buffer = AddDirectory(FileName, e->d_name);
                     if (FollowSymlinks) {
-                       int size = strlen(buffer) * 2; // should be large enough
-                       char *l = MALLOC(char, size);
-                       int n = readlink(buffer, l, size);
-                       if (n < 0) {
-                          if (errno != EINVAL)
-                             LOG_ERROR_STR(*buffer);
+                       struct stat st2;
+                       if (stat(buffer, &st2) == 0) {
+                          if (S_ISLNK(st2.st_mode)) {
+                             int size = st2.st_size + 1;
+                             char *l = MALLOC(char, size);
+                             int n = readlink(buffer, l, size - 1);
+                             if (n < 0) {
+                                if (errno != EINVAL)
+                                   LOG_ERROR_STR(*buffer);
+                                }
+                             else if (n < size) {
+                                l[n] = 0;
+                                dsyslog("removing %s", l);
+                                if (remove(l) < 0)
+                                   LOG_ERROR_STR(l);
+                                }
+                             else
+                                esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
+                             free(l);
+                             }
                           }
-                       else if (n < size) {
-                          l[n] = 0;
-                          dsyslog("removing %s", l);
-                          if (remove(l) < 0)
-                             LOG_ERROR_STR(l);
+                       else if (errno != ENOENT) {
+                          LOG_ERROR_STR(FileName);
+                          return false;
                           }
-                       else
-                          esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
-                       free(l);
                        }
                     dsyslog("removing %s", *buffer);
                     if (remove(buffer) < 0)

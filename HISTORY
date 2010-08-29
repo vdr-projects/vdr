@@ -6477,3 +6477,4 @@ Video Disk Recorder Revision History
 - Added locking to the cCutter functions to avoid a crash in case CutRecording()
   is called from a plugin (reported by Andreas Mair).
 - Fixed DDS detection for HD resolution subtitles (thanks to Reinhard Nissl).
+- Fixed following symbolic links in RemoveFileOrDir().
