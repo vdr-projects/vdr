@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.26 2010/01/30 10:05:23 kls Exp $
+ * $Id: dvbsdffdevice.c 2.27 2010/09/19 12:43:33 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -15,9 +15,9 @@
 #include <linux/dvb/video.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <vdr/eitscan.h>
+#include <vdr/transfer.h>
 #include "dvbsdffosd.h"
-#include "vdr/eitscan.h"
-#include "vdr/transfer.h"
 
 // --- cDvbSdFfDevice --------------------------------------------------------
 

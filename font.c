@@ -4,12 +4,17 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 2.4 2009/12/31 14:49:59 kls Exp $
+ * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
+ *
+ * $Id: font.c 2.5 2010/09/19 11:49:19 kls Exp $
  */
 
 #include "font.h"
 #include <ctype.h>
 #include <fontconfig/fontconfig.h>
+#ifdef BIDI
+#include <fribidi.h>
+#endif
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "config.h"
@@ -240,6 +245,10 @@ int cFreetypeFont::Width(const char *s) const
 {
   int w = 0;
   if (s) {
+#ifdef BIDI
+     cString bs = Bidi(s);
+     s = bs;
+#endif
      uint prevSym = 0;
      while (*s) {
            int sl = Utf8CharLen(s);
@@ -259,6 +268,10 @@ int cFreetypeFont::Width(const char *s) const
 void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const
 {
   if (s && height) { // checking height to make sure we actually have a valid font
+#ifdef BIDI
+     cString bs = Bidi(s);
+     s = bs;
+#endif
      bool AntiAliased = Setup.AntiAlias && Bitmap->Bpp() >= 8;
      bool TransparentBackground = ColorBg == clrTransparent;
      int16_t BlendLevelIndex[MAX_BLEND_LEVELS]; // tIndex is 8 bit unsigned, so a negative value can be used to mark unused entries
@@ -442,6 +455,32 @@ cString cFont::GetFontFileName(const char *FontName)
      }
   return FontFileName;
 }
+
+#ifdef BIDI
+cString cFont::Bidi(const char *Ltr)
+{
+  fribidi_set_mirroring(true);
+  fribidi_set_reorder_nsm(false);
+  FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
+  int LtrLen = strlen(Ltr);
+  FriBidiCharType Base = FRIBIDI_TYPE_L;
+  FriBidiChar *Logical = MALLOC(FriBidiChar, LtrLen + 1) ;
+  int RtlLen = fribidi_charset_to_unicode(fribidiCharset, const_cast<char *>(Ltr), LtrLen, Logical);
+  FriBidiChar *Visual = MALLOC(FriBidiChar, LtrLen + 1) ;
+  char *Rtl = NULL;
+  bool ok = fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL);
+  if (ok) {
+     fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
+     Rtl = MALLOC(char, RtlLen * 4);
+     fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
+     }
+  free(Logical);
+  free(Visual);
+  if (ok)
+     return cString(Rtl, true);
+  return cString(Ltr);
+}
+#endif
 
 // --- cTextWrapper ----------------------------------------------------------
 

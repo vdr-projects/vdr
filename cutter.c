@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.4 2010/01/02 13:08:08 kls Exp $
+ * $Id: cutter.c 2.5 2010/08/29 13:35:18 kls Exp $
  */
 
 #include "cutter.h"
 #include "recording.h"
 #include "remux.h"
-#include "thread.h"
 #include "videodir.h"
 
 // --- cCuttingThread --------------------------------------------------------
@@ -194,6 +193,7 @@ void cCuttingThread::Action(void)
 
 // --- cCutter ---------------------------------------------------------------
 
+cMutex cCutter::mutex;
 char *cCutter::editedVersionName = NULL;
 cCuttingThread *cCutter::cuttingThread = NULL;
 bool cCutter::error = false;
@@ -201,6 +201,7 @@ bool cCutter::ended = false;
 
 bool cCutter::Start(const char *FileName)
 {
+  cMutexLock MutexLock(&mutex);
   if (!cuttingThread) {
      error = false;
      ended = false;
@@ -231,6 +232,7 @@ bool cCutter::Start(const char *FileName)
 
 void cCutter::Stop(void)
 {
+  cMutexLock MutexLock(&mutex);
   bool Interrupted = cuttingThread && cuttingThread->Active();
   const char *Error = cuttingThread ? cuttingThread->Error() : NULL;
   delete cuttingThread;
@@ -247,6 +249,7 @@ void cCutter::Stop(void)
 
 bool cCutter::Active(void)
 {
+  cMutexLock MutexLock(&mutex);
   if (cuttingThread) {
      if (cuttingThread->Active())
         return true;
@@ -263,6 +266,7 @@ bool cCutter::Active(void)
 
 bool cCutter::Error(void)
 {
+  cMutexLock MutexLock(&mutex);
   bool result = error;
   error = false;
   return result;
@@ -270,6 +274,7 @@ bool cCutter::Error(void)
 
 bool cCutter::Ended(void)
 {
+  cMutexLock MutexLock(&mutex);
   bool result = ended;
   ended = false;
   return result;

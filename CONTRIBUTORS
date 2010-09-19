@@ -984,6 +984,7 @@ Andreas Mair <andreas@vdr-developer.org>
  option ':groups' is given
  for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
  for fixing initializing the timer's flags in the cTimer copy constructor
+ for reporting a crash in case CutRecording() is called from a plugin
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1097,6 +1098,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a possible out of buffer memory access in case of bad TS data
  for implementing handling of HD resolution subtitles according to v1.3.1 of
  ETSI EN 300 743, chapter 7.2.1
+ for fixing the array size of Atypes in cPatFilter::Process()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1254,6 +1256,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for devices with large buffers
  for implementing cDeviceHook
  for implementing cDevice::GetCurrentlyTunedTransponder()
+ for fixing DDS detection for HD resolution subtitles
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -2590,6 +2593,7 @@ Lars Hanisch <dvb@flensrocker.de>
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
+ for adding missing Dtypes for ATSC
 
 Dimitar Petrovski <dimeptr@gmail.com>
  for translating OSD texts to the Macedonian language
@@ -2614,3 +2618,10 @@ Christopher Reimer <reimer.christopher@freenet.de>
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
  configurable
+
+Cristiano A. Silva <arquithek@gmail.com>
+ for updating the Portuguese language texts
+
+Osama Alrawab <alrawab@hotmail.com>
+ for adding support for languages that are written right-to-left
+ for translating OSD texts to the Arabian language

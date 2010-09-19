@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.3 2009/12/31 14:48:25 kls Exp $
+ * $Id: font.h 2.4 2010/09/19 11:48:37 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -82,6 +82,11 @@ public:
           ///< Returns true if any font names were found.
   static cString GetFontFileName(const char *FontName);
           ///< Retruns the actual font file name for the given FontName.
+#ifdef BIDI
+  static cString Bidi(const char *Ltr);
+          ///< Converts any "right-to-left" parts in the "left-to-right" string Ltr
+          ///< to the proper language specific representation and returns the resulting string.
+#endif
   };
 
 class cTextWrapper {

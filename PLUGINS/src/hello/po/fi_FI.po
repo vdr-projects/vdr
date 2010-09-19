@@ -2,7 +2,7 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Hannu Savolainen <hannu@opensound.com>, 2002
-# Jaakko Hyv‰tti <jaakko@hyvatti.iki.fi>, 2002
+# Jaakko Hyv√§tti <jaakko@hyvatti.iki.fi>, 2002
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
 # Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003
 #
@@ -15,11 +15,11 @@ msgstr ""
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "A friendly greeting"
-msgstr "Yst‰v‰llisin terveisin"
+msgstr "Yst√§v√§llisin terveisin"
 
 msgid "Hello"
 msgstr "Hei"
@@ -28,10 +28,10 @@ msgid "Greeting time (s)"
 msgstr "Tervehdysaika (s)"
 
 msgid "Use alternate greeting"
-msgstr "K‰yt‰ vaihtoehtoista tervehdyst‰"
+msgstr "K√§yt√§ vaihtoehtoista tervehdyst√§"
 
 msgid "Howdy folks!"
-msgstr "Mit‰ kuuluu?"
+msgstr "Mit√§ kuuluu?"
 
 msgid "Hello world!"
 msgstr "Hei maailma!"

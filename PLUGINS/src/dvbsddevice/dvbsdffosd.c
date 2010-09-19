@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffosd.c 2.1 2009/12/29 11:52:48 kls Exp $
+ * $Id: dvbsdffosd.c 2.2 2010/09/19 12:43:45 kls Exp $
  */
 
 #include "dvbsdffosd.h"
@@ -11,7 +11,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/unistd.h>
-#include "vdr/tools.h"
+#include <vdr/tools.h>
 
 // --- cDvbSdFfOsd -----------------------------------------------------------
 

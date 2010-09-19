@@ -23,6 +23,7 @@ You will also need to install the following libraries, as well as their
 
   fontconfig
   freetype2
+  fribidi (see "BiDi support" below)
   gettext
   libcap
   libjpeg
@@ -110,6 +111,16 @@ in English.
 
 Note that for VDR's internationalized texts to work, the LANG environment
 variable must be set to a valid locale!
+
+BiDi support
+------------
+
+Some languages are written right-to-left. In order to display such languages
+correctly, you need to build VDR with BIDI=1. This will link to the "fribidi"
+library and implement a function that prepares bidirectional texts to be
+displayed correctly. Since BiDi support adds some runtime overhead by requiring
+additional memory allocation and copying, this feature is not compiled in
+by default, so that users that have no need for this don't get any overhead.
 
 Workaround for providers not encoding their EPG data correctly
 --------------------------------------------------------------
