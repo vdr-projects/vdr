@@ -6465,12 +6465,11 @@ Video Disk Recorder Revision History
   the number keys can be used to enter characters in a text input field (suggested
   by Stefan Huskamp).
 
-2010-08-29: Version 1.7.16
+2010-09-19: Version 1.7.16
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added missing Dtypes for ATSC (thanks to Alex Lasnier).
-- Updated the Portuguese language texts (thanks to Cristiano A.
-  Silva).
+- Updated the Portuguese language texts (thanks to Cristiano A. Silva).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed the array size of Atypes in cPatFilter::Process() (thanks to
   Rolf Ahrenberg).
@@ -6478,3 +6477,6 @@ Video Disk Recorder Revision History
   is called from a plugin (reported by Andreas Mair).
 - Fixed DDS detection for HD resolution subtitles (thanks to Reinhard Nissl).
 - Fixed following symbolic links in RemoveFileOrDir().
+- Added support for languages that are written right-to-left (based on a patch
+  from Osama Alrawab). See INSTALL for information on how to turn this on.
+- Added Arabian language texts (thanks to Osama Alrawab).
