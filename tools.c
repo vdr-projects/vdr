@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.9 2010/10/24 11:32:27 kls Exp $
+ * $Id: tools.c 2.10 2010/10/24 13:07:30 kls Exp $
  */
 
 #include "tools.h"
@@ -882,6 +882,13 @@ cString &cString::operator=(const cString &String)
      return *this;
   free(s);
   s = String.s ? strdup(String.s) : NULL;
+  return *this;
+}
+
+cString &cString::operator=(const char *String)
+{
+  free(s);
+  s = String ? strdup(String) : NULL;
   return *this;
 }
 
