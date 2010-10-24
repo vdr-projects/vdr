@@ -1879,6 +1879,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
  for adding passing package name and version to xgettext
  for making 'dist' target dependent on up to date *.po
+ for adding Language and fixing Language-Team header of *.po
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
