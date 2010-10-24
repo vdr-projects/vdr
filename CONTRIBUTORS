@@ -1877,6 +1877,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding missing #include <limits.h> to epg.c and menuitems.h
  for fixing various spelling errors and improving PLUGINS.html
  for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
+ for adding passing package name and version to xgettext
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.2 2010/02/06 14:50:03 kls Exp $
+# $Id: Makefile 2.3 2010/10/24 13:34:04 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -83,7 +83,7 @@ I18Npot   = $(PODIR)/$(PLUGIN).pot
 	msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
 
 %.po: $(I18Npot)
 	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<

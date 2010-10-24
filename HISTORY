@@ -6491,3 +6491,4 @@ Video Disk Recorder Revision History
 - Removed the check for positive STC values from cDvbSubtitleConverter::Action().
 - Added cString::operator=(const char *String) (suggested by Antti Seppälä).
 - Some spelling fixes (thanks to Ville Skyttä).
+- Passing package name and version to xgettext (thanks to Ville Skyttä).
