@@ -1878,6 +1878,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing various spelling errors and improving PLUGINS.html
  for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
  for adding passing package name and version to xgettext
+ for making 'dist' target dependent on up to date *.po
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
