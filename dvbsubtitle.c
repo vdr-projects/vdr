@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.7 2010/08/29 14:08:23 kls Exp $
+ * $Id: dvbsubtitle.c 2.8 2010/10/24 12:25:45 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -781,7 +781,7 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
   return 0;
 }
 
-#define LimitTo32Bit(n) (n & 0x00000000FFFFFFFFL)
+#define LimitTo32Bit(n) ((n) & 0x00000000FFFFFFFFL)
 #define MAXDELTA 40000 // max. reasonable PTS/STC delta in ms
 
 void cDvbSubtitleConverter::Action(void)
@@ -801,17 +801,11 @@ void cDvbSubtitleConverter::Action(void)
            Lock();
            if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
               int64_t STC = cDevice::PrimaryDevice()->GetSTC();
-              int64_t Delta = 0;
-              if (STC >= 0) {
-                 Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
-                 if (Delta > (int64_t(1) << 31))
-                    Delta -= (int64_t(1) << 32);
-                 else if (Delta < -((int64_t(1) << 31) - 1))
-                    Delta += (int64_t(1) << 32);
-                 }
-              else {
-                 //TODO sync on PTS? are there actually devices that don't deliver an STC?
-                 }
+              int64_t Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
+              if (Delta > (int64_t(1) << 31))
+                 Delta -= (int64_t(1) << 32);
+              else if (Delta < -((int64_t(1) << 31) - 1))
+                 Delta += (int64_t(1) << 32);
               Delta /= 90; // STC and PTS are in 1/90000s
               if (Delta <= MAXDELTA) {
                  if (Delta <= 0) {

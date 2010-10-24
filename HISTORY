@@ -6488,3 +6488,4 @@ Video Disk Recorder Revision History
   Steffen Barszus).
 - Changed the description of cDevice::GetSTC() to make it mandatory for devices
   that can replay.
+- Removed the check for positive STC values from cDvbSubtitleConverter::Action().
