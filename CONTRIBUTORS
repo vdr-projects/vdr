@@ -673,7 +673,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
  for reporting that the video type is unnecessarily written into channels.conf if
  VPID is 0
- for reporting chirping sound disturbences at editing points in TS recordings
+ for reporting chirping sound disturbances at editing points in TS recordings
  for reporting broken index generation in TS recordings after a buffer overflow
  for fixing the way the OSD size is determined on full featured DVB cards
  for his input on calculating the Aspect factor in GetOsdSize()
@@ -1022,7 +1022,7 @@ Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
 
 Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilà <jvila@tinet.org>
- for translating OSD texts to the Catalanian language
+ for translating OSD texts to the Catalan language
 
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entries for undefined
@@ -1248,7 +1248,7 @@ Reinhard Nissl <rnissl@gmx.de>
  to 'double'
  for suggesting to use different names for the Aspect parameter in GetVideoSize()
  and GetOsdSize()
- for reporting a problem with calculating menu colum widths in case the font has a
+ for reporting a problem with calculating menu column widths in case the font has a
  size other than the default size
  for reporting a bug in storing the current OSD size in case the
  device has changed it in its setup menu
@@ -1832,7 +1832,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
- for translating OSD texts to the Spanish and Catalanian language
+ for translating OSD texts to the Spanish and Catalan language
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -2231,7 +2231,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for making the non-breaking space symbol be rendered as a blank
  for fixing a signed character used as index in cBase64Encoder::NextLine()
  for fixing formatting the name section in the VDR man pages
- for reporting unneeded include files <linux/dvb/dmx.h> und <time.h> in remux.h
+ for reporting unneeded include files <linux/dvb/dmx.h> and <time.h> in remux.h
  for a patch that added a workaround for the broken linux-dvb driver header files
 
 Helge Lenz <h.lenz@gmx.de>

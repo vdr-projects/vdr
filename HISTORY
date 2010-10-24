@@ -2154,7 +2154,7 @@ Video Disk Recorder Revision History
   called before trying to learn the keys (problem reported by Oliver Endriss).
 - No longer starting the editing process if no marks have been set (thanks to
   Matthias Raus for reporting this one).
-- Added Catalanian language texts (thanks to Marc Rovira Vall and Ramon Roca).
+- Added Catalan language texts (thanks to Marc Rovira Vall and Ramon Roca).
   Plugin authors may want to add the new entries to their I18N texts and contact
   the translators to have their texts translated. Note that there are now 16
   different OSD languages, so please make sure you have 16 versions for each of
@@ -2219,7 +2219,7 @@ Video Disk Recorder Revision History
 - Completed the Italian OSD texts (thanks to Antonio Ospite).
 - Fixed breaking off replay in case the user hits "Play" or "Pause" too soon after
   going into "Pause live video" mode (thanks to Karim Afifi for reporting this one).
-- Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
+- Some corrections to the Catalan OSD texts (thanks to Jordi Vilà).
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
 - Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).
@@ -5706,7 +5706,7 @@ Video Disk Recorder Revision History
   ISO-8859-9.
 - Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
   to Tobias Grimm).
-- Updated the Spanish and Catalanian OSD texts (thanks to Luca Olivetti).
+- Updated the Spanish and Catalan OSD texts (thanks to Luca Olivetti).
 - Fixed automatically selecting the preferred subtitle language (based on a patch
   from Rolf Ahrenberg).
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
@@ -5811,7 +5811,7 @@ Video Disk Recorder Revision History
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
 - Errors in config files no longer keep VDR from starting.
-- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+- Removed unneeded include files <linux/dvb/dmx.h> and <time.h> from remux.h
   (reported by Tobias Grimm).
 
 2008-09-06: Version 1.6.0-2
@@ -5829,7 +5829,7 @@ Video Disk Recorder Revision History
   to Udo Richter).
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
-- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+- Removed unneeded include files <linux/dvb/dmx.h> and <time.h> from remux.h
   (reported by Tobias Grimm).
 
 2008-12-14: Version 1.7.2
@@ -6052,7 +6052,7 @@ Video Disk Recorder Revision History
 - Any TS packets in the first "frame" after a cut in an edited recording that don't
   belong to a payload unit that started in that frame now get their TEI flag set,
   so that a decoder will ignore them together with any PES data collected for that
-  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbences at
+  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbances at
   editing points in TS recordings).
 - cDvbPlayer::Empty() subtracts 1 from readIndex, because Action() will first
   increment it.
@@ -6490,3 +6490,4 @@ Video Disk Recorder Revision History
   that can replay.
 - Removed the check for positive STC values from cDvbSubtitleConverter::Action().
 - Added cString::operator=(const char *String) (suggested by Antti Seppälä).
+- Some spelling fixes (thanks to Ville Skyttä).
