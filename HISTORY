@@ -6484,3 +6484,5 @@ Video Disk Recorder Revision History
 2010-10-24: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
+  Steffen Barszus).

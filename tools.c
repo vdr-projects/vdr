@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.8 2010/08/29 15:03:08 kls Exp $
+ * $Id: tools.c 2.9 2010/10/24 11:32:27 kls Exp $
  */
 
 #include "tools.h"
@@ -368,7 +368,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                     cString buffer = AddDirectory(FileName, e->d_name);
                     if (FollowSymlinks) {
                        struct stat st2;
-                       if (stat(buffer, &st2) == 0) {
+                       if (lstat(buffer, &st2) == 0) {
                           if (S_ISLNK(st2.st_mode)) {
                              int size = st2.st_size + 1;
                              char *l = MALLOC(char, size);
@@ -377,14 +377,12 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                                 if (errno != EINVAL)
                                    LOG_ERROR_STR(*buffer);
                                 }
-                             else if (n < size) {
+                             else {
                                 l[n] = 0;
                                 dsyslog("removing %s", l);
                                 if (remove(l) < 0)
                                    LOG_ERROR_STR(l);
                                 }
-                             else
-                                esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
                              free(l);
                              }
                           }

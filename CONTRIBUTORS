@@ -740,6 +740,7 @@ Steffen Barszus <st_barszus@gmx.de>
  or Makefile.config as defaults
  for helping to debug a crash when using the --terminal option without having access
  to the given terminal
+ for fixing following symbolic links in RemoveFileOrDir()
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
