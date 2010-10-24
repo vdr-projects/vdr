@@ -6486,3 +6486,5 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
   Steffen Barszus).
+- Changed the description of cDevice::GetSTC() to make it mandatory for devices
+  that can replay.
