@@ -840,7 +840,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Kaustad taimeri menüüs"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Teksti sisestamine numbriklahvidega"
 
 msgid "EPG"
 msgstr "EPG"

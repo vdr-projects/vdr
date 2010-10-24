@@ -6480,3 +6480,7 @@ Video Disk Recorder Revision History
 - Added support for languages that are written right-to-left (based on a patch
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
+
+2010-10-24: Version 1.7.17
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
