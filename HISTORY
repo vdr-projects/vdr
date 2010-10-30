@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-10-24: Version 1.7.17
+2010-10-30: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6494,3 +6494,4 @@ Video Disk Recorder Revision History
 - Passing package name and version to xgettext (thanks to Ville Skyttä).
 - Made 'dist' target dependent on up to date *.po (thanks to Ville Skyttä).
 - Added Language and fixed Language-Team header of *.po (thanks to Ville Skyttä).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
