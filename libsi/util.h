@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 2.1 2008/05/22 10:49:08 kls Exp $
+ *   $Id: util.h 2.2 2010/11/01 15:24:32 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -19,6 +19,7 @@
 #include <time.h>
 
 #define HILO(x) (x##_hi << 8 | x##_lo)
+#define HILOHILO(x) (x##_hi_hi << 24 | x##_hi_lo << 16 | x##_lo_hi << 8 | x##_lo_lo)
 #define BCD_TIME_TO_SECONDS(x) ((3600 * ((10*((x##_h & 0xF0)>>4)) + (x##_h & 0xF))) + \
                              (60 * ((10*((x##_m & 0xF0)>>4)) + (x##_m & 0xF))) + \
                              ((10*((x##_s & 0xF0)>>4)) + (x##_s & 0xF)))

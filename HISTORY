@@ -6500,3 +6500,5 @@ Video Disk Recorder Revision History
   channels. To fix the index of existing recordings from such channels, just delete the
   'index' file of the recording and VDR will generate a new one the next time you play it.
   You should also change the line "F 25" to "F 50" in the 'info' file of that recording.
+- Added support for "registration descriptor" to 'libsi' and using it in pat.c (thanks
+  to Rolf Ahrenberg).

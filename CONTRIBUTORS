@@ -1100,6 +1100,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for implementing handling of HD resolution subtitles according to v1.3.1 of
  ETSI EN 300 743, chapter 7.2.1
  for fixing the array size of Atypes in cPatFilter::Process()
+ for adding support for "registration descriptor" to 'libsi' and using it in pat.c
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

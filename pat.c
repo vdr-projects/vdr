@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.13 2010/06/13 11:12:12 kls Exp $
+ * $Id: pat.c 2.14 2010/11/01 15:34:28 kls Exp $
  */
 
 #include "pat.h"
@@ -456,21 +456,63 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       }
                       break;
+              case 0x80:  // STREAMTYPE_USER_PRIVATE
+                      {
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::RegistrationDescriptorTag: {
+                                 SI::RegistrationDescriptor *rd = (SI::RegistrationDescriptor *)d;
+                                 // http://www.smpte-ra.org/mpegreg/mpegreg.html
+                                 switch (rd->getFormatIdentifier()) {
+                                   case 0x44434949: // 'DCII' DigiChipher II
+                                        Vpid = esPid;
+                                        Ppid = pmt.getPCRPid();
+                                        Vtype = stream.getStreamType();
+                                        ProcessCaDescriptors = true;
+                                        break;
+                                   default:
+                                        //printf("Format identifier: 0x08X\n", rd->getFormatIdentifier());
+                                        break;
+                                   }
+                                 }
+                                 break;
+                            default: ;
+                            }
+                         delete d;
+                         }
+                      }
+                      break;
               case 0x81: // STREAMTYPE_USER_PRIVATE
-                      if (Channel->IsAtsc()) { // ATSC AC-3
-                         char lang[MAXLANGCODE1] = { 0 };
-                         SI::Descriptor *d;
-                         for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
-                             switch (d->getDescriptorTag()) {
-                               case SI::ISO639LanguageDescriptorTag: {
-                                    SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-                                    strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
-                                    }
-                                    break;
-                               default: ;
-                               }
-                             delete d;
-                             }
+                      {
+                      char lang[MAXLANGCODE1] = { 0 };
+                      bool IsAc3 = false;
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::RegistrationDescriptorTag: {
+                                 SI::RegistrationDescriptor *rd = (SI::RegistrationDescriptor *)d;
+                                 // http://www.smpte-ra.org/mpegreg/mpegreg.html
+                                 switch (rd->getFormatIdentifier()) {
+                                   case 0x41432D33: // 'AC-3'
+                                        IsAc3 = true;
+                                        break;
+                                   default:
+                                        //printf("Format identifier: 0x08X\n", rd->getFormatIdentifier());
+                                        break;
+                                   }
+                                 }
+                                 break;
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 }
+                                 break;
+                            default: ;
+                            }
+                         delete d;
+                         }
+                      if (IsAc3) {
                          if (NumDpids < MAXDPIDS) {
                             Dpids[NumDpids] = esPid;
                             Dtypes[NumDpids] = SI::AC3DescriptorTag;
@@ -479,6 +521,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                             }
                          ProcessCaDescriptors = true;
                          }
+                      }
                       break;
               default: ;//printf("PID: %5d %5d %2d %3d %3d\n", pmt.getServiceId(), stream.getPid(), stream.getStreamType(), pmt.getVersionNumber(), Channel->Number());
               }
