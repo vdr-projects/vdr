@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-10-30: Version 1.7.17
+2010-11-01: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6495,3 +6495,8 @@ Video Disk Recorder Revision History
 - Made 'dist' target dependent on up to date *.po (thanks to Ville Skyttä).
 - Added Language and fixed Language-Team header of *.po (thanks to Ville Skyttä).
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- Fixed detecting frames on channels that broadcast with 50 or 60 fps.
+  This avoids artifacts during fast forward/rewind when replaying recordings from such
+  channels. To fix the index of existing recordings from such channels, just delete the
+  'index' file of the recording and VDR will generate a new one the next time you play it.
+  You should also change the line "F 25" to "F 50" in the 'info' file of that recording.
