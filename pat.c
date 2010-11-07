@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.14 2010/11/01 15:34:28 kls Exp $
+ * $Id: pat.c 2.15 2010/11/07 13:47:16 kls Exp $
  */
 
 #include "pat.h"
@@ -456,34 +456,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       }
                       break;
-              case 0x80:  // STREAMTYPE_USER_PRIVATE
-                      {
-                      SI::Descriptor *d;
-                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
-                          switch (d->getDescriptorTag()) {
-                            case SI::RegistrationDescriptorTag: {
-                                 SI::RegistrationDescriptor *rd = (SI::RegistrationDescriptor *)d;
-                                 // http://www.smpte-ra.org/mpegreg/mpegreg.html
-                                 switch (rd->getFormatIdentifier()) {
-                                   case 0x44434949: // 'DCII' DigiChipher II
-                                        Vpid = esPid;
-                                        Ppid = pmt.getPCRPid();
-                                        Vtype = stream.getStreamType();
-                                        ProcessCaDescriptors = true;
-                                        break;
-                                   default:
-                                        //printf("Format identifier: 0x08X\n", rd->getFormatIdentifier());
-                                        break;
-                                   }
-                                 }
-                                 break;
-                            default: ;
-                            }
-                         delete d;
-                         }
-                      }
-                      break;
-              case 0x81: // STREAMTYPE_USER_PRIVATE
+              case 0x80 ... 0xFF: // STREAMTYPE_USER_PRIVATE
                       {
                       char lang[MAXLANGCODE1] = { 0 };
                       bool IsAc3 = false;
@@ -494,6 +467,12 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                  SI::RegistrationDescriptor *rd = (SI::RegistrationDescriptor *)d;
                                  // http://www.smpte-ra.org/mpegreg/mpegreg.html
                                  switch (rd->getFormatIdentifier()) {
+                                   case 0x44434949: // 'DCII' aka. DigiCipher II
+                                        Vpid = esPid;
+                                        Ppid = pmt.getPCRPid();
+                                        Vtype = 0x02; // DCII compression is based upon MPEG-2
+                                        ProcessCaDescriptors = true;
+                                        break;
                                    case 0x41432D33: // 'AC-3'
                                         IsAc3 = true;
                                         break;
@@ -514,11 +493,11 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       if (IsAc3) {
                          if (NumDpids < MAXDPIDS) {
-                            Dpids[NumDpids] = esPid;
-                            Dtypes[NumDpids] = SI::AC3DescriptorTag;
-                            strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
-                            NumDpids++;
-                            }
+                           Dpids[NumDpids] = esPid;
+                           Dtypes[NumDpids] = SI::AC3DescriptorTag;
+                           strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
+                           NumDpids++;
+                           }
                          ProcessCaDescriptors = true;
                          }
                       }
