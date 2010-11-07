@@ -6503,3 +6503,5 @@ Video Disk Recorder Revision History
 - Added support for "registration descriptor" to 'libsi' and using it in pat.c (thanks
   to Rolf Ahrenberg).
 - Fixed unjustified log entries about changed channel pids (reported by Derek Kelly).
+- Added an include of VDR's 'Make.global' to libsi's Makefile (thanks to Rolf
+  Ahrenberg).
