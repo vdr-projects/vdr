@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.5 2010/02/13 13:30:59 kls Exp $
+ * $Id: skinsttng.c 2.6 2010/11/07 15:10:08 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -612,14 +612,6 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
      ts.Set(osd, xl, y, x4 - xl, y4 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Event->Contents(i); i++) {
-      const char *s = Event->ContentToString(Event->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, xl, y, x4 - xl, y4 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Event->Description())) {
      int yt = y;
@@ -666,14 +658,6 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
      ts.Set(osd, xl, y, x4 - xl, y4 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Info->GetEvent()->Contents(i); i++) {
-      const char *s = Info->GetEvent()->ContentToString(Info->GetEvent()->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, xl, y, x4 - xl, y4 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Info->Description())) {
      int yt = y;

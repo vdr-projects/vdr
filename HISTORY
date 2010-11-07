@@ -6505,3 +6505,5 @@ Video Disk Recorder Revision History
 - Fixed unjustified log entries about changed channel pids (reported by Derek Kelly).
 - Added an include of VDR's 'Make.global' to libsi's Makefile (thanks to Rolf
   Ahrenberg).
+- Removed displaying the "contents" information from the "Classic VDR" and
+  "ST:TNG Panels" skins, because it is often wrong and nothing but irritating.

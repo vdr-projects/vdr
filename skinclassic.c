@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 2.4 2010/02/13 13:44:48 kls Exp $
+ * $Id: skinclassic.c 2.5 2010/11/07 15:10:23 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -361,14 +361,6 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
      ts.Set(osd, x1, y, x2 - x1, y3 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Event->Contents(i); i++) {
-      const char *s = Event->ContentToString(Event->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, x1, y, x2 - x1, y3 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Event->Description())) {
      textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Event->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
@@ -405,14 +397,6 @@ void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
      ts.Set(osd, x1, y, x2 - x1, y3 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Info->GetEvent()->Contents(i); i++) {
-      const char *s = Info->GetEvent()->ContentToString(Info->GetEvent()->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, x1, y, x2 - x1, y3 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Info->Description())) {
      textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
