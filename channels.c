@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.16 2010/06/05 13:33:57 kls Exp $
+ * $Id: channels.c 2.17 2010/11/07 12:24:59 kls Exp $
  */
 
 #include "channels.h"
@@ -262,12 +262,14 @@ static int IntArraysDiffer(const int *a, const int *b, const char na[][MAXLANGCO
 {
   int result = 0;
   for (int i = 0; a[i] || b[i]; i++) {
-      if (a[i] && na && nb && strcmp(na[i], nb[i]) != 0)
+      if (!a[i] || !b[i]) {
+         result |= VALDIFF;
+         break;
+         }
+      if (na && nb && strcmp(na[i], nb[i]) != 0)
          result |= STRDIFF;
       if (a[i] != b[i])
          result |= VALDIFF;
-      if (!a[i] || !b[i])
-         break;
       }
   return result;
 }

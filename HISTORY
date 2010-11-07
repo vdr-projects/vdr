@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-11-01: Version 1.7.17
+2010-11-07: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6502,3 +6502,4 @@ Video Disk Recorder Revision History
   You should also change the line "F 25" to "F 50" in the 'info' file of that recording.
 - Added support for "registration descriptor" to 'libsi' and using it in pat.c (thanks
   to Rolf Ahrenberg).
+- Fixed unjustified log entries about changed channel pids (reported by Derek Kelly).
