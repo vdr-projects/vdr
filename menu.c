@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.24 2010/06/06 09:56:16 kls Exp $
+ * $Id: menu.c 2.25 2010/12/12 13:36:20 kls Exp $
  */
 
 #include "menu.h"
@@ -606,7 +606,7 @@ void cMenuText::Display(void)
 
 eOSState cMenuText::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -1253,7 +1253,7 @@ void cMenuEvent::Display(void)
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -2116,7 +2116,7 @@ void cMenuRecording::Display(void)
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -3614,7 +3614,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
   cChannel *NewChannel = NULL;
   if (Key != kNone)
      lastTime.Set();
-  switch (Key) {
+  switch (int(Key)) {
     case k0:
          if (number == 0) {
             // keep the "Toggle channels" function working
@@ -3818,7 +3818,7 @@ void cDisplayVolume::Process(eKeys Key)
 
 eOSState cDisplayVolume::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kVolUp|k_Repeat:
     case kVolUp:
     case kVolDn|k_Repeat:
@@ -3914,7 +3914,7 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
 {
   int oldTrack = track;
   int oldAudioChannel = audioChannel;
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -4031,7 +4031,7 @@ void cDisplaySubtitleTracks::Process(eKeys Key)
 eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 {
   int oldTrack = track;
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -4754,7 +4754,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      return osContinue;
      }
   bool DoShowMode = true;
-  switch (Key) {
+  switch (int(Key)) {
     // Positioning:
     case kPlay:
     case kUp:      Play(); break;
@@ -4781,7 +4781,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    return osEnd;
     default: {
       DoShowMode = false;
-      switch (Key) {
+      switch (int(Key)) {
         // Editing:
         case kMarkToggle:      MarkToggle(); break;
         case kPrev|k_Repeat:

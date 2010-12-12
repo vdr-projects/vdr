@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.19 2010/04/05 10:06:16 kls Exp $
+ * $Id: vdr.c 2.20 2010/12/12 13:42:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -937,7 +937,7 @@ int main(int argc, char *argv[])
            ShutdownHandler.SetUserInactiveTimeout();
            }
         // Keys that must work independent of any interactive mode:
-        switch (key) {
+        switch (int(key)) {
           // Menu control:
           case kMenu: {
                key = kNone; // nobody else needs to see this key
@@ -1185,7 +1185,7 @@ int main(int argc, char *argv[])
               cRemote::PutMacro(key);
               key = kNone;
               }
-           switch (key) {
+           switch (int(key)) {
              // Toggle channels:
              case kChanPrev:
              case k0: {

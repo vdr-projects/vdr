@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.7 2010/06/06 10:37:08 kls Exp $
+ * $Id: menuitems.c 2.8 2010/12/12 13:41:09 kls Exp $
  */
 
 #include "menuitems.h"
@@ -527,7 +527,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
      Set();
      return osContinue;
      }
-  switch (Key) {
+  switch (int(Key)) {
     case kRed:   // Switch between upper- and lowercase characters
                  if (InEditMode()) {
                     if (!insert || !newchar) {
@@ -733,7 +733,7 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 {
   int delta = 1;
 
-  switch (Key) {
+  switch (int(Key)) {
     case kLeft|k_Repeat:
     case kLeft:  delta = -1;
     case kRight|k_Repeat:
