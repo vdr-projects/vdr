@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 2.3 2010/02/28 14:25:32 kls Exp $
+ * $Id: receiver.c 2.4 2010/12/12 23:16:25 kls Exp $
  */
 
 #include "receiver.h"
-#include <stdarg.h>
 #include <stdio.h>
 #include "tools.h"
 

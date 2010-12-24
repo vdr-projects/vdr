@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.5 2010/10/24 13:06:27 kls Exp $
+ * $Id: tools.h 2.6 2010/12/12 23:15:52 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -17,6 +17,7 @@
 #include <iconv.h>
 #include <math.h>
 #include <poll.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>

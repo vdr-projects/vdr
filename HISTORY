@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-12-12: Version 1.7.17
+2010-12-24: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6509,3 +6509,4 @@ Video Disk Recorder Revision History
   "ST:TNG Panels" skins, because it is often wrong and nothing but irritating.
 - Added typecasts to avoid gcc 4.5 warnings in switch statements on eKeys
   variables where additional 'k_...' flags are used.
+- Fixed inclusion of <stdarg.h> (thanks to Henning Heinold).

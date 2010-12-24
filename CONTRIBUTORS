@@ -2635,3 +2635,6 @@ Osama Alrawab <alrawab@hotmail.com>
 
 Antti Seppälä <a.seppala@gmail.com>
  for suggesting to add cString::operator=(const char *String)
+
+Henning Heinold <heinold@inf.fu-berlin.de>
+ for fixing inclusion of <stdarg.h>

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.10 2010/10/24 13:07:30 kls Exp $
+ * $Id: tools.c 2.11 2010/12/12 23:15:38 kls Exp $
  */
 
 #include "tools.h"
@@ -18,7 +18,6 @@ extern "C" {
 #include <jpeglib.h>
 #undef boolean
 }
-#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/vfs.h>
