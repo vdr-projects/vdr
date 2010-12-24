@@ -2639,3 +2639,6 @@ Antti Seppälä <a.seppala@gmail.com>
 
 Henning Heinold <heinold@inf.fu-berlin.de>
  for fixing inclusion of <stdarg.h>
+
+Dominik Strasser <dominik@die-strassers.de>
+ for making a cRemote be removed from the Remotes list in case its initialization failed

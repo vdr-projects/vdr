@@ -6511,3 +6511,5 @@ Video Disk Recorder Revision History
   variables where additional 'k_...' flags are used.
 - Fixed inclusion of <stdarg.h> (thanks to Henning Heinold).
 - Changed "frame duration" to "frame rate" in vdr.5 (reported by Tobias Grimm).
+- Removing a cRemote from the Remotes list in case its initialization failed (thanks
+  to Dominik Strasser).
