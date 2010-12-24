@@ -6510,3 +6510,4 @@ Video Disk Recorder Revision History
 - Added typecasts to avoid gcc 4.5 warnings in switch statements on eKeys
   variables where additional 'k_...' flags are used.
 - Fixed inclusion of <stdarg.h> (thanks to Henning Heinold).
+- Changed "frame duration" to "frame rate" in vdr.5 (reported by Tobias Grimm).
