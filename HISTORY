@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-12-24: Version 1.7.17
+2010-12-26: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6513,3 +6513,5 @@ Video Disk Recorder Revision History
 - Changed "frame duration" to "frame rate" in vdr.5 (reported by Tobias Grimm).
 - Removing a cRemote from the Remotes list in case its initialization failed (thanks
   to Dominik Strasser).
+- Added LDFLAGS to the linker calls in the Makefiles (thanks to Joerg Bornkessel and
+  Paul Menzel).

@@ -2611,6 +2611,7 @@ Eric Valette <eric.valette@free.fr>
 
 Paul Menzel <paulepanter@users.sourceforge.net>
  for making include paths not be overwritten in the Makefile
+ for adding LDFLAGS to the linker calls in the Makefiles
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
@@ -2642,3 +2643,6 @@ Henning Heinold <heinold@inf.fu-berlin.de>
 
 Dominik Strasser <dominik@die-strassers.de>
  for making a cRemote be removed from the Remotes list in case its initialization failed
+
+Joerg Bornkessel <hd_brummy@gentoo.org>
+ for adding LDFLAGS to the linker calls in the Makefiles
