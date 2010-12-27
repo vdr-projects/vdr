@@ -6515,3 +6515,5 @@ Video Disk Recorder Revision History
   to Dominik Strasser).
 - Added LDFLAGS to the linker calls in the Makefiles (thanks to Joerg Bornkessel and
   Paul Menzel).
+- Now updating the 'frames per second' data in the list of recordings when a new
+  recording is started that has a frame rate other than the default.

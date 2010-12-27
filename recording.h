@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.14 2010/03/07 14:06:15 kls Exp $
+ * $Id: recording.h 2.15 2010/12/27 10:48:21 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -117,6 +117,7 @@ public:
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
+  void ReadInfo(void);
   bool WriteInfo(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu
@@ -165,6 +166,7 @@ public:
   cRecording *GetByName(const char *FileName);
   void AddByName(const char *FileName, bool TriggerUpdate = true);
   void DelByName(const char *FileName);
+  void UpdateByName(const char *FileName);
   int TotalFileSizeMB(void); ///< Only for deleted recordings!
   };
 

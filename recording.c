@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.23 2010/03/07 14:06:04 kls Exp $
+ * $Id: recording.c 2.24 2010/12/27 12:02:00 kls Exp $
  */
 
 #include "recording.h"
@@ -678,7 +678,7 @@ cRecording::cRecording(const char *FileName)
   const char *p = strrchr(FileName, '/');
 
   name = NULL;
-  info = new cRecordingInfo;
+  info = new cRecordingInfo(fileName);
   if (p) {
      time_t now = time(NULL);
      struct tm tm_r;
@@ -919,6 +919,14 @@ bool cRecording::IsEdited(void) const
   const char *s = strrchr(name, FOLDERDELIMCHAR);
   s = !s ? name : s + 1;
   return *s == '%';
+}
+
+void cRecording::ReadInfo(void)
+{
+  info->Read();
+  priority = info->priority;
+  lifetime = info->lifetime;
+  framesPerSecond = info->framesPerSecond;
 }
 
 bool cRecording::WriteInfo(void)
@@ -1170,6 +1178,14 @@ void cRecordings::DelByName(const char *FileName)
      ChangeState();
      TouchUpdate();
      }
+}
+
+void cRecordings::UpdateByName(const char *FileName)
+{
+  LOCK_THREAD;
+  cRecording *recording = GetByName(FileName);
+  if (recording)
+     recording->ReadInfo();
 }
 
 int cRecordings::TotalFileSizeMB(void)
