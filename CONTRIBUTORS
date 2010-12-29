@@ -2646,3 +2646,7 @@ Dominik Strasser <dominik@die-strassers.de>
 
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
+
+Andreas Oberritter <obi@opendreambox.org>
+ for suggesting to retrieve the include path to the freetype2 header files
+ via a call to 'pkg-config --cflags freetype2'

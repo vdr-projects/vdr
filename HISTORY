@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-12-26: Version 1.7.17
+2010-12-29: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6517,3 +6517,5 @@ Video Disk Recorder Revision History
   Paul Menzel).
 - Now updating the 'frames per second' data in the list of recordings when a new
   recording is started that has a frame rate other than the default.
+- The include path to the freetype2 header files is now retrieved via a call to
+  'pkg-config --cflags freetype2' (suggested by Andreas Oberritter).
