@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2010-12-29: Version 1.7.17
+2011-02-20: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6519,3 +6519,17 @@ Video Disk Recorder Revision History
   recording is started that has a frame rate other than the default.
 - The include path to the freetype2 header files is now retrieved via a call to
   'pkg-config --cflags freetype2' (suggested by Andreas Oberritter).
+- The OSD now has full TrueColor support. There can be several "pixmaps" that can
+  be overlayed with alpha blending. All existing skins should work out of the box
+  with the TrueColor OSD - the only exception being cOsd::GetBitmap(). Since the
+  TrueColor OSD doesn't use bitmaps, this function will return a dummy bitmap, which
+  may not be what the plugin expects. As long as this bitmap is only used for setting
+  the palette, there is no problem. However, any other operations on this bitmap will
+  have no effect. See the description of the cPixmap functions in osd.h for details
+  about the new functionalities.
+  The "ST:TNG Panels" skin has been enhanced to automatically use the TrueColor OSD
+  if available.
+  The "osddemo" plugin has been extended to show some of the possibilities of the
+  TrueColor OSD if it is run on a system that actually provides TrueColor support.
+  Thanks to Reinhard Nissl for some valuable input, help with debugging, and an
+  implementation of the AlphaBlend() function.

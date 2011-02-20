@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.4 2010/09/19 11:48:37 kls Exp $
+ * $Id: font.h 2.5 2011/01/14 16:22:03 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -26,6 +26,7 @@ enum eDvbFont {
   };
 
 class cBitmap;
+class cPixmap;
 typedef uint32_t tColor; // see also osd.h
 typedef uint8_t tIndex;
 
@@ -54,6 +55,9 @@ public:
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const = 0;
           ///< Draws the given text into the Bitmap at position (x, y) with the given colors.
           ///< The text will not exceed the given Width (if > 0), and will end with a complete character.
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}; // not "pure", so that existing implementations still compile
+          ///< Draws the given text into the Pixmap at position (x, y) with the given colors.
+          ///< The text will not exceed the given Width (if > 0), and will end with a complete character.
   static void SetFont(eDvbFont Font, const char *Name, int CharHeight);
           ///< Sets the given Font to use the font data according to Name (see CreateFont())
           ///< and make its characters CharHeight pixels high.
@@ -81,7 +85,7 @@ public:
           ///< of the actual font file.
           ///< Returns true if any font names were found.
   static cString GetFontFileName(const char *FontName);
-          ///< Retruns the actual font file name for the given FontName.
+          ///< Returns the actual font file name for the given FontName.
 #ifdef BIDI
   static cString Bidi(const char *Ltr);
           ///< Converts any "right-to-left" parts in the "left-to-right" string Ltr

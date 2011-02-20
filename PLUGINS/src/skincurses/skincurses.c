@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.4 2010/02/28 12:50:13 kls Exp $
+ * $Id: skincurses.c 2.5 2011/01/04 08:52:03 kls Exp $
  */
 
 #include <ncurses.h>
@@ -23,6 +23,7 @@ public:
   virtual int Width(const char *s) const { return s ? Utf8StrLen(s) : 0; }
   virtual int Height(void) const { return 1; }
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
   };
 
 static const cCursesFont Font;

@@ -19,4 +19,11 @@ Demonstration of how a plugin can have its very own OSD setup.
 It's a very primitive game that opens a small window in which the
 user can draw lines with the Up, Down, Left and Right buttons.
 The color buttons are used to switch color.
+
+On a VDR system with TrueColor support it displays some of the
+possibilities available with the TrueColor OSD. Once the "Animation"
+pixmap is displayed, it can be moved around with the Up, Down, Left
+and Right buttons. The Red button turns off the "Tiled Pixmaps"
+display, and the Green button toggles the color display.
+
 Press Ok to close the window.

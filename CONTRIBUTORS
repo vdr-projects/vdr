@@ -1260,6 +1260,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for implementing cDeviceHook
  for implementing cDevice::GetCurrentlyTunedTransponder()
  for fixing DDS detection for HD resolution subtitles
+ for some valuable input during development of the TrueColor OSD, help with
+ debugging, and an implementation of the AlphaBlend() function.
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

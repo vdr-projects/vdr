@@ -21,3 +21,7 @@ VDR Plugin 'osddemo' Revision History
 2008-04-13: Version 0.1.3
 
 - Fixed setting the OSD level (thanks to Wolfgang Rohdewald).
+
+2011-02-20: Version 0.2.0
+
+- Added support for TrueColor OSD.
