@@ -6535,3 +6535,5 @@ Video Disk Recorder Revision History
   implementation of the AlphaBlend() function.
 - Updated the Slovakian language texts (thanks to Milan Hrala).
 - Added Serbian language texts (thanks to Milan Cvijanovic).
+- Fixed reallocating memory in the "pictures" plugin (reported by Paul Menzel, with
+  input from Oliver Endriss).
