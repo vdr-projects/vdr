@@ -677,6 +677,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting broken index generation in TS recordings after a buffer overflow
  for fixing the way the OSD size is determined on full featured DVB cards
  for his input on calculating the Aspect factor in GetOsdSize()
+ for suggesting a better way of handling calls to realloc()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

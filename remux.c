@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.48 2010/11/01 12:29:17 kls Exp $
+ * $Id: remux.c 2.49 2011/02/20 17:27:47 kls Exp $
  */
 
 #include "remux.h"
@@ -666,9 +666,12 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
      return; // skip everything before the first payload start
   Length = TsGetPayload(&Data);
   if (length + Length > size) {
-     size = max(KILOBYTE(2), length + Length);
-     data = (uchar *)realloc(data, size);
-     if (!data) {
+     int NewSize = max(KILOBYTE(2), length + Length);
+     if (uchar *NewData = (uchar *)realloc(data, NewSize)) {
+        data = NewData;
+        size = NewSize;
+        }
+     else {
         Reset();
         return;
         }

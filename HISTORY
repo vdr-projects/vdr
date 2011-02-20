@@ -6537,3 +6537,4 @@ Video Disk Recorder Revision History
 - Added Serbian language texts (thanks to Milan Cvijanovic).
 - Fixed reallocating memory in the "pictures" plugin (reported by Paul Menzel, with
   input from Oliver Endriss).
+- Fixed reallocating memory in cTsToPes::PutTs() (suggested by Oliver Endriss).
