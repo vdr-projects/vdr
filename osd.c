@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.12 2011/02/20 14:48:01 kls Exp $
+ * $Id: osd.c 2.13 2011/02/20 21:35:48 kls Exp $
  */
 
 #include "osd.h"
@@ -72,10 +72,8 @@ cInitAlphaLut initAlphaLut;
 tColor AlphaBlend(tColor ColorFg, tColor ColorBg, tColor AlphaLayer)
 {
   tColor Alpha = (ColorFg & 0xFF000000) >> 24;
-  if (AlphaLayer < ALPHA_OPAQUE) {
-     Alpha *= AlphaLayer;
-     Alpha = ((Alpha + ((Alpha >> 8) & 0x000000FF) + 0x00000080) >> 8) & 0x000000FF;
-     }
+  Alpha *= AlphaLayer;
+  Alpha = ((Alpha + ((Alpha >> 8) & 0x000000FF) + 0x00000080) >> 8) & 0x000000FF;
   uint16_t *lut = &AlphaLut[Alpha][(ColorBg & 0xFF000000) >> 24][0];
   return (tColor)((lut[3] << 24)
     | (((((ColorFg & 0x00FF0000) >> 16) * lut[0] + ((ColorBg & 0x00FF0000) >> 16) * lut[1]) << 8) & 0x00FF0000)
