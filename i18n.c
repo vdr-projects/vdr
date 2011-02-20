@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 2.2 2010/09/19 11:22:39 kls Exp $
+ * $Id: i18n.c 2.3 2011/02/20 15:56:20 kls Exp $
  */
 
 /*
@@ -52,6 +52,7 @@ const char *LanguageCodeList[] = {
   "hun",
   "cat,cln",
   "rus",
+  "srb,srp,scr,scc",
   "hrv",
   "est",
   "dan",
