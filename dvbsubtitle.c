@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.8 2010/10/24 12:25:45 kls Exp $
+ * $Id: dvbsubtitle.c 2.9 2011/02/25 15:13:32 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -570,12 +570,17 @@ void cDvbSubtitleAssembler::Reset(void)
 bool cDvbSubtitleAssembler::Realloc(int Size)
 {
   if (Size > size) {
-     size = max(Size, 2048);
-     data = (uchar *)realloc(data, size);
-     if (!data) {
+     Size = max(Size, 2048);
+     if (uchar *NewBuffer = (uchar *)realloc(data, Size)) {
+        size = Size;
+        data = NewBuffer;
+        }
+     else {
         esyslog("ERROR: can't allocate memory for subtitle assembler");
         length = 0;
         size = 0;
+        free(data);
+        data = NULL;
         return false;
         }
      }

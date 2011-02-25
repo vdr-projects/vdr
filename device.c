@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.37 2010/06/03 13:35:02 kls Exp $
+ * $Id: device.c 2.38 2011/02/25 15:12:03 kls Exp $
  */
 
 #include "device.h"
@@ -1087,11 +1087,17 @@ void cDevice::StillPicture(const uchar *Data, int Length)
                  int l;
                  while (const uchar *p = TsToPes.GetPes(l)) {
                        int Offset = Size;
-                       Size += l;
-                       buf = (uchar *)realloc(buf, Size);
-                       if (!buf)
+                       int NewSize = Size + l;
+                       if (uchar *NewBuffer = (uchar *)realloc(buf, NewSize)) {
+                          Size = NewSize;
+                          buf = NewBuffer;
+                          memcpy(buf + Offset, p, l);
+                          }
+                       else {
+                          LOG_ERROR_STR("out of memory");
+                          free(buf);
                           return;
-                       memcpy(buf + Offset, p, l);
+                          }
                        }
                  TsToPes.Reset();
                  }
@@ -1103,11 +1109,17 @@ void cDevice::StillPicture(const uchar *Data, int Length)
      int l;
      while (const uchar *p = TsToPes.GetPes(l)) {
            int Offset = Size;
-           Size += l;
-           buf = (uchar *)realloc(buf, Size);
-           if (!buf)
+           int NewSize = Size + l;
+           if (uchar *NewBuffer = (uchar *)realloc(buf, NewSize)) {
+              Size = NewSize;
+              buf = NewBuffer;
+              memcpy(buf + Offset, p, l);
+              }
+           else {
+              esyslog("ERROR: out of memory");
+              free(buf);
               return;
-           memcpy(buf + Offset, p, l);
+              }
            }
      StillPicture(buf, Size);
      free(buf);

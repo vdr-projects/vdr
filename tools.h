@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.6 2010/12/12 23:15:52 kls Exp $
+ * $Id: tools.h 2.7 2011/02/25 15:05:58 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -434,6 +434,10 @@ private:
   {
     if (++Index > allocated) {
        data = (T *)realloc(data, Index * sizeof(T));
+       if (!data) {
+          esyslog("ERROR: out of memory - abort!");
+          abort();
+          }
        for (int i = allocated; i < Index; i++)
            data[i] = T(0);
        allocated = Index;

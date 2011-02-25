@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.25 2010/12/12 13:36:20 kls Exp $
+ * $Id: menu.c 2.26 2011/02/25 14:24:32 kls Exp $
  */
 
 #include "menu.h"
@@ -1860,8 +1860,14 @@ eOSState cMenuCommands::Execute(void)
               int l = 0;
               int c;
               while ((c = fgetc(p)) != EOF) {
-                    if (l % 20 == 0)
-                       result = (char *)realloc(result, l + 21);
+                    if (l % 20 == 0) {
+                       if (char *NewBuffer = (char *)realloc(result, l + 21))
+                          result = NewBuffer;
+                       else {
+                          esyslog("ERROR: out of memory");
+                          break;
+                          }
+                       }
                     result[l++] = char(c);
                     }
               if (result)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.11 2010/12/12 23:15:38 kls Exp $
+ * $Id: tools.c 2.12 2011/02/25 14:58:31 kls Exp $
  */
 
 #include "tools.h"
@@ -156,8 +156,14 @@ char *strreplace(char *s, const char *s1, const char *s2)
      int l  = strlen(s);
      int l1 = strlen(s1);
      int l2 = strlen(s2);
-     if (l2 > l1)
-        s = (char *)realloc(s, l + l2 - l1 + 1);
+     if (l2 > l1) {
+        if (char *NewBuffer = (char *)realloc(s, l + l2 - l1 + 1))
+           s = NewBuffer;
+        else {
+           esyslog("ERROR: out of memory");
+           return s;
+           }
+        }
      char *sof = s + of;
      if (l2 != l1)
         memmove(sof + l2, sof + l1, l - of - l1 + 1);
@@ -819,8 +825,15 @@ const char *cCharSetConv::Convert(const char *From, char *To, size_t ToLength)
      size_t FromLength = strlen(From);
      char *ToPtr = To;
      if (!ToPtr) {
-        length = max(length, FromLength * 2); // some reserve to avoid later reallocations
-        result = (char *)realloc(result, length);
+        int NewLength = max(length, FromLength * 2); // some reserve to avoid later reallocations
+        if (char *NewBuffer = (char *)realloc(result, NewLength)) {
+           length = NewLength;
+           result = NewBuffer;
+           }
+        else {
+           esyslog("ERROR: out of memory");
+           return From;
+           }
         ToPtr = result;
         ToLength = length;
         }
@@ -836,8 +849,15 @@ const char *cCharSetConv::Convert(const char *From, char *To, size_t ToLength)
                  // The result buffer is too small, so increase it:
                  size_t d = ToPtr - result;
                  size_t r = length / 2;
-                 length += r;
-                 Converted = result = (char *)realloc(result, length);
+                 int NewLength = length + r;
+                 if (char *NewBuffer = (char *)realloc(result, NewLength)) {
+                    length = NewLength;
+                    Converted = result = NewBuffer;
+                    }
+                 else {
+                    esyslog("ERROR: out of memory");
+                    return From;
+                    }
                  ToLength += r;
                  ToPtr = result + d;
                  }
@@ -1029,15 +1049,22 @@ static boolean JpegCompressEmptyOutputBuffer(j_compress_ptr cinfo)
   tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
   if (jcd) {
      int Used = jcd->size;
-     jcd->size += JPEGCOMPRESSMEM;
-     jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+     int NewSize = jcd->size + JPEGCOMPRESSMEM;
+     if (uchar *NewBuffer = (uchar *)realloc(jcd->mem, NewSize)) {
+        jcd->size = NewSize;
+        jcd->mem = NewBuffer;
+        }
+     else {
+        esyslog("ERROR: out of memory");
+        return false;
+        }
      if (jcd->mem) {
         cinfo->dest->next_output_byte = jcd->mem + Used;
         cinfo->dest->free_in_buffer = jcd->size - Used;
-        return TRUE;
+        return true;
         }
      }
-  return FALSE;
+  return false;
 }
 
 static void JpegCompressTermDestination(j_compress_ptr cinfo)
@@ -1046,8 +1073,12 @@ static void JpegCompressTermDestination(j_compress_ptr cinfo)
   if (jcd) {
      int Used = cinfo->dest->next_output_byte - jcd->mem;
      if (Used < jcd->size) {
-        jcd->size = Used;
-        jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+        if (uchar *NewBuffer = (uchar *)realloc(jcd->mem, Used)) {
+           jcd->size = Used;
+           jcd->mem = NewBuffer;
+           }
+        else
+           esyslog("ERROR: out of memory");
         }
      }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.49 2011/02/20 17:27:47 kls Exp $
+ * $Id: remux.c 2.50 2011/02/25 15:19:57 kls Exp $
  */
 
 #include "remux.h"
@@ -672,6 +672,7 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
         size = NewSize;
         }
      else {
+        esyslog("ERROR: out of memory");
         Reset();
         return;
         }
