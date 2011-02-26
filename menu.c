@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.26 2011/02/25 14:24:32 kls Exp $
+ * $Id: menu.c 2.27 2011/02/26 15:28:32 kls Exp $
  */
 
 #include "menu.h"
@@ -2276,7 +2276,7 @@ void cMenuRecordings::Set(bool Refresh)
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
       if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
-         if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
+         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))) {
             Add(Item);
             LastItem = Item;
             free(LastItemText);

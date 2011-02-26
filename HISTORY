@@ -6539,3 +6539,5 @@ Video Disk Recorder Revision History
   input from Oliver Endriss).
 - Fixed reallocating memory in cTsToPes::PutTs() (suggested by Oliver Endriss).
 - Now checking the result of all realloc() calls.
+- Fixed setting up the 'Recordings' menu in case there are several recordings
+  with exactly the same name.
