@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.7 2011/02/26 12:13:59 kls Exp $
+ * $Id: osd.h 2.8 2011/02/26 14:10:30 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -895,6 +895,17 @@ public:
   virtual void Flush(void);
        ///< Actually commits all data to the OSD hardware.
        ///< Flush() should return as soon as possible.
+       ///< For a true color OSD using the default implementation with in memory
+       ///< pixmaps, the Flush() function should basically do something like this:
+       ///<
+       ///<  LOCK_PIXMAPS;
+       ///<  while (cPixmapMemory *pm = RenderPixmaps()) {
+       ///<        int w = pm->ViewPort().Width();
+       ///<        int h = pm->ViewPort().Height();
+       ///<        int d = w * sizeof(tColor);
+       ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
+       ///<        delete pm;
+       ///<        }
   };
 
 #define MAXOSDIMAGES 64
