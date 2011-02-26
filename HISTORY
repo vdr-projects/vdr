@@ -6541,3 +6541,5 @@ Video Disk Recorder Revision History
 - Now checking the result of all realloc() calls.
 - Fixed setting up the 'Recordings' menu in case there are several recordings
   with exactly the same name.
+- Setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
+  (thanks to Anssi Hannula).

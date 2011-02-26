@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.50 2011/02/25 15:19:57 kls Exp $
+ * $Id: remux.c 2.51 2011/02/26 15:51:04 kls Exp $
  */
 
 #include "remux.h"
@@ -225,7 +225,7 @@ int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language
       Target[i++] = *Language++;
       Target[i++] = *Language++;
       Target[i++] = *Language++;
-      Target[i++] = 0x01;     // audio type
+      Target[i++] = 0x00;     // audio type
       Target[Length] += 0x04; // length
       if (*Language == '+')
          Language++;
