@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.6 2011/02/20 14:52:17 kls Exp $
+ * $Id: osd.h 2.7 2011/02/26 12:13:59 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -24,6 +24,7 @@
 #define MAXNUMCOLORS 256
 #define ALPHA_TRANSPARENT  0x00
 #define ALPHA_OPAQUE       0xFF
+#define IS_OPAQUE(c)       ((c >> 24) == ALPHA_OPAQUE)
 
 enum {
                    //AARRGGBB
@@ -73,7 +74,7 @@ tColor HsvToColor(double H, double S, double V);
    ///< to an RGB tColor value. The alpha value of the result is 0x00, so
    ///< the caller may need to set it accordingly.
 
-tColor AlphaBlend(tColor ColorFg, tColor ColorBg, tColor AlphaLayer = ALPHA_OPAQUE);
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer = ALPHA_OPAQUE);
 
 class cPalette {
 private:
@@ -479,11 +480,13 @@ public:
        ///< for defining the rendering sequence. If Layer is less than zero, this
        ///< pixmap will not be rendered into the final OSD (it can be activated by a
        ///< later call to SetLayer()). The value 0 is reserved for the background
-       ///< pixmap and shall not be used otherwise. If there are several pixmaps with
-       ///< the same value of Layer, their rendering sequence within that layer is
-       ///< undefined.
-       ///< I order to allow devices that can handle only a limited number of layers,
-       ///< the Layer parameters must be less than 8 (MAXPIXMAPLAYERS).
+       ///< pixmap and shall not be used otherwise (with the sole exception of
+       ///< temporarily using layer 0 to have a text with transparent background
+       ///< rendered with alpha blending into that pixmap; see also DrawPixel()).
+       ///< If there are several pixmaps with the same value of Layer, their rendering
+       ///< sequence within that layer is undefined.
+       ///< In order to allow devices that can handle only a limited number of layers,
+       ///< the Layer parameter must be less than 8 (MAXPIXMAPLAYERS).
        ///< ViewPort defines the rectangle in which this pixmap will be rendered on
        ///< the OSD. If no DrawPort ist given, it defaults to the same size as the
        ///< ViewPort, with its upper left corner set to (0, 0).
@@ -567,12 +570,11 @@ public:
        ///< the given Point. ImageHandle must be a value that has previously been
        ///< returned by a call to cOsdProvider::StoreImage(). If ImageHandle
        ///< has an invalid value, nothing happens.
-  virtual void DrawPixel(const cPoint &Point, tColor Color, tColor Alpha = ALPHA_OPAQUE) = 0;
+  virtual void DrawPixel(const cPoint &Point, tColor Color) = 0;
        ///< Sets the pixel at the given Point to the given Color, which is
        ///< a full 32 bit ARGB value. If the alpha value of Color is not 0xFF
-       ///< (fully opaque), the pixel is alpha blended with the existing color
-       ///< at the given position in this pixmap. If Alpha is less than
-       ///< ALPHA_OPAQUE, the alpha value of Color will be reduced accordingly.
+       ///< (fully opaque), and this is the background pixmap (layer 0), the pixel is
+       ///< alpha blended with the existing color at the given position in this pixmap.
   virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false) = 0;
        ///< Sets the pixels in the OSD with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at Point.
@@ -662,7 +664,7 @@ public:
   virtual void Fill(tColor Color);
   virtual void DrawImage(const cPoint &Point, const cImage &Image);
   virtual void DrawImage(const cPoint &Point, int ImageHandle);
-  virtual void DrawPixel(const cPoint &Point, tColor Color, tColor Alpha = ALPHA_OPAQUE);
+  virtual void DrawPixel(const cPoint &Point, tColor Color);
   virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false);
   virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
   virtual void DrawRectangle(const cRect &Rect, tColor Color);

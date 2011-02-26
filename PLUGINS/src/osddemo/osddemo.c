@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.2 2011/02/20 15:06:18 kls Exp $
+ * $Id: osddemo.c 2.3 2011/02/26 12:08:13 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -338,7 +338,8 @@ void cTrueColorDemo::Action(void)
                        const int Size = Font->Width(Text) + 10;
                        const int NumDots = 12;
                        const int AnimFrames = NumDots;
-                       AnimPixmap = osd->CreatePixmap(3, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size, Size * AnimFrames));
+                       // Temporarily using pixmap layer 0 to have the text alpha blended:
+                       AnimPixmap = osd->CreatePixmap(0, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size, Size * AnimFrames));
                        if (AnimPixmap) {
                           AnimPixmap->SetAlpha(0);
                           AnimPixmap->Clear();
@@ -356,8 +357,9 @@ void cTrueColorDemo::Action(void)
                                   AnimPixmap->DrawEllipse(cRect(x, y, Diameter, Diameter), ArgbToColor(0xFF, Color, Color, Color));
                                   Color -= Delta;
                                   }
-                              AnimPixmap->DrawText(cPoint(0, Frame * Size), "Animation", clrBlack, clrTransparent, cFont::GetFont(fontSml), Size, Size, taCenter);
+                              AnimPixmap->DrawText(cPoint(0, Frame * Size), Text, clrBlack, clrTransparent, cFont::GetFont(fontSml), Size, Size, taCenter);
                               }
+                          AnimPixmap->SetLayer(3); // now setting the actual pixmap layer
                           FadeInPixmap = AnimPixmap;
                           LOCK_THREAD;
                           OldCursor = cursor = AnimPixmap->ViewPort().Point();

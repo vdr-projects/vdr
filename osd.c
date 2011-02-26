@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.13 2011/02/20 21:35:48 kls Exp $
+ * $Id: osd.c 2.14 2011/02/26 11:36:58 kls Exp $
  */
 
 #include "osd.h"
@@ -69,7 +69,7 @@ public:
 
 cInitAlphaLut initAlphaLut;
 
-tColor AlphaBlend(tColor ColorFg, tColor ColorBg, tColor AlphaLayer)
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer)
 {
   tColor Alpha = (ColorFg & 0xFF000000) >> 24;
   Alpha *= AlphaLayer;
@@ -84,7 +84,7 @@ tColor AlphaBlend(tColor ColorFg, tColor ColorBg, tColor AlphaLayer)
 // Alpha blending without lookup table.
 // Also works fast, but doesn't return the theoretically correct result.
 // It's "good enough", though.
-static tColor Multiply(tColor Color, tColor Alpha)
+static tColor Multiply(tColor Color, uint8_t Alpha)
 {
   tColor RB = (Color & 0x00FF00FF) * Alpha;
   RB = ((RB + ((RB >> 8) & 0x00FF00FF) + 0x00800080) >> 8) & 0x00FF00FF;
@@ -93,7 +93,7 @@ static tColor Multiply(tColor Color, tColor Alpha)
   return AG | RB;
 }
 
-tColor AlphaBlend(tColor ColorFg, tColor ColorBg, tColor AlphaLayer)
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer)
 {
   tColor Alpha = (ColorFg & 0xFF000000) >> 24;
   if (AlphaLayer < ALPHA_OPAQUE) {
@@ -1174,12 +1174,15 @@ void cPixmapMemory::DrawImage(const cPoint &Point, int ImageHandle)
   Unlock();
 }
 
-void cPixmapMemory::DrawPixel(const cPoint &Point, tColor Color, tColor Alpha)
+void cPixmapMemory::DrawPixel(const cPoint &Point, tColor Color)
 {
   Lock();
   if (DrawPort().Size().Contains(Point)) {
      int p = Point.Y() * DrawPort().Width() + Point.X();
-     data[p] = AlphaBlend(Color, data[p], Alpha);
+     if (Layer() == 0 && !IS_OPAQUE(Color))
+        data[p] = AlphaBlend(Color, data[p]);
+     else
+        data[p] = Color;
      MarkDrawPortDirty(Point);
      }
   Unlock();

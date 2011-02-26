@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.6 2011/02/20 14:15:38 kls Exp $
+ * $Id: font.c 2.7 2011/02/26 12:09:18 kls Exp $
  */
 
 #include "font.h"
@@ -338,7 +338,6 @@ void cFreetypeFont::DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColo
      s = bs;
 #endif
      bool AntiAliased = Setup.AntiAlias;
-     bool TransparentBackground = ColorBg == clrTransparent;
      uint prevSym = 0;
      while (*s) {
            int sl = Utf8CharLen(s);
@@ -358,16 +357,8 @@ void cFreetypeFont::DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColo
                   for (int pitch = 0; pitch < g->Pitch(); pitch++) {
                       uchar bt = *(buffer + (row * g->Pitch() + pitch));
                       if (AntiAliased) {
-                         if (bt > 0x00) {
-                            tColor bg;
-                            if (bt == 0xFF || TransparentBackground)
-                               bg = ColorFg;
-                            else {
-                               bg = AlphaBlend(ColorFg, ColorBg, bt);
-                               bt = ALPHA_OPAQUE;
-                               }
-                            Pixmap->DrawPixel(cPoint(x + pitch + g->Left() + kerning, y + row + (height - Bottom() - g->Top())), bg, bt);
-                            }
+                         if (bt > 0x00)
+                            Pixmap->DrawPixel(cPoint(x + pitch + g->Left() + kerning, y + row + (height - Bottom() - g->Top())), AlphaBlend(ColorFg, ColorBg, bt));
                          }
                       else { //monochrome rendering
                          for (int col = 0; col < 8 && col + pitch * 8 <= symWidth; col++) {
