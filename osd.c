@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.15 2011/02/27 10:14:43 kls Exp $
+ * $Id: osd.c 2.16 2011/02/27 11:57:37 kls Exp $
  */
 
 #include "osd.h"
@@ -949,7 +949,7 @@ void cPixmap::SetLayer(int Layer)
      esyslog("ERROR: pixmap layer %d limited to %d", Layer, MAXPIXMAPLAYERS - 1);
      Layer = MAXPIXMAPLAYERS - 1;
      }
-  if (Layer && Layer != layer) {
+  if (Layer != layer) {
      if (Layer > 0 || layer > 0)
         MarkViewPortDirty(viewPort);
      layer = Layer;
@@ -1089,7 +1089,7 @@ void cPixmapMemory::Fill(tColor Color)
   Unlock();
 }
 
-void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty, bool Opaque)
+void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty)
 {
   if (Pixmap->Tile() && (Pixmap->DrawPort().Point() != cPoint(0, 0) || Pixmap->DrawPort().Size() < Pixmap->ViewPort().Size())) {
      cPoint t0 = Pixmap->DrawPort().Point().Shifted(Pixmap->ViewPort().Point()); // the origin of the draw port in absolute OSD coordinates
@@ -1112,7 +1112,7 @@ void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty, bool Opaque)
                     Source.Shift(Delta); // Source is now back at the pixmap's draw port location, still in absolute OSD coordinates
                     Source.Shift(-Pixmap->ViewPort().Point()); // Source is now relative to the pixmap's view port again
                     Source.Shift(-Pixmap->DrawPort().Point()); // Source is now relative to the pixmap's data
-                    if (Opaque)
+                    if (Pixmap->Layer() == 0)
                        Copy(Pixmap, Source, Dest); // this is the "background" pixmap
                     else
                        Render(Pixmap, Source, Dest); // all others are alpha blended over the background
@@ -1132,7 +1132,7 @@ void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty, bool Opaque)
         cPoint Dest = Source.Point().Shifted(-ViewPort().Point()); // remember the destination point
         Source.Shift(-Pixmap->ViewPort().Point()); // Source is now relative to the pixmap's draw port again
         Source.Shift(-Pixmap->DrawPort().Point()); // Source is now relative to the pixmap's data
-        if (Opaque)
+        if (Pixmap->Layer() == 0)
            Copy(Pixmap, Source, Dest); // this is the "background" pixmap
         else
            Render(Pixmap, Source, Dest); // all others are alpha blended over the background
@@ -1662,46 +1662,44 @@ cPixmapMemory *cOsd::RenderPixmaps(void)
   cPixmapMemory *Pixmap = NULL;
   if (isTrueColor) {
      LOCK_PIXMAPS;
-     for (;;) {
-         // Collect overlapping dirty rectangles:
-         cRect d;
-         for (int i = 0; i < numPixmaps; i++) {
-             cPixmap *pm = pixmaps[i];
-             if (!pm->DirtyViewPort().IsEmpty()) {
-                if (d.IsEmpty() || d.Intersects(pm->DirtyViewPort())) {
-                   d.Combine(pm->DirtyViewPort());
-                   pm->SetClean();
-                   }
-                }
-             }
-         if (d.IsEmpty())
-            break;
+     // Collect overlapping dirty rectangles:
+     cRect d;
+     for (int i = 0; i < numPixmaps; i++) {
+         cPixmap *pm = pixmaps[i];
+         if (!pm->DirtyViewPort().IsEmpty()) {
+            if (d.IsEmpty() || d.Intersects(pm->DirtyViewPort())) {
+               d.Combine(pm->DirtyViewPort());
+               pm->SetClean();
+               }
+            }
+         }
+     if (!d.IsEmpty()) {
 //#define DebugDirty
 #ifdef DebugDirty
-         static cRect OldDirty;
-         cRect NewDirty = d;
-         d.Combine(OldDirty);
-         OldDirty = NewDirty;
+        static cRect OldDirty;
+        cRect NewDirty = d;
+        d.Combine(OldDirty);
+        OldDirty = NewDirty;
 #endif
-         Pixmap = new cPixmapMemory(0, d);
-         Pixmap->Clear();
-         // Render the individual pixmaps into the resulting pixmap:
-         for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
-             for (int i = 0; i < numPixmaps; i++) {
-                 cPixmap *pm = pixmaps[i];
-                 if (pm->Layer() == Layer)
-                    Pixmap->DrawPixmap(pm, d, i == 0);
-                 }
-             }
+        Pixmap = new cPixmapMemory(0, d);
+        Pixmap->Clear();
+        // Render the individual pixmaps into the resulting pixmap:
+        for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
+            for (int i = 0; i < numPixmaps; i++) {
+                cPixmap *pm = pixmaps[i];
+                if (pm->Layer() == Layer)
+                   Pixmap->DrawPixmap(pm, d);
+                }
+            }
 #ifdef DebugDirty
-         cPixmapMemory DirtyIndicator(7, NewDirty);
-         static tColor DirtyIndicatorColors[] = { 0x7FFFFF00, 0x7F00FFFF };
-         static int DirtyIndicatorIndex = 0;
-         DirtyIndicator.Fill(DirtyIndicatorColors[DirtyIndicatorIndex]);
-         DirtyIndicatorIndex = 1 - DirtyIndicatorIndex;
-         Pixmap->Render(&DirtyIndicator, DirtyIndicator.DrawPort(), DirtyIndicator.ViewPort().Point().Shifted(-Pixmap->ViewPort().Point()));
+        cPixmapMemory DirtyIndicator(7, NewDirty);
+        static tColor DirtyIndicatorColors[] = { 0x7FFFFF00, 0x7F00FFFF };
+        static int DirtyIndicatorIndex = 0;
+        DirtyIndicator.Fill(DirtyIndicatorColors[DirtyIndicatorIndex]);
+        DirtyIndicatorIndex = 1 - DirtyIndicatorIndex;
+        Pixmap->Render(&DirtyIndicator, DirtyIndicator.DrawPort(), DirtyIndicator.ViewPort().Point().Shifted(-Pixmap->ViewPort().Point()));
 #endif
-         }
+        }
      }
   return Pixmap;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.8 2011/02/26 14:10:30 kls Exp $
+ * $Id: osd.h 2.9 2011/02/27 11:40:02 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -465,9 +465,11 @@ protected:
        ///< The coordinates of Point are relative to the pixmap's draw port.
        ///< If Point is within the currently visible view port of this pixmap,
        ///< MarkViewPortDirty() is called with the appropriate value.
-  virtual void DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty, bool Opaque);
-       ///< Draws the Dirty part of the given Pixmap into this pixmap. If Opaque
-       ///< is true, the Pixmap is copied, otherwise it is rendered into this
+  void SetClean(void);
+       ///< Resets the "dirty" rectangles of this pixmap.
+  virtual void DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty);
+       ///< Draws the Dirty part of the given Pixmap into this pixmap. If the
+       ///< Pixmap's layer is 0, it is copied, otherwise it is rendered into this
        ///< pixmap. This function is used only to implement the tile handling
        ///< in the final rendering to the OSD.
 public:
@@ -524,8 +526,6 @@ public:
        ///< the surrounding rectangle around all pixels that have been modified since the
        ///< last time this pixmap has been rendered to the OSD. The rectangle is
        ///< relative to the draw port's origin.
-  void SetClean(void);
-       ///< Resets the "dirty" rectangles of this pixmap.
   virtual void SetLayer(int Layer);
        ///< Sets the layer of this pixmap to the given value.
        ///< If the new layer is greater than zero, the pixmap will be visible.
