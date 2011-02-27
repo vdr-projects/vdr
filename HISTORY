@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2011-02-25: Version 1.7.17
+2011-02-27: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6543,3 +6543,5 @@ Video Disk Recorder Revision History
   with exactly the same name.
 - Setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
   (thanks to Anssi Hannula).
+- Changed the compiler optimization flag to -O3, which gives quite a performance
+  boost in the AlphaBlend() function.
