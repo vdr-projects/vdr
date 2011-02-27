@@ -6545,3 +6545,5 @@ Video Disk Recorder Revision History
   (thanks to Anssi Hannula).
 - Changed the compiler optimization flag to -O3, which gives quite a performance
   boost in the AlphaBlend() function.
+- While replaying, the editing marks are now updated every 10 seconds (based on a
+  patch from Manuel Reimer).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.25 2011/02/25 14:35:19 kls Exp $
+ * $Id: recording.c 2.26 2011/02/27 13:35:20 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,7 @@
 #define DELETEDLIFETIME   300 // seconds after which a deleted recording will be actually removed
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
+#define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
 
 #define MAX_SUBTITLE_LENGTH  40
 
@@ -1267,12 +1268,28 @@ bool cMark::Save(FILE *f)
 
 bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool IsPesRecording)
 {
-  cMutexLock MutexLock(&MutexMarkFramesPerSecond);
+  fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
-  MarkFramesPerSecond = framesPerSecond;
-  if (cConfig<cMark>::Load(AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX))) {
-     Sort();
-     return true;
+  lastUpdate = 0;
+  lastFileTime = -1; // the first call to Load() must take place!
+  return Update();
+}
+
+bool cMarks::Update(void)
+{
+  time_t t = time(NULL);
+  if (t - lastUpdate > MARKSUPDATEDELTA) {
+     lastUpdate = t;
+     t = LastModifiedTime(fileName);
+     if (t > lastFileTime) {
+        lastFileTime = t;
+        cMutexLock MutexLock(&MutexMarkFramesPerSecond);
+        MarkFramesPerSecond = framesPerSecond;
+        if (cConfig<cMark>::Load(fileName)) {
+           Sort();
+           return true;
+           }
+        }
      }
   return false;
 }

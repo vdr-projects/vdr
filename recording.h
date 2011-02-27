@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.15 2010/12/27 10:48:21 kls Exp $
+ * $Id: recording.h 2.16 2011/02/27 12:48:21 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -190,9 +190,13 @@ public:
 
 class cMarks : public cConfig<cMark> {
 private:
+  cString fileName;
   double framesPerSecond;
+  time_t lastUpdate;
+  time_t lastFileTime;
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
+  bool Update(void);
   void Sort(void);
   cMark *Add(int Position);
   cMark *Get(int Position);

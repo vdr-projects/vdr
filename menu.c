@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.27 2011/02/26 15:28:32 kls Exp $
+ * $Id: menu.c 2.28 2011/02/27 12:37:48 kls Exp $
  */
 
 #include "menu.h"
@@ -4742,6 +4742,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
      return osEnd;
+  if (Key == kNone)
+     marks.Update();
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
