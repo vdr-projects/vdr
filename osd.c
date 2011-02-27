@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.14 2011/02/26 11:36:58 kls Exp $
+ * $Id: osd.c 2.15 2011/02/27 10:14:43 kls Exp $
  */
 
 #include "osd.h"
@@ -43,42 +43,40 @@ tColor HsvToColor(double H, double S, double V)
 #define USE_ALPHA_LUT
 #ifdef USE_ALPHA_LUT
 // Alpha blending with lookup table (by Reinhard Nissl <rnissl@gmx.de>)
-// A little faster than the implementation below, but requires some 500KB
-// of RAM for the lookup table.
-static uint16_t AlphaLut[256][256][4];
+// A little slower (138 %) on fast machines than the implementation below and faster
+// on slow machines (79 %), but requires some 318KB of RAM for the lookup table.
+static uint16_t AlphaLutFactors[255][256][2];
+static uint8_t AlphaLutAlpha[255][256];
 
 class cInitAlphaLut {
 public:
   cInitAlphaLut(void)
   {
-    for (int alphaA = 0; alphaA < 256; alphaA++) {
+    for (int alphaA = 0; alphaA < 255; alphaA++) {
+        int range = (alphaA == 255 ? 255 : 254);
         for (int alphaB = 0; alphaB < 256; alphaB++) {
-            int alphaO_255 = 255 * alphaA + alphaB * (255 - alphaA);
-            if (!alphaO_255)
-               alphaO_255++;
-            int factorA = 256 * 255 * alphaA / alphaO_255;
-            int factorB = 256 * alphaB * (255 - alphaA) / alphaO_255;
-            AlphaLut[alphaA][alphaB][0] = factorA;
-            AlphaLut[alphaA][alphaB][1] = factorB;
-            // index 2 is never used
-            AlphaLut[alphaA][alphaB][3] = alphaO_255 / 255;
+            int alphaO_x_range = 255 * alphaA + alphaB * (range - alphaA);
+            if (!alphaO_x_range)
+               alphaO_x_range++;
+            int factorA = (256 * 255 * alphaA + alphaO_x_range / 2) / alphaO_x_range;
+            int factorB = (256 * alphaB * (range - alphaA) + alphaO_x_range / 2) / alphaO_x_range;
+            AlphaLutFactors[alphaA][alphaB][0] = factorA;
+            AlphaLutFactors[alphaA][alphaB][1] = factorB;
+            AlphaLutAlpha[alphaA][alphaB] = alphaO_x_range / range;
             }
         }
   }
-  };
-
-cInitAlphaLut initAlphaLut;
+  } InitAlphaLut;
 
 tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer)
 {
   tColor Alpha = (ColorFg & 0xFF000000) >> 24;
   Alpha *= AlphaLayer;
-  Alpha = ((Alpha + ((Alpha >> 8) & 0x000000FF) + 0x00000080) >> 8) & 0x000000FF;
-  uint16_t *lut = &AlphaLut[Alpha][(ColorBg & 0xFF000000) >> 24][0];
-  return (tColor)((lut[3] << 24)
-    | (((((ColorFg & 0x00FF0000) >> 16) * lut[0] + ((ColorBg & 0x00FF0000) >> 16) * lut[1]) << 8) & 0x00FF0000)
-    | (((((ColorFg & 0x0000FF00) >>  8) * lut[0] + ((ColorBg & 0x0000FF00) >>  8) * lut[1])     ) & 0x0000FF00)
-    | (((((ColorFg & 0x000000FF)      ) * lut[0] + ((ColorBg & 0x000000FF)      ) * lut[1]) >> 8) & 0x000000FF));
+  Alpha >>= 8;
+  uint16_t *lut = &AlphaLutFactors[Alpha][(ColorBg & 0xFF000000) >> 24][0];
+  return (tColor)((AlphaLutAlpha[Alpha][(ColorBg & 0xFF000000) >> 24] << 24)
+    | (((((ColorFg & 0x00FF00FF) * lut[0] + (ColorBg & 0x00FF00FF) * lut[1])) & 0xFF00FF00)
+    |  ((((ColorFg & 0x0000FF00) * lut[0] + (ColorBg & 0x0000FF00) * lut[1])) & 0x00FF0000)) >> 8);
 }
 #else
 // Alpha blending without lookup table.
