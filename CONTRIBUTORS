@@ -2665,3 +2665,7 @@ Milan Cvijanovic <elcom_cvijo@hotmail.com>
 
 Frank Neumann <frank.neumann@hp.com>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
+
+Gerald Dachs <vdr@dachsweb.de>
+ for reporting a problem with checking for minimum line length of 21 characters in
+ the LIRC receiver code

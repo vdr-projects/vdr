@@ -6481,7 +6481,7 @@ Video Disk Recorder Revision History
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
 
-2011-03-06: Version 1.7.17
+2011-03-08: Version 1.7.17
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
@@ -6549,3 +6549,5 @@ Video Disk Recorder Revision History
   patch from Manuel Reimer).
 - Now reducing the thread and I/O priority cCuttingThread::Action() to make the
   foreground process more responsive (suggested by Frank Neumann).
+- Removed checking for minimum line length of 21 characters in the LIRC receiver code
+  (reported by Gerald Dachs).
