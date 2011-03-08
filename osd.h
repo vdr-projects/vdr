@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.9 2011/02/27 11:40:02 kls Exp $
+ * $Id: osd.h 2.10 2011/03/08 15:52:12 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -503,29 +503,37 @@ public:
        ///< The drawing area of a newly created cPixmap is not initialized and may
        ///< contain random data.
   static void Lock(void) { mutex.Lock(); }
-       ///< All member functions of cPixmap set locks as necessary to make sure
-       ///< they are thread-safe. If several cPixmap member functions need to be
-       ///< called in a row, the caller must surround these calls with proper
-       ///< Lock()/Unlock() calls. See the LOCK_PIXMAPS macro for a convenient
-       ///< way of doing this.
+       ///< All public member functions of cPixmap set locks as necessary to make sure
+       ///< they are thread-safe (unless noted otherwise). If several cPixmap member
+       ///< functions need to be called in a row, the caller must surround these calls
+       ///< with proper Lock()/Unlock() calls. See the LOCK_PIXMAPS macro for a
+       ///< convenient way of doing this.
   static void Unlock(void) { mutex.Unlock(); }
   int Layer(void) const { return layer; }
   int Alpha(void) const { return alpha; }
   bool Tile(void) const { return tile; }
   const cRect &ViewPort(void) const { return viewPort; }
        ///< Returns the pixmap's view port, which is relative to the OSD's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
   const cRect &DrawPort(void) const { return drawPort; }
        ///< Returns the pixmap's draw port, which is relative to the view port.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
   const cRect &DirtyViewPort(void) const { return dirtyViewPort; }
        ///< Returns the "dirty" rectangle this pixmap causes on the OSD. This is the
        ///< surrounding rectangle around all pixels that have been modified since the
        ///< last time this pixmap has been rendered to the OSD. The rectangle is
        ///< relative to the OSD's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
   const cRect &DirtyDrawPort(void) const { return dirtyDrawPort; }
        ///< Returns the "dirty" rectangle in the draw port of this this pixmap. This is
        ///< the surrounding rectangle around all pixels that have been modified since the
        ///< last time this pixmap has been rendered to the OSD. The rectangle is
        ///< relative to the draw port's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
   virtual void SetLayer(int Layer);
        ///< Sets the layer of this pixmap to the given value.
        ///< If the new layer is greater than zero, the pixmap will be visible.
