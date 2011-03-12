@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.10 2011/03/12 13:07:59 kls Exp $
+ * $Id: dvbsubtitle.c 2.11 2011/03/12 15:13:03 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -420,7 +420,7 @@ public:
   int PageId(void) { return pageId; }
   int Version(void) { return version; }
   int State(void) { return state; }
-  tArea *GetAreas(void);
+  tArea *GetAreas(double Factor);
   cSubtitleClut *GetClutById(int ClutId, bool New = false);
   cSubtitleObject *GetObjectById(int ObjectId);
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
@@ -446,16 +446,16 @@ cDvbSubtitlePage::~cDvbSubtitlePage()
 {
 }
 
-tArea *cDvbSubtitlePage::GetAreas(void)
+tArea *cDvbSubtitlePage::GetAreas(double Factor)
 {
   if (regions.Count() > 0) {
      tArea *Areas = new tArea[regions.Count()];
      tArea *a = Areas;
      for (cSubtitleRegion *sr = regions.First(); sr; sr = regions.Next(sr)) {
-         a->x1 = sr->HorizontalAddress();
-         a->y1 = sr->VerticalAddress();
-         a->x2 = sr->HorizontalAddress() + sr->Width() - 1;
-         a->y2 = sr->VerticalAddress() + sr->Height() - 1;
+         a->x1 = int(round(Factor * sr->HorizontalAddress()));
+         a->y1 = int(round(Factor * sr->VerticalAddress()));
+         a->x2 = int(round(Factor * (sr->HorizontalAddress() + sr->Width() - 1)));
+         a->y2 = int(round(Factor * (sr->VerticalAddress() + sr->Height() - 1)));
          a->bpp = sr->Bpp();
          while ((a->Width() & 3) != 0)
                a->x2++; // aligns width to a multiple of 4, so 2, 4 and 8 bpp will work
@@ -616,9 +616,10 @@ private:
   int timeout;
   tArea *areas;
   int numAreas;
+  double osdFactor;
   cVector<cBitmap *> bitmaps;
 public:
-  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas);
+  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor);
   ~cDvbSubtitleBitmaps();
   int64_t Pts(void) { return pts; }
   int Timeout(void) { return timeout; }
@@ -626,12 +627,13 @@ public:
   void Draw(cOsd *Osd);
   };
 
-cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas)
+cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor)
 {
   pts = Pts;
   timeout = Timeout;
   areas = Areas;
   numAreas = NumAreas;
+  osdFactor = OsdFactor;
 }
 
 cDvbSubtitleBitmaps::~cDvbSubtitleBitmaps()
@@ -649,8 +651,14 @@ void cDvbSubtitleBitmaps::AddBitmap(cBitmap *Bitmap)
 void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
 {
   if (Osd->SetAreas(areas, numAreas) == oeOk) {
-     for (int i = 0; i < bitmaps.Size(); i++)
-         Osd->DrawBitmap(bitmaps[i]->X0(), bitmaps[i]->Y0(), *bitmaps[i]);
+     for (int i = 0; i < bitmaps.Size(); i++) {
+         cBitmap *b = bitmaps[i];
+         if (osdFactor != 1.0)
+            b = b->Scale(osdFactor, osdFactor);
+         Osd->DrawBitmap(int(round(b->X0() * osdFactor)), int(round(b->Y0() * osdFactor)), *b);
+         if (b != bitmaps[i])
+            delete b;
+         }
      Osd->Flush();
      }
 }
@@ -670,6 +678,7 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
+  SetOsdData();
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -703,6 +712,7 @@ void cDvbSubtitleConverter::Reset(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
+  SetOsdData();
   Unlock();
 }
 
@@ -850,9 +860,29 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
   return (Er << 16) | (Eg << 8) | Eb;
 }
 
+void cDvbSubtitleConverter::SetOsdData(void)
+{
+  int OsdWidth;
+  int OsdHeight;
+  double OsdAspect;
+  cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
+  osdDeltaX = osdDeltaY = 0;
+  osdFactor = 1.0;
+  double fw = double(OsdWidth) / displayWidth;
+  double fh = double(OsdHeight) / displayHeight;
+  if (fw >= fh) {
+     osdFactor = fh;
+     osdDeltaX = (OsdWidth - displayWidth * osdFactor) / 2;
+     }
+  else {
+     osdFactor = fw;
+     osdDeltaY = (OsdHeight - displayHeight * osdFactor) / 2;
+     }
+}
+
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
-  return osd || (osd = cOsdProvider::NewOsd(windowHorizontalOffset, windowVerticalOffset + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactor * windowHorizontalOffset + osdDeltaX)), int(round(osdFactor * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -1026,6 +1056,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                   windowVerticalOffset   = (Data[15] << 8) | Data[16];                                // displayWindowVerticalPositionMinimum
                   windowHeight           = ((Data[17] << 8) | Data[18]) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                   }
+               SetOsdData();
                SetupChanged();
                ddsVersionNumber = version;
                }
@@ -1048,7 +1079,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
 {
   if (!AssertOsd())
      return;
-  tArea *Areas = Page->GetAreas();
+  tArea *Areas = Page->GetAreas(osdFactor);
   int NumAreas = Page->regions.Count();
   int Bpp = 8;
   bool Reduced = false;
@@ -1085,7 +1116,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
             }
          }
      }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas);
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactor);
   bitmaps->Add(Bitmaps);
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
       int posX = sr->HorizontalAddress();

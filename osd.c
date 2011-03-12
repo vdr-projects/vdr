@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.16 2011/02/27 11:57:37 kls Exp $
+ * $Id: osd.c 2.17 2011/03/12 15:32:33 kls Exp $
  */
 
 #include "osd.h"
@@ -805,6 +805,30 @@ void cBitmap::ShrinkBpp(int NewBpp)
      SetBpp(NewBpp);
      Replace(NewPalette);
      }
+}
+
+cBitmap *cBitmap::Scale(double FactorX, double FactorY)
+{
+  // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
+  // by deltener@mindtremors.com
+  cBitmap *b = new cBitmap(int(round(Width() * FactorX)), int(round(Height() * FactorY)), Bpp(), X0(), Y0());
+  b->Replace(*this); // copy palette
+  int RatioX = (Width() << 16) / b->Width();
+  int RatioY = (Height() << 16) / b->Height();
+  tIndex *DestRow = b->bitmap;
+  int SourceY = 0;
+  for (int y = 0; y < b->Height(); y++) {
+      int SourceX = 0;
+      tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
+      tIndex *Dest = DestRow;
+      for (int x = 0; x < b->Width(); x++) {
+          *Dest++ = SourceRow[SourceX >> 16];
+          SourceX += RatioX;
+          }
+      SourceY += RatioY;
+      DestRow += b->Width();
+      }
+  return b;
 }
 
 // --- cRect -----------------------------------------------------------------

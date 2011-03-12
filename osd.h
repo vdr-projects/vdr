@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.10 2011/03/08 15:52:12 kls Exp $
+ * $Id: osd.h 2.11 2011/03/12 16:06:48 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -273,6 +273,9 @@ public:
        ///< the 2^NewBpp most frequently used colors as defined in the current palette.
        ///< If NewBpp is not smaller than the bitmap's current color depth,
        ///< or if it is not one of 4bpp or 2bpp, nothing happens.
+  cBitmap *Scale(double FactorX, double FactorY);
+       ///< Creates a copy of this bitmap, scaled by the given factors.
+       ///< The caller must delete the returned bitmap once it is no longer used.
   };
 
 struct tArea {

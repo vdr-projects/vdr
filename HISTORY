@@ -6554,3 +6554,5 @@ Video Disk Recorder Revision History
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Now storing the original display size when handling DVB subtitles (thanks to
   Reinhard Nissl).
+- The original display size of subtitles is now used to scale them properly when
+  displaying them on an HD OSD.
