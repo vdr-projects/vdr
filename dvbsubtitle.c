@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.9 2011/02/25 15:13:32 kls Exp $
+ * $Id: dvbsubtitle.c 2.10 2011/03/12 13:07:59 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -666,10 +666,10 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   osd = NULL;
   frozen = false;
   ddsVersionNumber = -1;
-  displayWidth = 720;
-  displayHeight = 576;
-  displayHorizontalOffset = 0;
-  displayVerticalOffset = 0;
+  displayWidth = windowWidth = 720;
+  displayHeight = windowHeight = 576;
+  windowHorizontalOffset = 0;
+  windowVerticalOffset = 0;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -699,10 +699,10 @@ void cDvbSubtitleConverter::Reset(void)
   DELETENULL(osd);
   frozen = false;
   ddsVersionNumber = -1;
-  displayWidth = 720;
-  displayHeight = 576;
-  displayHorizontalOffset = 0;
-  displayVerticalOffset = 0;
+  displayWidth = windowWidth = 720;
+  displayHeight = windowHeight = 576;
+  windowHorizontalOffset = 0;
+  windowVerticalOffset = 0;
   Unlock();
 }
 
@@ -852,7 +852,7 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
 
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
-  return osd || (osd = cOsdProvider::NewOsd(displayHorizontalOffset, displayVerticalOffset + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  return osd || (osd = cOsdProvider::NewOsd(windowHorizontalOffset, windowVerticalOffset + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -1016,15 +1016,15 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             int version = (Data[6] & 0xF0) >> 4;
             if (version != ddsVersionNumber) {
                int displayWindowFlag   = (Data[6] & 0x08) >> 3;
-               displayHorizontalOffset = 0;
-               displayVerticalOffset   = 0;
-               displayWidth            = ((Data[7] << 8) | Data[8]) + 1;
-               displayHeight           = ((Data[9] << 8) | Data[10]) + 1;
+               windowHorizontalOffset = 0;
+               windowVerticalOffset   = 0;
+               displayWidth = windowWidth   = ((Data[7] << 8) | Data[8]) + 1;
+               displayHeight = windowHeight = ((Data[9] << 8) | Data[10]) + 1;
                if (displayWindowFlag) { 
-                  displayHorizontalOffset = (Data[11] << 8) | Data[12];                                 // displayWindowHorizontalPositionMinimum
-                  displayWidth            = ((Data[13] << 8) | Data[14]) - displayHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
-                  displayVerticalOffset   = (Data[15] << 8) | Data[16];                                 // displayWindowVerticalPositionMinimum
-                  displayHeight           = ((Data[17] << 8) | Data[18]) - displayVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
+                  windowHorizontalOffset = (Data[11] << 8) | Data[12];                                // displayWindowHorizontalPositionMinimum
+                  windowWidth            = ((Data[13] << 8) | Data[14]) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+                  windowVerticalOffset   = (Data[15] << 8) | Data[16];                                // displayWindowVerticalPositionMinimum
+                  windowHeight           = ((Data[17] << 8) | Data[18]) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                   }
                SetupChanged();
                ddsVersionNumber = version;

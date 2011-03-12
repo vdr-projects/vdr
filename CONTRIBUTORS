@@ -1263,6 +1263,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing DDS detection for HD resolution subtitles
  for some valuable input during development of the TrueColor OSD, help with
  debugging, and an implementation of the AlphaBlend() function.
+ for storing the original display size when handling DVB subtitles
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

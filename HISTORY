@@ -6552,3 +6552,5 @@ Video Disk Recorder Revision History
 - Removed checking for minimum line length of 21 characters in the LIRC receiver code
   (reported by Gerald Dachs).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Now storing the original display size when handling DVB subtitles (thanks to
+  Reinhard Nissl).
