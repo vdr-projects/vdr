@@ -6556,3 +6556,7 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - The original display size of subtitles is now used to scale them properly when
   displaying them on an HD OSD.
+
+2011-03-13: Version 1.7.18
+
+- Reduced CPU load when pausing a replay (thanks to Johann Friedrichs).
