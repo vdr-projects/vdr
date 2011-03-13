@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 2.0 2006/05/26 10:40:19 kls Exp $
+# $Id: Makefile 2.1 2010/11/07 13:31:05 kls Exp $
 
 ### The C++ compiler and options:
 
@@ -11,6 +11,7 @@ AR = ar
 ARFLAGS = ru
 RANLIB = ranlib
 
+include ../Make.global
 -include ../Make.config
 
 ### The directory environment:

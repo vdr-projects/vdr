@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.7 2010/08/29 14:08:23 kls Exp $
+ * $Id: dvbsubtitle.c 2.11 2011/03/12 15:13:03 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -420,7 +420,7 @@ public:
   int PageId(void) { return pageId; }
   int Version(void) { return version; }
   int State(void) { return state; }
-  tArea *GetAreas(void);
+  tArea *GetAreas(double Factor);
   cSubtitleClut *GetClutById(int ClutId, bool New = false);
   cSubtitleObject *GetObjectById(int ObjectId);
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
@@ -446,16 +446,16 @@ cDvbSubtitlePage::~cDvbSubtitlePage()
 {
 }
 
-tArea *cDvbSubtitlePage::GetAreas(void)
+tArea *cDvbSubtitlePage::GetAreas(double Factor)
 {
   if (regions.Count() > 0) {
      tArea *Areas = new tArea[regions.Count()];
      tArea *a = Areas;
      for (cSubtitleRegion *sr = regions.First(); sr; sr = regions.Next(sr)) {
-         a->x1 = sr->HorizontalAddress();
-         a->y1 = sr->VerticalAddress();
-         a->x2 = sr->HorizontalAddress() + sr->Width() - 1;
-         a->y2 = sr->VerticalAddress() + sr->Height() - 1;
+         a->x1 = int(round(Factor * sr->HorizontalAddress()));
+         a->y1 = int(round(Factor * sr->VerticalAddress()));
+         a->x2 = int(round(Factor * (sr->HorizontalAddress() + sr->Width() - 1)));
+         a->y2 = int(round(Factor * (sr->VerticalAddress() + sr->Height() - 1)));
          a->bpp = sr->Bpp();
          while ((a->Width() & 3) != 0)
                a->x2++; // aligns width to a multiple of 4, so 2, 4 and 8 bpp will work
@@ -570,12 +570,17 @@ void cDvbSubtitleAssembler::Reset(void)
 bool cDvbSubtitleAssembler::Realloc(int Size)
 {
   if (Size > size) {
-     size = max(Size, 2048);
-     data = (uchar *)realloc(data, size);
-     if (!data) {
+     Size = max(Size, 2048);
+     if (uchar *NewBuffer = (uchar *)realloc(data, Size)) {
+        size = Size;
+        data = NewBuffer;
+        }
+     else {
         esyslog("ERROR: can't allocate memory for subtitle assembler");
         length = 0;
         size = 0;
+        free(data);
+        data = NULL;
         return false;
         }
      }
@@ -611,9 +616,10 @@ private:
   int timeout;
   tArea *areas;
   int numAreas;
+  double osdFactor;
   cVector<cBitmap *> bitmaps;
 public:
-  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas);
+  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor);
   ~cDvbSubtitleBitmaps();
   int64_t Pts(void) { return pts; }
   int Timeout(void) { return timeout; }
@@ -621,12 +627,13 @@ public:
   void Draw(cOsd *Osd);
   };
 
-cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas)
+cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor)
 {
   pts = Pts;
   timeout = Timeout;
   areas = Areas;
   numAreas = NumAreas;
+  osdFactor = OsdFactor;
 }
 
 cDvbSubtitleBitmaps::~cDvbSubtitleBitmaps()
@@ -644,8 +651,14 @@ void cDvbSubtitleBitmaps::AddBitmap(cBitmap *Bitmap)
 void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
 {
   if (Osd->SetAreas(areas, numAreas) == oeOk) {
-     for (int i = 0; i < bitmaps.Size(); i++)
-         Osd->DrawBitmap(bitmaps[i]->X0(), bitmaps[i]->Y0(), *bitmaps[i]);
+     for (int i = 0; i < bitmaps.Size(); i++) {
+         cBitmap *b = bitmaps[i];
+         if (osdFactor != 1.0)
+            b = b->Scale(osdFactor, osdFactor);
+         Osd->DrawBitmap(int(round(b->X0() * osdFactor)), int(round(b->Y0() * osdFactor)), *b);
+         if (b != bitmaps[i])
+            delete b;
+         }
      Osd->Flush();
      }
 }
@@ -661,10 +674,11 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   osd = NULL;
   frozen = false;
   ddsVersionNumber = -1;
-  displayWidth = 720;
-  displayHeight = 576;
-  displayHorizontalOffset = 0;
-  displayVerticalOffset = 0;
+  displayWidth = windowWidth = 720;
+  displayHeight = windowHeight = 576;
+  windowHorizontalOffset = 0;
+  windowVerticalOffset = 0;
+  SetOsdData();
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -694,10 +708,11 @@ void cDvbSubtitleConverter::Reset(void)
   DELETENULL(osd);
   frozen = false;
   ddsVersionNumber = -1;
-  displayWidth = 720;
-  displayHeight = 576;
-  displayHorizontalOffset = 0;
-  displayVerticalOffset = 0;
+  displayWidth = windowWidth = 720;
+  displayHeight = windowHeight = 576;
+  windowHorizontalOffset = 0;
+  windowVerticalOffset = 0;
+  SetOsdData();
   Unlock();
 }
 
@@ -781,7 +796,7 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
   return 0;
 }
 
-#define LimitTo32Bit(n) (n & 0x00000000FFFFFFFFL)
+#define LimitTo32Bit(n) ((n) & 0x00000000FFFFFFFFL)
 #define MAXDELTA 40000 // max. reasonable PTS/STC delta in ms
 
 void cDvbSubtitleConverter::Action(void)
@@ -801,17 +816,11 @@ void cDvbSubtitleConverter::Action(void)
            Lock();
            if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
               int64_t STC = cDevice::PrimaryDevice()->GetSTC();
-              int64_t Delta = 0;
-              if (STC >= 0) {
-                 Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
-                 if (Delta > (int64_t(1) << 31))
-                    Delta -= (int64_t(1) << 32);
-                 else if (Delta < -((int64_t(1) << 31) - 1))
-                    Delta += (int64_t(1) << 32);
-                 }
-              else {
-                 //TODO sync on PTS? are there actually devices that don't deliver an STC?
-                 }
+              int64_t Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
+              if (Delta > (int64_t(1) << 31))
+                 Delta -= (int64_t(1) << 32);
+              else if (Delta < -((int64_t(1) << 31) - 1))
+                 Delta += (int64_t(1) << 32);
               Delta /= 90; // STC and PTS are in 1/90000s
               if (Delta <= MAXDELTA) {
                  if (Delta <= 0) {
@@ -851,9 +860,29 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
   return (Er << 16) | (Eg << 8) | Eb;
 }
 
+void cDvbSubtitleConverter::SetOsdData(void)
+{
+  int OsdWidth;
+  int OsdHeight;
+  double OsdAspect;
+  cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
+  osdDeltaX = osdDeltaY = 0;
+  osdFactor = 1.0;
+  double fw = double(OsdWidth) / displayWidth;
+  double fh = double(OsdHeight) / displayHeight;
+  if (fw >= fh) {
+     osdFactor = fh;
+     osdDeltaX = (OsdWidth - displayWidth * osdFactor) / 2;
+     }
+  else {
+     osdFactor = fw;
+     osdDeltaY = (OsdHeight - displayHeight * osdFactor) / 2;
+     }
+}
+
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
-  return osd || (osd = cOsdProvider::NewOsd(displayHorizontalOffset, displayVerticalOffset + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactor * windowHorizontalOffset + osdDeltaX)), int(round(osdFactor * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -1017,16 +1046,17 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             int version = (Data[6] & 0xF0) >> 4;
             if (version != ddsVersionNumber) {
                int displayWindowFlag   = (Data[6] & 0x08) >> 3;
-               displayHorizontalOffset = 0;
-               displayVerticalOffset   = 0;
-               displayWidth            = ((Data[7] << 8) | Data[8]) + 1;
-               displayHeight           = ((Data[9] << 8) | Data[10]) + 1;
+               windowHorizontalOffset = 0;
+               windowVerticalOffset   = 0;
+               displayWidth = windowWidth   = ((Data[7] << 8) | Data[8]) + 1;
+               displayHeight = windowHeight = ((Data[9] << 8) | Data[10]) + 1;
                if (displayWindowFlag) { 
-                  displayHorizontalOffset = (Data[11] << 8) | Data[12];                                 // displayWindowHorizontalPositionMinimum
-                  displayWidth            = ((Data[13] << 8) | Data[14]) - displayHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
-                  displayVerticalOffset   = (Data[15] << 8) | Data[16];                                 // displayWindowVerticalPositionMinimum
-                  displayHeight           = ((Data[17] << 8) | Data[18]) - displayVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
+                  windowHorizontalOffset = (Data[11] << 8) | Data[12];                                // displayWindowHorizontalPositionMinimum
+                  windowWidth            = ((Data[13] << 8) | Data[14]) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+                  windowVerticalOffset   = (Data[15] << 8) | Data[16];                                // displayWindowVerticalPositionMinimum
+                  windowHeight           = ((Data[17] << 8) | Data[18]) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                   }
+               SetOsdData();
                SetupChanged();
                ddsVersionNumber = version;
                }
@@ -1049,7 +1079,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
 {
   if (!AssertOsd())
      return;
-  tArea *Areas = Page->GetAreas();
+  tArea *Areas = Page->GetAreas(osdFactor);
   int NumAreas = Page->regions.Count();
   int Bpp = 8;
   bool Reduced = false;
@@ -1086,7 +1116,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
             }
          }
      }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas);
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactor);
   bitmaps->Add(Bitmaps);
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
       int posX = sr->HorizontalAddress();

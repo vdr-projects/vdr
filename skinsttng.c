@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.5 2010/02/13 13:30:59 kls Exp $
+ * $Id: skinsttng.c 2.7 2011/02/20 13:02:49 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -182,12 +182,17 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      int yt = (y0 + y1) / 2;
      int yb = (y6 + y7) / 2;
      osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + (Setup.ChannelInfoPos ? 0 : cOsd::OsdHeight() - y7));
-     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
-     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 32 } }; // TrueColor
+     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
-        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } }; // 256 colors
+        if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        else {
+           tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } }; // 16 colors
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+           }
         }
      osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
      osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
@@ -220,12 +225,17 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
      y0 = 0;
      y1 = lineHeight;
      osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + (Setup.ChannelInfoPos ? 0 : cOsd::OsdHeight() - y1));
-     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
-     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 32 } }; // TrueColor
+     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
-        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } }; // 256 colors
+        if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        else {
+           tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } }; // 16 colors
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+           }
         }
      osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
      osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);
@@ -397,21 +407,26 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
-  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
-  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 32 } }; // TrueColor
+  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
-     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } }; // 256 colors
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
-                          { x0, y3, x3 - 1, y4 - 1, 1 },
-                          { x3, y3, x4 - 1, y4 - 1, 2 },
-                          { x4, y3, x7 - 1, y4 - 1, 2 },
-                          { x0, y4, x7 - 1, y7 - 1, 4 }
-                        };
-        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } }; // 16 colors
+        if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        else {
+           tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 }, // 2..16 colors
+                             { x0, y3, x3 - 1, y4 - 1, 1 },
+                             { x3, y3, x4 - 1, y4 - 1, 2 },
+                             { x4, y3, x7 - 1, y4 - 1, 2 },
+                             { x0, y4, x7 - 1, y7 - 1, 4 }
+                           };
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+           }
         }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
@@ -612,14 +627,6 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
      ts.Set(osd, xl, y, x4 - xl, y4 - y, Event->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Event->Contents(i); i++) {
-      const char *s = Event->ContentToString(Event->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, xl, y, x4 - xl, y4 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Event->Description())) {
      int yt = y;
@@ -666,14 +673,6 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
      ts.Set(osd, xl, y, x4 - xl, y4 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
      y += ts.Height();
      }
-  for (int i = 0; Info->GetEvent()->Contents(i); i++) {
-      const char *s = Info->GetEvent()->ContentToString(Info->GetEvent()->Contents(i));
-      if (!isempty(s)) {
-         const cFont *font = cFont::GetFont(fontSml);
-         ts.Set(osd, xl, y, x4 - xl, y4 - y, s, font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
-         y += ts.Height();
-         }
-      }
   y += font->Height();
   if (!isempty(Info->Description())) {
      int yt = y;
@@ -770,12 +769,17 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y7);
-  tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } };
-  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 32 } }; // TrueColor
+  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 8 } }; // 256 colors
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { 0, 0, x7 - 1, y7 - 1, 4 } }; // 16 colors
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, ModeOnly ? clrTransparent : Theme.Color(clrBackground));
   if (!ModeOnly) {
@@ -904,12 +908,17 @@ cSkinSTTNGDisplayVolume::cSkinSTTNGDisplayVolume(void)
   y0 = 0;
   y1 = lineHeight;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y1);
-  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
-  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 32 } }; // TrueColor
+  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } }; // 256 colors
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 4 } }; // 16 colors
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);
@@ -1019,21 +1028,26 @@ cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTrack
   int yt = (y0 + y1) / 2;
   int yb = (y6 + y7) / 2;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y7);
-  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } };
-  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 32 } }; // TrueColor
+  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } };
-     if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+     tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 8 } }; // 256 colors
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
         osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      else {
-        tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
-                          { x0, y3, x3 - 1, y4 - 1, 1 },
-                          { x3, y3, x4 - 1, y4 - 1, 2 },
-                          { x4, y3, x7 - 1, y4 - 1, 2 },
-                          { x0, y4, x7 - 1, y7 - 1, 4 }
-                        };
-        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        tArea Areas[] = { { x0, y0, x7 - 1, y7 - 1, 4 } }; // 16 colors
+        if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        else {
+           tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 }, // 2..16 colors
+                             { x0, y3, x3 - 1, y4 - 1, 1 },
+                             { x3, y3, x4 - 1, y4 - 1, 2 },
+                             { x4, y3, x7 - 1, y4 - 1, 2 },
+                             { x0, y4, x7 - 1, y7 - 1, 4 }
+                           };
+           osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+           }
         }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
@@ -1147,12 +1161,17 @@ cSkinSTTNGDisplayMessage::cSkinSTTNGDisplayMessage(void)
   y0 = 0;
   y1 = lineHeight;
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop() + cOsd::OsdHeight() - y1);
-  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } };
-  if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+  tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 32 } }; // TrueColor
+  if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 2 } };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 8 } }; // 256 colors
+     if (Setup.AntiAlias && osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+     else {
+        tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 2 } }; // 4 colors
+        osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+        }
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, frameColor, 7);

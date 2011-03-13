@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 2.2 2010/01/29 16:32:32 kls Exp $
+ * $Id: recorder.h 2.3 2010/12/27 11:17:04 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -24,7 +24,7 @@ private:
   cFileName *fileName;
   cIndexFile *index;
   cUnbufferedFile *recordFile;
-  cRecordingInfo recordingInfo;
+  char *recordingName;
   off_t fileSize;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);

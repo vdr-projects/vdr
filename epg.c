@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.6 2010/02/28 14:24:55 kls Exp $
+ * $Id: epg.c 2.7 2011/02/25 15:16:05 kls Exp $
  */
 
 #include "epg.h"
@@ -56,25 +56,34 @@ cComponents::~cComponents(void)
   free(components);
 }
 
-void cComponents::Realloc(int Index)
+bool cComponents::Realloc(int Index)
 {
   if (Index >= numComponents) {
-     int n = numComponents;
-     numComponents = Index + 1;
-     components = (tComponent *)realloc(components, numComponents * sizeof(tComponent));
-     memset(&components[n], 0, sizeof(tComponent) * (numComponents - n));
+     Index++;
+     if (tComponent *NewBuffer = (tComponent *)realloc(components, Index * sizeof(tComponent))) {
+        int n = numComponents;
+        numComponents = Index;
+        components = NewBuffer;
+        memset(&components[n], 0, sizeof(tComponent) * (numComponents - n));
+        }
+     else {
+        esyslog("ERROR: out of memory");
+        return false;
+        }
      }
+  return true;
 }
 
 void cComponents::SetComponent(int Index, const char *s)
 {
-  Realloc(Index);
-  components[Index].FromString(s);
+  if (Realloc(Index))
+     components[Index].FromString(s);
 }
 
 void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description)
 {
-  Realloc(Index);
+  if (!Realloc(Index))
+     return;
   tComponent *p = &components[Index];
   p->stream = Stream;
   p->type = Type;

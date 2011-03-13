@@ -5,18 +5,19 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.12\n"
+"Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2010-06-06 12:52+0200\n"
-"PO-Revision-Date: 2010-02-22 18:05+0200\n"
+"PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** Klaidingas kanalas ***"
+msgstr "*** Blogi kanalo nustatymai ***"
 
 msgid "Channel not available!"
 msgstr "Kanalas neegzistuoja!"
@@ -837,10 +838,10 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Įrašų katalogai"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Katalogai esantys laikmačių meniu"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Skaičių mygtukai simboliams"
 
 msgid "EPG"
 msgstr "Elektroninis programų gidas (EPG)"
@@ -893,10 +894,10 @@ msgid "names and PIDs"
 msgstr "pavadinimai ir PID'ai"
 
 msgid "add new channels"
-msgstr "pridėti naujų kanalų"
+msgstr "pridėti naujus kanalus"
 
 msgid "add new transponders"
-msgstr "pridėti naujų siųstuvų"
+msgstr "pridėti naujus siųstuvus"
 
 msgid "DVB"
 msgstr "DVB"
@@ -935,7 +936,7 @@ msgid "Setup.DVB$Subtitle offset"
 msgstr "Subtitrų pozicionavimo nuokrypis"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Subtitrų priekinio vaizdo permatomumas"
+msgstr "Subtitrų fonto permatomumas"
 
 msgid "Setup.DVB$Subtitle background transparency"
 msgstr "Subtitrų fono permatomumas"
@@ -995,7 +996,7 @@ msgid "pause live video"
 msgstr "pristabdyti 'gyvą' video srautą"
 
 msgid "confirm"
-msgstr ""
+msgstr "patvirtinti"
 
 msgid "yes"
 msgstr "taip"
@@ -1052,16 +1053,16 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Suskaidyti koreguotus failus"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Trinti atidėto grojimo įrašą"
 
 msgid "Replay"
-msgstr "Pakartoti"
+msgstr "Pakartojimai"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Daugiagreitis ręžimas"
+msgstr "Prasukimo ręžimas"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Rodyti atvaizdavimo ręžimą"
+msgstr "Rodyti pakartojimo ręžimą"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Kūrinio ID"
@@ -1172,7 +1173,7 @@ msgid "Pausing live video..."
 msgstr "Sustabdomas 'gyvo' video grojimas..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Trinti atidėto grojimo įrašą?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "

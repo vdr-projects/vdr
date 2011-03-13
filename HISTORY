@@ -2154,7 +2154,7 @@ Video Disk Recorder Revision History
   called before trying to learn the keys (problem reported by Oliver Endriss).
 - No longer starting the editing process if no marks have been set (thanks to
   Matthias Raus for reporting this one).
-- Added Catalanian language texts (thanks to Marc Rovira Vall and Ramon Roca).
+- Added Catalan language texts (thanks to Marc Rovira Vall and Ramon Roca).
   Plugin authors may want to add the new entries to their I18N texts and contact
   the translators to have their texts translated. Note that there are now 16
   different OSD languages, so please make sure you have 16 versions for each of
@@ -2219,7 +2219,7 @@ Video Disk Recorder Revision History
 - Completed the Italian OSD texts (thanks to Antonio Ospite).
 - Fixed breaking off replay in case the user hits "Play" or "Pause" too soon after
   going into "Pause live video" mode (thanks to Karim Afifi for reporting this one).
-- Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
+- Some corrections to the Catalan OSD texts (thanks to Jordi Vilà).
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
 - Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).
@@ -5706,7 +5706,7 @@ Video Disk Recorder Revision History
   ISO-8859-9.
 - Fixed a signed character used as index in cBase64Encoder::NextLine() (thanks
   to Tobias Grimm).
-- Updated the Spanish and Catalanian OSD texts (thanks to Luca Olivetti).
+- Updated the Spanish and Catalan OSD texts (thanks to Luca Olivetti).
 - Fixed automatically selecting the preferred subtitle language (based on a patch
   from Rolf Ahrenberg).
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
@@ -5811,7 +5811,7 @@ Video Disk Recorder Revision History
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
 - Errors in config files no longer keep VDR from starting.
-- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+- Removed unneeded include files <linux/dvb/dmx.h> and <time.h> from remux.h
   (reported by Tobias Grimm).
 
 2008-09-06: Version 1.6.0-2
@@ -5829,7 +5829,7 @@ Video Disk Recorder Revision History
   to Udo Richter).
 - Replaced the Finnish language code "smi" with "suo" (thanks to Rolf Ahrenberg).
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
-- Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
+- Removed unneeded include files <linux/dvb/dmx.h> and <time.h> from remux.h
   (reported by Tobias Grimm).
 
 2008-12-14: Version 1.7.2
@@ -6052,7 +6052,7 @@ Video Disk Recorder Revision History
 - Any TS packets in the first "frame" after a cut in an edited recording that don't
   belong to a payload unit that started in that frame now get their TEI flag set,
   so that a decoder will ignore them together with any PES data collected for that
-  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbences at
+  PID so far (thanks to Oliver Endriss for reporting chirping sound disturbances at
   editing points in TS recordings).
 - cDvbPlayer::Empty() subtracts 1 from readIndex, because Action() will first
   increment it.
@@ -6426,7 +6426,7 @@ Video Disk Recorder Revision History
   there is less than MIN_TS_PACKETS_FOR_FRAME_DETECTOR left (reported by Derek Kelly).
 - Added a note about not deleting cDeviceHook objects to device.h.
 - Added user defined key kUser0 (suggested by Ulf Kiener).
-- Include paths are now added instead of overwriting INCLUDES in the Makefile (thanks
+- Include paths are no longer overwritten in the Makefile (thanks
   to Paul Menzel).
 - The various modulation types are now taken into account when selecting a device for
   a recording or live viewing, so that devices that provide more capabilities are
@@ -6480,3 +6480,79 @@ Video Disk Recorder Revision History
 - Added support for languages that are written right-to-left (based on a patch
   from Osama Alrawab). See INSTALL for information on how to turn this on.
 - Added Arabian language texts (thanks to Osama Alrawab).
+
+2011-03-12: Version 1.7.17
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed following symbolic links in RemoveFileOrDir() (cont'd) (thanks to
+  Steffen Barszus).
+- Changed the description of cDevice::GetSTC() to make it mandatory for devices
+  that can replay.
+- Removed the check for positive STC values from cDvbSubtitleConverter::Action().
+- Added cString::operator=(const char *String) (suggested by Antti Seppälä).
+- Some spelling fixes (thanks to Ville Skyttä).
+- Passing package name and version to xgettext (thanks to Ville Skyttä).
+- Made 'dist' target dependent on up to date *.po (thanks to Ville Skyttä).
+- Added Language and fixed Language-Team header of *.po (thanks to Ville Skyttä).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- Fixed detecting frames on channels that broadcast with 50 or 60 fps.
+  This avoids artifacts during fast forward/rewind when replaying recordings from such
+  channels. To fix the index of existing recordings from such channels, just delete the
+  'index' file of the recording and VDR will generate a new one the next time you play it.
+  You should also change the line "F 25" to "F 50" in the 'info' file of that recording.
+- Added support for "registration descriptor" to 'libsi' and using it in pat.c (thanks
+  to Rolf Ahrenberg).
+- Fixed unjustified log entries about changed channel pids (reported by Derek Kelly).
+- Added an include of VDR's 'Make.global' to libsi's Makefile (thanks to Rolf
+  Ahrenberg).
+- Removed displaying the "contents" information from the "Classic VDR" and
+  "ST:TNG Panels" skins, because it is often wrong and nothing but irritating.
+- Added typecasts to avoid gcc 4.5 warnings in switch statements on eKeys
+  variables where additional 'k_...' flags are used.
+- Fixed inclusion of <stdarg.h> (thanks to Henning Heinold).
+- Changed "frame duration" to "frame rate" in vdr.5 (reported by Tobias Grimm).
+- Removing a cRemote from the Remotes list in case its initialization failed (thanks
+  to Dominik Strasser).
+- Added LDFLAGS to the linker calls in the Makefiles (thanks to Joerg Bornkessel and
+  Paul Menzel).
+- Now updating the 'frames per second' data in the list of recordings when a new
+  recording is started that has a frame rate other than the default.
+- The include path to the freetype2 header files is now retrieved via a call to
+  'pkg-config --cflags freetype2' (suggested by Andreas Oberritter).
+- The OSD now has full TrueColor support. There can be several "pixmaps" that can
+  be overlayed with alpha blending. All existing skins should work out of the box
+  with the TrueColor OSD - the only exception being cOsd::GetBitmap(). Since the
+  TrueColor OSD doesn't use bitmaps, this function will return a dummy bitmap, which
+  may not be what the plugin expects. As long as this bitmap is only used for setting
+  the palette, there is no problem. However, any other operations on this bitmap will
+  have no effect. See the description of the cPixmap functions in osd.h for details
+  about the new functionalities.
+  The "ST:TNG Panels" skin has been enhanced to automatically use the TrueColor OSD
+  if available.
+  The "osddemo" plugin has been extended to show some of the possibilities of the
+  TrueColor OSD if it is run on a system that actually provides TrueColor support.
+  Thanks to Reinhard Nissl for some valuable input, help with debugging, and an
+  implementation of the AlphaBlend() function.
+- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Added Serbian language texts (thanks to Milan Cvijanovic).
+- Fixed reallocating memory in the "pictures" plugin (reported by Paul Menzel, with
+  input from Oliver Endriss).
+- Fixed reallocating memory in cTsToPes::PutTs() (suggested by Oliver Endriss).
+- Now checking the result of all realloc() calls.
+- Fixed setting up the 'Recordings' menu in case there are several recordings
+  with exactly the same name (reported by Marcus Hilbrich).
+- Setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
+  (thanks to Anssi Hannula).
+- Changed the compiler optimization flag to -O3, which gives quite a performance
+  boost in the AlphaBlend() function.
+- While replaying, the editing marks are now updated every 10 seconds (based on a
+  patch from Manuel Reimer).
+- Now reducing the thread and I/O priority cCuttingThread::Action() to make the
+  foreground process more responsive (suggested by Frank Neumann).
+- Removed checking for minimum line length of 21 characters in the LIRC receiver code
+  (reported by Gerald Dachs).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Now storing the original display size when handling DVB subtitles (thanks to
+  Reinhard Nissl).
+- The original display size of subtitles is now used to scale them properly when
+  displaying them on an HD OSD.

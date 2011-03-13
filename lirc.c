@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.0 2006/05/28 08:48:13 kls Exp $
+ * $Id: lirc.c 2.1 2011/03/08 15:35:13 kls Exp $
  */
 
 #include "lirc.h"
@@ -86,7 +86,8 @@ void cLircRemote::Action(void)
                  }
            }
 
-        if (ready && ret > 21) {
+        if (ready && ret > 0) {
+           buf[ret - 1] = 0;
            int count;
            char KeyName[LIRC_KEY_BUF];
            if (sscanf(buf, "%*x %x %29s", &count, KeyName) != 2) { // '29' in '%29s' is LIRC_KEY_BUF-1!

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 2.0 2007/02/03 11:45:58 kls Exp $
+ *   $Id: descriptor.c 2.1 2010/11/01 15:24:31 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1030,6 +1030,17 @@ void MHP_ApplicationIconsDescriptor::Parse() {
    data.setPointerAndOffset<const descr_application_icons_descriptor>(first, offset);
    iconLocator.setDataAndOffset(data+offset, first->icon_locator_length, offset);
    data.setPointerAndOffset<const descr_application_icons_descriptor_end>(s, offset);
+}
+
+int RegistrationDescriptor::getFormatIdentifier() const {
+   return HILOHILO(s->format_identifier);
+}
+
+void RegistrationDescriptor::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const descr_registration>(s, offset);
+   if (checkSize(getLength()-offset))
+      privateData.assign(data.getData(offset), getLength()-offset);
 }
 
 } //end of namespace

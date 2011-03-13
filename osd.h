@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.5 2010/01/17 13:23:50 kls Exp $
+ * $Id: osd.h 2.11 2011/03/12 16:06:48 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -15,12 +15,16 @@
 #include <stdint.h>
 #include "config.h"
 #include "font.h"
+#include "thread.h"
 #include "tools.h"
 
 #define OSD_LEVEL_DEFAULT     0
 #define OSD_LEVEL_SUBTITLES  10
 
 #define MAXNUMCOLORS 256
+#define ALPHA_TRANSPARENT  0x00
+#define ALPHA_OPAQUE       0xFF
+#define IS_OPAQUE(c)       ((c >> 24) == ALPHA_OPAQUE)
 
 enum {
                    //AARRGGBB
@@ -49,6 +53,28 @@ enum eOsdError { oeOk, // see also OsdErrorTexts in osd.c
 
 typedef uint32_t tColor; // see also font.h
 typedef uint8_t tIndex;
+
+inline tColor ArgbToColor(uint8_t A, uint8_t R, uint8_t G, uint8_t B)
+{
+  return (tColor(A) << 24) | (tColor(R) << 16) | (tColor(G) << 8) | B;
+}
+
+inline tColor RgbToColor(uint8_t R, uint8_t G, uint8_t B)
+{
+  return (tColor(R) << 16) | (tColor(G) << 8) | B;
+}
+
+inline tColor RgbToColor(double R, double G, double B)
+{
+  return RgbToColor(uint8_t(0xFF * R), uint8_t(0xFF * G), uint8_t(0xFF * B));
+}
+
+tColor HsvToColor(double H, double S, double V);
+   ///< Converts the given Hue (0..360), Saturation (0..1) and Value (0..1)
+   ///< to an RGB tColor value. The alpha value of the result is 0x00, so
+   ///< the caller may need to set it accordingly.
+
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer = ALPHA_OPAQUE);
 
 class cPalette {
 private:
@@ -247,6 +273,9 @@ public:
        ///< the 2^NewBpp most frequently used colors as defined in the current palette.
        ///< If NewBpp is not smaller than the bitmap's current color depth,
        ///< or if it is not one of 4bpp or 2bpp, nothing happens.
+  cBitmap *Scale(double FactorX, double FactorY);
+       ///< Creates a copy of this bitmap, scaled by the given factors.
+       ///< The caller must delete the returned bitmap once it is no longer used.
   };
 
 struct tArea {
@@ -257,16 +286,433 @@ struct tArea {
   bool Intersects(const tArea &Area) const { return !(x2 < Area.x1 || x1 > Area.x2 || y2 < Area.y1 || y1 > Area.y2); }
   };
 
+class cPoint {
+private:
+  int x;
+  int y;
+public:
+  cPoint(void) { x = y = 0; }
+  cPoint(int X, int Y) { x = X; y = Y; }
+  cPoint(const cPoint &Point) { x = Point.X(); y = Point.Y(); }
+  bool operator==(const cPoint &Point) const { return x == Point.X() && y == Point.Y(); }
+  bool operator!=(const cPoint &Point) const { return !(*this == Point); }
+  cPoint operator-(void) const { return cPoint(-x, -y); }
+  cPoint operator-(const cPoint &Point) const { return cPoint(x - Point.X(), y - Point.Y()); }
+  int X(void) const { return x; }
+  int Y(void) const { return y; }
+  void SetX(int X) { x = X; }
+  void SetY(int Y) { y = Y; }
+  void Set(int X, int Y) { x = X; y = Y; }
+  void Set(const cPoint &Point) { x = Point.X(); y = Point.Y(); }
+  void Shift(int Dx, int Dy) { x += Dx; y += Dy; }
+  void Shift(const cPoint &Dp) { x += Dp.X(); y += Dp.Y(); }
+  cPoint Shifted(int Dx, int Dy) const { cPoint p(*this); p.Shift(Dx, Dy); return p; }
+  cPoint Shifted(const cPoint &Dp) const { cPoint p(*this); p.Shift(Dp); return p; }
+  };
+
+class cSize {
+private:
+  int width;
+  int height;
+public:
+  cSize(void) { width = height = 0; }
+  cSize(int Width, int Height) { width = Width; height = Height; }
+  cSize(const cSize &Size) { width = Size.Width(); height = Size.Height(); }
+  bool operator==(const cSize &Size) const { return width == Size.Width() && height == Size.Height(); }
+  bool operator!=(const cSize &Size) const { return !(*this == Size); }
+  bool operator<(const cSize &Size) const { return width < Size.Width() && height < Size.Height(); }
+  int Width(void) const { return width; }
+  int Height(void) const { return height; }
+  void SetWidth(int Width) { width = Width; }
+  void SetHeight(int Height) { height = Height; }
+  void Set(int Width, int Height) { width = Width; height = Height; }
+  void Set(const cSize &Size) { width = Size.Width(); height = Size.Height(); }
+  bool Contains(const cPoint &Point) const { return 0 <= Point.X() && 0 <= Point.Y() && Point.X() < width && Point.Y() < height; }
+  void Grow(int Dw, int Dh) { width += 2 * Dw; height += 2 * Dh; }
+  cSize Grown(int Dw, int Dh) const { cSize s(*this); s.Grow(Dw, Dh); return s; }
+  };
+
+class cRect {
+private:
+  cPoint point;
+  cSize size;
+public:
+  static const cRect Null;
+  cRect(void): point(0, 0), size(0, 0) {}
+  cRect(int X, int Y, int Width, int Height): point(X, Y), size(Width, Height) {}
+  cRect(const cPoint &Point, const cSize &Size): point(Point), size(Size) {}
+  cRect(const cSize &Size): point(0, 0), size(Size) {}
+  cRect(const cRect &Rect): point(Rect.Point()), size(Rect.Size()) {}
+  bool operator==(const cRect &Rect) const { return point == Rect.Point() && size == Rect.Size(); }
+  bool operator!=(const cRect &Rect) const { return !(*this == Rect); }
+  int X(void) const { return point.X(); }
+  int Y(void) const { return point.Y(); }
+  int Width(void) const { return size.Width(); }
+  int Height(void) const { return size.Height(); }
+  int Left(void) const { return X(); }
+  int Top(void) const { return Y(); }
+  int Right(void) const { return X() + Width() - 1; }
+  int Bottom(void) const { return Y() + Height() - 1; }
+  const cPoint &Point(void) const { return point; }
+  const cSize &Size(void) const { return size; }
+  void Set(int X, int Y, int Width, int Height) { point.Set(X, Y); size.Set(Width, Height); }
+  void Set(cPoint Point, cSize Size) { point.Set(Point); size.Set(Size); }
+  void SetPoint(int X, int Y) { point.Set(X, Y); }
+  void SetPoint(const cPoint &Point) { point.Set(Point); }
+  void SetSize(int Width, int Height) { size.Set(Width, Height); }
+  void SetSize(const cSize &Size) { size.Set(Size); }
+  void SetX(int X) { point.SetX(X); }
+  void SetY(int Y) { point.SetY(Y); }
+  void SetWidth(int Width) { size.SetWidth(Width); }
+  void SetHeight(int Height) { size.SetHeight(Height); }
+  void SetLeft(int Left) { SetWidth(Width() + X() - Left); SetX(Left); }
+  void SetTop(int Top) { SetHeight(Height() + Y() - Top); SetY(Top); }
+  void SetRight(int Right) { SetWidth(Right - X() + 1); }
+  void SetBottom(int Bottom) { SetHeight(Bottom - Y() + 1); }
+  void Shift(int Dx, int Dy) { point.Shift(Dx, Dy); }
+  void Shift(const cPoint &Dp) { point.Shift(Dp); }
+  cRect Shifted(int Dx, int Dy) const { cRect r(*this); r.Shift(Dx, Dy); return r; }
+  cRect Shifted(const cPoint &Dp) const { cRect r(*this); r.Shift(Dp); return r; }
+  void Grow(int Dx, int Dy);
+       ///< Grows the rectangle by the given number of pixels in either direction.
+       ///< A negative value will shrink the rectangle.
+  cRect Grown(int Dw, int Dh) const { cRect r(*this); r.Grow(Dw, Dh); return r; }
+  bool Contains(const cPoint &Point) const;
+       ///< Returns true if this rectangle contains Point.
+  bool Contains(const cRect &Rect) const;
+       ///< Returns true if this rectangle completely contains Rect.
+  bool Intersects(const cRect &Rect) const;
+       ///< Returns true if this rectangle intersects with Rect.
+  cRect Intersected(const cRect &Rect) const;
+       ///< Returns the intersection of this rectangle and the given Rect.
+  void Combine(const cRect &Rect);
+       ///< Combines this rectangle with the given Rect.
+  cRect Combined(const cRect &Rect) const { cRect r(*this); r.Combine(Rect); return r; }
+       ///< Returns the surrounding rectangle that contains this rectangle and the
+       ///< given Rect.
+  void Combine(const cPoint &Point);
+       ///< Combines this rectangle with the given Point.
+  cRect Combined(const cPoint &Point) const { cRect r(*this); r.Combine(Point); return r; }
+       ///< Returns the surrounding rectangle that contains this rectangle and the
+       ///< given Point.
+  bool IsEmpty(void) const { return Width() <= 0 || Height() <= 0; }
+       ///< Returns true if this rectangle is empty.
+  };
+
+class cImage {
+private:
+  cSize size;
+  tColor *data;
+public:
+  cImage(void);
+  cImage(const cImage &Image);
+  cImage(const cSize &Size, const tColor *Data = NULL);
+       ///< Creates an image with the given Size and allocates the necessary memory
+       ///< to copy the pixels pointed to by Data, which is a sequence of
+       ///< (Size.Width() * Size.Height()) tColor values.
+       ///< If Data is NULL, the allocated memory is not initialized.
+       ///< The alpha value of the Image's pixels is taken into account, so it has to be
+       ///< greater than 0 for the image to be visible.
+  virtual ~cImage();
+  const cSize &Size(void) const { return size; }
+  int Width(void) const { return size.Width(); }
+  int Height(void) const { return size.Height(); }
+  const tColor *Data(void) const { return data; }
+  tColor GetPixel(const cPoint &Point) const { return data[size.Width() * Point.Y() + Point.X()]; }
+       ///< Returns the pixel value at the given Point.
+       ///< For performance reasons there is no range check here, so the caller
+       ///< must make sure that the Point is within the images size.
+  void SetPixel(const cPoint &Point, tColor Color) { data[size.Width() * Point.Y() + Point.X()] = Color; }
+       ///< Sets the pixel at the given Point to Color.
+       ///< For performance reasons there is no range check here, so the caller
+       ///< must make sure that the Point is within the images size.
+  void Clear(void);
+       ///< Clears the image data by setting all pixels to be fully transparent.
+  void Fill(tColor Color);
+       ///< Fills the image data with the given Color.
+  };
+
+#define MAXPIXMAPLAYERS    8
+
+class cPixmap {
+  friend class cOsd;
+  friend class cPixmapMutexLock;
+private:
+  static cMutex mutex;
+  int layer;
+  int alpha;
+  bool tile;
+  cRect viewPort;
+  cRect drawPort;
+  cRect dirtyViewPort;
+  cRect dirtyDrawPort;
+protected:
+  virtual ~cPixmap() {}
+  void MarkViewPortDirty(const cRect &Rect);
+       ///< Marks the given rectangle of the view port of this pixmap as dirty.
+       ///< Rect is combined with the existing dirtyViewPort rectangle.
+       ///< The coordinates of Rect are given in absolute OSD values.
+  void MarkViewPortDirty(const cPoint &Point);
+       ///< Marks the given point of the view port of this pixmap as dirty.
+       ///< Point is combined with the existing dirtyViewPort rectangle.
+       ///< The coordinates of Point are given in absolute OSD values.
+  void MarkDrawPortDirty(const cRect &Rect);
+       ///< Marks the given rectangle of the draw port of this pixmap as dirty.
+       ///< Rect is combined with the existing dirtyDrawPort rectangle.
+       ///< The coordinates of Rect are relative to the pixmap's draw port.
+       ///< If Rect extends into the currently visible view port of this pixmap,
+       ///< MarkViewPortDirty() is called with the appropriate value.
+  void MarkDrawPortDirty(const cPoint &Point);
+       ///< Marks the given point of the draw port of this pixmap as dirty.
+       ///< Point is combined with the existing dirtyDrawPort rectangle.
+       ///< The coordinates of Point are relative to the pixmap's draw port.
+       ///< If Point is within the currently visible view port of this pixmap,
+       ///< MarkViewPortDirty() is called with the appropriate value.
+  void SetClean(void);
+       ///< Resets the "dirty" rectangles of this pixmap.
+  virtual void DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty);
+       ///< Draws the Dirty part of the given Pixmap into this pixmap. If the
+       ///< Pixmap's layer is 0, it is copied, otherwise it is rendered into this
+       ///< pixmap. This function is used only to implement the tile handling
+       ///< in the final rendering to the OSD.
+public:
+  cPixmap(void);
+  cPixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
+       ///< Creates a pixmap in the given Layer. When rendering the final OSD, pixmaps
+       ///< are handled in ascending order of their individual layer. This is
+       ///< important if pixmaps overlap each other. The one with the highest layer is
+       ///< rendered last. The actual value of Layer doesn't matter, it is only used
+       ///< for defining the rendering sequence. If Layer is less than zero, this
+       ///< pixmap will not be rendered into the final OSD (it can be activated by a
+       ///< later call to SetLayer()). The value 0 is reserved for the background
+       ///< pixmap and shall not be used otherwise (with the sole exception of
+       ///< temporarily using layer 0 to have a text with transparent background
+       ///< rendered with alpha blending into that pixmap; see also DrawPixel()).
+       ///< If there are several pixmaps with the same value of Layer, their rendering
+       ///< sequence within that layer is undefined.
+       ///< In order to allow devices that can handle only a limited number of layers,
+       ///< the Layer parameter must be less than 8 (MAXPIXMAPLAYERS).
+       ///< ViewPort defines the rectangle in which this pixmap will be rendered on
+       ///< the OSD. If no DrawPort ist given, it defaults to the same size as the
+       ///< ViewPort, with its upper left corner set to (0, 0).
+       ///< All drawing operations will be executed relative to the origin of the
+       ///< DrawPort rectangle, and will be clipped to the size of this rectangle.
+       ///< The DrawPort may have a different size than the ViewPort. If it is smaller
+       ///< than the ViewPort, the rest of the ViewPort is treated as fully transparent
+       ///< (unless this is a tiled pixmap, in which case the DrawPort is repeated
+       ///< horizontally and vertically to fill the entire ViewPort). If the DrawPort
+       ///< is larger than the ViewPort, only that portion of the DrawPort that
+       ///< intersects with the ViewPort will be visible on the OSD.
+       ///< The drawing area of a newly created cPixmap is not initialized and may
+       ///< contain random data.
+  static void Lock(void) { mutex.Lock(); }
+       ///< All public member functions of cPixmap set locks as necessary to make sure
+       ///< they are thread-safe (unless noted otherwise). If several cPixmap member
+       ///< functions need to be called in a row, the caller must surround these calls
+       ///< with proper Lock()/Unlock() calls. See the LOCK_PIXMAPS macro for a
+       ///< convenient way of doing this.
+  static void Unlock(void) { mutex.Unlock(); }
+  int Layer(void) const { return layer; }
+  int Alpha(void) const { return alpha; }
+  bool Tile(void) const { return tile; }
+  const cRect &ViewPort(void) const { return viewPort; }
+       ///< Returns the pixmap's view port, which is relative to the OSD's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
+  const cRect &DrawPort(void) const { return drawPort; }
+       ///< Returns the pixmap's draw port, which is relative to the view port.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
+  const cRect &DirtyViewPort(void) const { return dirtyViewPort; }
+       ///< Returns the "dirty" rectangle this pixmap causes on the OSD. This is the
+       ///< surrounding rectangle around all pixels that have been modified since the
+       ///< last time this pixmap has been rendered to the OSD. The rectangle is
+       ///< relative to the OSD's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
+  const cRect &DirtyDrawPort(void) const { return dirtyDrawPort; }
+       ///< Returns the "dirty" rectangle in the draw port of this this pixmap. This is
+       ///< the surrounding rectangle around all pixels that have been modified since the
+       ///< last time this pixmap has been rendered to the OSD. The rectangle is
+       ///< relative to the draw port's origin.
+       ///< Since this function returns a reference to a data member, the caller must
+       ///< use Lock()/Unlock() to make sure the data doesn't change while it is used.
+  virtual void SetLayer(int Layer);
+       ///< Sets the layer of this pixmap to the given value.
+       ///< If the new layer is greater than zero, the pixmap will be visible.
+       ///< If it is less than zero, it will be invisible.
+       ///< A value of 0 will be silently ignored.
+       ///< If a derived class reimplements this function, it needs to call the base
+       ///< class function.
+  virtual void SetAlpha(int Alpha);
+       ///< Sets the alpha value of this pixmap to the given value.
+       ///< Alpha is limited to the range 0 (fully transparent) to 255 (fully opaque).
+       ///< If a derived class reimplements this function, it needs to call the base
+       ///< class function.
+  virtual void SetTile(bool Tile);
+       ///< Sets the tile property of this pixmap to the given value. If Tile is true,
+       ///< the pixmaps data will be repeated horizontally and vertically if necessary
+       ///< to fill the entire view port.
+       ///< If a derived class reimplements this function, it needs to call the base
+       ///< class function.
+  virtual void SetViewPort(const cRect &Rect);
+       ///< Sets the pixmap's view port to the given Rect.
+       ///< If a derived class reimplements this function, it needs to call the base
+       ///< class function.
+  virtual void SetDrawPortPoint(const cPoint &Point, bool Dirty = true);
+       ///< Sets the pixmap's draw port to the given Point.
+       ///< Only the origin point of the draw port can be modified, its size is fixed.
+       ///< By default, setting a new draw port point results in marking the relevant
+       ///< part of the view port as "drity". If Dirty is set to false, the view port
+       ///< will not be marked as dirty. This is mainly used to implement the Pan()
+       ///< function.
+       ///< If a derived class reimplements this function, it needs to call the base
+       ///< class function.
+  virtual void Clear(void) = 0;
+       ///< Clears the pixmap's draw port by setting all pixels to be fully transparent.
+       ///< A derived class must call Lock()/Unlock().
+  virtual void Fill(tColor Color) = 0;
+       ///< Fills the pixmap's draw port with the given Color.
+       ///< A derived class must call Lock()/Unlock().
+  virtual void DrawImage(const cPoint &Point, const cImage &Image) = 0;
+       ///< Draws the given Image into this pixmap at the given Point.
+  virtual void DrawImage(const cPoint &Point, int ImageHandle) = 0;
+       ///< Draws the image referenced by the given ImageHandle into this pixmap at
+       ///< the given Point. ImageHandle must be a value that has previously been
+       ///< returned by a call to cOsdProvider::StoreImage(). If ImageHandle
+       ///< has an invalid value, nothing happens.
+  virtual void DrawPixel(const cPoint &Point, tColor Color) = 0;
+       ///< Sets the pixel at the given Point to the given Color, which is
+       ///< a full 32 bit ARGB value. If the alpha value of Color is not 0xFF
+       ///< (fully opaque), and this is the background pixmap (layer 0), the pixel is
+       ///< alpha blended with the existing color at the given position in this pixmap.
+  virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false) = 0;
+       ///< Sets the pixels in the OSD with the data from the given
+       ///< Bitmap, putting the upper left corner of the Bitmap at Point.
+       ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
+       ///< will be mapped to ColorBg and the second palette entry will be mapped to
+       ///< ColorFg (palette indexes are defined so that 0 is the background and
+       ///< 1 is the foreground color).
+       ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
+       ///< not overwrite the corresponding pixel in the target area.
+       ///< This function is mainly for compatibility with skins or plugins that
+       ///< draw bitmaps onto the OSD.
+  virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault) = 0;
+       ///< Draws the given string at Point with the given foreground
+       ///< and background color and font. If Width and Height are given, the text
+       ///< will be drawn into a rectangle with the given size and the given
+       ///< Alignment (default is top-left). If ColorBg is clrTransparent, no
+       ///< background pixels will be drawn, which allows drawing "transparent" text.
+  virtual void DrawRectangle(const cRect &Rect, tColor Color) = 0;
+       ///< Draws a filled rectangle with the given Color.
+  virtual void DrawEllipse(const cRect &Rect, tColor Color, int Quadrants = 0) = 0;
+       ///< Draws a filled ellipse with the given Color that fits into the given
+       ///< rectangle. Quadrants controls which parts of the ellipse are actually drawn:
+       ///< 0       draws the entire ellipse
+       ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
+       ///< 5..8    draws the right, top, left or bottom half, respectively
+       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< If Quadrants is not 0, the coordinates are those of the actual area, not
+       ///< the full circle!
+  virtual void DrawSlope(const cRect &Rect, tColor Color, int Type) = 0;
+       ///< Draws a "slope" with the given Color into the given rectangle.
+       ///< Type controls the direction of the slope and which side of it will be drawn:
+       ///< 0: horizontal, rising,  lower
+       ///< 1: horizontal, rising,  upper
+       ///< 2: horizontal, falling, lower
+       ///< 3: horizontal, falling, upper
+       ///< 4: vertical,   rising,  lower
+       ///< 5: vertical,   rising,  upper
+       ///< 6: vertical,   falling, lower
+       ///< 7: vertical,   falling, upper
+  virtual void Render(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest) = 0;
+       ///< Renders the part of the given Pixmap covered by Source into this pixmap at
+       ///< location Dest. The Source rectangle is relative to the given Pixmap's draw port.
+       ///< The Pixmap's alpha value is to be used when rendering.
+  virtual void Copy(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest) = 0;
+       ///< Copies the part of the given Pixmap covered by Source into this pixmap at
+       ///< location Dest. The Source rectangle is relative to the given Pixmap's draw port.
+       ///< The data from Pixmap is copied as is, no alpha handling of any kind takes
+       ///< place.
+  virtual void Scroll(const cPoint &Dest, const cRect &Source = cRect::Null) = 0;
+       ///< Scrolls the data in the pixmap's draw port to the given Dest point.
+       ///< If Source is given, only the data within that rectangle is scrolled.
+       ///< Source and Dest are relative to this pixmap's draw port.
+  virtual void Pan(const cPoint &Dest, const cRect &Source = cRect::Null) = 0;
+       ///< Does the same as Scroll(), but also shifts the draw port accordingly,
+       ///< so that the view port doesn't get dirty if the scrolled rectangle
+       ///< covers the entire view port. This may be of advantage if, e.g.,
+       ///< there is a draw port that holds, say, 11 lines of text, while the
+       ///< view port displays only 10 lines. By Pan()'ing the draw port up one
+       ///< line, an new bottom line can be written into the draw port (without
+       ///< being seen through the view port), and later the draw port can be
+       ///< shifted smoothly, resulting in a smooth scrolling.
+       ///< It is the caller's responsibility to make sure that Source and Dest
+       ///< are given in such a way that the view port will not get dirty. No
+       ///< check is done whether this condition actually holds true.
+  };
+
+class cPixmapMutexLock : public cMutexLock {
+public:
+  cPixmapMutexLock(void): cMutexLock(&cPixmap::mutex) {}
+  };
+
+#define LOCK_PIXMAPS cPixmapMutexLock PixmapMutexLock
+
+// cPixmapMemory is an implementation of cPixmap that uses an array of tColor
+// values to store the pixmap.
+
+class cPixmapMemory : public cPixmap {
+private:
+  tColor *data;
+  bool panning;
+public:
+  cPixmapMemory(void);
+  cPixmapMemory(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
+  virtual ~cPixmapMemory();
+  const uint8_t *Data(void) { return (uint8_t *)data; }
+  virtual void Clear(void);
+  virtual void Fill(tColor Color);
+  virtual void DrawImage(const cPoint &Point, const cImage &Image);
+  virtual void DrawImage(const cPoint &Point, int ImageHandle);
+  virtual void DrawPixel(const cPoint &Point, tColor Color);
+  virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false);
+  virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
+  virtual void DrawRectangle(const cRect &Rect, tColor Color);
+  virtual void DrawEllipse(const cRect &Rect, tColor Color, int Quadrants = 0);
+  virtual void DrawSlope(const cRect &Rect, tColor Color, int Type);
+  virtual void Render(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest);
+  virtual void Copy(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest);
+  virtual void Scroll(const cPoint &Dest, const cRect &Source = cRect::Null);
+  virtual void Pan(const cPoint &Dest, const cRect &Source = cRect::Null);
+  };
+
 #define MAXOSDAREAS 16
+#define MAXOSDPIXMAPS 64
+
+/// The cOsd class is the interface to the "On Screen Display".
+/// An actual output device needs to derive from this class and implement
+/// the functionality necessary to display the OSD on the TV screen.
+/// If the actual OSD supports "True Color", it can either let VDR do
+/// all the rendering by calling RenderPixmaps() ("raw mode"), or it can
+/// reimplement all necessary cPixmap functions and do the rendering
+/// itself ("high level mode").
+/// If an OSD provides a "high level mode", it shall also provide a "raw mode"
+/// in order to verify proper operation. The plugin that impements the OSD
+/// shall offer a configuration switch in its setup.
 
 class cOsd {
   friend class cOsdProvider;
 private:
   static int osdLeft, osdTop, osdWidth, osdHeight;
   static cVector<cOsd *> Osds;
-  cBitmap *savedRegion;
+  bool isTrueColor;
+  cBitmap *savedBitmap;
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
+  cPixmapMemory *savedPixmap;
+  cPixmap *pixmaps[MAXOSDPIXMAPS];
+  int numPixmaps;
   int left, top, width, height;
   uint level;
   bool active;
@@ -295,6 +741,32 @@ protected:
   virtual void SetActive(bool On) { active = On; }
        ///< Sets this OSD to be the active one.
        ///< A derived class must call cOsd::SetActive(On).
+  const cPixmap * const *Pixmaps(void) { return pixmaps; }
+       ///< Returns the list of currently active pixmaps in this OSD.
+  int NumPixmaps(void) { return numPixmaps; }
+       ///< Returns the number of currently active pixmaps in this OSD.
+  cPixmap *AddPixmap(cPixmap *Pixmap);
+       ///< Adds the given Pixmap to the list of currently active pixmaps in this OSD.
+       ///< Returns Pixmap if the operation was successful, or NULL if the maximum
+       ///< number of pixmaps has been exceeded.
+       ///< A derived class that implements its own cPixmap class must call AddPixmap()
+       ///< in order to add a newly created pixmap to the OSD's list of pixmaps.
+  cPixmapMemory *RenderPixmaps(void);
+       ///< Renders the dirty part of all pixmaps into a resulting pixmap that
+       ///< shall be displayed on the OSD. The returned pixmap's view port is
+       ///< set to the location of the rectangle on the OSD that needs to be
+       ///< refreshed; its draw port's origin is at (0, 0), and it has the same
+       ///< size as the view port.
+       ///< If there are several non-overlapping dirty rectangles from different pixmaps,
+       ///< they are returned separately in order to avoid re-rendering large parts
+       ///< of the OSD that haven't changed at all. The caller must therefore call
+       ///< RenderPixmaps() repeatedly until it returns NULL, and display the returned
+       ///< parts of the OSD at their appropriate locations. During this entire
+       ///< operation the caller must hold a lock on the cPixmap mutex (for instance
+       ///< by putting a LOCK_PIXMAPS into the scope of the operation).
+       ///< If there are no dirty pixmaps, or if this is not a true color OSD,
+       ///< this function returns NULL.
+       ///< The caller must delete the returned pixmap after use.
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
@@ -309,6 +781,9 @@ public:
        ///< screen.
   static int IsOpen(void) { return Osds.Size() && Osds[0]->level == OSD_LEVEL_DEFAULT; }
        ///< Returns true if there is currently a level 0 OSD open.
+  bool IsTrueColor(void) const { return isTrueColor; }
+       ///< Returns 'true' if this is a true color OSD (providing full 32 bit color
+       ///< depth).
   int Left(void) { return left; }
   int Top(void) { return top; }
   int Width(void) { return width; }
@@ -323,9 +798,33 @@ public:
        ///< a single color combination, and may not be able to serve all
        ///< requested colors. By default the palette assumes there will be
        ///< 10 fixed colors and 10 color combinations.
+       ///< If this is a true color OSD, this function does nothing.
   cBitmap *GetBitmap(int Area);
        ///< Returns a pointer to the bitmap for the given Area, or NULL if no
        ///< such bitmap exists.
+       ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
+       ///< is returned. This is done so that skins that call this function
+       ///< in order to preset the bitmap's palette won't crash.
+  virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
+       ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
+       ///< The caller must not delete the returned object, it will be deleted when
+       ///< the OSD is deleted. DestroyPixmap() can be called if a pixmap shall be
+       ///< destroyed before the OSD is deleted.
+       ///< If this is not a true color OSD, this function returns NULL.
+  virtual void DestroyPixmap(cPixmap *Pixmap);
+       ///< Destroys the given Pixmap, which has previously been created by a call to
+       ///< CreatePixmap(). When the OSD is deleted, all pixmaps are destroyed
+       ///< automatically. So this function only needs to be used if a pixmap shall
+       ///< be destroyed while the OSD is still being used.
+  virtual void DrawImage(const cPoint &Point, const cImage &Image);
+       ///< Draws the given Image on this OSD at the given Point.
+       ///< If this is not a true color OSD, this function does nothing.
+  virtual void DrawImage(const cPoint &Point, int ImageHandle);
+       ///< Draws the image referenced by the given ImageHandle on this OSD at
+       ///< the given Point. ImageHandle must be a value that has previously been
+       ///< returned by a call to cOsdProvider::StoreImage(). If ImageHandle
+       ///< has an invalid value, nothing happens.
+       ///< If this is not a true color OSD, this function does nothing.
   virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
        ///< Checks whether the OSD can display the given set of sub-areas.
        ///< The return value indicates whether a call to SetAreas() with this
@@ -343,6 +842,9 @@ public:
        ///< are part of the rectangle that surrounds a given drawing operation
        ///< will be drawn into, with the proper offsets.
        ///< A new call overwrites any previous settings
+       ///< To set up a true color OSD, exactly one area must be requested, with
+       ///< its coordinates set to the full area the OSD shall cover, and the
+       ///< bpp value set to 32.
   virtual void SaveRegion(int x1, int y1, int x2, int y2);
        ///< Saves the region defined by the given coordinates for later restoration
        ///< through RestoreRegion(). Only one saved region can be active at any
@@ -352,6 +854,7 @@ public:
        ///< If SaveRegion() has not been called before, nothing will happen.
   virtual eOsdError SetPalette(const cPalette &Palette, int Area);
        ///< Sets the Palette for the given Area (the first area is numbered 0).
+       ///< If this is a true color OSD, nothing happens and oeOk is returned.
   virtual void DrawPixel(int x, int y, tColor Color);
        ///< Sets the pixel at the given coordinates to the given Color, which is
        ///< a full 32 bit ARGB value.
@@ -368,6 +871,7 @@ public:
        ///< area shall have its palette replaced with the one from Bitmap.
        ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
        ///< not overwrite the corresponding pixel in the target area.
+       ///< If this is a true color OSD, ReplacePalette has no meaning.
   virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
@@ -401,18 +905,51 @@ public:
        ///< 7: vertical,   falling, upper
   virtual void Flush(void);
        ///< Actually commits all data to the OSD hardware.
+       ///< Flush() should return as soon as possible.
+       ///< For a true color OSD using the default implementation with in memory
+       ///< pixmaps, the Flush() function should basically do something like this:
+       ///<
+       ///<  LOCK_PIXMAPS;
+       ///<  while (cPixmapMemory *pm = RenderPixmaps()) {
+       ///<        int w = pm->ViewPort().Width();
+       ///<        int h = pm->ViewPort().Height();
+       ///<        int d = w * sizeof(tColor);
+       ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
+       ///<        delete pm;
+       ///<        }
   };
 
+#define MAXOSDIMAGES 64
+
 class cOsdProvider {
+  friend class cPixmapMemory;
 private:
   static cOsdProvider *osdProvider;
   static int oldWidth;
   static int oldHeight;
   static double oldAspect;
+  static cImage *images[MAXOSDIMAGES];
 protected:
   virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located
       ///< at the given coordinates.
+  virtual bool ProvidesTrueColor(void) { return false; }
+      ///< Returns true if this OSD provider is able to handle a true color OSD.
+  virtual int StoreImageData(const cImage &Image);
+      ///< Copies the given Image and returns a handle for later reference.
+      ///< A derived class can implement its own image storing mechanism by
+      ///< reimplementing this function as well as DropImageData().
+      ///< The base class implementation simply copies the image data to allow
+      ///< plugins to always use this interface, no matter if the actual device
+      ///< provides support for storing image data or not. The handles returned
+      ///< by the default implementation are positive integers. A derived class
+      ///< might want to use negative integers as handles, so that it can fall
+      ///< back to using the base class image storing mechanism if, e.g.,  it runs
+      ///< out of memory.
+  virtual void DropImageData(int ImageHandle);
+      ///< Drops the image data referenced by ImageHandle.
+  static const cImage *GetImageData(int ImageHandle);
+      ///< Gets the image data referenced by ImageHandle.
 public:
   cOsdProvider(void);
       //XXX maybe parameter to make this one "sticky"??? (frame-buffer etc.)
@@ -427,7 +964,22 @@ public:
       ///< Inquires the actual size of the video display and adjusts the OSD and
       ///< font sizes accordingly. If Force is true, all settings are recalculated,
       ///< even if the video resolution hasn't changed since the last call to
-      ///< this funtion.
+      ///< this function.
+  static bool SupportsTrueColor(void);
+      ///< Returns true if the current OSD provider is able to handle a true color OSD.
+  static int StoreImage(const cImage &Image);
+      ///< Stores the given Image for later use with DrawImage() on an OSD or
+      ///< pixmap. The returned number is a handle that must be used when
+      ///< referencing this image in a call to DrawImage() or DropImage().
+      ///< The image data is copied, so any later changes to Image will have
+      ///< no effect on the stored image.
+      ///< A derived class may be able to copy frequently used images to some
+      ///< space where they can be retrieved faster than using a cImage in each call.
+      ///< If this is not a true color OSD, or if the image data can't be stored for
+      ///< any reason, this function returns 0 and nothing is stored.
+  static void DropImage(int ImageHandle);
+      ///< Drops the image referenced by the given ImageHandle. If ImageHandle
+      ///< has an invalid value, nothing happens.
   static void Shutdown(void);
       ///< Shuts down the OSD provider facility by deleting the current OSD provider.
   };

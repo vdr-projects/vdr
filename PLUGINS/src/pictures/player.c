@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 2.0 2008/02/09 12:13:10 kls Exp $
+ * $Id: player.c 2.1 2011/02/20 17:15:25 kls Exp $
  */
 
 #include "player.h"
@@ -66,8 +66,15 @@ void cPicturePlayer::SetPicture(const char *FileName)
          length = read(f, buffer, size);
          if (length > 0) {
             if (length >= size) {
-               size = size * 3 / 2;
-               buffer = (uchar *)realloc(buffer, size);
+               int NewSize = size * 3 / 2;
+               if (uchar *NewBuffer = (uchar *)realloc(buffer, NewSize)) {
+                  buffer = NewBuffer;
+                  size = NewSize;
+                  }
+               else {
+                  LOG_ERROR_STR("out of memory");
+                  break;
+                  }
                lseek(f, 0, SEEK_SET);
                continue;
                }

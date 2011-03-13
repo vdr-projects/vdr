@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.8 2010/01/29 16:37:22 kls Exp $
+ * $Id: recorder.c 2.9 2010/12/27 11:35:46 kls Exp $
  */
 
 #include "recorder.h"
@@ -24,8 +24,9 @@
 cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority)
 :cReceiver(Channel, Priority)
 ,cThread("recording")
-,recordingInfo(FileName)
 {
+  recordingName = strdup(FileName);
+
   // Make sure the disk is up and running:
 
   SpinUpDisk(FileName);
@@ -69,6 +70,7 @@ cRecorder::~cRecorder()
   delete fileName;
   delete frameDetector;
   delete ringBuffer;
+  free(recordingName);
 }
 
 bool cRecorder::RunningLowOnDiskSpace(void)
@@ -127,10 +129,12 @@ void cRecorder::Action(void)
                  break;
               if (frameDetector->Synced()) {
                  if (!InfoWritten) {
-                    if (recordingInfo.Read()) {
-                       if (frameDetector->FramesPerSecond() > 0 && !DoubleEqual(recordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
-                          recordingInfo.SetFramesPerSecond(frameDetector->FramesPerSecond());
-                          recordingInfo.Write();
+                    cRecordingInfo RecordingInfo(recordingName);
+                    if (RecordingInfo.Read()) {
+                       if (frameDetector->FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
+                          RecordingInfo.SetFramesPerSecond(frameDetector->FramesPerSecond());
+                          RecordingInfo.Write();
+                          Recordings.UpdateByName(recordingName);
                           }
                        }
                     InfoWritten = true;

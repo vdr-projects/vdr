@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.1 2009/12/06 12:08:03 kls Exp $
+ * $Id: remote.c 2.2 2010/12/24 15:26:05 kls Exp $
  */
 
 #include "remote.h"
@@ -42,6 +42,7 @@ cRemote::cRemote(const char *Name)
 
 cRemote::~cRemote()
 {
+  Remotes.Del(this, false);
   free(name);
 }
 

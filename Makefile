@@ -4,15 +4,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.10 2010/09/17 13:28:50 kls Exp $
+# $Id: Makefile 2.14 2011/02/27 09:59:11 kls Exp $
 
 .DELETE_ON_ERROR:
 
 CC       ?= gcc
-CFLAGS   ?= -g -O2 -Wall
+CFLAGS   ?= -g -O3 -Wall
 
 CXX      ?= g++
-CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
 
 LSIDIR   = ./libsi
 DESTDIR ?=
@@ -21,7 +21,7 @@ MANDIR   = $(PREFIX)/share/man
 BINDIR   = $(PREFIX)/bin
 LOCDIR   = ./locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
-INCLUDES ?= -I/usr/include/freetype2
+INCLUDES ?= $(shell pkg-config --cflags freetype2)
 
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
@@ -95,7 +95,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(LDFLAGS) $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
 
 # The libsi library:
 
@@ -114,7 +114,7 @@ I18Npot   = $(PODIR)/vdr.pot
 	msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
 
 %.po: $(I18Npot)
 	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<

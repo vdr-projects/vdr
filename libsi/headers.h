@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.0 2007/02/03 11:45:58 kls Exp $
+ *   $Id: headers.h 2.1 2010/11/01 15:24:32 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -2004,6 +2004,18 @@ struct item_premiere_content_transmission_time {
    u_char start_time_h                           :8;
    u_char start_time_m                           :8;
    u_char start_time_s                           :8;
+};
+
+/* 0x05 registration_descriptor */
+
+#define DESCR_REGISTRATION_LEN 6
+struct descr_registration {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char format_identifier_hi_hi                :8;
+   u_char format_identifier_hi_lo                :8;
+   u_char format_identifier_lo_hi                :8;
+   u_char format_identifier_lo_lo                :8;
 };
 
 } //end of namespace

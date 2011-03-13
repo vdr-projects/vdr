@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.4 2009/12/23 15:14:39 kls Exp $
+ * $Id: tools.h 2.7 2011/02/25 15:05:58 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -17,6 +17,7 @@
 #include <iconv.h>
 #include <math.h>
 #include <poll.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -171,6 +172,7 @@ public:
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
+  cString &operator=(const char *String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
   static cString sprintf(const char *fmt, va_list &ap);
@@ -432,6 +434,10 @@ private:
   {
     if (++Index > allocated) {
        data = (T *)realloc(data, Index * sizeof(T));
+       if (!data) {
+          esyslog("ERROR: out of memory - abort!");
+          abort();
+          }
        for (int i = allocated; i < Index; i++)
            data[i] = T(0);
        allocated = Index;

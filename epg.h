@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.4 2010/01/08 15:20:34 kls Exp $
+ * $Id: epg.h 2.5 2011/02/25 14:14:38 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -51,7 +51,7 @@ class cComponents {
 private:
   int numComponents;
   tComponent *components;
-  void Realloc(int Index);
+  bool Realloc(int Index);
 public:
   cComponents(void);
   ~cComponents(void);

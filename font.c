@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.5 2010/09/19 11:49:19 kls Exp $
+ * $Id: font.c 2.7 2011/02/26 12:09:18 kls Exp $
  */
 
 #include "font.h"
@@ -118,6 +118,7 @@ public:
   virtual int Width(const char *s) const;
   virtual int Height(void) const { return height; }
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const;
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const;
   };
 
 cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
@@ -329,6 +330,53 @@ void cFreetypeFont::DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColo
      }
 }
 
+void cFreetypeFont::DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const
+{
+  if (s && height) { // checking height to make sure we actually have a valid font
+#ifdef BIDI
+     cString bs = Bidi(s);
+     s = bs;
+#endif
+     bool AntiAliased = Setup.AntiAlias;
+     uint prevSym = 0;
+     while (*s) {
+           int sl = Utf8CharLen(s);
+           uint sym = Utf8CharGet(s, sl);
+           s += sl;
+           cGlyph *g = Glyph(sym, AntiAliased);
+           if (!g)
+              continue;
+           int kerning = Kerning(g, prevSym);
+           prevSym = sym;
+           uchar *buffer = g->Bitmap();
+           int symWidth = g->Width();
+           if (Width && x + symWidth + g->Left() + kerning - 1 > Width)
+              break; // we don't draw partial characters
+           if (x + symWidth + g->Left() + kerning > 0) {
+              for (int row = 0; row < g->Rows(); row++) {
+                  for (int pitch = 0; pitch < g->Pitch(); pitch++) {
+                      uchar bt = *(buffer + (row * g->Pitch() + pitch));
+                      if (AntiAliased) {
+                         if (bt > 0x00)
+                            Pixmap->DrawPixel(cPoint(x + pitch + g->Left() + kerning, y + row + (height - Bottom() - g->Top())), AlphaBlend(ColorFg, ColorBg, bt));
+                         }
+                      else { //monochrome rendering
+                         for (int col = 0; col < 8 && col + pitch * 8 <= symWidth; col++) {
+                             if (bt & 0x80)
+                                Pixmap->DrawPixel(cPoint(x + col + pitch * 8 + g->Left() + kerning, y + row + (height - Bottom() - g->Top())), ColorFg);
+                             bt <<= 1;
+                             }
+                         }
+                      }
+                  }
+              }
+           x += g->AdvanceX() + kerning;
+           if (x > Pixmap->DrawPort().Width() - 1)
+              break;
+           }
+     }
+}
+
 // --- cDummyFont ------------------------------------------------------------
 
 // A dummy font, in case there are no fonts installed:
@@ -339,6 +387,7 @@ public:
   virtual int Width(const char *s) const { return 50; }
   virtual int Height(void) const { return 20; }
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {};
   };
 
 // --- cFont -----------------------------------------------------------------

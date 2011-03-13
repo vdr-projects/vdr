@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.22 2010/04/05 09:51:29 kls Exp $
+ * $Id: device.h 2.23 2010/10/24 12:11:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -586,8 +586,8 @@ protected:
 public:
   virtual int64_t GetSTC(void);
        ///< Gets the current System Time Counter, which can be used to
-       ///< synchronize audio and video. If this device is unable to
-       ///< provide the STC, -1 will be returned.
+       ///< synchronize audio, video and subtitles. If this device is able to
+       ///< replay, it must provide an STC.
        ///< The value returned doesn't need to be an actual "clock" value,
        ///< it is sufficient if it holds the PTS (Presentation Time Stamp) of
        ///< the most recently presented frame. A proper value must be returned

@@ -4,18 +4,103 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.10 2010/05/02 13:56:53 kls Exp $
+ * $Id: osd.c 2.17 2011/03/12 15:32:33 kls Exp $
  */
 
 #include "osd.h"
 #include <math.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/unistd.h>
 #include "device.h"
 #include "tools.h"
+
+tColor HsvToColor(double H, double S, double V)
+{
+  if (S > 0) {
+     H /= 60;
+     int i = floor(H);
+     double f = H - i;
+     double p = V * (1 - S);
+     double q = V * (1 - S * f);
+     double t = V * (1 - S * (1 - f));
+     switch (i) {
+       case 0:  return RgbToColor(V, t, p);
+       case 1:  return RgbToColor(q, V, p);
+       case 2:  return RgbToColor(p, V, t);
+       case 3:  return RgbToColor(p, q, V);
+       case 4:  return RgbToColor(t, p, V);
+       default: return RgbToColor(V, p, q);
+       }
+     }
+  else { // greyscale
+     uint8_t n = V * 0xFF;
+     return RgbToColor(n, n, n);
+     }
+}
+
+#define USE_ALPHA_LUT
+#ifdef USE_ALPHA_LUT
+// Alpha blending with lookup table (by Reinhard Nissl <rnissl@gmx.de>)
+// A little slower (138 %) on fast machines than the implementation below and faster
+// on slow machines (79 %), but requires some 318KB of RAM for the lookup table.
+static uint16_t AlphaLutFactors[255][256][2];
+static uint8_t AlphaLutAlpha[255][256];
+
+class cInitAlphaLut {
+public:
+  cInitAlphaLut(void)
+  {
+    for (int alphaA = 0; alphaA < 255; alphaA++) {
+        int range = (alphaA == 255 ? 255 : 254);
+        for (int alphaB = 0; alphaB < 256; alphaB++) {
+            int alphaO_x_range = 255 * alphaA + alphaB * (range - alphaA);
+            if (!alphaO_x_range)
+               alphaO_x_range++;
+            int factorA = (256 * 255 * alphaA + alphaO_x_range / 2) / alphaO_x_range;
+            int factorB = (256 * alphaB * (range - alphaA) + alphaO_x_range / 2) / alphaO_x_range;
+            AlphaLutFactors[alphaA][alphaB][0] = factorA;
+            AlphaLutFactors[alphaA][alphaB][1] = factorB;
+            AlphaLutAlpha[alphaA][alphaB] = alphaO_x_range / range;
+            }
+        }
+  }
+  } InitAlphaLut;
+
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer)
+{
+  tColor Alpha = (ColorFg & 0xFF000000) >> 24;
+  Alpha *= AlphaLayer;
+  Alpha >>= 8;
+  uint16_t *lut = &AlphaLutFactors[Alpha][(ColorBg & 0xFF000000) >> 24][0];
+  return (tColor)((AlphaLutAlpha[Alpha][(ColorBg & 0xFF000000) >> 24] << 24)
+    | (((((ColorFg & 0x00FF00FF) * lut[0] + (ColorBg & 0x00FF00FF) * lut[1])) & 0xFF00FF00)
+    |  ((((ColorFg & 0x0000FF00) * lut[0] + (ColorBg & 0x0000FF00) * lut[1])) & 0x00FF0000)) >> 8);
+}
+#else
+// Alpha blending without lookup table.
+// Also works fast, but doesn't return the theoretically correct result.
+// It's "good enough", though.
+static tColor Multiply(tColor Color, uint8_t Alpha)
+{
+  tColor RB = (Color & 0x00FF00FF) * Alpha;
+  RB = ((RB + ((RB >> 8) & 0x00FF00FF) + 0x00800080) >> 8) & 0x00FF00FF;
+  tColor AG = ((Color >> 8) & 0x00FF00FF) * Alpha;
+  AG = ((AG + ((AG >> 8) & 0x00FF00FF) + 0x00800080)) & 0xFF00FF00;
+  return AG | RB;
+}
+
+tColor AlphaBlend(tColor ColorFg, tColor ColorBg, uint8_t AlphaLayer)
+{
+  tColor Alpha = (ColorFg & 0xFF000000) >> 24;
+  if (AlphaLayer < ALPHA_OPAQUE) {
+     Alpha *= AlphaLayer;
+     Alpha = ((Alpha + ((Alpha >> 8) & 0x000000FF) + 0x00000080) >> 8) & 0x000000FF;
+     }
+  return Multiply(ColorFg, Alpha) + Multiply(ColorBg, 255 - Alpha);
+}
+#endif
 
 // --- cPalette --------------------------------------------------------------
 
@@ -613,8 +698,6 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
 
 void cBitmap::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
 {
-  // TODO This is just a quick and dirty implementation of a slope drawing
-  // machanism. If somebody can come up with a better solution, let's have it!
   if (!Intersects(x1, y1, x2, y2))
      return;
   bool upper    = Type & 0x01;
@@ -724,6 +807,756 @@ void cBitmap::ShrinkBpp(int NewBpp)
      }
 }
 
+cBitmap *cBitmap::Scale(double FactorX, double FactorY)
+{
+  // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
+  // by deltener@mindtremors.com
+  cBitmap *b = new cBitmap(int(round(Width() * FactorX)), int(round(Height() * FactorY)), Bpp(), X0(), Y0());
+  b->Replace(*this); // copy palette
+  int RatioX = (Width() << 16) / b->Width();
+  int RatioY = (Height() << 16) / b->Height();
+  tIndex *DestRow = b->bitmap;
+  int SourceY = 0;
+  for (int y = 0; y < b->Height(); y++) {
+      int SourceX = 0;
+      tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
+      tIndex *Dest = DestRow;
+      for (int x = 0; x < b->Width(); x++) {
+          *Dest++ = SourceRow[SourceX >> 16];
+          SourceX += RatioX;
+          }
+      SourceY += RatioY;
+      DestRow += b->Width();
+      }
+  return b;
+}
+
+// --- cRect -----------------------------------------------------------------
+
+const cRect cRect::Null;
+
+void cRect::Grow(int Dx, int Dy)
+{
+  point.Shift(-Dx, -Dy);
+  size.Grow(Dx, Dy);
+}
+
+bool cRect::Contains(const cPoint &Point) const
+{
+  return Left() <= Point.X() &&
+         Top() <= Point.Y() &&
+         Right() >= Point.X() &&
+         Bottom() >= Point.Y();
+}
+
+bool cRect::Contains(const cRect &Rect) const
+{
+  return Left() <= Rect.Left() &&
+         Top() <= Rect.Top() &&
+         Right() >= Rect.Right() &&
+         Bottom() >= Rect.Bottom();
+}
+
+bool cRect::Intersects(const cRect &Rect) const
+{
+  return !(Left() > Rect.Right() ||
+           Top() > Rect.Bottom() ||
+           Right() < Rect.Left() ||
+           Bottom() < Rect.Top());
+}
+
+cRect cRect::Intersected(const cRect &Rect) const
+{
+  cRect r;
+  if (!IsEmpty() && !Rect.IsEmpty()) {
+     r.SetLeft(max(Left(), Rect.Left()));
+     r.SetTop(max(Top(), Rect.Top()));
+     r.SetRight(min(Right(), Rect.Right()));
+     r.SetBottom(min(Bottom(), Rect.Bottom()));
+     }
+  return r;
+}
+
+void cRect::Combine(const cRect &Rect)
+{
+  if (IsEmpty())
+     *this = Rect;
+  if (Rect.IsEmpty())
+     return;
+  // must set right/bottom *before* top/left!
+  SetRight(max(Right(), Rect.Right()));
+  SetBottom(max(Bottom(), Rect.Bottom()));
+  SetLeft(min(Left(), Rect.Left()));
+  SetTop(min(Top(), Rect.Top()));
+}
+
+void cRect::Combine(const cPoint &Point)
+{
+  if (IsEmpty())
+     Set(Point.X(), Point.Y(), 1, 1);
+  // must set right/bottom *before* top/left!
+  SetRight(max(Right(), Point.X()));
+  SetBottom(max(Bottom(), Point.Y()));
+  SetLeft(min(Left(), Point.X()));
+  SetTop(min(Top(), Point.Y()));
+}
+
+// --- cPixmap ---------------------------------------------------------------
+
+cMutex cPixmap::mutex;
+
+cPixmap::cPixmap(void)
+{
+  layer = -1;
+  alpha = ALPHA_OPAQUE;
+  tile = false;
+}
+
+cPixmap::cPixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)
+{
+  layer = Layer;
+  if (layer >= MAXPIXMAPLAYERS) {
+     layer = MAXPIXMAPLAYERS - 1;
+     esyslog("ERROR: pixmap layer %d limited to %d", Layer, layer);
+     }
+  viewPort = ViewPort;
+  if (!DrawPort.IsEmpty())
+     drawPort = DrawPort;
+  else {
+     drawPort = viewPort;
+     drawPort.SetPoint(0, 0);
+     }
+  alpha = ALPHA_OPAQUE;
+  tile = false;
+}
+
+void cPixmap::MarkViewPortDirty(const cRect &Rect)
+{
+  dirtyViewPort.Combine(Rect.Intersected(viewPort));
+}
+
+void cPixmap::MarkViewPortDirty(const cPoint &Point)
+{
+  if (viewPort.Contains(Point))
+     dirtyViewPort.Combine(Point);
+}
+
+void cPixmap::MarkDrawPortDirty(const cRect &Rect)
+{
+  dirtyDrawPort.Combine(Rect.Intersected(drawPort));
+  if (tile)
+     MarkViewPortDirty(viewPort);
+  else
+     MarkViewPortDirty(Rect.Shifted(viewPort.Point()));
+}
+
+void cPixmap::MarkDrawPortDirty(const cPoint &Point)
+{
+  if (drawPort.Contains(Point)) {
+     dirtyDrawPort.Combine(Point);
+     if (tile)
+        MarkViewPortDirty(viewPort);
+     else
+        MarkViewPortDirty(Point.Shifted(viewPort.Point()));
+     }
+}
+
+void cPixmap::SetClean(void)
+{
+  dirtyViewPort = dirtyDrawPort = cRect();
+}
+
+void cPixmap::SetLayer(int Layer)
+{
+  Lock();
+  if (Layer >= MAXPIXMAPLAYERS) {
+     esyslog("ERROR: pixmap layer %d limited to %d", Layer, MAXPIXMAPLAYERS - 1);
+     Layer = MAXPIXMAPLAYERS - 1;
+     }
+  if (Layer != layer) {
+     if (Layer > 0 || layer > 0)
+        MarkViewPortDirty(viewPort);
+     layer = Layer;
+     }
+  Unlock();
+}
+
+void cPixmap::SetAlpha(int Alpha)
+{
+  Lock();
+  Alpha = min(max(Alpha, ALPHA_TRANSPARENT), ALPHA_OPAQUE);
+  if (Alpha != alpha) {
+     MarkViewPortDirty(viewPort);
+     alpha = Alpha;
+     }
+  Unlock();
+}
+
+void cPixmap::SetTile(bool Tile)
+{
+  Lock();
+  if (Tile != tile) {
+     if (drawPort.Point() != cPoint(0, 0) || drawPort.Width() < viewPort.Width() || drawPort.Height() < viewPort.Height())
+        MarkViewPortDirty(viewPort);
+     tile = Tile;
+     }
+  Unlock();
+}
+
+void cPixmap::SetViewPort(const cRect &Rect)
+{
+  Lock();
+  if (Rect != viewPort) {
+     if (tile)
+        MarkViewPortDirty(viewPort);
+     else
+        MarkViewPortDirty(drawPort.Shifted(viewPort.Point()));
+     viewPort = Rect;
+     if (tile)
+        MarkViewPortDirty(viewPort);
+     else
+        MarkViewPortDirty(drawPort.Shifted(viewPort.Point()));
+     }
+  Unlock();
+}
+
+void cPixmap::SetDrawPortPoint(const cPoint &Point, bool Dirty)
+{
+  Lock();
+  if (Point != drawPort.Point()) {
+     if (Dirty) {
+        if (tile)
+           MarkViewPortDirty(viewPort);
+        else
+           MarkViewPortDirty(drawPort.Shifted(viewPort.Point()));
+        }
+     drawPort.SetPoint(Point);
+     if (Dirty && !tile)
+        MarkViewPortDirty(drawPort.Shifted(viewPort.Point()));
+     }
+  Unlock();
+}
+
+// --- cImage ----------------------------------------------------------------
+
+cImage::cImage(void)
+{
+  data = NULL;
+}
+
+cImage::cImage(const cImage &Image)
+{
+  size = Image.Size();
+  int l = size.Width() * size.Height() * sizeof(tColor);
+  data = MALLOC(tColor, l);
+  memcpy(data, Image.Data(), l);
+}
+
+cImage::cImage(const cSize &Size, const tColor *Data)
+{
+  size = Size;
+  int l = size.Width() * size.Height() * sizeof(tColor);
+  data = MALLOC(tColor, l);
+  if (Data)
+     memcpy(data, Data, l);
+}
+
+cImage::~cImage()
+{
+  free(data);
+}
+
+void cImage::Clear(void)
+{
+  memset(data, 0x00, Width() * Height() * sizeof(tColor));
+}
+
+void cImage::Fill(tColor Color)
+{
+  for (int i = Width() * Height() - 1; i >= 0; i--)
+      data[i] = Color;
+}
+
+// --- cPixmapMemory ---------------------------------------------------------
+
+cPixmapMemory::cPixmapMemory(void)
+{
+  data = NULL;
+  panning = false;
+}
+
+cPixmapMemory::cPixmapMemory(int Layer, const cRect &ViewPort, const cRect &DrawPort)
+:cPixmap(Layer, ViewPort, DrawPort)
+{
+  data = MALLOC(tColor, this->DrawPort().Width() * this->DrawPort().Height());
+}
+
+cPixmapMemory::~cPixmapMemory()
+{
+  free(data);
+}
+
+void cPixmapMemory::Clear(void)
+{
+  Lock();
+  memset(data, 0x00, DrawPort().Width() * DrawPort().Height() * sizeof(tColor));
+  MarkDrawPortDirty(DrawPort());
+  Unlock();
+}
+
+void cPixmapMemory::Fill(tColor Color)
+{
+  Lock();
+  for (int i = DrawPort().Width() * DrawPort().Height() - 1; i >= 0; i--)
+      data[i] = Color;
+  MarkDrawPortDirty(DrawPort());
+  Unlock();
+}
+
+void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty)
+{
+  if (Pixmap->Tile() && (Pixmap->DrawPort().Point() != cPoint(0, 0) || Pixmap->DrawPort().Size() < Pixmap->ViewPort().Size())) {
+     cPoint t0 = Pixmap->DrawPort().Point().Shifted(Pixmap->ViewPort().Point()); // the origin of the draw port in absolute OSD coordinates
+     // Find the top/leftmost location where the draw port touches the view port:
+     while (t0.X() > Pixmap->ViewPort().Left())
+           t0.Shift(-Pixmap->DrawPort().Width(), 0);
+     while (t0.Y() > Pixmap->ViewPort().Top())
+           t0.Shift(0, -Pixmap->DrawPort().Height());
+     cPoint t = t0;;
+     while (t.Y() <= Pixmap->ViewPort().Bottom()) {
+           while (t.X() <= Pixmap->ViewPort().Right()) {
+                 cRect Source = Pixmap->DrawPort(); // assume the entire pixmap needs to be rendered
+                 Source.Shift(Pixmap->ViewPort().Point()); // Source is now in absolute OSD coordinates
+                 cPoint Delta = Source.Point() - t;
+                 Source.SetPoint(t); // Source is now where the pixmap's data shall be drawn
+                 Source = Source.Intersected(Pixmap->ViewPort()); // Source is now limited to the pixmap's view port
+                 Source = Source.Intersected(Dirty); // Source is now limited to the actual dirty rectangle
+                 if (!Source.IsEmpty()) {
+                    cPoint Dest = Source.Point().Shifted(-ViewPort().Point()); // remember the destination point
+                    Source.Shift(Delta); // Source is now back at the pixmap's draw port location, still in absolute OSD coordinates
+                    Source.Shift(-Pixmap->ViewPort().Point()); // Source is now relative to the pixmap's view port again
+                    Source.Shift(-Pixmap->DrawPort().Point()); // Source is now relative to the pixmap's data
+                    if (Pixmap->Layer() == 0)
+                       Copy(Pixmap, Source, Dest); // this is the "background" pixmap
+                    else
+                       Render(Pixmap, Source, Dest); // all others are alpha blended over the background
+                    }
+                 t.Shift(Pixmap->DrawPort().Width(), 0); // increase one draw port width to the right
+                 }
+           t.SetX(t0.X()); // go back to the leftmost position
+           t.Shift(0, Pixmap->DrawPort().Height()); // increase one draw port height down
+           }
+     }
+  else {
+     cRect Source = Pixmap->DrawPort(); // assume the entire pixmap needs to be rendered
+     Source.Shift(Pixmap->ViewPort().Point()); // Source is now in absolute OSD coordinates
+     Source = Source.Intersected(Pixmap->ViewPort()); // Source is now limited to the pixmap's view port
+     Source = Source.Intersected(Dirty); // Source is now limited to the actual dirty rectangle
+     if (!Source.IsEmpty()) {
+        cPoint Dest = Source.Point().Shifted(-ViewPort().Point()); // remember the destination point
+        Source.Shift(-Pixmap->ViewPort().Point()); // Source is now relative to the pixmap's draw port again
+        Source.Shift(-Pixmap->DrawPort().Point()); // Source is now relative to the pixmap's data
+        if (Pixmap->Layer() == 0)
+           Copy(Pixmap, Source, Dest); // this is the "background" pixmap
+        else
+           Render(Pixmap, Source, Dest); // all others are alpha blended over the background
+        }
+     }
+}
+
+void cPixmapMemory::DrawImage(const cPoint &Point, const cImage &Image)
+{
+  Lock();
+  cRect r = cRect(Point, Image.Size()).Intersected(DrawPort().Size());
+  if (!r.IsEmpty()) {
+     int ws = Image.Size().Width();
+     int wd = DrawPort().Width();
+     int w = r.Width() * sizeof(tColor);
+     const tColor *ps = Image.Data();
+     if (Point.Y() < 0)
+        ps -= Point.Y() * ws;
+     if (Point.X() < 0)
+        ps -= Point.X();
+     tColor *pd = data + wd * r.Top() + r.Left();
+     for (int y = r.Height(); y-- > 0; ) {
+         memcpy(pd, ps, w);
+         ps += ws;
+         pd += wd;
+         }
+     MarkDrawPortDirty(r);
+     }
+  Unlock();
+}
+
+void cPixmapMemory::DrawImage(const cPoint &Point, int ImageHandle)
+{
+  Lock();
+  if (const cImage *Image = cOsdProvider::GetImageData(ImageHandle))
+     DrawImage(Point, *Image);
+  Unlock();
+}
+
+void cPixmapMemory::DrawPixel(const cPoint &Point, tColor Color)
+{
+  Lock();
+  if (DrawPort().Size().Contains(Point)) {
+     int p = Point.Y() * DrawPort().Width() + Point.X();
+     if (Layer() == 0 && !IS_OPAQUE(Color))
+        data[p] = AlphaBlend(Color, data[p]);
+     else
+        data[p] = Color;
+     MarkDrawPortDirty(Point);
+     }
+  Unlock();
+}
+
+void cPixmapMemory::DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool Overlay)
+{
+  Lock();
+  cRect r = cRect(Point, cSize(Bitmap.Width(), Bitmap.Height())).Intersected(DrawPort().Size());
+  if (!r.IsEmpty()) {
+     bool UseColors = ColorFg || ColorBg;
+     int wd = DrawPort().Width();
+     tColor *pd = data + wd * r.Top() + r.Left();
+     for (int y = r.Top(); y <= r.Bottom(); y++) {
+         tColor *cd = pd;
+         for (int x = r.Left(); x <= r.Right(); x++) {
+             tIndex Index = *Bitmap.Data(x - Point.X(), y - Point.Y());
+             if (Index || !Overlay) {
+                if (UseColors)
+                   *cd = Index ? ColorFg : ColorBg;
+                else
+                   *cd = Bitmap.Color(Index);
+                }
+             cd++;
+             }
+         pd += wd;
+         }
+     MarkDrawPortDirty(r);
+     }
+  Unlock();
+}
+
+void cPixmapMemory::DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
+{
+  Lock();
+  int x = Point.X();
+  int y = Point.Y();
+  int w = Font->Width(s);
+  int h = Font->Height();
+  int limit = 0;
+  int cw = Width ? Width : w;
+  int ch = Height ? Height : h;
+  cRect r(x, y, cw, ch);
+  if (ColorBg != clrTransparent)
+     DrawRectangle(r, ColorBg);
+  if (Width || Height) {
+     limit = x + cw;
+     if (Width) {
+        if ((Alignment & taLeft) != 0)
+           ;
+        else if ((Alignment & taRight) != 0) {
+           if (w < Width)
+              x += Width - w;
+           }
+        else { // taCentered
+           if (w < Width)
+              x += (Width - w) / 2;
+           }
+        }
+     if (Height) {
+        if ((Alignment & taTop) != 0)
+           ;
+        else if ((Alignment & taBottom) != 0) {
+           if (h < Height)
+              y += Height - h;
+           }
+        else { // taCentered
+           if (h < Height)
+              y += (Height - h) / 2;
+           }
+        }
+     }
+  Font->DrawText(this, x, y, s, ColorFg, ColorBg, limit);
+  MarkDrawPortDirty(r);
+  Unlock();
+}
+
+void cPixmapMemory::DrawRectangle(const cRect &Rect, tColor Color)
+{
+  Lock();
+  cRect r = Rect.Intersected(DrawPort().Size());
+  if (!r.IsEmpty()) {
+     int wd = DrawPort().Width();
+     int w = r.Width() * sizeof(tColor);
+     tColor *ps = NULL;
+     tColor *pd = data + wd * r.Top() + r.Left();
+     for (int y = r.Height(); y-- > 0; ) {
+         if (ps)
+            memcpy(pd, ps, w); // all other lines are copied fast from the first one
+         else {
+            // explicitly fill the first line:
+            tColor *cd = ps = pd;
+            for (int x = r.Width(); x-- > 0; ) {
+                *cd = Color;
+                cd++;
+                }
+            }
+         pd += wd;
+         }
+     MarkDrawPortDirty(r);
+     }
+  Unlock();
+}
+
+void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
+{
+//TODO use anti-aliasing?
+//TODO fix alignment
+  Lock();
+  // Algorithm based on http://homepage.smc.edu/kennedy_john/BELIPSE.PDF
+  int x1 = Rect.Left();
+  int y1 = Rect.Top();
+  int x2 = Rect.Right();
+  int y2 = Rect.Bottom();
+  int rx = x2 - x1;
+  int ry = y2 - y1;
+  int cx = (x1 + x2) / 2;
+  int cy = (y1 + y2) / 2;
+  switch (abs(Quadrants)) {
+    case 0: rx /= 2; ry /= 2; break;
+    case 1: cx = x1; cy = y2; break;
+    case 2: cx = x2; cy = y2; break;
+    case 3: cx = x2; cy = y1; break;
+    case 4: cx = x1; cy = y1; break;
+    case 5: cx = x1;          ry /= 2; break;
+    case 6:          cy = y2; rx /= 2; break;
+    case 7: cx = x2;          ry /= 2; break;
+    case 8:          cy = y1; rx /= 2; break;
+    default: ;
+    }
+  int TwoASquare = 2 * rx * rx;
+  int TwoBSquare = 2 * ry * ry;
+  int x = rx;
+  int y = 0;
+  int XChange = ry * ry * (1 - 2 * rx);
+  int YChange = rx * rx;
+  int EllipseError = 0;
+  int StoppingX = TwoBSquare * rx;
+  int StoppingY = 0;
+  while (StoppingX >= StoppingY) {
+        switch (Quadrants) {
+          case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
+          case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
+          case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
+          case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
+          case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
+          case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
+          case  0:
+          case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
+          case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
+          case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          default: ;
+          }
+        y++;
+        StoppingY += TwoASquare;
+        EllipseError += YChange;
+        YChange += TwoASquare;
+        if (2 * EllipseError + XChange > 0) {
+           x--;
+           StoppingX -= TwoBSquare;
+           EllipseError += XChange;
+           XChange += TwoBSquare;
+           }
+        }
+  x = 0;
+  y = ry;
+  XChange = ry * ry;
+  YChange = rx * rx * (1 - 2 * ry);
+  EllipseError = 0;
+  StoppingX = 0;
+  StoppingY = TwoASquare * ry;
+  while (StoppingX <= StoppingY) {
+        switch (Quadrants) {
+          case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
+          case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
+          case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
+          case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
+          case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
+          case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
+          case  0:
+          case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
+          case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
+          case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          }
+        x++;
+        StoppingX += TwoBSquare;
+        EllipseError += XChange;
+        XChange += TwoBSquare;
+        if (2 * EllipseError + YChange > 0) {
+           y--;
+           StoppingY -= TwoASquare;
+           EllipseError += YChange;
+           YChange += TwoASquare;
+           }
+        }
+  MarkDrawPortDirty(Rect);
+  Unlock();
+}
+
+void cPixmapMemory::DrawSlope(const cRect &Rect, tColor Color, int Type)
+{
+  //TODO anti-aliasing?
+  //TODO also simplify cBitmap::DrawSlope()
+  Lock();
+  bool upper    = Type & 0x01;
+  bool falling  = Type & 0x02;
+  bool vertical = Type & 0x04;
+  int x1 = Rect.Left();
+  int y1 = Rect.Top();
+  int x2 = Rect.Right();
+  int y2 = Rect.Bottom();
+  int w  = Rect.Width();
+  int h  = Rect.Height();
+  if (vertical) {
+     for (int y = y1; y <= y2; y++) {
+         double c = cos((y - y1) * M_PI / h);
+         if (falling)
+            c = -c;
+         int x = (x1 + x2) / 2 + int(w * c / 2);
+         if (upper && !falling || !upper && falling)
+            DrawRectangle(cRect(x1, y, x - x1 + 1, 1), Color);
+         else
+            DrawRectangle(cRect(x, y, x2 - x + 1, 1), Color);
+         }
+     }
+  else {
+     for (int x = x1; x <= x2; x++) {
+         double c = cos((x - x1) * M_PI / w);
+         if (falling)
+            c = -c;
+         int y = (y1 + y2) / 2 + int(h * c / 2);
+         if (upper)
+            DrawRectangle(cRect(x, y1, 1, y - y1 + 1), Color);
+         else
+            DrawRectangle(cRect(x, y, 1, y2 - y + 1), Color);
+         }
+     }
+  MarkDrawPortDirty(Rect);
+  Unlock();
+}
+
+void cPixmapMemory::Render(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest)
+{
+  Lock();
+  if (Pixmap->Alpha() != ALPHA_TRANSPARENT) {
+     if (const cPixmapMemory *pm = dynamic_cast<const cPixmapMemory *>(Pixmap)) {
+        cRect s = Source.Intersected(Pixmap->DrawPort().Size());
+        if (!s.IsEmpty()) {
+           cPoint v = Dest - Source.Point();
+           cRect d = s.Shifted(v).Intersected(DrawPort().Size());
+           if (!d.IsEmpty()) {
+              s = d.Shifted(-v);
+              int a = pm->Alpha();
+              int ws = pm->DrawPort().Width();
+              int wd = DrawPort().Width();
+              const tColor *ps = pm->data + ws * s.Top() + s.Left();
+              tColor *pd = data + wd * d.Top() + d.Left();
+              for (int y = d.Height(); y-- > 0; ) {
+                  const tColor *cs = ps;
+                  tColor *cd = pd;
+                  for (int x = d.Width(); x-- > 0; ) {
+                      *cd = AlphaBlend(*cs, *cd, a);
+                      cs++;
+                      cd++;
+                      }
+                  ps += ws;
+                  pd += wd;
+                  }
+              MarkDrawPortDirty(d);
+              }
+           }
+        }
+     }
+  Unlock();
+}
+
+void cPixmapMemory::Copy(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest)
+{
+  Lock();
+  if (const cPixmapMemory *pm = dynamic_cast<const cPixmapMemory *>(Pixmap)) {
+     cRect s = Source.Intersected(pm->DrawPort().Size());
+     if (!s.IsEmpty()) {
+        cPoint v = Dest - Source.Point();
+        cRect d = s.Shifted(v).Intersected(DrawPort().Size());
+        if (!d.IsEmpty()) {
+           s = d.Shifted(-v);
+           int ws = pm->DrawPort().Width();
+           int wd = DrawPort().Width();
+           int w = d.Width() * sizeof(tColor);
+           const tColor *ps = pm->data + ws * s.Top() + s.Left();
+           tColor *pd = data + wd * d.Top() + d.Left();
+           for (int y = d.Height(); y-- > 0; ) {
+               memcpy(pd, ps, w);
+               ps += ws;
+               pd += wd;
+               }
+           MarkDrawPortDirty(d);
+           }
+        }
+     }
+  Unlock();
+}
+
+void cPixmapMemory::Scroll(const cPoint &Dest, const cRect &Source)
+{
+  Lock();
+  cRect s;
+  if (&Source == &cRect::Null)
+     s = DrawPort().Shifted(-DrawPort().Point());
+  else
+     s = Source.Intersected(DrawPort().Size());
+  if (!s.IsEmpty()) {
+     cPoint v = Dest - Source.Point();
+     cRect d = s.Shifted(v).Intersected(DrawPort().Size());
+     if (!d.IsEmpty()) {
+        s = d.Shifted(-v);
+        if (d.Point() != s.Point()) {
+           int ws = DrawPort().Width();
+           int wd = ws;
+           int w = d.Width() * sizeof(tColor);
+           const tColor *ps = data + ws * s.Top() + s.Left();
+           tColor *pd = data + wd * d.Top() + d.Left();
+           for (int y = d.Height(); y-- > 0; ) {
+               memmove(pd, ps, w); // source and destination might overlap!
+               ps += ws;
+               pd += wd;
+               }
+           if (panning)
+              SetDrawPortPoint(DrawPort().Point().Shifted(s.Point() - d.Point()), false);
+           else
+              MarkDrawPortDirty(d);
+           }
+        }
+     }
+  Unlock();
+}
+
+void cPixmapMemory::Pan(const cPoint &Dest, const cRect &Source)
+{
+  Lock();
+  panning = true;
+  Scroll(Dest, Source);
+  panning = false;
+  Unlock();
+}
+
 // --- cOsd ------------------------------------------------------------------
 
 static const char *OsdErrorTexts[] = {
@@ -746,8 +1579,11 @@ cVector<cOsd *> cOsd::Osds;
 
 cOsd::cOsd(int Left, int Top, uint Level)
 {
-  savedRegion = NULL;
+  isTrueColor = false;
+  savedBitmap = NULL;
   numBitmaps = 0;
+  savedPixmap = NULL;
+  numPixmaps = 0;
   left = Left;
   top = Top;
   width = height = 0;
@@ -766,7 +1602,10 @@ cOsd::~cOsd()
 {
   for (int i = 0; i < numBitmaps; i++)
       delete bitmaps[i];
-  delete savedRegion;
+  delete savedBitmap;
+  delete savedPixmap;
+  for (int i = 0; i < numPixmaps; i++)
+      delete pixmaps[i];
   for (int i = 0; i < Osds.Size(); i++) {
       if (Osds[i] == this) {
          Osds.Remove(i);
@@ -787,13 +1626,106 @@ void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
 {
+  if (isTrueColor)
+     return;
   for (int i = 0; i < numBitmaps; i++)
       bitmaps[i]->SetAntiAliasGranularity(FixedColors, BlendColors);
 }
 
 cBitmap *cOsd::GetBitmap(int Area)
 {
+  if (isTrueColor)
+     Area = 0; // returns the dummy bitmap
   return Area < numBitmaps ? bitmaps[Area] : NULL;
+}
+
+cPixmap *cOsd::CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)
+{
+  if (isTrueColor) {
+     LOCK_PIXMAPS;
+     cPixmap *Pixmap = new cPixmapMemory(Layer, ViewPort, DrawPort);
+     if (AddPixmap(Pixmap))
+        return Pixmap;
+     delete Pixmap;
+     }
+  return NULL;
+}
+
+void cOsd::DestroyPixmap(cPixmap *Pixmap)
+{
+  if (isTrueColor) {
+     LOCK_PIXMAPS;
+     for (int i = 1; i < numPixmaps; i++) { // begin at 1 - don't let the background pixmap be destroyed!
+         if (pixmaps[i] == Pixmap) {
+            pixmaps[0]->MarkViewPortDirty(Pixmap->ViewPort());
+            delete Pixmap;
+            while (i < numPixmaps - 1) {
+                  pixmaps[i] = pixmaps[i + 1];
+                  i++;
+                  }
+            numPixmaps--;
+            return;
+            }
+         }
+     esyslog("ERROR: attempt to destroy an unregistered pixmap");
+     }
+}
+
+cPixmap *cOsd::AddPixmap(cPixmap *Pixmap)
+{
+  LOCK_PIXMAPS;
+  if (numPixmaps < MAXOSDPIXMAPS)
+     return pixmaps[numPixmaps++] = Pixmap;
+  else
+     esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+  return NULL;
+}
+
+cPixmapMemory *cOsd::RenderPixmaps(void)
+{
+  cPixmapMemory *Pixmap = NULL;
+  if (isTrueColor) {
+     LOCK_PIXMAPS;
+     // Collect overlapping dirty rectangles:
+     cRect d;
+     for (int i = 0; i < numPixmaps; i++) {
+         cPixmap *pm = pixmaps[i];
+         if (!pm->DirtyViewPort().IsEmpty()) {
+            if (d.IsEmpty() || d.Intersects(pm->DirtyViewPort())) {
+               d.Combine(pm->DirtyViewPort());
+               pm->SetClean();
+               }
+            }
+         }
+     if (!d.IsEmpty()) {
+//#define DebugDirty
+#ifdef DebugDirty
+        static cRect OldDirty;
+        cRect NewDirty = d;
+        d.Combine(OldDirty);
+        OldDirty = NewDirty;
+#endif
+        Pixmap = new cPixmapMemory(0, d);
+        Pixmap->Clear();
+        // Render the individual pixmaps into the resulting pixmap:
+        for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
+            for (int i = 0; i < numPixmaps; i++) {
+                cPixmap *pm = pixmaps[i];
+                if (pm->Layer() == Layer)
+                   Pixmap->DrawPixmap(pm, d);
+                }
+            }
+#ifdef DebugDirty
+        cPixmapMemory DirtyIndicator(7, NewDirty);
+        static tColor DirtyIndicatorColors[] = { 0x7FFFFF00, 0x7F00FFFF };
+        static int DirtyIndicatorIndex = 0;
+        DirtyIndicator.Fill(DirtyIndicatorColors[DirtyIndicatorIndex]);
+        DirtyIndicatorIndex = 1 - DirtyIndicatorIndex;
+        Pixmap->Render(&DirtyIndicator, DirtyIndicator.DrawPort(), DirtyIndicator.ViewPort().Point().Shifted(-Pixmap->ViewPort().Point()));
+#endif
+        }
+     }
+  return Pixmap;
 }
 
 eOsdError cOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
@@ -810,6 +1742,10 @@ eOsdError cOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
              break;
              }
           }
+      if (Areas[i].bpp == 32) {
+         if (NumAreas > 1)
+            return oeTooManyAreas;
+         }
       }
   return Result;
 }
@@ -821,11 +1757,21 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
      while (numBitmaps)
            delete bitmaps[--numBitmaps];
      width = height = 0;
-     for (int i = 0; i < NumAreas; i++) {
-         bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
-         width = max(width, Areas[i].x2 + 1);
-         height = max(height, Areas[i].y2 + 1);
-         }
+     isTrueColor = NumAreas == 1 && Areas[0].bpp == 32;
+     if (isTrueColor) {
+        width = Areas[0].x2 - Areas[0].x1 + 1;
+        height = Areas[0].y2 - Areas[0].y1 + 1;
+        cPixmap *Pixmap = CreatePixmap(0, cRect(Areas[0].x1, Areas[0].y1, width, height));
+        Pixmap->Clear();
+        bitmaps[numBitmaps++] = new cBitmap(10, 10, 8); // dummy bitmap for GetBitmap()
+        }
+     else {
+        for (int i = 0; i < NumAreas; i++) {
+            bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
+            width = max(width, Areas[i].x2 + 1);
+            height = max(height, Areas[i].y2 + 1);
+            }
+        }
      }
   else
      esyslog("ERROR: cOsd::SetAreas returned %d (%s)", Result, Result < oeUnknown ? OsdErrorTexts[Result] : OsdErrorTexts[oeUnknown]);
@@ -834,62 +1780,119 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
 
 void cOsd::SaveRegion(int x1, int y1, int x2, int y2)
 {
-  delete savedRegion;
-  savedRegion = new cBitmap(x2 - x1 + 1, y2 - y1 + 1, 8, x1, y1);
-  for (int i = 0; i < numBitmaps; i++)
-      savedRegion->DrawBitmap(bitmaps[i]->X0(), bitmaps[i]->Y0(), *bitmaps[i]);
+  if (isTrueColor) {
+     delete savedPixmap;
+     cRect r(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+     savedPixmap = new cPixmapMemory(0, r);
+     savedPixmap->Copy(pixmaps[0], r, cPoint(0, 0));
+     }
+  else {
+     delete savedBitmap;
+     savedBitmap = new cBitmap(x2 - x1 + 1, y2 - y1 + 1, 8, x1, y1);
+     for (int i = 0; i < numBitmaps; i++)
+         savedBitmap->DrawBitmap(bitmaps[i]->X0(), bitmaps[i]->Y0(), *bitmaps[i]);
+     }
 }
 
 void cOsd::RestoreRegion(void)
 {
-  if (savedRegion) {
-     DrawBitmap(savedRegion->X0(), savedRegion->Y0(), *savedRegion);
-     delete savedRegion;
-     savedRegion = NULL;
+  if (isTrueColor) {
+     if (savedPixmap) {
+        pixmaps[0]->Copy(savedPixmap, savedPixmap->DrawPort(), savedPixmap->ViewPort().Point());
+        delete savedPixmap;
+        savedPixmap = NULL;
+        }
+     }
+  else {
+     if (savedBitmap) {
+        DrawBitmap(savedBitmap->X0(), savedBitmap->Y0(), *savedBitmap);
+        delete savedBitmap;
+        savedBitmap = NULL;
+        }
      }
 }
 
 eOsdError cOsd::SetPalette(const cPalette &Palette, int Area)
 {
-  if (Area < numBitmaps)
+  if (isTrueColor)
+     return oeOk;
+  if (Area < numBitmaps) {
      bitmaps[Area]->Take(Palette);
+     return oeOk;
+     }
   return oeUnknown;
+}
+
+void cOsd::DrawImage(const cPoint &Point, const cImage &Image)
+{
+  if (isTrueColor)
+     pixmaps[0]->DrawImage(Point, Image);
+}
+
+void cOsd::DrawImage(const cPoint &Point, int ImageHandle)
+{
+  if (isTrueColor)
+     pixmaps[0]->DrawImage(Point, ImageHandle);
 }
 
 void cOsd::DrawPixel(int x, int y, tColor Color)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawPixel(x, y, Color);
+  if (isTrueColor)
+     pixmaps[0]->DrawPixel(cPoint(x, y), Color);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawPixel(x, y, Color);
+     }
 }
 
 void cOsd::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette, bool Overlay)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg, ReplacePalette, Overlay);
+  if (isTrueColor)
+     pixmaps[0]->DrawBitmap(cPoint(x, y), Bitmap, ColorFg, ColorBg, Overlay);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg, ReplacePalette, Overlay);
+     }
 }
 
 void cOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawText(x, y, s, ColorFg, ColorBg, Font, Width, Height, Alignment);
+  if (isTrueColor)
+     pixmaps[0]->DrawText(cPoint(x, y), s, ColorFg, ColorBg, Font, Width, Height, Alignment);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawText(x, y, s, ColorFg, ColorBg, Font, Width, Height, Alignment);
+     }
 }
 
 void cOsd::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawRectangle(x1, y1, x2, y2, Color);
+  if (isTrueColor)
+     pixmaps[0]->DrawRectangle(cRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), Color);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawRectangle(x1, y1, x2, y2, Color);
+     }
 }
 
 void cOsd::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quadrants)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawEllipse(x1, y1, x2, y2, Color, Quadrants);
+  if (isTrueColor)
+     pixmaps[0]->DrawEllipse(cRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), Color, Quadrants);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawEllipse(x1, y1, x2, y2, Color, Quadrants);
+     }
 }
 
 void cOsd::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
 {
-  for (int i = 0; i < numBitmaps; i++)
-      bitmaps[i]->DrawSlope(x1, y1, x2, y2, Color, Type);
+  if (isTrueColor)
+     pixmaps[0]->DrawSlope(cRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), Color, Type);
+  else {
+     for (int i = 0; i < numBitmaps; i++)
+         bitmaps[i]->DrawSlope(x1, y1, x2, y2, Color, Type);
+     }
 }
 
 void cOsd::Flush(void)
@@ -902,6 +1905,7 @@ cOsdProvider *cOsdProvider::osdProvider = NULL;
 int cOsdProvider::oldWidth = 0;
 int cOsdProvider::oldHeight = 0;
 double cOsdProvider::oldAspect = 1.0;
+cImage *cOsdProvider::images[MAXOSDIMAGES] = { NULL };
 
 cOsdProvider::cOsdProvider(void)
 {
@@ -956,6 +1960,58 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      oldAspect = Aspect;
      dsyslog("OSD size changed to %dx%d @ %g", Width, Height, Aspect);
      }
+}
+
+bool cOsdProvider::SupportsTrueColor(void)
+{
+  if (osdProvider) {
+     return osdProvider->ProvidesTrueColor();
+     }
+  else
+     esyslog("ERROR: no OSD provider available in call to SupportsTrueColor()");
+  return false;
+}
+
+int cOsdProvider::StoreImageData(const cImage &Image)
+{
+  LOCK_PIXMAPS;
+  for (int i = 1; i < MAXOSDIMAGES; i++) {
+      if (!images[i]) {
+         images[i] = new cImage(Image);
+         return i;
+         }
+      }
+  return 0;
+}
+
+void cOsdProvider::DropImageData(int ImageHandle)
+{
+  LOCK_PIXMAPS;
+  if (0 < ImageHandle && ImageHandle < MAXOSDIMAGES) {
+     delete images[ImageHandle];
+     images[ImageHandle] = NULL;
+     }
+}
+
+const cImage *cOsdProvider::GetImageData(int ImageHandle)
+{
+  LOCK_PIXMAPS;
+  if (0 < ImageHandle && ImageHandle < MAXOSDIMAGES)
+     return images[ImageHandle];
+  return NULL;
+}
+
+int cOsdProvider::StoreImage(const cImage &Image)
+{
+  if (osdProvider)
+     return osdProvider->StoreImageData(Image);
+  return -1;
+}
+
+void cOsdProvider::DropImage(int ImageHandle)
+{
+  if (osdProvider)
+     osdProvider->DropImageData(ImageHandle);
 }
 
 void cOsdProvider::Shutdown(void)

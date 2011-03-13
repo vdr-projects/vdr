@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.26 2010/06/05 13:27:55 kls Exp $
+ * $Id: remux.h 2.27 2010/11/01 11:24:20 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -347,12 +347,10 @@ private:
   int numPtsValues;
   int numIFrames;
   bool isVideo;
-  int frameDuration;
+  double framesPerSecond;
   int framesInPayloadUnit;
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
-                            // some put an entire GOP into one payload unit (> 1), and
-                            // some spread a single frame over several payload units (< 0).
-  int payloadUnitOfFrame;
+                            // while others put an entire GOP into one payload unit (> 1).
   bool scanning;
   uint32_t scanner;
 public:
@@ -380,7 +378,7 @@ public:
       ///< Returns true if a new frame was detected and this is an independent frame
       ///< (i.e. one that can be displayed by itself, without using data from any
       ///< other frames).
-  double FramesPerSecond(void) { return frameDuration ? 90000.0 / frameDuration : 0; }
+  double FramesPerSecond(void) { return framesPerSecond; }
       ///< Returns the number of frames per second, or 0 if this information is not
       ///< available.
   };

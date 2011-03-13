@@ -673,10 +673,11 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding missing AUDIO_PAUSE/AUDIO_CONTINUE calls to cDvbDevice
  for reporting that the video type is unnecessarily written into channels.conf if
  VPID is 0
- for reporting chirping sound disturbences at editing points in TS recordings
+ for reporting chirping sound disturbances at editing points in TS recordings
  for reporting broken index generation in TS recordings after a buffer overflow
  for fixing the way the OSD size is determined on full featured DVB cards
  for his input on calculating the Aspect factor in GetOsdSize()
+ for suggesting a better way of handling calls to realloc()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -740,6 +741,7 @@ Steffen Barszus <st_barszus@gmx.de>
  or Makefile.config as defaults
  for helping to debug a crash when using the --terminal option without having access
  to the given terminal
+ for fixing following symbolic links in RemoveFileOrDir()
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
@@ -1021,7 +1023,7 @@ Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
 
 Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilà <jvila@tinet.org>
- for translating OSD texts to the Catalanian language
+ for translating OSD texts to the Catalan language
 
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entries for undefined
@@ -1099,6 +1101,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for implementing handling of HD resolution subtitles according to v1.3.1 of
  ETSI EN 300 743, chapter 7.2.1
  for fixing the array size of Atypes in cPatFilter::Process()
+ for adding support for "registration descriptor" to 'libsi' and using it in pat.c
+ for adding an include of VDR's 'Make.global' to libsi's Makefile
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1247,7 +1251,7 @@ Reinhard Nissl <rnissl@gmx.de>
  to 'double'
  for suggesting to use different names for the Aspect parameter in GetVideoSize()
  and GetOsdSize()
- for reporting a problem with calculating menu colum widths in case the font has a
+ for reporting a problem with calculating menu column widths in case the font has a
  size other than the default size
  for reporting a bug in storing the current OSD size in case the
  device has changed it in its setup menu
@@ -1257,6 +1261,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for implementing cDeviceHook
  for implementing cDevice::GetCurrentlyTunedTransponder()
  for fixing DDS detection for HD resolution subtitles
+ for some valuable input during development of the TrueColor OSD, help with
+ debugging, and an implementation of the AlphaBlend() function.
+ for storing the original display size when handling DVB subtitles
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1831,7 +1838,7 @@ Luca Olivetti <luca@ventoso.org>
  for suggesting to implement a timeout for remote controls that don't deliver
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
- for translating OSD texts to the Spanish and Catalanian language
+ for translating OSD texts to the Spanish and Catalan language
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -1876,6 +1883,9 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding missing #include <limits.h> to epg.c and menuitems.h
  for fixing various spelling errors and improving PLUGINS.html
  for adding some missing 'const' keywords to avoid compilation errors with gcc 4.4
+ for adding passing package name and version to xgettext
+ for making 'dist' target dependent on up to date *.po
+ for adding Language and fixing Language-Team header of *.po
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1966,9 +1976,11 @@ David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
  own inline functions to avoid problems on platforms that don't provide these
 
-Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
+Marcus Hilbrich <hilbrich@gmx.de>
  for a bug report that lead to fixing the EPG scan, so that it doesn't use the
  primary device if that is currently in Transfer-Mode from itself
+ for a bug report that led to fixing setting up the 'Recordings' menu in case there
+ are several recordings with exactly the same name
 
 Hardy Flor <HFlor@web.de>
  for a patch that was used as a base to implement SVDRP commands for plugins
@@ -2230,8 +2242,9 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for making the non-breaking space symbol be rendered as a blank
  for fixing a signed character used as index in cBase64Encoder::NextLine()
  for fixing formatting the name section in the VDR man pages
- for reporting unneeded include files <linux/dvb/dmx.h> und <time.h> in remux.h
+ for reporting unneeded include files <linux/dvb/dmx.h> and <time.h> in remux.h
  for a patch that added a workaround for the broken linux-dvb driver header files
+ for reporting a faulty "frame duration" instead of "frame rate" in vdr.5
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2286,6 +2299,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  from within its source directory
  for fixing stopping subtitle display when switching the primary device
  for fixing plugin arguments corruption with glibc 2.11 on x86_64
+ for setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2538,6 +2552,7 @@ Derek Kelly (user.vdr@gmail.com)
  for updating sources.conf
  for reporting a problem where the frame rate was not detected correctly
  for testing the implementation of FE_CAN_TURBO_FEC
+ for reporting unjustified log entries about changed channel pids
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2563,6 +2578,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  for fixing saving terminal settings when running in background
  for making the SVDRP port open only for the local host if svdrphosts.conf
  contains only the address of the local host
+ for a patch that was used as a base for making editing marks be updated every 10
+ seconds during replay
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
@@ -2602,7 +2619,9 @@ Eric Valette <eric.valette@free.fr>
  for adding handling of EnhancedAC3DescriptorTag
 
 Paul Menzel <paulepanter@users.sourceforge.net>
- for making include paths be added instead of overwriting INCLUDES in the Makefile
+ for making include paths not be overwritten in the Makefile
+ for adding LDFLAGS to the linker calls in the Makefiles
+ for reporting a possible memory leak in the "pictures" plugin
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
@@ -2625,3 +2644,29 @@ Cristiano A. Silva <arquithek@gmail.com>
 Osama Alrawab <alrawab@hotmail.com>
  for adding support for languages that are written right-to-left
  for translating OSD texts to the Arabian language
+
+Antti Seppälä <a.seppala@gmail.com>
+ for suggesting to add cString::operator=(const char *String)
+
+Henning Heinold <heinold@inf.fu-berlin.de>
+ for fixing inclusion of <stdarg.h>
+
+Dominik Strasser <dominik@die-strassers.de>
+ for making a cRemote be removed from the Remotes list in case its initialization failed
+
+Joerg Bornkessel <hd_brummy@gentoo.org>
+ for adding LDFLAGS to the linker calls in the Makefiles
+
+Andreas Oberritter <obi@opendreambox.org>
+ for suggesting to retrieve the include path to the freetype2 header files
+ via a call to 'pkg-config --cflags freetype2'
+
+Milan Cvijanovic <elcom_cvijo@hotmail.com>
+ for translating OSD texts to the Serbian language
+
+Frank Neumann <frank.neumann@hp.com>
+ for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
+
+Gerald Dachs <vdr@dachsweb.de>
+ for reporting a problem with checking for minimum line length of 21 characters in
+ the LIRC receiver code

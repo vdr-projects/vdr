@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.47 2010/06/05 13:32:15 kls Exp $
+ * $Id: remux.c 2.51 2011/02/26 15:51:04 kls Exp $
  */
 
 #include "remux.h"
@@ -225,7 +225,7 @@ int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language
       Target[i++] = *Language++;
       Target[i++] = *Language++;
       Target[i++] = *Language++;
-      Target[i++] = 0x01;     // audio type
+      Target[i++] = 0x00;     // audio type
       Target[Length] += 0x04; // length
       if (*Language == '+')
          Language++;
@@ -666,9 +666,13 @@ void cTsToPes::PutTs(const uchar *Data, int Length)
      return; // skip everything before the first payload start
   Length = TsGetPayload(&Data);
   if (length + Length > size) {
-     size = max(KILOBYTE(2), length + Length);
-     data = (uchar *)realloc(data, size);
-     if (!data) {
+     int NewSize = max(KILOBYTE(2), length + Length);
+     if (uchar *NewData = (uchar *)realloc(data, NewSize)) {
+        data = NewData;
+        size = NewSize;
+        }
+     else {
+        esyslog("ERROR: out of memory");
         Reset();
         return;
         }
@@ -780,9 +784,8 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   newFrame = independentFrame = false;
   numPtsValues = 0;
   numIFrames = 0;
-  frameDuration = 0;
+  framesPerSecond = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
-  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
 }
@@ -804,7 +807,6 @@ void cFrameDetector::SetPid(int Pid, int Type)
 void cFrameDetector::Reset(void)
 {
   newFrame = independentFrame = false;
-  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
 }
@@ -831,8 +833,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
                     return Processed; // need more data, in case the frame type is not stored in the first TS packet
-                 if (!frameDuration) {
-                    // frame duration unknown, so collect a sequence of PTS values:
+                 if (!framesPerSecond) {
+                    // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                        const uchar *Pes = Data + TsPayloadOffset(Data);
                        if (PesHasPts(Pes)) {
@@ -857,28 +859,22 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        uint32_t Delta = ptsValues[0];
                        // determine frame info:
                        if (isVideo) {
-                          if (Delta % 3600 == 0)
-                             frameDuration = 3600; // PAL, 25 fps, exact timing
-                          else if (abs(Delta % 3600) == 3599 || abs(Delta % 3600) == 1)
-                             frameDuration = 3600; // PAL, 25 fps, timing with jitter
+                          if (abs(Delta - 3600) <= 1)
+                             framesPerSecond = 25.0;
                           else if (Delta % 3003 == 0)
-                             frameDuration = 3003; // NTSC, 29.97 fps
-                          else if (abs(Delta - 1800) <= 1) {
-                             frameDuration = 3600; // PAL, 25 fps
-                             framesPerPayloadUnit = -2;
-                             }
-                          else if (Delta == 1501) {
-                             frameDuration = 3003; // NTSC, 29.97 fps
-                             framesPerPayloadUnit = -2;
-                             }
+                             framesPerSecond = 30.0 / 1.001;
+                          else if (abs(Delta - 1800) <= 1)
+                             framesPerSecond = 50.0;
+                          else if (Delta == 1501)
+                             framesPerSecond = 60.0 / 1.001;
                           else {
-                             frameDuration = 3600; // unknown, assuming 25 fps
-                             dsyslog("unknown frame duration (%d), assuming 25 fps", Delta);
+                             framesPerSecond = 25.0;
+                             dsyslog("unknown frame delta (%d), assuming 25 fps", Delta);
                              }
                           }
                        else // audio
-                          frameDuration = Delta; // PTS of audio frames is always increasing
-                       dbgframes("\nframe duration = %d  FPS = %5.2f  FPPU = %d\n", frameDuration, 90000.0 / frameDuration, framesPerPayloadUnit);
+                          framesPerSecond = 90000.0 / Delta; // PTS of audio frames is always increasing
+                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d\n", Delta, framesPerSecond, framesPerPayloadUnit);
                        }
                     }
                  scanner = EMPTY_SCANNER;
@@ -927,13 +923,6 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                newFrame = true;
                                independentFrame = Data[i + 1] == 0x10;
                                if (synced) {
-                                  if (framesPerPayloadUnit < 0) {
-                                     payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
-                                     if (payloadUnitOfFrame != 0 && independentFrame)
-                                        payloadUnitOfFrame = 0;
-                                     if (payloadUnitOfFrame)
-                                        newFrame = false;
-                                     }
                                   if (framesPerPayloadUnit <= 1)
                                      scanning = false;
                                   }
@@ -964,7 +953,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                 pid = 0; // let's just ignore any further data
                        }
                      }
-                 if (!synced && frameDuration && independentFrame) {
+                 if (!synced && framesPerSecond && independentFrame) {
                     synced = true;
                     dbgframes("*");
                     Reset();

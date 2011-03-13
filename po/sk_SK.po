@@ -1,20 +1,20 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006, 2008
-# Jiøí Dobrý <jdobry@centrum.cz>, 2008
+# Milan Hrala <hrala.milan@gmail.com>, 2011
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2010-06-06 12:52+0200\n"
-"PO-Revision-Date: 2009-09-30 12:50+0100\n"
+"PO-Revision-Date: 2011-02-15 16:29+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
-"Language-Team: Slovak\n"
+"Language-Team: Slovak <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Neplatný kanál ***"
@@ -71,251 +71,251 @@ msgid "Hierarchy"
 msgstr "Hierarchia"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "Starting EPG scan"
 msgstr "Zaèína prehµadáva» EPG"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Film/Dráma"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Detektívka/Triler"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Dobrodru¾ný/Western/Vojnový"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Vedecko fantastický/Fantastický/Horor"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Komédia"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Soap epera/Melodráma/Folklór"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romantický"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Skutoèný/Klasický/Nábo¾ensky/Historický film/Dráma"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Film pre dospelých/Dráma"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Správy/Aktuálne udalosti"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Správy/Predpoveï poèasia"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Spravodajský magazín"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Dokumentárny"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Diskusia/Rozhovor/debata"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "©ou/Zábavné hry"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Zábavná hra/vedemostná/sú»a¾ná"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "varieté"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Televízna relácia"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "©port"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Zvlá¹tne udalosti"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "©portový magazín"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Fudbal"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tenis/Squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Týmové ¹porty"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Atletika"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Motorizmus"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Vodné ¹porty"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Zimné ¹porty"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Jazdecké ¹porty"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Bojvé ¹porty"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Pre deti/program pre mláde¾"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Program pre pred¹kolské deti"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Zábavný program od 6 do 14 rokov"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Zábavný program od 10 do 16 rokov"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informaèný/Výchovný/©kolský program"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Kreslený/Bábkový"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Hudba/Balet/Tanec"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Vá¾na/Klasická hudba"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "¥udová/Tradièná Hudba"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Muzikál/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Balet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Umenie/Kultúra"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Herecké umenie"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Výtvarné umenie"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Nábo¾enstvo"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Populárna kultúra/Tradièné umenie"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literatúra"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Film/Kino"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Experimentálny film/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Rozhlas/Tlaè"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Nové média"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Umenie/Kultúrny magazín"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Móda"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Sociálny/Politický/Ekonomický"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Magazín/Reportá¾e/"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Ekonomika/Sociálne poradenstvo"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Významné osobnosti"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Vzdelávanie/Veda/Fakta"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Príroda/Zvieratá/®ivotné prostredie"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Technológia/Prírodné vedy"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicína/Filozofia/Psychológia"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Zahranièné krajiny/Expediícia"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "sociálne/duchovné vedy"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "ïal¹ie vzdelávanie"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Jazyky"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "vólny èas"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turistika/Cestovanie"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Remeslá"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motorizmus"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitness a zdravie"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Varenie"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Reklama/Predaj"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Záhradkárstvo"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Pôvodný jazyk"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Èiernobiely"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Nepublikované"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "®ivé vysielanie"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "od %d"
 
 msgid "No title"
 msgstr "Bez názvu"
@@ -326,7 +326,7 @@ msgstr "Slovensky"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "sk"
+msgstr "slv"
 
 msgid "Phase 1: Detecting RC code type"
 msgstr "Fáza 1: Detekcia typu kódu"
@@ -348,19 +348,19 @@ msgid "Press key for '%s'"
 msgstr "Stlaète klávesu pre '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Stlaète 'Hore' pre potvrdenie"
+msgstr "Pre potvrdenie stlaète klávesu 'Hore'"
 
 msgid "Press 'Down' to continue"
-msgstr "Stlaète 'Dole' pre pokraèovanie"
+msgstr "Pokraèujete stlaèením klávesy 'Dole' "
 
 msgid "(press 'Up' to go back)"
-msgstr "(stlaète 'hore' pre návrat)"
+msgstr "(Vrátite sa stlaèením klávesy 'hore')"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(stlaète 'dole' pre skonèenie)"
+msgstr "(Definovanie tlaèítok ukonèíte stlaèením klávesy 'dole')"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(stlaète 'Menu' pre preskoèenie definície klávesy)"
+msgstr "(stlaèením 'Menu' preskoèíte definíciu klávesy)"
 
 msgid "Learning Remote Control Keys"
 msgstr "Urèenie kódu diaµkového ovládania"
@@ -369,7 +369,7 @@ msgid "Phase 3: Saving key codes"
 msgstr "Fáza 3: Ulo¾enie kódu"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Stlaète 'hore' pre ulo¾enie, 'Dole' pre zru¹enie"
+msgstr "Stlaèením 'hore' ulo¾íte, 'Dole' zru¹íte"
 
 msgid "Key$Up"
 msgstr "Hore"
@@ -468,7 +468,7 @@ msgid "Key$Timers"
 msgstr "Plány nahrávania"
 
 msgid "Key$Recordings"
-msgstr "Záznamy"
+msgstr "Nahrávky"
 
 msgid "Key$Setup"
 msgstr "Nastavenie"
@@ -588,29 +588,29 @@ msgid "Delete channel?"
 msgstr "Odstráni» kanál?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Upravi» zlo¾ku"
 
 msgid "New folder"
-msgstr ""
+msgstr "Nový zlo¾ka"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Pod zlo¾ka"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Názov zlo¾ky u¾ existuje!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Názov zlo¾ky nesmie obsahova» '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Vybra»"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Vymaza» zlo¾ku a v¹etky pod zlo¾ky?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Vymaza» zlo¾ku?"
 
 msgid "Edit timer"
 msgstr "Úprava plánu nahrávania"
@@ -643,13 +643,13 @@ msgid "File"
 msgstr "Súbor"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Zlo¾ka"
 
 msgid "First day"
 msgstr "Prvý deò"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Vybra» zlo¾ku"
 
 msgid "Timers"
 msgstr "Plány nahrávania"
@@ -679,10 +679,10 @@ msgid "Button$Switch"
 msgstr "Prepnú»"
 
 msgid "What's on now?"
-msgstr "Aktuálny program"
+msgstr "Èo ide?"
 
 msgid "What's on next?"
-msgstr "Následujúci program"
+msgstr "Èo nasleduje?"
 
 msgid "Button$Next"
 msgstr "Ïalej"
@@ -718,7 +718,7 @@ msgid "CAM not responding!"
 msgstr "CAM neodpovedá!"
 
 msgid "Recording info"
-msgstr "Podrobnosti záznamu"
+msgstr "Podrobnosti nahrávky"
 
 msgid "Button$Play"
 msgstr "Prehra»"
@@ -727,7 +727,7 @@ msgid "Button$Rewind"
 msgstr "Na zaèiatok"
 
 msgid "Recordings"
-msgstr "Záznamy"
+msgstr "Nahrávky"
 
 msgid "Button$Open"
 msgstr "Otvori»"
@@ -736,13 +736,13 @@ msgid "Commands"
 msgstr "Príkazy"
 
 msgid "Error while accessing recording!"
-msgstr "Chyba pri prístupe k záznamom!"
+msgstr "Chyba pri prístupe k nahrávkam!"
 
 msgid "Delete recording?"
-msgstr "Zmaza» záznam?"
+msgstr "Zmaza» nahrávku?"
 
 msgid "Error while deleting recording!"
-msgstr "Pri vymazávaní záznamu pri¹lo k chybe!"
+msgstr "Pri vymazávaní nahrávky pri¹lo k chybe!"
 
 msgid "Recording commands"
 msgstr "Príkazy nahrávania"
@@ -796,7 +796,7 @@ msgid "Setup.OSD$Small font"
 msgstr "Malé písmo"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Urèené písmo"
+msgstr "Fixné písmo"
 
 msgid "Setup.OSD$Default font size (%)"
 msgstr "Veµkos» predvoleného písma (%)"
@@ -805,7 +805,7 @@ msgid "Setup.OSD$Small font size (%)"
 msgstr "Veµkos» malého písma (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Veµkos» urèeného písma (%)"
+msgstr "Veµkos» fixného písma (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozícia informácií o kanále"
@@ -835,13 +835,13 @@ msgid "Setup.OSD$Menu key closes"
 msgstr "Klávesa Menu zaviera"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Zoznam záznamov"
+msgstr "Zoznam nahrávok"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Zlo¾ky v menu plánovaèa"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Èíselné tlaèidlá pre znaky"
 
 msgid "EPG"
 msgstr "EPG"
@@ -957,7 +957,7 @@ msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Horná frekvencia LNB (MHz)"
 
 msgid "CAM reset"
-msgstr "Reset CAMu"
+msgstr "Resetnutie CAMu"
 
 msgid "CAM present"
 msgstr "CAM prítomný"
@@ -972,7 +972,7 @@ msgid "Button$Menu"
 msgstr "Menu"
 
 msgid "Button$Reset"
-msgstr "Reset"
+msgstr "Resetnú»"
 
 msgid "Opening CAM menu..."
 msgstr "Otvára sa menu CAM..."
@@ -990,13 +990,13 @@ msgid "do not pause live video"
 msgstr "nepreru¹ova» ¾ivé vysielanie"
 
 msgid "confirm pause live video"
-msgstr "Potrdi» preru¹enie ¾ivého vysielania"
+msgstr "potvrdi» preru¹enie ¾ivého vysielania"
 
 msgid "pause live video"
-msgstr "Preru¹i» ¾ivé vysielanie"
+msgstr "preru¹i» ¾ivé vysielanie"
 
 msgid "confirm"
-msgstr ""
+msgstr "overi»"
 
 msgid "yes"
 msgstr "áno"
@@ -1020,7 +1020,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Predvolená ¾ivotnos»"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Chovanie klávesy pozastavenia"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Priorita preru¹enia"
@@ -1053,7 +1053,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Deli» upravované súbory"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Vymaza» timeshift záznamy"
 
 msgid "Replay"
 msgstr "Prehrávanie"
@@ -1095,7 +1095,7 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitos» po spustení"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Prepína» z prvého na posledný a opaène"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Núdzové ukonèenie"
@@ -1113,7 +1113,7 @@ msgid "Restart"
 msgstr "Re¹tart"
 
 msgid "Really restart?"
-msgstr "Opravdu re¹tartova»?"
+msgstr "Naozaj re¹tartova»?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
@@ -1173,14 +1173,14 @@ msgid "Pausing live video..."
 msgstr "Preru¹uje sa be¾iaci program ..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Vymaza» timeshift záznamy?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skok: "
 
 msgid "No editing marks defined!"
-msgstr "Nie sú urèené upravované znaèky!"
+msgstr "Nie sú urèené znaèky úprav!"
 
 msgid "Can't start editing process!"
 msgstr "Nemô¾e zaèa» spracovanie úprav!"
@@ -1219,10 +1219,10 @@ msgid "Low disk space!"
 msgstr "Za chvíµku bude plný disk!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Regeneraèný indexový súbor"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Regenerácia indexového súboru hotová"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Vypnutie nie je mo¾né - chýba voµba '-s'!"
@@ -1261,11 +1261,11 @@ msgid "Classic VDR"
 msgstr "Klasické VDR"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG konzola"
+msgstr "ST:TNG panely"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr "PÚSÈPSN"
+msgstr "PUS©PSN"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
@@ -1302,7 +1302,7 @@ msgid "Recording started"
 msgstr "Zaèalo nahrávanie"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "Vypnutie VDR bude odlo¾ené - vypnete klávesou Power"
+msgstr "Vypnutie VDR bude odlo¾ené - platnos» potvrdte klávesou Power"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Ktorákoµvek klávesa zru¹í vypnutie"

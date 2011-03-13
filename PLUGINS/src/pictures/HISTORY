@@ -41,3 +41,7 @@ VDR Plugin 'pictures' Revision History
 2010-02-28: Version 0.0.9
 
 - Added Lithuanian language translations (thanks to Valdemaras Pipiras).
+
+2011-02-20: Version 0.1.0
+
+- Fixed reallocating memory (reported by Paul Menzel).

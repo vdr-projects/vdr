@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.24 2010/06/06 09:56:16 kls Exp $
+ * $Id: menu.c 2.28 2011/02/27 12:37:48 kls Exp $
  */
 
 #include "menu.h"
@@ -606,7 +606,7 @@ void cMenuText::Display(void)
 
 eOSState cMenuText::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -1253,7 +1253,7 @@ void cMenuEvent::Display(void)
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -1860,8 +1860,14 @@ eOSState cMenuCommands::Execute(void)
               int l = 0;
               int c;
               while ((c = fgetc(p)) != EOF) {
-                    if (l % 20 == 0)
-                       result = (char *)realloc(result, l + 21);
+                    if (l % 20 == 0) {
+                       if (char *NewBuffer = (char *)realloc(result, l + 21))
+                          result = NewBuffer;
+                       else {
+                          esyslog("ERROR: out of memory");
+                          break;
+                          }
+                       }
                     result[l++] = char(c);
                     }
               if (result)
@@ -2116,7 +2122,7 @@ void cMenuRecording::Display(void)
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -2270,7 +2276,7 @@ void cMenuRecordings::Set(bool Refresh)
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
       if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
-         if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
+         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))) {
             Add(Item);
             LastItem = Item;
             free(LastItemText);
@@ -3614,7 +3620,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
   cChannel *NewChannel = NULL;
   if (Key != kNone)
      lastTime.Set();
-  switch (Key) {
+  switch (int(Key)) {
     case k0:
          if (number == 0) {
             // keep the "Toggle channels" function working
@@ -3818,7 +3824,7 @@ void cDisplayVolume::Process(eKeys Key)
 
 eOSState cDisplayVolume::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kVolUp|k_Repeat:
     case kVolUp:
     case kVolDn|k_Repeat:
@@ -3914,7 +3920,7 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
 {
   int oldTrack = track;
   int oldAudioChannel = audioChannel;
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -4031,7 +4037,7 @@ void cDisplaySubtitleTracks::Process(eKeys Key)
 eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 {
   int oldTrack = track;
-  switch (Key) {
+  switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
@@ -4736,6 +4742,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
      return osEnd;
+  if (Key == kNone)
+     marks.Update();
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
@@ -4754,7 +4762,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      return osContinue;
      }
   bool DoShowMode = true;
-  switch (Key) {
+  switch (int(Key)) {
     // Positioning:
     case kPlay:
     case kUp:      Play(); break;
@@ -4781,7 +4789,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    return osEnd;
     default: {
       DoShowMode = false;
-      switch (Key) {
+      switch (int(Key)) {
         // Editing:
         case kMarkToggle:      MarkToggle(); break;
         case kPrev|k_Repeat:

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.8 2010/01/17 12:23:31 kls Exp $
+ * $Id: svdrp.c 2.9 2011/02/25 14:38:45 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1664,8 +1664,16 @@ bool cSVDRP::Process(void)
                  }
               else {
                  if (numChars >= length - 1) {
-                    length += BUFSIZ;
-                    cmdLine = (char *)realloc(cmdLine, length);
+                    int NewLength = length + BUFSIZ;
+                    if (char *NewBuffer = (char *)realloc(cmdLine, NewLength)) {
+                       length = NewLength;
+                       cmdLine = NewBuffer;
+                       }
+                    else {
+                       esyslog("ERROR: out of memory");
+                       Close();
+                       break;
+                       }
                     }
                  cmdLine[numChars++] = c;
                  cmdLine[numChars] = 0;

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.2 2010/02/13 10:31:52 kls Exp $
+ *   $Id: si.c 2.3 2010/11/01 15:24:32 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -606,6 +606,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case ExtensionDescriptorTag:
             d=new ExtensionDescriptor();
             break;
+         case RegistrationDescriptorTag:
+            d=new RegistrationDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -614,7 +617,6 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case VideoStreamDescriptorTag:
          case AudioStreamDescriptorTag:
          case HierarchyDescriptorTag:
-         case RegistrationDescriptorTag:
          case DataStreamAlignmentDescriptorTag:
          case TargetBackgroundGridDescriptorTag:
          case VideoWindowDescriptorTag:

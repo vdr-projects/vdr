@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 2.0 2007/02/03 11:45:58 kls Exp $
+ *   $Id: descriptor.h 2.1 2010/11/01 15:24:32 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -658,6 +658,16 @@ protected:
    virtual void Parse();
 private:
    const descr_application_icons_descriptor_end *s;
+};
+
+class RegistrationDescriptor : public Descriptor {
+public:
+   int getFormatIdentifier() const;
+   CharArray privateData;
+protected:
+   virtual void Parse();
+private:
+   const descr_registration *s;
 };
 
 } //end of namespace
