@@ -2541,7 +2541,6 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for some fixes to dvbspu.[hc]
  for fixing a busy loop when moving editing marks
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
- for reducing CPU load when pausing a replay
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
