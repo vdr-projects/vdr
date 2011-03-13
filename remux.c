@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.51 2011/02/26 15:51:04 kls Exp $
+ * $Id: remux.c 2.52 2011/03/13 13:57:09 kls Exp $
  */
 
 #include "remux.h"
@@ -833,7 +833,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
                     return Processed; // need more data, in case the frame type is not stored in the first TS packet
-                 if (!framesPerSecond) {
+                 if (framesPerSecond <= 0.0) {
                     // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                        const uchar *Pes = Data + TsPayloadOffset(Data);
@@ -953,7 +953,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                 pid = 0; // let's just ignore any further data
                        }
                      }
-                 if (!synced && framesPerSecond && independentFrame) {
+                 if (!synced && framesPerSecond > 0.0 && independentFrame) {
                     synced = true;
                     dbgframes("*");
                     Reset();

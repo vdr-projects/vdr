@@ -6562,3 +6562,4 @@ Video Disk Recorder Revision History
 - Reduced CPU load when pausing a replay (thanks to Johann Friedrichs).
 - Changed -O2 to -O3 in Make.config.template (reported by Matti Lehtimäki).
 - Added a missing 'default' case in cPixmapMemory::DrawEllipse().
+- Fixed some direct comparisons of double values.
