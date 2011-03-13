@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.17 2011/03/12 15:32:33 kls Exp $
+ * $Id: osd.c 2.18 2011/03/13 13:52:01 kls Exp $
  */
 
 #include "osd.h"
@@ -1394,6 +1394,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
           case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          default: ;
           }
         x++;
         StoppingX += TwoBSquare;
