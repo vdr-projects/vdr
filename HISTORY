@@ -6557,8 +6557,10 @@ Video Disk Recorder Revision History
 - The original display size of subtitles is now used to scale them properly when
   displaying them on an HD OSD.
 
-2011-03-13: Version 1.7.18
+2011-03-20: Version 1.7.18
 
 - Changed -O2 to -O3 in Make.config.template (reported by Matti Lehtimäki).
 - Added a missing 'default' case in cPixmapMemory::DrawEllipse().
 - Fixed some direct comparisons of double values.
+- Fixed detecting frames on channels that broadcast with separate "fields" instead
+  of complete frames.
