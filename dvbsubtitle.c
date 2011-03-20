@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.12 2011/03/13 13:54:05 kls Exp $
+ * $Id: dvbsubtitle.c 2.13 2011/03/20 15:10:30 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -420,7 +420,7 @@ public:
   int PageId(void) { return pageId; }
   int Version(void) { return version; }
   int State(void) { return state; }
-  tArea *GetAreas(double Factor);
+  tArea *GetAreas(double FactorX, double FactorY);
   cSubtitleClut *GetClutById(int ClutId, bool New = false);
   cSubtitleObject *GetObjectById(int ObjectId);
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
@@ -446,16 +446,16 @@ cDvbSubtitlePage::~cDvbSubtitlePage()
 {
 }
 
-tArea *cDvbSubtitlePage::GetAreas(double Factor)
+tArea *cDvbSubtitlePage::GetAreas(double FactorX, double FactorY)
 {
   if (regions.Count() > 0) {
      tArea *Areas = new tArea[regions.Count()];
      tArea *a = Areas;
      for (cSubtitleRegion *sr = regions.First(); sr; sr = regions.Next(sr)) {
-         a->x1 = int(round(Factor * sr->HorizontalAddress()));
-         a->y1 = int(round(Factor * sr->VerticalAddress()));
-         a->x2 = int(round(Factor * (sr->HorizontalAddress() + sr->Width() - 1)));
-         a->y2 = int(round(Factor * (sr->VerticalAddress() + sr->Height() - 1)));
+         a->x1 = int(round(FactorX * sr->HorizontalAddress()));
+         a->y1 = int(round(FactorY * sr->VerticalAddress()));
+         a->x2 = int(round(FactorX * (sr->HorizontalAddress() + sr->Width() - 1)));
+         a->y2 = int(round(FactorY * (sr->VerticalAddress() + sr->Height() - 1)));
          a->bpp = sr->Bpp();
          while ((a->Width() & 3) != 0)
                a->x2++; // aligns width to a multiple of 4, so 2, 4 and 8 bpp will work
@@ -616,10 +616,11 @@ private:
   int timeout;
   tArea *areas;
   int numAreas;
-  double osdFactor;
+  double osdFactorX;
+  double osdFactorY;
   cVector<cBitmap *> bitmaps;
 public:
-  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor);
+  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY);
   ~cDvbSubtitleBitmaps();
   int64_t Pts(void) { return pts; }
   int Timeout(void) { return timeout; }
@@ -627,13 +628,14 @@ public:
   void Draw(cOsd *Osd);
   };
 
-cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactor)
+cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY)
 {
   pts = Pts;
   timeout = Timeout;
   areas = Areas;
   numAreas = NumAreas;
-  osdFactor = OsdFactor;
+  osdFactorX = OsdFactorX;
+  osdFactorY = OsdFactorY;
 }
 
 cDvbSubtitleBitmaps::~cDvbSubtitleBitmaps()
@@ -653,9 +655,9 @@ void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
   if (Osd->SetAreas(areas, numAreas) == oeOk) {
      for (int i = 0; i < bitmaps.Size(); i++) {
          cBitmap *b = bitmaps[i];
-         if (!DoubleEqual(osdFactor, 1.0))
-            b = b->Scale(osdFactor, osdFactor);
-         Osd->DrawBitmap(int(round(b->X0() * osdFactor)), int(round(b->Y0() * osdFactor)), *b);
+         if (!(DoubleEqual(osdFactorX, 1.0) && DoubleEqual(osdFactorY, 1.0)))
+            b = b->Scale(osdFactorX, osdFactorY);
+         Osd->DrawBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b);
          if (b != bitmaps[i])
             delete b;
          }
@@ -862,27 +864,21 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
 
 void cDvbSubtitleConverter::SetOsdData(void)
 {
-  int OsdWidth;
-  int OsdHeight;
+  int OsdWidth, OsdHeight;
   double OsdAspect;
+  int VideoWidth, VideoHeight;
+  double VideoAspect;
   cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
-  osdDeltaX = osdDeltaY = 0;
-  osdFactor = 1.0;
-  double fw = double(OsdWidth) / displayWidth;
-  double fh = double(OsdHeight) / displayHeight;
-  if (fw >= fh) {
-     osdFactor = fh;
-     osdDeltaX = (OsdWidth - displayWidth * osdFactor) / 2;
-     }
-  else {
-     osdFactor = fw;
-     osdDeltaY = (OsdHeight - displayHeight * osdFactor) / 2;
-     }
+  cDevice::PrimaryDevice()->GetVideoSize(VideoWidth, VideoHeight, VideoAspect);
+  osdFactorX = VideoAspect * OsdHeight / displayWidth;
+  osdFactorY = double(OsdHeight) / displayHeight;
+  osdDeltaX = (OsdWidth - displayWidth * osdFactorX) / 2;
+  osdDeltaY = (OsdHeight - displayHeight * osdFactorY) / 2;
 }
 
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
-  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactor * windowHorizontalOffset + osdDeltaX)), int(round(osdFactor * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -1079,7 +1075,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
 {
   if (!AssertOsd())
      return;
-  tArea *Areas = Page->GetAreas(osdFactor);
+  tArea *Areas = Page->GetAreas(osdFactorX, osdFactorY);
   int NumAreas = Page->regions.Count();
   int Bpp = 8;
   bool Reduced = false;
@@ -1116,7 +1112,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
             }
          }
      }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactor);
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
   bitmaps->Add(Bitmaps);
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
       int posX = sr->HorizontalAddress();

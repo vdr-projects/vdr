@@ -6566,3 +6566,4 @@ Video Disk Recorder Revision History
   of complete frames.
 - Made updating the editing marks during replay react faster in case the marks
   file has just been written.
+- Fixed horizontal scaling of subtitles (reported by Reinhard Nissl).
