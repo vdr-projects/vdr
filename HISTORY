@@ -6564,3 +6564,5 @@ Video Disk Recorder Revision History
 - Fixed some direct comparisons of double values.
 - Fixed detecting frames on channels that broadcast with separate "fields" instead
   of complete frames.
+- Made updating the editing marks during replay react faster in case the marks
+  file has just been written.

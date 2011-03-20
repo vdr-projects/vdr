@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.26 2011/02/27 13:35:20 kls Exp $
+ * $Id: recording.c 2.27 2011/03/20 10:33:30 kls Exp $
  */
 
 #include "recording.h"
@@ -1270,7 +1270,7 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 {
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
-  lastUpdate = 0;
+  nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
   return Update();
 }
@@ -1278,11 +1278,27 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 bool cMarks::Update(void)
 {
   time_t t = time(NULL);
-  if (t - lastUpdate > MARKSUPDATEDELTA) {
-     lastUpdate = t;
-     t = LastModifiedTime(fileName);
-     if (t > lastFileTime) {
-        lastFileTime = t;
+  if (t > nextUpdate) {
+     time_t LastModified = LastModifiedTime(fileName);
+     int d;
+     if (LastModified > 0) // the file exists
+        d = t - LastModified;
+     else { // the file doesn't exist
+        if (lastFileTime <= 0) {
+           lastFileTime = t - 2; // -2 makes sure we don't miss an update within the very same second
+           LastModified = t; // make sure we run into the actual Load() below
+           }
+        d = t - lastFileTime;
+        }
+     if (d < 60)
+        d = 1; // check frequently if the file has just been modified
+     else if (d < 3600)
+        d = 10; // older files are checked less frequently
+     else
+        d /= 360; // phase out checking for very old files
+     nextUpdate = t + d;
+     if (LastModified > lastFileTime) {
+        lastFileTime = LastModified;
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
