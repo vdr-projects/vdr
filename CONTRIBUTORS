@@ -2672,3 +2672,6 @@ Frank Neumann <frank.neumann@hp.com>
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
  the LIRC receiver code
+
+Juergen Lock <vdr-l@jelal.kn-bremen.de>
+ for fixing cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE
