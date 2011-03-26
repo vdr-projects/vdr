@@ -6567,6 +6567,9 @@ Video Disk Recorder Revision History
 - Made updating the editing marks during replay react faster in case the marks
   file has just been written.
 - Fixed horizontal scaling of subtitles (reported by Reinhard Nissl).
+- Stripped the note "The data returned by this function is only used for informational
+  purposes (if any)" from the description of cDevice::GetVideoSize(). The VideoAspect
+  is now used to properly scale subtitles.
 - Fixed cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE (thanks
   to Juergen Lock).
 - Fixed the Language header of the Serbian translation file (thanks to Ville Skyttä).
