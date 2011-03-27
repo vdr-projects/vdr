@@ -2681,3 +2681,4 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
+ for replacing "%lld" and "%llX" print format specifiers with "PRId64" and "PRIX64"

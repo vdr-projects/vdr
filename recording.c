@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.27 2011/03/20 10:33:30 kls Exp $
+ * $Id: recording.c 2.28 2011/03/27 15:02:53 kls Exp $
  */
 
 #include "recording.h"
@@ -12,6 +12,8 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#define __STDC_FORMAT_MACROS // Required for format specifiers
+#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -1566,7 +1568,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
               delta = int(buf.st_size % sizeof(tIndexTs));
               if (delta) {
                  delta = sizeof(tIndexTs) - delta;
-                 esyslog("ERROR: invalid file size (%lld) in '%s'", buf.st_size, fileName);
+                 esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, fileName);
                  }
               last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
               if (!Record && last >= 0) {

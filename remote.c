@@ -4,11 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.2 2010/12/24 15:26:05 kls Exp $
+ * $Id: remote.c 2.3 2011/03/27 15:03:36 kls Exp $
  */
 
 #include "remote.h"
 #include <fcntl.h>
+#define __STDC_FORMAT_MACROS // Required for format specifiers
+#include <inttypes.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/types.h>
@@ -122,7 +124,7 @@ bool cRemote::PutMacro(eKeys Key)
 bool cRemote::Put(uint64_t Code, bool Repeat, bool Release)
 {
   char buffer[32];
-  snprintf(buffer, sizeof(buffer), "%016llX", Code);
+  snprintf(buffer, sizeof(buffer), "%016"PRIX64, Code);
   return Put(buffer, Repeat, Release);
 }
 

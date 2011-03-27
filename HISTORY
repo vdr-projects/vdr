@@ -6583,3 +6583,9 @@ Video Disk Recorder Revision History
 - Fixed scaling subtitles in case the OSD size is exactly the same as the display
   size of the subtitles.
 - Added a missing initialization to sDvbSpuRect (reported by Sergiu Dotenco).
+- Replaced "%lld" and "%llX" print format specifiers with "PRId64" and "PRIX64" to
+  avoid compiler warnings with gcc 4.5.2 (thanks to Sergiu Dotenco).
+  On a personal note: I find it a step in the totally wrong direction that there
+  have been macros introduced to work around this problem in the first place. There
+  should have been "real" format specifiers defined that address this. These macros
+  are nothing but an ugly workaround.

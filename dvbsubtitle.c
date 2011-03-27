@@ -7,10 +7,13 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.15 2011/03/27 13:52:58 kls Exp $
+ * $Id: dvbsubtitle.c 2.16 2011/03/27 15:02:12 kls Exp $
  */
 
+
 #include "dvbsubtitle.h"
+#define __STDC_FORMAT_MACROS // Required for format specifiers
+#include <inttypes.h>
 #include "device.h"
 
 #define PAGE_COMPOSITION_SEGMENT   0x10
@@ -735,7 +738,7 @@ int cDvbSubtitleConverter::ConvertFragments(const uchar *Data, int Length)
      if (Length > PayloadOffset + SubstreamHeaderLength) {
         int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : 0;
         if (pts)
-           dbgconverter("Converter PTS: %lld\n", pts);
+           dbgconverter("Converter PTS: %"PRId64"\n", pts);
         const uchar *data = Data + PayloadOffset + SubstreamHeaderLength; // skip substream header
         int length = Length - PayloadOffset - SubstreamHeaderLength; // skip substream header
         if (ResetSubtitleAssembler)
@@ -771,7 +774,7 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
      if (Length > PayloadOffset) {
         int64_t pts = PesGetPts(Data);
         if (pts)
-           dbgconverter("Converter PTS: %lld\n", pts);
+           dbgconverter("Converter PTS: %"PRId64"\n", pts);
         const uchar *data = Data + PayloadOffset;
         int length = Length - PayloadOffset;
         if (length > 3) {
@@ -830,7 +833,7 @@ void cDvbSubtitleConverter::Action(void)
                     if (AssertOsd()) {
                        sb->Draw(osd);
                        Timeout.Set(sb->Timeout() * 1000);
-                       dbgconverter("PTS: %lld  STC: %lld (%lld) timeout: %d\n", sb->Pts(), cDevice::PrimaryDevice()->GetSTC(), Delta, sb->Timeout());
+                       dbgconverter("PTS: %"PRId64"  STC: %"PRId64" (%"PRId64") timeout: %d\n", sb->Pts(), cDevice::PrimaryDevice()->GetSTC(), Delta, sb->Timeout());
                        }
                     bitmaps->Del(sb);
                     }
@@ -920,7 +923,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             page->SetTimeout(Data[6]);
             page->SetState((Data[6 + 1] & 0x0C) >> 2);
             page->regions.Clear();
-            dbgpages("Update page id %d version %d pts %lld timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
+            dbgpages("Update page id %d version %d pts %"PRId64" timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
             for (int i = 6 + 2; i < segmentLength; i += 6) {
                 cSubtitleRegion *region = page->GetRegionById(Data[i], true);
                 region->SetHorizontalAddress((Data[i + 2] << 8) + Data[i + 3]);
