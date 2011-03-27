@@ -6580,3 +6580,5 @@ Video Disk Recorder Revision History
 - Fixed the description of cReceiver in PLUGINS.html, regarding detaching a receiver
   from its device before deleting it (reported by Winfried Köhler). This change in
   behavior was introduced in version 1.5.7.
+- Fixed scaling subtitles in case the OSD size is exactly the same as the display
+  size of the subtitles.
