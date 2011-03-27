@@ -6575,3 +6575,5 @@ Video Disk Recorder Revision History
 - Fixed the Language header of the Serbian translation file (thanks to Ville Skyttä).
 - Added anti-aliasing when upscaling bitmaps (improves the display of SD subtitles
   when replayed on an HD OSD).
+- Renamed cBitmap::Scale() to Scaled(), because it doesn't modify the bitmap itself,
+  but rather returns a scaled copy.

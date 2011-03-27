@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.19 2011/03/27 11:48:39 kls Exp $
+ * $Id: osd.c 2.20 2011/03/27 11:52:12 kls Exp $
  */
 
 #include "osd.h"
@@ -806,7 +806,7 @@ void cBitmap::ShrinkBpp(int NewBpp)
      }
 }
 
-cBitmap *cBitmap::Scale(double FactorX, double FactorY)
+cBitmap *cBitmap::Scaled(double FactorX, double FactorY)
 {
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
