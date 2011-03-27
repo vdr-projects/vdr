@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.18 2011/03/13 13:52:01 kls Exp $
+ * $Id: osd.c 2.19 2011/03/27 11:48:39 kls Exp $
  */
 
 #include "osd.h"
@@ -503,8 +503,7 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
 {
   x -= x0;
   y -= y0;
-  if (0 <= x && x < width && 0 <= y && y < height)
-     SetIndex(x, y, Index(Color));
+  SetIndex(x, y, Index(Color));
 }
 
 void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette, bool Overlay)
@@ -815,19 +814,42 @@ cBitmap *cBitmap::Scale(double FactorX, double FactorY)
   b->Replace(*this); // copy palette
   int RatioX = (Width() << 16) / b->Width();
   int RatioY = (Height() << 16) / b->Height();
-  tIndex *DestRow = b->bitmap;
-  int SourceY = 0;
-  for (int y = 0; y < b->Height(); y++) {
-      int SourceX = 0;
-      tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
-      tIndex *Dest = DestRow;
-      for (int x = 0; x < b->Width(); x++) {
-          *Dest++ = SourceRow[SourceX >> 16];
-          SourceX += RatioX;
-          }
-      SourceY += RatioY;
-      DestRow += b->Width();
-      }
+  if (FactorX <= 1.0 && FactorY <= 1.0) {
+     // Downscaling - no anti-aliasing:
+     tIndex *DestRow = b->bitmap;
+     int SourceY = 0;
+     for (int y = 0; y < b->Height(); y++) {
+         int SourceX = 0;
+         tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
+         tIndex *Dest = DestRow;
+         for (int x = 0; x < b->Width(); x++) {
+             *Dest++ = SourceRow[SourceX >> 16];
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         DestRow += b->Width();
+         }
+     }
+  else {
+     // Upscaling - anti-aliasing:
+     b->SetBpp(8);
+     int SourceY = 0;
+     for (int y = 0; y < b->Height() - 1; y++) {
+         int SourceX = 0;
+         int sy = SourceY >> 16;
+         uint8_t BlendY = 0xFF - ((SourceY >> 8) & 0xFF);
+         for (int x = 0; x < b->Width() - 1; x++) {
+             int sx = SourceX >> 16;
+             uint8_t BlendX = 0xFF - ((SourceX >> 8) & 0xFF);
+             tColor c1 = b->Blend(GetColor(sx, sy),     GetColor(sx + 1, sy),     BlendX);
+             tColor c2 = b->Blend(GetColor(sx, sy + 1), GetColor(sx + 1, sy + 1), BlendX);
+             tColor c3 = b->Blend(c1, c2, BlendY);
+             b->DrawPixel(x + X0(), y + Y0(), c3);
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         }
+     }
   return b;
 }
 
