@@ -6582,3 +6582,4 @@ Video Disk Recorder Revision History
   behavior was introduced in version 1.5.7.
 - Fixed scaling subtitles in case the OSD size is exactly the same as the display
   size of the subtitles.
+- Added a missing initialization to sDvbSpuRect (reported by Sergiu Dotenco).
