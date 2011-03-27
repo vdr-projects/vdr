@@ -1523,8 +1523,9 @@ the receiver is attached to the device that actually receives the current live
 video stream (this may be different from the primary device in case of <i>Transfer
 Mode</i>).
 <p>
-If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
-and will automatically detach itself from the <tt>cDevice</tt>.
+<div class="modified">
+The <tt>cReceiver</tt> must be detached from its device before it is deleted.
+</div modified>
 
 <hr><h2><a name="Filters">Filters</a></h2>
 

@@ -6577,3 +6577,6 @@ Video Disk Recorder Revision History
   when replayed on an HD OSD).
 - Renamed cBitmap::Scale() to Scaled(), because it doesn't modify the bitmap itself,
   but rather returns a scaled copy.
+- Fixed the description of cReceiver in PLUGINS.html, regarding detaching a receiver
+  from its device before deleting it (reported by Winfried Köhler). This change in
+  behavior was introduced in version 1.5.7.

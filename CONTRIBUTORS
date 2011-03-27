@@ -2524,6 +2524,8 @@ Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
  for making several code modifications to avoid compiler warnings
  for improving the description of the transponder parameters in vdr.5
+ for reporting a necessary fix in the description of cReceiver in PLUGINS.html,
+ regarding detaching a receiver from its device before deleting it
 
 Igor M. Liplianin <liplianin@tut.by>
  for a patch that was used to convert VDR to the S2API driver API
