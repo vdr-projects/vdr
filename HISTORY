@@ -6557,7 +6557,7 @@ Video Disk Recorder Revision History
 - The original display size of subtitles is now used to scale them properly when
   displaying them on an HD OSD.
 
-2011-03-27: Version 1.7.18
+2011-03-28: Version 1.7.18
 
 - Changed -O2 to -O3 in Make.config.template (reported by Matti Lehtimäki).
 - Added a missing 'default' case in cPixmapMemory::DrawEllipse().
@@ -6589,3 +6589,6 @@ Video Disk Recorder Revision History
   have been macros introduced to work around this problem in the first place. There
   should have been "real" format specifiers defined that address this. These macros
   are nothing but an ugly workaround.
+- Added Cancel(3) to ~cTrueColorDemo() in the "osddemo" plugin (thanks to Reinhard Nissl).
+- Added a missing font deletion in cTrueColorDemo::Action() in the "osddemo" plugin
+  (thanks to Reinhard Nissl).
