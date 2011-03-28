@@ -1265,6 +1265,7 @@ Reinhard Nissl <rnissl@gmx.de>
  debugging, and an implementation of the AlphaBlend() function.
  for storing the original display size when handling DVB subtitles
  for reporting a problem with horizontal scaling of subtitles
+ for fixing a buffer overflow in cFont::Bidi()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

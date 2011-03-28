@@ -6592,3 +6592,4 @@ Video Disk Recorder Revision History
 - Added Cancel(3) to ~cTrueColorDemo() in the "osddemo" plugin (thanks to Reinhard Nissl).
 - Added a missing font deletion in cTrueColorDemo::Action() in the "osddemo" plugin
   (thanks to Reinhard Nissl).
+- Fixed a buffer overflow in cFont::Bidi() (thanks to Reinhard Nissl).
