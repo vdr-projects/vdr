@@ -2684,3 +2684,6 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
  for replacing "%lld" and "%llX" print format specifiers with "PRId64" and "PRIX64"
+
+Mika Laitio <lamikr@pilppa.org>
+ for reporting a case where cRecordingInfo::Read(FILE *f) was called with a NULL pointer

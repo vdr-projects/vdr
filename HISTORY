@@ -6594,3 +6594,5 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Fixed a buffer overflow in cFont::Bidi() (thanks to Reinhard Nissl).
 - Added HD stream content identifiers to vdr.5 (thanks to Christoph Haubrich).
+- Made cRecordingInfo::Read(FILE *f) private to avoid calls to it from outside
+  cRecordingInfo or cRecording (reported by Mika Laitio).
