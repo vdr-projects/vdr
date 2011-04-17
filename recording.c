@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.29 2011/04/17 13:20:46 kls Exp $
+ * $Id: recording.c 2.30 2011/04/17 13:53:11 kls Exp $
  */
 
 #include "recording.h"
@@ -303,9 +303,10 @@ bool cResumeFile::Save(int Index)
 void cResumeFile::Delete(void)
 {
   if (fileName) {
-     if (remove(fileName) < 0 && errno != ENOENT)
+     if (remove(fileName) == 0)
+        Recordings.ResetResume(fileName);
+     else if (errno != ENOENT)
         LOG_ERROR_STR(fileName);
-     Recordings.ResetResume(fileName);
      }
 }
 

@@ -6604,3 +6604,5 @@ Video Disk Recorder Revision History
   to Ville Skyttä).
 - The Makefile now also installs the include files (thanks to Ville Skyttä).
 - Added handling of "ANSI/SCTE 57" descriptors (thanks too Rolf Ahrenberg).
+- Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
+  Nissl).
