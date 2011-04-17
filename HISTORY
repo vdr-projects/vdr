@@ -6598,3 +6598,4 @@ Video Disk Recorder Revision History
   cRecordingInfo or cRecording (reported by Mika Laitio).
 - The dvbhddevice plugin is now part of the VDR distribution archive (thanks to
   Andreas Regel).
+- Removed an obsolete local variable in dvbsdffosd.c (thanks to Paul Menzel).
