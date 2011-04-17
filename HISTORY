@@ -6557,7 +6557,7 @@ Video Disk Recorder Revision History
 - The original display size of subtitles is now used to scale them properly when
   displaying them on an HD OSD.
 
-2011-04-03: Version 1.7.18
+2011-04-17: Version 1.7.18
 
 - Changed -O2 to -O3 in Make.config.template (reported by Matti Lehtimäki).
 - Added a missing 'default' case in cPixmapMemory::DrawEllipse().
@@ -6596,3 +6596,5 @@ Video Disk Recorder Revision History
 - Added HD stream content identifiers to vdr.5 (thanks to Christoph Haubrich).
 - Made cRecordingInfo::Read(FILE *f) private to avoid calls to it from outside
   cRecordingInfo or cRecording (reported by Mika Laitio).
+- The dvbhddevice plugin is now part of the VDR distribution archive (thanks to
+  Andreas Regel).
