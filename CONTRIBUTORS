@@ -1691,6 +1691,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting missing defines for large files in the 'newplugin' script
  for pointing out that the full timer file name should be displayed if it ends with
  "TITLE" or "EPISODE"
+ for a patch to "Made updating the editing marks during replay react faster in case
+ the marks file has just been written"
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

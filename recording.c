@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.28 2011/03/27 15:02:53 kls Exp $
+ * $Id: recording.c 2.29 2011/04/17 13:20:46 kls Exp $
  */
 
 #include "recording.h"
@@ -1274,6 +1274,7 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
   framesPerSecond = FramesPerSecond;
   nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
+  lastChange = 0;
   return Update();
 }
 
@@ -1282,16 +1283,9 @@ bool cMarks::Update(void)
   time_t t = time(NULL);
   if (t > nextUpdate) {
      time_t LastModified = LastModifiedTime(fileName);
-     int d;
-     if (LastModified > 0) // the file exists
-        d = t - LastModified;
-     else { // the file doesn't exist
-        if (lastFileTime <= 0) {
-           lastFileTime = t - 2; // -2 makes sure we don't miss an update within the very same second
-           LastModified = t; // make sure we run into the actual Load() below
-           }
-        d = t - lastFileTime;
-        }
+     if (LastModified != lastFileTime) // change detected, or first run
+        lastChange = LastModified > 0 ? LastModified : t;
+     int d = t - lastChange;
      if (d < 60)
         d = 1; // check frequently if the file has just been modified
      else if (d < 3600)
@@ -1299,8 +1293,10 @@ bool cMarks::Update(void)
      else
         d /= 360; // phase out checking for very old files
      nextUpdate = t + d;
-     if (LastModified > lastFileTime) {
+     if (LastModified != lastFileTime) { // change detected, or first run
         lastFileTime = LastModified;
+        if (lastFileTime == t)
+           lastFileTime--; // make sure we don't miss updates in the remaining second
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
