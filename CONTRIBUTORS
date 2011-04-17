@@ -1892,7 +1892,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for making 'dist' target dependent on up to date *.po
  for adding Language and fixing Language-Team header of *.po
  for fixing the Language header of the Serbian translation file
- for using pkg-config to get fribidi cflags and libs
+ for using pkg-config to get fribidi, freetype and fontconfig cflags and libs
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

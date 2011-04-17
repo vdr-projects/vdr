@@ -6600,4 +6600,5 @@ Video Disk Recorder Revision History
   Andreas Regel).
 - Removed an obsolete local variable in dvbsdffosd.c (thanks to Paul Menzel).
 - Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).
-- Now using pkg-config to get fribidi cflags and libs (thanks to Ville Skyttä).
+- Now using pkg-config to get fribidi, freetype and fontconfig cflags and libs (thanks
+  to Ville Skyttä).
