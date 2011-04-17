@@ -6602,3 +6602,4 @@ Video Disk Recorder Revision History
 - Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).
 - Now using pkg-config to get fribidi, freetype and fontconfig cflags and libs (thanks
   to Ville Skyttä).
+- The Makefile now also installs the include files (thanks to Ville Skyttä).

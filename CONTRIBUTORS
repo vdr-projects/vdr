@@ -1893,6 +1893,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding Language and fixing Language-Team header of *.po
  for fixing the Language header of the Serbian translation file
  for using pkg-config to get fribidi, freetype and fontconfig cflags and libs
+ for making the Makefile also install the include files
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
