@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.14 2011/02/27 09:59:11 kls Exp $
+# $Id: Makefile 2.15 2011/04/17 13:26:02 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -54,9 +54,9 @@ ifdef VDR_USER
 DEFINES += -DVDR_USER=\"$(VDR_USER)\"
 endif
 ifdef BIDI
-INCLUDES += -I/usr/include/fribidi
+INCLUDES += $(shell pkg-config --cflags fribidi)
 DEFINES += -DBIDI
-LIBS += -lfribidi
+LIBS += $(shell pkg-config --libs fribidi)
 endif
 
 LIRC_DEVICE ?= /dev/lircd
