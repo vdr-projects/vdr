@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.16 2011/03/27 15:02:12 kls Exp $
+ * $Id: dvbsubtitle.c 2.17 2011/04/17 14:34:05 kls Exp $
  */
 
 
@@ -655,11 +655,26 @@ void cDvbSubtitleBitmaps::AddBitmap(cBitmap *Bitmap)
 
 void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
 {
+  bool Scale = !(DoubleEqual(osdFactorX, 1.0) && DoubleEqual(osdFactorY, 1.0));
+  bool AntiAlias = true;
+  if (Scale && osdFactorX > 1.0 || osdFactorY > 1.0) {
+     // Upscaling requires 8bpp:
+     int Bpp[MAXOSDAREAS];
+     for (int i = 0; i < numAreas; i++) {
+         Bpp[i] = areas[i].bpp;
+         areas[i].bpp = 8;
+         }
+     if (Osd->CanHandleAreas(areas, numAreas) != oeOk) {
+        for (int i = 0; i < numAreas; i++)
+            Bpp[i] = areas[i].bpp = Bpp[i];
+        AntiAlias = false;
+        }
+     }
   if (Osd->SetAreas(areas, numAreas) == oeOk) {
      for (int i = 0; i < bitmaps.Size(); i++) {
          cBitmap *b = bitmaps[i];
-         if (!(DoubleEqual(osdFactorX, 1.0) && DoubleEqual(osdFactorY, 1.0)))
-            b = b->Scaled(osdFactorX, osdFactorY);
+         if (Scale)
+            b = b->Scaled(osdFactorX, osdFactorY, AntiAlias);
          Osd->DrawBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b);
          if (b != bitmaps[i])
             delete b;
