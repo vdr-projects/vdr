@@ -30,3 +30,7 @@ VDR Plugin 'osddemo' Revision History
 
 - Added Cancel(3) to ~cTrueColorDemo() (thanks to Reinhard Nissl).
 - Added a missing font deletion in cTrueColorDemo::Action() (thanks to Reinhard Nissl).
+
+2011-04-17: Version 0.2.2
+
+- Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).

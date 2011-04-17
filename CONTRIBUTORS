@@ -2631,6 +2631,7 @@ Paul Menzel <paulepanter@users.sourceforge.net>
  for adding LDFLAGS to the linker calls in the Makefiles
  for reporting a possible memory leak in the "pictures" plugin
  for removing an obsolete local variable in dvbsdffosd.c
+ for reporting a possible NULL pointer dereference in osddemo.c
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
