@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.15 2010/11/07 13:47:16 kls Exp $
+ * $Id: pat.c 2.16 2011/04/17 13:45:25 kls Exp $
  */
 
 #include "pat.h"
@@ -456,7 +456,37 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       }
                       break;
-              case 0x80 ... 0xFF: // STREAMTYPE_USER_PRIVATE
+              case 0x80: // STREAMTYPE_USER_PRIVATE - DigiCipher II VIDEO (ANSI/SCTE 57)
+                      Vpid = esPid;
+                      Ppid = pmt.getPCRPid();
+                      Vtype = 0x02; // compression based upon MPEG-2
+                      ProcessCaDescriptors = true;
+                      break;
+              case 0x81: // STREAMTYPE_USER_PRIVATE - ATSC A/53 AUDIO (ANSI/SCTE 57)
+                      {
+                      char lang[MAXLANGCODE1] = { 0 };
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 }
+                                 break;
+                            default: ;
+                            }
+                         delete d;
+                         }
+                      if (NumDpids < MAXDPIDS) {
+                         Dpids[NumDpids] = esPid;
+                         Dtypes[NumDpids] = SI::AC3DescriptorTag;
+                         strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
+                         NumDpids++;
+                         }
+                      ProcessCaDescriptors = true;
+                      }
+                      break;
+              case 0x82 ... 0xFF: // STREAMTYPE_USER_PRIVATE
                       {
                       char lang[MAXLANGCODE1] = { 0 };
                       bool IsAc3 = false;
@@ -467,17 +497,11 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                  SI::RegistrationDescriptor *rd = (SI::RegistrationDescriptor *)d;
                                  // http://www.smpte-ra.org/mpegreg/mpegreg.html
                                  switch (rd->getFormatIdentifier()) {
-                                   case 0x44434949: // 'DCII' aka. DigiCipher II
-                                        Vpid = esPid;
-                                        Ppid = pmt.getPCRPid();
-                                        Vtype = 0x02; // DCII compression is based upon MPEG-2
-                                        ProcessCaDescriptors = true;
-                                        break;
                                    case 0x41432D33: // 'AC-3'
                                         IsAc3 = true;
                                         break;
                                    default:
-                                        //printf("Format identifier: 0x08X\n", rd->getFormatIdentifier());
+                                        //printf("Format identifier: 0x%08X (pid: %d)\n", rd->getFormatIdentifier(), esPid);
                                         break;
                                    }
                                  }
@@ -493,11 +517,11 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       if (IsAc3) {
                          if (NumDpids < MAXDPIDS) {
-                           Dpids[NumDpids] = esPid;
-                           Dtypes[NumDpids] = SI::AC3DescriptorTag;
-                           strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
-                           NumDpids++;
-                           }
+                            Dpids[NumDpids] = esPid;
+                            Dtypes[NumDpids] = SI::AC3DescriptorTag;
+                            strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
+                            NumDpids++;
+                            }
                          ProcessCaDescriptors = true;
                          }
                       }
