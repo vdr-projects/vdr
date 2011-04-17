@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.51 2011/02/26 15:51:04 kls Exp $
+ * $Id: remux.c 2.53 2011/03/20 10:21:14 kls Exp $
  */
 
 #include "remux.h"
@@ -783,9 +783,11 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   synced = false;
   newFrame = independentFrame = false;
   numPtsValues = 0;
+  numFrames = 0;
   numIFrames = 0;
   framesPerSecond = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
+  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
 }
@@ -807,6 +809,7 @@ void cFrameDetector::SetPid(int Pid, int Type)
 void cFrameDetector::Reset(void)
 {
   newFrame = independentFrame = false;
+  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
 }
@@ -833,7 +836,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
                     return Processed; // need more data, in case the frame type is not stored in the first TS packet
-                 if (!framesPerSecond) {
+                 if (framesPerSecond <= 0.0) {
                     // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                        const uchar *Pes = Data + TsPayloadOffset(Data);
@@ -844,6 +847,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              dbgframes("#");
                              numPtsValues = 0;
                              numIFrames = 0;
+                             numFrames = 0;
                              }
                           else
                              numPtsValues++;
@@ -863,10 +867,23 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              framesPerSecond = 25.0;
                           else if (Delta % 3003 == 0)
                              framesPerSecond = 30.0 / 1.001;
-                          else if (abs(Delta - 1800) <= 1)
-                             framesPerSecond = 50.0;
+                          else if (abs(Delta - 1800) <= 1) {
+                             if (numFrames > 50) {
+                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
+                                framesPerSecond = 25.0;
+                                framesPerPayloadUnit = -2;
+                                }
+                             else
+                                framesPerSecond = 50.0;
+                             }
                           else if (Delta == 1501)
-                             framesPerSecond = 60.0 / 1.001;
+                             if (numFrames > 50) {
+                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
+                                framesPerSecond = 30.0 / 1.001;
+                                framesPerPayloadUnit = -2;
+                                }
+                             else
+                                framesPerSecond = 60.0 / 1.001;
                           else {
                              framesPerSecond = 25.0;
                              dsyslog("unknown frame delta (%d), assuming 25 fps", Delta);
@@ -874,7 +891,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                           }
                        else // audio
                           framesPerSecond = 90000.0 / Delta; // PTS of audio frames is always increasing
-                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d\n", Delta, framesPerSecond, framesPerPayloadUnit);
+                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numFrames);
                        }
                     }
                  scanner = EMPTY_SCANNER;
@@ -909,6 +926,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                   framesInPayloadUnit++;
                                   if (independentFrame)
                                      numIFrames++;
+                                  if (numIFrames == 1)
+                                     numFrames++;
                                   dbgframes("%d ", (Data[i + 2] >> 3) & 0x07);
                                   }
                                if (synced)
@@ -923,6 +942,13 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                newFrame = true;
                                independentFrame = Data[i + 1] == 0x10;
                                if (synced) {
+                                  if (framesPerPayloadUnit < 0) {
+                                     payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
+                                     if (payloadUnitOfFrame != 0 && independentFrame)
+                                        payloadUnitOfFrame = 0;
+                                     if (payloadUnitOfFrame)
+                                        newFrame = false;
+                                     }
                                   if (framesPerPayloadUnit <= 1)
                                      scanning = false;
                                   }
@@ -930,6 +956,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                   framesInPayloadUnit++;
                                   if (independentFrame)
                                      numIFrames++;
+                                  if (numIFrames == 1)
+                                     numFrames++;
                                   dbgframes("%02X ", Data[i + 1]);
                                   }
                                if (synced)
@@ -953,9 +981,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                 pid = 0; // let's just ignore any further data
                        }
                      }
-                 if (!synced && framesPerSecond && independentFrame) {
+                 if (!synced && framesPerSecond > 0.0 && independentFrame) {
                     synced = true;
-                    dbgframes("*");
+                    dbgframes("*\n");
                     Reset();
                     return Processed + TS_SIZE;
                     }

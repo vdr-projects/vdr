@@ -6,15 +6,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.2 2010/02/06 14:50:03 kls Exp $
+# $Id: Make.config.template 2.3 2011/03/13 13:41:12 kls Exp $
 
 ### The C compiler and options:
 
 CC       = gcc
-CFLAGS   = -g -O2 -Wall
+CFLAGS   = -g -O3 -Wall
 
 CXX      = g++
-CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+CXXFLAGS = -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
 
 ifdef PLUGIN
 CFLAGS   += -fPIC

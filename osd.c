@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.17 2011/03/12 15:32:33 kls Exp $
+ * $Id: osd.c 2.21 2011/04/17 14:25:07 kls Exp $
  */
 
 #include "osd.h"
@@ -503,8 +503,7 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
 {
   x -= x0;
   y -= y0;
-  if (0 <= x && x < width && 0 <= y && y < height)
-     SetIndex(x, y, Index(Color));
+  SetIndex(x, y, Index(Color));
 }
 
 void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool ReplacePalette, bool Overlay)
@@ -807,7 +806,7 @@ void cBitmap::ShrinkBpp(int NewBpp)
      }
 }
 
-cBitmap *cBitmap::Scale(double FactorX, double FactorY)
+cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
 {
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
@@ -815,19 +814,42 @@ cBitmap *cBitmap::Scale(double FactorX, double FactorY)
   b->Replace(*this); // copy palette
   int RatioX = (Width() << 16) / b->Width();
   int RatioY = (Height() << 16) / b->Height();
-  tIndex *DestRow = b->bitmap;
-  int SourceY = 0;
-  for (int y = 0; y < b->Height(); y++) {
-      int SourceX = 0;
-      tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
-      tIndex *Dest = DestRow;
-      for (int x = 0; x < b->Width(); x++) {
-          *Dest++ = SourceRow[SourceX >> 16];
-          SourceX += RatioX;
-          }
-      SourceY += RatioY;
-      DestRow += b->Width();
-      }
+  if (!AntiAlias || FactorX <= 1.0 && FactorY <= 1.0) {
+     // Downscaling - no anti-aliasing:
+     tIndex *DestRow = b->bitmap;
+     int SourceY = 0;
+     for (int y = 0; y < b->Height(); y++) {
+         int SourceX = 0;
+         tIndex *SourceRow = bitmap + (SourceY >> 16) * Width();
+         tIndex *Dest = DestRow;
+         for (int x = 0; x < b->Width(); x++) {
+             *Dest++ = SourceRow[SourceX >> 16];
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         DestRow += b->Width();
+         }
+     }
+  else {
+     // Upscaling - anti-aliasing:
+     b->SetBpp(8);
+     int SourceY = 0;
+     for (int y = 0; y < b->Height() - 1; y++) {
+         int SourceX = 0;
+         int sy = SourceY >> 16;
+         uint8_t BlendY = 0xFF - ((SourceY >> 8) & 0xFF);
+         for (int x = 0; x < b->Width() - 1; x++) {
+             int sx = SourceX >> 16;
+             uint8_t BlendX = 0xFF - ((SourceX >> 8) & 0xFF);
+             tColor c1 = b->Blend(GetColor(sx, sy),     GetColor(sx + 1, sy),     BlendX);
+             tColor c2 = b->Blend(GetColor(sx, sy + 1), GetColor(sx + 1, sy + 1), BlendX);
+             tColor c3 = b->Blend(c1, c2, BlendY);
+             b->DrawPixel(x + X0(), y + Y0(), c3);
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         }
+     }
   return b;
 }
 
@@ -1394,6 +1416,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
           case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          default: ;
           }
         x++;
         StoppingX += TwoBSquare;

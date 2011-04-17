@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.7 2011/02/26 12:09:18 kls Exp $
+ * $Id: font.c 2.8 2011/03/28 16:29:51 kls Exp $
  */
 
 #include "font.h"
@@ -520,7 +520,7 @@ cString cFont::Bidi(const char *Ltr)
   bool ok = fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL);
   if (ok) {
      fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
-     Rtl = MALLOC(char, RtlLen * 4);
+     Rtl = MALLOC(char, RtlLen * 4 + 1);
      fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
      }
   free(Logical);

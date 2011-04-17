@@ -1103,6 +1103,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing the array size of Atypes in cPatFilter::Process()
  for adding support for "registration descriptor" to 'libsi' and using it in pat.c
  for adding an include of VDR's 'Make.global' to libsi's Makefile
+ for adding handling of "ANSI/SCTE 57" descriptors
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1264,6 +1265,10 @@ Reinhard Nissl <rnissl@gmx.de>
  for some valuable input during development of the TrueColor OSD, help with
  debugging, and an implementation of the AlphaBlend() function.
  for storing the original display size when handling DVB subtitles
+ for reporting a problem with horizontal scaling of subtitles
+ for fixing a buffer overflow in cFont::Bidi()
+ for avoiding an unecessary call to Recordings.ResetResume()
+ for debugging a problem in handling the bitmap color depth for scaled subtitles
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1392,6 +1397,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for adding some missing 'const' statements to cBitmap
  for making cDevice::AddPid() store the stream type of the given pid
  for adding cFont::FontName() and cFont::Size()
+ for writing the dvbhddevice plugin
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1688,6 +1694,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting missing defines for large files in the 'newplugin' script
  for pointing out that the full timer file name should be displayed if it ends with
  "TITLE" or "EPISODE"
+ for a patch to "Made updating the editing marks during replay react faster in case
+ the marks file has just been written"
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1886,6 +1894,9 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding passing package name and version to xgettext
  for making 'dist' target dependent on up to date *.po
  for adding Language and fixing Language-Team header of *.po
+ for fixing the Language header of the Serbian translation file
+ for using pkg-config to get fribidi, freetype and fontconfig cflags and libs
+ for making the Makefile also install the include files
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2205,6 +2216,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting unused 'synced' member in cTsToPes
  for suggesting to add a note to cTsToPes about all TS packets having to belong to
  the same PID
+ for adding HD stream content identifiers to vdr.5
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2522,6 +2534,8 @@ Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
  for making several code modifications to avoid compiler warnings
  for improving the description of the transponder parameters in vdr.5
+ for reporting a necessary fix in the description of cReceiver in PLUGINS.html,
+ regarding detaching a receiver from its device before deleting it
 
 Igor M. Liplianin <liplianin@tut.by>
  for a patch that was used to convert VDR to the S2API driver API
@@ -2601,6 +2615,7 @@ Francesco Saverio Schiavarelli <fschiava@libero.it>
 
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for implementing the setup option "Miscellaneous/Channels wrap"
+ for reporting a missing change from -O2 to -O3 in Make.config.template
 
 Stephan Austermühle <au@hcsd.de>
  for suggesting to flush the file in cSafeFile::Close()
@@ -2622,6 +2637,8 @@ Paul Menzel <paulepanter@users.sourceforge.net>
  for making include paths not be overwritten in the Makefile
  for adding LDFLAGS to the linker calls in the Makefiles
  for reporting a possible memory leak in the "pictures" plugin
+ for removing an obsolete local variable in dvbsdffosd.c
+ for reporting a possible NULL pointer dereference in osddemo.c
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
@@ -2670,3 +2687,13 @@ Frank Neumann <frank.neumann@hp.com>
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
  the LIRC receiver code
+
+Juergen Lock <vdr-l@jelal.kn-bremen.de>
+ for fixing cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE
+
+Sergiu Dotenco <sergiu.dotenco@googlemail.com>
+ for reporting a missing initialization in sDvbSpuRect
+ for replacing "%lld" and "%llX" print format specifiers with "PRId64" and "PRIX64"
+
+Mika Laitio <lamikr@pilppa.org>
+ for reporting a case where cRecordingInfo::Read(FILE *f) was called with a NULL pointer

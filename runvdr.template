@@ -20,7 +20,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr.template 2.1 2010/01/17 12:39:27 kls Exp $
+# $Id: runvdr.template 2.2 2011/04/17 12:34:30 kls Exp $
 
 VDRPRG="./vdr"
 
@@ -30,8 +30,12 @@ VDROPTIONS="-w 60"
 VDRPLUGINS=""
 # You will need to select your output device plugin if you want
 # to use VDR to watch video. For instance, for a "Full Featured"
-# DVB card that would be
+# SD DVB card that would be
 # VDRPLUGINS="-P dvbsddevice"
+# For a "Full Featured" HD DVB card you could use
+# VDRPLUGINS="-P dvbhddevice"
+# There are also other output device plugins available, see
+# http://www.vdr-wiki.de/wiki/index.php/Plugins.
 
 VDRCMD="$VDRPRG $VDROPTIONS $VDRPLUGINS $*"
 

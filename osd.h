@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.11 2011/03/12 16:06:48 kls Exp $
+ * $Id: osd.h 2.13 2011/04/17 14:24:32 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -273,8 +273,11 @@ public:
        ///< the 2^NewBpp most frequently used colors as defined in the current palette.
        ///< If NewBpp is not smaller than the bitmap's current color depth,
        ///< or if it is not one of 4bpp or 2bpp, nothing happens.
-  cBitmap *Scale(double FactorX, double FactorY);
+  cBitmap *Scaled(double FactorX, double FactorY, bool AntiAlias = false);
        ///< Creates a copy of this bitmap, scaled by the given factors.
+       ///< If AntiAlias is true and either of the factors is greater than 1.0,
+       ///< anti-aliasing is applied. This will also set the color depth of the
+       ///< returned bitmap to 8bpp.
        ///< The caller must delete the returned bitmap once it is no longer used.
   };
 

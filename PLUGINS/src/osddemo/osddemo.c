@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.3 2011/02/26 12:08:13 kls Exp $
+ * $Id: osddemo.c 2.5 2011/04/17 13:05:13 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.2.0";
+static const char *VERSION        = "0.2.2";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -103,6 +103,7 @@ cTrueColorDemo::cTrueColorDemo(void)
 
 cTrueColorDemo::~cTrueColorDemo()
 {
+  Cancel(3);
   delete osd;
 }
 
@@ -262,12 +263,13 @@ void cTrueColorDemo::Action(void)
              case 3: {
                        if (cFont *Font = cFont::CreateFont(DefaultFontOsd, osd->Height() / 10)) {
                           NextPixmap = CreateTextPixmap("Millions of colors", Line, 1, clrYellow, clrTransparent, Font);
+                          delete Font;
                           if (NextPixmap) {
                              FadeInPixmap = NextPixmap;
+                             Start = cTimeMs::Now();
+                             StartLine = Line;
+                             Line += NextPixmap->DrawPort().Height();
                              }
-                          Start = cTimeMs::Now();
-                          StartLine = Line;
-                          Line += NextPixmap->DrawPort().Height();
                           }
                        State++;
                      }

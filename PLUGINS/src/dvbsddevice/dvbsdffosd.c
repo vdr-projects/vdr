@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffosd.c 2.2 2010/09/19 12:43:45 kls Exp $
+ * $Id: dvbsdffosd.c 2.3 2011/04/17 12:55:09 kls Exp $
  */
 
 #include "dvbsdffosd.h"
@@ -73,8 +73,7 @@ void cDvbSdFfOsd::SetActive(bool On)
            Flush();
         }
      else if (shown) {
-        cBitmap *Bitmap;
-        for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
+        for (int i = 0; GetBitmap(i); i++) {
             Cmd(OSD_SetWindow, 0, i + 1);
             Cmd(OSD_Close);
             }
@@ -108,8 +107,7 @@ eOsdError cDvbSdFfOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
 eOsdError cDvbSdFfOsd::SetAreas(const tArea *Areas, int NumAreas)
 {
   if (shown) {
-     cBitmap *Bitmap;
-     for (int i = 0; (Bitmap = GetBitmap(i)) != NULL; i++) {
+     for (int i = 0; GetBitmap(i); i++) {
          Cmd(OSD_SetWindow, 0, i + 1);
          Cmd(OSD_Close);
          }

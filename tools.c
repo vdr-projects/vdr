@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.12 2011/02/25 14:58:31 kls Exp $
+ * $Id: tools.c 2.13 2011/03/20 12:07:18 kls Exp $
  */
 
 #include "tools.h"
@@ -1575,9 +1575,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
      cachedstart = min(cachedstart, curpos);
 #endif
      ssize_t bytesRead = safe_read(fd, Data, Size);
-#ifdef USE_FADVISE
      if (bytesRead > 0) {
         curpos += bytesRead;
+#ifdef USE_FADVISE
         cachedend = max(cachedend, curpos);
 
         // Read ahead:
@@ -1597,8 +1597,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
            }
         else
            ahead = curpos; // jumped -> we really don't want any readahead, otherwise e.g. fast-rewind gets in trouble.
+#endif
         }
-
+#ifdef USE_FADVISE
      if (cachedstart < cachedend) {
         if (curpos - cachedstart > READCHUNK * 2) {
            // current position has moved forward enough, shrink tail window.

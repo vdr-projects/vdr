@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 2.4 2009/12/13 12:07:00 kls Exp $
+ * $Id: dvbspu.h 2.5 2011/03/27 14:50:48 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -32,6 +32,9 @@ typedef struct sDvbSpuRect {
     int x1, y1;
     int x2, y2;
 
+    sDvbSpuRect(void) {
+        x1 = y1 = x2 = y2 = 0;
+    };
     int width() const {
         return x2 - x1 + 1;
     };

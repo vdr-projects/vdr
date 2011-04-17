@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.27 2010/11/01 11:24:20 kls Exp $
+ * $Id: remux.h 2.28 2011/03/19 16:52:46 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -345,12 +345,15 @@ private:
   bool independentFrame;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
+  int numFrames;
   int numIFrames;
   bool isVideo;
   double framesPerSecond;
   int framesInPayloadUnit;
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
-                            // while others put an entire GOP into one payload unit (> 1).
+                            // some put an entire GOP into one payload unit (> 1), and
+                            // some spread a single frame over several payload units (< 0).
+  int payloadUnitOfFrame;
   bool scanning;
   uint32_t scanner;
 public:

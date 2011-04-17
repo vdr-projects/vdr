@@ -6556,3 +6556,53 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - The original display size of subtitles is now used to scale them properly when
   displaying them on an HD OSD.
+
+2011-04-17: Version 1.7.18
+
+- Changed -O2 to -O3 in Make.config.template (reported by Matti Lehtimäki).
+- Added a missing 'default' case in cPixmapMemory::DrawEllipse().
+- Fixed some direct comparisons of double values.
+- Fixed detecting frames on channels that broadcast with separate "fields" instead
+  of complete frames.
+- Made updating the editing marks during replay react faster in case the marks
+  file has just been written (with a patch from Udo Richter).
+- Fixed horizontal scaling of subtitles (reported by Reinhard Nissl).
+- Stripped the note "The data returned by this function is only used for informational
+  purposes (if any)" from the description of cDevice::GetVideoSize(). The VideoAspect
+  is now used to properly scale subtitles.
+- Fixed cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE (thanks
+  to Juergen Lock).
+- Fixed the Language header of the Serbian translation file (thanks to Ville Skyttä).
+- Added anti-aliasing when upscaling bitmaps, which improves the display of SD subtitles
+  when replayed on an HD OSD (thanks to Reinhard Nissl for his help in debugging).
+- Renamed cBitmap::Scale() to Scaled(), because it doesn't modify the bitmap itself,
+  but rather returns a scaled copy.
+- Fixed the description of cReceiver in PLUGINS.html, regarding detaching a receiver
+  from its device before deleting it (reported by Winfried Köhler). This change in
+  behavior was introduced in version 1.5.7.
+- Fixed scaling subtitles in case the OSD size is exactly the same as the display
+  size of the subtitles.
+- Added a missing initialization to sDvbSpuRect (reported by Sergiu Dotenco).
+- Replaced "%lld" and "%llX" print format specifiers with "PRId64" and "PRIX64" to
+  avoid compiler warnings with gcc 4.5.2 (thanks to Sergiu Dotenco).
+  On a personal note: I find it a step in the totally wrong direction that there
+  have been macros introduced to work around this problem in the first place. There
+  should have been "real" format specifiers defined that address this. These macros
+  are nothing but an ugly workaround.
+- Added Cancel(3) to ~cTrueColorDemo() in the "osddemo" plugin (thanks to Reinhard Nissl).
+- Added a missing font deletion in cTrueColorDemo::Action() in the "osddemo" plugin
+  (thanks to Reinhard Nissl).
+- Fixed a buffer overflow in cFont::Bidi() (thanks to Reinhard Nissl).
+- Added HD stream content identifiers to vdr.5 (thanks to Christoph Haubrich).
+- Made cRecordingInfo::Read(FILE *f) private to avoid calls to it from outside
+  cRecordingInfo or cRecording (reported by Mika Laitio).
+- The dvbhddevice plugin is now part of the VDR distribution archive (thanks to
+  Andreas Regel).
+- Removed an obsolete local variable in dvbsdffosd.c (thanks to Paul Menzel).
+- Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).
+- Now using pkg-config to get fribidi, freetype and fontconfig cflags and libs (thanks
+  to Ville Skyttä).
+- The Makefile now also installs the include files (thanks to Ville Skyttä).
+- Added handling of "ANSI/SCTE 57" descriptors (thanks too Rolf Ahrenberg).
+- Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
+  Nissl).

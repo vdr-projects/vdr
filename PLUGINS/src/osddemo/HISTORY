@@ -25,3 +25,12 @@ VDR Plugin 'osddemo' Revision History
 2011-02-20: Version 0.2.0
 
 - Added support for TrueColor OSD.
+
+2011-03-28: Version 0.2.1
+
+- Added Cancel(3) to ~cTrueColorDemo() (thanks to Reinhard Nissl).
+- Added a missing font deletion in cTrueColorDemo::Action() (thanks to Reinhard Nissl).
+
+2011-04-17: Version 0.2.2
+
+- Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).

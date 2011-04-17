@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.16 2011/02/27 12:48:21 kls Exp $
+ * $Id: recording.h 2.19 2011/04/17 13:18:04 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -57,6 +57,7 @@ private:
   int lifetime;
   char *fileName;
   cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
+  bool Read(FILE *f);
   void SetData(const char *Title, const char *ShortText, const char *Description);
   void SetAux(const char *Aux);
 public:
@@ -72,7 +73,6 @@ public:
   const char *Aux(void) const { return aux; }
   double FramesPerSecond(void) const { return framesPerSecond; }
   void SetFramesPerSecond(double FramesPerSecond);
-  bool Read(FILE *f);
   bool Write(FILE *f, const char *Prefix = "") const;
   bool Read(void);
   bool Write(void) const;
@@ -192,8 +192,9 @@ class cMarks : public cConfig<cMark> {
 private:
   cString fileName;
   double framesPerSecond;
-  time_t lastUpdate;
+  time_t nextUpdate;
   time_t lastFileTime;
+  time_t lastChange;
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);

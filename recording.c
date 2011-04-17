@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.26 2011/02/27 13:35:20 kls Exp $
+ * $Id: recording.c 2.30 2011/04/17 13:53:11 kls Exp $
  */
 
 #include "recording.h"
@@ -12,6 +12,8 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#define __STDC_FORMAT_MACROS // Required for format specifiers
+#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -301,9 +303,10 @@ bool cResumeFile::Save(int Index)
 void cResumeFile::Delete(void)
 {
   if (fileName) {
-     if (remove(fileName) < 0 && errno != ENOENT)
+     if (remove(fileName) == 0)
+        Recordings.ResetResume(fileName);
+     else if (errno != ENOENT)
         LOG_ERROR_STR(fileName);
-     Recordings.ResetResume(fileName);
      }
 }
 
@@ -1270,19 +1273,31 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 {
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
-  lastUpdate = 0;
+  nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
+  lastChange = 0;
   return Update();
 }
 
 bool cMarks::Update(void)
 {
   time_t t = time(NULL);
-  if (t - lastUpdate > MARKSUPDATEDELTA) {
-     lastUpdate = t;
-     t = LastModifiedTime(fileName);
-     if (t > lastFileTime) {
-        lastFileTime = t;
+  if (t > nextUpdate) {
+     time_t LastModified = LastModifiedTime(fileName);
+     if (LastModified != lastFileTime) // change detected, or first run
+        lastChange = LastModified > 0 ? LastModified : t;
+     int d = t - lastChange;
+     if (d < 60)
+        d = 1; // check frequently if the file has just been modified
+     else if (d < 3600)
+        d = 10; // older files are checked less frequently
+     else
+        d /= 360; // phase out checking for very old files
+     nextUpdate = t + d;
+     if (LastModified != lastFileTime) { // change detected, or first run
+        lastFileTime = LastModified;
+        if (lastFileTime == t)
+           lastFileTime--; // make sure we don't miss updates in the remaining second
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
@@ -1550,7 +1565,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
               delta = int(buf.st_size % sizeof(tIndexTs));
               if (delta) {
                  delta = sizeof(tIndexTs) - delta;
-                 esyslog("ERROR: invalid file size (%lld) in '%s'", buf.st_size, fileName);
+                 esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, fileName);
                  }
               last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
               if (!Record && last >= 0) {
