@@ -2257,6 +2257,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for reporting unneeded include files <linux/dvb/dmx.h> and <time.h> in remux.h
  for a patch that added a workaround for the broken linux-dvb driver header files
  for reporting a faulty "frame duration" instead of "frame rate" in vdr.5
+ for avoiding a gcc 4.6 compiler error in the skincurses plugin.
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
