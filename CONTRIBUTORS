@@ -2697,3 +2697,7 @@ Sergiu Dotenco <sergiu.dotenco@googlemail.com>
 
 Mika Laitio <lamikr@pilppa.org>
  for reporting a case where cRecordingInfo::Read(FILE *f) was called with a NULL pointer
+
+Dirk Leber <dirk.leber@reel-multimedia.com>
+ for fixing cString's operator=(const char *String) in case the given string is the
+ same as the existing one
