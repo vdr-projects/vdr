@@ -2702,3 +2702,5 @@ Mika Laitio <lamikr@pilppa.org>
 Dirk Leber <dirk.leber@reel-multimedia.com>
  for fixing cString's operator=(const char *String) in case the given string is the
  same as the existing one
+ for reporting that TsGetPayload() gets called without checking whether there actually
+ is a payload in the given TS packet

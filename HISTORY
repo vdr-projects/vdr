@@ -6612,3 +6612,5 @@ Video Disk Recorder Revision History
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
 - Avoiding a gcc 4.6 compiler error in the skincurses plugin (thanks to Tobias Grimm).
+- TsGetPayload() now checks if there actually is a payload in the given TS packet
+  (reported by Dirk Leber).
