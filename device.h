@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.24 2011/03/21 17:58:41 kls Exp $
+ * $Id: device.h 2.25 2011/05/21 12:54:43 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -197,6 +197,9 @@ public:
          ///< Returns the number of this device (0 ... numDevices).
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
+  virtual bool AvoidRecording(void) const { return false; }
+         ///< Returns true if this device should only be used for recording
+         ///< if no other device is available.
 
 // Device hooks
 

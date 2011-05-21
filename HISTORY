@@ -6618,3 +6618,5 @@ Video Disk Recorder Revision History
   are not dependent on the sequence of the files.
   Plugin authors may want to change the line containing the xgettext call in their
   Makefile accordingly by changing "$^" to "`ls $^`".
+- The primary device is now only avoided for recording if it is an old SD full
+  featured card. This is done through the new function cDevice::AvoidRecording().

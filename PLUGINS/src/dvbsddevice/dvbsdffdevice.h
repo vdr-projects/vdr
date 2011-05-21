@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.11 2010/01/04 11:01:14 kls Exp $
+ * $Id: dvbsdffdevice.h 2.12 2011/05/21 12:56:49 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -23,6 +23,7 @@ public:
   cDvbSdFfDevice(int Adapter, int Frontend);
   virtual ~cDvbSdFfDevice();
   virtual bool HasDecoder(void) const;
+  virtual bool AvoidRecording(void) const;
 
 // SPU facilities
 
