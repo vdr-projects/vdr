@@ -6614,3 +6614,7 @@ Video Disk Recorder Revision History
 - Avoiding a gcc 4.6 compiler error in the skincurses plugin (thanks to Tobias Grimm).
 - TsGetPayload() now checks if there actually is a payload in the given TS packet
   (reported by Dirk Leber).
+- Now sorting the source file names in the call to xgettext, to make sure the results
+  are not dependent on the sequence of the files.
+  Plugin authors may want to change the line containing the xgettext call in their
+  Makefile accordingly by changing "$^" to "`ls $^`".
