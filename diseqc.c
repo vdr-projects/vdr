@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.2 2010/02/06 15:43:31 kls Exp $
+ * $Id: diseqc.c 2.3 2011/05/21 22:07:08 kls Exp $
  */
 
 #include "diseqc.h"
@@ -157,7 +157,7 @@ cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polarization)
       if (Devices && !(Devices & (1 << Device - 1)))
          continue;
       if (p->Source() == Source && p->Slof() > Frequency && p->Polarization() == toupper(Polarization))
-        return p;
+         return p;
       }
   return NULL;
 }
