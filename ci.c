@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.6 2010/01/02 10:39:50 kls Exp $
+ * $Id: ci.c 2.7 2011/05/21 15:21:33 kls Exp $
  */
 
 #include "ci.h"
@@ -1894,9 +1894,9 @@ void cCamSlot::SetPid(int Pid, bool Active)
 }
 
 // see ISO/IEC 13818-1
-#define STREAM_TYPE_VIDEO  0x02
-#define STREAM_TYPE_AUDIO  0x04
-#define STREAM_TYPE_DOLBY  0x06
+#define STREAM_TYPE_VIDEO    0x02
+#define STREAM_TYPE_AUDIO    0x04
+#define STREAM_TYPE_PRIVATE  0x06
 
 void cCamSlot::AddChannel(const cChannel *Channel)
 {
@@ -1910,7 +1910,9 @@ void cCamSlot::AddChannel(const cChannel *Channel)
      for (const int *Apid = Channel->Apids(); *Apid; Apid++)
          AddPid(Channel->Sid(), *Apid, STREAM_TYPE_AUDIO);
      for (const int *Dpid = Channel->Dpids(); *Dpid; Dpid++)
-         AddPid(Channel->Sid(), *Dpid, STREAM_TYPE_DOLBY);
+         AddPid(Channel->Sid(), *Dpid, STREAM_TYPE_PRIVATE);
+     for (const int *Spid = Channel->Spids(); *Spid; Spid++)
+         AddPid(Channel->Sid(), *Spid, STREAM_TYPE_PRIVATE);
      }
 }
 
@@ -1931,7 +1933,9 @@ bool cCamSlot::CanDecrypt(const cChannel *Channel)
      for (const int *Apid = Channel->Apids(); *Apid; Apid++)
          CaPmt.AddPid(*Apid, STREAM_TYPE_AUDIO);
      for (const int *Dpid = Channel->Dpids(); *Dpid; Dpid++)
-         CaPmt.AddPid(*Dpid, STREAM_TYPE_DOLBY);
+         CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
+     for (const int *Spid = Channel->Spids(); *Spid; Spid++)
+         CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE); 
      cas->SendPMT(&CaPmt);
      cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
      do {

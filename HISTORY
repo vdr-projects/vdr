@@ -6607,7 +6607,7 @@ Video Disk Recorder Revision History
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
-2011-05-15: Version 1.7.19
+2011-05-21: Version 1.7.19
 
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
@@ -6620,3 +6620,4 @@ Video Disk Recorder Revision History
   Makefile accordingly by changing "$^" to "`ls $^`".
 - The primary device is now only avoided for recording if it is an old SD full
   featured card. This is done through the new function cDevice::AvoidRecording().
+- Subtitle PIDs are now also decrypted (thanks to Reinhard Nissl).
