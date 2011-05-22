@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.38 2010/05/01 09:47:13 kls Exp $
+ * $Id: dvbdevice.c 2.39 2011/05/22 10:34:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -392,11 +392,11 @@ bool cDvbTuner::SetFrontend(void)
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), dtp.Polarization());
+        const cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), dtp.Polarization());
         if (diseqc) {
            if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
               cDiseqc::eDiseqcActions da;
-              for (char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
+              for (const char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
                   switch (da) {
                     case cDiseqc::daNone:      break;
                     case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
@@ -407,7 +407,7 @@ bool cDvbTuner::SetFrontend(void)
                     case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
                     case cDiseqc::daCodes: {
                          int n = 0;
-                         uchar *codes = diseqc->Codes(n);
+                         const uchar *codes = diseqc->Codes(n);
                          if (codes) {
                             struct dvb_diseqc_master_cmd cmd;
                             cmd.msg_len = min(n, int(sizeof(cmd.msg)));

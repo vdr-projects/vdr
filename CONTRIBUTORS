@@ -2707,3 +2707,6 @@ Dirk Leber <dirk.leber@reel-multimedia.com>
  same as the existing one
  for reporting that TsGetPayload() gets called without checking whether there actually
  is a payload in the given TS packet
+
+Marco Göbenich <mg@needful.de>
+ for reporting a problem with executing diseqc commands from different threads
