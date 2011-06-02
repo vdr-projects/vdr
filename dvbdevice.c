@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.39 2011/05/22 10:34:49 kls Exp $
+ * $Id: dvbdevice.c 2.40 2011/06/02 13:28:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -253,12 +253,15 @@ bool cDvbTransponderParameters::Parse(const char *s)
 
 // --- cDvbTuner -------------------------------------------------------------
 
+#define TUNER_POLL_TIMEOUT  10 // ms
+
 class cDvbTuner : public cThread {
 private:
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
   int device;
   int fd_frontend;
   int adapter, frontend;
+  uint32_t subsystemId;
   int tuneTimeout;
   int lockTimeout;
   time_t lastTimeoutReport;
@@ -269,16 +272,20 @@ private:
   cMutex mutex;
   cCondVar locked;
   cCondVar newSet;
-  bool GetFrontendStatus(fe_status_t &Status, int TimeoutMs = 0);
+  void ClearEventQueue(void) const;
+  bool GetFrontendStatus(fe_status_t &Status) const;
   bool SetFrontend(void);
   virtual void Action(void);
 public:
   cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
   virtual ~cDvbTuner();
   const cChannel *GetTransponder(void) const { return &channel; }
+  uint32_t SubsystemId(void) const { return subsystemId; }
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
+  int GetSignalStrength(void) const;
+  int GetSignalQuality(void) const;
   };
 
 cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
@@ -288,6 +295,7 @@ cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_
   adapter = Adapter;
   frontend = Frontend;
   frontendType = FrontendType;
+  subsystemId = cDvbDeviceProbe::GetSubsystemId(adapter, frontend);
   tuneTimeout = 0;
   lockTimeout = 0;
   lastTimeoutReport = 0;
@@ -339,16 +347,19 @@ bool cDvbTuner::Locked(int TimeoutMs)
   return tunerStatus >= tsLocked;
 }
 
-bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
+void cDvbTuner::ClearEventQueue(void) const
 {
-  if (TimeoutMs) {
-     cPoller Poller(fd_frontend);
-     if (Poller.Poll(TimeoutMs)) {
-        dvb_frontend_event Event;
-        while (ioctl(fd_frontend, FE_GET_EVENT, &Event) == 0)
-              ; // just to clear the event queue - we'll read the actual status below
-        }
+  cPoller Poller(fd_frontend);
+  if (Poller.Poll(TUNER_POLL_TIMEOUT)) {
+     dvb_frontend_event Event;
+     while (ioctl(fd_frontend, FE_GET_EVENT, &Event) == 0)
+           ; // just to clear the event queue - we'll read the actual status below
      }
+}
+
+bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
+{
+  ClearEventQueue();
   while (1) {
         if (ioctl(fd_frontend, FE_READ_STATUS, &Status) != -1)
            return true;
@@ -356,6 +367,104 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
            break;
         }
   return false;
+}
+
+//#define DEBUG_SIGNALSTRENGTH
+//#define DEBUG_SIGNALQUALITY
+
+int cDvbTuner::GetSignalStrength(void) const
+{
+  ClearEventQueue();
+  uint16_t Signal;
+  while (1) {
+        if (ioctl(fd_frontend, FE_READ_SIGNAL_STRENGTH, &Signal) != -1)
+           break;
+        if (errno != EINTR)
+           return -1;
+        }
+  uint16_t MaxSignal = 0xFFFF; // Let's assume the default is using the entire range.
+  // Use the subsystemId to identify individual devices in case they need
+  // special treatment to map their Signal value into the range 0...0xFFFF.
+  int s = int(Signal) * 100 / MaxSignal;
+  if (s > 100)
+     s = 100;
+#ifdef DEBUG_SIGNALSTRENGTH
+  fprintf(stderr, "FE %d/%d: %08X S = %04X %04X %3d%%\n", adapter, frontend, subsystemId, MaxSignal, Signal, s);
+#endif
+  return s;
+}
+
+#define LOCK_THRESHOLD 10
+
+int cDvbTuner::GetSignalQuality(void) const
+{
+  fe_status_t Status;
+  if (GetFrontendStatus(Status)) {
+     if ((Status & FE_HAS_SIGNAL) == 0)
+        return 0;
+     if ((Status & FE_HAS_CARRIER) == 0)
+        return LOCK_THRESHOLD / 4;
+     if ((Status & FE_HAS_VITERBI) == 0)
+        return LOCK_THRESHOLD / 3;
+     if ((Status & FE_HAS_SYNC) == 0)
+        return LOCK_THRESHOLD / 2;
+     if ((Status & FE_HAS_LOCK) == 0)
+        return LOCK_THRESHOLD;
+     bool HasSnr = true;
+     uint16_t Snr;
+     while (1) {
+           if (ioctl(fd_frontend, FE_READ_SNR, &Snr) != -1)
+              break;
+           if (errno == EOPNOTSUPP) {
+              Snr = 0xFFFF;
+              HasSnr = false;
+              break;
+              }
+           if (errno != EINTR)
+              return -1;
+           }
+     bool HasBer = true;
+     uint32_t Ber;
+     while (1) {
+           if (ioctl(fd_frontend, FE_READ_BER, &Ber) != -1)
+              break;
+           if (errno == EOPNOTSUPP) {
+              Ber = 0;
+              HasBer = false;
+              break;
+              }
+           if (errno != EINTR)
+              return -1;
+           }
+     bool HasUnc = true;
+     uint32_t Unc;
+     while (1) {
+           if (ioctl(fd_frontend, FE_READ_UNCORRECTED_BLOCKS, &Unc) != -1)
+              break;
+           if (errno == EOPNOTSUPP) {
+              Unc = 0;
+              HasUnc = false;
+              break;
+              }
+           if (errno != EINTR)
+              return -1;
+           }
+     uint16_t MaxSnr = 0xFFFF; // Let's assume the default is using the entire range.
+     // Use the subsystemId to identify individual devices in case they need
+     // special treatment to map their Snr value into the range 0...0xFFFF.
+     int a = int(Snr) * 100 / MaxSnr;
+     int b = 100 - (Unc * 10 + (Ber / 256) * 5);
+     if (b < 0)
+        b = 0;
+     int q = LOCK_THRESHOLD + a * b * (100 - LOCK_THRESHOLD) / 100 / 100;
+     if (q > 100)
+        q = 100;
+#ifdef DEBUG_SIGNALQUALITY
+     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
+#endif
+     return q;
+     }
+  return -1;
 }
 
 static unsigned int FrequencyToHz(unsigned int f)
@@ -504,9 +613,9 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
      SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_MODULATION, dtp.Modulation());
-     
+
      tuneTimeout = ATSC_TUNE_TIMEOUT;
-     lockTimeout = ATSC_LOCK_TIMEOUT;     
+     lockTimeout = ATSC_LOCK_TIMEOUT;
      }
   else {
      esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
@@ -527,7 +636,7 @@ void cDvbTuner::Action(void)
   fe_status_t Status = (fe_status_t)0;
   while (Running()) {
         fe_status_t NewStatus;
-        if (GetFrontendStatus(NewStatus, 10))
+        if (GetFrontendStatus(NewStatus))
            Status = NewStatus;
         cMutexLock MutexLock(&mutex);
         switch (tunerStatus) {
@@ -936,7 +1045,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
 
-  if (ProvidesTransponder(Channel)) {
+  if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
      if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
@@ -969,19 +1078,30 @@ int cDvbDevice::NumProvidedSystems(void) const
   return numProvidedSystems;
 }
 
+int cDvbDevice::SignalStrength(void) const
+{
+  return dvbTuner ? dvbTuner->GetSignalStrength() : -1;
+}
+
+int cDvbDevice::SignalQuality(void) const
+{
+  return dvbTuner ? dvbTuner->GetSignalQuality() : -1;
+}
+
 const cChannel *cDvbDevice::GetCurrentlyTunedTransponder(void) const
 {
-  return dvbTuner->GetTransponder(); 
+  return dvbTuner ? dvbTuner->GetTransponder() : NULL;
 }
 
 bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel)
 {
-  return dvbTuner->IsTunedTo(Channel);
+  return dvbTuner ? dvbTuner->IsTunedTo(Channel) : false;
 }
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-  dvbTuner->Set(Channel);
+  if (dvbTuner)
+     dvbTuner->Set(Channel);
   return true;
 }
 
@@ -1035,4 +1155,25 @@ cDvbDeviceProbe::cDvbDeviceProbe(void)
 cDvbDeviceProbe::~cDvbDeviceProbe()
 {
   DvbDeviceProbes.Del(this, false);
+}
+
+uint32_t cDvbDeviceProbe::GetSubsystemId(int Adapter, int Frontend)
+{
+  cString FileName;
+  cReadLine ReadLine;
+  FILE *f = NULL;
+  uint32_t SubsystemId = 0;
+  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
+  if ((f = fopen(FileName, "r")) != NULL) {
+     if (char *s = ReadLine.Read(f))
+        SubsystemId = strtoul(s, NULL, 0) << 16;
+     fclose(f);
+     }
+  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
+  if ((f = fopen(FileName, "r")) != NULL) {
+     if (char *s = ReadLine.Read(f))
+        SubsystemId |= strtoul(s, NULL, 0);
+     fclose(f);
+     }
+  return SubsystemId;
 }

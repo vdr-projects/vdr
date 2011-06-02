@@ -1104,6 +1104,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding support for "registration descriptor" to 'libsi' and using it in pat.c
  for adding an include of VDR's 'Make.global' to libsi's Makefile
  for adding handling of "ANSI/SCTE 57" descriptors
+ for some input on how to use BER and UNC values to generate a "quality" value
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.25 2011/05/21 12:54:43 kls Exp $
+ * $Id: device.h 2.26 2011/06/02 13:15:31 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -253,6 +253,16 @@ public:
          ///< actually provide channels must implement this function.
          ///< The result of this function is used when selecting a device, in order
          ///< to avoid devices that provide more than one system.
+  virtual int SignalStrength(void) const;
+         ///< Returns the "strength" of the currently received signal.
+         ///< This is a value in the range 0 (no signal at all) through
+         ///< 100 (best possible signal). A value of -1 indicates that this
+         ///< device has no concept of a "signal strength".
+  virtual int SignalQuality(void) const;
+         ///< Returns the "quality" of the currently received signal.
+         ///< This is a value in the range 0 (worst quality) through
+         ///< 100 (best possible quality). A value of -1 indicates that this
+         ///< device has no concept of a "signal quality".
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
          ///< Returns a pointer to the currently tuned transponder.
          ///< This is not one of the channels in the global cChannels list, but rather

@@ -6607,7 +6607,7 @@ Video Disk Recorder Revision History
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
-2011-05-22: Version 1.7.19
+2011-06-02: Version 1.7.19
 
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
@@ -6624,3 +6624,11 @@ Video Disk Recorder Revision History
 - Fixed a possible race condition in cDiseqc::Execute() (reported by Marco Göbenich).
   The return value of cDiseqcs::Get() is now const, so plugin authors may need to
   adjust their code if they use this function.
+- The new functions cDevice::SignalStrength() and cDevice::SignalQuality() can be
+  used to determine the signal strength and quality of a given device (thanks to
+  Rolf Ahrenberg for some input on how to use BER and UNC values to generate a
+  "quality" value).
+- The 'sttng' skin now displays two colored bars at the bottom of the channel display,
+  indicating the strength (upper bar) and quality (lower bar) of the received signal.
+  The number to the left of these bars indicates the actual device the current
+  channel is being received with.
