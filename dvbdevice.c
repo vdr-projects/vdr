@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.40 2011/06/02 13:28:42 kls Exp $
+ * $Id: dvbdevice.c 2.41 2011/06/05 16:22:51 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -385,6 +385,9 @@ int cDvbTuner::GetSignalStrength(void) const
   uint16_t MaxSignal = 0xFFFF; // Let's assume the default is using the entire range.
   // Use the subsystemId to identify individual devices in case they need
   // special treatment to map their Signal value into the range 0...0xFFFF.
+  switch (subsystemId) {
+    case 0x13C21019: MaxSignal = 870; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+    }
   int s = int(Signal) * 100 / MaxSignal;
   if (s > 100)
      s = 100;
@@ -394,22 +397,24 @@ int cDvbTuner::GetSignalStrength(void) const
   return s;
 }
 
-#define LOCK_THRESHOLD 10
+#define LOCK_THRESHOLD 5 // indicates that all 5 FE_HAS_* flags are set
 
 int cDvbTuner::GetSignalQuality(void) const
 {
   fe_status_t Status;
   if (GetFrontendStatus(Status)) {
-     if ((Status & FE_HAS_SIGNAL) == 0)
-        return 0;
-     if ((Status & FE_HAS_CARRIER) == 0)
-        return LOCK_THRESHOLD / 4;
-     if ((Status & FE_HAS_VITERBI) == 0)
-        return LOCK_THRESHOLD / 3;
-     if ((Status & FE_HAS_SYNC) == 0)
-        return LOCK_THRESHOLD / 2;
-     if ((Status & FE_HAS_LOCK) == 0)
-        return LOCK_THRESHOLD;
+     // Actually one would expect these checks to be done from FE_HAS_SIGNAL to FE_HAS_LOCK, but some drivers (like the stb0899) are broken, so FE_HAS_LOCK is the only one that (hopefully) is generally reliable...
+     if ((Status & FE_HAS_LOCK) == 0) {
+        if ((Status & FE_HAS_SIGNAL) == 0)
+           return 0;
+        if ((Status & FE_HAS_CARRIER) == 0)
+           return 1;
+        if ((Status & FE_HAS_VITERBI) == 0)
+           return 2;
+        if ((Status & FE_HAS_SYNC) == 0)
+           return 3;
+        return 4;
+        }
      bool HasSnr = true;
      uint16_t Snr;
      while (1) {
@@ -452,6 +457,9 @@ int cDvbTuner::GetSignalQuality(void) const
      uint16_t MaxSnr = 0xFFFF; // Let's assume the default is using the entire range.
      // Use the subsystemId to identify individual devices in case they need
      // special treatment to map their Snr value into the range 0...0xFFFF.
+     switch (subsystemId) {
+       case 0x13C21019: MaxSnr = 200; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+       }
      int a = int(Snr) * 100 / MaxSnr;
      int b = 100 - (Unc * 10 + (Ber / 256) * 5);
      if (b < 0)
