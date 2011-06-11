@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.54 2011/06/11 11:20:06 kls Exp $
+ * $Id: remux.c 2.55 2011/06/11 11:35:18 kls Exp $
  */
 
 #include "remux.h"
@@ -840,7 +840,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                        const uchar *Pes = Data + TsPayloadOffset(Data);
-                       if (PesHasPts(Pes)) {
+                       if (numIFrames && PesHasPts(Pes)) {
                           ptsValues[numPtsValues] = PesGetPts(Pes);
                           // check for rollover:
                           if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
