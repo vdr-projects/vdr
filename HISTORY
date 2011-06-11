@@ -6607,7 +6607,7 @@ Video Disk Recorder Revision History
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
-2011-06-02: Version 1.7.19
+2011-06-11: Version 1.7.19
 
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
@@ -6632,3 +6632,5 @@ Video Disk Recorder Revision History
   indicating the strength (upper bar) and quality (lower bar) of the received signal.
   The number to the left of these bars indicates the actual device the current
   channel is being received with.
+- Fixed detecting frames in case the Picture Start Code or Access Unit Delimiter
+  extends over TS packet boundaries (reported by Johan Andersson).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.53 2011/03/20 10:21:14 kls Exp $
+ * $Id: remux.c 2.54 2011/06/11 11:20:06 kls Exp $
  */
 
 #include "remux.h"
@@ -906,9 +906,20 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     if (DebugFrames && !synced)
                        dbgframes("/");
                     }
+                 int PacketsForFrameDetector = MIN_TS_PACKETS_FOR_FRAME_DETECTOR;
                  for (int i = PayloadOffset; scanning && i < TS_SIZE; i++) {
                      scanner <<= 8;
                      scanner |= Data[i];
+                     if (i == TS_SIZE - 1) { // it was the last byte in this TS packet
+                        if (SeenPayloadStart && --PacketsForFrameDetector > 0) {
+                           Data += TS_SIZE;
+                           Length -= TS_SIZE;
+                           Processed += TS_SIZE;
+                           if (Length < TS_SIZE)
+                              return Processed;
+                           i = TsPayloadOffset(Data) - 1; // one before the first payload byte of the next TS packet
+                           }
+                        }
                      switch (type) {
                        case 0x01: // MPEG 1 video
                        case 0x02: // MPEG 2 video

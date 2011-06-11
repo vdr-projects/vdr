@@ -2711,3 +2711,7 @@ Dirk Leber <dirk.leber@reel-multimedia.com>
 
 Marco Göbenich <mg@needful.de>
  for reporting a problem with executing diseqc commands from different threads
+
+Johan Andersson <jna@jna.pp.se>
+ for reporting a bug in detecting frames in case the Picture Start Code or Access Unit
+ Delimiter extends over TS packet boundaries
