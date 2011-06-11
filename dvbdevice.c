@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.41 2011/06/05 16:22:51 kls Exp $
+ * $Id: dvbdevice.c 2.42 2011/06/11 14:34:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -386,7 +386,7 @@ int cDvbTuner::GetSignalStrength(void) const
   // Use the subsystemId to identify individual devices in case they need
   // special treatment to map their Signal value into the range 0...0xFFFF.
   switch (subsystemId) {
-    case 0x13C21019: MaxSignal = 870; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+    case 0x13C21019: MaxSignal = 670; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
     }
   int s = int(Signal) * 100 / MaxSignal;
   if (s > 100)
