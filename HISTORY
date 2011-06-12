@@ -6634,6 +6634,9 @@ Video Disk Recorder Revision History
   channel is being received with.
 - Fixed detecting frames in case the Picture Start Code or Access Unit Delimiter
   extends over TS packet boundaries (reported by Johan Andersson).
+  In order to fix this, the semantics of cFrameDetector had to be changed a little.
+  See cRecorder::Action() and cIndexFileGenerator::Action() on how to use the new
+  cFrameDetector::NewPayload() function.
 - The frame detector now only starts collecting PTS values after it has seen the
   first I-frame, otherwise it might get MaxPtsValues values and stop analyzing
   even though the incoming data is still garbage (reported by Derek Kelly).
