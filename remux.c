@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.56 2011/06/12 13:51:59 kls Exp $
+ * $Id: remux.c 2.57 2011/06/12 14:24:09 kls Exp $
  */
 
 #include "remux.h"
@@ -12,6 +12,7 @@
 #include "libsi/si.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+#include "recording.h"
 #include "shutdown.h"
 #include "tools.h"
 
@@ -883,8 +884,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              else
                                 framesPerSecond = 60.0 / 1.001;
                           else {
-                             framesPerSecond = 25.0;
-                             dsyslog("unknown frame delta (%d), assuming 25 fps", Delta);
+                             framesPerSecond = DEFAULTFRAMESPERSECOND;
+                             dsyslog("unknown frame delta (%d), assuming %5.2f fps", Delta, DEFAULTFRAMESPERSECOND);
                              }
                           }
                        else // audio

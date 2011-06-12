@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.10 2011/06/12 13:35:20 kls Exp $
+ * $Id: recorder.c 2.11 2011/06/12 14:16:45 kls Exp $
  */
 
 #include "recorder.h"
@@ -133,7 +133,7 @@ void cRecorder::Action(void)
                  if (!InfoWritten) {
                     cRecordingInfo RecordingInfo(recordingName);
                     if (RecordingInfo.Read()) {
-                       if (frameDetector->FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
+                       if (frameDetector->FramesPerSecond() > 0 && DoubleEqual(RecordingInfo.FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
                           RecordingInfo.SetFramesPerSecond(frameDetector->FramesPerSecond());
                           RecordingInfo.Write();
                           Recordings.UpdateByName(recordingName);
