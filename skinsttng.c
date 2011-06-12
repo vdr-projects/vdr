@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.8 2011/06/02 12:54:43 kls Exp $
+ * $Id: skinsttng.c 2.9 2011/06/12 14:40:50 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -338,8 +338,37 @@ void cSkinSTTNGDisplayChannel::Flush(void)
            osd->DrawText(x3 + TextFrame, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 2 * TextFrame);
            strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
            }
+        int DeviceNumber = cDevice::ActualDevice()->DeviceNumber() + 1;
+        int SignalStrength = cDevice::ActualDevice()->SignalStrength();
+        int SignalQuality = cDevice::ActualDevice()->SignalQuality();
+        if (DeviceNumber != lastDeviceNumber || SignalStrength != lastSignalStrength || SignalQuality != lastSignalQuality) {
+           int d = 3;
+           int h = ((y7 - y6 + 1) - 3 * d) / 2;
+           int w = (x4 - x3) / 5;
+           int x = (x3 + x4) / 2 - w / 2;
+           if (SignalStrength >= 0) {
+              int s = SignalStrength * w / 100;
+              osd->DrawRectangle(x,     y6 + d, x + s - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalValue));
+              osd->DrawRectangle(x + s, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalRest));
+              }
+           else if (DeviceNumber != lastDeviceNumber)
+              osd->DrawRectangle(x, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelFrame));
+           if (SignalQuality >= 0) {
+              int q = SignalQuality * w / 100;
+              osd->DrawRectangle(x,     y7 - d - h + 1, x + q - 1, y7 - d, Theme.Color(clrChannelSignalValue));
+              osd->DrawRectangle(x + q, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelSignalRest));
+              }
+           else if (DeviceNumber != lastDeviceNumber)
+              osd->DrawRectangle(x, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelFrame));
+           cString dn = cString::sprintf(" %d ", DeviceNumber);
+           const cFont *font = cFont::GetFont(fontSml);
+           int dw = font->Width(dn);
+           osd->DrawText(x - 2 * d - dw, y6, dn, Theme.Color(clrChannelDate), frameColor, font, dw);
+           lastDeviceNumber = DeviceNumber;
+           lastSignalStrength = SignalStrength;
+           lastSignalQuality = SignalQuality;
+           }
         }
-
      int seen = 0;
      if (present) {
         time_t t = time(NULL);
@@ -351,36 +380,6 @@ void cSkinSTTNGDisplayChannel::Flush(void)
         if (seen)
            osd->DrawRectangle(x1 + Gap, y3, x1 + Gap + ScrollWidth - 1, y3 + seen, Theme.Color(clrChannelTimebarSeen));
         lastSeen = seen;
-        }
-     int DeviceNumber = cDevice::ActualDevice()->DeviceNumber() + 1;
-     int SignalStrength = cDevice::ActualDevice()->SignalStrength();
-     int SignalQuality = cDevice::ActualDevice()->SignalQuality();
-     if (DeviceNumber != lastDeviceNumber || SignalStrength != lastSignalStrength || SignalQuality != lastSignalQuality) {
-        int d = 3;
-        int h = ((y7 - y6 + 1) - 3 * d) / 2;
-        int w = (x4 - x3) / 5;
-        int x = (x3 + x4) / 2 - w / 2;
-        if (SignalStrength >= 0) {
-           int s = SignalStrength * w / 100;
-           osd->DrawRectangle(x,     y6 + d, x + s - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalValue));
-           osd->DrawRectangle(x + s, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalRest));
-           }
-        else if (DeviceNumber != lastDeviceNumber)
-           osd->DrawRectangle(x, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelFrame));
-        if (SignalQuality >= 0) {
-           int q = SignalQuality * w / 100;
-           osd->DrawRectangle(x,     y7 - d - h + 1, x + q - 1, y7 - d, Theme.Color(clrChannelSignalValue));
-           osd->DrawRectangle(x + q, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelSignalRest));
-           }
-        else if (DeviceNumber != lastDeviceNumber)
-           osd->DrawRectangle(x, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelFrame));
-        cString dn = cString::sprintf(" %d ", DeviceNumber);
-        const cFont *font = cFont::GetFont(fontSml);
-        int dw = font->Width(dn);
-        osd->DrawText(x - 2 * d - dw, y6, dn, Theme.Color(clrChannelDate), frameColor, font, dw);
-        lastDeviceNumber = DeviceNumber;
-        lastSignalStrength = SignalStrength;
-        lastSignalQuality = SignalQuality;
         }
      }
   osd->Flush();
