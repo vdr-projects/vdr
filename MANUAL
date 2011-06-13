@@ -885,8 +885,8 @@ Version 1.6
                          key. Note that the total maximum is also limited by
                          the "OSD/Channel info time" parameter.
 
-  Initial channel = 0    The number of the channel that shall be tuned to when
-                         VDR starts. Default is 0, which means that it will
+  Initial channel =      The channel ID of the channel that shall be tuned to when
+                         VDR starts. Default is empty, which means that it will
                          tune to the channel that was on before VDR was stopped.
 
   Initial volume = -1    The volume that shall be set when VDR starts. Default

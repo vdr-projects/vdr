@@ -6607,7 +6607,7 @@ Video Disk Recorder Revision History
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
-2011-06-12: Version 1.7.19
+2011-06-13: Version 1.7.19
 
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
@@ -6644,3 +6644,6 @@ Video Disk Recorder Revision History
   that new value is not the default value (thanks to Derek Kelly for reporting a
   problem with the fps value being overwritten in case a recording was interrupted
   and resumed, and the fps value could not be determined after resuming recording).
+- The initial channel is now stored by the channel ID in the setup.conf file, in
+  order to avoid problems in case channels are reordered or deleted (reported by
+  Lars Bläser).

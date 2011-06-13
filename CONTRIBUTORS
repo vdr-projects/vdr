@@ -1028,6 +1028,8 @@ Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and 
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entries for undefined
  channels
+ for reporting a problem with the initial channel in case channels are reordered or
+ deleted
 
 Niko Tarnanen <niko.tarnanen@hut.fi>
  for translating OSD texts to the Finnish language
