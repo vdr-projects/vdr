@@ -2722,3 +2722,7 @@ Marco Göbenich <mg@needful.de>
 Johan Andersson <jna@jna.pp.se>
  for reporting a bug in detecting frames in case the Picture Start Code or Access Unit
  Delimiter extends over TS packet boundaries
+
+Dave Pickles <dave@pickles.me.uk>
+ for adding support for "content identifier descriptor" and "default authority
+ descriptor" to 'libsi'
