@@ -6607,7 +6607,7 @@ Video Disk Recorder Revision History
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
-2011-06-15: Version 1.7.19
+2011-06-19: Version 1.7.19
 
 - Fixed cString's operator=(const char *String) in case the given string is the
   same as the existing one (thanks to Dirk Leber).
