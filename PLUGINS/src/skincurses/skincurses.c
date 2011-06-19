@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.5 2011/01/04 08:52:03 kls Exp $
+ * $Id: skincurses.c 2.6 2011/05/15 21:41:47 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.9";
+static const char *VERSION        = "0.1.10";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -26,7 +26,7 @@ public:
   virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
   };
 
-static const cCursesFont Font;
+static const cCursesFont Font = cCursesFont(); // w/o the '= cCursesFont()' gcc 4.6 complains - can anybody explain why this is necessary?
 
 // --- cCursesOsd ------------------------------------------------------------
 

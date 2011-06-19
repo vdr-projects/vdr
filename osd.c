@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.21 2011/04/17 14:25:07 kls Exp $
+ * $Id: osd.c 2.22 2011/06/02 12:00:17 kls Exp $
  */
 
 #include "osd.h"
@@ -594,9 +594,10 @@ void cBitmap::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
      x2 = min(x2, width - 1);
      y2 = min(y2, height - 1);
      tIndex c = Index(Color);
-     for (int y = y1; y <= y2; y++)
+     for (int y = y1; y <= y2; y++) {
          for (int x = x1; x <= x2; x++)
              SetIndex(x, y, c);
+         }
      }
 }
 

@@ -13,4 +13,33 @@ VDR Plugin 'dvbhddevice' Revision History
 
 2011-04-17: Version 0.0.3
 
-- Added support for TrueColor OSD.
+- Improved trickmodes
+- No transfer mode needed for dolby digital
+- Clear audio and video PID when Clear() ist called to stop audio decoding when jumping to cutting marks
+- Support still frames in H264 format
+- Remote control setup
+- Added analogue video setting, support volume control.
+- Support setting of audio delay.
+- Support setting of audio channel (Stereo, Left, Right)
+- Support setting of audio downmix mode.
+- Playback of PES data is working now.
+- Fall back to MPEG2 stream type when no PMT is available.
+- Added support for PES PCM playback
+- Support HDMI-CEC. (One-Touch Play)
+- Added low level OSD implementation.
+- Added option to select between high level and low level OSD.
+- high level OSD: Implement SaveRegion and RestoreRegion.
+- Fix not working video playback when PCR PID is different from video PID.
+- Fix not working pause when playing H.264 video
+- Improvements in transfer mode, fix audio dropouts or no audio at all
+- Add implementation of CanHandleAreas method to support VDR 1.7.17
+- in cHdffOsdRaw::Flush fix reusing of loop variable i in subloop that lead to OSD update problems
+- Specify container format when starting audio decoding to support PES-DVD containers
+- Added support for True Color OSD
+- Allow to disable true color OSD support via setup option
+
+2011-04-xx: Version 0.0.4
+- locally define DVB OSD API extensions to support compiling with original DVB headers
+- Return correct pixel aspect ratio in GetOsdSize
+- Adapt Makefile to changes introduced in recent VDR versions
+

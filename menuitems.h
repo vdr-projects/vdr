@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.4 2010/06/06 10:32:38 kls Exp $
+ * $Id: menuitems.h 2.5 2011/06/13 13:46:03 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -133,9 +133,12 @@ public:
 class cMenuEditChanItem : public cMenuEditIntItem {
 protected:
   const char *noneString;
+  int dummyValue;
+  cString *channelID;
   virtual void Set(void);
 public:
   cMenuEditChanItem(const char *Name, int *Value, const char *NoneString = NULL);
+  cMenuEditChanItem(const char *Name, cString *ChannelID, const char *NoneString = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

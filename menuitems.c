@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.8 2010/12/12 13:41:09 kls Exp $
+ * $Id: menuitems.c 2.9 2011/06/13 14:48:41 kls Exp $
  */
 
 #include "menuitems.h"
@@ -713,7 +713,19 @@ void cMenuEditStraItem::Set(void)
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value, const char *NoneString)
 :cMenuEditIntItem(Name, Value, NoneString ? 0 : 1, Channels.MaxNumber())
 {
+  channelID = NULL;
   noneString = NoneString;
+  dummyValue = 0;
+  Set();
+}
+
+cMenuEditChanItem::cMenuEditChanItem(const char *Name, cString *ChannelID, const char *NoneString)
+:cMenuEditIntItem(Name, &dummyValue, NoneString ? 0 : 1, Channels.MaxNumber())
+{
+  channelID = ChannelID;
+  noneString = NoneString;
+  cChannel *channel = Channels.GetByChannelID(tChannelID::FromString(*ChannelID));
+  dummyValue = channel ? channel->Number() : 0;
   Set();
 }
 
@@ -744,6 +756,8 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
                       *value = channel->Number();
                    else if (delta < 0 && noneString)
                       *value = 0;
+                   if (channelID)
+                      *channelID = channel ? channel->GetChannelID().ToString() : "";
                    Set();
                  }
                  break;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.9 2010/12/27 11:35:46 kls Exp $
+ * $Id: recorder.c 2.11 2011/06/12 14:16:45 kls Exp $
  */
 
 #include "recorder.h"
@@ -31,7 +31,7 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
 
   SpinUpDisk(FileName);
 
-  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
+  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
 
   int Pid = Channel->Vpid();
@@ -119,6 +119,8 @@ void cRecorder::Action(void)
   time_t t = time(NULL);
   bool InfoWritten = false;
   bool FirstIframeSeen = false;
+  int FileNumber = 0;
+  off_t FrameOffset = -1;
   while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
@@ -131,7 +133,7 @@ void cRecorder::Action(void)
                  if (!InfoWritten) {
                     cRecordingInfo RecordingInfo(recordingName);
                     if (RecordingInfo.Read()) {
-                       if (frameDetector->FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
+                       if (frameDetector->FramesPerSecond() > 0 && DoubleEqual(RecordingInfo.FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
                           RecordingInfo.SetFramesPerSecond(frameDetector->FramesPerSecond());
                           RecordingInfo.Write();
                           Recordings.UpdateByName(recordingName);
@@ -139,12 +141,16 @@ void cRecorder::Action(void)
                        }
                     InfoWritten = true;
                     }
+                 if (frameDetector->NewPayload()) {
+                    FileNumber = fileName->Number();
+                    FrameOffset = fileSize;
+                    }
                  if (FirstIframeSeen || frameDetector->IndependentFrame()) {
                     FirstIframeSeen = true; // start recording with the first I-frame
                     if (!NextFile())
                        break;
                     if (index && frameDetector->NewFrame())
-                       index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
+                       index->Write(frameDetector->IndependentFrame(), FileNumber, FrameOffset);
                     if (frameDetector->IndependentFrame()) {
                        recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
                        fileSize += TS_SIZE;

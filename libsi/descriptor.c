@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 2.1 2010/11/01 15:24:31 kls Exp $
+ *   $Id: descriptor.c 2.2 2011/06/15 21:26:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -641,6 +641,33 @@ void FrequencyListDescriptor::Parse() {
 
 void ServiceIdentifierDescriptor::Parse() {
    textualServiceIdentifier.setData(data+sizeof(descr_service_identifier), getLength()-sizeof(descr_service_identifier));
+}
+
+void ContentIdentifierDescriptor::Parse() {
+   identifierLoop.setData(data+sizeof(descr_content_identifier), getLength()-sizeof(descr_content_identifier));
+}
+
+void ContentIdentifierDescriptor::Identifier::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const content_identifier_entry>(s, offset);
+   if (s->crid_location == 0) {
+     identifier.setData(data+(offset-1), s->crid_length);
+   }
+   else {
+      identifier.setData(data+(offset-1), 2);
+   }
+}
+
+int ContentIdentifierDescriptor::Identifier::getCridType() const {
+   return s->crid_type;
+}
+
+int ContentIdentifierDescriptor::Identifier::getCridLocation() const {
+   return s->crid_location;
+}
+
+void DefaultAuthorityDescriptor::Parse() {
+   DefaultAuthority.setData(data+sizeof(descr_default_authority), getLength()-sizeof(descr_default_authority));
 }
 
 void MultilingualNameDescriptor::Parse() {

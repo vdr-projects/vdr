@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.28 2011/03/19 16:52:46 kls Exp $
+ * $Id: remux.h 2.30 2011/06/12 12:49:17 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -84,15 +84,18 @@ inline bool TsIsScrambled(const uchar *p)
 
 inline int TsPayloadOffset(const uchar *p)
 {
-  int o = (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  int o = TsHasAdaptationField(p) ? p[4] + 5 : 4;
   return o <= TS_SIZE ? o : TS_SIZE;
 }
 
 inline int TsGetPayload(const uchar **p)
 {
-  int o = TsPayloadOffset(*p);
-  *p += o;
-  return TS_SIZE - o;
+  if (TsHasPayload(*p)) {
+     int o = TsPayloadOffset(*p);
+     *p += o;
+     return TS_SIZE - o;
+     }
+  return 0;
 }
 
 inline int TsContinuityCounter(const uchar *p)
@@ -294,7 +297,7 @@ public:
   ~cTsToPes();
   void PutTs(const uchar *Data, int Length);
        ///< Puts the payload data of the single TS packet at Data into the converter.
-       ///< Length is always 188.
+       ///< Length is always TS_SIZE.
        ///< If the given TS packet starts a new PES payload packet, the converter
        ///< will be automatically reset. Any packets before the first one that starts
        ///< a new PES payload packet will be ignored.
@@ -333,16 +336,16 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
-#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 2
-
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
   int pid;
   int type;
   bool synced;
+  bool newPayload;
   bool newFrame;
   bool independentFrame;
+  int frameTypeOffset;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
   int numFrames;
@@ -368,12 +371,17 @@ public:
       ///< the frame detector for actual work.
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
-      ///< bytes Data points to, and must be a multiple of 188.
+      ///< bytes Data points to, and must be a multiple of TS_SIZE.
       ///< Returns the number of bytes that have been analyzed.
       ///< If the return value is 0, the data was not sufficient for analyzing and
       ///< Analyze() needs to be called again with more actual data.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
+  bool NewPayload(void) { return newPayload; }
+      ///< Returns true if the data given to the last call to Analyze() started a
+      ///< new payload. The caller should remember the current file offset in
+      ///< order to be able to generate an index entry later, when NewFrame()
+      ///< returns true.
   bool NewFrame(void) { return newFrame; }
       ///< Returns true if the data given to the last call to Analyze() started a
       ///< new frame.

@@ -6606,3 +6606,46 @@ Video Disk Recorder Revision History
 - Added handling of "ANSI/SCTE 57" descriptors (thanks too Rolf Ahrenberg).
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
+
+2011-06-19: Version 1.7.19
+
+- Fixed cString's operator=(const char *String) in case the given string is the
+  same as the existing one (thanks to Dirk Leber).
+- Avoiding a gcc 4.6 compiler error in the skincurses plugin (thanks to Tobias Grimm).
+- TsGetPayload() now checks if there actually is a payload in the given TS packet
+  (reported by Dirk Leber).
+- Now sorting the source file names in the call to xgettext, to make sure the results
+  are not dependent on the sequence of the files.
+  Plugin authors may want to change the line containing the xgettext call in their
+  Makefile accordingly by changing "$^" to "`ls $^`".
+- The primary device is now only avoided for recording if it is an old SD full
+  featured card. This is done through the new function cDevice::AvoidRecording().
+- Subtitle PIDs are now also decrypted (thanks to Reinhard Nissl).
+- Fixed a possible race condition in cDiseqc::Execute() (reported by Marco Göbenich).
+  The return value of cDiseqcs::Get() is now const, so plugin authors may need to
+  adjust their code if they use this function.
+- The new functions cDevice::SignalStrength() and cDevice::SignalQuality() can be
+  used to determine the signal strength and quality of a given device (thanks to
+  Rolf Ahrenberg for some input on how to use BER and UNC values to generate a
+  "quality" value).
+- The 'sttng' skin now displays two colored bars at the bottom of the channel display,
+  indicating the strength (upper bar) and quality (lower bar) of the received signal.
+  The number to the left of these bars indicates the actual device the current
+  channel is being received with.
+- Fixed detecting frames in case the Picture Start Code or Access Unit Delimiter
+  extends over TS packet boundaries (reported by Johan Andersson).
+  In order to fix this, the semantics of cFrameDetector had to be changed a little.
+  See cRecorder::Action() and cIndexFileGenerator::Action() on how to use the new
+  cFrameDetector::NewPayload() function.
+- The frame detector now only starts collecting PTS values after it has seen the
+  first I-frame, otherwise it might get MaxPtsValues values and stop analyzing
+  even though the incoming data is still garbage (reported by Derek Kelly).
+- The info file of a recording is now only overwritten with a new fps value if
+  that new value is not the default value (thanks to Derek Kelly for reporting a
+  problem with the fps value being overwritten in case a recording was interrupted
+  and resumed, and the fps value could not be determined after resuming recording).
+- The initial channel is now stored by the channel ID in the setup.conf file, in
+  order to avoid problems in case channels are reordered or deleted (reported by
+  Lars Bläser).
+- Added support for "content identifier descriptor" and "default authority descriptor"
+  to 'libsi' (thanks to Dave Pickles).

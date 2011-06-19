@@ -1028,6 +1028,8 @@ Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and 
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entries for undefined
  channels
+ for reporting a problem with the initial channel in case channels are reordered or
+ deleted
 
 Niko Tarnanen <niko.tarnanen@hut.fi>
  for translating OSD texts to the Finnish language
@@ -1104,6 +1106,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding support for "registration descriptor" to 'libsi' and using it in pat.c
  for adding an include of VDR's 'Make.global' to libsi's Makefile
  for adding handling of "ANSI/SCTE 57" descriptors
+ for some input on how to use BER and UNC values to generate a "quality" value
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1269,6 +1272,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a buffer overflow in cFont::Bidi()
  for avoiding an unecessary call to Recordings.ResetResume()
  for debugging a problem in handling the bitmap color depth for scaled subtitles
+ for making subtitle PIDs be decrypted
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -2141,6 +2145,8 @@ Philippe Gramoullé <philippe@gramoulle.com>
 André Weidemann <Andre.Weidemann@web.de>
  for suggesting to only write Dolby Digital tracks into the 'info.vdr' file of a
  recording if Setup.UseDolbyDigital is true
+ for suggesting that the primary device should only be avoided for recording if
+ it is an old SD full featured card
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
@@ -2257,6 +2263,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for reporting unneeded include files <linux/dvb/dmx.h> and <time.h> in remux.h
  for a patch that added a workaround for the broken linux-dvb driver header files
  for reporting a faulty "frame duration" instead of "frame rate" in vdr.5
+ for avoiding a gcc 4.6 compiler error in the skincurses plugin.
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2567,6 +2574,11 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem where the frame rate was not detected correctly
  for testing the implementation of FE_CAN_TURBO_FEC
  for reporting unjustified log entries about changed channel pids
+ for reporting a problem with the frame detector in case it gets MaxPtsValues values
+ and stops analyzing even though the incoming data is still garbage
+ for reporting a problem with the fps value in the info file of a recording being
+ overwritten in case a recording was interrupted and resumed, and the fps value
+ could not be determined after resuming recording
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2697,3 +2709,20 @@ Sergiu Dotenco <sergiu.dotenco@googlemail.com>
 
 Mika Laitio <lamikr@pilppa.org>
  for reporting a case where cRecordingInfo::Read(FILE *f) was called with a NULL pointer
+
+Dirk Leber <dirk.leber@reel-multimedia.com>
+ for fixing cString's operator=(const char *String) in case the given string is the
+ same as the existing one
+ for reporting that TsGetPayload() gets called without checking whether there actually
+ is a payload in the given TS packet
+
+Marco Göbenich <mg@needful.de>
+ for reporting a problem with executing diseqc commands from different threads
+
+Johan Andersson <jna@jna.pp.se>
+ for reporting a bug in detecting frames in case the Picture Start Code or Access Unit
+ Delimiter extends over TS packet boundaries
+
+Dave Pickles <dave@pickles.me.uk>
+ for adding support for "content identifier descriptor" and "default authority
+ descriptor" to 'libsi'

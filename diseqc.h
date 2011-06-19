@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 2.1 2010/02/06 15:14:42 kls Exp $
+ * $Id: diseqc.h 2.2 2011/05/22 10:35:38 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -33,15 +33,15 @@ private:
   int lof;
   char *commands;
   bool parsing;
-  uchar codes[MaxDiseqcCodes];
-  int numCodes;
-  char *Wait(char *s);
-  char *Codes(char *s);
+  mutable uchar codes[MaxDiseqcCodes];
+  mutable int numCodes;
+  const char *Wait(const char *s) const;
+  const char *Codes(const char *s) const;
 public:
   cDiseqc(void);
   ~cDiseqc();
   bool Parse(const char *s);
-  eDiseqcActions Execute(char **CurrentAction);
+  eDiseqcActions Execute(const char **CurrentAction) const;
       // Parses the DiSEqC commands and returns the appropriate action code
       // with every call. CurrentAction must be the address of a character pointer,
       // which is initialized to NULL. This pointer is used internally while parsing
@@ -55,12 +55,12 @@ public:
   char Polarization(void) const { return polarization; }
   int Lof(void) const { return lof; }
   const char *Commands(void) const { return commands; }
-  uchar *Codes(int &NumCodes) { NumCodes = numCodes; return numCodes ? codes : NULL; }
+  const uchar *Codes(int &NumCodes) const { NumCodes = numCodes; return numCodes ? codes : NULL; }
   };
 
 class cDiseqcs : public cConfig<cDiseqc> {
 public:
-  cDiseqc *Get(int Device, int Source, int Frequency, char Polarization);
+  const cDiseqc *Get(int Device, int Source, int Frequency, char Polarization) const;
   };
 
 extern cDiseqcs Diseqcs;

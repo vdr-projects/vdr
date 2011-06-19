@@ -1,0 +1,89 @@
+# VDR plugin language source file
+# Copyright (C) 2011 Andreas Regel
+# This file is distributed under the same license as the dvbhddevice package.
+# Christoph Haubrich, 2011
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR \n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2011-05-05 20:34+0200\n"
+"PO-Revision-Date: 2011-04-25 21:44+0200\n"
+"Last-Translator: Christoph Haubrich\n"
+"Language-Team: <see README>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Automatic"
+msgstr "automatisch"
+
+msgid "Letterbox 16/9"
+msgstr "Letterbox 16:9"
+
+msgid "Letterbox 14/9"
+msgstr "Letterbox 14:9"
+
+msgid "Pillarbox"
+msgstr "Pillarbox"
+
+msgid "CentreCutOut"
+msgstr "CentreCutOut"
+
+msgid "Always 16/9"
+msgstr "immer 16:9"
+
+msgid "Disabled"
+msgstr "abgeschaltet"
+
+msgid "Analogue only"
+msgstr "nur Analoge Ausgänge"
+
+msgid "Always"
+msgstr "immer"
+
+msgid "HDMI only"
+msgstr "nur HDMI"
+
+msgid "Follow resolution"
+msgstr "folge Auflösung"
+
+msgid "none"
+msgstr "keins"
+
+msgid "Resolution"
+msgstr "Auflösung"
+
+msgid "TV format"
+msgstr "TV-Format"
+
+msgid "Video Conversion"
+msgstr "Videokonvertierung"
+
+msgid "Analogue Video"
+msgstr "Analoges Video"
+
+msgid "Audio Delay (ms)"
+msgstr "Audio Verzögerung (ms)"
+
+msgid "Audio Downmix"
+msgstr "Audio Downmix"
+
+msgid "OSD Size"
+msgstr "OSD Größe"
+
+msgid "HDMI CEC"
+msgstr "HDMI CEC"
+
+msgid "Remote Control Protocol"
+msgstr "Fernbedienungsprotokoll"
+
+msgid "Remote Control Address"
+msgstr "Fernbedienungsadresse"
+
+msgid "High Level OSD"
+msgstr "High Level OSD"
+
+msgid "Allow True Color OSD"
+msgstr "Erlaube True Color OSD"

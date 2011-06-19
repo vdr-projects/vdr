@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.1 2010/11/01 15:24:32 kls Exp $
+ *   $Id: headers.h 2.2 2011/06/15 21:26:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1678,6 +1678,24 @@ struct descr_tva_id {
 struct descr_content_identifier {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
+};
+
+struct content_identifier_entry {
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char crid_type                              :6;
+   u_char crid_location                          :2;
+#else
+   u_char crid_location                          :2;
+   u_char crid_type                              :6;
+#endif
+  union {
+    u_char crid_length                           :8;
+    u_char crid_ref_hi                           :8;
+  };
+  union {
+    u_char crid_byte                             :8;
+    u_char crid_ref_lo                           :8;
+  };
 };
 
 /* 0x77 time_slice_fec_identifier_descriptor (ETSI EN 301 192) */

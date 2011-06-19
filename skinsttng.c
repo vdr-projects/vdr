@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.7 2011/02/20 13:02:49 kls Exp $
+ * $Id: skinsttng.c 2.10 2011/06/12 15:20:59 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -92,6 +92,8 @@ THEME_CLR(Theme, clrChannelEpgTitle,        clrCyan);
 THEME_CLR(Theme, clrChannelEpgShortText,    clrYellow);
 THEME_CLR(Theme, clrChannelTimebarSeen,     clrYellow);
 THEME_CLR(Theme, clrChannelTimebarRest,     clrGray50);
+THEME_CLR(Theme, clrChannelSignalValue,     clrGreen);
+THEME_CLR(Theme, clrChannelSignalRest,      clrRed);
 THEME_CLR(Theme, clrMenuFrame,              clrYellow);
 THEME_CLR(Theme, clrMenuTitle,              clrBlack);
 THEME_CLR(Theme, clrMenuDate,               clrBlack);
@@ -134,6 +136,10 @@ private:
   const cEvent *present;
   cString lastDate;
   int lastSeen;
+  int lastDeviceNumber;
+  int lastSignalStrength;
+  int lastSignalQuality;
+  time_t lastSignalDisplay;
   tTrackId lastTrackId;
   static cBitmap bmTeletext, bmRadio, bmAudio, bmDolbyDigital, bmEncrypted, bmRecording;
 public:
@@ -156,6 +162,10 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
 {
   present = NULL;
   lastSeen = -1;
+  lastDeviceNumber = -1;
+  lastSignalStrength = -1;
+  lastSignalQuality = -1;
+  lastSignalDisplay = 0;
   memset(&lastTrackId, 0, sizeof(lastTrackId));
   const cFont *font = cFont::GetFont(fontOsd);
   withInfo = WithInfo;
@@ -274,6 +284,7 @@ void cSkinSTTNGDisplayChannel::SetChannel(const cChannel *Channel, int Number)
         }
      }
   osd->DrawText(x3 + TextFrame, y0, ChannelString(Channel, Number), Theme.Color(clrChannelName), frameColor, cFont::GetFont(fontOsd), x - x3 - TextFrame);
+  lastSignalDisplay = time(NULL); // don't get slowed down during heavy zapping
 }
 
 void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -330,8 +341,40 @@ void cSkinSTTNGDisplayChannel::Flush(void)
            osd->DrawText(x3 + TextFrame, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 2 * TextFrame);
            strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
            }
+        if (time(NULL) != lastSignalDisplay) {
+           int DeviceNumber = cDevice::ActualDevice()->DeviceNumber() + 1;
+           int SignalStrength = cDevice::ActualDevice()->SignalStrength();
+           int SignalQuality = cDevice::ActualDevice()->SignalQuality();
+           if (DeviceNumber != lastDeviceNumber || SignalStrength != lastSignalStrength || SignalQuality != lastSignalQuality) {
+              int d = 3;
+              int h = ((y7 - y6 + 1) - 3 * d) / 2;
+              int w = (x4 - x3) / 5;
+              int x = (x3 + x4) / 2 - w / 2;
+              if (SignalStrength >= 0) {
+                 int s = SignalStrength * w / 100;
+                 osd->DrawRectangle(x,     y6 + d, x + s - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalValue));
+                 osd->DrawRectangle(x + s, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelSignalRest));
+                 }
+              else if (DeviceNumber != lastDeviceNumber)
+                 osd->DrawRectangle(x, y6 + d, x + w - 1, y6 + d + h - 1, Theme.Color(clrChannelFrame));
+              if (SignalQuality >= 0) {
+                 int q = SignalQuality * w / 100;
+                 osd->DrawRectangle(x,     y7 - d - h + 1, x + q - 1, y7 - d, Theme.Color(clrChannelSignalValue));
+                 osd->DrawRectangle(x + q, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelSignalRest));
+                 }
+              else if (DeviceNumber != lastDeviceNumber)
+                 osd->DrawRectangle(x, y7 - d - h + 1, x + w - 1, y7 - d, Theme.Color(clrChannelFrame));
+              cString dn = cString::sprintf(" %d ", DeviceNumber);
+              const cFont *font = cFont::GetFont(fontSml);
+              int dw = font->Width(dn);
+              osd->DrawText(x - 2 * d - dw, y6, dn, Theme.Color(clrChannelDate), frameColor, font, dw);
+              lastDeviceNumber = DeviceNumber;
+              lastSignalStrength = SignalStrength;
+              lastSignalQuality = SignalQuality;
+              }
+           lastSignalDisplay = time(NULL);
+           }
         }
-
      int seen = 0;
      if (present) {
         time_t t = time(NULL);

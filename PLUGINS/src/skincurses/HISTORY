@@ -88,3 +88,7 @@ VDR Plugin 'skincurses' Revision History
 2010-02-28: Version 0.1.9
 
 - Added Lithuanian language translations (thanks to Valdemaras Pipiras).
+
+2011-05-15: Version 0.1.10
+
+- Avoiding a gcc 4.6 compiler error (thanks to Tobias Grimm).

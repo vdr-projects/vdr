@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.2 2010/02/06 15:43:31 kls Exp $
+ * $Id: diseqc.c 2.4 2011/05/22 10:36:12 kls Exp $
  */
 
 #include "diseqc.h"
@@ -59,7 +59,7 @@ bool cDiseqc::Parse(const char *s)
         polarization = char(toupper(polarization));
         if (polarization == 'V' || polarization == 'H' || polarization == 'L' || polarization == 'R') {
            parsing = true;
-           char *CurrentAction = NULL;
+           const char *CurrentAction = NULL;
            while (Execute(&CurrentAction) != daNone)
                  ;
            parsing = false;
@@ -75,7 +75,7 @@ bool cDiseqc::Parse(const char *s)
   return result;
 }
 
-char *cDiseqc::Wait(char *s)
+const char *cDiseqc::Wait(const char *s) const
 {
   char *p = NULL;
   errno = 0;
@@ -89,19 +89,22 @@ char *cDiseqc::Wait(char *s)
   return NULL;
 }
 
-char *cDiseqc::Codes(char *s)
+const char *cDiseqc::Codes(const char *s) const
 {
-  char *e = strchr(s, ']');
+  const char *e = strchr(s, ']');
   if (e) {
-     numCodes = 0;
-     char *t = s;
-     char *p = s;
+     int NumCodes = 0;
+     const char *t = s;
+     char *p;
      while (t < e) {
-           if (numCodes < MaxDiseqcCodes) {
+           if (NumCodes < MaxDiseqcCodes) {
               errno = 0;
               int n = strtol(t, &p, 16);
               if (!errno && p != t && 0 <= n && n <= 255) {
-                 codes[numCodes++] = uchar(n);
+                 if (parsing) {
+                    codes[NumCodes++] = uchar(n);
+                    numCodes = NumCodes;
+                    }
                  t = skipspace(p);
                  }
               else {
@@ -121,7 +124,7 @@ char *cDiseqc::Codes(char *s)
   return NULL;
 }
 
-cDiseqc::eDiseqcActions cDiseqc::Execute(char **CurrentAction)
+cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction) const
 {
   if (!*CurrentAction)
      *CurrentAction = commands;
@@ -146,10 +149,10 @@ cDiseqc::eDiseqcActions cDiseqc::Execute(char **CurrentAction)
 
 cDiseqcs Diseqcs;
 
-cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polarization)
+const cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polarization) const
 {
   int Devices = 0;
-  for (cDiseqc *p = First(); p; p = Next(p)) {
+  for (const cDiseqc *p = First(); p; p = Next(p)) {
       if (p->Devices()) {
          Devices = p->Devices();
          continue;
@@ -157,7 +160,7 @@ cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polarization)
       if (Devices && !(Devices & (1 << Device - 1)))
          continue;
       if (p->Source() == Source && p->Slof() > Frequency && p->Polarization() == toupper(Polarization))
-        return p;
+         return p;
       }
   return NULL;
 }

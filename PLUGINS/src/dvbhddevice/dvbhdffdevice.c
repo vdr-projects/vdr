@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.29 2011/04/17 11:20:22 kls Exp $
+ * $Id: dvbhdffdevice.c 1.32 2011/05/22 15:19:59 kls Exp $
  */
 
 #include "dvbhdffdevice.h"
@@ -110,7 +110,7 @@ void cDvbHdFfDevice::SetVideoFormat(bool VideoFormat16_9)
 {
   HDFF::tVideoFormat videoFormat;
   videoFormat.AutomaticEnabled = true;
-  videoFormat.AfdEnabled = true;
+  videoFormat.AfdEnabled = false;
   videoFormat.TvFormat = (HDFF::eTvFormat) gHdffSetup.TvFormat;
   videoFormat.VideoConversion = (HDFF::eVideoConversion) gHdffSetup.VideoConversion;
   mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
@@ -364,7 +364,7 @@ bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
      if (playMode == pmNone)
         TurnOffLiveMode(true);
 
-     mHdffCmdIf->CmdAvSetPlayMode(1, Transferring());
+     mHdffCmdIf->CmdAvSetPlayMode(1, Transferring() || (cTransferControl::ReceiverDevice() == this));
      mHdffCmdIf->CmdAvSetStc(0, 100000);
      mHdffCmdIf->CmdAvEnableSync(0, true);
      mHdffCmdIf->CmdAvEnableVideoAfterStop(0, true);
@@ -725,28 +725,14 @@ HDFF::cHdffCmdIf *cDvbHdFfDevice::GetHdffCmdHandler(void)
 bool cDvbHdFfDeviceProbe::Probe(int Adapter, int Frontend)
 {
   static uint32_t SubsystemIds[] = {
-    0x13C23009, // Technotrend S2-6400 HDFF
+    0x13C23009, // Technotrend S2-6400 HDFF development samples
+    0x13C2300A, // Technotrend S2-6400 HDFF production version
     0x00000000
     };
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
-  uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
-     }
+  uint32_t SubsystemId = GetSubsystemId(Adapter, Frontend);
   for (uint32_t *sid = SubsystemIds; *sid; sid++) {
       if (*sid == SubsystemId) {
-         FileName = cString::sprintf("/dev/dvb/adapter%d/osd0", Adapter);
+         cString FileName = cString::sprintf("/dev/dvb/adapter%d/osd0", Adapter);
          int fd = open(FileName, O_RDWR);
          if (fd != -1) { //TODO treat the second path of the S2-6400 as a budget device
             close(fd);

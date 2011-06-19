@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffosd.c 1.9 2011/04/17 11:20:22 kls Exp $
+ * $Id: hdffosd.c 1.10 2011/05/15 14:47:29 kls Exp $
  */
 
 #include "hdffosd.h"
@@ -154,8 +154,12 @@ eOsdError cHdffOsd::SetAreas(const tArea *Areas, int NumAreas)
     {
         //printf("SetAreas %d: %d %d %d %d %d\n", i, Areas[i].x1, Areas[i].y1, Areas[i].x2, Areas[i].y2, Areas[i].bpp);
     }
-    mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
-    mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
+    if (shown)
+    {
+        mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
+        mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
+        shown = false;
+    }
     return cOsd::SetAreas(Areas, NumAreas);
 }
 
@@ -166,9 +170,13 @@ void cHdffOsd::SetActive(bool On)
         cOsd::SetActive(On);
         if (On)
         {
+            if (GetBitmap(0)) // only flush here if there are already bitmaps
+                Flush();
         }
         else if (shown)
         {
+            mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
+            mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
             shown = false;
         }
     }
@@ -594,9 +602,13 @@ void cHdffOsdRaw::SetActive(bool On)
         cOsd::SetActive(On);
         if (On)
         {
+            if (GetBitmap(0)) // only flush here if there are already bitmaps
+                Flush();
         }
         else if (shown)
         {
+            mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
+            mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
             shown = false;
         }
     }
@@ -623,8 +635,12 @@ eOsdError cHdffOsdRaw::SetAreas(const tArea *Areas, int NumAreas)
     {
         //printf("SetAreas %d: %d %d %d %d %d\n", i, Areas[i].x1, Areas[i].y1, Areas[i].x2, Areas[i].y2, Areas[i].bpp);
     }
-    mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
-    mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
+    if (shown)
+    {
+        mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
+        mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
+        shown = false;
+    }
     return cOsd::SetAreas(Areas, NumAreas);
 }
 

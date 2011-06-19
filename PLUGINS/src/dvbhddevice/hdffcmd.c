@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.c 1.19 2011/04/17 11:20:22 kls Exp $
+ * $Id: hdffcmd.c 1.20 2011/04/24 09:31:59 kls Exp $
  */
 
 #include "hdffcmd.h"
@@ -12,6 +12,25 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <vdr/tools.h>
+
+#if !defined OSD_RAW_CMD
+typedef struct osd_raw_cmd_s {
+    const void *cmd_data;
+    int cmd_len;
+    void *result_data;
+    int result_len;
+} osd_raw_cmd_t;
+
+typedef struct osd_raw_data_s {
+    const void *data_buffer;
+    int data_length;
+    int data_handle;
+} osd_raw_data_t;
+
+#define OSD_RAW_CMD            _IOWR('o', 162, osd_raw_cmd_t)
+#define OSD_RAW_DATA           _IOWR('o', 163, osd_raw_data_t)
+#endif
+
 
 namespace HDFF
 {

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.3 2010/11/01 15:24:32 kls Exp $
+ *   $Id: si.c 2.4 2011/06/15 21:26:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -609,6 +609,12 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case RegistrationDescriptorTag:
             d=new RegistrationDescriptor();
             break;
+         case ContentIdentifierDescriptorTag:
+            d=new ContentIdentifierDescriptor();
+            break;
+         case DefaultAuthorityDescriptorTag:
+            d=new DefaultAuthorityDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -650,10 +656,8 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case TransportStreamDescriptorTag:
 
          //defined in ETSI EN 300 468 v 1.7.1
-         case DefaultAuthorityDescriptorTag:
          case RelatedContentDescriptorTag:
          case TVAIdDescriptorTag:
-         case ContentIdentifierDescriptorTag:
          case TimeSliceFecIdentifierDescriptorTag:
          case ECMRepetitionRateDescriptorTag:
          case EnhancedAC3DescriptorTag:

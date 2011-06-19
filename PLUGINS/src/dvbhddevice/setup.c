@@ -3,88 +3,17 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.11 2011/04/17 11:45:17 kls Exp $
+ * $Id: setup.c 1.12 2011/05/15 14:47:45 kls Exp $
  */
 
 #include "setup.h"
 #include "hdffcmd.h"
-
-const int kResolutions = 4;
-const int kTvFormats = 2;
-const int kVideoConversions = 6;
-const int kAnalogueVideos = 4;
-const int kAudioDownmixes = 5;
-const int kOsdSizes = 5;
-const int kRemoteProtocols = 3;
 
 const int kResolution1080i = 0;
 const int kResolution720p = 1;
 const int kResolution576p = 2;
 const int kResolution576i = 3;
 
-static const char * ResolutionItems[] =
-{
-    "1080i",
-    "720p",
-    "576p",
-    "576i",
-    NULL
-};
-
-static const char * TvFormatItems[] =
-{
-    "4/3",
-    "16/9",
-    NULL
-};
-
-static const char * VideoConversionItems[] =
-{
-    "Automatic",
-    "Letterbox 16/9",
-    "Letterbox 14/9",
-    "Pillarbox",
-    "CentreCutOut",
-    "Always 16/9",
-    NULL
-};
-
-static const char * AnalogueVideoItems[] =
-{
-    "Disabled",
-    "RGB",
-    "CVBS + YUV",
-    "YC (S-Video)",
-    NULL
-};
-
-static const char * AudioDownmixItems[] =
-{
-    "Disabled",
-    "Analogue only",
-    "Always",
-    "Automatic",
-    "HDMI only",
-    NULL
-};
-
-static const char * OsdSizeItems[] =
-{
-    "Follow resolution",
-    "1920x1080",
-    "1280x720",
-    "1024x576",
-    "720x576",
-    NULL
-};
-
-static const char * RemoteProtocolItems[] =
-{
-    "none",
-    "RC5",
-    "RC6",
-    NULL
-};
 
 cHdffSetup gHdffSetup;
 
@@ -162,7 +91,7 @@ void cHdffSetup::GetOsdSize(int &Width, int &Height, double &PixelAspect)
         Height = 576;
         PixelAspect = 4.0 / 3.0;
     }
-  PixelAspect /= double(Width) / Height;
+    PixelAspect /= double(Width) / Height;
 }
 
 HDFF::eHdmiVideoMode cHdffSetup::GetVideoMode(void)
@@ -183,21 +112,87 @@ HDFF::eHdmiVideoMode cHdffSetup::GetVideoMode(void)
 
 cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
 {
+    const int kResolutions = 4;
+    const int kTvFormats = 2;
+    const int kVideoConversions = 6;
+    const int kAnalogueVideos = 4;
+    const int kAudioDownmixes = 5;
+    const int kOsdSizes = 5;
+    const int kRemoteProtocols = 3;
+
+    static const char * ResolutionItems[kResolutions] =
+    {
+        "1080i",
+        "720p",
+        "576p",
+        "576i",
+    };
+
+    static const char * TvFormatItems[kTvFormats] =
+    {
+        "4/3",
+        "16/9",
+    };
+
+    static const char * VideoConversionItems[kVideoConversions] =
+    {
+        tr("Automatic"),
+        tr("Letterbox 16/9"),
+        tr("Letterbox 14/9"),
+        tr("Pillarbox"),
+        tr("CentreCutOut"),
+        tr("Always 16/9"),
+    };
+
+
+    static const char * AnalogueVideoItems[kAnalogueVideos] =
+    {
+        tr("Disabled"),
+        "RGB",
+        "CVBS + YUV",
+        "YC (S-Video)",
+    };
+
+    static const char * AudioDownmixItems[kAudioDownmixes] =
+    {
+        tr("Disabled"),
+        tr("Analogue only"),
+        tr("Always"),
+        tr("Automatic"),
+        tr("HDMI only"),
+    };
+
+    static const char * OsdSizeItems[kOsdSizes] =
+    {
+        tr("Follow resolution"),
+        "1920x1080",
+        "1280x720",
+        "1024x576",
+        "720x576",
+    };
+
+    static const char * RemoteProtocolItems[] =
+    {
+        tr("none"),
+        "RC5",
+        "RC6",
+    };
+
     mHdffCmdIf = pHdffCmdIf;
     mNewHdffSetup = gHdffSetup;
 
-    Add(new cMenuEditStraItem("Resolution", &mNewHdffSetup.Resolution, kResolutions, ResolutionItems));
-    Add(new cMenuEditStraItem("TV format", &mNewHdffSetup.TvFormat, kTvFormats, TvFormatItems));
-    Add(new cMenuEditStraItem("Video Conversion", &mNewHdffSetup.VideoConversion, kVideoConversions, VideoConversionItems));
-    Add(new cMenuEditStraItem("Analogue Video", &mNewHdffSetup.AnalogueVideo, kAnalogueVideos, AnalogueVideoItems));
-    Add(new cMenuEditIntItem("Audio Delay (ms)", &mNewHdffSetup.AudioDelay, 0, 500));
-    Add(new cMenuEditStraItem("Audio Downmix", &mNewHdffSetup.AudioDownmix, kAudioDownmixes, AudioDownmixItems));
-    Add(new cMenuEditStraItem("Osd Size", &mNewHdffSetup.OsdSize, kOsdSizes, OsdSizeItems));
-    Add(new cMenuEditBoolItem("HDMI CEC", &mNewHdffSetup.CecEnabled));
-    Add(new cMenuEditStraItem("Remote Control Protocol", &mNewHdffSetup.RemoteProtocol, kRemoteProtocols, RemoteProtocolItems));
-    Add(new cMenuEditIntItem("Remote Control Address", &mNewHdffSetup.RemoteAddress, -1, 31));
-    Add(new cMenuEditBoolItem("High Level OSD", &mNewHdffSetup.HighLevelOsd));
-    Add(new cMenuEditBoolItem("Allow True Color OSD", &mNewHdffSetup.TrueColorOsd));
+    Add(new cMenuEditStraItem(tr("Resolution"), &mNewHdffSetup.Resolution, kResolutions, ResolutionItems));
+    Add(new cMenuEditStraItem(tr("TV format"), &mNewHdffSetup.TvFormat, kTvFormats, TvFormatItems));
+    Add(new cMenuEditStraItem(tr("Video Conversion"), &mNewHdffSetup.VideoConversion, kVideoConversions, VideoConversionItems));
+    Add(new cMenuEditStraItem(tr("Analogue Video"), &mNewHdffSetup.AnalogueVideo, kAnalogueVideos, AnalogueVideoItems));
+    Add(new cMenuEditIntItem(tr("Audio Delay (ms)"), &mNewHdffSetup.AudioDelay, 0, 500));
+    Add(new cMenuEditStraItem(tr("Audio Downmix"), &mNewHdffSetup.AudioDownmix, kAudioDownmixes, AudioDownmixItems));
+    Add(new cMenuEditStraItem(tr("OSD Size"), &mNewHdffSetup.OsdSize, kOsdSizes, OsdSizeItems));
+    Add(new cMenuEditBoolItem(tr("HDMI CEC"), &mNewHdffSetup.CecEnabled));
+    Add(new cMenuEditStraItem(tr("Remote Control Protocol"), &mNewHdffSetup.RemoteProtocol, kRemoteProtocols, RemoteProtocolItems));
+    Add(new cMenuEditIntItem(tr("Remote Control Address"), &mNewHdffSetup.RemoteAddress, -1, 31));
+    Add(new cMenuEditBoolItem(tr("High Level OSD"), &mNewHdffSetup.HighLevelOsd));
+    Add(new cMenuEditBoolItem(tr("Allow True Color OSD"), &mNewHdffSetup.TrueColorOsd));
 }
 
 cHdffSetupPage::~cHdffSetupPage(void)

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 2.1 2010/11/01 15:24:32 kls Exp $
+ *   $Id: descriptor.h 2.2 2011/06/15 21:26:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -357,6 +357,31 @@ private:
 class ServiceIdentifierDescriptor : public Descriptor {
 public:
    String textualServiceIdentifier;
+protected:
+   virtual void Parse();
+};
+
+class ContentIdentifierDescriptor : public Descriptor {
+public:
+   class Identifier : public LoopElement {
+   public:
+      String identifier;
+      int getCridType() const;
+      int getCridLocation() const;
+      virtual int getLength() { return sizeof(content_identifier_entry)+identifier.getLength(); }
+   protected:
+      virtual void Parse();
+   private:
+      const content_identifier_entry *s;
+   };
+   StructureLoop<Identifier> identifierLoop;
+protected:
+   virtual void Parse();
+};
+
+class DefaultAuthorityDescriptor : public Descriptor {
+public:
+   String DefaultAuthority; //ID
 protected:
    virtual void Parse();
 };

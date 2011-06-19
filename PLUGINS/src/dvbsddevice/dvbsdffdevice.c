@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.27 2010/09/19 12:43:33 kls Exp $
+ * $Id: dvbsdffdevice.c 2.29 2011/05/22 15:22:14 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -86,6 +86,11 @@ void cDvbSdFfDevice::MakePrimaryDevice(bool On)
 }
 
 bool cDvbSdFfDevice::HasDecoder(void) const
+{
+  return true;
+}
+
+bool cDvbSdFfDevice::AvoidRecording(void) const
 {
   return true;
 }
@@ -772,22 +777,7 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
     0x13C21002, // Technotrend/Hauppauge WinTV DVB-S rev1.3 SE
     0x00000000
     };
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
-  uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
-     }
+  uint32_t SubsystemId = GetSubsystemId(Adapter, Frontend);
   for (uint32_t *sid = SubsystemIds; *sid; sid++) {
       if (*sid == SubsystemId) {
          dsyslog("creating cDvbSdFfDevice");

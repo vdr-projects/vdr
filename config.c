@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.13 2010/06/06 10:06:43 kls Exp $
+ * $Id: config.c 2.14 2011/06/13 14:41:01 kls Exp $
  */
 
 #include "config.h"
@@ -395,7 +395,7 @@ cSetup::cSetup(void)
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
   CurrentDolby = 0;
-  InitialChannel = 0;
+  // InitialChannel is initialized by constructor
   InitialVolume = -1;
   ChannelsWrap = 0;
   EmergencyExit = 1;
@@ -404,6 +404,7 @@ cSetup::cSetup(void)
 cSetup& cSetup::operator= (const cSetup &s)
 {
   memcpy(&__BeginData__, &s.__BeginData__, (char *)&s.__EndData__ - (char *)&s.__BeginData__);
+  InitialChannel = s.InitialChannel;
   return *this;
 }
 
@@ -586,7 +587,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-  else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = atoi(Value);
+  else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = Value;
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
