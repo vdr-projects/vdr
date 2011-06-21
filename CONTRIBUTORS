@@ -2509,6 +2509,7 @@ Johan Schuring <johan.schuring@vetteblei.nl>
 
 Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a missing reset of maxNumber in cChannels::Renumber()
+ for reporting some missing 'const' in tChannelID
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default

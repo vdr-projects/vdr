@@ -6649,3 +6649,7 @@ Video Disk Recorder Revision History
   Lars Bläser).
 - Added support for "content identifier descriptor" and "default authority descriptor"
   to 'libsi' (thanks to Dave Pickles).
+
+2011-06-21: Version 1.7.20
+
+- Added some missing 'const' to tChannelID (reported by Sundararaj Reel).
