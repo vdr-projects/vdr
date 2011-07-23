@@ -7,13 +7,14 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 1.4 2008/02/29 14:34:22 kls Exp $
+# $Id: pic2mpg 2.1 2011/07/23 14:23:59 kls Exp $
 
 ## TODO implement HDTV (1920 x 1080)
 
 use File::Path;
 use File::Spec;
 use Getopt::Std;
+use Image::ExifTool qw(:Public);
 use Image::Size;
 
 $Usage = qq{
@@ -151,6 +152,15 @@ sub ConvertFile
      }
   my ($w, $h) = imgsize($Pict);
   print "image size is $w x $h\n" if ($Detailed);
+  my $Exif = ImageInfo($Pict);
+  my $Orientation = $$Exif{"Orientation"};
+  my ($Degrees) = $Orientation =~ /Rotate ([0-9]+) /; 
+  my $Rotate = "-null";
+  $Rotate = "-cw"   if $Degrees eq "90";
+  $Rotate = "-ccw"  if $Degrees eq "270";
+  $Rotate = "-r180" if $Degrees eq "180";
+  print "orientation = '$Orientation' -> rotation = $Rotate\n" if ($Detailed);
+  ($w, $h) = ($h, $w) if ($Degrees eq "90" || $Degrees eq "270");
   if ($w / $h <= $ScreenRatio) {
      $w = $h * $ScreenRatio;
      }
@@ -161,8 +171,9 @@ sub ConvertFile
   my $ScaleH = $SH / $h * (100 - 2 * $OverscanY) / 100;
   $Pict = EscapeMeta($Pict);
   $Mpeg = EscapeMeta($Mpeg);
-  print "$Pict -> $Mpeg\n" if $ListFiles;
+  print "$Pict -> $Mpeg $Rotate\n" if $ListFiles;
   my $Cmd = "$PNMCONV{$Type} $Pict 2> /dev/null |"
+          . "pamflip $verbose1 $Rotate |"
           . "pnmscale $verbose1 --xscale=$ScaleW --yscale=$ScaleH |"
           . "pnmpad $verbose1 --black --width $SW --height $SH |"
           . "ppmntsc $verbose1 $system1 |"
