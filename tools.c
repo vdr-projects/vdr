@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.14 2011/04/29 14:51:14 kls Exp $
+ * $Id: tools.c 2.15 2011/07/31 13:19:28 kls Exp $
  */
 
 #include "tools.h"
@@ -261,7 +261,7 @@ int numdigits(int n)
 
 bool isnumber(const char *s)
 {
-  if (!*s)
+  if (!s || !*s)
      return false;
   do {
      if (!isdigit(*s))
