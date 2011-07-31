@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.21 2011/06/13 14:40:12 kls Exp $
+ * $Id: vdr.c 2.22 2011/07/31 13:42:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -704,12 +704,14 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
-  if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
-     if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))
-        Setup.InitialChannel = Channel->GetChannelID().ToString();
+  if (*Setup.InitialChannel) {
+     if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
+        if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))
+           Setup.InitialChannel = Channel->GetChannelID().ToString();
+        }
+     if (cChannel *Channel = Channels.GetByChannelID(tChannelID::FromString(Setup.InitialChannel)))
+        Setup.CurrentChannel = Channel->Number();
      }
-  if (cChannel *Channel = Channels.GetByChannelID(tChannelID::FromString(Setup.InitialChannel)))
-     Setup.CurrentChannel = Channel->Number();
   if (Setup.InitialVolume >= 0)
      Setup.CurrentVolume = Setup.InitialVolume;
   Channels.SwitchTo(Setup.CurrentChannel);

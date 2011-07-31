@@ -2223,6 +2223,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to add a note to cTsToPes about all TS packets having to belong to
  the same PID
  for adding HD stream content identifiers to vdr.5
+ for reporting that Setup.InitialChannel was dereferenced without checking for NULL
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
