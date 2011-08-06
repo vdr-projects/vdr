@@ -6659,3 +6659,5 @@ Video Disk Recorder Revision History
   Christoph Haubrich).
 - cSkins::Message() now blocks calls from background threads (thanks to Michael
   Eiler for reporting a crash in such a scenario).
+- Fixed the return value of the svdrpsend.pl script in case of an error (thanks to
+  Jonas Diemer).

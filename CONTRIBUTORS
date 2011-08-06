@@ -2734,3 +2734,6 @@ Holger Dengler <holger.dengler@gmx.de>
 
 Michael Eiler <eiler.mike@gmail.com>
  - reporting a crash in case cSkins::Message() is called from a background thread
+
+Jonas Diemer <jonasdiemer@googlemail.com>
+ for fixing the return value of the svdrpsend.pl script in case of an error

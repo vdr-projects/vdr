@@ -52,6 +52,6 @@ sub Error
 {
   print STDERR "@_\n";
   close(SOCK);
-  exit 0;
+  exit 1;
 }
 
