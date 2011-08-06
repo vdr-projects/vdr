@@ -2737,3 +2737,6 @@ Michael Eiler <eiler.mike@gmail.com>
 
 Jonas Diemer <jonasdiemer@googlemail.com>
  for fixing the return value of the svdrpsend.pl script in case of an error
+
+Jerome Lacarriere <lacarriere.j@gmail.com>
+ for increasing MAXCAIDS to 12

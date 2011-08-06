@@ -6661,3 +6661,4 @@ Video Disk Recorder Revision History
   Eiler for reporting a crash in such a scenario).
 - Fixed the return value of the svdrpsend.pl script in case of an error (thanks to
   Jonas Diemer).
+- Increased MAXCAIDS to 12 (thanks to Jerome Lacarriere).
