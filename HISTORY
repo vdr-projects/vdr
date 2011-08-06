@@ -6305,7 +6305,7 @@ Video Disk Recorder Revision History
   parameters, but rather the whole channel is handed down for processing. The old
   constructor of cReceiver is still available, but it is recommended to plugin authors
   that they switch to the new interface as soon as possible.
-  When replaying such a recording, the PCR packets are sent to PlayTsVideo()
+  When replaying such a recording, the PCR packets are sent to PlayTsVideo().
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
   This obsoletes the CMDSUBMENU patch.
