@@ -2744,3 +2744,7 @@ Jerome Lacarriere <lacarriere.j@gmail.com>
 
 Mark Hawes <MARK.HAWES@au.fujitsu.com>
  for reporting a bug in handling DiSEqC codes
+
+Frank Niederwipper <f.niederwipper@gmail.com>
+ for reporting a problem in timer handling in case a recording directory can't
+ be created

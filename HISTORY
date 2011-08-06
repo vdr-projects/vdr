@@ -6664,3 +6664,5 @@ Video Disk Recorder Revision History
 - Increased MAXCAIDS to 12 (thanks to Jerome Lacarriere).
 - Fixed handling DiSEqC codes (thanks to Mark Hawes for reporting the bug, and
   Udo Richter for suggesting the fix).
+- Added a mechanism to defer timer handling in case of problems (reported by
+  Frank Niederwipper).
