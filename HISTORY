@@ -6650,10 +6650,12 @@ Video Disk Recorder Revision History
 - Added support for "content identifier descriptor" and "default authority descriptor"
   to 'libsi' (thanks to Dave Pickles).
 
-2011-07-31: Version 1.7.20
+2011-08-06: Version 1.7.20
 
 - Added some missing 'const' to tChannelID (reported by Sundararaj Reel).
 - The isnumber() function now checks the given pointer for NULL (thanks to Holger
   Dengler).
 - Now checking Setup.InitialChannel for NULL before using it (reported by
   Christoph Haubrich).
+- cSkins::Message() now blocks calls from background threads (thanks to Michael
+  Eiler for reporting a crash in such a scenario).

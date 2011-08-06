@@ -2731,3 +2731,6 @@ Dave Pickles <dave@pickles.me.uk>
 
 Holger Dengler <holger.dengler@gmx.de>
  for making the isnumber() function check the given pointer for NULL
+
+Michael Eiler <eiler.mike@gmail.com>
+ - reporting a crash in case cSkins::Message() is called from a background thread
