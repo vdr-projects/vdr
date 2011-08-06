@@ -6662,3 +6662,5 @@ Video Disk Recorder Revision History
 - Fixed the return value of the svdrpsend.pl script in case of an error (thanks to
   Jonas Diemer).
 - Increased MAXCAIDS to 12 (thanks to Jerome Lacarriere).
+- Fixed handling DiSEqC codes (thanks to Mark Hawes for reporting the bug, and
+  Udo Richter for suggesting the fix).
