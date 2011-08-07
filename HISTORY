@@ -6650,7 +6650,7 @@ Video Disk Recorder Revision History
 - Added support for "content identifier descriptor" and "default authority descriptor"
   to 'libsi' (thanks to Dave Pickles).
 
-2011-08-06: Version 1.7.20
+2011-08-07: Version 1.7.20
 
 - Added some missing 'const' to tChannelID (reported by Sundararaj Reel).
 - The isnumber() function now checks the given pointer for NULL (thanks to Holger
@@ -6666,3 +6666,10 @@ Video Disk Recorder Revision History
   Udo Richter for suggesting the fix).
 - Added a mechanism to defer timer handling in case of problems (reported by
   Frank Niederwipper).
+- Fixed distortions that happened when splitting recording into several files
+  (was a side effect of "Fixed detecting frames in case the Picture Start Code or
+  Access Unit Delimiter extends over TS packet boundaries" in version 1.7.19).
+  cRecorder::Action() now buffers TS packets in case the frame type is
+  not yet known when a new payload starts. This adds no overhead for channels
+  that broadcast the frame type within the first TS packet of a payload; it only
+  kicks in if that information is not in the first TS packet.
