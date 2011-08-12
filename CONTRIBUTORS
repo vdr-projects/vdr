@@ -1701,6 +1701,7 @@ Udo Richter <udo_richter@gmx.de>
  for a patch to "Made updating the editing marks during replay react faster in case
  the marks file has just been written"
  for suggesting a fix for a bug in handling DiSEqC codes
+ for fixing handling the channelID in cMenuEditChanItem
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
