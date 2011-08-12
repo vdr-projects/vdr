@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.5 2010/02/16 15:37:05 kls Exp $
+ * $Id: nit.c 2.6 2011/08/12 14:27:31 kls Exp $
  */
 
 #include "nit.h"
@@ -150,6 +150,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     }
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
+                    bool forceTransponderUpdate = false;
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
@@ -164,9 +165,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                               }
                            if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
+                           else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('S')))
+                              forceTransponderUpdate = true; // get us receiving this transponder
                            }
                         }
-                    if (!found) {
+                    if (!found || forceTransponderUpdate) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
@@ -202,6 +205,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     }
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
+                    bool forceTransponderUpdate = false;
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
@@ -216,9 +220,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                               }
                            if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
+                           else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('C')))
+                              forceTransponderUpdate = true; // get us receiving this transponder
                            }
                         }
-                    if (!found) {
+                    if (!found || forceTransponderUpdate) {
                         for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
@@ -261,6 +267,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     }
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
+                    bool forceTransponderUpdate = false;
                     for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
@@ -275,9 +282,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                               }
                            if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
                               Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
+                           else if (strcmp(Channel->Parameters(), dtp.ToString('T')))
+                              forceTransponderUpdate = true; // get us receiving this transponder
                            }
                         }
-                    if (!found) {
+                    if (!found || forceTransponderUpdate) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);

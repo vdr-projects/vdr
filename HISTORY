@@ -6676,3 +6676,5 @@ Video Disk Recorder Revision History
 - Fixed handling the channelID in cMenuEditChanItem (thanks to Udo Richter).
 - cStringList::Sort() can now be called with a boolean parameter that controls
   case insensitive sorting (suggested by Sundararaj Reel).
+- Now scanning new transponders before old ones, to make sure transponder changes
+  are recognized (thanks to Reinhard Nissl).
