@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.7 2011/02/25 15:05:58 kls Exp $
+ * $Id: tools.h 2.8 2011/08/12 14:04:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -506,12 +506,23 @@ inline int CompareStrings(const void *a, const void *b)
   return strcmp(*(const char **)a, *(const char **)b);
 }
 
+inline int CompareStringsIgnoreCase(const void *a, const void *b)
+{
+  return strcasecmp(*(const char **)a, *(const char **)b);
+}
+
 class cStringList : public cVector<char *> {
 public:
   cStringList(int Allocated = 10): cVector<char *>(Allocated) {}
   virtual ~cStringList();
   int Find(const char *s) const;
-  void Sort(void) { cVector<char *>::Sort(CompareStrings); }
+  void Sort(bool IgnoreCase = false)
+  {
+    if (IgnoreCase)
+       cVector<char *>::Sort(CompareStringsIgnoreCase);
+    else
+       cVector<char *>::Sort(CompareStrings);
+  }
   virtual void Clear(void);
   };
 

@@ -6674,3 +6674,5 @@ Video Disk Recorder Revision History
   that broadcast the frame type within the first TS packet of a payload; it only
   kicks in if that information is not in the first TS packet.
 - Fixed handling the channelID in cMenuEditChanItem (thanks to Udo Richter).
+- cStringList::Sort() can now be called with a boolean parameter that controls
+  case insensitive sorting (suggested by Sundararaj Reel).
