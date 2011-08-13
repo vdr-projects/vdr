@@ -6682,3 +6682,4 @@ Video Disk Recorder Revision History
 - The length (as number of frames) of a recording's index file can now be determined
   by a call to cIndexFile::GetLength() (suggested by Christoph Haubrich).
 - Fixed some crashes in subtitle display (thanks to Rolf Ahrenberg).
+- Made DELETENULL() thread safe (reported by Rolf Ahrenberg).

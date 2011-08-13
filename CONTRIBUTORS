@@ -1108,6 +1108,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding handling of "ANSI/SCTE 57" descriptors
  for some input on how to use BER and UNC values to generate a "quality" value
  for fixing some crashes in subtitle display
+ for reporting that DELETENULL() was not thread safe
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
