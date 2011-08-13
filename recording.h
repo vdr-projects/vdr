@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.21 2011/08/13 12:36:54 kls Exp $
+ * $Id: recording.h 2.22 2011/08/13 12:51:23 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -120,15 +120,15 @@ public:
   void ReadInfo(void);
   bool WriteInfo(void);
   bool Delete(void);
-       // Changes the file name so that it will no longer be visible in the "Recordings" menu
-       // Returns false in case of error
+       ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
+       ///< Returns false in case of error
   bool Remove(void);
-       // Actually removes the file from the disk
-       // Returns false in case of error
+       ///< Actually removes the file from the disk
+       ///< Returns false in case of error
   bool Undelete(void);
-       // Changes the file name so that it will be visible in the "Recordings" menu again and
-       // not processed by cRemoveDeletedRecordingsThread.
-       // Returns false in case of error
+       ///< Changes the file name so that it will be visible in the "Recordings" menu again and
+       ///< not processed by cRemoveDeletedRecordingsThread.
+       ///< Returns false in case of error
   };
 
 class cRecordings : public cList<cRecording>, public cThread {
