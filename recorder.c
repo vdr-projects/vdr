@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.13 2011/08/12 14:14:57 kls Exp $
+ * $Id: recorder.c 2.14 2011/08/13 14:56:36 kls Exp $
  */
 
 #include "recorder.h"
@@ -119,7 +119,7 @@ void cRecorder::Action(void)
   time_t t = time(NULL);
   bool InfoWritten = false;
   bool FirstIframeSeen = false;
-#define BUFFERSIZE KILOBYTE(1)
+#define BUFFERSIZE (5 * TS_SIZE)
   bool Buffering = false;
   int BufferIndex = 0;
   int MaxBufferIndex = 0;
