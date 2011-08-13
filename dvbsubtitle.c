@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.17 2011/04/17 14:34:05 kls Exp $
+ * $Id: dvbsubtitle.c 2.18 2011/08/13 13:33:00 kls Exp $
  */
 
 
@@ -826,6 +826,7 @@ void cDvbSubtitleConverter::Action(void)
   while (Running()) {
         int WaitMs = 100;
         if (!frozen) {
+           LOCK_THREAD;
            if (osd) {
               int NewSetupLevel = setupLevel;
               if (Timeout.TimedOut() || LastSetupLevel != NewSetupLevel) {
@@ -833,7 +834,6 @@ void cDvbSubtitleConverter::Action(void)
                  }
               LastSetupLevel = NewSetupLevel;
               }
-           Lock();
            if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
               int64_t STC = cDevice::PrimaryDevice()->GetSTC();
               int64_t Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
@@ -858,7 +858,6 @@ void cDvbSubtitleConverter::Action(void)
               else
                  bitmaps->Del(sb);
               }
-           Unlock();
            }
         cCondWait::SleepMs(WaitMs);
         }
@@ -902,6 +901,7 @@ void cDvbSubtitleConverter::SetOsdData(void)
 
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
+  LOCK_THREAD;
   return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
 }
 
@@ -957,7 +957,11 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             region->SetVersion(regionVersion);
             bool regionFillFlag = (Data[6 + 1] & 0x08) >> 3;
             int regionWidth = (Data[6 + 2] << 8) | Data[6 + 3];
+            if (regionWidth < 1)
+               regionWidth = 1;
             int regionHeight = (Data[6 + 4] << 8) | Data[6 + 5];
+            if (regionHeight < 1)
+               regionHeight = 1;
             region->SetSize(regionWidth, regionHeight);
             region->SetLevel((Data[6 + 6] & 0xE0) >> 5);
             region->SetDepth((Data[6 + 6] & 0x1C) >> 2);
@@ -1103,7 +1107,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   int NumAreas = Page->regions.Count();
   int Bpp = 8;
   bool Reduced = false;
-  while (osd->CanHandleAreas(Areas, NumAreas) != oeOk) {
+  while (osd && osd->CanHandleAreas(Areas, NumAreas) != oeOk) {
         int HalfBpp = Bpp / 2;
         if (HalfBpp >= 2) {
            for (int i = 0; i < NumAreas; i++) {
@@ -1141,8 +1145,10 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
       int posX = sr->HorizontalAddress();
       int posY = sr->VerticalAddress();
-      cBitmap *bm = new cBitmap(sr->Width(), sr->Height(), sr->Bpp(), posX, posY);
-      bm->DrawBitmap(posX, posY, *sr);
-      Bitmaps->AddBitmap(bm);
+      if (sr->Width() > 0 && sr->Height() > 0) {
+         cBitmap *bm = new cBitmap(sr->Width(), sr->Height(), sr->Bpp(), posX, posY);
+         bm->DrawBitmap(posX, posY, *sr);
+         Bitmaps->AddBitmap(bm);
+         }
       }
 }
