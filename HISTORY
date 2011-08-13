@@ -6679,3 +6679,5 @@ Video Disk Recorder Revision History
 - Now scanning new transponders before old ones, to make sure transponder changes
   are recognized (thanks to Reinhard Nissl).
 - Implemented static cIndexFile::IndexFileName().
+- The length (as number of frames) of a recording's index file can now be determined
+  by a call to cIndexFile::GetLength() (suggested by Christoph Haubrich).

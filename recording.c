@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.32 2011/08/13 10:59:32 kls Exp $
+ * $Id: recording.c 2.33 2011/08/13 12:37:25 kls Exp $
  */
 
 #include "recording.h"
@@ -1814,6 +1814,15 @@ void cIndexFile::Delete(void)
         }
      unlink(fileName);
      }
+}
+
+int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
+{
+  struct stat buf;
+  cString s = IndexFileName(FileName, IsPesRecording);
+  if (*s && stat(s, &buf) == 0)
+     return buf.st_size / (IsPesRecording ? sizeof(tIndexTs) : sizeof(tIndexPes));
+  return -1;
 }
 
 bool GenerateIndex(const char *FileName) 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.20 2011/08/13 09:52:25 kls Exp $
+ * $Id: recording.h 2.21 2011/08/13 12:36:54 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -260,6 +260,9 @@ public:
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);
   void Delete(void);
+  static int GetLength(const char *FileName, bool IsPesRecording = false);
+       ///< Calculates the recording length (numer of frames) without actually reading the index file.
+       ///< Returns -1 in case of error.
   };
 
 class cFileName {
