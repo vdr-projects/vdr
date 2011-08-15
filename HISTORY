@@ -6650,7 +6650,7 @@ Video Disk Recorder Revision History
 - Added support for "content identifier descriptor" and "default authority descriptor"
   to 'libsi' (thanks to Dave Pickles).
 
-2011-08-14: Version 1.7.20
+2011-08-15: Version 1.7.20
 
 - Added some missing 'const' to tChannelID (reported by Sundararaj Reel).
 - The isnumber() function now checks the given pointer for NULL (thanks to Holger
@@ -6686,3 +6686,5 @@ Video Disk Recorder Revision History
 - The pic2mpg script of the 'pictures' plugin now generates HD images (thanks to
   Andre Weidemann for his support in using convert/ffmpeg). The old SD version is
   still available as pic2mpg-sd.
+- Added a mutex to protect cOsd::Osds from simultaneous access from different threads
+  (reported by Rolf Ahrenberg).
