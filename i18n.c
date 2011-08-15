@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 2.3 2011/02/20 15:56:20 kls Exp $
+ * $Id: i18n.c 2.4 2011/08/15 10:01:45 kls Exp $
  */
 
 /*
@@ -40,7 +40,7 @@ const char *LanguageCodeList[] = {
   "slv,slo",
   "ita",
   "dut,nla,nld",
-  "por",
+  "prt",
   "fra,fre",
   "nor",
   "fin,suo",
