@@ -822,7 +822,7 @@ Version 1.6
 
   Max. video file size = 2000
                          The maximum size of a single recorded video file in MB.
-                         The valid range is 100...2000. Default is 2000, but
+                         The valid range is 100...1048570. Default is 2000, but
                          you may want to use smaller values if you are planning
                          on archiving a recording to CD.
 
