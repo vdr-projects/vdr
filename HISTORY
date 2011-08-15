@@ -6688,3 +6688,5 @@ Video Disk Recorder Revision History
   still available as pic2mpg-sd.
 - Added a mutex to protect cOsd::Osds from simultaneous access from different threads
   (reported by Rolf Ahrenberg).
+- The cutter now sets the 'broken link' flag for MPEG2 TS recordings (thanks to
+  Oliver Endriss).

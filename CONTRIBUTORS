@@ -678,6 +678,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for fixing the way the OSD size is determined on full featured DVB cards
  for his input on calculating the Aspect factor in GetOsdSize()
  for suggesting a better way of handling calls to realloc()
+ for making the cutter set the 'broken link' flag for MPEG2 TS recordings
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
