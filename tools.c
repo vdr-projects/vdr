@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.15 2011/07/31 13:19:28 kls Exp $
+ * $Id: tools.c 2.16 2011/08/15 12:23:20 kls Exp $
  */
 
 #include "tools.h"
@@ -268,6 +268,21 @@ bool isnumber(const char *s)
         return false;
      } while (*++s);
   return true;
+}
+
+int64_t StrToNum(const char *s)
+{
+  char *t = NULL;
+  int64_t n = strtoll(s, &t, 10);
+  if (t) {
+     switch (*t) {
+       case 'T': n *= 1024;
+       case 'G': n *= 1024;
+       case 'M': n *= 1024;
+       case 'K': n *= 1024;
+       }
+     }
+  return n;
 }
 
 cString AddDirectory(const char *DirName, const char *FileName)

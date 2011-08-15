@@ -6691,3 +6691,7 @@ Video Disk Recorder Revision History
 - The cutter now sets the 'broken link' flag for MPEG2 TS recordings (thanks to
   Oliver Endriss).
 - Fixed language code entry for Portuguese.
+- The new command line options --filesize (suggested by Marco Göbenich) and --split
+  can be used together with --edit to set the maximum video file size and turn on
+  splitting edited files at the editing marks. These options must be given before
+  --edit to have an effect.

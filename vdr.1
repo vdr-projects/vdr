@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.5 2010/04/02 12:22:08 kls Exp $
+.\" $Id: vdr.1 2.6 2011/08/15 12:28:54 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -65,6 +65,15 @@ Write the EPG data into the given \fIfile\fR
 Use \fB\-E\-\fR to disable this.
 If \fIfile\fR is a directory, the file \fIepg.data\fR
 will be created in that directory.
+.TP
+.BI \-\-filesize= size
+Limit video files to \fIsize\fR bytes (default is 2000M).
+This option is only useful in conjunction with --edit, and must precede that
+option to have an effect.
+\fIsize\fR is an integer number and may be followed by one of the letters K, M, G or T
+to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively.
+The given value is silently limited to the program's internal minimum and
+maximum values.
 .TP
 .BI \-\-genindex= rec
 Generate the index file for the given recording.
@@ -156,6 +165,11 @@ more information.
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
 Call \fIcmd\fR to shutdown the computer. See the file \fIINSTALL\fR for more
 information.
+.TP
+.BI \-\-split
+Split edited files at the editing marks.
+This option is only useful in conjunction with --edit, and must precede that
+option to have an effect.
 .TP
 .BI \-t\  tty ,\ \-\-terminal= tty
 Set the controlling terminal.

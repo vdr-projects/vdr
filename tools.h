@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.9 2011/08/13 13:36:37 kls Exp $
+ * $Id: tools.h 2.10 2011/08/15 11:50:02 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -205,6 +205,12 @@ bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 bool isnumber(const char *s);
+int64_t StrToNum(const char *s);
+    ///< Converts the given string to a number.
+    ///< The numerical part of the string may be followed by one of the letters
+    ///< K, M, G or T to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively
+    ///< (based on 1024). Everything after the first non-numeric character is
+    ///< silently ignored, as are any characters other than the ones mentionend here.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
