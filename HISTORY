@@ -6695,3 +6695,6 @@ Video Disk Recorder Revision History
   can be used together with --edit to set the maximum video file size and turn on
   splitting edited files at the editing marks. These options must be given before
   --edit to have an effect.
+- cTimeMs is no longer initialized to the current time if the value given to the
+  constructor is negative (avoids the "cTimeMs: using monotonic clock..." log message
+  before VDR's starting log message).

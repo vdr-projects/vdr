@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.3 2011/03/27 15:03:36 kls Exp $
+ * $Id: remote.c 2.4 2011/08/15 13:41:40 kls Exp $
  */
 
 #include "remote.h"
@@ -26,7 +26,7 @@
 eKeys cRemote::keys[MaxKeys];
 int cRemote::in = 0;
 int cRemote::out = 0;
-cTimeMs cRemote::repeatTimeout;
+cTimeMs cRemote::repeatTimeout(-1);
 cRemote *cRemote::learning = NULL;
 char *cRemote::unknownCode = NULL;
 cMutex cRemote::mutex;

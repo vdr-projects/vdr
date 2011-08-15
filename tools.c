@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.16 2011/08/15 12:23:20 kls Exp $
+ * $Id: tools.c 2.17 2011/08/15 13:35:23 kls Exp $
  */
 
 #include "tools.h"
@@ -571,7 +571,10 @@ time_t LastModifiedTime(const char *FileName)
 
 cTimeMs::cTimeMs(int Ms)
 {
-  Set(Ms);
+  if (Ms >= 0)
+     Set(Ms);
+  else
+     begin = 0;
 }
 
 uint64_t cTimeMs::Now(void)

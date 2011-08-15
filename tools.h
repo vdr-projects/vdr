@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.10 2011/08/15 11:50:02 kls Exp $
+ * $Id: tools.h 2.11 2011/08/15 14:13:42 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -272,6 +272,8 @@ private:
 public:
   cTimeMs(int Ms = 0);
       ///< Creates a timer with ms resolution and an initial timeout of Ms.
+      ///< If Ms is negative the timer is not initialized with the current
+      ///< time.
   static uint64_t Now(void);
   void Set(int Ms = 0);
   bool TimedOut(void);
