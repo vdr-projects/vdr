@@ -6305,7 +6305,7 @@ Video Disk Recorder Revision History
   parameters, but rather the whole channel is handed down for processing. The old
   constructor of cReceiver is still available, but it is recommended to plugin authors
   that they switch to the new interface as soon as possible.
-  When replaying such a recording, the PCR packets are sent to PlayTsVideo()
+  When replaying such a recording, the PCR packets are sent to PlayTsVideo().
 - The files "commands.conf" and "reccmd.conf" can now contain nested lists of
   commands. See vdr.5 for information about the new file format.
   This obsoletes the CMDSUBMENU patch.
@@ -6649,3 +6649,52 @@ Video Disk Recorder Revision History
   Lars Bläser).
 - Added support for "content identifier descriptor" and "default authority descriptor"
   to 'libsi' (thanks to Dave Pickles).
+
+2011-08-15: Version 1.7.20
+
+- Added some missing 'const' to tChannelID (reported by Sundararaj Reel).
+- The isnumber() function now checks the given pointer for NULL (thanks to Holger
+  Dengler).
+- Now checking Setup.InitialChannel for NULL before using it (reported by
+  Christoph Haubrich).
+- cSkins::Message() now blocks calls from background threads (thanks to Michael
+  Eiler for reporting a crash in such a scenario).
+- Fixed the return value of the svdrpsend.pl script in case of an error (thanks to
+  Jonas Diemer).
+- Increased MAXCAIDS to 12 (thanks to Jerome Lacarriere).
+- Fixed handling DiSEqC codes (thanks to Mark Hawes for reporting the bug, and
+  Udo Richter for suggesting the fix).
+- Added a mechanism to defer timer handling in case of problems (reported by
+  Frank Niederwipper).
+- Fixed distortions that happened when splitting recording into several files
+  (was a side effect of "Fixed detecting frames in case the Picture Start Code or
+  Access Unit Delimiter extends over TS packet boundaries" in version 1.7.19).
+  cRecorder::Action() now buffers TS packets in case the frame type is
+  not yet known when a new payload starts. This adds no overhead for channels
+  that broadcast the frame type within the first TS packet of a payload; it only
+  kicks in if that information is not in the first TS packet.
+- Fixed handling the channelID in cMenuEditChanItem (thanks to Udo Richter).
+- cStringList::Sort() can now be called with a boolean parameter that controls
+  case insensitive sorting (suggested by Sundararaj Reel).
+- Now scanning new transponders before old ones, to make sure transponder changes
+  are recognized (thanks to Reinhard Nissl).
+- Implemented static cIndexFile::IndexFileName().
+- The length (as number of frames) of a recording's index file can now be determined
+  by a call to cIndexFile::GetLength() (suggested by Christoph Haubrich).
+- Fixed some crashes in subtitle display (thanks to Rolf Ahrenberg).
+- Made DELETENULL() thread safe (reported by Rolf Ahrenberg).
+- The pic2mpg script of the 'pictures' plugin now generates HD images (thanks to
+  Andre Weidemann for his support in using convert/ffmpeg). The old SD version is
+  still available as pic2mpg-sd.
+- Added a mutex to protect cOsd::Osds from simultaneous access from different threads
+  (reported by Rolf Ahrenberg).
+- The cutter now sets the 'broken link' flag for MPEG2 TS recordings (thanks to
+  Oliver Endriss).
+- Fixed language code entry for Portuguese.
+- The new command line options --filesize (suggested by Marco Göbenich) and --split
+  can be used together with --edit to set the maximum video file size and turn on
+  splitting edited files at the editing marks. These options must be given before
+  --edit to have an effect.
+- cTimeMs is no longer initialized to the current time if the value given to the
+  constructor is negative (avoids the "cTimeMs: using monotonic clock..." log message
+  before VDR's starting log message).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.1 2009/06/06 15:12:31 kls Exp $
+ * $Id: skins.c 2.2 2011/08/06 09:41:57 kls Exp $
  */
 
 #include "skins.h"
@@ -223,6 +223,10 @@ bool cSkins::SetCurrent(const char *Name)
 
 eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
 {
+  if (!cThread::IsMainThread()) {
+     dsyslog("cSkins::Message() called from background thread - ignored! (Use cSkins::QueueMessage() instead)");
+     return kNone;
+     }
   switch (Type) {
     case mtInfo:    isyslog("info: %s", s); break;
     case mtWarning: isyslog("warning: %s", s); break;

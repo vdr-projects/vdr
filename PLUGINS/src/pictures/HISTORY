@@ -45,3 +45,13 @@ VDR Plugin 'pictures' Revision History
 2011-02-20: Version 0.1.0
 
 - Fixed reallocating memory (reported by Paul Menzel).
+
+2011-07-23:
+
+- Now rotating images according to the EXIF 'Orientation' parameter.
+
+2011-08-14:
+
+- The pic2mpg script now generates HD images (thanks to Andre Weidemann for his
+  support in using convert/ffmpeg). The old SD version is still available as
+  pic2mpg-sd.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.57 2011/06/12 14:24:09 kls Exp $
+ * $Id: remux.c 2.58 2011/08/15 09:50:14 kls Exp $
  */
 
 #include "remux.h"
@@ -135,8 +135,11 @@ void TsSetTeiOnBrokenPackets(uchar *p, int l)
         if (!Processed[Pid]) {
            if (!TsPayloadStart(p))
               p[1] |= TS_ERROR;
-           else
+           else {
               Processed[Pid] = true;
+              int offs = TsPayloadOffset(p);
+              cRemux::SetBrokenLink(p + offs, TS_SIZE - offs);
+              }
            }
         l -= TS_SIZE;
         p += TS_SIZE;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.31 2011/06/12 13:04:28 kls Exp $
+ * $Id: recording.c 2.33 2011/08/13 12:37:25 kls Exp $
  */
 
 #include "recording.h"
@@ -1540,84 +1540,75 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
 :resumeFile(FileName, IsPesRecording)
 {
   f = -1;
-  fileName = NULL;
   size = 0;
   last = -1;
   index = NULL;
   isPesRecording = IsPesRecording;
   indexFileGenerator = NULL;
   if (FileName) {
-     const char *Suffix = isPesRecording ? INDEXFILESUFFIX ".vdr" : INDEXFILESUFFIX;
-     fileName = MALLOC(char, strlen(FileName) + strlen(Suffix) + 1);
-     if (fileName) {
-        strcpy(fileName, FileName);
-        char *pFileExt = fileName + strlen(fileName);
-        strcpy(pFileExt, Suffix);
-        int delta = 0;
-        if (!Record && access(fileName, R_OK) != 0) {
-           // Index file doesn't exist, so try to regenerate it:
-           if (!isPesRecording) { // sorry, can only do this for TS recordings
-              resumeFile.Delete(); // just in case
-              indexFileGenerator = new cIndexFileGenerator(FileName);
-              // Wait until the index file exists:
-              time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
-              do {
-                 cCondWait::SleepMs(INDEXFILECHECKINTERVAL); // start with a sleep, to give it a head start
-                 } while (access(fileName, R_OK) != 0 && time(NULL) < tmax);
-              }
-           }
-        if (access(fileName, R_OK) == 0) {
-           struct stat buf;
-           if (stat(fileName, &buf) == 0) {
-              delta = int(buf.st_size % sizeof(tIndexTs));
-              if (delta) {
-                 delta = sizeof(tIndexTs) - delta;
-                 esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, fileName);
-                 }
-              last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
-              if (!Record && last >= 0) {
-                 size = last + 1;
-                 index = MALLOC(tIndexTs, size);
-                 if (index) {
-                    f = open(fileName, O_RDONLY);
-                    if (f >= 0) {
-                       if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
-                          esyslog("ERROR: can't read from file '%s'", fileName);
-                          free(index);
-                          index = NULL;
-                          close(f);
-                          f = -1;
-                          }
-                       // we don't close f here, see CatchUp()!
-                       else if (isPesRecording)
-                          ConvertFromPes(index, size);
-                       }
-                    else
-                       LOG_ERROR_STR(fileName);
-                    }
-                 else
-                    esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), fileName);
-                 }
-              }
-           else
-              LOG_ERROR;
-           }
-        else if (!Record)
-           isyslog("missing index file %s", fileName);
-        if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, DEFFILEMODE)) >= 0) {
-              if (delta) {
-                 esyslog("ERROR: padding index file with %d '0' bytes", delta);
-                 while (delta--)
-                       writechar(f, 0);
-                 }
-              }
-           else
-              LOG_ERROR_STR(fileName);
+     fileName = IndexFileName(FileName, isPesRecording);
+     int delta = 0;
+     if (!Record && access(fileName, R_OK) != 0) {
+        // Index file doesn't exist, so try to regenerate it:
+        if (!isPesRecording) { // sorry, can only do this for TS recordings
+           resumeFile.Delete(); // just in case
+           indexFileGenerator = new cIndexFileGenerator(FileName);
+           // Wait until the index file exists:
+           time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
+           do {
+              cCondWait::SleepMs(INDEXFILECHECKINTERVAL); // start with a sleep, to give it a head start
+              } while (access(fileName, R_OK) != 0 && time(NULL) < tmax);
            }
         }
-     else
-        esyslog("ERROR: can't copy file name '%s'", FileName);
+     if (access(fileName, R_OK) == 0) {
+        struct stat buf;
+        if (stat(fileName, &buf) == 0) {
+           delta = int(buf.st_size % sizeof(tIndexTs));
+           if (delta) {
+              delta = sizeof(tIndexTs) - delta;
+              esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, *fileName);
+              }
+           last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
+           if (!Record && last >= 0) {
+              size = last + 1;
+              index = MALLOC(tIndexTs, size);
+              if (index) {
+                 f = open(fileName, O_RDONLY);
+                 if (f >= 0) {
+                    if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
+                       esyslog("ERROR: can't read from file '%s'", *fileName);
+                       free(index);
+                       index = NULL;
+                       close(f);
+                       f = -1;
+                       }
+                    // we don't close f here, see CatchUp()!
+                    else if (isPesRecording)
+                       ConvertFromPes(index, size);
+                    }
+                 else
+                    LOG_ERROR_STR(*fileName);
+                 }
+              else
+                 esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), *fileName);
+              }
+           }
+        else
+           LOG_ERROR;
+        }
+     else if (!Record)
+        isyslog("missing index file %s", *fileName);
+     if (Record) {
+        if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, DEFFILEMODE)) >= 0) {
+           if (delta) {
+              esyslog("ERROR: padding index file with %d '0' bytes", delta);
+              while (delta--)
+                    writechar(f, 0);
+              }
+           }
+        else
+           LOG_ERROR_STR(*fileName);
+        }
      }
 }
 
@@ -1625,9 +1616,13 @@ cIndexFile::~cIndexFile()
 {
   if (f >= 0)
      close(f);
-  free(fileName);
   free(index);
   delete indexFileGenerator;
+}
+
+cString cIndexFile::IndexFileName(const char *FileName, bool IsPesRecording)
+{
+  return cString::sprintf("%s%s", FileName, IsPesRecording ? INDEXFILESUFFIX ".vdr" : INDEXFILESUFFIX);
 }
 
 void cIndexFile::ConvertFromPes(tIndexTs *IndexTs, int Count)
@@ -1696,7 +1691,7 @@ bool cIndexFile::CatchUp(int Index)
                      last = newLast;
                      }
                   else
-                     LOG_ERROR_STR(fileName);
+                     LOG_ERROR_STR(*fileName);
                   }
                else {
                   esyslog("ERROR: can't realloc() index");
@@ -1705,7 +1700,7 @@ bool cIndexFile::CatchUp(int Index)
                }
             }
          else
-            LOG_ERROR_STR(fileName);
+            LOG_ERROR_STR(*fileName);
          if (Index < last - (i ? 2 * INDEXSAFETYLIMIT : 0) || Index > 10 * INDEXSAFETYLIMIT) // keep off the end in case of "Pause live video"
             break;
          cCondWait::SleepMs(1000);
@@ -1721,7 +1716,7 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
      if (isPesRecording)
         ConvertToPes(&i, 1);
      if (safe_write(f, &i, sizeof(i)) < 0) {
-        LOG_ERROR_STR(fileName);
+        LOG_ERROR_STR(*fileName);
         close(f);
         f = -1;
         return false;
@@ -1811,14 +1806,23 @@ bool cIndexFile::IsStillRecording()
 
 void cIndexFile::Delete(void)
 {
-  if (fileName) {
-     dsyslog("deleting index file '%s'", fileName);
+  if (*fileName) {
+     dsyslog("deleting index file '%s'", *fileName);
      if (f >= 0) {
         close(f);
         f = -1;
         }
      unlink(fileName);
      }
+}
+
+int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
+{
+  struct stat buf;
+  cString s = IndexFileName(FileName, IsPesRecording);
+  if (*s && stat(s, &buf) == 0)
+     return buf.st_size / (IsPesRecording ? sizeof(tIndexTs) : sizeof(tIndexPes));
+  return -1;
 }
 
 bool GenerateIndex(const char *FileName) 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.19 2011/04/17 13:18:04 kls Exp $
+ * $Id: recording.h 2.22 2011/08/13 12:51:23 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -120,15 +120,15 @@ public:
   void ReadInfo(void);
   bool WriteInfo(void);
   bool Delete(void);
-       // Changes the file name so that it will no longer be visible in the "Recordings" menu
-       // Returns false in case of error
+       ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
+       ///< Returns false in case of error
   bool Remove(void);
-       // Actually removes the file from the disk
-       // Returns false in case of error
+       ///< Actually removes the file from the disk
+       ///< Returns false in case of error
   bool Undelete(void);
-       // Changes the file name so that it will be visible in the "Recordings" menu again and
-       // not processed by cRemoveDeletedRecordingsThread.
-       // Returns false in case of error
+       ///< Changes the file name so that it will be visible in the "Recordings" menu again and
+       ///< not processed by cRemoveDeletedRecordingsThread.
+       ///< Returns false in case of error
   };
 
 class cRecordings : public cList<cRecording>, public cThread {
@@ -236,13 +236,14 @@ class cIndexFileGenerator;
 class cIndexFile {
 private:
   int f;
-  char *fileName;
+  cString fileName;
   int size, last;
   tIndexTs *index;
   bool isPesRecording;
   cResumeFile resumeFile;
   cIndexFileGenerator *indexFileGenerator;
   cMutex mutex;
+  static cString IndexFileName(const char *FileName, bool IsPesRecording);
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
   void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
@@ -259,6 +260,9 @@ public:
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);
   void Delete(void);
+  static int GetLength(const char *FileName, bool IsPesRecording = false);
+       ///< Calculates the recording length (numer of frames) without actually reading the index file.
+       ///< Returns -1 in case of error.
   };
 
 class cFileName {

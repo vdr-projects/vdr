@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.12 2010/06/05 13:12:54 kls Exp $
+ * $Id: channels.h 2.14 2011/08/06 09:56:13 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -34,7 +34,7 @@
 #define MAXAPIDS 32 // audio
 #define MAXDPIDS 16 // dolby (AC3 + DTS)
 #define MAXSPIDS 32 // subtitles
-#define MAXCAIDS  8 // conditional access
+#define MAXCAIDS 12 // conditional access
 
 #define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
 #define MAXLANGCODE2 8 // up to two 3 letter language codes, separated by '+' and zero terminated
@@ -61,11 +61,11 @@ public:
   bool Valid(void) const { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
-  int Source(void) { return source; }
-  int Nid(void) { return nid; }
-  int Tid(void) { return tid; }
-  int Sid(void) { return sid; }
-  int Rid(void) { return rid; }
+  int Source(void)  const { return source; }
+  int Nid(void)  const { return nid; }
+  int Tid(void)  const { return tid; }
+  int Sid(void)  const { return sid; }
+  int Rid(void)  const { return rid; }
   static tChannelID FromString(const char *s);
   cString ToString(void) const;
   static const tChannelID InvalidID;

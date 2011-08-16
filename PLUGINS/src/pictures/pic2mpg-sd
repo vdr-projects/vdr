@@ -7,45 +7,63 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 2.2 2011/08/14 13:34:15 kls Exp $
+# $Id: pic2mpg 2.1 2011/07/23 14:23:59 kls Exp $
+
+## TODO implement HDTV (1920 x 1080)
 
 use File::Path;
 use File::Spec;
 use Getopt::Std;
 use Image::ExifTool qw(:Public);
+use Image::Size;
 
 $Usage = qq{
 Usage: $0 [options] picture-dir mpeg-dir
        $0 [options] picture-file mpeg-file
 
-Options: -f             Force conversion
+Options: -a             Aspect ratio 4:3 (default is 16:9)
+         -f             Force conversion
          -h             print Help
-         -s size        Screen size (WIDTHxHEIGHT, default is 1920x1080)
+         -i             Ignore unknown file types
+         -n             NTSC (default is PAL)
          -v num         Verbose (0=none, 1=list files, 2=detailed)
+         -x percent     X overscan in percent
+         -y percent     Y overscan in percent
 };
 
-getopts("fhs:v:") || die $Usage;
+getopts("afhinv:x:y:") || die $Usage;
 
 die $Usage if $opt_h;
 
+$Aspect    = $opt_a;
 $Force     = $opt_f;
-$Size      = $opt_s || "1920x1080";
+$Ignore    = $opt_i;
+$NTSC      = $opt_n;
 $Verbose   = $opt_v;
+$OverscanX = $opt_x;
+$OverscanY = $opt_y;
 
 $ListFiles = $Verbose >= 1;
 $Detailed  = $Verbose >= 2;
 
-# Supported picture types:                                                                                                       
+# Screen size:
 
-%PICTYPES = (                                                                                                                  
-  bmp  => 1,
-  gif  => 1,
-  jpeg => 1,
-  jpg  => 1,
-  png  => 1,
-  pnm  => 1,
-  tif  => 1,
-  tiff => 1,
+$SW = $NTSC ? 720 : 720;
+$SH = $NTSC ? 480 : 576;
+
+$ScreenRatio = $Aspect ? 4 / 3 : 16 / 9;
+
+# Converter programs:
+
+%PNMCONV = (
+  bmp  => "bmptopnm",
+  gif  => "giftopnm",
+  jpeg => "jpegtopnm",
+  jpg  => "jpegtopnm",
+  png  => "pngtopnm",
+  pnm  => "cat",
+  tif  => "tifftopnm",
+  tiff => "tifftopnm",
   );
 
 # Command options:
@@ -53,6 +71,13 @@ $Detailed  = $Verbose >= 2;
 die "$0: missing parameter\n" unless $ARGV[0] && $ARGV[1];
 die "$0: file or directory not found: $ARGV[0]\n" unless -e $ARGV[0];
 die "$0: source and destination must be different\n" if $ARGV[0] eq $ARGV[1];
+
+$verbose1  = $Detailed ? "--verbose" : "";
+$verbose2  = $Detailed ? "-v 2" : "-v 0";
+$system1   = $NTSC ? "" : "--pal";
+$system2   = $NTSC ? "n" : "p";
+$framerate = $NTSC ? "30000:1001" : "25:1";
+$aspect    = $Aspect ? "2" : "3";
 
 # Convert a single file:
 
@@ -71,7 +96,7 @@ $MPGDIR = File::Spec->rel2abs($ARGV[1]);
 
 chdir($PICDIR) || die "$PICDIR: $!\n";
 
-@Pictures = `find -type f | sort`;
+@Pictures = `find -type f`;
 chomp(@Pictures);
 
 for $pic (@Pictures) {
@@ -121,18 +146,39 @@ sub ConvertFile
 {
   my ($Pict, $Mpeg) = @_;
   (my $Type) = lc($Pict) =~ /\.([^\.]*)$/;
-  return if (!defined $PICTYPES{$Type});
+  if (!defined $PNMCONV{$Type}) {
+     return if ($Ignore);
+     die "unknown file type '$Type': '$Pict'\n";
+     }
+  my ($w, $h) = imgsize($Pict);
+  print "image size is $w x $h\n" if ($Detailed);
   my $Exif = ImageInfo($Pict);
   my $Orientation = $$Exif{"Orientation"};
   my ($Degrees) = $Orientation =~ /Rotate ([0-9]+) /; 
-  my $Rotate = $Degrees ? "-rotate $Degrees" : "";
+  my $Rotate = "-null";
+  $Rotate = "-cw"   if $Degrees eq "90";
+  $Rotate = "-ccw"  if $Degrees eq "270";
+  $Rotate = "-r180" if $Degrees eq "180";
   print "orientation = '$Orientation' -> rotation = $Rotate\n" if ($Detailed);
+  ($w, $h) = ($h, $w) if ($Degrees eq "90" || $Degrees eq "270");
+  if ($w / $h <= $ScreenRatio) {
+     $w = $h * $ScreenRatio;
+     }
+  else {
+     $h = $w / $ScreenRatio;
+     }
+  my $ScaleW = $SW / $w * (100 - 2 * $OverscanX) / 100;
+  my $ScaleH = $SH / $h * (100 - 2 * $OverscanY) / 100;
   $Pict = EscapeMeta($Pict);
   $Mpeg = EscapeMeta($Mpeg);
   print "$Pict -> $Mpeg $Rotate\n" if $ListFiles;
-  my $Cmd = "convert $Pict -background '#000000' $Rotate -resize $Size -gravity center -extent $Size ppm:- | "
-          . "ffmpeg -f image2pipe -vcodec ppm -i pipe:0 -an -vcodec libx264 -vpre baseline -s $Size -qscale 2 -f mpegts -y $Mpeg "
-          . ($Detailed ? "" : "2>/dev/null");
+  my $Cmd = "$PNMCONV{$Type} $Pict 2> /dev/null |"
+          . "pamflip $verbose1 $Rotate |"
+          . "pnmscale $verbose1 --xscale=$ScaleW --yscale=$ScaleH |"
+          . "pnmpad $verbose1 --black --width $SW --height $SH |"
+          . "ppmntsc $verbose1 $system1 |"
+          . "ppmtoy4m $verbose2 -F $framerate -I p -S 420mpeg2 |"
+          . "mpeg2enc $verbose2 -f 3 -b 12500 -a $aspect -q 1 -n $system2 -o $Mpeg";
   !system($Cmd) || die "$Cmd: $!\n";
   $Cmd = "touch -r $Pict $Mpeg";
   !system($Cmd) || die "$Cmd: $!\n";

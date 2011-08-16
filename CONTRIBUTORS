@@ -678,6 +678,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for fixing the way the OSD size is determined on full featured DVB cards
  for his input on calculating the Aspect factor in GetOsdSize()
  for suggesting a better way of handling calls to realloc()
+ for making the cutter set the 'broken link' flag for MPEG2 TS recordings
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1107,6 +1108,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding an include of VDR's 'Make.global' to libsi's Makefile
  for adding handling of "ANSI/SCTE 57" descriptors
  for some input on how to use BER and UNC values to generate a "quality" value
+ for fixing some crashes in subtitle display
+ for reporting that DELETENULL() was not thread safe
+ for reporting a crash in subtitle display, related to cOsd::Osds
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1273,6 +1277,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for avoiding an unecessary call to Recordings.ResetResume()
  for debugging a problem in handling the bitmap color depth for scaled subtitles
  for making subtitle PIDs be decrypted
+ for making cEITScanner process new transponders before old ones, to make sure
+ transponder changes are recognized
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1700,6 +1706,8 @@ Udo Richter <udo_richter@gmx.de>
  "TITLE" or "EPISODE"
  for a patch to "Made updating the editing marks during replay react faster in case
  the marks file has just been written"
+ for suggesting a fix for a bug in handling DiSEqC codes
+ for fixing handling the channelID in cMenuEditChanItem
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2147,6 +2155,7 @@ André Weidemann <Andre.Weidemann@web.de>
  recording if Setup.UseDolbyDigital is true
  for suggesting that the primary device should only be avoided for recording if
  it is an old SD full featured card
+ for his support in using convert/ffmpeg in the pic2mpg script of the 'pictures' plugin
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
@@ -2223,6 +2232,9 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to add a note to cTsToPes about all TS packets having to belong to
  the same PID
  for adding HD stream content identifiers to vdr.5
+ for reporting that Setup.InitialChannel was dereferenced without checking for NULL
+ for suggesting to implement a function to determine the length of a recording's
+ index file
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2509,6 +2521,8 @@ Johan Schuring <johan.schuring@vetteblei.nl>
 
 Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a missing reset of maxNumber in cChannels::Renumber()
+ for reporting some missing 'const' in tChannelID
+ for suggesting to add optional case insensitive sorting to cStringList::Sort()
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
@@ -2718,6 +2732,7 @@ Dirk Leber <dirk.leber@reel-multimedia.com>
 
 Marco Göbenich <mg@needful.de>
  for reporting a problem with executing diseqc commands from different threads
+ for suggesting to implement command line option --filesize
 
 Johan Andersson <jna@jna.pp.se>
  for reporting a bug in detecting frames in case the Picture Start Code or Access Unit
@@ -2726,3 +2741,22 @@ Johan Andersson <jna@jna.pp.se>
 Dave Pickles <dave@pickles.me.uk>
  for adding support for "content identifier descriptor" and "default authority
  descriptor" to 'libsi'
+
+Holger Dengler <holger.dengler@gmx.de>
+ for making the isnumber() function check the given pointer for NULL
+
+Michael Eiler <eiler.mike@gmail.com>
+ - reporting a crash in case cSkins::Message() is called from a background thread
+
+Jonas Diemer <jonasdiemer@googlemail.com>
+ for fixing the return value of the svdrpsend.pl script in case of an error
+
+Jerome Lacarriere <lacarriere.j@gmail.com>
+ for increasing MAXCAIDS to 12
+
+Mark Hawes <MARK.HAWES@au.fujitsu.com>
+ for reporting a bug in handling DiSEqC codes
+
+Frank Niederwipper <f.niederwipper@gmail.com>
+ for reporting a problem in timer handling in case a recording directory can't
+ be created

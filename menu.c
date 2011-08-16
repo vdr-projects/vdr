@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.28 2011/02/27 12:37:48 kls Exp $
+ * $Id: menu.c 2.29 2011/08/06 13:13:34 kls Exp $
  */
 
 #include "menu.h"
@@ -38,6 +38,7 @@
 #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
                             // within which it will go directly into the "Edit timer" menu to allow
                             // further parameter settings
+#define DEFERTIMER       60 // seconds by which a timer is deferred in case of problems
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
@@ -4134,6 +4135,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      else
         DELETENULL(recorder);
      }
+  else
+     timer->SetDeferred(DEFERTIMER);
   if (!Timer) {
      Timers.Del(timer);
      Timers.SetModified();

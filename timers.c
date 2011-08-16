@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.4 2010/01/16 11:18:53 kls Exp $
+ * $Id: timers.c 2.5 2011/08/06 13:13:54 kls Exp $
  */
 
 #include "timers.h"
@@ -29,6 +29,7 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 {
   startTime = stopTime = 0;
   lastSetEvent = 0;
+  deferred = 0;
   recording = pending = inVpsMargin = false;
   flags = tfNone;
   if (Instant)
@@ -62,6 +63,7 @@ cTimer::cTimer(const cEvent *Event)
 {
   startTime = stopTime = 0;
   lastSetEvent = 0;
+  deferred = 0;
   recording = pending = inVpsMargin = false;
   flags = tfActive;
   if (Event->Vps() && Setup.UseVps)
@@ -118,6 +120,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
      lastSetEvent = 0;
+     deferred = 0;
      recording    = Timer.recording;
      pending      = Timer.pending;
      inVpsMargin  = Timer.inVpsMargin;
@@ -422,6 +425,10 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
         day = 0;
      }
 
+  if (t < deferred)
+     return false;
+  deferred = 0;
+
   if (HasFlags(tfActive)) {
      if (HasFlags(tfVps) && event && event->Vps()) {
         if (Margin || !Directly) {
@@ -587,6 +594,12 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
 void cTimer::SetPriority(int Priority)
 {
   priority = Priority;
+}
+
+void cTimer::SetDeferred(int Seconds)
+{
+  deferred = time(NULL) + Seconds;
+  isyslog("timer %s deferred for %d seconds", *ToDescr(), Seconds);
 }
 
 void cTimer::SetFlags(uint Flags)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.13 2011/04/17 14:24:32 kls Exp $
+ * $Id: osd.h 2.14 2011/08/15 09:22:50 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -709,6 +709,7 @@ class cOsd {
 private:
   static int osdLeft, osdTop, osdWidth, osdHeight;
   static cVector<cOsd *> Osds;
+  static cMutex mutex;
   bool isTrueColor;
   cBitmap *savedBitmap;
   cBitmap *bitmaps[MAXOSDAREAS];

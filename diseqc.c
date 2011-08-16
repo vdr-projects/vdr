@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.4 2011/05/22 10:36:12 kls Exp $
+ * $Id: diseqc.c 2.5 2011/08/06 10:32:18 kls Exp $
  */
 
 #include "diseqc.h"
@@ -95,13 +95,13 @@ const char *cDiseqc::Codes(const char *s) const
   if (e) {
      int NumCodes = 0;
      const char *t = s;
-     char *p;
      while (t < e) {
            if (NumCodes < MaxDiseqcCodes) {
               errno = 0;
+              char *p;
               int n = strtol(t, &p, 16);
               if (!errno && p != t && 0 <= n && n <= 255) {
-                 if (parsing) {
+                 if (!parsing) {
                     codes[NumCodes++] = uchar(n);
                     numCodes = NumCodes;
                     }

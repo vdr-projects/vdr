@@ -1,0 +1,93 @@
+# VDR plugin language source file
+# Copyright (C) 2011 Andreas Regel
+# This file is distributed under the same license as the dvbhddevice package.
+# Christoph Haubrich, 2011
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR\n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2011-05-05 20:34+0200\n"
+"PO-Revision-Date: 2011-07-10 00:23+0100\n"
+"Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
+"Language-Team:  <see README>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+msgid "Automatic"
+msgstr "Automatica"
+
+msgid "Letterbox 16/9"
+msgstr "Letterbox 16:9"
+
+msgid "Letterbox 14/9"
+msgstr "Letterbox 14:9"
+
+msgid "Pillarbox"
+msgstr "Pillarbox"
+
+msgid "CentreCutOut"
+msgstr "CentreCutOut"
+
+msgid "Always 16/9"
+msgstr "Sempre 16:9"
+
+msgid "Disabled"
+msgstr "Disabilitata"
+
+msgid "Analogue only"
+msgstr "Solo analogica"
+
+msgid "Always"
+msgstr "Sempre"
+
+msgid "HDMI only"
+msgstr "Solo HDMI"
+
+msgid "Follow resolution"
+msgstr "Risoluzione seguente"
+
+msgid "none"
+msgstr "nessuna"
+
+msgid "Resolution"
+msgstr "Risoluzione"
+
+msgid "TV format"
+msgstr "Formato TV"
+
+msgid "Video Conversion"
+msgstr "Conversione video"
+
+msgid "Analogue Video"
+msgstr "Video analogico"
+
+msgid "Audio Delay (ms)"
+msgstr "Ritardo audio (ms)"
+
+msgid "Audio Downmix"
+msgstr "Scala Audio"
+
+msgid "OSD Size"
+msgstr "Dimensione OSD"
+
+msgid "HDMI CEC"
+msgstr "HDMI CEC"
+
+msgid "Remote Control Protocol"
+msgstr "Protocollo controllo remoto"
+
+msgid "Remote Control Address"
+msgstr "Indirizzo controllo remoto"
+
+msgid "High Level OSD"
+msgstr "OSD alto livello"
+
+msgid "Allow True Color OSD"
+msgstr "Permetti OSD True Color"
+

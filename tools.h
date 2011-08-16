@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.7 2011/02/25 15:05:58 kls Exp $
+ * $Id: tools.h 2.11 2011/08/15 14:13:42 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -45,7 +45,7 @@ extern int SysLogLevel;
 
 #define MALLOC(type, size)  (type *)malloc(sizeof(type) * (size))
 
-#define DELETENULL(p) (delete (p), p = NULL)
+template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; } 
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
@@ -205,6 +205,12 @@ bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 bool isnumber(const char *s);
+int64_t StrToNum(const char *s);
+    ///< Converts the given string to a number.
+    ///< The numerical part of the string may be followed by one of the letters
+    ///< K, M, G or T to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively
+    ///< (based on 1024). Everything after the first non-numeric character is
+    ///< silently ignored, as are any characters other than the ones mentionend here.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
@@ -266,6 +272,8 @@ private:
 public:
   cTimeMs(int Ms = 0);
       ///< Creates a timer with ms resolution and an initial timeout of Ms.
+      ///< If Ms is negative the timer is not initialized with the current
+      ///< time.
   static uint64_t Now(void);
   void Set(int Ms = 0);
   bool TimedOut(void);
@@ -506,12 +514,23 @@ inline int CompareStrings(const void *a, const void *b)
   return strcmp(*(const char **)a, *(const char **)b);
 }
 
+inline int CompareStringsIgnoreCase(const void *a, const void *b)
+{
+  return strcasecmp(*(const char **)a, *(const char **)b);
+}
+
 class cStringList : public cVector<char *> {
 public:
   cStringList(int Allocated = 10): cVector<char *>(Allocated) {}
   virtual ~cStringList();
   int Find(const char *s) const;
-  void Sort(void) { cVector<char *>::Sort(CompareStrings); }
+  void Sort(bool IgnoreCase = false)
+  {
+    if (IgnoreCase)
+       cVector<char *>::Sort(CompareStringsIgnoreCase);
+    else
+       cVector<char *>::Sort(CompareStrings);
+  }
   virtual void Clear(void);
   };
 

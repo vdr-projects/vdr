@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 2.0 2008/02/16 14:33:23 kls Exp $
+ * $Id: timers.h 2.1 2011/08/06 12:59:32 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -29,6 +29,7 @@ class cTimer : public cListObject {
 private:
   mutable time_t startTime, stopTime;
   time_t lastSetEvent;
+  mutable time_t deferred; ///< Matches(time_t, ...) will return false if the current time is before this value
   bool recording, pending, inVpsMargin;
   uint flags;
   cChannel *channel;
@@ -62,6 +63,7 @@ public:
   const char *File(void) const { return file; }
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
+  time_t Deferred(void) const { return deferred; }
   cString ToText(bool UseChannelID = false) const;
   cString ToDescr(void) const;
   const cEvent *Event(void) const { return event; }
@@ -85,6 +87,7 @@ public:
   void SetPending(bool Pending);
   void SetInVpsMargin(bool InVpsMargin);
   void SetPriority(int Priority);
+  void SetDeferred(int Seconds);
   void SetFlags(uint Flags);
   void ClrFlags(uint Flags);
   void InvFlags(uint Flags);

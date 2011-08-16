@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.22 2011/06/02 12:00:17 kls Exp $
+ * $Id: osd.c 2.23 2011/08/15 09:27:39 kls Exp $
  */
 
 #include "osd.h"
@@ -1600,9 +1600,11 @@ int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
 cVector<cOsd *> cOsd::Osds;
+cMutex cOsd::mutex;
 
 cOsd::cOsd(int Left, int Top, uint Level)
 {
+  cMutexLock MutexLock(&mutex);
   isTrueColor = false;
   savedBitmap = NULL;
   numBitmaps = 0;
@@ -1624,6 +1626,7 @@ cOsd::cOsd(int Left, int Top, uint Level)
 
 cOsd::~cOsd()
 {
+  cMutexLock MutexLock(&mutex);
   for (int i = 0; i < numBitmaps; i++)
       delete bitmaps[i];
   delete savedBitmap;
@@ -1944,6 +1947,7 @@ cOsdProvider::~cOsdProvider()
 
 cOsd *cOsdProvider::NewOsd(int Left, int Top, uint Level)
 {
+  cMutexLock MutexLock(&cOsd::mutex);
   if (Level == OSD_LEVEL_DEFAULT && cOsd::IsOpen())
      esyslog("ERROR: attempt to open OSD while it is already open - using dummy OSD!");
   else if (osdProvider) {

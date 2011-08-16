@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.21 2011/06/13 14:40:12 kls Exp $
+ * $Id: vdr.c 2.23 2011/08/15 12:42:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -223,6 +223,7 @@ int main(int argc, char *argv[])
       { "device",   required_argument, NULL, 'D' },
       { "edit",     required_argument, NULL, 'e' | 0x100 },
       { "epgfile",  required_argument, NULL, 'E' },
+      { "filesize", required_argument, NULL, 'f' | 0x100 },
       { "genindex", required_argument, NULL, 'g' | 0x100 },
       { "grab",     required_argument, NULL, 'g' },
       { "help",     no_argument,       NULL, 'h' },
@@ -238,6 +239,7 @@ int main(int argc, char *argv[])
       { "rcu",      optional_argument, NULL, 'r' | 0x100 },
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
+      { "split",    no_argument,       NULL, 's' | 0x100 },
       { "terminal", required_argument, NULL, 't' },
       { "user",     required_argument, NULL, 'u' },
       { "userdump", no_argument,       NULL, 'u' | 0x100 },
@@ -269,6 +271,13 @@ int main(int argc, char *argv[])
           case 'e' | 0x100:
                     return CutRecording(optarg) ? 0 : 2;
           case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
+                    break;
+          case 'f' | 0x100:
+                    Setup.MaxVideoFileSize = StrToNum(optarg) / MEGABYTE(1);
+                    if (Setup.MaxVideoFileSize < MINVIDEOFILESIZE)
+                       Setup.MaxVideoFileSize = MINVIDEOFILESIZE;
+                    if (Setup.MaxVideoFileSize > MAXVIDEOFILESIZETS)
+                       Setup.MaxVideoFileSize = MAXVIDEOFILESIZETS;
                     break;
           case 'g' | 0x100:
                     return GenerateIndex(optarg) ? 0 : 2;
@@ -348,6 +357,9 @@ int main(int argc, char *argv[])
                     break;
           case 's': ShutdownHandler.SetShutdownCommand(optarg);
                     break;
+          case 's' | 0x100:
+                    Setup.SplitEditedFiles = 1;
+                    break;
           case 't': Terminal = optarg;
                     if (access(Terminal, R_OK | W_OK) < 0) {
                        fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
@@ -419,6 +431,8 @@ int main(int argc, char *argv[])
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
+               "            --filesize=SIZE limit video files to SIZE bytes (default is %dM)\n"
+               "                           only useful in conjunction with --edit\n"
                "            --genindex=REC generate index for recording REC and exit\n"
                "  -g DIR,   --grab=DIR     write images from the SVDRP command GRAB into the\n"
                "                           given DIR; DIR must be the full path name of an\n"
@@ -445,6 +459,8 @@ int main(int argc, char *argv[])
                "                           (default: %s)\n"
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
+               "            --split        split edited files at the editing marks (only\n"
+               "                           useful in conjunction with --edit)\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root\n"
@@ -458,6 +474,7 @@ int main(int argc, char *argv[])
                "\n",
                DEFAULTCONFDIR,
                DEFAULTEPGDATAFILENAME,
+               MAXVIDEOFILESIZEDEFAULT,
                DEFAULTPLUGINDIR,
                LIRC_DEVICE,
                LOCDIR,
@@ -704,12 +721,14 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
-  if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
-     if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))
-        Setup.InitialChannel = Channel->GetChannelID().ToString();
+  if (*Setup.InitialChannel) {
+     if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
+        if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))
+           Setup.InitialChannel = Channel->GetChannelID().ToString();
+        }
+     if (cChannel *Channel = Channels.GetByChannelID(tChannelID::FromString(Setup.InitialChannel)))
+        Setup.CurrentChannel = Channel->Number();
      }
-  if (cChannel *Channel = Channels.GetByChannelID(tChannelID::FromString(Setup.InitialChannel)))
-     Setup.CurrentChannel = Channel->Number();
   if (Setup.InitialVolume >= 0)
      Setup.CurrentVolume = Setup.InitialVolume;
   Channels.SwitchTo(Setup.CurrentChannel);
