@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.33 2011/08/13 12:37:25 kls Exp $
+ * $Id: recording.c 2.34 2011/08/20 09:53:45 kls Exp $
  */
 
 #include "recording.h"
@@ -956,6 +956,13 @@ bool cRecording::WriteInfo(void)
   else
      LOG_ERROR_STR(*InfoFileName);
   return true;
+}
+
+void cRecording::SetStartTime(time_t Start) 
+{
+  start = Start;
+  free(fileName);
+  fileName = NULL;
 }
 
 bool cRecording::Delete(void)

@@ -1708,6 +1708,8 @@ Udo Richter <udo_richter@gmx.de>
  the marks file has just been written"
  for suggesting a fix for a bug in handling DiSEqC codes
  for fixing handling the channelID in cMenuEditChanItem
+ for a patch that sets the start time of an edited recording to the time of the first
+ editing mark
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

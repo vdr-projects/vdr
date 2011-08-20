@@ -6705,3 +6705,6 @@ Video Disk Recorder Revision History
   (reported by Derek Kelly).
 - Now initializing Setup.InitialChannel to an empty string to avoid problems in
   case there is no setup.conf.
+- The start time of an edited recording is now set to the time of the first
+  editing mark (thanks to Udo Richter).
+  This obsoletes the CUTTIME patch.

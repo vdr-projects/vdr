@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.22 2011/08/13 12:51:23 kls Exp $
+ * $Id: recording.h 2.23 2011/08/20 09:52:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -119,6 +119,14 @@ public:
   bool IsPesRecording(void) const { return isPesRecording; }
   void ReadInfo(void);
   bool WriteInfo(void);
+  void SetStartTime(time_t Start);
+       ///< Sets the start time of this recording to the given value.
+       ///< If a filename has already been set for this recording, it will be
+       ///< deleted and a new one will be generated (using the new start time)
+       ///< at the next call to FileName().
+       ///< Use this function with care - it does not check whether a recording with
+       ///< this new name already exists, and if there is one, results may be
+       ///< unexpected!
   bool Delete(void);
        ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
        ///< Returns false in case of error
