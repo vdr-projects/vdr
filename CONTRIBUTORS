@@ -2593,6 +2593,8 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with the fps value in the info file of a recording being
  overwritten in case a recording was interrupted and resumed, and the fps value
  could not be determined after resuming recording
+ for reporting a problem with detecting frames for channels that split frames into
+ several payloads
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
