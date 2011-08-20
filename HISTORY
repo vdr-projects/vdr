@@ -6703,3 +6703,5 @@ Video Disk Recorder Revision History
 
 - Fixed detecting frames for channels that split frames into several payloads
   (reported by Derek Kelly).
+- Now initializing Setup.InitialChannel to an empty string to avoid problems in
+  case there is no setup.conf.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.14 2011/06/13 14:41:01 kls Exp $
+ * $Id: config.c 2.15 2011/08/20 09:12:05 kls Exp $
  */
 
 #include "config.h"
@@ -395,7 +395,7 @@ cSetup::cSetup(void)
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
   CurrentDolby = 0;
-  // InitialChannel is initialized by constructor
+  InitialChannel = "";
   InitialVolume = -1;
   ChannelsWrap = 0;
   EmergencyExit = 1;
