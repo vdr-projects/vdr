@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.34 2011/08/20 09:53:45 kls Exp $
+ * $Id: recording.c 2.35 2011/08/21 11:19:55 kls Exp $
  */
 
 #include "recording.h"
@@ -94,7 +94,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
-         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+         if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
             DeletedRecordings.Del(r);
@@ -120,7 +120,7 @@ void RemoveDeletedRecordings(void)
      if (!RemoveDeletedRecordingsThread.Active()) {
         cThreadLock DeletedRecordingsLock(&DeletedRecordings);
         for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
-            if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
                RemoveDeletedRecordingsThread.Start();
                break;
                }
@@ -153,7 +153,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
-                    if (!r0 || r->start < r0->start)
+                    if (!r0 || r->Start() < r0->Start())
                        r0 = r;
                     }
                  r = DeletedRecordings.Next(r);
@@ -180,11 +180,11 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
-                    if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                       if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                           (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
+                    if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                       if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                           (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
                           if (r0) {
-                             if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                             if (r->Priority() < r0->Priority() || (r->Priority() == r0->Priority() && r->Start() < r0->Start()))
                                 r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
                              }
                           else
@@ -1240,23 +1240,21 @@ cMutex MutexMarkFramesPerSecond;
 cMark::cMark(int Position, const char *Comment, double FramesPerSecond)
 {
   position = Position;
-  comment = Comment ? strdup(Comment) : NULL;
+  comment = Comment;
   framesPerSecond = FramesPerSecond;
 }
 
 cMark::~cMark()
 {
-  free(comment);
 }
 
 cString cMark::ToText(void)
 {
-  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), comment ? " " : "", comment ? comment : "");
+  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), Comment() ? " " : "", Comment() ? Comment() : "");
 }
 
 bool cMark::Parse(const char *s)
 {
-  free(comment);
   comment = NULL;
   framesPerSecond = MarkFramesPerSecond;
   position = HMSFToIndex(s, framesPerSecond);
@@ -1320,7 +1318,7 @@ void cMarks::Sort(void)
 {
   for (cMark *m1 = First(); m1; m1 = Next(m1)) {
       for (cMark *m2 = Next(m1); m2; m2 = Next(m2)) {
-          if (m2->position < m1->position) {
+          if (m2->Position() < m1->Position()) {
              swap(m1->position, m2->position);
              swap(m1->comment, m2->comment);
              }
@@ -1341,7 +1339,7 @@ cMark *cMarks::Add(int Position)
 cMark *cMarks::Get(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position == Position)
+      if (mi->Position() == Position)
          return mi;
       }
   return NULL;
@@ -1350,7 +1348,7 @@ cMark *cMarks::Get(int Position)
 cMark *cMarks::GetPrev(int Position)
 {
   for (cMark *mi = Last(); mi; mi = Prev(mi)) {
-      if (mi->position < Position)
+      if (mi->Position() < Position)
          return mi;
       }
   return NULL;
@@ -1359,7 +1357,7 @@ cMark *cMarks::GetPrev(int Position)
 cMark *cMarks::GetNext(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position > Position)
+      if (mi->Position() > Position)
          return mi;
       }
   return NULL;

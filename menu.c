@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.29 2011/08/06 13:13:34 kls Exp $
+ * $Id: menu.c 2.30 2011/08/21 11:09:19 kls Exp $
  */
 
 #include "menu.h"
@@ -4667,7 +4667,7 @@ void cReplayControl::MarkJump(bool Forward)
      if (GetIndex(Current, Total)) {
         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
         if (m) {
-           Goto(m->position, true);
+           Goto(m->Position(), true);
            displayFrames = true;
            }
         }
@@ -4684,14 +4684,15 @@ void cReplayControl::MarkMove(bool Forward)
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
         if (Forward) {
-           if ((m2 = marks.Next(m)) != NULL && m2->position <= p)
+           if ((m2 = marks.Next(m)) != NULL && m2->Position() <= p)
               return;
            }
         else {
-           if ((m2 = marks.Prev(m)) != NULL && m2->position >= p)
+           if ((m2 = marks.Prev(m)) != NULL && m2->Position() >= p)
               return;
            }
-        Goto(m->position = p, true);
+        m->SetPosition(p);
+        Goto(m->Position(), true);
         marks.Save();
         }
      }
@@ -4726,7 +4727,7 @@ void cReplayControl::EditTest(void)
         if ((m->Index() & 0x01) != 0)
            m = marks.Next(m);
         if (m) {
-           Goto(m->position - SecondsToFrames(3, FramesPerSecond()));
+           Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
            Play();
            }
         }

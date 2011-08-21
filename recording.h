@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.23 2011/08/20 09:52:07 kls Exp $
+ * $Id: recording.h 2.24 2011/08/21 11:34:03 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -21,6 +21,8 @@
 #define FOLDERDELIMCHAR '~'
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
+
+#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
 
 extern bool VfatFileSystem;
 extern int InstanceId;
@@ -97,14 +99,21 @@ private:
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
+#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
 public:
+#endif
   time_t start;
   int priority;
   int lifetime;
   time_t deleted;
+public:
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
   virtual ~cRecording();
+  time_t Start(void) const { return start; }
+  int Priority(void) const { return priority; }
+  int Lifetime(void) const { return lifetime; }
+  time_t Deleted(void) const { return deleted; }
   virtual int Compare(const cListObject &ListObject) const;
   const char *Name(void) const { return name; }
   const char *FileName(void) const;
@@ -184,13 +193,21 @@ extern cRecordings DeletedRecordings;
 #define DEFAULTFRAMESPERSECOND 25.0
 
 class cMark : public cListObject {
+  friend class cMarks; // for sorting
 private:
   double framesPerSecond;
+#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
 public:
+#endif
   int position;
-  char *comment;
+  cString comment;
+public:
   cMark(int Position = 0, const char *Comment = NULL, double FramesPerSecond = DEFAULTFRAMESPERSECOND);
   virtual ~cMark();
+  int Position(void) const { return position; }
+  const char *Comment(void) const { return comment; }
+  void SetPosition(int Position) { position = Position; }
+  void SetComment(const char *Comment) { comment = Comment; }
   cString ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
