@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.35 2011/08/21 11:19:55 kls Exp $
+ * $Id: recording.c 2.36 2011/08/21 13:43:03 kls Exp $
  */
 
 #include "recording.h"
@@ -60,6 +60,7 @@
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
+#define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 
 #define MAX_SUBTITLE_LENGTH  40
 
@@ -617,6 +618,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   instanceId = InstanceId;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
@@ -676,6 +678,7 @@ cRecording::cRecording(const char *FileName)
   lifetime = MAXLIFETIME;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
@@ -1031,6 +1034,25 @@ void cRecording::ResetResume(void) const
   resume = RESUME_NOT_INITIALIZED;
 }
 
+int cRecording::NumFrames(void) const
+{
+  if (numFrames < 0) {
+     int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
+     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+        return nf; // check again later for ongoing recordings
+     numFrames = nf;
+     }
+  return numFrames;
+}
+
+int cRecording::LengthInSeconds(void) const
+{
+  int nf = NumFrames();
+  if (nf >= 0)
+     return int((nf / FramesPerSecond() + 30) / 60) * 60;
+  return -1;
+}
+
 // --- cRecordings -----------------------------------------------------------
 
 cRecordings Recordings;
@@ -1102,6 +1124,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
                     cRecording *r = new cRecording(buffer);
                     if (r->Name()) {
+                       r->NumFrames(); // initializes the numFrames member
                        Lock();
                        Add(r);
                        ChangeState();
@@ -1513,9 +1536,6 @@ void cIndexFileGenerator::Action(void)
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds
-
-// The minimum age of an index file for considering it no longer to be written:
-#define MININDEXAGE    3600 // seconds
 
 struct tIndexPes {
   uint32_t offset;

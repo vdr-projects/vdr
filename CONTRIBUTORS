@@ -743,6 +743,7 @@ Steffen Barszus <st_barszus@gmx.de>
  for helping to debug a crash when using the --terminal option without having access
  to the given terminal
  for fixing following symbolic links in RemoveFileOrDir()
+ for suggesting to cache the length of a recording's index
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a

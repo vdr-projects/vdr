@@ -6715,3 +6715,6 @@ Video Disk Recorder Revision History
   exposes these members, so that existing plugins will still compile. Comment out
   this #define to check whether a particular plugin needs to be modified.
   This #define may be removed in a future version.
+- The new functions cRecording::NumFrames() and cRecording::LengthInSeconds() return
+  the number of frames and length (in seconds) of a recording (suggested by Steffen
+  Barszus).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.24 2011/08/21 11:34:03 kls Exp $
+ * $Id: recording.h 2.25 2011/08/21 13:10:39 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -89,6 +89,7 @@ private:
   mutable char *fileName;
   mutable char *name;
   mutable int fileSizeMB;
+  mutable int numFrames;
   int channel;
   int instanceId;
   bool isPesRecording;
@@ -123,6 +124,11 @@ public:
   int HierarchyLevels(void) const;
   void ResetResume(void) const;
   double FramesPerSecond(void) const { return framesPerSecond; }
+  int NumFrames(void) const;
+       ///< Returns the number of frames in this recording.
+       ///< If the number of frames is unknown, -1 will be returned.
+  int LengthInSeconds(void) const;
+       ///< Returns the length (in seconds) of this recording, or -1 in case of error.
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
