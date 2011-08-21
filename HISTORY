@@ -6718,3 +6718,5 @@ Video Disk Recorder Revision History
 - The new functions cRecording::NumFrames() and cRecording::LengthInSeconds() return
   the number of frames and length (in seconds) of a recording (suggested by Steffen
   Barszus).
+- The subtitle PIDs are now stored in the channels.conf file as an extension to the
+  TPID field (thanks to Rolf Ahrenberg).

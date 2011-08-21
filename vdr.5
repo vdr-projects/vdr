@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.22 2011/04/03 10:21:36 kls Exp $
+.\" $Id: vdr.5 2.23 2011/08/21 14:06:50 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -214,6 +214,17 @@ if there is an audio type.
 .TP
 .B TPID
 The teletext PID.
+If this channel also carries DVB subtitles, the DVB subtitling PIDs follow the
+teletext PID, separated by a semicolon, as in
+
+.B ...:201;2001,2002:...
+
+If certain subtitling PIDs broadcast in specific languages, the language
+codes for these can be appended to the individual subtitling PID, separated
+by an '=' sign, as in
+
+.B ...:201;2001=deu,2002=eng:...
+
 .TP
 .B Conditional access
 A hexadecimal integer defining how this channel can be accessed:

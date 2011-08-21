@@ -1112,6 +1112,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing some crashes in subtitle display
  for reporting that DELETENULL() was not thread safe
  for reporting a crash in subtitle display, related to cOsd::Osds
+ for a patch that stores the subtitle PIDs in the channels.conf file
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
