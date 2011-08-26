@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.18 2011/08/21 14:13:54 kls Exp $
+ * $Id: channels.c 2.19 2011/08/26 12:44:21 kls Exp $
  */
 
 #include "channels.h"
@@ -656,8 +656,6 @@ bool cChannel::Parse(const char *s)
               dpids[NumDpids] = 0;
               dtypes[NumDpids] = 0;
               }
-           if (sscanf(tpidbuf, "%d", &tpid) != 1)
-              return false;
            int NumSpids = 0;
            if ((p = strchr(tpidbuf, ';')) != NULL) {
               *p++ = 0;
@@ -680,6 +678,8 @@ bool cChannel::Parse(const char *s)
                     }
               spids[NumSpids] = 0;
               }
+           if (sscanf(tpidbuf, "%d", &tpid) != 1)
+              return false;
            if (caidbuf) {
               char *p = caidbuf;
               char *q;
