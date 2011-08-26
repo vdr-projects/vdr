@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.26 2011/06/02 13:15:31 kls Exp $
+ * $Id: device.h 2.27 2011/08/26 12:52:29 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -247,6 +247,10 @@ public:
          ///< function itself actually returns true.
          ///< The default implementation always returns false, so a derived cDevice
          ///< class that can provide channels must implement this function.
+  virtual bool ProvidesEIT(void) const;
+         ///< Returns true if this device provides EIT data and thus wants to be tuned
+         ///< to the channels it can receive regularly to update the data.
+         ///< The default implementation returns false.
   virtual int NumProvidedSystems(void) const;
          ///< Returns the number of individual "delivery systems" this device provides.
          ///< The default implementation returns 0, so any derived class that can

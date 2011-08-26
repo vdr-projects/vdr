@@ -6720,3 +6720,8 @@ Video Disk Recorder Revision History
   Barszus).
 - The subtitle PIDs are now stored in the channels.conf file as an extension to the
   TPID field (thanks to Rolf Ahrenberg).
+- The new function cDevice::ProvidesEIT() is used to determine whether a device can
+  provide EIT data and will thus be used in cEITScanner::Process() to receive EIT
+  data from the channels it can receive (suggested by Rolf Ahrenberg). Note that by
+  default it is assumed that a device can't provide EIT data, and only the builtin
+  cDvbDevice returns true from this function.
