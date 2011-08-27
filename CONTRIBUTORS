@@ -1716,6 +1716,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling the channelID in cMenuEditChanItem
  for a patch that sets the start time of an edited recording to the time of the first
  editing mark
+ for adding the option --outputonly to the dvbsddevice plugin
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

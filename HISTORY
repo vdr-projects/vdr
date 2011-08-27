@@ -6734,3 +6734,6 @@ Video Disk Recorder Revision History
   recording time to the length column. This new format is also used by the SVDRP
   command LSTR, so in case you have an application that parses the LSTR output,
   you will need to adjust it to the new format.
+- The dvbsddevice plugin now supports the new option --outputonly, which disables
+  receiving on SD FF devices and uses the device only for output (thanks to Udo
+  Richter).

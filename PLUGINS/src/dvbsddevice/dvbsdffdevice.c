@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.29 2011/05/22 15:22:14 kls Exp $
+ * $Id: dvbsdffdevice.c 2.30 2011/08/27 11:33:57 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -23,12 +23,13 @@
 
 int cDvbSdFfDevice::devVideoOffset = -1;
 
-cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend)
+cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend, bool OutputOnly)
 :cDvbDevice(Adapter, Frontend)
 {
   spuDecoder = NULL;
   digitalAudio = false;
   playMode = pmNone;
+  outputOnly = OutputOnly;
 
   // Devices that are only present on cards with decoders:
 
@@ -355,6 +356,14 @@ bool cDvbSdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
         }
      }
   return true;
+}
+
+bool cDvbSdFfDevice::ProvidesSource(int Source) const
+{
+  if (outputOnly)
+     return false;
+  else
+     return cDvbDevice::ProvidesSource(Source);
 }
 
 void cDvbSdFfDevice::TurnOffLiveMode(bool LiveView)
@@ -761,6 +770,11 @@ int cDvbSdFfDevice::PlayTsAudio(const uchar *Data, int Length)
 
 // --- cDvbSdFfDeviceProbe ---------------------------------------------------
 
+cDvbSdFfDeviceProbe::cDvbSdFfDeviceProbe(void)
+{
+  outputOnly = false;
+}
+
 bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
 {
   static uint32_t SubsystemIds[] = {
@@ -781,7 +795,7 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
   for (uint32_t *sid = SubsystemIds; *sid; sid++) {
       if (*sid == SubsystemId) {
          dsyslog("creating cDvbSdFfDevice");
-         new cDvbSdFfDevice(Adapter, Frontend);
+         new cDvbSdFfDevice(Adapter, Frontend, outputOnly);
          return true;
          }
       }
