@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.9 2011/02/25 14:38:45 kls Exp $
+ * $Id: svdrp.c 2.10 2011/08/27 10:43:18 kls Exp $
  */
 
 #include "svdrp.h"
@@ -219,9 +219,11 @@ const char *HelpPages[] = {
   "    image format defaults to JPEG.",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
-  "HITK [ <key> ]\n"
+  "HITK [ <key> ... ]\n"
   "    Hit the given remote control key. Without option a list of all\n"
-  "    valid key names is given.",
+  "    valid key names is given. If more than one key is given, they are\n"
+  "    entered into the remote control queue in the given sequence. There\n"
+  "    can be up to 31 keys.",
   "LSTC [ :groups | <number> | <name> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
@@ -902,13 +904,28 @@ void cSVDRP::CmdHELP(const char *Option)
 void cSVDRP::CmdHITK(const char *Option)
 {
   if (*Option) {
-     eKeys k = cKey::FromString(Option);
-     if (k != kNone) {
-        cRemote::Put(k);
-        Reply(250, "Key \"%s\" accepted", Option);
-        }
-     else
-        Reply(504, "Unknown key: \"%s\"", Option);
+     char buf[strlen(Option) + 1];
+     strcpy(buf, Option);
+     const char *delim = " \t";
+     char *strtok_next;
+     char *p = strtok_r(buf, delim, &strtok_next);
+     int NumKeys = 0;
+     while (p) {
+           eKeys k = cKey::FromString(p);
+           if (k != kNone) {
+              if (!cRemote::Put(k)) {
+                 Reply(451, "Too many keys in \"%s\" (only %d accepted)", Option, NumKeys);
+                 return;
+                 }
+              }
+           else {
+              Reply(504, "Unknown key: \"%s\"", p);
+              return;
+              }
+           NumKeys++;
+           p = strtok_r(NULL, delim, &strtok_next);
+           }
+     Reply(250, "Key%s \"%s\" accepted", NumKeys > 1 ? "s" : "", Option);
      }
   else {
      Reply(-214, "Valid <key> names for the HITK command:");

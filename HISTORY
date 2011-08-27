@@ -6699,7 +6699,7 @@ Video Disk Recorder Revision History
   constructor is negative (avoids the "cTimeMs: using monotonic clock..." log message
   before VDR's starting log message).
 
-2011-08-21: Version 1.7.21
+2011-08-27: Version 1.7.21
 
 - Fixed detecting frames for channels that split frames into several payloads
   (reported by Derek Kelly).
@@ -6728,3 +6728,4 @@ Video Disk Recorder Revision History
 - The Audio and Subtitles options are now available through the Green and Yellow
   keys in the Setup/DVB menu (thanks to Rolf Ahrenberg). This is mainly for remote
   controls that don't have dedicated keys for these functions.
+- The SVDRP command HITK now accepts multiple keys (up to 31).
