@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -923,6 +923,12 @@ msgstr "اضافة مصدر قنوات جديد"
 msgid "DVB"
 msgstr "الدى فى بى"
 
+msgid "Button$Audio"
+msgstr "الصوت"
+
+msgid "Button$Subtitles"
+msgstr "الترجمة"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "كرت الستالايت الاولى"
 
@@ -1156,9 +1162,6 @@ msgstr ""
 msgid " Stop replaying"
 msgstr " ايقاف الاعادة"
 
-msgid "Button$Audio"
-msgstr "الصوت"
-
 msgid "Button$Pause"
 msgstr "طمس"
 
@@ -1183,9 +1186,6 @@ msgstr "لا يوجد صوت متاح"
 
 msgid "No subtitles"
 msgstr "لا توجد ترجمة متاحة"
-
-msgid "Button$Subtitles"
-msgstr "الترجمة"
 
 msgid "No subtitles available!"
 msgstr "لا ترجمة متاحة"

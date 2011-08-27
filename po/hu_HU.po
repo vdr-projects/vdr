@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2007-12-01 21:42+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -905,6 +905,12 @@ msgstr "új transponder hozzáadása"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Hang"
+
+msgid "Button$Subtitles"
+msgstr "Feliratok"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Elsõ DVB interface"
 
@@ -1132,9 +1138,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Lejátszást befejzni"
 
-msgid "Button$Audio"
-msgstr "Hang"
-
 msgid "Button$Pause"
 msgstr "Szünet"
 
@@ -1159,9 +1162,6 @@ msgstr "Hang nem lehetséges!"
 
 msgid "No subtitles"
 msgstr "Felirat ki"
-
-msgid "Button$Subtitles"
-msgstr "Feliratok"
 
 msgid "No subtitles available!"
 msgstr "A csatornán nincs felirat!"

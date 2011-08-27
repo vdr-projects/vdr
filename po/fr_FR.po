@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2008-02-27 18:14+0100\n"
 "Last-Translator: Jean-Claude Repetto <jc@repetto.org>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -908,6 +908,12 @@ msgstr "ajouter transpondeurs"
 msgid "DVB"
 msgstr "Cartes DVB"
 
+msgid "Button$Audio"
+msgstr "Audio"
+
+msgid "Button$Subtitles"
+msgstr "Sous-titres"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Carte DVB primaire"
 
@@ -1135,9 +1141,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Arrêter la lecture"
 
-msgid "Button$Audio"
-msgstr "Audio"
-
 msgid "Button$Pause"
 msgstr "Pause"
 
@@ -1162,9 +1165,6 @@ msgstr "Pas de son disponible !"
 
 msgid "No subtitles"
 msgstr "Pas de sous-titres"
-
-msgid "Button$Subtitles"
-msgstr "Sous-titres"
 
 msgid "No subtitles available!"
 msgstr "Pas de sous-titres disponible !"

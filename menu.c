@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.30 2011/08/21 11:09:19 kls Exp $
+ * $Id: menu.c 2.31 2011/08/26 13:20:23 kls Exp $
  */
 
 #include "menu.h"
@@ -2770,6 +2770,7 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[5] = tr("add new transponders");
 
   SetSection(tr("DVB"));
+  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL); 
   Setup();
 }
 
@@ -2815,46 +2816,56 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone) {
-     bool DoSetup = data.VideoFormat != newVideoFormat;
-     DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
-     if (numAudioLanguages != oldnumAudioLanguages) {
-        for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
-            data.AudioLanguages[i] = 0;
-            for (int l = 0; l < I18nLanguages()->Size(); l++) {
-                int k;
-                for (k = 0; k < oldnumAudioLanguages; k++) {
-                    if (data.AudioLanguages[k] == l)
-                       break;
-                    }
-                if (k >= oldnumAudioLanguages) {
-                   data.AudioLanguages[i] = l;
-                   break;
+     switch (Key) {
+       case kGreen:  cRemote::Put(kAudio, true);
+                     state = osEnd;
+                     break;
+       case kYellow: cRemote::Put(kSubtitles, true);
+                     state = osEnd;
+                     break;
+       default: { 
+            bool DoSetup = data.VideoFormat != newVideoFormat;
+            DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
+            if (numAudioLanguages != oldnumAudioLanguages) {
+               for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
+                   data.AudioLanguages[i] = 0;
+                   for (int l = 0; l < I18nLanguages()->Size(); l++) {
+                       int k;
+                       for (k = 0; k < oldnumAudioLanguages; k++) {
+                           if (data.AudioLanguages[k] == l)
+                              break;
+                           }
+                       if (k >= oldnumAudioLanguages) {
+                          data.AudioLanguages[i] = l;
+                          break;
+                          }
+                       }
                    }
-                }
-            }
-        data.AudioLanguages[numAudioLanguages] = -1;
-        DoSetup = true;
-        }
-     if (numSubtitleLanguages != oldnumSubtitleLanguages) {
-        for (int i = oldnumSubtitleLanguages; i < numSubtitleLanguages; i++) {
-            data.SubtitleLanguages[i] = 0;
-            for (int l = 0; l < I18nLanguages()->Size(); l++) {
-                int k;
-                for (k = 0; k < oldnumSubtitleLanguages; k++) {
-                    if (data.SubtitleLanguages[k] == l)
-                       break;
-                    }
-                if (k >= oldnumSubtitleLanguages) {
-                   data.SubtitleLanguages[i] = l;
-                   break;
+               data.AudioLanguages[numAudioLanguages] = -1;
+               DoSetup = true;
+               }
+            if (numSubtitleLanguages != oldnumSubtitleLanguages) {
+               for (int i = oldnumSubtitleLanguages; i < numSubtitleLanguages; i++) {
+                   data.SubtitleLanguages[i] = 0;
+                   for (int l = 0; l < I18nLanguages()->Size(); l++) {
+                       int k;
+                       for (k = 0; k < oldnumSubtitleLanguages; k++) {
+                           if (data.SubtitleLanguages[k] == l)
+                              break;
+                           }
+                       if (k >= oldnumSubtitleLanguages) {
+                          data.SubtitleLanguages[i] = l;
+                          break;
+                          }
+                       }
                    }
-                }
+               data.SubtitleLanguages[numSubtitleLanguages] = -1;
+               DoSetup = true;
+               }
+            if (DoSetup)
+               Setup();
             }
-        data.SubtitleLanguages[numSubtitleLanguages] = -1;
-        DoSetup = true;
-        }
-     if (DoSetup)
-        Setup();
+       }
      }
   if (state == osBack && Key == kOk) {
      if (::Setup.PrimaryDVB != oldPrimaryDVB)

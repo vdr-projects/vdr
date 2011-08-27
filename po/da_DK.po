@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -902,6 +902,12 @@ msgstr "tilf. ny transp."
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Audio"
+
+msgid "Button$Subtitles"
+msgstr "Undertekster"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primær DVB enhed"
 
@@ -1129,9 +1135,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Stop afspilning"
 
-msgid "Button$Audio"
-msgstr "Audio"
-
 msgid "Button$Pause"
 msgstr "Pause"
 
@@ -1156,9 +1159,6 @@ msgstr "Ingen lyd tilgængelig!"
 
 msgid "No subtitles"
 msgstr "Ingen undertekster"
-
-msgid "Button$Subtitles"
-msgstr "Undertekster"
 
 msgid "No subtitles available!"
 msgstr "Ingen undertekster tilgængelig!"

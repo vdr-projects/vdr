@@ -1114,6 +1114,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a crash in subtitle display, related to cOsd::Osds
  for a patch that stores the subtitle PIDs in the channels.conf file
  for suggesting to implement a way for devices to tell whether they can provide EIT data
+ for making the Audio and Subtitles options available through the Green and Yellow
+ keys in the Setup/DVB menu
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

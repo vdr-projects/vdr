@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -902,6 +902,12 @@ msgstr "yeni uydu alýcý-verici ekle"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Audio"
+
+msgid "Button$Subtitles"
+msgstr "Altyazý"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primer DVB arayüzü"
 
@@ -1129,9 +1135,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Gösteriþi bitir"
 
-msgid "Button$Audio"
-msgstr "Audio"
-
 msgid "Button$Pause"
 msgstr "Durakla"
 
@@ -1156,9 +1159,6 @@ msgstr "Audio yok!"
 
 msgid "No subtitles"
 msgstr "Altyazý yok"
-
-msgid "Button$Subtitles"
-msgstr "Altyazý"
 
 msgid "No subtitles available!"
 msgstr "Altyazý bulunamadý"

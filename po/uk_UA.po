@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2010-04-25 16:35+0200\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -902,6 +902,12 @@ msgstr "додати нові транспондери"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Мова аудіо"
+
+msgid "Button$Subtitles"
+msgstr "Субтитри"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Основний DVB-пристрій"
 
@@ -1129,9 +1135,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Зупинити програвання"
 
-msgid "Button$Audio"
-msgstr "Мова аудіо"
-
 msgid "Button$Pause"
 msgstr "Пауза"
 
@@ -1156,9 +1159,6 @@ msgstr "Відсутній звук!"
 
 msgid "No subtitles"
 msgstr "Немає субтитрів"
-
-msgid "Button$Subtitles"
-msgstr "Субтитри"
 
 msgid "No subtitles available!"
 msgstr "Субтитрів немає!"

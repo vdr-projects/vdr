@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -905,6 +905,12 @@ msgstr "添加新转发器"
 msgid "DVB"
 msgstr "卫星卡设置"
 
+msgid "Button$Audio"
+msgstr "声道"
+
+msgid "Button$Subtitles"
+msgstr "字幕"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "使用中卫星卡接口"
 
@@ -1132,9 +1138,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr "停止回放"
 
-msgid "Button$Audio"
-msgstr "声道"
-
 msgid "Button$Pause"
 msgstr "暂停"
 
@@ -1159,9 +1162,6 @@ msgstr "音频不可用"
 
 msgid "No subtitles"
 msgstr "没有字幕"
-
-msgid "Button$Subtitles"
-msgstr "字幕"
 
 msgid "No subtitles available!"
 msgstr "字幕不可用"

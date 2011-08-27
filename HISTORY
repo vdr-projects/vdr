@@ -6725,3 +6725,6 @@ Video Disk Recorder Revision History
   data from the channels it can receive (suggested by Rolf Ahrenberg). Note that by
   default it is assumed that a device can't provide EIT data, and only the builtin
   cDvbDevice returns true from this function.
+- The Audio and Subtitles options are now available through the Green and Yellow
+  keys in the Setup/DVB menu (thanks to Rolf Ahrenberg). This is mainly for remote
+  controls that don't have dedicated keys for these functions.
