@@ -2771,3 +2771,6 @@ Mark Hawes <MARK.HAWES@au.fujitsu.com>
 Frank Niederwipper <f.niederwipper@gmail.com>
  for reporting a problem in timer handling in case a recording directory can't
  be created
+
+Chris Mayo <aklhfex@gmail.com>
+ for reporting a problem with detecting frames on radio channels

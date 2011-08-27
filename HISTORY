@@ -6737,3 +6737,4 @@ Video Disk Recorder Revision History
 - The dvbsddevice plugin now supports the new option --outputonly, which disables
   receiving on SD FF devices and uses the device only for output (thanks to Udo
   Richter).
+- Fixed detecting frames on radio channels (reported by Chris Mayo).
