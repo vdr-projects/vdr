@@ -6729,3 +6729,8 @@ Video Disk Recorder Revision History
   keys in the Setup/DVB menu (thanks to Rolf Ahrenberg). This is mainly for remote
   controls that don't have dedicated keys for these functions.
 - The SVDRP command HITK now accepts multiple keys (up to 31).
+- The Recordings menu now displays the length (in hours:minutes) of each recording
+  (thanks to Rolf Ahrenberg). Note that the "new" indicator has been moved from the
+  recording time to the length column. This new format is also used by the SVDRP
+  command LSTR, so in case you have an application that parses the LSTR output,
+  you will need to adjust it to the new format.
