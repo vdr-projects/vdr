@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.31 2011/09/04 09:09:33 kls Exp $
+ * $Id: remux.h 2.32 2011/09/04 12:48:26 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -336,7 +336,7 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
-#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 2
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 5
 
 class cFrameDetector {
 private:
@@ -359,6 +359,7 @@ private:
   int payloadUnitOfFrame;
   bool scanning;
   uint32_t scanner;
+  int SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset);
 public:
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.

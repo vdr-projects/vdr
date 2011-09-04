@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.61 2011/09/04 10:13:14 kls Exp $
+ * $Id: remux.c 2.62 2011/09/04 13:09:06 kls Exp $
  */
 
 #include "remux.h"
@@ -818,6 +818,25 @@ void cFrameDetector::Reset(void)
   scanner = EMPTY_SCANNER;
 }
 
+int cFrameDetector::SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset)
+{
+  if (!synced)
+     dbgframes("%d>", FrameTypeOffset);
+  while (Length >= TS_SIZE) {
+        // switch to the next TS packet, but skip those that have a different PID:
+        Data += TS_SIZE;
+        Length -= TS_SIZE;
+        Processed += TS_SIZE;
+        if (TsPid(Data) == pid)
+           break;
+        else if (Length < TS_SIZE)
+           esyslog("ERROR: out of data while skipping TS packets in cFrameDetector");
+        }
+  FrameTypeOffset -= TS_SIZE;
+  FrameTypeOffset += TsPayloadOffset(Data);
+  return FrameTypeOffset;
+}
+
 int cFrameDetector::Analyze(const uchar *Data, int Length)
 {
   int SeenPayloadStart = false;
@@ -920,8 +939,11 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               int FrameTypeOffset = i + 2;
+                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
+                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               uchar FrameType = (Data[i + 2] >> 3) & 0x07;
+                               uchar FrameType = (Data[FrameTypeOffset] >> 3) & 0x07;
                                independentFrame = FrameType == 1; // I-Frame
                                if (synced) {
                                   if (framesPerPayloadUnit <= 1)
@@ -944,8 +966,11 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               int FrameTypeOffset = i + 1;
+                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
+                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               uchar FrameType = Data[i + 1];
+                               uchar FrameType = Data[FrameTypeOffset];
                                independentFrame = FrameType == 0x10;
                                if (synced) {
                                   if (framesPerPayloadUnit < 0) {

@@ -6739,3 +6739,6 @@ Video Disk Recorder Revision History
   Richter).
 - Fixed detecting frames on radio channels (reported by Chris Mayo).
 - Revoked the changes to cFrameDetector that have been introduced in version 1.7.19.
+  Detecting frames in case the Picture Start Code or Access Unit Delimiter
+  extends over TS packet boundaries is now done by locally skipping TS packets
+  in cFrameDetector.
