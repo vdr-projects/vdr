@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.1\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2011-01-09 15:57+0100\n"
 "Last-Translator: Milan Cvijanoviæ <elcom_cvijo@hotmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -921,6 +921,12 @@ msgstr "dodaj nove transpondere"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Audio"
+
+msgid "Button$Subtitles"
+msgstr "Titlovi"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primarni DVB ureðaj"
 
@@ -1153,9 +1159,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Zaustavi reprodukciju"
 
-msgid "Button$Audio"
-msgstr "Audio"
-
 msgid "Button$Pause"
 msgstr "Pauza"
 
@@ -1180,9 +1183,6 @@ msgstr "Ton nedostupan"
 
 msgid "No subtitles"
 msgstr "Bez titlova"
-
-msgid "Button$Subtitles"
-msgstr "Titlovi"
 
 msgid "No subtitles available!"
 msgstr "Titlovi nisu dostupni!"

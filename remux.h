@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.30 2011/06/12 12:49:17 kls Exp $
+ * $Id: remux.h 2.32 2011/09/04 12:48:26 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -336,16 +336,16 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 5
+
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
   int pid;
   int type;
   bool synced;
-  bool newPayload;
   bool newFrame;
   bool independentFrame;
-  int frameTypeOffset;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
   int numFrames;
@@ -359,6 +359,7 @@ private:
   int payloadUnitOfFrame;
   bool scanning;
   uint32_t scanner;
+  int SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset);
 public:
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.
@@ -377,11 +378,6 @@ public:
       ///< Analyze() needs to be called again with more actual data.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
-  bool NewPayload(void) { return newPayload; }
-      ///< Returns true if the data given to the last call to Analyze() started a
-      ///< new payload. The caller should remember the current file offset in
-      ///< order to be able to generate an index entry later, when NewFrame()
-      ///< returns true.
   bool NewFrame(void) { return newFrame; }
       ///< Returns true if the data given to the last call to Analyze() started a
       ///< new frame.

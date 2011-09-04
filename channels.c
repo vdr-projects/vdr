@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.17 2010/11/07 12:24:59 kls Exp $
+ * $Id: channels.c 2.19 2011/08/26 12:44:21 kls Exp $
  */
 
 #include "channels.h"
@@ -497,8 +497,8 @@ cString cChannel::ToText(const cChannel *Channel)
      if (Channel->vpid && Channel->vtype)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "=%d", Channel->vtype);
      *q = 0;
-     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2 + 5) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod@type', +10: paranoia
-     char apidbuf[BufferSize];
+     const int ABufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2 + 5) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod@type', +10: paranoia
+     char apidbuf[ABufferSize];
      q = apidbuf;
      q += IntArrayToString(q, Channel->apids, 10, Channel->alangs, Channel->atypes);
      if (Channel->dpids[0]) {
@@ -506,11 +506,19 @@ cString cChannel::ToText(const cChannel *Channel)
         q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs, Channel->dtypes);
         }
      *q = 0;
+     const int TBufferSize = MAXSPIDS * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia and tpid
+     char tpidbuf[TBufferSize];
+     q = tpidbuf;
+     q += snprintf(q, sizeof(tpidbuf), "%d", Channel->tpid);
+     if (Channel->spids[0]) {
+        *q++ = ';';
+        q += IntArrayToString(q, Channel->spids, 10, Channel->slangs);
+        }
      char caidbuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%s:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, tpidbuf, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -544,14 +552,17 @@ bool cChannel::Parse(const char *s)
      char *parambuf = NULL;
      char *vpidbuf = NULL;
      char *apidbuf = NULL;
+     char *tpidbuf = NULL;
      char *caidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%d :%a[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpid, &caidbuf, &sid, &nid, &tid, &rid);
+     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%a[^:]:%a[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpidbuf, &caidbuf, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
            sid = atoi(caidbuf);
            delete caidbuf;
            caidbuf = NULL;
+           if (sscanf(tpidbuf, "%d", &tpid) != 1)
+              return false;
            caids[0] = tpid;
            caids[1] = 0;
            tpid = 0;
@@ -562,6 +573,7 @@ bool cChannel::Parse(const char *s)
         atypes[0] = 0;
         dpids[0] = 0;
         dtypes[0] = 0;
+        spids[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            parameters = parambuf;
@@ -644,7 +656,30 @@ bool cChannel::Parse(const char *s)
               dpids[NumDpids] = 0;
               dtypes[NumDpids] = 0;
               }
-
+           int NumSpids = 0;
+           if ((p = strchr(tpidbuf, ';')) != NULL) {
+              *p++ = 0;
+              char *q;
+              char *strtok_next;
+              while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
+                    if (NumSpids < MAXSPIDS) {
+                       char *l = strchr(q, '=');
+                       if (l) {
+                          *l++ = 0;
+                          strn0cpy(slangs[NumSpids], l, MAXLANGCODE2);
+                          }
+                       else
+                          *slangs[NumSpids] = 0;
+                       spids[NumSpids++] = strtol(q, NULL, 10);
+                       }
+                    else
+                       esyslog("ERROR: too many SPIDs!"); // no need to set ok to 'false'
+                    p = NULL;
+                    }
+              spids[NumSpids] = 0;
+              }
+           if (sscanf(tpidbuf, "%d", &tpid) != 1)
+              return false;
            if (caidbuf) {
               char *p = caidbuf;
               char *q;
@@ -681,6 +716,7 @@ bool cChannel::Parse(const char *s)
         free(sourcebuf);
         free(vpidbuf);
         free(apidbuf);
+        free(tpidbuf);
         free(caidbuf);
         free(namebuf);
         if (!GetChannelID().Valid()) {

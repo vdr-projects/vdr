@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.12 2011/05/15 14:47:45 kls Exp $
+ * $Id: setup.c 1.13 2011/08/27 09:35:35 kls Exp $
  */
 
 #include "setup.h"
@@ -20,6 +20,7 @@ cHdffSetup gHdffSetup;
 cHdffSetup::cHdffSetup(void)
 {
     Resolution = kResolution1080i;
+    VideoModeAdaption = HDFF::videoModeAdaptOff;
     TvFormat = HDFF::tvFormat16by9;
     VideoConversion = HDFF::videoConversionPillarbox;
     AnalogueVideo = HDFF::videoOutCvbsYuv;
@@ -35,18 +36,19 @@ cHdffSetup::cHdffSetup(void)
 
 bool cHdffSetup::SetupParse(const char *Name, const char *Value)
 {
-    if      (strcmp(Name, "Resolution")      == 0) Resolution      = atoi(Value);
-    else if (strcmp(Name, "TvFormat")        == 0) TvFormat        = atoi(Value);
-    else if (strcmp(Name, "VideoConversion") == 0) VideoConversion = atoi(Value);
-    else if (strcmp(Name, "AnalogueVideo")   == 0) AnalogueVideo   = atoi(Value);
-    else if (strcmp(Name, "AudioDelay")      == 0) AudioDelay      = atoi(Value);
-    else if (strcmp(Name, "AudioDownmix")    == 0) AudioDownmix    = atoi(Value);
-    else if (strcmp(Name, "OsdSize")         == 0) OsdSize         = atoi(Value);
-    else if (strcmp(Name, "CecEnabled")      == 0) CecEnabled      = atoi(Value);
-    else if (strcmp(Name, "RemoteProtocol")  == 0) RemoteProtocol  = atoi(Value);
-    else if (strcmp(Name, "RemoteAddress")   == 0) RemoteAddress   = atoi(Value);
-    else if (strcmp(Name, "HighLevelOsd")    == 0) HighLevelOsd    = atoi(Value);
-    else if (strcmp(Name, "TrueColorOsd")    == 0) TrueColorOsd    = atoi(Value);
+    if      (strcmp(Name, "Resolution")        == 0) Resolution        = atoi(Value);
+    else if (strcmp(Name, "VideoModeAdaption") == 0) VideoModeAdaption = atoi(Value);
+    else if (strcmp(Name, "TvFormat")          == 0) TvFormat          = atoi(Value);
+    else if (strcmp(Name, "VideoConversion")   == 0) VideoConversion   = atoi(Value);
+    else if (strcmp(Name, "AnalogueVideo")     == 0) AnalogueVideo     = atoi(Value);
+    else if (strcmp(Name, "AudioDelay")        == 0) AudioDelay        = atoi(Value);
+    else if (strcmp(Name, "AudioDownmix")      == 0) AudioDownmix      = atoi(Value);
+    else if (strcmp(Name, "OsdSize")           == 0) OsdSize           = atoi(Value);
+    else if (strcmp(Name, "CecEnabled")        == 0) CecEnabled        = atoi(Value);
+    else if (strcmp(Name, "RemoteProtocol")    == 0) RemoteProtocol    = atoi(Value);
+    else if (strcmp(Name, "RemoteAddress")     == 0) RemoteAddress     = atoi(Value);
+    else if (strcmp(Name, "HighLevelOsd")      == 0) HighLevelOsd      = atoi(Value);
+    else if (strcmp(Name, "TrueColorOsd")      == 0) TrueColorOsd      = atoi(Value);
     else return false;
     return true;
 }
@@ -113,6 +115,7 @@ HDFF::eHdmiVideoMode cHdffSetup::GetVideoMode(void)
 cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
 {
     const int kResolutions = 4;
+    const int kVideoModeAdaptions = 4;
     const int kTvFormats = 2;
     const int kVideoConversions = 6;
     const int kAnalogueVideos = 4;
@@ -126,6 +129,14 @@ cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
         "720p",
         "576p",
         "576i",
+    };
+
+    static const char * VideoModeAdaptionItems[kVideoModeAdaptions] =
+    {
+        tr("Off"),
+        tr("Frame rate"),
+        tr("HD Only"),
+        tr("Always")
     };
 
     static const char * TvFormatItems[kTvFormats] =
@@ -182,6 +193,7 @@ cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
     mNewHdffSetup = gHdffSetup;
 
     Add(new cMenuEditStraItem(tr("Resolution"), &mNewHdffSetup.Resolution, kResolutions, ResolutionItems));
+    Add(new cMenuEditStraItem(tr("Video Mode Adaption"), &mNewHdffSetup.VideoModeAdaption, kVideoModeAdaptions, VideoModeAdaptionItems));
     Add(new cMenuEditStraItem(tr("TV format"), &mNewHdffSetup.TvFormat, kTvFormats, TvFormatItems));
     Add(new cMenuEditStraItem(tr("Video Conversion"), &mNewHdffSetup.VideoConversion, kVideoConversions, VideoConversionItems));
     Add(new cMenuEditStraItem(tr("Analogue Video"), &mNewHdffSetup.AnalogueVideo, kAnalogueVideos, AnalogueVideoItems));
@@ -202,6 +214,7 @@ cHdffSetupPage::~cHdffSetupPage(void)
 void cHdffSetupPage::Store(void)
 {
     SetupStore("Resolution", mNewHdffSetup.Resolution);
+    SetupStore("VideoModeAdaption", mNewHdffSetup.VideoModeAdaption);
     SetupStore("TvFormat", mNewHdffSetup.TvFormat);
     SetupStore("VideoConversion", mNewHdffSetup.VideoConversion);
     SetupStore("AnalogueVideo", mNewHdffSetup.AnalogueVideo);
@@ -237,6 +250,7 @@ void cHdffSetupPage::Store(void)
         hdmiConfig.TransmitAudio = true;
         hdmiConfig.ForceDviMode = false;
         hdmiConfig.CecEnabled = mNewHdffSetup.CecEnabled;
+        hdmiConfig.VideoModeAdaption = (HDFF::eVideoModeAdaption) mNewHdffSetup.VideoModeAdaption;
         mHdffCmdIf->CmdHdmiConfigure(&hdmiConfig);
 
         mHdffCmdIf->CmdRemoteSetProtocol((HDFF::eRemoteProtocol) mNewHdffSetup.RemoteProtocol);

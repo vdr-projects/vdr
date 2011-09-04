@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -903,6 +903,12 @@ msgstr "додај нови транспондери"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Аудио"
+
+msgid "Button$Subtitles"
+msgstr "Титл"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Примарен DVB уред"
 
@@ -1130,9 +1136,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Запри пуштање"
 
-msgid "Button$Audio"
-msgstr "Аудио"
-
 msgid "Button$Pause"
 msgstr "Пауза"
 
@@ -1157,9 +1160,6 @@ msgstr "Аудио недостапно!"
 
 msgid "No subtitles"
 msgstr "Без титл"
-
-msgid "Button$Subtitles"
-msgstr "Титл"
 
 msgid "No subtitles available!"
 msgstr "Титлови недостапни!"

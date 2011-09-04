@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffmsgdef.h 1.12 2011/04/17 11:20:22 kls Exp $
+ * $Id: hdffmsgdef.h 1.13 2011/08/27 09:34:43 kls Exp $
  */
 
 #ifndef _HDFF_MSGDEF_H_
@@ -274,6 +274,14 @@ typedef enum _eHdmiVideoMode
     videoModeMaxValue
 } eHdmiVideoMode;
 
+typedef enum _eVideoModeAdaption
+{
+    videoModeAdaptOff,
+    videoModeAdaptFrameRate,
+    videoModeAdaptOnlyForHd,
+    videoModeAdaptAlways
+} eVideoModeAdaption;
+
 typedef enum _eCecCommand
 {
     cecCommandTvOn,
@@ -287,6 +295,7 @@ typedef struct _tHdmiConfig
     bool TransmitAudio;
     bool ForceDviMode;
     bool CecEnabled;
+    eVideoModeAdaption VideoModeAdaption;
 } tHdmiConfig;
 
 // Remote control definitions

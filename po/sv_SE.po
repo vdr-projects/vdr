@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2008-03-12 18:25+0100\n"
 "Last-Translator: Magnus Andersson <svankan@bahnhof.se>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -905,6 +905,12 @@ msgstr "lägg till nya transponders"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Ljud"
+
+msgid "Button$Subtitles"
+msgstr "Knapp$Textning"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primär DVB enhet"
 
@@ -1132,9 +1138,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Avsluta uppspelning"
 
-msgid "Button$Audio"
-msgstr "Ljud"
-
 msgid "Button$Pause"
 msgstr "Pausa"
 
@@ -1159,9 +1162,6 @@ msgstr "Ljud saknas!"
 
 msgid "No subtitles"
 msgstr "Ingen textning"
-
-msgid "Button$Subtitles"
-msgstr "Knapp$Textning"
 
 msgid "No subtitles available!"
 msgstr "Ingen textning tillgänglig!"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.6 2011/03/06 14:54:33 kls Exp $
+ * $Id: cutter.c 2.8 2011/08/21 11:08:08 kls Exp $
  */
 
 #include "cutter.h"
@@ -75,7 +75,7 @@ void cCuttingThread::Action(void)
      if (!fromFile || !toFile)
         return;
      fromFile->SetReadAhead(MEGABYTE(20));
-     int Index = Mark->position;
+     int Index = Mark->Position();
      Mark = fromMarks.Next(Mark);
      off_t FileSize = 0;
      int CurrentFileNumber = 0;
@@ -163,14 +163,14 @@ void cCuttingThread::Action(void)
 
            // Check editing marks:
 
-           if (Mark && Index >= Mark->position) {
+           if (Mark && Index >= Mark->Position()) {
               Mark = fromMarks.Next(Mark);
               toMarks.Add(LastIFrame);
               if (Mark)
                  toMarks.Add(toIndex->Last() + 1);
               toMarks.Save();
               if (Mark) {
-                 Index = Mark->position;
+                 Index = Mark->Position();
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
                  cutIn = true;
@@ -208,6 +208,12 @@ bool cCutter::Start(const char *FileName)
      error = false;
      ended = false;
      cRecording Recording(FileName);
+
+     cMarks FromMarks;
+     FromMarks.Load(FileName);
+     if (cMark *First = FromMarks.First())
+        Recording.SetStartTime(Recording.Start() + (int(First->Position() / Recording.FramesPerSecond() + 30) / 60) * 60);
+
      const char *evn = Recording.PrefixFileName('%');
      if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
         // XXX this can be removed once RenameVideoFile() follows symlinks (see videodir.c)

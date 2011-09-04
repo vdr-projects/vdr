@@ -743,6 +743,7 @@ Steffen Barszus <st_barszus@gmx.de>
  for helping to debug a crash when using the --terminal option without having access
  to the given terminal
  for fixing following symbolic links in RemoveFileOrDir()
+ for suggesting to cache the length of a recording's index
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
@@ -1111,6 +1112,11 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing some crashes in subtitle display
  for reporting that DELETENULL() was not thread safe
  for reporting a crash in subtitle display, related to cOsd::Osds
+ for a patch that stores the subtitle PIDs in the channels.conf file
+ for suggesting to implement a way for devices to tell whether they can provide EIT data
+ for making the Audio and Subtitles options available through the Green and Yellow
+ keys in the Setup/DVB menu
+ for making the Recordings menu display the length (in hours:minutes) of each recording
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1708,6 +1714,9 @@ Udo Richter <udo_richter@gmx.de>
  the marks file has just been written"
  for suggesting a fix for a bug in handling DiSEqC codes
  for fixing handling the channelID in cMenuEditChanItem
+ for a patch that sets the start time of an edited recording to the time of the first
+ editing mark
+ for adding the option --outputonly to the dvbsddevice plugin
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2593,6 +2602,8 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with the fps value in the info file of a recording being
  overwritten in case a recording was interrupted and resumed, and the fps value
  could not be determined after resuming recording
+ for reporting a problem with detecting frames for channels that split frames into
+ several payloads
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2760,3 +2771,6 @@ Mark Hawes <MARK.HAWES@au.fujitsu.com>
 Frank Niederwipper <f.niederwipper@gmail.com>
  for reporting a problem in timer handling in case a recording directory can't
  be created
+
+Chris Mayo <aklhfex@gmail.com>
+ for reporting a problem with detecting frames on radio channels

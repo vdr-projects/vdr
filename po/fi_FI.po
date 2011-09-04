@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -905,6 +905,12 @@ msgstr "uudet transponderit"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Ääni"
+
+msgid "Button$Subtitles"
+msgstr "Tekstitys"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Ensisijainen DVB-sovitin"
 
@@ -1132,9 +1138,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Lopeta toisto"
 
-msgid "Button$Audio"
-msgstr "Ääni"
-
 msgid "Button$Pause"
 msgstr "Tauko"
 
@@ -1159,9 +1162,6 @@ msgstr "Äänen kieli ei ole valittavissa!"
 
 msgid "No subtitles"
 msgstr "Ei tekstitystä"
-
-msgid "Button$Subtitles"
-msgstr "Tekstitys"
 
 msgid "No subtitles available!"
 msgstr "Tekstitys ei ole valittavissa!"

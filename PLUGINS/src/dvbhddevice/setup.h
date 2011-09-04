@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.h 1.8 2011/04/17 11:20:22 kls Exp $
+ * $Id: setup.h 1.9 2011/08/27 09:36:02 kls Exp $
  */
 
 #ifndef _HDFF_SETUP_H_
@@ -20,6 +20,7 @@ struct cHdffSetup
     HDFF::eHdmiVideoMode GetVideoMode(void);
 
     int Resolution;
+    int VideoModeAdaption;
     int TvFormat;
     int VideoConversion;
     int AnalogueVideo;

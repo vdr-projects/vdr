@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.29 2011/08/06 13:13:34 kls Exp $
+ * $Id: menu.c 2.32 2011/08/27 11:05:33 kls Exp $
  */
 
 #include "menu.h"
@@ -2193,13 +2193,13 @@ void cMenuRecordingItem::IncrementCounter(bool New)
   totalEntries++;
   if (New)
      newEntries++;
-  SetText(cString::sprintf("%d\t%d\t%s", totalEntries, newEntries, name));
+  SetText(cString::sprintf("%d\t\t%d\t%s", totalEntries, newEntries, name));
 }
 
 // --- cMenuRecordings -------------------------------------------------------
 
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
-:cOsdMenu(Base ? Base : tr("Recordings"), 9, 7)
+:cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
@@ -2770,6 +2770,7 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[5] = tr("add new transponders");
 
   SetSection(tr("DVB"));
+  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL); 
   Setup();
 }
 
@@ -2815,46 +2816,56 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone) {
-     bool DoSetup = data.VideoFormat != newVideoFormat;
-     DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
-     if (numAudioLanguages != oldnumAudioLanguages) {
-        for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
-            data.AudioLanguages[i] = 0;
-            for (int l = 0; l < I18nLanguages()->Size(); l++) {
-                int k;
-                for (k = 0; k < oldnumAudioLanguages; k++) {
-                    if (data.AudioLanguages[k] == l)
-                       break;
-                    }
-                if (k >= oldnumAudioLanguages) {
-                   data.AudioLanguages[i] = l;
-                   break;
+     switch (Key) {
+       case kGreen:  cRemote::Put(kAudio, true);
+                     state = osEnd;
+                     break;
+       case kYellow: cRemote::Put(kSubtitles, true);
+                     state = osEnd;
+                     break;
+       default: { 
+            bool DoSetup = data.VideoFormat != newVideoFormat;
+            DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
+            if (numAudioLanguages != oldnumAudioLanguages) {
+               for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
+                   data.AudioLanguages[i] = 0;
+                   for (int l = 0; l < I18nLanguages()->Size(); l++) {
+                       int k;
+                       for (k = 0; k < oldnumAudioLanguages; k++) {
+                           if (data.AudioLanguages[k] == l)
+                              break;
+                           }
+                       if (k >= oldnumAudioLanguages) {
+                          data.AudioLanguages[i] = l;
+                          break;
+                          }
+                       }
                    }
-                }
-            }
-        data.AudioLanguages[numAudioLanguages] = -1;
-        DoSetup = true;
-        }
-     if (numSubtitleLanguages != oldnumSubtitleLanguages) {
-        for (int i = oldnumSubtitleLanguages; i < numSubtitleLanguages; i++) {
-            data.SubtitleLanguages[i] = 0;
-            for (int l = 0; l < I18nLanguages()->Size(); l++) {
-                int k;
-                for (k = 0; k < oldnumSubtitleLanguages; k++) {
-                    if (data.SubtitleLanguages[k] == l)
-                       break;
-                    }
-                if (k >= oldnumSubtitleLanguages) {
-                   data.SubtitleLanguages[i] = l;
-                   break;
+               data.AudioLanguages[numAudioLanguages] = -1;
+               DoSetup = true;
+               }
+            if (numSubtitleLanguages != oldnumSubtitleLanguages) {
+               for (int i = oldnumSubtitleLanguages; i < numSubtitleLanguages; i++) {
+                   data.SubtitleLanguages[i] = 0;
+                   for (int l = 0; l < I18nLanguages()->Size(); l++) {
+                       int k;
+                       for (k = 0; k < oldnumSubtitleLanguages; k++) {
+                           if (data.SubtitleLanguages[k] == l)
+                              break;
+                           }
+                       if (k >= oldnumSubtitleLanguages) {
+                          data.SubtitleLanguages[i] = l;
+                          break;
+                          }
+                       }
                    }
-                }
+               data.SubtitleLanguages[numSubtitleLanguages] = -1;
+               DoSetup = true;
+               }
+            if (DoSetup)
+               Setup();
             }
-        data.SubtitleLanguages[numSubtitleLanguages] = -1;
-        DoSetup = true;
-        }
-     if (DoSetup)
-        Setup();
+       }
      }
   if (state == osBack && Key == kOk) {
      if (::Setup.PrimaryDVB != oldPrimaryDVB)
@@ -4667,7 +4678,7 @@ void cReplayControl::MarkJump(bool Forward)
      if (GetIndex(Current, Total)) {
         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
         if (m) {
-           Goto(m->position, true);
+           Goto(m->Position(), true);
            displayFrames = true;
            }
         }
@@ -4684,14 +4695,15 @@ void cReplayControl::MarkMove(bool Forward)
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
         if (Forward) {
-           if ((m2 = marks.Next(m)) != NULL && m2->position <= p)
+           if ((m2 = marks.Next(m)) != NULL && m2->Position() <= p)
               return;
            }
         else {
-           if ((m2 = marks.Prev(m)) != NULL && m2->position >= p)
+           if ((m2 = marks.Prev(m)) != NULL && m2->Position() >= p)
               return;
            }
-        Goto(m->position = p, true);
+        m->SetPosition(p);
+        Goto(m->Position(), true);
         marks.Save();
         }
      }
@@ -4726,7 +4738,7 @@ void cReplayControl::EditTest(void)
         if ((m->Index() & 0x01) != 0)
            m = marks.Next(m);
         if (m) {
-           Goto(m->position - SecondsToFrames(3, FramesPerSecond()));
+           Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
            Play();
            }
         }

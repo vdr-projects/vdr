@@ -7,17 +7,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2011-05-05 20:34+0200\n"
+"POT-Creation-Date: 2011-08-21 14:02+0200\n"
 "PO-Revision-Date: 2011-07-10 00:23+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <see README>\n"
-"Language: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+msgid "HD Full Featured DVB device"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Frame rate"
+msgstr ""
+
+msgid "HD Only"
+msgstr ""
+
+msgid "Always"
+msgstr "Sempre"
 
 msgid "Automatic"
 msgstr "Automatica"
@@ -43,9 +58,6 @@ msgstr "Disabilitata"
 msgid "Analogue only"
 msgstr "Solo analogica"
 
-msgid "Always"
-msgstr "Sempre"
-
 msgid "HDMI only"
 msgstr "Solo HDMI"
 
@@ -57,6 +69,9 @@ msgstr "nessuna"
 
 msgid "Resolution"
 msgstr "Risoluzione"
+
+msgid "Video Mode Adaption"
+msgstr ""
 
 msgid "TV format"
 msgstr "Formato TV"
@@ -90,4 +105,3 @@ msgstr "OSD alto livello"
 
 msgid "Allow True Color OSD"
 msgstr "Permetti OSD True Color"
-

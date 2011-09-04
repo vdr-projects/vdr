@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -903,6 +903,12 @@ msgstr "нов. транспондеры"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Язык"
+
+msgid "Button$Subtitles"
+msgstr "Субтитры"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Основное DVB-устройство"
 
@@ -1130,9 +1136,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Прекратить воспроизведение"
 
-msgid "Button$Audio"
-msgstr "Язык"
-
 msgid "Button$Pause"
 msgstr "Пауза"
 
@@ -1157,9 +1160,6 @@ msgstr "Отсутствует звук!"
 
 msgid "No subtitles"
 msgstr "Нет субтитров"
-
-msgid "Button$Subtitles"
-msgstr "Субтитры"
 
 msgid "No subtitles available!"
 msgstr "Субтитры недоступны!"

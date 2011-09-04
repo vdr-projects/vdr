@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.33 2011/08/13 12:37:25 kls Exp $
+ * $Id: recording.c 2.38 2011/09/04 09:32:25 kls Exp $
  */
 
 #include "recording.h"
@@ -60,6 +60,7 @@
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
+#define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 
 #define MAX_SUBTITLE_LENGTH  40
 
@@ -94,7 +95,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
-         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+         if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
             DeletedRecordings.Del(r);
@@ -120,7 +121,7 @@ void RemoveDeletedRecordings(void)
      if (!RemoveDeletedRecordingsThread.Active()) {
         cThreadLock DeletedRecordingsLock(&DeletedRecordings);
         for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
-            if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
                RemoveDeletedRecordingsThread.Start();
                break;
                }
@@ -153,7 +154,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
-                    if (!r0 || r->start < r0->start)
+                    if (!r0 || r->Start() < r0->Start())
                        r0 = r;
                     }
                  r = DeletedRecordings.Next(r);
@@ -180,11 +181,11 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
-                    if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                       if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                           (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
+                    if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                       if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                           (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
                           if (r0) {
-                             if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                             if (r->Priority() < r0->Priority() || (r->Priority() == r0->Priority() && r->Start() < r0->Start()))
                                 r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
                              }
                           else
@@ -617,6 +618,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   instanceId = InstanceId;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
@@ -676,6 +678,7 @@ cRecording::cRecording(const char *FileName)
   lifetime = MAXLIFETIME;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
@@ -870,13 +873,16 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%c%s",
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%d:%02d%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,
+                            Delimiter,
+                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 3600 : 0,
+                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 60 % 60 : 0,
                             New,
                             Delimiter,
                             s));
@@ -958,6 +964,13 @@ bool cRecording::WriteInfo(void)
   return true;
 }
 
+void cRecording::SetStartTime(time_t Start) 
+{
+  start = Start;
+  free(fileName);
+  fileName = NULL;
+}
+
 bool cRecording::Delete(void)
 {
   bool result = true;
@@ -1022,6 +1035,25 @@ bool cRecording::Undelete(void)
 void cRecording::ResetResume(void) const
 {
   resume = RESUME_NOT_INITIALIZED;
+}
+
+int cRecording::NumFrames(void) const
+{
+  if (numFrames < 0) {
+     int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
+     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+        return nf; // check again later for ongoing recordings
+     numFrames = nf;
+     }
+  return numFrames;
+}
+
+int cRecording::LengthInSeconds(void) const
+{
+  int nf = NumFrames();
+  if (nf >= 0)
+     return int((nf / FramesPerSecond() + 30) / 60) * 60;
+  return -1;
 }
 
 // --- cRecordings -----------------------------------------------------------
@@ -1095,6 +1127,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
                     cRecording *r = new cRecording(buffer);
                     if (r->Name()) {
+                       r->NumFrames(); // initializes the numFrames member
                        Lock();
                        Add(r);
                        ChangeState();
@@ -1233,23 +1266,21 @@ cMutex MutexMarkFramesPerSecond;
 cMark::cMark(int Position, const char *Comment, double FramesPerSecond)
 {
   position = Position;
-  comment = Comment ? strdup(Comment) : NULL;
+  comment = Comment;
   framesPerSecond = FramesPerSecond;
 }
 
 cMark::~cMark()
 {
-  free(comment);
 }
 
 cString cMark::ToText(void)
 {
-  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), comment ? " " : "", comment ? comment : "");
+  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), Comment() ? " " : "", Comment() ? Comment() : "");
 }
 
 bool cMark::Parse(const char *s)
 {
-  free(comment);
   comment = NULL;
   framesPerSecond = MarkFramesPerSecond;
   position = HMSFToIndex(s, framesPerSecond);
@@ -1313,7 +1344,7 @@ void cMarks::Sort(void)
 {
   for (cMark *m1 = First(); m1; m1 = Next(m1)) {
       for (cMark *m2 = Next(m1); m2; m2 = Next(m2)) {
-          if (m2->position < m1->position) {
+          if (m2->Position() < m1->Position()) {
              swap(m1->position, m2->position);
              swap(m1->comment, m2->comment);
              }
@@ -1334,7 +1365,7 @@ cMark *cMarks::Add(int Position)
 cMark *cMarks::Get(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position == Position)
+      if (mi->Position() == Position)
          return mi;
       }
   return NULL;
@@ -1343,7 +1374,7 @@ cMark *cMarks::Get(int Position)
 cMark *cMarks::GetPrev(int Position)
 {
   for (cMark *mi = Last(); mi; mi = Prev(mi)) {
-      if (mi->position < Position)
+      if (mi->Position() < Position)
          return mi;
       }
   return NULL;
@@ -1352,7 +1383,7 @@ cMark *cMarks::GetPrev(int Position)
 cMark *cMarks::GetNext(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position > Position)
+      if (mi->Position() > Position)
          return mi;
       }
   return NULL;
@@ -1403,12 +1434,11 @@ void cIndexFileGenerator::Action(void)
   bool Rewind = false;
   cFileName FileName(recordingName, false);
   cUnbufferedFile *ReplayFile = FileName.Open();
-  cRingBufferLinear Buffer(IFG_BUFFER_SIZE, TS_SIZE);
+  cRingBufferLinear Buffer(IFG_BUFFER_SIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE);
   cPatPmtParser PatPmtParser;
   cFrameDetector FrameDetector;
   cIndexFile IndexFile(recordingName, true);
   int BufferChunks = KILOBYTE(1); // no need to read a lot at the beginning when parsing PAT/PMT
-  int FileNumber = 0;
   off_t FileSize = 0;
   off_t FrameOffset = -1;
   Skins.QueueMessage(mtInfo, tr("Regenerating index file"));
@@ -1425,18 +1455,12 @@ void cIndexFileGenerator::Action(void)
         if (Data) {
            if (FrameDetector.Synced()) {
               // Step 3 - generate the index:
-              if (FrameOffset < 0 && TsPid(Data) == PATPID) {
-                 FileNumber = FileName.Number();
+              if (TsPid(Data) == PATPID)
                  FrameOffset = FileSize; // the PAT/PMT is at the beginning of an I-frame
-                 }
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
-                 if (FrameDetector.NewPayload() && FrameOffset < 0) {
-                    FileNumber = FileName.Number();
-                    FrameOffset = FileSize;
-                    }
                  if (FrameDetector.NewFrame()) {
-                    IndexFile.Write(FrameDetector.IndependentFrame(), FileNumber, FrameOffset);
+                    IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
                     FrameOffset = -1;
                     }
                  FileSize += Processed;
@@ -1508,9 +1532,6 @@ void cIndexFileGenerator::Action(void)
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds
-
-// The minimum age of an index file for considering it no longer to be written:
-#define MININDEXAGE    3600 // seconds
 
 struct tIndexPes {
   uint32_t offset;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 2.5 2010/11/07 15:10:23 kls Exp $
+ * $Id: skinclassic.c 2.6 2011/08/21 11:02:06 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -377,7 +377,7 @@ void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
   int y = y2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
+  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()));
   ts.Set(osd, x1, y, x2 - x1, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   y += ts.Height();
   if (Info->GetEvent()->ParentalRating()) {

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-05-21 14:26+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -904,6 +904,12 @@ msgstr "přidat nové transpondéry"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Zvuk"
+
+msgid "Button$Subtitles"
+msgstr "Titulky"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primární DVB zařízení"
 
@@ -1131,9 +1137,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Zastavit přehrávání"
 
-msgid "Button$Audio"
-msgstr "Zvuk"
-
 msgid "Button$Pause"
 msgstr "Přerušit"
 
@@ -1158,9 +1161,6 @@ msgstr "Zvuk není dostupný!"
 
 msgid "No subtitles"
 msgstr "Bez titulků"
-
-msgid "Button$Subtitles"
-msgstr "Titulky"
 
 msgid "No subtitles available!"
 msgstr "Žádné dostupné titulky!"

@@ -9,96 +9,96 @@ msgstr ""
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2011-08-21 14:02+0200\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
-"Last-Translator: Christoph Haubrich\n"
-"Language-Team: <see README>\n"
-"Language: de\n"
+"Last-Translator: Rolf Ahrenberg\n"
+"Language-Team: Finnish <vdr@linuxtv.org>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "HD Full Featured DVB device"
-msgstr "HD Full Featured DVB device"
+msgstr "DVB-laite HD-ulostulolla"
 
 msgid "Off"
-msgstr "aus"
+msgstr ""
 
 msgid "Frame rate"
-msgstr "passende Framerate"
+msgstr ""
 
 msgid "HD Only"
-msgstr "nur bei HD"
+msgstr ""
 
 msgid "Always"
-msgstr "immer"
+msgstr "aina"
 
 msgid "Automatic"
-msgstr "automatisch"
+msgstr "automaattinen"
 
 msgid "Letterbox 16/9"
-msgstr "Letterbox 16:9"
+msgstr "letterbox 16:9"
 
 msgid "Letterbox 14/9"
-msgstr "Letterbox 14:9"
+msgstr "letterbox 14:9"
 
 msgid "Pillarbox"
-msgstr "Pillarbox"
+msgstr "pillarbox"
 
 msgid "CentreCutOut"
-msgstr "CentreCutOut"
+msgstr "center cut out"
 
 msgid "Always 16/9"
-msgstr "immer 16:9"
+msgstr "aina 16:9"
 
 msgid "Disabled"
-msgstr "abgeschaltet"
+msgstr "ei käytössä"
 
 msgid "Analogue only"
-msgstr "nur Analoge Ausgänge"
+msgstr "vain analoginen"
 
 msgid "HDMI only"
-msgstr "nur HDMI"
+msgstr "vain HDMI"
 
 msgid "Follow resolution"
-msgstr "folge Auflösung"
+msgstr "resoluution mukaan"
 
 msgid "none"
-msgstr "keins"
+msgstr "ei"
 
 msgid "Resolution"
-msgstr "Auflösung"
+msgstr "Kuvaresoluutio"
 
 msgid "Video Mode Adaption"
-msgstr "Auflösungsanpassung"
+msgstr ""
 
 msgid "TV format"
-msgstr "TV-Format"
+msgstr "Näytön kuvasuhde"
 
 msgid "Video Conversion"
-msgstr "Videokonvertierung"
+msgstr "Näyttömuoto"
 
 msgid "Analogue Video"
-msgstr "Analoges Video"
+msgstr "Analoginen kuvalähtö"
 
 msgid "Audio Delay (ms)"
-msgstr "Audio Verzögerung (ms)"
+msgstr "Äänen viive (ms)"
 
 msgid "Audio Downmix"
-msgstr "Audio Downmix"
+msgstr "Äänen alasmiksaus"
 
 msgid "OSD Size"
-msgstr "OSD Größe"
+msgstr "Kuvaruutunäytön koko"
 
 msgid "HDMI CEC"
-msgstr "HDMI CEC"
+msgstr "Käytä HDMI CEC-toimintoa"
 
 msgid "Remote Control Protocol"
-msgstr "Fernbedienungsprotokoll"
+msgstr "Kaukosäätimen protokolla"
 
 msgid "Remote Control Address"
-msgstr "Fernbedienungsadresse"
+msgstr "Kaukosäätimen osoite"
 
 msgid "High Level OSD"
-msgstr "High Level OSD"
+msgstr "Käytä korkean tason kuvaruutunäyttöä"
 
 msgid "Allow True Color OSD"
-msgstr "Erlaube True Color OSD"
+msgstr "Salli tosivärit kuvaruutunäytölle"

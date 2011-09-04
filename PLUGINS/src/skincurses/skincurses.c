@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.6 2011/05/15 21:41:47 kls Exp $
+ * $Id: skincurses.c 2.7 2011/08/21 11:04:38 kls Exp $
  */
 
 #include <ncurses.h>
@@ -436,7 +436,7 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   int y = 2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
+  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()));
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   y += ts.Height();
   if (Info->GetEvent()->ParentalRating()) {

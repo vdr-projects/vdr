@@ -6698,3 +6698,47 @@ Video Disk Recorder Revision History
 - cTimeMs is no longer initialized to the current time if the value given to the
   constructor is negative (avoids the "cTimeMs: using monotonic clock..." log message
   before VDR's starting log message).
+
+2011-09-04: Version 1.7.21
+
+- Fixed detecting frames for channels that split frames into several payloads
+  (reported by Derek Kelly).
+- Now initializing Setup.InitialChannel to an empty string to avoid problems in
+  case there is no setup.conf.
+- The start time of an edited recording is now set to the time of the first
+  editing mark (thanks to Udo Richter).
+  This obsoletes the CUTTIME patch.
+- Direct access to the members start, priority, lifetime, and deleted of cRecording
+  as well as to position and comment of cMark is now deprecated. Plugin authors
+  should switch to the new access functions for these members. For now the macro
+  __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS is defined in recording.h, which
+  exposes these members, so that existing plugins will still compile. Comment out
+  this #define to check whether a particular plugin needs to be modified.
+  This #define may be removed in a future version.
+- The new functions cRecording::NumFrames() and cRecording::LengthInSeconds() return
+  the number of frames and length (in seconds) of a recording (suggested by Steffen
+  Barszus).
+- The subtitle PIDs are now stored in the channels.conf file as an extension to the
+  TPID field (thanks to Rolf Ahrenberg).
+- The new function cDevice::ProvidesEIT() is used to determine whether a device can
+  provide EIT data and will thus be used in cEITScanner::Process() to receive EIT
+  data from the channels it can receive (suggested by Rolf Ahrenberg). Note that by
+  default it is assumed that a device can't provide EIT data, and only the builtin
+  cDvbDevice returns true from this function.
+- The Audio and Subtitles options are now available through the Green and Yellow
+  keys in the Setup/DVB menu (thanks to Rolf Ahrenberg). This is mainly for remote
+  controls that don't have dedicated keys for these functions.
+- The SVDRP command HITK now accepts multiple keys (up to 31).
+- The Recordings menu now displays the length (in hours:minutes) of each recording
+  (thanks to Rolf Ahrenberg). Note that the "new" indicator has been moved from the
+  recording time to the length column. This new format is also used by the SVDRP
+  command LSTR, so in case you have an application that parses the LSTR output,
+  you will need to adjust it to the new format.
+- The dvbsddevice plugin now supports the new option --outputonly, which disables
+  receiving on SD FF devices and uses the device only for output (thanks to Udo
+  Richter).
+- Fixed detecting frames on radio channels (reported by Chris Mayo).
+- Revoked the changes to cFrameDetector that have been introduced in version 1.7.19.
+  Detecting frames in case the Picture Start Code or Access Unit Delimiter
+  extends over TS packet boundaries is now done by locally skipping TS packets
+  in cFrameDetector.
