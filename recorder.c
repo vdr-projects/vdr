@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.14 2011/08/13 14:56:36 kls Exp $
+ * $Id: recorder.c 2.15 2011/09/04 09:26:44 kls Exp $
  */
 
 #include "recorder.h"
@@ -31,7 +31,7 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
 
   SpinUpDisk(FileName);
 
-  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, TS_SIZE, true, "Recorder");
+  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
 
   int Pid = Channel->Vpid();
@@ -88,7 +88,7 @@ bool cRecorder::RunningLowOnDiskSpace(void)
 
 bool cRecorder::NextFile(void)
 {
-  if (recordFile) {
+  if (recordFile && frameDetector->IndependentFrame()) { // every file shall start with an independent frame
      if (fileSize > MEGABYTE(off_t(Setup.MaxVideoFileSize)) || RunningLowOnDiskSpace()) {
         recordFile = fileName->NextFile();
         fileSize = 0;
@@ -119,11 +119,6 @@ void cRecorder::Action(void)
   time_t t = time(NULL);
   bool InfoWritten = false;
   bool FirstIframeSeen = false;
-#define BUFFERSIZE (5 * TS_SIZE)
-  bool Buffering = false;
-  int BufferIndex = 0;
-  int MaxBufferIndex = 0;
-  uchar *Buffer = NULL;
   while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
@@ -144,34 +139,9 @@ void cRecorder::Action(void)
                        }
                     InfoWritten = true;
                     }
-                 if (frameDetector->NewPayload()) { // We're at the first TS packet of a new payload...
-                    if (Buffering)
-                       esyslog("ERROR: encountered new payload while buffering - dropping some data!");
-                    if (!frameDetector->NewFrame()) { // ...but the frame type is yet unknown, so we need to buffer packets until we see the frame type
-                       if (!Buffer) {
-                          dsyslog("frame type not in first packet of payload - buffering");
-                          if (!(Buffer = MALLOC(uchar, BUFFERSIZE))) {
-                             esyslog("ERROR: can't allocate frame type buffer");
-                             break;
-                             }
-                          }
-                       BufferIndex = 0;
-                       Buffering = true;
-                       }
-                    }
-                 else if (frameDetector->NewFrame()) // now we know the frame type, so stop buffering
-                    Buffering = false;
-                 if (Buffering) {
-                    if (BufferIndex + Count <= BUFFERSIZE) {
-                       memcpy(Buffer + BufferIndex, b, Count);
-                       BufferIndex += Count;
-                       }
-                    else
-                       esyslog("ERROR: too many bytes for frame type buffer (%d > %d) - dropped %d bytes", BufferIndex + Count, int(BUFFERSIZE), Count);
-                    }
-                 else if (FirstIframeSeen || frameDetector->IndependentFrame()) {
+                 if (FirstIframeSeen || frameDetector->IndependentFrame()) {
                     FirstIframeSeen = true; // start recording with the first I-frame
-                    if (frameDetector->IndependentFrame() && !NextFile()) // every file shall start with an independent frame
+                    if (!NextFile())
                        break;
                     if (index && frameDetector->NewFrame())
                        index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
@@ -183,12 +153,6 @@ void cRecorder::Action(void)
                              recordFile->Write(pmt, TS_SIZE);
                              fileSize += TS_SIZE;
                              }
-                       }
-                    if (BufferIndex) {
-                       recordFile->Write(Buffer, BufferIndex); // if an error occurs here, the next write below will catch and report it
-                       if (BufferIndex > MaxBufferIndex)
-                          MaxBufferIndex = BufferIndex;
-                       BufferIndex = 0;
                        }
                     if (recordFile->Write(b, Count) < 0) {
                        LOG_ERROR_STR(fileName->Name());
@@ -207,8 +171,4 @@ void cRecorder::Action(void)
            t = time(NULL);
            }
         }
-  if (Buffer) {
-     free(Buffer);
-     dsyslog("frame type buffer used %d bytes", MaxBufferIndex);
-     }
 }

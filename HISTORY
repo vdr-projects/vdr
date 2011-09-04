@@ -6699,7 +6699,7 @@ Video Disk Recorder Revision History
   constructor is negative (avoids the "cTimeMs: using monotonic clock..." log message
   before VDR's starting log message).
 
-2011-08-27: Version 1.7.21
+2011-09-04: Version 1.7.21
 
 - Fixed detecting frames for channels that split frames into several payloads
   (reported by Derek Kelly).
@@ -6738,3 +6738,4 @@ Video Disk Recorder Revision History
   receiving on SD FF devices and uses the device only for output (thanks to Udo
   Richter).
 - Fixed detecting frames on radio channels (reported by Chris Mayo).
+- Revoked the changes to cFrameDetector that have been introduced in version 1.7.19.

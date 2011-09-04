@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.37 2011/08/27 10:55:53 kls Exp $
+ * $Id: recording.c 2.38 2011/09/04 09:32:25 kls Exp $
  */
 
 #include "recording.h"
@@ -1434,12 +1434,11 @@ void cIndexFileGenerator::Action(void)
   bool Rewind = false;
   cFileName FileName(recordingName, false);
   cUnbufferedFile *ReplayFile = FileName.Open();
-  cRingBufferLinear Buffer(IFG_BUFFER_SIZE, TS_SIZE);
+  cRingBufferLinear Buffer(IFG_BUFFER_SIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE);
   cPatPmtParser PatPmtParser;
   cFrameDetector FrameDetector;
   cIndexFile IndexFile(recordingName, true);
   int BufferChunks = KILOBYTE(1); // no need to read a lot at the beginning when parsing PAT/PMT
-  int FileNumber = 0;
   off_t FileSize = 0;
   off_t FrameOffset = -1;
   Skins.QueueMessage(mtInfo, tr("Regenerating index file"));
@@ -1456,18 +1455,12 @@ void cIndexFileGenerator::Action(void)
         if (Data) {
            if (FrameDetector.Synced()) {
               // Step 3 - generate the index:
-              if (FrameOffset < 0 && TsPid(Data) == PATPID) {
-                 FileNumber = FileName.Number();
+              if (TsPid(Data) == PATPID)
                  FrameOffset = FileSize; // the PAT/PMT is at the beginning of an I-frame
-                 }
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
-                 if (FrameDetector.NewPayload() && FrameOffset < 0) {
-                    FileNumber = FileName.Number();
-                    FrameOffset = FileSize;
-                    }
                  if (FrameDetector.NewFrame()) {
-                    IndexFile.Write(FrameDetector.IndependentFrame(), FileNumber, FrameOffset);
+                    IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
                     FrameOffset = -1;
                     }
                  FileSize += Processed;
