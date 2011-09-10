@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.43 2011/08/26 12:57:34 kls Exp $
+ * $Id: dvbdevice.c 2.44 2011/09/10 13:34:02 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -509,30 +509,24 @@ bool cDvbTuner::SetFrontend(void)
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        const cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), dtp.Polarization());
+        const cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), frequency, dtp.Polarization());
         if (diseqc) {
            if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
-              cDiseqc::eDiseqcActions da;
-              for (const char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
+              struct dvb_diseqc_master_cmd cmd;
+              const char *CurrentAction = NULL;
+              for (;;) {
+                  cmd.msg_len = sizeof(cmd.msg);
+                  cDiseqc::eDiseqcActions da = diseqc->Execute(&CurrentAction, cmd.msg, &cmd.msg_len);
+                  if (da == cDiseqc::daNone)
+                     break;
                   switch (da) {
-                    case cDiseqc::daNone:      break;
                     case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
                     case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
                     case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
                     case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
                     case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
                     case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
-                    case cDiseqc::daCodes: {
-                         int n = 0;
-                         const uchar *codes = diseqc->Codes(n);
-                         if (codes) {
-                            struct dvb_diseqc_master_cmd cmd;
-                            cmd.msg_len = min(n, int(sizeof(cmd.msg)));
-                            memcpy(cmd.msg, codes, cmd.msg_len);
-                            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
-                            }
-                         }
-                         break;
+                    case cDiseqc::daCodes:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd)); break;
                     default: esyslog("ERROR: unknown diseqc command %d", da);
                     }
                   }

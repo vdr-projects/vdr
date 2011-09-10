@@ -6747,3 +6747,4 @@ Video Disk Recorder Revision History
 
 - Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
   return actual values (thanks to Luca Olivetti).
+- The DiSEqC codes are now copied in the call to cDiseqc::Execute().

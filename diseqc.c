@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.5 2011/08/06 10:32:18 kls Exp $
+ * $Id: diseqc.c 2.6 2011/09/10 13:38:38 kls Exp $
  */
 
 #include "diseqc.h"
@@ -23,7 +23,6 @@ cDiseqc::cDiseqc(void)
   lof = 0;
   commands = NULL;
   parsing = false;
-  numCodes = 0;
 }
 
 cDiseqc::~cDiseqc()
@@ -60,7 +59,7 @@ bool cDiseqc::Parse(const char *s)
         if (polarization == 'V' || polarization == 'H' || polarization == 'L' || polarization == 'R') {
            parsing = true;
            const char *CurrentAction = NULL;
-           while (Execute(&CurrentAction) != daNone)
+           while (Execute(&CurrentAction, NULL, NULL) != daNone)
                  ;
            parsing = false;
            result = !commands || !*CurrentAction;
@@ -89,7 +88,7 @@ const char *cDiseqc::Wait(const char *s) const
   return NULL;
 }
 
-const char *cDiseqc::Codes(const char *s) const
+const char *cDiseqc::GetCodes(const char *s, uchar *Codes, uint8_t *MaxCodes) const
 {
   const char *e = strchr(s, ']');
   if (e) {
@@ -101,9 +100,13 @@ const char *cDiseqc::Codes(const char *s) const
               char *p;
               int n = strtol(t, &p, 16);
               if (!errno && p != t && 0 <= n && n <= 255) {
-                 if (!parsing) {
-                    codes[NumCodes++] = uchar(n);
-                    numCodes = NumCodes;
+                 if (Codes) {
+                    if (NumCodes < *MaxCodes)
+                       Codes[NumCodes++] = uchar(n);
+                    else {
+                       esyslog("ERROR: too many codes in code sequence '%s'", s - 1);
+                       return NULL;
+                       }
                     }
                  t = skipspace(p);
                  }
@@ -117,6 +120,8 @@ const char *cDiseqc::Codes(const char *s) const
               return NULL;
               }
            }
+     if (MaxCodes)
+        *MaxCodes = NumCodes;
      return e + 1;
      }
   else
@@ -124,7 +129,7 @@ const char *cDiseqc::Codes(const char *s) const
   return NULL;
 }
 
-cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction) const
+cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction, uchar *Codes, uint8_t *MaxCodes) const
 {
   if (!*CurrentAction)
      *CurrentAction = commands;
@@ -138,7 +143,7 @@ cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction) const
           case 'A': return daMiniA;
           case 'B': return daMiniB;
           case 'W': *CurrentAction = Wait(*CurrentAction); break;
-          case '[': *CurrentAction = Codes(*CurrentAction); return *CurrentAction ? daCodes : daNone;
+          case '[': *CurrentAction = GetCodes(*CurrentAction, Codes, MaxCodes); return *CurrentAction ? daCodes : daNone;
           default: return daNone;
           }
         }
