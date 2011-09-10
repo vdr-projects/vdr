@@ -6742,3 +6742,8 @@ Video Disk Recorder Revision History
   Detecting frames in case the Picture Start Code or Access Unit Delimiter
   extends over TS packet boundaries is now done by locally skipping TS packets
   in cFrameDetector.
+
+2011-09-10: Version 1.7.22
+
+- Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
+  return actual values (thanks to Luca Olivetti).

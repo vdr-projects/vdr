@@ -1868,6 +1868,8 @@ Luca Olivetti <luca@ventoso.org>
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
  for translating OSD texts to the Spanish and Catalan language
+ for fixing scaling subtitles in case the primary device's GetVideoSize() function
+ doesn't return actual values
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
