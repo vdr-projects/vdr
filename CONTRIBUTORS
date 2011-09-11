@@ -1632,6 +1632,7 @@ Arthur Konovalov <artlov@gmail.com>
  for reporting problems with CAMs when checking the CAM status too frequently
  for reporting references to old *.vdr file names in MANUAL
  for reporting that the video stream type was set to 2 even if the vpid was 0
+ for updates to 'sources.conf'
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
