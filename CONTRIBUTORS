@@ -2778,3 +2778,6 @@ Frank Niederwipper <f.niederwipper@gmail.com>
 
 Chris Mayo <aklhfex@gmail.com>
  for reporting a problem with detecting frames on radio channels
+
+Dominic Evans <oldmanuk@gmail.com>
+ for making the SVDRP command LSTC accepts channel IDs

@@ -6756,3 +6756,4 @@ Video Disk Recorder Revision History
   - The 'U' parameter in the diseqc.conf file has been changed to 'S' ("Scr").
   - The configuration file name has been changed from "unicable.conf" to "scr.conf".
 - Updated sources.conf (thanks to Arthur Konovalov).
+- The SVDRP command LSTC now also accepts channel IDs (thanks to Dominic Evans).

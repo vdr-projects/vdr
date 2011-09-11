@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.10 2011/08/27 10:43:18 kls Exp $
+ * $Id: svdrp.c 2.11 2011/09/11 14:47:22 kls Exp $
  */
 
 #include "svdrp.h"
@@ -224,7 +224,7 @@ const char *HelpPages[] = {
   "    valid key names is given. If more than one key is given, they are\n"
   "    entered into the remote control queue in the given sequence. There\n"
   "    can be up to 31 keys.",
-  "LSTC [ :groups | <number> | <name> ]\n"
+  "LSTC [ :groups | <number> | <name> | <id> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.\n"
@@ -948,16 +948,18 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(501, "Channel \"%s\" not defined", Option);
         }
      else {
-        cChannel *next = NULL;
-        for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
-            if (!channel->GroupSep()) {
-               if (strcasestr(channel->Name(), Option)) {
-                  if (next)
-                     Reply(-250, "%d %s", next->Number(), *next->ToText());
-                  next = channel;
-                  }
-               }
-            }
+        cChannel *next = Channels.GetByChannelID(tChannelID::FromString(Option));
+        if (!next) {
+           for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+              if (!channel->GroupSep()) {
+                 if (strcasestr(channel->Name(), Option)) {
+                    if (next)
+                       Reply(-250, "%d %s", next->Number(), *next->ToText());
+                    next = channel;
+                    }
+                 }
+              }
+           }
         if (next)
            Reply(250, "%d %s", next->Number(), *next->ToText());
         else
