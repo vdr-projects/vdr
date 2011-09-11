@@ -6743,8 +6743,15 @@ Video Disk Recorder Revision History
   extends over TS packet boundaries is now done by locally skipping TS packets
   in cFrameDetector.
 
-2011-09-10: Version 1.7.22
+2011-09-11: Version 1.7.22
 
 - Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
   return actual values (thanks to Luca Olivetti).
 - The DiSEqC codes are now copied in the call to cDiseqc::Execute().
+- VDR now supports "Satellite Channel Routing" (SCR) (based on the "unicable" patch
+  from Lars Hanisch). Since "Unicable" is a registered trademark and stands for only
+  one of many implementations of SCR, the following changes have been made compared
+  to the patch, which need to be taken into account by people who have set up their
+  system using the patch:
+  - The 'U' parameter in the diseqc.conf file has been changed to 'S' ("Scr").
+  - The configuration file name has been changed from "unicable.conf" to "scr.conf".

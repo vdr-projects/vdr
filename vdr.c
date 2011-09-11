@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.23 2011/08/15 12:42:39 kls Exp $
+ * $Id: vdr.c 2.24 2011/09/10 15:03:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -598,6 +598,7 @@ int main(int argc, char *argv[])
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true);
   Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC);
+  Scrs.Load(AddDirectory(ConfigDirectory, "scr.conf"), true);
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true);
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
