@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.46 2011/09/17 11:41:01 kls Exp $
+ * $Id: dvbdevice.c 2.47 2011/09/17 12:53:46 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -31,6 +31,8 @@
 #define DVBT_LOCK_TIMEOUT  2000 //ms
 #define ATSC_TUNE_TIMEOUT  9000 //ms
 #define ATSC_LOCK_TIMEOUT  2000 //ms
+
+#define SCR_RANDOM_TIMEOUT  500 // ms (add random value up to this when tuning SCR device to avoid lockups)
 
 // --- DVB Parameter Maps ----------------------------------------------------
 
@@ -663,7 +665,7 @@ void cDvbTuner::Action(void)
                break;
           case tsSet:
                tunerStatus = SetFrontend() ? tsTuned : tsIdle;
-               Timer.Set(tuneTimeout);
+               Timer.Set(tuneTimeout + (scr ? rand() % SCR_RANDOM_TIMEOUT : 0));
                continue;
           case tsTuned:
                if (Timer.TimedOut()) {
