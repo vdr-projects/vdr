@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.45 2011/09/11 13:50:20 kls Exp $
+ * $Id: dvbdevice.c 2.46 2011/09/17 11:41:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -316,10 +316,12 @@ cDvbTuner::~cDvbTuner()
   newSet.Broadcast();
   locked.Broadcast();
   Cancel(3);
+  /* looks like this irritates the SCR switch, so let's leave it out for now
   if (lastDiseqc && lastDiseqc->IsScr()) {
      unsigned int Frequency = 0;
      ExecuteDiseqc(lastDiseqc, &Frequency);
      }
+  */
 }
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
