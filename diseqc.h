@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 2.4 2011/09/11 13:40:16 kls Exp $
+ * $Id: diseqc.h 2.5 2011/09/17 13:15:17 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -15,6 +15,7 @@
 
 class cScr : public cListObject {
 private:
+  int devices;
   int channel;
   uint userBand;
   int pin;
@@ -22,6 +23,7 @@ private:
 public:
   cScr(void);
   bool Parse(const char *s);
+  int Devices(void) const { return devices; }
   int Channel(void) const { return channel; }
   uint UserBand(void) const { return userBand; }
   int Pin(void) const { return pin; }
@@ -33,7 +35,7 @@ class cScrs : public cConfig<cScr> {
 private:
   cMutex mutex;
 public:
-  cScr *GetUnused(void);
+  cScr *GetUnused(int Device);
   };
 
 extern cScrs Scrs;

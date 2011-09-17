@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.8 2011/09/17 10:41:00 kls Exp $
+ * $Id: diseqc.c 2.9 2011/09/17 14:13:31 kls Exp $
  */
 
 #include "diseqc.h"
@@ -12,10 +12,30 @@
 #include "sources.h"
 #include "thread.h"
 
+static bool ParseDeviceNumbers(const char *s, int &Devices)
+{
+  if (*s && s[strlen(s) - 1] == ':') {
+     const char *p = s;
+     while (*p && *p != ':') {
+           char *t = NULL;
+           int d = strtol(p, &t, 10);
+           p = t;
+           if (0 < d && d < 31)
+              Devices |= (1 << d - 1);
+           else {
+              esyslog("ERROR: invalid device number %d in '%s'", d, s);
+              return false;
+              }
+           }
+     }
+  return true;
+}
+
 // --- cScr ------------------------------------------------------------------
 
 cScr::cScr(void)
 {
+  devices = 0;
   channel = -1;
   userBand = 0;
   pin = -1;
@@ -24,6 +44,10 @@ cScr::cScr(void)
 
 bool cScr::Parse(const char *s)
 {
+  if (!ParseDeviceNumbers(s, devices))
+     return false;
+  if (devices)
+     return true;
   bool result = false;
   int fields = sscanf(s, "%d %u %d", &channel, &userBand, &pin);
   if (fields == 2 || fields == 3) {
@@ -40,15 +64,21 @@ bool cScr::Parse(const char *s)
   return result;
 }
 
-
 // --- cScrs -----------------------------------------------------------------
 
 cScrs Scrs;
 
-cScr *cScrs::GetUnused(void)
+cScr *cScrs::GetUnused(int Device)
 {
   cMutexLock MutexLock(&mutex);
+  int Devices = 0;
   for (cScr *p = First(); p; p = Next(p)) {
+      if (p->Devices()) {
+         Devices = p->Devices();
+         continue;
+         }
+      if (Devices && !(Devices & (1 << Device - 1)))
+         continue;
       if (!p->Used()) {
         p->SetUsed(true);
         return p;
@@ -78,23 +108,12 @@ cDiseqc::~cDiseqc()
 
 bool cDiseqc::Parse(const char *s)
 {
+  if (!ParseDeviceNumbers(s, devices))
+     return false;
+  if (devices)
+     return true;
   bool result = false;
   char *sourcebuf = NULL;
-  if (*s && s[strlen(s) - 1] == ':') {
-     const char *p = s;
-     while (*p && *p != ':') {
-           char *t = NULL;
-           int d = strtol(p, &t, 10);
-           p = t;
-           if (0 < d && d < 32)
-              devices |= (1 << d - 1);
-           else {
-              esyslog("ERROR: invalid device number %d in '%s'", d, s);
-              return false;
-              }
-           }
-     return true;
-     }
   int fields = sscanf(s, "%a[^ ] %d %c %d %a[^\n]", &sourcebuf, &slof, &polarization, &lof, &commands);
   if (fields == 4)
      commands = NULL; //XXX Apparently sscanf() doesn't work correctly if the last %a argument results in an empty string
@@ -264,9 +283,9 @@ const cDiseqc *cDiseqcs::Get(int Device, int Source, int Frequency, char Polariz
          continue;
       if (p->Source() == Source && p->Slof() > Frequency && p->Polarization() == toupper(Polarization)) {
          if (p->IsScr() && Scr && !*Scr) {
-            *Scr = Scrs.GetUnused();
+            *Scr = Scrs.GetUnused(Device);
             if (*Scr)
-               dsyslog("SCR %d assigned to device %d", (*Scr)->Index(), Device);
+               dsyslog("SCR %d assigned to device %d", (*Scr)->Channel(), Device);
             else
                esyslog("ERROR: no free SCR entry available for device %d", Device);
             }

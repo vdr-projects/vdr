@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.24 2011/09/10 14:45:00 kls Exp $
+.\" $Id: vdr.5 2.25 2011/09/17 13:27:42 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -512,6 +512,19 @@ Examples:
 6 1980
 .br
 7 2096
+
+By default it is assumed that the SCR configurations apply to all devices, and
+each device will pick one. If you have several SCR sat cables connected to one
+VDR machine, or if you want to explicitly assign the SCR channels to your devices,
+lines of the form
+
+\fB1 2 4:\fR
+
+may be inserted in the \fIscr.conf\fR file, defining the devices that are allowed
+to use the SCR channels thereafter. In this case, only the devices
+1, 2 and 4 would be allowed to use the SCR channels following this line and up
+to the next such line, or the end of the file. If a device is listed more than
+once, only its first appearance counts.
 .SS REMOTE CONTROL KEYS
 The file \fIremote.conf\fR contains the key assignments for all remote control
 units. Each line consists of one key assignment in the following format:
