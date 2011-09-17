@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.7 2011/09/11 13:39:48 kls Exp $
+ * $Id: diseqc.c 2.8 2011/09/17 10:41:00 kls Exp $
  */
 
 #include "diseqc.h"
@@ -122,7 +122,7 @@ bool cDiseqc::Parse(const char *s)
 
 uint cDiseqc::SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes) const
 {
-  uint t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350;
+  uint t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350; // '+ 2' together with '/ 4' results in rounding!
   if (t < 1024 && Scr->Channel() >= 0 && Scr->Channel() < 8) {
      Codes[3] = t >> 8 | (t == 0 ? 0 : scrBank << 2) | Scr->Channel() << 5;
      Codes[4] = t;
