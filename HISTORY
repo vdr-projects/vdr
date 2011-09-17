@@ -6748,11 +6748,12 @@ Video Disk Recorder Revision History
 - Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
   return actual values (thanks to Luca Olivetti).
 - The DiSEqC codes are now copied in the call to cDiseqc::Execute().
-- VDR now supports "Satellite Channel Routing" (SCR) (based on the "unicable" patch
-  from Lars Hanisch). Since "Unicable" is a registered trademark and stands for only
-  one of many implementations of SCR, the following changes have been made compared
-  to the patch, which need to be taken into account by people who have set up their
-  system using the patch:
+- VDR now supports "Satellite Channel Routing" (SCR) according to EN50494 (based on
+  the "unicable" patch from Lars Hanisch).
+  Since "Unicable" is a registered trademark and stands for only one of many
+  implementations of SCR, the following changes have been made compared to the patch,
+  which need to be taken into account by people who have set up their system using
+  the patch:
   - The 'U' parameter in the diseqc.conf file has been changed to 'S' ("Scr").
   - The configuration file name has been changed from "unicable.conf" to "scr.conf".
 - Updated sources.conf (thanks to Arthur Konovalov).
