@@ -1117,6 +1117,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making the Audio and Subtitles options available through the Green and Yellow
  keys in the Setup/DVB menu
  for making the Recordings menu display the length (in hours:minutes) of each recording
+ for fixing handling DVB subtitles and implementing decoding textual DVB subtitles
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

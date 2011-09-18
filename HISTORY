@@ -6743,7 +6743,7 @@ Video Disk Recorder Revision History
   extends over TS packet boundaries is now done by locally skipping TS packets
   in cFrameDetector.
 
-2011-09-11: Version 1.7.22
+2011-09-18: Version 1.7.22
 
 - Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
   return actual values (thanks to Luca Olivetti).
@@ -6758,3 +6758,5 @@ Video Disk Recorder Revision History
   - The configuration file name has been changed from "unicable.conf" to "scr.conf".
 - Updated sources.conf (thanks to Arthur Konovalov).
 - The SVDRP command LSTC now also accepts channel IDs (thanks to Dominic Evans).
+- Fixed handling DVB subtitles and implemented decoding textual DVB subtitles (thanks
+  to Rolf Ahrenberg).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.11 2011/08/15 14:13:42 kls Exp $
+ * $Id: tools.h 2.12 2011/09/18 11:21:23 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -264,6 +264,28 @@ public:
       ///< each returned line until NULL is returned, in order to get the entire
       ///< data encoded. The returned data is only valid until the next time NextLine()
       ///< is called, or until the object is destroyed.
+  };
+
+class cBitStream {
+private:
+  const uint8_t *data;
+  int length; // in bits
+  int index; // in bits
+public:
+  cBitStream(const uint8_t *Data, int Length) : data(Data), length(Length), index(0) {}
+  ~cBitStream() {}
+  int GetBit(void);
+  uint32_t GetBits(int n);
+  void ByteAlign(void);
+  void WordAlign(void);
+  bool SetLength(int Length);
+  void SkipBits(int n) { index += n; }
+  void SkipBit(void) { SkipBits(1); }
+  bool IsEOF(void) const { return index >= length; }
+  void Reset(void) { index = 0; }
+  int Length(void) const { return length; }
+  int Index(void) const { return (IsEOF() ? length : index); }
+  const uint8_t *GetData(void) const { return (IsEOF() ? NULL : data + (index / 8)); }
   };
 
 class cTimeMs {
