@@ -2782,3 +2782,4 @@ Chris Mayo <aklhfex@gmail.com>
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
+ for adding cap_net_raw to the capabilities that are not dropped

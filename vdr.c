@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.24 2011/09/10 15:03:23 kls Exp $
+ * $Id: vdr.c 2.25 2011/09/23 13:09:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -116,7 +116,7 @@ static bool SetUser(const char *UserName, bool UserDump)//XXX name?
 static bool DropCaps(void)
 {
   // drop all capabilities except selected ones
-  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time=ep");
+  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time,cap_net_raw=ep");
   if (!caps) {
      fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
      return false;
