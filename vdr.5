@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.25 2011/09/17 13:27:42 kls Exp $
+.\" $Id: vdr.5 2.26 2011/09/25 13:51:34 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -450,7 +450,8 @@ Note that there should be a last entry with the value \fB99999\fR for each satel
 which covers the upper frequency range.
 
 The third parameter defines the polarization to which this entry applies. It can
-be either \fBH\fR for horizontal or \fBV\fR for vertical.
+be either \fBH\fR for horizontal, \fBV\fR for vertical, \fBL\fR for circular left
+or \fBR\fR for circular right.
 
 The fourth parameter specifies the "local oscillator frequency" (lof) of the LNB
 to use for the given frequency range. This number will be subtracted from the
