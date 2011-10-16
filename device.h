@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.27 2011/08/26 12:52:29 kls Exp $
+ * $Id: device.h 2.28 2011/10/16 13:27:23 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -30,6 +30,7 @@
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
+#define MAXOCCUPIEDTIMEOUT 99 // max. time (in seconds) a device may be occupied
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
@@ -220,6 +221,8 @@ public:
 
 // Channel facilities
 
+private:
+  time_t occupiedTimeout;
 protected:
   static int currentChannel;
 public:
@@ -300,6 +303,16 @@ public:
          ///< channel number while replaying.
   void ForceTransferMode(void);
          ///< Forces the device into transfermode for the current channel.
+  int Occupied(void) const;
+         ///< Returns the number of seconds this device is still occupied for.
+  void SetOccupied(int Seconds);
+         ///< Sets the occupied timeout for this device to the given number of
+         ///< Seconds, This can be used to tune a device to a particular transponder
+         ///< and make sure it will stay there for a certain amount of time, for
+         ///< instance to collect EPG data. This function shall only be called
+         ///< after the device has been successfully tuned to the requested transponder.
+         ///< Seconds will be silently limited to MAXOCCUPIEDTIMEOUT. Values less than
+         ///< 0 will be silently ignored.
   virtual bool HasLock(int TimeoutMs = 0);
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.25 2011/09/23 13:09:37 kls Exp $
+ * $Id: vdr.c 2.26 2011/10/16 14:02:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -860,7 +860,6 @@ int main(int argc, char *argv[])
            static time_t LastTimerCheck = 0;
            if (Now - LastTimerCheck > TIMERCHECKDELTA) { // don't do this too often
               InhibitEpgScan = false;
-              static time_t DeviceUsed[MAXDEVICES] = { 0 };
               for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
                   bool InVpsMargin = false;
                   bool NeedsTransponder = false;
@@ -900,19 +899,17 @@ int main(int argc, char *argv[])
                                Device = d;
                                break;
                                }
-                            bool timeout = Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT; // only check other devices if they have been left alone for a while
                             if (d->MaySwitchTransponder()) {
                                DeviceAvailable = true; // avoids using the actual device below
-                               if (timeout)
-                                  Device = d; // only check other devices if they have been left alone for a while
+                               Device = d;
                                }
-                            else if (timeout && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                            else if (!d->Occupied() && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
                                Device = d; // use this one only if no other with less impact can be found
                             }
                          }
                      if (!Device && InVpsMargin && !DeviceAvailable) {
                         cDevice *d = cDevice::ActualDevice();
-                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT)
+                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && !d->Occupied())
                            Device = d; // use the actual device as a last resort
                         }
                      // Switch the device to the transponder:
@@ -921,8 +918,8 @@ int main(int argc, char *argv[])
                            if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                               cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                            dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
-                           Device->SwitchChannel(Timer->Channel(), false);
-                           DeviceUsed[Device->DeviceNumber()] = Now;
+                           if (Device->SwitchChannel(Timer->Channel(), false))
+                              Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }
                         if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
                            // the previous SwitchChannel() has switched away the current live channel

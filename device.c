@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.42 2011/08/26 12:56:00 kls Exp $
+ * $Id: device.c 2.43 2011/10/16 14:01:30 kls Exp $
  */
 
 #include "device.h"
@@ -94,6 +94,8 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
   startScrambleDetection = 0;
+
+  occupiedTimeout = 0;
 
   player = NULL;
   isPlayingVideo = false;
@@ -645,7 +647,7 @@ bool cDevice::IsTunedToTransponder(const cChannel *Channel)
 
 bool cDevice::MaySwitchTransponder(void)
 {
-  return !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
+  return time(NULL) > occupiedTimeout && !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -784,6 +786,18 @@ void cDevice::ForceTransferMode(void)
      if (Channel)
         SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
      }
+}
+
+int cDevice::Occupied(void) const
+{
+  int Seconds = occupiedTimeout - time(NULL);
+  return Seconds > 0 ? Seconds : 0;
+}
+
+void cDevice::SetOccupied(int Seconds)
+{
+  if (Seconds >= 0)
+     occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
 }
 
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)

@@ -6743,7 +6743,7 @@ Video Disk Recorder Revision History
   extends over TS packet boundaries is now done by locally skipping TS packets
   in cFrameDetector.
 
-2011-10-09: Version 1.7.22
+2011-10-16: Version 1.7.22
 
 - Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
   return actual values (thanks to Luca Olivetti).
@@ -6762,3 +6762,6 @@ Video Disk Recorder Revision History
   to Rolf Ahrenberg).
 - Added cap_net_raw to the capabilities that are not dropped (thanks to Dominic Evans).
 - Fixed setting the start time of an edited recording (thanks to Christoph Haubrich).
+- Temporarily switching free devices to transponders in order to have their running
+  status updated is now done by marking the devices as "occupied" for a certain
+  amount of time.
