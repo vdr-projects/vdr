@@ -2667,6 +2667,7 @@ Stephan Austermühle <au@hcsd.de>
 Lars Hanisch <dvb@flensrocker.de>
  for suggesting to assign the source character 'V' to "Analog Video"
  for a patch that was used to implement SCR (Satellite Channel Routing)
+ for implementing the SVDRP command 'UPDR'
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices

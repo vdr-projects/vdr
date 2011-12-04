@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.11 2011/09/11 14:47:22 kls Exp $
+ * $Id: svdrp.c 2.12 2011/12/04 13:58:33 kls Exp $
  */
 
 #include "svdrp.h"
@@ -315,6 +315,9 @@ const char *HelpPages[] = {
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
   "    and stop time does not yet exists, it will be created.",
+  "UPDR\n"
+  "    Initiates a re-read of the recordings directory, which is the SVDRP\n"
+  "    equivalent to 'touch .update'.",
   "VOLU [ <number> | + | - | mute ]\n"
   "    Set the audio volume to the given number (which is limited to the range\n"
   "    0...255). If the special options '+' or '-' are given, the volume will\n"
@@ -1559,6 +1562,12 @@ void cSVDRP::CmdUPDT(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
+void cSVDRP::CmdUPDR(const char *Option)
+{
+  Recordings.Update(false);
+  Reply(250, "Re-read of recordings directory triggered");
+}
+
 void cSVDRP::CmdVOLU(const char *Option)
 {
   if (*Option) {
@@ -1629,6 +1638,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("REMO"))  CmdREMO(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);
+  else if (CMD("UPDR"))  CmdUPDR(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("VOLU"))  CmdVOLU(s);
   else if (CMD("QUIT"))  Close(true);

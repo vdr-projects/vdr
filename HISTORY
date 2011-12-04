@@ -6771,3 +6771,5 @@ Video Disk Recorder Revision History
   set up their sat devices with the above options.
 - Fixed a crash when deleting a recording while cutting it (thanks to Ville Skyttä).
 - Fixed several spelling errors (thanks to Ville Skyttä).
+- The new SVDRP command UPDR can be used to trigger an update of the list of
+  recordings (thanks to Lars Hanisch).
