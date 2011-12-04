@@ -6779,3 +6779,4 @@ Video Disk Recorder Revision History
   to Ville Skyttä).
 - Added file name and line number to LOG_ERROR_STR() (thanks to Rolf Ahrenberg).
 - Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
+- Fixed a crash with malformed SI data (patch from vdr-portal).
