@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2011-12-03 16:25+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
 "Language-Team: Norwegian Nynorsk <vdr@linuxtv.org>\n"
@@ -962,6 +962,13 @@ msgstr "LO-frekvens i lavbåndet (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "LO-frekvens i høybåndet (MHz)"
+
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
 
 msgid "CAM reset"
 msgstr ""

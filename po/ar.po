@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2011-12-03 16:25+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -982,6 +982,13 @@ msgstr "التردد المنخفض للاقط م هرتز"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "التردد المرتفع للاقط م هرتز"
+
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
 
 msgid "CAM reset"
 msgstr "اعادة تشغيل الكامة"

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.26 2011/10/16 14:02:34 kls Exp $
+ * $Id: vdr.c 2.27 2011/12/03 15:35:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -639,6 +639,7 @@ int main(int argc, char *argv[])
   // DVB interfaces:
 
   cDvbDevice::Initialize();
+  cDvbDevice::BondDevices(Setup.DeviceBondings);
 
   // Initialize plugins:
 
@@ -899,7 +900,7 @@ int main(int argc, char *argv[])
                                Device = d;
                                break;
                                }
-                            if (d->MaySwitchTransponder()) {
+                            if (d->MaySwitchTransponder(Timer->Channel())) {
                                DeviceAvailable = true; // avoids using the actual device below
                                Device = d;
                                }

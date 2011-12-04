@@ -732,12 +732,18 @@ Version 1.6
 
   LNB:
 
+  Use DiSEqC = no        Generally turns DiSEqC support on or off.
+
   SLOF               = 11700  The switching frequency (in MHz) between low and
                               high LOF
   Low LNB frequency  =  9750  The LNB's low and high local oscillator frequencies
   High LNB frequency = 10600  (in MHz, these have no meaning for DVB-C receivers)
 
-  Use DiSEqC = no        Generally turns DiSEqC support on or off.
+  Device n connected to sat cable = own
+                         Defines whether DVB-S device n has its own satellite cable,
+                         or is "bonded" with another device. All DVB-S devices that
+                         are connected to the same sat cable must be set to the same
+                         number here.
 
   CAM:
 

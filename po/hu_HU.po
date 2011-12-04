@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2011-12-03 16:25+0100\n"
 "PO-Revision-Date: 2007-12-01 21:42+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -964,6 +964,13 @@ msgstr "Alsó LNB-frekvencia (MHZ)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Felsõ LNB-frekvencia (MHZ)"
+
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
 
 msgid "CAM reset"
 msgstr "CAM újraindítás"

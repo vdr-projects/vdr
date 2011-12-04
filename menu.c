@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.32 2011/08/27 11:05:33 kls Exp $
+ * $Id: menu.c 2.33 2011/12/03 15:11:42 kls Exp $
  */
 
 #include "menu.h"
@@ -2885,6 +2885,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 
 class cMenuSetupLNB : public cMenuSetupBase {
 private:
+  cSatCableNumbers satCableNumbers;
   void Setup(void);
 public:
   cMenuSetupLNB(void);
@@ -2892,7 +2893,9 @@ public:
   };
 
 cMenuSetupLNB::cMenuSetupLNB(void)
+:satCableNumbers(MAXDEVICES)
 {
+  satCableNumbers.FromString(data.DeviceBondings);
   SetSection(tr("LNB"));
   Setup();
 }
@@ -2910,6 +2913,18 @@ void cMenuSetupLNB::Setup(void)
      Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
      }
 
+  int NumSatDevices = 0;
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      if (cDevice::GetDevice(i)->ProvidesSource(cSource::stSat))
+         NumSatDevices++;
+      }
+  if (NumSatDevices > 1) {
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         if (cDevice::GetDevice(i)->ProvidesSource(cSource::stSat))
+            Add(new cMenuEditIntItem(cString::sprintf(tr("Setup.LNB$Device %d connected to sat cable"), i + 1), &satCableNumbers.Array()[i], 0, NumSatDevices, tr("Setup.LNB$own")));
+         }
+     }
+
   SetCurrent(Get(current));
   Display();
 }
@@ -2917,10 +2932,18 @@ void cMenuSetupLNB::Setup(void)
 eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
 {
   int oldDiSEqC = data.DiSEqC;
+  bool DeviceBondingsChanged = false;
+  if (Key == kOk) {
+     cString NewDeviceBondings = satCableNumbers.ToString();
+     DeviceBondingsChanged = strcmp(data.DeviceBondings, NewDeviceBondings) != 0;
+     data.DeviceBondings = NewDeviceBondings;
+     }
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone && data.DiSEqC != oldDiSEqC)
      Setup();
+  else if (DeviceBondingsChanged)
+     cDvbDevice::BondDevices(data.DeviceBondings);
   return state;
 }
 

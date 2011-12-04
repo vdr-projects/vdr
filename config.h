@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.35 2011/09/10 09:45:55 kls Exp $
+ * $Id: config.h 2.36 2011/12/03 14:19:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -59,6 +59,25 @@ public:
   bool Parse(const char *s);
   bool IsLocalhost(void);
   bool Accepts(in_addr_t Address);
+  };
+
+class cSatCableNumbers {
+private:
+  int size;
+  int *array;
+public:
+  cSatCableNumbers(int Size, const char *s = NULL);
+  ~cSatCableNumbers();
+  int Size(void) const { return size; }
+  int *Array(void) { return array; }
+  bool FromString(const char *s);
+  cString ToString(void);
+  int FirstDeviceIndex(int DeviceIndex) const;
+      ///< Returns the first device index (starting at 0) that uses the same
+      ///< sat cable number as the device with the given DeviceIndex.
+      ///< If the given device does not use the same sat cable as any other device,
+      ///< or if the resulting value would be the same as DeviceIndex,
+      ///< or if DeviceIndex is out of range, -1 is returned.
   };
 
 template<class T> class cConfig : public cList<T> {
@@ -292,6 +311,7 @@ public:
   int EmergencyExit;
   int __EndData__;
   cString InitialChannel;
+  cString DeviceBondings;
   cSetup(void);
   cSetup& operator= (const cSetup &s);
   bool Load(const char *FileName);

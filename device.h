@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.28 2011/10/16 13:27:23 kls Exp $
+ * $Id: device.h 2.29 2011/10/16 14:10:33 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -275,12 +275,14 @@ public:
          ///< This is not one of the channels in the global cChannels list, but rather
          ///< a local copy. The result may be NULL if the device is not tuned to any
          ///< transponder.
-  virtual bool IsTunedToTransponder(const cChannel *Channel);
+  virtual bool IsTunedToTransponder(const cChannel *Channel) const;
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.
-  virtual bool MaySwitchTransponder(void);
-         ///< Returns true if it is ok to switch the transponder on this device,
-         ///< without disturbing any other activities.
+  virtual bool MaySwitchTransponder(const cChannel *Channel) const;
+         ///< Returns true if it is ok to switch to the Channel's transponder on this
+         ///< device, without disturbing any other activities. If an occupied timeout
+         ///< has been set for this device, and that timeout has not yet expired,
+         ///< this function returns false,
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          ///< Switches the device to the given Channel, initiating transfer mode
          ///< if necessary.
@@ -710,7 +712,7 @@ public:
 // Receiver facilities
 
 private:
-  cMutex mutexReceiver;
+  mutable cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
 public:
   int Priority(void) const;
@@ -739,7 +741,7 @@ public:
        ///< Detaches the given receiver from this device.
   void DetachAll(int Pid);
        ///< Detaches all receivers from this device for this pid.
-  void DetachAllReceivers(void);
+  virtual void DetachAllReceivers(void);
        ///< Detaches all receivers from this device.
   };
 
