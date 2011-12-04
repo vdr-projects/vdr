@@ -1117,6 +1117,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making the Audio and Subtitles options available through the Green and Yellow
  keys in the Setup/DVB menu
  for making the Recordings menu display the length (in hours:minutes) of each recording
+ for fixing handling DVB subtitles and implementing decoding textual DVB subtitles
+ for adding file name and line number to LOG_ERROR_STR()
+ for replacing all calls to sleep() with cCondWait::SleepMs()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1632,6 +1635,7 @@ Arthur Konovalov <artlov@gmail.com>
  for reporting problems with CAMs when checking the CAM status too frequently
  for reporting references to old *.vdr file names in MANUAL
  for reporting that the video stream type was set to 2 even if the vpid was 0
+ for updates to 'sources.conf'
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -1868,6 +1872,8 @@ Luca Olivetti <luca@ventoso.org>
  "repeat" keypresses very fast
  for reporting a broken entry 'A111.1W' in sources.conf
  for translating OSD texts to the Spanish and Catalan language
+ for fixing scaling subtitles in case the primary device's GetVideoSize() function
+ doesn't return actual values
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -1918,6 +1924,11 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing the Language header of the Serbian translation file
  for using pkg-config to get fribidi, freetype and fontconfig cflags and libs
  for making the Makefile also install the include files
+ for fixing a crash when deleting a recording while cutting it
+ for fixing several spelling errors
+ for adding generating a pkg-config file to the Makefile
+ for removing the '.pl' suffix from all scripts (thanks to Ville Skyttä).
+ for changing the default location for the LIRC socket to /var/run/lirc/lircd
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2244,6 +2255,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting that Setup.InitialChannel was dereferenced without checking for NULL
  for suggesting to implement a function to determine the length of a recording's
  index file
+ for fixing setting the start time of an edited recording
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2659,6 +2671,8 @@ Stephan Austermühle <au@hcsd.de>
 
 Lars Hanisch <dvb@flensrocker.de>
  for suggesting to assign the source character 'V' to "Analog Video"
+ for a patch that was used to implement SCR (Satellite Channel Routing)
+ for implementing the SVDRP command 'UPDR'
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2774,3 +2788,7 @@ Frank Niederwipper <f.niederwipper@gmail.com>
 
 Chris Mayo <aklhfex@gmail.com>
  for reporting a problem with detecting frames on radio channels
+
+Dominic Evans <oldmanuk@gmail.com>
+ for making the SVDRP command LSTC accepts channel IDs
+ for adding cap_net_raw to the capabilities that are not dropped

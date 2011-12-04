@@ -7,7 +7,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 2.2 2011/08/14 13:34:15 kls Exp $
+# $Id: pic2mpg 2.3 2011/11/02 17:20:37 kls Exp $
 
 use File::Path;
 use File::Spec;
@@ -124,7 +124,7 @@ sub ConvertFile
   return if (!defined $PICTYPES{$Type});
   my $Exif = ImageInfo($Pict);
   my $Orientation = $$Exif{"Orientation"};
-  my ($Degrees) = $Orientation =~ /Rotate ([0-9]+) /; 
+  my ($Degrees) = $Orientation =~ /Rotate ([0-9]+)/; 
   my $Rotate = $Degrees ? "-rotate $Degrees" : "";
   print "orientation = '$Orientation' -> rotation = $Rotate\n" if ($Detailed);
   $Pict = EscapeMeta($Pict);

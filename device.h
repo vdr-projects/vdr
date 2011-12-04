@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.27 2011/08/26 12:52:29 kls Exp $
+ * $Id: device.h 2.30 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -30,6 +30,7 @@
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
+#define MAXOCCUPIEDTIMEOUT 99 // max. time (in seconds) a device may be occupied
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
@@ -220,6 +221,8 @@ public:
 
 // Channel facilities
 
+private:
+  time_t occupiedTimeout;
 protected:
   static int currentChannel;
 public:
@@ -272,12 +275,14 @@ public:
          ///< This is not one of the channels in the global cChannels list, but rather
          ///< a local copy. The result may be NULL if the device is not tuned to any
          ///< transponder.
-  virtual bool IsTunedToTransponder(const cChannel *Channel);
+  virtual bool IsTunedToTransponder(const cChannel *Channel) const;
          ///< Returns true if this device is currently tuned to the given Channel's
          ///< transponder.
-  virtual bool MaySwitchTransponder(void);
-         ///< Returns true if it is ok to switch the transponder on this device,
-         ///< without disturbing any other activities.
+  virtual bool MaySwitchTransponder(const cChannel *Channel) const;
+         ///< Returns true if it is ok to switch to the Channel's transponder on this
+         ///< device, without disturbing any other activities. If an occupied timeout
+         ///< has been set for this device, and that timeout has not yet expired,
+         ///< this function returns false,
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          ///< Switches the device to the given Channel, initiating transfer mode
          ///< if necessary.
@@ -300,6 +305,16 @@ public:
          ///< channel number while replaying.
   void ForceTransferMode(void);
          ///< Forces the device into transfermode for the current channel.
+  int Occupied(void) const;
+         ///< Returns the number of seconds this device is still occupied for.
+  void SetOccupied(int Seconds);
+         ///< Sets the occupied timeout for this device to the given number of
+         ///< Seconds, This can be used to tune a device to a particular transponder
+         ///< and make sure it will stay there for a certain amount of time, for
+         ///< instance to collect EPG data. This function shall only be called
+         ///< after the device has been successfully tuned to the requested transponder.
+         ///< Seconds will be silently limited to MAXOCCUPIEDTIMEOUT. Values less than
+         ///< 0 will be silently ignored.
   virtual bool HasLock(int TimeoutMs = 0);
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false
@@ -457,7 +472,7 @@ protected:
        ///< Sets the current subtitle track to the given value.
 public:
   void ClrAvailableTracks(bool DescriptionsOnly = false, bool IdsOnly = false);
-       ///< Clears the list of currently availabe tracks. If DescriptionsOnly
+       ///< Clears the list of currently available tracks. If DescriptionsOnly
        ///< is true, only the track descriptions will be cleared. With IdsOnly
        ///< set to true only the ids will be cleared. IdsOnly is only taken
        ///< into account if DescriptionsOnly is false.
@@ -650,10 +665,10 @@ public:
        ///< Returns true if the device itself or any of the file handles in
        ///< Poller is ready for further action.
        ///< If TimeoutMs is not zero, the device will wait up to the given number
-       ///< of milleseconds before returning in case it can't accept any data.
+       ///< of milliseconds before returning in case it can't accept any data.
   virtual bool Flush(int TimeoutMs = 0);
        ///< Returns true if the device's output buffers are empty, i. e. any
-       ///< data which was bufferd so far has been processed.
+       ///< data which was buffered so far has been processed.
        ///< If TimeoutMs is not zero, the device will wait up to the given
        ///< number of milliseconds before returning in case there is still
        ///< data in the buffers.
@@ -697,7 +712,7 @@ public:
 // Receiver facilities
 
 private:
-  cMutex mutexReceiver;
+  mutable cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
 public:
   int Priority(void) const;
@@ -726,7 +741,7 @@ public:
        ///< Detaches the given receiver from this device.
   void DetachAll(int Pid);
        ///< Detaches all receivers from this device for this pid.
-  void DetachAllReceivers(void);
+  virtual void DetachAllReceivers(void);
        ///< Detaches all receivers from this device.
   };
 

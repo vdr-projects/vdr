@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.8 2011/08/21 11:08:08 kls Exp $
+ * $Id: cutter.c 2.10 2011/12/04 12:55:53 kls Exp $
  */
 
 #include "cutter.h"
@@ -100,7 +100,8 @@ void cCuttingThread::Action(void)
            if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &Independent, &Length)) {
               if (FileNumber != CurrentFileNumber) {
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
-                 fromFile->SetReadAhead(MEGABYTE(20));
+                 if (fromFile)
+                    fromFile->SetReadAhead(MEGABYTE(20));
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile) {
@@ -210,7 +211,7 @@ bool cCutter::Start(const char *FileName)
      cRecording Recording(FileName);
 
      cMarks FromMarks;
-     FromMarks.Load(FileName);
+     FromMarks.Load(FileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
      if (cMark *First = FromMarks.First())
         Recording.SetStartTime(Recording.Start() + (int(First->Position() / Recording.FramesPerSecond() + 30) / 60) * 60);
 

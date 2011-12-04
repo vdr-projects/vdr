@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.4 2011/06/15 21:26:00 kls Exp $
+ *   $Id: si.c 2.5 2011/12/04 15:06:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -206,6 +206,8 @@ void DescriptorGroup::Add(GroupDescriptor *d) {
          array[i]=0;
    } else if (length != d->getLastDescriptorNumber()+1)
       return; //avoid crash in case of misuse
+   if (length <= d->getDescriptorNumber())
+      return; // see http://www.vdr-portal.de/board60-linux/board14-betriebssystem/board69-c-t-vdr/p1025777-segfault-mit-vdr-1-7-21/#post1025777
    array[d->getDescriptorNumber()]=d;
 }
 

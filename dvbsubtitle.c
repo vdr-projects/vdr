@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.18 2011/08/13 13:33:00 kls Exp $
+ * $Id: dvbsubtitle.c 2.20 2011/09/18 11:23:15 kls Exp $
  */
 
 
@@ -15,13 +15,18 @@
 #define __STDC_FORMAT_MACROS // Required for format specifiers
 #include <inttypes.h>
 #include "device.h"
+#include "libsi/si.h"
 
-#define PAGE_COMPOSITION_SEGMENT   0x10
-#define REGION_COMPOSITION_SEGMENT 0x11
-#define CLUT_DEFINITION_SEGMENT    0x12
-#define OBJECT_DATA_SEGMENT        0x13
-#define DISPLAY_DEFINITION_SEGMENT 0x14
-#define END_OF_DISPLAY_SET_SEGMENT 0x80
+//#define FINISHPAGE_HACK
+
+#define PAGE_COMPOSITION_SEGMENT    0x10
+#define REGION_COMPOSITION_SEGMENT  0x11
+#define CLUT_DEFINITION_SEGMENT     0x12
+#define OBJECT_DATA_SEGMENT         0x13
+#define DISPLAY_DEFINITION_SEGMENT  0x14
+#define DISPARITY_SIGNALING_SEGMENT 0x15 // DVB BlueBook A156
+#define END_OF_DISPLAY_SET_SEGMENT  0x80
+#define STUFFING_SEGMENT            0xFF
 
 // Set these to 'true' for debug output:
 static bool DebugConverter = false;
@@ -61,8 +66,68 @@ cSubtitleClut::cSubtitleClut(int ClutId)
 ,palette4(4)
 ,palette8(8)
 {
+  int a = 0, r = 0, g = 0, b = 0;
   clutId = ClutId;
   version = -1;
+  // ETSI EN 300 743 10.3: 4-entry CLUT default contents
+  palette2.SetColor(0, ArgbToColor(  0,   0,   0,   0));
+  palette2.SetColor(1, ArgbToColor(255, 255, 255, 255));
+  palette2.SetColor(2, ArgbToColor(255,   0,   0,   0));
+  palette2.SetColor(3, ArgbToColor(255, 127, 127, 127));
+  // ETSI EN 300 743 10.2: 16-entry CLUT default contents
+  palette4.SetColor(0, ArgbToColor(0, 0, 0, 0));
+  for (int i = 1; i < 16; ++i) {
+      if (i < 8) {
+         r = (i & 1) ? 255 : 0;
+         g = (i & 2) ? 255 : 0;
+         b = (i & 4) ? 255 : 0;
+         }
+      else {
+         r = (i & 1) ? 127 : 0;
+         g = (i & 2) ? 127 : 0;
+         b = (i & 4) ? 127 : 0;
+         }
+      palette4.SetColor(i, ArgbToColor(255, r, g, b));
+      }
+  // ETSI EN 300 743 10.1: 256-entry CLUT default contents
+  palette8.SetColor(0, ArgbToColor(0, 0, 0, 0));
+  for (int i = 1; i < 256; ++i) {
+      if (i < 8) {
+         r = (i & 1) ? 255 : 0;
+         g = (i & 2) ? 255 : 0;
+         b = (i & 4) ? 255 : 0;
+         a = 63;
+         }
+      else {
+         switch (i & 0x88) {
+           case 0x00:
+                r = ((i & 1) ? 85 : 0) + ((i & 0x10) ? 170 : 0);
+                g = ((i & 2) ? 85 : 0) + ((i & 0x20) ? 170 : 0);
+                b = ((i & 4) ? 85 : 0) + ((i & 0x40) ? 170 : 0);
+                a = 255;
+                break;
+           case 0x08:
+                r = ((i & 1) ? 85 : 0) + ((i & 0x10) ? 170 : 0);
+                g = ((i & 2) ? 85 : 0) + ((i & 0x20) ? 170 : 0);
+                b = ((i & 4) ? 85 : 0) + ((i & 0x40) ? 170 : 0);
+                a = 127;
+                break;
+           case 0x80:
+                r = 127 + ((i & 1) ? 43 : 0) + ((i & 0x10) ? 85 : 0);
+                g = 127 + ((i & 2) ? 43 : 0) + ((i & 0x20) ? 85 : 0);
+                b = 127 + ((i & 4) ? 43 : 0) + ((i & 0x40) ? 85 : 0);
+                a = 255;
+                break;
+           case 0x88:
+                r = ((i & 1) ? 43 : 0) + ((i & 0x10) ? 85 : 0);
+                g = ((i & 2) ? 43 : 0) + ((i & 0x20) ? 85 : 0);
+                b = ((i & 4) ? 43 : 0) + ((i & 0x40) ? 85 : 0);
+                a = 255;
+                break;
+            }
+         }
+      palette8.SetColor(i, ArgbToColor(a, r, g, b));
+      }
 }
 
 void cSubtitleClut::SetColor(int Bpp, int Index, tColor Color)
@@ -94,29 +159,33 @@ private:
   int version;
   int codingMethod;
   bool nonModifyingColorFlag;
-  int nibblePos;
-  uchar backgroundColor;
-  uchar foregroundColor;
+  uchar backgroundPixelCode;
+  uchar foregroundPixelCode;
   int providerFlag;
   int px;
   int py;
   cBitmap *bitmap;
+  char textData[Utf8BufSize(256)]; // number of character codes is an 8-bit field
   void DrawLine(int x, int y, tIndex Index, int Length);
-  uchar Get2Bits(const uchar *Data, int &Index);
-  uchar Get4Bits(const uchar *Data, int &Index);
-  bool Decode2BppCodeString(const uchar *Data, int &Index, int&x, int y);
-  bool Decode4BppCodeString(const uchar *Data, int &Index, int&x, int y);
-  bool Decode8BppCodeString(const uchar *Data, int &Index, int&x, int y);
+  bool Decode2BppCodeString(cBitStream *bs, int&x, int y, const uint8_t *MapTable);
+  bool Decode4BppCodeString(cBitStream *bs, int&x, int y, const uint8_t *MapTable);
+  bool Decode8BppCodeString(cBitStream *bs, int&x, int y);
 public:
   cSubtitleObject(int ObjectId, cBitmap *Bitmap);
   int ObjectId(void) { return objectId; }
   int Version(void) { return version; }
   int CodingMethod(void) { return codingMethod; }
+  uchar BackgroundPixelCode(void) { return backgroundPixelCode; }
+  uchar ForegroundPixelCode(void) { return foregroundPixelCode; }
+  const char *TextData(void) { return &textData[0]; }
+  int X(void) { return px; }
+  int Y(void) { return py; }
   bool NonModifyingColorFlag(void) { return nonModifyingColorFlag; }
+  void DecodeCharacterString(const uchar *Data, int NumberOfCodes);
   void DecodeSubBlock(const uchar *Data, int Length, bool Even);
   void SetVersion(int Version) { version = Version; }
-  void SetBackgroundColor(uchar BackgroundColor) { backgroundColor = BackgroundColor; }
-  void SetForegroundColor(uchar ForegroundColor) { foregroundColor = ForegroundColor; }
+  void SetBackgroundPixelCode(uchar BackgroundPixelCode) { backgroundPixelCode = BackgroundPixelCode; }
+  void SetForegroundPixelCode(uchar ForegroundPixelCode) { foregroundPixelCode = ForegroundPixelCode; }
   void SetNonModifyingColorFlag(bool NonModifyingColorFlag) { nonModifyingColorFlag = NonModifyingColorFlag; }
   void SetCodingMethod(int CodingMethod) { codingMethod = CodingMethod; }
   void SetPosition(int x, int y) { px = x; py = y; }
@@ -129,59 +198,105 @@ cSubtitleObject::cSubtitleObject(int ObjectId, cBitmap *Bitmap)
   version = -1;
   codingMethod = -1;
   nonModifyingColorFlag = false;
-  nibblePos = 0;
-  backgroundColor = 0;
-  foregroundColor = 0;
+  backgroundPixelCode = 0;
+  foregroundPixelCode = 0;
   providerFlag = -1;
   px = py = 0;
   bitmap = Bitmap;
+  memset(textData, 0, sizeof(textData));
+}
+
+void cSubtitleObject::DecodeCharacterString(const uchar *Data, int NumberOfCodes)
+{
+  if (NumberOfCodes > 0) {
+     bool singleByte;
+     const uchar *from = &Data[1];
+     int len = NumberOfCodes * 2 - 1;
+     cCharSetConv conv(SI::getCharacterTable(from, len, &singleByte));
+     if (singleByte) {
+        char txt[NumberOfCodes + 1];
+        char *p = txt;
+        for (int i = 2; i < NumberOfCodes; ++i) {
+            char c = Data[i * 2 + 1] & 0xFF;
+            if (c == 0)
+               break;
+            if (' ' <= c && c <= '~' || c == '\n' || 0xA0 <= c)
+               *(p++) = c;
+            else if (c == 0x8A)
+               *(p++) = '\n';
+            }
+        *p = 0;
+        const char *s = conv.Convert(txt);
+        Utf8Strn0Cpy(textData, s, Utf8StrLen(s));
+        }
+     else {
+        // TODO: add proper multibyte support for "UTF-16", "EUC-KR", "GB2312", "GBK", "UTF-8"
+        }
+     }
 }
 
 void cSubtitleObject::DecodeSubBlock(const uchar *Data, int Length, bool Even)
 {
   int x = 0;
   int y = Even ? 0 : 1;
-  for (int index = 0; index < Length; ) {
-      switch (Data[index++]) {
-        case 0x10: {
-             nibblePos = 8;
-             while (Decode2BppCodeString(Data, index, x, y) && index < Length)
-                   ;
-             if (!nibblePos)
-                index++;
-             break;
-             }
-        case 0x11: {
-             nibblePos = 4;
-             while (Decode4BppCodeString(Data, index, x, y) && index < Length)
-                   ;
-             if (!nibblePos)
-                index++;
-             break;
-             }
-        case 0x12:
-             while (Decode8BppCodeString(Data, index, x, y) && index < Length)
-                   ;
-             break;
-        case 0x20: //TODO
-             dbgobjects("sub block 2 to 4 map\n");
-             index += 4;
-             break;
-        case 0x21: //TODO
-             dbgobjects("sub block 2 to 8 map\n");
-             index += 4;
-             break;
-        case 0x22: //TODO
-             dbgobjects("sub block 4 to 8 map\n");
-             index += 16;
-             break;
-        case 0xF0:
-             x = 0;
-             y += 2;
-             break;
-        default: dbgobjects("unknown sub block %s %d\n", __FUNCTION__, __LINE__);
+  uint8_t map2to4[ 4] = { 0x00, 0x07, 0x08, 0x0F };
+  uint8_t map2to8[ 4] = { 0x00, 0x77, 0x88, 0xFF };
+  uint8_t map4to8[16] = { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF };
+  const uint8_t *mapTable = NULL;
+  cBitStream bs(Data, Length * 8);
+  while (!bs.IsEOF()) {
+        switch (bs.GetBits(8)) {
+          case 0x10:
+               dbgobjects("2-bit / pixel code string\n");
+               switch (bitmap->Bpp()) {
+                 case 8:  mapTable = map2to8; break;
+                 case 4:  mapTable = map2to4; break;
+                 default: mapTable = NULL;    break;
+                 }
+               while (Decode2BppCodeString(&bs, x, y, mapTable) && !bs.IsEOF())
+                     ;
+               bs.ByteAlign();
+               break;
+          case 0x11:
+               dbgobjects("4-bit / pixel code string\n");
+               switch (bitmap->Bpp()) {
+                 case 8:  mapTable = map4to8; break;
+                 default: mapTable = NULL;    break;
+                 }
+               while (Decode4BppCodeString(&bs, x, y, mapTable) && !bs.IsEOF())
+                     ;
+               bs.ByteAlign();
+               break;
+          case 0x12:
+               dbgobjects("8-bit / pixel code string\n");
+               while (Decode8BppCodeString(&bs, x, y) && !bs.IsEOF())
+                     ;
+               break;
+          case 0x20:
+               dbgobjects("sub block 2 to 4 map\n");
+               map2to4[0] = bs.GetBits(4);
+               map2to4[1] = bs.GetBits(4);
+               map2to4[2] = bs.GetBits(4);
+               map2to4[3] = bs.GetBits(4);
+               break;
+          case 0x21:
+               dbgobjects("sub block 2 to 8 map\n");
+               for (int i = 0; i < 4; ++i)
+                   map2to8[i] = bs.GetBits(8);
+               break;
+          case 0x22:
+               dbgobjects("sub block 4 to 8 map\n");
+               for (int i = 0; i < 16; ++i)
+                   map4to8[i] = bs.GetBits(8);
+               break;
+          case 0xF0:
+               dbgobjects("end of object line\n");
+               x = 0;
+               y += 2;
+               break;
+          default: dbgobjects("unknown sub block %s %d\n", __FUNCTION__, __LINE__);
+          }
         }
-      }
 }
 
 void cSubtitleObject::DrawLine(int x, int y, tIndex Index, int Length)
@@ -194,136 +309,110 @@ void cSubtitleObject::DrawLine(int x, int y, tIndex Index, int Length)
       bitmap->SetIndex(pos, y, Index);
 }
 
-uchar cSubtitleObject::Get2Bits(const uchar *Data, int &Index)
-{
-  uchar result = Data[Index];
-  if (!nibblePos) {
-     Index++;
-     nibblePos = 8;
-     }
-  nibblePos -= 2;
-  return (result >> nibblePos) & 0x03;
-}
-
-uchar cSubtitleObject::Get4Bits(const uchar *Data, int &Index)
-{
-  uchar result = Data[Index];
-  if (!nibblePos) {
-     Index++;
-     nibblePos = 4;
-     }
-  else {
-     result >>= 4;
-     nibblePos -= 4;
-     }
-  return result & 0x0F;
-}
-
-bool cSubtitleObject::Decode2BppCodeString(const uchar *Data, int &Index, int &x, int y)
+bool cSubtitleObject::Decode2BppCodeString(cBitStream *bs, int &x, int y, const uint8_t *MapTable)
 {
   int rl = 0;
   int color = 0;
-  uchar code = Get2Bits(Data, Index);
+  uchar code = bs->GetBits(2);
   if (code) {
      color = code;
      rl = 1;
      }
-  else {
-     code = Get2Bits(Data, Index);
-     if (code & 2) { // switch_1
-        rl = ((code & 1) << 2) + Get2Bits(Data, Index) + 3;
-        color = Get2Bits(Data, Index);
-        }
-     else if (code & 1)
-        rl = 1; //color 0
-     else {
-        code = Get2Bits(Data, Index);
-        switch (code & 3) { //switch_3
-          case 0:
-               return false;
-          case 1:
-               rl = 2; //color 0
-               break;
-          case 2:
-               rl = (Get2Bits(Data, Index) << 2) + Get2Bits(Data, Index) + 12;
-               color = Get2Bits(Data, Index);
-               break;
-          case 3:
-               rl = (Get2Bits(Data, Index) << 6) + (Get2Bits(Data, Index) << 4) + (Get2Bits(Data, Index) << 2) + Get2Bits(Data, Index) + 29;
-               color = Get2Bits(Data, Index);
-               break;
-          default: ;
-          }
-        }
+  else if (bs->GetBit()) { // switch_1
+     rl = bs->GetBits(3) + 3;
+     color = bs->GetBits(2);
      }
+  else if (bs->GetBit()) // switch_2
+     rl = 1; //color 0
+  else {
+     switch (bs->GetBits(2)) { // switch_3
+       case 0:
+            return false;
+       case 1:
+            rl = 2; //color 0
+            break;
+       case 2:
+            rl = bs->GetBits(4) + 12;
+            color = bs->GetBits(2);
+            break;
+       case 3:
+            rl = bs->GetBits(8) + 29;
+            color = bs->GetBits(2);
+            break;
+       default: ;
+       }
+     }
+  if (MapTable)
+     color = MapTable[color];
   DrawLine(x, y, color, rl);
   x += rl;
   return true;
 }
 
-bool cSubtitleObject::Decode4BppCodeString(const uchar *Data, int &Index, int &x, int y)
+bool cSubtitleObject::Decode4BppCodeString(cBitStream *bs, int &x, int y, const uint8_t *MapTable)
 {
   int rl = 0;
   int color = 0;
-  uchar code = Get4Bits(Data, Index);
+  uchar code = bs->GetBits(4);
   if (code) {
      color = code;
      rl = 1;
      }
-  else {
-     code = Get4Bits(Data, Index);
-     if (code & 8) { // switch_1
-        if (code & 4) { //switch_2
-           switch (code & 3) { //switch_3
-             case 0: // color 0
-                  rl = 1;
-                  break;
-             case 1: // color 0
-                  rl = 2;
-                  break;
-             case 2:
-                  rl = Get4Bits(Data, Index) + 9;
-                  color = Get4Bits(Data, Index);
-                  break;
-             case 3:
-                  rl = (Get4Bits(Data, Index) << 4) + Get4Bits(Data, Index) + 25;
-                  color = Get4Bits(Data, Index);
-                  break;
-             default: ;
-             }
-           }
-        else {
-           rl = (code & 3) + 4;
-           color = Get4Bits(Data, Index);
-           }
-        }
-     else { // color 0
-        if (!code)
-           return false;
-        rl = code + 2;
-        }
+  else if (bs->GetBit() == 0) { // switch_1
+     code = bs->GetBits(3);
+     if (code)
+        rl = code + 2; //color 0
+     else
+        return false;
      }
+  else if (bs->GetBit() == 0) { // switch_2
+     rl = bs->GetBits(2) + 4;
+     color = bs->GetBits(4);
+     }
+  else {
+     switch (bs->GetBits(2)) { // switch_3
+       case 0: // color 0
+            rl = 1;
+            break;
+       case 1: // color 0
+            rl = 2;
+            break;
+       case 2:
+            rl = bs->GetBits(4) + 9;
+            color = bs->GetBits(4);
+            break;
+       case 3:
+            rl = bs->GetBits(8) + 25;
+            color = bs->GetBits(4);
+            break;
+       }
+     }
+  if (MapTable)
+     color = MapTable[color];
   DrawLine(x, y, color, rl);
   x += rl;
   return true;
 }
 
-bool cSubtitleObject::Decode8BppCodeString(const uchar *Data, int &Index, int &x, int y)
+bool cSubtitleObject::Decode8BppCodeString(cBitStream *bs, int &x, int y)
 {
   int rl = 0;
   int color = 0;
-  uchar code = Data[Index++];
+  uchar code = bs->GetBits(8);
   if (code) {
      color = code;
      rl = 1;
      }
+  else if (bs->GetBit()) {
+     rl = bs->GetBits(7);
+     color = bs->GetBits(8);
+     }
   else {
-     code = Data[Index++];
-     rl = code & 0x63;
-     if (code & 0x80)
-        color = Data[Index++];
-     else if (!rl)
-        return false; //else color 0
+     code = bs->GetBits(7);
+     if (code)
+        rl = code; // color 0
+     else
+        return false;
      }
   DrawLine(x, y, color, rl);
   x += rl;
@@ -340,6 +429,7 @@ private:
   int horizontalAddress;
   int verticalAddress;
   int level;
+  int lineHeight;
   cList<cSubtitleObject> objects;
 public:
   cSubtitleRegion(int RegionId);
@@ -358,6 +448,7 @@ public:
   void SetDepth(int Depth);
   void SetHorizontalAddress(int HorizontalAddress) { horizontalAddress = HorizontalAddress; }
   void SetVerticalAddress(int VerticalAddress) { verticalAddress = VerticalAddress; }
+  void UpdateTextData(cSubtitleClut *Clut);
   };
 
 cSubtitleRegion::cSubtitleRegion(int RegionId)
@@ -369,6 +460,7 @@ cSubtitleRegion::cSubtitleRegion(int RegionId)
   horizontalAddress = 0;
   verticalAddress = 0;
   level = 0;
+  lineHeight = 26; // configurable subtitling font size
 }
 
 void cSubtitleRegion::FillRegion(tIndex Index)
@@ -392,6 +484,22 @@ cSubtitleObject *cSubtitleRegion::GetObjectById(int ObjectId, bool New)
      objects.Add(result);
      }
   return result;
+}
+
+void cSubtitleRegion::UpdateTextData(cSubtitleClut *Clut)
+{
+  const cPalette *palette = Clut ? Clut->GetPalette(Depth()) : NULL;
+  for (cSubtitleObject *so = objects.First(); so && palette; so = objects.Next(so)) {
+      if (Utf8StrLen(so->TextData()) > 0) {
+         const cFont *font = cFont::GetFont(fontOsd);
+         cBitmap *tmp = new cBitmap(font->Width(so->TextData()), font->Height(), Depth());
+         double factor = (double)lineHeight / font->Height();
+         tmp->DrawText(0, 0, so->TextData(), palette->Color(so->ForegroundPixelCode()), palette->Color(so->BackgroundPixelCode()), font);
+         tmp = tmp->Scaled(factor, factor, true);
+         DrawBitmap(so->X(), so->Y(), *tmp);
+         DELETENULL(tmp);
+         }
+      }
 }
 
 void cSubtitleRegion::SetLevel(int Level)
@@ -887,7 +995,7 @@ void cDvbSubtitleConverter::SetOsdData(void)
   double VideoAspect;
   cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
   cDevice::PrimaryDevice()->GetVideoSize(VideoWidth, VideoHeight, VideoAspect);
-  if (OsdWidth == displayWidth && OsdHeight == displayHeight) {
+  if (OsdWidth == displayWidth && OsdHeight == displayHeight || VideoWidth == 0) {
      osdFactorX = osdFactorY = 1.0;
      osdDeltaX = osdDeltaY = 0;
      }
@@ -907,12 +1015,15 @@ bool cDvbSubtitleConverter::AssertOsd(void)
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
 {
-  if (Length > 5 && Data[0] == 0x0F) {
-     int segmentLength = (Data[4] << 8) + Data[5] + 6;
-     if (segmentLength > Length)
+  cBitStream bs(Data, Length * 8);
+  if (Length > 5 && bs.GetBits(8) == 0x0F) { // sync byte
+     int segmentType = bs.GetBits(8);
+     if (segmentType == STUFFING_SEGMENT)
         return -1;
-     int segmentType = Data[1];
-     int pageId = (Data[2] << 8) + Data[3];
+     int pageId = bs.GetBits(16);
+     int segmentLength = bs.GetBits(16);
+     if (!bs.SetLength(bs.Index() + segmentLength * 8))
+        return -1;
      cDvbSubtitlePage *page = NULL;
      LOCK_THREAD;
      for (cDvbSubtitlePage *sp = pages->First(); sp; sp = pages->Next(sp)) {
@@ -931,154 +1042,170 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
      switch (segmentType) {
        case PAGE_COMPOSITION_SEGMENT: {
             dbgsegments("PAGE_COMPOSITION_SEGMENT\n");
-            int pageVersion = (Data[6 + 1] & 0xF0) >> 4;
+            int pageTimeout = bs.GetBits(8);
+            int pageVersion = bs.GetBits(4);
             if (pageVersion == page->Version())
                break; // no update
             page->SetVersion(pageVersion);
-            page->SetTimeout(Data[6]);
-            page->SetState((Data[6 + 1] & 0x0C) >> 2);
+            page->SetTimeout(pageTimeout);
+            page->SetState(bs.GetBits(2));
             page->regions.Clear();
+            bs.SkipBits(2); // reserved
             dbgpages("Update page id %d version %d pts %"PRId64" timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
-            for (int i = 6 + 2; i < segmentLength; i += 6) {
-                cSubtitleRegion *region = page->GetRegionById(Data[i], true);
-                region->SetHorizontalAddress((Data[i + 2] << 8) + Data[i + 3]);
-                region->SetVerticalAddress((Data[i + 4] << 8) + Data[i + 5]);
-                }
+            while (!bs.IsEOF()) {
+                  cSubtitleRegion *region = page->GetRegionById(bs.GetBits(8), true);
+                  bs.SkipBits(8); // reserved
+                  region->SetHorizontalAddress(bs.GetBits(16));
+                  region->SetVerticalAddress(bs.GetBits(16));
+                  }
             break;
             }
        case REGION_COMPOSITION_SEGMENT: {
             dbgsegments("REGION_COMPOSITION_SEGMENT\n");
-            cSubtitleRegion *region = page->GetRegionById(Data[6]);
+            cSubtitleRegion *region = page->GetRegionById(bs.GetBits(8));
             if (!region)
                break;
-            int regionVersion = (Data[6 + 1] & 0xF0) >> 4;
+            int regionVersion = bs.GetBits(4);
             if (regionVersion == region->Version())
                break; // no update
             region->SetVersion(regionVersion);
-            bool regionFillFlag = (Data[6 + 1] & 0x08) >> 3;
-            int regionWidth = (Data[6 + 2] << 8) | Data[6 + 3];
+            bool regionFillFlag = bs.GetBit();
+            bs.SkipBits(3); // reserved
+            int regionWidth = bs.GetBits(16);
             if (regionWidth < 1)
                regionWidth = 1;
-            int regionHeight = (Data[6 + 4] << 8) | Data[6 + 5];
+            int regionHeight = bs.GetBits(16);
             if (regionHeight < 1)
                regionHeight = 1;
             region->SetSize(regionWidth, regionHeight);
-            region->SetLevel((Data[6 + 6] & 0xE0) >> 5);
-            region->SetDepth((Data[6 + 6] & 0x1C) >> 2);
-            region->SetClutId(Data[6 + 7]);
+            region->SetLevel(bs.GetBits(3));
+            region->SetDepth(bs.GetBits(3));
+            bs.SkipBits(2); // reserved
+            region->SetClutId(bs.GetBits(8));
             dbgregions("Region pageId %d id %d version %d fill %d width %d height %d level %d depth %d clutId %d\n", pageId, region->RegionId(), region->Version(), regionFillFlag, regionWidth, regionHeight, region->Level(), region->Depth(), region->ClutId());
+            int region8bitPixelCode = bs.GetBits(8);
+            int region4bitPixelCode = bs.GetBits(4);
+            int region2bitPixelCode = bs.GetBits(2);
+            bs.SkipBits(2); // reserved
             if (regionFillFlag) {
                switch (region->Bpp()) {
-                 case 2: region->FillRegion((Data[6 + 9] & 0x0C) >> 2); break;
-                 case 4: region->FillRegion((Data[6 + 9] & 0xF0) >> 4); break;
-                 case 8: region->FillRegion(Data[6 + 8]); break;
+                 case 2: region->FillRegion(region8bitPixelCode); break;
+                 case 4: region->FillRegion(region4bitPixelCode); break;
+                 case 8: region->FillRegion(region2bitPixelCode); break;
                  default: dbgregions("unknown bpp %d (%s %d)\n", region->Bpp(), __FUNCTION__, __LINE__);
                  }
                }
-            for (int i = 6 + 10; i < segmentLength; i += 6) {
-                cSubtitleObject *object = region->GetObjectById((Data[i] << 8) | Data[i + 1], true);
-                int objectType = (Data[i + 2] & 0xC0) >> 6;
-                object->SetCodingMethod(objectType);
-                object->SetProviderFlag((Data[i + 2] & 0x30) >> 4);
-                int objectHorizontalPosition = ((Data[i + 2] & 0x0F) << 8) | Data[i + 3];
-                int objectVerticalPosition = ((Data[i + 4] & 0x0F) << 8) | Data[i + 5];
-                object->SetPosition(objectHorizontalPosition, objectVerticalPosition);
-                if (objectType == 0x01 || objectType == 0x02) {
-                   object->SetForegroundColor(Data[i + 6]);
-                   object->SetBackgroundColor(Data[i + 7]);
-                   i += 2;
-                   }
-                }
+            while (!bs.IsEOF()) {
+                  cSubtitleObject *object = region->GetObjectById(bs.GetBits(16), true);
+                  int objectType = bs.GetBits(2);
+                  object->SetCodingMethod(objectType);
+                  object->SetProviderFlag(bs.GetBits(2));
+                  int objectHorizontalPosition = bs.GetBits(12);
+                  bs.SkipBits(4); // reserved
+                  int objectVerticalPosition = bs.GetBits(12);
+                  object->SetPosition(objectHorizontalPosition, objectVerticalPosition);
+                  if (objectType == 0x01 || objectType == 0x02) {
+                     object->SetForegroundPixelCode(bs.GetBits(8));
+                     object->SetBackgroundPixelCode(bs.GetBits(8));
+                     }
+                  }
             break;
             }
        case CLUT_DEFINITION_SEGMENT: {
             dbgsegments("CLUT_DEFINITION_SEGMENT\n");
-            cSubtitleClut *clut =  page->GetClutById(Data[6], true);
-            int clutVersion = (Data[6 + 1] & 0xF0) >> 4;
+            cSubtitleClut *clut =  page->GetClutById(bs.GetBits(8), true);
+            int clutVersion = bs.GetBits(4);
             if (clutVersion == clut->Version())
                break; // no update
             clut->SetVersion(clutVersion);
+            bs.SkipBits(4); // reserved
             dbgcluts("Clut pageId %d id %d version %d\n", pageId, clut->ClutId(), clut->Version());
-            for (int i = 6 + 2; i < segmentLength; i += 2) {
-                uchar clutEntryId = Data[i];
-                bool fullRangeFlag = Data[i + 1] & 1;
-                uchar yval;
-                uchar crval;
-                uchar cbval;
-                uchar tval;
-                if (fullRangeFlag) {
-                   yval  = Data[i + 2];
-                   crval = Data[i + 3];
-                   cbval = Data[i + 4];
-                   tval  = Data[i + 5];
-                   }
-                else {
-                   yval   =   Data[i + 2] & 0xFC;
-                   crval  =  (Data[i + 2] & 0x03) << 6;
-                   crval |=  (Data[i + 3] & 0xC0) >> 2;
-                   cbval  =  (Data[i + 3] & 0x3C) << 2;
-                   tval   =  (Data[i + 3] & 0x03) << 6;
-                   }
-                tColor value = 0;
-                if (yval) {
-                   value = yuv2rgb(yval, cbval, crval);
-                   value |= ((10 - (clutEntryId ? Setup.SubtitleFgTransparency : Setup.SubtitleBgTransparency)) * (255 - tval) / 10) << 24;
-                   }
-                int EntryFlags = Data[i + 1];
-                dbgcluts("%2d %d %d %d %08X\n", clutEntryId, (EntryFlags & 0x80) ? 2 : 0, (EntryFlags & 0x40) ? 4 : 0, (EntryFlags & 0x20) ? 8 : 0, value);
-                if ((EntryFlags & 0x80) != 0)
-                   clut->SetColor(2, clutEntryId, value);
-                if ((EntryFlags & 0x40) != 0)
-                   clut->SetColor(4, clutEntryId, value);
-                if ((EntryFlags & 0x20) != 0)
-                   clut->SetColor(8, clutEntryId, value);
-                i += fullRangeFlag ? 4 : 2;
-                }
+            while (!bs.IsEOF()) {
+                  uchar clutEntryId = bs.GetBits(8);
+                  bool entryClut2Flag = bs.GetBit();
+                  bool entryClut4Flag = bs.GetBit();
+                  bool entryClut8Flag = bs.GetBit();
+                  bs.SkipBits(4); // reserved
+                  uchar yval;
+                  uchar crval;
+                  uchar cbval;
+                  uchar tval;
+                  if (bs.GetBit()) { // full_range_flag
+                     yval  = bs.GetBits(8);
+                     crval = bs.GetBits(8);
+                     cbval = bs.GetBits(8);
+                     tval  = bs.GetBits(8);
+                     }
+                  else {
+                     yval  = bs.GetBits(6) << 2;
+                     crval = bs.GetBits(4) << 4;
+                     cbval = bs.GetBits(4) << 4;
+                     tval  = bs.GetBits(2) << 6;
+                     }
+                  tColor value = 0;
+                  if (yval) {
+                     value = yuv2rgb(yval, cbval, crval);
+                     value |= ((10 - (clutEntryId ? Setup.SubtitleFgTransparency : Setup.SubtitleBgTransparency)) * (255 - tval) / 10) << 24;
+                     }
+                  dbgcluts("%2d %d %d %d %08X\n", clutEntryId, entryClut2Flag ? 2 : 0, entryClut4Flag ? 4 : 0, entryClut8Flag ? 8 : 0, value);
+                  if (entryClut2Flag)
+                     clut->SetColor(2, clutEntryId, value);
+                  if (entryClut4Flag)
+                     clut->SetColor(4, clutEntryId, value);
+                  if (entryClut8Flag)
+                     clut->SetColor(8, clutEntryId, value);
+                  }
             dbgcluts("\n");
             page->UpdateRegionPalette(clut);
             break;
             }
        case OBJECT_DATA_SEGMENT: {
             dbgsegments("OBJECT_DATA_SEGMENT\n");
-            cSubtitleObject *object = page->GetObjectById((Data[6] << 8) | Data[6 + 1]);
+            cSubtitleObject *object = page->GetObjectById(bs.GetBits(16));
             if (!object)
                break;
-            int objectVersion = (Data[6 + 2] & 0xF0) >> 4;
+            int objectVersion = bs.GetBits(4);
             if (objectVersion == object->Version())
                break; // no update
             object->SetVersion(objectVersion);
-            int codingMethod = (Data[6 + 2] & 0x0C) >> 2;
-            object->SetNonModifyingColorFlag(Data[6 + 2] & 0x01);
+            int codingMethod = bs.GetBits(2);
+            object->SetNonModifyingColorFlag(bs.GetBit());
+            bs.SkipBit(); // reserved
             dbgobjects("Object pageId %d id %d version %d method %d modify %d\n", pageId, object->ObjectId(), object->Version(), object->CodingMethod(), object->NonModifyingColorFlag());
             if (codingMethod == 0) { // coding of pixels
-               int i = 6 + 3;
-               int topFieldLength = (Data[i] << 8) | Data[i + 1];
-               int bottomFieldLength = (Data[i + 2] << 8) | Data[i + 3];
-               object->DecodeSubBlock(Data + i + 4, topFieldLength, true);
+               int topFieldLength = bs.GetBits(16);
+               int bottomFieldLength = bs.GetBits(16);
+               object->DecodeSubBlock(bs.GetData(), topFieldLength, true);
                if (bottomFieldLength)
-                  object->DecodeSubBlock(Data + i + 4 + topFieldLength, bottomFieldLength, false);
+                  object->DecodeSubBlock(bs.GetData() + topFieldLength, bottomFieldLength, false);
                else
-                  object->DecodeSubBlock(Data + i + 4, topFieldLength, false);
+                  object->DecodeSubBlock(bs.GetData(), topFieldLength, false);
+               bs.WordAlign();
                }
             else if (codingMethod == 1) { // coded as a string of characters
-               //TODO implement textual subtitles
+               int numberOfCodes = bs.GetBits(8);
+               object->DecodeCharacterString(bs.GetData(), numberOfCodes);
                }
+#ifdef FINISHPAGE_HACK
+            FinishPage(page); // flush to OSD right away
+#endif
             break;
             }
        case DISPLAY_DEFINITION_SEGMENT: {
             dbgsegments("DISPLAY_DEFINITION_SEGMENT\n");
-            int version = (Data[6] & 0xF0) >> 4;
+            int version = bs.GetBits(4);
             if (version != ddsVersionNumber) {
-               int displayWindowFlag   = (Data[6] & 0x08) >> 3;
+               bool displayWindowFlag = bs.GetBit();
                windowHorizontalOffset = 0;
                windowVerticalOffset   = 0;
-               displayWidth = windowWidth   = ((Data[7] << 8) | Data[8]) + 1;
-               displayHeight = windowHeight = ((Data[9] << 8) | Data[10]) + 1;
-               if (displayWindowFlag) { 
-                  windowHorizontalOffset = (Data[11] << 8) | Data[12];                                // displayWindowHorizontalPositionMinimum
-                  windowWidth            = ((Data[13] << 8) | Data[14]) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
-                  windowVerticalOffset   = (Data[15] << 8) | Data[16];                                // displayWindowVerticalPositionMinimum
-                  windowHeight           = ((Data[17] << 8) | Data[18]) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
+               bs.SkipBits(3); // reserved
+               displayWidth  = windowWidth  = bs.GetBits(16) + 1;
+               displayHeight = windowHeight = bs.GetBits(16) + 1;
+               if (displayWindowFlag) {
+                  windowHorizontalOffset = bs.GetBits(16);                              // displayWindowHorizontalPositionMinimum
+                  windowWidth            = bs.GetBits(16) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+                  windowVerticalOffset   = bs.GetBits(16);                              // displayWindowVerticalPositionMinimum
+                  windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                   }
                SetOsdData();
                SetupChanged();
@@ -1086,15 +1213,56 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                }
             break;
             }
+       case DISPARITY_SIGNALING_SEGMENT: {
+            dbgsegments("DISPARITY_SIGNALING_SEGMENT\n");
+            bs.SkipBits(4); // dss_version_number
+            bool disparity_shift_update_sequence_page_flag = bs.GetBit();
+            bs.SkipBits(3); // reserved
+            bs.SkipBits(8); // page_default_disparity_shift
+            if (disparity_shift_update_sequence_page_flag) {
+               bs.SkipBits(8); // disparity_shift_update_sequence_length
+               bs.SkipBits(24); // interval_duration[23..0]
+               int division_period_count = bs.GetBits(8);
+               for (int i = 0; i < division_period_count; ++i) {
+                   bs.SkipBits(8); // interval_count
+                   bs.SkipBits(8); // disparity_shift_update_integer_part
+                   }
+               }
+            while (!bs.IsEOF()) {
+                  bs.SkipBits(8); // region_id
+                  bool disparity_shift_update_sequence_region_flag = bs.GetBit();
+                  bs.SkipBits(5); // reserved
+                  int number_of_subregions_minus_1 = bs.GetBits(2);
+                  for (int i = 0; i <= number_of_subregions_minus_1; ++i) {
+                      if (number_of_subregions_minus_1 > 0) {
+                         bs.SkipBits(16); // subregion_horizontal_position
+                         bs.SkipBits(16); // subregion_width
+                         }
+                      bs.SkipBits(8); // subregion_disparity_shift_integer_part
+                      bs.SkipBits(4); // subregion_disparity_shift_fractional_part
+                      bs.SkipBits(4); // reserved
+                      if (disparity_shift_update_sequence_region_flag) {
+                         bs.SkipBits(8); // disparity_shift_update_sequence_length
+                         bs.SkipBits(24); // interval_duration[23..0]
+                         int division_period_count = bs.GetBits(8);
+                         for (int i = 0; i < division_period_count; ++i) {
+                             bs.SkipBits(8); // interval_count
+                             bs.SkipBits(8); // disparity_shift_update_integer_part
+                             }
+                         }
+                      }
+                  }
+            break;
+            }
        case END_OF_DISPLAY_SET_SEGMENT: {
             dbgsegments("END_OF_DISPLAY_SET_SEGMENT\n");
             FinishPage(page);
-            }
             break;
+            }
        default:
             dbgsegments("*** unknown segment type: %02X\n", segmentType);
        }
-     return segmentLength;
+     return bs.Length() / 8;
      }
   return -1;
 }
@@ -1143,6 +1311,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
   bitmaps->Add(Bitmaps);
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
+      sr->UpdateTextData(Page->GetClutById(sr->ClutId()));
       int posX = sr->HorizontalAddress();
       int posY = sr->VerticalAddress();
       if (sr->Width() > 0 && sr->Height() > 0) {

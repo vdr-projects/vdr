@@ -386,6 +386,23 @@ accessed using DiSEqC, you have to go to the "Setup" menu and set the "DiSEqC"
 parameter to "on". You also need to set up the file 'diseqc.conf' to properly
 access your DiSEqC equipment (see man vdr(5) for details).
 
+A special form of DiSEqC is used to connect several receivers to one signal
+source using only a single cable. This method, known as "Satellite Channel Routing"
+according to EN50494 (aka "Unicable(TM)", "OLT(TM)", "SatCR", "Single Cable
+Distribution", "Channel Stacking System" or "Single Cable Interface") uses
+the file "scr.conf" to specify which SCR channels use which user band frequency.
+
+If DVB-S devices need to be connected to the same satellite cable, but no
+"Satellite Channel Routing" is available, they can be set to be "bonded" in
+the Setup/LNB menu. Bonded devices can only be tuned to the same polarization
+and frequency band, which reduces the number of potentially receivable channels.
+
+Note that it doesn't make sense to use "Satellite Channel Routing" and
+"Device Bonding" at the same time with the same devices. If you use either
+of these methods, it is necessary that your devices are always created in the
+same sequence when the drivers are loaded. You may need to configure some
+proper "udev" rules to make sure this happens.
+
 Running VDR with DVB-C (cable) or DVB-T (terrestrial):
 ------------------------------------------------------
 

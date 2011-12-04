@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 2.1 2009/06/14 11:14:00 kls Exp $
+ * $Id: pat.h 2.2 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -39,7 +39,7 @@ int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSy
          ///< are copied that match one of the given CA system IDs.
          ///< \return Returns the number of bytes copied into Data (0 if no CA descriptors are
          ///< available), or -1 if BufSize was too small to hold all CA descriptors.
-         ///< The return value in StreamFlag tells whether these CA descriptors are to be used
+         ///< The return value tells whether these CA descriptors are to be used
          ///< for the individual streams.
 
 #endif //__PAT_H

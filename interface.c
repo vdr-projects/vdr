@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 2.0 2008/02/10 15:49:15 kls Exp $
+ * $Id: interface.c 2.1 2011/12/04 14:52:38 kls Exp $
  */
 
 #include "interface.h"
@@ -79,7 +79,7 @@ bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
      DisplayMenu->SetItem(tr("RC code detected!"), 4, false, false);
      DisplayMenu->SetItem(tr("Do not press any key..."), 5, false, false);
      DisplayMenu->Flush();
-     sleep(3);
+     cCondWait::SleepMs(3000);
      DisplayMenu->SetItem("", 4, false, false);
      DisplayMenu->SetItem("", 5, false, false);
 

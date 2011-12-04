@@ -6742,3 +6742,41 @@ Video Disk Recorder Revision History
   Detecting frames in case the Picture Start Code or Access Unit Delimiter
   extends over TS packet boundaries is now done by locally skipping TS packets
   in cFrameDetector.
+
+2011-12-04: Version 1.7.22
+
+- Fixed scaling subtitles in case the primary device's GetVideoSize() function doesn't
+  return actual values (thanks to Luca Olivetti).
+- The DiSEqC codes are now copied in the call to cDiseqc::Execute().
+- VDR now supports "Satellite Channel Routing" (SCR) according to EN50494 (based on
+  the "unicable" patch from Lars Hanisch).
+  Since "Unicable" is a registered trademark and stands for only one of many
+  implementations of SCR, the following changes have been made compared to the patch,
+  which need to be taken into account by people who have set up their system using
+  the patch:
+  - The 'U' parameter in the diseqc.conf file has been changed to 'S' ("Scr").
+  - The configuration file name has been changed from "unicable.conf" to "scr.conf".
+- Updated sources.conf (thanks to Arthur Konovalov).
+- The SVDRP command LSTC now also accepts channel IDs (thanks to Dominic Evans).
+- Fixed handling DVB subtitles and implemented decoding textual DVB subtitles (thanks
+  to Rolf Ahrenberg).
+- Added cap_net_raw to the capabilities that are not dropped (thanks to Dominic Evans).
+- Fixed setting the start time of an edited recording (thanks to Christoph Haubrich).
+- Temporarily switching free devices to transponders in order to have their running
+  status updated is now done by marking the devices as "occupied" for a certain
+  amount of time.
+- The new setup options "LNB/Device n connected to sat cable" can be used to define
+  which DVB-S devices are connected to the same sat cable and are therefore "bonded".
+  This obsoletes the LNBSHARE patch. Users of the LNBSHARE patch will need to newly
+  set up their sat devices with the above options.
+- Fixed a crash when deleting a recording while cutting it (thanks to Ville Skyttä).
+- Fixed several spelling errors (thanks to Ville Skyttä).
+- The new SVDRP command UPDR can be used to trigger an update of the list of
+  recordings (thanks to Lars Hanisch).
+- Added generating a pkg-config file to the Makefile (thanks to Ville Skyttä).
+- Removed the '.pl' suffix from all scripts (thanks to Ville Skyttä).
+- Changed the default location for the LIRC socket to /var/run/lirc/lircd (thanks
+  to Ville Skyttä).
+- Added file name and line number to LOG_ERROR_STR() (thanks to Rolf Ahrenberg).
+- Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
+- Fixed a crash with malformed SI data (patch from vdr-portal).

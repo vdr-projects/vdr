@@ -20,13 +20,13 @@ msgid "HD Full Featured DVB device"
 msgstr "DVB-laite HD-ulostulolla"
 
 msgid "Off"
-msgstr ""
+msgstr "ei"
 
 msgid "Frame rate"
-msgstr ""
+msgstr "kuvataajuuden mukaan"
 
 msgid "HD Only"
-msgstr ""
+msgstr "vain HD-resoluutiolla"
 
 msgid "Always"
 msgstr "aina"
@@ -68,7 +68,7 @@ msgid "Resolution"
 msgstr "Kuvaresoluutio"
 
 msgid "Video Mode Adaption"
-msgstr ""
+msgstr "Sovita näyttömoodi"
 
 msgid "TV format"
 msgstr "Näytön kuvasuhde"

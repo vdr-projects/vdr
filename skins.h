@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.0 2008/02/17 11:30:56 kls Exp $
+ * $Id: skins.h 2.1 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -148,7 +148,7 @@ public:
        ///< Sets the Total number of items in the currently displayed list, and the
        ///< Offset of the first item that is currently displayed (the skin knows how
        ///< many items it can display at once, see MaxItems()). This can be used to
-       ///< display a scollbar.
+       ///< display a scrollbar.
   virtual void SetEvent(const cEvent *Event) = 0;
        ///< Sets the Event that shall be displayed, using the entire central area
        ///< of the menu. The Event's 'description' shall be displayed using a

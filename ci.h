@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 2.0 2007/01/03 12:49:10 kls Exp $
+ * $Id: ci.h 2.1 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __CI_H
@@ -220,7 +220,7 @@ public:
        ///< CAM is currently not decrypting anything. If there is already a
        ///< channel being decrypted, a call to CanDecrypt() checks whether the
        ///< CAM can also decrypt the given channel. Only CAMs that have replied
-       ///< to the inital QUERY will perform this check at all. CAMs that never
+       ///< to the initial QUERY will perform this check at all. CAMs that never
        ///< replied to the initial QUERY are assumed not to be able to handle
        ///< more than one channel at a time.
   void StartDecrypting(void);

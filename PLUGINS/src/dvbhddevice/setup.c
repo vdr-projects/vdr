@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.13 2011/08/27 09:35:35 kls Exp $
+ * $Id: setup.c 1.14 2011/12/04 15:31:58 kls Exp $
  */
 
 #include "setup.h"
@@ -20,12 +20,12 @@ cHdffSetup gHdffSetup;
 cHdffSetup::cHdffSetup(void)
 {
     Resolution = kResolution1080i;
-    VideoModeAdaption = HDFF::videoModeAdaptOff;
-    TvFormat = HDFF::tvFormat16by9;
-    VideoConversion = HDFF::videoConversionPillarbox;
-    AnalogueVideo = HDFF::videoOutCvbsYuv;
+    VideoModeAdaption = HDFF_VIDEO_MODE_ADAPT_OFF;
+    TvFormat = HDFF_TV_FORMAT_16_BY_9;
+    VideoConversion = HDFF_VIDEO_CONVERSION_PILLARBOX;
+    AnalogueVideo = HDFF_VIDEO_OUT_CVBS_YUV;
     AudioDelay = 0;
-    AudioDownmix = HDFF::downmixAutomatic;
+    AudioDownmix = HDFF_AUDIO_DOWNMIX_AUTOMATIC;
     OsdSize = 0;
     CecEnabled = 1;
     RemoteProtocol = 1;
@@ -68,7 +68,7 @@ void cHdffSetup::GetOsdSize(int &Width, int &Height, double &PixelAspect)
             Width = 720;
             Height = 576;
         }
-        if (TvFormat == HDFF::tvFormat16by9)
+        if (TvFormat == HDFF_TV_FORMAT_16_BY_9)
             PixelAspect = 16.0 / 9.0;
         else
             PixelAspect = 4.0 / 3.0;
@@ -96,19 +96,19 @@ void cHdffSetup::GetOsdSize(int &Width, int &Height, double &PixelAspect)
     PixelAspect /= double(Width) / Height;
 }
 
-HDFF::eHdmiVideoMode cHdffSetup::GetVideoMode(void)
+HdffVideoMode_t cHdffSetup::GetVideoMode(void)
 {
     switch (Resolution)
     {
         case kResolution1080i:
         default:
-            return HDFF::videoMode1080i50;
+            return HDFF_VIDEO_MODE_1080I50;
         case kResolution720p:
-            return HDFF::videoMode720p50;
+            return HDFF_VIDEO_MODE_720P50;
         case kResolution576p:
-            return HDFF::videoMode576p50;
+            return HDFF_VIDEO_MODE_576P50;
         case kResolution576i:
-            return HDFF::videoMode576i50;
+            return HDFF_VIDEO_MODE_576I50;
     }
 }
 
@@ -233,27 +233,27 @@ void cHdffSetupPage::Store(void)
         {
             mHdffCmdIf->CmdHdmiSetVideoMode(mNewHdffSetup.GetVideoMode());
         }
-        HDFF::tVideoFormat videoFormat;
-        HDFF::tHdmiConfig hdmiConfig;
+        HdffVideoFormat_t videoFormat;
+        HdffHdmiConfig_t hdmiConfig;
 
         videoFormat.AutomaticEnabled = true;
         videoFormat.AfdEnabled = true;
-        videoFormat.TvFormat = (HDFF::eTvFormat) mNewHdffSetup.TvFormat;
-        videoFormat.VideoConversion = (HDFF::eVideoConversion) mNewHdffSetup.VideoConversion;
+        videoFormat.TvFormat = (HdffTvFormat_t) mNewHdffSetup.TvFormat;
+        videoFormat.VideoConversion = (HdffVideoConversion_t) mNewHdffSetup.VideoConversion;
         mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
 
         mHdffCmdIf->CmdAvSetAudioDelay(mNewHdffSetup.AudioDelay);
-        mHdffCmdIf->CmdAvSetAudioDownmix((HDFF::eDownmixMode) mNewHdffSetup.AudioDownmix);
+        mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) mNewHdffSetup.AudioDownmix);
 
-        mHdffCmdIf->CmdMuxSetVideoOut((HDFF::eVideoOut) mNewHdffSetup.AnalogueVideo);
+        mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) mNewHdffSetup.AnalogueVideo);
 
         hdmiConfig.TransmitAudio = true;
         hdmiConfig.ForceDviMode = false;
         hdmiConfig.CecEnabled = mNewHdffSetup.CecEnabled;
-        hdmiConfig.VideoModeAdaption = (HDFF::eVideoModeAdaption) mNewHdffSetup.VideoModeAdaption;
+        hdmiConfig.VideoModeAdaption = (HdffVideoModeAdaption_t) mNewHdffSetup.VideoModeAdaption;
         mHdffCmdIf->CmdHdmiConfigure(&hdmiConfig);
 
-        mHdffCmdIf->CmdRemoteSetProtocol((HDFF::eRemoteProtocol) mNewHdffSetup.RemoteProtocol);
+        mHdffCmdIf->CmdRemoteSetProtocol((HdffRemoteProtocol_t) mNewHdffSetup.RemoteProtocol);
         mHdffCmdIf->CmdRemoteSetAddressFilter(mNewHdffSetup.RemoteAddress >= 0, mNewHdffSetup.RemoteAddress);
     }
 

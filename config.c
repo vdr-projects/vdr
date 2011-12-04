@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.15 2011/08/20 09:12:05 kls Exp $
+ * $Id: config.c 2.16 2011/12/03 15:21:30 kls Exp $
  */
 
 #include "config.h"
@@ -61,6 +61,69 @@ bool cSVDRPhost::IsLocalhost(void)
 bool cSVDRPhost::Accepts(in_addr_t Address)
 {
   return (Address & mask) == (addr.s_addr & mask);
+}
+
+// --- cSatCableNumbers ------------------------------------------------------
+
+cSatCableNumbers::cSatCableNumbers(int Size, const char *s)
+{
+  size = Size;
+  array = MALLOC(int, size);
+  memset(array, size * sizeof(int), 0);
+  FromString(s);
+}
+
+cSatCableNumbers::~cSatCableNumbers()
+{
+  free(array);
+}
+
+bool cSatCableNumbers::FromString(const char *s)
+{
+  char *t;
+  int i = 0;
+  const char *p = s;
+  while (p && *p) {
+        int n = strtol(p, &t, 10);
+        if (t != p) {
+           if (i < size)
+              array[i++] = n;
+           else {
+              esyslog("ERROR: too many sat cable numbers in '%s'", s);
+              return false;
+              }
+           }
+        else {
+           esyslog("ERROR: invalid sat cable number in '%s'", s);
+           return false;
+           }
+        p = skipspace(t);
+        }
+  for ( ; i < size; i++)
+      array[i] = 0;
+  return true;
+}
+
+cString cSatCableNumbers::ToString(void)
+{
+  cString s("");
+  for (int i = 0; i < size; i++) {
+      s = cString::sprintf("%s%d ", *s, array[i]);
+      }
+  return s;
+}
+
+int cSatCableNumbers::FirstDeviceIndex(int DeviceIndex) const
+{
+  if (0 <= DeviceIndex && DeviceIndex < size) {
+     if (int CableNr = array[DeviceIndex]) {
+        for (int i = 0; i < size; i++) {
+            if (i < DeviceIndex && array[i] == CableNr)
+               return i;
+            }
+        }
+     }
+  return -1;
 }
 
 // --- cNestedItem -----------------------------------------------------------
@@ -396,6 +459,7 @@ cSetup::cSetup(void)
   CurrentVolume = MAXVOLUME;
   CurrentDolby = 0;
   InitialChannel = "";
+  DeviceBondings = "";
   InitialVolume = -1;
   ChannelsWrap = 0;
   EmergencyExit = 1;
@@ -405,6 +469,7 @@ cSetup& cSetup::operator= (const cSetup &s)
 {
   memcpy(&__BeginData__, &s.__BeginData__, (char *)&s.__EndData__ - (char *)&s.__BeginData__);
   InitialChannel = s.InitialChannel;
+  DeviceBondings = s.DeviceBondings;
   return *this;
 }
 
@@ -589,6 +654,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = Value;
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
+  else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
   else
@@ -685,6 +751,7 @@ bool cSetup::Save(void)
   Store("CurrentDolby",       CurrentDolby);
   Store("InitialChannel",     InitialChannel);
   Store("InitialVolume",      InitialVolume);
+  Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);
   Store("EmergencyExit",      EmergencyExit);
 

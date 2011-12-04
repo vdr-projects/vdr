@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.16 2011/08/26 12:55:45 kls Exp $
+ * $Id: dvbdevice.h 2.18 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -122,10 +122,40 @@ private:
   int numProvidedSystems;
   fe_delivery_system frontendType;
   int fd_dvr, fd_ca;
+  static cMutex bondMutex;
+  cDvbDevice *bondedDevice;
+  mutable bool needsDetachBondedReceivers;
 public:
   cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
   virtual bool Ready(void);
+  static bool BondDevices(const char *Bondings);
+       ///< Bonds the devices as defined in the given Bondings string.
+       ///< A bonding is a sequence of device numbers (starting at 1),
+       ///< separated by '+' characters. Several bondings are separated by
+       ///< commas, as in "1+2,3+4+5".
+       ///< Returns false if an error occurred.
+  static void UnBondDevices(void);
+       ///< Unbonds all devices.
+  bool Bond(cDvbDevice *Device);
+       ///< Bonds this device with the given Device, making both of them use
+       ///< the same satellite cable and LNB. Only DVB-S(2) devices can be
+       ///< bonded. When this function is called, the calling device must
+       ///< not be bonded to any other device. The given Device, however,
+       ///< may already be bonded to an other device. That way several devices
+       ///< can be bonded together.
+       ///< Returns true if the bonding was successful.
+  void UnBond(void);
+       ///< Removes this device from any bonding it might have with other
+       ///< devices. If this device is not bonded with any other device,
+       ///< nothing happens.
+  bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
+       ///< Returns true if this device is either not bonded to any other
+       ///< device, or the given Channel is on the same satellite, polarization
+       ///< and band as those the bonded devices are tuned to (if any).
+       ///< If ConsiderOccupied is true, any bonded devices that are currently
+       ///< occupied but not otherwise receiving will cause this function to
+       ///< return false.
 
 // Common Interface facilities:
 
@@ -145,7 +175,8 @@ public:
   virtual int SignalStrength(void) const;
   virtual int SignalQuality(void) const;
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
-  virtual bool IsTunedToTransponder(const cChannel *Channel);
+  virtual bool IsTunedToTransponder(const cChannel *Channel) const;
+  virtual bool MaySwitchTransponder(const cChannel *Channel) const;
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 public:
@@ -172,7 +203,7 @@ public:
 protected:
   static int setTransferModeForDolbyDigital;
 public:
-  static void SetTransferModeForDolbyDigital(int Mode); // needs to be here for backwards compatibilty
+  static void SetTransferModeForDolbyDigital(int Mode); // needs to be here for backwards compatibility
          ///< Controls how the DVB device handles Transfer Mode when replaying
          ///< Dolby Digital audio.
          ///< 0 = don't set "audio bypass" in driver/firmware, don't force Transfer Mode
@@ -187,6 +218,7 @@ protected:
   virtual bool OpenDvr(void);
   virtual void CloseDvr(void);
   virtual bool GetTSPacket(uchar *&Data);
+  virtual void DetachAllReceivers(void);
   };
 
 // A plugin that implements a DVB device derived from cDvbDevice needs to create

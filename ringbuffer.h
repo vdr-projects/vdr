@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 2.2 2009/11/08 11:52:25 kls Exp $
+ * $Id: ringbuffer.h 2.3 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -85,7 +85,7 @@ public:
     ///< \return Returns the number of bytes actually read and stored, or
     ///< an error value from the actual read() call.
   int Read(cUnbufferedFile *File, int Max = 0);
-    ///< Like Read(int FileHandle, int Max), but reads fom a cUnbufferedFile).
+    ///< Like Read(int FileHandle, int Max), but reads from a cUnbufferedFile).
   int Put(const uchar *Data, int Count);
     ///< Puts at most Count bytes of Data into the ring buffer.
     ///< \return Returns the number of bytes actually stored.

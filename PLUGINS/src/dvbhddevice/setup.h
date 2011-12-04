@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.h 1.9 2011/08/27 09:36:02 kls Exp $
+ * $Id: setup.h 1.10 2011/12/04 15:32:13 kls Exp $
  */
 
 #ifndef _HDFF_SETUP_H_
@@ -17,7 +17,7 @@ struct cHdffSetup
     cHdffSetup(void);
     bool SetupParse(const char * Name, const char * Value);
     void GetOsdSize(int &Width, int &Height, double &PixelAspect);
-    HDFF::eHdmiVideoMode GetVideoMode(void);
+    HdffVideoMode_t GetVideoMode(void);
 
     int Resolution;
     int VideoModeAdaption;

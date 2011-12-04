@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.23 2011/08/15 12:42:39 kls Exp $
+ * $Id: vdr.c 2.27 2011/12/03 15:35:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -116,7 +116,7 @@ static bool SetUser(const char *UserName, bool UserDump)//XXX name?
 static bool DropCaps(void)
 {
   // drop all capabilities except selected ones
-  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time=ep");
+  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time,cap_net_raw=ep");
   if (!caps) {
      fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
      return false;
@@ -598,6 +598,7 @@ int main(int argc, char *argv[])
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true);
   Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC);
+  Scrs.Load(AddDirectory(ConfigDirectory, "scr.conf"), true);
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true);
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
@@ -638,6 +639,7 @@ int main(int argc, char *argv[])
   // DVB interfaces:
 
   cDvbDevice::Initialize();
+  cDvbDevice::BondDevices(Setup.DeviceBondings);
 
   // Initialize plugins:
 
@@ -859,7 +861,6 @@ int main(int argc, char *argv[])
            static time_t LastTimerCheck = 0;
            if (Now - LastTimerCheck > TIMERCHECKDELTA) { // don't do this too often
               InhibitEpgScan = false;
-              static time_t DeviceUsed[MAXDEVICES] = { 0 };
               for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
                   bool InVpsMargin = false;
                   bool NeedsTransponder = false;
@@ -899,19 +900,17 @@ int main(int argc, char *argv[])
                                Device = d;
                                break;
                                }
-                            bool timeout = Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT; // only check other devices if they have been left alone for a while
-                            if (d->MaySwitchTransponder()) {
+                            if (d->MaySwitchTransponder(Timer->Channel())) {
                                DeviceAvailable = true; // avoids using the actual device below
-                               if (timeout)
-                                  Device = d; // only check other devices if they have been left alone for a while
+                               Device = d;
                                }
-                            else if (timeout && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
+                            else if (!d->Occupied() && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
                                Device = d; // use this one only if no other with less impact can be found
                             }
                          }
                      if (!Device && InVpsMargin && !DeviceAvailable) {
                         cDevice *d = cDevice::ActualDevice();
-                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && Now - DeviceUsed[d->DeviceNumber()] > TIMERDEVICETIMEOUT)
+                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && !d->Occupied())
                            Device = d; // use the actual device as a last resort
                         }
                      // Switch the device to the transponder:
@@ -920,8 +919,8 @@ int main(int argc, char *argv[])
                            if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                               cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                            dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
-                           Device->SwitchChannel(Timer->Channel(), false);
-                           DeviceUsed[Device->DeviceNumber()] = Now;
+                           if (Device->SwitchChannel(Timer->Channel(), false))
+                              Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }
                         if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
                            // the previous SwitchChannel() has switched away the current live channel

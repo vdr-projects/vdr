@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.23 2011/08/21 14:06:50 kls Exp $
+.\" $Id: vdr.5 2.26 2011/09/25 13:51:34 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -450,7 +450,8 @@ Note that there should be a last entry with the value \fB99999\fR for each satel
 which covers the upper frequency range.
 
 The third parameter defines the polarization to which this entry applies. It can
-be either \fBH\fR for horizontal or \fBV\fR for vertical.
+be either \fBH\fR for horizontal, \fBV\fR for vertical, \fBL\fR for circular left
+or \fBR\fR for circular right.
 
 The fourth parameter specifies the "local oscillator frequency" (lof) of the LNB
 to use for the given frequency range. This number will be subtracted from the
@@ -467,6 +468,7 @@ l l.
 \fBV\fR@voltage high (18V)
 \fBA\fR@mini A
 \fBB\fR@mini B
+\fBSn\fR@Satellite channel routing code sequence for bank n follows
 \fBWnn\fR@wait nn milliseconds (nn may be any positive integer number)
 \fB[xx ...]\fR@hex code sequence (max. 6)
 .TE
@@ -484,6 +486,46 @@ to receive the satellites following thereafter. In this case, only the devices
 1, 2 and 4 would be able to receive any satellites following this line and up
 to the next such line, or the end of the file. Devices may be listed more than
 once.
+.SS SATELLITE CHANNEL ROUTING (SCR)
+The file \fIscr.conf\fR contains the channel definitions of the SCR device in use.
+The format is
+
+channel frequency [pin]
+
+where channel is the SCR device's channel index (0-7), frequency is the user band
+frequency of the given channel, and pin is an optional pin number (0-255). The
+actual values are device specific and can be found in the SCR device's manual.
+
+Examples:
+
+0 1284
+.br
+1 1400
+.br
+2 1516
+.br
+3 1632
+.br
+4 1748
+.br
+5 1864
+.br
+6 1980
+.br
+7 2096
+
+By default it is assumed that the SCR configurations apply to all devices, and
+each device will pick one. If you have several SCR sat cables connected to one
+VDR machine, or if you want to explicitly assign the SCR channels to your devices,
+lines of the form
+
+\fB1 2 4:\fR
+
+may be inserted in the \fIscr.conf\fR file, defining the devices that are allowed
+to use the SCR channels thereafter. In this case, only the devices
+1, 2 and 4 would be allowed to use the SCR channels following this line and up
+to the next such line, or the end of the file. If a device is listed more than
+once, only its first appearance counts.
 .SS REMOTE CONTROL KEYS
 The file \fIremote.conf\fR contains the key assignments for all remote control
 units. Each line consists of one key assignment in the following format:

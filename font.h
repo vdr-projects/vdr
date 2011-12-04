@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.5 2011/01/14 16:22:03 kls Exp $
+ * $Id: font.h 2.6 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -51,7 +51,7 @@ public:
   virtual int Height(void) const = 0;
           ///< Returns the height of this font in pixel (all characters have the same height).
   int Height(const char *s) const { return Height(); }
-          ///< Returns the height of this font in pixel (obsolete, just for backwards compatibilty).
+          ///< Returns the height of this font in pixel (obsolete, just for backwards compatibility).
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const = 0;
           ///< Draws the given text into the Bitmap at position (x, y) with the given colors.
           ///< The text will not exceed the given Width (if > 0), and will end with a complete character.

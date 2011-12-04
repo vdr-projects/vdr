@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.14 2011/08/15 09:22:50 kls Exp $
+ * $Id: osd.h 2.15 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -496,7 +496,7 @@ public:
        ///< In order to allow devices that can handle only a limited number of layers,
        ///< the Layer parameter must be less than 8 (MAXPIXMAPLAYERS).
        ///< ViewPort defines the rectangle in which this pixmap will be rendered on
-       ///< the OSD. If no DrawPort ist given, it defaults to the same size as the
+       ///< the OSD. If no DrawPort is given, it defaults to the same size as the
        ///< ViewPort, with its upper left corner set to (0, 0).
        ///< All drawing operations will be executed relative to the origin of the
        ///< DrawPort rectangle, and will be clipped to the size of this rectangle.
@@ -566,7 +566,7 @@ public:
        ///< Sets the pixmap's draw port to the given Point.
        ///< Only the origin point of the draw port can be modified, its size is fixed.
        ///< By default, setting a new draw port point results in marking the relevant
-       ///< part of the view port as "drity". If Dirty is set to false, the view port
+       ///< part of the view port as "dirty". If Dirty is set to false, the view port
        ///< will not be marked as dirty. This is mainly used to implement the Pan()
        ///< function.
        ///< If a derived class reimplements this function, it needs to call the base
@@ -701,7 +701,7 @@ public:
 /// reimplement all necessary cPixmap functions and do the rendering
 /// itself ("high level mode").
 /// If an OSD provides a "high level mode", it shall also provide a "raw mode"
-/// in order to verify proper operation. The plugin that impements the OSD
+/// in order to verify proper operation. The plugin that implements the OSD
 /// shall offer a configuration switch in its setup.
 
 class cOsd {

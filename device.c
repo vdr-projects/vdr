@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.42 2011/08/26 12:56:00 kls Exp $
+ * $Id: device.c 2.44 2011/10/16 14:36:43 kls Exp $
  */
 
 #include "device.h"
@@ -94,6 +94,8 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
   startScrambleDetection = 0;
+
+  occupiedTimeout = 0;
 
   player = NULL;
   isPlayingVideo = false;
@@ -638,14 +640,14 @@ const cChannel *cDevice::GetCurrentlyTunedTransponder(void) const
   return NULL;
 }
 
-bool cDevice::IsTunedToTransponder(const cChannel *Channel)
+bool cDevice::IsTunedToTransponder(const cChannel *Channel) const
 {
   return false;
 }
 
-bool cDevice::MaySwitchTransponder(void)
+bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 {
-  return !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
+  return time(NULL) > occupiedTimeout && !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -784,6 +786,18 @@ void cDevice::ForceTransferMode(void)
      if (Channel)
         SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
      }
+}
+
+int cDevice::Occupied(void) const
+{
+  int Seconds = occupiedTimeout - time(NULL);
+  return Seconds > 0 ? Seconds : 0;
+}
+
+void cDevice::SetOccupied(int Seconds)
+{
+  if (Seconds >= 0)
+     occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
 }
 
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
@@ -1474,6 +1488,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 int cDevice::Priority(void) const
 {
   int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
          priority = max(receiver[i]->priority, priority);
@@ -1488,6 +1503,7 @@ bool cDevice::Ready(void)
 
 bool cDevice::Receiving(bool CheckAny) const
 {
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] && (CheckAny || receiver[i]->priority >= 0)) // cReceiver with priority < 0 doesn't count
          return true;

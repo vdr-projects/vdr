@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.17 2011/08/15 13:35:23 kls Exp $
+ * $Id: tools.c 2.19 2011/12/04 14:52:38 kls Exp $
  */
 
 #include "tools.h"
@@ -1196,6 +1196,47 @@ const char *cBase64Encoder::NextLine(void)
   return NULL;
 }
 
+// --- cBitStream ------------------------------------------------------------
+
+int cBitStream::GetBit(void)
+{
+  if (index >= length)
+     return 1;
+  int r = (data[index >> 3] >> (7 - (index & 7))) & 1;
+  ++index;
+  return r;
+}
+
+uint32_t cBitStream::GetBits(int n)
+{
+  uint32_t r = 0;
+  while (n--)
+        r |= GetBit() << n;
+  return r;
+}
+
+void cBitStream::ByteAlign(void)
+{
+  int n = index % 8;
+  if (n > 0)
+     SkipBits(8 - n);
+}
+
+void cBitStream::WordAlign(void)
+{
+  int n = index % 16;
+  if (n > 0)
+     SkipBits(16 - n);
+}
+
+bool cBitStream::SetLength(int Length)
+{
+  if (Length > length)
+     return false;
+  length = Length;
+  return true;
+}
+
 // --- cReadLine -------------------------------------------------------------
 
 cReadLine::cReadLine(void)
@@ -1748,7 +1789,7 @@ bool cLockFile::Lock(int WaitSeconds)
               break;
               }
            if (WaitSeconds)
-              sleep(1);
+              cCondWait::SleepMs(1000);
            }
         } while (f < 0 && time(NULL) < Timeout);
      }

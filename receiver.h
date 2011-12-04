@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.1 2010/01/30 10:25:19 kls Exp $
+ * $Id: receiver.h 2.2 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -56,7 +56,7 @@ public:
   bool AddPid(int Pid);
                ///< Adds the given Pid to the list of PIDs of this receiver.
   bool AddPids(const int *Pids);
-               ///< Adds the given izero terminated list of Pids to the list of PIDs of this
+               ///< Adds the given zero terminated list of Pids to the list of PIDs of this
                ///< receiver.
   bool AddPids(int Pid1, int Pid2, int Pid3 = 0, int Pid4 = 0, int Pid5 = 0, int Pid6 = 0, int Pid7 = 0, int Pid8 = 0, int Pid9 = 0);
                ///< Adds the given Pids to the list of PIDs of this receiver.

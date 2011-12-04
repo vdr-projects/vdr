@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.43 2011/08/26 12:57:34 kls Exp $
+ * $Id: dvbdevice.c 2.48 2011/12/03 15:24:27 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -31,6 +31,8 @@
 #define DVBT_LOCK_TIMEOUT  2000 //ms
 #define ATSC_TUNE_TIMEOUT  9000 //ms
 #define ATSC_LOCK_TIMEOUT  2000 //ms
+
+#define SCR_RANDOM_TIMEOUT  500 // ms (add random value up to this when tuning SCR device to avoid lockups)
 
 // --- DVB Parameter Maps ----------------------------------------------------
 
@@ -257,8 +259,9 @@ bool cDvbTransponderParameters::Parse(const char *s)
 
 class cDvbTuner : public cThread {
 private:
+  static cMutex bondMutex;
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
-  int device;
+  const cDvbDevice *device;
   int fd_frontend;
   int adapter, frontend;
   uint32_t subsystemId;
@@ -267,28 +270,41 @@ private:
   time_t lastTimeoutReport;
   fe_delivery_system frontendType;
   cChannel channel;
-  const char *diseqcCommands;
+  const cDiseqc *lastDiseqc;
+  const cScr *scr;
   eTunerStatus tunerStatus;
   cMutex mutex;
   cCondVar locked;
   cCondVar newSet;
+  cDvbTuner *bondedTuner;
+  bool bondedMaster;
+  bool bondedMasterFailed;
+  cString GetBondingParams(const cChannel *Channel = NULL) const;
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
+  void ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency);
+  void ResetToneAndVoltage(void);
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
+  cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
   virtual ~cDvbTuner();
+  bool Bond(cDvbTuner *Tuner);
+  void UnBond(void);
+  bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
+  cDvbTuner *GetBondedMaster(void);
   const cChannel *GetTransponder(void) const { return &channel; }
   uint32_t SubsystemId(void) const { return subsystemId; }
   bool IsTunedTo(const cChannel *Channel) const;
-  void Set(const cChannel *Channel);
+  void SetChannel(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
   };
 
-cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
+cMutex cDvbTuner::bondMutex;
+
+cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
 {
   device = Device;
   fd_frontend = Fd_Frontend;
@@ -299,10 +315,14 @@ cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_
   tuneTimeout = 0;
   lockTimeout = 0;
   lastTimeoutReport = 0;
-  diseqcCommands = NULL;
+  lastDiseqc = NULL;
+  scr = NULL;
   tunerStatus = tsIdle;
+  bondedTuner = NULL;
+  bondedMaster = false;
+  bondedMasterFailed = false;
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2)
-     CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
+     ResetToneAndVoltage(); // must explicitly turn on LNB power
   SetDescription("tuner on frontend %d/%d", adapter, frontend);
   Start();
 }
@@ -313,6 +333,116 @@ cDvbTuner::~cDvbTuner()
   newSet.Broadcast();
   locked.Broadcast();
   Cancel(3);
+  UnBond();
+  /* looks like this irritates the SCR switch, so let's leave it out for now
+  if (lastDiseqc && lastDiseqc->IsScr()) {
+     unsigned int Frequency = 0;
+     ExecuteDiseqc(lastDiseqc, &Frequency);
+     }
+  */
+}
+
+bool cDvbTuner::Bond(cDvbTuner *Tuner)
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (!bondedTuner) {
+     if ((frontendType == SYS_DVBS || frontendType == SYS_DVBS2) && (Tuner->frontendType == SYS_DVBS || Tuner->frontendType == SYS_DVBS2)) {
+        ResetToneAndVoltage();
+        bondedMaster = false; // makes sure we don't disturb an existing master
+        bondedTuner = Tuner->bondedTuner ? Tuner->bondedTuner : Tuner;
+        Tuner->bondedTuner = this;
+        dsyslog("tuner %d/%d bonded with tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend);
+        return true;
+        }
+     else
+        esyslog("ERROR: can't bond tuner %d/%d with tuner %d/%d (only DVB-S(2) tuners can be bonded)", adapter, frontend, Tuner->adapter, Tuner->frontend);
+     }
+  else
+     esyslog("ERROR: tuner %d/%d already bonded with tuner %d/%d, can't bond with tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend, Tuner->adapter, Tuner->frontend);
+  return false;
+}
+
+void cDvbTuner::UnBond(void)
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (cDvbTuner *t = bondedTuner) {
+     dsyslog("tuner %d/%d unbonded from tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend);
+     while (t->bondedTuner != this)
+           t = t->bondedTuner;
+     if (t == bondedTuner)
+        t->bondedTuner = NULL;
+     else
+        t->bondedTuner = bondedTuner;
+     bondedMaster = false; // another one will automatically become master whenever necessary
+     bondedTuner = NULL;
+     }
+}
+
+cString cDvbTuner::GetBondingParams(const cChannel *Channel) const
+{
+  if (!Channel)
+     Channel = &channel;
+  cDvbTransponderParameters dtp(Channel->Parameters());
+  if (Setup.DiSEqC) {
+     if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL))
+        return diseqc->Commands();
+     }
+  else {
+     bool ToneOff = Channel->Frequency() < (unsigned int)Setup.LnbSLOF;
+     bool VoltOff = dtp.Polarization() == 'V' || dtp.Polarization() == 'R';
+     return cString::sprintf("%c %c", ToneOff ? 't' : 'T', VoltOff ? 'v' : 'V');
+     }
+  return "";
+}
+
+bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (cDvbTuner *t = bondedTuner) {
+     cString BondingParams = GetBondingParams(Channel);
+     do {
+        if (t->device->Receiving() || t->tunerStatus != tsIdle && (t->device == cDevice::ActualDevice() || ConsiderOccupied && t->device->Occupied())) {
+           if (strcmp(BondingParams, t->GetBondingParams()) != 0)
+              return false;
+           }
+        t = t->bondedTuner;
+        } while (t != bondedTuner);
+     }
+  return true;
+}
+
+cDvbTuner *cDvbTuner::GetBondedMaster(void)
+{
+  if (!bondedTuner)
+     return this; // an unbonded tuner is always "master"
+  cMutexLock MutexLock(&bondMutex);
+  if (bondedMaster) {
+     if (!bondedMasterFailed)
+        return this;
+     else
+        bondedMaster = false;
+     }
+  // This tuner is bonded, but it's not the master, so let's see if there is a master at all:
+  if (cDvbTuner *t = bondedTuner) {
+     while (t != this) {
+           if (t->bondedMaster)
+              return t;
+           t = t->bondedTuner;
+           }
+     }
+  // None of the other bonded tuners is master, so make this one the master:
+  cDvbTuner *t = this;
+  if (bondedMasterFailed) {
+     // This one has failed, so switch to the next one:
+     t = bondedTuner;
+     t->bondedMasterFailed = false;
+     cMutexLock MutexLock(&t->mutex);
+     t->channel = channel;
+     t->tunerStatus = tsSet;
+     }
+  t->bondedMaster = true;
+  dsyslog("tuner %d/%d is now bonded master", t->adapter, t->frontend);
+  return t;
 }
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
@@ -325,14 +455,34 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
   return strcmp(channel.Parameters(), Channel->Parameters()) == 0;
 }
 
-void cDvbTuner::Set(const cChannel *Channel)
+void cDvbTuner::SetChannel(const cChannel *Channel)
 {
-  cMutexLock MutexLock(&mutex);
-  if (!IsTunedTo(Channel))
-     tunerStatus = tsSet;
-  channel = *Channel;
-  lastTimeoutReport = 0;
-  newSet.Broadcast();
+  if (Channel) {
+     if (bondedTuner) {
+        cMutexLock MutexLock(&bondMutex);
+        cDvbTuner *BondedMaster = GetBondedMaster();
+        if (BondedMaster == this) {
+           if (strcmp(GetBondingParams(Channel), GetBondingParams()) != 0) {
+              // switching to a completely different band, so set all others to idle:
+              for (cDvbTuner *t = bondedTuner; t && t != this; t = t->bondedTuner)
+                  t->SetChannel(NULL);
+              }
+           }
+        else if (!BondedMaster->device->Receiving())
+           BondedMaster->SetChannel(Channel);
+        }
+     cMutexLock MutexLock(&mutex);
+     if (!IsTunedTo(Channel))
+        tunerStatus = tsSet;
+     channel = *Channel;
+     lastTimeoutReport = 0;
+     newSet.Broadcast();
+     }
+  else {
+     cMutexLock MutexLock(&mutex);
+     tunerStatus = tsIdle;
+     ResetToneAndVoltage();
+     }
 }
 
 bool cDvbTuner::Locked(int TimeoutMs)
@@ -482,6 +632,36 @@ static unsigned int FrequencyToHz(unsigned int f)
   return f;
 }
 
+void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
+{
+  struct dvb_diseqc_master_cmd cmd;
+  const char *CurrentAction = NULL;
+  for (;;) {
+      cmd.msg_len = sizeof(cmd.msg);
+      cDiseqc::eDiseqcActions da = Diseqc->Execute(&CurrentAction, cmd.msg, &cmd.msg_len, scr, Frequency);
+      if (da == cDiseqc::daNone)
+         break;
+      switch (da) {
+        case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
+        case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
+        case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
+        case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
+        case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
+        case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
+        case cDiseqc::daCodes:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd)); break;
+        default: esyslog("ERROR: unknown diseqc command %d", da);
+        }
+      }
+  if (scr)
+     ResetToneAndVoltage(); // makes sure we don't block the bus!
+}
+
+void cDvbTuner::ResetToneAndVoltage(void)
+{
+  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13));
+  CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
+}
+
 bool cDvbTuner::SetFrontend(void)
 {
 #define MAXFRONTENDCMDS 16
@@ -509,36 +689,18 @@ bool cDvbTuner::SetFrontend(void)
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        const cDiseqc *diseqc = Diseqcs.Get(device, channel.Source(), channel.Frequency(), dtp.Polarization());
-        if (diseqc) {
-           if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
-              cDiseqc::eDiseqcActions da;
-              for (const char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
-                  switch (da) {
-                    case cDiseqc::daNone:      break;
-                    case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
-                    case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
-                    case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
-                    case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
-                    case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
-                    case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
-                    case cDiseqc::daCodes: {
-                         int n = 0;
-                         const uchar *codes = diseqc->Codes(n);
-                         if (codes) {
-                            struct dvb_diseqc_master_cmd cmd;
-                            cmd.msg_len = min(n, int(sizeof(cmd.msg)));
-                            memcpy(cmd.msg, codes, cmd.msg_len);
-                            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
-                            }
-                         }
-                         break;
-                    default: esyslog("ERROR: unknown diseqc command %d", da);
-                    }
-                  }
-              diseqcCommands = diseqc->Commands();
-              }
+        if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
+           if (diseqc != lastDiseqc || diseqc->IsScr()) {
+              if (GetBondedMaster() == this) {
+                 ExecuteDiseqc(diseqc, &frequency);
+                 if (frequency == 0)
+                    return false;
+                 }
+              else
+                 ResetToneAndVoltage();
+              lastDiseqc = diseqc;
+              }
            }
         else {
            esyslog("ERROR: no DiSEqC parameters found for channel %d", channel.Number());
@@ -555,7 +717,11 @@ bool cDvbTuner::SetFrontend(void)
            frequency -= Setup.LnbFrequHi;
            tone = SEC_TONE_ON;
            }
-        int volt = (dtp.Polarization() == 'v' || dtp.Polarization() == 'V' || dtp.Polarization() == 'r' || dtp.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+        int volt = (dtp.Polarization() == 'V' || dtp.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+        if (GetBondedMaster() != this) {
+           tone = SEC_TONE_OFF;
+           volt = SEC_VOLTAGE_13;
+           }
         CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
         CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
         }
@@ -652,22 +818,25 @@ void cDvbTuner::Action(void)
                break;
           case tsSet:
                tunerStatus = SetFrontend() ? tsTuned : tsIdle;
-               Timer.Set(tuneTimeout);
+               Timer.Set(tuneTimeout + (scr ? rand() % SCR_RANDOM_TIMEOUT : 0));
                continue;
           case tsTuned:
                if (Timer.TimedOut()) {
                   tunerStatus = tsSet;
-                  diseqcCommands = NULL;
+                  lastDiseqc = NULL;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
                      isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
+                  cMutexLock MutexLock(&bondMutex);
+                  if (bondedTuner && bondedMaster)
+                     bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
           case tsLocked:
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
-                  diseqcCommands = NULL;
+                  lastDiseqc = NULL;
                   isyslog("frontend %d/%d was reinitialized", adapter, frontend);
                   lastTimeoutReport = 0;
                   continue;
@@ -757,6 +926,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 // --- cDvbDevice ------------------------------------------------------------
 
 int cDvbDevice::setTransferModeForDolbyDigital = 1;
+cMutex cDvbDevice::bondMutex;
 
 const char *DeliverySystems[] = {
   "UNDEFINED",
@@ -786,6 +956,8 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   dvbTuner = NULL;
   frontendType = SYS_UNDEFINED;
   numProvidedSystems = 0;
+  bondedDevice = NULL;
+  needsDetachBondedReceivers = false;
 
   // Devices that are present on all card types:
 
@@ -835,7 +1007,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
         else
            p = (char *)"unknown modulations";
         isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], p, frontendInfo.name);
-        dvbTuner = new cDvbTuner(CardIndex() + 1, fd_frontend, adapter, frontend, frontendType);
+        dvbTuner = new cDvbTuner(this, fd_frontend, adapter, frontend, frontendType);
         }
      }
   else
@@ -849,6 +1021,7 @@ cDvbDevice::~cDvbDevice()
   StopSectionHandler();
   delete dvbTuner;
   delete ciAdapter;
+  UnBond();
   // We're not explicitly closing any device files here, since this sometimes
   // caused segfaults. Besides, the program is about to terminate anyway...
 }
@@ -937,6 +1110,104 @@ bool cDvbDevice::Ready(void)
 {
   if (ciAdapter)
      return ciAdapter->Ready();
+  return true;
+}
+
+bool cDvbDevice::BondDevices(const char *Bondings)
+{
+  UnBondDevices();
+  if (Bondings) {
+     cSatCableNumbers SatCableNumbers(MAXDEVICES, Bondings);
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         int d = SatCableNumbers.FirstDeviceIndex(i);
+         if (d >= 0) {
+            int ErrorDevice = 0;
+            if (cDevice *Device1 = cDevice::GetDevice(i)) {
+               if (cDevice *Device2 = cDevice::GetDevice(d)) {
+                  if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
+                     if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
+                        if (!DvbDevice2->Bond(DvbDevice1))
+                           return false; // Bond() has already logged the error
+                        }
+                     else
+                        ErrorDevice = d + 1;
+                     }
+                  else
+                     ErrorDevice = i + 1;
+                  if (ErrorDevice) {
+                     esyslog("ERROR: device '%d' in device bondings '%s' is not a cDvbDevice", ErrorDevice, Bondings);
+                     return false;
+                     }
+                  }
+               else
+                  ErrorDevice = d + 1;
+               }
+            else
+               ErrorDevice = i + 1;
+            if (ErrorDevice) {
+               esyslog("ERROR: unknown device '%d' in device bondings '%s'", ErrorDevice, Bondings);
+               return false;
+               }
+            }
+         }
+     }
+  return true;
+}
+
+void cDvbDevice::UnBondDevices(void)
+{
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      if (cDvbDevice *d = dynamic_cast<cDvbDevice *>(cDevice::GetDevice(i)))
+         d->UnBond();
+      }
+}
+
+bool cDvbDevice::Bond(cDvbDevice *Device)
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (!bondedDevice) {
+     if (Device != this) {
+        if ((frontendType == SYS_DVBS || frontendType == SYS_DVBS2) && (Device->frontendType == SYS_DVBS || Device->frontendType == SYS_DVBS2)) {
+           if (dvbTuner && Device->dvbTuner && dvbTuner->Bond(Device->dvbTuner)) {
+              bondedDevice = Device->bondedDevice ? Device->bondedDevice : Device;
+              Device->bondedDevice = this;
+              dsyslog("device %d bonded with device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1);
+              return true;
+              }
+           }
+        else
+           esyslog("ERROR: can't bond device %d with device %d (only DVB-S(2) devices can be bonded)", CardIndex() + 1, Device->CardIndex() + 1);
+        }
+     else
+        esyslog("ERROR: can't bond device %d with itself", CardIndex() + 1);
+     }
+  else
+     esyslog("ERROR: device %d already bonded with device %d, can't bond with device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1, Device->CardIndex() + 1);
+  return false;
+}
+
+void cDvbDevice::UnBond(void)
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (cDvbDevice *d = bondedDevice) {
+     if (dvbTuner)
+        dvbTuner->UnBond();
+     dsyslog("device %d unbonded from device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1);
+     while (d->bondedDevice != this)
+           d = d->bondedDevice;
+     if (d == bondedDevice)
+        d->bondedDevice = NULL;
+     else
+        d->bondedDevice = bondedDevice;
+     bondedDevice = NULL;
+     }
+}
+
+bool cDvbDevice::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
+{
+  cMutexLock MutexLock(&bondMutex);
+  if (bondedDevice)
+     return dvbTuner && dvbTuner->BondingOk(Channel, ConsiderOccupied);
   return true;
 }
 
@@ -1042,7 +1313,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      dtp.Modulation() == PSK_8    && !(frontendInfo.caps & FE_CAN_TURBO_FEC) && dtp.System() == SYS_DVBS) // "turbo fec" is a non standard FEC used by North American broadcasters - this is a best guess to determine this condition
      return false; // requires modulation system which frontend doesn't provide
   if (!cSource::IsSat(Channel->Source()) ||
-     !Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization()))
+     (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL)))
      return DeviceHooksProvidesTransponder(Channel);
   return false;
 }
@@ -1052,28 +1323,44 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
+  needsDetachBondedReceivers = false;
 
   if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
-     if (Priority >= 0 && Receiving(true)) {
-        if (dvbTuner->IsTunedTo(Channel)) {
-           if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
-              if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
-                 if (CamSlot()->CanDecrypt(Channel))
+     if (Priority >= 0) {
+        if (Receiving(true)) {
+           if (dvbTuner->IsTunedTo(Channel)) {
+              if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
+                 if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
+                    if (CamSlot()->CanDecrypt(Channel))
+                       result = true;
+                    else
+                       needsDetachReceivers = true;
+                    }
+                 else if (!IsPrimaryDevice())
                     result = true;
                  else
-                    needsDetachReceivers = true;
+                    result = Priority >= Setup.PrimaryLimit;
                  }
-              else if (!IsPrimaryDevice())
-                 result = true;
               else
-                 result = Priority >= Setup.PrimaryLimit;
+                 result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
               }
            else
-              result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
+              needsDetachReceivers = true;
            }
-        else
-           needsDetachReceivers = true;
+        if (result) {
+           if (!BondingOk(Channel)) {
+              // This device is bonded, so we need to check the priorities of the others:
+              for (cDvbDevice *d = bondedDevice; d && d != this; d = d->bondedDevice) {
+                  if (d->Priority() >= Priority) {
+                     result = false;
+                     break;
+                     }
+                  }
+              needsDetachBondedReceivers = true;
+              needsDetachReceivers = true;
+              }
+           }
         }
      }
   if (NeedsDetachReceivers)
@@ -1106,15 +1393,20 @@ const cChannel *cDvbDevice::GetCurrentlyTunedTransponder(void) const
   return dvbTuner ? dvbTuner->GetTransponder() : NULL;
 }
 
-bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel)
+bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel) const
 {
   return dvbTuner ? dvbTuner->IsTunedTo(Channel) : false;
+}
+
+bool cDvbDevice::MaySwitchTransponder(const cChannel *Channel) const
+{
+  return BondingOk(Channel, true) && cDevice::MaySwitchTransponder(Channel);
 }
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   if (dvbTuner)
-     dvbTuner->Set(Channel);
+     dvbTuner->SetChannel(Channel);
   return true;
 }
 
@@ -1154,6 +1446,17 @@ bool cDvbDevice::GetTSPacket(uchar *&Data)
      return true;
      }
   return false;
+}
+
+void cDvbDevice::DetachAllReceivers(void)
+{
+  cMutexLock MutexLock(&bondMutex);
+  cDvbDevice *d = this;
+  do {
+     d->cDevice::DetachAllReceivers();
+     d = d->bondedDevice;
+     } while (d && d != this && needsDetachBondedReceivers);
+  needsDetachBondedReceivers = false;
 }
 
 // --- cDvbDeviceProbe -------------------------------------------------------

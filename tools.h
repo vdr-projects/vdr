@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.11 2011/08/15 14:13:42 kls Exp $
+ * $Id: tools.h 2.14 2011/12/04 14:48:03 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -36,7 +36,7 @@ extern int SysLogLevel;
 #define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_ERR, a) : void() )
 
 #define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
-#define LOG_ERROR_STR(s)  esyslog("ERROR: %s: %m", s)
+#define LOG_ERROR_STR(s)  esyslog("ERROR (%s,%d): %s: %m", __FILE__, __LINE__, s)
 
 #define SECSINDAY  86400
 
@@ -108,7 +108,7 @@ int Utf8StrLen(const char *s);
     ///< Returns the number of UTF-8 symbols formed by the given string of
     ///< character bytes.
 char *Utf8Strn0Cpy(char *Dest, const char *Src, int n);
-    ///< Copies at most n character bytes from Src to Dst, making sure that the
+    ///< Copies at most n character bytes from Src to Dest, making sure that the
     ///< resulting copy ends with a complete UTF-8 symbol. The copy is guaranteed
     ///< to be zero terminated.
     ///< Returns a pointer to Dest.
@@ -210,7 +210,7 @@ int64_t StrToNum(const char *s);
     ///< The numerical part of the string may be followed by one of the letters
     ///< K, M, G or T to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively
     ///< (based on 1024). Everything after the first non-numeric character is
-    ///< silently ignored, as are any characters other than the ones mentionend here.
+    ///< silently ignored, as are any characters other than the ones mentioned here.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
@@ -264,6 +264,28 @@ public:
       ///< each returned line until NULL is returned, in order to get the entire
       ///< data encoded. The returned data is only valid until the next time NextLine()
       ///< is called, or until the object is destroyed.
+  };
+
+class cBitStream {
+private:
+  const uint8_t *data;
+  int length; // in bits
+  int index; // in bits
+public:
+  cBitStream(const uint8_t *Data, int Length) : data(Data), length(Length), index(0) {}
+  ~cBitStream() {}
+  int GetBit(void);
+  uint32_t GetBits(int n);
+  void ByteAlign(void);
+  void WordAlign(void);
+  bool SetLength(int Length);
+  void SkipBits(int n) { index += n; }
+  void SkipBit(void) { SkipBits(1); }
+  bool IsEOF(void) const { return index >= length; }
+  void Reset(void) { index = 0; }
+  int Length(void) const { return length; }
+  int Index(void) const { return (IsEOF() ? length : index); }
+  const uint8_t *GetData(void) const { return (IsEOF() ? NULL : data + (index / 8)); }
   };
 
 class cTimeMs {

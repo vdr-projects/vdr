@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.33 2011/08/27 09:32:18 kls Exp $
+ * $Id: dvbhdffdevice.c 1.35 2011/12/04 15:30:42 kls Exp $
  */
 
 #include "dvbhdffdevice.h"
@@ -47,18 +47,18 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      isHdffPrimary = true;
      mHdffCmdIf = new HDFF::cHdffCmdIf(fd_osd);
      mHdffCmdIf->CmdAvSetAudioDelay(gHdffSetup.AudioDelay);
-     mHdffCmdIf->CmdAvSetAudioDownmix((HDFF::eDownmixMode) gHdffSetup.AudioDownmix);
-     mHdffCmdIf->CmdMuxSetVideoOut((HDFF::eVideoOut) gHdffSetup.AnalogueVideo);
+     mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) gHdffSetup.AudioDownmix);
+     mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) gHdffSetup.AnalogueVideo);
      mHdffCmdIf->CmdHdmiSetVideoMode(gHdffSetup.GetVideoMode());
-     HDFF::tHdmiConfig hdmiConfig;
+     HdffHdmiConfig_t hdmiConfig;
      hdmiConfig.TransmitAudio = true;
      hdmiConfig.ForceDviMode = false;
      hdmiConfig.CecEnabled = gHdffSetup.CecEnabled;
-     hdmiConfig.VideoModeAdaption = (HDFF::eVideoModeAdaption) gHdffSetup.VideoModeAdaption;
+     hdmiConfig.VideoModeAdaption = (HdffVideoModeAdaption_t) gHdffSetup.VideoModeAdaption;
      mHdffCmdIf->CmdHdmiConfigure(&hdmiConfig);
      if (gHdffSetup.CecEnabled)
-        mHdffCmdIf->CmdHdmiSendCecCommand(HDFF::cecCommandTvOn);
-     mHdffCmdIf->CmdRemoteSetProtocol((HDFF::eRemoteProtocol) gHdffSetup.RemoteProtocol);
+        mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_ON);
+     mHdffCmdIf->CmdRemoteSetProtocol((HdffRemoteProtocol_t) gHdffSetup.RemoteProtocol);
      mHdffCmdIf->CmdRemoteSetAddressFilter(gHdffSetup.RemoteAddress >= 0, gHdffSetup.RemoteAddress);
      }
 
@@ -109,11 +109,11 @@ void cDvbHdFfDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayForma
 
 void cDvbHdFfDevice::SetVideoFormat(bool VideoFormat16_9)
 {
-  HDFF::tVideoFormat videoFormat;
+  HdffVideoFormat_t videoFormat;
   videoFormat.AutomaticEnabled = true;
   videoFormat.AfdEnabled = true;
-  videoFormat.TvFormat = (HDFF::eTvFormat) gHdffSetup.TvFormat;
-  videoFormat.VideoConversion = (HDFF::eVideoConversion) gHdffSetup.VideoConversion;
+  videoFormat.TvFormat = (HdffTvFormat_t) gHdffSetup.TvFormat;
+  videoFormat.VideoConversion = (HdffVideoConversion_t) gHdffSetup.VideoConversion;
   mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
 }
 
@@ -184,14 +184,14 @@ bool cDvbHdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
            mHdffCmdIf->CmdAvSetPcrPid(0, Handle->pid);
         else if (Type == ptVideo) {
            if (Handle->streamType == 0x1B)
-              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF::videoStreamH264);
+              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_H264);
            else
-              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF::videoStreamMpeg2);
+              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_MPEG2);
            }
         else if (Type == ptAudio)
-           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF::audioStreamMpeg1);
+           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_MPEG1);
         else if (Type == ptDolby)
-           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF::audioStreamAc3);
+           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_AC3);
         if (!(Type <= ptDolby && Handle->used <= 1)) {
            pesFilterParams.pid     = Handle->pid;
            pesFilterParams.input   = DMX_IN_FRONTEND;
@@ -209,11 +209,11 @@ bool cDvbHdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
         if (Type == ptPcr)
            mHdffCmdIf->CmdAvSetPcrPid(0, 0);
         else if (Type == ptVideo)
-           mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF::videoStreamMpeg2);
+           mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
         else if (Type == ptAudio)
-           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF::audioStreamMpeg1);
+           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
         else if (Type == ptDolby)
-           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF::audioStreamAc3);
+           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_AC3);
         //TODO missing setting to 0x1FFF??? see cDvbDevice::SetPid()
         close(Handle->handle);
         Handle->handle = -1;
@@ -351,10 +351,13 @@ bool cDvbHdFfDevice::CanReplay(void) const
 bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
 {
   if (PlayMode == pmNone) {
+     mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
+     mHdffCmdIf->CmdAvSetAudioSpeed(0, 100);
+
      mHdffCmdIf->CmdAvEnableVideoAfterStop(0, false);
      mHdffCmdIf->CmdAvSetPcrPid(0, 0);
-     mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF::videoStreamMpeg2);
-     mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF::audioStreamMpeg1);
+     mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
+     mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
 
      ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX);
      mHdffCmdIf->CmdAvSetDecoderInput(0, 0);
@@ -374,6 +377,8 @@ bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
      playAudioPid = -1;
      audioCounter = 0;
      videoCounter = 0;
+     freezed = false;
+     trickMode = false;
 
      mHdffCmdIf->CmdAvSetDecoderInput(0, 2);
      ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY);
@@ -405,18 +410,20 @@ int64_t cDvbHdFfDevice::GetSTC(void)
 
 void cDvbHdFfDevice::TrickSpeed(int Speed)
 {
+  freezed = false;
   mHdffCmdIf->CmdAvEnableSync(0, false);
-  mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF::audioStreamMpeg1);
+  mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
   playAudioPid = -1;
   if (Speed > 0)
      mHdffCmdIf->CmdAvSetVideoSpeed(0, 100 / Speed);
+  trickMode = true;
 }
 
 void cDvbHdFfDevice::Clear(void)
 {
   CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-  mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF::videoStreamMpeg1);
-  mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF::audioStreamMpeg1);
+  mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
+  mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
   playVideoPid = -1;
   playAudioPid = -1;
   cDevice::Clear();
@@ -424,6 +431,8 @@ void cDvbHdFfDevice::Clear(void)
 
 void cDvbHdFfDevice::Play(void)
 {
+  freezed = false;
+  trickMode = false;
   mHdffCmdIf->CmdAvEnableSync(0, true);
   mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
   mHdffCmdIf->CmdAvSetAudioSpeed(0, 100);
@@ -432,6 +441,7 @@ void cDvbHdFfDevice::Play(void)
 
 void cDvbHdFfDevice::Freeze(void)
 {
+  freezed = true;
   mHdffCmdIf->CmdAvSetVideoSpeed(0, 0);
   mHdffCmdIf->CmdAvSetAudioSpeed(0, 0);
   cDevice::Freeze();
@@ -443,13 +453,13 @@ void cDvbHdFfDevice::Mute(void)
   cDevice::Mute();
 }
 
-static HDFF::eVideoStreamType MapVideoStreamTypes(int Vtype)
+static HdffVideoStreamType_t MapVideoStreamTypes(int Vtype)
 {
   switch (Vtype) {
-    case 0x01: return HDFF::videoStreamMpeg1;
-    case 0x02: return HDFF::videoStreamMpeg2;
-    case 0x1B: return HDFF::videoStreamH264;
-    default: return HDFF::videoStreamMpeg2; // fallback to MPEG2
+    case 0x01: return HDFF_VIDEO_STREAM_MPEG1;
+    case 0x02: return HDFF_VIDEO_STREAM_MPEG2;
+    case 0x1B: return HDFF_VIDEO_STREAM_H264;
+    default: return HDFF_VIDEO_STREAM_MPEG2; // fallback to MPEG2
     }
 }
 
@@ -594,6 +604,8 @@ uint32_t cDvbHdFfDevice::PesToTs(uint8_t * TsBuffer, uint16_t Pid, uint8_t & Cou
 
 int cDvbHdFfDevice::PlayVideo(const uchar *Data, int Length)
 {
+    if (freezed)
+        return -1;
     //TODO: support greater Length
     uint8_t tsBuffer[188 * 16];
     uint32_t tsLength;
@@ -603,7 +615,7 @@ int cDvbHdFfDevice::PlayVideo(const uchar *Data, int Length)
 
     if (pid != playVideoPid) {
         playVideoPid = pid;
-        mHdffCmdIf->CmdAvSetVideoPid(0, playVideoPid, HDFF::videoStreamMpeg2, true);
+        mHdffCmdIf->CmdAvSetVideoPid(0, playVideoPid, HDFF_VIDEO_STREAM_MPEG2, true);
     }
     if (WriteAllOrNothing(fd_video, tsBuffer, tsLength, 1000, 10) <= 0)
         Length = 0;
@@ -612,39 +624,43 @@ int cDvbHdFfDevice::PlayVideo(const uchar *Data, int Length)
 
 int cDvbHdFfDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 {
+    if (freezed)
+        return -1;
+    if (trickMode)
+        return Length;
     uint8_t streamId;
     uint8_t tsBuffer[188 * 16];
     uint32_t tsLength;
-    HDFF::eAudioStreamType streamType = HDFF::audioStreamMpeg1;
-    HDFF::eAVContainerType containerType = HDFF::avContainerPes;
+    HdffAudioStreamType_t streamType = HDFF_AUDIO_STREAM_MPEG1;
+    HdffAvContainerType_t containerType = HDFF_AV_CONTAINER_PES;
     int pid;
 
     streamId = Data[3];
     if (streamId >= 0xC0 && streamId <= 0xDF)
     {
-        streamType = HDFF::audioStreamMpeg1;
+        streamType = HDFF_AUDIO_STREAM_MPEG1;
     }
     else if (streamId == 0xBD)
     {
         const uint8_t * payload = Data + 9 + Data[8];
         if ((payload[0] & 0xF8) == 0xA0)
         {
-            containerType = HDFF::avContainerPesDvd;
-            streamType = HDFF::audioStreamPcm;
+            containerType = HDFF_AV_CONTAINER_PES_DVD;
+            streamType = HDFF_AUDIO_STREAM_PCM;
         }
         else if ((payload[0] & 0xF8) == 0x88)
         {
-            containerType = HDFF::avContainerPesDvd;
-            streamType = HDFF::audioStreamDts;
+            containerType = HDFF_AV_CONTAINER_PES_DVD;
+            streamType = HDFF_AUDIO_STREAM_DTS;
         }
         else if ((payload[0] & 0xF8) == 0x80)
         {
-            containerType = HDFF::avContainerPesDvd;
-            streamType = HDFF::audioStreamAc3;
+            containerType = HDFF_AV_CONTAINER_PES_DVD;
+            streamType = HDFF_AUDIO_STREAM_AC3;
         }
         else
         {
-            streamType = HDFF::audioStreamAc3;
+            streamType = HDFF_AUDIO_STREAM_AC3;
         }
     }
     pid = 200 + (int) streamType;
@@ -661,6 +677,8 @@ int cDvbHdFfDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 
 int cDvbHdFfDevice::PlayTsVideo(const uchar *Data, int Length)
 {
+  if (freezed)
+    return -1;
   int pid = TsPid(Data);
   if (pid != playVideoPid) {
      PatPmtParser();
@@ -672,21 +690,25 @@ int cDvbHdFfDevice::PlayTsVideo(const uchar *Data, int Length)
   return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
-static HDFF::eAudioStreamType MapAudioStreamTypes(int Atype)
+static HdffAudioStreamType_t MapAudioStreamTypes(int Atype)
 {
   switch (Atype) {
-    case 0x03: return HDFF::audioStreamMpeg1;
-    case 0x04: return HDFF::audioStreamMpeg2;
-    case SI::AC3DescriptorTag: return HDFF::audioStreamAc3;
-    case SI::EnhancedAC3DescriptorTag: return HDFF::audioStreamEAc3;
-    case 0x0F: return HDFF::audioStreamAac;
-    case 0x11: return HDFF::audioStreamHeAac;
-    default: return HDFF::audioStreamMaxValue; // there is no HDFF::audioStreamNone
+    case 0x03: return HDFF_AUDIO_STREAM_MPEG1;
+    case 0x04: return HDFF_AUDIO_STREAM_MPEG2;
+    case SI::AC3DescriptorTag: return HDFF_AUDIO_STREAM_AC3;
+    case SI::EnhancedAC3DescriptorTag: return HDFF_AUDIO_STREAM_EAC3;
+    case 0x0F: return HDFF_AUDIO_STREAM_AAC;
+    case 0x11: return HDFF_AUDIO_STREAM_HE_AAC;
+    default: return HDFF_AUDIO_STREAM_MPEG1;
     }
 }
 
 int cDvbHdFfDevice::PlayTsAudio(const uchar *Data, int Length)
 {
+  if (freezed)
+    return -1;
+  if (trickMode)
+    return Length;
   int pid = TsPid(Data);
   if (pid != playAudioPid) {
      playAudioPid = pid;

@@ -7,12 +7,12 @@
 # plus an 'index.htm' file. All output files are written into the current
 # directory.
 #
-# Usage: epg2html.pl < /video/epg.data
+# Usage: epg2html < /video/epg.data
 #
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 2.0 2006/04/17 12:19:08 kls Exp $
+# $Id: epg2html 2.1 2011/12/04 14:17:35 kls Exp $
 
 @Index = ();
 

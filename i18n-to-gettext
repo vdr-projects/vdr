@@ -5,12 +5,12 @@
 # Extracts all texts from the file i18n.c and creates language
 # specific *.po files.
 #
-# Usage: i18n-to-gettext.pl
+# Usage: i18n-to-gettext
 #
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: i18n-to-gettext.pl 2.1 2009/10/18 14:07:49 kls Exp $
+# $Id: i18n-to-gettext 2.2 2011/12/04 14:17:35 kls Exp $
 
 # How to convert an actual plugin:
 #

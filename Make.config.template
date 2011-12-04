@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.3 2011/03/13 13:41:12 kls Exp $
+# $Id: Make.config.template 2.4 2011/12/04 14:41:00 kls Exp $
 
 ### The C compiler and options:
 
@@ -35,7 +35,7 @@ CONFDIR  = $(VIDEODIR)
 
 ### The remote control:
 
-LIRC_DEVICE = /dev/lircd
+LIRC_DEVICE = /var/run/lirc/lircd
 RCU_DEVICE  = /dev/ttyS1
 
 ## Define if you want vdr to not run as root

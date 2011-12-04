@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.h 1.6 2010/03/13 11:18:13 kls Exp $
+ * $Id: dvbhdffdevice.h 1.7 2011/09/10 10:17:32 kls Exp $
  */
 
 #ifndef __DVBHDFFDEVICE_H
@@ -79,6 +79,8 @@ protected:
 private:
   int playVideoPid;
   int playAudioPid;
+  bool freezed;
+  bool trickMode;
 
   // Pes2Ts conversion stuff
   uint8_t videoCounter;

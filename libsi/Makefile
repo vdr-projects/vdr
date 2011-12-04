@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 2.1 2010/11/07 13:31:05 kls Exp $
+# $Id: Makefile 2.2 2011/12/04 14:18:38 kls Exp $
 
 ### The C++ compiler and options:
 
@@ -52,4 +52,4 @@ clean:
 
 dist:
 	tar cvzf libsi.tar.gz -C .. libsi/util.c libsi/si.c libsi/section.c libsi/descriptor.c \
-   libsi/util.h libsi/si.h libsi/section.h libsi/descriptor.h libsi/headers.h libsi/Makefile libsi/gendescr.pl
+   libsi/util.h libsi/si.h libsi/section.h libsi/descriptor.h libsi/headers.h libsi/Makefile libsi/gendescr
