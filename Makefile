@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.21 2011/12/04 14:17:35 kls Exp $
+# $Id: Makefile 2.22 2011/12/04 14:41:00 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -62,7 +62,7 @@ DEFINES += -DBIDI
 LIBS += $(shell pkg-config --libs fribidi)
 endif
 
-LIRC_DEVICE ?= /dev/lircd
+LIRC_DEVICE ?= /var/run/lirc/lircd
 RCU_DEVICE  ?= /dev/ttyS1
 
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"

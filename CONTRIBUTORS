@@ -1926,6 +1926,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing several spelling errors
  for adding generating a pkg-config file to the Makefile
  for removing the '.pl' suffix from all scripts (thanks to Ville Skyttä).
+ for changing the default location for the LIRC socket to /var/run/lirc/lircd
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

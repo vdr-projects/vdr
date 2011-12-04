@@ -6775,3 +6775,5 @@ Video Disk Recorder Revision History
   recordings (thanks to Lars Hanisch).
 - Added generating a pkg-config file to the Makefile (thanks to Ville Skyttä).
 - Removed the '.pl' suffix from all scripts (thanks to Ville Skyttä).
+- Changed the default location for the LIRC socket to /var/run/lirc/lircd (thanks
+  to Ville Skyttä).
