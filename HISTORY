@@ -6777,3 +6777,4 @@ Video Disk Recorder Revision History
 - Removed the '.pl' suffix from all scripts (thanks to Ville Skyttä).
 - Changed the default location for the LIRC socket to /var/run/lirc/lircd (thanks
   to Ville Skyttä).
+- Added file name and line number to LOG_ERROR_STR() (thanks to Rolf Ahrenberg).

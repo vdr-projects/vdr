@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.13 2011/12/04 13:38:17 kls Exp $
+ * $Id: tools.h 2.14 2011/12/04 14:48:03 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -36,7 +36,7 @@ extern int SysLogLevel;
 #define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_ERR, a) : void() )
 
 #define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
-#define LOG_ERROR_STR(s)  esyslog("ERROR: %s: %m", s)
+#define LOG_ERROR_STR(s)  esyslog("ERROR (%s,%d): %s: %m", __FILE__, __LINE__, s)
 
 #define SECSINDAY  86400
 
