@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.9 2011/10/09 16:09:58 kls Exp $
+ * $Id: cutter.c 2.10 2011/12/04 12:55:53 kls Exp $
  */
 
 #include "cutter.h"
@@ -100,7 +100,8 @@ void cCuttingThread::Action(void)
            if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &Independent, &Length)) {
               if (FileNumber != CurrentFileNumber) {
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
-                 fromFile->SetReadAhead(MEGABYTE(20));
+                 if (fromFile)
+                    fromFile->SetReadAhead(MEGABYTE(20));
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile) {
