@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.18 2011/09/18 11:22:21 kls Exp $
+ * $Id: tools.c 2.19 2011/12/04 14:52:38 kls Exp $
  */
 
 #include "tools.h"
@@ -1789,7 +1789,7 @@ bool cLockFile::Lock(int WaitSeconds)
               break;
               }
            if (WaitSeconds)
-              sleep(1);
+              cCondWait::SleepMs(1000);
            }
         } while (f < 0 && time(NULL) < Timeout);
      }

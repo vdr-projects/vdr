@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.33 2011/12/03 15:11:42 kls Exp $
+ * $Id: menu.c 2.34 2011/12/04 14:52:38 kls Exp $
  */
 
 #include "menu.h"
@@ -4208,7 +4208,7 @@ bool cRecordControl::GetEvent(void)
       }
       if (seconds == 0)
          dsyslog("waiting for EPG info...");
-      sleep(1);
+      cCondWait::SleepMs(1000);
       }
   dsyslog("no EPG info available");
   return false;
@@ -4318,11 +4318,11 @@ bool cRecordControls::PauseLiveVideo(void)
   Skins.Message(mtStatus, tr("Pausing live video..."));
   cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
   if (Start(NULL, true)) {
-     sleep(2); // allow recorded file to fill up enough to start replaying
+     cCondWait::SleepMs(2000); // allow recorded file to fill up enough to start replaying
      cReplayControl *rc = new cReplayControl;
      cControl::Launch(rc);
      cControl::Attach();
-     sleep(1); // allow device to replay some frames, so we have a picture
+     cCondWait::SleepMs(1000); // allow device to replay some frames, so we have a picture
      Skins.Message(mtStatus, NULL);
      rc->ProcessKey(kPause); // pause, allowing replay mode display
      return true;
