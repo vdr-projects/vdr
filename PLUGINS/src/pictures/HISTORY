@@ -55,3 +55,7 @@ VDR Plugin 'pictures' Revision History
 - The pic2mpg script now generates HD images (thanks to Andre Weidemann for his
   support in using convert/ffmpeg). The old SD version is still available as
   pic2mpg-sd.
+
+2011-11-02:
+
+- Fixed handling images that are rotated by 180 degrees in pic2mpg.
