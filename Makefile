@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.20 2011/12/04 14:12:49 kls Exp $
+# $Id: Makefile 2.21 2011/12/04 14:17:35 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -190,7 +190,7 @@ install: install-bin install-conf install-doc install-plugins install-i18n insta
 
 install-bin: vdr
 	@mkdir -p $(DESTDIR)$(BINDIR)
-	@cp --remove-destination vdr svdrpsend.pl $(DESTDIR)$(BINDIR)
+	@cp --remove-destination vdr svdrpsend $(DESTDIR)$(BINDIR)
 
 # Configuration files:
 
