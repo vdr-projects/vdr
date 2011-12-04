@@ -1923,6 +1923,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for using pkg-config to get fribidi, freetype and fontconfig cflags and libs
  for making the Makefile also install the include files
  for fixing a crash when deleting a recording while cutting it
+ for fixing several spelling errors
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

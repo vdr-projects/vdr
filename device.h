@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.29 2011/10/16 14:10:33 kls Exp $
+ * $Id: device.h 2.30 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -472,7 +472,7 @@ protected:
        ///< Sets the current subtitle track to the given value.
 public:
   void ClrAvailableTracks(bool DescriptionsOnly = false, bool IdsOnly = false);
-       ///< Clears the list of currently availabe tracks. If DescriptionsOnly
+       ///< Clears the list of currently available tracks. If DescriptionsOnly
        ///< is true, only the track descriptions will be cleared. With IdsOnly
        ///< set to true only the ids will be cleared. IdsOnly is only taken
        ///< into account if DescriptionsOnly is false.
@@ -665,10 +665,10 @@ public:
        ///< Returns true if the device itself or any of the file handles in
        ///< Poller is ready for further action.
        ///< If TimeoutMs is not zero, the device will wait up to the given number
-       ///< of milleseconds before returning in case it can't accept any data.
+       ///< of milliseconds before returning in case it can't accept any data.
   virtual bool Flush(int TimeoutMs = 0);
        ///< Returns true if the device's output buffers are empty, i. e. any
-       ///< data which was bufferd so far has been processed.
+       ///< data which was buffered so far has been processed.
        ///< If TimeoutMs is not zero, the device will wait up to the given
        ///< number of milliseconds before returning in case there is still
        ///< data in the buffers.

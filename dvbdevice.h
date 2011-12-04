@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.17 2011/11/27 11:56:57 kls Exp $
+ * $Id: dvbdevice.h 2.18 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -203,7 +203,7 @@ public:
 protected:
   static int setTransferModeForDolbyDigital;
 public:
-  static void SetTransferModeForDolbyDigital(int Mode); // needs to be here for backwards compatibilty
+  static void SetTransferModeForDolbyDigital(int Mode); // needs to be here for backwards compatibility
          ///< Controls how the DVB device handles Transfer Mode when replaying
          ///< Dolby Digital audio.
          ///< 0 = don't set "audio bypass" in driver/firmware, don't force Transfer Mode

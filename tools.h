@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.12 2011/09/18 11:21:23 kls Exp $
+ * $Id: tools.h 2.13 2011/12/04 13:38:17 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -108,7 +108,7 @@ int Utf8StrLen(const char *s);
     ///< Returns the number of UTF-8 symbols formed by the given string of
     ///< character bytes.
 char *Utf8Strn0Cpy(char *Dest, const char *Src, int n);
-    ///< Copies at most n character bytes from Src to Dst, making sure that the
+    ///< Copies at most n character bytes from Src to Dest, making sure that the
     ///< resulting copy ends with a complete UTF-8 symbol. The copy is guaranteed
     ///< to be zero terminated.
     ///< Returns a pointer to Dest.
@@ -210,7 +210,7 @@ int64_t StrToNum(const char *s);
     ///< The numerical part of the string may be followed by one of the letters
     ///< K, M, G or T to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively
     ///< (based on 1024). Everything after the first non-numeric character is
-    ///< silently ignored, as are any characters other than the ones mentionend here.
+    ///< silently ignored, as are any characters other than the ones mentioned here.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);

@@ -6770,3 +6770,4 @@ Video Disk Recorder Revision History
   This obsoletes the LNBSHARE patch. Users of the LNBSHARE patch will need to newly
   set up their sat devices with the above options.
 - Fixed a crash when deleting a recording while cutting it (thanks to Ville Skyttä).
+- Fixed several spelling errors (thanks to Ville Skyttä).
