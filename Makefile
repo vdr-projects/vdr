@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.19 2011/12/04 14:09:37 kls Exp $
+# $Id: Makefile 2.20 2011/12/04 14:12:49 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -122,7 +122,6 @@ vdr.pc: Makefile Make.global
 	@echo "Description: Video Disk Recorder" >> $@
 	@echo "URL: http://www.tvdr.de/" >> $@
 	@echo "Version: $(VDRVERSION)" >> $@
-	@echo "Requires: freetype2 fontconfig" >> $@
 	@echo "Cflags: \$${cflags}" >> $@
 
 # Internationalization (I18N):
