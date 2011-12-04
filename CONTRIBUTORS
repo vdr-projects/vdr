@@ -1924,6 +1924,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for making the Makefile also install the include files
  for fixing a crash when deleting a recording while cutting it
  for fixing several spelling errors
+ for adding generating a pkg-config file to the Makefile
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

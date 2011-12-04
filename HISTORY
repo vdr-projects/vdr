@@ -6773,3 +6773,4 @@ Video Disk Recorder Revision History
 - Fixed several spelling errors (thanks to Ville Skyttä).
 - The new SVDRP command UPDR can be used to trigger an update of the list of
   recordings (thanks to Lars Hanisch).
+- Added generating a pkg-config file to the Makefile (thanks to Ville Skyttä).

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.18 2011/05/21 12:21:40 kls Exp $
+# $Id: Makefile 2.19 2011/12/04 14:09:37 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -32,6 +32,8 @@ CONFDIR  = $(VIDEODIR)
 
 DOXYGEN  = /usr/bin/doxygen
 DOXYFILE = Doxyfile
+
+PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
 
 include Make.global
 -include Make.config
@@ -77,7 +79,7 @@ DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 
-all: vdr i18n
+all: vdr i18n vdr.pc
 
 # Implicit rules:
 
@@ -102,6 +104,26 @@ vdr: $(OBJS) $(SILIB)
 
 $(SILIB):
 	$(MAKE) -C $(LSIDIR) all
+
+# pkg-config file:
+
+vdr.pc: Makefile Make.global
+	@echo "bindir=$(BINDIR)" > $@
+	@echo "includedir=$(INCDIR)" >> $@
+	@echo "configdir=$(CONFDIR)" >> $@
+	@echo "videodir=$(VIDEODIR)" >> $@
+	@echo "plugindir=$(PLUGINLIBDIR)" >> $@
+	@echo "localedir=$(LOCDIR)" >> $@
+	@echo "apiversion=$(APIVERSION)" >> $@
+	@echo "cflags=$(CXXFLAGS) $(DEFINES) -I\$${includedir}" >> $@
+	@echo "plugincflags=\$${cflags} -fPIC" >> $@
+	@echo "" >> $@
+	@echo "Name: VDR" >> $@
+	@echo "Description: Video Disk Recorder" >> $@
+	@echo "URL: http://www.tvdr.de/" >> $@
+	@echo "Version: $(VDRVERSION)" >> $@
+	@echo "Requires: freetype2 fontconfig" >> $@
+	@echo "Cflags: \$${cflags}" >> $@
 
 # Internationalization (I18N):
 
@@ -163,7 +185,7 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins install-i18n install-includes
+install: install-bin install-conf install-doc install-plugins install-i18n install-includes install-pc
 
 # VDR binary:
 
@@ -200,6 +222,14 @@ install-includes: include-dir
 	@mkdir -p $(DESTDIR)$(INCDIR)
 	@cp -pLR include/vdr include/libsi $(DESTDIR)$(INCDIR)
 
+# pkg-config file:
+
+install-pc: vdr.pc
+	if [ -n "$(PCDIR)" ] ; then \
+	    mkdir -p $(DESTDIR)$(PCDIR) ; \
+	    cp vdr.pc $(DESTDIR)$(PCDIR) ; \
+	    fi
+
 # Source documentation:
 
 srcdoc:
@@ -212,7 +242,7 @@ srcdoc:
 
 clean:
 	$(MAKE) -C $(LSIDIR) clean
-	-rm -f $(OBJS) $(DEPFILE) vdr core* *~
+	-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
 	-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
 	-rm -rf include
 	-rm -rf srcdoc
