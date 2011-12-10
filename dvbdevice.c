@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.48 2011/12/03 15:24:27 kls Exp $
+ * $Id: dvbdevice.c 2.49 2011/12/06 17:38:18 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1126,7 +1126,7 @@ bool cDvbDevice::BondDevices(const char *Bondings)
                if (cDevice *Device2 = cDevice::GetDevice(d)) {
                   if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                      if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
-                        if (!DvbDevice2->Bond(DvbDevice1))
+                        if (!DvbDevice1->Bond(DvbDevice2))
                            return false; // Bond() has already logged the error
                         }
                      else
