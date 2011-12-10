@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.39 2011/12/04 13:51:44 kls Exp $
+ * $Id: recording.c 2.40 2011/12/10 14:12:55 kls Exp $
  */
 
 #include "recording.h"
@@ -1105,7 +1105,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
         if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
            char *buffer = strdup(AddDirectory(DirName, e->d_name));
            struct stat st;
-           if (stat(buffer, &st) == 0) {
+           if (lstat(buffer, &st) == 0) {
               int Link = 0;
               if (S_ISLNK(st.st_mode)) {
                  if (LinkLevel > MAX_LINK_LEVEL) {

@@ -6785,3 +6785,5 @@ Video Disk Recorder Revision History
 
 - Removed the '.pl' suffix from svdrpsend.pl (sorry, I missed that one).
 - Fixed bonding more than two devices.
+- Fixed handling symbolic links in cRecordings::ScanVideoDir() (reported by
+  Sundararaj Reel).
