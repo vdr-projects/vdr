@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 2.3 2010/02/13 10:31:34 kls Exp $
+ *   $Id: si.h 2.4 2011/12/10 15:47:15 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -153,6 +153,8 @@ enum DescriptorTag {
                MHP_PrefetchDescriptorTag = 0x0C,
                MHP_DelegatedApplicationDescriptorTag = 0x0E,
                MHP_ApplicationStorageDescriptorTag = 0x10,
+               MHP_SimpleApplicationLocationDescriptorTag = 0x15,
+               MHP_SimpleApplicationBoundaryDescriptorTag = 0x17,
   // Premiere private Descriptor Tags
                PremiereContentTransmissionDescriptorTag = 0xF2,
 

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.5 2011/12/04 15:06:18 kls Exp $
+ *   $Id: si.c 2.6 2011/12/10 15:47:15 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -689,6 +689,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
             break;
          case MHP_DVBJApplicationLocationDescriptorTag:
             d=new MHP_DVBJApplicationLocationDescriptor();
+            break;
+         case MHP_SimpleApplicationLocationDescriptorTag:
+            d=new MHP_SimpleApplicationLocationDescriptor();
             break;
       // 0x05 - 0x0A is unimplemented this library
          case MHP_ExternalApplicationAuthorisationDescriptorTag:

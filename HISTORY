@@ -6795,3 +6795,4 @@ Video Disk Recorder Revision History
 - Added HasSnr to the DEBUG_SIGNALQUALITY output in cDvbTuner::GetSignalQuality()
   (triggered by Ville Skyttä pointing out that the variable HasSnr was unused).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added support for HbbTV to libsi (thanks to Christoph Haubrich).

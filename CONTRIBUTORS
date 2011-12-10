@@ -2260,6 +2260,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to implement a function to determine the length of a recording's
  index file
  for fixing setting the start time of an edited recording
+ for adding support for HbbTV to libsi
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

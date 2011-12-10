@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.2 2011/06/15 21:26:00 kls Exp $
+ *   $Id: headers.h 2.3 2011/12/10 15:47:15 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1907,6 +1907,11 @@ struct descr_transport_protocol {
    /* protocol_id-specific selector bytes follow */
 };
 
+struct descr_url_extension_entry {
+   u_char url_extension_length                   :8;
+   /* URL extension string */
+};
+
 #define TRANSPORT_VIA_OC_LEN 1
 
 struct transport_via_oc {
@@ -1938,6 +1943,12 @@ struct transport_via_oc_remote_end {
 
 struct transport_via_oc_end {
    u_char component_tag                          :8;
+};
+
+#define TRANSPORT_VIA_HTTP_LEN 1
+
+struct transport_via_http {
+   u_char url_base_length                        :8;
 };
 
 /* 0x03 dvb_j_application_descriptor() */
@@ -1989,6 +2000,16 @@ struct descr_application_icons_descriptor {
 struct descr_application_icons_descriptor_end {
    u_char icon_flags_hi                          :8;
    u_char icon_flags_lo                          :8;
+};
+
+/* 0x15 simple application location descrptor */
+
+#define DESCR_SIMPLE_APPLICATION_LOCATION_LEN 3
+
+struct descr_simple_application_location_descriptor {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   /* inital_path_bytes */
 };
 
 // Private DVB Descriptor  Premiere.de
