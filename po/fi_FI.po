@@ -967,10 +967,10 @@ msgstr "LNB-ylätaajuus (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "DVB-sovitin %d kytketty SAT-kaapeliin"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "oma"
 
 msgid "CAM reset"
 msgstr "CAM nollaus"

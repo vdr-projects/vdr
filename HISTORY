@@ -6794,3 +6794,4 @@ Video Disk Recorder Revision History
 - Removed a redundant NULL check in cDvbSpuDecoder::setTime() (thanks to Ville Skyttä).
 - Added HasSnr to the DEBUG_SIGNALQUALITY output in cDvbTuner::GetSignalQuality()
   (triggered by Ville Skyttä pointing out that the variable HasSnr was unused).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
