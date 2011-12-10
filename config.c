@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.16 2011/12/03 15:21:30 kls Exp $
+ * $Id: config.c 2.17 2011/12/10 14:33:27 kls Exp $
  */
 
 #include "config.h"
@@ -69,7 +69,6 @@ cSatCableNumbers::cSatCableNumbers(int Size, const char *s)
 {
   size = Size;
   array = MALLOC(int, size);
-  memset(array, size * sizeof(int), 0);
   FromString(s);
 }
 
