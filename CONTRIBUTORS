@@ -1932,6 +1932,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for pointing out that the argument sequence in the memset() call in the ctor of
  cSatCableNumbers was wrong
  for removing a redundant NULL check in cDvbSpuDecoder::setTime()
+ for pointing out that the variable HasSnr was unused in cDvbTuner::GetSignalQuality()
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

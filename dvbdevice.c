@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.49 2011/12/06 17:38:18 kls Exp $
+ * $Id: dvbdevice.c 2.50 2011/12/10 14:59:34 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -618,7 +618,7 @@ int cDvbTuner::GetSignalQuality(void) const
      if (q > 100)
         q = 100;
 #ifdef DEBUG_SIGNALQUALITY
-     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
+     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %d %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasSnr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
 #endif
      return q;
      }

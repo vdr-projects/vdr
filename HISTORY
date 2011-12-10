@@ -6792,3 +6792,5 @@ Video Disk Recorder Revision History
 - Removed redundant memset() in the ctor of cSatCableNumbers (triggered by
   Ville Skyttä pointing out that the argument sequence in the call was wrong).
 - Removed a redundant NULL check in cDvbSpuDecoder::setTime() (thanks to Ville Skyttä).
+- Added HasSnr to the DEBUG_SIGNALQUALITY output in cDvbTuner::GetSignalQuality()
+  (triggered by Ville Skyttä pointing out that the variable HasSnr was unused).
