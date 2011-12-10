@@ -2545,6 +2545,8 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting some missing 'const' in tChannelID
  for suggesting to add optional case insensitive sorting to cStringList::Sort()
  for reporting a bug in handling symbolic links in cRecordings::ScanVideoDir()
+ for reporting a memory leak in cRecordings::ScanVideoDir() in case there are too
+ many link levels
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default

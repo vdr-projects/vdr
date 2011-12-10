@@ -6787,3 +6787,5 @@ Video Disk Recorder Revision History
 - Fixed bonding more than two devices.
 - Fixed handling symbolic links in cRecordings::ScanVideoDir() (reported by
   Sundararaj Reel).
+- Fixed a memory leak in cRecordings::ScanVideoDir() in case there are too many
+  link levels (reported by Sundararaj Reel).
