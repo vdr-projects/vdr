@@ -6791,3 +6791,4 @@ Video Disk Recorder Revision History
   link levels (reported by Sundararaj Reel).
 - Removed redundant memset() in the ctor of cSatCableNumbers (triggered by
   Ville Skyttä pointing out that the argument sequence in the call was wrong).
+- Removed a redundant NULL check in cDvbSpuDecoder::setTime() (thanks to Ville Skyttä).

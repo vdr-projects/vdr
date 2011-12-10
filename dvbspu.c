@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.8 2010/01/17 13:43:27 kls Exp $
+ * $Id: dvbspu.c 2.9 2011/12/10 14:39:19 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -496,7 +496,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
     if (!spu)
         return 0;
 
-    if (spu && !clean)
+    if (!clean)
         Draw();
 
     while (DCSQ_offset != prev_DCSQ_offset) {   /* Display Control Sequences */

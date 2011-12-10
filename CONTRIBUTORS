@@ -1931,6 +1931,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for changing the default location for the LIRC socket to /var/run/lirc/lircd
  for pointing out that the argument sequence in the memset() call in the ctor of
  cSatCableNumbers was wrong
+ for removing a redundant NULL check in cDvbSpuDecoder::setTime()
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
