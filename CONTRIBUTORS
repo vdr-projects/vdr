@@ -2801,3 +2801,7 @@ Chris Mayo <aklhfex@gmail.com>
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
  for adding cap_net_raw to the capabilities that are not dropped
+
+Torsten Lang <info@torstenlang.de>
+ for reporting a problem with newline characters in stream component descriptions
+ of EPG data from BSkyB's "MTV MUSIC"

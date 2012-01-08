@@ -6803,3 +6803,6 @@ Video Disk Recorder Revision History
 - Updated the Hungarian language texts (thanks to István Füley).
 - cDvbTuner::ExecuteDiseqc() now makes sure only one tuner sends SCR commands
   at any given time (reported by Frank Neumann).
+- cEvent::FixEpgBugs() now replaces any newline characters in stream component
+  descriptions with blanks (thanks to Torsten Lang for reporting a problem with
+  EPG data from BSkyB's "MTV MUSIC", S28.2E-2-2010-7012).
