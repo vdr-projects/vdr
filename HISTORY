@@ -6801,3 +6801,5 @@ Video Disk Recorder Revision History
   DTV_ENUM_DELSYS call. With older drivers it will fall back to one delivery
   system per frontend.
 - Updated the Hungarian language texts (thanks to István Füley).
+- cDvbTuner::ExecuteDiseqc() now makes sure only one tuner sends SCR commands
+  at any given time (reported by Frank Neumann).

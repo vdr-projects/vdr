@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.51 2012/01/07 10:42:47 kls Exp $
+ * $Id: dvbdevice.c 2.52 2012/01/08 14:30:04 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -642,6 +642,9 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
      CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
      lnbPowerTurnedOn = true;
      }
+  static cMutex Mutex;
+  if (Diseqc->IsScr())
+     Mutex.Lock(); 
   struct dvb_diseqc_master_cmd cmd;
   const char *CurrentAction = NULL;
   for (;;) {
@@ -662,6 +665,8 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
       }
   if (scr)
      ResetToneAndVoltage(); // makes sure we don't block the bus!
+  if (Diseqc->IsScr())
+     Mutex.Unlock(); 
 }
 
 void cDvbTuner::ResetToneAndVoltage(void)

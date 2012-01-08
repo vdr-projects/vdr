@@ -2742,6 +2742,7 @@ Milan Cvijanovic <elcom_cvijo@hotmail.com>
 
 Frank Neumann <frank.neumann@hp.com>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
+ for reporting a problem with tuning timeouts when using SCR with multiple tuners
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
