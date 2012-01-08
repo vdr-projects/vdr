@@ -6800,3 +6800,4 @@ Video Disk Recorder Revision History
   This requires a DVB driver with version 5.5 or higher that can handle the
   DTV_ENUM_DELSYS call. With older drivers it will fall back to one delivery
   system per frontend.
+- Updated the Hungarian language texts (thanks to István Füley).
