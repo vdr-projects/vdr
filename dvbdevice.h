@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.18 2011/12/04 13:38:17 kls Exp $
+ * $Id: dvbdevice.h 2.19 2012/01/06 13:29:46 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
-#include <sys/mman.h> // FIXME: workaround for broken linux-dvb header files
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/version.h>
 #include "device.h"
@@ -20,6 +19,7 @@
 #endif
 
 #define MAXDVBDEVICES  8
+#define MAXDELIVERYSYSTEMS 8
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -47,7 +47,8 @@ extern const tDvbParameterMap InversionValues[];
 extern const tDvbParameterMap BandwidthValues[];
 extern const tDvbParameterMap CoderateValues[];
 extern const tDvbParameterMap ModulationValues[];
-extern const tDvbParameterMap SystemValues[];
+extern const tDvbParameterMap SystemValuesSat[];
+extern const tDvbParameterMap SystemValuesTerr[];
 extern const tDvbParameterMap TransmissionValues[];
 extern const tDvbParameterMap GuardValues[];
 extern const tDvbParameterMap HierarchyValues[];
@@ -119,12 +120,14 @@ protected:
   int adapter, frontend;
 private:
   dvb_frontend_info frontendInfo;
-  int numProvidedSystems;
-  fe_delivery_system frontendType;
+  int deliverySystems[MAXDELIVERYSYSTEMS];
+  int numDeliverySystems;
+  int numModulations;
   int fd_dvr, fd_ca;
   static cMutex bondMutex;
   cDvbDevice *bondedDevice;
   mutable bool needsDetachBondedReceivers;
+  bool QueryDeliverySystems(int fd_frontend);
 public:
   cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
@@ -167,6 +170,7 @@ private:
 private:
   cDvbTuner *dvbTuner;
 public:
+  virtual bool ProvidesDeliverySystem(int DeliverySystem) const;
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;

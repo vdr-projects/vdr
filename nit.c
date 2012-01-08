@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.6 2011/08/12 14:27:31 kls Exp $
+ * $Id: nit.c 2.7 2012/01/06 12:45:39 kls Exp $
  */
 
 #include "nit.h"
@@ -15,6 +15,9 @@
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
 #include "tools.h"
+
+#define DVB_SYSTEM_1 0 // see also dvbdevice.c
+#define DVB_SYSTEM_2 1
 
 cNitFilter::cNitFilter(void)
 {
@@ -134,7 +137,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetCoderateH(CodeRates[sd->getFecInner()]);
                  static int Modulations[] = { QAM_AUTO, QPSK, PSK_8, QAM_16 };
                  dtp.SetModulation(Modulations[sd->getModulationType()]);
-                 dtp.SetSystem(sd->getModulationSystem() ? SYS_DVBS2 : SYS_DVBS);
+                 dtp.SetSystem(sd->getModulationSystem() ? DVB_SYSTEM_2 : DVB_SYSTEM_1);
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
                  dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
