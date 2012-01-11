@@ -6807,3 +6807,5 @@ Video Disk Recorder Revision History
   descriptions with blanks (thanks to Torsten Lang for reporting a problem with
   EPG data from BSkyB's "MTV MUSIC", S28.2E-2-2010-7012).
 - Fixed cDvbSubtitleConverter::SetOsdData() (thanks to Rolf Ahrenberg).
+- Fixed cListBase::Move() in case From and To are equal (reported by Sundararaj
+  Reel).
