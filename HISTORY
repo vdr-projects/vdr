@@ -6809,3 +6809,4 @@ Video Disk Recorder Revision History
 - Fixed cDvbSubtitleConverter::SetOsdData() (thanks to Rolf Ahrenberg).
 - Fixed cListBase::Move() in case From and To are equal (reported by Sundararaj
   Reel).
+- Added support for DVB-T2 to libsi (thanks to Rolf Ahrenberg).

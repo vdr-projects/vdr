@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.3 2011/12/10 15:47:15 kls Exp $
+ *   $Id: headers.h 2.4 2012/01/11 11:35:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1837,6 +1837,37 @@ struct descr_extension {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
    u_char descriptor_tag_extension               :8;
+};
+
+/* extension 0x04 t2_delivery_system_descriptor */
+
+struct descr_t2_delivery_system {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char descriptor_tag_extension               :8;
+   u_char plp_id                                 :8;
+   u_char t2_system_id_hi                        :8;
+   u_char t2_system_id_lo                        :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char siso_miso                              :2;
+   u_char bandwidth                              :4;
+   u_char reserved                               :2;
+   u_char guard_interval                         :3;
+   u_char transmission_mode                      :3;
+   u_char other_frequency_flag                   :1;
+   u_char tfs_flag                               :1;
+#else
+   u_char reserved                               :2;
+   u_char bandwidth                              :4;
+   u_char siso_miso                              :2;
+   u_char tfs_flag                               :1;
+   u_char other_frequency_flag                   :1;
+   u_char transmission_mode                      :3;
+   u_char guard_interval                         :3;
+#endif
+/* now follow cell_id, frequency_loop_length, centre_frequency,
+   subcell_info_loop_length, cell_id_extension, transposer_frequency
+   fields looping to the end */
 };
 
 /* MHP 0x00 application_descriptor */

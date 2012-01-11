@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 2.3 2011/12/10 15:47:15 kls Exp $
+ *   $Id: descriptor.h 2.4 2012/01/11 11:35:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -536,6 +536,25 @@ protected:
    virtual void Parse();
 private:
    const descr_extension *s;
+};
+
+class T2DeliverySystemDescriptor : public Descriptor {
+public:
+   int getExtendedDataFlag() const;
+   int getExtensionDescriptorTag() const;
+   int getPlpId() const;
+   int getT2SystemId() const;
+   int getSisoMiso() const;
+   int getBandwidth() const;
+   int getGuardInterval() const;
+   int getTransmissionMode() const;
+   int getOtherFrequencyFlag() const;
+   int getTfsFlag() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_t2_delivery_system *s;
+   int extended_data_flag;
 };
 
 // Private DVB Descriptor  Premiere.de
