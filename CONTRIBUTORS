@@ -1120,6 +1120,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing handling DVB subtitles and implementing decoding textual DVB subtitles
  for adding file name and line number to LOG_ERROR_STR()
  for replacing all calls to sleep() with cCondWait::SleepMs()
+ for fixing cDvbSubtitleConverter::SetOsdData()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

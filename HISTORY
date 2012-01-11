@@ -6781,7 +6781,7 @@ Video Disk Recorder Revision History
 - Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
 - Fixed a crash with malformed SI data (patch from vdr-portal).
 
-2012-01-07: Version 1.7.23
+2012-01-11: Version 1.7.23
 
 - Removed the '.pl' suffix from svdrpsend.pl (sorry, I missed that one).
 - Fixed bonding more than two devices.
@@ -6806,3 +6806,4 @@ Video Disk Recorder Revision History
 - cEvent::FixEpgBugs() now replaces any newline characters in stream component
   descriptions with blanks (thanks to Torsten Lang for reporting a problem with
   EPG data from BSkyB's "MTV MUSIC", S28.2E-2-2010-7012).
+- Fixed cDvbSubtitleConverter::SetOsdData() (thanks to Rolf Ahrenberg).
