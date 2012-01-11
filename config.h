@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.37 2011/12/04 21:46:30 kls Exp $
+ * $Id: config.h 2.38 2012/01/11 15:40:47 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -122,7 +122,7 @@ public:
                 if (!isempty(s)) {
                    T *l = new T;
                    if (l->Parse(s))
-                      Add(l);
+                      this->Add(l);
                    else {
                       esyslog("ERROR: error in %s, line %d", fileName, line);
                       delete l;

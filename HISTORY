@@ -6811,3 +6811,4 @@ Video Disk Recorder Revision History
   Reel).
 - Added support for DVB-T2 to libsi (thanks to Rolf Ahrenberg).
 - Added support for handling DVB-T2 transponders (thanks to Rolf Ahrenberg).
+- Fixed cConfig::Load() for g++ version 4.7.0 (thanks to Ville Skyttä).
