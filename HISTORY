@@ -6810,3 +6810,4 @@ Video Disk Recorder Revision History
 - Fixed cListBase::Move() in case From and To are equal (reported by Sundararaj
   Reel).
 - Added support for DVB-T2 to libsi (thanks to Rolf Ahrenberg).
+- Added support for handling DVB-T2 transponders (thanks to Rolf Ahrenberg).

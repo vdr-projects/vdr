@@ -1122,6 +1122,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for replacing all calls to sleep() with cCondWait::SleepMs()
  for fixing cDvbSubtitleConverter::SetOsdData()
  for adding support for DVB-T2 to libsi
+ for adding support for handling DVB-T2 transponders
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

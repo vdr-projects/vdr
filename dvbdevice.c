@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.52 2012/01/08 14:30:04 kls Exp $
+ * $Id: dvbdevice.c 2.53 2012/01/11 12:31:06 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -44,9 +44,12 @@ const tDvbParameterMap InversionValues[] = {
   };
 
 const tDvbParameterMap BandwidthValues[] = {
-  {   6, 6000000, "6 MHz" },
-  {   7, 7000000, "7 MHz" },
-  {   8, 8000000, "8 MHz" },
+  {    5,  5000000, "5 MHz" },
+  {    6,  6000000, "6 MHz" },
+  {    7,  7000000, "7 MHz" },
+  {    8,  8000000, "8 MHz" },
+  {   10, 10000000, "10 MHz" },
+  { 1712,  1712000, "1.712 MHz" },
   {  -1, 0, NULL }
   };
 
@@ -75,9 +78,12 @@ const tDvbParameterMap ModulationValues[] = {
   {   2, QPSK,     "QPSK" },
   {   5, PSK_8,    "8PSK" },
   {   6, APSK_16,  "16APSK" },
+  {   7, APSK_32,  "32APSK" },
   {  10, VSB_8,    "VSB8" },
   {  11, VSB_16,   "VSB16" },
+  {  12, DQPSK,    "DQPSK" },
   { 998, QAM_AUTO, "QAMAUTO" },
+  { 999, QAM_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
@@ -97,18 +103,25 @@ const tDvbParameterMap SystemValuesTerr[] = {
   };
 
 const tDvbParameterMap TransmissionValues[] = {
+  {   1, TRANSMISSION_MODE_1K,   "1K" },
   {   2, TRANSMISSION_MODE_2K,   "2K" },
+  {   4, TRANSMISSION_MODE_4K,   "4K" },
   {   8, TRANSMISSION_MODE_8K,   "8K" },
+  {  16, TRANSMISSION_MODE_16K,  "16K" },
+  {  32, TRANSMISSION_MODE_32K,  "32K" },
   { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
 const tDvbParameterMap GuardValues[] = {
-  {   4, GUARD_INTERVAL_1_4,  "1/4" },
-  {   8, GUARD_INTERVAL_1_8,  "1/8" },
-  {  16, GUARD_INTERVAL_1_16, "1/16" },
-  {  32, GUARD_INTERVAL_1_32, "1/32" },
-  { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
+  {     4, GUARD_INTERVAL_1_4,    "1/4" },
+  {     8, GUARD_INTERVAL_1_8,    "1/8" },
+  {    16, GUARD_INTERVAL_1_16,   "1/16" },
+  {    32, GUARD_INTERVAL_1_32,   "1/32" },
+  {   128, GUARD_INTERVAL_1_128,  "1/128" },
+  { 19128, GUARD_INTERVAL_19_128, "19/128" },
+  { 19256, GUARD_INTERVAL_19_256, "19/256" },
+  {   999, GUARD_INTERVAL_AUTO,   trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
@@ -193,6 +206,7 @@ cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
   rollOff      = ROLLOFF_AUTO;
+  plpId        = 0;
   Parse(Parameters);
 }
 
@@ -215,7 +229,8 @@ cString cDvbTransponderParameters::ToString(char Type) const
   ST("ACST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
   ST("ACST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
   ST("  S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST("  S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
+  ST("   T")  q += PrintParameter(q, 'P', plpId);
+  ST("  ST")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
   ST("   T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
   ST("   T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
   return buffer;
@@ -228,7 +243,7 @@ const char *cDvbTransponderParameters::ParseParameter(const char *s, int &Value,
      errno = 0;
      int n = strtol(s, &p, 10);
      if (!errno && p != s) {
-        Value = MapToDriver(n, Map);
+        Value = Map ? MapToDriver(n, Map) : n;
         if (Value >= 0)
            return p;
         }
@@ -250,6 +265,7 @@ bool cDvbTransponderParameters::Parse(const char *s)
           case 'L': polarization = *s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
+          case 'P': s = ParseParameter(s, plpId); break;
           case 'R': polarization = *s++; break;
           case 'S': s = ParseParameter(s, system, SystemValuesSat); break; // we only need the numerical value, so Sat or Terr doesn't matter
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
@@ -792,8 +808,8 @@ bool cDvbTuner::SetFrontend(void)
      tuneTimeout = DVBC_TUNE_TIMEOUT;
      lockTimeout = DVBC_LOCK_TIMEOUT;
      }
-  else if (frontendType == SYS_DVBT) {
-     // DVB-T
+  else if (frontendType == SYS_DVBT || frontendType == SYS_DVBT2) {
+     // DVB-T/DVB-T2 (common parts)
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
      SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_BANDWIDTH_HZ, dtp.Bandwidth());
@@ -803,6 +819,10 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_TRANSMISSION_MODE, dtp.Transmission());
      SETCMD(DTV_GUARD_INTERVAL, dtp.Guard());
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
+     if (frontendType == SYS_DVBT2) {
+        // DVB-T2
+        SETCMD(DTV_DVBT2_PLP_ID, dtp.PlpId());
+        }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
@@ -933,7 +953,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 #define ST(s) if (strchr(s, type))
   switch (param++) {
     case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "HVLR");             else return GetOsdItem();
-    case  1: ST("  S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
+    case  1: ST("  ST")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
     case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &srate);                                else return GetOsdItem();
     case  3: ST("ACST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
     case  4: ST(" CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
@@ -944,6 +964,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
     case  9: ST("   T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
     case 10: ST("   T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
     case 11: ST("  S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
+    case 12: ST("   T")  return new cMenuEditIntItem( tr("PlpId"),        &dtp.plpId,        0, 255);             else return GetOsdItem();
     default: return NULL;
     }
   return NULL;
@@ -1138,7 +1159,10 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
                      if (frontendInfo.caps & FE_CAN_2G_MODULATION)
                         deliverySystems[numDeliverySystems++] = SYS_DVBS2;
                      break;
-       case FE_OFDM: deliverySystems[numDeliverySystems++] = SYS_DVBT; break;
+       case FE_OFDM: deliverySystems[numDeliverySystems++] = SYS_DVBT;
+                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
+                        deliverySystems[numDeliverySystems++] = SYS_DVBT2;
+                     break;
        case FE_QAM:  deliverySystems[numDeliverySystems++] = SYS_DVBC_ANNEX_AC; break;
        case FE_ATSC: deliverySystems[numDeliverySystems++] = SYS_ATSC; break;
        default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
@@ -1363,7 +1387,7 @@ bool cDvbDevice::ProvidesSource(int Source) const
       || type == cSource::stAtsc  && ProvidesDeliverySystem(SYS_ATSC)
       || type == cSource::stCable && (ProvidesDeliverySystem(SYS_DVBC_ANNEX_AC) || ProvidesDeliverySystem(SYS_DVBC_ANNEX_B))
       || type == cSource::stSat   && (ProvidesDeliverySystem(SYS_DVBS) || ProvidesDeliverySystem(SYS_DVBS2))
-      || type == cSource::stTerr  && ProvidesDeliverySystem(SYS_DVBT);
+      || type == cSource::stTerr  && (ProvidesDeliverySystem(SYS_DVBT) || ProvidesDeliverySystem(SYS_DVBT2));
 }
 
 bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const

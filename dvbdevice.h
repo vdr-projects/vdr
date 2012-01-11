@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.19 2012/01/06 13:29:46 kls Exp $
+ * $Id: dvbdevice.h 2.20 2012/01/11 12:08:49 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,8 +14,8 @@
 #include <linux/dvb/version.h>
 #include "device.h"
 
-#if DVB_API_VERSION < 5
-#error VDR requires Linux DVB driver API version 5.0 or higher!
+#if DVB_API_VERSION < 5 || (DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR < 3)
+#error VDR requires Linux DVB driver API version 5.3 or higher!
 #endif
 
 #define MAXDVBDEVICES  8
@@ -68,8 +68,9 @@ private:
   int guard;
   int hierarchy;
   int rollOff;
+  int plpId;
   int PrintParameter(char *p, char Name, int Value) const;
-  const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map);
+  const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map = NULL);
 public:
   cDvbTransponderParameters(const char *Parameters = NULL);
   char Polarization(void) const { return polarization; }
@@ -83,6 +84,7 @@ public:
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
   int RollOff(void) const { return rollOff; }
+  int PlpId(void) const { return plpId; }
   void SetPolarization(char Polarization) { polarization = Polarization; }
   void SetInversion(int Inversion) { inversion = Inversion; }
   void SetBandwidth(int Bandwidth) { bandwidth = Bandwidth; }
@@ -94,6 +96,7 @@ public:
   void SetGuard(int Guard) { guard = Guard; }
   void SetHierarchy(int Hierarchy) { hierarchy = Hierarchy; }
   void SetRollOff(int RollOff) { rollOff = RollOff; }
+  void SetPlpId(int PlpId) { plpId = PlpId; }
   cString ToString(char Type) const;
   bool Parse(const char *s);
   };

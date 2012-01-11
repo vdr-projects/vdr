@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-12-03 16:25+0100\n"
+"POT-Creation-Date: 2012-01-11 13:47+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -75,6 +75,9 @@ msgstr "Hierarkia"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr "PLP-tunniste"
 
 msgid "Starting EPG scan"
 msgstr "Ohjelmaoppaan päivitys aloitettu"

@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-11-19 16:01+0200\n"
+"POT-Creation-Date: 2012-01-11 13:47+0100\n"
 "PO-Revision-Date: 2012-01-02 11:54+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Érvénytelen csatorna ***"
@@ -75,6 +75,9 @@ msgstr "Hierarhia"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "EPG adatok aktualizálása"
@@ -964,6 +967,14 @@ msgstr "Alsó LNB-frekvencia (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Felsõ LNB-frekvencia (MHz)"
+
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+#, fuzzy
+msgid "Setup.LNB$own"
+msgstr "DiSEqC használata"
 
 msgid "CAM reset"
 msgstr "CAM újraindítás"
