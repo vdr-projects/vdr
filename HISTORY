@@ -6814,3 +6814,5 @@ Video Disk Recorder Revision History
   with version 5.3 or higher that can handle the DTV_DVBT2_PLP_ID call (thanks
   to Rolf Ahrenberg).
 - Fixed cConfig::Load() for g++ version 4.7.0 (thanks to Ville Skyttä).
+- Fixed a possible memory corruption in cTsToPes::GetPes() in case of broken
+  TS packets, e.g. when switching channels.
