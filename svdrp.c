@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.12 2011/12/04 13:58:33 kls Exp $
+ * $Id: svdrp.c 2.13 2012/01/12 15:02:46 kls Exp $
  */
 
 #include "svdrp.h"
@@ -583,6 +583,10 @@ void cSVDRP::CmdCLRE(const char *Option)
                   }
                }
            if (Schedule) {
+              for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
+                  if (ChannelID == Timer->Channel()->GetChannelID().ClrRid())
+                     Timer->SetEvent(NULL);
+                  }
               Schedule->Cleanup(INT_MAX);
               cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
               Reply(250, "EPG data of channel \"%s\" cleared", Option);

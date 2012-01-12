@@ -2492,6 +2492,8 @@ Timo Eskola <timo@tolleri.net>
  for implementing sending all frames to devices that can handle them in fast forward
  trick speeds
  for implementing the setup option "Recording/Pause key handling"
+ for fixing the SVDRP command CLRE for a single channel in case there are events
+ that have a timer
 
 Elias Luttinen <el@iki.fi>
  for improving the description of where logging goes in the INSTALL file
