@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.8 2012/01/11 12:16:33 kls Exp $
+ * $Id: nit.c 2.9 2012/01/12 08:43:52 kls Exp $
  */
 
 #include "nit.h"
@@ -307,26 +307,30 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::ExtensionDescriptor *sd = (SI::ExtensionDescriptor *)d;
                  switch (sd->getExtensionDescriptorTag()) {
                    case SI::T2DeliverySystemDescriptorTag: {
-                        for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
-                            int Source = cSource::FromData(cSource::stTerr);
-                            if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                               SI::T2DeliverySystemDescriptor *td = (SI::T2DeliverySystemDescriptor *)d;
-                               int Frequency = Channel->Frequency();
-                               int SymbolRate = Channel->Srate();
-                               cDvbTransponderParameters dtp(Channel->Parameters());
-                               dtp.SetSystem(DVB_SYSTEM_1);
-                               dtp.SetPlpId(td->getPlpId());
-                               if (td->getExtendedDataFlag()) {
-                                  static int T2Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 10000000, 1712000, 0, 0 };
-                                  dtp.SetBandwidth(T2Bandwidths[td->getBandwidth()]);
-                                  static int T2GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4, GUARD_INTERVAL_1_128, GUARD_INTERVAL_19_128, GUARD_INTERVAL_19_256, 0 };
-                                  dtp.SetGuard(T2GuardIntervals[td->getGuardInterval()]);
-                                  static int T2TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_1K, TRANSMISSION_MODE_16K, TRANSMISSION_MODE_32K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
-                                  dtp.SetTransmission(T2TransmissionModes[td->getTransmissionMode()]);
+                        if (Setup.UpdateChannels >= 5) {
+                           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                               int Source = cSource::FromData(cSource::stTerr);
+                               if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                                  SI::T2DeliverySystemDescriptor *td = (SI::T2DeliverySystemDescriptor *)d;
+                                  int Frequency = Channel->Frequency();
+                                  int SymbolRate = Channel->Srate();
+                                  //int SystemId = td->getSystemId();
+                                  cDvbTransponderParameters dtp(Channel->Parameters());
+                                  dtp.SetSystem(DVB_SYSTEM_2);
+                                  dtp.SetPlpId(td->getPlpId());
+                                  if (td->getExtendedDataFlag()) {
+                                     static int T2Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 10000000, 1712000, 0, 0 };
+                                     dtp.SetBandwidth(T2Bandwidths[td->getBandwidth()]);
+                                     static int T2GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4, GUARD_INTERVAL_1_128, GUARD_INTERVAL_19_128, GUARD_INTERVAL_19_256, 0 };
+                                     dtp.SetGuard(T2GuardIntervals[td->getGuardInterval()]);
+                                     static int T2TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_1K, TRANSMISSION_MODE_16K, TRANSMISSION_MODE_32K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
+                                     dtp.SetTransmission(T2TransmissionModes[td->getTransmissionMode()]);
+                                     //TODO add parsing of frequencies
+                                     }
+                                  Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
                                   }
-                               Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
                                }
-                            }
+                           }
                         }
                         break;
                    default: ;
