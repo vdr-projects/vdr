@@ -6810,5 +6810,7 @@ Video Disk Recorder Revision History
 - Fixed cListBase::Move() in case From and To are equal (reported by Sundararaj
   Reel).
 - Added support for DVB-T2 to libsi (thanks to Rolf Ahrenberg).
-- Added support for handling DVB-T2 transponders (thanks to Rolf Ahrenberg).
+- Added support for handling DVB-T2 transponders.  This requires a DVB driver
+  with version 5.3 or higher that can handle the DTV_DVBT2_PLP_ID call (thanks
+  to Rolf Ahrenberg).
 - Fixed cConfig::Load() for g++ version 4.7.0 (thanks to Ville Skyttä).
