@@ -2747,7 +2747,7 @@ Andreas Oberritter <obi@opendreambox.org>
 Milan Cvijanovic <elcom_cvijo@hotmail.com>
  for translating OSD texts to the Serbian language
 
-Frank Neumann <frank.neumann@hp.com>
+Frank Neumann <fnu@yavdr.org>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
 
