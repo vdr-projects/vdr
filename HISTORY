@@ -6820,3 +6820,5 @@ Video Disk Recorder Revision History
   that have a timer (thanks to Timo Eskola).
 - BIDI support now checks at runtime whether the system runs with UTF-8 (suggested
   by Torsten Lang).
+- Added member functions Adapter() and Frontend() to cDvbDevice (suggested by
+  Rolf Ahrenberg).
