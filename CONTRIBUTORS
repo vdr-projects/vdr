@@ -2812,3 +2812,5 @@ Dominic Evans <oldmanuk@gmail.com>
 Torsten Lang <info@torstenlang.de>
  for reporting a problem with newline characters in stream component descriptions
  of EPG data from BSkyB's "MTV MUSIC"
+ for suggesting to make BIDI support check at runtime whether the system runs with
+ UTF-8

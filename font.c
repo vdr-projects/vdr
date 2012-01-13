@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.8 2011/03/28 16:29:51 kls Exp $
+ * $Id: font.c 2.9 2012/01/13 09:43:22 kls Exp $
  */
 
 #include "font.h"
@@ -508,25 +508,27 @@ cString cFont::GetFontFileName(const char *FontName)
 #ifdef BIDI
 cString cFont::Bidi(const char *Ltr)
 {
-  fribidi_set_mirroring(true);
-  fribidi_set_reorder_nsm(false);
-  FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
-  int LtrLen = strlen(Ltr);
-  FriBidiCharType Base = FRIBIDI_TYPE_L;
-  FriBidiChar *Logical = MALLOC(FriBidiChar, LtrLen + 1) ;
-  int RtlLen = fribidi_charset_to_unicode(fribidiCharset, const_cast<char *>(Ltr), LtrLen, Logical);
-  FriBidiChar *Visual = MALLOC(FriBidiChar, LtrLen + 1) ;
-  char *Rtl = NULL;
-  bool ok = fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL);
-  if (ok) {
-     fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
-     Rtl = MALLOC(char, RtlLen * 4 + 1);
-     fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
+  if (cCharSetConv::SystemCharacterTable()) { // bidi requires UTF-8
+     fribidi_set_mirroring(true);
+     fribidi_set_reorder_nsm(false);
+     FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
+     int LtrLen = strlen(Ltr);
+     FriBidiCharType Base = FRIBIDI_TYPE_L;
+     FriBidiChar *Logical = MALLOC(FriBidiChar, LtrLen + 1) ;
+     int RtlLen = fribidi_charset_to_unicode(fribidiCharset, const_cast<char *>(Ltr), LtrLen, Logical);
+     FriBidiChar *Visual = MALLOC(FriBidiChar, LtrLen + 1) ;
+     char *Rtl = NULL;
+     bool ok = fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL);
+     if (ok) {
+        fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
+        Rtl = MALLOC(char, RtlLen * 4 + 1);
+        fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
+        }
+     free(Logical);
+     free(Visual);
+     if (ok)
+        return cString(Rtl, true);
      }
-  free(Logical);
-  free(Visual);
-  if (ok)
-     return cString(Rtl, true);
   return cString(Ltr);
 }
 #endif

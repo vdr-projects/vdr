@@ -6781,7 +6781,7 @@ Video Disk Recorder Revision History
 - Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
 - Fixed a crash with malformed SI data (patch from vdr-portal).
 
-2012-01-11: Version 1.7.23
+2012-01-12: Version 1.7.23
 
 - Removed the '.pl' suffix from svdrpsend.pl (sorry, I missed that one).
 - Fixed bonding more than two devices.
@@ -6818,3 +6818,5 @@ Video Disk Recorder Revision History
   TS packets, e.g. when switching channels.
 - Fixed the SVDRP command CLRE for a single channel in case there are events
   that have a timer (thanks to Timo Eskola).
+- BIDI support now checks at runtime whether the system runs with UTF-8 (suggested
+  by Torsten Lang).
