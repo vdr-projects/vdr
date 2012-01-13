@@ -6822,3 +6822,6 @@ Video Disk Recorder Revision History
   by Torsten Lang).
 - Added member functions Adapter() and Frontend() to cDvbDevice (suggested by
   Rolf Ahrenberg).
+- The parameters that are only used by "second generation" delivery systems (DVB-S2
+  and DVB-T2) are no longer written into channels.conf for "first generation"
+  delivery systems (DVB-S and DVB-T).

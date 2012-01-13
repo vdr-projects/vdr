@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.53 2012/01/11 12:31:06 kls Exp $
+ * $Id: dvbdevice.c 2.54 2012/01/13 12:23:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -217,22 +217,22 @@ int cDvbTransponderParameters::PrintParameter(char *p, char Name, int Value) con
 
 cString cDvbTransponderParameters::ToString(char Type) const
 {
-#define ST(s) if (strchr(s, Type))
+#define ST(s) if (strchr(s, Type) && (strchr(s, '0' + system + 1) || strchr(s, '*')))
   char buffer[64];
   char *q = buffer;
   *q = 0;
-  ST("  S ")  q += sprintf(q, "%c", polarization);
-  ST("   T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
-  ST(" CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
-  ST("   T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
-  ST("   T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
-  ST("ACST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
-  ST("ACST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
-  ST("  S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST("   T")  q += PrintParameter(q, 'P', plpId);
-  ST("  ST")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
-  ST("   T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
-  ST("   T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
+  ST("  S *")  q += sprintf(q, "%c", polarization);
+  ST("   T*")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
+  ST(" CST*")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
+  ST("   T*")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
+  ST("   T*")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
+  ST("ACST*")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
+  ST("ACST*")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
+  ST("  S 2")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
+  ST("   T2")  q += PrintParameter(q, 'P', plpId);
+  ST("  ST*")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
+  ST("   T*")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
+  ST("   T*")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
   return buffer;
 }
 
