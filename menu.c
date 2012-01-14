@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.34 2011/12/04 14:52:38 kls Exp $
+ * $Id: menu.c 2.35 2012/01/14 13:06:03 kls Exp $
  */
 
 #include "menu.h"
@@ -3114,6 +3114,7 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   SetSection(tr("Replay"));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -4568,12 +4569,15 @@ bool cReplayControl::ShowProgress(bool Initial)
            displayReplay->SetTitle(title);
         lastCurrent = lastTotal = -1;
         }
-     if (Total != lastTotal) {
-        displayReplay->SetTotal(IndexToHMSF(Total, false, FramesPerSecond()));
-        if (!Initial)
-           displayReplay->Flush();
-        }
      if (Current != lastCurrent || Total != lastTotal) {
+        if (Setup.ShowRemainingTime || Total != lastTotal) {
+           int Index = Total;
+           if (Setup.ShowRemainingTime)
+              Index = Current - Index;
+           displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+           if (!Initial)
+              displayReplay->Flush();
+           }
         displayReplay->SetProgress(Current, Total);
         if (!Initial)
            displayReplay->Flush();

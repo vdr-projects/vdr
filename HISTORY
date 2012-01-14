@@ -6828,3 +6828,6 @@ Video Disk Recorder Revision History
 - Changed IndexToHMSF() so that it can handle negative Index values.
 - Added option -N to the msgmerge call in the Makefile, because fuzzy translation
   mostly resulted in useless strings.
+- The new setup option "Replay/Show remaining time" can be used to switch between
+  showing the total length or the remaining time of the recording that is currently
+  replayed.

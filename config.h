@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.38 2012/01/11 15:40:47 kls Exp $
+ * $Id: config.h 2.39 2012/01/14 13:03:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -302,6 +302,7 @@ public:
   time_t NextWakeupTime;
   int MultiSpeedMode;
   int ShowReplayMode;
+  int ShowRemainingTime;
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;
