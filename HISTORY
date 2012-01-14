@@ -6826,3 +6826,5 @@ Video Disk Recorder Revision History
   and DVB-T2) are no longer written into channels.conf for "first generation"
   delivery systems (DVB-S and DVB-T).
 - Changed IndexToHMSF() so that it can handle negative Index values.
+- Added option -N to the msgmerge call in the Makefile, because fuzzy translation
+  mostly resulted in useless strings.
