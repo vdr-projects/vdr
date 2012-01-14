@@ -6781,7 +6781,7 @@ Video Disk Recorder Revision History
 - Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
 - Fixed a crash with malformed SI data (patch from vdr-portal).
 
-2012-01-12: Version 1.7.23
+2012-01-14: Version 1.7.23
 
 - Removed the '.pl' suffix from svdrpsend.pl (sorry, I missed that one).
 - Fixed bonding more than two devices.
@@ -6825,3 +6825,4 @@ Video Disk Recorder Revision History
 - The parameters that are only used by "second generation" delivery systems (DVB-S2
   and DVB-T2) are no longer written into channels.conf for "first generation"
   delivery systems (DVB-S and DVB-T).
+- Changed IndexToHMSF() so that it can handle negative Index values.

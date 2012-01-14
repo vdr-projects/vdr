@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.41 2011/12/10 14:22:37 kls Exp $
+ * $Id: recording.c 2.42 2012/01/14 12:50:58 kls Exp $
  */
 
 #include "recording.h"
@@ -2035,15 +2035,18 @@ cUnbufferedFile *cFileName::NextFile(void)
 
 cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 {
-  char buffer[16];
+  const char *Sign = "";
+  if (Index < 0) {
+     Index = -Index;
+     Sign = "-";
+     }
   double Seconds;
   int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
   s %= 60;
-  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
-  return buffer;
+  return cString::sprintf(WithFrame ? "%s%d:%02d:%02d.%02d" : "%s%d:%02d:%02d", Sign, h, m, s, f);
 }
 
 int HMSFToIndex(const char *HMSF, double FramesPerSecond)
