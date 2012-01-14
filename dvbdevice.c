@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.54 2012/01/13 12:23:33 kls Exp $
+ * $Id: dvbdevice.c 2.55 2012/01/14 10:45:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -82,7 +82,6 @@ const tDvbParameterMap ModulationValues[] = {
   {  10, VSB_8,    "VSB8" },
   {  11, VSB_16,   "VSB16" },
   {  12, DQPSK,    "DQPSK" },
-  { 998, QAM_AUTO, "QAMAUTO" },
   { 999, QAM_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
