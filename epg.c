@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.7 2011/02/25 15:16:05 kls Exp $
+ * $Id: epg.c 2.9 2012/01/12 14:31:46 kls Exp $
  */
 
 #include "epg.h"
@@ -828,10 +828,17 @@ void cEvent::FixEpgBugs(void)
 
 Final:
 
-  // VDR can't usefully handle newline characters in the title and shortText of EPG
+  // VDR can't usefully handle newline characters in the title, shortText or component description of EPG
   // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
+  if (components) {
+     for (int i = 0; i < components->NumComponents(); i++) {
+         tComponent *p = components->Component(i);
+         if (p->description)
+            strreplace(p->description, '\n', ' ');
+         }
+     }
   /* TODO adapt to UTF-8
   // Same for control characters:
   strreplace(title, '\x86', ' ');
@@ -1022,10 +1029,15 @@ void cSchedule::Cleanup(void)
 
 void cSchedule::Cleanup(time_t Time)
 {
-  cEvent *Event;
-  while ((Event = events.First()) != NULL) {
-        if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) // adding one hour for safety
-           DelEvent(Event);
+  cEvent *Event = events.First();
+  while (Event) {
+        if (Event->HasTimer())
+           Event = (cEvent *)Event->Next();
+        else if (Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
+           cEvent *e = Event;
+           Event = (cEvent *)Event->Next();
+           DelEvent(e);
+           }
         else
            break;
         }

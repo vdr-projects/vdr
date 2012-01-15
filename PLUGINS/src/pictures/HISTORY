@@ -59,3 +59,7 @@ VDR Plugin 'pictures' Revision History
 2011-11-02:
 
 - Fixed handling images that are rotated by 180 degrees in pic2mpg.
+
+2012-01-08:
+
+- Added option -o to pic2mpg.

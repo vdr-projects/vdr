@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-12-03 16:25+0100\n"
+"POT-Creation-Date: 2012-01-14 14:06+0100\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -73,6 +73,9 @@ msgstr "Хиерархија"
 
 msgid "Rolloff"
 msgstr "Рол-оф"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Започнувам скенирање на EPG"
@@ -1077,6 +1080,9 @@ msgstr "Повеќебрзински режим"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Прикажи начин на пуштање"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"

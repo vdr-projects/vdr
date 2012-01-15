@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-12-03 16:25+0100\n"
+"POT-Creation-Date: 2012-01-14 14:06+0100\n"
 "PO-Revision-Date: 2010-06-13 00:30+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -79,6 +79,9 @@ msgstr "Gerarchia"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -1083,6 +1086,9 @@ msgstr "Modalità multispeed"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Mostra modalità riproduzione"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"

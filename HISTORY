@@ -6780,3 +6780,58 @@ Video Disk Recorder Revision History
 - Added file name and line number to LOG_ERROR_STR() (thanks to Rolf Ahrenberg).
 - Replaced all calls to sleep() with cCondWait::SleepMs() (thanks to Rolf Ahrenberg).
 - Fixed a crash with malformed SI data (patch from vdr-portal).
+
+2012-01-15: Version 1.7.23
+
+- Removed the '.pl' suffix from svdrpsend.pl (sorry, I missed that one).
+- Fixed bonding more than two devices.
+- Fixed handling symbolic links in cRecordings::ScanVideoDir() (reported by
+  Sundararaj Reel).
+- Fixed a memory leak in cRecordings::ScanVideoDir() in case there are too many
+  link levels (reported by Sundararaj Reel).
+- Removed redundant memset() in the ctor of cSatCableNumbers (triggered by
+  Ville Skyttä pointing out that the argument sequence in the call was wrong).
+- Removed a redundant NULL check in cDvbSpuDecoder::setTime() (thanks to Ville Skyttä).
+- Added HasSnr to the DEBUG_SIGNALQUALITY output in cDvbTuner::GetSignalQuality()
+  (triggered by Ville Skyttä pointing out that the variable HasSnr was unused).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added support for HbbTV to libsi (thanks to Christoph Haubrich).
+- Added support for devices with more than one delivery system per frontend.
+  This requires a DVB driver with version 5.5 or higher that can handle the
+  DTV_ENUM_DELSYS call. With older drivers it will fall back to one delivery
+  system per frontend.
+- Updated the Hungarian language texts (thanks to István Füley).
+- cDvbTuner::ExecuteDiseqc() now makes sure only one tuner sends SCR commands
+  at any given time (reported by Frank Neumann).
+- cEvent::FixEpgBugs() now replaces any newline characters in stream component
+  descriptions with blanks (thanks to Torsten Lang for reporting a problem with
+  EPG data from BSkyB's "MTV MUSIC", S28.2E-2-2010-7012).
+- Fixed cDvbSubtitleConverter::SetOsdData() (thanks to Rolf Ahrenberg).
+- Fixed cListBase::Move() in case From and To are equal (reported by Sundararaj
+  Reel).
+- Added support for DVB-T2 to libsi (thanks to Rolf Ahrenberg).
+- Added support for handling DVB-T2 transponders.  This requires a DVB driver
+  with version 5.3 or higher that can handle the DTV_DVBT2_PLP_ID call (thanks
+  to Rolf Ahrenberg).
+- Fixed cConfig::Load() for g++ version 4.7.0 (thanks to Ville Skyttä).
+- Fixed a possible memory corruption in cTsToPes::GetPes() in case of broken
+  TS packets, e.g. when switching channels.
+- Fixed the SVDRP command CLRE for a single channel in case there are events
+  that have a timer (thanks to Timo Eskola).
+- BIDI support now checks at runtime whether the system runs with UTF-8 (suggested
+  by Torsten Lang).
+- Added member functions Adapter() and Frontend() to cDvbDevice (suggested by
+  Rolf Ahrenberg).
+- The parameters that are only used by "second generation" delivery systems (DVB-S2
+  and DVB-T2) are no longer written into channels.conf for "first generation"
+  delivery systems (DVB-S and DVB-T).
+- Changed IndexToHMSF() so that it can handle negative Index values.
+- Added option -N to the msgmerge call in the Makefile, because fuzzy translation
+  mostly resulted in useless strings.
+- The new setup option "Replay/Show remaining time" can be used to switch between
+  showing the total length or the remaining time of the recording that is currently
+  replayed.
+- Fixed wrongfully displaying the length of a recording in the title of the replay
+  progress display.
+- Fixed frozen live view with device bonding in case the bonded master is used for
+  live viewing (reported by Uwe Scheffler).

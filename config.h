@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.36 2011/12/03 14:19:52 kls Exp $
+ * $Id: config.h 2.39 2012/01/14 13:03:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.22"
-#define VDRVERSNUM   10722  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.23"
+#define VDRVERSNUM   10723  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.22"
-#define APIVERSNUM   10722  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.23"
+#define APIVERSNUM   10723  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -122,7 +122,7 @@ public:
                 if (!isempty(s)) {
                    T *l = new T;
                    if (l->Parse(s))
-                      Add(l);
+                      this->Add(l);
                    else {
                       esyslog("ERROR: error in %s, line %d", fileName, line);
                       delete l;
@@ -302,6 +302,7 @@ public:
   time_t NextWakeupTime;
   int MultiSpeedMode;
   int ShowReplayMode;
+  int ShowRemainingTime;
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;

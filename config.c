@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.16 2011/12/03 15:21:30 kls Exp $
+ * $Id: config.c 2.18 2012/01/14 13:04:59 kls Exp $
  */
 
 #include "config.h"
@@ -69,7 +69,6 @@ cSatCableNumbers::cSatCableNumbers(int Size, const char *s)
 {
   size = Size;
   array = MALLOC(int, size);
-  memset(array, size * sizeof(int), 0);
   FromString(s);
 }
 
@@ -454,6 +453,7 @@ cSetup::cSetup(void)
   NextWakeupTime = 0;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
+  ShowRemainingTime = 0;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
@@ -648,6 +648,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
+  else if (!strcasecmp(Name, "ShowRemainingTime"))   ShowRemainingTime  = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
@@ -745,6 +746,7 @@ bool cSetup::Save(void)
   Store("NextWakeupTime",     NextWakeupTime);
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
+  Store("ShowRemainingTime",  ShowRemainingTime);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);

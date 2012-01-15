@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.62 2011/09/04 13:09:06 kls Exp $
+ * $Id: remux.c 2.63 2012/01/12 12:07:58 kls Exp $
  */
 
 #include "remux.h"
@@ -701,6 +701,10 @@ const uchar *cTsToPes::GetPes(int &Length)
         uchar *p = data + offset - 6;
         if (p != data) {
            p -= 3;
+           if (p < data) {
+              Reset();
+              return NULL;
+              }
            memmove(p, data, 4);
            }
         int l = min(length - offset, MAXPESLENGTH);

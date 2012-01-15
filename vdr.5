@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.26 2011/09/25 13:51:34 kls Exp $
+.\" $Id: vdr.5 2.27 2012/01/11 13:16:57 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -87,32 +87,33 @@ meaning (and allowed values) are
 .TS
 tab (@);
 l l.
-\fBB\fR@Bandwidth (6, 7, 8)
+\fBB\fR@Bandwidth (1712, 5, 6, 7, 8, 10)
 \fBC\fR@Code rate high priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
 \fBD\fR@coDe rate low priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
-\fBG\fR@Guard interval (4, 8, 16, 32)
+\fBG\fR@Guard interval (4, 8, 16, 32, 128, 19128, 19256)
 \fBH\fR@Horizontal polarization
 \fBI\fR@Inversion (0, 1)
 \fBL\fR@Left circular polarization
 \fBM\fR@Modulation (2, 5, 6, 10, 11, 16, 32, 64, 128, 256, 998)
 \fBO\fR@rollOff (0, 20, 25, 35)
+\fBP\fR@Plp id (0-255)
 \fBR\fR@Right circular polarization
 \fBS\fR@delivery System (0, 1)
-\fBT\fR@Transmission mode (2, 8)
+\fBT\fR@Transmission mode (1, 2, 4, 8, 16, 32)
 \fBV\fR@Vertical polarization
 \fBY\fR@hierarchY (0, 1, 2, 4)
 .TE
 
-\fBBandwidth:\fR The bandwidth of the channel in MHz (DVB-T only).
+\fBBandwidth:\fR The bandwidth of the channel in MHz (1712 in kHz): (DVB-T/DVB-T2 only).
 
-\fBCode rate high priority:\fR Forward Error Correction (FEC) of the high priority stream (DVB-T).
+\fBCode rate high priority:\fR Forward Error Correction (FEC) of the high priority stream (DVB-T/DVB-T2).
 For DVB-S/DVB-S2 this parameter specifies the inner FEC scheme.
 12 = 1/2, 23 = 2/3, 34 = 3/4, ...
 
-\fBCode rate low priority:\fR Forward Error Correction (FEC) of the low priority stream (DVB-T only).
+\fBCode rate low priority:\fR Forward Error Correction (FEC) of the low priority stream (DVB-T/DVB-T2 only).
 If no hierarchy is used, set to 0.
 
-\fBGuard interval:\fR The guard interval value (DVB-T only): 4 = 1/4, 8 = 1/8, 16 = 1/16, 32 = 1/32.
+\fBGuard interval:\fR The guard interval value (DVB-T only): 4 = 1/4, 8 = 1/8, 16 = 1/16, 32 = 1/32, 128 = 1/128, 19128 = 19/128, 19256 = 19/256.
 
 \fBInversion:\fR Specifies whether the DVB frontend needs spectral inversion (DVB-T and DVB-C only). This is frontend specific, if in doubt, omit.
 
@@ -120,26 +121,30 @@ If no hierarchy is used, set to 0.
 .TS
 tab (@);
 l l.
-\fB2\fR@QPSK (DVB-S, DVB-S2, DVB-T)
+\fB2\fR@QPSK (DVB-S, DVB-S2, DVB-T, DVB-T2, ISDB-T)
 \fB5\fR@8PSK (DVB-S2)
 \fB6\fR@16APSK (DVB-S2)
+\fB7\fR@32APSK (DVB-S2)
 \fB10\fR@VSB8 (ATSC aerial)
 \fB11\fR@VSB16 (ATSC aerial)
-\fB16\fR@QAM16 (DVB-T)
-\fB64\fR@QAM64 (DVB-C, DVB-T)
+\fB12\fR@DQPSK (ISDB-T)
+\fB16\fR@QAM16 (DVB-T, DVB-T2, ISDB-T)
+\fB64\fR@QAM64 (DVB-C, DVB-T, DVB-T2, ISDB-T)
 \fB128\fR@QAM128 (DVB-C)
-\fB256\fR@QAM256 (DVB-C)
+\fB256\fR@QAM256 (DVB-C, DVB-T2)
 .TE
 
 \fBRolloff:\fR The Nyquist filter rolloff factor for DVB-S (\fB35\fR) and DVB-S2 (\fB35\fR, 25, 20),
 35 = 0.35, 25 = 0.25, 20 = 0.20, DVB-S/DVB-S2 default value is 0.35
 
-\fBTransmission mode:\fR Number of DVB-T OFDM carriers, 8 = 8k, 2 = 2k. If in doubt, try 8k.
+\fBPLP id:\fR Physical Layer Pipe (PLP) id (\fB0\fR-255) for DVB-T2 multiplex (DVB-T2 only).
+
+\fBTransmission mode:\fR Number of DVB-T OFDM carriers, 32 = 32k, 16 = 16k, 8 = 8k, 4 = 4k, 2 = 2k, 1 = 1k. If in doubt, try 8k.
 
 \fBHierarchy:\fR If set to 1, this transponder uses two streams, high priority and low priority.
-If in doubt, try 0 (off). (DVB-T only).
+If in doubt, try 0 (off). (DVB-T/DVB-T2 only).
 
-\fBDelivery System:\fR The satellite delivery system (0 = DVB-S, 1 = DVB-S2).
+\fBDelivery System:\fR The delivery system (0 = "first generation" (DVB-S/DVB-T), 1 = "second generation" (DVB-S2/DVB-T2).
 
 \fBPolarization:\fR Satellite antenna polarization.
 H = horizontal, V = vertical, R = circular right, L = circular left.
@@ -152,16 +157,19 @@ The special value \fB999\fR is used for "automatic", which means the driver
 will automatically determine the proper value (if possible).
 
 An example of a parameter field for a DVB-T channel might look like this:
-\fBB8C23D12G8M16T8Y0\fR
+\fBB8C23D12G8M16T8Y0S0\fR
+
+An example of a parameter field for a DVB-T2 channel might look like this:
+\fBB8C23D12G8M16T8Y0P0S1\fR
 
 An example of a parameter field for a DVB-C channel might look like this:
 \fBC0M64\fR
 
 An example of a parameter field for a DVB-S channel might look like this:
-\fBhC56M2O35S0\fR
+\fBHC56M2O35S0\fR
 
 An example of a parameter field for a DVB-S2 channel might look like this:
-\fBhC910M2O35S1\fR
+\fBHC910M2O35S1\fR
 
 Plugins that implement devices that need their own set of parameters may
 store those in the parameters string in arbitrary format (not necessarily

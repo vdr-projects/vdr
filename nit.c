@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.6 2011/08/12 14:27:31 kls Exp $
+ * $Id: nit.c 2.9 2012/01/12 08:43:52 kls Exp $
  */
 
 #include "nit.h"
@@ -15,6 +15,9 @@
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
 #include "tools.h"
+
+#define DVB_SYSTEM_1 0 // see also dvbdevice.c
+#define DVB_SYSTEM_2 1
 
 cNitFilter::cNitFilter(void)
 {
@@ -134,7 +137,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetCoderateH(CodeRates[sd->getFecInner()]);
                  static int Modulations[] = { QAM_AUTO, QPSK, PSK_8, QAM_16 };
                  dtp.SetModulation(Modulations[sd->getModulationType()]);
-                 dtp.SetSystem(sd->getModulationSystem() ? SYS_DVBS2 : SYS_DVBS);
+                 dtp.SetSystem(sd->getModulationSystem() ? DVB_SYSTEM_2 : DVB_SYSTEM_1);
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
                  dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
@@ -242,10 +245,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stTerr);
                  int Frequency = Frequencies[0] = sd->getFrequency() * 10;
-                 static int Bandwidths[] = { 8000000, 7000000, 6000000, 0, 0, 0, 0, 0 };
+                 static int Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 0, 0, 0, 0 };
                  dtp.SetBandwidth(Bandwidths[sd->getBandwidth()]);
                  static int Constellations[] = { QPSK, QAM_16, QAM_64, QAM_AUTO };
                  dtp.SetModulation(Constellations[sd->getConstellation()]);
+                 dtp.SetSystem(DVB_SYSTEM_1);
                  static int Hierarchies[] = { HIERARCHY_NONE, HIERARCHY_1, HIERARCHY_2, HIERARCHY_4, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO };
                  dtp.SetHierarchy(Hierarchies[sd->getHierarchy()]);
                  static int CodeRates[] = { FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO };
@@ -253,7 +257,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetCoderateL(CodeRates[sd->getCodeRateLP()]);
                  static int GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4 };
                  dtp.SetGuard(GuardIntervals[sd->getGuardInterval()]);
-                 static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
+                 static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_AUTO };
                  dtp.SetTransmission(TransmissionModes[sd->getTransmissionMode()]);
                  if (ThisNIT >= 0) {
                     for (int n = 0; n < NumFrequencies; n++) {
@@ -297,6 +301,40 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         }
                     }
+                 }
+                 break;
+            case SI::ExtensionDescriptorTag: {
+                 SI::ExtensionDescriptor *sd = (SI::ExtensionDescriptor *)d;
+                 switch (sd->getExtensionDescriptorTag()) {
+                   case SI::T2DeliverySystemDescriptorTag: {
+                        if (Setup.UpdateChannels >= 5) {
+                           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                               int Source = cSource::FromData(cSource::stTerr);
+                               if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                                  SI::T2DeliverySystemDescriptor *td = (SI::T2DeliverySystemDescriptor *)d;
+                                  int Frequency = Channel->Frequency();
+                                  int SymbolRate = Channel->Srate();
+                                  //int SystemId = td->getSystemId();
+                                  cDvbTransponderParameters dtp(Channel->Parameters());
+                                  dtp.SetSystem(DVB_SYSTEM_2);
+                                  dtp.SetPlpId(td->getPlpId());
+                                  if (td->getExtendedDataFlag()) {
+                                     static int T2Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 10000000, 1712000, 0, 0 };
+                                     dtp.SetBandwidth(T2Bandwidths[td->getBandwidth()]);
+                                     static int T2GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4, GUARD_INTERVAL_1_128, GUARD_INTERVAL_19_128, GUARD_INTERVAL_19_256, 0 };
+                                     dtp.SetGuard(T2GuardIntervals[td->getGuardInterval()]);
+                                     static int T2TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_1K, TRANSMISSION_MODE_16K, TRANSMISSION_MODE_32K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
+                                     dtp.SetTransmission(T2TransmissionModes[td->getTransmissionMode()]);
+                                     //TODO add parsing of frequencies
+                                     }
+                                  Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
+                                  }
+                               }
+                           }
+                        }
+                        break;
+                   default: ;
+                   }
                  }
                  break;
             default: ;

@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.2 2011/06/15 21:26:00 kls Exp $
+ *   $Id: headers.h 2.4 2012/01/11 11:35:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1839,6 +1839,37 @@ struct descr_extension {
    u_char descriptor_tag_extension               :8;
 };
 
+/* extension 0x04 t2_delivery_system_descriptor */
+
+struct descr_t2_delivery_system {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char descriptor_tag_extension               :8;
+   u_char plp_id                                 :8;
+   u_char t2_system_id_hi                        :8;
+   u_char t2_system_id_lo                        :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char siso_miso                              :2;
+   u_char bandwidth                              :4;
+   u_char reserved                               :2;
+   u_char guard_interval                         :3;
+   u_char transmission_mode                      :3;
+   u_char other_frequency_flag                   :1;
+   u_char tfs_flag                               :1;
+#else
+   u_char reserved                               :2;
+   u_char bandwidth                              :4;
+   u_char siso_miso                              :2;
+   u_char tfs_flag                               :1;
+   u_char other_frequency_flag                   :1;
+   u_char transmission_mode                      :3;
+   u_char guard_interval                         :3;
+#endif
+/* now follow cell_id, frequency_loop_length, centre_frequency,
+   subcell_info_loop_length, cell_id_extension, transposer_frequency
+   fields looping to the end */
+};
+
 /* MHP 0x00 application_descriptor */
 
 #define DESCR_APPLICATION_LEN 3
@@ -1907,6 +1938,11 @@ struct descr_transport_protocol {
    /* protocol_id-specific selector bytes follow */
 };
 
+struct descr_url_extension_entry {
+   u_char url_extension_length                   :8;
+   /* URL extension string */
+};
+
 #define TRANSPORT_VIA_OC_LEN 1
 
 struct transport_via_oc {
@@ -1938,6 +1974,12 @@ struct transport_via_oc_remote_end {
 
 struct transport_via_oc_end {
    u_char component_tag                          :8;
+};
+
+#define TRANSPORT_VIA_HTTP_LEN 1
+
+struct transport_via_http {
+   u_char url_base_length                        :8;
 };
 
 /* 0x03 dvb_j_application_descriptor() */
@@ -1989,6 +2031,16 @@ struct descr_application_icons_descriptor {
 struct descr_application_icons_descriptor_end {
    u_char icon_flags_hi                          :8;
    u_char icon_flags_lo                          :8;
+};
+
+/* 0x15 simple application location descrptor */
+
+#define DESCR_SIMPLE_APPLICATION_LOCATION_LEN 3
+
+struct descr_simple_application_location_descriptor {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   /* inital_path_bytes */
 };
 
 // Private DVB Descriptor  Premiere.de

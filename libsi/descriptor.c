@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 2.2 2011/06/15 21:26:00 kls Exp $
+ *   $Id: descriptor.c 2.4 2012/01/11 11:35:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -876,6 +876,52 @@ int ExtensionDescriptor::getExtensionDescriptorTag() const {
    return s->descriptor_tag_extension;
 }
 
+void T2DeliverySystemDescriptor::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const descr_t2_delivery_system>(s, offset);
+   extended_data_flag = s->descriptor_length > 0x04;
+}
+
+int T2DeliverySystemDescriptor::getExtendedDataFlag() const {
+  return extended_data_flag;
+}
+
+int T2DeliverySystemDescriptor::getExtensionDescriptorTag() const {
+   return s->descriptor_tag_extension;
+}
+
+int T2DeliverySystemDescriptor::getPlpId() const {
+   return s->plp_id;
+}
+
+int T2DeliverySystemDescriptor::getT2SystemId() const {
+   return HILO(s->t2_system_id);
+}
+
+int T2DeliverySystemDescriptor::getSisoMiso() const {
+   return extended_data_flag ? s->siso_miso : -1;
+}
+
+int T2DeliverySystemDescriptor::getBandwidth() const {
+   return extended_data_flag ? s->bandwidth : -1;
+}
+
+int T2DeliverySystemDescriptor::getGuardInterval() const {
+   return extended_data_flag ? s->guard_interval : -1;
+}
+
+int T2DeliverySystemDescriptor::getTransmissionMode() const {
+   return extended_data_flag ? s->transmission_mode : -1;
+}
+
+int T2DeliverySystemDescriptor::getOtherFrequencyFlag() const {
+   return extended_data_flag ? s->other_frequency_flag : -1;
+}
+
+int T2DeliverySystemDescriptor::getTfsFlag() const {
+   return extended_data_flag ? s->tfs_flag : -1;
+}
+
 int PremiereContentTransmissionDescriptor::getOriginalNetworkId() const {
    return HILO(s->original_network_id);
 }
@@ -1005,8 +1051,14 @@ int MHP_TransportProtocolDescriptor::getComponentTag() const {
    return componentTag;
 }
 
+char *MHP_TransportProtocolDescriptor::getUrlBase(char *buffer, int size) {
+   return UrlBase.getText(buffer, size);
+}
+
 void MHP_TransportProtocolDescriptor::Parse() {
    int offset=0;
+   remote=false;
+   componentTag=-1;
    data.setPointerAndOffset<const descr_transport_protocol>(s, offset);
    if (getProtocolId() == ObjectCarousel) {
       const transport_via_oc *oc;
@@ -1021,10 +1073,22 @@ void MHP_TransportProtocolDescriptor::Parse() {
          data.setPointerAndOffset<const transport_via_oc_end>(rem, offset);
          componentTag=rem->component_tag;
       }
-   } else { //unimplemented
-      remote=false;
-      componentTag=-1;
+   } else if (getProtocolId() == HTTPoverInteractionChannel) {
+      const transport_via_http *http;
+      data.setPointerAndOffset<const transport_via_http>(http, offset);
+      UrlBase.setDataAndOffset(data+offset, http->url_base_length, offset);
+
+      // fill URL Extension,
+      UrlExtensionLoop.setData(data+offset, getLength()-offset);
+   } else {
+      //unimplemented
    }
+}
+
+void MHP_TransportProtocolDescriptor::UrlExtensionEntry::Parse() {
+   const descr_url_extension_entry *s;
+   s=data.getData<const descr_url_extension_entry>();
+   UrlExtension.setData(data, s->url_extension_length);
 }
 
 void MHP_DVBJApplicationDescriptor::Parse() {
@@ -1057,6 +1121,17 @@ void MHP_ApplicationIconsDescriptor::Parse() {
    data.setPointerAndOffset<const descr_application_icons_descriptor>(first, offset);
    iconLocator.setDataAndOffset(data+offset, first->icon_locator_length, offset);
    data.setPointerAndOffset<const descr_application_icons_descriptor_end>(s, offset);
+}
+
+char *MHP_SimpleApplicationLocationDescriptor::getLocation(char *buffer, int size) {
+   return location.getText(buffer, size);
+}
+
+void MHP_SimpleApplicationLocationDescriptor::Parse() {
+   int offset=0;
+   const descr_simple_application_location_descriptor *loc;
+   data.setPointerAndOffset<const descr_simple_application_location_descriptor>(loc, offset);
+   location.setDataAndOffset(data+offset, loc->descriptor_length, offset);
 }
 
 int RegistrationDescriptor::getFormatIdentifier() const {

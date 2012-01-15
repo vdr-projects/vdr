@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 2.2 2011/06/15 21:26:00 kls Exp $
+ *   $Id: descriptor.h 2.4 2012/01/11 11:35:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -538,6 +538,25 @@ private:
    const descr_extension *s;
 };
 
+class T2DeliverySystemDescriptor : public Descriptor {
+public:
+   int getExtendedDataFlag() const;
+   int getExtensionDescriptorTag() const;
+   int getPlpId() const;
+   int getT2SystemId() const;
+   int getSisoMiso() const;
+   int getBandwidth() const;
+   int getGuardInterval() const;
+   int getTransmissionMode() const;
+   int getOtherFrequencyFlag() const;
+   int getTfsFlag() const;
+protected:
+   virtual void Parse();
+private:
+   const descr_t2_delivery_system *s;
+   int extended_data_flag;
+};
+
 // Private DVB Descriptor  Premiere.de
 // 0xF2  Content Transmission Descriptor
 // http://dvbsnoop.sourceforge.net/examples/example-private-section.html
@@ -639,17 +658,29 @@ protected:
 
 class MHP_TransportProtocolDescriptor : public Descriptor {
 public:
+   class UrlExtensionEntry : public LoopElement {
+   public:
+      virtual int getLength() { return sizeof(descr_url_extension_entry)+UrlExtension.getLength(); }
+      String UrlExtension;
+   protected:
+      virtual void Parse();
+   };
+
    enum Protocol { ObjectCarousel = 0x01, IPviaDVB = 0x02, HTTPoverInteractionChannel = 0x03 };
    int getProtocolId() const;
    int getProtocolLabel() const;
    bool isRemote() const;
    int getComponentTag() const;
+   char *getUrlBase(char *buffer, int size);
+   StructureLoop<UrlExtensionEntry> UrlExtensionLoop;
+
 protected:
    virtual void Parse();
 private:
    const descr_transport_protocol *s;
    bool remote;
    int componentTag;
+   String UrlBase;
 };
 
 class MHP_DVBJApplicationDescriptor : public Descriptor {
@@ -683,6 +714,15 @@ protected:
    virtual void Parse();
 private:
    const descr_application_icons_descriptor_end *s;
+};
+
+class MHP_SimpleApplicationLocationDescriptor : public Descriptor {
+public:
+   char *getLocation(char *buffer, int size);
+protected:
+   virtual void Parse();
+private:
+   String location;
 };
 
 class RegistrationDescriptor : public Descriptor {

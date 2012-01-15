@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.19 2011/12/04 14:52:38 kls Exp $
+ * $Id: tools.c 2.20 2012/01/11 11:21:43 kls Exp $
  */
 
 #include "tools.h"
@@ -1913,7 +1913,7 @@ void cListBase::Move(int From, int To)
 
 void cListBase::Move(cListObject *From, cListObject *To)
 {
-  if (From && To) {
+  if (From && To && From != To) {
      if (From->Index() < To->Index())
         To = To->Next();
      if (From == objects)

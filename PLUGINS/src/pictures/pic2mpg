@@ -7,7 +7,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 2.3 2011/11/02 17:20:37 kls Exp $
+# $Id: pic2mpg 2.4 2012/01/08 13:27:17 kls Exp $
 
 use File::Path;
 use File::Spec;
@@ -20,15 +20,17 @@ Usage: $0 [options] picture-dir mpeg-dir
 
 Options: -f             Force conversion
          -h             print Help
+         -o percent     overscan in percent
          -s size        Screen size (WIDTHxHEIGHT, default is 1920x1080)
          -v num         Verbose (0=none, 1=list files, 2=detailed)
 };
 
-getopts("fhs:v:") || die $Usage;
+getopts("fho:s:v:") || die $Usage;
 
 die $Usage if $opt_h;
 
 $Force     = $opt_f;
+$Overscan  = $opt_o || 0;
 $Size      = $opt_s || "1920x1080";
 $Verbose   = $opt_v;
 
@@ -53,6 +55,15 @@ $Detailed  = $Verbose >= 2;
 die "$0: missing parameter\n" unless $ARGV[0] && $ARGV[1];
 die "$0: file or directory not found: $ARGV[0]\n" unless -e $ARGV[0];
 die "$0: source and destination must be different\n" if $ARGV[0] eq $ARGV[1];
+
+$Extent = $Size;
+if ($Overscan > 0) {
+   my ($x, $y) = $Size =~ /(.*)x(.*)/;
+   my $r = (100 + $Overscan) / 100;
+   $x = int($x * $r + 0.5);
+   $y = int($y * $r + 0.5);
+   $Extent = "${x}x$y";
+   }
 
 # Convert a single file:
 
@@ -130,7 +141,7 @@ sub ConvertFile
   $Pict = EscapeMeta($Pict);
   $Mpeg = EscapeMeta($Mpeg);
   print "$Pict -> $Mpeg $Rotate\n" if $ListFiles;
-  my $Cmd = "convert $Pict -background '#000000' $Rotate -resize $Size -gravity center -extent $Size ppm:- | "
+  my $Cmd = "convert $Pict -background '#000000' $Rotate -resize $Size -gravity center -extent $Extent ppm:- | "
           . "ffmpeg -f image2pipe -vcodec ppm -i pipe:0 -an -vcodec libx264 -vpre baseline -s $Size -qscale 2 -f mpegts -y $Mpeg "
           . ($Detailed ? "" : "2>/dev/null");
   !system($Cmd) || die "$Cmd: $!\n";

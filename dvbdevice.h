@@ -4,22 +4,22 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.18 2011/12/04 13:38:17 kls Exp $
+ * $Id: dvbdevice.h 2.21 2012/01/13 11:32:45 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
-#include <sys/mman.h> // FIXME: workaround for broken linux-dvb header files
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/version.h>
 #include "device.h"
 
-#if DVB_API_VERSION < 5
-#error VDR requires Linux DVB driver API version 5.0 or higher!
+#if DVB_API_VERSION < 5 || (DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR < 3)
+#error VDR requires Linux DVB driver API version 5.3 or higher!
 #endif
 
 #define MAXDVBDEVICES  8
+#define MAXDELIVERYSYSTEMS 8
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -47,7 +47,8 @@ extern const tDvbParameterMap InversionValues[];
 extern const tDvbParameterMap BandwidthValues[];
 extern const tDvbParameterMap CoderateValues[];
 extern const tDvbParameterMap ModulationValues[];
-extern const tDvbParameterMap SystemValues[];
+extern const tDvbParameterMap SystemValuesSat[];
+extern const tDvbParameterMap SystemValuesTerr[];
 extern const tDvbParameterMap TransmissionValues[];
 extern const tDvbParameterMap GuardValues[];
 extern const tDvbParameterMap HierarchyValues[];
@@ -67,8 +68,9 @@ private:
   int guard;
   int hierarchy;
   int rollOff;
+  int plpId;
   int PrintParameter(char *p, char Name, int Value) const;
-  const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map);
+  const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map = NULL);
 public:
   cDvbTransponderParameters(const char *Parameters = NULL);
   char Polarization(void) const { return polarization; }
@@ -82,6 +84,7 @@ public:
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
   int RollOff(void) const { return rollOff; }
+  int PlpId(void) const { return plpId; }
   void SetPolarization(char Polarization) { polarization = Polarization; }
   void SetInversion(int Inversion) { inversion = Inversion; }
   void SetBandwidth(int Bandwidth) { bandwidth = Bandwidth; }
@@ -93,6 +96,7 @@ public:
   void SetGuard(int Guard) { guard = Guard; }
   void SetHierarchy(int Hierarchy) { hierarchy = Hierarchy; }
   void SetRollOff(int RollOff) { rollOff = RollOff; }
+  void SetPlpId(int PlpId) { plpId = PlpId; }
   cString ToString(char Type) const;
   bool Parse(const char *s);
   };
@@ -119,15 +123,19 @@ protected:
   int adapter, frontend;
 private:
   dvb_frontend_info frontendInfo;
-  int numProvidedSystems;
-  fe_delivery_system frontendType;
+  int deliverySystems[MAXDELIVERYSYSTEMS];
+  int numDeliverySystems;
+  int numModulations;
   int fd_dvr, fd_ca;
   static cMutex bondMutex;
   cDvbDevice *bondedDevice;
   mutable bool needsDetachBondedReceivers;
+  bool QueryDeliverySystems(int fd_frontend);
 public:
   cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
+  int Adapter(void) const { return adapter; }
+  int Frontend(void) const { return frontend; }
   virtual bool Ready(void);
   static bool BondDevices(const char *Bondings);
        ///< Bonds the devices as defined in the given Bondings string.
@@ -167,6 +175,7 @@ private:
 private:
   cDvbTuner *dvbTuner;
 public:
+  virtual bool ProvidesDeliverySystem(int DeliverySystem) const;
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;

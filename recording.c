@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.39 2011/12/04 13:51:44 kls Exp $
+ * $Id: recording.c 2.43 2012/01/15 11:04:24 kls Exp $
  */
 
 #include "recording.h"
@@ -873,16 +873,23 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%d:%02d%c%c%s",
+     cString Length("");
+     if (NewIndicator) {
+        int Seconds = max(0, LengthInSeconds());
+        Length = cString::sprintf("%c%d:%02d",
+                   Delimiter,
+                   Seconds / 3600,
+                   Seconds / 60 % 60
+                   );
+        }
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,
-                            Delimiter,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 3600 : 0,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 60 % 60 : 0,
+                            *Length,
                             New,
                             Delimiter,
                             s));
@@ -1103,25 +1110,21 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
         if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-           char *buffer = strdup(AddDirectory(DirName, e->d_name));
+           cString buffer = AddDirectory(DirName, e->d_name);
            struct stat st;
-           if (stat(buffer, &st) == 0) {
+           if (lstat(buffer, &st) == 0) {
               int Link = 0;
               if (S_ISLNK(st.st_mode)) {
                  if (LinkLevel > MAX_LINK_LEVEL) {
-                    isyslog("max link level exceeded - not scanning %s", buffer);
+                    isyslog("max link level exceeded - not scanning %s", *buffer);
                     continue;
                     }
                  Link = 1;
-                 char *old = buffer;
-                 buffer = ReadLink(old);
-                 free(old);
-                 if (!buffer)
+                 buffer = ReadLink(buffer);
+                 if (!*buffer)
                     continue;
-                 if (stat(buffer, &st) != 0) {
-                    free(buffer);
+                 if (stat(buffer, &st) != 0)
                     continue;
-                    }
                  }
               if (S_ISDIR(st.st_mode)) {
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
@@ -1144,7 +1147,6 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                     ScanVideoDir(buffer, Foreground, LinkLevel + Link);
                  }
               }
-           free(buffer);
            }
         }
 }
@@ -2040,15 +2042,18 @@ cUnbufferedFile *cFileName::NextFile(void)
 
 cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 {
-  char buffer[16];
+  const char *Sign = "";
+  if (Index < 0) {
+     Index = -Index;
+     Sign = "-";
+     }
   double Seconds;
   int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
   s %= 60;
-  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
-  return buffer;
+  return cString::sprintf(WithFrame ? "%s%d:%02d:%02d.%02d" : "%s%d:%02d:%02d", Sign, h, m, s, f);
 }
 
 int HMSFToIndex(const char *HMSF, double FramesPerSecond)

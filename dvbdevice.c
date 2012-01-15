@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.48 2011/12/03 15:24:27 kls Exp $
+ * $Id: dvbdevice.c 2.56 2012/01/15 14:31:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -44,9 +44,12 @@ const tDvbParameterMap InversionValues[] = {
   };
 
 const tDvbParameterMap BandwidthValues[] = {
-  {   6, 6000000, "6 MHz" },
-  {   7, 7000000, "7 MHz" },
-  {   8, 8000000, "8 MHz" },
+  {    5,  5000000, "5 MHz" },
+  {    6,  6000000, "6 MHz" },
+  {    7,  7000000, "7 MHz" },
+  {    8,  8000000, "8 MHz" },
+  {   10, 10000000, "10 MHz" },
+  { 1712,  1712000, "1.712 MHz" },
   {  -1, 0, NULL }
   };
 
@@ -75,31 +78,49 @@ const tDvbParameterMap ModulationValues[] = {
   {   2, QPSK,     "QPSK" },
   {   5, PSK_8,    "8PSK" },
   {   6, APSK_16,  "16APSK" },
+  {   7, APSK_32,  "32APSK" },
   {  10, VSB_8,    "VSB8" },
   {  11, VSB_16,   "VSB16" },
-  { 998, QAM_AUTO, "QAMAUTO" },
+  {  12, DQPSK,    "DQPSK" },
+  { 999, QAM_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
-const tDvbParameterMap SystemValues[] = {
-  {   0, SYS_DVBS,  "DVB-S" },
-  {   1, SYS_DVBS2, "DVB-S2" },
+#define DVB_SYSTEM_1 0 // see also nit.c
+#define DVB_SYSTEM_2 1
+
+const tDvbParameterMap SystemValuesSat[] = {
+  {   0, DVB_SYSTEM_1, "DVB-S" },
+  {   1, DVB_SYSTEM_2, "DVB-S2" },
+  {  -1, 0, NULL }
+  };
+
+const tDvbParameterMap SystemValuesTerr[] = {
+  {   0, DVB_SYSTEM_1, "DVB-T" },
+  {   1, DVB_SYSTEM_2, "DVB-T2" },
   {  -1, 0, NULL }
   };
 
 const tDvbParameterMap TransmissionValues[] = {
+  {   1, TRANSMISSION_MODE_1K,   "1K" },
   {   2, TRANSMISSION_MODE_2K,   "2K" },
+  {   4, TRANSMISSION_MODE_4K,   "4K" },
   {   8, TRANSMISSION_MODE_8K,   "8K" },
+  {  16, TRANSMISSION_MODE_16K,  "16K" },
+  {  32, TRANSMISSION_MODE_32K,  "32K" },
   { 999, TRANSMISSION_MODE_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
 const tDvbParameterMap GuardValues[] = {
-  {   4, GUARD_INTERVAL_1_4,  "1/4" },
-  {   8, GUARD_INTERVAL_1_8,  "1/8" },
-  {  16, GUARD_INTERVAL_1_16, "1/16" },
-  {  32, GUARD_INTERVAL_1_32, "1/32" },
-  { 999, GUARD_INTERVAL_AUTO, trNOOP("auto") },
+  {     4, GUARD_INTERVAL_1_4,    "1/4" },
+  {     8, GUARD_INTERVAL_1_8,    "1/8" },
+  {    16, GUARD_INTERVAL_1_16,   "1/16" },
+  {    32, GUARD_INTERVAL_1_32,   "1/32" },
+  {   128, GUARD_INTERVAL_1_128,  "1/128" },
+  { 19128, GUARD_INTERVAL_19_128, "19/128" },
+  { 19256, GUARD_INTERVAL_19_256, "19/256" },
+  {   999, GUARD_INTERVAL_AUTO,   trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
@@ -179,11 +200,12 @@ cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
   coderateH    = FEC_AUTO;
   coderateL    = FEC_AUTO;
   modulation   = QPSK;
-  system       = SYS_DVBS;
+  system       = DVB_SYSTEM_1;
   transmission = TRANSMISSION_MODE_AUTO;
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
   rollOff      = ROLLOFF_AUTO;
+  plpId        = 0;
   Parse(Parameters);
 }
 
@@ -194,21 +216,22 @@ int cDvbTransponderParameters::PrintParameter(char *p, char Name, int Value) con
 
 cString cDvbTransponderParameters::ToString(char Type) const
 {
-#define ST(s) if (strchr(s, Type))
+#define ST(s) if (strchr(s, Type) && (strchr(s, '0' + system + 1) || strchr(s, '*')))
   char buffer[64];
   char *q = buffer;
   *q = 0;
-  ST("  S ")  q += sprintf(q, "%c", polarization);
-  ST("   T")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
-  ST(" CST")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
-  ST("   T")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
-  ST("   T")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
-  ST("ACST")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
-  ST("ACST")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
-  ST("  S ")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST("  S ")  q += PrintParameter(q, 'S', MapToUser(system, SystemValues));
-  ST("   T")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
-  ST("   T")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
+  ST("  S *")  q += sprintf(q, "%c", polarization);
+  ST("   T*")  q += PrintParameter(q, 'B', MapToUser(bandwidth, BandwidthValues));
+  ST(" CST*")  q += PrintParameter(q, 'C', MapToUser(coderateH, CoderateValues));
+  ST("   T*")  q += PrintParameter(q, 'D', MapToUser(coderateL, CoderateValues));
+  ST("   T*")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
+  ST("ACST*")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
+  ST("ACST*")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
+  ST("  S 2")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
+  ST("   T2")  q += PrintParameter(q, 'P', plpId);
+  ST("  ST*")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
+  ST("   T*")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
+  ST("   T*")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
   return buffer;
 }
 
@@ -219,7 +242,7 @@ const char *cDvbTransponderParameters::ParseParameter(const char *s, int &Value,
      errno = 0;
      int n = strtol(s, &p, 10);
      if (!errno && p != s) {
-        Value = MapToDriver(n, Map);
+        Value = Map ? MapToDriver(n, Map) : n;
         if (Value >= 0)
            return p;
         }
@@ -241,8 +264,9 @@ bool cDvbTransponderParameters::Parse(const char *s)
           case 'L': polarization = *s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
+          case 'P': s = ParseParameter(s, plpId); break;
           case 'R': polarization = *s++; break;
-          case 'S': s = ParseParameter(s, system, SystemValues); break;
+          case 'S': s = ParseParameter(s, system, SystemValuesSat); break; // we only need the numerical value, so Sat or Terr doesn't matter
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
           case 'V': polarization = *s++; break;
           case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
@@ -268,10 +292,10 @@ private:
   int tuneTimeout;
   int lockTimeout;
   time_t lastTimeoutReport;
-  fe_delivery_system frontendType;
   cChannel channel;
   const cDiseqc *lastDiseqc;
   const cScr *scr;
+  bool lnbPowerTurnedOn;
   eTunerStatus tunerStatus;
   cMutex mutex;
   cCondVar locked;
@@ -279,6 +303,7 @@ private:
   cDvbTuner *bondedTuner;
   bool bondedMaster;
   bool bondedMasterFailed;
+  bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
@@ -287,7 +312,7 @@ private:
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType);
+  cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend);
   virtual ~cDvbTuner();
   bool Bond(cDvbTuner *Tuner);
   void UnBond(void);
@@ -304,25 +329,23 @@ public:
 
 cMutex cDvbTuner::bondMutex;
 
-cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
+cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend)
 {
   device = Device;
   fd_frontend = Fd_Frontend;
   adapter = Adapter;
   frontend = Frontend;
-  frontendType = FrontendType;
   subsystemId = cDvbDeviceProbe::GetSubsystemId(adapter, frontend);
   tuneTimeout = 0;
   lockTimeout = 0;
   lastTimeoutReport = 0;
   lastDiseqc = NULL;
   scr = NULL;
+  lnbPowerTurnedOn = false;
   tunerStatus = tsIdle;
   bondedTuner = NULL;
   bondedMaster = false;
   bondedMasterFailed = false;
-  if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2)
-     ResetToneAndVoltage(); // must explicitly turn on LNB power
   SetDescription("tuner on frontend %d/%d", adapter, frontend);
   Start();
 }
@@ -346,16 +369,12 @@ bool cDvbTuner::Bond(cDvbTuner *Tuner)
 {
   cMutexLock MutexLock(&bondMutex);
   if (!bondedTuner) {
-     if ((frontendType == SYS_DVBS || frontendType == SYS_DVBS2) && (Tuner->frontendType == SYS_DVBS || Tuner->frontendType == SYS_DVBS2)) {
-        ResetToneAndVoltage();
-        bondedMaster = false; // makes sure we don't disturb an existing master
-        bondedTuner = Tuner->bondedTuner ? Tuner->bondedTuner : Tuner;
-        Tuner->bondedTuner = this;
-        dsyslog("tuner %d/%d bonded with tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend);
-        return true;
-        }
-     else
-        esyslog("ERROR: can't bond tuner %d/%d with tuner %d/%d (only DVB-S(2) tuners can be bonded)", adapter, frontend, Tuner->adapter, Tuner->frontend);
+     ResetToneAndVoltage();
+     bondedMaster = false; // makes sure we don't disturb an existing master
+     bondedTuner = Tuner->bondedTuner ? Tuner->bondedTuner : Tuner;
+     Tuner->bondedTuner = this;
+     dsyslog("tuner %d/%d bonded with tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend);
+     return true;
      }
   else
      esyslog("ERROR: tuner %d/%d already bonded with tuner %d/%d, can't bond with tuner %d/%d", adapter, frontend, bondedTuner->adapter, bondedTuner->frontend, Tuner->adapter, Tuner->frontend);
@@ -468,7 +487,7 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
                   t->SetChannel(NULL);
               }
            }
-        else if (!BondedMaster->device->Receiving())
+        else if (strcmp(GetBondingParams(Channel), BondedMaster->GetBondingParams()) != 0)
            BondedMaster->SetChannel(Channel);
         }
      cMutexLock MutexLock(&mutex);
@@ -618,7 +637,7 @@ int cDvbTuner::GetSignalQuality(void) const
      if (q > 100)
         q = 100;
 #ifdef DEBUG_SIGNALQUALITY
-     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
+     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %d %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasSnr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
 #endif
      return q;
      }
@@ -634,6 +653,13 @@ static unsigned int FrequencyToHz(unsigned int f)
 
 void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
 {
+  if (!lnbPowerTurnedOn) {
+     CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
+     lnbPowerTurnedOn = true;
+     }
+  static cMutex Mutex;
+  if (Diseqc->IsScr())
+     Mutex.Lock(); 
   struct dvb_diseqc_master_cmd cmd;
   const char *CurrentAction = NULL;
   for (;;) {
@@ -654,12 +680,30 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
       }
   if (scr)
      ResetToneAndVoltage(); // makes sure we don't block the bus!
+  if (Diseqc->IsScr())
+     Mutex.Unlock(); 
 }
 
 void cDvbTuner::ResetToneAndVoltage(void)
 {
   CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13));
   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
+}
+
+static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTransponderParameters *Dtp)
+{
+  int ds = SYS_UNDEFINED;
+  if (Channel->IsAtsc())
+     ds = SYS_ATSC;
+  else if (Channel->IsCable())
+     ds = SYS_DVBC_ANNEX_AC;
+  else if (Channel->IsSat())
+     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBS : SYS_DVBS2;
+  else if (Channel->IsTerr())
+     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBT : SYS_DVBT2;
+  else
+     esyslog("ERROR: can't determine frontend type for channel %d", Channel->Number());
+  return ds;
 }
 
 bool cDvbTuner::SetFrontend(void)
@@ -686,6 +730,12 @@ bool cDvbTuner::SetFrontend(void)
 
   cDvbTransponderParameters dtp(channel.Parameters());
 
+  // Determine the required frontend type:
+  int frontendType = GetRequiredDeliverySystem(&channel, &dtp);
+  if (frontendType == SYS_UNDEFINED)
+     return false;
+
+  SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      unsigned int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
@@ -728,22 +778,15 @@ bool cDvbTuner::SetFrontend(void)
      frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
 
      // DVB-S/DVB-S2 (common parts)
-     SETCMD(DTV_DELIVERY_SYSTEM, dtp.System());
      SETCMD(DTV_FREQUENCY, frequency * 1000UL);
      SETCMD(DTV_MODULATION, dtp.Modulation());
      SETCMD(DTV_SYMBOL_RATE, channel.Srate() * 1000UL);
      SETCMD(DTV_INNER_FEC, dtp.CoderateH());
      SETCMD(DTV_INVERSION, dtp.Inversion());
-     if (dtp.System() == SYS_DVBS2) {
-        if (frontendType == SYS_DVBS2) {
-           // DVB-S2
-           SETCMD(DTV_PILOT, PILOT_AUTO);
-           SETCMD(DTV_ROLLOFF, dtp.RollOff());
-           }
-        else {
-           esyslog("ERROR: frontend %d/%d doesn't provide DVB-S2", adapter, frontend);
-           return false;
-           }
+     if (frontendType == SYS_DVBS2) {
+        // DVB-S2
+        SETCMD(DTV_PILOT, PILOT_AUTO);
+        SETCMD(DTV_ROLLOFF, dtp.RollOff());
         }
      else {
         // DVB-S
@@ -755,7 +798,6 @@ bool cDvbTuner::SetFrontend(void)
      }
   else if (frontendType == SYS_DVBC_ANNEX_AC || frontendType == SYS_DVBC_ANNEX_B) {
      // DVB-C
-     SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
      SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_SYMBOL_RATE, channel.Srate() * 1000UL);
@@ -765,9 +807,8 @@ bool cDvbTuner::SetFrontend(void)
      tuneTimeout = DVBC_TUNE_TIMEOUT;
      lockTimeout = DVBC_LOCK_TIMEOUT;
      }
-  else if (frontendType == SYS_DVBT) {
-     // DVB-T
-     SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
+  else if (frontendType == SYS_DVBT || frontendType == SYS_DVBT2) {
+     // DVB-T/DVB-T2 (common parts)
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
      SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_BANDWIDTH_HZ, dtp.Bandwidth());
@@ -777,13 +818,16 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_TRANSMISSION_MODE, dtp.Transmission());
      SETCMD(DTV_GUARD_INTERVAL, dtp.Guard());
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
+     if (frontendType == SYS_DVBT2) {
+        // DVB-T2
+        SETCMD(DTV_DVBT2_PLP_ID, dtp.PlpId());
+        }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
      }
   else if (frontendType == SYS_ATSC) {
      // ATSC
-     SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
      SETCMD(DTV_FREQUENCY, FrequencyToHz(channel.Frequency()));
      SETCMD(DTV_INVERSION, dtp.Inversion());
      SETCMD(DTV_MODULATION, dtp.Modulation());
@@ -903,11 +947,12 @@ void cDvbSourceParam::GetData(cChannel *Channel)
 cOsdItem *cDvbSourceParam::GetOsdItem(void)
 {
   char type = Source();
+  const tDvbParameterMap *SystemValues = type == 'S' ? SystemValuesSat : SystemValuesTerr;
 #undef ST
 #define ST(s) if (strchr(s, type))
   switch (param++) {
     case  0: ST("  S ")  return new cMenuEditChrItem( tr("Polarization"), &dtp.polarization, "HVLR");             else return GetOsdItem();
-    case  1: ST("  S ")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
+    case  1: ST("  ST")  return new cMenuEditMapItem( tr("System"),       &dtp.system,       SystemValues);       else return GetOsdItem();
     case  2: ST(" CS ")  return new cMenuEditIntItem( tr("Srate"),        &srate);                                else return GetOsdItem();
     case  3: ST("ACST")  return new cMenuEditMapItem( tr("Inversion"),    &dtp.inversion,    InversionValues);    else return GetOsdItem();
     case  4: ST(" CST")  return new cMenuEditMapItem( tr("CoderateH"),    &dtp.coderateH,    CoderateValues);     else return GetOsdItem();
@@ -918,6 +963,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
     case  9: ST("   T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
     case 10: ST("   T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
     case 11: ST("  S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
+    case 12: ST("   T")  return new cMenuEditIntItem( tr("PlpId"),        &dtp.plpId,        0, 255);             else return GetOsdItem();
     default: return NULL;
     }
   return NULL;
@@ -928,7 +974,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 int cDvbDevice::setTransferModeForDolbyDigital = 1;
 cMutex cDvbDevice::bondMutex;
 
-const char *DeliverySystems[] = {
+const char *DeliverySystemNames[] = {
   "UNDEFINED",
   "DVB-C",
   "DVB-C",
@@ -945,6 +991,8 @@ const char *DeliverySystems[] = {
   "DMBTH",
   "CMMB",
   "DAB",
+  "DVB-T2",
+  "TURBO",
   NULL
   };
 
@@ -954,8 +1002,8 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   frontend = Frontend;
   ciAdapter = NULL;
   dvbTuner = NULL;
-  frontendType = SYS_UNDEFINED;
-  numProvidedSystems = 0;
+  numDeliverySystems = 0;
+  numModulations = 0;
   bondedDevice = NULL;
   needsDetachBondedReceivers = false;
 
@@ -976,39 +1024,8 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   // We only check the devices that must be present - the others will be checked before accessing them://XXX
 
   if (fd_frontend >= 0) {
-     if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) >= 0) {
-        switch (frontendInfo.type) {
-          case FE_QPSK: frontendType = (frontendInfo.caps & FE_CAN_2G_MODULATION) ? SYS_DVBS2 : SYS_DVBS; break;
-          case FE_OFDM: frontendType = SYS_DVBT; break;
-          case FE_QAM:  frontendType = SYS_DVBC_ANNEX_AC; break;
-          case FE_ATSC: frontendType = SYS_ATSC; break;
-          default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
-          }
-        }
-     else
-        LOG_ERROR;
-     if (frontendType != SYS_UNDEFINED) {
-        numProvidedSystems++;
-        if (frontendType == SYS_DVBS2)
-           numProvidedSystems++;
-        char Modulations[64];
-        char *p = Modulations;
-        if (frontendInfo.caps & FE_CAN_QPSK)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QPSK, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_QAM_16)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_16, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_QAM_32)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_32, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_QAM_64)  { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_64, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_QAM_128) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_128, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_QAM_256) { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(QAM_256, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_8VSB)    { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_8, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_16VSB)   { numProvidedSystems++; p += sprintf(p, ",%s", MapToUserString(VSB_16, ModulationValues)); }
-        if (frontendInfo.caps & FE_CAN_TURBO_FEC){numProvidedSystems++; p += sprintf(p, ",%s", "TURBO_FEC"); }
-        if (p != Modulations)
-           p = Modulations + 1; // skips first ','
-        else
-           p = (char *)"unknown modulations";
-        isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, DeliverySystems[frontendType], p, frontendInfo.name);
-        dvbTuner = new cDvbTuner(this, fd_frontend, adapter, frontend, frontendType);
-        }
+     if (QueryDeliverySystems(fd_frontend))
+        dvbTuner = new cDvbTuner(this, fd_frontend, adapter, frontend);
      }
   else
      esyslog("ERROR: can't open DVB device %d/%d", adapter, frontend);
@@ -1106,6 +1123,74 @@ LastAdapter:
   return Found > 0;
 }
 
+bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
+{
+  numDeliverySystems = 0;
+  if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) < 0) {
+     LOG_ERROR;
+     return false;
+     }
+#if DVB_API_VERSION > 5 || DVB_API_VERSION_MINOR >= 5
+  dtv_property Frontend[1];
+  memset(&Frontend, 0, sizeof(Frontend));
+  dtv_properties CmdSeq;
+  memset(&CmdSeq, 0, sizeof(CmdSeq));
+  CmdSeq.props = Frontend;
+  SETCMD(DTV_ENUM_DELSYS, 0);
+  int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
+  if (Result == 0) {
+     for (uint i = 0; i < Frontend[0].u.buffer.len; i++) {
+         if (numDeliverySystems >= MAXDELIVERYSYSTEMS) {
+            esyslog("ERROR: too many delivery systems on frontend %d/%d", adapter, frontend);
+            break;
+            }
+         deliverySystems[numDeliverySystems++] = Frontend[0].u.buffer.data[i];
+         }
+     }
+  else {
+     esyslog("ERROR: can't query delivery systems on frontend %d/%d - falling back to legacy mode", adapter, frontend);
+#else
+     {
+#endif
+     // Legacy mode (DVB-API < 5.5):
+     switch (frontendInfo.type) {
+       case FE_QPSK: deliverySystems[numDeliverySystems++] = SYS_DVBS;
+                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
+                        deliverySystems[numDeliverySystems++] = SYS_DVBS2;
+                     break;
+       case FE_OFDM: deliverySystems[numDeliverySystems++] = SYS_DVBT;
+                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
+                        deliverySystems[numDeliverySystems++] = SYS_DVBT2;
+                     break;
+       case FE_QAM:  deliverySystems[numDeliverySystems++] = SYS_DVBC_ANNEX_AC; break;
+       case FE_ATSC: deliverySystems[numDeliverySystems++] = SYS_ATSC; break;
+       default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
+       }
+     }
+  if (numDeliverySystems > 0) {
+     cString ds("");
+     for (int i = 0; i < numDeliverySystems; i++)
+         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", DeliverySystemNames[deliverySystems[i]]);
+     cString ms("");
+     if (frontendInfo.caps & FE_CAN_QPSK)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QPSK, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_16)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_16, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_32)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_32, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_64)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_64, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_128)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_128, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_256)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_256, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_8VSB)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_8, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_16VSB)     { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_16, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_TURBO_FEC) { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", "TURBO_FEC"); }
+     if (!**ms)
+        ms = "unknown modulations";
+     isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, *ds, *ms, frontendInfo.name);
+     return true;
+     }
+  else
+     esyslog("ERROR: frontend %d/%d doesn't provide any delivery systems", adapter, frontend);
+  return false;
+}
+
 bool cDvbDevice::Ready(void)
 {
   if (ciAdapter)
@@ -1126,7 +1211,7 @@ bool cDvbDevice::BondDevices(const char *Bondings)
                if (cDevice *Device2 = cDevice::GetDevice(d)) {
                   if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                      if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
-                        if (!DvbDevice2->Bond(DvbDevice1))
+                        if (!DvbDevice1->Bond(DvbDevice2))
                            return false; // Bond() has already logged the error
                         }
                      else
@@ -1167,7 +1252,7 @@ bool cDvbDevice::Bond(cDvbDevice *Device)
   cMutexLock MutexLock(&bondMutex);
   if (!bondedDevice) {
      if (Device != this) {
-        if ((frontendType == SYS_DVBS || frontendType == SYS_DVBS2) && (Device->frontendType == SYS_DVBS || Device->frontendType == SYS_DVBS2)) {
+        if ((ProvidesDeliverySystem(SYS_DVBS) || ProvidesDeliverySystem(SYS_DVBS2)) && (Device->ProvidesDeliverySystem(SYS_DVBS) || Device->ProvidesDeliverySystem(SYS_DVBS2))) {
            if (dvbTuner && Device->dvbTuner && dvbTuner->Bond(Device->dvbTuner)) {
               bondedDevice = Device->bondedDevice ? Device->bondedDevice : Device;
               Device->bondedDevice = this;
@@ -1285,14 +1370,23 @@ void cDvbDevice::CloseFilter(int Handle)
   close(Handle);
 }
 
+bool cDvbDevice::ProvidesDeliverySystem(int DeliverySystem) const
+{
+  for (int i = 0; i < numDeliverySystems; i++) {
+      if (deliverySystems[i] == DeliverySystem)
+         return true;
+      }
+  return false;
+}
+
 bool cDvbDevice::ProvidesSource(int Source) const
 {
   int type = Source & cSource::st_Mask;
   return type == cSource::stNone
-      || type == cSource::stAtsc  && (frontendType == SYS_ATSC)
-      || type == cSource::stCable && (frontendType == SYS_DVBC_ANNEX_AC || frontendType == SYS_DVBC_ANNEX_B)
-      || type == cSource::stSat   && (frontendType == SYS_DVBS || frontendType == SYS_DVBS2)
-      || type == cSource::stTerr  && (frontendType == SYS_DVBT);
+      || type == cSource::stAtsc  && ProvidesDeliverySystem(SYS_ATSC)
+      || type == cSource::stCable && (ProvidesDeliverySystem(SYS_DVBC_ANNEX_AC) || ProvidesDeliverySystem(SYS_DVBC_ANNEX_B))
+      || type == cSource::stSat   && (ProvidesDeliverySystem(SYS_DVBS) || ProvidesDeliverySystem(SYS_DVBS2))
+      || type == cSource::stTerr  && (ProvidesDeliverySystem(SYS_DVBT) || ProvidesDeliverySystem(SYS_DVBT2));
 }
 
 bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
@@ -1300,7 +1394,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
   if (!ProvidesSource(Channel->Source()))
      return false; // doesn't provide source
   cDvbTransponderParameters dtp(Channel->Parameters());
-  if (dtp.System() == SYS_DVBS2 && frontendType == SYS_DVBS ||
+  if (!ProvidesDeliverySystem(GetRequiredDeliverySystem(Channel, &dtp)) ||
      dtp.Modulation() == QPSK     && !(frontendInfo.caps & FE_CAN_QPSK) ||
      dtp.Modulation() == QAM_16   && !(frontendInfo.caps & FE_CAN_QAM_16) ||
      dtp.Modulation() == QAM_32   && !(frontendInfo.caps & FE_CAN_QAM_32) ||
@@ -1375,7 +1469,7 @@ bool cDvbDevice::ProvidesEIT(void) const
 
 int cDvbDevice::NumProvidedSystems(void) const
 {
-  return numProvidedSystems;
+  return numDeliverySystems + numModulations;
 }
 
 int cDvbDevice::SignalStrength(void) const

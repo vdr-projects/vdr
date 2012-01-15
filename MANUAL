@@ -856,6 +856,10 @@ Version 1.6
 
   Show replay mode = no  Turns displaying the current replay mode on or off.
 
+  Show remaining time = no
+                         Defines whether the replay progress display shows the
+                         remaining time or the total length of the recording.
+
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with
