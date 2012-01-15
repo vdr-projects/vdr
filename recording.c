@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.42 2012/01/14 12:50:58 kls Exp $
+ * $Id: recording.c 2.43 2012/01/15 11:04:24 kls Exp $
  */
 
 #include "recording.h"
@@ -873,16 +873,23 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%d:%02d%c%c%s",
+     cString Length("");
+     if (NewIndicator) {
+        int Seconds = max(0, LengthInSeconds());
+        Length = cString::sprintf("%c%d:%02d",
+                   Delimiter,
+                   Seconds / 3600,
+                   Seconds / 60 % 60
+                   );
+        }
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,
-                            Delimiter,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 3600 : 0,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 60 % 60 : 0,
+                            *Length,
                             New,
                             Delimiter,
                             s));
