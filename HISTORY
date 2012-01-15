@@ -6833,3 +6833,5 @@ Video Disk Recorder Revision History
   replayed.
 - Fixed wrongfully displaying the length of a recording in the title of the replay
   progress display.
+- Fixed frozen live view with device bonding in case the bonded master is used for
+  live viewing (reported by Uwe Scheffler).

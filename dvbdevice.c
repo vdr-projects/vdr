@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.55 2012/01/14 10:45:33 kls Exp $
+ * $Id: dvbdevice.c 2.56 2012/01/15 14:31:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -487,7 +487,7 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
                   t->SetChannel(NULL);
               }
            }
-        else if (!BondedMaster->device->Receiving())
+        else if (strcmp(GetBondingParams(Channel), BondedMaster->GetBondingParams()) != 0)
            BondedMaster->SetChannel(Channel);
         }
      cMutexLock MutexLock(&mutex);
