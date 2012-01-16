@@ -6835,3 +6835,7 @@ Video Disk Recorder Revision History
   progress display.
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
+
+2012-01-16: Version 1.7.24
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
