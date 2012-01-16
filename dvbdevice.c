@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.56 2012/01/15 14:31:47 kls Exp $
+ * $Id: dvbdevice.c 2.57 2012/01/16 12:43:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -857,6 +857,7 @@ void cDvbTuner::Action(void)
         if (GetFrontendStatus(NewStatus))
            Status = NewStatus;
         cMutexLock MutexLock(&mutex);
+        int WaitTime = 1000;
         switch (tunerStatus) {
           case tsIdle:
                break;
@@ -877,6 +878,7 @@ void cDvbTuner::Action(void)
                      bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
+               WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
           case tsLocked:
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
@@ -905,9 +907,7 @@ void cDvbTuner::Action(void)
                break;
           default: esyslog("ERROR: unknown tuner status %d", tunerStatus);
           }
-
-        if (tunerStatus != tsTuned)
-           newSet.TimedWait(mutex, 1000);
+        newSet.TimedWait(mutex, WaitTime);
         }
 }
 

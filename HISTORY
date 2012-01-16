@@ -6842,3 +6842,4 @@ Video Disk Recorder Revision History
 - Revoked "Fixed handling symbolic links in cRecordings::ScanVideoDir()".
   This change actually broke handling symbolic links (see
   http://www.vdr-portal.de/board1-news/board2-vdr-news/p1047199-announce-vdr-developer-version-1-7-23/#post1047199).
+- Fixed a high load in case a transponder can't be received.
