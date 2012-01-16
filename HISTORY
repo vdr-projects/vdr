@@ -6844,3 +6844,4 @@ Video Disk Recorder Revision History
   http://www.vdr-portal.de/board1-news/board2-vdr-news/p1047199-announce-vdr-developer-version-1-7-23/#post1047199).
 - Fixed a high load in case a transponder can't be received.
 - Improved the way DVB_API_VERSION is checked.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

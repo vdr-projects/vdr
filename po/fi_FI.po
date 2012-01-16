@@ -1084,7 +1084,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Näytä toiston tila"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Näytä jäljellä oleva aika"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
