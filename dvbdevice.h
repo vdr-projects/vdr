@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.21 2012/01/13 11:32:45 kls Exp $
+ * $Id: dvbdevice.h 2.22 2012/01/16 12:51:39 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,7 +14,7 @@
 #include <linux/dvb/version.h>
 #include "device.h"
 
-#if DVB_API_VERSION < 5 || (DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR < 3)
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0503
 #error VDR requires Linux DVB driver API version 5.3 or higher!
 #endif
 

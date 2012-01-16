@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.57 2012/01/16 12:43:33 kls Exp $
+ * $Id: dvbdevice.c 2.58 2012/01/16 12:52:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1130,7 +1130,7 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
      LOG_ERROR;
      return false;
      }
-#if DVB_API_VERSION > 5 || DVB_API_VERSION_MINOR >= 5
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) >= 0x0505
   dtv_property Frontend[1];
   memset(&Frontend, 0, sizeof(Frontend));
   dtv_properties CmdSeq;
