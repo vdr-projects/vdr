@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.44 2011/10/16 14:36:43 kls Exp $
+ * $Id: device.c 2.45 2012/01/17 15:28:57 kls Exp $
  */
 
 #include "device.h"
@@ -529,6 +529,14 @@ void cDevice::DelPid(int Pid, ePidType PidType)
 bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
   return false;
+}
+
+void cDevice::DelLivePids(void)
+{
+  for (int i = ptAudio; i < ptOther; i++) {
+      if (pidHandles[i].pid)
+         DelPid(pidHandles[i].pid, ePidType(i));
+      }
 }
 
 void cDevice::StartSectionHandler(void)

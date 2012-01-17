@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.30 2011/12/04 13:38:17 kls Exp $
+ * $Id: device.h 2.31 2012/01/17 15:13:10 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -354,6 +354,9 @@ protected:
          ///< Handle->used indicates how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
+public:
+  void DelLivePids(void);
+         ///< Deletes the live viewing PIDs.
 
 // Section filter facilities
 

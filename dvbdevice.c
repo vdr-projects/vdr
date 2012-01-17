@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.58 2012/01/16 12:52:01 kls Exp $
+ * $Id: dvbdevice.c 2.59 2012/01/17 15:16:12 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -502,6 +502,8 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
      tunerStatus = tsIdle;
      ResetToneAndVoltage();
      }
+  if (bondedTuner && device->IsPrimaryDevice())
+     cDevice::PrimaryDevice()->DelLivePids(); // 'device' is const, so we must do it this way
 }
 
 bool cDvbTuner::Locked(int TimeoutMs)
