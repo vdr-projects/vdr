@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.45 2012/01/17 15:28:57 kls Exp $
+ * $Id: device.c 2.46 2012/01/18 10:43:00 kls Exp $
  */
 
 #include "device.h"
@@ -335,6 +335,7 @@ void cDevice::SetCamSlot(cCamSlot *CamSlot)
 
 void cDevice::Shutdown(void)
 {
+  deviceHooks.Clear();
   primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];

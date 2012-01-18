@@ -6848,3 +6848,4 @@ Video Disk Recorder Revision History
 - Fixed asserting there is a live programme if the primary device is bonded with
   a device that starts a recording on a different band.
 - Fixed the return type of cMyDeviceHook::DeviceProvidesTransponder() in PLUGINS.html.
+- Fixed a crash in a plugin using cDeviceHook when VDR ends (reported by Oliver Endriss).
