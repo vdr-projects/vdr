@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.31 2012/01/17 15:13:10 kls Exp $
+ * $Id: device.h 2.32 2012/01/18 12:12:49 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -439,14 +439,14 @@ public:
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
-         ///< Returns the With, Height and VideoAspect ratio of the currently
+         ///< Returns the Width, Height and VideoAspect ratio of the currently
          ///< displayed video material. Width and Height are given in pixel
          ///< (e.g. 720x576) and VideoAspect is e.g. 1.33333 for a 4:3 broadcast,
          ///< or 1.77778 for 16:9.
          ///< The default implementation returns 0 for Width and Height
          ///< and 1.0 for VideoAspect.
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
-         ///< Returns the With, Height and PixelAspect ratio the OSD should use
+         ///< Returns the Width, Height and PixelAspect ratio the OSD should use
          ///< to best fit the resolution of the output device. If PixelAspect
          ///< is not 1.0, the OSD may take this as a hint to scale its
          ///< graphics in a way that, e.g., a circle will actually
