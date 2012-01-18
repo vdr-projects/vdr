@@ -6836,7 +6836,7 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
-2012-01-17: Version 1.7.24
+2012-01-18: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Revoked "Fixed handling symbolic links in cRecordings::ScanVideoDir()".
@@ -6847,3 +6847,4 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed asserting there is a live programme if the primary device is bonded with
   a device that starts a recording on a different band.
+- Fixed the return type of cMyDeviceHook::DeviceProvidesTransponder() in PLUGINS.html.
