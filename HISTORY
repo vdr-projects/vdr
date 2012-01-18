@@ -6849,3 +6849,4 @@ Video Disk Recorder Revision History
   a device that starts a recording on a different band.
 - Fixed the return type of cMyDeviceHook::DeviceProvidesTransponder() in PLUGINS.html.
 - Fixed a crash in a plugin using cDeviceHook when VDR ends (reported by Oliver Endriss).
+- Some improvements to the Makefiles (thanks to Christian Ruppert).
