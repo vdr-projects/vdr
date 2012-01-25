@@ -6836,7 +6836,7 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
-2012-01-18: Version 1.7.24
+2012-01-25: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Revoked "Fixed handling symbolic links in cRecordings::ScanVideoDir()".
@@ -6850,3 +6850,5 @@ Video Disk Recorder Revision History
 - Fixed the return type of cMyDeviceHook::DeviceProvidesTransponder() in PLUGINS.html.
 - Fixed a crash in a plugin using cDeviceHook when VDR ends (reported by Oliver Endriss).
 - Some improvements to the Makefiles (thanks to Christian Ruppert).
+- Fixed cRecording::LengthInSeconds(), which wrongfully rounded the result to full
+  minutes (thanks to Christoph Haubrich).

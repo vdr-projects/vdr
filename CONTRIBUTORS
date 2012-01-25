@@ -2268,6 +2268,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  index file
  for fixing setting the start time of an edited recording
  for adding support for HbbTV to libsi
+ for fixing cRecording::LengthInSeconds(), which wrongfully rounded the result to full
+ minutes
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
