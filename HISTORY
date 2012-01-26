@@ -6836,12 +6836,9 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
-2012-01-25: Version 1.7.24
+2012-01-26: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
-- Revoked "Fixed handling symbolic links in cRecordings::ScanVideoDir()".
-  This change actually broke handling symbolic links (see
-  http://www.vdr-portal.de/board1-news/board2-vdr-news/p1047199-announce-vdr-developer-version-1-7-23/#post1047199).
 - Fixed a high load in case a transponder can't be received.
 - Improved the way DVB_API_VERSION is checked.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -6852,3 +6849,5 @@ Video Disk Recorder Revision History
 - Some improvements to the Makefiles (thanks to Christian Ruppert).
 - Fixed cRecording::LengthInSeconds(), which wrongfully rounded the result to full
   minutes (thanks to Christoph Haubrich).
+- Symbolic links are no longer resolved in cRecordings::ScanVideoDir() (thanks to
+  Sundararaj Reel).

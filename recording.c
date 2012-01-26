@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.45 2012/01/25 09:32:39 kls Exp $
+ * $Id: recording.c 2.46 2012/01/26 10:02:29 kls Exp $
  */
 
 #include "recording.h"
@@ -1120,11 +1120,6 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                     continue;
                     }
                  Link = 1;
-                 buffer = ReadLink(buffer);
-                 if (!*buffer)
-                    continue;
-                 if (stat(buffer, &st) != 0)
-                    continue;
                  }
               if (S_ISDIR(st.st_mode)) {
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
