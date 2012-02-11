@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.27 2011/12/03 15:35:09 kls Exp $
+ * $Id: vdr.c 2.28 2012/02/11 12:34:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -569,6 +569,7 @@ int main(int argc, char *argv[])
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
+  cEpgDataReader EpgDataReader;
   cOsdObject *Menu = NULL;
   int LastChannel = 0;
   int LastTimerChannel = -1;
@@ -633,7 +634,7 @@ int main(int argc, char *argv[])
         cSchedules::SetEpgDataFileName(AddDirectory(EpgDirectory, EpgDataFileName));
      else
         cSchedules::SetEpgDataFileName(EpgDataFileName);
-     cSchedules::Read();
+     EpgDataReader.Start();
      }
 
   // DVB interfaces:

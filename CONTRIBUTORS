@@ -604,6 +604,7 @@ Helmut Auer <vdr@helmutauer.de>
  for a patch that was used to implement the command line options --edit and
  --genindex
  for suggesting to disable EPG processing for a while after a CLRE command
+ for suggesting to read the epg.data file in a separate thread
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

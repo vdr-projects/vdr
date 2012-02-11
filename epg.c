@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.8 2012/01/08 14:59:38 kls Exp $
+ * $Id: epg.c 2.9 2012/02/11 12:33:04 kls Exp $
  */
 
 #include "epg.h"
@@ -1283,4 +1283,16 @@ const cSchedule *cSchedules::GetSchedule(const cChannel *Channel, bool AddIfMiss
      Channel->schedule = Schedule;
      }
   return Channel->schedule != &DummySchedule? Channel->schedule : NULL;
+}
+
+// --- cEpgDataReader --------------------------------------------------------
+
+cEpgDataReader::cEpgDataReader(void)
+:cThread("epg data reader")
+{
+}
+
+void cEpgDataReader::Action(void)
+{
+  cSchedules::Read();
 }
