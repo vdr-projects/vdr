@@ -6836,7 +6836,7 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
-2012-02-11: Version 1.7.24
+2012-02-12: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a high load in case a transponder can't be received.
@@ -6853,3 +6853,5 @@ Video Disk Recorder Revision History
   Sundararaj Reel).
 - The epg.data file is now read in a separate thread to make the startup process
   faster in case the file is very large (suggested by Helmut Auer).
+- Fixed selecting the primary device for receiving the live viewing channel in
+  case it is bonded with an other device and has no receiver attached to it.

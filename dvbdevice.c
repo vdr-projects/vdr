@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.59 2012/01/17 15:16:12 kls Exp $
+ * $Id: dvbdevice.c 2.60 2012/02/12 12:38:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1442,7 +1442,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                  result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
               }
            else
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving(true);
            }
         if (result) {
            if (!BondingOk(Channel)) {
@@ -1454,7 +1454,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving(true);
               }
            }
         }
