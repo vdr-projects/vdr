@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.60 2012/02/12 12:38:49 kls Exp $
+ * $Id: dvbdevice.c 2.61 2012/02/12 15:45:10 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1008,6 +1008,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   numModulations = 0;
   bondedDevice = NULL;
   needsDetachBondedReceivers = false;
+  tsBuffer = NULL;
 
   // Devices that are present on all card types:
 

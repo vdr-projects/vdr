@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.46 2012/01/18 10:43:00 kls Exp $
+ * $Id: device.c 2.47 2012/02/12 15:44:06 kls Exp $
  */
 
 #include "device.h"
@@ -41,7 +41,8 @@ cLiveSubtitle::~cLiveSubtitle()
 
 void cLiveSubtitle::Receive(uchar *Data, int Length)
 {
-  cDevice::PrimaryDevice()->PlayTs(Data, Length);
+  if (cDevice::PrimaryDevice())
+     cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
 // --- cDeviceHook -----------------------------------------------------------

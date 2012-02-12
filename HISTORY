@@ -6855,3 +6855,5 @@ Video Disk Recorder Revision History
   faster in case the file is very large (suggested by Helmut Auer).
 - Fixed selecting the primary device for receiving the live viewing channel in
   case it is bonded with an other device and has no receiver attached to it.
+- Fixed a possible crash when canceling VDR while displaying subtitles, and the
+  primary device is no longer available.
