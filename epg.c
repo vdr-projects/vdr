@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.10 2012/02/13 14:51:29 kls Exp $
+ * $Id: epg.c 2.11 2012/02/13 14:58:19 kls Exp $
  */
 
 #include "epg.h"
@@ -424,7 +424,7 @@ cString cEvent::GetVpsString(void) const
 {
   char buf[25];
   struct tm tm_r;
-  strftime(buf, sizeof(buf), "%d.%m %R", localtime_r(&vps, &tm_r));
+  strftime(buf, sizeof(buf), "%d.%m. %R", localtime_r(&vps, &tm_r));
   return buf;
 }
 

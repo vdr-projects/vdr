@@ -6860,3 +6860,4 @@ Video Disk Recorder Revision History
 - Improved handling subtitles of BBC channels.
 - No longer using tabs as delimiter in the EPG bugfix log (they were garbled in the
   log file).
+- Added a missing '.' after the month in VPS strings.
