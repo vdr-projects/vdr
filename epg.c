@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.9 2012/02/11 12:33:04 kls Exp $
+ * $Id: epg.c 2.10 2012/02/13 14:51:29 kls Exp $
  */
 
 #include "epg.h"
@@ -587,7 +587,7 @@ void ReportEpgBugFixStats(bool Reset)
      bool GotHits = false;
      char buffer[1024];
      for (int i = 0; i < MAXEPGBUGFIXSTATS; i++) {
-         const char *delim = "\t";
+         const char *delim = " ";
          tEpgBugFixStats *p = &EpgBugFixStats[i];
          if (p->hits) {
             bool PrintedStats = false;
@@ -604,11 +604,11 @@ void ReportEpgBugFixStats(bool Reset)
                       dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEvent::FixEpgBugs()");
                       dsyslog("IN VDR/epg.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
                       dsyslog("=====================");
-                      dsyslog("Fix\tHits\tChannels");
+                      dsyslog("Fix Hits Channels");
                       GotHits = true;
                       }
                    if (!PrintedStats) {
-                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%-3d %-4d", i, p->hits);
                       PrintedStats = true;
                       }
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());

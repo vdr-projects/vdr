@@ -6858,3 +6858,5 @@ Video Disk Recorder Revision History
 - Fixed a possible crash when canceling VDR while displaying subtitles, and the
   primary device is no longer available.
 - Improved handling subtitles of BBC channels.
+- No longer using tabs as delimiter in the EPG bugfix log (they were garbled in the
+  log file).
