@@ -6836,7 +6836,7 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
-2012-02-12: Version 1.7.24
+2012-02-13: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a high load in case a transponder can't be received.
@@ -6857,3 +6857,4 @@ Video Disk Recorder Revision History
   case it is bonded with an other device and has no receiver attached to it.
 - Fixed a possible crash when canceling VDR while displaying subtitles, and the
   primary device is no longer available.
+- Improved handling subtitles of BBC channels.
