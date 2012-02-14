@@ -6836,6 +6836,17 @@ Video Disk Recorder Revision History
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
 
+2012-02-14: Version 1.6.0-3
+
+- Changed cDvbDevice::GrabImage() to use V4L2
+  (backport from version 1.7.3, thanks to Ralf Schueler).
+- Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
+  (backport from version 1.7.8, thanks to Ralf Schueler).
+- Modified cSVDRP::CmdGRAB() to avoid writing into const data
+  (backport from version 1.7.8, thanks to Ralf Schueler).
+- Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
+  (backport from version 1.7.9, thanks to Ralf Schueler).
+
 2012-02-13: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
