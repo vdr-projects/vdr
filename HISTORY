@@ -5758,3 +5758,8 @@ Video Disk Recorder Revision History
 - Fixed wrong value for TableIdBAT in libsi/si.h (thanks to Winfried Köhler).
 - Removed unneeded include files <linux/dvb/dmx.h> und <time.h> from remux.h
   (reported by Tobias Grimm).
+
+2012-02-14: Version 1.6.0-3
+
+- Changed cDvbDevice::GrabImage() to use V4L2
+  (backport from version 1.7.3, thanks to Ralf Schueler).

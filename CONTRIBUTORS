@@ -2363,3 +2363,7 @@ Edgar Toernig <froese@gmx.de>
 
 Winfried Köhler <w_koehl@gmx.de>
  for fixing wrong value for TableIdBAT in libsi/si.h
+
+Ralf Schueler <dl4mw@schueler.ws>
+ for backporting "Changed cDvbDevice::GrabImage() to use V4L" from version 1.7.3
+ to 1.6.0-3
