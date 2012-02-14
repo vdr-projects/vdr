@@ -2367,3 +2367,5 @@ Winfried Köhler <w_koehl@gmx.de>
 Ralf Schueler <dl4mw@schueler.ws>
  for backporting "Changed cDvbDevice::GrabImage() to use V4L" from version 1.7.3
  to 1.6.0-3
+ for backporting "Added some missing 'const' keywords to avoid compilation errors
+ with gcc 4.4" from version 1.7.8 to 1.6.0-3

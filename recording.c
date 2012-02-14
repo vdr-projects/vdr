@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.162 2008/02/24 10:28:53 kls Exp $
+ * $Id: recording.c 1.162.1.1 2012/02/14 13:47:29 kls Exp $
  */
 
 #include "recording.h"
@@ -509,8 +509,8 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      Utf8Strn0Cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
      Subtitle = SubtitleBuffer;
      }
-  char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
-  char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
+  const char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
+  const char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
   if (macroTITLE || macroEPISODE) {
      name = strdup(Timer->File());
      name = strreplace(name, TIMERMACRO_TITLE, Title);
@@ -551,7 +551,7 @@ cRecording::cRecording(const char *FileName)
   sortBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(VideoDirectory) + 1;
-  char *p = strrchr(FileName, '/');
+  const char *p = strrchr(FileName, '/');
 
   name = NULL;
   info = new cRecordingInfo;
