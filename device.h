@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.32 2012/01/18 12:12:49 kls Exp $
+ * $Id: device.h 2.33 2012/02/14 14:42:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -498,11 +498,11 @@ public:
        ///< is more than one audio track.
   int NumSubtitleTracks(void) const;
        ///< Returns the number of subtitle tracks that are currently available.
-  eTrackType GetCurrentAudioTrack(void) { return currentAudioTrack; }
+  eTrackType GetCurrentAudioTrack(void) const { return currentAudioTrack; }
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
-  eTrackType GetCurrentSubtitleTrack(void) { return currentSubtitleTrack; }
+  eTrackType GetCurrentSubtitleTrack(void) const { return currentSubtitleTrack; }
   bool SetCurrentSubtitleTrack(eTrackType Type, bool Manual = false);
        ///< Sets the current subtitle track to the given Type.
        ///< IF Manual is true, no automatic preferred subtitle language selection
