@@ -2369,3 +2369,5 @@ Ralf Schueler <dl4mw@schueler.ws>
  to 1.6.0-3
  for backporting "Added some missing 'const' keywords to avoid compilation errors
  with gcc 4.4" from version 1.7.8 to 1.6.0-3
+ for backporting "Modified cSVDRP::CmdGRAB() to avoid writing into const data"
+ from version 1.7.8 to 1.6.0-3

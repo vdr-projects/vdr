@@ -5765,3 +5765,5 @@ Video Disk Recorder Revision History
   (backport from version 1.7.3, thanks to Ralf Schueler).
 - Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
   (backport from version 1.7.8, thanks to Ralf Schueler).
+- Modified cSVDRP::CmdGRAB() to avoid writing into const data
+  (backport from version 1.7.8, thanks to Ralf Schueler).
