@@ -2371,3 +2371,5 @@ Ralf Schueler <dl4mw@schueler.ws>
  with gcc 4.4" from version 1.7.8 to 1.6.0-3
  for backporting "Modified cSVDRP::CmdGRAB() to avoid writing into const data"
  from version 1.7.8 to 1.6.0-3
+ for backporting "Fixed cRecordings::DelByName() to avoid compilation errors with
+ gcc 4.4" from version 1.7.9 to 1.6.0-3
