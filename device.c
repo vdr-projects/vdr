@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.48 2012/02/15 12:14:32 kls Exp $
+ * $Id: device.c 2.49 2012/02/15 13:15:19 kls Exp $
  */
 
 #include "device.h"
@@ -81,8 +81,6 @@ cDevice::cDevice(void)
   dsyslog("new device number %d", CardIndex() + 1);
 
   SetDescription("receiver on device %d", CardIndex() + 1);
-
-  SetVideoFormat(Setup.VideoFormat);
 
   mute = false;
   volume = Setup.CurrentVolume;

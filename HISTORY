@@ -6875,3 +6875,5 @@ Video Disk Recorder Revision History
 - Added some missing 'const' to cDevice (thanks to Joachim Wilke).
 - Fixed handling the PrimaryLimit when requesting a device for live viewing
   (reported by Uwe Scheffler).
+- Removed superfluous calls to SetVideoFormat() from device constructors. This
+  function is called in cDevice::SetPrimaryDevice(), anyway.
