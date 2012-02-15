@@ -272,6 +272,8 @@ Uwe Scheffler <linux_dvb@uni.de>
  for helping to test new DVB-T handling
  for reporting a bug in switching the video format in the Setup/DVB menu
  for reporting a problem with frozen live view in conjunction with device bonding
+ for reporting a problem in handling the PrimaryLimit when requesting a device for
+ live viewing
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs

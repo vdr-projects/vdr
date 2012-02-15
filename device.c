@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.47 2012/02/12 15:44:06 kls Exp $
+ * $Id: device.c 2.48 2012/02/15 12:14:32 kls Exp $
  */
 
 #include "device.h"
@@ -271,7 +271,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
-          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+          if (device[i]->ProvidesChannel(Channel, (LiveView && device[i]->IsPrimaryDevice()) ? Setup.PrimaryLimit : Priority, &ndr)) { // this device is basicly able to do the job
              if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
