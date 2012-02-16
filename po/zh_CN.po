@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-02-16 13:18+0100\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -746,6 +746,9 @@ msgstr "存取录像错误！"
 
 msgid "Delete recording?"
 msgstr "是否删除录像？"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "删除录像错误！"

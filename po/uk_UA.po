@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-02-16 13:18+0100\n"
 "PO-Revision-Date: 2010-04-25 16:35+0200\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -743,6 +743,9 @@ msgstr "Помилка доступу до запису!"
 
 msgid "Delete recording?"
 msgstr "Витерти запис?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Помилка видалення запису!"

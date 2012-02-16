@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.47 2012/02/13 11:49:43 kls Exp $
+ * $Id: recording.c 2.48 2012/02/16 11:53:13 kls Exp $
  */
 
 #include "recording.h"
@@ -1217,12 +1217,14 @@ void cRecordings::DelByName(const char *FileName)
      char *ext = strrchr(recording->fileName, '.');
      if (ext) {
         strncpy(ext, DELEXT, strlen(ext));
-        recording->fileSizeMB = DirSizeMB(recording->FileName());
-        recording->deleted = time(NULL);
-        DeletedRecordings.Add(recording);
+        if (access(recording->FileName(), F_OK) == 0) {
+           recording->fileSizeMB = DirSizeMB(recording->FileName());
+           recording->deleted = time(NULL);
+           DeletedRecordings.Add(recording);
+           recording = NULL; // to prevent it from being deleted below
+           }
         }
-     else
-        delete recording;
+     delete recording;
      ChangeState();
      TouchUpdate();
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.35 2012/01/14 13:06:03 kls Exp $
+ * $Id: menu.c 2.36 2012/02/16 11:57:51 kls Exp $
  */
 
 #include "menu.h"
@@ -2383,9 +2383,19 @@ eOSState cMenuRecordings::Delete(void)
            }
         cRecording *recording = GetRecording(ri);
         if (recording) {
+           if (cCutter::Active(ri->FileName())) {
+              if (Interface->Confirm(tr("Recording is being edited - really delete?"))) {
+                 cCutter::Stop();
+                 recording = Recordings.GetByName(ri->FileName()); // cCutter::Stop() might have deleted it if it was the edited version
+                 // we continue with the code below even if recording is NULL,
+                 // in order to have the menu updated etc.
+                 }
+              else
+                 return osContinue;
+              }
            if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), ri->FileName()) == 0)
               cControl::Shutdown();
-           if (recording->Delete()) {
+           if (!recording || recording->Delete()) {
               cReplayControl::ClearLastReplayed(ri->FileName());
               Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
