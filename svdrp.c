@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.13 2012/01/12 15:02:46 kls Exp $
+ * $Id: svdrp.c 2.14 2012/02/16 12:25:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -664,12 +664,16 @@ void cSVDRP::CmdDELR(const char *Option)
         if (recording) {
            cRecordControl *rc = cRecordControls::GetRecordControl(recording->FileName());
            if (!rc) {
-              if (recording->Delete()) {
-                 Reply(250, "Recording \"%s\" deleted", Option);
-                 ::Recordings.DelByName(recording->FileName());
+              if (!cCutter::Active(recording->FileName())) {
+                 if (recording->Delete()) {
+                    Reply(250, "Recording \"%s\" deleted", Option);
+                    ::Recordings.DelByName(recording->FileName());
+                    }
+                 else
+                    Reply(554, "Error while deleting recording!");
                  }
               else
-                 Reply(554, "Error while deleting recording!");
+                 Reply(550, "Recording \"%s\" is being edited", Option);
               }
            else
               Reply(550, "Recording \"%s\" is in use by timer %d", Option, rc->Timer()->Index() + 1);
