@@ -304,7 +304,7 @@ multiple slashes).
 Note that the file system need not be 64-bit proof, since the 'vdr'
 program splits video files into chunks of about 2GB. You should use
 a disk with several gigabytes of free space. One GB can store roughly
-half an hour of video data.
+half an hour of SD video data, or 10 minutes of HD video.
 
 If you have more than one disk and don't want to combine them to form
 one large logical volume, you can set up several video directories as
