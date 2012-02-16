@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.14 2012/02/16 12:25:05 kls Exp $
+ * $Id: svdrp.c 2.15 2012/02/16 12:38:19 kls Exp $
  */
 
 #include "svdrp.h"
@@ -256,8 +256,6 @@ const char *HelpPages[] = {
   "    used to easily activate or deactivate a timer.",
   "MOVC <number> <to>\n"
   "    Move a channel to a new position.",
-  "MOVT <number> <to>\n"
-  "    Move a timer to a new position.",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
@@ -1287,12 +1285,6 @@ void cSVDRP::CmdMOVC(const char *Option)
      Reply(501, "Missing channel number");
 }
 
-void cSVDRP::CmdMOVT(const char *Option)
-{
-  //TODO combine this with menu action
-  Reply(502, "MOVT not yet implemented");
-}
-
 void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
@@ -1636,7 +1628,6 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("MODC"))  CmdMODC(s);
   else if (CMD("MODT"))  CmdMODT(s);
   else if (CMD("MOVC"))  CmdMOVC(s);
-  else if (CMD("MOVT"))  CmdMOVT(s);
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);

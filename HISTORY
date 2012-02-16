@@ -6880,3 +6880,4 @@ Video Disk Recorder Revision History
 - An ongoing editing process is now canceled if either the original or the edited
   version of the recording is deleted from the Recordings menu.
 - The SVDRP command DELR now won't delete a recording that is currently being edited.
+- Removed code stub for obsolete SVDRP command MOVT.
