@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.48 2012/02/16 11:53:13 kls Exp $
+ * $Id: recording.c 2.49 2012/02/17 13:57:05 kls Exp $
  */
 
 #include "recording.h"
@@ -1109,40 +1109,38 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
   cReadDir d(DirName);
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
-        if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-           cString buffer = AddDirectory(DirName, e->d_name);
-           struct stat st;
-           if (lstat(buffer, &st) == 0) {
-              int Link = 0;
-              if (S_ISLNK(st.st_mode)) {
-                 if (LinkLevel > MAX_LINK_LEVEL) {
-                    isyslog("max link level exceeded - not scanning %s", *buffer);
-                    continue;
-                    }
-                 Link = 1;
-                 if (stat(buffer, &st) != 0)
-                    continue;
+        cString buffer = AddDirectory(DirName, e->d_name);
+        struct stat st;
+        if (lstat(buffer, &st) == 0) {
+           int Link = 0;
+           if (S_ISLNK(st.st_mode)) {
+              if (LinkLevel > MAX_LINK_LEVEL) {
+                 isyslog("max link level exceeded - not scanning %s", *buffer);
+                 continue;
                  }
-              if (S_ISDIR(st.st_mode)) {
-                 if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
-                    cRecording *r = new cRecording(buffer);
-                    if (r->Name()) {
-                       r->NumFrames(); // initializes the numFrames member
-                       Lock();
-                       Add(r);
-                       ChangeState();
-                       Unlock();
-                       if (deleted) {
-                          r->fileSizeMB = DirSizeMB(buffer);
-                          r->deleted = time(NULL);
-                          }
+              Link = 1;
+              if (stat(buffer, &st) != 0)
+                 continue;
+              }
+           if (S_ISDIR(st.st_mode)) {
+              if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
+                 cRecording *r = new cRecording(buffer);
+                 if (r->Name()) {
+                    r->NumFrames(); // initializes the numFrames member
+                    Lock();
+                    Add(r);
+                    ChangeState();
+                    Unlock();
+                    if (deleted) {
+                       r->fileSizeMB = DirSizeMB(buffer);
+                       r->deleted = time(NULL);
                        }
-                    else
-                       delete r;
                     }
                  else
-                    ScanVideoDir(buffer, Foreground, LinkLevel + Link);
+                    delete r;
                  }
+              else
+                 ScanVideoDir(buffer, Foreground, LinkLevel + Link);
               }
            }
         }

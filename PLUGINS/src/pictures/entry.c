@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: entry.c 1.3 2008/02/17 13:42:34 kls Exp $
+ * $Id: entry.c 2.1 2012/02/17 14:00:28 kls Exp $
  */
 
 #include "entry.h"
@@ -48,13 +48,11 @@ void cPictureEntry::Load(void) const
      if (d.Ok()) {
         struct dirent *e;
         while ((e = d.Next()) != NULL) {
-              if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-                 struct stat ds;
-                 if (stat(AddDirectory(Directory, e->d_name), &ds) == 0) {
-                    if (!entries)
-                       entries = new cList<cPictureEntry>;
-                    entries->Add(new cPictureEntry(e->d_name, this, S_ISDIR(ds.st_mode)));
-                    }
+              struct stat ds;
+              if (stat(AddDirectory(Directory, e->d_name), &ds) == 0) {
+                 if (!entries)
+                    entries = new cList<cPictureEntry>;
+                 entries->Add(new cPictureEntry(e->d_name, this, S_ISDIR(ds.st_mode)));
                  }
               }
         if (entries)

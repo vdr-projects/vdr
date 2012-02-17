@@ -6884,3 +6884,4 @@ Video Disk Recorder Revision History
 - The DVB device adapters/frontends are now probed by scanning the /dev/dvb directory
   instead of looping through adapter/frontend numbers. This allows for "holes" in the
   device numbering.
+- cReadDir::Next() now skips directory entries "." and "..".
