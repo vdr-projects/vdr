@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.61 2012/02/12 15:45:10 kls Exp $
+ * $Id: dvbdevice.c 2.62 2012/02/17 12:20:34 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1048,7 +1048,7 @@ cDvbDevice::~cDvbDevice()
 
 cString cDvbDevice::DvbName(const char *Name, int Adapter, int Frontend)
 {
-  return cString::sprintf("%s%d/%s%d", DEV_DVB_ADAPTER, Adapter, Name, Frontend);
+  return cString::sprintf("%s/%s%d/%s%d", DEV_DVB_BASE, DEV_DVB_ADAPTER, Adapter, Name, Frontend);
 }
 
 int cDvbDevice::DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError)
@@ -1096,28 +1096,47 @@ bool cDvbDevice::Initialize(void)
   new cDvbSourceParam('C', "DVB-C");
   new cDvbSourceParam('S', "DVB-S");
   new cDvbSourceParam('T', "DVB-T");
+  cStringList Nodes;
+  cReadDir DvbDir(DEV_DVB_BASE);
+  if (DvbDir.Ok()) {
+     struct dirent *a;
+     while ((a = DvbDir.Next()) != NULL) {
+           if (strstr(a->d_name, DEV_DVB_ADAPTER) == a->d_name) {
+              int Adapter = strtol(a->d_name + strlen(DEV_DVB_ADAPTER), NULL, 10);
+              cReadDir AdapterDir(AddDirectory(DEV_DVB_BASE, a->d_name));
+              if (AdapterDir.Ok()) {
+                 struct dirent *f;
+                 while ((f = AdapterDir.Next()) != NULL) {
+                       if (strstr(f->d_name, DEV_DVB_FRONTEND) == f->d_name) {
+                          int Frontend = strtol(f->d_name + strlen(DEV_DVB_FRONTEND), NULL, 10);
+                          Nodes.Append(strdup(cString::sprintf("%2d %2d", Adapter, Frontend)));
+                          }
+                       }
+                 }
+              }
+           }
+     }
   int Checked = 0;
   int Found = 0;
-  for (int Adapter = 0; ; Adapter++) {
-      for (int Frontend = 0; ; Frontend++) {
-          if (Exists(Adapter, Frontend)) {
-             if (Checked++ < MAXDVBDEVICES) {
-                if (UseDevice(NextCardIndex())) {
-                   if (Probe(Adapter, Frontend))
-                      Found++;
-                   }
-                else
-                   NextCardIndex(1); // skips this one
-                }
-             }
-          else if (Frontend == 0)
-             goto LastAdapter;
-          else
-             goto NextAdapter;
-          }
-      NextAdapter: ;
-      }
-LastAdapter:
+  if (Nodes.Size() > 0) {
+     Nodes.Sort();
+     for (int i = 0; i < Nodes.Size(); i++) {
+         int Adapter;
+         int Frontend;
+         if (2 == sscanf(Nodes[i], "%d %d", &Adapter, &Frontend)) {
+            if (Exists(Adapter, Frontend)) {
+               if (Checked++ < MAXDVBDEVICES) {
+                  if (UseDevice(NextCardIndex())) {
+                     if (Probe(Adapter, Frontend))
+                        Found++;
+                     }
+                  else
+                     NextCardIndex(1); // skips this one
+                  }
+               }
+            }
+         }
+     }
   NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
   if (Found > 0)
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");

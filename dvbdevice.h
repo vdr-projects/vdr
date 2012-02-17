@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.22 2012/01/16 12:51:39 kls Exp $
+ * $Id: dvbdevice.h 2.23 2012/02/17 11:18:55 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -22,7 +22,8 @@
 #define MAXDELIVERYSYSTEMS 8
 
 #define DEV_VIDEO         "/dev/video"
-#define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
+#define DEV_DVB_BASE      "/dev/dvb"
+#define DEV_DVB_ADAPTER   "adapter"
 #define DEV_DVB_OSD       "osd"
 #define DEV_DVB_FRONTEND  "frontend"
 #define DEV_DVB_DVR       "dvr"
