@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.21 2010/03/07 14:24:26 kls Exp $
+ * $Id: dvbplayer.c 2.22 2012/02/17 15:36:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -87,6 +87,7 @@ class cNonBlockingFileReader : public cThread {
 private:
   cUnbufferedFile *f;
   uchar *buffer;
+  uchar *result;
   int wanted;
   int length;
   cCondWait newSet;
@@ -100,7 +101,7 @@ public:
   void Clear(void);
   void Request(cUnbufferedFile *File, int Length);
   int Result(uchar **Buffer);
-  bool Reading(void) { return buffer; }
+  bool Reading(void) { return result; }
   bool WaitForDataMs(int msToWait);
   };
 
@@ -109,6 +110,7 @@ cNonBlockingFileReader::cNonBlockingFileReader(void)
 {
   f = NULL;
   buffer = NULL;
+  result = NULL;
   wanted = length = 0;
   Start();
 }
@@ -118,6 +120,7 @@ cNonBlockingFileReader::~cNonBlockingFileReader()
   newSet.Signal();
   Cancel(3);
   free(buffer);
+  free(result);
 }
 
 void cNonBlockingFileReader::Clear(void)
@@ -126,6 +129,8 @@ void cNonBlockingFileReader::Clear(void)
   f = NULL;
   free(buffer);
   buffer = NULL;
+  free(result);
+  result = NULL;
   wanted = length = 0;
   Unlock();
 }
@@ -137,18 +142,18 @@ void cNonBlockingFileReader::Request(cUnbufferedFile *File, int Length)
   wanted = Length;
   buffer = MALLOC(uchar, wanted);
   f = File;
-  Unlock();
   newSet.Signal();
+  Unlock();
 }
 
 int cNonBlockingFileReader::Result(uchar **Buffer)
 {
   LOCK_THREAD;
-  if (buffer && length == wanted) {
-     *Buffer = buffer;
-     buffer = NULL;
+  if (result && length == wanted) {
+     *Buffer = result;
+     result = NULL;
      return wanted;
-     }
+  }
   errno = EAGAIN;
   return -1;
 }
@@ -172,6 +177,8 @@ void cNonBlockingFileReader::Action(void)
               length = wanted = r; // this will forward the error status to the caller
               }
            if (length == wanted) {
+              result = buffer;
+              buffer = NULL;
               cMutexLock NewDataLock(&newDataMutex);
               newDataCond.Broadcast();
               }
@@ -183,9 +190,9 @@ void cNonBlockingFileReader::Action(void)
 
 bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 {
-  cMutexLock NewDataLock(&newDataMutex);
-  if (buffer && length == wanted)
+  if (result && length == wanted)
      return true;
+  cMutexLock NewDataLock(&newDataMutex);
   return newDataCond.TimedWait(newDataMutex, msToWait);
 }
 
@@ -402,13 +409,13 @@ void cDvbPlayer::Action(void)
 
   while (Running()) {
         if (WaitingForData)
-           nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
+           nonBlockingFileReader->WaitForDataMs(10); // this keeps the CPU load low, but reacts immediately on new data
         else if (Sleep) {
            cPoller Poller;
            DevicePoll(Poller, 10);
            Sleep = false;
            if (playMode == pmStill || playMode==pmPause)
-              cCondWait::SleepMs(3);
+              cCondWait::SleepMs(10);
            }
         {
           LOCK_THREAD;
@@ -470,7 +477,15 @@ void cDvbPlayer::Action(void)
                    }
                 if (!eof) {
                    uchar *b = NULL;
-                   int r = nonBlockingFileReader->Result(&b);
+                   int Retries = 5;
+                   int r;
+                   while (true) {
+                         r = nonBlockingFileReader->Result(&b);
+                         if (r == -1 && errno == EAGAIN && --Retries)
+                            nonBlockingFileReader->WaitForDataMs(10); 
+                         else 
+                            break;
+                         }
                    if (r > 0) {
                       WaitingForData = false;
                       uint32_t Pts = 0;
