@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.36 2012/02/16 11:57:51 kls Exp $
+ * $Id: menu.c 2.37 2012/02/19 11:37:55 kls Exp $
  */
 
 #include "menu.h"
@@ -4329,13 +4329,10 @@ bool cRecordControls::PauseLiveVideo(void)
   Skins.Message(mtStatus, tr("Pausing live video..."));
   cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
   if (Start(NULL, true)) {
-     cCondWait::SleepMs(2000); // allow recorded file to fill up enough to start replaying
-     cReplayControl *rc = new cReplayControl;
+     cReplayControl *rc = new cReplayControl(true);
      cControl::Launch(rc);
      cControl::Attach();
-     cCondWait::SleepMs(1000); // allow device to replay some frames, so we have a picture
      Skins.Message(mtStatus, NULL);
-     rc->ProcessKey(kPause); // pause, allowing replay mode display
      return true;
      }
   Skins.Message(mtStatus, NULL);
@@ -4425,8 +4422,8 @@ cReplayControl *cReplayControl::currentReplayControl = NULL;
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
 
-cReplayControl::cReplayControl(void)
-:cDvbPlayerControl(fileName)
+cReplayControl::cReplayControl(bool PauseLive)
+:cDvbPlayerControl(fileName, PauseLive)
 {
   currentReplayControl = this;
   displayReplay = NULL;

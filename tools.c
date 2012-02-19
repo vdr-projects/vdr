@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.21 2012/02/17 13:58:49 kls Exp $
+ * $Id: tools.c 2.22 2012/02/18 15:30:35 kls Exp $
  */
 
 #include "tools.h"
@@ -561,6 +561,14 @@ time_t LastModifiedTime(const char *FileName)
   if (stat(FileName, &fs) == 0)
      return fs.st_mtime;
   return 0;
+}
+
+off_t FileSize(const char *FileName)
+{
+  struct stat fs;
+  if (stat(FileName, &fs) == 0)
+     return fs.st_size;
+  return -1;
 }
 
 // --- cTimeMs ---------------------------------------------------------------

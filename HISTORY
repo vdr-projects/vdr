@@ -6847,7 +6847,7 @@ Video Disk Recorder Revision History
 - Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
   (backport from version 1.7.9, thanks to Ralf Schueler).
 
-2012-02-18: Version 1.7.24
+2012-02-19: Version 1.7.24
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a high load in case a transponder can't be received.
@@ -6886,3 +6886,5 @@ Video Disk Recorder Revision History
   device numbering.
 - cReadDir::Next() now skips directory entries "." and "..".
 - Fixed a possible deadlock in time shift mode.
+- Fixed switching into time shift mode when pausing live video (thanks to Reinhard
+  Nissl for helping to debug this one).

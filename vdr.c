@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.28 2012/02/11 12:34:01 kls Exp $
+ * $Id: vdr.c 2.29 2012/02/19 11:37:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -1160,7 +1160,6 @@ int main(int argc, char *argv[])
               }
            switch (state) {
              case osPause:  DELETE_MENU;
-                            cControl::Shutdown(); // just in case
                             if (!cRecordControls::PauseLiveVideo())
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;

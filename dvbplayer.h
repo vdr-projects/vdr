@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 1.2 2002/06/23 10:13:51 kls Exp $
+ * $Id: dvbplayer.h 2.1 2012/02/19 11:40:36 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H
@@ -19,8 +19,11 @@ class cDvbPlayerControl : public cControl {
 private:
   cDvbPlayer *player;
 public:
-  cDvbPlayerControl(const char *FileName);
+  cDvbPlayerControl(const char *FileName, bool PauseLive = false);
        // Sets up a player for the given file.
+       // If PauseLive is true, special care is taken to make sure the index
+       // file of the recording is long enough to allow the player to display
+       // the first frame in still picture mode.
   virtual ~cDvbPlayerControl();
   bool Active(void);
   void Stop(void);

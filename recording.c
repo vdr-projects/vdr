@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.49 2012/02/17 13:57:05 kls Exp $
+ * $Id: recording.c 2.50 2012/02/19 10:44:45 kls Exp $
  */
 
 #include "recording.h"
@@ -1555,8 +1555,9 @@ struct tIndexTs {
 
 #define MAXWAITFORINDEXFILE     10 // max. time to wait for the regenerated index file (seconds)
 #define INDEXFILECHECKINTERVAL 500 // ms between checks for existence of the regenerated index file
+#define INDEXFILETESTINTERVAL   10 // ms between tests for the size of the index file in case of pausing live video
 
-cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
+cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive)
 :resumeFile(FileName, IsPesRecording)
 {
   f = -1;
@@ -1567,6 +1568,12 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
   indexFileGenerator = NULL;
   if (FileName) {
      fileName = IndexFileName(FileName, isPesRecording);
+     if (!Record && PauseLive) {
+        // Wait until the index file contains at least two frames:
+        time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
+        while (time(NULL) < tmax && FileSize(fileName) < 2 * sizeof(tIndexTs))
+              cCondWait::SleepMs(INDEXFILETESTINTERVAL);
+        }
      int delta = 0;
      if (!Record && access(fileName, R_OK) != 0) {
         // Index file doesn't exist, so try to regenerate it:
