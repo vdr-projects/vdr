@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.23 2012/02/19 10:48:02 kls Exp $
+ * $Id: dvbplayer.c 2.24 2012/02/19 14:31:22 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -291,6 +291,8 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
      delete index;
      index = NULL;
      }
+  else if (PauseLive)
+     framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
 }
 
 cDvbPlayer::~cDvbPlayer()
