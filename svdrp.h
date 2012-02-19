@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 2.1 2011/12/04 13:51:44 kls Exp $
+ * $Id: svdrp.h 2.2 2012/02/16 12:37:53 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -71,7 +71,6 @@ private:
   void CmdMODC(const char *Option);
   void CmdMODT(const char *Option);
   void CmdMOVC(const char *Option);
-  void CmdMOVT(const char *Option);
   void CmdNEWC(const char *Option);
   void CmdNEWT(const char *Option);
   void CmdNEXT(const char *Option);

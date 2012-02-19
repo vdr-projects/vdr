@@ -1993,7 +1993,7 @@ whatever actions are necessary to determine whether the given Device can
 provide the given Channel's transponder, as in
 
 <p><table><tr><td class="code"><pre>
-void cMyDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
+bool cMyDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
 {
   if (<i>condition where Device can't provide Channel</i>)
      return false;

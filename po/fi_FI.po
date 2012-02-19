@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-02-16 13:18+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -747,6 +747,9 @@ msgstr "Tallenteen toistaminen epäonnistui!"
 msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
 
+msgid "Recording is being edited - really delete?"
+msgstr ""
+
 msgid "Error while deleting recording!"
 msgstr "Tallenteen poistaminen epäonnistui!"
 
@@ -1084,7 +1087,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Näytä toiston tila"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Näytä jäljellä oleva aika"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

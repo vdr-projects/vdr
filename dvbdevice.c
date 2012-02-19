@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.56 2012/01/15 14:31:47 kls Exp $
+ * $Id: dvbdevice.c 2.62 2012/02/17 12:20:34 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -502,6 +502,8 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
      tunerStatus = tsIdle;
      ResetToneAndVoltage();
      }
+  if (bondedTuner && device->IsPrimaryDevice())
+     cDevice::PrimaryDevice()->DelLivePids(); // 'device' is const, so we must do it this way
 }
 
 bool cDvbTuner::Locked(int TimeoutMs)
@@ -857,6 +859,7 @@ void cDvbTuner::Action(void)
         if (GetFrontendStatus(NewStatus))
            Status = NewStatus;
         cMutexLock MutexLock(&mutex);
+        int WaitTime = 1000;
         switch (tunerStatus) {
           case tsIdle:
                break;
@@ -877,6 +880,7 @@ void cDvbTuner::Action(void)
                      bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
+               WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
           case tsLocked:
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
@@ -905,9 +909,7 @@ void cDvbTuner::Action(void)
                break;
           default: esyslog("ERROR: unknown tuner status %d", tunerStatus);
           }
-
-        if (tunerStatus != tsTuned)
-           newSet.TimedWait(mutex, 1000);
+        newSet.TimedWait(mutex, WaitTime);
         }
 }
 
@@ -1006,6 +1008,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   numModulations = 0;
   bondedDevice = NULL;
   needsDetachBondedReceivers = false;
+  tsBuffer = NULL;
 
   // Devices that are present on all card types:
 
@@ -1045,7 +1048,7 @@ cDvbDevice::~cDvbDevice()
 
 cString cDvbDevice::DvbName(const char *Name, int Adapter, int Frontend)
 {
-  return cString::sprintf("%s%d/%s%d", DEV_DVB_ADAPTER, Adapter, Name, Frontend);
+  return cString::sprintf("%s/%s%d/%s%d", DEV_DVB_BASE, DEV_DVB_ADAPTER, Adapter, Name, Frontend);
 }
 
 int cDvbDevice::DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError)
@@ -1093,28 +1096,47 @@ bool cDvbDevice::Initialize(void)
   new cDvbSourceParam('C', "DVB-C");
   new cDvbSourceParam('S', "DVB-S");
   new cDvbSourceParam('T', "DVB-T");
+  cStringList Nodes;
+  cReadDir DvbDir(DEV_DVB_BASE);
+  if (DvbDir.Ok()) {
+     struct dirent *a;
+     while ((a = DvbDir.Next()) != NULL) {
+           if (strstr(a->d_name, DEV_DVB_ADAPTER) == a->d_name) {
+              int Adapter = strtol(a->d_name + strlen(DEV_DVB_ADAPTER), NULL, 10);
+              cReadDir AdapterDir(AddDirectory(DEV_DVB_BASE, a->d_name));
+              if (AdapterDir.Ok()) {
+                 struct dirent *f;
+                 while ((f = AdapterDir.Next()) != NULL) {
+                       if (strstr(f->d_name, DEV_DVB_FRONTEND) == f->d_name) {
+                          int Frontend = strtol(f->d_name + strlen(DEV_DVB_FRONTEND), NULL, 10);
+                          Nodes.Append(strdup(cString::sprintf("%2d %2d", Adapter, Frontend)));
+                          }
+                       }
+                 }
+              }
+           }
+     }
   int Checked = 0;
   int Found = 0;
-  for (int Adapter = 0; ; Adapter++) {
-      for (int Frontend = 0; ; Frontend++) {
-          if (Exists(Adapter, Frontend)) {
-             if (Checked++ < MAXDVBDEVICES) {
-                if (UseDevice(NextCardIndex())) {
-                   if (Probe(Adapter, Frontend))
-                      Found++;
-                   }
-                else
-                   NextCardIndex(1); // skips this one
-                }
-             }
-          else if (Frontend == 0)
-             goto LastAdapter;
-          else
-             goto NextAdapter;
-          }
-      NextAdapter: ;
-      }
-LastAdapter:
+  if (Nodes.Size() > 0) {
+     Nodes.Sort();
+     for (int i = 0; i < Nodes.Size(); i++) {
+         int Adapter;
+         int Frontend;
+         if (2 == sscanf(Nodes[i], "%d %d", &Adapter, &Frontend)) {
+            if (Exists(Adapter, Frontend)) {
+               if (Checked++ < MAXDVBDEVICES) {
+                  if (UseDevice(NextCardIndex())) {
+                     if (Probe(Adapter, Frontend))
+                        Found++;
+                     }
+                  else
+                     NextCardIndex(1); // skips this one
+                  }
+               }
+            }
+         }
+     }
   NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
   if (Found > 0)
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
@@ -1130,7 +1152,7 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
      LOG_ERROR;
      return false;
      }
-#if DVB_API_VERSION > 5 || DVB_API_VERSION_MINOR >= 5
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) >= 0x0505
   dtv_property Frontend[1];
   memset(&Frontend, 0, sizeof(Frontend));
   dtv_properties CmdSeq;
@@ -1440,7 +1462,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                  result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
               }
            else
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving(true);
            }
         if (result) {
            if (!BondingOk(Channel)) {
@@ -1452,7 +1474,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving(true);
               }
            }
         }

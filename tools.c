@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.20 2012/01/11 11:21:43 kls Exp $
+ * $Id: tools.c 2.22 2012/02/18 15:30:35 kls Exp $
  */
 
 #include "tools.h"
@@ -384,37 +384,35 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
         if (d.Ok()) {
            struct dirent *e;
            while ((e = d.Next()) != NULL) {
-                 if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-                    cString buffer = AddDirectory(FileName, e->d_name);
-                    if (FollowSymlinks) {
-                       struct stat st2;
-                       if (lstat(buffer, &st2) == 0) {
-                          if (S_ISLNK(st2.st_mode)) {
-                             int size = st2.st_size + 1;
-                             char *l = MALLOC(char, size);
-                             int n = readlink(buffer, l, size - 1);
-                             if (n < 0) {
-                                if (errno != EINVAL)
-                                   LOG_ERROR_STR(*buffer);
-                                }
-                             else {
-                                l[n] = 0;
-                                dsyslog("removing %s", l);
-                                if (remove(l) < 0)
-                                   LOG_ERROR_STR(l);
-                                }
-                             free(l);
+                 cString buffer = AddDirectory(FileName, e->d_name);
+                 if (FollowSymlinks) {
+                    struct stat st2;
+                    if (lstat(buffer, &st2) == 0) {
+                       if (S_ISLNK(st2.st_mode)) {
+                          int size = st2.st_size + 1;
+                          char *l = MALLOC(char, size);
+                          int n = readlink(buffer, l, size - 1);
+                          if (n < 0) {
+                             if (errno != EINVAL)
+                                LOG_ERROR_STR(*buffer);
                              }
-                          }
-                       else if (errno != ENOENT) {
-                          LOG_ERROR_STR(FileName);
-                          return false;
+                          else {
+                             l[n] = 0;
+                             dsyslog("removing %s", l);
+                             if (remove(l) < 0)
+                                LOG_ERROR_STR(l);
+                             }
+                          free(l);
                           }
                        }
-                    dsyslog("removing %s", *buffer);
-                    if (remove(buffer) < 0)
-                       LOG_ERROR_STR(*buffer);
+                    else if (errno != ENOENT) {
+                       LOG_ERROR_STR(FileName);
+                       return false;
+                       }
                     }
+                 dsyslog("removing %s", *buffer);
+                 if (remove(buffer) < 0)
+                    LOG_ERROR_STR(*buffer);
                  }
            }
         else {
@@ -442,7 +440,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
      bool empty = true;
      struct dirent *e;
      while ((e = d.Next()) != NULL) {
-           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..") && strcmp(e->d_name, "lost+found")) {
+           if (strcmp(e->d_name, "lost+found")) {
               cString buffer = AddDirectory(DirName, e->d_name);
               struct stat st;
               if (stat(buffer, &st) == 0) {
@@ -480,24 +478,22 @@ int DirSizeMB(const char *DirName)
      int size = 0;
      struct dirent *e;
      while (size >= 0 && (e = d.Next()) != NULL) {
-           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-              cString buffer = AddDirectory(DirName, e->d_name);
-              struct stat st;
-              if (stat(buffer, &st) == 0) {
-                 if (S_ISDIR(st.st_mode)) {
-                    int n = DirSizeMB(buffer);
-                    if (n >= 0)
-                       size += n;
-                    else
-                       size = -1;
-                    }
+           cString buffer = AddDirectory(DirName, e->d_name);
+           struct stat st;
+           if (stat(buffer, &st) == 0) {
+              if (S_ISDIR(st.st_mode)) {
+                 int n = DirSizeMB(buffer);
+                 if (n >= 0)
+                    size += n;
                  else
-                    size += st.st_size / MEGABYTE(1);
+                    size = -1;
                  }
-              else {
-                 LOG_ERROR_STR(*buffer);
-                 size = -1;
-                 }
+              else
+                 size += st.st_size / MEGABYTE(1);
+              }
+           else {
+              LOG_ERROR_STR(*buffer);
+              size = -1;
               }
            }
      return size;
@@ -565,6 +561,14 @@ time_t LastModifiedTime(const char *FileName)
   if (stat(FileName, &fs) == 0)
      return fs.st_mtime;
   return 0;
+}
+
+off_t FileSize(const char *FileName)
+{
+  struct stat fs;
+  if (stat(FileName, &fs) == 0)
+     return fs.st_size;
+  return -1;
 }
 
 // --- cTimeMs ---------------------------------------------------------------
@@ -1320,7 +1324,13 @@ cReadDir::~cReadDir()
 
 struct dirent *cReadDir::Next(void)
 {
-  return directory && readdir_r(directory, &u.d, &result) == 0 ? result : NULL;
+  if (directory) {
+     while (readdir_r(directory, &u.d, &result) == 0 && result) {
+           if (strcmp(result->d_name, ".") && strcmp(result->d_name, ".."))
+              return result;
+           }
+     }
+  return NULL;
 }
 
 // --- cStringList -----------------------------------------------------------
@@ -1362,16 +1372,14 @@ bool cFileNameList::Load(const char *Directory, bool DirsOnly)
      struct dirent *e;
      if (d.Ok()) {
         while ((e = d.Next()) != NULL) {
-              if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-                 if (DirsOnly) {
-                    struct stat ds;
-                    if (stat(AddDirectory(Directory, e->d_name), &ds) == 0) {
-                       if (!S_ISDIR(ds.st_mode))
-                          continue;
-                       }
+              if (DirsOnly) {
+                 struct stat ds;
+                 if (stat(AddDirectory(Directory, e->d_name), &ds) == 0) {
+                    if (!S_ISDIR(ds.st_mode))
+                       continue;
                     }
-                 Append(strdup(e->d_name));
                  }
+              Append(strdup(e->d_name));
               }
         Sort();
         return true;

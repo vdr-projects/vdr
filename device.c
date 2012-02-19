@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.44 2011/10/16 14:36:43 kls Exp $
+ * $Id: device.c 2.49 2012/02/15 13:15:19 kls Exp $
  */
 
 #include "device.h"
@@ -41,7 +41,8 @@ cLiveSubtitle::~cLiveSubtitle()
 
 void cLiveSubtitle::Receive(uchar *Data, int Length)
 {
-  cDevice::PrimaryDevice()->PlayTs(Data, Length);
+  if (cDevice::PrimaryDevice())
+     cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
 // --- cDeviceHook -----------------------------------------------------------
@@ -80,8 +81,6 @@ cDevice::cDevice(void)
   dsyslog("new device number %d", CardIndex() + 1);
 
   SetDescription("receiver on device %d", CardIndex() + 1);
-
-  SetVideoFormat(Setup.VideoFormat);
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -270,7 +269,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
-          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+          if (device[i]->ProvidesChannel(Channel, (LiveView && device[i]->IsPrimaryDevice()) ? Setup.PrimaryLimit : Priority, &ndr)) { // this device is basicly able to do the job
              if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
@@ -335,6 +334,7 @@ void cDevice::SetCamSlot(cCamSlot *CamSlot)
 
 void cDevice::Shutdown(void)
 {
+  deviceHooks.Clear();
   primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];
@@ -529,6 +529,14 @@ void cDevice::DelPid(int Pid, ePidType PidType)
 bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
   return false;
+}
+
+void cDevice::DelLivePids(void)
+{
+  for (int i = ptAudio; i < ptOther; i++) {
+      if (pidHandles[i].pid)
+         DelPid(pidHandles[i].pid, ePidType(i));
+      }
 }
 
 void cDevice::StartSectionHandler(void)

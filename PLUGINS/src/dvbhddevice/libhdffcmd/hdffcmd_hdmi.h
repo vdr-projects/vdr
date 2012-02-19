@@ -47,14 +47,15 @@ typedef struct HdffHdmiConfig_t
     int ForceDviMode;
     int CecEnabled;
     HdffVideoModeAdaption_t VideoModeAdaption;
+    char CecDeviceName[14];
 } HdffHdmiConfig_t;
 
 typedef enum HdffCecCommand_t
 {
     HDFF_CEC_COMMAND_TV_ON,
     HDFF_CEC_COMMAND_TV_OFF,
-    HDFF_CEC_COMMAND_TV_ACTIVE_SOURCE,
-    HDFF_CEC_COMMAND_TV_INACTIVE_SOURCE
+    HDFF_CEC_COMMAND_ACTIVE_SOURCE,
+    HDFF_CEC_COMMAND_INACTIVE_SOURCE
 } HdffCecCommand_t;
 
 
@@ -63,5 +64,9 @@ int HdffCmdHdmiSetVideoMode(int OsdDevice, HdffVideoMode_t VideoMode);
 int HdffCmdHdmiConfigure(int OsdDevice, const HdffHdmiConfig_t * Config);
 
 int HdffCmdHdmiSendCecCommand(int OsdDevice, HdffCecCommand_t Command);
+
+int HdffCmdHdmiSendRawCecCommand(int OsdDevice, uint8_t Destination,
+                                 uint8_t Opcode, const uint8_t * Operand,
+                                 uint8_t OperandLength);
 
 #endif /* HDFFCMD_HDMI_H */

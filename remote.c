@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.4 2011/08/15 13:41:40 kls Exp $
+ * $Id: remote.c 2.5 2012/01/16 16:57:00 kls Exp $
  */
 
 #include "remote.h"
@@ -317,38 +317,38 @@ uint64_t cKbdRemote::ReadKeySequence(void)
   if ((key1 = ReadKey()) >= 0) {
      k = key1;
      if (key1 == 0x1B) {
-         // Start of escape sequence
-         if ((key1 = ReadKey()) >= 0) {
-            k <<= 8;
-            k |= key1 & 0xFF;
-            switch (key1) {
-              case 0x4F: // 3-byte sequence
-                   if ((key1 = ReadKey()) >= 0) {
-                      k <<= 8;
-                      k |= key1 & 0xFF;
-                      }
-                   break;
-              case 0x5B: // 3- or more-byte sequence
-                   if ((key1 = ReadKey()) >= 0) {
-                      k <<= 8;
-                      k |= key1 & 0xFF;
-                      switch (key1) {
-                        case 0x31 ... 0x3F: // more-byte sequence
-                        case 0x5B: // strange, may apparently occur
-                             do {
-                                if ((key1 = ReadKey()) < 0)
-                                   break; // Sequence ends here
-                                k <<= 8;
-                                k |= key1 & 0xFF;
-                                } while (key1 != 0x7E);
-                             break;
-                        default: ;
-                        }
-                      }
-                   break;
-              default: ;
-              }
-            }
+        // Start of escape sequence
+        if ((key1 = ReadKey()) >= 0) {
+           k <<= 8;
+           k |= key1 & 0xFF;
+           switch (key1) {
+             case 0x4F: // 3-byte sequence
+                  if ((key1 = ReadKey()) >= 0) {
+                     k <<= 8;
+                     k |= key1 & 0xFF;
+                     }
+                  break;
+             case 0x5B: // 3- or more-byte sequence
+                  if ((key1 = ReadKey()) >= 0) {
+                     k <<= 8;
+                     k |= key1 & 0xFF;
+                     switch (key1) {
+                       case 0x31 ... 0x3F: // more-byte sequence
+                       case 0x5B: // strange, may apparently occur
+                            do {
+                               if ((key1 = ReadKey()) < 0)
+                                  break; // Sequence ends here
+                               k <<= 8;
+                               k |= key1 & 0xFF;
+                               } while (key1 != 0x7E);
+                            break;
+                       default: ;
+                       }
+                     }
+                  break;
+             default: ;
+             }
+           }
         }
      }
   return k;

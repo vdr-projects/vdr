@@ -3,8 +3,10 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.35 2011/12/04 15:30:42 kls Exp $
+ * $Id: dvbhdffdevice.c 1.39 2012/02/15 13:14:49 kls Exp $
  */
+
+#include <stdint.h>
 
 #include "dvbhdffdevice.h"
 #include <errno.h>
@@ -50,30 +52,34 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) gHdffSetup.AudioDownmix);
      mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) gHdffSetup.AnalogueVideo);
      mHdffCmdIf->CmdHdmiSetVideoMode(gHdffSetup.GetVideoMode());
+
      HdffHdmiConfig_t hdmiConfig;
+     memset(&hdmiConfig, 0, sizeof(hdmiConfig));
      hdmiConfig.TransmitAudio = true;
      hdmiConfig.ForceDviMode = false;
      hdmiConfig.CecEnabled = gHdffSetup.CecEnabled;
+     strcpy(hdmiConfig.CecDeviceName, "VDR");
      hdmiConfig.VideoModeAdaption = (HdffVideoModeAdaption_t) gHdffSetup.VideoModeAdaption;
      mHdffCmdIf->CmdHdmiConfigure(&hdmiConfig);
-     if (gHdffSetup.CecEnabled)
-        mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_ON);
+
      mHdffCmdIf->CmdRemoteSetProtocol((HdffRemoteProtocol_t) gHdffSetup.RemoteProtocol);
      mHdffCmdIf->CmdRemoteSetAddressFilter(gHdffSetup.RemoteAddress >= 0, gHdffSetup.RemoteAddress);
      }
-
-  // Video format:
-
-  SetVideoFormat(Setup.VideoFormat);
 }
 
 cDvbHdFfDevice::~cDvbHdFfDevice()
 {
-  delete spuDecoder;
-  if (isHdffPrimary)
-     delete mHdffCmdIf;
-  // We're not explicitly closing any device files here, since this sometimes
-  // caused segfaults. Besides, the program is about to terminate anyway...
+    delete spuDecoder;
+    if (isHdffPrimary)
+    {
+        if (gHdffSetup.CecEnabled && gHdffSetup.CecTvOff)
+        {
+            mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_OFF);
+        }
+        delete mHdffCmdIf;
+    }
+    // We're not explicitly closing any device files here, since this sometimes
+    // caused segfaults. Besides, the program is about to terminate anyway...
 }
 
 void cDvbHdFfDevice::MakePrimaryDevice(bool On)

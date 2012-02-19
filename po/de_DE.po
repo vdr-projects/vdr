@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-02-16 13:18+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -743,6 +743,9 @@ msgstr "Fehler beim Ansprechen der Aufzeichnung!"
 
 msgid "Delete recording?"
 msgstr "Aufzeichnung löschen?"
+
+msgid "Recording is being edited - really delete?"
+msgstr "Aufzeichnung wird geschnitten - trotzdem löschen?"
 
 msgid "Error while deleting recording!"
 msgstr "Fehler beim Löschen der Aufzeichnung!"

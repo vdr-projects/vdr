@@ -272,6 +272,8 @@ Uwe Scheffler <linux_dvb@uni.de>
  for helping to test new DVB-T handling
  for reporting a bug in switching the video format in the Setup/DVB menu
  for reporting a problem with frozen live view in conjunction with device bonding
+ for reporting a problem in handling the PrimaryLimit when requesting a device for
+ live viewing
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -604,6 +606,7 @@ Helmut Auer <vdr@helmutauer.de>
  for a patch that was used to implement the command line options --edit and
  --genindex
  for suggesting to disable EPG processing for a while after a CLRE command
+ for suggesting to read the epg.data file in a separate thread
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -680,6 +683,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for his input on calculating the Aspect factor in GetOsdSize()
  for suggesting a better way of handling calls to realloc()
  for making the cutter set the 'broken link' flag for MPEG2 TS recordings
+ for reporting a crash in a plugin using cDeviceHook when VDR ends
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1125,6 +1129,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding support for DVB-T2 to libsi
  for adding support for handling DVB-T2 transponders
  for suggesting to add member functions Adapter() and Frontend() to cDvbDevice
+ for improving handling subtitles of BBC channels
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1293,6 +1298,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for making subtitle PIDs be decrypted
  for making cEITScanner process new transponders before old ones, to make sure
  transponder changes are recognized
+ for helping to debug switching into time shift mode when pausing live video
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1765,6 +1771,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for adding a missing 'const' to cRecording::FramesPerSecond()
  for modifying cCharSetConv so that it can be used to convert from "whatever VDR uses"
  to a given code
+ for adding some missing 'const' to cDevice
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -2267,6 +2274,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  index file
  for fixing setting the start time of an edited recording
  for adding support for HbbTV to libsi
+ for fixing cRecording::LengthInSeconds(), which wrongfully rounded the result to full
+ minutes
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2816,3 +2825,16 @@ Torsten Lang <info@torstenlang.de>
  of EPG data from BSkyB's "MTV MUSIC"
  for suggesting to make BIDI support check at runtime whether the system runs with
  UTF-8
+
+Christian Ruppert <idl0r@gentoo.org>
+ for some improvements to the Makefiles
+
+Ralf Schueler <dl4mw@schueler.ws>
+ for backporting "Changed cDvbDevice::GrabImage() to use V4L" from version 1.7.3
+ to 1.6.0-3
+ for backporting "Added some missing 'const' keywords to avoid compilation errors
+ with gcc 4.4" from version 1.7.8 to 1.6.0-3
+ for backporting "Modified cSVDRP::CmdGRAB() to avoid writing into const data"
+ from version 1.7.8 to 1.6.0-3
+ for backporting "Fixed cRecordings::DelByName() to avoid compilation errors with
+ gcc 4.4" from version 1.7.9 to 1.6.0-3

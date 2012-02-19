@@ -3,13 +3,12 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.h 1.18 2011/12/04 15:31:23 kls Exp $
+ * $Id: hdffcmd.h 1.19 2012/02/06 11:09:27 kls Exp $
  */
 
 #ifndef _HDFF_CMD_H_
 #define _HDFF_CMD_H_
 
-#include "bitbuffer.h"
 #include "libhdffcmd/hdffcmd.h"
 
 namespace HDFF

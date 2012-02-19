@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2011-08-21 14:02+0200\n"
+"POT-Creation-Date: 2012-02-07 20:13+0100\n"
 "PO-Revision-Date: 2011-07-10 00:23+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <see README>\n"
@@ -22,17 +22,11 @@ msgstr ""
 msgid "HD Full Featured DVB device"
 msgstr ""
 
-msgid "Off"
-msgstr ""
+msgid "Video Conversion"
+msgstr "Conversione video"
 
-msgid "Frame rate"
+msgid "TV on"
 msgstr ""
-
-msgid "HD Only"
-msgstr ""
-
-msgid "Always"
-msgstr "Sempre"
 
 msgid "Automatic"
 msgstr "Automatica"
@@ -51,6 +45,21 @@ msgstr "CentreCutOut"
 
 msgid "Always 16/9"
 msgstr "Sempre 16:9"
+
+msgid "Zoom 16/9"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Frame rate"
+msgstr ""
+
+msgid "HD Only"
+msgstr ""
+
+msgid "Always"
+msgstr "Sempre"
 
 msgid "Disabled"
 msgstr "Disabilitata"
@@ -76,9 +85,6 @@ msgstr ""
 msgid "TV format"
 msgstr "Formato TV"
 
-msgid "Video Conversion"
-msgstr "Conversione video"
-
 msgid "Analogue Video"
 msgstr "Video analogico"
 
@@ -94,6 +100,12 @@ msgstr "Dimensione OSD"
 msgid "HDMI CEC"
 msgstr "HDMI CEC"
 
+msgid "CEC: Switch TV on"
+msgstr ""
+
+msgid "CEC: Switch TV off"
+msgstr ""
+
 msgid "Remote Control Protocol"
 msgstr "Protocollo controllo remoto"
 
@@ -105,3 +117,6 @@ msgstr "OSD alto livello"
 
 msgid "Allow True Color OSD"
 msgstr "Permetti OSD True Color"
+
+msgid "Hide mainmenu entry"
+msgstr ""

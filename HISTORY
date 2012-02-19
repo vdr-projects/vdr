@@ -6835,3 +6835,56 @@ Video Disk Recorder Revision History
   progress display.
 - Fixed frozen live view with device bonding in case the bonded master is used for
   live viewing (reported by Uwe Scheffler).
+
+2012-02-14: Version 1.6.0-3
+
+- Changed cDvbDevice::GrabImage() to use V4L2
+  (backport from version 1.7.3, thanks to Ralf Schueler).
+- Added some missing 'const' keywords to avoid compilation errors with gcc 4.4
+  (backport from version 1.7.8, thanks to Ralf Schueler).
+- Modified cSVDRP::CmdGRAB() to avoid writing into const data
+  (backport from version 1.7.8, thanks to Ralf Schueler).
+- Fixed cRecordings::DelByName() to avoid compilation errors with gcc 4.4
+  (backport from version 1.7.9, thanks to Ralf Schueler).
+
+2012-02-19: Version 1.7.24
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed a high load in case a transponder can't be received.
+- Improved the way DVB_API_VERSION is checked.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed asserting there is a live programme if the primary device is bonded with
+  a device that starts a recording on a different band.
+- Fixed the return type of cMyDeviceHook::DeviceProvidesTransponder() in PLUGINS.html.
+- Fixed a crash in a plugin using cDeviceHook when VDR ends (reported by Oliver Endriss).
+- Some improvements to the Makefiles (thanks to Christian Ruppert).
+- Fixed cRecording::LengthInSeconds(), which wrongfully rounded the result to full
+  minutes (thanks to Christoph Haubrich).
+- Symbolic links are no longer resolved in cRecordings::ScanVideoDir() (thanks to
+  Sundararaj Reel).
+- The epg.data file is now read in a separate thread to make the startup process
+  faster in case the file is very large (suggested by Helmut Auer).
+- Fixed selecting the primary device for receiving the live viewing channel in
+  case it is bonded with an other device and has no receiver attached to it.
+- Fixed a possible crash when canceling VDR while displaying subtitles, and the
+  primary device is no longer available.
+- Improved handling subtitles of BBC channels.
+- No longer using tabs as delimiter in the EPG bugfix log (they were garbled in the
+  log file).
+- Added a missing '.' after the month in VPS strings.
+- Added some missing 'const' to cDevice (thanks to Joachim Wilke).
+- Fixed handling the PrimaryLimit when requesting a device for live viewing
+  (reported by Uwe Scheffler).
+- Removed superfluous calls to SetVideoFormat() from device constructors. This
+  function is called in cDevice::SetPrimaryDevice(), anyway.
+- An ongoing editing process is now canceled if either the original or the edited
+  version of the recording is deleted from the Recordings menu.
+- The SVDRP command DELR now won't delete a recording that is currently being edited.
+- Removed code stub for obsolete SVDRP command MOVT.
+- The DVB device adapters/frontends are now probed by scanning the /dev/dvb directory
+  instead of looping through adapter/frontend numbers. This allows for "holes" in the
+  device numbering.
+- cReadDir::Next() now skips directory entries "." and "..".
+- Fixed a possible deadlock in time shift mode.
+- Fixed switching into time shift mode when pausing live video (thanks to Reinhard
+  Nissl for helping to debug this one).

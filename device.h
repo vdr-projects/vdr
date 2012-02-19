@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.30 2011/12/04 13:38:17 kls Exp $
+ * $Id: device.h 2.33 2012/02/14 14:42:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -354,6 +354,9 @@ protected:
          ///< Handle->used indicates how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
+public:
+  void DelLivePids(void);
+         ///< Deletes the live viewing PIDs.
 
 // Section filter facilities
 
@@ -436,14 +439,14 @@ public:
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
-         ///< Returns the With, Height and VideoAspect ratio of the currently
+         ///< Returns the Width, Height and VideoAspect ratio of the currently
          ///< displayed video material. Width and Height are given in pixel
          ///< (e.g. 720x576) and VideoAspect is e.g. 1.33333 for a 4:3 broadcast,
          ///< or 1.77778 for 16:9.
          ///< The default implementation returns 0 for Width and Height
          ///< and 1.0 for VideoAspect.
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
-         ///< Returns the With, Height and PixelAspect ratio the OSD should use
+         ///< Returns the Width, Height and PixelAspect ratio the OSD should use
          ///< to best fit the resolution of the output device. If PixelAspect
          ///< is not 1.0, the OSD may take this as a hint to scale its
          ///< graphics in a way that, e.g., a circle will actually
@@ -495,11 +498,11 @@ public:
        ///< is more than one audio track.
   int NumSubtitleTracks(void) const;
        ///< Returns the number of subtitle tracks that are currently available.
-  eTrackType GetCurrentAudioTrack(void) { return currentAudioTrack; }
+  eTrackType GetCurrentAudioTrack(void) const { return currentAudioTrack; }
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
-  eTrackType GetCurrentSubtitleTrack(void) { return currentSubtitleTrack; }
+  eTrackType GetCurrentSubtitleTrack(void) const { return currentSubtitleTrack; }
   bool SetCurrentSubtitleTrack(eTrackType Type, bool Manual = false);
        ///< Sets the current subtitle track to the given Type.
        ///< IF Manual is true, no automatic preferred subtitle language selection

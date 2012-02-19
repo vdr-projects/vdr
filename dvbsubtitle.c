@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.21 2012/01/11 10:34:07 kls Exp $
+ * $Id: dvbsubtitle.c 2.22 2012/02/13 09:48:18 kls Exp $
  */
 
 
@@ -620,7 +620,7 @@ void cDvbSubtitlePage::SetState(int State)
     case 0: // normal case - page update
          dbgpages("page update\n");
          break;
-    case 1: // aquisition point - page refresh
+    case 1: // acquisition point - page refresh
          dbgpages("page refresh\n");
          regions.Clear();
          break;
@@ -1049,7 +1049,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             page->SetVersion(pageVersion);
             page->SetTimeout(pageTimeout);
             page->SetState(bs.GetBits(2));
-            page->regions.Clear();
             bs.SkipBits(2); // reserved
             dbgpages("Update page id %d version %d pts %"PRId64" timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
             while (!bs.IsEOF()) {

@@ -4,17 +4,9 @@
 
 VERSION = 0.1.0
 
-ifndef $(INSTALL_PATH)
-    INSTALL_PATH=/usr/local
-endif
-
-ifndef $(INSTALL_LIB_PATH)
-    INSTALL_LIB_PATH=$(INSTALL_PATH)/lib
-endif
-
-ifndef $(INSTALL_INCLUDE_PATH)
-    INSTALL_INCLUDE_PATH=$(INSTALL_PATH)/include
-endif
+INSTALL_PATH         ?= /usr/local
+INSTALL_LIB_PATH     ?= $(INSTALL_PATH)/lib
+INSTALL_INCLUDE_PATH ?= $(INSTALL_PATH)/include
 
 LIB_NAME = libhdffcmd
 
@@ -27,9 +19,10 @@ LIB_HEADERS = hdffcmd.h hdffcmd_av.h hdffcmd_generic.h hdffcmd_hdmi.h \
 LIB_STATIC = $(LIB_NAME).a
 LIB_SHARED = $(LIB_NAME)-$(VERSION).so
 
-CC     = gcc
-CFLAGS = -g -O2 -fPIC -Wall
-AR     = ar -r
+CC      ?= gcc
+CFLAGS  ?= -g -O2 -fPIC -Wall
+AR      ?= ar
+ARFLAGS ?= r
 
 ### Implicit rules:
 
@@ -50,10 +43,10 @@ $(DEPFILE): Makefile
 all: $(LIB_STATIC) $(LIB_SHARED)
 
 $(LIB_STATIC): $(LIB_OBJS)
-	$(AR) $(LIB_STATIC) $(LIB_OBJS)
+	$(AR) $(ARFLAGS) $(LIB_STATIC) $(LIB_OBJS)
 
 $(LIB_SHARED): $(LIB_OBJS)
-	$(CC) -fPIC -shared -o $(LIB_SHARED) $(LIB_OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -fPIC -shared -o $(LIB_SHARED) $(LIB_OBJS)
 	ln -sf $(LIB_SHARED) $(LIB_NAME).so
 
 clean:

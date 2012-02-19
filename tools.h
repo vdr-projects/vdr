@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.14 2011/12/04 14:48:03 kls Exp $
+ * $Id: tools.h 2.15 2012/02/18 15:29:50 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -224,6 +224,7 @@ char *ReadLink(const char *FileName); ///< returns a new string allocated on the
 bool SpinUpDisk(const char *FileName);
 void TouchFile(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
+off_t FileSize(const char *FileName); ///< returns the size of the given file, or -1 in case of an error (e.g. if the file doesn't exist)
 cString WeekDayName(int WeekDay);
 cString WeekDayName(time_t t);
 cString WeekDayNameFull(int WeekDay);

@@ -3,8 +3,10 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.c 1.22 2011/12/04 15:31:03 kls Exp $
+ * $Id: hdffcmd.c 1.23 2012/02/06 11:08:48 kls Exp $
  */
+
+#include <stdint.h>
 
 #include "hdffcmd.h"
 #include "libhdffcmd/hdffcmd.h"

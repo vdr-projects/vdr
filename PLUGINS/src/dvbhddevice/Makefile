@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.9 2011/12/04 15:30:21 kls Exp $
+# $Id: Makefile 1.12 2012/02/08 15:10:09 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -22,9 +22,9 @@ CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
 
 ### The directory environment:
 
-VDRDIR = ../../..
-LIBDIR = ../../lib
-TMPDIR = /tmp
+VDRDIR ?= ../../..
+LIBDIR ?= ../../lib
+TMPDIR ?= /tmp
 
 ### Make sure that necessary options are included:
 
@@ -51,7 +51,7 @@ DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
 ### The object files (add further files here):
 
-OBJS = $(PLUGIN).o bitbuffer.o dvbhdffdevice.o hdffcmd.o hdffosd.o setup.o
+OBJS = $(PLUGIN).o dvbhdffdevice.o hdffcmd.o hdffosd.o menu.o setup.o
 
 ### The main target:
 

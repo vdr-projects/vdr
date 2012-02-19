@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.23 2012/01/14 13:09:10 kls Exp $
+# $Id: Makefile 2.24 2012/01/18 12:19:37 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,10 +17,10 @@ CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
 LSIDIR   = ./libsi
 DESTDIR ?=
 PREFIX  ?= /usr/local
-MANDIR   = $(PREFIX)/share/man
-BINDIR   = $(PREFIX)/bin
-INCDIR   = $(PREFIX)/include
-LOCDIR   = ./locale
+MANDIR  ?= $(PREFIX)/share/man
+BINDIR  ?= $(PREFIX)/bin
+INCDIR  ?= $(PREFIX)/include
+LOCDIR  ?= ./locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
 INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 
@@ -30,7 +30,7 @@ PLUGINLIBDIR= $(PLUGINDIR)/lib
 VIDEODIR = /video
 CONFDIR  = $(VIDEODIR)
 
-DOXYGEN  = /usr/bin/doxygen
+DOXYGEN ?= /usr/bin/doxygen
 DOXYFILE = Doxyfile
 
 PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
@@ -246,4 +246,3 @@ clean:
 	-rm -rf include
 	-rm -rf srcdoc
 CLEAN: clean
-

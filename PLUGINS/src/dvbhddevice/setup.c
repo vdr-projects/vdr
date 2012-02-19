@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.14 2011/12/04 15:31:58 kls Exp $
+ * $Id: setup.c 1.17 2012/02/08 15:14:01 kls Exp $
  */
 
 #include "setup.h"
@@ -28,10 +28,13 @@ cHdffSetup::cHdffSetup(void)
     AudioDownmix = HDFF_AUDIO_DOWNMIX_AUTOMATIC;
     OsdSize = 0;
     CecEnabled = 1;
+    CecTvOn = 1;
+    CecTvOff = 0;
     RemoteProtocol = 1;
     RemoteAddress = -1;
     HighLevelOsd = 1;
     TrueColorOsd = 1;
+    HideMainMenu = 0;
 }
 
 bool cHdffSetup::SetupParse(const char *Name, const char *Value)
@@ -45,10 +48,13 @@ bool cHdffSetup::SetupParse(const char *Name, const char *Value)
     else if (strcmp(Name, "AudioDownmix")      == 0) AudioDownmix      = atoi(Value);
     else if (strcmp(Name, "OsdSize")           == 0) OsdSize           = atoi(Value);
     else if (strcmp(Name, "CecEnabled")        == 0) CecEnabled        = atoi(Value);
+    else if (strcmp(Name, "CecTvOn")           == 0) CecTvOn           = atoi(Value);
+    else if (strcmp(Name, "CecTvOff")          == 0) CecTvOff          = atoi(Value);
     else if (strcmp(Name, "RemoteProtocol")    == 0) RemoteProtocol    = atoi(Value);
     else if (strcmp(Name, "RemoteAddress")     == 0) RemoteAddress     = atoi(Value);
     else if (strcmp(Name, "HighLevelOsd")      == 0) HighLevelOsd      = atoi(Value);
     else if (strcmp(Name, "TrueColorOsd")      == 0) TrueColorOsd      = atoi(Value);
+    else if (strcmp(Name, "HideMainMenu")      == 0) HideMainMenu      = atoi(Value);
     else return false;
     return true;
 }
@@ -112,12 +118,74 @@ HdffVideoMode_t cHdffSetup::GetVideoMode(void)
     }
 }
 
+void cHdffSetup::SetNextVideoConversion(void)
+{
+    int nextVideoConversion = HDFF_VIDEO_CONVERSION_AUTOMATIC;
+
+    if (TvFormat == HDFF_TV_FORMAT_16_BY_9)
+    {
+        switch (VideoConversion)
+        {
+            case HDFF_VIDEO_CONVERSION_PILLARBOX:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT;
+                break;
+            case HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_ALWAYS_16_BY_9;
+                break;
+            case HDFF_VIDEO_CONVERSION_ALWAYS_16_BY_9:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_ZOOM_16_BY_9;
+                break;
+            case HDFF_VIDEO_CONVERSION_ZOOM_16_BY_9:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_PILLARBOX;
+                break;
+        }
+    }
+    else
+    {
+        switch (VideoConversion)
+        {
+            case HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_LETTERBOX_14_BY_9;
+                break;
+            case HDFF_VIDEO_CONVERSION_LETTERBOX_14_BY_9:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT;
+                break;
+            case HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT:
+                nextVideoConversion = HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9;
+                break;
+        }
+    }
+    VideoConversion = nextVideoConversion;
+}
+
+const char * cHdffSetup::GetVideoConversionString(void)
+{
+    switch (VideoConversion)
+    {
+        case HDFF_VIDEO_CONVERSION_AUTOMATIC:
+        default:
+            return tr("Automatic");
+        case HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9:
+            return tr("Letterbox 16/9");
+        case HDFF_VIDEO_CONVERSION_LETTERBOX_14_BY_9:
+            return tr("Letterbox 14/9");
+        case HDFF_VIDEO_CONVERSION_PILLARBOX:
+            return tr("Pillarbox");
+        case HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT:
+            return tr("CentreCutOut");
+        case HDFF_VIDEO_CONVERSION_ALWAYS_16_BY_9:
+            return tr("Always 16/9");
+        case HDFF_VIDEO_CONVERSION_ZOOM_16_BY_9:
+            return tr("Zoom 16/9");
+    }
+}
+
+
 cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
 {
     const int kResolutions = 4;
     const int kVideoModeAdaptions = 4;
     const int kTvFormats = 2;
-    const int kVideoConversions = 6;
     const int kAnalogueVideos = 4;
     const int kAudioDownmixes = 5;
     const int kOsdSizes = 5;
@@ -144,17 +212,6 @@ cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
         "4/3",
         "16/9",
     };
-
-    static const char * VideoConversionItems[kVideoConversions] =
-    {
-        tr("Automatic"),
-        tr("Letterbox 16/9"),
-        tr("Letterbox 14/9"),
-        tr("Pillarbox"),
-        tr("CentreCutOut"),
-        tr("Always 16/9"),
-    };
-
 
     static const char * AnalogueVideoItems[kAnalogueVideos] =
     {
@@ -194,25 +251,133 @@ cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
 
     Add(new cMenuEditStraItem(tr("Resolution"), &mNewHdffSetup.Resolution, kResolutions, ResolutionItems));
     Add(new cMenuEditStraItem(tr("Video Mode Adaption"), &mNewHdffSetup.VideoModeAdaption, kVideoModeAdaptions, VideoModeAdaptionItems));
-    Add(new cMenuEditStraItem(tr("TV format"), &mNewHdffSetup.TvFormat, kTvFormats, TvFormatItems));
-    Add(new cMenuEditStraItem(tr("Video Conversion"), &mNewHdffSetup.VideoConversion, kVideoConversions, VideoConversionItems));
+    mTvFormatItem = new cMenuEditStraItem(tr("TV format"), &mNewHdffSetup.TvFormat, kTvFormats, TvFormatItems);
+    Add(mTvFormatItem);
     Add(new cMenuEditStraItem(tr("Analogue Video"), &mNewHdffSetup.AnalogueVideo, kAnalogueVideos, AnalogueVideoItems));
     Add(new cMenuEditIntItem(tr("Audio Delay (ms)"), &mNewHdffSetup.AudioDelay, 0, 500));
     Add(new cMenuEditStraItem(tr("Audio Downmix"), &mNewHdffSetup.AudioDownmix, kAudioDownmixes, AudioDownmixItems));
     Add(new cMenuEditStraItem(tr("OSD Size"), &mNewHdffSetup.OsdSize, kOsdSizes, OsdSizeItems));
     Add(new cMenuEditBoolItem(tr("HDMI CEC"), &mNewHdffSetup.CecEnabled));
+    Add(new cMenuEditBoolItem(tr("CEC: Switch TV on"), &mNewHdffSetup.CecTvOn));
+    Add(new cMenuEditBoolItem(tr("CEC: Switch TV off"), &mNewHdffSetup.CecTvOff));
     Add(new cMenuEditStraItem(tr("Remote Control Protocol"), &mNewHdffSetup.RemoteProtocol, kRemoteProtocols, RemoteProtocolItems));
     Add(new cMenuEditIntItem(tr("Remote Control Address"), &mNewHdffSetup.RemoteAddress, -1, 31));
     Add(new cMenuEditBoolItem(tr("High Level OSD"), &mNewHdffSetup.HighLevelOsd));
     Add(new cMenuEditBoolItem(tr("Allow True Color OSD"), &mNewHdffSetup.TrueColorOsd));
+    Add(new cMenuEditBoolItem(tr("Hide mainmenu entry"), &mNewHdffSetup.HideMainMenu));
+
+    mVideoConversion = 0;
+    if (mNewHdffSetup.TvFormat == HDFF_TV_FORMAT_16_BY_9)
+    {
+        switch (mNewHdffSetup.VideoConversion)
+        {
+            case HDFF_VIDEO_CONVERSION_PILLARBOX:
+                mVideoConversion = 0;
+                break;
+            case HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT:
+                mVideoConversion = 1;
+                break;
+            case HDFF_VIDEO_CONVERSION_ALWAYS_16_BY_9:
+                mVideoConversion = 2;
+                break;
+            case HDFF_VIDEO_CONVERSION_ZOOM_16_BY_9:
+                mVideoConversion = 3;
+                break;
+        }
+    }
+    else
+    {
+        switch (mNewHdffSetup.VideoConversion)
+        {
+            case HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9:
+                mVideoConversion = 0;
+                break;
+            case HDFF_VIDEO_CONVERSION_LETTERBOX_14_BY_9:
+                mVideoConversion = 1;
+                break;
+            case HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT:
+                mVideoConversion = 2;
+                break;
+        }
+    }
+    BuildVideoConversionItem();
 }
 
 cHdffSetupPage::~cHdffSetupPage(void)
 {
 }
 
+void cHdffSetupPage::BuildVideoConversionItem(void)
+{
+    const int kVideoConversions4by3 = 3;
+    const int kVideoConversions16by9 = 4;
+
+    static const char * VideoConversionItems4by3[kVideoConversions4by3] =
+    {
+        tr("Letterbox 16/9"),
+        tr("Letterbox 14/9"),
+        tr("CentreCutOut")
+    };
+
+    static const char * VideoConversionItems16by9[kVideoConversions16by9] =
+    {
+        tr("Pillarbox"),
+        tr("CentreCutOut"),
+        tr("Always 16/9"),
+        tr("Zoom 16/9")
+    };
+
+    cOsdItem * item;
+
+    cList<cOsdItem>::Del(mTvFormatItem->Next());
+    if (mNewHdffSetup.TvFormat == HDFF_TV_FORMAT_16_BY_9)
+    {
+        item = new cMenuEditStraItem(tr("Video Conversion"), &mVideoConversion,
+                kVideoConversions16by9, VideoConversionItems16by9);
+    }
+    else
+    {
+        item = new cMenuEditStraItem(tr("Video Conversion"), &mVideoConversion,
+                kVideoConversions4by3, VideoConversionItems4by3);
+    }
+    Add(item, false, mTvFormatItem);
+}
+
 void cHdffSetupPage::Store(void)
 {
+    if (mNewHdffSetup.TvFormat == HDFF_TV_FORMAT_16_BY_9)
+    {
+        switch (mVideoConversion)
+        {
+            case 0:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_PILLARBOX;
+                break;
+            case 1:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT;
+                break;
+            case 2:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_ALWAYS_16_BY_9;
+                break;
+            case 3:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_ZOOM_16_BY_9;
+                break;
+        }
+    }
+    else
+    {
+        switch (mVideoConversion)
+        {
+            case 0:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9;
+                break;
+            case 1:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_LETTERBOX_14_BY_9;
+                break;
+            case 2:
+                mNewHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT;
+                break;
+        }
+    }
     SetupStore("Resolution", mNewHdffSetup.Resolution);
     SetupStore("VideoModeAdaption", mNewHdffSetup.VideoModeAdaption);
     SetupStore("TvFormat", mNewHdffSetup.TvFormat);
@@ -222,10 +387,13 @@ void cHdffSetupPage::Store(void)
     SetupStore("AudioDownmix", mNewHdffSetup.AudioDownmix);
     SetupStore("OsdSize", mNewHdffSetup.OsdSize);
     SetupStore("CecEnabled", mNewHdffSetup.CecEnabled);
+    SetupStore("CecTvOn", mNewHdffSetup.CecTvOn);
+    SetupStore("CecTvOff", mNewHdffSetup.CecTvOff);
     SetupStore("RemoteProtocol", mNewHdffSetup.RemoteProtocol);
     SetupStore("RemoteAddress", mNewHdffSetup.RemoteAddress);
     SetupStore("HighLevelOsd", mNewHdffSetup.HighLevelOsd);
     SetupStore("TrueColorOsd", mNewHdffSetup.TrueColorOsd);
+    SetupStore("HideMainMenu", mNewHdffSetup.HideMainMenu);
 
     if (mHdffCmdIf)
     {
@@ -237,7 +405,7 @@ void cHdffSetupPage::Store(void)
         HdffHdmiConfig_t hdmiConfig;
 
         videoFormat.AutomaticEnabled = true;
-        videoFormat.AfdEnabled = true;
+        videoFormat.AfdEnabled = false;
         videoFormat.TvFormat = (HdffTvFormat_t) mNewHdffSetup.TvFormat;
         videoFormat.VideoConversion = (HdffVideoConversion_t) mNewHdffSetup.VideoConversion;
         mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
@@ -247,6 +415,7 @@ void cHdffSetupPage::Store(void)
 
         mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) mNewHdffSetup.AnalogueVideo);
 
+        memset(&hdmiConfig, 0, sizeof(hdmiConfig));
         hdmiConfig.TransmitAudio = true;
         hdmiConfig.ForceDviMode = false;
         hdmiConfig.CecEnabled = mNewHdffSetup.CecEnabled;
@@ -258,4 +427,30 @@ void cHdffSetupPage::Store(void)
     }
 
     gHdffSetup = mNewHdffSetup;
+}
+
+eOSState cHdffSetupPage::ProcessKey(eKeys key)
+{
+	eOSState state = cMenuSetupPage::ProcessKey(key);
+
+	if (state == osContinue)
+	{
+		cOsdItem * item;
+		switch (key)
+		{
+			case kLeft:
+			case kRight:
+				item = Get(Current());
+				if (item == mTvFormatItem)
+				{
+				    mVideoConversion = 0;
+					BuildVideoConversionItem();
+					Display();
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	return state;
 }

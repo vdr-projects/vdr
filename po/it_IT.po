@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
-"PO-Revision-Date: 2010-06-13 00:30+0100\n"
+"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"PO-Revision-Date: 2012-01-15 19:11+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -81,7 +81,7 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -751,6 +751,9 @@ msgstr "Errore accesso alla registrazione!"
 msgid "Delete recording?"
 msgstr "Eliminare la registrazione?"
 
+msgid "Recording is being edited - really delete?"
+msgstr ""
+
 msgid "Error while deleting recording!"
 msgstr "Errore eliminazione registrazione!"
 
@@ -974,10 +977,10 @@ msgstr "Freq HI LNB (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Periferica %d connessa al cavo sat"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "propria"
 
 msgid "CAM reset"
 msgstr "Reimposta la CAM"
@@ -1088,7 +1091,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Mostra modalità riproduzione"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Mostra tempo rimanente"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"

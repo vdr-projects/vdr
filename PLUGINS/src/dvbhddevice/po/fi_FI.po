@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR \n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2011-08-21 14:02+0200\n"
+"POT-Creation-Date: 2012-02-07 20:13+0100\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
 "Last-Translator: Rolf Ahrenberg\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -19,17 +19,11 @@ msgstr ""
 msgid "HD Full Featured DVB device"
 msgstr "DVB-laite HD-ulostulolla"
 
-msgid "Off"
-msgstr "ei"
+msgid "Video Conversion"
+msgstr "Näyttömuoto"
 
-msgid "Frame rate"
-msgstr "kuvataajuuden mukaan"
-
-msgid "HD Only"
-msgstr "vain HD-resoluutiolla"
-
-msgid "Always"
-msgstr "aina"
+msgid "TV on"
+msgstr ""
 
 msgid "Automatic"
 msgstr "automaattinen"
@@ -48,6 +42,21 @@ msgstr "center cut out"
 
 msgid "Always 16/9"
 msgstr "aina 16:9"
+
+msgid "Zoom 16/9"
+msgstr ""
+
+msgid "Off"
+msgstr "ei"
+
+msgid "Frame rate"
+msgstr "kuvataajuuden mukaan"
+
+msgid "HD Only"
+msgstr "vain HD-resoluutiolla"
+
+msgid "Always"
+msgstr "aina"
 
 msgid "Disabled"
 msgstr "ei käytössä"
@@ -73,9 +82,6 @@ msgstr "Sovita näyttömoodi"
 msgid "TV format"
 msgstr "Näytön kuvasuhde"
 
-msgid "Video Conversion"
-msgstr "Näyttömuoto"
-
 msgid "Analogue Video"
 msgstr "Analoginen kuvalähtö"
 
@@ -91,6 +97,12 @@ msgstr "Kuvaruutunäytön koko"
 msgid "HDMI CEC"
 msgstr "Käytä HDMI CEC-toimintoa"
 
+msgid "CEC: Switch TV on"
+msgstr ""
+
+msgid "CEC: Switch TV off"
+msgstr ""
+
 msgid "Remote Control Protocol"
 msgstr "Kaukosäätimen protokolla"
 
@@ -102,3 +114,6 @@ msgstr "Käytä korkean tason kuvaruutunäyttöä"
 
 msgid "Allow True Color OSD"
 msgstr "Salli tosivärit kuvaruutunäytölle"
+
+msgid "Hide mainmenu entry"
+msgstr ""

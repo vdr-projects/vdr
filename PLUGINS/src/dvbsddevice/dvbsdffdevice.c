@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.30 2011/08/27 11:33:57 kls Exp $
+ * $Id: dvbsdffdevice.c 2.31 2012/02/15 13:15:05 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -66,10 +66,6 @@ cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend, bool OutputOnly)
         fclose(f);
      }
   devVideoIndex = devVideoOffset >= 0 ? devVideoOffset++ : -1;
-
-  // Video format:
-
-  SetVideoFormat(Setup.VideoFormat);
 }
 
 cDvbSdFfDevice::~cDvbSdFfDevice()
