@@ -531,6 +531,7 @@ Onno Kreuzinger <ok@solutas.net>
 
 Rudi Hofer (Rudi.Hofer@gmx.de)
  for his help in keeping 'channels.conf' up to date
+ for reporting a problem with overlapping tab positions in skins when using wide fonts
 
 Gregoire Favre <greg@ulima.unil.ch>
  for fixing some function headers to make them compile with gcc 3.x
