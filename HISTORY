@@ -6895,3 +6895,5 @@ Video Disk Recorder Revision History
   when pausing live video.
 - Increased the average character estimate for calculating tab positions in skins,
   to better suit wide fonts (reported by Rudi Hofer).
+- Fixed getting the subsystem ids of DVB devices in case they have been rearranged
+  via udev rules.

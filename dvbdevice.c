@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.62 2012/02/17 12:20:34 kls Exp $
+ * $Id: dvbdevice.c 2.63 2012/02/20 12:45:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1591,21 +1591,43 @@ cDvbDeviceProbe::~cDvbDeviceProbe()
 
 uint32_t cDvbDeviceProbe::GetSubsystemId(int Adapter, int Frontend)
 {
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
   uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
+  cString FileName = cString::sprintf("/dev/dvb/adapter%d/frontend%d", Adapter, Frontend);
+  struct stat st;
+  if (stat(FileName, &st) == 0) {
+     cReadDir d("/sys/class/dvb");
+     if (d.Ok()) {
+        struct dirent *e;
+        while ((e = d.Next()) != NULL) {
+              if (strstr(e->d_name, "frontend")) {
+                 FileName = cString::sprintf("/sys/class/dvb/%s/dev", e->d_name);
+                 if (FILE *f = fopen(FileName, "r")) {
+                    cReadLine ReadLine;
+                    char *s = ReadLine.Read(f);
+                    fclose(f);
+                    unsigned Major;
+                    unsigned Minor;
+                    if (s && 2 == sscanf(s, "%u:%u", &Major, &Minor)) {
+                       if (((Major << 8) | Minor) == st.st_rdev) {
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_vendor", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId = strtoul(s, NULL, 0) << 16;
+                             fclose(f);
+                             }
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_device", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId |= strtoul(s, NULL, 0);
+                             fclose(f);
+                             }
+                          break;
+                          }
+                       }
+                    }
+                 }
+              }
+        }
      }
   return SubsystemId;
 }
