@@ -6897,3 +6897,4 @@ Video Disk Recorder Revision History
   to better suit wide fonts (reported by Rudi Hofer).
 - Fixed getting the subsystem ids of DVB devices in case they have been rearranged
   via udev rules.
+- Added several cTimer::Set...() functions (suggested by Alexander Rieger).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 2.1 2011/08/06 12:59:32 kls Exp $
+ * $Id: timers.h 2.2 2012/02/20 15:24:28 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -86,7 +86,13 @@ public:
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
   void SetInVpsMargin(bool InVpsMargin);
+  void SetDay(time_t Day);
+  void SetWeekDays(int WeekDays);
+  void SetStart(int Start);
+  void SetStop(int Stop);
   void SetPriority(int Priority);
+  void SetLifetime(int Lifetime);
+  void SetAux(const char *Aux);
   void SetDeferred(int Seconds);
   void SetFlags(uint Flags);
   void ClrFlags(uint Flags);

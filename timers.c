@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.5 2011/08/06 13:13:54 kls Exp $
+ * $Id: timers.c 2.6 2012/02/20 15:37:01 kls Exp $
  */
 
 #include "timers.h"
@@ -591,9 +591,40 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
   inVpsMargin = InVpsMargin;
 }
 
+void cTimer::SetDay(time_t Day)
+{
+  day = Day;
+}
+
+void cTimer::SetWeekDays(int WeekDays)
+{
+  weekdays = WeekDays;
+}
+
+void cTimer::SetStart(int Start)
+{
+  start = Start;
+}
+
+void cTimer::SetStop(int Stop)
+{
+  stop = Stop;
+}
+
 void cTimer::SetPriority(int Priority)
 {
   priority = Priority;
+}
+
+void cTimer::SetLifetime(int Lifetime)
+{
+  lifetime = Lifetime;
+}
+
+void cTimer::SetAux(const char *Aux)
+{
+  free(aux);
+  aux = strdup(Aux);
 }
 
 void cTimer::SetDeferred(int Seconds)
