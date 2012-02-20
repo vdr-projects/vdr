@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.6 2012/02/20 15:37:01 kls Exp $
+ * $Id: timers.c 2.7 2012/02/20 15:51:55 kls Exp $
  */
 
 #include "timers.h"
@@ -384,11 +384,10 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   return mktime(&tm);
 }
 
-char *cTimer::SetFile(const char *File)
+void cTimer::SetFile(const char *File)
 {
   if (!isempty(File))
      Utf8Strn0Cpy(file, File, sizeof(file));
-  return file;
 }
 
 bool cTimer::Matches(time_t t, bool Directly, int Margin) const

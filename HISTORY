@@ -6898,3 +6898,4 @@ Video Disk Recorder Revision History
 - Fixed getting the subsystem ids of DVB devices in case they have been rearranged
   via udev rules.
 - Added several cTimer::Set...() functions (suggested by Alexander Rieger).
+- Changed the return value of cTimer::SetFile() to 'void'.
