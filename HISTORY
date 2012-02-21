@@ -6902,3 +6902,4 @@ Video Disk Recorder Revision History
 - Revoked "Fixed a possible deadlock in time shift mode" because it caused trouble with
   output on vdr-xine and dxr3, and also short glitches when replaying on any output
   device.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
