@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-02-19: Version 1.7.25
+2012-02-21: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6899,3 +6899,6 @@ Video Disk Recorder Revision History
   via udev rules.
 - Added several cTimer::Set...() functions (suggested by Alexander Rieger).
 - Changed the return value of cTimer::SetFile() to 'void'.
+- Revoked "Fixed a possible deadlock in time shift mode" because it caused trouble with
+  output on vdr-xine and dxr3, and also short glitches when replaying on any output
+  device.
