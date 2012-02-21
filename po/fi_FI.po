@@ -321,7 +321,7 @@ msgstr "Suoralähetys"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "K-%d"
+msgstr "%d"
 
 msgid "No title"
 msgstr "Ei esitystä"
@@ -748,7 +748,7 @@ msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Tallennetta muokataan - poistetaanko silti?"
 
 msgid "Error while deleting recording!"
 msgstr "Tallenteen poistaminen epäonnistui!"
