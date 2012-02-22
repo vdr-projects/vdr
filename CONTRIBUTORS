@@ -1131,6 +1131,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding support for handling DVB-T2 transponders
  for suggesting to add member functions Adapter() and Frontend() to cDvbDevice
  for improving handling subtitles of BBC channels
+ for fixing handling subtitle color palettes on channels where subtitles appear
+ "word by word"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
