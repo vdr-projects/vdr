@@ -6906,3 +6906,5 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed handling subtitle color palettes on channels where subtitles appear
   "word by word" (thanks to Rolf Ahrenberg).
+- Fixed upscaling cBitmaps with anti-aliasing (thanks to Rolf Ahrenberg for reporting
+  a problem with color palettes in subtitles).

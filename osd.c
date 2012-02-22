@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.23 2011/08/15 09:27:39 kls Exp $
+ * $Id: osd.c 2.24 2012/02/22 16:13:04 kls Exp $
  */
 
 #include "osd.h"
@@ -812,11 +812,11 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
   cBitmap *b = new cBitmap(int(round(Width() * FactorX)), int(round(Height() * FactorY)), Bpp(), X0(), Y0());
-  b->Replace(*this); // copy palette
   int RatioX = (Width() << 16) / b->Width();
   int RatioY = (Height() << 16) / b->Height();
   if (!AntiAlias || FactorX <= 1.0 && FactorY <= 1.0) {
      // Downscaling - no anti-aliasing:
+     b->Replace(*this); // copy palette
      tIndex *DestRow = b->bitmap;
      int SourceY = 0;
      for (int y = 0; y < b->Height(); y++) {
@@ -834,6 +834,7 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
   else {
      // Upscaling - anti-aliasing:
      b->SetBpp(8);
+     b->Replace(*this); // copy palette (must be done *after* SetBpp()!)
      int SourceY = 0;
      for (int y = 0; y < b->Height() - 1; y++) {
          int SourceX = 0;
