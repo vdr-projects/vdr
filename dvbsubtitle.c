@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.23 2012/02/22 09:33:45 kls Exp $
+ * $Id: dvbsubtitle.c 2.24 2012/02/23 09:20:36 kls Exp $
  */
 
 
@@ -541,7 +541,6 @@ public:
   void SetPts(int64_t Pts) { pts = Pts; }
   void SetState(int State);
   void SetTimeout(int Timeout) { timeout = Timeout; }
-  void UpdateRegionPalette(cSubtitleClut *Clut);
   };
 
 cDvbSubtitlePage::cDvbSubtitlePage(int PageId)
@@ -633,14 +632,6 @@ void cDvbSubtitlePage::SetState(int State)
          break;
     default: dbgpages("unknown page state (%s %d)\n", __FUNCTION__, __LINE__);
     }
-}
-
-void cDvbSubtitlePage::UpdateRegionPalette(cSubtitleClut *Clut)
-{
-  for (cSubtitleRegion *sr = regions.First(); sr; sr = regions.Next(sr)) {
-      if (sr->ClutId() == Clut->ClutId())
-         sr->Replace(*Clut->GetPalette(sr->Bpp()));
-      }
 }
 
 // --- cDvbSubtitleAssembler -------------------------------------------------
