@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-02-22: Version 1.7.25
+2012-02-24: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6908,3 +6908,4 @@ Video Disk Recorder Revision History
   "word by word" (thanks to Rolf Ahrenberg).
 - Fixed upscaling cBitmaps with anti-aliasing (thanks to Rolf Ahrenberg for reporting
   a problem with color palettes in subtitles).
+- Fixed getting the video aspect ratio for scaling subtitles.

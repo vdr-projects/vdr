@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.24 2012/02/23 09:20:36 kls Exp $
+ * $Id: dvbsubtitle.c 2.25 2012/02/24 11:19:54 kls Exp $
  */
 
 
@@ -797,7 +797,6 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
-  SetOsdData();
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -831,7 +830,6 @@ void cDvbSubtitleConverter::Reset(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
-  SetOsdData();
   Unlock();
 }
 
@@ -1001,7 +999,11 @@ void cDvbSubtitleConverter::SetOsdData(void)
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
   LOCK_THREAD;
-  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  if (!osd) {
+     SetOsdData();
+     osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES);
+     }
+  return osd != NULL;
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
