@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.2 2011/12/04 13:38:17 kls Exp $
+ * $Id: receiver.h 2.3 2012/02/25 11:19:53 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -45,7 +45,7 @@ public:
 #endif
   cReceiver(const cChannel *Channel = NULL, int Priority = -1);
                ///< Creates a new receiver for the given Channel with the given Priority.
-               ///< If Channel is not NULL, its pids set by a call to SetPids().
+               ///< If Channel is not NULL, its pids are set by a call to SetPids().
                ///< Otherwise pids can be added to the receiver by separate calls to the AddPid[s]
                ///< functions.
                ///< The total number of PIDs added to a receiver must not exceed MAXRECEIVEPIDS.
