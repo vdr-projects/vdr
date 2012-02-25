@@ -6917,3 +6917,8 @@ Video Disk Recorder Revision History
   won't notice this change, anyway.
 - Since cReceivers can have priorities between -99 and 99, the priority
   for an unused device has been changed from -1 to -100.
+- If the first event in a schedule has a table id of 0x00, any incoming EIT data for
+  that schedule from the DVB stream will be completely ignored. This way an external
+  EPG source can fill the schedules with EPG data that will not be messed up with
+  that from the DVB data stream. Note, though, that this means VDR can not do VPS
+  controlled recordings with such events!
