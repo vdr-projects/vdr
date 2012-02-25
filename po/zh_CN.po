@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -1031,9 +1031,6 @@ msgstr "时间正在开始 (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "时间正在停止 (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "主要限制"
 
 msgid "Setup.Recording$Default priority"
 msgstr "默认优先"

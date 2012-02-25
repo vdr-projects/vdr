@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2012-01-02 11:54+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1032,9 +1032,6 @@ msgstr "Idõeltolás a kezdésnél (perc)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Idõeltolás a befejezésnél (perc)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Alsó prioritás határ"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Alapértelmezett prioritás"

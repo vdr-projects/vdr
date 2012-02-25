@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.3 2012/02/25 11:19:53 kls Exp $
+ * $Id: receiver.h 2.4 2012/02/25 12:49:31 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -49,7 +49,7 @@ public:
                ///< Otherwise pids can be added to the receiver by separate calls to the AddPid[s]
                ///< functions.
                ///< The total number of PIDs added to a receiver must not exceed MAXRECEIVEPIDS.
-               ///< Priority may be any value in the range -99..99. Negative values indicate
+               ///< Priority may be any value in the range +/-MAXPRIORITY. Negative values indicate
                ///< that this cReceiver may be detached at any time (without blocking the
                ///< cDevice it is attached to).
   virtual ~cReceiver();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.18 2012/01/14 13:04:59 kls Exp $
+ * $Id: config.c 2.19 2012/02/25 13:31:46 kls Exp $
  */
 
 #include "config.h"
@@ -406,7 +406,6 @@ cSetup::cSetup(void)
   SVDRPTimeout = 300;
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
-  PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 99;
   PauseKeyHandling = 2;
@@ -601,7 +600,6 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
-  else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
   else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
@@ -699,7 +697,6 @@ bool cSetup::Save(void)
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
-  Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
   Store("PauseKeyHandling",   PauseKeyHandling);

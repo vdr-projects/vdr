@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -1029,9 +1029,6 @@ msgstr "Опережение начала записи (мин)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Запаздывание остановки записи (мин)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Мин. приоритет захвата осн. устройства"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Приоритет таймера по умолчанию"

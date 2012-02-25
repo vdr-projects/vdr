@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-02-24: Version 1.7.25
+2012-02-25: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6909,3 +6909,11 @@ Video Disk Recorder Revision History
 - Fixed upscaling cBitmaps with anti-aliasing (thanks to Rolf Ahrenberg for reporting
   a problem with color palettes in subtitles).
 - Fixed getting the video aspect ratio for scaling subtitles.
+- Removed the "PrimaryLimit". Old "full featured" DVB cards can be run with the
+  --outputonly option to avoid problems with recording high bandwidth channels.
+  Besides, with HDTV becoming ever more popular those cards are pretty much obsolete
+  by now (the TT S2-6400 has no problems recording and replaying high bandwidth
+  channels simultaneously). And, last but not least, people using software players
+  won't notice this change, anyway.
+- Since cReceivers can have priorities between -99 and 99, the priority
+  for an unused device has been changed from -1 to -100.

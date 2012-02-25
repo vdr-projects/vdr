@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.33 2012/02/14 14:42:42 kls Exp $
+ * $Id: device.h 2.34 2012/02/25 12:54:39 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -31,6 +31,8 @@
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
 #define MAXOCCUPIEDTIMEOUT 99 // max. time (in seconds) a device may be occupied
+#define LIVEPRIORITY        0 // priority used when selecting a device for live viewing
+#define IDLEPRIORITY       (-MAXPRIORITY - 1)
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
@@ -237,9 +239,8 @@ public:
          ///< the given channel's transponder.
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
-         ///< In case the device has cReceivers attached to it or it is the primary
-         ///< device, Priority is used to decide whether the caller's request can
-         ///< be honored.
+         ///< In case the device has cReceivers attached to it, Priority is used to
+         ///< decide whether the caller's request can be honored.
          ///< The special Priority value -1 will tell the caller whether this device
          ///< is principally able to provide the given Channel, regardless of any
          ///< attached cReceivers.
@@ -719,9 +720,8 @@ private:
   cReceiver *receiver[MAXRECEIVERS];
 public:
   int Priority(void) const;
-      ///< Returns the priority of the current receiving session (0..MAXPRIORITY),
-      ///< or -1 if no receiver is currently active. The primary device will
-      ///< always return at least Setup.PrimaryLimit-1.
+      ///< Returns the priority of the current receiving session (-MAXPRIORITY..MAXPRIORITY),
+      ///< or IDLEPRIORITY if no receiver is currently active.
 protected:
   virtual bool OpenDvr(void);
       ///< Opens the DVR of this device and prepares it to deliver a Transport

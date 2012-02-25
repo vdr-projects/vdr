@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -1029,9 +1029,6 @@ msgstr "Comenzar grabación antes (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Acabar grabación después (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Límite primario"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Prioridad por defecto"

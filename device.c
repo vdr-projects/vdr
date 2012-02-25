@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.49 2012/02/15 13:15:19 kls Exp $
+ * $Id: device.c 2.50 2012/02/25 12:45:53 kls Exp $
  */
 
 #include "device.h"
@@ -58,9 +58,6 @@ bool cDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChanne
 }
 
 // --- cDevice ---------------------------------------------------------------
-
-// The default priority for non-primary devices:
-#define DEFAULTPRIORITY  -1
 
 // The minimum number of unknown PS1 packets to consider this a "pre 1.3.19 private stream":
 #define MIN_PRE_1_3_19_PRIVATESTREAM 10
@@ -269,7 +266,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
-          if (device[i]->ProvidesChannel(Channel, (LiveView && device[i]->IsPrimaryDevice()) ? Setup.PrimaryLimit : Priority, &ndr)) { // this device is basicly able to do the job
+          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
              if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
@@ -690,7 +687,7 @@ bool cDevice::SwitchChannel(int Direction)
      cChannel *channel;
      while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
-           if (GetDevice(channel, 0, true))
+           if (GetDevice(channel, LIVEPRIORITY, true))
               break;
            n = channel->Number() + Direction;
            }
@@ -717,7 +714,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      DELETENULL(dvbSubtitleConverter);
      }
 
-  cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, 0, LiveView) : this;
+  cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
   bool NeedsTransferMode = Device != this;
 
@@ -1495,7 +1492,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 
 int cDevice::Priority(void) const
 {
-  int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
+  int priority = IDLEPRIORITY;
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.41 2012/02/19 14:33:23 kls Exp $
+ * $Id: config.h 2.42 2012/02/25 13:31:34 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -264,7 +264,6 @@ public:
   int SVDRPTimeout;
   int ZapTimeout;
   int ChannelEntryTimeout;
-  int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
   int PausePriority, PauseLifetime;
   int PauseKeyHandling;

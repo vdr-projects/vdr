@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1053,9 +1053,6 @@ msgstr ""
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr ""
 
-msgid "Setup.Recording$Primary limit"
-msgstr "الحدود الابتدائية"
-
 msgid "Setup.Recording$Default priority"
 msgstr "الاولويات الافتراضية"
 
@@ -1367,60 +1364,3 @@ msgstr "اضغط اى زر لالغاء اعادة التشغيل"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "البرنامج سيقوم بالاغلاق بعد%s دقيقة "
-
-#~ msgid "Path"
-#~ msgstr "المسار"
-
-#~ msgid "Timer commands"
-#~ msgstr "اوامر الموءقت"
-
-#~ msgid "Rename recording"
-#~ msgstr "اعادة تسمية التسجيل"
-
-#~ msgid "Date"
-#~ msgstr "التاريخ"
-
-#~ msgid "Length"
-#~ msgstr "الطول"
-
-#~ msgid "Size"
-#~ msgstr "الحجم"
-
-#~ msgid "Delete marks information?"
-#~ msgstr "حذف معلومات العلامة"
-
-#~ msgid "Delete resume information?"
-#~ msgstr "حذف معلومات المواصلة"
-
-#~ msgid "Setup.OSD$Main menu command position"
-#~ msgstr "موضع اوامر القائمة الرئسية"
-
-#~ msgid "Setup.EPG$Show progress bar"
-#~ msgstr "اضهار شريط التقدم"
-
-#~ msgid "Setup.Recording$Max. recording size (GB)"
-#~ msgstr "اقصى حجم للتسجيل م ب"
-
-#~ msgid "Setup.Recording$Hard Link Cutter"
-#~ msgstr "قاطع وصلات الاختصرات"
-
-#~ msgid "Setup.Recording$Show date"
-#~ msgstr "اظهر التاريخ"
-
-#~ msgid "Setup.Recording$Show time"
-#~ msgstr "اظهر تاريخ التعديل"
-
-#~ msgid "Setup.Recording$Show length"
-#~ msgstr "اظهر VPS"
-
-#~ msgid "Rename$Up"
-#~ msgstr "اعلى"
-
-#~ msgid "Rename$Down"
-#~ msgstr "اسفل"
-
-#~ msgid "Rename$Previous"
-#~ msgstr "السابق"
-
-#~ msgid "Rename$Next"
-#~ msgstr "التالى"

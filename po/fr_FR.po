@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-02-27 18:14+0100\n"
 "Last-Translator: Jean-Claude Repetto <jc@repetto.org>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -1034,9 +1034,6 @@ msgstr "Marge antérieure (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Marge postérieure (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Limite primaire"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Priorité par défaut"
