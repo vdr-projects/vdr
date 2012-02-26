@@ -1134,6 +1134,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing handling subtitle color palettes on channels where subtitles appear
  "word by word"
  for reporting a problem with color palettes in subtitles
+ for adding some typecasts to silence gcc compiler warnings
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
