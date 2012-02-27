@@ -6925,3 +6925,8 @@ Video Disk Recorder Revision History
 - Added some typecasts to silence gcc compiler warnings (thanks to Rolf Ahrenberg).
 - Fixed handling overlapping timers in case a VPS timer with higher priority needs
   to interrupt a timer with lower priority.
+- The code for the RCU remote control unit has been moved into a separate plugin
+  named "rcu".
+  The REMOTE=RCU option in the 'make' call for VDR is now obsolete.
+  The command line option --rcu is now obsolete. Use -Prcu instead. If you have
+  used --rcu with a device path, use -P"rcu -d<device>".
