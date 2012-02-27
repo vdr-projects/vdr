@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.7 2012/02/20 15:51:55 kls Exp $
+ * $Id: timers.c 2.8 2012/02/27 09:38:41 kls Exp $
  */
 
 #include "timers.h"
@@ -390,6 +390,8 @@ void cTimer::SetFile(const char *File)
      Utf8Strn0Cpy(file, File, sizeof(file));
 }
 
+#define EITPRESENTFOLLOWINGRATE 10 // max. seconds between two occurrences of the "EIT present/following table for the actual multiplex" (2s by the standard, using some more for safety)
+
 bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 {
   startTime = stopTime = 0;
@@ -433,8 +435,12 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
         if (Margin || !Directly) {
            startTime = event->StartTime();
            stopTime = event->EndTime();
-           if (!Margin)
-              return event->IsRunning(true);
+           if (!Margin) { // this is an actual check
+              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
+                 return event->IsRunning(true);
+              else
+                 return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
+              }
            }
         }
      return startTime <= t + Margin && t < stopTime; // must stop *before* stopTime to allow adjacent timers

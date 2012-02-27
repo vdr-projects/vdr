@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-02-26: Version 1.7.25
+2012-02-27: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6923,3 +6923,5 @@ Video Disk Recorder Revision History
   that from the DVB data stream. Note, though, that this means VDR can not do VPS
   controlled recordings with such events!
 - Added some typecasts to silence gcc compiler warnings (thanks to Rolf Ahrenberg).
+- Fixed handling overlapping timers in case a VPS timer with higher priority needs
+  to interrupt a timer with lower priority.
