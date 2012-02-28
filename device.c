@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.50 2012/02/25 12:45:53 kls Exp $
+ * $Id: device.c 2.51 2012/02/28 09:25:57 kls Exp $
  */
 
 #include "device.h"
@@ -1046,7 +1046,8 @@ void cDevice::EnsureSubtitleTrack(void)
      int LanguagePreference = INT_MAX; // higher than the maximum possible value
      for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
          const tTrackId *TrackId = GetTrack(eTrackType(i));
-         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference))
+         if (TrackId && TrackId->id && (I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference) ||
+            (i == ttSubtitleFirst + 8 && !*TrackId->language && LanguagePreference == INT_MAX))) // compatibility mode for old subtitles plugin
             PreferredTrack = eTrackType(i);
          }
      // Make sure we're set to an available subtitle track:

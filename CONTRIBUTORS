@@ -2378,6 +2378,8 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for fixing stopping subtitle display when switching the primary device
  for fixing plugin arguments corruption with glibc 2.11 on x86_64
  for setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
+ for adding support for automatically selecting subtitles when playing old PES
+ recordings made with the subtitles plugin
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'

@@ -6930,3 +6930,5 @@ Video Disk Recorder Revision History
   The REMOTE=RCU option in the 'make' call for VDR is now obsolete.
   The command line option --rcu is now obsolete. Use -Prcu instead. If you have
   used --rcu with a device path, use -P"rcu -d<device>".
+- Added support for automatically selecting subtitles when playing old PES
+  recordings made with the subtitles plugin (thanks to Anssi Hannula).
