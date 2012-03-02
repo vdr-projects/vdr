@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 2.1 2010/01/16 14:25:31 kls Exp $
+ * $Id: osdbase.h 2.2 2012/03/02 15:49:57 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -92,9 +92,11 @@ private:
   int first, current, marked;
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
+  bool helpDisplayed;
   char *status;
   int digit;
   bool hasHotkeys;
+  void DisplayHelp(bool Force = false);
 protected:
   void SetDisplayMenu(void);
   cSkinDisplayMenu *DisplayMenu(void) { return displayMenu; }

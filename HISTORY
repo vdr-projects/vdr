@@ -6947,3 +6947,8 @@ Video Disk Recorder Revision History
 - Added a Query parameter to cDevice::GetDevice(), so that devices can be queried
   without side effects when zapping.
 - Replaced min(max()) calls with the new function constrain().
+- Fixed handling OSD color button texts in case a menu item has texts of its own
+  (reported by Rolf Ahrenberg). If a plugin creates derived cMenuEditItems that set
+  color button texts, these should not set the texts directly by calling
+  cSkinDisplay::Current()->SetButtons(), but rather call the new member function
+  cMenuEditItem::SetHelp().

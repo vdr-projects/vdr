@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.3 2010/12/12 13:41:28 kls Exp $
+ * $Id: osdbase.c 2.4 2012/03/02 15:49:57 kls Exp $
  */
 
 #include "osdbase.h"
 #include <string.h>
 #include "device.h"
 #include "i18n.h"
+#include "menuitems.h"
 #include "remote.h"
 #include "status.h"
 
@@ -85,6 +86,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   current = marked = -1;
   subMenu = NULL;
   helpRed = helpGreen = helpYellow = helpBlue = NULL;
+  helpDisplayed = false;
   status = NULL;
   if (!displayMenuCount++)
      SetDisplayMenu();
@@ -154,6 +156,15 @@ void cOsdMenu::SetTitle(const char *Title)
   title = strdup(Title);
 }
 
+void cOsdMenu::DisplayHelp(bool Force)
+{
+  if (!helpDisplayed || Force) {
+     displayMenu->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
+     cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
+     helpDisplayed = true;
+     }
+}
+
 void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
   // strings are NOT copied - must be constants!!!
@@ -161,8 +172,7 @@ void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, c
   helpGreen  = Green;
   helpYellow = Yellow;
   helpBlue   = Blue;
-  displayMenu->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
-  cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
+  DisplayHelp(true);
 }
 
 void cOsdMenu::Del(int Index)
@@ -205,8 +215,7 @@ void cOsdMenu::Display(void)
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);
   cStatus::MsgOsdTitle(title);
-  displayMenu->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
-  cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
+  DisplayHelp(true);
   int count = Count();
   if (count > 0) {
      int ni = 0;
@@ -263,6 +272,12 @@ void cOsdMenu::DisplayCurrent(bool Current)
         cStatus::MsgOsdCurrentItem(item->Text());
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
+     if (cMenuEditItem *MenuEditItem = dynamic_cast<cMenuEditItem *>(item)) {
+        if (!MenuEditItem->DisplayHelp())
+           DisplayHelp();
+        else
+           helpDisplayed = false;
+        }
      }
 }
 

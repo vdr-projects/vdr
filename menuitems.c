@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.10 2011/08/12 13:19:40 kls Exp $
+ * $Id: menuitems.c 2.11 2012/03/02 15:49:57 kls Exp $
  */
 
 #include "menuitems.h"
@@ -26,6 +26,7 @@ const char *FileNameChars = trNOOP("FileNameChars$ abcdefghijklmnopqrstuvwxyz012
 cMenuEditItem::cMenuEditItem(const char *Name)
 {
   name = strdup(Name ? Name : "???");
+  SetHelp(NULL);
 }
 
 cMenuEditItem::~cMenuEditItem()
@@ -38,6 +39,27 @@ void cMenuEditItem::SetValue(const char *Value)
   cString buffer = cString::sprintf("%s:\t%s", name, Value);
   SetText(buffer);
   cStatus::MsgOsdCurrentItem(buffer);
+}
+
+void cMenuEditItem::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
+{
+  // strings are NOT copied - must be constants!!!
+  helpRed    = Red;
+  helpGreen  = Green;
+  helpYellow = Yellow;
+  helpBlue   = Blue;
+  helpDisplayed = false;
+}
+
+bool cMenuEditItem::DisplayHelp(void)
+{
+  bool HasHelp = helpRed || helpGreen || helpYellow || helpBlue;
+  if (HasHelp && !helpDisplayed) {
+     cSkinDisplay::Current()->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
+     cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
+     helpDisplayed = true;
+     }
+  return HasHelp;
 }
 
 // --- cMenuEditIntItem ------------------------------------------------------
@@ -382,9 +404,9 @@ void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (InEditMode())
-     cSkinDisplay::Current()->SetButtons(tr("Button$ABC/abc"), insert ? tr("Button$Overwrite") : tr("Button$Insert"), tr("Button$Delete"));
+     SetHelp(tr("Button$ABC/abc"), insert ? tr("Button$Overwrite") : tr("Button$Insert"), tr("Button$Delete"));
   else
-     cSkinDisplay::Current()->SetButtons(NULL);
+     SetHelp(NULL);
 }
 
 uint *cMenuEditStrItem::IsAllowed(uint c)
