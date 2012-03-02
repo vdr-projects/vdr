@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.5 2010/01/30 11:10:25 kls Exp $
+ * $Id: transfer.c 2.6 2012/02/29 14:16:23 kls Exp $
  */
 
 #include "transfer.h"
@@ -12,7 +12,7 @@
 // --- cTransfer -------------------------------------------------------------
 
 cTransfer::cTransfer(const cChannel *Channel)
-:cReceiver(Channel)
+:cReceiver(Channel, TRANSFERPRIORITY)
 {
   patPmtGenerator.SetChannel(Channel);
 }

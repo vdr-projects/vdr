@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.23 2012/02/17 11:18:55 kls Exp $
+ * $Id: dvbdevice.h 2.24 2012/02/29 12:20:51 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -179,7 +179,7 @@ public:
   virtual bool ProvidesDeliverySystem(int DeliverySystem) const;
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const;
   virtual bool ProvidesEIT(void) const;
   virtual int NumProvidedSystems(void) const;
   virtual int SignalStrength(void) const;

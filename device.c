@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.51 2012/02/28 09:25:57 kls Exp $
+ * $Id: device.c 2.52 2012/03/02 10:18:44 kls Exp $
  */
 
 #include "device.h"
@@ -281,8 +281,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
              imp <<= 4; imp |= GetClippedNumProvidedSystems(4, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
-             imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
-             imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
+             imp <<= 8; imp |= device[i]->Priority() - IDLEPRIORITY;                                                 // use the device with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
+             imp <<= 8; imp |= (NumUsableSlots ? SlotPriority[j] : IDLEPRIORITY) - IDLEPRIORITY;                     // use the CAM slot with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
              imp <<= 1; imp |= NumUsableSlots ? 0 : device[i]->HasCi();                                              // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
@@ -652,7 +652,7 @@ bool cDevice::IsTunedToTransponder(const cChannel *Channel) const
 
 bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 {
-  return time(NULL) > occupiedTimeout && !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
+  return time(NULL) > occupiedTimeout && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -1494,6 +1494,8 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 int cDevice::Priority(void) const
 {
   int priority = IDLEPRIORITY;
+  if (IsPrimaryDevice() && !Replaying() && ActualDevice() == PrimaryDevice())
+     priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
@@ -1507,11 +1509,11 @@ bool cDevice::Ready(void)
   return true;
 }
 
-bool cDevice::Receiving(bool CheckAny) const
+bool cDevice::Receiving(bool Dummy) const
 {
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
-      if (receiver[i] && (CheckAny || receiver[i]->priority >= 0)) // cReceiver with priority < 0 doesn't count
+      if (receiver[i])
          return true;
       }
   return false;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 2.1 2011/12/04 13:38:17 kls Exp $
+ * $Id: ci.h 2.2 2012/02/29 10:24:27 kls Exp $
  */
 
 #ifndef __CI_H
@@ -192,7 +192,7 @@ public:
        ///< Gets a pending enquiry, or NULL if there is no enquiry.
   int Priority(void);
        ///< Returns the priority if the device this slot is currently assigned
-       ///< to, or -1 if it is not assigned to any device.
+       ///< to, or IDLEPRIORITY if it is not assigned to any device.
   bool ProvidesCa(const int *CaSystemIds);
        ///< Returns true if the CAM in this slot provides one of the given
        ///< CaSystemIds. This doesn't necessarily mean that it will be

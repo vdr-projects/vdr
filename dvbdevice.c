@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.64 2012/02/25 12:10:12 kls Exp $
+ * $Id: dvbdevice.c 2.65 2012/02/29 12:23:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -420,7 +420,7 @@ bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
   if (cDvbTuner *t = bondedTuner) {
      cString BondingParams = GetBondingParams(Channel);
      do {
-        if (t->device->Receiving() || t->tunerStatus != tsIdle && (t->device == cDevice::ActualDevice() || ConsiderOccupied && t->device->Occupied())) {
+        if (t->device->Receiving() || ConsiderOccupied && t->device->Occupied()) {
            if (strcmp(BondingParams, t->GetBondingParams()) != 0)
               return false;
            }
@@ -1437,14 +1437,14 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
-  bool hasPriority = Priority < 0 || Priority > this->Priority();
+  bool hasPriority = Priority == IDLEPRIORITY || Priority > this->Priority();
   bool needsDetachReceivers = false;
   needsDetachBondedReceivers = false;
 
   if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
      if (Priority >= 0) {
-        if (Receiving(true)) {
+        if (Receiving()) {
            if (dvbTuner->IsTunedTo(Channel)) {
               if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
                  if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
@@ -1460,7 +1460,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                  result = true;
               }
            else
-              needsDetachReceivers = Receiving(true);
+              needsDetachReceivers = Receiving();
            }
         if (result) {
            if (!BondingOk(Channel)) {
@@ -1472,7 +1472,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = Receiving(true);
+              needsDetachReceivers = Receiving();
               }
            }
         }

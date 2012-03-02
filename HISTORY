@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-02-27: Version 1.7.25
+2012-03-02: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6932,3 +6932,15 @@ Video Disk Recorder Revision History
   used --rcu with a device path, use -P"rcu -d<device>".
 - Added support for automatically selecting subtitles when playing old PES
   recordings made with the subtitles plugin (thanks to Anssi Hannula).
+- Revised priority handling to allow receivers with a priority that is lower than
+  that of live viewing (with suggestions from Frank Schmirler):
+  + An idle device (one that is not used for live viewing and has no receiver
+    attached to it) now has priority IDLEPRIORITY (-100).
+  + An unused CAM slot now has priority IDLEPRIORITY.
+  + The default priority of a cReceiver is now MINPRIORITY (-99).
+  + A device that is used only for live viewing (no matter whether it's in Transfer
+    Mode or real live mode) now has priority TRANSFERPRIORITY (-1).
+  + The function cDevice::Receiving() now returns true if there is any receiver
+    attached to the device. Its boolean parameter has no meaning any more.
+  + The default value for the Priority parameter of the function cDevice::ProvidesChannel()
+    has been changed to IDLEPRIORITY.

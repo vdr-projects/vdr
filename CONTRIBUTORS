@@ -2405,6 +2405,8 @@ Frank Schmirler <vdr@schmirler.de>
  recordings of the same broadcast made by different instances of VDR
  for fixing EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0
  for fixing the German translation of "Folder name must not contain '%c'!"
+ for suggestions used in revising priority handling to allow receivers with a priority
+ that is lower than that of live viewing
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while

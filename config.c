@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.19 2012/02/25 13:31:46 kls Exp $
+ * $Id: config.c 2.20 2012/02/29 10:15:54 kls Exp $
  */
 
 #include "config.h"
@@ -407,7 +407,7 @@ cSetup::cSetup(void)
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
   DefaultPriority = 50;
-  DefaultLifetime = 99;
+  DefaultLifetime = MAXLIFETIME;
   PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;

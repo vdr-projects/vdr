@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.34 2012/02/25 12:54:39 kls Exp $
+ * $Id: device.h 2.35 2012/02/29 12:19:28 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -31,8 +31,6 @@
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
 #define MAXOCCUPIEDTIMEOUT 99 // max. time (in seconds) a device may be occupied
-#define LIVEPRIORITY        0 // priority used when selecting a device for live viewing
-#define IDLEPRIORITY       (-MAXPRIORITY - 1)
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
@@ -237,11 +235,11 @@ public:
   virtual bool ProvidesTransponderExclusively(const cChannel *Channel) const;
          ///< Returns true if this is the only device that is able to provide
          ///< the given channel's transponder.
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
          ///< In case the device has cReceivers attached to it, Priority is used to
          ///< decide whether the caller's request can be honored.
-         ///< The special Priority value -1 will tell the caller whether this device
+         ///< The special Priority value IDLEPRIORITY will tell the caller whether this device
          ///< is principally able to provide the given Channel, regardless of any
          ///< attached cReceivers.
          ///< If NeedsDetachReceivers is given, the resulting value in it will tell the
@@ -736,8 +734,8 @@ protected:
       ///< false in case of a non recoverable error, otherwise it returns true,
       ///< even if Data is NULL.
 public:
-  bool Receiving(bool CheckAny = false) const;
-       ///< Returns true if we are currently receiving.
+  bool Receiving(bool Dummy = false) const;
+       ///< Returns true if we are currently receiving. The parameter has no meaning (for backwards compatibility only).
   bool AttachReceiver(cReceiver *Receiver);
        ///< Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);

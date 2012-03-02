@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.7 2011/05/21 15:21:33 kls Exp $
+ * $Id: ci.c 2.8 2012/02/29 10:24:41 kls Exp $
  */
 
 #include "ci.h"
@@ -1841,7 +1841,7 @@ const int *cCamSlot::GetCaSystemIds(void)
 int cCamSlot::Priority(void)
 {
   cDevice *d = Device();
-  return d ? d->Priority() : -1;
+  return d ? d->Priority() : IDLEPRIORITY;
 }
 
 bool cCamSlot::ProvidesCa(const int *CaSystemIds)

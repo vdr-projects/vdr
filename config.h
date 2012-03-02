@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.42 2012/02/25 13:31:34 kls Exp $
+ * $Id: config.h 2.43 2012/02/29 12:28:01 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -36,8 +36,12 @@
 // plugins to work with newer versions of the core VDR as long as no
 // VDR header files have changed.
 
-#define MAXPRIORITY 99
-#define MAXLIFETIME 99
+#define MAXPRIORITY       99
+#define MINPRIORITY       (-MAXPRIORITY)
+#define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
+#define TRANSFERPRIORITY  (LIVEPRIORITY - 1) // priority used for actual local Transfer Mode
+#define IDLEPRIORITY      (MINPRIORITY - 1)  // priority of an idle device
+#define MAXLIFETIME       99
 
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920
