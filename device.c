@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.53 2012/03/02 10:33:35 kls Exp $
+ * $Id: device.c 2.54 2012/03/02 10:46:06 kls Exp $
  */
 
 #include "device.h"
@@ -877,7 +877,7 @@ void cDevice::SetAudioChannel(int AudioChannel)
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
   int OldVolume = volume;
-  volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
+  volume = constrain(Absolute ? Volume : volume + Volume, 0, MAXVOLUME);
   SetVolumeDevice(volume);
   Absolute |= mute;
   cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);

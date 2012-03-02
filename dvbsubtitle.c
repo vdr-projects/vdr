@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.26 2012/02/25 14:47:44 kls Exp $
+ * $Id: dvbsubtitle.c 2.27 2012/03/02 10:47:25 kls Exp $
  */
 
 
@@ -969,9 +969,9 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
   Epb = (Cb - 128);
   Epr = (Cr - 128);
   /* ITU-R 709 */
-  Er = max(min(((298 * Ey             + 460 * Epr) / 256), 255), 0);
-  Eg = max(min(((298 * Ey -  55 * Epb - 137 * Epr) / 256), 255), 0);
-  Eb = max(min(((298 * Ey + 543 * Epb            ) / 256), 255), 0);
+  Er = constrain((298 * Ey             + 460 * Epr) / 256, 0, 255);
+  Eg = constrain((298 * Ey -  55 * Epb - 137 * Epr) / 256, 0, 255);
+  Eb = constrain((298 * Ey + 543 * Epb            ) / 256, 0, 255);
 
   return (Er << 16) | (Eg << 8) | Eb;
 }

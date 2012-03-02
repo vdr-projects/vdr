@@ -6946,3 +6946,4 @@ Video Disk Recorder Revision History
     has been changed to IDLEPRIORITY.
 - Added a Query parameter to cDevice::GetDevice(), so that devices can be queried
   without side effects when zapping.
+- Replaced min(max()) calls with the new function constrain().

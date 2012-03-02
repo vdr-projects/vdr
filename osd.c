@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.24 2012/02/22 16:13:04 kls Exp $
+ * $Id: osd.c 2.25 2012/03/02 10:48:19 kls Exp $
  */
 
 #include "osd.h"
@@ -1008,7 +1008,7 @@ void cPixmap::SetLayer(int Layer)
 void cPixmap::SetAlpha(int Alpha)
 {
   Lock();
-  Alpha = min(max(Alpha, ALPHA_TRANSPARENT), ALPHA_OPAQUE);
+  Alpha = constrain(Alpha, ALPHA_TRANSPARENT, ALPHA_OPAQUE);
   if (Alpha != alpha) {
      MarkViewPortDirty(viewPort);
      alpha = Alpha;
@@ -1648,8 +1648,8 @@ void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
 {
   osdLeft = Left;
   osdTop = Top;
-  osdWidth = min(max(Width, MINOSDWIDTH), MAXOSDWIDTH);
-  osdHeight = min(max(Height, MINOSDHEIGHT), MAXOSDHEIGHT);
+  osdWidth = constrain(Width, MINOSDWIDTH, MAXOSDWIDTH);
+  osdHeight = constrain(Height, MINOSDHEIGHT, MAXOSDHEIGHT);
 }
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
