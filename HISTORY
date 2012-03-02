@@ -6944,3 +6944,5 @@ Video Disk Recorder Revision History
     attached to the device. Its boolean parameter has no meaning any more.
   + The default value for the Priority parameter of the function cDevice::ProvidesChannel()
     has been changed to IDLEPRIORITY.
+- Added a Query parameter to cDevice::GetDevice(), so that devices can be queried
+  without side effects when zapping.

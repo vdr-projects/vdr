@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.52 2012/03/02 10:18:44 kls Exp $
+ * $Id: device.c 2.53 2012/03/02 10:33:35 kls Exp $
  */
 
 #include "device.h"
@@ -226,7 +226,7 @@ static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
   return NumProvidedSystems;
 }
 
-cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView)
+cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query)
 {
   cDevice *AvoidDevice = avoidDevice;
   avoidDevice = NULL;
@@ -301,7 +301,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (!NumUsableSlots)
          break; // no CAM necessary, so just one loop over the devices
       }
-  if (d) {
+  if (d && !Query) {
      if (NeedsDetachReceivers)
         d->DetachAllReceivers();
      if (s) {
@@ -687,7 +687,7 @@ bool cDevice::SwitchChannel(int Direction)
      cChannel *channel;
      while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
-           if (GetDevice(channel, LIVEPRIORITY, true))
+           if (GetDevice(channel, LIVEPRIORITY, true, true))
               break;
            n = channel->Number() + Direction;
            }

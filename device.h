@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.35 2012/02/29 12:19:28 kls Exp $
+ * $Id: device.h 2.36 2012/03/02 10:23:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -139,7 +139,7 @@ public:
          ///< Gets the device with the given Index.
          ///< \param Index must be in the range 0..numDevices-1.
          ///< \return A pointer to the device, or NULL if the Index was invalid.
-  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView);
+  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query = false);
          ///< Returns a device that is able to receive the given Channel at the
          ///< given Priority, with the least impact on active recordings and
          ///< live viewing. The LiveView parameter tells whether the device will
@@ -153,6 +153,10 @@ public:
          ///< after detaching any receivers because the channel can't be decrypted,
          ///< this device/CAM combination will be skipped in the next call to
          ///< GetDevice().
+         ///< If Query is true, no actual CAM assignments or receiver detachments will
+         ///< be done, so that this function can be called without any side effects
+         ///< in order to just determine whether a device is available for the given
+         ///< Channel.
          ///< See also ProvidesChannel().
   static void SetAvoidDevice(cDevice *Device) { avoidDevice = Device; }
          ///< Sets the given Device to be temporarily avoided in the next call to

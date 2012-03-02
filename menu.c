@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.38 2012/02/25 13:50:49 kls Exp $
+ * $Id: menu.c 2.39 2012/03/02 10:33:17 kls Exp $
  */
 
 #include "menu.h"
@@ -3653,7 +3653,7 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
            Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
            if (!Channel && Setup.ChannelsWrap)
               Channel = Direction > 0 ? Channels.First() : Channels.Last();
-           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true))
+           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
               return Channel;
            }
      }
