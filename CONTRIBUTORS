@@ -531,6 +531,7 @@ Onno Kreuzinger <ok@solutas.net>
 
 Rudi Hofer (Rudi.Hofer@gmx.de)
  for his help in keeping 'channels.conf' up to date
+ for reporting a problem with overlapping tab positions in skins when using wide fonts
 
 Gregoire Favre <greg@ulima.unil.ch>
  for fixing some function headers to make them compile with gcc 3.x
@@ -1130,6 +1131,12 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding support for handling DVB-T2 transponders
  for suggesting to add member functions Adapter() and Frontend() to cDvbDevice
  for improving handling subtitles of BBC channels
+ for fixing handling subtitle color palettes on channels where subtitles appear
+ "word by word"
+ for reporting a problem with color palettes in subtitles
+ for adding some typecasts to silence gcc compiler warnings
+ for reporting a bug in handling OSD color button texts in case a menu item has
+ texts of its own
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2077,6 +2084,7 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for making the list of tracks given in cStatus::SetAudioTrack() NULL terminated
  for fixing handling kLeft in the calls to cStatus::MsgOsdTextItem()
  for fixing a possible integer overflow in GetAbsTime()
+ for suggesting to add several cTimer::Set...() functions
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
@@ -2372,6 +2380,8 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for fixing stopping subtitle display when switching the primary device
  for fixing plugin arguments corruption with glibc 2.11 on x86_64
  for setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
+ for adding support for automatically selecting subtitles when playing old PES
+ recordings made with the subtitles plugin
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2397,6 +2407,8 @@ Frank Schmirler <vdr@schmirler.de>
  recordings of the same broadcast made by different instances of VDR
  for fixing EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0
  for fixing the German translation of "Folder name must not contain '%c'!"
+ for suggestions used in revising priority handling to allow receivers with a priority
+ that is lower than that of live viewing
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while

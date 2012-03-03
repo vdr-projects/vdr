@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.62 2012/02/17 12:20:34 kls Exp $
+ * $Id: dvbdevice.c 2.65 2012/02/29 12:23:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -420,7 +420,7 @@ bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
   if (cDvbTuner *t = bondedTuner) {
      cString BondingParams = GetBondingParams(Channel);
      do {
-        if (t->device->Receiving() || t->tunerStatus != tsIdle && (t->device == cDevice::ActualDevice() || ConsiderOccupied && t->device->Occupied())) {
+        if (t->device->Receiving() || ConsiderOccupied && t->device->Occupied()) {
            if (strcmp(BondingParams, t->GetBondingParams()) != 0)
               return false;
            }
@@ -1437,14 +1437,14 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
-  bool hasPriority = Priority < 0 || Priority > this->Priority();
+  bool hasPriority = Priority == IDLEPRIORITY || Priority > this->Priority();
   bool needsDetachReceivers = false;
   needsDetachBondedReceivers = false;
 
   if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
      if (Priority >= 0) {
-        if (Receiving(true)) {
+        if (Receiving()) {
            if (dvbTuner->IsTunedTo(Channel)) {
               if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
                  if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
@@ -1453,16 +1453,14 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                     else
                        needsDetachReceivers = true;
                     }
-                 else if (!IsPrimaryDevice())
-                    result = true;
                  else
-                    result = Priority >= Setup.PrimaryLimit;
+                    result = true;
                  }
               else
-                 result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
+                 result = true;
               }
            else
-              needsDetachReceivers = Receiving(true);
+              needsDetachReceivers = Receiving();
            }
         if (result) {
            if (!BondingOk(Channel)) {
@@ -1474,7 +1472,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = Receiving(true);
+              needsDetachReceivers = Receiving();
               }
            }
         }
@@ -1591,21 +1589,43 @@ cDvbDeviceProbe::~cDvbDeviceProbe()
 
 uint32_t cDvbDeviceProbe::GetSubsystemId(int Adapter, int Frontend)
 {
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
   uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
+  cString FileName = cString::sprintf("/dev/dvb/adapter%d/frontend%d", Adapter, Frontend);
+  struct stat st;
+  if (stat(FileName, &st) == 0) {
+     cReadDir d("/sys/class/dvb");
+     if (d.Ok()) {
+        struct dirent *e;
+        while ((e = d.Next()) != NULL) {
+              if (strstr(e->d_name, "frontend")) {
+                 FileName = cString::sprintf("/sys/class/dvb/%s/dev", e->d_name);
+                 if (FILE *f = fopen(FileName, "r")) {
+                    cReadLine ReadLine;
+                    char *s = ReadLine.Read(f);
+                    fclose(f);
+                    unsigned Major;
+                    unsigned Minor;
+                    if (s && 2 == sscanf(s, "%u:%u", &Major, &Minor)) {
+                       if (((Major << 8) | Minor) == st.st_rdev) {
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_vendor", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId = strtoul(s, NULL, 0) << 16;
+                             fclose(f);
+                             }
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_device", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId |= strtoul(s, NULL, 0);
+                             fclose(f);
+                             }
+                          break;
+                          }
+                       }
+                    }
+                 }
+              }
+        }
      }
   return SubsystemId;
 }

@@ -763,15 +763,6 @@ Version 1.6
                          These margins are added automatically to timers that
                          are created from the EPG data.
 
-  Primary limit = 0      The minimum priority a timer must have to be allowed to
-                         use the primary DVB interface, or to force another timer
-                         with higher priority to use the primary DVB interface.
-                         This is mainly useful for recordings that should take
-                         place only when there is nothing else to do, but should
-                         never keep the user from viewing stuff on the primary
-                         interface. On systems with only one DVB card, timers
-                         with a priority below PrimaryLimit will never execute.
-
   Default priority = 50  The default Priority and Lifetime values used when
   Default lifetime = 99  creating a new timer event. A Lifetime value of 99
                          means that this recording will never be deleted

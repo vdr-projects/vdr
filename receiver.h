@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.2 2011/12/04 13:38:17 kls Exp $
+ * $Id: receiver.h 2.5 2012/03/01 09:50:24 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -43,15 +43,15 @@ public:
 #ifdef LEGACY_CRECEIVER
   cReceiver(tChannelID ChannelID, int Priority, int Pid, const int *Pids1 = NULL, const int *Pids2 = NULL, const int *Pids3 = NULL);
 #endif
-  cReceiver(const cChannel *Channel = NULL, int Priority = -1);
+  cReceiver(const cChannel *Channel = NULL, int Priority = MINPRIORITY);
                ///< Creates a new receiver for the given Channel with the given Priority.
-               ///< If Channel is not NULL, its pids set by a call to SetPids().
+               ///< If Channel is not NULL, its pids are set by a call to SetPids().
                ///< Otherwise pids can be added to the receiver by separate calls to the AddPid[s]
                ///< functions.
                ///< The total number of PIDs added to a receiver must not exceed MAXRECEIVEPIDS.
-               ///< Priority may be any value in the range -99..99. Negative values indicate
-               ///< that this cReceiver may be detached at any time (without blocking the
-               ///< cDevice it is attached to).
+               ///< Priority may be any value in the range MINPRIORITY...MAXPRIORITY. Negative values indicate
+               ///< that this cReceiver may be detached at any time in favor of a timer recording
+               ///< or live viewing (without blocking the cDevice it is attached to).
   virtual ~cReceiver();
   bool AddPid(int Pid);
                ///< Adds the given Pid to the list of PIDs of this receiver.

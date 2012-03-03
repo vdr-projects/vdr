@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -321,7 +321,7 @@ msgstr "Suoralähetys"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "K-%d"
+msgstr "%d"
 
 msgid "No title"
 msgstr "Ei esitystä"
@@ -748,7 +748,7 @@ msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Tallennetta muokataan - poistetaanko silti?"
 
 msgid "Error while deleting recording!"
 msgstr "Tallenteen poistaminen epäonnistui!"
@@ -1031,9 +1031,6 @@ msgstr "Aloitusmarginaali (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Lopetusmarginaali (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Ensisijaisen sovittimen prioriteettiraja"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Tallenteen oletusprioriteetti"

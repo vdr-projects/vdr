@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -1032,9 +1032,6 @@ msgstr "Tijd marge begin (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Tijd marge eind (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Eerste grens"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Standaard prioriteit"

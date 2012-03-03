@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 2.2 2010/11/01 15:24:32 kls Exp $
+ *   $Id: util.h 2.3 2012/02/26 13:58:26 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -54,10 +54,10 @@ public:
    template <typename T> const T* getData(int offset) const { return (T*)(data_->data+offset+off); }
       //sets p to point to data+offset, increments offset
    template <typename T> void setPointerAndOffset(const T* &p, int &offset) const { p=(T*)getData(offset); offset+=sizeof(T); }
-   unsigned char operator[](const int index) const { return data_->data ? data_->data[off+index] : 0; }
+   unsigned char operator[](const int index) const { return data_->data ? data_->data[off+index] : (unsigned char)0; }
    int getLength() const { return data_->size; }
-   u_int16_t TwoBytes(const int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
-   u_int32_t FourBytes(const int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
+   u_int16_t TwoBytes(const int index) const { return data_->data ? data_->TwoBytes(off+index) : u_int16_t(0); }
+   u_int32_t FourBytes(const int index) const { return data_->data ? data_->FourBytes(off+index) : u_int32_t(0); }
 
    bool isValid() const { return data_->valid; }
    bool checkSize(int offset) { return (data_->valid && (data_->valid=(offset>=0 && off+offset < data_->size))); }
@@ -73,9 +73,9 @@ private:
       virtual void Delete() = 0;
 
       u_int16_t TwoBytes(const int index) const
-         { return (data[index] << 8) | data[index+1]; }
+         { return u_int16_t((data[index] << 8) | data[index+1]); }
       u_int32_t FourBytes(const int index) const
-         { return (data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | data[index+3]; }
+         { return u_int32_t((data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | data[index+3]); }
       /*#ifdef CHARARRAY_THREADSAFE
       void Lock();
       void Unlock();
@@ -140,7 +140,7 @@ private:
 namespace DVBTime {
 time_t getTime(unsigned char date_hi, unsigned char date_lo, unsigned char timehr, unsigned char timemi, unsigned char timese);
 time_t getDuration(unsigned char timehr, unsigned char timemi, unsigned char timese);
-inline unsigned char bcdToDec(unsigned char b) { return ((b >> 4) & 0x0F) * 10 + (b & 0x0F); }
+inline unsigned char bcdToDec(unsigned char b) { return (unsigned char)(((b >> 4) & 0x0F) * 10 + (b & 0x0F)); }
 }
 
 //taken and adapted from libdtv, (c) Rolf Hakenes

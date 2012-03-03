@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.15 2012/02/18 15:29:50 kls Exp $
+ * $Id: tools.h 2.16 2012/02/29 10:41:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -56,6 +56,8 @@ template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
+
+template<class T> inline T constrain(T v, T l, T h) { return v < l ? l : v > h ? h : v; }
 
 void syslog_with_tid(int priority, const char *format, ...) __attribute__ ((format (printf, 2, 3)));
 

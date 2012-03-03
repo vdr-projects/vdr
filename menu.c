@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.37 2012/02/19 11:37:55 kls Exp $
+ * $Id: menu.c 2.39 2012/03/02 10:33:17 kls Exp $
  */
 
 #include "menu.h"
@@ -3093,7 +3093,6 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   SetSection(tr("Recording"));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditStraItem(tr("Setup.Recording$Pause key handling"),        &data.PauseKeyHandling, 3, pauseKeyHandlingTexts));
@@ -3654,7 +3653,7 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
            Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
            if (!Channel && Setup.ChannelsWrap)
               Channel = Direction > 0 ? Channels.First() : Channels.Last();
-           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, 0, true))
+           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
               return Channel;
            }
      }
@@ -4294,7 +4293,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
                }
            }
         }
-     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending())) {
+     else if (!Timer || !Timer->Pending()) {
         isyslog("no free DVB device to record channel %d!", ch);
         Skins.Message(mtError, tr("No free DVB device to record!"));
         }

@@ -47,15 +47,12 @@ If you have an infrared remote control unit you can define the REMOTE macro
 to one of the following values in the 'make' call to make the respective control
 the default:
 
-  REMOTE=RCU    control via the "Remote Control Unit" receiver
-                (see http://www.tvdr.de/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)
 
-Alternatively you can use the '--rcu' or '--lirc' options at runtime.
-These options accept an optional path to the remote control device,
-the defaults of which can be set via the RCU_DEVICE and LIRC_DEVICE macros,
-respectively.
+Alternatively you can use the '--lirc' option at runtime.
+This option accepts an optional path to the remote control device,
+the default of which can be set via the LIRC_DEVICE macro.
 
 If your video directory will be on a VFAT partition, you can call VDR with
 the command line option '--vfat'.

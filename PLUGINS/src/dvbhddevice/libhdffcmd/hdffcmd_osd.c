@@ -103,10 +103,15 @@ int HdffCmdOsdCreateDisplay(int OsdDevice, uint16_t Width, uint16_t Height,
     {
         if (osd_cmd.result_len > 0)
         {
-            *NewDisplay = (resultData[6] << 24)
-                        | (resultData[7] << 16)
-                        | (resultData[8] << 8)
-                        | resultData[9];
+            if (resultData[2] == HDFF_MSG_TYPE_ANSWER)
+            {
+                *NewDisplay = (resultData[6] << 24)
+                            | (resultData[7] << 16)
+                            | (resultData[8] << 8)
+                            | resultData[9];
+            }
+            else
+                err = -1;
         }
     }
     return err;
@@ -295,10 +300,15 @@ int HdffCmdOsdCreatePalette(int OsdDevice, HdffColorType_t ColorType,
     {
         if (osd_cmd.result_len > 0)
         {
-            *NewPalette = (resultData[6] << 24)
-                        | (resultData[7] << 16)
-                        | (resultData[8] << 8)
-                        | resultData[9];
+            if (resultData[2] == HDFF_MSG_TYPE_ANSWER)
+            {
+                *NewPalette = (resultData[6] << 24)
+                            | (resultData[7] << 16)
+                            | (resultData[8] << 8)
+                            | resultData[9];
+            }
+            else
+                err = -1;
         }
     }
     return err;
@@ -400,10 +410,15 @@ int HdffCmdOsdCreateFontFace(int OsdDevice, const uint8_t * FontData,
     {
         if (osd_cmd.result_len > 0)
         {
-            *NewFontFace = (resultData[6] << 24)
-                         | (resultData[7] << 16)
-                         | (resultData[8] << 8)
-                         | resultData[9];
+            if (resultData[2] == HDFF_MSG_TYPE_ANSWER)
+            {
+                *NewFontFace = (resultData[6] << 24)
+                             | (resultData[7] << 16)
+                             | (resultData[8] << 8)
+                             | resultData[9];
+            }
+            else
+                err = -1;
         }
     }
     return err;
@@ -451,10 +466,15 @@ int HdffCmdOsdCreateFont(int OsdDevice, uint32_t FontFace, uint32_t Size,
     {
         if (osd_cmd.result_len > 0)
         {
-            *NewFont = (resultData[6] << 24)
-                     | (resultData[7] << 16)
-                     | (resultData[8] << 8)
-                     | resultData[9];
+            if (resultData[2] == HDFF_MSG_TYPE_ANSWER)
+            {
+                *NewFont = (resultData[6] << 24)
+                         | (resultData[7] << 16)
+                         | (resultData[8] << 8)
+                         | resultData[9];
+            }
+            else
+                err = -1;
         }
     }
     return err;

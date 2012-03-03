@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.6 2012/02/11 12:29:55 kls Exp $
+ * $Id: epg.h 2.7 2012/02/26 13:58:26 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -100,7 +100,7 @@ public:
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
   const cComponents *Components(void) const { return components; }
-  uchar Contents(int i = 0) const { return (0 <= i && i < MaxEventContents) ? contents[i] : 0; }
+  uchar Contents(int i = 0) const { return (0 <= i && i < MaxEventContents) ? contents[i] : uchar(0); }
   int ParentalRating(void) const { return parentalRating; }
   time_t StartTime(void) const { return startTime; }
   time_t EndTime(void) const { return startTime + duration; }

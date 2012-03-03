@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 2.4 2010/12/12 23:16:25 kls Exp $
+ * $Id: receiver.c 2.5 2012/02/29 11:49:36 kls Exp $
  */
 
 #include "receiver.h"
@@ -16,7 +16,7 @@ cReceiver::cReceiver(tChannelID ChannelID, int Priority, int Pid, const int *Pid
 {
   device = NULL;
   channelID = ChannelID;
-  priority = Priority;
+  priority = constrain(Priority, MINPRIORITY, MAXPRIORITY);
   numPids = 0;
   AddPid(Pid);
   AddPids(Pids1);
@@ -28,7 +28,7 @@ cReceiver::cReceiver(tChannelID ChannelID, int Priority, int Pid, const int *Pid
 cReceiver::cReceiver(const cChannel *Channel, int Priority)
 {
   device = NULL;
-  priority = Priority;
+  priority = constrain(Priority, MINPRIORITY, MAXPRIORITY);
   numPids = 0;
   SetPids(Channel);
 }

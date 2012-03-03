@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.12 2010/05/14 14:08:35 kls Exp $
+ * $Id: eit.c 2.13 2012/02/25 15:25:51 kls Exp $
  */
 
 #include "eit.h"
@@ -38,6 +38,14 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
      return; // only collect data for known channels
 
   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
+  if (pSchedule) {
+     if (cEvent *Event = pSchedule->Events()->First()) {
+        if (Event->TableID() == 0x00)
+           return; // never touch schedules with events from external sources
+        }
+     }
+  else
+     return;
 
   bool Empty = true;
   bool Modified = false;

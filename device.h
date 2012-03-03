@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.33 2012/02/14 14:42:42 kls Exp $
+ * $Id: device.h 2.36 2012/03/02 10:23:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -139,7 +139,7 @@ public:
          ///< Gets the device with the given Index.
          ///< \param Index must be in the range 0..numDevices-1.
          ///< \return A pointer to the device, or NULL if the Index was invalid.
-  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView);
+  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query = false);
          ///< Returns a device that is able to receive the given Channel at the
          ///< given Priority, with the least impact on active recordings and
          ///< live viewing. The LiveView parameter tells whether the device will
@@ -153,6 +153,10 @@ public:
          ///< after detaching any receivers because the channel can't be decrypted,
          ///< this device/CAM combination will be skipped in the next call to
          ///< GetDevice().
+         ///< If Query is true, no actual CAM assignments or receiver detachments will
+         ///< be done, so that this function can be called without any side effects
+         ///< in order to just determine whether a device is available for the given
+         ///< Channel.
          ///< See also ProvidesChannel().
   static void SetAvoidDevice(cDevice *Device) { avoidDevice = Device; }
          ///< Sets the given Device to be temporarily avoided in the next call to
@@ -235,12 +239,11 @@ public:
   virtual bool ProvidesTransponderExclusively(const cChannel *Channel) const;
          ///< Returns true if this is the only device that is able to provide
          ///< the given channel's transponder.
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
-         ///< In case the device has cReceivers attached to it or it is the primary
-         ///< device, Priority is used to decide whether the caller's request can
-         ///< be honored.
-         ///< The special Priority value -1 will tell the caller whether this device
+         ///< In case the device has cReceivers attached to it, Priority is used to
+         ///< decide whether the caller's request can be honored.
+         ///< The special Priority value IDLEPRIORITY will tell the caller whether this device
          ///< is principally able to provide the given Channel, regardless of any
          ///< attached cReceivers.
          ///< If NeedsDetachReceivers is given, the resulting value in it will tell the
@@ -719,9 +722,8 @@ private:
   cReceiver *receiver[MAXRECEIVERS];
 public:
   int Priority(void) const;
-      ///< Returns the priority of the current receiving session (0..MAXPRIORITY),
-      ///< or -1 if no receiver is currently active. The primary device will
-      ///< always return at least Setup.PrimaryLimit-1.
+      ///< Returns the priority of the current receiving session (-MAXPRIORITY..MAXPRIORITY),
+      ///< or IDLEPRIORITY if no receiver is currently active.
 protected:
   virtual bool OpenDvr(void);
       ///< Opens the DVR of this device and prepares it to deliver a Transport
@@ -736,8 +738,8 @@ protected:
       ///< false in case of a non recoverable error, otherwise it returns true,
       ///< even if Data is NULL.
 public:
-  bool Receiving(bool CheckAny = false) const;
-       ///< Returns true if we are currently receiving.
+  bool Receiving(bool Dummy = false) const;
+       ///< Returns true if we are currently receiving. The parameter has no meaning (for backwards compatibility only).
   bool AttachReceiver(cReceiver *Receiver);
        ///< Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);

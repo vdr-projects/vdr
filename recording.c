@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.50 2012/02/19 10:44:45 kls Exp $
+ * $Id: recording.c 2.51 2012/02/26 13:58:26 kls Exp $
  */
 
 #include "recording.h"
@@ -1571,7 +1571,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
      if (!Record && PauseLive) {
         // Wait until the index file contains at least two frames:
         time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
-        while (time(NULL) < tmax && FileSize(fileName) < 2 * sizeof(tIndexTs))
+        while (time(NULL) < tmax && FileSize(fileName) < off_t(2 * sizeof(tIndexTs)))
               cCondWait::SleepMs(INDEXFILETESTINTERVAL);
         }
      int delta = 0;

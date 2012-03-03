@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian <vdr@linuxtv.org>\n"
@@ -1030,9 +1030,6 @@ msgstr "Rezerva na poèetku snimanja (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Rezerva na kraju (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Standardno ogranièenje"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Zadani prioritet"

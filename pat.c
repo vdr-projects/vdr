@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.16 2011/04/17 13:45:25 kls Exp $
+ * $Id: pat.c 2.17 2012/03/02 10:56:45 kls Exp $
  */
 
 #include "pat.h"
@@ -360,7 +360,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       break;
               case 3: // STREAMTYPE_11172_AUDIO
               case 4: // STREAMTYPE_13818_AUDIO
-              case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport sytax
+              case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport syntax
               case 0x11: // ISO/IEC 14496-3 Audio with LATM transport syntax
                       {
                       if (NumApids < MAXAPIDS) {

@@ -555,6 +555,8 @@ as the <a href="#Getting started"><tt>Start()</tt></a> functions were called.
 
 <hr><h2><a name="Logging">Logging</a></h2>
 
+<div class="blurb">Traces in the sand...</div><p>
+
 <p>
 If the plugin should print log messages, you can use <tt>dsyslog()</tt>, <tt>isyslog()</tt> or <tt>esyslog()</tt>.<br>
 <ul>
@@ -1507,7 +1509,10 @@ member functions of <tt>cReceiver</tt>.
 The above example sets up a receiver that wants to receive data from only one
 PID (for example the Teletext PID). In order to not interfere with other recording
 operations, it sets its priority to <tt>-1</tt> (any negative value will allow
-a <tt>cReceiver</tt> to be detached from its <tt>cDevice</tt> at any time.
+a <tt>cReceiver</tt> to be detached from its <tt>cDevice</tt> at any time
+<div class="modified">
+in favor of a timer recording or live viewing).
+</div modified>
 <p>
 Once a <tt>cReceiver</tt> has been created, it needs to be <i>attached</i> to
 a <tt>cDevice</tt>:

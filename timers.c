@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.5 2011/08/06 13:13:54 kls Exp $
+ * $Id: timers.c 2.8 2012/02/27 09:38:41 kls Exp $
  */
 
 #include "timers.h"
@@ -384,12 +384,13 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   return mktime(&tm);
 }
 
-char *cTimer::SetFile(const char *File)
+void cTimer::SetFile(const char *File)
 {
   if (!isempty(File))
      Utf8Strn0Cpy(file, File, sizeof(file));
-  return file;
 }
+
+#define EITPRESENTFOLLOWINGRATE 10 // max. seconds between two occurrences of the "EIT present/following table for the actual multiplex" (2s by the standard, using some more for safety)
 
 bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 {
@@ -434,8 +435,12 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
         if (Margin || !Directly) {
            startTime = event->StartTime();
            stopTime = event->EndTime();
-           if (!Margin)
-              return event->IsRunning(true);
+           if (!Margin) { // this is an actual check
+              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
+                 return event->IsRunning(true);
+              else
+                 return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
+              }
            }
         }
      return startTime <= t + Margin && t < stopTime; // must stop *before* stopTime to allow adjacent timers
@@ -591,9 +596,40 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
   inVpsMargin = InVpsMargin;
 }
 
+void cTimer::SetDay(time_t Day)
+{
+  day = Day;
+}
+
+void cTimer::SetWeekDays(int WeekDays)
+{
+  weekdays = WeekDays;
+}
+
+void cTimer::SetStart(int Start)
+{
+  start = Start;
+}
+
+void cTimer::SetStop(int Stop)
+{
+  stop = Stop;
+}
+
 void cTimer::SetPriority(int Priority)
 {
   priority = Priority;
+}
+
+void cTimer::SetLifetime(int Lifetime)
+{
+  lifetime = Lifetime;
+}
+
+void cTimer::SetAux(const char *Aux)
+{
+  free(aux);
+  aux = strdup(Aux);
 }
 
 void cTimer::SetDeferred(int Seconds)

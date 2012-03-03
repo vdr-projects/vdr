@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.63 2012/01/12 12:07:58 kls Exp $
+ * $Id: remux.c 2.64 2012/03/02 10:56:49 kls Exp $
  */
 
 #include "remux.h"
@@ -514,7 +514,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                       break;
            case 0x03: // STREAMTYPE_11172_AUDIO
            case 0x04: // STREAMTYPE_13818_AUDIO
-           case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport sytax
+           case 0x0F: // ISO/IEC 13818-7 Audio with ADTS transport syntax
            case 0x11: // ISO/IEC 14496-3 Audio with LATM transport syntax
                       {
                       if (NumApids < MAXAPIDS) {

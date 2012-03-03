@@ -6888,3 +6888,74 @@ Video Disk Recorder Revision History
 - Fixed a possible deadlock in time shift mode.
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
+
+2012-03-03: Version 1.7.25
+
+- The fps value for channels where it differs from the default is now set correctly
+  when pausing live video.
+- Increased the average character estimate for calculating tab positions in skins,
+  to better suit wide fonts (reported by Rudi Hofer).
+- Fixed getting the subsystem ids of DVB devices in case they have been rearranged
+  via udev rules.
+- Added several cTimer::Set...() functions (suggested by Alexander Rieger).
+- Changed the return value of cTimer::SetFile() to 'void'.
+- Revoked "Fixed a possible deadlock in time shift mode" because it caused trouble with
+  output on vdr-xine and dxr3, and also short glitches when replaying on any output
+  device.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed handling subtitle color palettes on channels where subtitles appear
+  "word by word" (thanks to Rolf Ahrenberg).
+- Fixed upscaling cBitmaps with anti-aliasing (thanks to Rolf Ahrenberg for reporting
+  a problem with color palettes in subtitles).
+- Fixed getting the video aspect ratio for scaling subtitles.
+- Removed the "PrimaryLimit". Old "full featured" DVB cards can be run with the
+  --outputonly option to avoid problems with recording high bandwidth channels.
+  Besides, with HDTV becoming ever more popular those cards are pretty much obsolete
+  by now (the TT S2-6400 has no problems recording and replaying high bandwidth
+  channels simultaneously). And, last but not least, people using software players
+  won't notice this change, anyway.
+- Since cReceivers can have priorities between -99 and 99, the priority
+  for an unused device has been changed from -1 to -100.
+- If the first event in a schedule has a table id of 0x00, any incoming EIT data for
+  that schedule from the DVB stream will be completely ignored. This way an external
+  EPG source can fill the schedules with EPG data that will not be messed up with
+  that from the DVB data stream. Note, though, that this means VDR can not do VPS
+  controlled recordings with such events!
+- Added some typecasts to silence gcc compiler warnings (thanks to Rolf Ahrenberg).
+- Fixed handling overlapping timers in case a VPS timer with higher priority needs
+  to interrupt a timer with lower priority.
+- The code for the RCU remote control unit has been moved into a separate plugin
+  named "rcu".
+  The REMOTE=RCU option in the 'make' call for VDR is now obsolete.
+  The command line option --rcu is now obsolete. Use -Prcu instead. If you have
+  used --rcu with a device path, use -P"rcu -d<device>".
+- Added support for automatically selecting subtitles when playing old PES
+  recordings made with the subtitles plugin (thanks to Anssi Hannula).
+- Revised priority handling to allow receivers with a priority that is lower than
+  that of live viewing (with suggestions from Frank Schmirler):
+  + An idle device (one that is not used for live viewing and has no receiver
+    attached to it) now has priority IDLEPRIORITY (-100).
+  + An unused CAM slot now has priority IDLEPRIORITY.
+  + The default priority of a cReceiver is now MINPRIORITY (-99).
+  + A device that is used only for live viewing (no matter whether it's in Transfer
+    Mode or real live mode) now has priority TRANSFERPRIORITY (-1).
+  + The function cDevice::Receiving() now returns true if there is any receiver
+    attached to the device. Its boolean parameter has no meaning any more.
+  + The default value for the Priority parameter of the function cDevice::ProvidesChannel()
+    has been changed to IDLEPRIORITY.
+- Added a Query parameter to cDevice::GetDevice(), so that devices can be queried
+  without side effects when zapping.
+- Replaced min(max()) calls with the new function constrain().
+- Fixed handling OSD color button texts in case a menu item has texts of its own
+  (reported by Rolf Ahrenberg). If a plugin creates derived cMenuEditItems that set
+  color button texts, these should not set the texts directly by calling
+  cSkinDisplay::Current()->SetButtons(), but rather call the new member function
+  cMenuEditItem::SetHelp().
+- Moved the call to cStatus::MsgChannelSwitch(this, 0) to the beginning of
+  cDevice::SetChannel(), so that any receivers that have been attached to the
+  device by plugins may be detached before the final call to GetDevice().
+  This actually reverts "Only calling cStatus::MsgChannelSwitch() if a channel
+  is actually going to be switched or has actually been switched successfully"
+  which was made in version 1.1.10, so please report if this has any unwanted
+  side effects.

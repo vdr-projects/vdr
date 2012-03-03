@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.7 2011/12/04 14:41:00 kls Exp $
+.\" $Id: vdr.1 2.8 2012/02/27 11:01:17 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -33,8 +33,7 @@ to be a "full featured" card, which means it must contain an MPEG decoder
 and provide audio and video signal outputs.
 
 \fBvdr\fR uses the On Screen Display of the DVB card to display its menus.
-It can be controlled by the PC keyboard, a home built "Remote Control Unit"
-(RCU) or the "Linux Infrared Remote Control" (LIRC).
+It can be controlled by the PC keyboard or the "Linux Infrared Remote Control" (LIRC).
 
 Remote access is possible via the "Simple Video Disk Recorder Protocol" (SVDRP),
 which can be accessed on port 6419, for instance by \fBtelnet\fR.
@@ -153,10 +152,6 @@ particular options) you can use
 \fBvdr \-P "*"\fR
 
 (note the quotes around the asterisk to prevent wildcard expansion).
-.TP
-.BI \-\-rcu[= path ]
-Use a serial port remote control device.
-If \fIpath\fR is omitted, vdr uses \fI/dev/ttyS1\fR.
 .TP
 .BI \-r\  cmd ,\ \-\-record= cmd
 Call \fIcmd\fR before and after a recording. See the file \fIINSTALL\fR for

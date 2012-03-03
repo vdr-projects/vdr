@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.23 2011/08/15 09:27:39 kls Exp $
+ * $Id: osd.c 2.25 2012/03/02 10:48:19 kls Exp $
  */
 
 #include "osd.h"
@@ -812,11 +812,11 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
   cBitmap *b = new cBitmap(int(round(Width() * FactorX)), int(round(Height() * FactorY)), Bpp(), X0(), Y0());
-  b->Replace(*this); // copy palette
   int RatioX = (Width() << 16) / b->Width();
   int RatioY = (Height() << 16) / b->Height();
   if (!AntiAlias || FactorX <= 1.0 && FactorY <= 1.0) {
      // Downscaling - no anti-aliasing:
+     b->Replace(*this); // copy palette
      tIndex *DestRow = b->bitmap;
      int SourceY = 0;
      for (int y = 0; y < b->Height(); y++) {
@@ -834,6 +834,7 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
   else {
      // Upscaling - anti-aliasing:
      b->SetBpp(8);
+     b->Replace(*this); // copy palette (must be done *after* SetBpp()!)
      int SourceY = 0;
      for (int y = 0; y < b->Height() - 1; y++) {
          int SourceX = 0;
@@ -1007,7 +1008,7 @@ void cPixmap::SetLayer(int Layer)
 void cPixmap::SetAlpha(int Alpha)
 {
   Lock();
-  Alpha = min(max(Alpha, ALPHA_TRANSPARENT), ALPHA_OPAQUE);
+  Alpha = constrain(Alpha, ALPHA_TRANSPARENT, ALPHA_OPAQUE);
   if (Alpha != alpha) {
      MarkViewPortDirty(viewPort);
      alpha = Alpha;
@@ -1647,8 +1648,8 @@ void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
 {
   osdLeft = Left;
   osdTop = Top;
-  osdWidth = min(max(Width, MINOSDWIDTH), MAXOSDWIDTH);
-  osdHeight = min(max(Height, MINOSDHEIGHT), MAXOSDHEIGHT);
+  osdWidth = constrain(Width, MINOSDWIDTH, MAXOSDWIDTH);
+  osdHeight = constrain(Height, MINOSDHEIGHT, MAXOSDHEIGHT);
 }
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.39 2012/02/15 13:14:49 kls Exp $
+ * $Id: dvbhdffdevice.c 1.40 2012/02/28 09:18:56 kls Exp $
  */
 
 #include <stdint.h>
@@ -48,6 +48,25 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      devHdffOffset = adapter;
      isHdffPrimary = true;
      mHdffCmdIf = new HDFF::cHdffCmdIf(fd_osd);
+
+     /* reset some stuff in case the VDR was killed before and had no chance
+	to clean up. */
+     mHdffCmdIf->CmdOsdReset();
+
+     mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
+     mHdffCmdIf->CmdAvSetAudioSpeed(0, 100);
+
+     mHdffCmdIf->CmdAvEnableVideoAfterStop(0, false);
+     mHdffCmdIf->CmdAvSetPcrPid(0, 0);
+     mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
+     mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
+
+     ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX);
+     mHdffCmdIf->CmdAvSetDecoderInput(0, 0);
+     mHdffCmdIf->CmdAvEnableSync(0, true);
+     mHdffCmdIf->CmdAvSetPlayMode(0, true);
+     /* reset done */
+
      mHdffCmdIf->CmdAvSetAudioDelay(gHdffSetup.AudioDelay);
      mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) gHdffSetup.AudioDownmix);
      mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) gHdffSetup.AnalogueVideo);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.5 2011/06/13 13:46:03 kls Exp $
+ * $Id: menuitems.h 2.6 2012/03/02 15:49:57 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -19,10 +19,15 @@ extern const char *FileNameChars;
 class cMenuEditItem : public cOsdItem {
 private:
   char *name;
+  const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
+  bool helpDisplayed;
+protected:
+  void SetHelp(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
 public:
   cMenuEditItem(const char *Name);
   ~cMenuEditItem();
   void SetValue(const char *Value);
+  bool DisplayHelp(void);
   };
 
 class cMenuEditIntItem : public cMenuEditItem {

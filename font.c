@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.9 2012/01/13 09:43:22 kls Exp $
+ * $Id: font.c 2.10 2012/03/02 10:47:45 kls Exp $
  */
 
 #include "font.h"
@@ -396,7 +396,7 @@ cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
-  cFont *f = CreateFont(Name, min(max(CharHeight, MINFONTSIZE), MAXFONTSIZE));
+  cFont *f = CreateFont(Name, constrain(CharHeight, MINFONTSIZE, MAXFONTSIZE));
   if (!f || !f->Height())
      f = new cDummyFont;
   delete fonts[Font];

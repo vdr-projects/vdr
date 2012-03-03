@@ -7,7 +7,7 @@
  * Original author: Marco Schlüßler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.22 2012/02/13 09:48:18 kls Exp $
+ * $Id: dvbsubtitle.c 2.27 2012/03/02 10:47:25 kls Exp $
  */
 
 
@@ -541,7 +541,6 @@ public:
   void SetPts(int64_t Pts) { pts = Pts; }
   void SetState(int State);
   void SetTimeout(int Timeout) { timeout = Timeout; }
-  void UpdateRegionPalette(cSubtitleClut *Clut);
   };
 
 cDvbSubtitlePage::cDvbSubtitlePage(int PageId)
@@ -633,14 +632,6 @@ void cDvbSubtitlePage::SetState(int State)
          break;
     default: dbgpages("unknown page state (%s %d)\n", __FUNCTION__, __LINE__);
     }
-}
-
-void cDvbSubtitlePage::UpdateRegionPalette(cSubtitleClut *Clut)
-{
-  for (cSubtitleRegion *sr = regions.First(); sr; sr = regions.Next(sr)) {
-      if (sr->ClutId() == Clut->ClutId())
-         sr->Replace(*Clut->GetPalette(sr->Bpp()));
-      }
 }
 
 // --- cDvbSubtitleAssembler -------------------------------------------------
@@ -806,7 +797,6 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
-  SetOsdData();
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   Start();
@@ -840,7 +830,6 @@ void cDvbSubtitleConverter::Reset(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
-  SetOsdData();
   Unlock();
 }
 
@@ -980,9 +969,9 @@ tColor cDvbSubtitleConverter::yuv2rgb(int Y, int Cb, int Cr)
   Epb = (Cb - 128);
   Epr = (Cr - 128);
   /* ITU-R 709 */
-  Er = max(min(((298 * Ey             + 460 * Epr) / 256), 255), 0);
-  Eg = max(min(((298 * Ey -  55 * Epb - 137 * Epr) / 256), 255), 0);
-  Eb = max(min(((298 * Ey + 543 * Epb            ) / 256), 255), 0);
+  Er = constrain((298 * Ey             + 460 * Epr) / 256, 0, 255);
+  Eg = constrain((298 * Ey -  55 * Epb - 137 * Epr) / 256, 0, 255);
+  Eb = constrain((298 * Ey + 543 * Epb            ) / 256, 0, 255);
 
   return (Er << 16) | (Eg << 8) | Eb;
 }
@@ -995,7 +984,7 @@ void cDvbSubtitleConverter::SetOsdData(void)
   double VideoAspect;
   cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
   cDevice::PrimaryDevice()->GetVideoSize(VideoWidth, VideoHeight, VideoAspect);
-  if (OsdWidth == displayWidth && OsdHeight == displayHeight || DoubleEqual(VideoAspect, 1.0)) {
+  if (OsdWidth == displayWidth && OsdHeight == displayHeight) {
      osdFactorX = osdFactorY = 1.0;
      osdDeltaX = osdDeltaY = 0;
      }
@@ -1010,7 +999,11 @@ void cDvbSubtitleConverter::SetOsdData(void)
 bool cDvbSubtitleConverter::AssertOsd(void)
 {
   LOCK_THREAD;
-  return osd || (osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES));
+  if (!osd) {
+     SetOsdData();
+     osd = cOsdProvider::NewOsd(int(round(osdFactorX * windowHorizontalOffset + osdDeltaX)), int(round(osdFactorY * windowVerticalOffset + osdDeltaY)) + Setup.SubtitleOffset, OSD_LEVEL_SUBTITLES);
+     }
+  return osd != NULL;
 }
 
 int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t Pts)
@@ -1035,7 +1028,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
      if (!page) {
         page = new cDvbSubtitlePage(pageId);
         pages->Add(page);
-        dbgpages("Create SubtitlePage %d  (total pages = %d)\n", pageId, pages->Count());
+        dbgpages("Create SubtitlePage %d (total pages = %d)\n", pageId, pages->Count());
         }
      if (Pts)
         page->SetPts(Pts);
@@ -1112,7 +1105,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             }
        case CLUT_DEFINITION_SEGMENT: {
             dbgsegments("CLUT_DEFINITION_SEGMENT\n");
-            cSubtitleClut *clut =  page->GetClutById(bs.GetBits(8), true);
+            cSubtitleClut *clut = page->GetClutById(bs.GetBits(8), true);
             int clutVersion = bs.GetBits(4);
             if (clutVersion == clut->Version())
                break; // no update
@@ -1155,7 +1148,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                      clut->SetColor(8, clutEntryId, value);
                   }
             dbgcluts("\n");
-            page->UpdateRegionPalette(clut);
             break;
             }
        case OBJECT_DATA_SEGMENT: {
@@ -1310,7 +1302,11 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
   bitmaps->Add(Bitmaps);
   for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
-      sr->UpdateTextData(Page->GetClutById(sr->ClutId()));
+      cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
+      if (!clut)
+         continue;
+      sr->Replace(*clut->GetPalette(sr->Bpp()));
+      sr->UpdateTextData(clut);
       int posX = sr->HorizontalAddress();
       int posY = sr->VerticalAddress();
       if (sr->Width() > 0 && sr->Height() > 0) {

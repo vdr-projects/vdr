@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-16 13:18+0100\n"
+"POT-Creation-Date: 2012-02-25 14:32+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1028,9 +1028,6 @@ msgstr "Vorlauf zum Timer-Beginn (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Nachlauf am Timer-Ende (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Primär-Limit"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Default-Priorität"
