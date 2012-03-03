@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.54 2012/03/02 10:46:06 kls Exp $
+ * $Id: device.c 2.55 2012/03/03 11:43:05 kls Exp $
  */
 
 #include "device.h"
@@ -708,6 +708,8 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
+  cStatus::MsgChannelSwitch(this, 0);
+
   if (LiveView) {
      StopReplay();
      DELETENULL(liveSubtitle);
@@ -725,7 +727,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (NeedsTransferMode) {
      if (Device && CanReplay()) {
-        cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (Device->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(Device, Channel));
         else
@@ -736,7 +737,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
   else {
      Channels.Lock(false);
-     cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
      // Stop section handling:
      if (sectionHandler) {
         sectionHandler->SetStatus(false);

@@ -6889,7 +6889,7 @@ Video Disk Recorder Revision History
 - Fixed switching into time shift mode when pausing live video (thanks to Reinhard
   Nissl for helping to debug this one).
 
-2012-03-02: Version 1.7.25
+2012-03-03: Version 1.7.25
 
 - The fps value for channels where it differs from the default is now set correctly
   when pausing live video.
@@ -6952,3 +6952,10 @@ Video Disk Recorder Revision History
   color button texts, these should not set the texts directly by calling
   cSkinDisplay::Current()->SetButtons(), but rather call the new member function
   cMenuEditItem::SetHelp().
+- Moved the call to cStatus::MsgChannelSwitch(this, 0) to the beginning of
+  cDevice::SetChannel(), so that any receivers that have been attached to the
+  device by plugins may be detached before the final call to GetDevice().
+  This actually reverts "Only calling cStatus::MsgChannelSwitch() if a channel
+  is actually going to be switched or has actually been switched successfully"
+  which was made in version 1.1.10, so please report if this has any unwanted
+  side effects.
