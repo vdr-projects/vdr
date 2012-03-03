@@ -1334,4 +1334,4 @@ msgstr "Taste drücken, um Neustart abzubrechen"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR wird in %s Minuten ausschalten"
+msgstr "VDR wird in %s Minuten abgeschaltet"
