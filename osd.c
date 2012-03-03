@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.25 2012/03/02 10:48:19 kls Exp $
+ * $Id: osd.c 2.26 2012/03/03 13:20:15 kls Exp $
  */
 
 #include "osd.h"
@@ -1701,11 +1701,13 @@ void cOsd::DestroyPixmap(cPixmap *Pixmap)
 
 cPixmap *cOsd::AddPixmap(cPixmap *Pixmap)
 {
-  LOCK_PIXMAPS;
-  if (numPixmaps < MAXOSDPIXMAPS)
-     return pixmaps[numPixmaps++] = Pixmap;
-  else
-     esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+  if (Pixmap) {
+     LOCK_PIXMAPS;
+     if (numPixmaps < MAXOSDPIXMAPS)
+        return pixmaps[numPixmaps++] = Pixmap;
+     else
+        esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+     }
   return NULL;
 }
 
