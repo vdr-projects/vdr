@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.40 2012/03/03 14:47:32 kls Exp $
+ * $Id: menu.c 2.41 2012/03/03 15:00:41 kls Exp $
  */
 
 #include "menu.h"
@@ -4513,6 +4513,8 @@ void cReplayControl::ShowTimed(int Seconds)
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
+  else if (timeoutShow && Seconds > 0)
+     timeoutShow = time(NULL) + Seconds;
 }
 
 void cReplayControl::Show(void)
@@ -4531,6 +4533,7 @@ void cReplayControl::Hide(void)
      lastPlay = lastForward = false;
      lastSpeed = -2; // an invalid value
      timeSearchActive = false;
+     timeoutShow = 0;
      }
 }
 
