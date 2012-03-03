@@ -6965,3 +6965,5 @@ Video Disk Recorder Revision History
 - Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
 - Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
   Frank Neumann).
+- The replay progress display is now turned on whenever a mark is toggled (not
+  only when one is set).

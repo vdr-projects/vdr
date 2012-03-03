@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.39 2012/03/02 10:33:17 kls Exp $
+ * $Id: menu.c 2.40 2012/03/03 14:47:32 kls Exp $
  */
 
 #include "menu.h"
@@ -4694,12 +4694,12 @@ void cReplayControl::MarkToggle(void)
         marks.Del(m);
      else {
         marks.Add(Current);
-        ShowTimed(2);
         bool Play, Forward;
         int Speed;
         if (GetReplayMode(Play, Forward, Speed) && !Play)
            Goto(Current, true);
         }
+     ShowTimed(2);
      marks.Save();
      }
 }
