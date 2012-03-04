@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.15 2012/02/16 12:38:19 kls Exp $
+ * $Id: svdrp.c 2.16 2012/03/04 12:05:56 kls Exp $
  */
 
 #include "svdrp.h"
@@ -601,9 +601,13 @@ void cSVDRP::CmdCLRE(const char *Option)
         Reply(501, "Undefined channel \"%s\"", Option);
      }
   else {
-     cSchedules::ClearAll();
      cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
-     Reply(250, "EPG data cleared");
+     if (cSchedules::ClearAll()) {
+        Reply(250, "EPG data cleared");
+        cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
+        }
+     else
+        Reply(451, "Error while clearing EPG data");
      }
 }
 
@@ -1600,6 +1604,7 @@ void cSVDRP::Execute(char *Cmd)
         Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
         DELETENULL(PUTEhandler);
         }
+     cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME); // re-trigger the timeout, in case there is very much EPG data
      return;
      }
   // skip leading whitespace:
