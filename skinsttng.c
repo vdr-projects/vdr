@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.12 2012/03/05 10:35:16 kls Exp $
+ * $Id: skinsttng.c 2.13 2012/03/05 12:01:26 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -284,7 +284,7 @@ void cSkinSTTNGDisplayChannel::SetChannel(const cChannel *Channel, int Number)
         }
      }
   osd->DrawText(x3 + TextFrame, y0, ChannelString(Channel, Number), Theme.Color(clrChannelName), frameColor, cFont::GetFont(fontOsd), x - x3 - TextFrame);
-  lastSignalDisplay = time(NULL); // don't get slowed down during heavy zapping
+  lastSignalDisplay = 0;
 }
 
 void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -341,8 +341,8 @@ void cSkinSTTNGDisplayChannel::Flush(void)
            osd->DrawText(x3 + TextFrame, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 2 * TextFrame);
            strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
            }
-        if (time(NULL) != lastSignalDisplay) {
-           int DeviceNumber = cDevice::ActualDevice()->DeviceNumber() + 1;
+        int DeviceNumber = cDevice::ActualDevice()->DeviceNumber() + 1;
+        if (DeviceNumber != lastDeviceNumber || time(NULL) != lastSignalDisplay) {
            int SignalStrength = cDevice::ActualDevice()->SignalStrength();
            int SignalQuality = cDevice::ActualDevice()->SignalQuality();
            if (DeviceNumber != lastDeviceNumber || SignalStrength != lastSignalStrength || SignalQuality != lastSignalQuality) {

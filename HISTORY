@@ -6974,3 +6974,5 @@ Video Disk Recorder Revision History
 - Added some missing member initializations in cBitmap.
 - Improved displaying the play mode in the ST:TNG skin.
 - Made the ST:TNG skin the default in case the user selected skin is not available.
+- Improved displaying signal strength and quality in the ST:TNG skin's channel
+  display.
