@@ -6960,7 +6960,7 @@ Video Disk Recorder Revision History
   which was made in version 1.1.10, so please report if this has any unwanted
   side effects.
 
-2012-03-04: Version 1.7.26
+2012-03-05: Version 1.7.26
 
 - Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
 - Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
@@ -6971,3 +6971,4 @@ Video Disk Recorder Revision History
 - Fixed a possible race condition with the SVDRP commands CLRE and PUTE, where
   EPG data from the transponder could be handled even though it shouldn't be
   handled for 10 seconds.
+- Added some missing member initializations in cBitmap.
