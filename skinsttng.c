@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.11 2011/08/21 11:02:26 kls Exp $
+ * $Id: skinsttng.c 2.12 2012/03/05 10:35:16 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -783,9 +783,6 @@ public:
   virtual void Flush(void);
   };
 
-#define SymbolWidth 30
-#define SymbolHeight 30
-
 cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
 {
   const cFont *font = cFont::GetFont(fontSml);
@@ -794,7 +791,7 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   lastCurrentWidth = 0;
   cBitmap bm(play_xpm);
   x0 = 0;
-  x1 = max(SymbolWidth, bm.Width());
+  x1 = max(lineHeight * 2, bm.Width());
   x2 = x1 + Roundness;
   x3 = x2 + Gap;
   x7 = cOsd::OsdWidth();
@@ -805,7 +802,7 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   y1 = lineHeight;
   y2 = y1 + Roundness;
   y3 = y2 + Gap;
-  y4 = y3 + max(SymbolHeight, bm.Height());
+  y4 = y3 + max(lineHeight, bm.Height());
   y5 = y4 + Gap;
   y6 = y5 + Roundness;
   y7 = y6 + font->Height();
@@ -867,10 +864,7 @@ static const char *const *ReplaySymbols[2][2][5] = {
 
 void cSkinSTTNGDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 {
-  if (Speed < -1)
-     Speed = -1;
-  if (Speed > 3)
-     Speed = 3;
+  Speed = constrain(Speed, -1, 3);
   cBitmap bm(ReplaySymbols[Play][Forward][Speed + 1]);
   osd->DrawBitmap(x0 + (x1 - x0 - bm.Width()) / 2, y3 + (y4 - y3 - bm.Height()) / 2, bm, Theme.Color(clrReplayMode), frameColor);
 }

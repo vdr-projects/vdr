@@ -6972,3 +6972,4 @@ Video Disk Recorder Revision History
   EPG data from the transponder could be handled even though it shouldn't be
   handled for 10 seconds.
 - Added some missing member initializations in cBitmap.
+- Improved displaying the play mode in the ST:TNG skin.
