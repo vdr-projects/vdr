@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.30 2012/02/27 10:59:55 kls Exp $
+ * $Id: vdr.c 2.31 2012/03/05 10:44:33 kls Exp $
  */
 
 #include <getopt.h>
@@ -677,8 +677,8 @@ int main(int argc, char *argv[])
 
   // Default skins:
 
-  new cSkinClassic;
   new cSkinSTTNG;
+  new cSkinClassic;
   Skins.SetCurrent(Setup.OSDSkin);
   cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
   CurrentSkin = Skins.Current();
