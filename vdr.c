@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.31 2012/03/05 10:44:33 kls Exp $
+ * $Id: vdr.c 2.32 2012/03/06 12:14:17 kls Exp $
  */
 
 #include <getopt.h>
@@ -762,9 +762,13 @@ int main(int argc, char *argv[])
            if ((!Menu || CheckHasProgramme) && Now - lastTime > MINCHANNELWAIT) { // !Menu to avoid interfering with the CAM if a CAM menu is open
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
               if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
-                 if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
-                     && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel))) // ...or the one used by the last timer...
+                 if (cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(Channel->Number())) // try to switch to the original channel...
                     ;
+                 else if (LastTimerChannel > 0) {
+                    Channel = Channels.GetByNumber(LastTimerChannel);
+                    if (Channel && cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer
+                       ;
+                    }
                  }
               lastTime = Now; // don't do this too often
               LastTimerChannel = -1;
@@ -878,31 +882,12 @@ int main(int argc, char *argv[])
                      }
                   if (NeedsTransponder || InVpsMargin) {
                      // Find a device that provides the required transponder:
-                     cDevice *Device = NULL;
-                     bool DeviceAvailable = false;
-                     for (int i = 0; i < cDevice::NumDevices(); i++) {
-                         cDevice *d = cDevice::GetDevice(i);
-                         if (d && d->ProvidesTransponder(Timer->Channel())) {
-                            if (d->IsTunedToTransponder(Timer->Channel())) {
-                               // if any device is tuned to the transponder, we're done
-                               Device = d;
-                               break;
-                               }
-                            if (d->MaySwitchTransponder(Timer->Channel())) {
-                               DeviceAvailable = true; // avoids using the actual device below
-                               Device = d;
-                               }
-                            else if (!d->Occupied() && !Device && InVpsMargin && !d->Receiving() && d->ProvidesTransponderExclusively(Timer->Channel()))
-                               Device = d; // use this one only if no other with less impact can be found
-                            }
-                         }
-                     if (!Device && InVpsMargin && !DeviceAvailable) {
-                        cDevice *d = cDevice::ActualDevice();
-                        if (!d->Receiving() && d->ProvidesTransponder(Timer->Channel()) && !d->Occupied())
-                           Device = d; // use the actual device as a last resort
-                        }
+                     cDevice *Device = cDevice::GetDeviceForTransponder(Timer->Channel(), MINPRIORITY);
+                     if (!Device && InVpsMargin)
+                        Device = cDevice::GetDeviceForTransponder(Timer->Channel(), LIVEPRIORITY);
                      // Switch the device to the transponder:
                      if (Device) {
+                        bool HadProgramme = cDevice::PrimaryDevice()->HasProgramme();
                         if (!Device->IsTunedToTransponder(Timer->Channel())) {
                            if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                               cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
@@ -910,13 +895,8 @@ int main(int argc, char *argv[])
                            if (Device->SwitchChannel(Timer->Channel(), false))
                               Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }
-                        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
-                           // the previous SwitchChannel() has switched away the current live channel
-                           cDevice::SetAvoidDevice(Device);
-                           if (!Channels.SwitchTo(cDevice::CurrentChannel())) // try to switch to the original channel on a different device...
-                              Channels.SwitchTo(Timer->Channel()->Number()); // ...or avoid toggling between old channel and black screen
-                           Skins.Message(mtInfo, tr("Upcoming recording!"));
-                           }
+                        if (cDevice::PrimaryDevice()->HasDecoder() && HadProgramme && !cDevice::PrimaryDevice()->HasProgramme())
+                           Skins.Message(mtInfo, tr("Upcoming recording!")); // the previous SwitchChannel() has switched away the current live channel
                         }
                      }
                   }

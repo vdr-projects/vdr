@@ -6960,7 +6960,7 @@ Video Disk Recorder Revision History
   which was made in version 1.1.10, so please report if this has any unwanted
   side effects.
 
-2012-03-05: Version 1.7.26
+2012-03-06: Version 1.7.26
 
 - Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
 - Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
@@ -6976,3 +6976,6 @@ Video Disk Recorder Revision History
 - Made the ST:TNG skin the default in case the user selected skin is not available.
 - Improved displaying signal strength and quality in the ST:TNG skin's channel
   display.
+- Fixed switching devices to the transponders of VPS recordings in case there
+  are only bonded devices. The cDevice's "avoid device" mechanism has been replaced
+  by using "occupied".

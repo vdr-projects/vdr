@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.36 2012/03/02 10:23:13 kls Exp $
+ * $Id: device.h 2.37 2012/03/06 12:13:46 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -109,7 +109,6 @@ private:
   static int useDevice;
   static cDevice *device[MAXDEVICES];
   static cDevice *primaryDevice;
-  static cDevice *avoidDevice;
 public:
   static int NumDevices(void) { return numDevices; }
          ///< Returns the total number of devices.
@@ -158,9 +157,11 @@ public:
          ///< in order to just determine whether a device is available for the given
          ///< Channel.
          ///< See also ProvidesChannel().
-  static void SetAvoidDevice(cDevice *Device) { avoidDevice = Device; }
-         ///< Sets the given Device to be temporarily avoided in the next call to
-         ///< GetDevice(const cChannel, int, bool).
+  static cDevice *GetDeviceForTransponder(const cChannel *Channel, int Priority);
+         ///< Returns a device that is not currently "occupied" and can be tuned to
+         ///< the transponder of the given Channel, without disturbing any receiver
+         ///< at priorities higher or equal to Priority.
+         ///< If no such device is currently available, NULL will be returned.
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.
