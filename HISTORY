@@ -6981,3 +6981,6 @@ Video Disk Recorder Revision History
   by using "occupied".
 - Fixed selecting devices for the EPG scan in case the primary device is bonded
   with an other one.
+- Removed the calls to EITScanner.UsesDevice(this) from dvb[hs]ddevice.c, because
+  the code following these calls is only executed if LiveView is true, which is
+  never the case when the EITScanner switches to a channel.

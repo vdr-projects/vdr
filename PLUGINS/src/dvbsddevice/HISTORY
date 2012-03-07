@@ -23,3 +23,9 @@ VDR Plugin 'dvbsddevice' Revision History
 2011-08-27: Version 0.0.5
 
 - Added option --outputonly to use the device only for output (thanks to Udo Richter).
+
+2012-03-07: Version 0.06
+
+- Removed the call to EITScanner.UsesDevice(this) from dvbsddevice.c, because
+  the code following these calls is only executed if LiveView is true, which is
+  never the case when the EITScanner switches to a channel.
