@@ -1221,10 +1221,10 @@ If a plugin wants to get informed on various events in VDR, it can derive a clas
 
 class cMyStatusMonitor : public cStatus {
 protected:
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber<div class="modified">, bool LiveView</div>);
   };
 
-void cMyStatusMonitor::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+void cMyStatusMonitor::ChannelSwitch(const cDevice *Device, int ChannelNumber<div class="modified">, bool LiveView</div>)
 {
   if (ChannelNumber)
      dsyslog("channel switched to %d on DVB %d", ChannelNumber, Device-&gt;CardIndex());

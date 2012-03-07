@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: rcu.c 1.1 2012/02/27 11:49:51 kls Exp $
+ * $Id: rcu.c 1.2 2012/03/07 14:22:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -16,7 +16,7 @@
 #include <vdr/thread.h>
 #include <vdr/tools.h>
 
-static const char *VERSION        = "0.0.1";
+static const char *VERSION        = "0.0.2";
 static const char *DESCRIPTION    = "Remote Control Unit";
 
 #define REPEATLIMIT      150 // ms
@@ -44,7 +44,7 @@ private:
   void SetString(const char *s);
   bool DetectCode(unsigned char *Code);
   virtual void Action(void);
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
   virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
 public:
   cRcuRemote(const char *DeviceName);
@@ -353,9 +353,9 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
   return false;
 }
 
-void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView)
 {
-  if (ChannelNumber && Device->IsPrimaryDevice())
+  if (ChannelNumber && LiveView)
      SetNumber(cDevice::CurrentChannel());
 }
 

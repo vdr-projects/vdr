@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.12 2008/02/16 15:00:33 kls Exp $
+ * $Id: status.h 2.1 2012/03/07 14:16:57 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -30,10 +30,11 @@ protected:
                // been added or will be deleted, respectively. In case of tcMod,
                // Timer is NULL; this indicates that some timer has been changed.
                // Note that tcAdd and tcDel are always also followed by a tcMod.
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber) {}
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView) {}
                // Indicates a channel switch on the given DVB device.
                // If ChannelNumber is 0, this is before the channel is being switched,
                // otherwise ChannelNumber is the number of the channel that has been switched to.
+               // LiveView tells whether this channel switch is for live viewing.
   virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On) {}
                // The given DVB device has started (On = true) or stopped (On = false) recording Name.
                // Name is the name of the recording, without any directory path. The full file name
@@ -85,7 +86,7 @@ public:
   virtual ~cStatus();
   // These functions are called whenever the related status information changes:
   static void MsgTimerChange(const cTimer *Timer, eTimerChange Change);
-  static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
+  static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
   static void MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On);
   static void MsgReplaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   static void MsgSetVolume(int Volume, bool Absolute);

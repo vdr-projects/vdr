@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.56 2012/03/06 12:32:38 kls Exp $
+ * $Id: device.c 2.57 2012/03/07 14:17:49 kls Exp $
  */
 
 #include "device.h"
@@ -723,7 +723,7 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
-  cStatus::MsgChannelSwitch(this, 0);
+  cStatus::MsgChannelSwitch(this, 0, LiveView);
 
   if (LiveView) {
      StopReplay();
@@ -793,7 +793,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureAudioTrack(true);
         EnsureSubtitleTrack();
         }
-     cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successfull
      }
 
   return Result;

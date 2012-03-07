@@ -6984,3 +6984,8 @@ Video Disk Recorder Revision History
 - Removed the calls to EITScanner.UsesDevice(this) from dvb[hs]ddevice.c, because
   the code following these calls is only executed if LiveView is true, which is
   never the case when the EITScanner switches to a channel.
+- Removed the obsolete function cEITScanner::UsesDevice(). If a plugin has used this
+  function to find out whether a call to its cStatus::ChannelSwitch() function was
+  due to a live channel switch, it can use that function's new parameter LiveView.
+  Any plugins that implement cStatus::ChannelSwitch() need to add the parameter
+  'bool LiveView' to that function.
