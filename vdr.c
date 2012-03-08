@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.32 2012/03/06 12:14:17 kls Exp $
+ * $Id: vdr.c 2.33 2012/03/08 09:51:52 kls Exp $
  */
 
 #include <getopt.h>
@@ -761,7 +761,7 @@ int main(int argc, char *argv[])
            static time_t lastTime = 0;
            if ((!Menu || CheckHasProgramme) && Now - lastTime > MINCHANNELWAIT) { // !Menu to avoid interfering with the CAM if a CAM menu is open
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-              if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
+              if (Channel && (Channel->Vpid() || Channel->Apid(0) || Channel->Dpid(0))) {
                  if (cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(Channel->Number())) // try to switch to the original channel...
                     ;
                  else if (LastTimerChannel > 0) {

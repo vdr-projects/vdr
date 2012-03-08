@@ -6960,7 +6960,7 @@ Video Disk Recorder Revision History
   which was made in version 1.1.10, so please report if this has any unwanted
   side effects.
 
-2012-03-07: Version 1.7.26
+2012-03-08: Version 1.7.26
 
 - Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
 - Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
@@ -6993,3 +6993,4 @@ Video Disk Recorder Revision History
   broadcast Dolby Digital audio there were sometimes log entries like
   "changing pids of channel ... from ... to ..." with no apparent difference
   between the old and new set of pids.
+- Fixed checking pids in case a channel has only Dolby Digital audio.
