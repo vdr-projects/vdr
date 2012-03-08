@@ -6997,3 +6997,5 @@ Video Disk Recorder Revision History
 - The Green button in the "Edit timer" menu can now be used to toggle between single
   shot and repeating timers. This is the same as pressing '0' when the "Day" field
   is selected, but it works at any time (and is more obvious).
+- Revoked "If the first event in a schedule has a table id of 0x00, any incoming EIT data for
+  that schedule from the DVB stream will be completely ignored".
