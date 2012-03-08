@@ -6989,3 +6989,7 @@ Video Disk Recorder Revision History
   due to a live channel switch, it can use that function's new parameter LiveView.
   Any plugins that implement cStatus::ChannelSwitch() need to add the parameter
   'bool LiveView' to that function.
+- Fixed parsing channel data in case the audio pid is 0. On channels that only
+  broadcast Dolby Digital audio there were sometimes log entries like
+  "changing pids of channel ... from ... to ..." with no apparent difference
+  between the old and new set of pids.
