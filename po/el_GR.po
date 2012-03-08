@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -646,6 +646,12 @@ msgid "File"
 msgstr "Αρχείο"
 
 msgid "Button$Folder"
+msgstr ""
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
 msgstr ""
 
 msgid "First day"

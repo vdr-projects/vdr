@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.6 2012/03/02 15:49:57 kls Exp $
+ * $Id: menuitems.h 2.7 2012/03/08 12:38:46 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -168,6 +168,7 @@ private:
   virtual void Set(void);
 public:
   cMenuEditDateItem(const char *Name, time_t *Value, int *WeekDays = NULL);
+  void ToggleRepeating(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.11 2012/03/02 15:49:57 kls Exp $
+ * $Id: menuitems.c 2.12 2012/03/08 13:22:22 kls Exp $
  */
 
 #include "menuitems.h"
@@ -886,6 +886,24 @@ void cMenuEditDateItem::Set(void)
   SetValue(buf);
 }
 
+void cMenuEditDateItem::ToggleRepeating(void)
+{
+  if (weekdays) {
+     if (*weekdays) {
+        *value = cTimer::SetTime(oldvalue ? oldvalue : time(NULL), 0);
+        oldvalue = 0;
+        *weekdays = 0;
+        }
+     else {
+        *weekdays = days[cTimer::GetWDay(*value)];
+        dayindex = FindDayIndex(*weekdays);
+        oldvalue = *value;
+        *value = 0;
+        }
+     Set();
+     }
+}
+
 eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
 {
   eOSState state = cMenuEditItem::ProcessKey(Key);
@@ -937,17 +955,8 @@ eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
      else if (weekdays) {
         if (Key == k0) {
            // Toggle between weekdays and single day:
-           if (*weekdays) {
-              *value = cTimer::SetTime(oldvalue ? oldvalue : now, 0);
-              oldvalue = 0;
-              *weekdays = 0;
-              }
-           else {
-              *weekdays = days[cTimer::GetWDay(*value)];
-              dayindex = FindDayIndex(*weekdays);
-              oldvalue = *value;
-              *value = 0;
-              }
+           ToggleRepeating();
+           return osContinue; // ToggleRepeating) has already called Set()
            }
         else if (k1 <= Key && Key <= k7) {
            // Toggle individual weekdays:

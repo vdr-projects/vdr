@@ -6994,3 +6994,6 @@ Video Disk Recorder Revision History
   "changing pids of channel ... from ... to ..." with no apparent difference
   between the old and new set of pids.
 - Fixed checking pids in case a channel has only Dolby Digital audio.
+- The Green button in the "Edit timer" menu can now be used to toggle between single
+  shot and repeating timers. This is the same as pressing '0' when the "Day" field
+  is selected, but it works at any time (and is more obvious).
