@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.33 2012/03/08 09:51:52 kls Exp $
+ * $Id: vdr.c 2.34 2012/03/09 09:55:15 kls Exp $
  */
 
 #include <getopt.h>
@@ -1300,6 +1300,7 @@ Exit:
      Setup.Save();
      }
   cDevice::Shutdown();
+  EpgHandlers.Clear();
   PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);
   ReportEpgBugFixStats();

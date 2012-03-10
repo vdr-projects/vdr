@@ -6960,7 +6960,7 @@ Video Disk Recorder Revision History
   which was made in version 1.1.10, so please report if this has any unwanted
   side effects.
 
-2012-03-08: Version 1.7.26
+2012-03-10: Version 1.7.26
 
 - Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
 - Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
@@ -6999,3 +6999,13 @@ Video Disk Recorder Revision History
   is selected, but it works at any time (and is more obvious).
 - Revoked "If the first event in a schedule has a table id of 0x00, any incoming EIT data for
   that schedule from the DVB stream will be completely ignored".
+- Added a new plugin interface for implementing EPG handlers.
+  + A plugin can implement an EPG handler by creating an object derived from
+    cEpgHandler and implementing the necessary member functions.
+  + The special handling of events with table id 0x00 has been dropped.
+    For backwards compatibility EPG events with table ids lower than 0x4E will
+    be treated as if they had a table id of 0x4E, and the new plugin 'epgtableid0'
+    can be used to have them handled like in previous versions.
+  + The default table id for a newly created cEvent has been changed to 0xFF,
+    which is higher than any normal table id that is broadcast in the EIT data.
+  See PLUGINS.html, section "Electronic Program Guide" for more information.

@@ -102,6 +102,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Audio">Audio</a>
 <li><a href="#Remote Control">Remote Control</a>
 <li><a href="#Conditional Access">Conditional Access</a>
+<li><modified><a href="#Electronic Program Guide">Electronic Program Guide</modified></a>
 </ul>
 </ul>
 
@@ -2211,6 +2212,38 @@ virtual bool Assign(cDevice *Device, bool Query = false);
 </pre></td></tr></table><p>
 
 See the description of this function in <tt>ci.h</tt> for details.
+
+<div class="modified">
+<hr><h2><a name="Electronic Program Guide">Electronic Program Guide</a></h2>
+
+<div class="blurb">The grass is always greener on the other side...</div><p>
+
+In case the <i>Electronic Program Guide (EPG)</i> provided by the broadcaster
+isn't sufficient for your taste, you can implement a <tt>cEpgHandler</tt> to
+improve it from external sources. For instance, to replace the description
+of the broadcaster's EPG with one from some external database, you could do:
+
+<p><table><tr><td class="code"><pre>
+#include &lt;vdr/epg.h&gt;
+
+class cMyEpgHandler : public cEpgHandler {
+public:
+  virtual bool SetDescription(cEvent *Event, const char *Description);
+  };
+
+bool cMyEpgHandler::SetDescription(cEvent *Event, const char *Description)
+{
+  Event-&gt;SetDescription(DescriptionFromDatabase(Event));
+  return true;
+}
+</pre></td></tr></table><p>
+
+where <tt>DescriptionFromDatabase()</tt> would derive the description of the
+ given event from some external source. Note that the function returns <tt>true</tt>
+to signal VDR that no other EPG handlers shall be queried after this one.
+<p>
+See <tt>VDR/epg.h</tt> for details.
+</div modified>
 
 </body>
 </html>
