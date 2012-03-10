@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.13 2012/02/25 15:25:51 kls Exp $
+ * $Id: eit.c 2.15 2012/03/10 14:43:52 kls Exp $
  */
 
 #include "eit.h"
@@ -36,20 +36,13 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   cChannel *channel = Channels.GetByChannelID(channelID, true);
   if (!channel)
      return; // only collect data for known channels
+  if (EpgHandlers.IgnoreChannel(channel))
+     return;
 
   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
-  if (pSchedule) {
-     if (cEvent *Event = pSchedule->Events()->First()) {
-        if (Event->TableID() == 0x00)
-           return; // never touch schedules with events from external sources
-        }
-     }
-  else
-     return;
 
   bool Empty = true;
   bool Modified = false;
-  bool HasExternalData = false;
   time_t SegmentStart = 0;
   time_t SegmentEnd = 0;
   time_t Now = time(NULL);
@@ -61,7 +54,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
-      bool ExternalData = false;
+      if (EpgHandlers.HandleEitEvent(pSchedule, &SiEitEvent, Tid, getVersionNumber()))
+         continue; // an EPG handler has done all of the processing
       time_t StartTime = SiEitEvent.getStartTime();
       int Duration = SiEitEvent.getDuration();
       // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
@@ -80,23 +74,17 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          // If we don't have that event yet, we create a new one.
          // Otherwise we copy the information into the existing event anyway, because the data might have changed.
          pEvent = newEvent = new cEvent(SiEitEvent.getEventId());
-         if (!pEvent)
-            continue;
+         newEvent->SetStartTime(StartTime);
+         newEvent->SetDuration(Duration);
+         pSchedule->AddEvent(newEvent);
          }
       else {
          // We have found an existing event, either through its event ID or its start time.
          pEvent->SetSeen();
-         // If the existing event has a zero table ID it was defined externally and shall
-         // not be overwritten.
-         uchar TableID = pEvent->TableID();
-         if (TableID == 0x00) {
-            if (pEvent->Version() == getVersionNumber())
-               continue;
-            HasExternalData = ExternalData = true;
-            }
+         uchar TableID = max(pEvent->TableID(), uchar(0x4E)); // for backwards compatibility, table ids less than 0x4E are treated as if they were "present"
          // If the new event has a higher table ID, let's skip it.
          // The lower the table ID, the more "current" the information.
-         else if (Tid > TableID)
+         if (Tid > TableID)
             continue;
          // If the new event comes from the same table and has the same version number
          // as the existing one, let's skip it to avoid unnecessary work.
@@ -106,21 +94,20 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          // to the Sat.1/Pro7 transponder, events will keep toggling because of the bogus version numbers.
          else if (Tid == TableID && pEvent->Version() == getVersionNumber())
             continue;
+         EpgHandlers.SetEventID(pEvent, SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
+         EpgHandlers.SetStartTime(pEvent, StartTime);
+         EpgHandlers.SetDuration(pEvent, Duration);
          }
-      if (!ExternalData) {
-         pEvent->SetEventID(SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
+      if (pEvent->TableID() > 0x4E) // for backwards compatibility, table ids less than 0x4E are never overwritten
          pEvent->SetTableID(Tid);
-         pEvent->SetStartTime(StartTime);
-         pEvent->SetDuration(Duration);
-         }
-      if (newEvent)
-         pSchedule->AddEvent(newEvent);
       if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
          if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
             pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
          }
-      if (OnlyRunningStatus)
+      if (OnlyRunningStatus) {
+         pEvent->SetVersion(0xFF); // we have already changed the table id above, so set the version to an invalid value to make sure the next full run will be executed
          continue; // do this before setting the version, so that the full update can be done later
+         }
       pEvent->SetVersion(getVersionNumber());
 
       int LanguagePreferenceShort = -1;
@@ -132,10 +119,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
       cLinkChannels *LinkChannels = NULL;
       cComponents *Components = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
-          if (ExternalData && d->getDescriptorTag() != SI::ComponentDescriptorTag) {
-             delete d;
-             continue;
-             }
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
                  SI::ExtendedEventDescriptor *eed = (SI::ExtendedEventDescriptor *)d;
@@ -172,7 +155,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                         NumContents++;
                         }
                      }
-                 pEvent->SetContents(Contents);
+                 EpgHandlers.SetContents(pEvent, Contents);
                  }
                  break;
             case SI::ParentalRatingDescriptorTag: {
@@ -191,7 +174,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                           case 0x13:          ParentalRating = 16; break;
                           default:            ParentalRating = 0;
                           }
-                        pEvent->SetParentalRating(ParentalRating);
+                        EpgHandlers.SetParentalRating(pEvent, ParentalRating);
                         }
                      }
                  }
@@ -210,7 +193,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  else if (month == 0 && t.tm_mon == 11) // current month is jan, but event is in dec
                     t.tm_year--;
                  time_t vps = mktime(&t);
-                 pEvent->SetVps(vps);
+                 EpgHandlers.SetVps(pEvent, vps);
                  }
                  break;
             case SI::TimeShiftedEventDescriptorTag: {
@@ -221,9 +204,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  rEvent = (cEvent *)rSchedule->GetEvent(tsed->getReferenceEventId());
                  if (!rEvent)
                     break;
-                 pEvent->SetTitle(rEvent->Title());
-                 pEvent->SetShortText(rEvent->ShortText());
-                 pEvent->SetDescription(rEvent->Description());
+                 EpgHandlers.SetTitle(pEvent, rEvent->Title());
+                 EpgHandlers.SetShortText(pEvent, rEvent->ShortText());
+                 EpgHandlers.SetDescription(pEvent, rEvent->Description());
                  }
                  break;
             case SI::LinkageDescriptorTag: {
@@ -281,30 +264,30 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
       if (!rEvent) {
          if (ShortEventDescriptor) {
             char buffer[Utf8BufSize(256)];
-            pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
-            pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
+            EpgHandlers.SetTitle(pEvent, ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
+            EpgHandlers.SetShortText(pEvent, ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
             }
-         else if (!HasExternalData) {
-            pEvent->SetTitle(NULL);
-            pEvent->SetShortText(NULL);
+         else {
+            EpgHandlers.SetTitle(pEvent, NULL);
+            EpgHandlers.SetShortText(pEvent, NULL);
             }
          if (ExtendedEventDescriptors) {
             char buffer[Utf8BufSize(ExtendedEventDescriptors->getMaximumTextLength(": ")) + 1];
-            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, sizeof(buffer), ": "));
+            EpgHandlers.SetDescription(pEvent, ExtendedEventDescriptors->getText(buffer, sizeof(buffer), ": "));
             }
-         else if (!HasExternalData)
-            pEvent->SetDescription(NULL);
+         else
+            EpgHandlers.SetDescription(pEvent, NULL);
          }
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
 
       pEvent->SetComponents(Components);
 
-      if (!HasExternalData)
-         pEvent->FixEpgBugs();
+      EpgHandlers.FixEpgBugs(pEvent);
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
       Modified = true;
+      EpgHandlers.HandleEvent(pEvent);
       }
   if (Tid == 0x4E) {
      if (Empty && getSectionNumber() == 0)
@@ -315,9 +298,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   if (OnlyRunningStatus)
      return;
   if (Modified) {
-     pSchedule->Sort();
-     if (!HasExternalData)
-        pSchedule->DropOutdated(SegmentStart, SegmentEnd, Tid, getVersionNumber());
+     EpgHandlers.SortSchedule(pSchedule);
+     EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
      Schedules->SetModified(pSchedule);
      }
 }

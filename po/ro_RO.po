@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2011-03-10 23:52+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -650,6 +650,12 @@ msgstr "Fiºier"
 
 msgid "Button$Folder"
 msgstr "Director"
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
 
 msgid "First day"
 msgstr "Prima zi"

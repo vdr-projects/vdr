@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.65 2012/02/29 12:23:43 kls Exp $
+ * $Id: dvbdevice.c 2.67 2012/03/08 09:49:58 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -420,7 +420,7 @@ bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
   if (cDvbTuner *t = bondedTuner) {
      cString BondingParams = GetBondingParams(Channel);
      do {
-        if (t->device->Receiving() || ConsiderOccupied && t->device->Occupied()) {
+        if (t->device->Priority() > IDLEPRIORITY || ConsiderOccupied && t->device->Occupied()) {
            if (strcmp(BondingParams, t->GetBondingParams()) != 0)
               return false;
            }
@@ -1446,7 +1446,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
      if (Priority >= 0) {
         if (Receiving()) {
            if (dvbTuner->IsTunedTo(Channel)) {
-              if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
+              if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0)) || Channel->Dpid(0) && !HasPid(Channel->Dpid(0))) {
                  if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
                     if (CamSlot()->CanDecrypt(Channel))
                        result = true;

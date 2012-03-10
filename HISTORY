@@ -6959,3 +6959,53 @@ Video Disk Recorder Revision History
   is actually going to be switched or has actually been switched successfully"
   which was made in version 1.1.10, so please report if this has any unwanted
   side effects.
+
+2012-03-10: Version 1.7.26
+
+- Now checking for NULL in cOsd::AddPixmap() (suggested by Christoph Haubrich).
+- Fixed the German translation of "VDR will shut down in %s minutes" (thanks to
+  Frank Neumann).
+- The replay progress display is now turned on whenever a mark is toggled (not
+  only when one is set).
+- Toggling a mark now restarts the timeout of the replay progress display.
+- Fixed a possible race condition with the SVDRP commands CLRE and PUTE, where
+  EPG data from the transponder could be handled even though it shouldn't be
+  handled for 10 seconds.
+- Added some missing member initializations in cBitmap.
+- Improved displaying the play mode in the ST:TNG skin.
+- Made the ST:TNG skin the default in case the user selected skin is not available.
+- Improved displaying signal strength and quality in the ST:TNG skin's channel
+  display.
+- Fixed switching devices to the transponders of VPS recordings in case there
+  are only bonded devices. The cDevice's "avoid device" mechanism has been replaced
+  by using "occupied".
+- Fixed selecting devices for the EPG scan in case the primary device is bonded
+  with an other one.
+- Removed the calls to EITScanner.UsesDevice(this) from dvb[hs]ddevice.c, because
+  the code following these calls is only executed if LiveView is true, which is
+  never the case when the EITScanner switches to a channel.
+- Removed the obsolete function cEITScanner::UsesDevice(). If a plugin has used this
+  function to find out whether a call to its cStatus::ChannelSwitch() function was
+  due to a live channel switch, it can use that function's new parameter LiveView.
+  Any plugins that implement cStatus::ChannelSwitch() need to add the parameter
+  'bool LiveView' to that function.
+- Fixed parsing channel data in case the audio pid is 0. On channels that only
+  broadcast Dolby Digital audio there were sometimes log entries like
+  "changing pids of channel ... from ... to ..." with no apparent difference
+  between the old and new set of pids.
+- Fixed checking pids in case a channel has only Dolby Digital audio.
+- The Green button in the "Edit timer" menu can now be used to toggle between single
+  shot and repeating timers. This is the same as pressing '0' when the "Day" field
+  is selected, but it works at any time (and is more obvious).
+- Revoked "If the first event in a schedule has a table id of 0x00, any incoming EIT data for
+  that schedule from the DVB stream will be completely ignored".
+- Added a new plugin interface for implementing EPG handlers.
+  + A plugin can implement an EPG handler by creating an object derived from
+    cEpgHandler and implementing the necessary member functions.
+  + The special handling of events with table id 0x00 has been dropped.
+    For backwards compatibility EPG events with table ids lower than 0x4E will
+    be treated as if they had a table id of 0x4E, and the new plugin 'epgtableid0'
+    can be used to have them handled like in previous versions.
+  + The default table id for a newly created cEvent has been changed to 0xFF,
+    which is higher than any normal table id that is broadcast in the EIT data.
+  See PLUGINS.html, section "Electronic Program Guide" for more information.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.39 2012/03/02 10:33:17 kls Exp $
+ * $Id: menu.c 2.42 2012/03/08 13:32:44 kls Exp $
  */
 
 #include "menu.h"
@@ -903,7 +903,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
   file = NULL;
-  firstday = NULL;
+  day = firstday = NULL;
   timer = Timer;
   addIfConfirmed = New;
   if (timer) {
@@ -913,7 +913,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      channel = data.Channel()->Number();
      Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
-     Add(new cMenuEditDateItem(tr("Day"),          &data.day, &data.weekdays));
+     Add(day = new cMenuEditDateItem(tr("Day"),    &data.day, &data.weekdays));
      Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
      Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
      Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
@@ -935,7 +935,7 @@ cMenuEditTimer::~cMenuEditTimer()
 
 void cMenuEditTimer::SetHelpKeys(void)
 {
-  SetHelp(tr("Button$Folder"));
+  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Once") : tr("Button$Repeating"));
 }
 
 void cMenuEditTimer::SetFirstDayItem(void)
@@ -1001,7 +1001,14 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                      }
                      return osBack;
        case kRed:    return AddSubMenu(new cMenuFolder(tr("Select folder"), &Folders, data.file));
-       case kGreen:
+       case kGreen:  if (day) {
+                        day->ToggleRepeating();
+                        SetCurrent(day);
+                        SetFirstDayItem();
+                        SetHelpKeys();
+                        Display();
+                        }
+                     return osContinue;
        case kYellow:
        case kBlue:   return osContinue;
        default: break;
@@ -4513,6 +4520,8 @@ void cReplayControl::ShowTimed(int Seconds)
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
+  else if (timeoutShow && Seconds > 0)
+     timeoutShow = time(NULL) + Seconds;
 }
 
 void cReplayControl::Show(void)
@@ -4531,6 +4540,7 @@ void cReplayControl::Hide(void)
      lastPlay = lastForward = false;
      lastSpeed = -2; // an invalid value
      timeSearchActive = false;
+     timeoutShow = 0;
      }
 }
 
@@ -4694,12 +4704,12 @@ void cReplayControl::MarkToggle(void)
         marks.Del(m);
      else {
         marks.Add(Current);
-        ShowTimed(2);
         bool Play, Forward;
         int Speed;
         if (GetReplayMode(Play, Forward, Speed) && !Play)
            Goto(Current, true);
         }
+     ShowTimed(2);
      marks.Save();
      }
 }

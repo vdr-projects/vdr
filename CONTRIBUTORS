@@ -2284,6 +2284,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for adding support for HbbTV to libsi
  for fixing cRecording::LengthInSeconds(), which wrongfully rounded the result to full
  minutes
+ for suggesting to check for NULL in cOsd::AddPixmap()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2773,6 +2774,7 @@ Milan Cvijanovic <elcom_cvijo@hotmail.com>
 Frank Neumann <fnu@yavdr.org>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
+ for fixing the German translation of "VDR will shut down in %s minutes"
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in

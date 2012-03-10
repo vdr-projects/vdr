@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -648,6 +648,12 @@ msgstr "Датотека"
 
 msgid "Button$Folder"
 msgstr "Директориум"
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
 
 msgid "First day"
 msgstr "Прв ден"

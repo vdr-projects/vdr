@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -659,6 +659,12 @@ msgstr "ملف"
 #, fuzzy
 msgid "Button$Folder"
 msgstr "الموءقت"
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
 
 msgid "First day"
 msgstr "اليوم الاول"

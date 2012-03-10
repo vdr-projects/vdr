@@ -21,6 +21,9 @@ html, body {
 .modified {
     background-color: #FFDDDD;
 }
+modified {
+    background-color: #FFDDDD;
+}
 </style>
 </head>
 <body>
@@ -34,9 +37,9 @@ Copyright &copy; 2009 Klaus Schmidinger<br>
 <a href="mailto:kls@tvdr.de">kls@tvdr.de</a><br>
 <a href="http://www.tvdr.de">www.tvdr.de</a>
 </div>
-<div class="modified">
-Important modifications introduced since version 1.6 are marked like this.
-</div modified>
+<div class="center">
+<modified>Important modifications introduced since version 1.6 are marked like this.</modified>
+</div>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -99,6 +102,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Audio">Audio</a>
 <li><a href="#Remote Control">Remote Control</a>
 <li><a href="#Conditional Access">Conditional Access</a>
+<li><modified><a href="#Electronic Program Guide">Electronic Program Guide</modified></a>
 </ul>
 </ul>
 
@@ -1221,10 +1225,10 @@ If a plugin wants to get informed on various events in VDR, it can derive a clas
 
 class cMyStatusMonitor : public cStatus {
 protected:
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber<modified>, bool LiveView</modified>);
   };
 
-void cMyStatusMonitor::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+void cMyStatusMonitor::ChannelSwitch(const cDevice *Device, int ChannelNumber<modified>, bool LiveView</modified>)
 {
   if (ChannelNumber)
      dsyslog("channel switched to %d on DVB %d", ChannelNumber, Device-&gt;CardIndex());
@@ -1510,9 +1514,7 @@ The above example sets up a receiver that wants to receive data from only one
 PID (for example the Teletext PID). In order to not interfere with other recording
 operations, it sets its priority to <tt>-1</tt> (any negative value will allow
 a <tt>cReceiver</tt> to be detached from its <tt>cDevice</tt> at any time
-<div class="modified">
-in favor of a timer recording or live viewing).
-</div modified>
+<modified>in favor of a timer recording or live viewing</modified>).
 <p>
 Once a <tt>cReceiver</tt> has been created, it needs to be <i>attached</i> to
 a <tt>cDevice</tt>:
@@ -1528,9 +1530,9 @@ the receiver is attached to the device that actually receives the current live
 video stream (this may be different from the primary device in case of <i>Transfer
 Mode</i>).
 <p>
-<div class="modified">
+<modified>
 The <tt>cReceiver</tt> must be detached from its device before it is deleted.
-</div modified>
+</modified>
 
 <hr><h2><a name="Filters">Filters</a></h2>
 
@@ -1808,9 +1810,7 @@ If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
 <p><table><tr><td class="code"><pre>
-<div class="modified">
-virtual int NumProvidedSystems(void) const;
-</div modified>
+<modified>virtual int NumProvidedSystems(void) const;</modified>
 virtual bool ProvidesSource(int Source) const;
 virtual bool ProvidesTransponder(const cChannel *Channel) const;
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
@@ -1859,9 +1859,7 @@ virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
-<div class="modified">
-virtual bool IsPlayingVideo(void) const;
-</div modified>
+<modified>virtual bool IsPlayingVideo(void) const;</modified>
 virtual bool HasIBPTrickSpeed(void);
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
@@ -1938,13 +1936,13 @@ void cMyDevice::MakePrimaryDevice(bool On)
 The OSD provider object is allocated on the heap and shall not be deleted
 (it will be deleted automatically in case a different device sets up an OSD
 provider, or when the program ends).
-
+<p>
 Note that an OSD implementation need not be physically linked to the device
 in any way. All it needs to make sure is that the OSD will be visible to the
 user - whether this goes through OSD facilities of the physical device (like
 a "full featured" DVB card) or through a graphics adapter that overlays its
 output with the video signal, doesn't matter.
-
+<p>
 <div class="modified">
 In order to be able to determine the proper size of the OSD, the device
 should implement the function
@@ -2214,6 +2212,38 @@ virtual bool Assign(cDevice *Device, bool Query = false);
 </pre></td></tr></table><p>
 
 See the description of this function in <tt>ci.h</tt> for details.
+
+<div class="modified">
+<hr><h2><a name="Electronic Program Guide">Electronic Program Guide</a></h2>
+
+<div class="blurb">The grass is always greener on the other side...</div><p>
+
+In case the <i>Electronic Program Guide (EPG)</i> provided by the broadcaster
+isn't sufficient for your taste, you can implement a <tt>cEpgHandler</tt> to
+improve it from external sources. For instance, to replace the description
+of the broadcaster's EPG with one from some external database, you could do:
+
+<p><table><tr><td class="code"><pre>
+#include &lt;vdr/epg.h&gt;
+
+class cMyEpgHandler : public cEpgHandler {
+public:
+  virtual bool SetDescription(cEvent *Event, const char *Description);
+  };
+
+bool cMyEpgHandler::SetDescription(cEvent *Event, const char *Description)
+{
+  Event-&gt;SetDescription(DescriptionFromDatabase(Event));
+  return true;
+}
+</pre></td></tr></table><p>
+
+where <tt>DescriptionFromDatabase()</tt> would derive the description of the
+ given event from some external source. Note that the function returns <tt>true</tt>
+to signal VDR that no other EPG handlers shall be queried after this one.
+<p>
+See <tt>VDR/epg.h</tt> for details.
+</div modified>
 
 </body>
 </html>

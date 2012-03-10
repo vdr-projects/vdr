@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.25 2012/03/02 10:48:19 kls Exp $
+ * $Id: osd.c 2.27 2012/03/05 10:28:01 kls Exp $
  */
 
 #include "osd.h"
@@ -254,6 +254,7 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, int X0, int Y0)
   bitmap = NULL;
   x0 = X0;
   y0 = Y0;
+  width = height = 0;
   SetSize(Width, Height);
 }
 
@@ -262,6 +263,7 @@ cBitmap::cBitmap(const char *FileName)
   bitmap = NULL;
   x0 = 0;
   y0 = 0;
+  width = height = 0;
   LoadXpm(FileName);
 }
 
@@ -270,6 +272,7 @@ cBitmap::cBitmap(const char *const Xpm[])
   bitmap = NULL;
   x0 = 0;
   y0 = 0;
+  width = height = 0;
   SetXpm(Xpm);
 }
 
@@ -1701,11 +1704,13 @@ void cOsd::DestroyPixmap(cPixmap *Pixmap)
 
 cPixmap *cOsd::AddPixmap(cPixmap *Pixmap)
 {
-  LOCK_PIXMAPS;
-  if (numPixmaps < MAXOSDPIXMAPS)
-     return pixmaps[numPixmaps++] = Pixmap;
-  else
-     esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+  if (Pixmap) {
+     LOCK_PIXMAPS;
+     if (numPixmaps < MAXOSDPIXMAPS)
+        return pixmaps[numPixmaps++] = Pixmap;
+     else
+        esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+     }
   return NULL;
 }
 

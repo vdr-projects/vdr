@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -649,6 +649,12 @@ msgstr "Soubor"
 
 msgid "Button$Folder"
 msgstr "Složka"
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
 
 msgid "First day"
 msgstr "První den"

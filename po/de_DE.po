@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -647,6 +647,12 @@ msgstr "Datei"
 
 msgid "Button$Folder"
 msgstr "Verzeichnis"
+
+msgid "Button$Once"
+msgstr "Einmalig"
+
+msgid "Button$Repeating"
+msgstr "Wiederholend"
 
 msgid "First day"
 msgstr "Erster Tag"
@@ -1334,4 +1340,4 @@ msgstr "Taste drücken, um Neustart abzubrechen"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR wird in %s Minuten ausschalten"
+msgstr "VDR wird in %s Minuten abgeschaltet"

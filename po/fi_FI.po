@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-02-25 14:32+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -650,6 +650,12 @@ msgstr "Tiedosto"
 
 msgid "Button$Folder"
 msgstr "Kansio"
+
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
 
 msgid "First day"
 msgstr "1. päivä"

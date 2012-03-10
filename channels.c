@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.19 2011/08/26 12:44:21 kls Exp $
+ * $Id: channels.c 2.20 2012/03/07 16:50:15 kls Exp $
  */
 
 #include "channels.h"
@@ -619,7 +619,8 @@ bool cChannel::Parse(const char *s)
                        }
                     else
                        *alangs[NumApids] = 0;
-                    apids[NumApids++] = strtol(q, NULL, 10);
+                    if ((apids[NumApids] = strtol(q, NULL, 10)) != 0)
+                       NumApids++;
                     }
                  else
                     esyslog("ERROR: too many APIDs!"); // no need to set ok to 'false'
@@ -647,7 +648,8 @@ bool cChannel::Parse(const char *s)
                           }
                        else
                           *dlangs[NumDpids] = 0;
-                       dpids[NumDpids++] = strtol(q, NULL, 10);
+                       if ((dpids[NumDpids] = strtol(q, NULL, 10)) != 0)
+                          NumDpids++;
                        }
                     else
                        esyslog("ERROR: too many DPIDs!"); // no need to set ok to 'false'

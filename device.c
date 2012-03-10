@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.55 2012/03/03 11:43:05 kls Exp $
+ * $Id: device.c 2.57 2012/03/07 14:17:49 kls Exp $
  */
 
 #include "device.h"
@@ -68,7 +68,6 @@ int cDevice::nextCardIndex = 0;
 int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
-cDevice *cDevice::avoidDevice = NULL;
 cList<cDeviceHook> cDevice::deviceHooks;
 
 cDevice::cDevice(void)
@@ -228,8 +227,6 @@ static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
 
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query)
 {
-  cDevice *AvoidDevice = avoidDevice;
-  avoidDevice = NULL;
   // Collect the current priorities of all CAM slots that can decrypt the channel:
   int NumCamSlots = CamSlots.Count();
   int SlotPriority[NumCamSlots];
@@ -259,8 +256,6 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (NumUsableSlots && SlotPriority[j] > MAXPRIORITY)
          continue; // there is no CAM available in this slot
       for (int i = 0; i < numDevices; i++) {
-          if (device[i] == AvoidDevice)
-             continue; // this device shall be temporarily avoided
           if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->CardIndex() + 1)
              continue; // a specific card was requested, but not this one
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
@@ -317,6 +312,26 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
         d->CamSlot()->Assign(NULL);
      }
   return d;
+}
+
+cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
+{
+  cDevice *Device = NULL;
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      if (cDevice *d = cDevice::GetDevice(i)) {
+         if (d->IsTunedToTransponder(Channel))
+            return d; // if any device is tuned to the transponder, we're done
+         if (d->ProvidesTransponder(Channel)) {
+            if (d->MaySwitchTransponder(Channel))
+               Device = d; // this device may switch to the transponder without disturbing any receiver or live view
+            else if (!d->Occupied()) {
+               if (d->Priority() < Priority && (!Device || d->Priority() < Device->Priority()))
+                  Device = d; // use this one only if no other with less impact can be found
+               }
+            }
+         }
+      }
+  return Device;
 }
 
 bool cDevice::HasCi(void)
@@ -708,7 +723,7 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
-  cStatus::MsgChannelSwitch(this, 0);
+  cStatus::MsgChannelSwitch(this, 0, LiveView);
 
   if (LiveView) {
      StopReplay();
@@ -778,7 +793,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureAudioTrack(true);
         EnsureSubtitleTrack();
         }
-     cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successfull
      }
 
   return Result;

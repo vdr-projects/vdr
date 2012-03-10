@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.40 2012/02/28 09:18:56 kls Exp $
+ * $Id: dvbhdffdevice.c 1.41 2012/03/07 13:52:41 kls Exp $
  */
 
 #include <stdint.h>
@@ -297,13 +297,6 @@ bool cDvbHdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   if (!cDvbDevice::SetChannelDevice(Channel, LiveView))
      return false;
-
-  // If this channel switch was requested by the EITScanner we don't wait for
-  // a lock and don't set any live PIDs (the EITScanner will wait for the lock
-  // by itself before setting any filters):
-
-  if (EITScanner.UsesDevice(this)) //XXX
-     return true;
 
   // PID settings:
 
