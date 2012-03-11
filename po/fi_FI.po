@@ -652,10 +652,10 @@ msgid "Button$Folder"
 msgstr "Kansio"
 
 msgid "Button$Once"
-msgstr ""
+msgstr "Yksittäinen"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Toistuva"
 
 msgid "First day"
 msgstr "1. päivä"
