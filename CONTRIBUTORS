@@ -1322,7 +1322,7 @@ Javier Marcet <lists@marcet.info>
  is a replay session active
 
 Peter Waechtler <pwaechtler@mac.com>
- for adding channels for DVB-T Hannover (Germany) to channels.cont.terr
+ for adding channels for DVB-T Hannover (Germany) to channels.conf.terr
 
 Robert Bartl <robert@bartl.priv.at>
  for reporting a hangup in SVDRP when the client disappears without sending QUIT
@@ -1854,7 +1854,7 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
  through the full featured DVB card
 
 Walter Koch <koch@u32.de>
- for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+ for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.conf.terr
  for fixing some missing '-' in the German OSD texts
  for suggesting to display the free disk space also in the title of the "Recordings"
  menu
@@ -1955,6 +1955,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for removing a redundant NULL check in cDvbSpuDecoder::setTime()
  for pointing out that the variable HasSnr was unused in cDvbTuner::GetSignalQuality()
  for fixing cConfig::Load() for g++ version 4.7.0
+ for fixing some typos in HISTORY and CONTRIBUTORS
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

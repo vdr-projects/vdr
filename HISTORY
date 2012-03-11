@@ -2335,7 +2335,7 @@ Video Disk Recorder Revision History
 - Now explicitly handling exit value 0 and 2 in 'runvdr'.
 - Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
   to Lauri Tischler and Ragnar Sundblad).
-- Added channels for DVB-T Hannover (Germany) to channels.cont.terr (thanks to
+- Added channels for DVB-T Hannover (Germany) to channels.conf.terr (thanks to
   Peter Waechtler).
 - Fixed a hangup in SVDRP when the client disappears without sending QUIT (thanks
   to Robert Bartl for reporting this one). The problem was introduced in version
@@ -7015,3 +7015,4 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Changed the Green button in the "Edit timer" menu from "Once" to "Single"
   (suggested by Rolf Ahrenberg).
+- Fixed some typos in HISTORY and CONTRIBUTORS (thanks to Ville Skyttä).
