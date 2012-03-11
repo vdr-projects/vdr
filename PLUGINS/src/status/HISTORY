@@ -44,3 +44,7 @@ VDR Plugin 'status' Revision History
 2008-02-16: Version 0.3.0
 
 - Added new cStatus functions.
+
+2012-03-11: Version 0.3.1
+
+- Added new parameter LiveView to ChannelSwitch() (reported by Udo Richter).
