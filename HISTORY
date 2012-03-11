@@ -7027,3 +7027,7 @@ Video Disk Recorder Revision History
   uses the respective code. You can reactivate these to quickly make your plugin
   compile again, but beware that these code parts will be removed in one of the next
   versions.
+- Made the "overloaded-virtual" warning an error to detect hidden overloaded
+  virtual functions (thanks to Anssi Hannula for pointing out -Werror=...).
+  Plugin authors may want to change -Woverloaded-virtual to -Werror=overloaded-virtual
+  in their Makefiles.

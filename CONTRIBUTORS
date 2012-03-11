@@ -2386,6 +2386,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
  for adding support for automatically selecting subtitles when playing old PES
  recordings made with the subtitles plugin
+ for pointing out -Werror=...
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'

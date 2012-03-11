@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 2.7 2012/01/18 12:32:31 kls Exp $
+# $Id: newplugin 2.8 2012/03/11 15:34:26 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -77,7 +77,7 @@ VERSION = \$(shell grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ 
 ### The C++ compiler and options:
 
 CXX      ?= g++
-CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
+CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
 
 ### The directory environment:
 
