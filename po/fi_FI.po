@@ -651,7 +651,7 @@ msgstr "Tiedosto"
 msgid "Button$Folder"
 msgstr "Kansio"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr "Yksittäinen"
 
 msgid "Button$Repeating"

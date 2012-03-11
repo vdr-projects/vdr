@@ -7013,3 +7013,5 @@ Video Disk Recorder Revision History
 2012-03-11: Version 1.7.27
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Changed the Green button in the "Edit timer" menu from "Once" to "Single"
+  (suggested by Rolf Ahrenberg).

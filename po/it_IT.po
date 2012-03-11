@@ -655,7 +655,7 @@ msgstr "Nome"
 msgid "Button$Folder"
 msgstr "Cartella"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

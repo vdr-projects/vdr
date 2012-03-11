@@ -651,7 +651,7 @@ msgstr "File"
 msgid "Button$Folder"
 msgstr "Könyvtár"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

@@ -1137,6 +1137,8 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding some typecasts to silence gcc compiler warnings
  for reporting a bug in handling OSD color button texts in case a menu item has
  texts of its own
+ for suggesting to change the Green button in the "Edit timer" menu from "Once"
+ to "Single"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

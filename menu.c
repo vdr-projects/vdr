@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.42 2012/03/08 13:32:44 kls Exp $
+ * $Id: menu.c 2.43 2012/03/11 10:44:32 kls Exp $
  */
 
 #include "menu.h"
@@ -935,7 +935,7 @@ cMenuEditTimer::~cMenuEditTimer()
 
 void cMenuEditTimer::SetHelpKeys(void)
 {
-  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Once") : tr("Button$Repeating"));
+  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Single") : tr("Button$Repeating"));
 }
 
 void cMenuEditTimer::SetFirstDayItem(void)

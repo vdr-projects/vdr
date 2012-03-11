@@ -648,7 +648,7 @@ msgstr "Súbor"
 msgid "Button$Folder"
 msgstr "Zlo¾ka"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

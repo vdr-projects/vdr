@@ -651,7 +651,7 @@ msgstr "Fiºier"
 msgid "Button$Folder"
 msgstr "Director"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

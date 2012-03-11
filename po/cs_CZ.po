@@ -650,7 +650,7 @@ msgstr "Soubor"
 msgid "Button$Folder"
 msgstr "Složka"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

@@ -650,7 +650,7 @@ msgstr "Datoteka"
 msgid "Button$Folder"
 msgstr ""
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"
