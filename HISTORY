@@ -7021,3 +7021,4 @@ Video Disk Recorder Revision History
 - Dropped the meanwhile obsolete script 'i18n-to-gettext'.
 - Removed the obsolete function cPlugin::RegisterI18n().
 - Removed the obsolete typedef tI18nPhrase.
+- Adapted menu column widths of 'skincurses' to the wider HD OSD sizes.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.1 2011/12/04 13:38:17 kls Exp $
+ * $Id: skins.h 2.2 2012/03/11 14:38:23 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -28,6 +28,8 @@ private:
 public:
   cSkinDisplay(void);
   virtual ~cSkinDisplay();
+  static int AvgCharWidth(void) { return Setup.FontOsdSize * 4 / 6; }
+       ///< Returns the average width of a character in pixel (just a raw estimate).
   int EditableWidth(void) { return editableWidth; }
   void SetEditableWidth(int Width) { editableWidth = Width; }
        ///< If an item is set through a call to cSkinDisplayMenu::SetItem(), this
