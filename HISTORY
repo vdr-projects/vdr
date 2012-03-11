@@ -7018,3 +7018,4 @@ Video Disk Recorder Revision History
 - Fixed some typos in HISTORY and CONTRIBUTORS (thanks to Ville Skyttä).
 - The channel name column in the "What's on now/next" menu now adjusts its width
   to display the full short name of each channel (suggested by Dominic Evans).
+- Dropped the meanwhile obsolete script 'i18n-to-gettext'.
