@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 2.2 2010/01/06 11:36:46 kls Exp $
+ * $Id: plugin.c 2.3 2012/03/11 13:56:02 kls Exp $
  */
 
 #include "plugin.h"
@@ -128,11 +128,6 @@ const char **cPlugin::SVDRPHelpPages(void)
 cString cPlugin::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
 {
   return NULL;
-}
-
-void cPlugin::RegisterI18n(const void *)
-{
-  dsyslog("plugin '%s' called obsolete function RegisterI18n()", Name());
 }
 
 void cPlugin::SetConfigDirectory(const char *Dir)
