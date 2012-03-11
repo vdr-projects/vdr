@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.32 2012/03/07 13:52:48 kls Exp $
+ * $Id: dvbsdffdevice.c 2.33 2012/03/11 13:32:42 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -431,7 +431,7 @@ bool cDvbSdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true)); // actually one would expect 'false' here, but according to Marco Schlüßler <marco@lordzodiac.de> this works
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true)); // actually one would expect 'false' here, but according to Marco Schluessler <marco@lordzodiac.de> this works
                                                    // to avoid missing audio after replaying a DVD; with 'false' there is an audio disturbance when switching
                                                    // between two channels on the same transponder on DVB-S
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));

@@ -4,10 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * Original author: Marco Schlüßler <marco@lordzodiac.de>
+ * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.27 2012/03/02 10:47:25 kls Exp $
+ * $Id: dvbsubtitle.c 2.28 2012/03/11 13:34:03 kls Exp $
  */
 
 
