@@ -7022,3 +7022,8 @@ Video Disk Recorder Revision History
 - Removed the obsolete function cPlugin::RegisterI18n().
 - Removed the obsolete typedef tI18nPhrase.
 - Adapted menu column widths of 'skincurses' to the wider HD OSD sizes.
+- Deactivated definition of __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS (recording.h)
+  and LEGACY_CRECEIVER (receiver.h) to trigger an error for any plugin that still
+  uses the respective code. You can reactivate these to quickly make your plugin
+  compile again, but beware that these code parts will be removed in one of the next
+  versions.
