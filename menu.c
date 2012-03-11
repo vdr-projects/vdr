@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.43 2012/03/11 10:44:32 kls Exp $
+ * $Id: menu.c 2.44 2012/03/11 13:20:45 kls Exp $
  */
 
 #include "menu.h"
@@ -49,6 +49,7 @@
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
+#define CHNAMWIDTH  (Channels.MaxShortChannelNameLength() + 1)
 
 // --- cFreeDiskSpace --------------------------------------------------------
 
@@ -1347,9 +1348,9 @@ bool cMenuScheduleItem::Update(bool Force)
      const char *csn = channel ? channel->ShortName(true) : NULL;
      cString eds = event->GetDateString();
      if (channel && withDate)
-        buffer = cString::sprintf("%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
+        buffer = cString::sprintf("%d\t%.*s\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 999), csn, Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      else if (channel)
-        buffer = cString::sprintf("%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 6), csn, *event->GetTimeString(), t, v, r, event->Title());
+        buffer = cString::sprintf("%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), Utf8SymChars(csn, 999), csn, *event->GetTimeString(), t, v, r, event->Title());
      else
         buffer = cString::sprintf("%.*s\t%s\t%c%c%c\t%s", Utf8SymChars(eds, 6), *eds, *event->GetTimeString(), t, v, r, event->Title());
      SetText(buffer);
@@ -1383,7 +1384,7 @@ int cMenuWhatsOn::currentChannel = 0;
 const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
-:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6, 4)
+:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, CHNAMWIDTH, 6, 4)
 {
   now = Now;
   helpKeys = -1;
@@ -1607,7 +1608,7 @@ void cMenuSchedule::PrepareScheduleThisThis(const cEvent *Event, const cChannel 
 void cMenuSchedule::PrepareScheduleThisAll(const cEvent *Event, const cChannel *Channel)
 {
   Clear();
-  SetCols(CHNUMWIDTH, 7, 7, 6, 4);
+  SetCols(CHNUMWIDTH, CHNAMWIDTH, 7, 6, 4);
   SetTitle(tr("This event - all channels"));
   if (schedules && Event) {
      for (cChannel *ch = Channels.First(); ch; ch = Channels.Next(ch)) {
@@ -1626,7 +1627,7 @@ void cMenuSchedule::PrepareScheduleThisAll(const cEvent *Event, const cChannel *
 void cMenuSchedule::PrepareScheduleAllAll(const cEvent *Event, const cChannel *Channel)
 {
   Clear();
-  SetCols(CHNUMWIDTH, 7, 7, 6, 4);
+  SetCols(CHNUMWIDTH, CHNAMWIDTH, 7, 6, 4);
   SetTitle(tr("All events - all channels"));
   if (schedules) {
      for (cChannel *ch = Channels.First(); ch; ch = Channels.Next(ch)) {

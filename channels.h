@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.14 2011/08/06 09:56:13 kls Exp $
+ * $Id: channels.h 2.15 2012/03/11 11:46:39 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -200,6 +200,8 @@ public:
 class cChannels : public cRwLock, public cConfig<cChannel> {
 private:
   int maxNumber;
+  int maxChannelNameLength;
+  int maxShortChannelNameLength;
   int modified;
   int beingEdited;
   cHash<cChannel> channelsHashSid;
@@ -224,6 +226,8 @@ public:
   bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
   bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
+  int MaxChannelNameLength(void);
+  int MaxShortChannelNameLength(void);
   void SetModified(bool ByUser = false);
   int Modified(void);
       ///< Returns 0 if no channels have been modified, 1 if an automatic

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.20 2012/03/07 16:50:15 kls Exp $
+ * $Id: channels.c 2.21 2012/03/11 13:29:06 kls Exp $
  */
 
 #include "channels.h"
@@ -760,6 +760,8 @@ cChannels Channels;
 cChannels::cChannels(void)
 {
   maxNumber = 0;
+  maxChannelNameLength = 0;
+  maxShortChannelNameLength = 0;
   modified = CHANNELSMOD_NONE;
 }
 
@@ -937,9 +939,32 @@ bool cChannels::SwitchTo(int Number)
   return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
 }
 
+int cChannels::MaxChannelNameLength(void)
+{
+  if (!maxChannelNameLength) {
+     for (cChannel *channel = First(); channel; channel = Next(channel)) {
+         if (!channel->GroupSep())
+            maxChannelNameLength = max(Utf8StrLen(channel->Name()), maxChannelNameLength);
+         }
+     }
+  return maxChannelNameLength;
+}
+
+int cChannels::MaxShortChannelNameLength(void)
+{
+  if (!maxShortChannelNameLength) {
+     for (cChannel *channel = First(); channel; channel = Next(channel)) {
+         if (!channel->GroupSep())
+            maxShortChannelNameLength = max(Utf8StrLen(channel->ShortName()), maxShortChannelNameLength);
+         }
+     }
+  return maxShortChannelNameLength;
+}
+
 void cChannels::SetModified(bool ByUser)
 {
   modified = ByUser ? CHANNELSMOD_USER : !modified ? CHANNELSMOD_AUTO : modified;
+  maxChannelNameLength = maxShortChannelNameLength = 0;
 }
 
 int cChannels::Modified(void)
