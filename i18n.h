@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.25 2008/01/19 11:56:19 kls Exp $
+ * $Id: i18n.h 2.1 2012/03/11 14:07:45 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -12,8 +12,6 @@
 
 #include <stdio.h>
 #include "tools.h"
-
-typedef const char *tI18nPhrase[22]; ///< obsolete - switch to 'gettext'!
 
 #define I18N_DEFAULT_LOCALE "en_US"
 #define I18N_MAX_LOCALE_LEN 16       // for buffers that hold en_US etc.

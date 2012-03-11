@@ -7020,3 +7020,4 @@ Video Disk Recorder Revision History
   to display the full short name of each channel (suggested by Dominic Evans).
 - Dropped the meanwhile obsolete script 'i18n-to-gettext'.
 - Removed the obsolete function cPlugin::RegisterI18n().
+- Removed the obsolete typedef tI18nPhrase.
