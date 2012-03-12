@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.28 2012/03/11 15:26:01 kls Exp $
+ * $Id: recording.h 2.29 2012/03/12 11:44:06 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -284,7 +284,7 @@ public:
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
-  int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL, bool StayOffEnd = false);
+  int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
   int Get(uint16_t FileNumber, off_t FileOffset);
   int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.25 2012/02/21 11:34:04 kls Exp $
+ * $Id: dvbplayer.c 2.26 2012/03/12 14:36:55 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -441,9 +441,9 @@ void cDvbPlayer::Action(void)
                          int NewIndex = readIndex + d;
                          if (NewIndex <= 0 && readIndex > 0)
                             NewIndex = 1; // make sure the very first frame is delivered
-                         NewIndex = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, TimeShiftMode);
+                         NewIndex = index->GetNextIFrame(NewIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length);
                          if (NewIndex < 0 && TimeShiftMode && playDir == pdForward)
-                            SwitchToPlayFrame = Index;
+                            SwitchToPlayFrame = readIndex;
                          Index = NewIndex;
                          readIndependent = true;
                          }
@@ -452,7 +452,7 @@ void cDvbPlayer::Action(void)
                          if (!NextFile(FileNumber, FileOffset))
                             continue;
                          }
-                      else
+                      else if (!(TimeShiftMode && playDir == pdForward))
                          eof = true;
                       }
                    else if (index) {
@@ -486,16 +486,16 @@ void cDvbPlayer::Action(void)
                          }
                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts); // hands over b to the ringBuffer
                       }
-                   else if (r < 0 && errno == EAGAIN)
-                      WaitingForData = true;
-                   else {
-                      if (r == 0)
-                         eof = true;
-                      else if (r < 0 && FATALERRNO) {
+                   else if (r < 0) {
+                      if (errno == EAGAIN)
+                         WaitingForData = true;
+                      else if (FATALERRNO) {
                          LOG_ERROR;
                          break;
                          }
                       }
+                   else
+                      eof = true;
                    }
                 }
 
@@ -764,7 +764,7 @@ void cDvbPlayer::SkipSeconds(int Seconds)
      if (Index >= 0) {
         Index = max(Index + SecondsToFrames(Seconds, framesPerSecond), 0);
         if (Index > 0)
-           Index = index->GetNextIFrame(Index, false, NULL, NULL, NULL, true);
+           Index = index->GetNextIFrame(Index, false, NULL, NULL, NULL);
         if (Index >= 0)
            readIndex = Index - 1; // Action() will first increment it!
         }

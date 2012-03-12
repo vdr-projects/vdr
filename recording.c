@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.51 2012/02/26 13:58:26 kls Exp $
+ * $Id: recording.c 2.52 2012/03/12 14:49:28 kls Exp $
  */
 
 #include "recording.h"
@@ -1526,9 +1526,6 @@ void cIndexFileGenerator::Action(void)
 
 #define INDEXFILESUFFIX     "/index"
 
-// The number of frames to stay off the end in case of time shift:
-#define INDEXSAFETYLIMIT 150 // frames
-
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds
 
@@ -1728,7 +1725,7 @@ bool cIndexFile::CatchUp(int Index)
             }
          else
             LOG_ERROR_STR(*fileName);
-         if (Index < last - (i ? 2 * INDEXSAFETYLIMIT : 0) || Index > 10 * INDEXSAFETYLIMIT) // keep off the end in case of "Pause live video"
+         if (Index < last)
             break;
          cCondWait::SleepMs(1000);
          }
@@ -1775,13 +1772,13 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
   return false;
 }
 
-int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off_t *FileOffset, int *Length, bool StayOffEnd)
+int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off_t *FileOffset, int *Length)
 {
   if (CatchUp()) {
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? INDEXSAFETYLIMIT : 0)) {
+         if (Index >= 0 && Index < last) {
             if (index[Index].independent) {
                uint16_t fn;
                if (!FileNumber)
