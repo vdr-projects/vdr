@@ -7031,3 +7031,4 @@ Video Disk Recorder Revision History
   virtual functions (thanks to Anssi Hannula for pointing out -Werror=...).
   Plugin authors may want to change -Woverloaded-virtual to -Werror=overloaded-virtual
   in their Makefiles.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

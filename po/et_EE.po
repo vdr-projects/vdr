@@ -649,13 +649,13 @@ msgid "Button$Folder"
 msgstr "Kaust"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Üks kord"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Korduv"
 
 msgid "First day"
-msgstr "Esimene päev"
+msgstr "1. päev"
 
 msgid "Select folder"
 msgstr "Kausta valik"
