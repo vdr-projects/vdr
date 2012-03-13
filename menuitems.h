@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 2.7 2012/03/08 12:38:46 kls Exp $
+ * $Id: menuitems.h 2.8 2012/03/13 11:19:11 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -163,6 +163,7 @@ private:
   time_t *value;
   int *weekdays;
   time_t oldvalue;
+  int oldweekdays;
   int dayindex;
   int FindDayIndex(int WeekDays);
   virtual void Set(void);

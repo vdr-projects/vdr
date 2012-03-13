@@ -7035,3 +7035,5 @@ Video Disk Recorder Revision History
 - Improved fast forwarding to the end of a timeshift recording.
 - The new function cDevice::DeviceName() returns a string identifying the name of
   the given device.
+- When toggling a timer between "Single" and "Repeating", the previous setting is now
+  retained in case the user toggles back to the original value.

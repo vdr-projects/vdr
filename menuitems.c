@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.12 2012/03/08 13:22:22 kls Exp $
+ * $Id: menuitems.c 2.13 2012/03/13 11:21:57 kls Exp $
  */
 
 #include "menuitems.h"
@@ -855,6 +855,7 @@ cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value, int *WeekD
   value = Value;
   weekdays = WeekDays;
   oldvalue = 0;
+  oldweekdays = 0;
   dayindex = weekdays ? FindDayIndex(*weekdays) : 0;
   Set();
 }
@@ -892,10 +893,12 @@ void cMenuEditDateItem::ToggleRepeating(void)
      if (*weekdays) {
         *value = cTimer::SetTime(oldvalue ? oldvalue : time(NULL), 0);
         oldvalue = 0;
+        oldweekdays = *weekdays;
         *weekdays = 0;
         }
      else {
-        *weekdays = days[cTimer::GetWDay(*value)];
+        *weekdays = oldweekdays ? oldweekdays : days[cTimer::GetWDay(*value)];
+        oldweekdays = 0;
         dayindex = FindDayIndex(*weekdays);
         oldvalue = *value;
         *value = 0;
