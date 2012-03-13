@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.28 2012/03/11 13:34:03 kls Exp $
+ * $Id: dvbsubtitle.c 2.29 2012/03/13 15:30:47 kls Exp $
  */
 
 
@@ -491,13 +491,14 @@ void cSubtitleRegion::UpdateTextData(cSubtitleClut *Clut)
   const cPalette *palette = Clut ? Clut->GetPalette(Depth()) : NULL;
   for (cSubtitleObject *so = objects.First(); so && palette; so = objects.Next(so)) {
       if (Utf8StrLen(so->TextData()) > 0) {
-         const cFont *font = cFont::GetFont(fontOsd);
+         cFont *font = cFont::CreateFont(Setup.FontOsd, Setup.FontOsdSize);
          cBitmap *tmp = new cBitmap(font->Width(so->TextData()), font->Height(), Depth());
          double factor = (double)lineHeight / font->Height();
          tmp->DrawText(0, 0, so->TextData(), palette->Color(so->ForegroundPixelCode()), palette->Color(so->BackgroundPixelCode()), font);
          tmp = tmp->Scaled(factor, factor, true);
          DrawBitmap(so->X(), so->Y(), *tmp);
          DELETENULL(tmp);
+         delete font;
          }
       }
 }

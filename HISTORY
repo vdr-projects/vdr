@@ -7041,3 +7041,4 @@ Video Disk Recorder Revision History
   existing recordings is now taken into account. If this value can't be determined,
   the previous value of 25.75 MB/min is taken.
 - No longer using GetFont() (which is not thread safe) in the 'osddemo' plugin.
+- No longer using GetFont() (which is not thread safe) in cSubtitleRegion::UpdateTextData().
