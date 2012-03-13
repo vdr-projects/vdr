@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.57 2012/03/07 14:17:49 kls Exp $
+ * $Id: device.c 2.58 2012/03/13 09:48:14 kls Exp $
  */
 
 #include "device.h"
@@ -160,6 +160,11 @@ int cDevice::DeviceNumber(void) const
          return i;
       }
   return -1;
+}
+
+cString cDevice::DeviceName(void) const
+{
+  return "";
 }
 
 void cDevice::MakePrimaryDevice(bool On)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.67 2012/03/08 09:49:58 kls Exp $
+ * $Id: dvbdevice.c 2.68 2012/03/13 09:50:56 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1088,6 +1088,11 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
   dsyslog("creating cDvbDevice");
   new cDvbDevice(Adapter, Frontend); // it's a "budget" device
   return true;
+}
+
+cString cDvbDevice::DeviceName(void) const
+{
+  return frontendInfo.name;
 }
 
 bool cDvbDevice::Initialize(void)
