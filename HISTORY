@@ -7040,3 +7040,4 @@ Video Disk Recorder Revision History
 - When estimating the remaining disk space (in hours), the average data rate of all
   existing recordings is now taken into account. If this value can't be determined,
   the previous value of 25.75 MB/min is taken.
+- No longer using GetFont() (which is not thread safe) in the 'osddemo' plugin.

@@ -34,3 +34,7 @@ VDR Plugin 'osddemo' Revision History
 2011-04-17: Version 0.2.2
 
 - Fixed a possible NULL pointer dereference in osddemo.c (reported by Paul Menzel).
+
+2012-03-13: Version 0.2.3
+
+- No longer using GetFont() (which is not thread safe) in the 'osddemo' plugin,

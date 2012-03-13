@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.5 2011/04/17 13:05:13 kls Exp $
+ * $Id: osddemo.c 2.6 2012/03/13 15:17:33 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.2.2";
+static const char *VERSION        = "0.2.3";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -85,7 +85,7 @@ private:
   cPixmap *destroyablePixmap;
   cPixmap *toggleablePixmap;
   virtual void Action(void);
-  cPixmap *CreateTextPixmap(const char *s, int Line, int Layer, tColor ColorFg, tColor ColorBg, const cFont *Font = NULL);
+  cPixmap *CreateTextPixmap(const char *s, int Line, int Layer, tColor ColorFg, tColor ColorBg, const cFont *Font);
 public:
   cTrueColorDemo(void);
   virtual ~cTrueColorDemo();
@@ -109,8 +109,6 @@ cTrueColorDemo::~cTrueColorDemo()
 
 cPixmap *cTrueColorDemo::CreateTextPixmap(const char *s, int Line, int Layer, tColor ColorFg, tColor ColorBg, const cFont *Font)
 {
-  if (!Font)
-     Font = cFont::GetFont(fontOsd);
   const int h = Font->Height(s);
   int w = Font->Width(s);
   cPixmap *Pixmap = osd->CreatePixmap(Layer, cRect((osd->Width() - w) / 2, Line, w, h));
@@ -131,6 +129,9 @@ void cTrueColorDemo::Action(void)
   cPixmap *TilePixmap = NULL;
   cPixmap *ScrollPixmap = NULL;
   cPixmap *AnimPixmap = NULL;
+  cFont *OsdFont = cFont::CreateFont(Setup.FontOsd, Setup.FontOsdSize);
+  cFont *SmlFont = cFont::CreateFont(Setup.FontSml, Setup.FontSmlSize);
+  cFont *LrgFont = cFont::CreateFont(Setup.FontOsd, osd->Height() / 10);
   int FrameTime = 40; // ms
   int FadeTime = 1000; // ms
   int MoveTime = 4000; // ms
@@ -202,10 +203,9 @@ void cTrueColorDemo::Action(void)
                        cRect r = ScrollPixmap->DrawPort();
                        r.SetPoint(-r.X(), -r.Y());
                        ScrollPixmap->Pan(cPoint(0, 0), r);
-                       const cFont *Font = cFont::GetFont(fontOsd);
                        cString s = cString::sprintf("Line %d", ++ScrollLineNumber);
                        ScrollPixmap->DrawRectangle(cRect(0, ScrollPixmap->ViewPort().Height(), ScrollPixmap->DrawPort().Width(), ScrollPixmap->DrawPort().Height()), clrTransparent);
-                       ScrollPixmap->DrawText(cPoint(0, ScrollPixmap->ViewPort().Height()), s, clrYellow, clrTransparent, Font);
+                       ScrollPixmap->DrawText(cPoint(0, ScrollPixmap->ViewPort().Height()), s, clrYellow, clrTransparent, OsdFont);
                        ScrollStartTime = Now;
                        }
                     else {
@@ -234,18 +234,15 @@ void cTrueColorDemo::Action(void)
         if (!Animated) {
            switch (State) {
              case 0: {
-                       if (cFont *Font = cFont::CreateFont(DefaultFontOsd, osd->Height() / 10)) {
-                          FadeInPixmap = CreateTextPixmap("VDR", Line, 1, clrYellow, clrTransparent, Font);
-                          if (FadeInPixmap)
-                             Line += FadeInPixmap->DrawPort().Height();
-                          delete Font;
-                          Start = cTimeMs::Now();
-                          }
+                       FadeInPixmap = CreateTextPixmap("VDR", Line, 1, clrYellow, clrTransparent, LrgFont);
+                       if (FadeInPixmap)
+                          Line += FadeInPixmap->DrawPort().Height();
+                       Start = cTimeMs::Now();
                        State++;
                      }
                      break;
              case 1: { 
-                       FadeInPixmap = CreateTextPixmap("Video Disk Recorder", Line, 3, clrYellow, clrTransparent);
+                       FadeInPixmap = CreateTextPixmap("Video Disk Recorder", Line, 3, clrYellow, clrTransparent, OsdFont);
                        if (FadeInPixmap)
                           Line += FadeInPixmap->DrawPort().Height();
                        Start = cTimeMs::Now();
@@ -253,7 +250,7 @@ void cTrueColorDemo::Action(void)
                      }
                      break;
              case 2: {
-                       FadeInPixmap = CreateTextPixmap("True Color OSD Demo", Line, 1, clrYellow, clrTransparent);
+                       FadeInPixmap = CreateTextPixmap("True Color OSD Demo", Line, 1, clrYellow, clrTransparent, OsdFont);
                        if (FadeInPixmap)
                           Line += FadeInPixmap->DrawPort().Height();
                        Start = cTimeMs::Now();
@@ -261,15 +258,12 @@ void cTrueColorDemo::Action(void)
                      }
                      break;
              case 3: {
-                       if (cFont *Font = cFont::CreateFont(DefaultFontOsd, osd->Height() / 10)) {
-                          NextPixmap = CreateTextPixmap("Millions of colors", Line, 1, clrYellow, clrTransparent, Font);
-                          delete Font;
-                          if (NextPixmap) {
-                             FadeInPixmap = NextPixmap;
-                             Start = cTimeMs::Now();
-                             StartLine = Line;
-                             Line += NextPixmap->DrawPort().Height();
-                             }
+                       NextPixmap = CreateTextPixmap("Millions of colors", Line, 1, clrYellow, clrTransparent, LrgFont);
+                       if (NextPixmap) {
+                          FadeInPixmap = NextPixmap;
+                          Start = cTimeMs::Now();
+                          StartLine = Line;
+                          Line += NextPixmap->DrawPort().Height();
                           }
                        State++;
                      }
@@ -301,7 +295,7 @@ void cTrueColorDemo::Action(void)
                      }
                      break;
              case 6: {
-                       TilePixmap = CreateTextPixmap("Tiled Pixmaps", StartLine, 1, clrRed, clrWhite);
+                       TilePixmap = CreateTextPixmap("Tiled Pixmaps", StartLine, 1, clrRed, clrWhite, OsdFont);
                        if (TilePixmap) {
                           TilePixmap->SetViewPort(TilePixmap->ViewPort().Grown(TilePixmap->DrawPort().Width(), TilePixmap->DrawPort().Height()));
                           TilePixmap->SetAlpha(200);
@@ -317,15 +311,14 @@ void cTrueColorDemo::Action(void)
                      }
                      break;
              case 7: {
-                       const cFont *Font = cFont::GetFont(fontOsd);
                        const char *Text = "Scrolling Pixmaps";
-                       int w = Font->Width(Text);
-                       int h = Font->Height();
+                       int w = OsdFont->Width(Text);
+                       int h = OsdFont->Height();
                        if (cPixmap *Pixmap = osd->CreatePixmap(2, cRect((osd->Width() - w) / 2, StartLine, w, 2 * h), cRect(0, 0, w, 3 * h))) {
                           Pixmap->Clear();
-                          Pixmap->DrawText(cPoint(0, 0), Text, clrYellow, clrTransparent, Font);
+                          Pixmap->DrawText(cPoint(0, 0), Text, clrYellow, clrTransparent, OsdFont);
                           cString s = cString::sprintf("Line %d", ++ScrollLineNumber);
-                          Pixmap->DrawText(cPoint(0, Pixmap->ViewPort().Height()), s, clrYellow, clrTransparent, Font);
+                          Pixmap->DrawText(cPoint(0, Pixmap->ViewPort().Height()), s, clrYellow, clrTransparent, OsdFont);
                           ScrollPixmap = Pixmap;
                           ScrollStart.Set(0, 0);
                           ScrollEnd.Set(0, -h);
@@ -335,9 +328,8 @@ void cTrueColorDemo::Action(void)
                      }
                      break;
              case 8: {
-                       const cFont *Font = cFont::GetFont(fontSml);
                        const char *Text = "Animation";
-                       const int Size = Font->Width(Text) + 10;
+                       const int Size = SmlFont->Width(Text) + 10;
                        const int NumDots = 12;
                        const int AnimFrames = NumDots;
                        // Temporarily using pixmap layer 0 to have the text alpha blended:
@@ -359,7 +351,7 @@ void cTrueColorDemo::Action(void)
                                   AnimPixmap->DrawEllipse(cRect(x, y, Diameter, Diameter), ArgbToColor(0xFF, Color, Color, Color));
                                   Color -= Delta;
                                   }
-                              AnimPixmap->DrawText(cPoint(0, Frame * Size), Text, clrBlack, clrTransparent, cFont::GetFont(fontSml), Size, Size, taCenter);
+                              AnimPixmap->DrawText(cPoint(0, Frame * Size), Text, clrBlack, clrTransparent, SmlFont, Size, Size, taCenter);
                               }
                           AnimPixmap->SetLayer(3); // now setting the actual pixmap layer
                           FadeInPixmap = AnimPixmap;
@@ -393,6 +385,9 @@ void cTrueColorDemo::Action(void)
         if (Delta < FrameTime)
            cCondWait::SleepMs(FrameTime - Delta);
         }
+  delete OsdFont;
+  delete SmlFont;
+  delete LrgFont;
 }
 
 void cTrueColorDemo::Show(void)
