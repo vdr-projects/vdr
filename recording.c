@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.52 2012/03/12 14:49:28 kls Exp $
+ * $Id: recording.c 2.53 2012/03/13 13:17:57 kls Exp $
  */
 
 #include "recording.h"
@@ -1063,6 +1063,17 @@ int cRecording::LengthInSeconds(void) const
   return -1;
 }
 
+int cRecording::FileSizeMB(void) const
+{
+  if (fileSizeMB < 0) {
+     int fs = DirSizeMB(FileName());
+     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+        return fs; // check again later for ongoing recordings
+     fileSizeMB = fs;
+     }
+  return fileSizeMB;
+}
+
 // --- cRecordings -----------------------------------------------------------
 
 cRecordings Recordings;
@@ -1127,14 +1138,13 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                  cRecording *r = new cRecording(buffer);
                  if (r->Name()) {
                     r->NumFrames(); // initializes the numFrames member
+                    r->FileSizeMB(); // initializes the fileSizeMB member
+                    if (deleted)
+                       r->deleted = time(NULL);
                     Lock();
                     Add(r);
                     ChangeState();
                     Unlock();
-                    if (deleted) {
-                       r->fileSizeMB = DirSizeMB(buffer);
-                       r->deleted = time(NULL);
-                       }
                     }
                  else
                     delete r;
@@ -1216,7 +1226,6 @@ void cRecordings::DelByName(const char *FileName)
      if (ext) {
         strncpy(ext, DELEXT, strlen(ext));
         if (access(recording->FileName(), F_OK) == 0) {
-           recording->fileSizeMB = DirSizeMB(recording->FileName());
            recording->deleted = time(NULL);
            DeletedRecordings.Add(recording);
            recording = NULL; // to prevent it from being deleted below
@@ -1241,10 +1250,31 @@ int cRecordings::TotalFileSizeMB(void)
   int size = 0;
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (recording->fileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
-         size += recording->fileSizeMB;
+      int FileSizeMB = recording->FileSizeMB();
+      if (FileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
+         size += FileSizeMB;
       }
   return size;
+}
+
+double cRecordings::MBperMinute(void)
+{
+  int size = 0;
+  int length = 0;
+  LOCK_THREAD;
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (IsOnVideoDirectoryFileSystem(recording->FileName())) {
+         int FileSizeMB = recording->FileSizeMB();
+         if (FileSizeMB > 0) {
+            int LengthInSeconds = recording->LengthInSeconds();
+            if (LengthInSeconds > 0) {
+               size += FileSizeMB;
+               length += LengthInSeconds;
+               }
+            }
+         }
+      }
+  return (size && length) ? double(size) * 60 / length : -1;
 }
 
 void cRecordings::ResetResume(const char *ResumeFileName)

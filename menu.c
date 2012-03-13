@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.44 2012/03/11 13:20:45 kls Exp $
+ * $Id: menu.c 2.45 2012/03/13 13:14:38 kls Exp $
  */
 
 #include "menu.h"
@@ -78,7 +78,10 @@ bool cFreeDiskSpace::HasChanged(bool ForceCheck)
      int Percent = VideoDiskSpace(&FreeMB);
      lastDiskSpaceCheck = time(NULL);
      if (ForceCheck || FreeMB != lastFreeMB) {
-        int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
+        int MBperMinute = Recordings.MBperMinute();
+        if (MBperMinute <= 0)
+           MBperMinute = MB_PER_MINUTE;
+        int Minutes = int(double(FreeMB) / MBperMinute);
         int Hours = Minutes / 60;
         Minutes %= 60;
         freeDiskSpaceString = cString::sprintf("%s %d%%  -  %2d:%02d %s", tr("Disk"), Percent, Hours, Minutes, tr("free"));
