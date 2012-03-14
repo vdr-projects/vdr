@@ -2329,6 +2329,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for a patch that added a workaround for the broken linux-dvb driver header files
  for reporting a faulty "frame duration" instead of "frame rate" in vdr.5
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
+ for suggesting to move setting LC_NUMERIC further up to make sure any floating point
+ numbers use a decimal point
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
