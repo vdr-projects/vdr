@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.30 2012/03/13 15:37:03 kls Exp $
+ * $Id: dvbsubtitle.c 2.31 2012/03/16 11:56:56 kls Exp $
  */
 
 
@@ -1281,9 +1281,16 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
         else
            return; // unable to draw bitmaps
         }
-  if (Reduced) {
-     for (int i = 0; i < NumAreas; i++) {
-         cSubtitleRegion *sr = Page->regions.Get(i);
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
+  bitmaps->Add(Bitmaps);
+  for (int i = 0; i < NumAreas; i++) { 
+      cSubtitleRegion *sr = Page->regions.Get(i);
+      cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
+      if (!clut)
+         continue;
+      sr->Replace(*clut->GetPalette(sr->Bpp()));
+      sr->UpdateTextData(clut);
+      if (Reduced) {
          if (sr->Bpp() != Areas[i].bpp) {
             if (sr->Level() <= Areas[i].bpp) {
                //TODO this is untested - didn't have any such subtitle stream
@@ -1299,15 +1306,6 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
                }
             }
          }
-     }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
-  bitmaps->Add(Bitmaps);
-  for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
-      cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
-      if (!clut)
-         continue;
-      sr->Replace(*clut->GetPalette(sr->Bpp()));
-      sr->UpdateTextData(clut);
       int posX = sr->HorizontalAddress();
       int posY = sr->VerticalAddress();
       if (sr->Width() > 0 && sr->Height() > 0) {

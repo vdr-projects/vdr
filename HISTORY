@@ -7046,3 +7046,4 @@ Video Disk Recorder Revision History
 - Moved setting LC_NUMERIC further up to make sure any floating point numbers use a
   decimal point (suggested by Tobias Grimm).
 - Added missing channel locking to cEIT.
+- Fixed reduced bpp support for DVB subtitles (thanks to Rolf Ahrenberg).

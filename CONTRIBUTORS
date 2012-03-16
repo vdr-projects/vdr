@@ -1139,6 +1139,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  texts of its own
  for suggesting to change the Green button in the "Edit timer" menu from "Once"
  to "Single"
+ for fixing reduced bpp support for DVB subtitles
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
