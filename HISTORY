@@ -7047,3 +7047,4 @@ Video Disk Recorder Revision History
   decimal point (suggested by Tobias Grimm).
 - Added missing channel locking to cEIT.
 - Fixed reduced bpp support for DVB subtitles (thanks to Rolf Ahrenberg).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
