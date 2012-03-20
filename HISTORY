@@ -7010,7 +7010,7 @@ Video Disk Recorder Revision History
     which is higher than any normal table id that is broadcast in the EIT data.
   See PLUGINS.html, section "Electronic Program Guide" for more information.
 
-2012-03-14: Version 1.7.27
+2012-03-20: Version 1.7.27
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Changed the Green button in the "Edit timer" menu from "Once" to "Single"
@@ -7048,3 +7048,4 @@ Video Disk Recorder Revision History
 - Added missing channel locking to cEIT.
 - Fixed reduced bpp support for DVB subtitles (thanks to Rolf Ahrenberg).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Reverted some improvements to Make.config.template (thanks to Christian Ruppert).
