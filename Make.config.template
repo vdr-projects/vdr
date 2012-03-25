@@ -6,15 +6,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.6 2012/02/27 10:56:28 kls Exp $
+# $Id: Make.config.template 2.8 2012/03/20 11:20:13 kls Exp $
 
 ### The C compiler and options:
 
-CC       ?= gcc
-CFLAGS   ?= -g -O3 -Wall
+CC       = gcc
+CFLAGS   = -g -O3 -Wall
 
-CXX      ?= g++
-CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
+CXX      = g++
+CXXFLAGS = -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
 
 ifdef PLUGIN
 CFLAGS   += -fPIC
@@ -23,23 +23,23 @@ endif
 
 ### The directory environment:
 
-PREFIX   ?= $(DESTDIR)/usr/local
-#DVBDIR   ?= /usr/src/v4l-dvb/linux
-MANDIR   ?= $(PREFIX)/man
-BINDIR   ?= $(PREFIX)/bin
+PREFIX   = $(DESTDIR)/usr/local
+#DVBDIR   = /usr/src/v4l-dvb/linux
+MANDIR   = $(PREFIX)/man
+BINDIR   = $(PREFIX)/bin
 
-LOCDIR       ?= ./locale
-PLUGINDIR    ?= ./PLUGINS
-PLUGINLIBDIR ?= $(PLUGINDIR)/lib
-VIDEODIR     ?= /video
-CONFDIR      ?= $(VIDEODIR)
+LOCDIR       = ./locale
+PLUGINDIR    = ./PLUGINS
+PLUGINLIBDIR = $(PLUGINDIR)/lib
+VIDEODIR     = /video
+CONFDIR      = $(VIDEODIR)
 
 ### The remote control:
 
-LIRC_DEVICE ?= /var/run/lirc/lircd
+LIRC_DEVICE = /var/run/lirc/lircd
 
 ## Define if you want vdr to not run as root
-#VDR_USER ?= vdr
+#VDR_USER = vdr
 
 ### You don't need to touch the following:
 

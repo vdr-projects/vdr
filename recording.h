@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.27 2012/02/19 10:44:53 kls Exp $
+ * $Id: recording.h 2.30 2012/03/13 12:41:05 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -22,7 +22,7 @@
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
 
-#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
+//#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
 
 extern bool VfatFileSystem;
 extern int InstanceId;
@@ -129,6 +129,9 @@ public:
        ///< If the number of frames is unknown, -1 will be returned.
   int LengthInSeconds(void) const;
        ///< Returns the length (in seconds) of this recording, or -1 in case of error.
+  int FileSizeMB(void) const;
+       ///< Returns the total file size of this recording (in MB), or -1 if the file
+       ///< size is unknown.
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
@@ -190,7 +193,10 @@ public:
   void AddByName(const char *FileName, bool TriggerUpdate = true);
   void DelByName(const char *FileName);
   void UpdateByName(const char *FileName);
-  int TotalFileSizeMB(void); ///< Only for deleted recordings!
+  int TotalFileSizeMB(void);
+  double MBperMinute(void);
+       ///< Returns the average data rate (in MB/min) of all recordings, or -1 if
+       ///< this value is unknown.
   };
 
 extern cRecordings Recordings;
@@ -284,7 +290,7 @@ public:
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
-  int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL, bool StayOffEnd = false);
+  int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
   int Get(uint16_t FileNumber, off_t FileOffset);
   int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }

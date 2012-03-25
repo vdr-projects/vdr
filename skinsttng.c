@@ -4,10 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.13 2012/03/05 12:01:26 kls Exp $
+ * $Id: skinsttng.c 2.14 2012/03/11 14:06:05 kls Exp $
  */
 
-// Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
+// "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
 // registered in the United States Patent and Trademark Office.
 // No infringement intended.
 

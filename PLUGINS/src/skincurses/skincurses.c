@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.7 2011/08/21 11:04:38 kls Exp $
+ * $Id: skincurses.c 2.8 2012/03/11 14:42:52 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.1.10";
+static const char *VERSION        = "0.1.11";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -375,13 +375,13 @@ void cSkinCursesDisplayMenu::SetItem(const char *Text, int Index, bool Current, 
   for (int i = 0; i < MaxTabs; i++) {
       const char *s = GetTabbedText(Text, i);
       if (s) {
-         int xt = Tab(i) / 12;// Tab() is in "pixel" - see also skins.c!!!
+         int xt = Tab(i) / AvgCharWidth();// Tab() is in "pixel" - see also skins.c!!!
          osd->DrawText(xt, y, s, ColorFg, ColorBg, &Font, ScOsdWidth - 2 - xt);
          }
       if (!Tab(i + 1))
          break;
       }
-  SetEditableWidth(ScOsdWidth - 2 - Tab(1) / 12); // Tab() is in "pixel" - see also skins.c!!!
+  SetEditableWidth(ScOsdWidth - 2 - Tab(1) / AvgCharWidth()); // Tab() is in "pixel" - see also skins.c!!!
 }
 
 void cSkinCursesDisplayMenu::SetScrollbar(int Total, int Offset)

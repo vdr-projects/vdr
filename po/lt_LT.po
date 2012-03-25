@@ -648,7 +648,7 @@ msgstr "Failas"
 msgid "Button$Folder"
 msgstr "Katalogas"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

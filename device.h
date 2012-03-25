@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.37 2012/03/06 12:13:46 kls Exp $
+ * $Id: device.h 2.38 2012/03/13 10:17:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -201,6 +201,9 @@ public:
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
          ///< Returns the number of this device (0 ... numDevices).
+  virtual cString DeviceName(void) const;
+         ///< Returns a string identifying the name of this device.
+         ///< The default implementation returns an empty string.
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
   virtual bool AvoidRecording(void) const { return false; }

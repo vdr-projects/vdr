@@ -2335,7 +2335,7 @@ Video Disk Recorder Revision History
 - Now explicitly handling exit value 0 and 2 in 'runvdr'.
 - Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
   to Lauri Tischler and Ragnar Sundblad).
-- Added channels for DVB-T Hannover (Germany) to channels.cont.terr (thanks to
+- Added channels for DVB-T Hannover (Germany) to channels.conf.terr (thanks to
   Peter Waechtler).
 - Fixed a hangup in SVDRP when the client disappears without sending QUIT (thanks
   to Robert Bartl for reporting this one). The problem was introduced in version
@@ -7009,3 +7009,45 @@ Video Disk Recorder Revision History
   + The default table id for a newly created cEvent has been changed to 0xFF,
     which is higher than any normal table id that is broadcast in the EIT data.
   See PLUGINS.html, section "Electronic Program Guide" for more information.
+
+2012-03-25: Version 1.7.27
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Changed the Green button in the "Edit timer" menu from "Once" to "Single"
+  (suggested by Rolf Ahrenberg).
+- Fixed some typos in HISTORY and CONTRIBUTORS (thanks to Ville Skyttä).
+- The channel name column in the "What's on now/next" menu now adjusts its width
+  to display the full short name of each channel (suggested by Dominic Evans).
+- Dropped the meanwhile obsolete script 'i18n-to-gettext'.
+- Removed the obsolete function cPlugin::RegisterI18n().
+- Removed the obsolete typedef tI18nPhrase.
+- Adapted menu column widths of 'skincurses' to the wider HD OSD sizes.
+- Deactivated definition of __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS (recording.h)
+  and LEGACY_CRECEIVER (receiver.h) to trigger an error for any plugin that still
+  uses the respective code. You can reactivate these to quickly make your plugin
+  compile again, but beware that these code parts will be removed in one of the next
+  versions.
+- Made the "overloaded-virtual" warning an error to detect hidden overloaded
+  virtual functions (thanks to Anssi Hannula for pointing out -Werror=...).
+  Plugin authors may want to change -Woverloaded-virtual to -Werror=overloaded-virtual
+  in their Makefiles.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Improved fast forwarding to the end of a timeshift recording.
+- The new function cDevice::DeviceName() returns a string identifying the name of
+  the given device.
+- When toggling a timer between "Single" and "Repeating", the previous setting is now
+  retained in case the user toggles back to the original value.
+- When estimating the remaining disk space (in hours), the average data rate of all
+  existing recordings is now taken into account. If this value can't be determined,
+  the previous value of 25.75 MB/min is taken.
+- No longer using GetFont() (which is not thread safe) in the 'osddemo' plugin.
+- No longer using GetFont() (which is not thread safe) in cSubtitleRegion::UpdateTextData().
+- Fixed a memory leak in cSubtitleRegion::UpdateTextData().
+- Moved setting LC_NUMERIC further up to make sure any floating point numbers use a
+  decimal point (suggested by Tobias Grimm).
+- Added missing channel locking to cEIT.
+- Fixed reduced bpp support for DVB subtitles (thanks to Rolf Ahrenberg).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Reverted some improvements to Make.config.template (thanks to Christian Ruppert).
+- Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
+  Schmirler).

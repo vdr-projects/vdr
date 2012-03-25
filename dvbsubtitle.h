@@ -4,9 +4,9 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * Original author: Marco Schlüßler <marco@lordzodiac.de>
+ * Original author: Marco Schluessler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 2.6 2011/03/20 13:34:23 kls Exp $
+ * $Id: dvbsubtitle.h 2.7 2012/03/11 13:34:12 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H

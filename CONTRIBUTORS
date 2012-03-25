@@ -1137,6 +1137,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for adding some typecasts to silence gcc compiler warnings
  for reporting a bug in handling OSD color button texts in case a menu item has
  texts of its own
+ for suggesting to change the Green button in the "Edit timer" menu from "Once"
+ to "Single"
+ for fixing reduced bpp support for DVB subtitles
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1320,7 +1323,7 @@ Javier Marcet <lists@marcet.info>
  is a replay session active
 
 Peter Waechtler <pwaechtler@mac.com>
- for adding channels for DVB-T Hannover (Germany) to channels.cont.terr
+ for adding channels for DVB-T Hannover (Germany) to channels.conf.terr
 
 Robert Bartl <robert@bartl.priv.at>
  for reporting a hangup in SVDRP when the client disappears without sending QUIT
@@ -1852,7 +1855,7 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
  through the full featured DVB card
 
 Walter Koch <koch@u32.de>
- for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+ for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.conf.terr
  for fixing some missing '-' in the German OSD texts
  for suggesting to display the free disk space also in the title of the "Recordings"
  menu
@@ -1953,6 +1956,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for removing a redundant NULL check in cDvbSpuDecoder::setTime()
  for pointing out that the variable HasSnr was unused in cDvbTuner::GetSignalQuality()
  for fixing cConfig::Load() for g++ version 4.7.0
+ for fixing some typos in HISTORY and CONTRIBUTORS
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2326,6 +2330,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for a patch that added a workaround for the broken linux-dvb driver header files
  for reporting a faulty "frame duration" instead of "frame rate" in vdr.5
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
+ for suggesting to move setting LC_NUMERIC further up to make sure any floating point
+ numbers use a decimal point
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2383,6 +2389,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for setting the audio type of language descriptors to 0x00 in the PAT/PMT generator
  for adding support for automatically selecting subtitles when playing old PES
  recordings made with the subtitles plugin
+ for pointing out -Werror=...
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2410,6 +2417,7 @@ Frank Schmirler <vdr@schmirler.de>
  for fixing the German translation of "Folder name must not contain '%c'!"
  for suggestions used in revising priority handling to allow receivers with a priority
  that is lower than that of live viewing
+ for fixing handling IDLEPRIORITY in cDvbDevice::ProvidesChannel()
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2833,6 +2841,8 @@ Chris Mayo <aklhfex@gmail.com>
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
  for adding cap_net_raw to the capabilities that are not dropped
+ for suggesting to make the channel name column in the "What's on now/next" menu
+ adjust its width to display the full short name of each channel
 
 Torsten Lang <info@torstenlang.de>
  for reporting a problem with newline characters in stream component descriptions

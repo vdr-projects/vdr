@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 2.0 2008/02/16 15:41:05 kls Exp $
+ * $Id: status.c 2.1 2012/03/11 14:48:37 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.3.0";
+static const char *VERSION        = "0.3.1";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -18,7 +18,7 @@ static const char *MAINMENUENTRY  = NULL;
 class cStatusTest : public cStatus {
 protected:
   virtual void TimerChange(const cTimer *Timer, eTimerChange Change);
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
   virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
   virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   virtual void SetVolume(int Volume, bool Absolute);
@@ -41,9 +41,9 @@ void cStatusTest::TimerChange(const cTimer *Timer, eTimerChange Change)
   dsyslog("status: cStatusTest::TimerChange  %s %d", Timer ? *Timer->ToText(true) : "-", Change);
 }
 
-void cStatusTest::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+void cStatusTest::ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView)
 {
-  dsyslog("status: cStatusTest::ChannelSwitch  %d %d", Device->CardIndex(), ChannelNumber);
+  dsyslog("status: cStatusTest::ChannelSwitch  %d %d %d", Device->CardIndex(), ChannelNumber, LiveView);
 }
 
 void cStatusTest::Recording(const cDevice *Device, const char *Name, const char *FileName, bool On)

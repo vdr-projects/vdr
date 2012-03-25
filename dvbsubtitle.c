@@ -4,10 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * Original author: Marco Schlüßler <marco@lordzodiac.de>
+ * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.27 2012/03/02 10:47:25 kls Exp $
+ * $Id: dvbsubtitle.c 2.31 2012/03/16 11:56:56 kls Exp $
  */
 
 
@@ -491,13 +491,14 @@ void cSubtitleRegion::UpdateTextData(cSubtitleClut *Clut)
   const cPalette *palette = Clut ? Clut->GetPalette(Depth()) : NULL;
   for (cSubtitleObject *so = objects.First(); so && palette; so = objects.Next(so)) {
       if (Utf8StrLen(so->TextData()) > 0) {
-         const cFont *font = cFont::GetFont(fontOsd);
-         cBitmap *tmp = new cBitmap(font->Width(so->TextData()), font->Height(), Depth());
+         cFont *font = cFont::CreateFont(Setup.FontOsd, Setup.FontOsdSize);
+         cBitmap tmp(font->Width(so->TextData()), font->Height(), Depth());
          double factor = (double)lineHeight / font->Height();
-         tmp->DrawText(0, 0, so->TextData(), palette->Color(so->ForegroundPixelCode()), palette->Color(so->BackgroundPixelCode()), font);
-         tmp = tmp->Scaled(factor, factor, true);
-         DrawBitmap(so->X(), so->Y(), *tmp);
-         DELETENULL(tmp);
+         tmp.DrawText(0, 0, so->TextData(), palette->Color(so->ForegroundPixelCode()), palette->Color(so->BackgroundPixelCode()), font);
+         cBitmap *scaled = tmp.Scaled(factor, factor, true);
+         DrawBitmap(so->X(), so->Y(), *scaled);
+         delete scaled;
+         delete font;
          }
       }
 }
@@ -1280,9 +1281,16 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
         else
            return; // unable to draw bitmaps
         }
-  if (Reduced) {
-     for (int i = 0; i < NumAreas; i++) {
-         cSubtitleRegion *sr = Page->regions.Get(i);
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
+  bitmaps->Add(Bitmaps);
+  for (int i = 0; i < NumAreas; i++) { 
+      cSubtitleRegion *sr = Page->regions.Get(i);
+      cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
+      if (!clut)
+         continue;
+      sr->Replace(*clut->GetPalette(sr->Bpp()));
+      sr->UpdateTextData(clut);
+      if (Reduced) {
          if (sr->Bpp() != Areas[i].bpp) {
             if (sr->Level() <= Areas[i].bpp) {
                //TODO this is untested - didn't have any such subtitle stream
@@ -1298,15 +1306,6 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
                }
             }
          }
-     }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
-  bitmaps->Add(Bitmaps);
-  for (cSubtitleRegion *sr = Page->regions.First(); sr; sr = Page->regions.Next(sr)) {
-      cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
-      if (!clut)
-         continue;
-      sr->Replace(*clut->GetPalette(sr->Bpp()));
-      sr->UpdateTextData(clut);
       int posX = sr->HorizontalAddress();
       int posY = sr->VerticalAddress();
       if (sr->Width() > 0 && sr->Height() > 0) {

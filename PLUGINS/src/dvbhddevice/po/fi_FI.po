@@ -44,7 +44,7 @@ msgid "Always 16/9"
 msgstr "aina 16:9"
 
 msgid "Zoom 16/9"
-msgstr ""
+msgstr "zoom 16/9"
 
 msgid "Off"
 msgstr "ei"
@@ -98,10 +98,10 @@ msgid "HDMI CEC"
 msgstr "Käytä HDMI CEC-toimintoa"
 
 msgid "CEC: Switch TV on"
-msgstr ""
+msgstr "CEC: Laita TV päälle"
 
 msgid "CEC: Switch TV off"
-msgstr ""
+msgstr "CEC: Sammuta TV"
 
 msgid "Remote Control Protocol"
 msgstr "Kaukosäätimen protokolla"
@@ -116,4 +116,4 @@ msgid "Allow True Color OSD"
 msgstr "Salli tosivärit kuvaruutunäytölle"
 
 msgid "Hide mainmenu entry"
-msgstr ""
+msgstr "Piilota valinta päävalikosta"

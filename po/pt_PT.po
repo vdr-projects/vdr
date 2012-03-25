@@ -649,7 +649,7 @@ msgstr "Ficheiro"
 msgid "Button$Folder"
 msgstr "Pasta"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

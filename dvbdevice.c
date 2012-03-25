@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.67 2012/03/08 09:49:58 kls Exp $
+ * $Id: dvbdevice.c 2.69 2012/03/25 10:41:45 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1090,6 +1090,11 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
   return true;
 }
 
+cString cDvbDevice::DeviceName(void) const
+{
+  return frontendInfo.name;
+}
+
 bool cDvbDevice::Initialize(void)
 {
   new cDvbSourceParam('A', "ATSC");
@@ -1443,7 +1448,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
   if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
-     if (Priority >= 0) {
+     if (Priority > IDLEPRIORITY) {
         if (Receiving()) {
            if (dvbTuner->IsTunedTo(Channel)) {
               if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0)) || Channel->Dpid(0) && !HasPid(Channel->Dpid(0))) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.4 2012/02/20 11:47:15 kls Exp $
+ * $Id: skins.c 2.5 2012/03/11 14:36:11 kls Exp $
  */
 
 #include "skins.h"
@@ -78,9 +78,8 @@ void cSkinDisplayMenu::SetTabs(int Tab1, int Tab2, int Tab3, int Tab4, int Tab5)
   tabs[3] = Tab3 ? tabs[2] + Tab3 : 0;
   tabs[4] = Tab4 ? tabs[3] + Tab4 : 0;
   tabs[5] = Tab5 ? tabs[4] + Tab5 : 0;
-  int AvgCharWidth = Setup.FontOsdSize * 4 / 6; // just an estimate
   for (int i = 1; i < MaxTabs; i++)
-      tabs[i] *= AvgCharWidth;
+      tabs[i] *= AvgCharWidth();
 }
 
 void cSkinDisplayMenu::Scroll(bool Up, bool Page)

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.15 2012/03/10 14:43:52 kls Exp $
+ * $Id: eit.c 2.16 2012/03/14 10:11:15 kls Exp $
  */
 
 #include "eit.h"
@@ -32,12 +32,18 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   if (!CheckCRCAndParse())
      return;
 
+  time_t Now = time(NULL);
+  if (Now < VALID_TIME)
+     return; // we need the current time for handling PDC descriptors
+
+  if (!Channels.Lock(false, 10))
+     return;
   tChannelID channelID(Source, getOriginalNetworkId(), getTransportStreamId(), getServiceId());
   cChannel *channel = Channels.GetByChannelID(channelID, true);
-  if (!channel)
-     return; // only collect data for known channels
-  if (EpgHandlers.IgnoreChannel(channel))
+  if (!channel || EpgHandlers.IgnoreChannel(channel)) {
+     Channels.Unlock();
      return;
+     }
 
   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
 
@@ -45,12 +51,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   bool Modified = false;
   time_t SegmentStart = 0;
   time_t SegmentEnd = 0;
-  time_t Now = time(NULL);
   struct tm tm_r;
   struct tm t = *localtime_r(&Now, &tm_r); // this initializes the time zone in 't'
-
-  if (Now < VALID_TIME)
-     return; // we need the current time for handling PDC descriptors
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
@@ -295,13 +297,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
         pSchedule->ClrRunningStatus(channel);
      pSchedule->SetPresentSeen();
      }
-  if (OnlyRunningStatus)
-     return;
-  if (Modified) {
+  if (Modified && !OnlyRunningStatus) {
      EpgHandlers.SortSchedule(pSchedule);
      EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
      Schedules->SetModified(pSchedule);
      }
+  Channels.Unlock();
 }
 
 // --- cTDT ------------------------------------------------------------------

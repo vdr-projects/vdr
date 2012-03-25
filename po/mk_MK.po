@@ -649,7 +649,7 @@ msgstr "Датотека"
 msgid "Button$Folder"
 msgstr "Директориум"
 
-msgid "Button$Once"
+msgid "Button$Single"
 msgstr ""
 
 msgid "Button$Repeating"

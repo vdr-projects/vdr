@@ -92,3 +92,7 @@ VDR Plugin 'skincurses' Revision History
 2011-05-15: Version 0.1.10
 
 - Avoiding a gcc 4.6 compiler error (thanks to Tobias Grimm).
+
+2012-03-11: Version 0.1.11
+
+- Adapted menu column widths of 'skincurses' to the wider HD OSD sizes.

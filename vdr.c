@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.34 2012/03/09 09:55:15 kls Exp $
+ * $Id: vdr.c 2.35 2012/03/14 09:09:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -173,6 +173,7 @@ int main(int argc, char *argv[])
   // Initiate locale:
 
   setlocale(LC_ALL, "");
+  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Command line options:
 
@@ -550,7 +551,6 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
-  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Initialize internationalization:
 

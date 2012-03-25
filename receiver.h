@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.5 2012/03/01 09:50:24 kls Exp $
+ * $Id: receiver.h 2.6 2012/03/11 15:25:40 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -14,7 +14,7 @@
 
 #define MAXRECEIVEPIDS  64 // the maximum number of PIDs per receiver
 
-#define LEGACY_CRECEIVER // Code enclosed with this macro is deprecated and may be removed in a future version
+//#define LEGACY_CRECEIVER // Code enclosed with this macro is deprecated and may be removed in a future version
 
 class cReceiver {
   friend class cDevice;
