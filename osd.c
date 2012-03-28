@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.27 2012/03/05 10:28:01 kls Exp $
+ * $Id: osd.c 2.28 2012/03/28 10:40:12 kls Exp $
  */
 
 #include "osd.h"
@@ -1382,10 +1382,10 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case  0:
           case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
           case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
           default: ;
           }
         y++;
@@ -1417,10 +1417,10 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case  0:
           case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
           case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
           default: ;
           }
         x++;

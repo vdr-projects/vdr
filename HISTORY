@@ -7051,3 +7051,7 @@ Video Disk Recorder Revision History
 - Reverted some improvements to Make.config.template (thanks to Christian Ruppert).
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
+
+2012-03-28: Version 1.7.28
+
+- Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
