@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 2.5 2012/02/29 11:49:36 kls Exp $
+ * $Id: receiver.c 2.6 2012/03/31 10:15:26 kls Exp $
  */
 
 #include "receiver.h"
@@ -83,7 +83,7 @@ bool cReceiver::SetPids(const cChannel *Channel)
             AddPids(Channel->Dpids()) &&
             AddPids(Channel->Spids());
      }
-return true;
+  return true;
 }
 
 bool cReceiver::WantsPid(int Pid)
