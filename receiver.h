@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.6 2012/03/11 15:25:40 kls Exp $
+ * $Id: receiver.h 2.7 2012/03/31 10:18:29 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -62,7 +62,7 @@ public:
                ///< Adds the given Pids to the list of PIDs of this receiver.
   bool SetPids(const cChannel *Channel);
                ///< Sets the PIDs of this receiver to those of the given Channel,
-               ///< replacing and previously stored PIDs. If Channel is NULL, all
+               ///< replacing any previously stored PIDs. If Channel is NULL, all
                ///< PIDs will be cleared. Parameters in the Setup may control whether
                ///< certain types of PIDs (like Dolby Digital, for instance) are
                ///< actually set. The Channel's ID is stored and can later be retrieved
