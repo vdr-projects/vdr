@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.16 2012/02/29 10:41:00 kls Exp $
+ * $Id: tools.h 2.17 2012/04/01 11:36:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -228,13 +228,24 @@ void TouchFile(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
 off_t FileSize(const char *FileName); ///< returns the size of the given file, or -1 in case of an error (e.g. if the file doesn't exist)
 cString WeekDayName(int WeekDay);
+    ///< Converts the given WeekDay (0=Sunday, 1=Monday, ...) to a three letter
+    ///< day name.
 cString WeekDayName(time_t t);
+    ///< Converts the week day of the given time to a three letter day name.
 cString WeekDayNameFull(int WeekDay);
+    ///< Converts the given WeekDay (0=Sunday, 1=Monday, ...) to a full
+    ///< day name.
 cString WeekDayNameFull(time_t t);
+    ///< Converts the week day of the given time to a full day name.
 cString DayDateTime(time_t t = 0);
+    ///< Converts the given time to a string of the form "www dd.mm. hh:mm".
+    ///< If no time is given, the current time is taken.
 cString TimeToString(time_t t);
+    ///< Converts the given time to a string of the form "www mmm dd hh:mm:ss yyyy".
 cString DateString(time_t t);
+    ///< Converts the given time to a string of the form "www dd.mm.yyyy".
 cString TimeString(time_t t);
+    ///< Converts the given time to a string of the form "hh:mm".
 uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100);
     ///< Converts the given Memory to a JPEG image and returns a pointer
     ///< to the resulting image. Mem must point to a data block of exactly
