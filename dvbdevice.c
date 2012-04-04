@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.69 2012/03/25 10:41:45 kls Exp $
+ * $Id: dvbdevice.c 2.70 2012/04/04 09:49:12 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -285,6 +285,7 @@ class cDvbTuner : public cThread {
 private:
   static cMutex bondMutex;
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  int frontendType;
   const cDvbDevice *device;
   int fd_frontend;
   int adapter, frontend;
@@ -314,6 +315,7 @@ private:
 public:
   cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend);
   virtual ~cDvbTuner();
+  int FrontendType(void) const { return frontendType; }
   bool Bond(cDvbTuner *Tuner);
   void UnBond(void);
   bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
@@ -331,6 +333,7 @@ cMutex cDvbTuner::bondMutex;
 
 cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend)
 {
+  frontendType = SYS_UNDEFINED;
   device = Device;
   fd_frontend = Fd_Frontend;
   adapter = Adapter;
@@ -733,7 +736,7 @@ bool cDvbTuner::SetFrontend(void)
   cDvbTransponderParameters dtp(channel.Parameters());
 
   // Determine the required frontend type:
-  int frontendType = GetRequiredDeliverySystem(&channel, &dtp);
+  frontendType = GetRequiredDeliverySystem(&channel, &dtp);
   if (frontendType == SYS_UNDEFINED)
      return false;
 
@@ -977,7 +980,7 @@ int cDvbDevice::setTransferModeForDolbyDigital = 1;
 cMutex cDvbDevice::bondMutex;
 
 const char *DeliverySystemNames[] = {
-  "UNDEFINED",
+  "",
   "DVB-C",
   "DVB-C",
   "DVB-T",
@@ -1088,6 +1091,17 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
   dsyslog("creating cDvbDevice");
   new cDvbDevice(Adapter, Frontend); // it's a "budget" device
   return true;
+}
+
+cString cDvbDevice::DeviceType(void) const
+{
+  if (dvbTuner) {
+     if (dvbTuner->FrontendType() != SYS_UNDEFINED)
+        return DeliverySystemNames[dvbTuner->FrontendType()];
+     if (numDeliverySystems)
+        return DeliverySystemNames[deliverySystems[0]]; // to have some reasonable default
+     }
+  return "";
 }
 
 cString cDvbDevice::DeviceName(void) const
