@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.45 2012/03/13 13:14:38 kls Exp $
+ * $Id: menu.c 2.46 2012/04/06 12:33:40 kls Exp $
  */
 
 #include "menu.h"
@@ -47,9 +47,10 @@
 #define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
+#define MAXCHNAMWIDTH      16 // maximum number of characters of channels' short names shown in schedules menus
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
-#define CHNAMWIDTH  (Channels.MaxShortChannelNameLength() + 1)
+#define CHNAMWIDTH  (min(MAXCHNAMWIDTH, Channels.MaxShortChannelNameLength() + 1))
 
 // --- cFreeDiskSpace --------------------------------------------------------
 

@@ -7052,10 +7052,13 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-04: Version 1.7.28
+2012-04-06: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
   at all (reported by Derek Kelly).
 - The new function cDevice::DeviceType() returns a string identifying the type of
   the given device.
+- Now limiting the number of characters of a channel's (short) name to 16 in the
+  schedules menus, to keep that column from getting overly wide in case there is
+  a channel with a very long name that has no short name.
