@@ -2792,6 +2792,8 @@ Gerald Dachs <vdr@dachsweb.de>
 
 Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for fixing cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE
+ for reporting a problem with EPG scan on systems with only a single DVB device that
+ use software output
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
