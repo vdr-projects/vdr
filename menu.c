@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.46 2012/04/06 12:33:40 kls Exp $
+ * $Id: menu.c 2.47 2012/04/08 11:52:56 kls Exp $
  */
 
 #include "menu.h"
@@ -214,6 +214,7 @@ public:
 cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 :cOsdMenu(tr("Edit channel"), 16)
 {
+  SetMenuCategory(mcChannel);
   channel = Channel;
   sourceParam = NULL;
   *name = 0;
@@ -391,6 +392,7 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
+  SetMenuCategory(mcChannel);
   number = 0;
   Setup();
   Channels.IncBeingEdited();
@@ -586,6 +588,7 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
 cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcText);
   text = NULL;
   font = Font;
   SetText(Text);
@@ -674,6 +677,7 @@ public:
 cMenuEditFolder::cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNestedItem *Folder)
 :cOsdMenu(Folder ? tr("Edit folder") : tr("New folder"), 12)
 {
+  SetMenuCategory(mcFolder);
   list = List;
   folder = Folder;
   if (folder) {
@@ -746,6 +750,7 @@ eOSState cMenuEditFolder::ProcessKey(eKeys Key)
 cMenuFolder::cMenuFolder(const char *Title, cNestedItemList *NestedItemList, const char *Path)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcFolder);
   list = nestedItemList = NestedItemList;
   firstFolder = NULL;
   editing = false;
@@ -757,6 +762,7 @@ cMenuFolder::cMenuFolder(const char *Title, cNestedItemList *NestedItemList, con
 cMenuFolder::cMenuFolder(const char *Title, cList<cNestedItem> *List, cNestedItemList *NestedItemList, const char *Dir, const char *Path)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcFolder);
   list = List;
   nestedItemList = NestedItemList;
   dir = Dir;
@@ -907,6 +913,7 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
+  SetMenuCategory(mcTimer);
   file = NULL;
   day = firstday = NULL;
   timer = Timer;
@@ -1105,6 +1112,7 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
+  SetMenuCategory(mcTimer);
   helpKeys = -1;
   for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
       timer->SetEventFromSchedule(); // make sure the event is current
@@ -1243,6 +1251,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch, bool Buttons)
 :cOsdMenu(tr("Event"))
 {
+  SetMenuCategory(mcEvent);
   event = Event;
   if (event) {
      cChannel *channel = Channels.GetByChannelID(event->ChannelID(), true);
@@ -1390,6 +1399,7 @@ const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, CHNAMWIDTH, 6, 4)
 {
+  SetMenuCategory(mcSchedule);
   now = Now;
   helpKeys = -1;
   timerState = 0;
@@ -1554,6 +1564,7 @@ public:
 cMenuSchedule::cMenuSchedule(void)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcSchedule);
   now = next = false;
   otherChannel = 0;
   helpKeys = -1;
@@ -1811,6 +1822,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 cMenuCommands::cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcCommand);
   result = NULL;
   SetHasHotkeys();
   commands = Commands;
@@ -1940,6 +1952,7 @@ public:
 cMenuCam::cMenuCam(cCamSlot *CamSlot)
 :cOsdMenu("", 1) // tab necessary for enquiry!
 {
+  SetMenuCategory(mcCam);
   camSlot = CamSlot;
   ciMenu = NULL;
   ciEnquiry = NULL;
@@ -2119,6 +2132,7 @@ public:
 cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
+  SetMenuCategory(mcRecording);
   recording = Recording;
   withButtons = WithButtons;
   if (withButtons)
@@ -2213,6 +2227,7 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 :cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
+  SetMenuCategory(mcRecording);
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
   Recordings.StateChanged(recordingsState); // just to get the current state
@@ -3243,6 +3258,7 @@ public:
 cMenuSetup::cMenuSetup(void)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcSetup);
   Set();
 }
 
@@ -3327,6 +3343,7 @@ cOsdObject *cMenuMain::pluginOsdObject = NULL;
 cMenuMain::cMenuMain(eOSState State)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcMain);
   replaying = false;
   stopReplayItem = NULL;
   cancelEditingItem = NULL;

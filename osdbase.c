@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.4 2012/03/02 15:49:57 kls Exp $
+ * $Id: osdbase.c 2.5 2012/04/08 11:19:46 kls Exp $
  */
 
 #include "osdbase.h"
@@ -80,6 +80,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   digit = 0;
   hasHotkeys = false;
   title = NULL;
+  menuCategory = mcUnknown;
   SetTitle(Title);
   SetCols(c0, c1, c2, c3, c4);
   first = 0;
@@ -101,6 +102,11 @@ cOsdMenu::~cOsdMenu()
   cStatus::MsgOsdClear();
   if (!--displayMenuCount)
      DELETENULL(displayMenu);
+}
+
+void cOsdMenu::SetMenuCategory(eMenuCategory MenuCategory)
+{
+  menuCategory = MenuCategory;
 }
 
 void cOsdMenu::SetDisplayMenu(void)
@@ -212,6 +218,8 @@ void cOsdMenu::Display(void)
   displayMenu->SetMessage(mtStatus, NULL);
   displayMenu->Clear();
   cStatus::MsgOsdClear();
+  if (menuCategory != displayMenu->MenuCategory())
+     displayMenu->SetMenuCategory(menuCategory);
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);
   cStatus::MsgOsdTitle(title);

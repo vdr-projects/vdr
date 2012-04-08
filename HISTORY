@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-07: Version 1.7.28
+2012-04-08: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7064,3 +7064,7 @@ Video Disk Recorder Revision History
   a channel with a very long name that has no short name.
 - Fixed EPG scan on systems with only a single DVB device that use software output
   (reported by Juergen Lock).
+- Skins can now inquire the menu category for which their cSkinDisplayMenu is currently
+  being used. This can be done either through a call to cSkinDisplayMenu::MenuCategory()
+  or by reimplementing cSkinDisplayMenu::SetMenuCategory(). This information allows a
+  skin to use special icons or decorations for the various types of menus in VDR.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.5 2012/03/11 14:36:11 kls Exp $
+ * $Id: skins.c 2.6 2012/04/08 11:38:57 kls Exp $
  */
 
 #include "skins.h"
@@ -67,7 +67,13 @@ cSkinDisplay::~cSkinDisplay()
 
 cSkinDisplayMenu::cSkinDisplayMenu(void)
 {
+  menuCategory = mcUnknown;
   SetTabs(0);
+}
+
+void cSkinDisplayMenu::SetMenuCategory(eMenuCategory MenuCategory)
+{
+  menuCategory = MenuCategory;
 }
 
 void cSkinDisplayMenu::SetTabs(int Tab1, int Tab2, int Tab3, int Tab4, int Tab5)
