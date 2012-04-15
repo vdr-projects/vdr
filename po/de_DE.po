@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-04-15 12:45+0200\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -922,6 +922,9 @@ msgstr "Untertitel"
 
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primäres DVB-Interface"
+
+msgid "Setup.DVB$Standard compliance"
+msgstr "Standardkonformität"
 
 msgid "Setup.DVB$Video format"
 msgstr "Videoformat"

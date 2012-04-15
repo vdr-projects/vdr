@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.46 2012/03/28 10:42:32 kls Exp $
+ * $Id: config.h 2.47 2012/04/15 10:45:32 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -51,6 +51,16 @@
 #define MaxFileName 256
 #define MaxSkinName 16
 #define MaxThemeName 16
+
+// Basically VDR works according to the DVB standard, but there are countries/providers
+// that use other standards, which in some details deviate from the DVB standard.
+// This makes it necessary to handle things differently in some areas, depending on
+// which standard is actually used. The following macros are used to distinguish
+// these cases (make sure to adjust cMenuSetupDVB::standardComplianceTexts accordingly
+// when adding a new standard):
+
+#define STANDARD_DVB       0
+#define STANDARD_ANSISCTE  1
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 
@@ -255,6 +265,7 @@ public:
   int SetSystemTime;
   int TimeSource;
   int TimeTransponder;
+  int StandardCompliance;
   int MarginStart, MarginStop;
   int AudioLanguages[I18N_MAX_LANGUAGES + 1];
   int DisplaySubtitles;

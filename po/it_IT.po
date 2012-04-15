@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-04-15 12:45+0200\n"
 "PO-Revision-Date: 2012-03-19 01:08+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -929,6 +929,9 @@ msgstr "Sottotitoli"
 
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Scheda DVB primaria"
+
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
 
 msgid "Setup.DVB$Video format"
 msgstr "Formato video"

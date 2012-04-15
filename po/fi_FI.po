@@ -926,6 +926,9 @@ msgstr "Tekstitys"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Ensisijainen DVB-sovitin"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr "Noudatettava standardi"
+
 msgid "Setup.DVB$Video format"
 msgstr "Kuvasuhde"
 

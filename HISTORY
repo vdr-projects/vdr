@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-08: Version 1.7.28
+2012-04-15: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7068,3 +7068,7 @@ Video Disk Recorder Revision History
   being used. This can be done either through a call to cSkinDisplayMenu::MenuCategory()
   or by reimplementing cSkinDisplayMenu::SetMenuCategory(). This information allows a
   skin to use special icons or decorations for the various types of menus in VDR.
+- The new setup option "DVB/Standard compliance" can be used to switch between different
+  variations of the DVB standard (thanks to Rolf Ahrenberg). Currently there is "DVB"
+  (for the original DVB standard) and "ANSI/SCTE", which is used to properly handle
+  certain private stream types.

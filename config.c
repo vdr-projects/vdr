@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.20 2012/02/29 10:15:54 kls Exp $
+ * $Id: config.c 2.21 2012/04/15 09:52:14 kls Exp $
  */
 
 #include "config.h"
@@ -391,6 +391,7 @@ cSetup::cSetup(void)
   SetSystemTime = 0;
   TimeSource = 0;
   TimeTransponder = 0;
+  StandardCompliance = STANDARD_DVB;
   MarginStart = 2;
   MarginStop = 10;
   AudioLanguages[0] = -1;
@@ -585,6 +586,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
   else if (!strcasecmp(Name, "TimeSource"))          TimeSource         = cSource::FromString(Value);
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
+  else if (!strcasecmp(Name, "StandardCompliance"))  StandardCompliance = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
   else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
@@ -682,6 +684,7 @@ bool cSetup::Save(void)
   Store("SetSystemTime",      SetSystemTime);
   Store("TimeSource",         cSource::ToString(TimeSource));
   Store("TimeTransponder",    TimeTransponder);
+  Store("StandardCompliance", StandardCompliance);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
   StoreLanguages("AudioLanguages", AudioLanguages);

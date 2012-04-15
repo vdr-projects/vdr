@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-04-15 12:45+0200\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -925,6 +925,9 @@ msgstr "字幕"
 
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "使用中卫星卡接口"
+
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
 
 msgid "Setup.DVB$Video format"
 msgstr "视频格式"

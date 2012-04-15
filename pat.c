@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.17 2012/03/02 10:56:45 kls Exp $
+ * $Id: pat.c 2.18 2012/04/15 09:54:53 kls Exp $
  */
 
 #include "pat.h"
@@ -456,37 +456,47 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       }
                       break;
-              case 0x80: // STREAMTYPE_USER_PRIVATE - DigiCipher II VIDEO (ANSI/SCTE 57)
-                      Vpid = esPid;
-                      Ppid = pmt.getPCRPid();
-                      Vtype = 0x02; // compression based upon MPEG-2
-                      ProcessCaDescriptors = true;
-                      break;
-              case 0x81: // STREAMTYPE_USER_PRIVATE - ATSC A/53 AUDIO (ANSI/SCTE 57)
-                      {
-                      char lang[MAXLANGCODE1] = { 0 };
-                      SI::Descriptor *d;
-                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
-                          switch (d->getDescriptorTag()) {
-                            case SI::ISO639LanguageDescriptorTag: {
-                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
-                                 }
-                                 break;
-                            default: ;
+              case 0x80: // STREAMTYPE_USER_PRIVATE
+                      if (Setup.StandardCompliance == STANDARD_ANSISCTE) { // DigiCipher II VIDEO (ANSI/SCTE 57)
+                         Vpid = esPid;
+                         Ppid = pmt.getPCRPid();
+                         Vtype = 0x02; // compression based upon MPEG-2
+                         ProcessCaDescriptors = true;
+                         break;
+                         }
+                      // fall through
+              case 0x81: // STREAMTYPE_USER_PRIVATE
+                      if (Setup.StandardCompliance == STANDARD_ANSISCTE) { // ATSC A/53 AUDIO (ANSI/SCTE 57)
+                         char lang[MAXLANGCODE1] = { 0 };
+                         SI::Descriptor *d;
+                         for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                             switch (d->getDescriptorTag()) {
+                               case SI::ISO639LanguageDescriptorTag: {
+                                    SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                    strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                    }
+                                    break;
+                               default: ;
+                               }
+                            delete d;
                             }
-                         delete d;
+                         if (NumDpids < MAXDPIDS) {
+                            Dpids[NumDpids] = esPid;
+                            Dtypes[NumDpids] = SI::AC3DescriptorTag;
+                            strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
+                            NumDpids++;
+                            }
+                         ProcessCaDescriptors = true;
+                         break;
                          }
-                      if (NumDpids < MAXDPIDS) {
-                         Dpids[NumDpids] = esPid;
-                         Dtypes[NumDpids] = SI::AC3DescriptorTag;
-                         strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
-                         NumDpids++;
+                      // fall through
+              case 0x82: // STREAMTYPE_USER_PRIVATE
+                      if (Setup.StandardCompliance == STANDARD_ANSISCTE) { // STANDARD SUBTITLE (ANSI/SCTE 27)
+                         //TODO
+                         break;
                          }
-                      ProcessCaDescriptors = true;
-                      }
-                      break;
-              case 0x82 ... 0xFF: // STREAMTYPE_USER_PRIVATE
+                      // fall through
+              case 0x83 ... 0xFF: // STREAMTYPE_USER_PRIVATE
                       {
                       char lang[MAXLANGCODE1] = { 0 };
                       bool IsAc3 = false;

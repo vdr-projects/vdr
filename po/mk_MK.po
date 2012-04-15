@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-04-15 12:45+0200\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -923,6 +923,9 @@ msgstr "Титл"
 
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Примарен DVB уред"
+
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
 
 msgid "Setup.DVB$Video format"
 msgstr "Видео формат"

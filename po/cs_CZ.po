@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-04-15 12:45+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -924,6 +924,9 @@ msgstr "Titulky"
 
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primární DVB zařízení"
+
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
 
 msgid "Setup.DVB$Video format"
 msgstr "Formát videa"
