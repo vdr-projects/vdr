@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.48 2012/04/15 10:15:16 kls Exp $
+ * $Id: menu.c 2.49 2012/04/22 10:44:20 kls Exp $
  */
 
 #include "menu.h"
@@ -4392,6 +4392,15 @@ cRecordControl *cRecordControls::GetRecordControl(const char *FileName)
             return RecordControls[i];
          }
      }
+  return NULL;
+}
+
+cRecordControl *cRecordControls::GetRecordControl(const cTimer *Timer)
+{
+  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+      if (RecordControls[i] && RecordControls[i]->Timer() == Timer)
+         return RecordControls[i];
+      }
   return NULL;
 }
 

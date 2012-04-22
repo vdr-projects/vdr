@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.5 2012/03/08 13:11:40 kls Exp $
+ * $Id: menu.h 2.6 2012/04/19 14:28:37 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -243,6 +243,9 @@ public:
   static bool PauseLiveVideo(void);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
+  static cRecordControl *GetRecordControl(const cTimer *Timer);
+         ///< Returns the cRecordControl for the given Timer.
+         ///< If there is no cRecordControl for Timer, NULL is returned.
   static void Process(time_t t);
   static void ChannelDataModified(cChannel *Channel);
   static bool Active(void);
