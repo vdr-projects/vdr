@@ -7079,3 +7079,5 @@ Video Disk Recorder Revision History
   compatibility, the default skins "Classic VDR", "ST:TNG Panels" and "Text mode"
   (i.e. curses) have been changed to behave like before. Other skins may want to
   display the disk usage in totally different ways.
+- A cOsdMenu can now handle skins that display different numbers of items in the
+  various menu categories.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.5 2012/04/08 11:19:46 kls Exp $
+ * $Id: osdbase.c 2.6 2012/04/23 09:41:22 kls Exp $
  */
 
 #include "osdbase.h"
@@ -72,13 +72,13 @@ void cOsdObject::Show(void)
 
 cSkinDisplayMenu *cOsdMenu::displayMenu = NULL;
 int cOsdMenu::displayMenuCount = 0;
-int cOsdMenu::displayMenuItems = 0;//XXX dynamic???
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
   isMenu = true;
   digit = 0;
   hasHotkeys = false;
+  displayMenuItems = 0;
   title = NULL;
   menuCategory = mcUnknown;
   SetTitle(Title);
@@ -116,7 +116,6 @@ void cOsdMenu::SetDisplayMenu(void)
      delete displayMenu;
      }
   displayMenu = Skins.Current()->DisplayMenu();
-  displayMenuItems = displayMenu->MaxItems();
 }
 
 const char *cOsdMenu::hk(const char *s)
@@ -220,6 +219,7 @@ void cOsdMenu::Display(void)
   cStatus::MsgOsdClear();
   if (menuCategory != displayMenu->MenuCategory())
      displayMenu->SetMenuCategory(menuCategory);
+  displayMenuItems = displayMenu->MaxItems();
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);
   cStatus::MsgOsdTitle(title);
