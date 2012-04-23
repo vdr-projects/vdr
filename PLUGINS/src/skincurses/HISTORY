@@ -96,3 +96,8 @@ VDR Plugin 'skincurses' Revision History
 2012-03-11: Version 0.1.11
 
 - Adapted menu column widths of 'skincurses' to the wider HD OSD sizes.
+
+2012-04-23: Version 0.1.12
+
+- Now displaying disk usage in the title of the main and "Recordings" menu,
+  which is no longer done by the VDR core.

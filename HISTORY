@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-15: Version 1.7.28
+2012-04-23: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7072,3 +7072,10 @@ Video Disk Recorder Revision History
   variations of the DVB standard (thanks to Rolf Ahrenberg). Currently there is "DVB"
   (for the original DVB standard) and "ANSI/SCTE", which is used to properly handle
   certain private stream types.
+- The disk usage is no longer automatically added to the title of the main and
+  "Recordings" menus. This has always been a mekeshift solution and it is now up
+  to the individual skin if, where and how it wants to display this information.
+  A skin can use the new cVideoDiskUsage class to implement such a display. For
+  compatibility, the default skins "Classic VDR", "ST:TNG Panels" and "Text mode"
+  (i.e. curses) have been changed to behave like before. Other skins may want to
+  display the disk usage in totally different ways.

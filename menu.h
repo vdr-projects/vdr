@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.6 2012/04/19 14:28:37 kls Exp $
+ * $Id: menu.h 2.7 2012/04/22 15:08:58 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -196,7 +196,6 @@ private:
   int level;
   int recordingsState;
   int helpKeys;
-  bool SetFreeDiskDisplay(bool Force = false);
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
   bool Open(bool OpenSubMenus = false);
