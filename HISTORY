@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-23: Version 1.7.28
+2012-04-24: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7081,3 +7081,6 @@ Video Disk Recorder Revision History
   display the disk usage in totally different ways.
 - A cOsdMenu can now handle skins that display different numbers of items in the
   various menu categories.
+- OSD and skin are now reinitialized after a plugin setup page has been confirmed,
+  to have them react immediately in case any change to a plugin's setup parameter
+  has an effect on the OSD.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.50 2012/04/22 15:13:14 kls Exp $
+ * $Id: menu.c 2.51 2012/04/24 09:17:45 kls Exp $
  */
 
 #include "menu.h"
@@ -3186,8 +3186,13 @@ eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
               }
            }
         }
-     else if (state == osContinue)
+     else if (state == osContinue) {
         Store();
+        // Reinitialize OSD and skin, in case any plugin setup change has an influence on these:
+        cOsdProvider::UpdateOsdSize(true);
+        SetDisplayMenu();
+        Display();
+        }
      }
   return state;
 }
