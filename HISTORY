@@ -7084,3 +7084,4 @@ Video Disk Recorder Revision History
 - OSD and skin are now reinitialized after a plugin setup page has been confirmed,
   to have them react immediately in case any change to a plugin's setup parameter
   has an effect on the OSD.
+- The Timers list is now marked as modified whenever a recording starts or ends.

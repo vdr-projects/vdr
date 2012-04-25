@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.51 2012/04/24 09:17:45 kls Exp $
+ * $Id: menu.c 2.52 2012/04/25 09:42:54 kls Exp $
  */
 
 #include "menu.h"
@@ -4094,6 +4094,8 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 {
+  // Whatever happens here, the timers will be modified in some way...
+  Timers.SetModified();
   // We're going to manipulate an event here, so we need to prevent
   // others from modifying any EPG data:
   cSchedulesLock SchedulesLock;
@@ -4108,7 +4110,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   if (!timer) {
      timer = new cTimer(true, Pause);
      Timers.Add(timer);
-     Timers.SetModified();
      instantId = cString::sprintf(cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->CardIndex() + 1);
      }
   timer->SetPending(true);
@@ -4130,7 +4131,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         }
      else {
         Timers.Del(timer);
-        Timers.SetModified();
         if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName, Recording.Name());
         }
@@ -4158,7 +4158,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      timer->SetDeferred(DEFERTIMER);
   if (!Timer) {
      Timers.Del(timer);
-     Timers.SetModified();
      timer = NULL;
      }
 }
@@ -4208,6 +4207,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
      cStatus::MsgRecording(device, NULL, fileName, false);
      if (ExecuteUserCommand)
         cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
+     Timers.SetModified();
      }
 }
 
