@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 2.2 2012/02/16 12:37:53 kls Exp $
+ * $Id: svdrp.h 2.3 2012/04/26 10:30:06 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -43,7 +43,7 @@ class cSVDRP {
 private:
   cSocket socket;
   cFile file;
-  cRecordings Recordings;
+  cRecordings recordings;
   cPUTEhandler *PUTEhandler;
   int numChars;
   int length;

@@ -7087,3 +7087,5 @@ Video Disk Recorder Revision History
 - The Timers list is now marked as modified whenever a recording starts or ends.
 - Fixed cDevice::StillPicture(), making sure it doesn't call the derived class's
   function if no buffer has been allocated.
+- Fixed the SVDRP command UPDR, which didn't update the global recordings list
+  (reported by Lars Hanisch).
