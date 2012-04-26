@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-24: Version 1.7.28
+2012-04-26: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7085,3 +7085,5 @@ Video Disk Recorder Revision History
   to have them react immediately in case any change to a plugin's setup parameter
   has an effect on the OSD.
 - The Timers list is now marked as modified whenever a recording starts or ends.
+- Fixed cDevice::StillPicture(), making sure it doesn't call the derived class's
+  function if no buffer has been allocated.
