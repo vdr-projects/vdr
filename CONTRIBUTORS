@@ -2868,3 +2868,7 @@ Ralf Schueler <dl4mw@schueler.ws>
  from version 1.7.8 to 1.6.0-3
  for backporting "Fixed cRecordings::DelByName() to avoid compilation errors with
  gcc 4.4" from version 1.7.9 to 1.6.0-3
+
+Marcus Roscher <dad401@gmx.de>
+ for reporting a problem with cDevice::StillPicture(), which called the derived class's
+ function even if no buffer has been allocated
