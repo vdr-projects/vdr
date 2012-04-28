@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 2.4 2009/03/08 12:29:10 kls Exp $
+ * $Id: player.h 2.5 2012/04/28 10:56:00 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -92,7 +92,10 @@ public:
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
-  static cControl *Control(void);
+  static cControl *Control(bool Hidden = false);
+         ///< Returns the current replay control (if any) in case it is currently
+         ///< visible. If Hidden is true, the control will be returned even if it is
+         ///< currently hidden.
   };
 
 #endif //__PLAYER_H

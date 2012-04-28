@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.12 2007/07/20 15:25:24 kls Exp $
+ * $Id: player.c 2.1 2012/04/28 10:56:00 kls Exp $
  */
 
 #include "player.h"
@@ -60,10 +60,10 @@ cOsdObject *cControl::GetInfo(void)
   return NULL;
 }
 
-cControl *cControl::Control(void)
+cControl *cControl::Control(bool Hidden)
 {
   cMutexLock MutexLock(&mutex);
-  return (control && !control->hidden) ? control : NULL;
+  return (control && (!control->hidden || Hidden)) ? control : NULL;
 }
 
 void cControl::Launch(cControl *Control)

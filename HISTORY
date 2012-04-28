@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-26: Version 1.7.28
+2012-04-28: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7089,3 +7089,5 @@ Video Disk Recorder Revision History
   function if no buffer has been allocated (reported by Marcus Roscher).
 - Fixed the SVDRP command UPDR, which didn't update the global recordings list
   (reported by Lars Hanisch).
+- cControl::Control() now has an additional boolean parameter, which can be set to
+  true to get the current player control even if it is hidden.
