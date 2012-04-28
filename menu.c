@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.52 2012/04/25 09:42:54 kls Exp $
+ * $Id: menu.c 2.53 2012/04/28 11:13:09 kls Exp $
  */
 
 #include "menu.h"
@@ -4770,6 +4770,13 @@ cOsdObject *cReplayControl::GetInfo(void)
   cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
   if (Recording)
      return new cMenuRecording(Recording, false);
+  return NULL;
+}
+
+const cRecording *cReplayControl::GetRecording(void)
+{
+  if (const cRecording *Recording = Recordings.GetByName(LastReplayed()))
+     return Recording;
   return NULL;
 }
 

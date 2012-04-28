@@ -7091,3 +7091,5 @@ Video Disk Recorder Revision History
   (reported by Lars Hanisch).
 - cControl::Control() now has an additional boolean parameter, which can be set to
   true to get the current player control even if it is hidden.
+- The new functions cControl::GetRecording() and cControl::GetHeader() can be used
+  to retrieve information about what the current player is playing.

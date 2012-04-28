@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 2.1 2012/04/28 10:56:00 kls Exp $
+ * $Id: player.c 2.2 2012/04/28 11:52:50 kls Exp $
  */
 
 #include "player.h"
@@ -58,6 +58,16 @@ cControl::~cControl()
 cOsdObject *cControl::GetInfo(void)
 {
   return NULL;
+}
+
+const cRecording *cControl::GetRecording(void)
+{
+  return NULL;
+}
+
+cString cControl::GetHeader(void)
+{
+  return "";
 }
 
 cControl *cControl::Control(bool Hidden)

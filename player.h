@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 2.5 2012/04/28 10:56:00 kls Exp $
+ * $Id: player.h 2.6 2012/04/28 13:04:17 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -86,6 +86,18 @@ public:
   virtual ~cControl();
   virtual void Hide(void) = 0;
   virtual cOsdObject *GetInfo(void);
+         ///< Returns an OSD object that displays information about the currently
+         ///< played programme. If no such information is available, NULL will be
+         ///< returned.
+  virtual const cRecording *GetRecording(void);
+         ///< Returns the cRecording that is currently being replayed, or NULL if
+         ///< this player is not playing a cRecording.
+  virtual cString GetHeader(void);
+         ///< This can be used by players that don't play a cRecording, but rather
+         ///< do something completely different. The resulting string may be used by
+         ///< skins as a last resort, in case they want to display the state of the
+         ///< current player. The return value is expected to be a short, single line
+         ///< string. The default implementation returns an empty string.
   double FramesPerSecond(void) { return player->FramesPerSecond(); }
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return player->GetIndex(Current, Total, SnapToIFrame); }
   bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return player->GetReplayMode(Play, Forward, Speed); }

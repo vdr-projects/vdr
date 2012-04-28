@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 2.1 2011/02/20 17:15:25 kls Exp $
+ * $Id: player.c 2.2 2012/04/28 11:58:15 kls Exp $
  */
 
 #include "player.h"
@@ -202,6 +202,11 @@ void cPictureControl::DisplayCaption(void)
   Path.Truncate(-4); // don't display the ".mpg" extension
   DrawTextOutlined(osd, w - Font->Width(p), 0, p, clrWhite, clrBlack, Font);
   osd->Flush();
+}
+
+cString cPictureControl::GetHeader(void)
+{
+  return tr("Pictures");
 }
 
 eOSState cPictureControl::ProcessKey(eKeys Key)
