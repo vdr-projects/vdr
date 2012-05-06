@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-04-28: Version 1.7.28
+2012-05-06: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7093,3 +7093,4 @@ Video Disk Recorder Revision History
   true to get the current player control even if it is hidden.
 - The new functions cControl::GetRecording() and cControl::GetHeader() can be used
   to retrieve information about what the current player is playing.
+- Fixed a possible high CPU load when pausing replay (thanks to Reinhard Nissl).

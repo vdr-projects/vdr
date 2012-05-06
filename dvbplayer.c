@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.26 2012/03/12 14:36:55 kls Exp $
+ * $Id: dvbplayer.c 2.27 2012/05/06 11:02:35 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -408,7 +408,7 @@ void cDvbPlayer::Action(void)
      Goto(0, true);
   while (Running()) {
         if (WaitingForData)
-           nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
+           WaitingForData = !nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
         else if (Sleep) {
            cPoller Poller;
            DevicePoll(Poller, 10);

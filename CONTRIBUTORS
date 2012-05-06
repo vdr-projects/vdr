@@ -1310,6 +1310,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for making cEITScanner process new transponders before old ones, to make sure
  transponder changes are recognized
  for helping to debug switching into time shift mode when pausing live video
+ for fixing a possible high CPU load when pausing replay
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
