@@ -2873,3 +2873,7 @@ Ralf Schueler <dl4mw@schueler.ws>
 Marcus Roscher <dad401@gmx.de>
  for reporting a problem with cDevice::StillPicture(), which called the derived class's
  function even if no buffer has been allocated
+
+Reinhard Mantey <geronimo013@gmx.de>
+ for reporting a problem with character comparisons in
+ cSubtitleObject::DecodeCharacterString()
