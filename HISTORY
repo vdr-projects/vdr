@@ -7096,3 +7096,6 @@ Video Disk Recorder Revision History
 - Fixed a possible high CPU load when pausing replay (thanks to Reinhard Nissl).
 - Fixed character comparisons in cSubtitleObject::DecodeCharacterString() (reported
   by Reinhard Mantey).
+- Renamed the function cString::sprintf(const char *fmt, va_list &ap) to vsprintf(),
+  because it might inadvertently be called with a 'char *' as the second argument on
+  some compilers and cause a crash (reported by Sundararaj Reel).

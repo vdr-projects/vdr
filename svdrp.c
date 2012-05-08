@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.17 2012/04/26 10:36:11 kls Exp $
+ * $Id: svdrp.c 2.18 2012/05/08 11:23:56 kls Exp $
  */
 
 #include "svdrp.h"
@@ -432,7 +432,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
      if (Code != 0) {
         va_list ap;
         va_start(ap, fmt);
-        cString buffer = cString::sprintf(fmt, ap);
+        cString buffer = cString::vsprintf(fmt, ap);
         va_end(ap);
         const char *s = buffer;
         while (s && *s) {

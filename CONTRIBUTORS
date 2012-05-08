@@ -2593,6 +2593,9 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a memory leak in cRecordings::ScanVideoDir() in case there are too
  many link levels
  for reporting a bug in cListBase::Move() in case From and To are equal
+ for reporting a problem with the function cString::sprintf(const char *fmt, va_list &ap),
+ that might inadvertently be called with a 'char *' as the second argument on some
+ compilers and cause a crash
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default

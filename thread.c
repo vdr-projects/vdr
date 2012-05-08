@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 2.3 2009/04/13 13:50:39 kls Exp $
+ * $Id: thread.c 2.4 2012/05/08 11:15:57 kls Exp $
  */
 
 #include "thread.h"
@@ -239,7 +239,7 @@ void cThread::SetDescription(const char *Description, ...)
   if (Description) {
      va_list ap;
      va_start(ap, Description);
-     description = strdup(cString::sprintf(Description, ap));
+     description = strdup(cString::vsprintf(Description, ap));
      va_end(ap);
      }
 }
