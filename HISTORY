@@ -7099,3 +7099,6 @@ Video Disk Recorder Revision History
 - Renamed the function cString::sprintf(const char *fmt, va_list &ap) to vsprintf(),
   because it might inadvertently be called with a 'char *' as the second argument on
   some compilers and cause a crash (reported by Sundararaj Reel).
+- Removed the "bondedMasterFailed" mechanism from cDvbTuner, because it caused
+  problems with the EPG scan in case a transponder is not receivable in a setup with
+  bonded devices (reported by Michael Schneider).

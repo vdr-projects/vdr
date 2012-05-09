@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.70 2012/04/04 09:49:12 kls Exp $
+ * $Id: dvbdevice.c 2.71 2012/05/09 08:33:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -303,7 +303,6 @@ private:
   cCondVar newSet;
   cDvbTuner *bondedTuner;
   bool bondedMaster;
-  bool bondedMasterFailed;
   bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
   void ClearEventQueue(void) const;
@@ -348,7 +347,6 @@ cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int
   tunerStatus = tsIdle;
   bondedTuner = NULL;
   bondedMaster = false;
-  bondedMasterFailed = false;
   SetDescription("tuner on frontend %d/%d", adapter, frontend);
   Start();
 }
@@ -438,12 +436,8 @@ cDvbTuner *cDvbTuner::GetBondedMaster(void)
   if (!bondedTuner)
      return this; // an unbonded tuner is always "master"
   cMutexLock MutexLock(&bondMutex);
-  if (bondedMaster) {
-     if (!bondedMasterFailed)
-        return this;
-     else
-        bondedMaster = false;
-     }
+  if (bondedMaster)
+     return this;
   // This tuner is bonded, but it's not the master, so let's see if there is a master at all:
   if (cDvbTuner *t = bondedTuner) {
      while (t != this) {
@@ -453,18 +447,9 @@ cDvbTuner *cDvbTuner::GetBondedMaster(void)
            }
      }
   // None of the other bonded tuners is master, so make this one the master:
-  cDvbTuner *t = this;
-  if (bondedMasterFailed) {
-     // This one has failed, so switch to the next one:
-     t = bondedTuner;
-     t->bondedMasterFailed = false;
-     cMutexLock MutexLock(&t->mutex);
-     t->channel = channel;
-     t->tunerStatus = tsSet;
-     }
-  t->bondedMaster = true;
-  dsyslog("tuner %d/%d is now bonded master", t->adapter, t->frontend);
-  return t;
+  bondedMaster = true;
+  dsyslog("tuner %d/%d is now bonded master", adapter, frontend);
+  return this;
 }
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
@@ -878,9 +863,6 @@ void cDvbTuner::Action(void)
                      isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
-                  cMutexLock MutexLock(&bondMutex);
-                  if (bondedTuner && bondedMaster)
-                     bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
                WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
