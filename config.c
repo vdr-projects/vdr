@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.21 2012/04/15 09:52:14 kls Exp $
+ * $Id: config.c 2.22 2012/05/11 11:06:57 kls Exp $
  */
 
 #include "config.h"
@@ -309,9 +309,9 @@ cSetupLine::cSetupLine(void)
 
 cSetupLine::cSetupLine(const char *Name, const char *Value, const char *Plugin)
 {
-  name = strdup(Name);
-  value = strdup(Value);
-  plugin = Plugin ? strdup(Plugin) : NULL;
+  name = strreplace(strdup(Name), '\n', 0);
+  value = strreplace(strdup(Value), '\n', 0);
+  plugin = Plugin ? strreplace(strdup(Plugin), '\n', 0) : NULL;
 }
 
 cSetupLine::~cSetupLine()

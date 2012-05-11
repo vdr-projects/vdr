@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-05-08: Version 1.7.28
+2012-05-11: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7102,3 +7102,5 @@ Video Disk Recorder Revision History
 - Removed the "bondedMasterFailed" mechanism from cDvbTuner, because it caused
   problems with the EPG scan in case a transponder is not receivable in a setup with
   bonded devices (reported by Michael Schneider).
+- Making sure setup strings don't contain any newline characters (thanks to Joachim
+  Wilke).

@@ -1784,6 +1784,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for modifying cCharSetConv so that it can be used to convert from "whatever VDR uses"
  to a given code
  for adding some missing 'const' to cDevice
+ for making sure setup strings don't contain any newline characters
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
