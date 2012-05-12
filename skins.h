@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.4 2012/04/28 10:39:54 kls Exp $
+ * $Id: skins.h 2.5 2012/05/12 11:10:30 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -213,6 +213,11 @@ public:
   virtual void SetMarks(const cMarks *Marks);
        ///< Sets the editing marks to Marks, which shall be used to display the
        ///< progress bar through a cProgressBar object.
+  virtual void SetRecording(const cRecording *Recording);
+       ///< Sets the recording that is currently being played.
+       ///< The default implementation calls SetTitle() with the title and short
+       ///< text of the Recording. A derived class can use any information provided
+       ///< by the given Recording and display it.
   virtual void SetTitle(const char *Title) = 0;
        ///< Sets the title of the recording.
   virtual void SetMode(bool Play, bool Forward, int Speed) = 0;

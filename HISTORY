@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-05-11: Version 1.7.28
+2012-05-12: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7104,3 +7104,5 @@ Video Disk Recorder Revision History
   bonded devices (reported by Michael Schneider).
 - Making sure setup strings don't contain any newline characters (thanks to Joachim
   Wilke).
+- The new member function cSkinDisplayReplay::SetRecording() allows a skin to display
+  more information about the currently played recording.

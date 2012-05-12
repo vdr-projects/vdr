@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.53 2012/04/28 11:13:09 kls Exp $
+ * $Id: menu.c 2.54 2012/05/12 13:08:23 kls Exp $
  */
 
 #include "menu.h"
@@ -2305,7 +2305,7 @@ eOSState cMenuRecordings::Play(void)
      else {
         cRecording *recording = GetRecording(ri);
         if (recording) {
-           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cReplayControl::SetRecording(recording->FileName());
            return osReplay;
            }
         }
@@ -4132,7 +4132,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      else {
         Timers.Del(timer);
         if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-           cReplayControl::SetRecording(fileName, Recording.Name());
+           cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
      return;
@@ -4147,7 +4147,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-           cReplayControl::SetRecording(fileName, Recording.Name());
+           cReplayControl::SetRecording(fileName);
         Recordings.AddByName(fileName);
         return;
         }
@@ -4301,7 +4301,7 @@ void cRecordControls::Stop(const char *InstantId)
 bool cRecordControls::PauseLiveVideo(void)
 {
   Skins.Message(mtStatus, tr("Pausing live video..."));
-  cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
+  cReplayControl::SetRecording(NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
   if (Start(NULL, true)) {
      cReplayControl *rc = new cReplayControl(true);
      cControl::Launch(rc);
@@ -4402,8 +4402,7 @@ bool cRecordControls::StateChanged(int &State)
 // --- cReplayControl --------------------------------------------------------
 
 cReplayControl *cReplayControl::currentReplayControl = NULL;
-char *cReplayControl::fileName = NULL;
-char *cReplayControl::title = NULL;
+cString cReplayControl::fileName;
 
 cReplayControl::cReplayControl(bool PauseLive)
 :cDvbPlayerControl(fileName, PauseLive)
@@ -4433,7 +4432,7 @@ cReplayControl::~cReplayControl()
 
 void cReplayControl::Stop(void)
 {
-  if (Setup.DelTimeshiftRec && fileName) {
+  if (Setup.DelTimeshiftRec && *fileName) {
      cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
      if (rc && rc->InstantId()) {
         if (Active()) {
@@ -4446,7 +4445,7 @@ void cReplayControl::Stop(void)
                  Timers.SetModified();
                  }
               cDvbPlayerControl::Stop();
-              cRecording *recording = Recordings.GetByName(fileName);;
+              cRecording *recording = Recordings.GetByName(fileName);
               if (recording) {
                  if (recording->Delete()) {
                     Recordings.DelByName(fileName);
@@ -4463,17 +4462,14 @@ void cReplayControl::Stop(void)
   cDvbPlayerControl::Stop();
 }
 
-void cReplayControl::SetRecording(const char *FileName, const char *Title)
+void cReplayControl::SetRecording(const char *FileName)
 {
-  free(fileName);
-  free(title);
-  fileName = FileName ? strdup(FileName) : NULL;
-  title = Title ? strdup(Title) : NULL;
+  fileName = FileName;
 }
 
 const char *cReplayControl::NowReplaying(void)
 {
-  return currentReplayControl ? fileName : NULL;
+  return currentReplayControl ? *fileName : NULL;
 }
 
 const char *cReplayControl::LastReplayed(void)
@@ -4483,10 +4479,8 @@ const char *cReplayControl::LastReplayed(void)
 
 void cReplayControl::ClearLastReplayed(const char *FileName)
 {
-  if (fileName && FileName && strcmp(fileName, FileName) == 0) {
-     free(fileName);
+  if (*fileName && FileName && strcmp(fileName, FileName) == 0)
      fileName = NULL;
-     }
 }
 
 void cReplayControl::ShowTimed(int Seconds)
@@ -4558,8 +4552,10 @@ bool cReplayControl::ShowProgress(bool Initial)
         visible = true;
         }
      if (Initial) {
-        if (title)
-           displayReplay->SetTitle(title);
+        if (*fileName) {
+           if (cRecording *Recording = Recordings.GetByName(fileName))
+              displayReplay->SetRecording(Recording);
+           }
         lastCurrent = lastTotal = -1;
         }
      if (Current != lastCurrent || Total != lastTotal) {
@@ -4731,7 +4727,7 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  if (fileName) {
+  if (*fileName) {
      Hide();
      if (!cCutter::Active()) {
         if (!marks.Count())

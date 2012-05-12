@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.23 2012/05/08 11:13:13 kls Exp $
+ * $Id: tools.c 2.24 2012/05/12 13:29:20 kls Exp $
  */
 
 #include "tools.h"
@@ -1039,6 +1039,15 @@ cString DateString(time_t t)
   char *p = stpcpy(buf, WeekDayName(tm->tm_wday));
   *p++ = ' ';
   strftime(p, sizeof(buf) - (p - buf), "%d.%m.%Y", tm);
+  return buf;
+}
+
+cString ShortDateString(time_t t)
+{
+  char buf[32];
+  struct tm tm_r;
+  tm *tm = localtime_r(&t, &tm_r);
+  strftime(buf, sizeof(buf), "%d.%m.%y", tm);
   return buf;
 }
 

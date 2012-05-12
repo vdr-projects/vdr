@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.8 2012/04/28 11:13:03 kls Exp $
+ * $Id: menu.h 2.9 2012/05/12 11:48:04 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -269,8 +269,7 @@ private:
   void TimeSearch(void);
   void ShowTimed(int Seconds = 0);
   static cReplayControl *currentReplayControl;
-  static char *fileName;
-  static char *title;
+  static cString fileName;
   void ShowMode(void);
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
@@ -288,7 +287,7 @@ public:
   virtual void Show(void);
   virtual void Hide(void);
   bool Visible(void) { return visible; }
-  static void SetRecording(const char *FileName, const char *Title);
+  static void SetRecording(const char *FileName);
   static const char *NowReplaying(void);
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);

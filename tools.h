@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.18 2012/05/08 11:11:33 kls Exp $
+ * $Id: tools.h 2.19 2012/05/12 13:27:56 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -244,6 +244,8 @@ cString TimeToString(time_t t);
     ///< Converts the given time to a string of the form "www mmm dd hh:mm:ss yyyy".
 cString DateString(time_t t);
     ///< Converts the given time to a string of the form "www dd.mm.yyyy".
+cString ShortDateString(time_t t);
+    ///< Converts the given time to a string of the form "dd.mm.yy".
 cString TimeString(time_t t);
     ///< Converts the given time to a string of the form "hh:mm".
 uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100);

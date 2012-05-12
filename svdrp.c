@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.18 2012/05/08 11:23:56 kls Exp $
+ * $Id: svdrp.c 2.19 2012/05/12 11:55:18 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1371,7 +1371,7 @@ void cSVDRP::CmdPLAY(const char *Option)
         if (recording) {
            if (c)
               option = skipspace(++option);
-           cReplayControl::SetRecording(NULL, NULL);
+           cReplayControl::SetRecording(NULL);
            cControl::Shutdown();
            if (*option) {
               int pos = 0;
@@ -1383,7 +1383,7 @@ void cSVDRP::CmdPLAY(const char *Option)
               else
                  resume.Save(pos);
               }
-           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cReplayControl::SetRecording(recording->FileName());
            cControl::Launch(new cReplayControl);
            cControl::Attach();
            Reply(250, "Playing recording \"%s\" [%s]", num, recording->Title());

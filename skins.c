@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.7 2012/04/28 10:40:16 kls Exp $
+ * $Id: skins.c 2.8 2012/05/12 11:27:23 kls Exp $
  */
 
 #include "skins.h"
@@ -170,6 +170,21 @@ void cSkinDisplayReplay::cProgressBar::Mark(int x, bool Start, bool Current, tCo
 cSkinDisplayReplay::cSkinDisplayReplay(void)
 {
   marks = NULL;
+}
+
+void cSkinDisplayReplay::SetRecording(const cRecording *Recording)
+{
+  const char *Title = NULL;
+  const char *ShortText = NULL;
+  const cRecordingInfo *RecordingInfo = Recording->Info();
+  if ((Title = RecordingInfo->Title()) != NULL)
+     ShortText = RecordingInfo->ShortText();
+  else
+     Title = Recording->Name();
+  if (ShortText)
+     SetTitle(cString::sprintf("%s: %s", Title, ShortText));
+  else
+     SetTitle(Title);
 }
 
 void cSkinDisplayReplay::SetMarks(const cMarks *Marks)
