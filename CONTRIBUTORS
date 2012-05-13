@@ -2881,6 +2881,7 @@ Marcus Roscher <dad401@gmx.de>
 Reinhard Mantey <geronimo013@gmx.de>
  for reporting a problem with character comparisons in
  cSubtitleObject::DecodeCharacterString()
+ for fixing a mismatched 'delete' in cSchedules::SetEpgDataFileName()
 
 Michael Schneider <vdrportal_midas@gmx.de>
  for reporting a problem with the EPG scan in case a transponder is not receivable in
