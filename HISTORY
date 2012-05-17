@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-05-13: Version 1.7.28
+2012-05-17: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7108,3 +7108,6 @@ Video Disk Recorder Revision History
   more information about the currently played recording.
 - Fixed a mismatched 'delete' in cSchedules::SetEpgDataFileName() (thanks to Reinhard
   Mantey).
+- The DrawText() functions of the OSD now accept the new alignment flag taBorder,
+  which triggers keeping a proper distance from the edge that taLeft or taRight
+  aligns to.

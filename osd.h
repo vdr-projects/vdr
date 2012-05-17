@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.15 2011/12/04 13:38:17 kls Exp $
+ * $Id: osd.h 2.16 2012/05/17 15:09:35 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -25,6 +25,7 @@
 #define ALPHA_TRANSPARENT  0x00
 #define ALPHA_OPAQUE       0xFF
 #define IS_OPAQUE(c)       ((c >> 24) == ALPHA_OPAQUE)
+#define TEXT_ALIGN_BORDER  10 // fraction of the font height used for sizing border
 
 enum {
                    //AARRGGBB
@@ -151,6 +152,7 @@ enum eTextAlignment { taCenter  = 0x00,
                       taRight   = 0x02,
                       taTop     = 0x04,
                       taBottom  = 0x08,
+                      taBorder  = 0x10, // keeps some distance from the left or right alignment edge
                       taDefault = taTop | taLeft
                     };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.28 2012/03/28 10:40:12 kls Exp $
+ * $Id: osd.c 2.29 2012/05/17 13:29:19 kls Exp $
  */
 
 #include "osd.h"
@@ -553,11 +553,15 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
      if (Width || Height) {
         limit = x + cw - x0;
         if (Width) {
-           if ((Alignment & taLeft) != 0)
-              ;
+           if ((Alignment & taLeft) != 0) {
+              if ((Alignment & taBorder) != 0)
+                 x += max(h / TEXT_ALIGN_BORDER, 1);
+              }
            else if ((Alignment & taRight) != 0) {
               if (w < Width)
                  x += Width - w;
+              if ((Alignment & taBorder) != 0)
+                 x -= max(h / TEXT_ALIGN_BORDER, 1);
               }
            else { // taCentered
               if (w < Width)
@@ -1280,11 +1284,15 @@ void cPixmapMemory::DrawText(const cPoint &Point, const char *s, tColor ColorFg,
   if (Width || Height) {
      limit = x + cw;
      if (Width) {
-        if ((Alignment & taLeft) != 0)
-           ;
+        if ((Alignment & taLeft) != 0) {
+           if ((Alignment & taBorder) != 0)
+              x += max(h / TEXT_ALIGN_BORDER, 1);
+           }
         else if ((Alignment & taRight) != 0) {
            if (w < Width)
               x += Width - w;
+           if ((Alignment & taBorder) != 0)
+              x -= max(h / TEXT_ALIGN_BORDER, 1);
            }
         else { // taCentered
            if (w < Width)
