@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.19 2012/05/12 13:27:56 kls Exp $
+ * $Id: tools.h 2.20 2012/05/19 12:32:32 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -470,6 +470,7 @@ public:
   };
 
 template<class T> class cVector {
+  ///< cVector may only be used for *simple* types, like int or pointers - not for class objects that allocate additional memory!
 private:
   mutable int allocated;
   mutable int size;
@@ -528,7 +529,7 @@ public:
   virtual void Append(T Data)
   {
     if (size >= allocated)
-       Realloc(allocated * 4 / 2); // increase size by 50%
+       Realloc(allocated * 3 / 2); // increase size by 50%
     data[size++] = Data;
   }
   virtual void Remove(int Index)
