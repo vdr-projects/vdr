@@ -2860,6 +2860,7 @@ Torsten Lang <info@torstenlang.de>
  of EPG data from BSkyB's "MTV MUSIC"
  for suggesting to make BIDI support check at runtime whether the system runs with
  UTF-8
+ for reporting a bug in checking for UTF-8 support in cFont::Bidi()
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles

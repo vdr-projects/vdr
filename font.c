@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.10 2012/03/02 10:47:45 kls Exp $
+ * $Id: font.c 2.11 2012/05/19 10:15:18 kls Exp $
  */
 
 #include "font.h"
@@ -508,7 +508,7 @@ cString cFont::GetFontFileName(const char *FontName)
 #ifdef BIDI
 cString cFont::Bidi(const char *Ltr)
 {
-  if (cCharSetConv::SystemCharacterTable()) { // bidi requires UTF-8
+  if (!cCharSetConv::SystemCharacterTable()) { // bidi requires UTF-8
      fribidi_set_mirroring(true);
      fribidi_set_reorder_nsm(false);
      FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
