@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.53 2012/03/13 13:17:57 kls Exp $
+ * $Id: recording.c 2.54 2012/05/20 13:19:15 kls Exp $
  */
 
 #include "recording.h"
@@ -723,7 +723,9 @@ cRecording::cRecording(const char *FileName)
            }
         fclose(f);
         }
-     else if (errno != ENOENT)
+     else if (errno == ENOENT)
+        info->ownEvent->SetTitle(name);
+     else
         LOG_ERROR_STR(*InfoFileName);
 #ifdef SUMMARYFALLBACK
      // fall back to the old 'summary.vdr' if there was no 'info.vdr':
