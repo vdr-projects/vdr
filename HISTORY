@@ -7114,3 +7114,4 @@ Video Disk Recorder Revision History
 - Fixed checking for UTF-8 support in cFont::Bidi() (reported by Torsten Lang).
 - If a recording has no info file, the 'title' of the recording's info is now set
   to the recording's name.
+- cVector::Clear() now reinitializes any previously used members.

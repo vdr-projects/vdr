@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.20 2012/05/19 12:32:32 kls Exp $
+ * $Id: tools.h 2.21 2012/05/20 13:58:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -540,6 +540,8 @@ public:
   }
   virtual void Clear(void)
   {
+    for (int i = 0; i < size; i++)
+        data[i] = T(0);
     size = 0;
   }
   void Sort(__compar_fn_t Compare)
