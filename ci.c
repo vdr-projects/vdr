@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.8 2012/02/29 10:24:41 kls Exp $
+ * $Id: ci.c 2.9 2012/05/29 11:13:40 kls Exp $
  */
 
 #include "ci.h"
@@ -1715,6 +1715,7 @@ bool cCamSlot::Reset(void)
      if (ciAdapter->Reset(slotIndex)) {
         resetTime = time(NULL);
         dbgprotocol("ok.\n");
+        lastModuleStatus = msReset;
         return true;
         }
      dbgprotocol("failed!\n");
