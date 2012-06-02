@@ -7142,3 +7142,5 @@ Video Disk Recorder Revision History
 - Extended the interface to the script that gets called for recordings, so that in
   the "edited" case it also provides the name of the original recording (thanks to
   Christian Richter).
+- Added DeleteEvent() to the EPG handler interface, so that an EPG handler can trigger
+  deleting of an event (thanks to Christian Kaiser).

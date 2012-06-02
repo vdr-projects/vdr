@@ -2895,3 +2895,6 @@ Marco Skambraks <marco@ammec.de>
 Christian Richter <cr@crichter.net>
  for extending the interface to the script that gets called for recordings, so that in
  the "edited" case it also provides the name of the original recording
+
+Christian Kaiser <christian.kaiser@teleservice.com>
+ for adding DeleteEvent() to the EPG handler interface
