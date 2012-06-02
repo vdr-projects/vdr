@@ -7135,3 +7135,5 @@ Video Disk Recorder Revision History
   "LCARS" is the new default skin of VDR. It requires at least a 4bpp (16 color) full
   screen OSD, but you can still operate it if your OSD can handle only fewer colors
   (in which case you may want to switch to the "ST:TNG" or "Classic VDR" skin).
+- Finally removed the code marked with __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
+  and LEGACY_CRECEIVER.

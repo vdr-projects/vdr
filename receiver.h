@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.7 2012/03/31 10:18:29 kls Exp $
+ * $Id: receiver.h 2.8 2012/06/02 13:20:44 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -13,8 +13,6 @@
 #include "device.h"
 
 #define MAXRECEIVEPIDS  64 // the maximum number of PIDs per receiver
-
-//#define LEGACY_CRECEIVER // Code enclosed with this macro is deprecated and may be removed in a future version
 
 class cReceiver {
   friend class cDevice;
@@ -40,9 +38,6 @@ protected:
                ///< will be delivered only ONCE, so the cReceiver must make sure that
                ///< it will be able to buffer the data if necessary.
 public:
-#ifdef LEGACY_CRECEIVER
-  cReceiver(tChannelID ChannelID, int Priority, int Pid, const int *Pids1 = NULL, const int *Pids2 = NULL, const int *Pids3 = NULL);
-#endif
   cReceiver(const cChannel *Channel = NULL, int Priority = MINPRIORITY);
                ///< Creates a new receiver for the given Channel with the given Priority.
                ///< If Channel is not NULL, its pids are set by a call to SetPids().

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.30 2012/03/13 12:41:05 kls Exp $
+ * $Id: recording.h 2.31 2012/06/02 13:22:53 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -21,8 +21,6 @@
 #define FOLDERDELIMCHAR '~'
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
-
-//#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
 
 extern bool VfatFileSystem;
 extern int InstanceId;
@@ -100,9 +98,6 @@ private:
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
-#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
-public:
-#endif
   time_t start;
   int priority;
   int lifetime;
@@ -208,9 +203,6 @@ class cMark : public cListObject {
   friend class cMarks; // for sorting
 private:
   double framesPerSecond;
-#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
-public:
-#endif
   int position;
   cString comment;
 public:
