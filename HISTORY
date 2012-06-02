@@ -7138,3 +7138,4 @@ Video Disk Recorder Revision History
 - Finally removed the code marked with __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
   and LEGACY_CRECEIVER.
 - Now making sure that the "small font" is never larger than the "osd font".
+- Fixed font handling with fontconfig 2.9.0 or newer (thanks to Joerg Bornkessel).

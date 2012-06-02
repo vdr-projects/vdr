@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.12 2012/06/02 13:32:19 kls Exp $
+ * $Id: font.c 2.13 2012/06/02 13:38:28 kls Exp $
  */
 
 #include "font.h"
@@ -482,7 +482,8 @@ cString cFont::GetFontFileName(const char *FontName)
      FcPatternAddBool(pat, FC_SCALABLE, FcTrue);
      FcConfigSubstitute(NULL, pat, FcMatchPattern);
      FcDefaultSubstitute(pat);
-     FcFontSet *fontset = FcFontSort(NULL, pat, FcFalse, NULL, NULL);
+     FcResult fresult;
+     FcFontSet *fontset = FcFontSort(NULL, pat, FcFalse, NULL, &fresult);
      if (fontset) {
         for (int i = 0; i < fontset->nfont; i++) {
             FcBool scalable;

@@ -2780,6 +2780,7 @@ Dominik Strasser <dominik@die-strassers.de>
 
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
+ for fixing font handling with fontconfig 2.9.0 or newer
 
 Andreas Oberritter <obi@opendreambox.org>
  for suggesting to retrieve the include path to the freetype2 header files
