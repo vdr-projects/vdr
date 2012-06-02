@@ -7118,3 +7118,5 @@ Video Disk Recorder Revision History
 - Fixed resetting CAMs (thanks to Marco Skambraks).
 - The new function RgbShade() (include osd.h) can be used to generate a brighter or
   darker version of a given color.
+- The new class cSortedTimers can be used to quickly get a list of all timers, sorted
+  by their start time.
