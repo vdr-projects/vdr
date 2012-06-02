@@ -7120,3 +7120,18 @@ Video Disk Recorder Revision History
   darker version of a given color.
 - The new class cSortedTimers can be used to quickly get a list of all timers, sorted
   by their start time.
+- The new skin "LCARS" is an enhanced version of the "ST:TNG" skin (which is still
+  there in its original layout, for those who don't like the LCARS skin, or can't use
+  it due to OSD limitations). The LCARS skin utilizes the new "menu category" feature
+  to display additional information on the main menu page. It shows upcoming timers
+  and the system's devices, as well as which device is recording which timers. The
+  upper pane of the main menu displays the programme data in live and replay mode,
+  and a progress bar. An indicator on the right side of the device list shows which
+  device is currently used for live viewing, and whether it is in transfer mode.
+  The individual device displays show the device number, the device type, which CAM
+  (if any ) is currently assigned to the device, and the signal strength and quality.
+  On the left side of the OSD there is a permanent display of the current date and
+  time, the disk usage and the system load.
+  "LCARS" is the new default skin of VDR. It requires at least a 4bpp (16 color) full
+  screen OSD, but you can still operate it if your OSD can handle only fewer colors
+  (in which case you may want to switch to the "ST:TNG" or "Classic VDR" skin).

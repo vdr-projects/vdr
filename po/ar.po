@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-04-15 12:45+0200\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -516,12 +516,6 @@ msgstr "المستخدم 8"
 
 msgid "Key$User9"
 msgstr "المستخدم 9"
-
-msgid "Disk"
-msgstr "القرص الصلب"
-
-msgid "free"
-msgstr "مساحة حرة"
 
 msgid "Free To Air"
 msgstr "غير مشفر"
@@ -1177,9 +1171,6 @@ msgstr " ايقاف التسجيل "
 msgid "Schedule"
 msgstr "جدولة"
 
-msgid "VDR"
-msgstr ""
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " ايقاف الاعادة"
@@ -1310,6 +1301,24 @@ msgstr "الصوت "
 msgid "Classic VDR"
 msgstr "VDR تقليدى  "
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG شاشة "
 
@@ -1373,3 +1382,9 @@ msgstr "اضغط اى زر لالغاء اعادة التشغيل"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "البرنامج سيقوم بالاغلاق بعد%s دقيقة "
+
+msgid "Disk"
+msgstr "القرص الصلب"
+
+msgid "free"
+msgstr "مساحة حرة"
