@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.9 2012/05/20 13:49:24 kls Exp $
+ * $Id: skins.c 2.10 2012/06/02 11:44:14 kls Exp $
  */
 
 #include "skins.h"
@@ -174,7 +174,7 @@ cSkinDisplayReplay::cSkinDisplayReplay(void)
 
 void cSkinDisplayReplay::SetRecording(const cRecording *Recording)
 {
-  SetTitle(Recording->Name());
+  SetTitle(Recording->Title());
 }
 
 void cSkinDisplayReplay::SetMarks(const cMarks *Marks)
