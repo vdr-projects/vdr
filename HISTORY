@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-05-29: Version 1.7.28
+2012-06-02: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7116,3 +7116,5 @@ Video Disk Recorder Revision History
   to the recording's name.
 - cVector::Clear() now reinitializes any previously used members.
 - Fixed resetting CAMs (thanks to Marco Skambraks).
+- The new function RgbShade() (include osd.h) can be used to generate a brighter or
+  darker version of a given color.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.29 2012/05/17 13:29:19 kls Exp $
+ * $Id: osd.c 2.30 2012/06/02 10:42:23 kls Exp $
  */
 
 #include "osd.h"
@@ -38,6 +38,16 @@ tColor HsvToColor(double H, double S, double V)
      uint8_t n = V * 0xFF;
      return RgbToColor(n, n, n);
      }
+}
+
+tColor RgbShade(tColor Color, double Factor)
+{
+  double f = fabs(constrain(Factor, -1.0, 1.0));
+  double w = Factor > 0 ? f * 0xFF : 0;
+  return (Color & 0xFF000000) |
+         (min(0xFF, int((1 - f) * ((Color >> 16) & 0xFF) + w + 0.5)) << 16) |
+         (min(0xFF, int((1 - f) * ((Color >>  8) & 0xFF) + w + 0.5)) <<  8) |
+         (min(0xFF, int((1 - f) * ( Color        & 0xFF) + w + 0.5))      );
 }
 
 #define USE_ALPHA_LUT

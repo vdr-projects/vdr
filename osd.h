@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.16 2012/05/17 15:09:35 kls Exp $
+ * $Id: osd.h 2.17 2012/06/02 10:32:38 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -69,6 +69,14 @@ inline tColor RgbToColor(double R, double G, double B)
 {
   return RgbToColor(uint8_t(0xFF * R), uint8_t(0xFF * G), uint8_t(0xFF * B));
 }
+
+tColor RgbShade(tColor Color, double Factor);
+   ///< Returns a brighter (Factor > 0) or darker (Factor < 0) version
+   ///< of the given Color.
+   ///< If Factor is 0.0, the return value is the unchanged Color,
+   ///< If Factor is 1.0, white is returned.
+   ///< If Factor is -1.0, black is returned.
+   ///< The alpha value of Color is returned unchanged.
 
 tColor HsvToColor(double H, double S, double V);
    ///< Converts the given Hue (0..360), Saturation (0..1) and Value (0..1)
