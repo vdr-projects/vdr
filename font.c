@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.11 2012/05/19 10:15:18 kls Exp $
+ * $Id: font.c 2.12 2012/06/02 13:32:19 kls Exp $
  */
 
 #include "font.h"
@@ -412,7 +412,7 @@ const cFont *cFont::GetFont(eDvbFont Font)
   if (!fonts[Font]) {
      switch (Font) {
        case fontOsd: SetFont(Font, Setup.FontOsd, Setup.FontOsdSize); break;
-       case fontSml: SetFont(Font, Setup.FontSml, Setup.FontSmlSize); break;
+       case fontSml: SetFont(Font, Setup.FontSml, min(Setup.FontSmlSize, Setup.FontOsdSize)); break;
        case fontFix: SetFont(Font, Setup.FontFix, Setup.FontFixSize); break;
        default: esyslog("ERROR: unknown Font %d (%s %d)", Font, __FUNCTION__, __LINE__);
        }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.30 2012/06/02 10:42:23 kls Exp $
+ * $Id: osd.c 2.31 2012/06/02 13:32:38 kls Exp $
  */
 
 #include "osd.h"
@@ -2006,7 +2006,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      Setup.FontSmlSize = int(round(Height * Setup.FontSmlSizeP));
      cFont::SetFont(fontOsd, Setup.FontOsd, Setup.FontOsdSize);
      cFont::SetFont(fontFix, Setup.FontFix, Setup.FontFixSize);
-     cFont::SetFont(fontSml, Setup.FontSml, Setup.FontSmlSize);
+     cFont::SetFont(fontSml, Setup.FontSml, min(Setup.FontSmlSize, Setup.FontOsdSize));
      oldWidth = Width;
      oldHeight = Height;
      oldAspect = Aspect;

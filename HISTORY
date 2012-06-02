@@ -7137,3 +7137,4 @@ Video Disk Recorder Revision History
   (in which case you may want to switch to the "ST:TNG" or "Classic VDR" skin).
 - Finally removed the code marked with __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
   and LEGACY_CRECEIVER.
+- Now making sure that the "small font" is never larger than the "osd font".
