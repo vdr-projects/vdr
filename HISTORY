@@ -7139,3 +7139,6 @@ Video Disk Recorder Revision History
   and LEGACY_CRECEIVER.
 - Now making sure that the "small font" is never larger than the "osd font".
 - Fixed font handling with fontconfig 2.9.0 or newer (thanks to Joerg Bornkessel).
+- Extended the interface to the script that gets called for recordings, so that in
+  the "edited" case it also provides the name of the original recording (thanks to
+  Christian Richter).

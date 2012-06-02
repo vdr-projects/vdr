@@ -235,8 +235,8 @@ You can use the '-r' option to define a program or script that gets called
 before and after a recording is performed, and after an editing process
 has finished.
 
-The program will be called with two string parameters. The first parameter
-is one of
+The program will be called with two or three (in case of "edited") string
+parameters. The first parameter is one of
 
   before      if this is *before* a recording starts
   after       if this is *after* a recording has finished
@@ -244,7 +244,8 @@ is one of
 
 and the second parameter contains the full name of the recording's
 directory (which may not yet exists at that moment in the "before" case).
-In the "edited" case it will be the name of the edited version.
+In the "edited" case it will be the name of the edited version (second
+parameter) and the name of the source version (third parameter).
 
 Within this program you can do anything you would like to do before and/or
 after a recording or after an editing process. However, the program must return
@@ -265,6 +266,7 @@ case "$1" in
             ;;
      edited)
             echo "Edited recording $2"
+            echo "Source recording $3"
             ;;
      *)
             echo "ERROR: unknown state: $1"

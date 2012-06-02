@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.31 2012/06/02 13:22:53 kls Exp $
+ * $Id: recording.h 2.32 2012/06/02 13:46:55 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -243,7 +243,7 @@ private:
   static const char *command;
 public:
   static void SetCommand(const char *Command) { command = Command; }
-  static void InvokeCommand(const char *State, const char *RecordingFileName);
+  static void InvokeCommand(const char *State, const char *RecordingFileName, const char *SourceFileName = NULL);
   };
 
 // The maximum size of a single frame (up to HDTV 1920x1080):

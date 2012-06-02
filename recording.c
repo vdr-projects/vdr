@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.54 2012/05/20 13:19:15 kls Exp $
+ * $Id: recording.c 2.55 2012/06/02 13:52:05 kls Exp $
  */
 
 #include "recording.h"
@@ -1424,13 +1424,17 @@ cMark *cMarks::GetNext(int Position)
 
 const char *cRecordingUserCommand::command = NULL;
 
-void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName)
+void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName, const char *SourceFileName)
 {
   if (command) {
-     cString cmd = cString::sprintf("%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"));
-     isyslog("executing '%s'", *cmd);
-     SystemExec(cmd);
-     }
+    cString cmd;
+    if (SourceFileName)
+       cmd = cString::sprintf("%s %s \"%s\" \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"), *strescape(SourceFileName, "\\\"$"));
+    else
+       cmd = cString::sprintf("%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"));
+    isyslog("executing '%s'", *cmd);
+    SystemExec(cmd);
+  }
 }
 
 // --- cIndexFileGenerator ---------------------------------------------------

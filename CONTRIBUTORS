@@ -2891,3 +2891,7 @@ Michael Schneider <vdrportal_midas@gmx.de>
 
 Marco Skambraks <marco@ammec.de>
  for fixing resetting CAMs
+
+Christian Richter <cr@crichter.net>
+ for extending the interface to the script that gets called for recordings, so that in
+ the "edited" case it also provides the name of the original recording
