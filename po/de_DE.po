@@ -1274,22 +1274,22 @@ msgid "Classic VDR"
 msgstr "Klassischer VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "PLATTE"
 
 msgid "LOAD"
-msgstr ""
+msgstr "LAST"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TIMER"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "EMPFÄNGER"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "WIEDERGABE"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG-Konsolen"
