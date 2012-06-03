@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.55 2012/06/02 13:52:05 kls Exp $
+ * $Id: recording.c 2.56 2012/06/03 09:51:27 kls Exp $
  */
 
 #include "recording.h"
@@ -153,7 +153,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = DeletedRecordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
+                 if (r->IsOnVideoDirectoryFileSystem()) { // only remove recordings that will actually increase the free video disk space
                     if (!r0 || r->Start() < r0->Start())
                        r0 = r;
                     }
@@ -180,7 +180,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
+                 if (r->IsOnVideoDirectoryFileSystem()) { // only delete recordings that will actually increase the free video disk space
                     if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
                        if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
                            (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
@@ -617,6 +617,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   channel = Timer->Channel()->Number();
   instanceId = InstanceId;
   isPesRecording = false;
+  isOnVideoDirectoryFileSystem = -1; // unknown
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   numFrames = -1;
   deleted = 0;
@@ -677,6 +678,7 @@ cRecording::cRecording(const char *FileName)
   priority = MAXPRIORITY; // assume maximum in case there is no info file
   lifetime = MAXLIFETIME;
   isPesRecording = false;
+  isOnVideoDirectoryFileSystem = -1; // unknown
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   numFrames = -1;
   deleted = 0;
@@ -950,6 +952,13 @@ bool cRecording::IsEdited(void) const
   const char *s = strrchr(name, FOLDERDELIMCHAR);
   s = !s ? name : s + 1;
   return *s == '%';
+}
+
+bool cRecording::IsOnVideoDirectoryFileSystem(void) const
+{
+  if (isOnVideoDirectoryFileSystem < 0)
+     isOnVideoDirectoryFileSystem = ::IsOnVideoDirectoryFileSystem(FileName());
+  return isOnVideoDirectoryFileSystem;
 }
 
 void cRecording::ReadInfo(void)
@@ -1253,7 +1262,7 @@ int cRecordings::TotalFileSizeMB(void)
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
       int FileSizeMB = recording->FileSizeMB();
-      if (FileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
+      if (FileSizeMB > 0 && recording->IsOnVideoDirectoryFileSystem())
          size += FileSizeMB;
       }
   return size;
@@ -1265,7 +1274,7 @@ double cRecordings::MBperMinute(void)
   int length = 0;
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (IsOnVideoDirectoryFileSystem(recording->FileName())) {
+      if (recording->IsOnVideoDirectoryFileSystem()) {
          int FileSizeMB = recording->FileSizeMB();
          if (FileSizeMB > 0) {
             int LengthInSeconds = recording->LengthInSeconds();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.32 2012/06/02 13:46:55 kls Exp $
+ * $Id: recording.h 2.33 2012/06/03 09:49:09 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -91,6 +91,7 @@ private:
   int channel;
   int instanceId;
   bool isPesRecording;
+  mutable int isOnVideoDirectoryFileSystem; // -1 = unknown, 0 = no, 1 = yes
   double framesPerSecond;
   cRecordingInfo *info;
   cRecording(const cRecording&); // can't copy cRecording
@@ -130,6 +131,7 @@ public:
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
+  bool IsOnVideoDirectoryFileSystem(void) const;
   void ReadInfo(void);
   bool WriteInfo(void);
   void SetStartTime(time_t Start);

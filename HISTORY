@@ -7052,7 +7052,7 @@ Video Disk Recorder Revision History
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
 
-2012-06-02: Version 1.7.28
+2012-06-03: Version 1.7.28
 
 - Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
 - Fixed getting the maximum short channel name length in case there are no short names
@@ -7144,3 +7144,6 @@ Video Disk Recorder Revision History
   Christian Richter).
 - Added DeleteEvent() to the EPG handler interface, so that an EPG handler can trigger
   deleting of an event (thanks to Christian Kaiser).
+- Speeded up opening menus on systems with many (several thousands) of recordings, by
+  caching the information whether a recording is stored on the video directory file
+  system within the cRecording data (based on a patch from Torsten Lang).
