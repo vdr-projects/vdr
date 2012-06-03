@@ -3,15 +3,16 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.8 2012/03/11 14:42:52 kls Exp $
+ * $Id: skincurses.c 2.9 2012/04/23 08:53:13 kls Exp $
  */
 
 #include <ncurses.h>
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
+#include <vdr/videodir.h>
 
-static const char *VERSION        = "0.1.11";
+static const char *VERSION        = "0.1.12";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -262,6 +263,9 @@ void cSkinCursesDisplayChannel::Flush(void)
 class cSkinCursesDisplayMenu : public cSkinDisplayMenu {
 private:
   cOsd *osd;
+  cString title;
+  int lastDiskUsageState;
+  void DrawTitle(void);
   void DrawScrollbar(int Total, int Offset, int Shown, int Top, int Height, bool CanScrollUp, bool CanScrollDown);
   void SetTextScrollbar(void);
 public:
@@ -285,6 +289,7 @@ public:
 cSkinCursesDisplayMenu::cSkinCursesDisplayMenu(void)
 {
   osd = new cCursesOsd(0, 0);
+  lastDiskUsageState = -1;
   osd->DrawRectangle(0, 0, ScOsdWidth - 1, ScOsdHeight - 1, clrBackground);
 }
 
@@ -332,9 +337,16 @@ void cSkinCursesDisplayMenu::Clear(void)
   textScroller.Reset();
 }
 
+void cSkinCursesDisplayMenu::DrawTitle(void)
+{
+  bool WithDisk = MenuCategory() == mcMain || MenuCategory() == mcRecording;
+  osd->DrawText(0, 0, WithDisk ? cString::sprintf("%s  -  %s", *title, *cVideoDiskUsage::String()) : title, clrBlack, clrCyan, &Font, ScOsdWidth);
+}
+
 void cSkinCursesDisplayMenu::SetTitle(const char *Title)
 {
-  osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, ScOsdWidth);
+  title = Title;
+  DrawTitle();
 }
 
 void cSkinCursesDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -475,6 +487,8 @@ void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinCursesDisplayMenu::Flush(void)
 {
+  if (cVideoDiskUsage::HasChanged(lastDiskUsageState))
+     DrawTitle();
   cString date = DayDateTime();
   osd->DrawText(ScOsdWidth - Utf8StrLen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
   osd->Flush();

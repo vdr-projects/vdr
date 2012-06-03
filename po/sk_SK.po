@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2011-02-15 16:29+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -509,12 +509,6 @@ msgstr "U¾ívateµ8"
 msgid "Key$User9"
 msgstr "U¾ívateµ9"
 
-msgid "Disk"
-msgstr "Disk"
-
-msgid "free"
-msgstr "volne"
-
 msgid "Free To Air"
 msgstr "volne ¹íriteµný"
 
@@ -923,6 +917,9 @@ msgstr "Titulky"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Hlavné DVB rozhranie"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Formát videa"
 
@@ -1147,9 +1144,6 @@ msgstr " Zastavi» nahrávanie"
 msgid "Schedule"
 msgstr "TV program"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Zastavi» prehrávanie"
@@ -1279,6 +1273,24 @@ msgstr "Hlasitos»"
 msgid "Classic VDR"
 msgstr "Klasické VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG panely"
 
@@ -1341,3 +1353,9 @@ msgstr "ktorákoµvek  klávesa zru¹í re¹tart"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR sa vypne za %s minút"
+
+msgid "Disk"
+msgstr "Disk"
+
+msgid "free"
+msgstr "volne"

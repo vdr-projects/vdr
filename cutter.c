@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.11 2012/02/16 12:08:39 kls Exp $
+ * $Id: cutter.c 2.12 2012/06/02 13:46:55 kls Exp $
  */
 
 #include "cutter.h"
@@ -270,7 +270,7 @@ bool cCutter::Active(const char *FileName)
      error = cuttingThread->Error();
      Stop();
      if (!error)
-        cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName);
+        cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName, originalVersionName);
      originalVersionName = NULL;
      editedVersionName = NULL;
      ended = true;

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2008-03-12 18:25+0100\n"
 "Last-Translator: Magnus Andersson <svankan@bahnhof.se>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -512,12 +512,6 @@ msgstr "Användare8"
 msgid "Key$User9"
 msgstr "Användare9"
 
-msgid "Disk"
-msgstr "Disk"
-
-msgid "free"
-msgstr "ledigt"
-
 msgid "Free To Air"
 msgstr "Okodad"
 
@@ -926,6 +920,9 @@ msgstr "Knapp$Textning"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primär DVB enhet"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Video format"
 
@@ -1150,9 +1147,6 @@ msgstr " Avsluta inspelning "
 msgid "Schedule"
 msgstr "Program"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Avsluta uppspelning"
@@ -1282,6 +1276,24 @@ msgstr "Volym "
 msgid "Classic VDR"
 msgstr "Klassisk VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsol"
 
@@ -1344,3 +1356,9 @@ msgstr "Tryck valfri knapp för att återkalla omstart"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR kommer att stängas ned om %s minuter"
+
+msgid "Disk"
+msgstr "Disk"
+
+msgid "free"
+msgstr "ledigt"

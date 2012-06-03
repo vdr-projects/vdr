@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -509,12 +509,6 @@ msgstr "Lisaklahv8"
 msgid "Key$User9"
 msgstr "Lisaklahv9"
 
-msgid "Disk"
-msgstr "Ketas"
-
-msgid "free"
-msgstr "vaba"
-
 msgid "Free To Air"
 msgstr "FTA"
 
@@ -923,6 +917,9 @@ msgstr "Subtiitrid"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Esmane DVB seade"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "TV külgsuhe"
 
@@ -1147,9 +1144,6 @@ msgstr " Lõpetada salvestamine "
 msgid "Schedule"
 msgstr "Kava"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Lõpetada taasesitamine"
@@ -1279,6 +1273,24 @@ msgstr "Helitugevus "
 msgid "Classic VDR"
 msgstr "Classic VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Panels"
 
@@ -1341,3 +1353,9 @@ msgstr "Restardi katkestamiseks vajuta suvalist klahvi"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR lülitub välja %s minuti pärast"
+
+msgid "Disk"
+msgstr "Ketas"
+
+msgid "free"
+msgstr "vaba"

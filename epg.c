@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.12 2012/03/10 13:14:27 kls Exp $
+ * $Id: epg.c 2.14 2012/06/02 14:08:12 kls Exp $
  */
 
 #include "epg.h"
@@ -1125,7 +1125,7 @@ cSchedulesLock::~cSchedulesLock()
 // --- cSchedules ------------------------------------------------------------
 
 cSchedules cSchedules::schedules;
-const char *cSchedules::epgDataFileName = NULL;
+char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastCleanup = time(NULL);
 time_t cSchedules::lastDump = time(NULL);
 time_t cSchedules::modified = 0;
@@ -1137,7 +1137,7 @@ const cSchedules *cSchedules::Schedules(cSchedulesLock &SchedulesLock)
 
 void cSchedules::SetEpgDataFileName(const char *FileName)
 {
-  delete epgDataFileName;
+  free(epgDataFileName);
   epgDataFileName = FileName ? strdup(FileName) : NULL;
 }
 
@@ -1427,6 +1427,15 @@ void cEpgHandlers::HandleEvent(cEvent *Event)
       if (eh->HandleEvent(Event))
          break;
       }
+}
+
+bool cEpgHandlers::DeleteEvent(const cEvent *Event)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->DeleteEvent(Event))
+         return true;
+      }
+  return false;
 }
 
 void cEpgHandlers::SortSchedule(cSchedule *Schedule)

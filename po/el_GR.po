@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -509,12 +509,6 @@ msgstr ""
 msgid "Key$User9"
 msgstr ""
 
-msgid "Disk"
-msgstr "Δίσκος"
-
-msgid "free"
-msgstr "Ελεύθερος"
-
 msgid "Free To Air"
 msgstr ""
 
@@ -923,6 +917,9 @@ msgstr ""
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Κύρια DVB κάρτα"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Μορφή οθόνης"
 
@@ -1147,9 +1144,6 @@ msgstr " Τέλος εγγαφής "
 msgid "Schedule"
 msgstr "Πρόγραμμα"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Τέλος αναπαραγωγής"
@@ -1279,6 +1273,24 @@ msgstr "Ένταση "
 msgid "Classic VDR"
 msgstr "Κλασικό VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "Μορφές ST:TNG"
 
@@ -1341,3 +1353,9 @@ msgstr ""
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr ""
+
+msgid "Disk"
+msgstr "Δίσκος"
+
+msgid "free"
+msgstr "Ελεύθερος"

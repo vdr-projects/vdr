@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.2 2012/03/11 14:38:23 kls Exp $
+ * $Id: skins.h 2.5 2012/05/12 11:10:30 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -72,6 +72,8 @@ public:
   */
   };
 
+enum eMenuCategory { mcUndefined = -1, mcUnknown = 0, mcMain, mcSchedule, mcChannel, mcTimer, mcRecording, mcPlugin, mcSetup, mcCommand, mcEvent, mcText, mcFolder, mcCam };
+
 class cSkinDisplayMenu : public cSkinDisplay {
        ///< This class implements the general purpose menu display, which is
        ///< used throughout the program to display information and let the
@@ -92,6 +94,7 @@ class cSkinDisplayMenu : public cSkinDisplay {
 public:
   enum { MaxTabs = 6 };
 private:
+  eMenuCategory menuCategory;
   int tabs[MaxTabs];
 protected:
   cTextScroller textScroller;
@@ -104,6 +107,16 @@ protected:
        ///< part can be found, NULL will be returned.
 public:
   cSkinDisplayMenu(void);
+  eMenuCategory MenuCategory(void) const { return menuCategory; }
+       ///< Returns the menu category, set by a previous call to SetMenuCategory().
+  virtual void SetMenuCategory(eMenuCategory MenuCategory);
+       ///< Sets the current menu category. This allows skins to handle known
+       ///< types of menus in different ways, for instance by displaying icons
+       ///< or special decorations.
+       ///< A derived class can reimplement this function to be informed of any
+       ///< changes in the menu category. If it does, it shall call the base class
+       ///< function in order to set the members accordingly for later calls to the
+       ///< MenuCategory() function.
   virtual void SetTabs(int Tab1, int Tab2 = 0, int Tab3 = 0, int Tab4 = 0, int Tab5 = 0);
        ///< Sets the tab columns to the given values, which are the number of
        ///< characters in each column.
@@ -200,6 +213,11 @@ public:
   virtual void SetMarks(const cMarks *Marks);
        ///< Sets the editing marks to Marks, which shall be used to display the
        ///< progress bar through a cProgressBar object.
+  virtual void SetRecording(const cRecording *Recording);
+       ///< Sets the recording that is currently being played.
+       ///< The default implementation calls SetTitle() with the title and short
+       ///< text of the Recording. A derived class can use any information provided
+       ///< by the given Recording and display it.
   virtual void SetTitle(const char *Title) = 0;
        ///< Sets the title of the recording.
   virtual void SetMode(bool Play, bool Forward, int Speed) = 0;

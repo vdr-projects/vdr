@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.31 2012/03/16 11:56:56 kls Exp $
+ * $Id: dvbsubtitle.c 2.32 2012/05/08 08:17:17 kls Exp $
  */
 
 
@@ -217,7 +217,7 @@ void cSubtitleObject::DecodeCharacterString(const uchar *Data, int NumberOfCodes
         char txt[NumberOfCodes + 1];
         char *p = txt;
         for (int i = 2; i < NumberOfCodes; ++i) {
-            char c = Data[i * 2 + 1] & 0xFF;
+            uchar c = Data[i * 2 + 1] & 0xFF;
             if (c == 0)
                break;
             if (' ' <= c && c <= '~' || c == '\n' || 0xA0 <= c)

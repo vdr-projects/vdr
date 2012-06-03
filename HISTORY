@@ -6603,7 +6603,7 @@ Video Disk Recorder Revision History
 - Now using pkg-config to get fribidi, freetype and fontconfig cflags and libs (thanks
   to Ville Skyttä).
 - The Makefile now also installs the include files (thanks to Ville Skyttä).
-- Added handling of "ANSI/SCTE 57" descriptors (thanks too Rolf Ahrenberg).
+- Added handling of "ANSI/SCTE 57" descriptors (thanks to Rolf Ahrenberg).
 - Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
@@ -7051,3 +7051,99 @@ Video Disk Recorder Revision History
 - Reverted some improvements to Make.config.template (thanks to Christian Ruppert).
 - Fixed handling IDLEPRIORITY in cDvbDevice::ProvidesChannel() (thanks to Frank
   Schmirler).
+
+2012-06-03: Version 1.7.28
+
+- Fixed cPixmapMemory::DrawEllipse() for quadrants -1 and -4.
+- Fixed getting the maximum short channel name length in case there are no short names
+  at all (reported by Derek Kelly).
+- The new function cDevice::DeviceType() returns a string identifying the type of
+  the given device.
+- Now limiting the number of characters of a channel's (short) name to 16 in the
+  schedules menus, to keep that column from getting overly wide in case there is
+  a channel with a very long name that has no short name.
+- Fixed EPG scan on systems with only a single DVB device that use software output
+  (reported by Juergen Lock).
+- Skins can now inquire the menu category for which their cSkinDisplayMenu is currently
+  being used. This can be done either through a call to cSkinDisplayMenu::MenuCategory()
+  or by reimplementing cSkinDisplayMenu::SetMenuCategory(). This information allows a
+  skin to use special icons or decorations for the various types of menus in VDR.
+- The new setup option "DVB/Standard compliance" can be used to switch between different
+  variations of the DVB standard (thanks to Rolf Ahrenberg). Currently there is "DVB"
+  (for the original DVB standard) and "ANSI/SCTE", which is used to properly handle
+  certain private stream types.
+- The disk usage is no longer automatically added to the title of the main and
+  "Recordings" menus. This has always been a mekeshift solution and it is now up
+  to the individual skin if, where and how it wants to display this information.
+  A skin can use the new cVideoDiskUsage class to implement such a display. For
+  compatibility, the default skins "Classic VDR", "ST:TNG Panels" and "Text mode"
+  (i.e. curses) have been changed to behave like before. Other skins may want to
+  display the disk usage in totally different ways.
+- A cOsdMenu can now handle skins that display different numbers of items in the
+  various menu categories.
+- OSD and skin are now reinitialized after a plugin setup page has been confirmed,
+  to have them react immediately in case any change to a plugin's setup parameter
+  has an effect on the OSD.
+- The Timers list is now marked as modified whenever a recording starts or ends.
+- Fixed cDevice::StillPicture(), making sure it doesn't call the derived class's
+  function if no buffer has been allocated (reported by Marcus Roscher).
+- Fixed the SVDRP command UPDR, which didn't update the global recordings list
+  (reported by Lars Hanisch).
+- cControl::Control() now has an additional boolean parameter, which can be set to
+  true to get the current player control even if it is hidden.
+- The new functions cControl::GetRecording() and cControl::GetHeader() can be used
+  to retrieve information about what the current player is playing.
+- Fixed a possible high CPU load when pausing replay (thanks to Reinhard Nissl).
+- Fixed character comparisons in cSubtitleObject::DecodeCharacterString() (reported
+  by Reinhard Mantey).
+- Renamed the function cString::sprintf(const char *fmt, va_list &ap) to vsprintf(),
+  because it might inadvertently be called with a 'char *' as the second argument on
+  some compilers and cause a crash (reported by Sundararaj Reel).
+- Removed the "bondedMasterFailed" mechanism from cDvbTuner, because it caused
+  problems with the EPG scan in case a transponder is not receivable in a setup with
+  bonded devices (reported by Michael Schneider).
+- Making sure setup strings don't contain any newline characters (thanks to Joachim
+  Wilke).
+- The new member function cSkinDisplayReplay::SetRecording() allows a skin to display
+  more information about the currently played recording.
+- Fixed a mismatched 'delete' in cSchedules::SetEpgDataFileName() (thanks to Reinhard
+  Mantey).
+- The DrawText() functions of the OSD now accept the new alignment flag taBorder,
+  which triggers keeping a proper distance from the edge that taLeft or taRight
+  aligns to.
+- Fixed checking for UTF-8 support in cFont::Bidi() (reported by Torsten Lang).
+- If a recording has no info file, the 'title' of the recording's info is now set
+  to the recording's name.
+- cVector::Clear() now reinitializes any previously used members.
+- Fixed resetting CAMs (thanks to Marco Skambraks).
+- The new function RgbShade() (include osd.h) can be used to generate a brighter or
+  darker version of a given color.
+- The new class cSortedTimers can be used to quickly get a list of all timers, sorted
+  by their start time.
+- The new skin "LCARS" is an enhanced version of the "ST:TNG" skin (which is still
+  there in its original layout, for those who don't like the LCARS skin, or can't use
+  it due to OSD limitations). The LCARS skin utilizes the new "menu category" feature
+  to display additional information on the main menu page. It shows upcoming timers
+  and the system's devices, as well as which device is recording which timers. The
+  upper pane of the main menu displays the programme data in live and replay mode,
+  and a progress bar. An indicator on the right side of the device list shows which
+  device is currently used for live viewing, and whether it is in transfer mode.
+  The individual device displays show the device number, the device type, which CAM
+  (if any ) is currently assigned to the device, and the signal strength and quality.
+  On the left side of the OSD there is a permanent display of the current date and
+  time, the disk usage and the system load.
+  "LCARS" is the new default skin of VDR. It requires at least a 4bpp (16 color) full
+  screen OSD, but you can still operate it if your OSD can handle only fewer colors
+  (in which case you may want to switch to the "ST:TNG" or "Classic VDR" skin).
+- Finally removed the code marked with __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
+  and LEGACY_CRECEIVER.
+- Now making sure that the "small font" is never larger than the "osd font".
+- Fixed font handling with fontconfig 2.9.0 or newer (thanks to Joerg Bornkessel).
+- Extended the interface to the script that gets called for recordings, so that in
+  the "edited" case it also provides the name of the original recording (thanks to
+  Christian Richter).
+- Added DeleteEvent() to the EPG handler interface, so that an EPG handler can trigger
+  deleting of an event (thanks to Christian Kaiser).
+- Speeded up opening menus on systems with many (several thousands) of recordings, by
+  caching the information whether a recording is stored on the video directory file
+  system within the cRecording data (based on a patch from Torsten Lang).

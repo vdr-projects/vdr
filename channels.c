@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.21 2012/03/11 13:29:06 kls Exp $
+ * $Id: channels.c 2.22 2012/04/01 09:27:08 kls Exp $
  */
 
 #include "channels.h"
@@ -955,7 +955,7 @@ int cChannels::MaxShortChannelNameLength(void)
   if (!maxShortChannelNameLength) {
      for (cChannel *channel = First(); channel; channel = Next(channel)) {
          if (!channel->GroupSep())
-            maxShortChannelNameLength = max(Utf8StrLen(channel->ShortName()), maxShortChannelNameLength);
+            maxShortChannelNameLength = max(Utf8StrLen(channel->ShortName(true)), maxShortChannelNameLength);
          }
      }
   return maxShortChannelNameLength;

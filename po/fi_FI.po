@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -512,12 +512,6 @@ msgstr "Lisänäppäin 8"
 msgid "Key$User9"
 msgstr "Lisänäppäin 9"
 
-msgid "Disk"
-msgstr "Levy"
-
-msgid "free"
-msgstr "vapaana"
-
 msgid "Free To Air"
 msgstr "vapaa"
 
@@ -926,6 +920,9 @@ msgstr "Tekstitys"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Ensisijainen DVB-sovitin"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr "Noudatettava standardi"
+
 msgid "Setup.DVB$Video format"
 msgstr "Kuvasuhde"
 
@@ -1150,9 +1147,6 @@ msgstr " Lopeta tallennus "
 msgid "Schedule"
 msgstr "Ohjelmisto"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Lopeta toisto"
@@ -1282,6 +1276,24 @@ msgstr "Äänenvoimakkuus "
 msgid "Classic VDR"
 msgstr "Klassinen VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsoli"
 
@@ -1344,3 +1356,9 @@ msgstr "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR sammuu %s minuutin kuluttua"
+
+msgid "Disk"
+msgstr "Levy"
+
+msgid "free"
+msgstr "vapaana"

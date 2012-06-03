@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.27 2012/03/05 10:28:01 kls Exp $
+ * $Id: osd.c 2.31 2012/06/02 13:32:38 kls Exp $
  */
 
 #include "osd.h"
@@ -38,6 +38,16 @@ tColor HsvToColor(double H, double S, double V)
      uint8_t n = V * 0xFF;
      return RgbToColor(n, n, n);
      }
+}
+
+tColor RgbShade(tColor Color, double Factor)
+{
+  double f = fabs(constrain(Factor, -1.0, 1.0));
+  double w = Factor > 0 ? f * 0xFF : 0;
+  return (Color & 0xFF000000) |
+         (min(0xFF, int((1 - f) * ((Color >> 16) & 0xFF) + w + 0.5)) << 16) |
+         (min(0xFF, int((1 - f) * ((Color >>  8) & 0xFF) + w + 0.5)) <<  8) |
+         (min(0xFF, int((1 - f) * ( Color        & 0xFF) + w + 0.5))      );
 }
 
 #define USE_ALPHA_LUT
@@ -553,11 +563,15 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
      if (Width || Height) {
         limit = x + cw - x0;
         if (Width) {
-           if ((Alignment & taLeft) != 0)
-              ;
+           if ((Alignment & taLeft) != 0) {
+              if ((Alignment & taBorder) != 0)
+                 x += max(h / TEXT_ALIGN_BORDER, 1);
+              }
            else if ((Alignment & taRight) != 0) {
               if (w < Width)
                  x += Width - w;
+              if ((Alignment & taBorder) != 0)
+                 x -= max(h / TEXT_ALIGN_BORDER, 1);
               }
            else { // taCentered
               if (w < Width)
@@ -1280,11 +1294,15 @@ void cPixmapMemory::DrawText(const cPoint &Point, const char *s, tColor ColorFg,
   if (Width || Height) {
      limit = x + cw;
      if (Width) {
-        if ((Alignment & taLeft) != 0)
-           ;
+        if ((Alignment & taLeft) != 0) {
+           if ((Alignment & taBorder) != 0)
+              x += max(h / TEXT_ALIGN_BORDER, 1);
+           }
         else if ((Alignment & taRight) != 0) {
            if (w < Width)
               x += Width - w;
+           if ((Alignment & taBorder) != 0)
+              x -= max(h / TEXT_ALIGN_BORDER, 1);
            }
         else { // taCentered
            if (w < Width)
@@ -1382,10 +1400,10 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case  0:
           case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
           case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
           default: ;
           }
         y++;
@@ -1417,10 +1435,10 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
           case  0:
           case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
           case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, x2 - x + 1,      1), Color); break;
+          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
           case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
           case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, x2 - x + 1,      1), Color); break;
+          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
           default: ;
           }
         x++;
@@ -1988,7 +2006,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      Setup.FontSmlSize = int(round(Height * Setup.FontSmlSizeP));
      cFont::SetFont(fontOsd, Setup.FontOsd, Setup.FontOsdSize);
      cFont::SetFont(fontFix, Setup.FontFix, Setup.FontFixSize);
-     cFont::SetFont(fontSml, Setup.FontSml, Setup.FontSmlSize);
+     cFont::SetFont(fontSml, Setup.FontSml, min(Setup.FontSmlSize, Setup.FontOsdSize));
      oldWidth = Width;
      oldHeight = Height;
      oldAspect = Aspect;

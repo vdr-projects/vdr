@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -510,12 +510,6 @@ msgstr "Пользователь8"
 msgid "Key$User9"
 msgstr "Пользователь9"
 
-msgid "Disk"
-msgstr "Диск"
-
-msgid "free"
-msgstr "свободно"
-
 msgid "Free To Air"
 msgstr "FTA (незакодировано)"
 
@@ -924,6 +918,9 @@ msgstr "Субтитры"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Основное DVB-устройство"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Формат видео"
 
@@ -1148,9 +1145,6 @@ msgstr " Прекратить запись "
 msgid "Schedule"
 msgstr "Телегид"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Прекратить воспроизведение"
@@ -1280,6 +1274,24 @@ msgstr "Громкость "
 msgid "Classic VDR"
 msgstr "Классический"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG панели"
 
@@ -1342,3 +1354,9 @@ msgstr "Нажмите любую кнопку для отмены перезагрузки"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR выключится через %s минут"
+
+msgid "Disk"
+msgstr "Диск"
+
+msgid "free"
+msgstr "свободно"

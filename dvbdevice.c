@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.69 2012/03/25 10:41:45 kls Exp $
+ * $Id: dvbdevice.c 2.71 2012/05/09 08:33:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -285,6 +285,7 @@ class cDvbTuner : public cThread {
 private:
   static cMutex bondMutex;
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  int frontendType;
   const cDvbDevice *device;
   int fd_frontend;
   int adapter, frontend;
@@ -302,7 +303,6 @@ private:
   cCondVar newSet;
   cDvbTuner *bondedTuner;
   bool bondedMaster;
-  bool bondedMasterFailed;
   bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
   void ClearEventQueue(void) const;
@@ -314,6 +314,7 @@ private:
 public:
   cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend);
   virtual ~cDvbTuner();
+  int FrontendType(void) const { return frontendType; }
   bool Bond(cDvbTuner *Tuner);
   void UnBond(void);
   bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
@@ -331,6 +332,7 @@ cMutex cDvbTuner::bondMutex;
 
 cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend)
 {
+  frontendType = SYS_UNDEFINED;
   device = Device;
   fd_frontend = Fd_Frontend;
   adapter = Adapter;
@@ -345,7 +347,6 @@ cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int
   tunerStatus = tsIdle;
   bondedTuner = NULL;
   bondedMaster = false;
-  bondedMasterFailed = false;
   SetDescription("tuner on frontend %d/%d", adapter, frontend);
   Start();
 }
@@ -435,12 +436,8 @@ cDvbTuner *cDvbTuner::GetBondedMaster(void)
   if (!bondedTuner)
      return this; // an unbonded tuner is always "master"
   cMutexLock MutexLock(&bondMutex);
-  if (bondedMaster) {
-     if (!bondedMasterFailed)
-        return this;
-     else
-        bondedMaster = false;
-     }
+  if (bondedMaster)
+     return this;
   // This tuner is bonded, but it's not the master, so let's see if there is a master at all:
   if (cDvbTuner *t = bondedTuner) {
      while (t != this) {
@@ -450,18 +447,9 @@ cDvbTuner *cDvbTuner::GetBondedMaster(void)
            }
      }
   // None of the other bonded tuners is master, so make this one the master:
-  cDvbTuner *t = this;
-  if (bondedMasterFailed) {
-     // This one has failed, so switch to the next one:
-     t = bondedTuner;
-     t->bondedMasterFailed = false;
-     cMutexLock MutexLock(&t->mutex);
-     t->channel = channel;
-     t->tunerStatus = tsSet;
-     }
-  t->bondedMaster = true;
-  dsyslog("tuner %d/%d is now bonded master", t->adapter, t->frontend);
-  return t;
+  bondedMaster = true;
+  dsyslog("tuner %d/%d is now bonded master", adapter, frontend);
+  return this;
 }
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
@@ -733,7 +721,7 @@ bool cDvbTuner::SetFrontend(void)
   cDvbTransponderParameters dtp(channel.Parameters());
 
   // Determine the required frontend type:
-  int frontendType = GetRequiredDeliverySystem(&channel, &dtp);
+  frontendType = GetRequiredDeliverySystem(&channel, &dtp);
   if (frontendType == SYS_UNDEFINED)
      return false;
 
@@ -875,9 +863,6 @@ void cDvbTuner::Action(void)
                      isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
-                  cMutexLock MutexLock(&bondMutex);
-                  if (bondedTuner && bondedMaster)
-                     bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
                WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
@@ -977,7 +962,7 @@ int cDvbDevice::setTransferModeForDolbyDigital = 1;
 cMutex cDvbDevice::bondMutex;
 
 const char *DeliverySystemNames[] = {
-  "UNDEFINED",
+  "",
   "DVB-C",
   "DVB-C",
   "DVB-T",
@@ -1088,6 +1073,17 @@ bool cDvbDevice::Probe(int Adapter, int Frontend)
   dsyslog("creating cDvbDevice");
   new cDvbDevice(Adapter, Frontend); // it's a "budget" device
   return true;
+}
+
+cString cDvbDevice::DeviceType(void) const
+{
+  if (dvbTuner) {
+     if (dvbTuner->FrontendType() != SYS_UNDEFINED)
+        return DeliverySystemNames[dvbTuner->FrontendType()];
+     if (numDeliverySystems)
+        return DeliverySystemNames[deliverySystems[0]]; // to have some reasonable default
+     }
+  return "";
 }
 
 cString cDvbDevice::DeviceName(void) const

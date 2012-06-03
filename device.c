@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.58 2012/03/13 09:48:14 kls Exp $
+ * $Id: device.c 2.60 2012/04/26 09:40:36 kls Exp $
  */
 
 #include "device.h"
@@ -160,6 +160,11 @@ int cDevice::DeviceNumber(void) const
          return i;
       }
   return -1;
+}
+
+cString cDevice::DeviceType(void) const
+{
+  return "";
 }
 
 cString cDevice::DeviceName(void) const
@@ -1176,8 +1181,10 @@ void cDevice::StillPicture(const uchar *Data, int Length)
               return;
               }
            }
-     StillPicture(buf, Size);
-     free(buf);
+     if (buf) {
+        StillPicture(buf, Size);
+        free(buf);
+        }
      }
 }
 

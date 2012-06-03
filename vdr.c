@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.35 2012/03/14 09:09:19 kls Exp $
+ * $Id: vdr.c 2.36 2012/04/26 09:23:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -56,6 +56,7 @@
 #include "recording.h"
 #include "shutdown.h"
 #include "skinclassic.h"
+#include "skinlcars.h"
 #include "skinsttng.h"
 #include "sourceparams.h"
 #include "sources.h"
@@ -677,6 +678,7 @@ int main(int argc, char *argv[])
 
   // Default skins:
 
+  new cSkinLCARS;
   new cSkinSTTNG;
   new cSkinClassic;
   Skins.SetCurrent(Setup.OSDSkin);

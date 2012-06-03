@@ -1140,6 +1140,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for suggesting to change the Green button in the "Edit timer" menu from "Once"
  to "Single"
  for fixing reduced bpp support for DVB subtitles
+ for implementing "DVB Standard compliance" handling
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1309,6 +1310,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for making cEITScanner process new transponders before old ones, to make sure
  transponder changes are recognized
  for helping to debug switching into time shift mode when pausing live video
+ for fixing a possible high CPU load when pausing replay
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1782,6 +1784,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for modifying cCharSetConv so that it can be used to convert from "whatever VDR uses"
  to a given code
  for adding some missing 'const' to cDevice
+ for making sure setup strings don't contain any newline characters
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -2591,6 +2594,9 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a memory leak in cRecordings::ScanVideoDir() in case there are too
  many link levels
  for reporting a bug in cListBase::Move() in case From and To are equal
+ for reporting a problem with the function cString::sprintf(const char *fmt, va_list &ap),
+ that might inadvertently be called with a 'char *' as the second argument on some
+ compilers and cause a crash
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
@@ -2663,6 +2669,8 @@ Derek Kelly (user.vdr@gmail.com)
  could not be determined after resuming recording
  for reporting a problem with detecting frames for channels that split frames into
  several payloads
+ for reporting a problem with getting the maximum short channel name length in case there
+ are no short names at all
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2720,6 +2728,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for suggesting to assign the source character 'V' to "Analog Video"
  for a patch that was used to implement SCR (Satellite Channel Routing)
  for implementing the SVDRP command 'UPDR'
+ for reporting that the SVDRP command UPDR didn't update the global recordings list
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2771,6 +2780,7 @@ Dominik Strasser <dominik@die-strassers.de>
 
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
+ for fixing font handling with fontconfig 2.9.0 or newer
 
 Andreas Oberritter <obi@opendreambox.org>
  for suggesting to retrieve the include path to the freetype2 header files
@@ -2790,6 +2800,8 @@ Gerald Dachs <vdr@dachsweb.de>
 
 Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for fixing cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE
+ for reporting a problem with EPG scan on systems with only a single DVB device that
+ use software output
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
@@ -2849,6 +2861,9 @@ Torsten Lang <info@torstenlang.de>
  of EPG data from BSkyB's "MTV MUSIC"
  for suggesting to make BIDI support check at runtime whether the system runs with
  UTF-8
+ for reporting a bug in checking for UTF-8 support in cFont::Bidi()
+ for a patch that was used to implement caching the information whether a recording
+ is stored on the video directory file system within the cRecording data
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -2862,3 +2877,26 @@ Ralf Schueler <dl4mw@schueler.ws>
  from version 1.7.8 to 1.6.0-3
  for backporting "Fixed cRecordings::DelByName() to avoid compilation errors with
  gcc 4.4" from version 1.7.9 to 1.6.0-3
+
+Marcus Roscher <dad401@gmx.de>
+ for reporting a problem with cDevice::StillPicture(), which called the derived class's
+ function even if no buffer has been allocated
+
+Reinhard Mantey <geronimo013@gmx.de>
+ for reporting a problem with character comparisons in
+ cSubtitleObject::DecodeCharacterString()
+ for fixing a mismatched 'delete' in cSchedules::SetEpgDataFileName()
+
+Michael Schneider <vdrportal_midas@gmx.de>
+ for reporting a problem with the EPG scan in case a transponder is not receivable in
+ a setup with bonded devices
+
+Marco Skambraks <marco@ammec.de>
+ for fixing resetting CAMs
+
+Christian Richter <cr@crichter.net>
+ for extending the interface to the script that gets called for recordings, so that in
+ the "edited" case it also provides the name of the original recording
+
+Christian Kaiser <christian.kaiser@teleservice.com>
+ for adding DeleteEvent() to the EPG handler interface

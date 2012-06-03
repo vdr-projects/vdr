@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.16 2012/03/04 12:05:56 kls Exp $
+ * $Id: svdrp.c 2.19 2012/05/12 11:55:18 kls Exp $
  */
 
 #include "svdrp.h"
@@ -432,7 +432,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
      if (Code != 0) {
         va_list ap;
         va_start(ap, fmt);
-        cString buffer = cString::sprintf(fmt, ap);
+        cString buffer = cString::vsprintf(fmt, ap);
         va_end(ap);
         const char *s = buffer;
         while (s && *s) {
@@ -662,14 +662,14 @@ void cSVDRP::CmdDELR(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
-        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            cRecordControl *rc = cRecordControls::GetRecordControl(recording->FileName());
            if (!rc) {
               if (!cCutter::Active(recording->FileName())) {
                  if (recording->Delete()) {
                     Reply(250, "Recording \"%s\" deleted", Option);
-                    ::Recordings.DelByName(recording->FileName());
+                    Recordings.DelByName(recording->FileName());
                     }
                  else
                     Reply(554, "Error while deleting recording!");
@@ -681,7 +681,7 @@ void cSVDRP::CmdDELR(const char *Option)
               Reply(550, "Recording \"%s\" is in use by timer %d", Option, rc->Timer()->Index() + 1);
            }
         else
-           Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before deleting)");
+           Reply(550, "Recording \"%s\" not found%s", Option, recordings.Count() ? "" : " (use LSTR before deleting)");
         }
      else
         Reply(501, "Error in recording number \"%s\"", Option);
@@ -723,7 +723,7 @@ void cSVDRP::CmdEDIT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
-        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            cMarks Marks;
            if (Marks.Load(recording->FileName(), recording->FramesPerSecond(), recording->IsPesRecording()) && Marks.Count()) {
@@ -740,7 +740,7 @@ void cSVDRP::CmdEDIT(const char *Option)
               Reply(554, "No editing marks defined");
            }
         else
-           Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before editing)");
+           Reply(550, "Recording \"%s\" not found%s", Option, recordings.Count() ? "" : " (use LSTR before editing)");
         }
      else
         Reply(501, "Error in recording number \"%s\"", Option);
@@ -1076,10 +1076,10 @@ void cSVDRP::CmdLSTE(const char *Option)
 
 void cSVDRP::CmdLSTR(const char *Option)
 {
-  bool recordings = Recordings.Update(true);
+  recordings.Update(true);
   if (*Option) {
      if (isnumber(Option)) {
-        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            FILE *f = fdopen(file, "w");
            if (f) {
@@ -1097,11 +1097,11 @@ void cSVDRP::CmdLSTR(const char *Option)
      else
         Reply(501, "Error in recording number \"%s\"", Option);
      }
-  else if (recordings) {
-     cRecording *recording = Recordings.First();
+  else if (recordings.Count()) {
+     cRecording *recording = recordings.First();
      while (recording) {
-           Reply(recording == Recordings.Last() ? 250 : -250, "%d %s", recording->Index() + 1, recording->Title(' ', true));
-           recording = Recordings.Next(recording);
+           Reply(recording == recordings.Last() ? 250 : -250, "%d %s", recording->Index() + 1, recording->Title(' ', true));
+           recording = recordings.Next(recording);
            }
      }
   else
@@ -1367,11 +1367,11 @@ void cSVDRP::CmdPLAY(const char *Option)
      char c = *option;
      *option = 0;
      if (isnumber(num)) {
-        cRecording *recording = Recordings.Get(strtol(num, NULL, 10) - 1);
+        cRecording *recording = recordings.Get(strtol(num, NULL, 10) - 1);
         if (recording) {
            if (c)
               option = skipspace(++option);
-           cReplayControl::SetRecording(NULL, NULL);
+           cReplayControl::SetRecording(NULL);
            cControl::Shutdown();
            if (*option) {
               int pos = 0;
@@ -1383,13 +1383,13 @@ void cSVDRP::CmdPLAY(const char *Option)
               else
                  resume.Save(pos);
               }
-           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cReplayControl::SetRecording(recording->FileName());
            cControl::Launch(new cReplayControl);
            cControl::Attach();
            Reply(250, "Playing recording \"%s\" [%s]", num, recording->Title());
            }
         else
-           Reply(550, "Recording \"%s\" not found%s", num, Recordings.Count() ? "" : " (use LSTR before playing)");
+           Reply(550, "Recording \"%s\" not found%s", num, recordings.Count() ? "" : " (use LSTR before playing)");
         }
      else
         Reply(501, "Error in recording number \"%s\"", num);

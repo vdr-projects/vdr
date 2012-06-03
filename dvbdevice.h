@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.25 2012/03/13 10:11:15 kls Exp $
+ * $Id: dvbdevice.h 2.26 2012/03/31 11:13:31 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -138,6 +138,7 @@ public:
   int Adapter(void) const { return adapter; }
   int Frontend(void) const { return frontend; }
   virtual bool Ready(void);
+  virtual cString DeviceType(void) const;
   virtual cString DeviceName(void) const;
   static bool BondDevices(const char *Bondings);
        ///< Bonds the devices as defined in the given Bondings string.

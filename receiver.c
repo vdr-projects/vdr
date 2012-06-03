@@ -4,26 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 2.5 2012/02/29 11:49:36 kls Exp $
+ * $Id: receiver.c 2.7 2012/06/02 13:20:38 kls Exp $
  */
 
 #include "receiver.h"
 #include <stdio.h>
 #include "tools.h"
-
-#ifdef LEGACY_CRECEIVER
-cReceiver::cReceiver(tChannelID ChannelID, int Priority, int Pid, const int *Pids1, const int *Pids2, const int *Pids3)
-{
-  device = NULL;
-  channelID = ChannelID;
-  priority = constrain(Priority, MINPRIORITY, MAXPRIORITY);
-  numPids = 0;
-  AddPid(Pid);
-  AddPids(Pids1);
-  AddPids(Pids2);
-  AddPids(Pids3);
-}
-#endif
 
 cReceiver::cReceiver(const cChannel *Channel, int Priority)
 {
@@ -83,7 +69,7 @@ bool cReceiver::SetPids(const cChannel *Channel)
             AddPids(Channel->Dpids()) &&
             AddPids(Channel->Spids());
      }
-return true;
+  return true;
 }
 
 bool cReceiver::WantsPid(int Pid)

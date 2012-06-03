@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 2.3 2012/02/20 15:52:57 kls Exp $
+ * $Id: timers.h 2.4 2012/04/15 13:21:31 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -134,5 +134,10 @@ public:
   };
 
 extern cTimers Timers;
+
+class cSortedTimers : public cVector<const cTimer *> {
+public:
+  cSortedTimers(void);
+  };
 
 #endif //__TIMERS_H

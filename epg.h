@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.8 2012/03/10 13:50:10 kls Exp $
+ * $Id: epg.h 2.10 2012/06/02 14:07:51 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -192,7 +192,7 @@ class cSchedules : public cList<cSchedule> {
 private:
   cRwLock rwlock;
   static cSchedules schedules;
-  static const char *epgDataFileName;
+  static char *epgDataFileName;
   static time_t lastCleanup;
   static time_t lastDump;
   static time_t modified;
@@ -258,6 +258,9 @@ public:
   virtual bool HandleEvent(cEvent *Event) { return false; }
           ///< After all modifications of the Event have been done, the EPG handler
           ///< can take a final look at it.
+  virtual bool DeleteEvent(const cEvent *Event) { return false; }
+          ///< After the complete processing of the Event is finished, an EPG handler
+          ///< can decide that this Event shall be deleted from its schedule.
   virtual bool SortSchedule(cSchedule *Schedule) { return false; }
           ///< Sorts the Schedule after the complete table has been processed.
   virtual bool DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version) { return false; }
@@ -280,6 +283,7 @@ public:
   void SetVps(cEvent *Event, time_t Vps);
   void FixEpgBugs(cEvent *Event);
   void HandleEvent(cEvent *Event);
+  bool DeleteEvent(const cEvent *Event);
   void SortSchedule(cSchedule *Schedule);
   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
   };

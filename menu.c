@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.45 2012/03/13 13:14:38 kls Exp $
+ * $Id: menu.c 2.54 2012/05/12 13:08:23 kls Exp $
  */
 
 #include "menu.h"
@@ -34,7 +34,6 @@
 
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
-#define DISKSPACECHEK     5 // seconds between disk space checks
 #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
                             // within which it will go directly into the "Edit timer" menu to allow
                             // further parameter settings
@@ -47,50 +46,10 @@
 #define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
+#define MAXCHNAMWIDTH      16 // maximum number of characters of channels' short names shown in schedules menus
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
-#define CHNAMWIDTH  (Channels.MaxShortChannelNameLength() + 1)
-
-// --- cFreeDiskSpace --------------------------------------------------------
-
-#define MB_PER_MINUTE 25.75 // this is just an estimate!
-
-class cFreeDiskSpace {
-private:
-  static time_t lastDiskSpaceCheck;
-  static int lastFreeMB;
-  static cString freeDiskSpaceString;
-public:
-  static bool HasChanged(bool ForceCheck = false);
-  static const char *FreeDiskSpaceString(void) { HasChanged(); return freeDiskSpaceString; }
-  };
-
-time_t cFreeDiskSpace::lastDiskSpaceCheck = 0;
-int cFreeDiskSpace::lastFreeMB = 0;
-cString cFreeDiskSpace::freeDiskSpaceString;
-
-cFreeDiskSpace FreeDiskSpace;
-
-bool cFreeDiskSpace::HasChanged(bool ForceCheck)
-{
-  if (ForceCheck || time(NULL) - lastDiskSpaceCheck > DISKSPACECHEK) {
-     int FreeMB;
-     int Percent = VideoDiskSpace(&FreeMB);
-     lastDiskSpaceCheck = time(NULL);
-     if (ForceCheck || FreeMB != lastFreeMB) {
-        int MBperMinute = Recordings.MBperMinute();
-        if (MBperMinute <= 0)
-           MBperMinute = MB_PER_MINUTE;
-        int Minutes = int(double(FreeMB) / MBperMinute);
-        int Hours = Minutes / 60;
-        Minutes %= 60;
-        freeDiskSpaceString = cString::sprintf("%s %d%%  -  %2d:%02d %s", tr("Disk"), Percent, Hours, Minutes, tr("free"));
-        lastFreeMB = FreeMB;
-        return true;
-        }
-     }
-  return false;
-}
+#define CHNAMWIDTH  (min(MAXCHNAMWIDTH, Channels.MaxShortChannelNameLength() + 1))
 
 // --- cMenuEditCaItem -------------------------------------------------------
 
@@ -213,6 +172,7 @@ public:
 cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 :cOsdMenu(tr("Edit channel"), 16)
 {
+  SetMenuCategory(mcChannel);
   channel = Channel;
   sourceParam = NULL;
   *name = 0;
@@ -390,6 +350,7 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
+  SetMenuCategory(mcChannel);
   number = 0;
   Setup();
   Channels.IncBeingEdited();
@@ -585,6 +546,7 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
 cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcText);
   text = NULL;
   font = Font;
   SetText(Text);
@@ -673,6 +635,7 @@ public:
 cMenuEditFolder::cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNestedItem *Folder)
 :cOsdMenu(Folder ? tr("Edit folder") : tr("New folder"), 12)
 {
+  SetMenuCategory(mcFolder);
   list = List;
   folder = Folder;
   if (folder) {
@@ -745,6 +708,7 @@ eOSState cMenuEditFolder::ProcessKey(eKeys Key)
 cMenuFolder::cMenuFolder(const char *Title, cNestedItemList *NestedItemList, const char *Path)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcFolder);
   list = nestedItemList = NestedItemList;
   firstFolder = NULL;
   editing = false;
@@ -756,6 +720,7 @@ cMenuFolder::cMenuFolder(const char *Title, cNestedItemList *NestedItemList, con
 cMenuFolder::cMenuFolder(const char *Title, cList<cNestedItem> *List, cNestedItemList *NestedItemList, const char *Dir, const char *Path)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcFolder);
   list = List;
   nestedItemList = NestedItemList;
   dir = Dir;
@@ -906,6 +871,7 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
+  SetMenuCategory(mcTimer);
   file = NULL;
   day = firstday = NULL;
   timer = Timer;
@@ -1104,6 +1070,7 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
+  SetMenuCategory(mcTimer);
   helpKeys = -1;
   for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
       timer->SetEventFromSchedule(); // make sure the event is current
@@ -1242,6 +1209,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch, bool Buttons)
 :cOsdMenu(tr("Event"))
 {
+  SetMenuCategory(mcEvent);
   event = Event;
   if (event) {
      cChannel *channel = Channels.GetByChannelID(event->ChannelID(), true);
@@ -1389,6 +1357,7 @@ const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, CHNAMWIDTH, 6, 4)
 {
+  SetMenuCategory(mcSchedule);
   now = Now;
   helpKeys = -1;
   timerState = 0;
@@ -1553,6 +1522,7 @@ public:
 cMenuSchedule::cMenuSchedule(void)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcSchedule);
   now = next = false;
   otherChannel = 0;
   helpKeys = -1;
@@ -1810,6 +1780,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 cMenuCommands::cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters)
 :cOsdMenu(Title)
 {
+  SetMenuCategory(mcCommand);
   result = NULL;
   SetHasHotkeys();
   commands = Commands;
@@ -1939,6 +1910,7 @@ public:
 cMenuCam::cMenuCam(cCamSlot *CamSlot)
 :cOsdMenu("", 1) // tab necessary for enquiry!
 {
+  SetMenuCategory(mcCam);
   camSlot = CamSlot;
   ciMenu = NULL;
   ciEnquiry = NULL;
@@ -2118,6 +2090,7 @@ public:
 cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
+  SetMenuCategory(mcRecording);
   recording = Recording;
   withButtons = WithButtons;
   if (withButtons)
@@ -2212,13 +2185,13 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 :cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
+  SetMenuCategory(mcRecording);
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
   Recordings.StateChanged(recordingsState); // just to get the current state
   helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   Set();
-  SetFreeDiskDisplay(true);
   if (Current() < 0)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
@@ -2231,16 +2204,6 @@ cMenuRecordings::~cMenuRecordings()
 {
   helpKeys = -1;
   free(base);
-}
-
-bool cMenuRecordings::SetFreeDiskDisplay(bool Force)
-{
-  if (FreeDiskSpace.HasChanged(Force)) {
-     //XXX -> skin function!!!
-     SetTitle(cString::sprintf("%s  -  %s", base ? base : tr("Recordings"), FreeDiskSpace.FreeDiskSpaceString()));
-     return true;
-     }
-  return false;
 }
 
 void cMenuRecordings::SetHelpKeys(void)
@@ -2305,7 +2268,6 @@ void cMenuRecordings::Set(bool Refresh)
          }
       }
   free(LastItemText);
-  Refresh |= SetFreeDiskDisplay(Refresh);
   if (Refresh)
      Display();
 }
@@ -2343,7 +2305,7 @@ eOSState cMenuRecordings::Play(void)
      else {
         cRecording *recording = GetRecording(ri);
         if (recording) {
-           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cReplayControl::SetRecording(recording->FileName());
            return osReplay;
            }
         }
@@ -2411,7 +2373,7 @@ eOSState cMenuRecordings::Delete(void)
               Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
               SetHelpKeys();
-              SetFreeDiskDisplay(true);
+              cVideoDiskUsage::ForceCheck();
               Display();
               if (!Count())
                  return osBack;
@@ -2484,8 +2446,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
      Display();
      }
   if (!HasSubMenu()) {
-     if (HadSubMenu)
-        SetFreeDiskDisplay();
      if (Key != kNone)
         SetHelpKeys();
      }
@@ -2767,6 +2727,7 @@ private:
   void Setup(void);
   const char *videoDisplayFormatTexts[3];
   const char *updateChannelsTexts[6];
+  const char *standardComplianceTexts[2];
 public:
   cMenuSetupDVB(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -2789,6 +2750,8 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[3] = tr("names and PIDs");
   updateChannelsTexts[4] = tr("add new channels");
   updateChannelsTexts[5] = tr("add new transponders");
+  standardComplianceTexts[0] = "DVB";
+  standardComplianceTexts[1] = "ANSI/SCTE";
 
   SetSection(tr("DVB"));
   SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL); 
@@ -2802,6 +2765,7 @@ void cMenuSetupDVB::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Standard compliance"),   &data.StandardCompliance, 2, standardComplianceTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
   if (data.VideoFormat == 0)
      Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
@@ -3222,8 +3186,13 @@ eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
               }
            }
         }
-     else if (state == osContinue)
+     else if (state == osContinue) {
         Store();
+        // Reinitialize OSD and skin, in case any plugin setup change has an influence on these:
+        cOsdProvider::UpdateOsdSize(true);
+        SetDisplayMenu();
+        Display();
+        }
      }
   return state;
 }
@@ -3242,6 +3211,7 @@ public:
 cMenuSetup::cMenuSetup(void)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcSetup);
   Set();
 }
 
@@ -3326,6 +3296,7 @@ cOsdObject *cMenuMain::pluginOsdObject = NULL;
 cMenuMain::cMenuMain(eOSState State)
 :cOsdMenu("")
 {
+  SetMenuCategory(mcMain);
   replaying = false;
   stopReplayItem = NULL;
   cancelEditingItem = NULL;
@@ -3393,13 +3364,6 @@ void cMenuMain::Set(void)
 bool cMenuMain::Update(bool Force)
 {
   bool result = false;
-
-  // Title with disk usage:
-  if (FreeDiskSpace.HasChanged(Force)) {
-     //XXX -> skin function!!!
-     SetTitle(cString::sprintf("%s  -  %s", tr("VDR"), FreeDiskSpace.FreeDiskSpaceString()));
-     result = true;
-     }
 
   bool NewReplaying = cControl::Control() != NULL;
   if (Force || NewReplaying != replaying) {
@@ -4130,6 +4094,8 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 {
+  // Whatever happens here, the timers will be modified in some way...
+  Timers.SetModified();
   // We're going to manipulate an event here, so we need to prevent
   // others from modifying any EPG data:
   cSchedulesLock SchedulesLock;
@@ -4144,7 +4110,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   if (!timer) {
      timer = new cTimer(true, Pause);
      Timers.Add(timer);
-     Timers.SetModified();
      instantId = cString::sprintf(cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->CardIndex() + 1);
      }
   timer->SetPending(true);
@@ -4166,9 +4131,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         }
      else {
         Timers.Del(timer);
-        Timers.SetModified();
         if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-           cReplayControl::SetRecording(fileName, Recording.Name());
+           cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
      return;
@@ -4183,7 +4147,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-           cReplayControl::SetRecording(fileName, Recording.Name());
+           cReplayControl::SetRecording(fileName);
         Recordings.AddByName(fileName);
         return;
         }
@@ -4194,7 +4158,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      timer->SetDeferred(DEFERTIMER);
   if (!Timer) {
      Timers.Del(timer);
-     Timers.SetModified();
      timer = NULL;
      }
 }
@@ -4244,6 +4207,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
      cStatus::MsgRecording(device, NULL, fileName, false);
      if (ExecuteUserCommand)
         cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
+     Timers.SetModified();
      }
 }
 
@@ -4337,7 +4301,7 @@ void cRecordControls::Stop(const char *InstantId)
 bool cRecordControls::PauseLiveVideo(void)
 {
   Skins.Message(mtStatus, tr("Pausing live video..."));
-  cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
+  cReplayControl::SetRecording(NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
   if (Start(NULL, true)) {
      cReplayControl *rc = new cReplayControl(true);
      cControl::Launch(rc);
@@ -4370,6 +4334,15 @@ cRecordControl *cRecordControls::GetRecordControl(const char *FileName)
             return RecordControls[i];
          }
      }
+  return NULL;
+}
+
+cRecordControl *cRecordControls::GetRecordControl(const cTimer *Timer)
+{
+  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+      if (RecordControls[i] && RecordControls[i]->Timer() == Timer)
+         return RecordControls[i];
+      }
   return NULL;
 }
 
@@ -4429,8 +4402,7 @@ bool cRecordControls::StateChanged(int &State)
 // --- cReplayControl --------------------------------------------------------
 
 cReplayControl *cReplayControl::currentReplayControl = NULL;
-char *cReplayControl::fileName = NULL;
-char *cReplayControl::title = NULL;
+cString cReplayControl::fileName;
 
 cReplayControl::cReplayControl(bool PauseLive)
 :cDvbPlayerControl(fileName, PauseLive)
@@ -4460,7 +4432,7 @@ cReplayControl::~cReplayControl()
 
 void cReplayControl::Stop(void)
 {
-  if (Setup.DelTimeshiftRec && fileName) {
+  if (Setup.DelTimeshiftRec && *fileName) {
      cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
      if (rc && rc->InstantId()) {
         if (Active()) {
@@ -4473,7 +4445,7 @@ void cReplayControl::Stop(void)
                  Timers.SetModified();
                  }
               cDvbPlayerControl::Stop();
-              cRecording *recording = Recordings.GetByName(fileName);;
+              cRecording *recording = Recordings.GetByName(fileName);
               if (recording) {
                  if (recording->Delete()) {
                     Recordings.DelByName(fileName);
@@ -4490,17 +4462,14 @@ void cReplayControl::Stop(void)
   cDvbPlayerControl::Stop();
 }
 
-void cReplayControl::SetRecording(const char *FileName, const char *Title)
+void cReplayControl::SetRecording(const char *FileName)
 {
-  free(fileName);
-  free(title);
-  fileName = FileName ? strdup(FileName) : NULL;
-  title = Title ? strdup(Title) : NULL;
+  fileName = FileName;
 }
 
 const char *cReplayControl::NowReplaying(void)
 {
-  return currentReplayControl ? fileName : NULL;
+  return currentReplayControl ? *fileName : NULL;
 }
 
 const char *cReplayControl::LastReplayed(void)
@@ -4510,10 +4479,8 @@ const char *cReplayControl::LastReplayed(void)
 
 void cReplayControl::ClearLastReplayed(const char *FileName)
 {
-  if (fileName && FileName && strcmp(fileName, FileName) == 0) {
-     free(fileName);
+  if (*fileName && FileName && strcmp(fileName, FileName) == 0)
      fileName = NULL;
-     }
 }
 
 void cReplayControl::ShowTimed(int Seconds)
@@ -4585,8 +4552,10 @@ bool cReplayControl::ShowProgress(bool Initial)
         visible = true;
         }
      if (Initial) {
-        if (title)
-           displayReplay->SetTitle(title);
+        if (*fileName) {
+           if (cRecording *Recording = Recordings.GetByName(fileName))
+              displayReplay->SetRecording(Recording);
+           }
         lastCurrent = lastTotal = -1;
         }
      if (Current != lastCurrent || Total != lastTotal) {
@@ -4758,7 +4727,7 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  if (fileName) {
+  if (*fileName) {
      Hide();
      if (!cCutter::Active()) {
         if (!marks.Count())
@@ -4797,6 +4766,13 @@ cOsdObject *cReplayControl::GetInfo(void)
   cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
   if (Recording)
      return new cMenuRecording(Recording, false);
+  return NULL;
+}
+
+const cRecording *cReplayControl::GetRecording(void)
+{
+  if (const cRecording *Recording = Recordings.GetByName(LastReplayed()))
+     return Recording;
   return NULL;
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 2.0 2008/02/16 13:00:03 kls Exp $
+ * $Id: videodir.c 2.1 2012/04/22 15:03:10 kls Exp $
  */
 
 #include "videodir.h"
@@ -240,4 +240,44 @@ bool IsOnVideoDirectoryFileSystem(const char *FileName)
         return true;
      } while (Dir.Next());
   return false;
+}
+
+// --- cVideoDiskUsage -------------------------------------------------------
+
+#define DISKSPACECHEK     5 // seconds between disk space checks
+#define MB_PER_MINUTE 25.75 // this is just an estimate!
+
+int cVideoDiskUsage::state = 0;
+time_t cVideoDiskUsage::lastChecked = 0;
+int cVideoDiskUsage::usedPercent = 0;
+int cVideoDiskUsage::freeMB = 0;
+int cVideoDiskUsage::freeMinutes = 0;
+
+bool cVideoDiskUsage::HasChanged(int &State)
+{
+  if (time(NULL) - lastChecked > DISKSPACECHEK) {
+     int FreeMB;
+     int UsedPercent = VideoDiskSpace(&FreeMB);
+     if (FreeMB != freeMB) {
+        usedPercent = UsedPercent;
+        freeMB = FreeMB;
+        int MBperMinute = Recordings.MBperMinute();
+        if (MBperMinute <= 0)
+           MBperMinute = MB_PER_MINUTE;
+        freeMinutes = int(double(FreeMB) / MBperMinute);
+        state++;
+        }
+     lastChecked = time(NULL);
+     }
+  if (State != state) {
+     State = state;
+     return true;
+     }
+  return false;
+}
+
+cString cVideoDiskUsage::String(void)
+{
+  HasChanged(state);
+  return cString::sprintf("%s %d%%  -  %2d:%02d %s", tr("Disk"), usedPercent, freeMinutes / 60, freeMinutes % 60, tr("free"));
 }

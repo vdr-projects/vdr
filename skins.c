@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.5 2012/03/11 14:36:11 kls Exp $
+ * $Id: skins.c 2.10 2012/06/02 11:44:14 kls Exp $
  */
 
 #include "skins.h"
@@ -67,7 +67,13 @@ cSkinDisplay::~cSkinDisplay()
 
 cSkinDisplayMenu::cSkinDisplayMenu(void)
 {
+  menuCategory = mcUndefined;
   SetTabs(0);
+}
+
+void cSkinDisplayMenu::SetMenuCategory(eMenuCategory MenuCategory)
+{
+  menuCategory = MenuCategory;
 }
 
 void cSkinDisplayMenu::SetTabs(int Tab1, int Tab2, int Tab3, int Tab4, int Tab5)
@@ -164,6 +170,11 @@ void cSkinDisplayReplay::cProgressBar::Mark(int x, bool Start, bool Current, tCo
 cSkinDisplayReplay::cSkinDisplayReplay(void)
 {
   marks = NULL;
+}
+
+void cSkinDisplayReplay::SetRecording(const cRecording *Recording)
+{
+  SetTitle(Recording->Title());
 }
 
 void cSkinDisplayReplay::SetMarks(const cMarks *Marks)

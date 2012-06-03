@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -509,12 +509,6 @@ msgstr "Bruger8"
 msgid "Key$User9"
 msgstr "Bruger9"
 
-msgid "Disk"
-msgstr "Disk"
-
-msgid "free"
-msgstr "fri"
-
 msgid "Free To Air"
 msgstr "Free To Air"
 
@@ -923,6 +917,9 @@ msgstr "Undertekster"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primær DVB enhed"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Video format"
 
@@ -1147,9 +1144,6 @@ msgstr " Stop optagelse "
 msgid "Schedule"
 msgstr "Programoversigt"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Stop afspilning"
@@ -1279,6 +1273,24 @@ msgstr "Lydstyrke "
 msgid "Classic VDR"
 msgstr "Klassisk VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsol"
 
@@ -1341,3 +1353,9 @@ msgstr "Tryk vilkårlig knap for at annullere genstart"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR slukker om %s minutter"
+
+msgid "Disk"
+msgstr "Disk"
+
+msgid "free"
+msgstr "fri"

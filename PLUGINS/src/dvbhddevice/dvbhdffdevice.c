@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.41 2012/03/07 13:52:41 kls Exp $
+ * $Id: dvbhdffdevice.c 1.43 2012/05/08 11:40:32 kls Exp $
  */
 
 #include <stdint.h>
@@ -50,7 +50,7 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      mHdffCmdIf = new HDFF::cHdffCmdIf(fd_osd);
 
      /* reset some stuff in case the VDR was killed before and had no chance
-	to clean up. */
+        to clean up. */
      mHdffCmdIf->CmdOsdReset();
 
      mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
@@ -183,68 +183,72 @@ void cDvbHdFfDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
   gHdffSetup.GetOsdSize(Width, Height, PixelAspect);
 }
 
-/*TODO obsolete?
-bool cDvbHdFfDevice::SetAudioBypass(bool On)
-{
-  if (setTransferModeForDolbyDigital != 1)
-     return false;
-  return ioctl(fd_audio, AUDIO_SET_BYPASS_MODE, On) == 0;
-}
-TODO*/
-
 bool cDvbHdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
-  if (Handle->pid) {
-     dmx_pes_filter_params pesFilterParams;
-     memset(&pesFilterParams, 0, sizeof(pesFilterParams));
-     if (On) {
-        if (Handle->handle < 0) {
-           Handle->handle = DvbOpen(DEV_DVB_DEMUX, adapter, frontend, O_RDWR | O_NONBLOCK, true);
-           if (Handle->handle < 0) {
-              LOG_ERROR;
-              return false;
-              }
-           }
-        if (Type == ptPcr)
-           mHdffCmdIf->CmdAvSetPcrPid(0, Handle->pid);
-        else if (Type == ptVideo) {
-           if (Handle->streamType == 0x1B)
-              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_H264);
-           else
-              mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_MPEG2);
-           }
-        else if (Type == ptAudio)
-           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_MPEG1);
-        else if (Type == ptDolby)
-           mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_AC3);
-        if (!(Type <= ptDolby && Handle->used <= 1)) {
-           pesFilterParams.pid     = Handle->pid;
-           pesFilterParams.input   = DMX_IN_FRONTEND;
-           pesFilterParams.output  = DMX_OUT_TS_TAP;
-           pesFilterParams.pes_type= DMX_PES_OTHER;
-           pesFilterParams.flags   = DMX_IMMEDIATE_START;
-           if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-              LOG_ERROR;
-              return false;
-              }
-           }
+    //printf("SetPid Type %d, On %d, PID %5d, streamtype %d, handle %d, used %d\n", Type, On, Handle->pid, Handle->streamType, Handle->handle, Handle->used);
+    if (Handle->pid) {
+        dmx_pes_filter_params pesFilterParams;
+        memset(&pesFilterParams, 0, sizeof(pesFilterParams));
+        if (On) {
+            if (Handle->handle < 0) {
+                Handle->handle = DvbOpen(DEV_DVB_DEMUX, adapter, frontend, O_RDWR | O_NONBLOCK, true);
+                if (Handle->handle < 0) {
+                    LOG_ERROR;
+                    return false;
+                }
+            }
+            if (Type == ptPcr)
+                mHdffCmdIf->CmdAvSetPcrPid(0, Handle->pid);
+            else if (Type == ptVideo) {
+                if (Handle->streamType == 0x1B)
+                    mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_H264);
+                else
+                    mHdffCmdIf->CmdAvSetVideoPid(0, Handle->pid, HDFF_VIDEO_STREAM_MPEG2);
+            }
+            else if (Type == ptAudio) {
+                if (Handle->streamType == 0x03)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_MPEG1);
+                else if (Handle->streamType == 0x04)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_MPEG2);
+                else if (Handle->streamType == SI::AC3DescriptorTag)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_AC3);
+                else if (Handle->streamType == SI::EnhancedAC3DescriptorTag)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_EAC3);
+                else if (Handle->streamType == 0x0F)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_AAC);
+                else if (Handle->streamType == 0x11)
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_HE_AAC);
+                else
+                    mHdffCmdIf->CmdAvSetAudioPid(0, Handle->pid, HDFF_AUDIO_STREAM_MPEG1);
+            }
+            if (!(Type <= ptDolby && Handle->used <= 1)) {
+                pesFilterParams.pid     = Handle->pid;
+                pesFilterParams.input   = DMX_IN_FRONTEND;
+                pesFilterParams.output  = DMX_OUT_TS_TAP;
+                pesFilterParams.pes_type= DMX_PES_OTHER;
+                pesFilterParams.flags   = DMX_IMMEDIATE_START;
+                if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
+                    LOG_ERROR;
+                    return false;
+                }
+            }
         }
-     else if (!Handle->used) {
-        CHECK(ioctl(Handle->handle, DMX_STOP));
-        if (Type == ptPcr)
-           mHdffCmdIf->CmdAvSetPcrPid(0, 0);
-        else if (Type == ptVideo)
-           mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
-        else if (Type == ptAudio)
-           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
-        else if (Type == ptDolby)
-           mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_AC3);
-        //TODO missing setting to 0x1FFF??? see cDvbDevice::SetPid()
-        close(Handle->handle);
-        Handle->handle = -1;
+        else if (!Handle->used) {
+            CHECK(ioctl(Handle->handle, DMX_STOP));
+            if (Type == ptPcr)
+                mHdffCmdIf->CmdAvSetPcrPid(0, 0);
+            else if (Type == ptVideo)
+                mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
+            else if (Type == ptAudio)
+                mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
+            else if (Type == ptDolby)
+                mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_AC3);
+            //TODO missing setting to 0x1FFF??? see cDvbDevice::SetPid()
+            close(Handle->handle);
+            Handle->handle = -1;
         }
-     }
-  return true;
+    }
+    return true;
 }
 
 void cDvbHdFfDevice::TurnOffLiveMode(bool LiveView)
@@ -286,6 +290,8 @@ bool cDvbHdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (CamSlot() && !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlot()->SlotNumber()))
      StartTransferMode |= LiveView && IsPrimaryDevice() && Channel->Ca() >= CA_ENCRYPTED_MIN;
 
+  //printf("SetChannelDevice Transfer %d, Live %d\n", StartTransferMode, LiveView);
+
   bool TurnOnLivePIDs = !StartTransferMode && LiveView;
 
   // Turn off live PIDs if necessary:
@@ -301,13 +307,10 @@ bool cDvbHdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (TurnOnLivePIDs) {
-     //SetAudioBypass(false);//TODO obsolete?
-     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(vpid, ptVideo, Channel->Vtype()) && AddPid(apid, ptAudio))) {
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(vpid, ptVideo, Channel->Vtype()) && AddPid(apid ? apid : dpid, ptAudio, apid ? 0 : Channel->Dtype(0)))) {
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
-     if (IsPrimaryDevice())
-        AddPid(Channel->Tpid(), ptTeletext);//TODO obsolete?
      }
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel));
@@ -338,27 +341,31 @@ void cDvbHdFfDevice::SetDigitalAudioDevice(bool On)
 
 void cDvbHdFfDevice::SetAudioTrackDevice(eTrackType Type)
 {
-  //printf("SetAudioTrackDevice %d\n", Type);
-  const tTrackId *TrackId = GetTrack(Type);
-  if (TrackId && TrackId->id) {
-     if (IS_AUDIO_TRACK(Type)) {
-        if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
-           DetachAll(pidHandles[ptAudio].pid);
-           if (CamSlot())
-              CamSlot()->SetPid(pidHandles[ptAudio].pid, false);
-           pidHandles[ptAudio].pid = TrackId->id;
-           SetPid(&pidHandles[ptAudio], ptAudio, true);
-           if (CamSlot()) {
-              CamSlot()->SetPid(pidHandles[ptAudio].pid, true);
-              CamSlot()->StartDecrypting();
-              }
-           }
-	}
-     else if (IS_DOLBY_TRACK(Type)) {
-        pidHandles[ptDolby].pid = TrackId->id;
-        SetPid(&pidHandles[ptDolby], ptDolby, true);
+    //printf("SetAudioTrackDevice %d\n", Type);
+    const tTrackId *TrackId = GetTrack(Type);
+    if (TrackId && TrackId->id) {
+        int streamType = 0;
+        cChannel * channel = Channels.GetByNumber(CurrentChannel());
+        if (channel) {
+            if (IS_AUDIO_TRACK(Type))
+                streamType = channel->Atype(Type - ttAudioFirst);
+            else if (IS_DOLBY_TRACK(Type))
+                streamType = channel->Dtype(Type - ttDolbyFirst);
         }
-     }
+        //printf("SetAudioTrackDevice new %d %d, current %d\n", TrackId->id, streamType, pidHandles[ptAudio].pid);
+        if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
+            DetachAll(pidHandles[ptAudio].pid);
+            if (CamSlot())
+                CamSlot()->SetPid(pidHandles[ptAudio].pid, false);
+            pidHandles[ptAudio].pid = TrackId->id;
+            pidHandles[ptAudio].streamType = streamType;
+            SetPid(&pidHandles[ptAudio], ptAudio, true);
+            if (CamSlot()) {
+                CamSlot()->SetPid(pidHandles[ptAudio].pid, true);
+                CamSlot()->StartDecrypting();
+            }
+        }
+    }
 }
 
 bool cDvbHdFfDevice::CanReplay(void) const

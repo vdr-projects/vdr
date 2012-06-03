@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.h 2.0 2008/01/12 16:21:57 kls Exp $
+ * $Id: player.h 2.1 2012/04/28 11:56:01 kls Exp $
  */
 
 #ifndef _PLAYER_H
@@ -39,6 +39,7 @@ private:
 public:
   cPictureControl(cPictureEntry *Pictures, const cPictureEntry *PictureEntry, bool SlideShow = false);
   virtual ~cPictureControl();
+  virtual cString GetHeader(void);
   virtual eOSState ProcessKey(eKeys Key);
   static bool Active(void) { return active > 0; }
   static const char *LastDisplayed(void);

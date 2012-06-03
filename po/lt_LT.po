@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -509,12 +509,6 @@ msgstr "Vartotojas8"
 msgid "Key$User9"
 msgstr "Vartotojas9"
 
-msgid "Disk"
-msgstr "Diskas"
-
-msgid "free"
-msgstr "laisva"
-
 msgid "Free To Air"
 msgstr "Nekoduotas kanalas"
 
@@ -923,6 +917,9 @@ msgstr "Subtitrai"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Pirminiė DVB įvestis"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Video formatas"
 
@@ -1147,9 +1144,6 @@ msgstr " Sustabdyti įrašinėjimą "
 msgid "Schedule"
 msgstr "Programa"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Sustabdyti kartojimą"
@@ -1279,6 +1273,24 @@ msgstr "Garsas "
 msgid "Classic VDR"
 msgstr "Klasikinis VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Skydeliai"
 
@@ -1341,3 +1353,9 @@ msgstr "Paspauskit bet kurį mygtuką kad sustabdytumėte perkrovimą"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR išsijungs per %s minutes"
+
+msgid "Disk"
+msgstr "Diskas"
+
+msgid "free"
+msgstr "laisva"

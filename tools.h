@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.16 2012/02/29 10:41:00 kls Exp $
+ * $Id: tools.h 2.21 2012/05/20 13:58:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -177,7 +177,7 @@ public:
   cString &operator=(const char *String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
-  static cString sprintf(const char *fmt, va_list &ap);
+  static cString vsprintf(const char *fmt, va_list &ap);
   };
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
@@ -228,13 +228,26 @@ void TouchFile(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
 off_t FileSize(const char *FileName); ///< returns the size of the given file, or -1 in case of an error (e.g. if the file doesn't exist)
 cString WeekDayName(int WeekDay);
+    ///< Converts the given WeekDay (0=Sunday, 1=Monday, ...) to a three letter
+    ///< day name.
 cString WeekDayName(time_t t);
+    ///< Converts the week day of the given time to a three letter day name.
 cString WeekDayNameFull(int WeekDay);
+    ///< Converts the given WeekDay (0=Sunday, 1=Monday, ...) to a full
+    ///< day name.
 cString WeekDayNameFull(time_t t);
+    ///< Converts the week day of the given time to a full day name.
 cString DayDateTime(time_t t = 0);
+    ///< Converts the given time to a string of the form "www dd.mm. hh:mm".
+    ///< If no time is given, the current time is taken.
 cString TimeToString(time_t t);
+    ///< Converts the given time to a string of the form "www mmm dd hh:mm:ss yyyy".
 cString DateString(time_t t);
+    ///< Converts the given time to a string of the form "www dd.mm.yyyy".
+cString ShortDateString(time_t t);
+    ///< Converts the given time to a string of the form "dd.mm.yy".
 cString TimeString(time_t t);
+    ///< Converts the given time to a string of the form "hh:mm".
 uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100);
     ///< Converts the given Memory to a JPEG image and returns a pointer
     ///< to the resulting image. Mem must point to a data block of exactly
@@ -457,6 +470,7 @@ public:
   };
 
 template<class T> class cVector {
+  ///< cVector may only be used for *simple* types, like int or pointers - not for class objects that allocate additional memory!
 private:
   mutable int allocated;
   mutable int size;
@@ -515,7 +529,7 @@ public:
   virtual void Append(T Data)
   {
     if (size >= allocated)
-       Realloc(allocated * 4 / 2); // increase size by 50%
+       Realloc(allocated * 3 / 2); // increase size by 50%
     data[size++] = Data;
   }
   virtual void Remove(int Index)
@@ -526,6 +540,8 @@ public:
   }
   virtual void Clear(void)
   {
+    for (int i = 0; i < size; i++)
+        data[i] = T(0);
     size = 0;
   }
   void Sort(__compar_fn_t Compare)

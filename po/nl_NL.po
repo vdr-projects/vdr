@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -513,12 +513,6 @@ msgstr "Gebruiker8"
 msgid "Key$User9"
 msgstr "Gebruiker9"
 
-msgid "Disk"
-msgstr "Schijf"
-
-msgid "free"
-msgstr "vrij"
-
 msgid "Free To Air"
 msgstr "Vrij te ontvangen"
 
@@ -927,6 +921,9 @@ msgstr "Ondertiteling"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Eerste DVB kaart"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Videoformaat"
 
@@ -1151,9 +1148,6 @@ msgstr " Stop opnemen "
 msgid "Schedule"
 msgstr "Programmagids"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Stop afspelen"
@@ -1283,6 +1277,24 @@ msgstr "Volume "
 msgid "Classic VDR"
 msgstr "VDR Klassiek"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Consoles"
 
@@ -1345,3 +1357,9 @@ msgstr "Druk een willekeurige toets om herstarten af te breken"
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR zal na %s minuten uitschakelen"
+
+msgid "Disk"
+msgstr "Schijf"
+
+msgid "free"
+msgstr "vrij"

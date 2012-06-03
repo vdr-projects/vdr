@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"POT-Creation-Date: 2012-06-02 15:10+0200\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -510,12 +510,6 @@ msgstr "Корисник8"
 msgid "Key$User9"
 msgstr "Корисник9"
 
-msgid "Disk"
-msgstr "Диск"
-
-msgid "free"
-msgstr "слободен"
-
 msgid "Free To Air"
 msgstr "Слободно"
 
@@ -924,6 +918,9 @@ msgstr "Титл"
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Примарен DVB уред"
 
+msgid "Setup.DVB$Standard compliance"
+msgstr ""
+
 msgid "Setup.DVB$Video format"
 msgstr "Видео формат"
 
@@ -1148,9 +1145,6 @@ msgstr " Запри снимање "
 msgid "Schedule"
 msgstr "Распоред"
 
-msgid "VDR"
-msgstr "VDR"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Запри пуштање"
@@ -1280,6 +1274,24 @@ msgstr "Глас"
 msgid "Classic VDR"
 msgstr "Класичен VDR"
 
+msgid "DISK"
+msgstr ""
+
+msgid "LOAD"
+msgstr ""
+
+msgid "TIMERS"
+msgstr ""
+
+msgid "DEVICES"
+msgstr ""
+
+msgid "LIVE"
+msgstr ""
+
+msgid "PLAY"
+msgstr ""
+
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Панели"
 
@@ -1342,3 +1354,9 @@ msgstr "Притиснете копче за откажување на рест�
 #, c-format
 msgid "VDR will shut down in %s minutes"
 msgstr "VDR ќе се исклучи за %s минути"
+
+msgid "Disk"
+msgstr "Диск"
+
+msgid "free"
+msgstr "слободен"

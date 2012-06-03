@@ -71,3 +71,7 @@ VDR Plugin 'pictures' Revision History
 2012-02-27: Version 0.1.2
 
 - Removed an obsolete command line option.
+
+2012-04-2r8 Version 0.1.3
+
+- Added cPictureControl::GetHeader().

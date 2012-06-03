@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 2.2 2012/03/02 15:49:57 kls Exp $
+ * $Id: osdbase.h 2.4 2012/04/23 09:40:07 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -86,10 +86,11 @@ class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
 private:
   static cSkinDisplayMenu *displayMenu;
   static int displayMenuCount;
-  static int displayMenuItems;
+  int displayMenuItems;
   char *title;
   int cols[cSkinDisplayMenu::MaxTabs];
   int first, current, marked;
+  eMenuCategory menuCategory;
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
   bool helpDisplayed;
@@ -128,6 +129,7 @@ public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
   virtual bool NeedsFastResponse(void) { return subMenu ? subMenu->NeedsFastResponse() : cOsdObject::NeedsFastResponse(); }
+  void SetMenuCategory(eMenuCategory MenuCategory);
   int Current(void) const { return current; }
   void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
   void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.16 2012/03/14 10:11:15 kls Exp $
+ * $Id: eit.c 2.17 2012/06/02 14:05:22 kls Exp $
  */
 
 #include "eit.h"
@@ -290,6 +290,11 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          channel->SetLinkChannels(LinkChannels);
       Modified = true;
       EpgHandlers.HandleEvent(pEvent);
+
+      if (EpgHandlers.DeleteEvent(pEvent)) {
+         pSchedule->DelEvent(pEvent);
+         pEvent = NULL;
+         }
       }
   if (Tid == 0x4E) {
      if (Empty && getSectionNumber() == 0)
