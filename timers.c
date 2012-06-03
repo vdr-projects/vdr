@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.9 2012/06/02 12:10:00 kls Exp $
+ * $Id: timers.c 2.10 2012/06/03 13:04:23 kls Exp $
  */
 
 #include "timers.h"
@@ -829,7 +829,7 @@ static int CompareTimers(const void *a, const void *b)
 }
 
 cSortedTimers::cSortedTimers(void)
-:cVector(Timers.Count())
+:cVector<const cTimer *>(Timers.Count())
 {
   for (const cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
       Append(Timer);

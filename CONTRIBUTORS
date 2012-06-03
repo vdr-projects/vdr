@@ -1744,6 +1744,7 @@ Udo Richter <udo_richter@gmx.de>
  for a patch that sets the start time of an edited recording to the time of the first
  editing mark
  for adding the option --outputonly to the dvbsddevice plugin
+ for adding a missing template specification to the c'tor of cSortedTimers
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
