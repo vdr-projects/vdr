@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.3 2012/06/03 15:59:26 kls Exp $
+ * $Id: skinlcars.c 2.4 2012/06/04 08:05:03 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1192,15 +1192,17 @@ void cSkinLCARSDisplayMenu::DrawTimers(void)
      int Slot = 0;
      for (int i = 0; i < cDevice::NumDevices(); i++) {
          if (const cDevice *Device = cDevice::GetDevice(i)) {
-            if (!deviceRecording[Device->DeviceNumber()]) {
-               if (Slot < FreeDeviceSlots.Size()) {
-                  y = FreeDeviceSlots[Slot];
-                  Slot++;
+            if (Device->NumProvidedSystems()) {
+               if (!deviceRecording[Device->DeviceNumber()]) {
+                  if (Slot < FreeDeviceSlots.Size()) {
+                     y = FreeDeviceSlots[Slot];
+                     Slot++;
+                     }
+                  if (y + lineHeight > ys05)
+                     break;
+                  deviceOffset[Device->DeviceNumber()] = y;
+                  y += lineHeight + Gap;
                   }
-               if (y + lineHeight > ys05)
-                  break;
-               deviceOffset[Device->DeviceNumber()] = y;
-               y += lineHeight + Gap;
                }
             }
          }
@@ -1231,8 +1233,10 @@ void cSkinLCARSDisplayMenu::DrawDevice(const cDevice *Device)
 void cSkinLCARSDisplayMenu::DrawDevices(void)
 {
   for (int i = 0; i < cDevice::NumDevices(); i++) {
-      if (const cDevice *Device = cDevice::GetDevice(i))
-         DrawDevice(Device);
+      if (const cDevice *Device = cDevice::GetDevice(i)) {
+         if (Device->NumProvidedSystems())
+            DrawDevice(Device);
+         }
       }
 }
 
@@ -1264,8 +1268,10 @@ void cSkinLCARSDisplayMenu::DrawSignals(void)
   if (initial || Now - lastSignalDisplay >= SIGNALDISPLAYDELTA) {
      for (int i = 0; i < cDevice::NumDevices(); i++) {
          if (const cDevice *Device = cDevice::GetDevice(i)) {
-            if (int y = deviceOffset[i])
-               DrawDeviceSignal(osd, Device, xs + lineHeight / 2, y, xs11, y + lineHeight, lastSignalStrength[i], lastSignalQuality[i], initial);
+            if (Device->NumProvidedSystems()) {
+               if (int y = deviceOffset[i])
+                  DrawDeviceSignal(osd, Device, xs + lineHeight / 2, y, xs11, y + lineHeight, lastSignalStrength[i], lastSignalQuality[i], initial);
+               }
             }
          }
      lastSignalDisplay = Now;

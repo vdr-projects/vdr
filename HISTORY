@@ -7153,3 +7153,5 @@ Video Disk Recorder Revision History
 - Added a missing template specification to the c'tor of cSortedTimers (thanks to Udo
   Richter).
 - Fixed the background color of the Transfer Mode indicator bitmap in the LCARS skin.
+- The LCARS skin now only displays devices that can actually receive channels, leaving
+  out, for instance, pure replay devices (suggested by Reinhard Nissl).
