@@ -1141,6 +1141,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  to "Single"
  for fixing reduced bpp support for DVB subtitles
  for implementing "DVB Standard compliance" handling
+ for fixing the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

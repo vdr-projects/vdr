@@ -7160,3 +7160,5 @@ Video Disk Recorder Revision History
 - Fixed making LCARS the default skin.
 - Adjusted the default values for OSD and font sizes to better fit HDTV.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel() (thanks
+  to Rolf Ahrenberg).
