@@ -7159,3 +7159,4 @@ Video Disk Recorder Revision History
   doesn't fit with the selected font size (reported by Reinhard Nissl).
 - Fixed making LCARS the default skin.
 - Adjusted the default values for OSD and font sizes to better fit HDTV.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

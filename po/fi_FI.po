@@ -1277,22 +1277,22 @@ msgid "Classic VDR"
 msgstr "Klassinen VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "LEVY"
 
 msgid "LOAD"
-msgstr ""
+msgstr "KUORMA"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "AJASTIMET"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "LAITTEET"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "TOISTO"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsoli"
