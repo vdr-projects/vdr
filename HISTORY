@@ -7148,7 +7148,8 @@ Video Disk Recorder Revision History
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
 
-2012-06-03: Version 1.7.29
+2012-06-04: Version 1.7.29
 
 - Added a missing template specification to the c'tor of cSortedTimers (thanks to Udo
   Richter).
+- Fixed the background color of the Transfer Mode indicator bitmap in the LCARS skin.

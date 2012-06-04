@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.2 2012/06/03 09:45:00 kls Exp $
+ * $Id: skinlcars.c 2.3 2012/06/03 15:59:26 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1247,10 +1247,11 @@ void cSkinLCARSDisplayMenu::DrawLiveIndicator(void)
      if (lastLiveIndicatorY >= 0)
         osd->DrawRectangle(xs12, lastLiveIndicatorY, xs13 - 1, lastLiveIndicatorY + lineHeight - 1, Theme.Color(clrBackground));
      if (y >= 0) {
-        osd->DrawRectangle(xs12, y, xs12 + lineHeight / 2 - 1, y + lineHeight - 1, frameColor);
-        osd->DrawEllipse  (xs12 + lineHeight / 2, y, xs13 - 1, y + lineHeight - 1, frameColor, 5);
+        tColor ColorBg = Theme.Color(clrChannelFrameBg);
+        osd->DrawRectangle(xs12, y, xs12 + lineHeight / 2 - 1, y + lineHeight - 1, ColorBg);
+        osd->DrawEllipse  (xs12 + lineHeight / 2, y, xs13 - 1, y + lineHeight - 1, ColorBg, 5);
         if (Transferring)
-           osd->DrawBitmap((xs12 + xs13 - bmTransferMode.Width()) / 2, y + (lineHeight - bmTransferMode.Height()) / 2, bmTransferMode, Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg));
+           osd->DrawBitmap((xs12 + xs13 - bmTransferMode.Width()) / 2, y + (lineHeight - bmTransferMode.Height()) / 2, bmTransferMode, Theme.Color(clrChannelFrameFg), ColorBg);
         }
      lastLiveIndicatorY = y;
      lastLiveIndicatorTransferring = Transferring;
