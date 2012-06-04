@@ -7164,3 +7164,4 @@ Video Disk Recorder Revision History
   to Rolf Ahrenberg).
 - Removed DeleteEvent() from the EPG handler interface (turned out not to be useful)
   and replaced it with HandledExternally() (thanks to Jörg Wendel).
+- Added SetComponents() to the EPG handler interface (thanks to Dirk Heiser).

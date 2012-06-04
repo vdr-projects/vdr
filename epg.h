@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.12 2012/06/04 10:05:21 kls Exp $
+ * $Id: epg.h 2.13 2012/06/04 10:26:10 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -259,6 +259,7 @@ public:
   virtual bool SetStartTime(cEvent *Event, time_t StartTime) { return false; }
   virtual bool SetDuration(cEvent *Event, int Duration) { return false; }
   virtual bool SetVps(cEvent *Event, time_t Vps) { return false; }
+  virtual bool SetComponents(cEvent *Event, cComponents *Components) { return false; }
   virtual bool FixEpgBugs(cEvent *Event) { return false; }
           ///< Fixes some known problems with EPG data.
   virtual bool HandleEvent(cEvent *Event) { return false; }
@@ -285,6 +286,7 @@ public:
   void SetStartTime(cEvent *Event, time_t StartTime);
   void SetDuration(cEvent *Event, int Duration);
   void SetVps(cEvent *Event, time_t Vps);
+  void SetComponents(cEvent *Event, cComponents *Components);
   void FixEpgBugs(cEvent *Event);
   void HandleEvent(cEvent *Event);
   void SortSchedule(cSchedule *Schedule);

@@ -2907,3 +2907,6 @@ Christian Richter <cr@crichter.net>
 
 Christian Kaiser <christian.kaiser@teleservice.com>
  for adding DeleteEvent() to the EPG handler interface
+
+Dirk Heiser <dirk-vdr@gmx.de>
+ for adding SetComponents() to the EPG handler interface

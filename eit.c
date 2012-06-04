@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.19 2012/06/04 10:10:11 kls Exp $
+ * $Id: eit.c 2.20 2012/06/04 10:26:10 kls Exp $
  */
 
 #include "eit.h"
@@ -285,7 +285,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
 
-      pEvent->SetComponents(Components);
+      EpgHandlers.SetComponents(pEvent, Components);
 
       EpgHandlers.FixEpgBugs(pEvent);
       if (LinkChannels)

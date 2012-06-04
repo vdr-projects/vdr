@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.16 2012/06/04 10:06:22 kls Exp $
+ * $Id: epg.c 2.17 2012/06/04 10:26:10 kls Exp $
  */
 
 #include "epg.h"
@@ -1419,6 +1419,15 @@ void cEpgHandlers::SetVps(cEvent *Event, time_t Vps)
          return;
       }
   Event->SetVps(Vps);
+}
+
+void cEpgHandlers::SetComponents(cEvent *Event, cComponents *Components)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetComponents(Event, Components))
+         return;
+      }
+  Event->SetComponents(Components);
 }
 
 void cEpgHandlers::FixEpgBugs(cEvent *Event)
