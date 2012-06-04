@@ -7162,3 +7162,5 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel() (thanks
   to Rolf Ahrenberg).
+- Removed DeleteEvent() from the EPG handler interface (turned out not to be useful)
+  and replaced it with HandledExternally() (thanks to Jörg Wendel).

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.11 2012/06/04 09:49:24 kls Exp $
+ * $Id: epg.h 2.12 2012/06/04 10:05:21 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -244,6 +244,12 @@ public:
           ///< EPG handlers are queried to see if any of them would like to do the
           ///< complete processing by itself. TableID and Version are from the
           ///< incoming section data.
+  virtual bool HandledExternally(const cChannel *Channel) { return false; }
+          ///< If any EPG handler returns true in this function, it is assumed that
+          ///< the EPG for the given Channel is handled completely from some external
+          ///< source. Incoming EIT data is processed as usual, but any new EPG event
+          ///< will not be added to the respective schedule. It's up to the EPG
+          ///< handler to take care of this.
   virtual bool SetEventID(cEvent *Event, tEventID EventID) { return false; }
   virtual bool SetTitle(cEvent *Event, const char *Title) { return false; }
   virtual bool SetShortText(cEvent *Event, const char *ShortText) { return false; }
@@ -269,6 +275,7 @@ class cEpgHandlers : public cList<cEpgHandler> {
 public:
   bool IgnoreChannel(const cChannel *Channel);
   bool HandleEitEvent(cSchedule *Schedule, const SI::EIT::Event *EitEvent, uchar TableID, uchar Version);
+  bool HandledExternally(const cChannel *Channel);
   void SetEventID(cEvent *Event, tEventID EventID);
   void SetTitle(cEvent *Event, const char *Title);
   void SetShortText(cEvent *Event, const char *ShortText);
