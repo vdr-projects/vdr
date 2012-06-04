@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.22 2012/05/11 11:06:57 kls Exp $
+ * $Id: config.c 2.23 2012/06/04 09:06:57 kls Exp $
  */
 
 #include "config.h"
@@ -373,7 +373,7 @@ cSetup Setup;
 cSetup::cSetup(void)
 {
   strcpy(OSDLanguage, ""); // default is taken from environment
-  strcpy(OSDSkin, "sttng");
+  strcpy(OSDSkin, "lcars");
   strcpy(OSDTheme, "default");
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
