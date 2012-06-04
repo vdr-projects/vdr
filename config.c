@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.23 2012/06/04 09:06:57 kls Exp $
+ * $Id: config.c 2.24 2012/06/04 09:14:04 kls Exp $
  */
 
 #include "config.h"
@@ -424,10 +424,10 @@ cSetup::cSetup(void)
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;
-  OSDLeftP = 0.08;
-  OSDTopP = 0.08;
-  OSDWidthP = 0.87;
-  OSDHeightP = 0.84;
+  OSDLeftP = 0.03;
+  OSDTopP = 0.03;
+  OSDWidthP = 0.93;
+  OSDHeightP = 0.93;
   OSDLeft = 54;
   OSDTop = 45;
   OSDWidth = 624;
@@ -439,8 +439,8 @@ cSetup::cSetup(void)
   strcpy(FontOsd, DefaultFontOsd);
   strcpy(FontSml, DefaultFontSml);
   strcpy(FontFix, DefaultFontFix);
-  FontOsdSizeP = 0.038;
-  FontSmlSizeP = 0.035;
+  FontOsdSizeP = 0.032;
+  FontSmlSizeP = 0.028;
   FontFixSizeP = 0.031;
   FontOsdSize = 22;
   FontSmlSize = 18;

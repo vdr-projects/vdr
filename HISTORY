@@ -7158,3 +7158,4 @@ Video Disk Recorder Revision History
 - Now scaling down the Transfer Mode indicator bitmap in the LCARS skin in case it
   doesn't fit with the selected font size (reported by Reinhard Nissl).
 - Fixed making LCARS the default skin.
+- Adjusted the default values for OSD and font sizes to better fit HDTV.
