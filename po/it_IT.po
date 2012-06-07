@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2012-06-02 15:10+0200\n"
-"PO-Revision-Date: 2012-03-19 01:08+0100\n"
+"PO-Revision-Date: 2012-06-06 22:50+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -925,7 +925,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Scheda DVB primaria"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Modalità base"
 
 msgid "Setup.DVB$Video format"
 msgstr "Formato video"
@@ -1281,22 +1281,22 @@ msgid "Classic VDR"
 msgstr "VDR Classico"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISCO"
 
 msgid "LOAD"
-msgstr ""
+msgstr "CARICA"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TIMER"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "SCHEDE"
 
 msgid "LIVE"
-msgstr ""
+msgstr "DAL VIVO"
 
 msgid "PLAY"
-msgstr ""
+msgstr "RIPRODUCI"
 
 msgid "ST:TNG Panels"
 msgstr "Consolle ST:TNG"
