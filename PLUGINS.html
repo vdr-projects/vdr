@@ -1687,7 +1687,7 @@ The first step in implementing a new skin is to derive a class from <tt>cSkin</t
 that provides the handling objects necessary to do the actual work:
 
 <p><table><tr><td class="code"><pre>
-#include "skins.h"
+#include &lt;vdr/skins.h&gt;
 
 class cMySkin : public cSkin {
 public:
@@ -1697,7 +1697,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
-  virtual cSkinDisplayMessage *DisplayTrack(int NumTracks, const char * const *Tracks);
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual cSkinDisplayMessage *DisplayMessage(void);
   };
 </pre></td></tr></table><p>
