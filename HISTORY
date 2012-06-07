@@ -7167,3 +7167,4 @@ Video Disk Recorder Revision History
 - Added SetComponents() to the EPG handler interface (thanks to Dirk Heiser).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Changed the button colors in the LCARS skin to better fit with the rest of the theme.
+- Removed the gap from the main menu buttons in the LCARS skin.

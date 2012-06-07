@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.7 2012/06/07 10:21:47 kls Exp $
+ * $Id: skinlcars.c 2.8 2012/06/07 10:37:07 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -928,7 +928,7 @@ void cSkinLCARSDisplayMenu::DrawMainButton(const char *Text, int x0, int x1, int
 {
   int h = y1 - y0;
   osd->DrawEllipse(x0, y0, x1 - 1, y1 - 1, ColorBg, 7);
-  osd->DrawText(x1 + Gap, y0, Text, ColorFg, ColorBg, Font, x2 - x1 - Gap, h, taBottom | taRight);
+  osd->DrawText(x1, y0, Text, ColorFg, ColorBg, Font, x2 - x1, h, taBottom | taRight);
   osd->DrawEllipse(x2, y0, x3 - 1, y1 - 1, ColorBg, 5);
 }
 
