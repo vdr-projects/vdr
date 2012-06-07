@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.6 2012/06/04 09:35:43 kls Exp $
+ * $Id: skinlcars.c 2.7 2012/06/07 10:21:47 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -93,10 +93,10 @@ static cTheme Theme;
 #define CLR_ALERT           0xFFFF0000
 #define CLR_EXPOSED         0xFF990000
 #define CLR_WHITE           0xFFFFFFFF
-#define CLR_RED             0xFFB20000
-#define CLR_GREEN           0xFF00B200
-#define CLR_YELLOW          0xFFB2B200
-#define CLR_BLUE            0xFF0000B2
+#define CLR_RED             0xFFCC6666
+#define CLR_GREEN           0xFFA0FF99
+#define CLR_YELLOW          0xFFF1DF60
+#define CLR_BLUE            0xFF9A99FF
 #define CLR_BLACK           0xFF000000
 
 // General colors:
@@ -122,13 +122,13 @@ THEME_CLR(Theme, clrEventDescription,       CLR_TEXT);
 
 // Buttons:
 
-THEME_CLR(Theme, clrButtonRedFg,            CLR_WHITE);
+THEME_CLR(Theme, clrButtonRedFg,            CLR_BLACK);
 THEME_CLR(Theme, clrButtonRedBg,            CLR_RED);
 THEME_CLR(Theme, clrButtonGreenFg,          CLR_BLACK);
 THEME_CLR(Theme, clrButtonGreenBg,          CLR_GREEN);
 THEME_CLR(Theme, clrButtonYellowFg,         CLR_BLACK);
 THEME_CLR(Theme, clrButtonYellowBg,         CLR_YELLOW);
-THEME_CLR(Theme, clrButtonBlueFg,           CLR_WHITE);
+THEME_CLR(Theme, clrButtonBlueFg,           CLR_BLACK);
 THEME_CLR(Theme, clrButtonBlueBg,           CLR_BLUE);
 
 // Messages:
