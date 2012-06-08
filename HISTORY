@@ -7169,3 +7169,4 @@ Video Disk Recorder Revision History
 - Changed the button colors in the LCARS skin to better fit with the rest of the theme.
 - Removed the gap from the main menu buttons in the LCARS skin.
 - Fixed some copy&paste errors in PLUGINS.html (thanks to Winfried Köhler).
+- The LCARS skin's main menu now only displays timers that are actually activated.

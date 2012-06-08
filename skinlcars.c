@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.9 2012/06/07 11:43:35 kls Exp $
+ * $Id: skinlcars.c 2.10 2012/06/08 10:25:39 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1179,7 +1179,7 @@ void cSkinLCARSDisplayMenu::DrawTimers(void)
                         }
                      SortedTimers[i] = NULL;
                      }
-                  else if (!Device) {
+                  else if (!Device && Timer->HasFlags(tfActive)) {
                      DrawTimer(Timer, y, false);
                      FreeDeviceSlots.Append(y);
                      y += lineHeight + Gap;
@@ -1209,7 +1209,13 @@ void cSkinLCARSDisplayMenu::DrawTimers(void)
                }
             }
          }
-     osd->DrawText(xs02, ys00, itoa(Timers.Count()), Theme.Color(clrMenuFrameFg), frameColor, font, xs03 - xs02, ys01 - ys00, taBottom | taLeft | taBorder);
+     // Total number of active timers:
+     int NumTimers = 0;
+     for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
+         if (Timer->HasFlags(tfActive))
+            NumTimers++;
+         }
+     osd->DrawText(xs02, ys00, itoa(NumTimers), Theme.Color(clrMenuFrameFg), frameColor, font, xs03 - xs02, ys01 - ys00, taBottom | taLeft | taBorder);
      osd->DrawText(xs08, ys00, itoa(NumDevices), Theme.Color(clrMenuFrameFg), frameColor, font, xs09 - xs08, ys01 - ys00, taBottom | taRight | taBorder);
      lastSignalDisplay = 0;
      initial = true; // forces redrawing of devices
