@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.54 2012/05/12 13:08:23 kls Exp $
+ * $Id: menu.c 2.55 2012/06/09 14:27:02 kls Exp $
  */
 
 #include "menu.h"
@@ -2247,6 +2247,7 @@ void cMenuRecordings::Set(bool Refresh)
         }
      }
   Clear();
+  GetRecordingsSortMode(DirectoryName());
   Recordings.Sort();
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
       if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
@@ -2270,6 +2271,17 @@ void cMenuRecordings::Set(bool Refresh)
   free(LastItemText);
   if (Refresh)
      Display();
+}
+
+cString cMenuRecordings::DirectoryName(void)
+{
+  cString d(VideoDirectory);
+  if (base) {
+     char *s = ExchangeChars(strdup(base), true);
+     d = AddDirectory(d, s);
+     free(s);
+     }
+  return d;
 }
 
 cRecording *cMenuRecordings::GetRecording(cMenuRecordingItem *Item)
@@ -2417,6 +2429,15 @@ eOSState cMenuRecordings::Commands(eKeys Key)
   return osContinue;
 }
 
+eOSState cMenuRecordings::Sort(void)
+{
+  if (HasSubMenu())
+     return osContinue;
+  IncRecordingsSortMode(DirectoryName());
+  Set(true);
+  return osContinue;
+}
+
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
   bool HadSubMenu = HasSubMenu();
@@ -2431,6 +2452,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kYellow: return Delete();
        case kInfo:
        case kBlue:   return Info();
+       case k0:      return Sort();
        case k1...k9: return Commands(Key);
        case kNone:   if (Recordings.StateChanged(recordingsState))
                         Set(true);
@@ -4149,6 +4171,20 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         Recordings.AddByName(fileName);
+        if (!Timer->IsSingleEvent()) {
+           char *Directory = strdup(fileName);
+           // going up two directory levels to get the series folder
+           if (char *p = strrchr(Directory, '/')) {
+              while (p > Directory && *--p != '/')
+                    ;
+              *p = 0;
+              if (!HasRecordingsSortMode(Directory)) {
+                 dsyslog("setting %s to be sorted by time", Directory);
+                 SetRecordingsSortMode(Directory, rsmTime);
+                 }
+              }
+           free(Directory);
+           }
         return;
         }
      else

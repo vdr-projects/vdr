@@ -24,7 +24,7 @@ Version 1.6
   Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
   Blue    -           Stop/Resume  Mark       Info       -             Info              Stop             -
-  0..9    Ch select   -            Sort(2)    Day(3)     Numeric inp.  Exec cmd(1)       Editing          -
+  0..9    Ch select   -            Sort(2)    Day(3)     Numeric inp.  Sort/Exec cmd(1)  Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -81,7 +81,7 @@ Version 1.6
   Yellow    Info
   Blue      Timers menu
 
-  (1) See "Processing Recordings" below.
+  (1) See "Sort Recordings" and "Processing Recordings" below.
   (2) In the "Channels" menu the '0' key switches the sort mode through "by number",
       "by name" and "by provider". Other numeric input positions the cursor to
       the channel with the number entered so far. If there is no channel with that
@@ -300,6 +300,14 @@ Version 1.6
   or by pressing the "Blue" key outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
   key in the "VDR" menu.
+
+* Sort Recordings
+
+  Within the "Recordings" menu, pressing the '0' key toggles sorting between
+  "by time" and "by name". The selected sort mode is stored separately for each
+  folder (provided you have write access to that folder).
+  If a folder is newly created by a repeating timer, the sort mode for that
+  folder is initially set to "by time".
 
 * Processing Recordings
 
