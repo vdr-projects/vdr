@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.10 2012/06/03 13:04:23 kls Exp $
+ * $Id: timers.c 2.11 2012/06/09 14:37:24 kls Exp $
  */
 
 #include "timers.h"
@@ -280,7 +280,7 @@ bool cTimer::Parse(const char *s)
   free(aux);
   aux = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
-  //XXX results in an empty string (this first occured when the EIT gathering
+  //XXX results in an empty string (this first occurred when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
   //XXX If anybody can shed some light on why sscanf() failes here, I'd love

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.31 2012/06/02 13:32:38 kls Exp $
+ * $Id: osd.c 2.32 2012/06/09 14:37:24 kls Exp $
  */
 
 #include "osd.h"
@@ -130,7 +130,7 @@ void cPalette::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
      antiAliasGranularity = MAXNUMCOLORS - 1;
   else {
      int ColorsForBlending = MAXNUMCOLORS - FixedColors;
-     int ColorsPerBlend = ColorsForBlending / BlendColors + 2; // +2 = the full foreground and background colors, which are amoung the fixed colors
+     int ColorsPerBlend = ColorsForBlending / BlendColors + 2; // +2 = the full foreground and background colors, which are among the fixed colors
      antiAliasGranularity = double(MAXNUMCOLORS - 1) / (ColorsPerBlend - 1);
      }
 }

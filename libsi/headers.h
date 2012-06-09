@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.4 2012/01/11 11:35:17 kls Exp $
+ *   $Id: headers.h 2.5 2012/06/09 14:37:24 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -2040,7 +2040,7 @@ struct descr_application_icons_descriptor_end {
 struct descr_simple_application_location_descriptor {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* inital_path_bytes */
+   /* initial_path_bytes */
 };
 
 // Private DVB Descriptor  Premiere.de

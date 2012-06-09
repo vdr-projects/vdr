@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.60 2012/04/26 09:40:36 kls Exp $
+ * $Id: device.c 2.61 2012/06/09 14:37:24 kls Exp $
  */
 
 #include "device.h"
@@ -271,7 +271,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
-          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
              if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
@@ -803,7 +803,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureAudioTrack(true);
         EnsureSubtitleTrack();
         }
-     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successful
      }
 
   return Result;

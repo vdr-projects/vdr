@@ -1305,7 +1305,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for storing the original display size when handling DVB subtitles
  for reporting a problem with horizontal scaling of subtitles
  for fixing a buffer overflow in cFont::Bidi()
- for avoiding an unecessary call to Recordings.ResetResume()
+ for avoiding an unnecessary call to Recordings.ResetResume()
  for debugging a problem in handling the bitmap color depth for scaled subtitles
  for making subtitle PIDs be decrypted
  for making cEITScanner process new transponders before old ones, to make sure
@@ -2157,7 +2157,7 @@ Jürgen Schneider <ivory7@gmx.de>
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
  for his idea of going directly into the "Edit timer" menu for a timer created
- from the "Schedule" menu in case it starts withing the next two minutes
+ from the "Schedule" menu in case it starts within the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
  for a patch that fixed part of a crash in i18n character set conversion

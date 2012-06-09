@@ -6604,7 +6604,7 @@ Video Disk Recorder Revision History
   to Ville Skyttä).
 - The Makefile now also installs the include files (thanks to Ville Skyttä).
 - Added handling of "ANSI/SCTE 57" descriptors (thanks to Rolf Ahrenberg).
-- Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
+- Avoiding an unnecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
 2011-06-19: Version 1.7.19
@@ -7175,3 +7175,4 @@ Video Disk Recorder Revision History
   folder (provided you have write access to that folder).
   If a folder is newly created by a repeating timer, the sort mode for that
   folder is initially set to "by time".
+- Fixed several spelling errors (thanks to Ville Skyttä).
