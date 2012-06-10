@@ -7177,3 +7177,5 @@ Video Disk Recorder Revision History
   folder is initially set to "by time".
 - Fixed several spelling errors (thanks to Ville Skyttä).
 - Fixed handling recording with more than two bonded devices.
+- Fixed the type of MBperMinute in cVideoDiskUsage::HasChanged() (thanks to Andreas
+  Mair).

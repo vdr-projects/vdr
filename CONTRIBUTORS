@@ -995,6 +995,7 @@ Andreas Mair <andreas@vdr-developer.org>
  for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
  for fixing initializing the timer's flags in the cTimer copy constructor
  for reporting a crash in case CutRecording() is called from a plugin
+ for fixing the type of MBperMinute in cVideoDiskUsage::HasChanged()
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
