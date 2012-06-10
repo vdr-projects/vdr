@@ -7179,3 +7179,6 @@ Video Disk Recorder Revision History
 - Fixed handling recording with more than two bonded devices.
 - Fixed the type of MBperMinute in cVideoDiskUsage::HasChanged() (thanks to Andreas
   Mair).
+- Setting the "broken link" or "TEI" flags when cutting recordings is now suppressed
+  if the editing point merges two seamlessly fitting parts of the same stream (thanks
+  to Torsten Lang).

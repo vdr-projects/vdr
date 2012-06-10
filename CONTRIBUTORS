@@ -2873,6 +2873,8 @@ Torsten Lang <info@torstenlang.de>
  for reporting a bug in checking for UTF-8 support in cFont::Bidi()
  for a patch that was used to implement caching the information whether a recording
  is stored on the video directory file system within the cRecording data
+ for suppressing setting the "broken link" or "TEI" flags when cutting recordings
+ if the editing point merges two seamlessly fitting parts of the same stream
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
