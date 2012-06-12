@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.10 2012/06/08 10:25:39 kls Exp $
+ * $Id: skinlcars.c 2.11 2012/06/12 13:15:53 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -133,13 +133,13 @@ THEME_CLR(Theme, clrButtonBlueBg,           CLR_BLUE);
 
 // Messages:
 
-THEME_CLR(Theme, clrMessageStatusFg,        CLR_WHITE);
+THEME_CLR(Theme, clrMessageStatusFg,        CLR_BLACK);
 THEME_CLR(Theme, clrMessageStatusBg,        CLR_BLUE);
 THEME_CLR(Theme, clrMessageInfoFg,          CLR_BLACK);
 THEME_CLR(Theme, clrMessageInfoBg,          CLR_GREEN);
 THEME_CLR(Theme, clrMessageWarningFg,       CLR_BLACK);
 THEME_CLR(Theme, clrMessageWarningBg,       CLR_YELLOW);
-THEME_CLR(Theme, clrMessageErrorFg,         CLR_WHITE);
+THEME_CLR(Theme, clrMessageErrorFg,         CLR_BLACK);
 THEME_CLR(Theme, clrMessageErrorBg,         CLR_RED);
 
 // Volume:
