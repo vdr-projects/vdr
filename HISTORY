@@ -7148,7 +7148,7 @@ Video Disk Recorder Revision History
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
 
-2012-06-10: Version 1.7.29
+2012-06-13: Version 1.7.29
 
 - Added a missing template specification to the c'tor of cSortedTimers (thanks to Udo
   Richter).
@@ -7182,3 +7182,4 @@ Video Disk Recorder Revision History
 - Setting the "broken link" or "TEI" flags when cutting recordings is now suppressed
   if the editing point merges two seamlessly fitting parts of the same stream (thanks
   to Torsten Lang).
+- Fixed displaying messages in the LCARS skin.

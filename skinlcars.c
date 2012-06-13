@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.11 2012/06/12 13:15:53 kls Exp $
+ * $Id: skinlcars.c 2.12 2012/06/13 10:12:09 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -548,14 +548,30 @@ void cSkinLCARSDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Fo
 void cSkinLCARSDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 {
   if (Text) {
-     int y0 = yc11 - ShowSeenExtent;
-     int y1 = yc11;
-     osd->SaveRegion(xc06, y0, xc13 - 1, yc12 - 1);
-     osd->DrawRectangle(xc06, y0, xc07, y1 - 1, Theme.Color(clrBackground)); // clears the "seen" bar
-     osd->DrawText(xc06, yc11, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), cFont::GetFont(fontSml), xc13 - xc06, yc12 - yc11, taCenter);
+     int x0, x1, y0, y1, y2;
+     if (withInfo) {
+        x0 = xc06;
+        x1 = xc13;
+        y0 = yc11 - ShowSeenExtent;
+        y1 = yc11;
+        y2 = yc12;
+        }
+     else {
+        x0 = xc03;
+        x1 = xc13;
+        y0 = y1 = yc00;
+        y2 = yc02;
+        }
+     osd->SaveRegion(x0, y0, x1 - 1, y2 - 1);
+     if (withInfo)
+        osd->DrawRectangle(xc06, y0, xc07, y1 - 1, Theme.Color(clrBackground)); // clears the "seen" bar
+     osd->DrawText(x0, y1, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), cFont::GetFont(fontSml), x1 - x0, y2 - y1, taCenter);
+     message = true;
      }
-  else
+  else {
      osd->RestoreRegion();
+     message = false;
+     }
 }
 
 void cSkinLCARSDisplayChannel::Flush(void)
@@ -566,16 +582,16 @@ void cSkinLCARSDisplayChannel::Flush(void)
         DrawTrack();
         DrawDevice();
         DrawSignal();
+        int Current = 0;
+        int Total = 0;
+        if (present) {
+           time_t t = time(NULL);
+           if (t > present->StartTime())
+              Current = t - present->StartTime();
+           Total = present->Duration();
+           }
+        DrawSeen(Current, Total);
         }
-     int Current = 0;
-     int Total = 0;
-     if (present) {
-        time_t t = time(NULL);
-        if (t > present->StartTime())
-           Current = t - present->StartTime();
-        Total = present->Duration();
-        }
-     DrawSeen(Current, Total);
      }
   osd->Flush();
   initial = false;
@@ -1801,7 +1817,7 @@ void cSkinLCARSDisplayReplay::SetMessage(eMessageType Type, const char *Text)
 {
   if (Text) {
      osd->SaveRegion(xp06, yp08, xp13 - 1, yp09 - 1);
-     osd->DrawText(xp06, yp08, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), cFont::GetFont(fontSml), xp13 - xp06, 0, taCenter);
+     osd->DrawText(xp06, yp08, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), cFont::GetFont(fontSml), xp13 - xp06, yp09 - yp08, taCenter);
      }
   else
      osd->RestoreRegion();
@@ -2089,7 +2105,7 @@ void cSkinLCARSDisplayMessage::SetMessage(eMessageType Type, const char *Text)
   osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x0, y0, x1 - 1, y1 - 1, ColorBg, 7);
   osd->DrawRectangle(x1, y0, x2 - 1, y1 - 1, ColorBg);
-  osd->DrawText(x3, y0, Text, ColorFg, ColorBg, cFont::GetFont(fontOsd), x4 - x3, 0, taCenter);
+  osd->DrawText(x3, y0, Text, ColorFg, ColorBg, cFont::GetFont(fontSml), x4 - x3, y1 - y0, taCenter);
   osd->DrawRectangle(x5, y0, x6 - 1, y1 - 1, ColorBg);
   osd->DrawRectangle(x6, y0, x7 - 1, y1 - 1, clrTransparent);
   osd->DrawEllipse  (x6, y0, x7 - 1, y1 - 1, ColorBg, 5);
