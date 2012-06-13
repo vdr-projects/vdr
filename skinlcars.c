@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.12 2012/06/13 10:12:09 kls Exp $
+ * $Id: skinlcars.c 2.13 2012/06/13 13:27:31 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -76,11 +76,11 @@ static cTheme Theme;
 // Color domains:
 
 #define CLR_BACKGROUND      0x99000000
-#define CLR_MAIN_FRAME      0xFFF1DF6F
-#define CLR_CHANNEL_FRAME   0xFFFFCC99
+#define CLR_MAIN_FRAME      0xFFFF9966
+#define CLR_CHANNEL_FRAME   0xFF8A9EC9
 #define CLR_REPLAY_FRAME    0xFFCC6666
 #define CLR_DATE            0xFF99CCFF
-#define CLR_MENU_ITEMS      0xFFFFBC57
+#define CLR_MENU_ITEMS      0xFF9999FF
 #define CLR_TIMER           0xFF99CCFF
 #define CLR_DEVICE          0xFFF1B1AF
 #define CLR_CHANNEL_NAME    0xFF99CCFF
@@ -166,11 +166,11 @@ THEME_CLR(Theme, clrMenuTitle,              CLR_MAIN_FRAME);
 THEME_CLR(Theme, clrMenuMainBracket,        CLR_MENU_ITEMS);
 THEME_CLR(Theme, clrMenuTimerRecording,     CLR_DEVICE);
 THEME_CLR(Theme, clrMenuDeviceRecording,    CLR_TIMER);
-THEME_CLR(Theme, clrMenuItemCurrentFg,      CLR_BLACK);
-THEME_CLR(Theme, clrMenuItemCurrentBg,      CLR_MENU_ITEMS);
+THEME_CLR(Theme, clrMenuItemCurrentFg,      CLR_MAIN_FRAME);
+THEME_CLR(Theme, clrMenuItemCurrentBg,      RgbShade(CLR_MENU_ITEMS, -0.5));
 THEME_CLR(Theme, clrMenuItemSelectable,     CLR_MENU_ITEMS);
 THEME_CLR(Theme, clrMenuItemNonSelectable,  CLR_TEXT);
-THEME_CLR(Theme, clrMenuScrollbarTotal,     CLR_MENU_ITEMS);
+THEME_CLR(Theme, clrMenuScrollbarTotal,     RgbShade(CLR_MAIN_FRAME, 0.2));
 THEME_CLR(Theme, clrMenuScrollbarShown,     CLR_SEEN);
 THEME_CLR(Theme, clrMenuScrollbarArrow,     CLR_BLACK);
 THEME_CLR(Theme, clrMenuText,               CLR_TEXT);

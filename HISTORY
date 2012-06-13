@@ -7185,3 +7185,5 @@ Video Disk Recorder Revision History
 - Fixed displaying messages in the LCARS skin.
 - Fixed checking for a visible live programme in case a menu or the channel display
   is currently open.
+- Changed some of the colors in the LCARS skin (you may need to delete the file
+  lcars-default.theme from your themes directory to see these changes).
