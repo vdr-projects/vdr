@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.24 2012/06/04 09:14:04 kls Exp $
+ * $Id: config.c 2.25 2012/06/13 09:12:53 kls Exp $
  */
 
 #include "config.h"
@@ -439,9 +439,9 @@ cSetup::cSetup(void)
   strcpy(FontOsd, DefaultFontOsd);
   strcpy(FontSml, DefaultFontSml);
   strcpy(FontFix, DefaultFontFix);
-  FontOsdSizeP = 0.032;
+  FontOsdSizeP = 0.031;
   FontSmlSizeP = 0.028;
-  FontFixSizeP = 0.031;
+  FontFixSizeP = 0.030;
   FontOsdSize = 22;
   FontSmlSize = 18;
   FontFixSize = 20;
