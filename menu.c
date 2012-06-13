@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.55 2012/06/09 14:27:02 kls Exp $
+ * $Id: menu.c 2.56 2012/06/13 11:24:40 kls Exp $
  */
 
 #include "menu.h"
@@ -1888,6 +1888,8 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 // --- cMenuCam --------------------------------------------------------------
 
+static bool CamMenuIsOpen = false;
+
 class cMenuCam : public cOsdMenu {
 private:
   cCamSlot *camSlot;
@@ -1919,6 +1921,7 @@ cMenuCam::cMenuCam(cCamSlot *CamSlot)
   lastCamExchange = time(NULL);
   SetNeedsFastResponse(true);
   QueryCam();
+  CamMenuIsOpen = true;
 }
 
 cMenuCam::~cMenuCam()
@@ -1930,6 +1933,7 @@ cMenuCam::~cMenuCam()
      ciEnquiry->Abort();
   delete ciEnquiry;
   free(input);
+  CamMenuIsOpen = false;
 }
 
 void cMenuCam::GenerateTitle(const char *s)
@@ -2073,6 +2077,11 @@ cOsdObject *CamControl(void)
          return new cMenuCam(CamSlot);
       }
   return NULL;
+}
+
+bool CamMenuActive(void)
+{
+  return CamMenuIsOpen;
 }
 
 // --- cMenuRecording --------------------------------------------------------

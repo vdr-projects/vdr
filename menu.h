@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.10 2012/06/09 12:12:43 kls Exp $
+ * $Id: menu.h 2.11 2012/06/13 11:23:11 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -187,6 +187,7 @@ public:
   };
 
 cOsdObject *CamControl(void);
+bool CamMenuActive(void);
 
 class cMenuRecordingItem;
 

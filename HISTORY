@@ -7183,3 +7183,5 @@ Video Disk Recorder Revision History
   if the editing point merges two seamlessly fitting parts of the same stream (thanks
   to Torsten Lang).
 - Fixed displaying messages in the LCARS skin.
+- Fixed checking for a visible live programme in case a menu or the channel display
+  is currently open.
