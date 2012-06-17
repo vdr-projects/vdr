@@ -913,6 +913,11 @@ Version 1.6
                          wrap around the beginning or end of the channel list if
                          this parameter is set to 'yes'.
 
+  Show channel names with source = no
+                         If this option is turned on, channel names will be displayed
+                         with the source appended to them, as in "ZDF (S)", where
+                         'S' stands for "Satellite".
+
   Emergency exit = yes   If, for some reason, a recording fails because the video
                          data stream is broken, or the CAM doesn't decrypt etc.,
                          VDR automatically exits in order to allow the surrounding

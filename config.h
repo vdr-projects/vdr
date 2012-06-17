@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.48 2012/06/03 13:04:49 kls Exp $
+ * $Id: config.h 2.49 2012/06/17 11:14:50 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -323,6 +323,7 @@ public:
   int CurrentDolby;
   int InitialVolume;
   int ChannelsWrap;
+  int ShowChannelNamesWithSource;
   int EmergencyExit;
   int __EndData__;
   cString InitialChannel;

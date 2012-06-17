@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.25 2012/06/13 09:12:53 kls Exp $
+ * $Id: config.c 2.26 2012/06/17 12:27:07 kls Exp $
  */
 
 #include "config.h"
@@ -462,6 +462,7 @@ cSetup::cSetup(void)
   DeviceBondings = "";
   InitialVolume = -1;
   ChannelsWrap = 0;
+  ShowChannelNamesWithSource = 0;
   EmergencyExit = 1;
 }
 
@@ -657,6 +658,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
+  else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
   else
      return false;
@@ -755,6 +757,7 @@ bool cSetup::Save(void)
   Store("InitialVolume",      InitialVolume);
   Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);
+  Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
   Store("EmergencyExit",      EmergencyExit);
 
   Sort();

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-02 15:10+0200\n"
+"POT-Creation-Date: 2012-06-17 13:59+0200\n"
 "PO-Revision-Date: 2008-03-12 18:25+0100\n"
 "Last-Translator: Magnus Andersson <svankan@bahnhof.se>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1120,6 +1120,9 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Ljudstyrka vid uppstart"
 
 msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Show channel names with source"
 msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
