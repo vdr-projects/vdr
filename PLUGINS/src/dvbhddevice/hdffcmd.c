@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.c 1.24 2012/02/28 09:19:09 kls Exp $
+ * $Id: hdffcmd.c 1.25 2012/06/16 11:16:38 kls Exp $
  */
 
 #include <stdint.h>
@@ -308,6 +308,12 @@ void cHdffCmdIf::CmdOsdDrawText(uint32_t hDisplay, uint32_t hFont, int X, int Y,
 {
     //printf("Text %08X (%d,%d), %s, %08X\n", hFont, X, Y, pText, Color);
     HdffCmdOsdDrawText(mOsdDev, hDisplay, hFont, X, Y, pText, Color);
+}
+
+void cHdffCmdIf::CmdOsdDrawUtf8Text(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color)
+{
+    //printf("Text(UTF8) %08X (%d,%d), %s, %08X\n", hFont, X, Y, pText, Color);
+    HdffCmdOsdDrawUtf8Text(mOsdDev, hDisplay, hFont, X, Y, pText, Color);
 }
 
 void cHdffCmdIf::CmdOsdDrawTextW(uint32_t hDisplay, uint32_t hFont, int X, int Y, const uint16_t * pText, uint32_t Color)

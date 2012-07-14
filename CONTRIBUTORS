@@ -982,7 +982,7 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem with multiple entries of the same subdirectory in the
  "Recordings" menu
 
-Andreas Mair <andreas@vdr-developer.org>
+Andreas Mair <amair.sob@googlemail.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
@@ -995,6 +995,7 @@ Andreas Mair <andreas@vdr-developer.org>
  for fixing handling 3 and 4 byte UTF-8 symbols in Utf8CharGet()
  for fixing initializing the timer's flags in the cTimer copy constructor
  for reporting a crash in case CutRecording() is called from a plugin
+ for fixing the type of MBperMinute in cVideoDiskUsage::HasChanged()
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1141,6 +1142,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  to "Single"
  for fixing reduced bpp support for DVB subtitles
  for implementing "DVB Standard compliance" handling
+ for fixing the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1304,13 +1306,17 @@ Reinhard Nissl <rnissl@gmx.de>
  for storing the original display size when handling DVB subtitles
  for reporting a problem with horizontal scaling of subtitles
  for fixing a buffer overflow in cFont::Bidi()
- for avoiding an unecessary call to Recordings.ResetResume()
+ for avoiding an unnecessary call to Recordings.ResetResume()
  for debugging a problem in handling the bitmap color depth for scaled subtitles
  for making subtitle PIDs be decrypted
  for making cEITScanner process new transponders before old ones, to make sure
  transponder changes are recognized
  for helping to debug switching into time shift mode when pausing live video
  for fixing a possible high CPU load when pausing replay
+ for suggesting that the LCARS skin should only displays devices that can actually
+ receive channels
+ for reporting that the Transfer Mode indicator bitmap in the LCARS skin may not
+ fit with small font sizes
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1744,6 +1750,7 @@ Udo Richter <udo_richter@gmx.de>
  for a patch that sets the start time of an edited recording to the time of the first
  editing mark
  for adding the option --outputonly to the dvbsddevice plugin
+ for adding a missing template specification to the c'tor of cSortedTimers
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2151,7 +2158,7 @@ Jürgen Schneider <ivory7@gmx.de>
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
  for his idea of going directly into the "Edit timer" menu for a timer created
- from the "Schedule" menu in case it starts withing the next two minutes
+ from the "Schedule" menu in case it starts within the next two minutes
  for reporting a problem with a format string in recording.c on 64bit systems
  for reporting a problem with the device selection in case of timer conflicts
  for a patch that fixed part of a crash in i18n character set conversion
@@ -2459,6 +2466,7 @@ Ulf Kiener <webmaster@ulf-kiener.de>
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
+ for adding HandledExternally() to the EPG handler interface
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2564,6 +2572,7 @@ Benjamin Hess <benjamin.h@gmx.ch>
 Winfried Koehler <w_koehl@gmx.de>
  for fixing finding new transponders
  for reporting a compiler warning in calculations involving FramesPerSecond()
+ for fixing some copy&paste errors in PLUGINS.html
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
@@ -2864,6 +2873,8 @@ Torsten Lang <info@torstenlang.de>
  for reporting a bug in checking for UTF-8 support in cFont::Bidi()
  for a patch that was used to implement caching the information whether a recording
  is stored on the video directory file system within the cRecording data
+ for suppressing setting the "broken link" or "TEI" flags when cutting recordings
+ if the editing point merges two seamlessly fitting parts of the same stream
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -2900,3 +2911,9 @@ Christian Richter <cr@crichter.net>
 
 Christian Kaiser <christian.kaiser@teleservice.com>
  for adding DeleteEvent() to the EPG handler interface
+
+Dirk Heiser <dirk-vdr@gmx.de>
+ for adding SetComponents() to the EPG handler interface
+
+Ludi Kaleni <ludi113@hotmail.com>
+ for suggesting to add the source character to channel names whenever they are displayed

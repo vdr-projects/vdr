@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 2.1 2012/04/22 15:03:10 kls Exp $
+ * $Id: videodir.c 2.2 2012/06/10 13:45:21 kls Exp $
  */
 
 #include "videodir.h"
@@ -261,7 +261,7 @@ bool cVideoDiskUsage::HasChanged(int &State)
      if (FreeMB != freeMB) {
         usedPercent = UsedPercent;
         freeMB = FreeMB;
-        int MBperMinute = Recordings.MBperMinute();
+        double MBperMinute = Recordings.MBperMinute();
         if (MBperMinute <= 0)
            MBperMinute = MB_PER_MINUTE;
         freeMinutes = int(double(FreeMB) / MBperMinute);

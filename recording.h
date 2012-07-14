@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.33 2012/06/03 09:49:09 kls Exp $
+ * $Id: recording.h 2.34 2012/06/09 13:55:22 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -83,7 +83,8 @@ class cRecording : public cListObject {
 private:
   mutable int resume;
   mutable char *titleBuffer;
-  mutable char *sortBuffer;
+  mutable char *sortBufferName;
+  mutable char *sortBufferTime;
   mutable char *fileName;
   mutable char *name;
   mutable int fileSizeMB;
@@ -332,5 +333,12 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // value points to the resulting string, which may be different from s.
 
 bool GenerateIndex(const char *FileName);
+
+enum eRecordingsSortMode { rsmName, rsmTime };
+extern eRecordingsSortMode RecordingsSortMode;
+bool HasRecordingsSortMode(const char *Directory);
+void GetRecordingsSortMode(const char *Directory);
+void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode);
+void IncRecordingsSortMode(const char *Directory);
 
 #endif //__RECORDING_H

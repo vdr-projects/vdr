@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.60 2012/04/26 09:40:36 kls Exp $
+ * $Id: device.c 2.62 2012/06/10 13:13:18 kls Exp $
  */
 
 #include "device.h"
@@ -271,7 +271,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
-          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
              if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
@@ -334,7 +334,7 @@ cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
          if (d->ProvidesTransponder(Channel)) {
             if (d->MaySwitchTransponder(Channel))
                Device = d; // this device may switch to the transponder without disturbing any receiver or live view
-            else if (!d->Occupied()) {
+            else if (!d->Occupied() && d->MaySwitchTransponder(Channel)) { // MaySwitchTransponder() implicitly calls Occupied()
                if (d->Priority() < Priority && (!Device || d->Priority() < Device->Priority()))
                   Device = d; // use this one only if no other with less impact can be found
                }
@@ -803,7 +803,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureAudioTrack(true);
         EnsureSubtitleTrack();
         }
-     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successful
      }
 
   return Result;

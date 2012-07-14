@@ -21,6 +21,7 @@
  *
  *********************************************************************/
 
+#include <errno.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -38,8 +39,12 @@ int HdffCmdGetFirmwareVersion(int OsdDevice, uint32_t * Version, char * String,
     osd_raw_cmd_t osd_cmd;
     int err;
 
+    if (Version == NULL)
+        return -EINVAL;
+
     *Version = 0;
-    String[0] = 0;
+    if (String)
+        String[0] = 0;
 
     BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
     memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
@@ -54,11 +59,14 @@ int HdffCmdGetFirmwareVersion(int OsdDevice, uint32_t * Version, char * String,
     {
         if (osd_cmd.result_len > 0)
         {
-            uint8_t textLength = resultData[9];
-            if (textLength >= MaxLength)
-                textLength = MaxLength - 1;
-            memcpy(String, &resultData[10], textLength);
-            String[textLength] = 0;
+            if (String)
+            {
+                uint8_t textLength = resultData[9];
+                if (textLength >= MaxLength)
+                    textLength = MaxLength - 1;
+                memcpy(String, &resultData[10], textLength);
+                String[textLength] = 0;
+            }
             *Version = (resultData[6] << 16)
                      | (resultData[7] << 8)
                      | resultData[8];
@@ -76,8 +84,12 @@ int HdffCmdGetInterfaceVersion(int OsdDevice, uint32_t * Version, char * String,
     osd_raw_cmd_t osd_cmd;
     int err;
 
+    if (Version == NULL)
+        return -EINVAL;
+
     *Version = 0;
-    String[0] = 0;
+    if (String)
+        String[0] = 0;
 
     BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
     memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
@@ -92,11 +104,14 @@ int HdffCmdGetInterfaceVersion(int OsdDevice, uint32_t * Version, char * String,
     {
         if (osd_cmd.result_len > 0)
         {
-            uint8_t textLength = resultData[9];
-            if (textLength >= MaxLength)
-                textLength = MaxLength - 1;
-            memcpy(String, &resultData[10], textLength);
-            String[textLength] = 0;
+            if (String)
+            {
+                uint8_t textLength = resultData[9];
+                if (textLength >= MaxLength)
+                    textLength = MaxLength - 1;
+                memcpy(String, &resultData[10], textLength);
+                String[textLength] = 0;
+            }
             *Version = (resultData[6] << 16)
                      | (resultData[7] << 8)
                      | resultData[8];
@@ -113,6 +128,9 @@ int HdffCmdGetCopyrights(int OsdDevice, uint8_t Index, char * String,
     BitBuffer_t cmdBuf;
     osd_raw_cmd_t osd_cmd;
     int err;
+
+    if (String == NULL)
+        return -EINVAL;
 
     String[0] = 0;
 

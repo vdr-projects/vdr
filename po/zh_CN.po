@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-02 15:10+0200\n"
+"POT-Creation-Date: 2012-06-17 13:59+0200\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -1120,6 +1120,9 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "初始化声音"
 
 msgid "Setup.Miscellaneous$Channels wrap"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Show channel names with source"
 msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.56 2012/06/03 09:51:27 kls Exp $
+ * $Id: recording.c 2.57 2012/06/09 13:57:30 kls Exp $
  */
 
 #include "recording.h"
@@ -52,6 +52,8 @@
 #endif
 #define INFOFILESUFFIX    "/info"
 #define MARKSFILESUFFIX   "/marks"
+
+#define SORTMODEFILE      ".sort"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -610,7 +612,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 {
   resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
-  sortBuffer = NULL;
+  sortBufferName = sortBufferTime = NULL;
   fileName = NULL;
   name = NULL;
   fileSizeMB = -1; // unknown
@@ -683,7 +685,7 @@ cRecording::cRecording(const char *FileName)
   numFrames = -1;
   deleted = 0;
   titleBuffer = NULL;
-  sortBuffer = NULL;
+  sortBufferName = sortBufferTime = NULL;
   FileName = fileName = strdup(FileName);
   if (*(fileName + strlen(fileName) - 1) == '/')
      *(fileName + strlen(fileName) - 1) = 0;
@@ -795,7 +797,8 @@ cRecording::cRecording(const char *FileName)
 cRecording::~cRecording()
 {
   free(titleBuffer);
-  free(sortBuffer);
+  free(sortBufferName);
+  free(sortBufferTime);
   free(fileName);
   free(name);
   delete info;
@@ -816,22 +819,27 @@ char *cRecording::StripEpisodeName(char *s)
            }
         t++;
         }
-  if (s1 && s2)
-     memmove(s1 + 1, s2, t - s2 + 1);
+  if (s1 && s2) {
+     s1++;
+     memmove(s1, s2, t - s2 + 1);
+     *s1 = 0xFF; // sorts folders before plain recordings
+     }
   return s;
 }
 
 char *cRecording::SortName(void) const
 {
-  if (!sortBuffer) {
-     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+  char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
+  if (!*sb) {
+     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory) + 1)
+                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
      strreplace(s, '/', 'a'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
-     sortBuffer = MALLOC(char, l);
-     strxfrm(sortBuffer, s, l);
+     *sb = MALLOC(char, l);
+     strxfrm(*sb, s, l);
      free(s);
      }
-  return sortBuffer;
+  return *sb;
 }
 
 int cRecording::GetResume(void) const
@@ -2132,4 +2140,40 @@ int ReadFrame(cUnbufferedFile *f, uchar *b, int Length, int Max)
   if (r < 0)
      LOG_ERROR;
   return r;
+}
+
+// --- Recordings Sort Mode --------------------------------------------------
+
+eRecordingsSortMode RecordingsSortMode = rsmName;
+
+bool HasRecordingsSortMode(const char *Directory)
+{
+  return access(AddDirectory(Directory, SORTMODEFILE), R_OK) == 0;
+}
+
+void GetRecordingsSortMode(const char *Directory)
+{
+  if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "r")) {
+     char buf[8];
+     if (fgets(buf, sizeof(buf), f))
+        RecordingsSortMode = eRecordingsSortMode(constrain(atoi(buf), 0, int(rsmTime)));
+     fclose(f);
+     }
+}
+
+void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode)
+{
+  if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "w")) {
+     fputs(cString::sprintf("%d\n", SortMode), f);
+     fclose(f);
+     }
+}
+
+void IncRecordingsSortMode(const char *Directory)
+{
+  GetRecordingsSortMode(Directory);
+  RecordingsSortMode = eRecordingsSortMode(int(RecordingsSortMode) + 1);
+  if (RecordingsSortMode > rsmTime)
+     RecordingsSortMode = eRecordingsSortMode(0);
+  SetRecordingsSortMode(Directory, RecordingsSortMode);
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-02 15:10+0200\n"
+"POT-Creation-Date: 2012-06-17 13:59+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1145,6 +1145,9 @@ msgstr "فعل الصوت"
 #, fuzzy
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "كسابق"
+
+msgid "Setup.Miscellaneous$Show channel names with source"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "خروج طارىء"

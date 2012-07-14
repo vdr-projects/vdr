@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-02 15:10+0200\n"
+"POT-Creation-Date: 2012-06-17 13:59+0200\n"
 "PO-Revision-Date: 2010-04-25 16:35+0200\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -1118,6 +1118,9 @@ msgstr "Гучність при включенні"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Кінець каналів"
+
+msgid "Setup.Miscellaneous$Show channel names with source"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Аварійний вихід"

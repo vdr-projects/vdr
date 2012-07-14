@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.3 2010/03/07 13:53:11 kls Exp $
+ * $Id: sources.h 2.4 2012/06/17 11:19:23 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -33,6 +33,7 @@ public:
   int Code(void) const { return code; }
   const char *Description(void) const { return description; }
   bool Parse(const char *s);
+  static char ToChar(int Code) { return (Code & st_Mask) >> 24; }
   static cString ToString(int Code);
   static int FromString(const char *s);
   static int FromData(eSourceType SourceType, int Position = 0, bool East = false);

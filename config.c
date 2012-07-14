@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.22 2012/05/11 11:06:57 kls Exp $
+ * $Id: config.c 2.26 2012/06/17 12:27:07 kls Exp $
  */
 
 #include "config.h"
@@ -373,7 +373,7 @@ cSetup Setup;
 cSetup::cSetup(void)
 {
   strcpy(OSDLanguage, ""); // default is taken from environment
-  strcpy(OSDSkin, "sttng");
+  strcpy(OSDSkin, "lcars");
   strcpy(OSDTheme, "default");
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
@@ -424,10 +424,10 @@ cSetup::cSetup(void)
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;
-  OSDLeftP = 0.08;
-  OSDTopP = 0.08;
-  OSDWidthP = 0.87;
-  OSDHeightP = 0.84;
+  OSDLeftP = 0.03;
+  OSDTopP = 0.03;
+  OSDWidthP = 0.93;
+  OSDHeightP = 0.93;
   OSDLeft = 54;
   OSDTop = 45;
   OSDWidth = 624;
@@ -439,9 +439,9 @@ cSetup::cSetup(void)
   strcpy(FontOsd, DefaultFontOsd);
   strcpy(FontSml, DefaultFontSml);
   strcpy(FontFix, DefaultFontFix);
-  FontOsdSizeP = 0.038;
-  FontSmlSizeP = 0.035;
-  FontFixSizeP = 0.031;
+  FontOsdSizeP = 0.031;
+  FontSmlSizeP = 0.028;
+  FontFixSizeP = 0.030;
   FontOsdSize = 22;
   FontSmlSize = 18;
   FontFixSize = 20;
@@ -462,6 +462,7 @@ cSetup::cSetup(void)
   DeviceBondings = "";
   InitialVolume = -1;
   ChannelsWrap = 0;
+  ShowChannelNamesWithSource = 0;
   EmergencyExit = 1;
 }
 
@@ -657,6 +658,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
+  else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
   else
      return false;
@@ -755,6 +757,7 @@ bool cSetup::Save(void)
   Store("InitialVolume",      InitialVolume);
   Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);
+  Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
   Store("EmergencyExit",      EmergencyExit);
 
   Sort();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.12 2012/06/02 13:46:55 kls Exp $
+ * $Id: cutter.c 2.13 2012/06/10 14:33:36 kls Exp $
  */
 
 #include "cutter.h"
@@ -83,7 +83,9 @@ void cCuttingThread::Action(void)
      int LastIFrame = 0;
      toMarks.Add(0);
      toMarks.Save();
-     uchar buffer[MAXFRAMESIZE];
+     uchar buffer[MAXFRAMESIZE], buffer2[MAXFRAMESIZE];
+     int Length2;
+     bool CheckForSeamlessStream = false;
      bool LastMark = false;
      bool cutIn = true;
      while (Running()) {
@@ -142,7 +144,21 @@ void cCuttingThread::Action(void)
                  FileSize = 0;
                  }
               LastIFrame = 0;
-
+              // Compare the current frame with the previously stored one, to see if this is a seamlessly merged recording of the same stream:
+              if (CheckForSeamlessStream) {
+                 if (Length == Length2) {
+                    int diffs = 0;
+                    for (int i = 0; i < Length; i++) {
+                        if (buffer[i] != buffer2[i]) {
+                           if (diffs++ > 10)
+                              break;
+                           }
+                        }
+                    if (diffs < 10) // the continuity counters of the PAT/PMT packets may differ
+                       cutIn = false; // it's apparently a seamless stream, so no need for "broken" handling
+                    }
+                 CheckForSeamlessStream = false;
+                 }
               if (cutIn) {
                  if (isPesRecording)
                     cRemux::SetBrokenLink(buffer, Length);
@@ -172,6 +188,16 @@ void cCuttingThread::Action(void)
                  toMarks.Add(toIndex->Last() + 1);
               toMarks.Save();
               if (Mark) {
+                 // Read the next frame, for later comparison with the first frame at this mark:
+                 if (fromIndex->Get(Index, &FileNumber, &FileOffset, &Independent, &Length2)) {
+                    if (FileNumber != CurrentFileNumber)
+                       fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
+                    if (fromFile) {
+                       int len = ReadFrame(fromFile, buffer2, Length2, sizeof(buffer2));
+                       if (len >= 0 && len == Length2)
+                          CheckForSeamlessStream = true;
+                       }
+                    }
                  Index = Mark->Position();
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame

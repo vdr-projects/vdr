@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.47 2012/04/15 10:45:32 kls Exp $
+ * $Id: config.h 2.49 2012/06/17 11:14:50 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.28"
-#define VDRVERSNUM   10728  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.29"
+#define VDRVERSNUM   10729  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.28"
-#define APIVERSNUM   10728  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.29"
+#define APIVERSNUM   10729  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -323,6 +323,7 @@ public:
   int CurrentDolby;
   int InitialVolume;
   int ChannelsWrap;
+  int ShowChannelNamesWithSource;
   int EmergencyExit;
   int __EndData__;
   cString InitialChannel;

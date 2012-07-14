@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.14 2012/06/02 14:08:12 kls Exp $
+ * $Id: epg.c 2.17 2012/06/04 10:26:10 kls Exp $
  */
 
 #include "epg.h"
@@ -1331,6 +1331,15 @@ bool cEpgHandlers::HandleEitEvent(cSchedule *Schedule, const SI::EIT::Event *Eit
   return false;
 }
 
+bool cEpgHandlers::HandledExternally(const cChannel *Channel)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->HandledExternally(Channel))
+         return true;
+      }
+  return false;
+}
+
 void cEpgHandlers::SetEventID(cEvent *Event, tEventID EventID)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
@@ -1412,6 +1421,15 @@ void cEpgHandlers::SetVps(cEvent *Event, time_t Vps)
   Event->SetVps(Vps);
 }
 
+void cEpgHandlers::SetComponents(cEvent *Event, cComponents *Components)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetComponents(Event, Components))
+         return;
+      }
+  Event->SetComponents(Components);
+}
+
 void cEpgHandlers::FixEpgBugs(cEvent *Event)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
@@ -1427,15 +1445,6 @@ void cEpgHandlers::HandleEvent(cEvent *Event)
       if (eh->HandleEvent(Event))
          break;
       }
-}
-
-bool cEpgHandlers::DeleteEvent(const cEvent *Event)
-{
-  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
-      if (eh->DeleteEvent(Event))
-         return true;
-      }
-  return false;
 }
 
 void cEpgHandlers::SortSchedule(cSchedule *Schedule)

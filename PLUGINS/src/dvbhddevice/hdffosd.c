@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffosd.c 1.15 2012/05/17 13:29:50 kls Exp $
+ * $Id: hdffosd.c 1.17 2012/06/16 11:17:11 kls Exp $
  */
 
 #include "hdffosd.h"
@@ -47,6 +47,8 @@ private:
     uint32_t mBitmapColors[256];
     uint32_t mBitmapNumColors;
 
+    bool mSupportsUtf8Text;
+
 protected:
     virtual void SetActive(bool On);
 public:
@@ -78,6 +80,12 @@ cHdffOsd::cHdffOsd(int Left, int Top, HDFF::cHdffCmdIf * pHdffCmdIf, uint Level)
     shown = false;
     mChanged = false;
     mBitmapPalette = HDFF_INVALID_HANDLE;
+
+    mSupportsUtf8Text = false;
+    if (mHdffCmdIf->CmdGetFirmwareVersion(NULL, 0) >= 0x309)
+        mSupportsUtf8Text = true;
+
+    memset(&config, 0, sizeof(config));
     config.FontKerning = true;
     config.FontAntialiasing = Setup.AntiAlias ? true : false;
     mHdffCmdIf->CmdOsdConfigure(&config);
@@ -346,15 +354,19 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
         {
             if ((Alignment & taLeft) != 0)
             {
+#if (APIVERSNUM >= 10728)
                 if ((Alignment & taBorder) != 0)
                     x += max(h / TEXT_ALIGN_BORDER, 1);
+#endif
             }
             else if ((Alignment & taRight) != 0)
             {
                 if (w < Width)
                     x += Width - w;
+#if (APIVERSNUM >= 10728)
                 if ((Alignment & taBorder) != 0)
                     x -= max(h / TEXT_ALIGN_BORDER, 1);
+#endif
             }
             else
             { // taCentered
@@ -378,8 +390,11 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
             }
         }
     }
-    //x -= mLeft;
-    //y -= mTop;
+    if (mSupportsUtf8Text)
+    {
+        mHdffCmdIf->CmdOsdDrawUtf8Text(mDisplay, pFont->Handle, x + mLeft, y + mTop + h, s, ColorFg);
+    }
+    else
     {
         uint16_t tmp[1000];
         uint16_t len = 0;
@@ -394,9 +409,7 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
         tmp[len] = 0;
         mHdffCmdIf->CmdOsdDrawTextW(mDisplay, pFont->Handle, x + mLeft, y + mTop + h, tmp, ColorFg);
     }
-    //mHdffCmdIf->CmdOsdDrawText(mDisplay, pFont->Handle, x + mLeft, y + mTop + h - 7, s, ColorFg);
     mHdffCmdIf->CmdOsdSetDisplayClippingArea(mDisplay, false, 0, 0, 0, 0);
-    //Font->DrawText(this, x, y, s, ColorFg, ColorBg, limit);
     mChanged = true;
 }
 

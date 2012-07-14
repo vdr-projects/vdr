@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.h 1.19 2012/02/06 11:09:27 kls Exp $
+ * $Id: hdffcmd.h 1.20 2012/06/16 11:16:52 kls Exp $
  */
 
 #ifndef _HDFF_CMD_H_
@@ -74,6 +74,7 @@ public:
     void CmdOsdDrawEllipse(uint32_t hDisplay, int CX, int CY, int RadiusX, int RadiusY,
                            uint32_t Color, uint32_t Flags);
     void CmdOsdDrawText(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color);
+    void CmdOsdDrawUtf8Text(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color);
     void CmdOsdDrawTextW(uint32_t hDisplay, uint32_t hFont, int X, int Y, const uint16_t * pText, uint32_t Color);
     void CmdOsdDrawBitmap(uint32_t hDisplay, int X, int Y, const uint8_t * pBitmap,
                           int BmpWidth, int BmpHeight, int BmpSize,

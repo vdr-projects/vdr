@@ -6604,7 +6604,7 @@ Video Disk Recorder Revision History
   to Ville Skyttä).
 - The Makefile now also installs the include files (thanks to Ville Skyttä).
 - Added handling of "ANSI/SCTE 57" descriptors (thanks to Rolf Ahrenberg).
-- Avoiding an unecessary call to Recordings.ResetResume() (thanks to Reinhard
+- Avoiding an unnecessary call to Recordings.ResetResume() (thanks to Reinhard
   Nissl).
 
 2011-06-19: Version 1.7.19
@@ -7147,3 +7147,46 @@ Video Disk Recorder Revision History
 - Speeded up opening menus on systems with many (several thousands) of recordings, by
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
+
+2012-07-14: Version 1.7.29
+
+- Added a missing template specification to the c'tor of cSortedTimers (thanks to Udo
+  Richter).
+- Fixed the background color of the Transfer Mode indicator bitmap in the LCARS skin.
+- The LCARS skin now only displays devices that can actually receive channels, leaving
+  out, for instance, pure replay devices (suggested by Reinhard Nissl).
+- Now scaling down the Transfer Mode indicator bitmap in the LCARS skin in case it
+  doesn't fit with the selected font size (reported by Reinhard Nissl).
+- Fixed making LCARS the default skin.
+- Adjusted the default values for OSD and font sizes to better fit HDTV.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel() (thanks
+  to Rolf Ahrenberg).
+- Removed DeleteEvent() from the EPG handler interface (turned out not to be useful)
+  and replaced it with HandledExternally() (thanks to Jörg Wendel).
+- Added SetComponents() to the EPG handler interface (thanks to Dirk Heiser).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Changed the button colors in the LCARS skin to better fit with the rest of the theme.
+- Removed the gap from the main menu buttons in the LCARS skin.
+- Fixed some copy&paste errors in PLUGINS.html (thanks to Winfried Köhler).
+- The LCARS skin's main menu now only displays timers that are actually activated.
+- Within the "Recordings" menu, pressing the '0' key now toggles sorting between
+  "by time" and "by name". The selected sort mode is stored separately for each
+  folder (provided you have write access to that folder).
+  If a folder is newly created by a repeating timer, the sort mode for that
+  folder is initially set to "by time".
+- Fixed several spelling errors (thanks to Ville Skyttä).
+- Fixed handling recording with more than two bonded devices.
+- Fixed the type of MBperMinute in cVideoDiskUsage::HasChanged() (thanks to Andreas
+  Mair).
+- Setting the "broken link" or "TEI" flags when cutting recordings is now suppressed
+  if the editing point merges two seamlessly fitting parts of the same stream (thanks
+  to Torsten Lang).
+- Fixed displaying messages in the LCARS skin.
+- Fixed checking for a visible live programme in case a menu or the channel display
+  is currently open.
+- Changed some of the colors in the LCARS skin (you may need to delete the file
+  lcars-default.theme from your themes directory to see these changes).
+- The new setup option "Miscellaneous/Show channel names with source" can be used to
+  turn on adding the source character to channel names whenever they are displayed
+  (suggested by Ludi Kaleni).

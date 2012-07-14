@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.15 2012/03/11 11:46:39 kls Exp $
+ * $Id: channels.h 2.16 2012/06/17 11:21:33 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -123,6 +123,8 @@ private:
   int number;    // Sequence number assigned on load
   bool groupSep;
   int __EndData__;
+  mutable cString nameSource;
+  mutable cString shortNameSource;
   cString parameters;
   int modification;
   mutable const cSchedule *schedule;
@@ -137,8 +139,8 @@ public:
   cString ToText(void) const;
   bool Parse(const char *s);
   bool Save(FILE *f);
-  const char *Name(void) const { return name; }
-  const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }
+  const char *Name(void) const;
+  const char *ShortName(bool OrName = false) const;
   const char *Provider(void) const { return provider; }
   const char *PortalName(void) const { return portalName; }
   int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'

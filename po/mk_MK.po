@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-02 15:10+0200\n"
+"POT-Creation-Date: 2012-06-17 13:59+0200\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -1119,6 +1119,9 @@ msgstr "Почетна јачина на звук"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Премотување канали"
+
+msgid "Setup.Miscellaneous$Show channel names with source"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Итен излез"
