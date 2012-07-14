@@ -7148,7 +7148,7 @@ Video Disk Recorder Revision History
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
 
-2012-06-17: Version 1.7.29
+2012-07-14: Version 1.7.29
 
 - Added a missing template specification to the c'tor of cSortedTimers (thanks to Udo
   Richter).
@@ -7188,4 +7188,5 @@ Video Disk Recorder Revision History
 - Changed some of the colors in the LCARS skin (you may need to delete the file
   lcars-default.theme from your themes directory to see these changes).
 - The new setup option "Miscellaneous/Show channel names with source" can be used to
-  turn on adding the source character to channel names whenever they are displayed.
+  turn on adding the source character to channel names whenever they are displayed
+  (suggested by Ludi Kaleni).

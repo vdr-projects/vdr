@@ -2914,3 +2914,6 @@ Christian Kaiser <christian.kaiser@teleservice.com>
 
 Dirk Heiser <dirk-vdr@gmx.de>
  for adding SetComponents() to the EPG handler interface
+
+Ludi Kaleni <ludi113@hotmail.com>
+ for suggesting to add the source character to channel names whenever they are displayed
