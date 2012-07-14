@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.23 2012/06/17 11:53:10 kls Exp $
+ * $Id: channels.c 2.24 2012/07/14 12:15:00 kls Exp $
  */
 
 #include "channels.h"
@@ -120,7 +120,7 @@ cChannel& cChannel::operator= (const cChannel &Channel)
 
 const char *cChannel::Name(void) const
 {
-  if (Setup.ShowChannelNamesWithSource) {
+  if (Setup.ShowChannelNamesWithSource && !groupSep) {
      if (isempty(nameSource))
         nameSource = cString::sprintf("%s (%c)", name, cSource::ToChar(source));
      return nameSource;
@@ -132,7 +132,7 @@ const char *cChannel::ShortName(bool OrName) const
 {
   if (OrName && isempty(shortName))
      return Name();
-  if (Setup.ShowChannelNamesWithSource) {
+  if (Setup.ShowChannelNamesWithSource && !groupSep) {
      if (isempty(shortNameSource))
         shortNameSource = cString::sprintf("%s (%c)", shortName, cSource::ToChar(source));
      return shortNameSource;
@@ -217,6 +217,8 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      srate = Srate;
      parameters = Parameters;
      schedule = NULL;
+     nameSource = NULL;
+     shortNameSource = NULL;
      if (Number() && !Quiet) {
         dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
