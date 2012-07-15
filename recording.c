@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.57 2012/06/09 13:57:30 kls Exp $
+ * $Id: recording.c 2.58 2012/07/15 10:47:58 kls Exp $
  */
 
 #include "recording.h"
@@ -831,8 +831,8 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory) + 1)
-                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory))
+                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)));
      strreplace(s, '/', 'a'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
      *sb = MALLOC(char, l);

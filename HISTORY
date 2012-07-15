@@ -7190,3 +7190,7 @@ Video Disk Recorder Revision History
 - The new setup option "Miscellaneous/Show channel names with source" can be used to
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
+
+2012-07-15: Version 1.7.30
+
+- Fixed sorting recordings in the top level video directory.
