@@ -2917,3 +2917,6 @@ Dirk Heiser <dirk-vdr@gmx.de>
 
 Ludi Kaleni <ludi113@hotmail.com>
  for suggesting to add the source character to channel names whenever they are displayed
+
+Mehdi Karamnejad <mehdi_karamnejad@sfu.ca>
+ for reporting a problem with garbled UTF-8 EPG data and helping to debug it
