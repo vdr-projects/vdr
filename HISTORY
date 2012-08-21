@@ -7197,3 +7197,4 @@ Video Disk Recorder Revision History
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
   (thanks to Mehdi Karamnejad for reporting a problem with garbled UTF-8 EPG data
   and helping to debug it).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

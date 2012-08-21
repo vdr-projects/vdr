@@ -1123,7 +1123,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanavien rullaus"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Näytä lähde kanavien nimissä"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Käytä hätäsammutusta"
