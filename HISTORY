@@ -7198,3 +7198,7 @@ Video Disk Recorder Revision History
   (thanks to Mehdi Karamnejad for reporting a problem with garbled UTF-8 EPG data
   and helping to debug it).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- When checking whether a video directory is empty, file names that start with a
+  dot ('.') are now ignored and will be implicitly removed if the directory contains
+  no other files. This fixes the leftover ".sort" files that were introduced in
+  version 1.7.29.
