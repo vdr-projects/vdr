@@ -7203,3 +7203,5 @@ Video Disk Recorder Revision History
   no other files. This fixes the leftover ".sort" files that were introduced in
   version 1.7.29.
 - Added IsUpdate() to the EPG handler interface (thanks to Jörg Wendel).
+- Fixed detecting transfer mode on full featured DVB cards (thanks to Stefan Huelswitt
+  for reporting a problem with updating CA descriptors in such cases).
