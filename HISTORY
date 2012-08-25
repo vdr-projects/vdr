@@ -7191,7 +7191,7 @@ Video Disk Recorder Revision History
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
 
-2012-08-21: Version 1.7.30
+2012-08-25: Version 1.7.30
 
 - Fixed sorting recordings in the top level video directory.
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
@@ -7202,3 +7202,4 @@ Video Disk Recorder Revision History
   dot ('.') are now ignored and will be implicitly removed if the directory contains
   no other files. This fixes the leftover ".sort" files that were introduced in
   version 1.7.29.
+- Added IsUpdate() to the EPG handler interface (thanks to Jörg Wendel).
