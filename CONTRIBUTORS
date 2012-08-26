@@ -2347,6 +2347,9 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
+ for implementing cDevice::HasInternalCam(), which can be implemented by devices that
+ provide encrypted channels in an already decrypted form, without requiring explicit
+ handling of a CAM
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown

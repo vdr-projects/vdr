@@ -7208,3 +7208,6 @@ Video Disk Recorder Revision History
 - Fixed a race condition when zapping in transfer mode (reported by Reinhard Nissl).
 - The new function cDevice::ReadFilter() can be used by devices to implement their
   own way of retrieving section filter data (thanks to Deti Fliegl).
+- The new function cDevice::HasInternalCam() can be implemented by devices that
+  provide encrypted channels in an already decrypted form, without requiring explicit
+  handling of a CAM (thanks to Tobias Grimm).

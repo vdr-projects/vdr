@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.40 2012/08/26 12:56:14 kls Exp $
+ * $Id: device.h 2.41 2012/08/26 13:25:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -415,6 +415,12 @@ private:
 public:
   virtual bool HasCi(void);
          ///< Returns true if this device has a Common Interface.
+  virtual bool HasInternalCam(void) { return false; }
+         ///< Returns true if this device handles encrypted channels itself
+         ///< without VDR assistance. This can be e.g. if the device is a
+         ///< client that gets the stream from another VDR instance that has
+         ///< already decrypted the stream. In this case ProvidesChannel()
+         ///< shall check whether the channel can be decrypted.
   void SetCamSlot(cCamSlot *CamSlot);
          ///< Sets the given CamSlot to be used with this device.
   cCamSlot *CamSlot(void) const { return camSlot; }
