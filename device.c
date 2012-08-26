@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.63 2012/08/25 11:56:08 kls Exp $
+ * $Id: device.c 2.64 2012/08/26 12:53:39 kls Exp $
  */
 
 #include "device.h"
@@ -591,6 +591,11 @@ void cDevice::StopSectionHandler(void)
 int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
   return -1;
+}
+
+int cDevice::ReadFilter(int Handle, void *Buffer, size_t Length)
+{
+  return safe_read(Handle, Buffer, Length);
 }
 
 void cDevice::CloseFilter(int Handle)

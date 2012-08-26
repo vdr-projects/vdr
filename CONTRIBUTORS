@@ -87,6 +87,8 @@ Deti Fliegl <deti@fliegl.de>
  for fixing setting the OSD size in the 'Confirm' interface call
  for fixing handling improper buffer lengths in the EIT parser
  for a patch that was used to implement StopSectionHandler()
+ for adding cDevice::ReadFilter() to allow devices to implement their own way of
+ retrieving section filter data
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID

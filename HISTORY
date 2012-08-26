@@ -7206,3 +7206,5 @@ Video Disk Recorder Revision History
 - Fixed detecting transfer mode on full featured DVB cards (thanks to Stefan Huelswitt
   for reporting a problem with updating CA descriptors in such cases).
 - Fixed a race condition when zapping in transfer mode (reported by Reinhard Nissl).
+- The new function cDevice::ReadFilter() can be used by devices to implement their
+  own way of retrieving section filter data (thanks to Deti Fliegl).
