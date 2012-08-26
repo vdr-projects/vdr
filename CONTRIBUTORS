@@ -1319,6 +1319,7 @@ Reinhard Nissl <rnissl@gmx.de>
  receive channels
  for reporting that the Transfer Mode indicator bitmap in the LCARS skin may not
  fit with small font sizes
+ for reporting a race condition when zapping in transfer mode
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

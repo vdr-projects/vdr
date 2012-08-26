@@ -7191,7 +7191,7 @@ Video Disk Recorder Revision History
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
 
-2012-08-25: Version 1.7.30
+2012-08-26: Version 1.7.30
 
 - Fixed sorting recordings in the top level video directory.
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
@@ -7205,3 +7205,4 @@ Video Disk Recorder Revision History
 - Added IsUpdate() to the EPG handler interface (thanks to Jörg Wendel).
 - Fixed detecting transfer mode on full featured DVB cards (thanks to Stefan Huelswitt
   for reporting a problem with updating CA descriptors in such cases).
+- Fixed a race condition when zapping in transfer mode (reported by Reinhard Nissl).
