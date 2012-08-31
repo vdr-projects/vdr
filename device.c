@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.65 2012/08/26 13:45:38 kls Exp $
+ * $Id: device.c 2.66 2012/08/31 11:02:24 kls Exp $
  */
 
 #include "device.h"
@@ -1675,8 +1675,8 @@ void cDevice::Detach(cReceiver *Receiver)
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] == Receiver) {
-         Receiver->Activate(false);
          Lock();
+         Receiver->Activate(false);
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
