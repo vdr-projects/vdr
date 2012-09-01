@@ -7191,7 +7191,7 @@ Video Disk Recorder Revision History
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
 
-2012-08-26: Version 1.7.30
+2012-09-01: Version 1.7.30
 
 - Fixed sorting recordings in the top level video directory.
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
@@ -7211,3 +7211,10 @@ Video Disk Recorder Revision History
 - The new function cDevice::HasInternalCam() can be implemented by devices that
   provide encrypted channels in an already decrypted form, without requiring explicit
   handling of a CAM (thanks to Tobias Grimm).
+- VDR can now be built according to the FHS ("File system Hierarchy Standard") by
+  activating the line
+  #USEFHS = 1
+  in a copy of the file Make.config.template (thanks to Christopher Reimer and
+  Udo Richter for contributing to a patch).
+- By default (without FHS support) the config directory is now set to the value
+  given in the -v option if only -v and no -c is given.

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.27 2012/06/02 13:10:00 kls Exp $
+# $Id: Makefile 2.28 2012/09/01 13:22:33 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -27,8 +27,9 @@ INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
 
-VIDEODIR = /video
-CONFDIR  = $(VIDEODIR)
+# By default VDR requires only one single directory to operate:
+VIDEODIR     = /video
+# See Make.config.template if you want to build VDR according to the FHS ("File system Hierarchy Standard")
 
 DOXYGEN ?= /usr/bin/doxygen
 DOXYFILE = Doxyfile
@@ -70,6 +71,8 @@ DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"
+DEFINES += -DCACHEDIR=\"$(CACHEDIR)\"
+DEFINES += -DRESDIR=\"$(RESDIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
@@ -111,6 +114,8 @@ vdr.pc: Makefile Make.global
 	@echo "includedir=$(INCDIR)" >> $@
 	@echo "configdir=$(CONFDIR)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
+	@echo "cachedir=$(CACHEDIR)" >> $@
+	@echo "resdir=$(RESDIR)" >> $@
 	@echo "plugindir=$(PLUGINLIBDIR)" >> $@
 	@echo "localedir=$(LOCDIR)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
@@ -183,7 +188,7 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins install-i18n install-includes install-pc
+install: install-bin install-dirs install-conf install-doc install-plugins install-i18n install-includes install-pc
 
 # VDR binary:
 
@@ -193,12 +198,15 @@ install-bin: vdr
 
 # Configuration files:
 
-install-conf:
+install-dirs:
 	@mkdir -p $(DESTDIR)$(VIDEODIR)
-	@if [ ! -d $(DESTDIR)$(CONFDIR) ]; then\
-	    mkdir -p $(DESTDIR)$(CONFDIR);\
-	    cp *.conf $(DESTDIR)$(CONFDIR);\
-	    fi
+	@mkdir -p $(DESTDIR)$(CONFDIR)
+	@mkdir -p $(DESTDIR)$(CACHEDIR)
+	@mkdir -p $(DESTDIR)$(RESDIR)
+
+install-conf:
+	@cp *.conf $(DESTDIR)$(CONFDIR)
+
 
 # Documentation:
 

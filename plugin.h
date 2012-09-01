@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 2.1 2012/03/11 13:55:56 kls Exp $
+ * $Id: plugin.h 2.2 2012/09/01 13:08:54 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -21,7 +21,9 @@ class cPlugin {
   friend class cDll;
   friend class cPluginManager;
 private:
-  static char *configDirectory;
+  static cString configDirectory;
+  static cString cacheDirectory;
+  static cString resourceDirectory;
   const char *name;
   bool started;
   void SetName(const char *s);
@@ -57,6 +59,10 @@ public:
 
   static void SetConfigDirectory(const char *Dir);
   static const char *ConfigDirectory(const char *PluginName = NULL);
+  static void SetCacheDirectory(const char *Dir);
+  static const char *CacheDirectory(const char *PluginName = NULL);
+  static void SetResourceDirectory(const char *Dir);
+  static const char *ResourceDirectory(const char *PluginName = NULL);
   };
 
 class cDll : public cListObject {

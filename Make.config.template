@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.8 2012/03/20 11:20:13 kls Exp $
+# $Id: Make.config.template 2.9 2012/09/01 10:31:33 kls Exp $
 
 ### The C compiler and options:
 
@@ -28,11 +28,22 @@ PREFIX   = $(DESTDIR)/usr/local
 MANDIR   = $(PREFIX)/man
 BINDIR   = $(PREFIX)/bin
 
+# By default locale and plugin files are built under the source directory:
 LOCDIR       = ./locale
 PLUGINDIR    = ./PLUGINS
 PLUGINLIBDIR = $(PLUGINDIR)/lib
+# By default VDR requires only one single directory to operate:
 VIDEODIR     = /video
-CONFDIR      = $(VIDEODIR)
+# Activate the following line to build VDR according to the FHS ("File system Hierarchy Standard"):
+#USEFHS = 1
+ifdef USEFHS
+VIDEODIR     = /srv/vdr/video
+CONFDIR      = /var/lib/vdr
+CACHEDIR     = /var/cache/vdr
+RESDIR       = $(PREFIX)/share/vdr
+LOCDIR       = $(PREFIX)/share/locale
+PLUGINLIBDIR = $(PREFIX)/lib/vdr
+endif
 
 ### The remote control:
 

@@ -1756,6 +1756,7 @@ Udo Richter <udo_richter@gmx.de>
  editing mark
  for adding the option --outputonly to the dvbsddevice plugin
  for adding a missing template specification to the c'tor of cSortedTimers
+ for contributing to a patch that implements FHS support
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2775,6 +2776,7 @@ Luis Fernandes <telping@gmail.com>
 Christopher Reimer <reimer.christopher@freenet.de>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
+ for contributing to a patch that implements FHS support
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys

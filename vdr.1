@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.8 2012/02/27 11:01:17 kls Exp $
+.\" $Id: vdr.1 2.9 2012/09/01 13:40:49 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -41,6 +41,10 @@ which can be accessed on port 6419, for instance by \fBtelnet\fR.
 .TP
 .BI \-a\  cmd ,\ \-\-audio= cmd
 Send Dolby Digital audio to stdin of command \fIcmd\fR.
+.TP
+.BI \-\-cachedir= dir
+save cache files in \fIdir\fR
+(default is to save them in the video directory).
 .TP
 .BI \-c\  dir ,\ \-\-config= dir
 Read config files from directory \fIdir\fR
@@ -156,6 +160,10 @@ particular options) you can use
 .BI \-r\  cmd ,\ \-\-record= cmd
 Call \fIcmd\fR before and after a recording. See the file \fIINSTALL\fR for
 more information.
+.TP
+.BI \-\-resdir= dir
+read resource files from \fIdir\fR
+(default is to read them from the config directory).
 .TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
 Call \fIcmd\fR to shutdown the computer. See the file \fIINSTALL\fR for more

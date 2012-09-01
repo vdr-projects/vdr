@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 2.4 2011/08/15 10:01:45 kls Exp $
+ * $Id: i18n.c 2.5 2012/09/01 10:53:43 kls Exp $
  */
 
 /*
@@ -63,7 +63,7 @@ const char *LanguageCodeList[] = {
   NULL
   };
 
-static const char *I18nLocaleDir = LOCDIR;
+static cString I18nLocaleDir;
 
 static cStringList LanguageLocales;
 static cStringList LanguageNames;
@@ -102,8 +102,7 @@ static void SetEnvLanguage(const char *Locale)
 
 void I18nInitialize(const char *LocaleDir)
 {
-  if (LocaleDir)
-     I18nLocaleDir = LocaleDir;
+  I18nLocaleDir = LocaleDir;
   LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
   LanguageNames.Append(strdup(SkipContext(LanguageName)));
   LanguageCodes.Append(strdup(LanguageCodeList[0]));
@@ -113,7 +112,7 @@ void I18nInitialize(const char *LocaleDir)
   if (Locales.Size() > 0) {
      char *OldLocale = strdup(setlocale(LC_MESSAGES, NULL));
      for (int i = 0; i < Locales.Size(); i++) {
-         cString FileName = cString::sprintf("%s/%s/LC_MESSAGES/vdr.mo", I18nLocaleDir, Locales[i]);
+         cString FileName = cString::sprintf("%s/%s/LC_MESSAGES/vdr.mo", *I18nLocaleDir, Locales[i]);
          if (access(FileName, F_OK) == 0) { // found a locale with VDR texts
             if (NumLocales < I18N_MAX_LANGUAGES - 1) {
                SetEnvLanguage(Locales[i]);
@@ -142,7 +141,7 @@ void I18nInitialize(const char *LocaleDir)
          }
      SetEnvLanguage(LanguageLocales[CurrentLanguage]);
      free(OldLocale);
-     dsyslog("found %d locales in %s", NumLocales - 1, I18nLocaleDir);
+     dsyslog("found %d locales in %s", NumLocales - 1, *I18nLocaleDir);
      }
   // Prepare any known language codes for which there was no locale:
   for (const char **lc = LanguageCodeList; *lc; lc++) {

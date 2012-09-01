@@ -82,7 +82,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Wakeup">Wakeup</a>
 <li><a href="#Setup parameters">Setup parameters</a>
 <li><a href="#The Setup menu">The Setup menu</a>
-<li><a href="#Configuration files">Configuration files</a>
+<li><modified><a href="#Additional files">Additional files</modified></a>
 <li><a href="#Internationalization">Internationalization</a>
 <li><a href="#Custom services">Custom services</a>
 <li><a href="#SVDRP commands">SVDRP commands</a>
@@ -885,39 +885,70 @@ You can first assign the temporary values to the global variables and then do th
 your setup parameters and use that one to copy all parameters with one single statement
 (like VDR does with its cSetup class).
 
-<hr><h2><a name="Configuration files">Configuration files</a></h2>
+<hr><h2><modified><a name="Additional files">Additional files</a></modified></h2>
 
 <div class="blurb">I want my own stuff!</div><p>
 
-There may be situations where a plugin requires configuration files of its own, maybe
-for data that can't be stored in the simple <a href="#Setup parameters">setup parameters</a>
-of VDR, or maybe because it needs to launch other programs that simply need a separate
-configuration file. While the plugin is free to store such files anywhere it
-sees fit, it might be a good idea to put them in a common place, preferably
-where other configuration data already exists. VDR provides the function
+<modified>
+There may be situations where a plugin requires files of its own. While the plugin is
+free to store such files anywhere it sees fit, it might be a good idea to put them in a common
+place, preferably where such data already exists.
+</modified>
+<p>
+<modified>
+<i>configuration files</i>, maybe for data that can't be stored in the simple
+<a href="#Setup parameters">setup parameters</a> of VDR, or maybe because it needs to
+launch other programs that simply need a separate configuration file.
+</modified>
+<p>
+<modified>
+<i>cache files</i>, to store data so that future requests for that data can be served faster. The data
+that is stored within a cache might be values that have been computed earlier or duplicates of
+original values that are stored elsewhere.
+</modified>
+<p>
+<modified>
+<i>resource files</i>, for providing additional files, like pictures, movie clips or channel logos.
+</modified>
+<p>
+<modified>
+Threfore VDR provides the functions
 
 <p><table><tr><td class="code"><pre>
+<modified>
 const char *ConfigDirectory(const char *PluginName = NULL);
+const char *CacheDirectory(const char *PluginName = NULL);
+const char *ResourceDirectory(const char *PluginName = NULL);
+</modified>
 </pre></td></tr></table><p>
 
-which returns a string containing the directory that VDR uses for its own configuration
-files (defined through the <tt><b>-c</b></tt> option in the call to VDR), extended by
+<modified>
+each of which returns a string containing the directory that VDR uses for its own
+files (defined through the options in the call to VDR), extended by
+</modified>
 <tt>"/plugins"</tt>. So assuming the VDR configuration directory is <tt>/video</tt>
 (the default if no <tt><b>-c</b></tt> or <tt><b>-v</b></tt> option is given),
 a call to <tt>ConfigDirectory()</tt> will return <tt>/video/plugins</tt>. The first
 call to <tt>ConfigDirectory()</tt> will automatically make sure that the <tt>plugins</tt>
 subdirectory will exist. If, for some reason, this cannot be achieved, <tt>NULL</tt>
 will be returned.
+<modified>
+The behavoir of <tt>CacheDirectory()</tt> and <tt>ResourceDirectory()</tt> is similar.
+</modified>
 <p>
 The additional <tt>plugins</tt> directory is used to keep files from plugins apart
 from those of VDR itself, making sure there will be no name clashes. If a plugin
-needs only one extra configuration file, it is suggested that this file be named
-<tt>name.conf</tt>, where <i>name</i> shall be the name of the plugin.
+<modified>
+needs only one extra file, it is suggested that this file be named <tt>name.*</tt>,
+where <i>name</i> shall be the name of the plugin.
+</modified>
 <p>
 If a plugin needs more than one such file, it is suggested that the plugin stores
 these in a subdirectory of its own, named after the plugin. To easily get such a name
-the <tt>ConfigDirectory()</tt> function can be given an additional string that will
-be appended to the returned directory name, as in
+<modified>
+the functions can be given an additional string that will be appended to the returned
+directory name, as in
+</modified>
 
 <p><table><tr><td class="code"><pre>
 const char *MyConfigDir = ConfigDirectory(Name());
@@ -928,13 +959,16 @@ plugin's name. Again, VDR will make sure that the requested directory will exist
 (or return <tt>NULL</tt> in case of an error).
 <p>
 <b>
-The returned string is statically allocated and will be overwritten by subsequent
-calls to ConfigDirectory()!
+<modified>
+The returned strings are statically allocated and will be overwritten by subsequent calls!
+</modified>
 </b>
 <p>
-The <tt>ConfigDirectory()</tt> function is a static member function of the <tt>cPlugin</tt>
-class. This allows it to be called even from outside any member function of the derived
-plugin class, by writing
+<modified>
+The <tt>ConfigDirectory()</tt>, <tt>CacheDirectory()</tt> and <tt>ResourceDirectory()</tt>
+functions are static member functions of the <tt>cPlugin</tt> class. This allows them to be
+called even from outside any member function of the derived plugin class, by writing
+</modified>
 
 <p><table><tr><td class="code"><pre>
 const char *MyConfigDir = cPlugin::ConfigDirectory();
