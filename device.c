@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.66 2012/08/31 11:02:24 kls Exp $
+ * $Id: device.c 2.67 2012/09/02 09:26:36 kls Exp $
  */
 
 #include "device.h"
@@ -1676,10 +1676,10 @@ void cDevice::Detach(cReceiver *Receiver)
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] == Receiver) {
          Lock();
-         Receiver->Activate(false);
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
+         Receiver->Activate(false);
          for (int n = 0; n < Receiver->numPids; n++)
              DelPid(Receiver->pids[n]);
          }

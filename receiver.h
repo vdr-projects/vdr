@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 2.8 2012/06/02 13:20:44 kls Exp $
+ * $Id: receiver.h 2.9 2012/09/02 09:27:20 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -27,7 +27,7 @@ protected:
   void Detach(void);
   virtual void Activate(bool On) {}
                ///< This function is called just before the cReceiver gets attached to
-               ///< (On == true) or detached from (On == false) a cDevice. It can be used
+               ///< (On == true) and right after it gets detached from (On == false) a cDevice. It can be used
                ///< to do things like starting/stopping a thread.
                ///< It is guaranteed that Receive() will not be called before Activate(true).
   virtual void Receive(uchar *Data, int Length) = 0;
