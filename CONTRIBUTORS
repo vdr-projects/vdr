@@ -2931,3 +2931,6 @@ Ludi Kaleni <ludi113@hotmail.com>
 
 Mehdi Karamnejad <mehdi_karamnejad@sfu.ca>
  for reporting a problem with garbled UTF-8 EPG data and helping to debug it
+
+Dennis Bendlin <dennisbendlin@online.de>
+ for a patch that implements FHS support

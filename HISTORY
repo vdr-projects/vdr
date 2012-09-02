@@ -7217,7 +7217,7 @@ Video Disk Recorder Revision History
 - VDR can now be built according to the FHS ("File system Hierarchy Standard") by
   activating the line
   #USEFHS = 1
-  in a copy of the file Make.config.template (thanks to Christopher Reimer and
-  Udo Richter for contributing to a patch).
+  in a copy of the file Make.config.template (thanks to Dennis Bendlin, as well as
+  Christopher Reimer and Udo Richter for contributing to the patch).
 - By default (without FHS support) the config directory is now set to the value
   given in the -v option if only -v and no -c is given.
