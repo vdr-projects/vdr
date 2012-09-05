@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.34 2012/06/09 13:55:22 kls Exp $
+ * $Id: recording.h 2.35 2012/09/05 11:25:33 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -275,6 +275,11 @@ private:
   cResumeFile resumeFile;
   cIndexFileGenerator *indexFileGenerator;
   cMutex mutex;
+  static cMutex indexListMutex;
+  static cVector<const cIndexFile *> indexList;
+  static void AddToIndexList(const cIndexFile *IndexFile);
+  static void RemoveFromIndexList(const cIndexFile *IndexFile);
+  static bool IsInIndexList(const cIndexFile *IndexFile);
   static cString IndexFileName(const char *FileName, bool IsPesRecording);
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
   void ConvertToPes(tIndexTs *IndexTs, int Count);
