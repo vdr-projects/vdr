@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.59 2012/09/05 11:45:55 kls Exp $
+ * $Id: recording.c 2.60 2012/09/06 09:57:31 kls Exp $
  */
 
 #include "recording.h"
@@ -1067,7 +1067,7 @@ int cRecording::NumFrames(void) const
 {
   if (numFrames < 0) {
      int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
-     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
         return nf; // check again later for ongoing recordings
      numFrames = nf;
      }
@@ -1086,7 +1086,7 @@ int cRecording::FileSizeMB(void) const
 {
   if (fileSizeMB < 0) {
      int fs = DirSizeMB(FileName());
-     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
         return fs; // check again later for ongoing recordings
      fileSizeMB = fs;
      }
