@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-17 13:59+0200\n"
+"POT-Creation-Date: 2012-09-09 15:20+0200\n"
 "PO-Revision-Date: 2012-06-06 22:50+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -855,6 +855,18 @@ msgstr "Cartelle nel menu timer"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Tasti numerici per i caratteri"
+
+msgid "Setup.OSD$Color key 0"
+msgstr ""
+
+msgid "Setup.OSD$Color key 1"
+msgstr ""
+
+msgid "Setup.OSD$Color key 2"
+msgstr ""
+
+msgid "Setup.OSD$Color key 3"
+msgstr ""
 
 msgid "EPG"
 msgstr "Guida programmi EPG"

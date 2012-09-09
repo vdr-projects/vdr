@@ -7191,7 +7191,7 @@ Video Disk Recorder Revision History
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
 
-2012-09-07: Version 1.7.30
+2012-09-09: Version 1.7.30
 
 - Fixed sorting recordings in the top level video directory.
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
@@ -7228,3 +7228,9 @@ Video Disk Recorder Revision History
   of the index file).
 - Fixed sluggish response when manipulating editing marks while a cutting thread
   is running (reported by Torsten Lang).
+- The new setup options "OSD/Color key [0123]" can be used to adjust the sequence
+  of the color buttons displayed in the menus to that of the color keys on your
+  remote control (based on a patch from Oliver Schinagl).
+  Authors of plugins that implement skins may want to adapt their SetButtons()
+  function in order to make use of this new feature. See, for instance, the function
+  cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.

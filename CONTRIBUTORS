@@ -2936,3 +2936,6 @@ Mehdi Karamnejad <mehdi_karamnejad@sfu.ca>
 
 Dennis Bendlin <dennisbendlin@online.de>
  for a patch that implements FHS support
+
+Oliver Schinagl <oliver@schinagl.nl>
+ for a patch that was used to implement the setup options "OSD/Color key [0123]"

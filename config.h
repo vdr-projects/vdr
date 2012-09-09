@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.50 2012/07/15 10:51:56 kls Exp $
+ * $Id: config.h 2.51 2012/09/09 12:57:33 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -288,6 +288,7 @@ public:
   int RecordingDirs;
   int FoldersInTimerMenu;
   int NumberKeysForChars;
+  int ColorKey0, ColorKey1, ColorKey2, ColorKey3;
   int VideoDisplayFormat;
   int VideoFormat;
   int UpdateChannels;

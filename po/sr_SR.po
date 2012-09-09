@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.1\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-06-17 13:59+0200\n"
+"POT-Creation-Date: 2012-09-09 15:20+0200\n"
 "PO-Revision-Date: 2011-01-09 15:57+0100\n"
 "Last-Translator: Milan Cvijanoviæ <elcom_cvijo@hotmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -866,6 +866,18 @@ msgstr "Direktoriji u tajmer meni-ju "
 #, fuzzy
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Number keys for characters"
+
+msgid "Setup.OSD$Color key 0"
+msgstr ""
+
+msgid "Setup.OSD$Color key 1"
+msgstr ""
+
+msgid "Setup.OSD$Color key 2"
+msgstr ""
+
+msgid "Setup.OSD$Color key 3"
+msgstr ""
 
 msgid "EPG"
 msgstr "EPG (TV Raspored¨)"

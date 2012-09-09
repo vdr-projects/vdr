@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.59 2012/09/09 09:19:15 kls Exp $
+ * $Id: menu.c 2.60 2012/09/09 12:23:00 kls Exp $
  */
 
 #include "menu.h"
@@ -2510,6 +2510,7 @@ void cMenuSetupBase::Store(void)
 class cMenuSetupOSD : public cMenuSetupBase {
 private:
   const char *useSmallFontTexts[3];
+  const char *keyColorTexts[4];
   int osdLanguageIndex;
   int numSkins;
   int originalSkinIndex;
@@ -2560,6 +2561,10 @@ void cMenuSetupOSD::Set(void)
   useSmallFontTexts[0] = tr("never");
   useSmallFontTexts[1] = tr("skin dependent");
   useSmallFontTexts[2] = tr("always");
+  keyColorTexts[0] = tr("Key$Red");
+  keyColorTexts[1] = tr("Key$Green");
+  keyColorTexts[2] = tr("Key$Yellow");
+  keyColorTexts[3] = tr("Key$Blue");
   Clear();
   SetSection(tr("OSD"));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &osdLanguageIndex, I18nNumLanguagesWithLocale(), &I18nLanguages()->At(0)));
@@ -2589,6 +2594,10 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Number keys for characters"), &data.NumberKeysForChars));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 0"),            &data.ColorKey0, 4, keyColorTexts));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 1"),            &data.ColorKey1, 4, keyColorTexts));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 2"),            &data.ColorKey2, 4, keyColorTexts));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 3"),            &data.ColorKey3, 4, keyColorTexts));
   SetCurrent(Get(current));
   Display();
 }

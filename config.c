@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.26 2012/06/17 12:27:07 kls Exp $
+ * $Id: config.c 2.27 2012/09/09 12:58:23 kls Exp $
  */
 
 #include "config.h"
@@ -418,6 +418,10 @@ cSetup::cSetup(void)
   RecordingDirs = 1;
   FoldersInTimerMenu = 1;
   NumberKeysForChars = 1;
+  ColorKey0 = 0;
+  ColorKey1 = 1;
+  ColorKey2 = 2;
+  ColorKey3 = 3;
   VideoDisplayFormat = 1;
   VideoFormat = 0;
   UpdateChannels = 5;
@@ -614,6 +618,10 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
   else if (!strcasecmp(Name, "NumberKeysForChars"))  NumberKeysForChars = atoi(Value);
+  else if (!strcasecmp(Name, "ColorKey0"))           ColorKey0          = atoi(Value);
+  else if (!strcasecmp(Name, "ColorKey1"))           ColorKey1          = atoi(Value);
+  else if (!strcasecmp(Name, "ColorKey2"))           ColorKey2          = atoi(Value);
+  else if (!strcasecmp(Name, "ColorKey3"))           ColorKey3          = atoi(Value);
   else if (!strcasecmp(Name, "VideoDisplayFormat"))  VideoDisplayFormat = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
@@ -713,6 +721,10 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("FoldersInTimerMenu", FoldersInTimerMenu);
   Store("NumberKeysForChars", NumberKeysForChars);
+  Store("ColorKey0",          ColorKey0);
+  Store("ColorKey1",          ColorKey1);
+  Store("ColorKey2",          ColorKey2);
+  Store("ColorKey3",          ColorKey3);
   Store("VideoDisplayFormat", VideoDisplayFormat);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);

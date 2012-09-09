@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.13 2012/06/13 13:27:31 kls Exp $
+ * $Id: skinlcars.c 2.14 2012/09/09 12:16:50 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -975,10 +975,11 @@ void cSkinLCARSDisplayMenu::DrawMenuFrame(void)
   osd->DrawEllipse  (xa08 + lineHeight / 2, yb14, xa09 - 1, yb15 - 1, frameColor, 5);
   osd->DrawText(xa00, yb10, "VDR", Theme.Color(clrMenuFrameFg), frameColor, tallFont, xa02 - xa00, yb11 - yb10, taTop | taRight | taBorder);
   // Color buttons:
-  osd->DrawRectangle(xb00, yb14, xb01 - 1, yb15 - 1, Theme.Color(clrButtonRedBg));
-  osd->DrawRectangle(xb04, yb14, xb05 - 1, yb15 - 1, Theme.Color(clrButtonGreenBg));
-  osd->DrawRectangle(xb08, yb14, xb09 - 1, yb15 - 1, Theme.Color(clrButtonYellowBg));
-  osd->DrawRectangle(xb12, yb14, xb13 - 1, yb15 - 1, Theme.Color(clrButtonBlueBg));
+  tColor lutBg[] = { clrButtonRedBg, clrButtonGreenBg, clrButtonYellowBg, clrButtonBlueBg };
+  osd->DrawRectangle(xb00, yb14, xb01 - 1, yb15 - 1, Theme.Color(lutBg[Setup.ColorKey0]));
+  osd->DrawRectangle(xb04, yb14, xb05 - 1, yb15 - 1, Theme.Color(lutBg[Setup.ColorKey1]));
+  osd->DrawRectangle(xb08, yb14, xb09 - 1, yb15 - 1, Theme.Color(lutBg[Setup.ColorKey2]));
+  osd->DrawRectangle(xb12, yb14, xb13 - 1, yb15 - 1, Theme.Color(lutBg[Setup.ColorKey3]));
 }
 
 void cSkinLCARSDisplayMenu::DrawDate(void)
@@ -1458,19 +1459,22 @@ void cSkinLCARSDisplayMenu::SetTitle(const char *Title)
 
 void cSkinLCARSDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
+  const char *lutText[] = { Red, Green, Yellow, Blue };
+  tColor lutFg[] = { clrButtonRedFg, clrButtonGreenFg, clrButtonYellowFg, clrButtonBlueFg };
+  tColor lutBg[] = { clrButtonRedBg, clrButtonGreenBg, clrButtonYellowBg, clrButtonBlueBg };
   const cFont *font = cFont::GetFont(fontSml);
   if (MenuCategory() == mcMain) {
-     DrawMainButton(Red,    xd00, xd01, xd02, xd03, yd02, yd03, Theme.Color(clrButtonRedFg),    Theme.Color(clrButtonRedBg),    font);
-     DrawMainButton(Green,  xd04, xd05, xd06, xd07, yd02, yd03, Theme.Color(clrButtonGreenFg),  Theme.Color(clrButtonGreenBg),  font);
-     DrawMainButton(Yellow, xd00, xd01, xd02, xd03, yd04, yd05, Theme.Color(clrButtonYellowFg), Theme.Color(clrButtonYellowBg), font);
-     DrawMainButton(Blue,   xd04, xd05, xd06, xd07, yd04, yd05, Theme.Color(clrButtonBlueFg),   Theme.Color(clrButtonBlueBg),   font);
+     DrawMainButton(lutText[Setup.ColorKey0], xd00, xd01, xd02, xd03, yd02, yd03, Theme.Color(lutFg[Setup.ColorKey0]), Theme.Color(lutBg[Setup.ColorKey0]), font);
+     DrawMainButton(lutText[Setup.ColorKey1], xd04, xd05, xd06, xd07, yd02, yd03, Theme.Color(lutFg[Setup.ColorKey1]), Theme.Color(lutBg[Setup.ColorKey1]), font);
+     DrawMainButton(lutText[Setup.ColorKey2], xd00, xd01, xd02, xd03, yd04, yd05, Theme.Color(lutFg[Setup.ColorKey2]), Theme.Color(lutBg[Setup.ColorKey2]), font);
+     DrawMainButton(lutText[Setup.ColorKey3], xd04, xd05, xd06, xd07, yd04, yd05, Theme.Color(lutFg[Setup.ColorKey3]), Theme.Color(lutBg[Setup.ColorKey3]), font);
      }
   else {
      int h = yb15 - yb14;
-     osd->DrawText(xb02, yb14, Red,    Theme.Color(clrButtonRedFg),    Theme.Color(clrButtonRedBg),    font, xb03 - xb02, h, taLeft | taBorder);
-     osd->DrawText(xb06, yb14, Green,  Theme.Color(clrButtonGreenFg),  Theme.Color(clrButtonGreenBg),  font, xb07 - xb06, h, taLeft | taBorder);
-     osd->DrawText(xb10, yb14, Yellow, Theme.Color(clrButtonYellowFg), Theme.Color(clrButtonYellowBg), font, xb11 - xb10, h, taLeft | taBorder);
-     osd->DrawText(xb14, yb14, Blue,   Theme.Color(clrButtonBlueFg),   Theme.Color(clrButtonBlueBg),   font, xb15 - xb14, h, taLeft | taBorder);
+     osd->DrawText(xb02, yb14, lutText[Setup.ColorKey0], Theme.Color(lutFg[Setup.ColorKey0]), Theme.Color(lutBg[Setup.ColorKey0]), font, xb03 - xb02, h, taLeft | taBorder);
+     osd->DrawText(xb06, yb14, lutText[Setup.ColorKey1], Theme.Color(lutFg[Setup.ColorKey1]), Theme.Color(lutBg[Setup.ColorKey1]), font, xb07 - xb06, h, taLeft | taBorder);
+     osd->DrawText(xb10, yb14, lutText[Setup.ColorKey2], Theme.Color(lutFg[Setup.ColorKey2]), Theme.Color(lutBg[Setup.ColorKey2]), font, xb11 - xb10, h, taLeft | taBorder);
+     osd->DrawText(xb14, yb14, lutText[Setup.ColorKey3], Theme.Color(lutFg[Setup.ColorKey3]), Theme.Color(lutBg[Setup.ColorKey3]), font, xb15 - xb14, h, taLeft | taBorder);
      }
 }
 
