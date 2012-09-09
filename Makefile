@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.28 2012/09/01 13:22:33 kls Exp $
+# $Id: Makefile 2.29 2012/09/09 09:29:15 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -76,6 +76,12 @@ DEFINES += -DRESDIR=\"$(RESDIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
+# Default values for directories:
+
+CONFDIRDEF  = $(firstword $(CONFDIR)  $(VIDEODIR))
+CACHEDIRDEF = $(firstword $(CACHEDIR) $(VIDEODIR))
+RESDIRDEF   = $(firstword $(RESDIR)   $(CONFDIRDEF))
+
 # The version numbers of VDR and the plugin API (taken from VDR's "config.h"):
 
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
@@ -112,10 +118,10 @@ $(SILIB):
 vdr.pc: Makefile Make.global
 	@echo "bindir=$(BINDIR)" > $@
 	@echo "includedir=$(INCDIR)" >> $@
-	@echo "configdir=$(CONFDIR)" >> $@
+	@echo "configdir=$(CONFDIRDEF)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
-	@echo "cachedir=$(CACHEDIR)" >> $@
-	@echo "resdir=$(RESDIR)" >> $@
+	@echo "cachedir=$(CACHEDIRDEF)" >> $@
+	@echo "resdir=$(RESDIRDEF)" >> $@
 	@echo "plugindir=$(PLUGINLIBDIR)" >> $@
 	@echo "localedir=$(LOCDIR)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
@@ -200,12 +206,12 @@ install-bin: vdr
 
 install-dirs:
 	@mkdir -p $(DESTDIR)$(VIDEODIR)
-	@mkdir -p $(DESTDIR)$(CONFDIR)
-	@mkdir -p $(DESTDIR)$(CACHEDIR)
-	@mkdir -p $(DESTDIR)$(RESDIR)
+	@mkdir -p $(DESTDIR)$(CONFDIRDEF)
+	@mkdir -p $(DESTDIR)$(CACHEDIRDEF)
+	@mkdir -p $(DESTDIR)$(RESDIRDEF)
 
 install-conf:
-	@cp *.conf $(DESTDIR)$(CONFDIR)
+	@cp *.conf $(DESTDIR)$(CONFDIRDEF)
 
 
 # Documentation:
