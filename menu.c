@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.58 2012/06/17 11:12:25 kls Exp $
+ * $Id: menu.c 2.59 2012/09/09 09:19:15 kls Exp $
  */
 
 #include "menu.h"
@@ -4455,6 +4455,7 @@ cReplayControl::cReplayControl(bool PauseLive)
 {
   currentReplayControl = this;
   displayReplay = NULL;
+  marksModified = false;
   visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   lastPlay = lastForward = false;
@@ -4472,6 +4473,10 @@ cReplayControl::~cReplayControl()
   Hide();
   cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();
+  if (marksModified) {
+     marks.Save();
+     marksModified = false;
+     }
   if (currentReplayControl == this)
      currentReplayControl = NULL;
 }
@@ -4729,7 +4734,7 @@ void cReplayControl::MarkToggle(void)
            Goto(Current, true);
         }
      ShowTimed(2);
-     marks.Save();
+     marksModified = true;
      }
 }
 
@@ -4766,7 +4771,7 @@ void cReplayControl::MarkMove(bool Forward)
            }
         m->SetPosition(p);
         Goto(m->Position(), true);
-        marks.Save();
+        marksModified = true;
         }
      }
 }
@@ -4775,6 +4780,10 @@ void cReplayControl::EditCut(void)
 {
   if (*fileName) {
      Hide();
+     if (marksModified) {
+        marks.Save();
+        marksModified = false;
+        }
      if (!cCutter::Active()) {
         if (!marks.Count())
            Skins.Message(mtError, tr("No editing marks defined!"));

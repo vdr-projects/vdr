@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.11 2012/06/13 11:23:11 kls Exp $
+ * $Id: menu.h 2.12 2012/09/07 08:48:34 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -260,6 +260,7 @@ class cReplayControl : public cDvbPlayerControl {
 private:
   cSkinDisplayReplay *displayReplay;
   cMarks marks;
+  bool marksModified;
   bool visible, modeOnly, shown, displayFrames;
   int lastCurrent, lastTotal;
   bool lastPlay, lastForward;

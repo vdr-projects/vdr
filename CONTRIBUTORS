@@ -2886,6 +2886,8 @@ Torsten Lang <info@torstenlang.de>
  is stored on the video directory file system within the cRecording data
  for suppressing setting the "broken link" or "TEI" flags when cutting recordings
  if the editing point merges two seamlessly fitting parts of the same stream
+ for reporting a sluggish response when manipulating editing marks while a cutting
+ thread is running
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles

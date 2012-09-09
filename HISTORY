@@ -7191,7 +7191,7 @@ Video Disk Recorder Revision History
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
 
-2012-09-06: Version 1.7.30
+2012-09-07: Version 1.7.30
 
 - Fixed sorting recordings in the top level video directory.
 - Fixed handling control characters in SI data in case of UTF-8 encoded strings
@@ -7226,3 +7226,5 @@ Video Disk Recorder Revision History
 - Fixed getting the file size and number of frames of ongoing recordings (only the
   timestamp of the recording's directory was checked, while it should have been that
   of the index file).
+- Fixed sluggish response when manipulating editing marks while a cutting thread
+  is running (reported by Torsten Lang).
