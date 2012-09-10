@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.13 2012/06/04 10:26:10 kls Exp $
+ * $Id: epg.h 2.14 2012/08/25 11:15:18 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -250,6 +250,10 @@ public:
           ///< source. Incoming EIT data is processed as usual, but any new EPG event
           ///< will not be added to the respective schedule. It's up to the EPG
           ///< handler to take care of this.
+  virtual bool IsUpdate(tEventID EventID, time_t StartTime, uchar TableID, uchar Version) { return false; }
+          ///< VDR can't perform the update check (version, tid) for externally handled events,
+          ///< therefore the EPG handlers have to take care of this. Otherwise the parsing of
+          ///< non-updates will waste a lot of resources.
   virtual bool SetEventID(cEvent *Event, tEventID EventID) { return false; }
   virtual bool SetTitle(cEvent *Event, const char *Title) { return false; }
   virtual bool SetShortText(cEvent *Event, const char *ShortText) { return false; }
@@ -277,6 +281,7 @@ public:
   bool IgnoreChannel(const cChannel *Channel);
   bool HandleEitEvent(cSchedule *Schedule, const SI::EIT::Event *EitEvent, uchar TableID, uchar Version);
   bool HandledExternally(const cChannel *Channel);
+  bool IsUpdate(tEventID EventID, time_t StartTime, uchar TableID, uchar Version);
   void SetEventID(cEvent *Event, tEventID EventID);
   void SetTitle(cEvent *Event, const char *Title);
   void SetShortText(cEvent *Event, const char *ShortText);

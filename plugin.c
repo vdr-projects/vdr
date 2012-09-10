@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 2.3 2012/03/11 13:56:02 kls Exp $
+ * $Id: plugin.c 2.4 2012/09/01 13:10:27 kls Exp $
  */
 
 #include "plugin.h"
@@ -25,7 +25,9 @@
 
 // --- cPlugin ---------------------------------------------------------------
 
-char *cPlugin::configDirectory = NULL;
+cString cPlugin::configDirectory;
+cString cPlugin::cacheDirectory;
+cString cPlugin::resourceDirectory;
 
 cPlugin::cPlugin(void)
 {
@@ -132,8 +134,7 @@ cString cPlugin::SVDRPCommand(const char *Command, const char *Option, int &Repl
 
 void cPlugin::SetConfigDirectory(const char *Dir)
 {
-  free(configDirectory);
-  configDirectory = strdup(Dir);
+  configDirectory = Dir;
 }
 
 const char *cPlugin::ConfigDirectory(const char *PluginName)
@@ -141,7 +142,35 @@ const char *cPlugin::ConfigDirectory(const char *PluginName)
   static cString buffer;
   if (!cThread::IsMainThread())
      esyslog("ERROR: plugin '%s' called cPlugin::ConfigDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
-  buffer = cString::sprintf("%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  buffer = cString::sprintf("%s/plugins%s%s", *configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  return MakeDirs(buffer, true) ? *buffer : NULL;
+}
+
+void cPlugin::SetCacheDirectory(const char *Dir)
+{
+  cacheDirectory = Dir;
+}
+
+const char *cPlugin::CacheDirectory(const char *PluginName)
+{
+  static cString buffer;
+  if (!cThread::IsMainThread())
+     esyslog("ERROR: plugin '%s' called cPlugin::CacheDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
+  buffer = cString::sprintf("%s/plugins%s%s", *cacheDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  return MakeDirs(buffer, true) ? *buffer : NULL;
+}
+
+void cPlugin::SetResourceDirectory(const char *Dir)
+{
+  resourceDirectory = Dir;
+}
+
+const char *cPlugin::ResourceDirectory(const char *PluginName)
+{
+  static cString buffer;
+  if (!cThread::IsMainThread())
+     esyslog("ERROR: plugin '%s' called cPlugin::ResourceDirectory(), which is not thread safe!", PluginName ? PluginName : "<no name given>");
+  buffer = cString::sprintf("%s/plugins%s%s", *resourceDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
   return MakeDirs(buffer, true) ? *buffer : NULL;
 }
 

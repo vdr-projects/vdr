@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.24 2012/05/12 13:29:20 kls Exp $
+ * $Id: tools.c 2.25 2012/08/21 10:34:37 kls Exp $
  */
 
 #include "tools.h"
@@ -435,6 +435,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
 
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
 {
+  bool HasDotFiles = false;
   cReadDir d(DirName);
   if (d.Ok()) {
      bool empty = true;
@@ -448,6 +449,8 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
                     if (!RemoveEmptyDirectories(buffer, true))
                        empty = false;
                     }
+                 else if (*e->d_name == '.') // "dot files" don't count
+                    HasDotFiles = true;
                  else
                     empty = false;
                  }
@@ -458,6 +461,22 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
               }
            }
      if (RemoveThis && empty) {
+        if (HasDotFiles) {
+           cReadDir d(DirName);
+           if (d.Ok()) {
+              struct dirent *e;
+              while ((e = d.Next()) != NULL) {
+                    if (*e->d_name == '.') { // for safety - should always be true
+                       cString buffer = AddDirectory(DirName, e->d_name);
+                       dsyslog("removing %s", *buffer);
+                       if (remove(buffer) < 0) {
+                          LOG_ERROR_STR(*buffer);
+                          return false;
+                          }
+                       }
+                    }
+              }
+           }
         dsyslog("removing %s", DirName);
         if (remove(DirName) < 0) {
            LOG_ERROR_STR(DirName);

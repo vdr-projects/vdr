@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.17 2012/06/04 10:26:10 kls Exp $
+ * $Id: epg.c 2.18 2012/08/25 11:10:29 kls Exp $
  */
 
 #include "epg.h"
@@ -1335,6 +1335,15 @@ bool cEpgHandlers::HandledExternally(const cChannel *Channel)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
       if (eh->HandledExternally(Channel))
+         return true;
+      }
+  return false;
+}
+
+bool cEpgHandlers::IsUpdate(tEventID EventID, time_t StartTime, uchar TableID, uchar Version)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->IsUpdate(EventID, StartTime, TableID, Version))
          return true;
       }
   return false;

@@ -601,6 +601,14 @@ Version 1.6
                          characters in a text input field. You may want to set this
                          to "no" if you are using an actual keyboard to control VDR.
 
+  Color key 0 = 0        By default, VDR assumes that the sequence of the color
+  Color key 1 = 1        keys on the remote control is red-green-yellow-blue. If
+  Color key 2 = 2        your remote control has these keys in a different sequence,
+  Color key 3 = 3        you can adjust these parameters to reorder the corresponding
+                         color buttons in the menus accordingly. Note that this does
+                         not change the functionality of the individual keys; it only
+                         changes the sequence in which the color buttons are displayed.
+
   EPG:
 
   EPG scan timeout = 5   The time (in hours) of user inactivity after which the

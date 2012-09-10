@@ -7190,3 +7190,47 @@ Video Disk Recorder Revision History
 - The new setup option "Miscellaneous/Show channel names with source" can be used to
   turn on adding the source character to channel names whenever they are displayed
   (suggested by Ludi Kaleni).
+
+2012-09-09: Version 1.7.30
+
+- Fixed sorting recordings in the top level video directory.
+- Fixed handling control characters in SI data in case of UTF-8 encoded strings
+  (thanks to Mehdi Karamnejad for reporting a problem with garbled UTF-8 EPG data
+  and helping to debug it).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- When checking whether a video directory is empty, file names that start with a
+  dot ('.') are now ignored and will be implicitly removed if the directory contains
+  no other files. This fixes the leftover ".sort" files that were introduced in
+  version 1.7.29.
+- Added IsUpdate() to the EPG handler interface (thanks to Jörg Wendel).
+- Fixed detecting transfer mode on full featured DVB cards (thanks to Stefan Huelswitt
+  for reporting a problem with updating CA descriptors in such cases).
+- Fixed a race condition when zapping in transfer mode (reported by Reinhard Nissl).
+  This involves a slight change in the semantics of the cReceiver::Activate() function,
+  which is now called with 'false' *after* the receiver has been detached from the
+  device.
+- The new function cDevice::ReadFilter() can be used by devices to implement their
+  own way of retrieving section filter data (thanks to Deti Fliegl).
+- The new function cDevice::HasInternalCam() can be implemented by devices that
+  provide encrypted channels in an already decrypted form, without requiring explicit
+  handling of a CAM (thanks to Tobias Grimm).
+- VDR can now be built according to the FHS ("File system Hierarchy Standard") by
+  activating the line
+  #USEFHS = 1
+  in a copy of the file Make.config.template (thanks to Dennis Bendlin, as well as
+  Christopher Reimer and Udo Richter for contributing to the patch).
+- By default (without FHS support) the config directory is now set to the value
+  given in the -v option if only -v and no -c is given.
+- Fixed a long delay at the end when replaying a recording that has stopped recording
+  less than an hour ago (typically time shift mode or a freshly edited recording).
+- Fixed getting the file size and number of frames of ongoing recordings (only the
+  timestamp of the recording's directory was checked, while it should have been that
+  of the index file).
+- Fixed sluggish response when manipulating editing marks while a cutting thread
+  is running (reported by Torsten Lang).
+- The new setup options "OSD/Color key [0123]" can be used to adjust the sequence
+  of the color buttons displayed in the menus to that of the color keys on your
+  remote control (based on a patch from Oliver Schinagl).
+  Authors of plugins that implement skins may want to adapt their SetButtons()
+  function in order to make use of this new feature. See, for instance, the function
+  cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.

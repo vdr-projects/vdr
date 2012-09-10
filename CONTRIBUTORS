@@ -87,6 +87,8 @@ Deti Fliegl <deti@fliegl.de>
  for fixing setting the OSD size in the 'Confirm' interface call
  for fixing handling improper buffer lengths in the EIT parser
  for a patch that was used to implement StopSectionHandler()
+ for adding cDevice::ReadFilter() to allow devices to implement their own way of
+ retrieving section filter data
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
@@ -139,7 +141,7 @@ Andre Valentin <av2000@topmail.de>
 Jørgen Tvedt <pjtvedt@online.no>
  for translating OSD texts to the Norwegian language
 
-Stefan Huelswitt <huels@iname.com>
+Stefan Huelswitt <s.huelswitt@gmx.de>
  for fixing the repeat function with LIRC
  for making the position of the channel display configurable
  for making the width and height of the OSD configurable
@@ -225,6 +227,8 @@ Stefan Huelswitt <huels@iname.com>
  cStatus::MsgSetVolume() bug to react properly
  for improving the 'i18n' target in the Makefile to avoid unnecessary work
  for a patch that was used to implement the --localedir option
+ for reporting a problem with updating CA descriptors in transfer mode on full
+ featured DVB cards
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -1317,6 +1321,7 @@ Reinhard Nissl <rnissl@gmx.de>
  receive channels
  for reporting that the Transfer Mode indicator bitmap in the LCARS skin may not
  fit with small font sizes
+ for reporting a race condition when zapping in transfer mode
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1751,6 +1756,7 @@ Udo Richter <udo_richter@gmx.de>
  editing mark
  for adding the option --outputonly to the dvbsddevice plugin
  for adding a missing template specification to the c'tor of cSortedTimers
+ for contributing to a patch that implements FHS support
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2342,6 +2348,9 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
+ for implementing cDevice::HasInternalCam(), which can be implemented by devices that
+ provide encrypted channels in an already decrypted form, without requiring explicit
+ handling of a CAM
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2467,6 +2476,7 @@ Ulf Kiener <webmaster@ulf-kiener.de>
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
  for adding HandledExternally() to the EPG handler interface
+ for adding IsUpdate() to the EPG handler interface
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2766,6 +2776,7 @@ Luis Fernandes <telping@gmail.com>
 Christopher Reimer <reimer.christopher@freenet.de>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
+ for contributing to a patch that implements FHS support
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -2875,6 +2886,8 @@ Torsten Lang <info@torstenlang.de>
  is stored on the video directory file system within the cRecording data
  for suppressing setting the "broken link" or "TEI" flags when cutting recordings
  if the editing point merges two seamlessly fitting parts of the same stream
+ for reporting a sluggish response when manipulating editing marks while a cutting
+ thread is running
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -2917,3 +2930,12 @@ Dirk Heiser <dirk-vdr@gmx.de>
 
 Ludi Kaleni <ludi113@hotmail.com>
  for suggesting to add the source character to channel names whenever they are displayed
+
+Mehdi Karamnejad <mehdi_karamnejad@sfu.ca>
+ for reporting a problem with garbled UTF-8 EPG data and helping to debug it
+
+Dennis Bendlin <dennisbendlin@online.de>
+ for a patch that implements FHS support
+
+Oliver Schinagl <oliver@schinagl.nl>
+ for a patch that was used to implement the setup options "OSD/Color key [0123]"

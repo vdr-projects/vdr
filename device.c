@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.62 2012/06/10 13:13:18 kls Exp $
+ * $Id: device.c 2.67 2012/09/02 09:26:36 kls Exp $
  */
 
 #include "device.h"
@@ -241,6 +241,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
   int NumCamSlots = CamSlots.Count();
   int SlotPriority[NumCamSlots];
   int NumUsableSlots = 0;
+  bool InternalCamNeeded = false;
   if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
      for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
          SlotPriority[CamSlot->Index()] = MAXPRIORITY + 1; // assumes it can't be used
@@ -254,7 +255,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
             }
          }
      if (!NumUsableSlots)
-        return NULL; // no CAM is able to decrypt this channel
+        InternalCamNeeded = true; // no CAM is able to decrypt this channel
      }
 
   bool NeedsDetachReceivers = false;
@@ -268,11 +269,14 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       for (int i = 0; i < numDevices; i++) {
           if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->CardIndex() + 1)
              continue; // a specific card was requested, but not this one
-          if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
+          bool HasInternalCam = device[i]->HasInternalCam();
+          if (InternalCamNeeded && !HasInternalCam)
+             continue; // no CAM is able to decrypt this channel and the device uses vdr handled CAMs
+          if (NumUsableSlots && !HasInternalCam && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr;
           if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
-             if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
+             if (NumUsableSlots && !HasInternalCam && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                 ndr = true; // using a different CAM slot requires detaching receivers
              // Put together an integer number that reflects the "impact" using
              // this device would have on the overall system. Each condition is represented
@@ -287,18 +291,18 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 4; imp |= GetClippedNumProvidedSystems(4, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
              imp <<= 8; imp |= device[i]->Priority() - IDLEPRIORITY;                                                 // use the device with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
-             imp <<= 8; imp |= (NumUsableSlots ? SlotPriority[j] : IDLEPRIORITY) - IDLEPRIORITY;                     // use the CAM slot with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
+             imp <<= 8; imp |= ((NumUsableSlots && !HasInternalCam) ? SlotPriority[j] : IDLEPRIORITY) - IDLEPRIORITY;// use the CAM slot with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
-             imp <<= 1; imp |= NumUsableSlots ? 0 : device[i]->HasCi();                                              // avoid cards with Common Interface for FTA channels
+             imp <<= 1; imp |= (NumUsableSlots || InternalCamNeeded) ? 0 : device[i]->HasCi();                       // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
-             imp <<= 1; imp |= NumUsableSlots ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
+             imp <<= 1; imp |= (NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
              imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
              if (imp < Impact) {
                 // This device has less impact than any previous one, so we take it.
                 Impact = imp;
                 d = device[i];
                 NeedsDetachReceivers = ndr;
-                if (NumUsableSlots)
+                if (NumUsableSlots && !HasInternalCam)
                    s = CamSlots.Get(j);
                 }
              }
@@ -591,6 +595,11 @@ void cDevice::StopSectionHandler(void)
 int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
   return -1;
+}
+
+int cDevice::ReadFilter(int Handle, void *Buffer, size_t Length)
+{
+  return safe_read(Handle, Buffer, Length);
 }
 
 void cDevice::CloseFilter(int Handle)
@@ -1195,7 +1204,7 @@ bool cDevice::Replaying(void) const
 
 bool cDevice::Transferring(void) const
 {
-  return ActualDevice() != PrimaryDevice();
+  return cTransferControl::ReceiverDevice() != NULL;
 }
 
 bool cDevice::AttachPlayer(cPlayer *Player)
@@ -1666,11 +1675,11 @@ void cDevice::Detach(cReceiver *Receiver)
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] == Receiver) {
-         Receiver->Activate(false);
          Lock();
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
+         Receiver->Activate(false);
          for (int n = 0; n < Receiver->numPids; n++)
              DelPid(Receiver->pids[n]);
          }

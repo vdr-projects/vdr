@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.39 2012/04/04 09:48:21 kls Exp $
+ * $Id: device.h 2.41 2012/08/26 13:25:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -393,6 +393,10 @@ public:
        ///< Opens a file handle for the given filter data.
        ///< A derived device that provides section data must
        ///< implement this function.
+  virtual int ReadFilter(int Handle, void *Buffer, size_t Length);
+       ///< Reads data from a handle for the given filter.
+       ///< A derived class need not implement this function, because this
+       ///< is done by the default implementation.
   virtual void CloseFilter(int Handle);
        ///< Closes a file handle that has previously been opened
        ///< by OpenFilter(). If this is as simple as calling close(Handle),
@@ -411,6 +415,12 @@ private:
 public:
   virtual bool HasCi(void);
          ///< Returns true if this device has a Common Interface.
+  virtual bool HasInternalCam(void) { return false; }
+         ///< Returns true if this device handles encrypted channels itself
+         ///< without VDR assistance. This can be e.g. if the device is a
+         ///< client that gets the stream from another VDR instance that has
+         ///< already decrypted the stream. In this case ProvidesChannel()
+         ///< shall check whether the channel can be decrypted.
   void SetCamSlot(cCamSlot *CamSlot);
          ///< Sets the given CamSlot to be used with this device.
   cCamSlot *CamSlot(void) const { return camSlot; }

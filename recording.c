@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.57 2012/06/09 13:57:30 kls Exp $
+ * $Id: recording.c 2.60 2012/09/06 09:57:31 kls Exp $
  */
 
 #include "recording.h"
@@ -831,8 +831,8 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory) + 1)
-                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory))
+                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)));
      strreplace(s, '/', 'a'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
      *sb = MALLOC(char, l);
@@ -1067,7 +1067,7 @@ int cRecording::NumFrames(void) const
 {
   if (numFrames < 0) {
      int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
-     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
         return nf; // check again later for ongoing recordings
      numFrames = nf;
      }
@@ -1086,7 +1086,7 @@ int cRecording::FileSizeMB(void) const
 {
   if (fileSizeMB < 0) {
      int fs = DirSizeMB(FileName());
-     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
         return fs; // check again later for ongoing recordings
      fileSizeMB = fs;
      }
@@ -1607,6 +1607,9 @@ struct tIndexTs {
 #define INDEXFILECHECKINTERVAL 500 // ms between checks for existence of the regenerated index file
 #define INDEXFILETESTINTERVAL   10 // ms between tests for the size of the index file in case of pausing live video
 
+cMutex cIndexFile::indexListMutex;
+cVector<const cIndexFile *> cIndexFile::indexList;
+
 cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive)
 :resumeFile(FileName, IsPesRecording)
 {
@@ -1687,10 +1690,13 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
            LOG_ERROR_STR(*fileName);
         }
      }
+  if (Record)
+     AddToIndexList(this);
 }
 
 cIndexFile::~cIndexFile()
 {
+  RemoveFromIndexList(this);
   if (f >= 0)
      close(f);
   free(index);
@@ -1735,8 +1741,7 @@ bool cIndexFile::CatchUp(int Index)
      for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
-            if (time(NULL) - buf.st_mtime > MININDEXAGE) {
-               // apparently the index file is not being written any more
+            if (!IsInIndexList(this)) {
                close(f);
                f = -1;
                break;
@@ -1900,6 +1905,39 @@ int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
   if (*s && stat(s, &buf) == 0)
      return buf.st_size / (IsPesRecording ? sizeof(tIndexTs) : sizeof(tIndexPes));
   return -1;
+}
+
+void cIndexFile::AddToIndexList(const cIndexFile *IndexFile)
+{
+  cMutexLock MutexLock(&indexListMutex);
+  for (int i = 0; i < indexList.Size(); i++) {
+      if (!indexList[i]) {
+         indexList[i] = IndexFile;
+         return;
+         }
+      }
+  indexList.Append(IndexFile);
+}
+
+void cIndexFile::RemoveFromIndexList(const cIndexFile *IndexFile)
+{
+  cMutexLock MutexLock(&indexListMutex);
+  for (int i = 0; i < indexList.Size(); i++) {
+      if (indexList[i] == IndexFile) {
+         indexList[i] = NULL;
+         return;
+         }
+      }
+}
+
+bool cIndexFile::IsInIndexList(const cIndexFile *IndexFile)
+{
+  cMutexLock MutexLock(&indexListMutex);
+  for (int i = 0; i < indexList.Size(); i++) {
+      if (indexList[i] && !strcmp(indexList[i]->fileName, IndexFile->fileName))
+         return true;
+      }
+  return false;
 }
 
 bool GenerateIndex(const char *FileName) 

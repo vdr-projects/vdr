@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.37 2012/06/13 11:28:41 kls Exp $
+ * $Id: vdr.c 2.38 2012/09/01 13:30:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -178,10 +178,15 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
+#define dd(a, b) (*a ? a : b)
 #define DEFAULTSVDRPPORT 6419
 #define DEFAULTWATCHDOG     0 // seconds
-#define DEFAULTCONFDIR CONFDIR
+#define DEFAULTVIDEODIR VIDEODIR
+#define DEFAULTCONFDIR dd(CONFDIR, VideoDirectory)
+#define DEFAULTCACHEDIR dd(CACHEDIR, VideoDirectory)
+#define DEFAULTRESDIR dd(RESDIR, ConfigDirectory)
 #define DEFAULTPLUGINDIR PLUGINDIR
+#define DEFAULTLOCDIR LOCDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
   bool StartedAsRoot = false;
@@ -189,7 +194,11 @@ int main(int argc, char *argv[])
   bool UserDump = false;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
+  const char *VideoDirectory = DEFAULTVIDEODIR;
   const char *ConfigDirectory = NULL;
+  const char *CacheDirectory = NULL;
+  const char *ResourceDirectory = NULL;
+  const char *LocaleDirectory = DEFAULTLOCDIR;
   const char *EpgDataFileName = DEFAULTEPGDATAFILENAME;
   bool DisplayHelp = false;
   bool DisplayVersion = false;
@@ -198,7 +207,6 @@ int main(int argc, char *argv[])
   bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
-  const char *LocaleDir = NULL;
 
   bool UseKbd = true;
   const char *LircDevice = NULL;
@@ -216,6 +224,7 @@ int main(int argc, char *argv[])
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
+      { "cachedir", required_argument, NULL, 'c' | 0x100 },
       { "config",   required_argument, NULL, 'c' },
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
@@ -235,6 +244,7 @@ int main(int argc, char *argv[])
       { "plugin",   required_argument, NULL, 'P' },
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
+      { "resdir",   required_argument, NULL, 'r' | 0x100 },
       { "shutdown", required_argument, NULL, 's' },
       { "split",    no_argument,       NULL, 's' | 0x100 },
       { "terminal", required_argument, NULL, 't' },
@@ -251,6 +261,9 @@ int main(int argc, char *argv[])
   while ((c = getopt_long(argc, argv, "a:c:dD:e:E:g:hi:l:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
+                    break;
+          case 'c' | 0x100:
+                    CacheDirectory = optarg;
                     break;
           case 'c': ConfigDirectory = optarg;
                     break;
@@ -327,7 +340,7 @@ int main(int argc, char *argv[])
                     break;
           case 'l' | 0x200:
                     if (access(optarg, R_OK | X_OK) == 0)
-                       LocaleDir = optarg;
+                       LocaleDirectory = optarg;
                     else {
                        fprintf(stderr, "vdr: can't access locale directory: %s\n", optarg);
                        return 2;
@@ -348,6 +361,9 @@ int main(int argc, char *argv[])
           case 'P': PluginManager.AddPlugin(optarg);
                     break;
           case 'r': cRecordingUserCommand::SetCommand(optarg);
+                    break;
+          case 'r' | 0x100:
+                    ResourceDirectory = optarg;
                     break;
           case 's': ShutdownHandler.SetShutdownCommand(optarg);
                     break;
@@ -414,6 +430,7 @@ int main(int argc, char *argv[])
      if (DisplayHelp) {
         printf("Usage: vdr [OPTIONS]\n\n"          // for easier orientation, this is column 80|
                "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
+               "            --cachedir=DIR save cache files in DIR (default: %s)\n"
                "  -c DIR,   --config=DIR   read config files from DIR (default: %s)\n"
                "  -d,       --daemon       run in daemon mode\n"
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
@@ -450,6 +467,7 @@ int main(int argc, char *argv[])
                "                           0 turns off SVDRP\n"
                "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
+               "            --resdir=DIR   read resource files from DIR (default: %s)\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "            --split        split edited files at the editing marks (only\n"
                "                           useful in conjunction with --edit)\n"
@@ -464,14 +482,16 @@ int main(int argc, char *argv[])
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
+               DEFAULTCACHEDIR,
                DEFAULTCONFDIR,
                DEFAULTEPGDATAFILENAME,
                MAXVIDEOFILESIZEDEFAULT,
                DEFAULTPLUGINDIR,
                LIRC_DEVICE,
-               LOCDIR,
+               DEFAULTLOCDIR,
                DEFAULTSVDRPPORT,
-               VideoDirectory,
+               DEFAULTRESDIR,
+               DEFAULTVIDEODIR,
                DEFAULTWATCHDOG
                );
         }
@@ -555,7 +575,7 @@ int main(int argc, char *argv[])
 
   // Initialize internationalization:
 
-  I18nInitialize(LocaleDir);
+  I18nInitialize(LocaleDirectory);
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
@@ -577,13 +597,21 @@ int main(int argc, char *argv[])
   if (!PluginManager.LoadPlugins(true))
      EXIT(2);
 
-  // Configuration data:
+  // Directories:
 
+  SetVideoDirectory(VideoDirectory);
   if (!ConfigDirectory)
      ConfigDirectory = DEFAULTCONFDIR;
-
   cPlugin::SetConfigDirectory(ConfigDirectory);
+  if (!CacheDirectory)
+     CacheDirectory = DEFAULTCACHEDIR;
+  cPlugin::SetCacheDirectory(CacheDirectory);
+  if (!ResourceDirectory)
+     ResourceDirectory = DEFAULTRESDIR;
+  cPlugin::SetResourceDirectory(ResourceDirectory);
   cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));
+
+  // Configuration data:
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true);
@@ -618,7 +646,7 @@ int main(int argc, char *argv[])
         EpgDataFileName = DEFAULTEPGDATAFILENAME;
         }
      else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
-        EpgDirectory = VideoDirectory;
+        EpgDirectory = CacheDirectory;
      if (EpgDirectory)
         cSchedules::SetEpgDataFileName(AddDirectory(EpgDirectory, EpgDataFileName));
      else

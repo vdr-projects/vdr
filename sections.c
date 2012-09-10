@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 2.0 2007/10/14 12:52:07 kls Exp $
+ * $Id: sections.c 2.1 2012/08/26 12:53:39 kls Exp $
  */
 
 #include "sections.h"
@@ -198,7 +198,7 @@ void cSectionHandler::Action(void)
                   if (fh) {
                      // Read section data:
                      unsigned char buf[4096]; // max. allowed size for any EIT section
-                     int r = safe_read(fh->handle, buf, sizeof(buf));
+                     int r = device->ReadFilter(fh->handle, buf, sizeof(buf));
                      if (!DeviceHasLock)
                         continue; // we do the read anyway, to flush any data that might have come from a different transponder
                      if (r > 3) { // minimum number of bytes necessary to get section length
