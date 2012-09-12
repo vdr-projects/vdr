@@ -7213,7 +7213,7 @@ Video Disk Recorder Revision History
   own way of retrieving section filter data (thanks to Deti Fliegl).
 - The new function cDevice::HasInternalCam() can be implemented by devices that
   provide encrypted channels in an already decrypted form, without requiring explicit
-  handling of a CAM (thanks to Tobias Grimm).
+  handling of a CAM (thanks to Anssi Hannula).
 - VDR can now be built according to the FHS ("File system Hierarchy Standard") by
   activating the line
   #USEFHS = 1

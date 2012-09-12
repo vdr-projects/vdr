@@ -2348,9 +2348,6 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
- for implementing cDevice::HasInternalCam(), which can be implemented by devices that
- provide encrypted channels in an already decrypted form, without requiring explicit
- handling of a CAM
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2409,6 +2406,9 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for adding support for automatically selecting subtitles when playing old PES
  recordings made with the subtitles plugin
  for pointing out -Werror=...
+ for implementing cDevice::HasInternalCam(), which can be implemented by devices that
+ provide encrypted channels in an already decrypted form, without requiring explicit
+ handling of a CAM
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
