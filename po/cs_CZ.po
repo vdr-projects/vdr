@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-13 13:15+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -1253,6 +1253,9 @@ msgstr "Generování index souboru"
 
 msgid "Index file regeneration complete"
 msgstr "Generování index souboru dokončeno"
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Vypnutí není možné - chybí volba '-s'!"

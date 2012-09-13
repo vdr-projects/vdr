@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.60 2012/09/06 09:57:31 kls Exp $
+ * $Id: recording.c 2.61 2012/09/13 11:02:17 kls Exp $
  */
 
 #include "recording.h"
@@ -1483,6 +1483,7 @@ cIndexFileGenerator::~cIndexFileGenerator()
 void cIndexFileGenerator::Action(void)
 {
   bool IndexFileComplete = false;
+  bool IndexFileWritten = false;
   bool Rewind = false;
   cFileName FileName(recordingName, false);
   cUnbufferedFile *ReplayFile = FileName.Open();
@@ -1514,6 +1515,7 @@ void cIndexFileGenerator::Action(void)
                  if (FrameDetector.NewFrame()) {
                     IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
                     FrameOffset = -1;
+                    IndexFileWritten = true;
                     }
                  FileSize += Processed;
                  Buffer.Del(Processed);
@@ -1568,11 +1570,16 @@ void cIndexFileGenerator::Action(void)
            break;
            }
         }
+  if (IndexFileComplete) {
+     if (IndexFileWritten) {
+        Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
+        return;
+        }
+     else
+        Skins.QueueMessage(mtError, tr("Index file regeneration failed!"));
+     }
   // Delete the index file if the recording has not been processed entirely:
-  if (IndexFileComplete)
-     Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
-  else
-     IndexFile.Delete();
+  IndexFile.Delete();
 }
 
 // --- cIndexFile ------------------------------------------------------------

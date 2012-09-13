@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-13 13:15+0200\n"
 "PO-Revision-Date: 2012-01-02 11:54+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1255,6 +1255,9 @@ msgstr "Az index file újragenerálása"
 
 msgid "Index file regeneration complete"
 msgstr "Index file újragenerálása kész."
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "A leállítás nem lehetséges - Opció '-s' hiányzik!"

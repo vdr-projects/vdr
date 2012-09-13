@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-13 13:15+0200\n"
 "PO-Revision-Date: 2008-02-28 19:44+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -1251,6 +1251,9 @@ msgid "Regenerating index file"
 msgstr ""
 
 msgid "Index file regeneration complete"
+msgstr ""
+
+msgid "Index file regeneration failed!"
 msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
