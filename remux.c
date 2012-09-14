@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.64 2012/03/02 10:56:49 kls Exp $
+ * $Id: remux.c 2.65 2012/09/14 09:06:14 kls Exp $
  */
 
 #include "remux.h"
@@ -974,8 +974,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
                                   i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               uchar FrameType = Data[FrameTypeOffset];
-                               independentFrame = FrameType == 0x10;
+                               uchar FrameType = Data[FrameTypeOffset] & 0xE0;
+                               independentFrame = FrameType == 0x00;
                                if (synced) {
                                   if (framesPerPayloadUnit < 0) {
                                      payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;

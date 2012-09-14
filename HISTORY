@@ -7235,7 +7235,9 @@ Video Disk Recorder Revision History
   function in order to make use of this new feature. See, for instance, the function
   cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
 
-2012-09-13: Version 1.7.31
+2012-09-14: Version 1.7.31
 
 - If regenerating an index file fails and no data is written to the file, VDR now
   reports this error and removes the empty index file.
+- Fixed mapping the frame type bits when detecting independent frames in MPEG 4
+  video (reported by Reinhard Nissl).
