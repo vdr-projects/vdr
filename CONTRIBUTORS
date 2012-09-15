@@ -2741,6 +2741,7 @@ Francesco Saverio Schiavarelli <fschiava@libero.it>
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for implementing the setup option "Miscellaneous/Channels wrap"
  for reporting a missing change from -O2 to -O3 in Make.config.template
+ for a patch that was used to implement instant recording of only the present event
 
 Stephan Austermühle <au@hcsd.de>
  for suggesting to flush the file in cSafeFile::Close()

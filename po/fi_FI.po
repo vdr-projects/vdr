@@ -1080,6 +1080,9 @@ msgstr "Nimeä pikatallenne"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Pikatallennuksen kesto (min)"
 
+msgid "Setup.Recording$present event"
+msgstr "nykyinen tapahtuma"
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Suurin tiedostokoko (Mt)"
 

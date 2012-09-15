@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-13 13:15+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -1077,6 +1077,9 @@ msgstr "Nombrar grabaciones inmediatas"
 
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Tiempo de grabación inmediata (min)"
+
+msgid "Setup.Recording$present event"
+msgstr ""
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Tamaño máximo de fichero (MB)"

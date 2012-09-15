@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.52 2012/09/13 11:12:07 kls Exp $
+ * $Id: config.h 2.53 2012/09/15 11:51:54 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -42,6 +42,7 @@
 #define TRANSFERPRIORITY  (LIVEPRIORITY - 1) // priority used for actual local Transfer Mode
 #define IDLEPRIORITY      (MINPRIORITY - 1)  // priority of an idle device
 #define MAXLIFETIME       99
+#define DEFINSTRECTIME    180 // default instant recording time (minutes)
 
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920

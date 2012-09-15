@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-13 13:15+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -1078,6 +1078,9 @@ msgstr "Pojmenovat okamžité nahrávky"
 
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Délka okamžitého nahrávání (min)"
+
+msgid "Setup.Recording$present event"
+msgstr ""
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maximální velikost nahrávky (MB)"

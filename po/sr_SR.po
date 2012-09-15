@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.1\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-13 13:15+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2011-01-09 15:57+0100\n"
 "Last-Translator: Milan Cvijanoviæ <elcom_cvijo@hotmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -1099,6 +1099,9 @@ msgstr "Imenuj trenutno snimanje"
 
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Trajanje trenutnog snimanja (min)"
+
+msgid "Setup.Recording$present event"
+msgstr ""
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maks. velièina datoteke (MB)"
