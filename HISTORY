@@ -6193,7 +6193,7 @@ Video Disk Recorder Revision History
   (thanks to Andreas Schaefers).
 - Fixed references to old *.vdr file names in MANUAL (reported by Arthur Konovalov).
 - Reverted "Removed limitation to PAL resolution from SPU handling" because it
-  cause nothing but trouble. Besides, the core VDR doesn't use this, anyway.
+  caused nothing but trouble. Besides, the core VDR doesn't use this, anyway.
 - Fixed the default value for "Pause key handling" in the MANUAL (reported by
   Diego Pierotto).
 
@@ -6666,7 +6666,7 @@ Video Disk Recorder Revision History
   Udo Richter for suggesting the fix).
 - Added a mechanism to defer timer handling in case of problems (reported by
   Frank Niederwipper).
-- Fixed distortions that happened when splitting recording into several files
+- Fixed distortions that happened when splitting a recording into several files
   (was a side effect of "Fixed detecting frames in case the Picture Start Code or
   Access Unit Delimiter extends over TS packet boundaries" in version 1.7.19).
   cRecorder::Action() now buffers TS packets in case the frame type is
