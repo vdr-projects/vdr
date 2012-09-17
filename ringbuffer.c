@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 2.3 2009/11/22 11:14:36 kls Exp $
+ * $Id: ringbuffer.c 2.4 2012/09/17 08:23:43 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -66,13 +66,13 @@ void cRingBuffer::WaitForGet(void)
 
 void cRingBuffer::EnablePut(void)
 {
-  if (putTimeout && Free() > Size() / 3)
+  if (putTimeout && Free() > Size() / 10)
      readyForPut.Signal();
 }
 
 void cRingBuffer::EnableGet(void)
 {
-  if (getTimeout && Available() > Size() / 3)
+  if (getTimeout && Available() > Size() / 10)
      readyForGet.Signal();
 }
 
