@@ -7245,3 +7245,5 @@ Video Disk Recorder Revision History
   which means to record only the currently running event (based on a patch from Matti
   Lehtimäki).
 - Decreased the ring buffer put/get trigger sizes from 1/3 to 1/10.
+- The script given to VDR with the '-r' option is now also called whenever a
+  recording is deleted (thanks to Alexander Wenzel).

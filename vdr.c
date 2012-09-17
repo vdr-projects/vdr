@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.38 2012/09/01 13:30:19 kls Exp $
+ * $Id: vdr.c 2.39 2012/09/17 08:56:58 kls Exp $
  */
 
 #include <getopt.h>
@@ -466,7 +466,8 @@ int main(int argc, char *argv[])
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                "                           0 turns off SVDRP\n"
                "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"
-               "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
+               "  -r CMD,   --record=CMD   call CMD before and after a recording, and after\n"
+               "                           a recording has been edited or deleted\n"
                "            --resdir=DIR   read resource files from DIR (default: %s)\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "            --split        split edited files at the editing marks (only\n"
