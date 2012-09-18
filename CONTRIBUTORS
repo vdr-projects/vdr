@@ -1322,8 +1322,6 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting that the Transfer Mode indicator bitmap in the LCARS skin may not
  fit with small font sizes
  for reporting a race condition when zapping in transfer mode
- for reporting an error in mapping the frame type bits when detecting independent
- frames in MPEG 4 video
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -2944,3 +2942,7 @@ Dennis Bendlin <dennisbendlin@online.de>
 
 Oliver Schinagl <oliver@schinagl.nl>
  for a patch that was used to implement the setup options "OSD/Color key [0123]"
+
+Andrey Pridvorov <ua0lnj@bk.ru>
+ for reporting a problem with detecting frames in MPEG 4 video, and pointing towards
+ a better way of doing it

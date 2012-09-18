@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.65 2012/09/14 09:06:14 kls Exp $
+ * $Id: remux.c 2.66 2012/09/18 09:11:24 kls Exp $
  */
 
 #include "remux.h"
@@ -843,7 +843,8 @@ int cFrameDetector::SkipPackets(const uchar *&Data, int &Length, int &Processed,
 
 int cFrameDetector::Analyze(const uchar *Data, int Length)
 {
-  int SeenPayloadStart = false;
+  bool SeenPayloadStart = false;
+  bool SeenAccessUnitDelimiter = false;
   int Processed = 0;
   newFrame = independentFrame = false;
   while (Length >= TS_SIZE) {
@@ -970,12 +971,16 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               SeenAccessUnitDelimiter = true;
+                               }
+                            else if (SeenAccessUnitDelimiter && scanner == 0x00000001) { // NALU start
+                               SeenAccessUnitDelimiter = false;
                                int FrameTypeOffset = i + 1;
                                if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
                                   i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               uchar FrameType = Data[FrameTypeOffset] & 0xE0;
-                               independentFrame = FrameType == 0x00;
+                               uchar FrameType = Data[FrameTypeOffset] & 0x1F;
+                               independentFrame = FrameType == 0x07;
                                if (synced) {
                                   if (framesPerPayloadUnit < 0) {
                                      payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
