@@ -7249,3 +7249,5 @@ Video Disk Recorder Revision History
 - cPatPmtParser::ParsePmt() now also recognizes stream type 0x81 as "AC3", so that
   recordings that have been converted from the old PES format to TS can be played
   (suggested by Jens Vogel).
+- Fixed a leftover frame counter in the LCARS skin's replay display after jumping to
+  an editing mark and resuming replay.
