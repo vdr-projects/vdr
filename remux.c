@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.66 2012/09/18 09:11:24 kls Exp $
+ * $Id: remux.c 2.67 2012/09/19 10:28:42 kls Exp $
  */
 
 #include "remux.h"
@@ -619,6 +619,34 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             NumDpids++;
                             dpids[NumDpids]= 0;
                             }
+                         }
+                      }
+                      break;
+           case 0x81: // STREAMTYPE_USER_PRIVATE
+                      {
+                      dbgpatpmt(" AC3");
+                      char lang[MAXLANGCODE1] = { 0 };
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 dbgpatpmt(" '%s'", ld->languageCode);
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 }
+                                 break;
+                            default: ;
+                            }
+                         delete d;
+                         }
+                      if (NumDpids < MAXDPIDS) {
+                         dpids[NumDpids] = stream.getPid();
+                         dtypes[NumDpids] = SI::AC3DescriptorTag;
+                         strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
+                         if (updatePrimaryDevice && Setup.UseDolbyDigital)
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, stream.getPid(), lang);
+                         NumDpids++;
+                         dpids[NumDpids]= 0;
                          }
                       }
                       break;
