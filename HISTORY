@@ -7235,7 +7235,7 @@ Video Disk Recorder Revision History
   function in order to make use of this new feature. See, for instance, the function
   cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
 
-2012-09-19: Version 1.7.31
+2012-09-22: Version 1.7.31
 
 - If regenerating an index file fails and no data is written to the file, VDR now
   reports this error and removes the empty index file.
@@ -7251,3 +7251,8 @@ Video Disk Recorder Revision History
   (suggested by Jens Vogel).
 - Fixed a leftover frame counter in the LCARS skin's replay display after jumping to
   an editing mark and resuming replay.
+- The new class cIoThrottle is used to allow I/O intense threads to temporarily
+  suspend their activities in case buffers run full (suggested by Torsten Lang).
+  Currently the cutter thread is suspended if the TS or Recorder buffer use more
+  than 50% of their capacity. Plugin authors may want to participate in this
+  mechanism if they use intense background I/O.

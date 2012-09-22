@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.67 2012/09/02 09:26:36 kls Exp $
+ * $Id: device.c 2.68 2012/09/20 09:32:26 kls Exp $
  */
 
 #include "device.h"
@@ -1721,6 +1721,7 @@ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
   delivered = false;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
+  ringBuffer->SetIoThrottle();
   Start();
 }
 

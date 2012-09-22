@@ -2891,6 +2891,8 @@ Torsten Lang <info@torstenlang.de>
  if the editing point merges two seamlessly fitting parts of the same stream
  for reporting a sluggish response when manipulating editing marks while a cutting
  thread is running
+ for suggesting to allow I/O intense threads to temporarily suspend their activities
+ in case buffers run full
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
