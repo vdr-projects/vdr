@@ -7256,3 +7256,5 @@ Video Disk Recorder Revision History
   Currently the cutter thread is suspended if the TS or Recorder buffer use more
   than 50% of their capacity. Plugin authors may want to participate in this
   mechanism if they use intense background I/O.
+- Increased the size of the TS buffer to 5MB and that of the Recorder buffer to
+  20MB to better handle HD recordings (suggested by Torsten Lang).

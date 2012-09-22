@@ -2893,6 +2893,8 @@ Torsten Lang <info@torstenlang.de>
  thread is running
  for suggesting to allow I/O intense threads to temporarily suspend their activities
  in case buffers run full
+ for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
+ buffer to 20MB to better handle HD recordings
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
