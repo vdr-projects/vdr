@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.14 2012/08/25 11:15:18 kls Exp $
+ * $Id: epg.h 2.15 2012/09/24 12:53:53 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -193,7 +193,6 @@ private:
   cRwLock rwlock;
   static cSchedules schedules;
   static char *epgDataFileName;
-  static time_t lastCleanup;
   static time_t lastDump;
   static time_t modified;
 public:
@@ -207,7 +206,7 @@ public:
   static void Cleanup(bool Force = false);
   static void ResetVersions(void);
   static bool ClearAll(void);
-  static bool Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0);
+  static bool Dump(FILE *f = NULL, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0);
   static bool Read(FILE *f = NULL);
   cSchedule *AddSchedule(tChannelID ChannelID);
   const cSchedule *GetSchedule(tChannelID ChannelID) const;
@@ -220,7 +219,7 @@ public:
   virtual void Action(void);
   };
 
-void ReportEpgBugFixStats(bool Reset = false);
+void ReportEpgBugFixStats(bool Force = false);
 
 class cEpgHandler : public cListObject {
 public:

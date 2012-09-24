@@ -7235,7 +7235,7 @@ Video Disk Recorder Revision History
   function in order to make use of this new feature. See, for instance, the function
   cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
 
-2012-09-22: Version 1.7.31
+2012-09-24: Version 1.7.31
 
 - If regenerating an index file fails and no data is written to the file, VDR now
   reports this error and removes the empty index file.
@@ -7258,3 +7258,6 @@ Video Disk Recorder Revision History
   mechanism if they use intense background I/O.
 - Increased the size of the TS buffer to 5MB and that of the Recorder buffer to
   20MB to better handle HD recordings (suggested by Torsten Lang).
+- Moved cleaning up the EPG data and writing the epg.data file into a separate
+  thread to avoid sluggish response to user input on slow systems (based on a patch from
+  Sören Moch).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.39 2012/09/17 08:56:58 kls Exp $
+ * $Id: vdr.c 2.40 2012/09/24 12:43:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -1295,6 +1295,8 @@ int main(int argc, char *argv[])
            PluginManager.Housekeeping();
            }
 
+        ReportEpgBugFixStats();
+
         // Main thread hooks of plugins:
         PluginManager.MainThreadHook();
         }
@@ -1331,7 +1333,7 @@ Exit:
   EpgHandlers.Clear();
   PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);
-  ReportEpgBugFixStats();
+  ReportEpgBugFixStats(true);
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   if (LastSignal)

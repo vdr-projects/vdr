@@ -2955,3 +2955,7 @@ Jens Vogel <jens.vogel@akjv.de>
  for suggesting to make cPatPmtParser::ParsePmt() also recognize stream type 0x81
  as "AC3", so that recordings that have been converted from the old PES format to
  TS can be played
+
+Sören Moch <smoch@web.de>
+ for a patch that was used to move cleaning up the EPG data and writing the epg.data
+ file into a separate thread to avoid sluggish response to user input on slow systems
