@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.19 2012/09/24 13:24:02 kls Exp $
+ * $Id: epg.c 2.20 2012/09/29 11:49:11 kls Exp $
  */
 
 #include "epg.h"
@@ -1123,6 +1123,8 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 // --- cEpgDataWriter ---------------------------------------------------------
 
 class cEpgDataWriter : public cThread {
+private:
+  cMutex mutex;
 protected:
   virtual void Action(void);
 public:
@@ -1144,6 +1146,7 @@ void cEpgDataWriter::Action(void)
 
 void cEpgDataWriter::Perform(void)
 {
+  cMutexLock MutexLock(&mutex); // to make sure fore- and background calls don't cause parellel dumps!
   {
     cSchedulesLock SchedulesLock(true, 1000);
     cSchedules *s = (cSchedules *)cSchedules::Schedules(SchedulesLock);
