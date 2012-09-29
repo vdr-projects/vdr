@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.20 2012/09/29 11:49:11 kls Exp $
+ * $Id: epg.c 2.21 2012/09/29 14:29:49 kls Exp $
  */
 
 #include "epg.h"
@@ -641,6 +641,26 @@ void ReportEpgBugFixStats(bool Force)
      }
 }
 
+static void StripControlCharacters(char *s)
+{
+  if (s) {
+     int len = strlen(s);
+     while (len > 0) {
+           int l = Utf8CharLen(s);
+           uchar *p = (uchar *)s;
+           if (l == 2 && *p == 0xC2) // UTF-8 sequence
+              p++;
+           if (*p == 0x86 || *p == 0x87) {
+              memmove(s, p + 1, len - l + 1); // we also copy the terminating 0!
+              len -= l;
+              l = 0;
+              }
+           s += l;
+           len -= l;
+           }
+     }
+}
+
 void cEvent::FixEpgBugs(void)
 {
   if (isempty(title)) {
@@ -850,15 +870,10 @@ Final:
             strreplace(p->description, '\n', ' ');
          }
      }
-  /* TODO adapt to UTF-8
   // Same for control characters:
-  strreplace(title, '\x86', ' ');
-  strreplace(title, '\x87', ' ');
-  strreplace(shortText, '\x86', ' ');
-  strreplace(shortText, '\x87', ' ');
-  strreplace(description, '\x86', ' ');
-  strreplace(description, '\x87', ' ');
-  XXX*/
+  StripControlCharacters(title);
+  StripControlCharacters(shortText);
+  StripControlCharacters(description);
 }
 
 // --- cSchedule -------------------------------------------------------------

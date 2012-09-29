@@ -7262,3 +7262,4 @@ Video Disk Recorder Revision History
   thread to avoid sluggish response to user input on slow systems (based on a patch from
   Sören Moch).
 - Fixed sorting folders before recordings in case of UTF-8 (thanks to Sören Moch).
+- Reactivated stripping control characters from EPG texts and adapted it to UTF-8.
