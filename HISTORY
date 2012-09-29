@@ -7263,3 +7263,4 @@ Video Disk Recorder Revision History
   Sören Moch).
 - Fixed sorting folders before recordings in case of UTF-8 (thanks to Sören Moch).
 - Reactivated stripping control characters from EPG texts and adapted it to UTF-8.
+- Added missing decrementing of 'len' in libsi/si.c's String::decodeText() functions.
