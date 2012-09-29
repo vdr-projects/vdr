@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.62 2012/09/17 08:54:00 kls Exp $
+ * $Id: recording.c 2.63 2012/09/29 10:04:55 kls Exp $
  */
 
 #include "recording.h"
@@ -820,9 +820,13 @@ char *cRecording::StripEpisodeName(char *s)
         t++;
         }
   if (s1 && s2) {
+     // To have folders sorted before plain recordings, the '/' s1 points to
+     // is replaced by the character 'b'. All other slashes will be replaced
+     // by 'a' in SortName() (see below), which will result in the desired
+     // sequence:
+     *s1 = 'b';
      s1++;
      memmove(s1, s2, t - s2 + 1);
-     *s1 = 0xFF; // sorts folders before plain recordings
      }
   return s;
 }
