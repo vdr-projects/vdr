@@ -7235,7 +7235,7 @@ Video Disk Recorder Revision History
   function in order to make use of this new feature. See, for instance, the function
   cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
 
-2012-09-29: Version 1.7.31
+2012-09-30: Version 1.7.31
 
 - If regenerating an index file fails and no data is written to the file, VDR now
   reports this error and removes the empty index file.
@@ -7264,3 +7264,10 @@ Video Disk Recorder Revision History
 - Fixed sorting folders before recordings in case of UTF-8 (thanks to Sören Moch).
 - Reactivated stripping control characters from EPG texts and adapted it to UTF-8.
 - Added missing decrementing of 'len' in libsi/si.c's String::decodeText() functions.
+- When checking whether a video directory is empty, file names that start with a
+  dot ('.') are no longer automatically ignored and implicitly removed if the directory
+  contains no other files. Instead, RemoveEmptyDirectories() now has an additional
+  parameter that can be given a list of files that shall be ignored when considering
+  whether a directory is empty. This allows users to continue to use files such as
+  ".keep" to prevent a directory from being deleted when it is empty. Currently the
+  only file name that is ignored is ".sort".

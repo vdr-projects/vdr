@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.25 2012/08/21 10:34:37 kls Exp $
+ * $Id: tools.c 2.26 2012/09/30 13:04:14 kls Exp $
  */
 
 #include "tools.h"
@@ -285,6 +285,18 @@ int64_t StrToNum(const char *s)
   return n;
 }
 
+bool StrInArray(const char *a[], const char *s)
+{
+  if (a) {
+     while (*a) {
+           if (strcmp(*a, s) == 0)
+              return true;
+           a++;
+           }
+     }
+  return false;
+}
+
 cString AddDirectory(const char *DirName, const char *FileName)
 {
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
@@ -433,9 +445,9 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
   return true;
 }
 
-bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
+bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis, const char *IgnoreFiles[])
 {
-  bool HasDotFiles = false;
+  bool HasIgnoredFiles = false;
   cReadDir d(DirName);
   if (d.Ok()) {
      bool empty = true;
@@ -446,11 +458,11 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
               struct stat st;
               if (stat(buffer, &st) == 0) {
                  if (S_ISDIR(st.st_mode)) {
-                    if (!RemoveEmptyDirectories(buffer, true))
+                    if (!RemoveEmptyDirectories(buffer, true, IgnoreFiles))
                        empty = false;
                     }
-                 else if (*e->d_name == '.') // "dot files" don't count
-                    HasDotFiles = true;
+                 else if (RemoveThis && IgnoreFiles && StrInArray(IgnoreFiles, e->d_name))
+                    HasIgnoredFiles = true;
                  else
                     empty = false;
                  }
@@ -461,21 +473,18 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
               }
            }
      if (RemoveThis && empty) {
-        if (HasDotFiles) {
-           cReadDir d(DirName);
-           if (d.Ok()) {
-              struct dirent *e;
-              while ((e = d.Next()) != NULL) {
-                    if (*e->d_name == '.') { // for safety - should always be true
-                       cString buffer = AddDirectory(DirName, e->d_name);
-                       dsyslog("removing %s", *buffer);
-                       if (remove(buffer) < 0) {
-                          LOG_ERROR_STR(*buffer);
-                          return false;
-                          }
+        if (HasIgnoredFiles) {
+           while (*IgnoreFiles) {
+                 cString buffer = AddDirectory(DirName, *IgnoreFiles);
+                 if (access(buffer, F_OK) == 0) {
+                    dsyslog("removing %s", *buffer);
+                    if (remove(buffer) < 0) {
+                       LOG_ERROR_STR(*buffer);
+                       return false;
                        }
                     }
-              }
+                 IgnoreFiles++;
+                 }
            }
         dsyslog("removing %s", DirName);
         if (remove(DirName) < 0) {

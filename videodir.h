@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.h 2.2 2012/09/01 10:57:07 kls Exp $
+ * $Id: videodir.h 2.3 2012/09/30 11:01:15 kls Exp $
  */
 
 #ifndef __VIDEODIR_H
@@ -23,7 +23,7 @@ bool RemoveVideoFile(const char *FileName);
 bool VideoFileSpaceAvailable(int SizeMB);
 int VideoDiskSpace(int *FreeMB = NULL, int *UsedMB = NULL); // returns the used disk space in percent
 cString PrefixVideoFileName(const char *FileName, char Prefix);
-void RemoveEmptyVideoDirectories(void);
+void RemoveEmptyVideoDirectories(const char *IgnoreFiles[] = NULL);
 bool IsOnVideoDirectoryFileSystem(const char *FileName);
 
 class cVideoDiskUsage {
