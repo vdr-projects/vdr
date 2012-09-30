@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1077,6 +1077,9 @@ msgstr "Direktaufzeichnung benennen"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Dauer der Direktaufzeichnung (min)"
 
+msgid "Setup.Recording$present event"
+msgstr "laufende Sendung"
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Max. Videodateigröße (MB)"
 
@@ -1251,6 +1254,9 @@ msgstr "Index-Datei wird regeneriert"
 
 msgid "Index file regeneration complete"
 msgstr "Regenerierung der Index-Datei abgeschlossen"
+
+msgid "Index file regeneration failed!"
+msgstr "Regenerierung der Index-Datei fehlgeschlagen!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Ausschalten unmöglich - Option '-s' fehlt!"

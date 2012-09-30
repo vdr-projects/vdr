@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.64 2012/03/02 10:56:49 kls Exp $
+ * $Id: remux.c 2.67 2012/09/19 10:28:42 kls Exp $
  */
 
 #include "remux.h"
@@ -622,6 +622,34 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          }
                       }
                       break;
+           case 0x81: // STREAMTYPE_USER_PRIVATE
+                      {
+                      dbgpatpmt(" AC3");
+                      char lang[MAXLANGCODE1] = { 0 };
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 dbgpatpmt(" '%s'", ld->languageCode);
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 }
+                                 break;
+                            default: ;
+                            }
+                         delete d;
+                         }
+                      if (NumDpids < MAXDPIDS) {
+                         dpids[NumDpids] = stream.getPid();
+                         dtypes[NumDpids] = SI::AC3DescriptorTag;
+                         strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
+                         if (updatePrimaryDevice && Setup.UseDolbyDigital)
+                            cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, stream.getPid(), lang);
+                         NumDpids++;
+                         dpids[NumDpids]= 0;
+                         }
+                      }
+                      break;
            default: ;
            }
          dbgpatpmt("\n");
@@ -843,7 +871,8 @@ int cFrameDetector::SkipPackets(const uchar *&Data, int &Length, int &Processed,
 
 int cFrameDetector::Analyze(const uchar *Data, int Length)
 {
-  int SeenPayloadStart = false;
+  bool SeenPayloadStart = false;
+  bool SeenAccessUnitDelimiter = false;
   int Processed = 0;
   newFrame = independentFrame = false;
   while (Length >= TS_SIZE) {
@@ -970,12 +999,16 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               SeenAccessUnitDelimiter = true;
+                               }
+                            else if (SeenAccessUnitDelimiter && scanner == 0x00000001) { // NALU start
+                               SeenAccessUnitDelimiter = false;
                                int FrameTypeOffset = i + 1;
                                if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
                                   i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               uchar FrameType = Data[FrameTypeOffset];
-                               independentFrame = FrameType == 0x10;
+                               uchar FrameType = Data[FrameTypeOffset] & 0x1F;
+                               independentFrame = FrameType == 0x07;
                                if (synced) {
                                   if (framesPerPayloadUnit < 0) {
                                      payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;

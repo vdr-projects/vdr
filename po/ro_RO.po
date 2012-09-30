@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2011-03-10 23:52+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -1080,6 +1080,9 @@ msgstr "Nume înregistrare imediatã"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Timpul de înregistare imediatã (min)"
 
+msgid "Setup.Recording$present event"
+msgstr ""
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Dimensiune maximã a fiºierului video (MB)"
 
@@ -1254,6 +1257,9 @@ msgstr "Generez index"
 
 msgid "Index file regeneration complete"
 msgstr "Generarea indexului s-a incheiat"
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nu pot închide - vezi opþiunea '-s'"

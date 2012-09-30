@@ -837,6 +837,11 @@ Version 1.6
                          Default is 180 minutes (3 hours). The stop time of an
                          instant recording can be modified at any time by editing
                          the respective timer in the "Timers" menu.
+                         If this parameter is set to 0 ("present event"), only the
+                         currently running event will be recorded, using the stop
+                         margin and VPS setting as configured.
+                         Note that this parameter is also used when pausing live
+                         video!
 
   Max. video file size = 2000
                          The maximum size of a single recorded video file in MB.

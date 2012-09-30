@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 2.3 2009/11/22 11:14:36 kls Exp $
+ * $Id: ringbuffer.c 2.5 2012/09/22 11:26:49 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -20,6 +20,8 @@
 #define OVERFLOWREPORTDELTA 5 // seconds between reports
 #define PERCENTAGEDELTA     10
 #define PERCENTAGETHRESHOLD 70
+#define IOTHROTTLELOW       20
+#define IOTHROTTLEHIGH      50
 
 cRingBuffer::cRingBuffer(int Size, bool Statistics)
 {
@@ -31,10 +33,12 @@ cRingBuffer::cRingBuffer(int Size, bool Statistics)
   putTimeout = getTimeout = 0;
   lastOverflowReport = 0;
   overflowCount = overflowBytes = 0;
+  ioThrottle = NULL;
 }
 
 cRingBuffer::~cRingBuffer()
 {
+  delete ioThrottle;
   if (statistics)
      dsyslog("buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
 }
@@ -49,6 +53,12 @@ void cRingBuffer::UpdatePercentage(int Fill)
         dsyslog("buffer usage: %d%% (tid=%d)", percent, getThreadTid);
         lastPercent = percent;
         }
+     }
+  if (ioThrottle) {
+     if (percent >= IOTHROTTLEHIGH)
+        ioThrottle->Activate();
+     else if (percent < IOTHROTTLELOW)
+        ioThrottle->Release();
      }
 }
 
@@ -66,13 +76,13 @@ void cRingBuffer::WaitForGet(void)
 
 void cRingBuffer::EnablePut(void)
 {
-  if (putTimeout && Free() > Size() / 3)
+  if (putTimeout && Free() > Size() / 10)
      readyForPut.Signal();
 }
 
 void cRingBuffer::EnableGet(void)
 {
-  if (getTimeout && Available() > Size() / 3)
+  if (getTimeout && Available() > Size() / 10)
      readyForGet.Signal();
 }
 
@@ -80,6 +90,12 @@ void cRingBuffer::SetTimeouts(int PutTimeout, int GetTimeout)
 {
   putTimeout = PutTimeout;
   getTimeout = GetTimeout;
+}
+
+void cRingBuffer::SetIoThrottle(void)
+{
+  if (!ioThrottle)
+     ioThrottle = new cIoThrottle;
 }
 
 void cRingBuffer::ReportOverflow(int Bytes)

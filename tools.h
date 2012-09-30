@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.21 2012/05/20 13:58:06 kls Exp $
+ * $Id: tools.h 2.22 2012/09/30 11:02:21 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -213,6 +213,9 @@ int64_t StrToNum(const char *s);
     ///< K, M, G or T to abbreviate Kilo-, Mega-, Giga- or Terabyte, respectively
     ///< (based on 1024). Everything after the first non-numeric character is
     ///< silently ignored, as are any characters other than the ones mentioned here.
+bool StrInArray(const char *a[], const char *s);
+    ///< Returns true if the string s is equal to one of the strings pointed
+    ///< to by the (NULL terminated) array a.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
@@ -220,7 +223,12 @@ int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
-bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
+bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false, const char *IgnoreFiles[] = NULL);
+     ///< Removes all empty directories under the given directory DirName.
+     ///< If RemoveThis is true, DirName will also be removed if it is empty.
+     ///< IgnoreFiles can be set to an array of file names that will be ignored when
+     ///< considering whether a directory is empty. If IgnoreFiles is given, the array
+     ///< must end with a NULL pointer.
 int DirSizeMB(const char *DirName); ///< returns the total size of the files in the given directory, or -1 in case of an error
 char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 bool SpinUpDisk(const char *FileName);

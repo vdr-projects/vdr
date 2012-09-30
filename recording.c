@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.60 2012/09/06 09:57:31 kls Exp $
+ * $Id: recording.c 2.64 2012/09/30 13:05:14 kls Exp $
  */
 
 #include "recording.h"
@@ -107,8 +107,10 @@ void cRemoveDeletedRecordingsThread::Action(void)
             }
          r = DeletedRecordings.Next(r);
          }
-     if (deleted)
-        RemoveEmptyVideoDirectories();
+     if (deleted) {
+        const char *IgnoreFiles[] = { SORTMODEFILE, NULL };
+        RemoveEmptyVideoDirectories(IgnoreFiles);
+        }
      }
 }
 
@@ -820,9 +822,13 @@ char *cRecording::StripEpisodeName(char *s)
         t++;
         }
   if (s1 && s2) {
+     // To have folders sorted before plain recordings, the '/' s1 points to
+     // is replaced by the character 'b'. All other slashes will be replaced
+     // by 'a' in SortName() (see below), which will result in the desired
+     // sequence:
+     *s1 = 'b';
      s1++;
      memmove(s1, s2, t - s2 + 1);
-     *s1 = 0xFF; // sorts folders before plain recordings
      }
   return s;
 }
@@ -1010,8 +1016,10 @@ bool cRecording::Delete(void)
         RemoveVideoFile(NewName);
         }
      isyslog("deleting recording '%s'", FileName());
-     if (access(FileName(), F_OK) == 0)
+     if (access(FileName(), F_OK) == 0) {
         result = RenameVideoFile(FileName(), NewName);
+        cRecordingUserCommand::InvokeCommand(RUC_DELETERECORDING, NewName);
+        }
      else {
         isyslog("recording '%s' vanished", FileName());
         result = true; // well, we were going to delete it, anyway
@@ -1483,6 +1491,7 @@ cIndexFileGenerator::~cIndexFileGenerator()
 void cIndexFileGenerator::Action(void)
 {
   bool IndexFileComplete = false;
+  bool IndexFileWritten = false;
   bool Rewind = false;
   cFileName FileName(recordingName, false);
   cUnbufferedFile *ReplayFile = FileName.Open();
@@ -1514,6 +1523,7 @@ void cIndexFileGenerator::Action(void)
                  if (FrameDetector.NewFrame()) {
                     IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
                     FrameOffset = -1;
+                    IndexFileWritten = true;
                     }
                  FileSize += Processed;
                  Buffer.Del(Processed);
@@ -1568,11 +1578,16 @@ void cIndexFileGenerator::Action(void)
            break;
            }
         }
+  if (IndexFileComplete) {
+     if (IndexFileWritten) {
+        Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
+        return;
+        }
+     else
+        Skins.QueueMessage(mtError, tr("Index file regeneration failed!"));
+     }
   // Delete the index file if the recording has not been processed entirely:
-  if (IndexFileComplete)
-     Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
-  else
-     IndexFile.Delete();
+  IndexFile.Delete();
 }
 
 // --- cIndexFile ------------------------------------------------------------

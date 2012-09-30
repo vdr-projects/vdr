@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.7 2012/08/21 08:10:00 kls Exp $
+ *   $Id: si.c 2.8 2012/09/29 14:44:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -454,6 +454,7 @@ void String::decodeText(char *buffer, int size) {
          }
          if (l == 2 && Move) {
             memmove(p, p + 1, len - 1); // we also copy the terminating 0!
+            len -= 1;
             l = 1;
          }
       }
@@ -480,6 +481,7 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
       if (*p == 0x86 || *p == 0x87) {
          IsShortName += (*p == 0x86) ? 1 : -1;
          memmove(to, to + l, len - l + 1); // we also copy the terminating 0!
+         len -= l;
          l = 0;
       }
       if (l && IsShortName) {

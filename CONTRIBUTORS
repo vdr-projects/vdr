@@ -2312,6 +2312,8 @@ Pekka Mauno <pekka.mauno@iki.fi>
 
 Alexander Wenzel <hondansx@gmx.de>
  for fixing the shutdown timeout
+ for making the script given to VDR with the '-r' option be also called whenever a
+ recording is deleted
 
 Jan Lenz <email@JanLenz.de>
  for reporting a bug in deleting recordings that have been removed externally when
@@ -2348,9 +2350,6 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
- for implementing cDevice::HasInternalCam(), which can be implemented by devices that
- provide encrypted channels in an already decrypted form, without requiring explicit
- handling of a CAM
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2409,6 +2408,9 @@ Anssi Hannula <anssi.hannula@gmail.com>
  for adding support for automatically selecting subtitles when playing old PES
  recordings made with the subtitles plugin
  for pointing out -Werror=...
+ for implementing cDevice::HasInternalCam(), which can be implemented by devices that
+ provide encrypted channels in an already decrypted form, without requiring explicit
+ handling of a CAM
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
@@ -2739,6 +2741,7 @@ Francesco Saverio Schiavarelli <fschiava@libero.it>
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for implementing the setup option "Miscellaneous/Channels wrap"
  for reporting a missing change from -O2 to -O3 in Make.config.template
+ for a patch that was used to implement instant recording of only the present event
 
 Stephan Austermühle <au@hcsd.de>
  for suggesting to flush the file in cSafeFile::Close()
@@ -2888,6 +2891,10 @@ Torsten Lang <info@torstenlang.de>
  if the editing point merges two seamlessly fitting parts of the same stream
  for reporting a sluggish response when manipulating editing marks while a cutting
  thread is running
+ for suggesting to allow I/O intense threads to temporarily suspend their activities
+ in case buffers run full
+ for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
+ buffer to 20MB to better handle HD recordings
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -2939,3 +2946,17 @@ Dennis Bendlin <dennisbendlin@online.de>
 
 Oliver Schinagl <oliver@schinagl.nl>
  for a patch that was used to implement the setup options "OSD/Color key [0123]"
+
+Andrey Pridvorov <ua0lnj@bk.ru>
+ for reporting a problem with detecting frames in MPEG 4 video, and pointing towards
+ a better way of doing it
+
+Jens Vogel <jens.vogel@akjv.de>
+ for suggesting to make cPatPmtParser::ParsePmt() also recognize stream type 0x81
+ as "AC3", so that recordings that have been converted from the old PES format to
+ TS can be played
+
+Sören Moch <smoch@web.de>
+ for a patch that was used to move cleaning up the EPG data and writing the epg.data
+ file into a separate thread to avoid sluggish response to user input on slow systems
+ for fixing sorting folders before recordings in case of UTF-8

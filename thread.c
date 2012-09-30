@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 2.4 2012/05/08 11:15:57 kls Exp $
+ * $Id: thread.c 2.5 2012/09/20 09:05:50 kls Exp $
  */
 
 #include "thread.h"
@@ -396,6 +396,48 @@ bool cThreadLock::Lock(cThread *Thread)
      return true;
      }
   return false;
+}
+
+// --- cIoThrottle -----------------------------------------------------------
+
+cMutex cIoThrottle::mutex;
+int cIoThrottle::count = 0;
+
+cIoThrottle::cIoThrottle(void)
+{
+  active = false;
+}
+
+cIoThrottle::~cIoThrottle()
+{
+  Release();
+}
+
+void cIoThrottle::Activate(void)
+{
+  if (!active) {
+     mutex.Lock();
+     count++;
+     active = true;
+     dsyslog("i/o throttle activated, count = %d (tid=%d)", count, cThread::ThreadId());
+     mutex.Unlock();
+     }
+}
+
+void cIoThrottle::Release(void)
+{
+  if (active) {
+     mutex.Lock();
+     count--;
+     active = false;
+     dsyslog("i/o throttle released, count = %d (tid=%d)", count, cThread::ThreadId());
+     mutex.Unlock();
+     }
+}
+
+bool cIoThrottle::Engaged(void)
+{
+  return count > 0;
 }
 
 // --- cPipe -----------------------------------------------------------------

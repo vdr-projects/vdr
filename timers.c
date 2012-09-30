@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.11 2012/06/09 14:37:24 kls Exp $
+ * $Id: timers.c 2.12 2012/09/15 13:34:03 kls Exp $
  */
 
 #include "timers.h"
@@ -32,6 +32,9 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   deferred = 0;
   recording = pending = inVpsMargin = false;
   flags = tfNone;
+  *file = 0;
+  aux = NULL;
+  event = NULL;
   if (Instant)
      SetFlags(tfActive | tfInstant);
   channel = Channel ? Channel : Channels.GetByNumber(cDevice::CurrentChannel());
@@ -41,15 +44,40 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   day = SetTime(t, 0);
   weekdays = 0;
   start = now->tm_hour * 100 + now->tm_min;
-  stop = now->tm_hour * 60 + now->tm_min + Setup.InstantRecordTime;
-  stop = (stop / 60) * 100 + (stop % 60);
+  stop = 0;
+  if (!Setup.InstantRecordTime && channel) {
+     cSchedulesLock SchedulesLock;
+     if (const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock)) {
+        if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {
+           if (const cEvent *Event = Schedule->GetPresentEvent()) {
+              time_t tstart = Event->StartTime();
+              time_t tstop = Event->EndTime();
+              if (Event->Vps() && Setup.UseVps) {
+                 SetFlags(tfVps);
+                 tstart = Event->Vps();
+                 }
+              else {
+                 tstop  += Setup.MarginStop * 60;
+                 tstart -= Setup.MarginStart * 60;
+                 }
+              day = SetTime(tstart, 0);
+              struct tm *time = localtime_r(&tstart, &tm_r);
+              start = time->tm_hour * 100 + time->tm_min;
+              time = localtime_r(&tstop, &tm_r);
+              stop = time->tm_hour * 100 + time->tm_min;
+              SetEvent(Event);
+              }
+           }
+        }
+     }
+  if (!stop) {
+     stop = now->tm_hour * 60 + now->tm_min + (Setup.InstantRecordTime ? Setup.InstantRecordTime : DEFINSTRECTIME);
+     stop = (stop / 60) * 100 + (stop % 60);
+     }
   if (stop >= 2400)
      stop -= 2400;
   priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
-  *file = 0;
-  aux = NULL;
-  event = NULL;
   if (Instant && channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
   if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
@@ -66,6 +94,9 @@ cTimer::cTimer(const cEvent *Event)
   deferred = 0;
   recording = pending = inVpsMargin = false;
   flags = tfActive;
+  *file = 0;
+  aux = NULL;
+  event = NULL;
   if (Event->Vps() && Setup.UseVps)
      SetFlags(tfVps);
   channel = Channels.GetByChannelID(Event->ChannelID(), true);
@@ -86,7 +117,6 @@ cTimer::cTimer(const cEvent *Event)
      stop -= 2400;
   priority = Setup.DefaultPriority;
   lifetime = Setup.DefaultLifetime;
-  *file = 0;
   const char *Title = Event->Title();
   if (!isempty(Title))
      Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
@@ -95,8 +125,7 @@ cTimer::cTimer(const cEvent *Event)
      file[Utf8SymChars(file, VFAT_MAX_FILENAME)] = 0;
      dsyslog("timer file name truncated to '%s'", file);
      }
-  aux = NULL;
-  event = NULL; // let SetEvent() be called to get a log message
+  SetEvent(Event);
 }
 
 cTimer::cTimer(const cTimer &Timer)

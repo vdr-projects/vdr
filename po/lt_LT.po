@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -1077,6 +1077,9 @@ msgstr "Rankiniu būdu vykdomų įrašų įvardinimo schama"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Rankiniu būdu vykdomo įrašo laikas (min)"
 
+msgid "Setup.Recording$present event"
+msgstr ""
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maks. video failo dydis (MB)"
 
@@ -1251,6 +1254,9 @@ msgstr "Pergeneruojamas index failas"
 
 msgid "Index file regeneration complete"
 msgstr "Index failo pergeneravimas baigtas"
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sistemos negalima išjungti, nes starto metu nebuvo komandinėj eilutėj paduota savybė '-s'!"

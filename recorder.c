@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.15 2011/09/04 09:26:44 kls Exp $
+ * $Id: recorder.c 2.17 2012/09/22 11:53:57 kls Exp $
  */
 
 #include "recorder.h"
 #include "shutdown.h"
 
-#define RECORDERBUFSIZE  (MEGABYTE(5) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
+#define RECORDERBUFSIZE  (MEGABYTE(20) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
 
 // The maximum time we wait before assuming that a recorded video data stream
 // is broken:
@@ -33,6 +33,7 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
 
   ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
+  ringBuffer->SetIoThrottle();
 
   int Pid = Channel->Vpid();
   int Type = Channel->Vtype();

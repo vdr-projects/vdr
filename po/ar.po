@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1102,6 +1102,9 @@ msgstr "اسم التسجيل الفورى"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "مدة التسجيل الفورى بالدقيقة"
 
+msgid "Setup.Recording$present event"
+msgstr ""
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "اقصى حجم لملف الفيديو ب م ب"
 
@@ -1278,6 +1281,9 @@ msgid "Regenerating index file"
 msgstr ""
 
 msgid "Index file regeneration complete"
+msgstr ""
+
+msgid "Index file regeneration failed!"
 msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-13 13:15+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -1080,6 +1080,9 @@ msgstr "Nimeä pikatallenne"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Pikatallennuksen kesto (min)"
 
+msgid "Setup.Recording$present event"
+msgstr "nykyinen tapahtuma"
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Suurin tiedostokoko (Mt)"
 
@@ -1254,6 +1257,9 @@ msgstr "Luodaan indeksitiedosto uudelleen"
 
 msgid "Index file regeneration complete"
 msgstr "Indeksitiedosto valmistui"
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sammutus ei onnistu - '-s' parametri puuttuu!"

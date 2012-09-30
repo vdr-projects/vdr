@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.36 2012/09/06 09:59:11 kls Exp $
+ * $Id: recording.h 2.37 2012/09/17 08:53:23 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -240,6 +240,7 @@ public:
 #define RUC_BEFORERECORDING "before"
 #define RUC_AFTERRECORDING  "after"
 #define RUC_EDITEDRECORDING "edited"
+#define RUC_DELETERECORDING "deleted"
 
 class cRecordingUserCommand {
 private:

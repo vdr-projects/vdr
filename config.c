@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.27 2012/09/09 12:58:23 kls Exp $
+ * $Id: config.c 2.28 2012/09/15 11:52:03 kls Exp $
  */
 
 #include "config.h"
@@ -383,7 +383,7 @@ cSetup::cSetup(void)
   MenuKeyCloses = 0;
   MarkInstantRecord = 1;
   strcpy(NameInstantRecord, "TITLE EPISODE");
-  InstantRecordTime = 180;
+  InstantRecordTime = DEFINSTRECTIME;
   LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;

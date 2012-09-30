@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.13 2012/06/10 14:33:36 kls Exp $
+ * $Id: cutter.c 2.14 2012/09/20 09:12:47 kls Exp $
  */
 
 #include "cutter.h"
@@ -88,11 +88,27 @@ void cCuttingThread::Action(void)
      bool CheckForSeamlessStream = false;
      bool LastMark = false;
      bool cutIn = true;
+     bool suspensionLogged = false;
      while (Running()) {
            uint16_t FileNumber;
            off_t FileOffset;
            int Length;
            bool Independent;
+
+           // Suspend cutting if we have severe throughput problems:
+
+           if (cIoThrottle::Engaged()) {
+              if (!suspensionLogged) {
+                 dsyslog("suspending cutter thread");
+                 suspensionLogged = true;
+                 }
+              cCondWait::SleepMs(100);
+              continue;
+              }
+           else if (suspensionLogged) {
+              dsyslog("resuming cutter thread");
+              suspensionLogged = false;
+              }
 
            // Make sure there is enough disk space:
 

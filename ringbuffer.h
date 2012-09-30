@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 2.3 2011/12/04 13:38:17 kls Exp $
+ * $Id: ringbuffer.h 2.4 2012/09/20 09:29:32 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -22,6 +22,7 @@ private:
   time_t lastOverflowReport;
   int overflowCount;
   int overflowBytes;
+  cIoThrottle *ioThrottle;
 protected:
   tThreadId getThreadTid;
   int maxFill;//XXX
@@ -40,6 +41,7 @@ public:
   cRingBuffer(int Size, bool Statistics = false);
   virtual ~cRingBuffer();
   void SetTimeouts(int PutTimeout, int GetTimeout);
+  void SetIoThrottle(void);
   void ReportOverflow(int Bytes);
   };
 

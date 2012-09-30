@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-09 15:20+0200\n"
+"POT-Creation-Date: 2012-09-15 14:04+0200\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -1078,6 +1078,9 @@ msgstr "Име на директно снимање"
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Траење на директно снимање (мин)"
 
+msgid "Setup.Recording$present event"
+msgstr ""
+
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Максимална големина на датотека (MB)"
 
@@ -1252,6 +1255,9 @@ msgstr "Регенерирање на индекс датотека"
 
 msgid "Index file regeneration complete"
 msgstr "Регенерирањето на индексот заврши"
+
+msgid "Index file regeneration failed!"
+msgstr ""
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Невозможно гаснење - недостасува опцијата '-s'!"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.14 2012/09/09 12:16:50 kls Exp $
+ * $Id: skinlcars.c 2.15 2012/09/19 11:05:50 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1661,6 +1661,7 @@ private:
   bool modeOnly;
   int lineHeight;
   tColor frameColor;
+  int lastCurrentWidth;
   cString lastDate;
   tTrackId lastTrackId;
   void DrawDate(void);
@@ -1685,6 +1686,7 @@ cSkinLCARSDisplayReplay::cSkinLCARSDisplayReplay(bool ModeOnly)
   modeOnly = ModeOnly;
   lineHeight = font->Height();
   frameColor = Theme.Color(clrReplayFrameBg);
+  lastCurrentWidth = 0;
   int d = 5 * lineHeight;
   xp00 = 0;
   xp01 = xp00 + d / 2;
@@ -1801,8 +1803,9 @@ void cSkinLCARSDisplayReplay::SetProgress(int Current, int Total)
 void cSkinLCARSDisplayReplay::SetCurrent(const char *Current)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  int w = font->Width(Current) + 10;
-  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, w, 0, taLeft);
+  int w = font->Width(Current);
+  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, lastCurrentWidth > w ? lastCurrentWidth : w, 0, taLeft);
+  lastCurrentWidth = w;
 }
 
 void cSkinLCARSDisplayReplay::SetTotal(const char *Total)

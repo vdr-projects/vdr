@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.38 2012/09/01 13:30:19 kls Exp $
+ * $Id: vdr.c 2.40 2012/09/24 12:43:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -466,7 +466,8 @@ int main(int argc, char *argv[])
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                "                           0 turns off SVDRP\n"
                "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"
-               "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
+               "  -r CMD,   --record=CMD   call CMD before and after a recording, and after\n"
+               "                           a recording has been edited or deleted\n"
                "            --resdir=DIR   read resource files from DIR (default: %s)\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "            --split        split edited files at the editing marks (only\n"
@@ -1294,6 +1295,8 @@ int main(int argc, char *argv[])
            PluginManager.Housekeeping();
            }
 
+        ReportEpgBugFixStats();
+
         // Main thread hooks of plugins:
         PluginManager.MainThreadHook();
         }
@@ -1330,7 +1333,7 @@ Exit:
   EpgHandlers.Clear();
   PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);
-  ReportEpgBugFixStats();
+  ReportEpgBugFixStats(true);
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   if (LastSignal)

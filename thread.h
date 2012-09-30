@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 2.1 2009/04/13 13:50:39 kls Exp $
+ * $Id: thread.h 2.2 2012/09/20 08:46:27 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -156,6 +156,29 @@ public:
   };
 
 #define LOCK_THREAD cThreadLock ThreadLock(this)
+
+class cIoThrottle {
+private:
+  static cMutex mutex;
+  static int count;
+  bool active;
+public:
+  cIoThrottle(void);
+  ~cIoThrottle();
+  void Activate(void);
+       ///< Activates the global I/O throttling mechanism.
+       ///< This function may be called any number of times, but only
+       ///< the first call after an inactive state will have an effect.
+  void Release(void);
+       ///< Releases the global I/O throttling mechanism.
+       ///< This function may be called any number of times, but only
+       ///< the first call after an active state will have an effect.
+  bool Active(void) { return active; }
+       ///< Returns true if this I/O throttling object is currently active.
+  static bool Engaged(void);
+       ///< Returns true if any I/O throttling object is currently active.
+  };
+
 
 // cPipe implements a pipe that closes all unnecessary file descriptors in
 // the child process.
