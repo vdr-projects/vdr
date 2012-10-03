@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.64 2012/09/30 13:05:14 kls Exp $
+ * $Id: recording.c 2.65 2012/10/03 12:52:13 kls Exp $
  */
 
 #include "recording.h"
@@ -97,6 +97,8 @@ void cRemoveDeletedRecordingsThread::Action(void)
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
+         if (cIoThrottle::Engaged())
+            return;
          if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();

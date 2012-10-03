@@ -1757,6 +1757,7 @@ Udo Richter <udo_richter@gmx.de>
  for adding the option --outputonly to the dvbsddevice plugin
  for adding a missing template specification to the c'tor of cSortedTimers
  for contributing to a patch that implements FHS support
+ for suggesting to check cIoThrottle::Engaged() in cRemoveDeletedRecordingsThread::Action()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
