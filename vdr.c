@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.40 2012/09/24 12:43:04 kls Exp $
+ * $Id: vdr.c 2.41 2012/10/03 09:58:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -1238,6 +1238,8 @@ int main(int argc, char *argv[])
                      cControl::Shutdown();
                      cControl::Launch(new cReplayControl);
                      }
+                  else
+                     DirectMainFunction(osRecordings); // no last viewed recording, so enter the Recordings menu
                   break;
              default:    break;
              }

@@ -2314,6 +2314,8 @@ Alexander Wenzel <hondansx@gmx.de>
  for fixing the shutdown timeout
  for making the script given to VDR with the '-r' option be also called whenever a
  recording is deleted
+ for making pressing the Play key during normal live viewing mode open the Recordings
+ menu if there is no "last viewed" recording
 
 Jan Lenz <email@JanLenz.de>
  for reporting a bug in deleting recordings that have been removed externally when
