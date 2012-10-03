@@ -7276,3 +7276,4 @@ Video Disk Recorder Revision History
 
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu
   if there is no "last viewed" recording (thanks to Alexander Wenzel).
+  The same behavior has been implemented for the Blue key in the main menu.

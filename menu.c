@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.61 2012/09/15 11:45:28 kls Exp $
+ * $Id: menu.c 2.62 2012/10/03 10:14:53 kls Exp $
  */
 
 #include "menu.h"
@@ -3418,7 +3418,7 @@ bool cMenuMain::Update(bool Force)
         stopReplayItem = NULL;
         }
      // Color buttons:
-     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : NULL);
+     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
      result = true;
      }
 
@@ -3516,7 +3516,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osPause;
                              break;
                case kBlue:   if (!HadSubMenu)
-                                state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
+                                state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osRecordings;
                              break;
                default:      break;
                }
