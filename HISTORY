@@ -7285,3 +7285,6 @@ Video Disk Recorder Revision History
   priority threads may want to use this instead of the calls to SetPriority(19) and
   SetIOPriority(7). The priority of a thread ("low" or "high") is now logged when the
   thread starts.
+- Changed DTV_DVBT2_PLP_ID to DTV_STREAM_ID in dvbdevice.c to adapt to an incompatible
+  change in DVB API 5.8 (reported by Derek Kelly).
+  Removed the meanwhile obsolete definition of FE_CAN_TURBO_FEC.

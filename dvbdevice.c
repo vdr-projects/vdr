@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.72 2012/09/22 11:53:57 kls Exp $
+ * $Id: dvbdevice.c 2.73 2012/10/04 12:44:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -21,7 +21,9 @@
 #include "menuitems.h"
 #include "sourceparams.h"
 
-#define FE_CAN_TURBO_FEC  0x8000000 // TODO: remove this once it is defined in the driver
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0508
+#define DTV_STREAM_ID DTV_DVBT2_PLP_ID
+#endif
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -810,7 +812,7 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
      if (frontendType == SYS_DVBT2) {
         // DVB-T2
-        SETCMD(DTV_DVBT2_PLP_ID, dtp.PlpId());
+        SETCMD(DTV_STREAM_ID, dtp.PlpId());
         }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
