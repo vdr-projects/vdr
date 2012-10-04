@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.14 2012/09/20 09:12:47 kls Exp $
+ * $Id: cutter.c 2.15 2012/10/04 12:19:37 kls Exp $
  */
 
 #include "cutter.h"
@@ -33,7 +33,7 @@ public:
   };
 
 cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
-:cThread("video cutting")
+:cThread("video cutting", true)
 {
   error = NULL;
   fromFile = toFile = NULL;
@@ -69,8 +69,6 @@ void cCuttingThread::Action(void)
 {
   cMark *Mark = fromMarks.First();
   if (Mark) {
-     SetPriority(19);
-     SetIOPriority(7);
      fromFile = fromFileName->Open();
      toFile = toFileName->Open();
      if (!fromFile || !toFile)
