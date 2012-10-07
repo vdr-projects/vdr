@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.h 1.2 2007/08/05 14:10:22 kls Exp $
+ * $Id: themes.h 2.1 2012/10/07 11:11:43 kls Exp $
  */
 
 #ifndef __THEMES_H
@@ -56,7 +56,7 @@ public:
   };
 
 // A helper macro that simplifies defining theme colors.
-#define THEME_CLR(Theme, Subject, Color) static const int Subject = Theme.AddColor(#Subject, Color)
+#define THEME_CLR(Theme, Subject, Color) static const tColor Subject = Theme.AddColor(#Subject, Color)
 
 class cThemes {
 private:
