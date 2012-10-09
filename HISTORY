@@ -7292,3 +7292,5 @@ Video Disk Recorder Revision History
 - Fixed setting the video format in the dvbhdffdevice (thanks to Torsten Lang).
 - Fixed 'make install' to not overwrite existing configuration files (thanks to Peter
   Münster).
+- Added including the Make.global and Make.config files to the dvbdhffdevice's
+  libhdffcmd/Makefile.
