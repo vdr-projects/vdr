@@ -2965,3 +2965,6 @@ Sören Moch <smoch@web.de>
  for a patch that was used to move cleaning up the EPG data and writing the epg.data
  file into a separate thread to avoid sluggish response to user input on slow systems
  for fixing sorting folders before recordings in case of UTF-8
+
+Peter Münster <pmlists@free.fr>
+ for fixing 'make install' to not overwrite existing configuration files

@@ -7290,3 +7290,5 @@ Video Disk Recorder Revision History
   Removed the meanwhile obsolete definition of FE_CAN_TURBO_FEC.
 - Fixed some compiler warnings under gcc version 4.7.1.
 - Fixed setting the video format in the dvbhdffdevice (thanks to Torsten Lang).
+- Fixed 'make install' to not overwrite existing configuration files (thanks to Peter
+  Münster).
