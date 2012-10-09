@@ -7294,3 +7294,5 @@ Video Disk Recorder Revision History
   Münster).
 - Added including the Make.global and Make.config files to the dvbdhffdevice's
   libhdffcmd/Makefile.
+- Added options to build a 32-bit version of VDR on a 64-bit machine to
+  Make.config.template.

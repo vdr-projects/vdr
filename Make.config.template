@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.9 2012/09/01 10:31:33 kls Exp $
+# $Id: Make.config.template 2.10 2012/10/09 10:32:32 kls Exp $
 
 ### The C compiler and options:
 
@@ -19,6 +19,12 @@ CXXFLAGS = -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
 ifdef PLUGIN
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
+endif
+
+# Use 'make M32=1 ...' to build a 32-bit version of VDR on a 64-bit machine:
+ifdef M32
+CFLAGS   += -m32
+CXXFLAGS += -m32
 endif
 
 ### The directory environment:
