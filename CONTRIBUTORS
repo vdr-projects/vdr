@@ -2899,6 +2899,7 @@ Torsten Lang <info@torstenlang.de>
  in case buffers run full
  for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
  buffer to 20MB to better handle HD recordings
+ for fixing setting the video format in the dvbhdffdevice
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
