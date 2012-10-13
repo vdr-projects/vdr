@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.12 2012/09/15 13:34:03 kls Exp $
+ * $Id: timers.c 2.13 2012/10/13 14:16:22 kls Exp $
  */
 
 #include "timers.h"
@@ -551,6 +551,8 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
            if (event && Recording())
               return; // let the recording end first
+           if (event && (now <= event->EndTime() || Matches(0, true)))
+              return; // stay with the old event until the timer has completely expired
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
@@ -562,8 +564,6 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
                      }
                   }
                }
-           if (!Event && event && (now <= event->EndTime() || Matches(0, true)))
-              return; // stay with the old event until the timer has completely expired
            }
         else {
            // Normal timers match the event they have the most overlap with:
