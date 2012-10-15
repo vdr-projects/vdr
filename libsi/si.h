@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 2.5 2012/01/11 11:35:17 kls Exp $
+ *   $Id: si.h 2.6 2012/10/15 11:56:06 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -347,8 +347,10 @@ public:
          T *ret=new T();
          ret->setData(d);
          ret->CheckParse();
-         if (!checkSize(ret->getLength()))
+         if (!checkSize(ret->getLength())) {
+            delete ret;
             return 0;
+         }
          it.i+=ret->getLength();
          return ret;
       }

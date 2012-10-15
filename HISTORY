@@ -7301,3 +7301,5 @@ Video Disk Recorder Revision History
 - If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
   it will now be shifted towards the next I-frame (either up or down, whichever is
   closer).
+- Fixed a possible memory leak in SI::StructureLoop::getNextAsPointer() (reported by
+  Sundararaj Reel).

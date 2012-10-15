@@ -2621,6 +2621,7 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a problem with the function cString::sprintf(const char *fmt, va_list &ap),
  that might inadvertently be called with a 'char *' as the second argument on some
  compilers and cause a crash
+ for reporting a possible memory leak in SI::StructureLoop::getNextAsPointer()
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
