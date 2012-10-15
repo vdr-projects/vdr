@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.66 2012/10/04 12:21:38 kls Exp $
+ * $Id: recording.c 2.67 2012/10/15 10:23:37 kls Exp $
  */
 
 #include "recording.h"
@@ -1358,8 +1358,10 @@ bool cMark::Save(FILE *f)
 
 bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool IsPesRecording)
 {
+  recordingFileName = RecordingFileName;
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
+  isPesRecording = IsPesRecording;
   nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
   lastChange = 0;
@@ -1388,12 +1390,25 @@ bool cMarks::Update(void)
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
+           Align();
            Sort();
            return true;
            }
         }
      }
   return false;
+}
+
+void cMarks::Align(void)
+{
+  cIndexFile IndexFile(recordingFileName, isPesRecording);
+  for (cMark *m = First(); m; m = Next(m)) {
+      int p = IndexFile.GetClosestIFrame(m->Position());
+      if (int d = m->Position() - p) {
+         isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), d, abs(d) > 1 ? "s" : "");
+         m->SetPosition(p);
+         }
+      }
 }
 
 void cMarks::Sort(void)
@@ -1880,6 +1895,34 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
          }
      }
   return -1;
+}
+
+int cIndexFile::GetClosestIFrame(int Index)
+{
+  if (last > 0) {
+     Index = constrain(Index, 0, last - 1);
+     if (index[Index].independent)
+        return Index;
+     int il = Index - 1;
+     int ih = Index + 1;
+     for (;;) {
+         if (il >= 0) {
+            if (index[il].independent)
+               return il;
+            il--;
+            }
+         else if (ih >= last)
+            break;
+         if (ih < last) {
+            if (index[ih].independent)
+               return ih;
+            ih++;
+            }
+         else if (il < 0)
+            break;
+         }
+     }
+  return 0;
 }
 
 int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.37 2012/09/17 08:53:23 kls Exp $
+ * $Id: recording.h 2.38 2012/10/15 10:22:27 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -222,14 +222,17 @@ public:
 
 class cMarks : public cConfig<cMark> {
 private:
+  cString recordingFileName;
   cString fileName;
   double framesPerSecond;
+  bool isPesRecording;
   time_t nextUpdate;
   time_t lastFileTime;
   time_t lastChange;
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
+  void Align(void);
   void Sort(void);
   cMark *Add(int Position);
   cMark *Get(int Position);
@@ -291,6 +294,11 @@ public:
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
   int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
+  int GetClosestIFrame(int Index);
+       ///< Returns the index of the I-frame that is closest to the given Index (or Index itself,
+       ///< if it already points to an I-frame). Index may be any value, even outside the current
+       ///< range of frame indexes.
+       ///< If there is no actual index data available, 0 is returned.
   int Get(uint16_t FileNumber, off_t FileOffset);
   int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }

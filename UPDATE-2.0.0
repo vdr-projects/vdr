@@ -327,6 +327,9 @@ Recordings:
   This obsoletes the CUTTIME patch.
 - An ongoing editing process is now canceled if either the original or the edited
   version of the recording is deleted from the Recordings menu.
+- If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
+  it will now be shifted towards the next I-frame (either up or down, whichever is
+  closer).
 
 SVDRP:
 

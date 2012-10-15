@@ -7272,7 +7272,7 @@ Video Disk Recorder Revision History
   ".keep" to prevent a directory from being deleted when it is empty. Currently the
   only file name that is ignored is ".sort".
 
-2012-10-13: Version 1.7.32
+2012-10-15: Version 1.7.32
 
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu
   if there is no "last viewed" recording (thanks to Alexander Wenzel).
@@ -7298,3 +7298,6 @@ Video Disk Recorder Revision History
   Make.config.template.
 - Fixed handling VPS timers in case the running status of an event goes to '1' (not
   running) and later goes to '4' (running).
+- If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
+  it will now be shifted towards the next I-frame (either up or down, whichever is
+  closer).
