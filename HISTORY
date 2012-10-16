@@ -7272,7 +7272,7 @@ Video Disk Recorder Revision History
   ".keep" to prevent a directory from being deleted when it is empty. Currently the
   only file name that is ignored is ".sort".
 
-2012-10-15: Version 1.7.32
+2012-10-16: Version 1.7.32
 
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu
   if there is no "last viewed" recording (thanks to Alexander Wenzel).
@@ -7303,3 +7303,5 @@ Video Disk Recorder Revision History
   closer).
 - Fixed a possible memory leak in SI::StructureLoop::getNextAsPointer() (reported by
   Sundararaj Reel).
+- Fixed handling timers in case an event is modified and "phased out" while the timer
+  is recording.
