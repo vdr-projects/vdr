@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.67 2012/10/15 10:23:37 kls Exp $
+ * $Id: recording.c 2.68 2012/11/01 11:51:52 kls Exp $
  */
 
 #include "recording.h"
@@ -1550,7 +1550,6 @@ void cIndexFileGenerator::Action(void)
               if (Processed > 0) {
                  if (FrameDetector.Synced()) {
                     // Synced FrameDetector, so rewind for actual processing:
-                    FrameDetector.Reset();
                     Rewind = true;
                     }
                  Buffer.Del(Processed);
