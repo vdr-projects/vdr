@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.68 2012/11/01 11:51:52 kls Exp $
+ * $Id: recording.c 2.69 2012/11/03 11:25:13 kls Exp $
  */
 
 #include "recording.h"
@@ -1401,7 +1401,7 @@ bool cMarks::Update(void)
 
 void cMarks::Align(void)
 {
-  cIndexFile IndexFile(recordingFileName, isPesRecording);
+  cIndexFile IndexFile(recordingFileName, false, isPesRecording);
   for (cMark *m = First(); m; m = Next(m)) {
       int p = IndexFile.GetClosestIFrame(m->Position());
       if (int d = m->Position() - p) {
