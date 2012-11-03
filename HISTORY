@@ -7299,8 +7299,8 @@ Video Disk Recorder Revision History
 - Fixed handling VPS timers in case the running status of an event goes to '1' (not
   running) and later goes to '4' (running).
 - If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
-  it will now be shifted towards the next I-frame (either up or down, whichever is
-  closer).
+  it will now be shifted towards the next I-frame, either up or down, whichever is
+  closer (suggested by Udo Richter).
 - Fixed a possible memory leak in SI::StructureLoop::getNextAsPointer() (reported by
   Sundararaj Reel).
 - Fixed handling timers in case an event is modified and "phased out" while the timer

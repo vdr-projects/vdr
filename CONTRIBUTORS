@@ -1758,6 +1758,8 @@ Udo Richter <udo_richter@gmx.de>
  for adding a missing template specification to the c'tor of cSortedTimers
  for contributing to a patch that implements FHS support
  for suggesting to check cIoThrottle::Engaged() in cRemoveDeletedRecordingsThread::Action()
+ for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
+ when a recording is played
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
