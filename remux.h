@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.33 2012/11/02 14:33:11 kls Exp $
+ * $Id: remux.h 2.34 2012/11/06 11:03:06 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -158,7 +158,7 @@ private:
   uchar *data;
   int length;
   int pid;
-  int index;  // points to the next byte to process
+  int index; // points to the next byte to process
 public:
   cTsPayload(void);
   cTsPayload(uchar *Data, int Length, int Pid = -1);
@@ -171,6 +171,12 @@ public:
        ///< Otherwise the PID of the first TS packet defines which payload will be
        ///< delivered.
        ///< Any intermediate TS packets with different PIDs will be skipped.
+  bool AtTsStart(void) { return index < length && (index % TS_SIZE) == 0; }
+       ///< Returns true if this payload handler is currently pointing to first byte
+       ///< of a TS packet.
+  bool AtPayloadStart(void) { return AtTsStart() && TsPayloadStart(data + index); }
+       ///< Returns true if this payload handler is currently pointing to the first byte
+       ///< of a TS packet that starts a new payload.
   int Available(void) { return length - index; }
        ///< Returns the number of raw bytes (including any TS headers) still available
        ///< in the TS payload handler.

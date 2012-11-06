@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.68 2012/11/02 14:35:57 kls Exp $
+ * $Id: remux.c 2.69 2012/11/06 10:59:39 kls Exp $
  */
 
 #include "remux.h"
@@ -991,8 +991,6 @@ cMpeg2Parser::cMpeg2Parser(void)
 int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
 {
   newFrame = independentFrame = false;
-  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
-     return 0; // need more data
   cTsPayload tsPayload(const_cast<uchar *>(Data), Length, Pid);
   if (TsPayloadStart(Data)) {
      tsPayload.SkipPesHeader();
@@ -1000,23 +998,27 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
      if (debug && seenIndependentFrame)
         dbgframes("/");
      }
-  do {
-     scanner = (scanner << 8) | tsPayload.GetByte();
-     if (scanner == 0x00000100) { // Picture Start Code
-        newFrame = true;
-        tsPayload.GetByte();
-        uchar FrameType = (tsPayload.GetByte() >> 3) & 0x07;
-        independentFrame = FrameType == 1; // I-Frame
-        if (debug) {
-           seenIndependentFrame |= independentFrame;
-           if (seenIndependentFrame) {
-              static const char FrameTypes[] = "?IPBD???";
-              dbgframes("%c", FrameTypes[FrameType]);
-              }
-           }
-        break;
-        }
-     } while (tsPayload.Available() > (MIN_TS_PACKETS_FOR_FRAME_DETECTOR - 1) * TS_SIZE);
+  for (;;) {
+      scanner = (scanner << 8) | tsPayload.GetByte();
+      if (scanner == 0x00000100) { // Picture Start Code
+         newFrame = true;
+         tsPayload.GetByte();
+         uchar FrameType = (tsPayload.GetByte() >> 3) & 0x07;
+         independentFrame = FrameType == 1; // I-Frame
+         if (debug) {
+            seenIndependentFrame |= independentFrame;
+            if (seenIndependentFrame) {
+               static const char FrameTypes[] = "?IPBD???";
+               dbgframes("%c", FrameTypes[FrameType]);
+               }
+            }
+         break;
+         }
+      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
+            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         break;
+      }
   return tsPayload.Used();
 }
 
@@ -1133,8 +1135,6 @@ int32_t cMpeg4Parser::GetGolombSe(void)
 int cMpeg4Parser::Parse(const uchar *Data, int Length, int Pid)
 {
   newFrame = independentFrame = false;
-  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
-     return 0; // need more data
   tsPayload.Setup(const_cast<uchar *>(Data), Length, Pid);
   if (TsPayloadStart(Data)) {
      tsPayload.SkipPesHeader();
@@ -1143,28 +1143,32 @@ int cMpeg4Parser::Parse(const uchar *Data, int Length, int Pid)
         dbgframes("/");
         }
      }
-  do {
-     scanner = (scanner << 8) | GetByte(true);
-     if ((scanner & 0xFFFFFF00) == 0x00000100) { // NAL unit start
-        uchar NalUnitType = scanner & 0x1F;
-        switch (NalUnitType) {
-          case nutAccessUnitDelimiter:  ParseAccessUnitDelimiter();
-                                        gotAccessUnitDelimiter = true;
-                                        break;
-          case nutSequenceParameterSet: ParseSequenceParameterSet();
-                                        gotSequenceParameterSet = true;
-                                        break;
-          case nutCodedSliceNonIdr:
-          case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {
-                                           ParseSliceHeader(); 
-                                           gotAccessUnitDelimiter = false;
-                                           return tsPayload.Used();
-                                           }
-                                        break;
-          default: ;
-          }
-        }
-     } while (tsPayload.Available() > (MIN_TS_PACKETS_FOR_FRAME_DETECTOR - 1) * TS_SIZE);
+  for (;;) {
+      scanner = (scanner << 8) | GetByte(true);
+      if ((scanner & 0xFFFFFF00) == 0x00000100) { // NAL unit start
+         uchar NalUnitType = scanner & 0x1F;
+         switch (NalUnitType) {
+           case nutAccessUnitDelimiter:  ParseAccessUnitDelimiter();
+                                         gotAccessUnitDelimiter = true;
+                                         break;
+           case nutSequenceParameterSet: ParseSequenceParameterSet();
+                                         gotSequenceParameterSet = true;
+                                         break;
+           case nutCodedSliceNonIdr:
+           case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {
+                                            ParseSliceHeader(); 
+                                            gotAccessUnitDelimiter = false;
+                                            return tsPayload.Used();
+                                            }
+                                         break;
+           default: ;
+           }
+         }
+      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
+            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         break;
+      }
   return tsPayload.Used();
 }
 
@@ -1324,8 +1328,6 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                  int n = parser->Parse(Data, Length, pid);
                  if (n > 0) {
                     if (parser->NewFrame()) {
-                       if (Processed)
-                          return Processed; // flush everything before this new frame
                        newFrame = true;
                        independentFrame = parser->IndependentFrame();
                        if (synced) {
