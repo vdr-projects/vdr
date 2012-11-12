@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.70 2012/11/04 15:27:44 kls Exp $
+ * $Id: recording.c 2.71 2012/11/12 14:48:12 kls Exp $
  */
 
 #include "recording.h"
@@ -1560,7 +1560,7 @@ void cIndexFileGenerator::Action(void)
               uchar *p = Data;
               while (Length >= TS_SIZE) {
                     int Pid = TsPid(p);
-                    if (Pid == 0)
+                    if (Pid == PATPID)
                        PatPmtParser.ParsePat(p, TS_SIZE);
                     else if (Pid == PatPmtParser.PmtPid())
                        PatPmtParser.ParsePmt(p, TS_SIZE);
@@ -1768,7 +1768,7 @@ bool cIndexFile::CatchUp(int Index)
   // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
      cMutexLock MutexLock(&mutex);
-     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index > last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
             if (!IsInIndexList(this)) {
@@ -1813,7 +1813,7 @@ bool cIndexFile::CatchUp(int Index)
             }
          else
             LOG_ERROR_STR(*fileName);
-         if (Index < last)
+         if (Index <= last)
             break;
          cCondWait::SleepMs(1000);
          }
@@ -1841,18 +1841,22 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
 bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length)
 {
   if (CatchUp(Index)) {
-     if (Index >= 0 && Index < last) {
+     if (Index >= 0 && Index <= last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
         if (Independent)
            *Independent = index[Index].independent;
         if (Length) {
-           uint16_t fn = index[Index + 1].number;
-           off_t fo = index[Index + 1].offset;
-           if (fn == *FileNumber)
-              *Length = int(fo - *FileOffset);
+           if (Index < last) {
+              uint16_t fn = index[Index + 1].number;
+              off_t fo = index[Index + 1].offset;
+              if (fn == *FileNumber)
+                 *Length = int(fo - *FileOffset);
+              else
+                 *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+              }
            else
-              *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+              *Length = -1;
            }
         return true;
         }
@@ -1866,7 +1870,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index < last) {
+         if (Index >= 0 && Index <= last) {
             if (index[Index].independent) {
                uint16_t fn;
                if (!FileNumber)
@@ -1900,7 +1904,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
 int cIndexFile::GetClosestIFrame(int Index)
 {
   if (last > 0) {
-     Index = constrain(Index, 0, last - 1);
+     Index = constrain(Index, 0, last);
      if (index[Index].independent)
         return Index;
      int il = Index - 1;
@@ -1911,9 +1915,9 @@ int cIndexFile::GetClosestIFrame(int Index)
                return il;
             il--;
             }
-         else if (ih >= last)
+         else if (ih > last)
             break;
-         if (ih < last) {
+         if (ih <= last) {
             if (index[ih].independent)
                return ih;
             ih++;
@@ -1930,7 +1934,7 @@ int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)
   if (CatchUp()) {
      //TODO implement binary search!
      int i;
-     for (i = 0; i < last; i++) {
+     for (i = 0; i <= last; i++) {
          if (index[i].number > FileNumber || (index[i].number == FileNumber) && off_t(index[i].offset) >= FileOffset)
             break;
          }
@@ -2082,7 +2086,7 @@ bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
                   while (read(fd, buf, sizeof(buf)) == sizeof(buf)) {
                         if (buf[0] == TS_SYNC_BYTE) {
                            int Pid = TsPid(buf);
-                           if (Pid == 0)
+                           if (Pid == PATPID)
                               PatPmtParser.ParsePat(buf, sizeof(buf));
                            else if (Pid == PatPmtParser.PmtPid()) {
                               PatPmtParser.ParsePmt(buf, sizeof(buf));
