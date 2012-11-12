@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.38 2012/10/15 10:22:27 kls Exp $
+ * $Id: recording.h 2.39 2012/11/12 14:51:09 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -234,7 +234,7 @@ public:
   bool Update(void);
   void Align(void);
   void Sort(void);
-  cMark *Add(int Position);
+  void Add(int Position);
   cMark *Get(int Position);
   cMark *GetPrev(int Position);
   cMark *GetNext(int Position);
@@ -301,6 +301,7 @@ public:
        ///< If there is no actual index data available, 0 is returned.
   int Get(uint16_t FileNumber, off_t FileOffset);
   int Last(void) { CatchUp(); return last; }
+       ///< Returns the index of the last entry in this file, or -1 if the file is empty.
   int GetResume(void) { return resumeFile.Read(); }
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);

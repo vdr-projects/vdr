@@ -7312,3 +7312,6 @@ Video Disk Recorder Revision History
   start up to twice as fast as before.
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Fixed handling the very last entry in a recording index.
+- The return type of cMarks::Add() has been changed to void, since due to the sorting
+  of the list of marks the returned pointer might have pointed to a totally different
+  mark. Besides, the return value was never actually used.

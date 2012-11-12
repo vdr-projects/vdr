@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.71 2012/11/12 14:48:12 kls Exp $
+ * $Id: recording.c 2.72 2012/11/12 14:51:09 kls Exp $
  */
 
 #include "recording.h"
@@ -1423,14 +1423,10 @@ void cMarks::Sort(void)
       }
 }
 
-cMark *cMarks::Add(int Position)
+void cMarks::Add(int Position)
 {
-  cMark *m = Get(Position);
-  if (!m) {
-     cConfig<cMark>::Add(m = new cMark(Position, NULL, framesPerSecond));
-     Sort();
-     }
-  return m;
+  cConfig<cMark>::Add(new cMark(Position, NULL, framesPerSecond));
+  Sort();
 }
 
 cMark *cMarks::Get(int Position)
