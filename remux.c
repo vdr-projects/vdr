@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.69 2012/11/06 10:59:39 kls Exp $
+ * $Id: remux.c 2.70 2012/11/13 10:00:00 kls Exp $
  */
 
 #include "remux.h"
@@ -991,16 +991,25 @@ cMpeg2Parser::cMpeg2Parser(void)
 int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
 {
   newFrame = independentFrame = false;
+  bool SeenPayloadStart = false;
   cTsPayload tsPayload(const_cast<uchar *>(Data), Length, Pid);
   if (TsPayloadStart(Data)) {
+     SeenPayloadStart = true;
      tsPayload.SkipPesHeader();
      scanner = EMPTY_SCANNER;
      if (debug && seenIndependentFrame)
         dbgframes("/");
      }
+  uint32_t OldScanner = scanner; // need to remember it in case of multiple frames per payload
   for (;;) {
+      if (!SeenPayloadStart && tsPayload.AtTsStart())
+         OldScanner = scanner;
       scanner = (scanner << 8) | tsPayload.GetByte();
       if (scanner == 0x00000100) { // Picture Start Code
+         if (!SeenPayloadStart && tsPayload.GetLastIndex() > TS_SIZE) {
+            scanner = OldScanner;
+            return tsPayload.Used() - TS_SIZE;
+            }
          newFrame = true;
          tsPayload.GetByte();
          uchar FrameType = (tsPayload.GetByte() >> 3) & 0x07;
@@ -1314,11 +1323,10 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
         if (TsHasPayload(Data) && !TsIsScrambled(Data)) {
            int Pid = TsPid(Data);
            if (Pid == pid) {
-              if (TsPayloadStart(Data)) {
-                 if (Processed)
-                    return Processed;
+              if (Processed)
+                 return Processed;
+              if (TsPayloadStart(Data))
                  scanning = true;
-                 }
               if (scanning) {
                  // Detect the beginning of a new frame:
                  if (TsPayloadStart(Data)) {
