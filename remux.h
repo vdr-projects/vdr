@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.32 2011/09/04 12:48:26 kls Exp $
+ * $Id: remux.h 2.35 2012/11/18 12:17:23 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -52,6 +52,11 @@ public:
 #define PATPID 0x0000 // PAT PID (constant 0)
 #define MAXPID 0x2000 // for arrays that use a PID as the index
 
+#define PTSTICKS  90000 // number of PTS ticks per second
+#define PCRFACTOR 300 // conversion from 27MHz PCR extension to 90kHz PCR base
+#define MAX33BIT  0x00000001FFFFFFFFLL // max. possible value with 33 bit
+#define MAX27MHZ  ((MAX33BIT + 1) * PCRFACTOR - 1) // max. possible PCR value
+
 inline bool TsHasPayload(const uchar *p)
 {
   return p[3] & TS_PAYLOAD_EXISTS;
@@ -82,6 +87,16 @@ inline bool TsIsScrambled(const uchar *p)
   return p[3] & TS_SCRAMBLING_CONTROL;
 }
 
+inline uchar TsGetContinuityCounter(const uchar *p)
+{
+  return p[3] & TS_CONT_CNT_MASK;
+}
+
+inline void TsSetContinuityCounter(uchar *p, uchar Counter)
+{
+  p[3] = (p[3] & ~TS_CONT_CNT_MASK) | (Counter & TS_CONT_CNT_MASK);
+}
+
 inline int TsPayloadOffset(const uchar *p)
 {
   int o = TsHasAdaptationField(p) ? p[4] + 5 : 4;
@@ -103,15 +118,31 @@ inline int TsContinuityCounter(const uchar *p)
   return p[3] & TS_CONT_CNT_MASK;
 }
 
-inline int TsGetAdaptationField(const uchar *p)
+inline int64_t TsGetPcr(const uchar *p)
 {
-  return TsHasAdaptationField(p) ? p[5] : 0x00;
+  if (TsHasAdaptationField(p)) {
+     if (p[4] >= 7 && (p[5] & TS_ADAPT_PCR)) {
+        return ((((int64_t)p[ 6]) << 25) |
+                (((int64_t)p[ 7]) << 17) |
+                (((int64_t)p[ 8]) <<  9) |
+                (((int64_t)p[ 9]) <<  1) |
+                (((int64_t)p[10]) >>  7)) * PCRFACTOR +
+               (((((int)p[10]) & 0x01) << 8) |
+                ( ((int)p[11])));
+        }
+     }
+  return -1;
 }
+
+void TsHidePayload(uchar *p);
+void TsSetPcr(uchar *p, int64_t Pcr);
 
 // The following functions all take a pointer to a sequence of complete TS packets.
 
 int64_t TsGetPts(const uchar *p, int l);
-void TsSetTeiOnBrokenPackets(uchar *p, int l);
+int64_t TsGetDts(const uchar *p, int l);
+void TsSetPts(uchar *p, int l, int64_t Pts);
+void TsSetDts(uchar *p, int l, int64_t Dts);
 
 // Some PES handling tools:
 // The following functions that take a pointer to PES data all assume that
@@ -142,6 +173,11 @@ inline bool PesHasPts(const uchar *p)
   return (p[7] & 0x80) && p[8] >= 5;
 }
 
+inline bool PesHasDts(const uchar *p)
+{
+  return (p[7] & 0x40) && p[8] >= 10;
+}
+
 inline int64_t PesGetPts(const uchar *p)
 {
   return ((((int64_t)p[ 9]) & 0x0E) << 29) |
@@ -150,6 +186,88 @@ inline int64_t PesGetPts(const uchar *p)
          (( (int64_t)p[12])         <<  7) |
          ((((int64_t)p[13]) & 0xFE) >>  1);
 }
+
+inline int64_t PesGetDts(const uchar *p)
+{
+  return ((((int64_t)p[14]) & 0x0E) << 29) |
+         (( (int64_t)p[15])         << 22) |
+         ((((int64_t)p[16]) & 0xFE) << 14) |
+         (( (int64_t)p[17])         <<  7) |
+         ((((int64_t)p[18]) & 0xFE) >>  1);
+}
+
+void PesSetPts(uchar *p, int64_t Pts);
+void PesSetDts(uchar *p, int64_t Dts);
+
+// PTS handling:
+
+inline int64_t PtsAdd(int64_t Pts1, int64_t Pts2) { return (Pts1 + Pts2) & MAX33BIT; }
+       ///< Adds the given PTS values, taking into account the 33bit wrap around.
+int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
+       ///< Returns the difference between two PTS values. The result of Pts2 - Pts1
+       ///< is the actual number of 90kHz time ticks that pass from Pts1 to Pts2,
+       ///< properly taking into account the 33bit wrap around. If Pts2 is "before"
+       ///< Pts1, the result is negative.
+
+// A transprent TS payload handler:
+
+class cTsPayload {
+private:
+  uchar *data;
+  int length;
+  int pid;
+  int index; // points to the next byte to process
+public:
+  cTsPayload(void);
+  cTsPayload(uchar *Data, int Length, int Pid = -1);
+       ///< Creates a new TS payload handler and calls Setup() with the given Data.
+  void Setup(uchar *Data, int Length, int Pid = -1);
+       ///< Sets up this TS payload handler with the given Data, which points to a
+       ///< sequence of Length bytes of complete TS packets. Any incomplete TS
+       ///< packet at the end will be ignored.
+       ///< If Pid is given, only TS packets with data for that PID will be processed.
+       ///< Otherwise the PID of the first TS packet defines which payload will be
+       ///< delivered.
+       ///< Any intermediate TS packets with different PIDs will be skipped.
+  bool AtTsStart(void) { return index < length && (index % TS_SIZE) == 0; }
+       ///< Returns true if this payload handler is currently pointing to first byte
+       ///< of a TS packet.
+  bool AtPayloadStart(void) { return AtTsStart() && TsPayloadStart(data + index); }
+       ///< Returns true if this payload handler is currently pointing to the first byte
+       ///< of a TS packet that starts a new payload.
+  int Available(void) { return length - index; }
+       ///< Returns the number of raw bytes (including any TS headers) still available
+       ///< in the TS payload handler.
+  int Used(void) { return (index + TS_SIZE - 1) / TS_SIZE * TS_SIZE; }
+       ///< Returns the number of raw bytes that have already been used (e.g. by calling
+       ///< GetByte()). Any TS packet of which at least a single byte has been delivered
+       ///< is counted with its full size.
+  bool Eof(void) const { return index >= length; }
+       ///< Returns true if all available bytes of the TS payload have been processed.
+  uchar GetByte(void);
+       ///< Gets the next byte of the TS payload, skipping any intermediate TS header data.
+  bool SkipBytes(int Bytes);
+       ///< Skips the given number of bytes in the payload and returns true if there
+       ///< is still data left to read.
+  bool SkipPesHeader(void);
+       ///< Skips all bytes belonging to the PES header of the payload.
+  int GetLastIndex(void);
+       ///< Returns the index into the TS data of the payload byte that has most recently
+       ///< been read. If no byte has been read yet, -1 will be returned.
+  void SetByte(uchar Byte, int Index);
+       ///< Sets the TS data byte at the given Index to the value Byte.
+       ///< Index should be one that has been retrieved by a previous call to GetIndex(),
+       ///< otherwise the behaviour is undefined. The current read index will not be
+       ///< altered by a call to this function.
+  bool Find(uint32_t Code);
+       ///< Searches for the four byte sequence given in Code and returns true if it
+       ///< was found within the payload data. The next call to GetByte() will return the
+       ///< value immediately following the Code. If the code was not found, the read
+       ///< index will remain the same as before this call, so that several calls to
+       ///< Find() can be performed starting at the same index..
+       ///< The special code 0xFFFFFFFF can not be searched, because this value is used
+       ///< to initialize the scanner.
+  };
 
 // PAT/PMT Generator:
 
@@ -248,6 +366,10 @@ public:
        ///< are delivered to the parser through several subsequent calls to
        ///< ParsePmt(). The whole PMT data will be processed once the last packet
        ///< has been received.
+  bool ParsePatPmt(const uchar *Data, int Length);
+       ///< Parses the given Data (which may consist of several TS packets, typically
+       ///< an entire frame) and extracts the PAT and PMT.
+       ///< Returns true if a valid PAT/PMT has been detected.
   bool GetVersions(int &PatVersion, int &PmtVersion) const;
        ///< Returns true if a valid PAT/PMT has been parsed and stores
        ///< the current version numbers in the given variables.
@@ -338,6 +460,8 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 #define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 5
 
+class cFrameParser;
+
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
@@ -354,12 +478,9 @@ private:
   double framesPerSecond;
   int framesInPayloadUnit;
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
-                            // some put an entire GOP into one payload unit (> 1), and
-                            // some spread a single frame over several payload units (< 0).
-  int payloadUnitOfFrame;
+                            // while others put an entire GOP into one payload unit (> 1).
   bool scanning;
-  uint32_t scanner;
-  int SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset);
+  cFrameParser *parser;
 public:
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.
@@ -367,9 +488,6 @@ public:
       ///< call to SetPid().
   void SetPid(int Pid, int Type);
       ///< Sets the Pid and stream Type to detect frames for.
-  void Reset(void);
-      ///< Resets any counters and flags used while syncing and prepares
-      ///< the frame detector for actual work.
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of TS_SIZE.

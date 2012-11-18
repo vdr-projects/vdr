@@ -1757,6 +1757,9 @@ Udo Richter <udo_richter@gmx.de>
  for adding the option --outputonly to the dvbsddevice plugin
  for adding a missing template specification to the c'tor of cSortedTimers
  for contributing to a patch that implements FHS support
+ for suggesting to check cIoThrottle::Engaged() in cRemoveDeletedRecordingsThread::Action()
+ for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
+ when a recording is played
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2305,6 +2308,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for fixing cRecording::LengthInSeconds(), which wrongfully rounded the result to full
  minutes
  for suggesting to check for NULL in cOsd::AddPixmap()
+ for making modified editing marks be written to disk whenever the replay progress
+ display gets hidden
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2314,6 +2319,8 @@ Alexander Wenzel <hondansx@gmx.de>
  for fixing the shutdown timeout
  for making the script given to VDR with the '-r' option be also called whenever a
  recording is deleted
+ for making pressing the Play key during normal live viewing mode open the Recordings
+ menu if there is no "last viewed" recording
 
 Jan Lenz <email@JanLenz.de>
  for reporting a bug in deleting recordings that have been removed externally when
@@ -2618,6 +2625,7 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  for reporting a problem with the function cString::sprintf(const char *fmt, va_list &ap),
  that might inadvertently be called with a 'char *' as the second argument on some
  compilers and cause a crash
+ for reporting a possible memory leak in SI::StructureLoop::getNextAsPointer()
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
@@ -2692,6 +2700,7 @@ Derek Kelly (user.vdr@gmail.com)
  several payloads
  for reporting a problem with getting the maximum short channel name length in case there
  are no short names at all
+ for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2895,6 +2904,7 @@ Torsten Lang <info@torstenlang.de>
  in case buffers run full
  for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
  buffer to 20MB to better handle HD recordings
+ for fixing setting the video format in the dvbhdffdevice
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -2960,3 +2970,6 @@ Sören Moch <smoch@web.de>
  for a patch that was used to move cleaning up the EPG data and writing the epg.data
  file into a separate thread to avoid sluggish response to user input on slow systems
  for fixing sorting folders before recordings in case of UTF-8
+
+Peter Münster <pmlists@free.fr>
+ for fixing 'make install' to not overwrite existing configuration files

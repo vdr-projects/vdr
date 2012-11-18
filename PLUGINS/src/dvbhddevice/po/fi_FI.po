@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR \n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2012-02-07 20:13+0100\n"
+"POT-Creation-Date: 2012-11-13 20:08+0100\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
 "Last-Translator: Rolf Ahrenberg\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -90,6 +90,9 @@ msgstr "Äänen viive (ms)"
 
 msgid "Audio Downmix"
 msgstr "Äänen alasmiksaus"
+
+msgid "A/V Sync Shift (ms)"
+msgstr ""
 
 msgid "OSD Size"
 msgstr "Kuvaruutunäytön koko"

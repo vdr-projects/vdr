@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.68 2012/09/20 09:32:26 kls Exp $
+ * $Id: device.c 2.69 2012/11/13 09:11:43 kls Exp $
  */
 
 #include "device.h"
@@ -1147,7 +1147,7 @@ void cDevice::StillPicture(const uchar *Data, int Length)
      int Size = 0;
      while (Length >= TS_SIZE) {
            int Pid = TsPid(Data);
-           if (Pid == 0)
+           if (Pid == PATPID)
               patPmtParser.ParsePat(Data, TS_SIZE);
            else if (Pid == patPmtParser.PmtPid())
               patPmtParser.ParsePmt(Data, TS_SIZE);
@@ -1484,7 +1484,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
            if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
               int PayloadOffset = TsPayloadOffset(Data);
               if (PayloadOffset < TS_SIZE) {
-                 if (Pid == 0)
+                 if (Pid == PATPID)
                     patPmtParser.ParsePat(Data, TS_SIZE);
                  else if (Pid == patPmtParser.PmtPid())
                     patPmtParser.ParsePmt(Data, TS_SIZE);

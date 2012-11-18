@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 2.2 2012/09/20 08:46:27 kls Exp $
+ * $Id: thread.h 2.3 2012/10/04 12:15:39 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -83,6 +83,7 @@ private:
   tThreadId childThreadId;
   cMutex mutex;
   char *description;
+  bool lowPriority;
   static tThreadId mainThreadId;
   static void *StartThread(cThread *Thread);
 protected:
@@ -106,11 +107,13 @@ protected:
        ///< If WaitSeconds is -1, only 'running' is set to false and Cancel()
        ///< returns immediately, without killing the thread.
 public:
-  cThread(const char *Description = NULL);
+  cThread(const char *Description = NULL, bool LowPriority = false);
        ///< Creates a new thread.
        ///< If Description is present, a log file entry will be made when
        ///< the thread starts and stops. The Start() function must be called
        ///< to actually start the thread.
+       ///< LowPriority can be set to true to make this thread run at a lower
+       ///< priority.
   virtual ~cThread();
   void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
   bool Start(void);

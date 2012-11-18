@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.12 2012/09/15 13:34:03 kls Exp $
+ * $Id: timers.c 2.14 2012/10/16 08:22:39 kls Exp $
  */
 
 #include "timers.h"
@@ -465,10 +465,11 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
            startTime = event->StartTime();
            stopTime = event->EndTime();
            if (!Margin) { // this is an actual check
-              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
-                 return event->IsRunning(true);
-              else
-                 return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
+              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
+                 if (event->StartTime() > 0) // checks for "phased out" events
+                    return event->IsRunning(true);
+                 }
+              return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
               }
            }
         }
@@ -549,8 +550,12 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         lastSetEvent = now;
         const cEvent *Event = NULL;
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
-           if (event && Recording())
-              return; // let the recording end first
+           if (event && event->StartTime() > 0) { // checks for "phased out" events
+              if (Recording())
+                 return; // let the recording end first
+              if (now <= event->EndTime() || Matches(0, true))
+                 return; // stay with the old event until the timer has completely expired
+              }
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
@@ -562,8 +567,6 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
                      }
                   }
                }
-           if (!Event && event && (now <= event->EndTime() || Matches(0, true)))
-              return; // stay with the old event until the timer has completely expired
            }
         else {
            // Normal timers match the event they have the most overlap with:

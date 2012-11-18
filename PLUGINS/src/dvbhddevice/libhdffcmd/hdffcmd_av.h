@@ -149,4 +149,6 @@ int HdffCmdAvSetAudioDownmix(int OsdDevice,
 
 int HdffCmdAvSetAudioChannel(int OsdDevice, uint8_t AudioChannel);
 
+int HdffCmdAvSetSyncShift(int OsdDevice, int16_t SyncShift);
+
 #endif /* HDFFCMD_AV_H */

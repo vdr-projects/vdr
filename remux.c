@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.67 2012/09/19 10:28:42 kls Exp $
+ * $Id: remux.c 2.71 2012/11/18 12:18:08 kls Exp $
  */
 
 #include "remux.h"
@@ -22,6 +22,8 @@ static bool DebugFrames = false;
 
 #define dbgpatpmt(a...) if (DebugPatPmt) fprintf(stderr, a)
 #define dbgframes(a...) if (DebugFrames) fprintf(stderr, a)
+
+#define EMPTY_SCANNER (0xFFFFFFFF)
 
 ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader)
 {
@@ -112,6 +114,32 @@ void cRemux::SetBrokenLink(uchar *Data, int Length)
 
 // --- Some TS handling tools ------------------------------------------------
 
+void TsHidePayload(uchar *p)
+{
+  p[1] &= ~TS_PAYLOAD_START;
+  p[3] |=  TS_ADAPT_FIELD_EXISTS;
+  p[3] &= ~TS_PAYLOAD_EXISTS;
+  p[4] = TS_SIZE - 5;
+  p[5] = 0x00;
+  memset(p + 6, 0xFF, TS_SIZE - 6);
+}
+
+void TsSetPcr(uchar *p, int64_t Pcr)
+{
+  if (TsHasAdaptationField(p)) {
+     if (p[4] >= 7 && (p[5] & TS_ADAPT_PCR)) {
+        int64_t b = Pcr / PCRFACTOR;
+        int e = Pcr % PCRFACTOR;
+        p[ 6] =  b >> 25;
+        p[ 7] =  b >> 17;
+        p[ 8] =  b >>  9;
+        p[ 9] =  b >>  1;
+        p[10] = (b <<  7) | (p[10] & 0x7E) | ((e >> 8) & 0x01);
+        p[11] =  e;
+        }
+     }
+}
+
 int64_t TsGetPts(const uchar *p, int l)
 {
   // Find the first packet with a PTS and use it:
@@ -125,25 +153,163 @@ int64_t TsGetPts(const uchar *p, int l)
   return -1;
 }
 
-void TsSetTeiOnBrokenPackets(uchar *p, int l)
+int64_t TsGetDts(const uchar *p, int l)
 {
-  bool Processed[MAXPID] = { false };
-  while (l >= TS_SIZE) {
-        if (*p != TS_SYNC_BYTE)
-           break;
-        int Pid = TsPid(p);
-        if (!Processed[Pid]) {
-           if (!TsPayloadStart(p))
-              p[1] |= TS_ERROR;
-           else {
-              Processed[Pid] = true;
-              int offs = TsPayloadOffset(p);
-              cRemux::SetBrokenLink(p + offs, TS_SIZE - offs);
-              }
-           }
-        l -= TS_SIZE;
+  // Find the first packet with a DTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasDts(d))
+           return PesGetDts(d);
         p += TS_SIZE;
+        l -= TS_SIZE;
         }
+  return -1;
+}
+
+void TsSetPts(uchar *p, int l, int64_t Pts)
+{
+  // Find the first packet with a PTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasPts(d)) {
+           PesSetPts(const_cast<uchar *>(d), Pts);
+           return;
+           }
+        p += TS_SIZE;
+        l -= TS_SIZE;
+        }
+}
+
+void TsSetDts(uchar *p, int l, int64_t Dts)
+{
+  // Find the first packet with a DTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasDts(d)) {
+           PesSetDts(const_cast<uchar *>(d), Dts);
+           return;
+           }
+        p += TS_SIZE;
+        l -= TS_SIZE;
+        }
+}
+
+// --- Some PES handling tools -----------------------------------------------
+
+void PesSetPts(uchar *p, int64_t Pts)
+{
+  p[ 9] = ((Pts >> 29) & 0x0E) | (p[9] & 0xF1);
+  p[10] =   Pts >> 22;
+  p[11] = ((Pts >> 14) & 0xFE) | 0x01;
+  p[12] =   Pts >>  7;
+  p[13] = ((Pts <<  1) & 0xFE) | 0x01;
+}
+
+void PesSetDts(uchar *p, int64_t Dts)
+{
+  p[14] = ((Dts >> 29) & 0x0E) | (p[14] & 0xF1);
+  p[15] =   Dts >> 22;
+  p[16] = ((Dts >> 14) & 0xFE) | 0x01;
+  p[17] =   Dts >>  7;
+  p[18] = ((Dts <<  1) & 0xFE) | 0x01;
+}
+
+int64_t PtsDiff(int64_t Pts1, int64_t Pts2)
+{
+  int64_t d = Pts2 - Pts1;
+  if (d > MAX33BIT / 2)
+     return d - (MAX33BIT + 1);
+  if (d < -MAX33BIT / 2)
+     return d + (MAX33BIT + 1);
+  return d;
+}
+
+// --- cTsPayload ------------------------------------------------------------
+
+cTsPayload::cTsPayload(void)
+{
+  data = NULL;
+  length = 0;
+  pid = -1;
+  index = 0;
+}
+
+cTsPayload::cTsPayload(uchar *Data, int Length, int Pid)
+{
+  Setup(Data, Length, Pid);
+}
+
+void cTsPayload::Setup(uchar *Data, int Length, int Pid)
+{
+  data = Data;
+  length = Length;
+  pid = Pid >= 0 ? Pid : TsPid(Data);
+  index = 0;
+}
+
+uchar cTsPayload::GetByte(void)
+{
+  if (!Eof()) {
+     if (index % TS_SIZE == 0) { // encountered the next TS header
+        for (;; index += TS_SIZE) {
+            if (data[index] == TS_SYNC_BYTE && index + TS_SIZE <= length) { // to make sure we are at a TS header start and drop incomplete TS packets at the end
+               uchar *p = data + index;
+               if (TsPid(p) == pid) { // only handle TS packets for the initial PID
+                  if (TsHasPayload(p)) {
+                     if (index > 0 && TsPayloadStart(p)) { // checking index to not skip the very first TS packet
+                        length = index; // triggers EOF
+                        return 0x00;
+                        }
+                     index += TsPayloadOffset(p);
+                     break;
+                     }
+                  }
+               }
+            else {
+               length = index; // triggers EOF
+               return 0x00;
+               }
+           }
+        }
+     return data[index++];
+     }
+  return 0x00;
+}
+
+bool cTsPayload::SkipBytes(int Bytes)
+{
+  while (Bytes-- > 0)
+        GetByte();
+  return !Eof();
+}
+
+bool cTsPayload::SkipPesHeader(void)
+{
+  return SkipBytes(PesPayloadOffset(data + TsPayloadOffset(data)));
+}
+
+int cTsPayload::GetLastIndex(void)
+{
+  return index - 1;
+}
+
+void cTsPayload::SetByte(uchar Byte, int Index)
+{
+  if (Index >= 0 && Index < length)
+     data[Index] = Byte;
+}
+
+bool cTsPayload::Find(uint32_t Code)
+{
+  int OldIndex = index;
+  uint32_t Scanner = EMPTY_SCANNER;
+  while (!Eof()) {
+        Scanner = (Scanner << 8) | GetByte();
+        if (Scanner == Code)
+           return true;
+        }
+  index = OldIndex;
+  return false;
 }
 
 // --- cPatPmtGenerator ------------------------------------------------------
@@ -665,6 +831,25 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
   pmtSize = 0;
 }
 
+bool cPatPmtParser::ParsePatPmt(const uchar *Data, int Length)
+{
+  while (Length >= TS_SIZE) {
+        if (*Data != TS_SYNC_BYTE)
+           break; // just for safety
+        int Pid = TsPid(Data);
+        if (Pid == PATPID)
+           ParsePat(Data, TS_SIZE);
+        else if (Pid == PmtPid()) {
+           ParsePmt(Data, TS_SIZE);
+           if (patVersion >= 0 && pmtVersion >= 0)
+              return true;
+           }
+        Data += TS_SIZE;
+        Length -= TS_SIZE;
+        }
+  return false;
+}
+
 bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion) const
 {
   PatVersion = patVersion;
@@ -809,23 +994,365 @@ void PesDump(const char *Name, const u_char *Data, int Length)
   TsDump(Name, Data, Length);
 }
 
-// --- cFrameDetector --------------------------------------------------------
+// --- cFrameParser ----------------------------------------------------------
 
-#define EMPTY_SCANNER (0xFFFFFFFF)
+class cFrameParser {
+protected:
+  bool debug;
+  bool newFrame;
+  bool independentFrame;
+public:
+  cFrameParser(void);
+  virtual ~cFrameParser() {};
+  virtual int Parse(const uchar *Data, int Length, int Pid) = 0;
+       ///< Parses the given Data, which is a sequence of Length bytes of TS packets.
+       ///< The payload in the TS packets with the given Pid is searched for just
+       ///< enough information to determine the beginning and type of the next video
+       ///< frame.
+       ///< Returns the number of bytes parsed. Upon return, the functions NewFrame()
+       ///< and IndependentFrame() can be called to retrieve the required information.
+  void SetDebug(bool Debug) { debug = Debug; }
+  bool NewFrame(void) { return newFrame; }
+  bool IndependentFrame(void) { return independentFrame; }
+  };
+
+cFrameParser::cFrameParser(void)
+{
+  debug = true;
+  newFrame = false;
+  independentFrame = false;
+}
+
+// --- cAudioParser ----------------------------------------------------------
+
+class cAudioParser : public cFrameParser {
+public:
+  cAudioParser(void);
+  virtual int Parse(const uchar *Data, int Length, int Pid);
+  };
+
+cAudioParser::cAudioParser(void)
+{
+}
+
+int cAudioParser::Parse(const uchar *Data, int Length, int Pid)
+{
+  if (TsPayloadStart(Data)) {
+     newFrame = independentFrame = true;
+     if (debug)
+        dbgframes("/");
+     }
+  else
+     newFrame = independentFrame = false;
+  return TS_SIZE;
+}
+
+// --- cMpeg2Parser ----------------------------------------------------------
+
+class cMpeg2Parser : public cFrameParser {
+private:
+  uint32_t scanner;
+  bool seenIndependentFrame;
+public:
+  cMpeg2Parser(void);
+  virtual int Parse(const uchar *Data, int Length, int Pid);
+  };
+
+cMpeg2Parser::cMpeg2Parser(void)
+{
+  scanner = EMPTY_SCANNER;
+  seenIndependentFrame = false;
+}
+
+int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
+{
+  newFrame = independentFrame = false;
+  bool SeenPayloadStart = false;
+  cTsPayload tsPayload(const_cast<uchar *>(Data), Length, Pid);
+  if (TsPayloadStart(Data)) {
+     SeenPayloadStart = true;
+     tsPayload.SkipPesHeader();
+     scanner = EMPTY_SCANNER;
+     if (debug && seenIndependentFrame)
+        dbgframes("/");
+     }
+  uint32_t OldScanner = scanner; // need to remember it in case of multiple frames per payload
+  for (;;) {
+      if (!SeenPayloadStart && tsPayload.AtTsStart())
+         OldScanner = scanner;
+      scanner = (scanner << 8) | tsPayload.GetByte();
+      if (scanner == 0x00000100) { // Picture Start Code
+         if (!SeenPayloadStart && tsPayload.GetLastIndex() > TS_SIZE) {
+            scanner = OldScanner;
+            return tsPayload.Used() - TS_SIZE;
+            }
+         newFrame = true;
+         tsPayload.GetByte();
+         uchar FrameType = (tsPayload.GetByte() >> 3) & 0x07;
+         independentFrame = FrameType == 1; // I-Frame
+         if (debug) {
+            seenIndependentFrame |= independentFrame;
+            if (seenIndependentFrame) {
+               static const char FrameTypes[] = "?IPBD???";
+               dbgframes("%c", FrameTypes[FrameType]);
+               }
+            }
+         break;
+         }
+      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
+            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         break;
+      }
+  return tsPayload.Used();
+}
+
+// --- cMpeg4Parser ----------------------------------------------------------
+
+class cMpeg4Parser : public cFrameParser {
+private:
+  enum eNalUnitType {
+    nutCodedSliceNonIdr     = 1,
+    nutCodedSliceIdr        = 5,
+    nutSequenceParameterSet = 7,
+    nutAccessUnitDelimiter  = 9,
+    };
+  cTsPayload tsPayload;
+  uchar byte; // holds the current byte value in case of bitwise access
+  int bit; // the bit index into the current byte (-1 if we're not in bit reading mode)
+  int zeroBytes; // the number of consecutive zero bytes (to detect 0x000003)
+  uint32_t scanner;
+  // Identifiers written in '_' notation as in "ITU-T H.264":
+  bool separate_colour_plane_flag;
+  int log2_max_frame_num;
+  bool frame_mbs_only_flag;
+  //
+  bool gotAccessUnitDelimiter;
+  bool gotSequenceParameterSet;
+  uchar GetByte(bool Raw = false);
+       ///< Gets the next data byte. If Raw is true, no filtering will be done.
+       ///< With Raw set to false, if the byte sequence 0x000003 is encountered,
+       ///< the byte with 0x03 will be skipped.
+  uchar GetBit(void);
+  uint32_t GetBits(int Bits);
+  uint32_t GetGolombUe(void);
+  int32_t GetGolombSe(void);
+  void ParseAccessUnitDelimiter(void);
+  void ParseSequenceParameterSet(void);
+  void ParseSliceHeader(void);
+public:
+  cMpeg4Parser(void);
+       ///< Sets up a new MPEG-4 parser.
+       ///< This class parses only the data absolutely necessary to determine the
+       ///< frame borders and field count of the given H264 material.
+  virtual int Parse(const uchar *Data, int Length, int Pid);
+  };
+
+cMpeg4Parser::cMpeg4Parser(void)
+{
+  byte = 0;
+  bit = -1;
+  zeroBytes = 0;
+  scanner = EMPTY_SCANNER;
+  separate_colour_plane_flag = false;
+  log2_max_frame_num = 0;
+  frame_mbs_only_flag = false;
+  gotAccessUnitDelimiter = false;
+  gotSequenceParameterSet = false;
+}
+
+uchar cMpeg4Parser::GetByte(bool Raw)
+{
+  uchar b = tsPayload.GetByte();
+  if (!Raw) {
+     // If we encounter the byte sequence 0x000003, we need to skip the 0x03:
+     if (b == 0x00)
+        zeroBytes++;
+     else {
+        if (b == 0x03 && zeroBytes >= 2)
+           b = tsPayload.GetByte();
+        zeroBytes = 0;
+        }
+     }
+  else
+     zeroBytes = 0;
+  bit = -1;
+  return b;
+}
+
+uchar cMpeg4Parser::GetBit(void)
+{
+  if (bit < 0) {
+     byte = GetByte();
+     bit = 7;
+     }
+  return (byte & (1 << bit--)) ? 1 : 0;
+}
+
+uint32_t cMpeg4Parser::GetBits(int Bits)
+{
+  uint32_t b = 0;
+  while (Bits--)
+        b |= GetBit() << Bits;
+  return b;
+}
+
+uint32_t cMpeg4Parser::GetGolombUe(void)
+{
+  int z = -1;
+  for (int b = 0; !b; z++)
+      b = GetBit();
+  return (1 << z) - 1 + GetBits(z);
+}
+
+int32_t cMpeg4Parser::GetGolombSe(void)
+{
+  uint32_t v = GetGolombUe();
+  if (v) {
+     if ((v & 0x01) != 0)
+        return (v + 1) / 2; // fails for v == 0xFFFFFFFF, but that will probably never happen
+     else
+        return -int32_t(v / 2);
+     }
+  return v;
+}
+
+int cMpeg4Parser::Parse(const uchar *Data, int Length, int Pid)
+{
+  newFrame = independentFrame = false;
+  tsPayload.Setup(const_cast<uchar *>(Data), Length, Pid);
+  if (TsPayloadStart(Data)) {
+     tsPayload.SkipPesHeader();
+     scanner = EMPTY_SCANNER;
+     if (debug && gotSequenceParameterSet) {
+        dbgframes("/");
+        }
+     }
+  for (;;) {
+      scanner = (scanner << 8) | GetByte(true);
+      if ((scanner & 0xFFFFFF00) == 0x00000100) { // NAL unit start
+         uchar NalUnitType = scanner & 0x1F;
+         switch (NalUnitType) {
+           case nutAccessUnitDelimiter:  ParseAccessUnitDelimiter();
+                                         gotAccessUnitDelimiter = true;
+                                         break;
+           case nutSequenceParameterSet: ParseSequenceParameterSet();
+                                         gotSequenceParameterSet = true;
+                                         break;
+           case nutCodedSliceNonIdr:
+           case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {
+                                            ParseSliceHeader(); 
+                                            gotAccessUnitDelimiter = false;
+                                            return tsPayload.Used();
+                                            }
+                                         break;
+           default: ;
+           }
+         }
+      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
+            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         break;
+      }
+  return tsPayload.Used();
+}
+
+void cMpeg4Parser::ParseAccessUnitDelimiter(void)
+{
+  if (debug && gotSequenceParameterSet)
+     dbgframes("A");
+  GetByte(); // primary_pic_type
+}
+
+void cMpeg4Parser::ParseSequenceParameterSet(void)
+{
+  uchar profile_idc = GetByte(); // profile_idc
+  GetByte(); // constraint_set[0-5]_flags, reserved_zero_2bits
+  GetByte(); // level_idc
+  GetGolombUe(); // seq_parameter_set_id
+  if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44 || profile_idc == 83 || profile_idc == 86 || profile_idc ==118 || profile_idc == 128) {
+     int chroma_format_idc = GetGolombUe(); // chroma_format_idc
+     if (chroma_format_idc == 3)
+        separate_colour_plane_flag = GetBit();
+     GetGolombUe(); // bit_depth_luma_minus8
+     GetGolombUe(); // bit_depth_chroma_minus8
+     GetBit(); // qpprime_y_zero_transform_bypass_flag
+     if (GetBit()) { // seq_scaling_matrix_present_flag
+        for (int i = 0; i < ((chroma_format_idc != 3) ? 8 : 12); i++) {
+            if (GetBit()) { // seq_scaling_list_present_flag
+               int SizeOfScalingList = (i < 6) ? 16 : 64;
+               int LastScale = 8;
+               int NextScale = 8;
+               for (int j = 0; j < SizeOfScalingList; j++) {
+                   if (NextScale)
+                      NextScale = (LastScale + GetGolombSe() + 256) % 256; // delta_scale
+                   if (NextScale)
+                      LastScale = NextScale;
+                   }
+               }
+            }
+        }
+     }
+  log2_max_frame_num = GetGolombUe() + 4; // log2_max_frame_num_minus4
+  int pic_order_cnt_type = GetGolombUe(); // pic_order_cnt_type
+  if (pic_order_cnt_type == 0)
+     GetGolombUe(); // log2_max_pic_order_cnt_lsb_minus4
+  else if (pic_order_cnt_type == 1) {
+     GetBit(); // delta_pic_order_always_zero_flag
+     GetGolombSe(); // offset_for_non_ref_pic
+     GetGolombSe(); // offset_for_top_to_bottom_field
+     for (int i = GetGolombUe(); i--; ) // num_ref_frames_in_pic_order_cnt_cycle
+         GetGolombSe(); // offset_for_ref_frame
+     }
+  GetGolombUe(); // max_num_ref_frames
+  GetBit(); // gaps_in_frame_num_value_allowed_flag
+  GetGolombUe(); // pic_width_in_mbs_minus1
+  GetGolombUe(); // pic_height_in_map_units_minus1
+  frame_mbs_only_flag = GetBit(); // frame_mbs_only_flag
+  if (debug) {
+     if (gotAccessUnitDelimiter && !gotSequenceParameterSet)
+        dbgframes("A"); // just for completeness
+     dbgframes(frame_mbs_only_flag ? "S" : "s");
+     }
+}
+
+void cMpeg4Parser::ParseSliceHeader(void)
+{
+  newFrame = true;
+  GetGolombUe(); // first_mb_in_slice
+  int slice_type = GetGolombUe(); // slice_type, 0 = P, 1 = B, 2 = I, 3 = SP, 4 = SI
+  independentFrame = (slice_type % 5) == 2;
+  if (debug) {
+     static const char SliceTypes[] = "PBIpi";
+     dbgframes("%c", SliceTypes[slice_type % 5]);
+     }
+  if (frame_mbs_only_flag)
+     return; // don't need the rest - a frame is complete
+  GetGolombUe(); // pic_parameter_set_id
+  if (separate_colour_plane_flag)
+     GetBits(2); // colour_plane_id
+  GetBits(log2_max_frame_num); // frame_num
+  if (!frame_mbs_only_flag) {
+     if (GetBit()) // field_pic_flag
+        newFrame = !GetBit(); // bottom_field_flag
+     if (debug)
+        dbgframes(newFrame ? "t" : "b");
+     }
+}
+
+// --- cFrameDetector --------------------------------------------------------
 
 cFrameDetector::cFrameDetector(int Pid, int Type)
 {
+  parser = NULL;
   SetPid(Pid, Type);
   synced = false;
   newFrame = independentFrame = false;
   numPtsValues = 0;
-  numFrames = 0;
   numIFrames = 0;
   framesPerSecond = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
-  payloadUnitOfFrame = 0;
   scanning = false;
-  scanner = EMPTY_SCANNER;
 }
 
 static int CmpUint32(const void *p1, const void *p2)
@@ -840,42 +1367,26 @@ void cFrameDetector::SetPid(int Pid, int Type)
   pid = Pid;
   type = Type;
   isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
-}
-
-void cFrameDetector::Reset(void)
-{
-  newFrame = independentFrame = false;
-  payloadUnitOfFrame = 0;
-  scanning = false;
-  scanner = EMPTY_SCANNER;
-}
-
-int cFrameDetector::SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset)
-{
-  if (!synced)
-     dbgframes("%d>", FrameTypeOffset);
-  while (Length >= TS_SIZE) {
-        // switch to the next TS packet, but skip those that have a different PID:
-        Data += TS_SIZE;
-        Length -= TS_SIZE;
-        Processed += TS_SIZE;
-        if (TsPid(Data) == pid)
-           break;
-        else if (Length < TS_SIZE)
-           esyslog("ERROR: out of data while skipping TS packets in cFrameDetector");
-        }
-  FrameTypeOffset -= TS_SIZE;
-  FrameTypeOffset += TsPayloadOffset(Data);
-  return FrameTypeOffset;
+  delete parser;
+  parser = NULL;
+  if (type == 0x01 || type == 0x02)
+     parser = new cMpeg2Parser;
+  else if (type == 0x1B)
+     parser = new cMpeg4Parser;
+  else if (type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
+     parser = new cAudioParser;
+  else if (type != 0)
+     esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
 }
 
 int cFrameDetector::Analyze(const uchar *Data, int Length)
 {
-  bool SeenPayloadStart = false;
-  bool SeenAccessUnitDelimiter = false;
+  if (!parser)
+     return 0;
   int Processed = 0;
   newFrame = independentFrame = false;
-  while (Length >= TS_SIZE) {
+  while (Length >= MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE) { // makes sure we are looking at enough data, in case the frame type is not stored in the first TS packet
+        // Sync on TS packet borders:
         if (Data[0] != TS_SYNC_BYTE) {
            int Skipped = 1;
            while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
@@ -883,186 +1394,99 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
            esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
            return Processed + Skipped;
            }
+        // Handle one TS packet:
+        int Handled = TS_SIZE;
         if (TsHasPayload(Data) && !TsIsScrambled(Data)) {
            int Pid = TsPid(Data);
            if (Pid == pid) {
+              if (Processed)
+                 return Processed;
+              if (TsPayloadStart(Data))
+                 scanning = true;
+              if (scanning) {
+                 // Detect the beginning of a new frame:
+                 if (TsPayloadStart(Data)) {
+                    if (!framesPerPayloadUnit)
+                       framesPerPayloadUnit = framesInPayloadUnit;
+                    }
+                 int n = parser->Parse(Data, Length, pid);
+                 if (n > 0) {
+                    if (parser->NewFrame()) {
+                       newFrame = true;
+                       independentFrame = parser->IndependentFrame();
+                       if (synced) {
+                          if (framesPerPayloadUnit <= 1)
+                             scanning = false;
+                          }
+                       else {
+                          framesInPayloadUnit++;
+                          if (independentFrame)
+                             numIFrames++;
+                          }
+                       }
+                    Handled = n;
+                    }
+                 }
               if (TsPayloadStart(Data)) {
-                 SeenPayloadStart = true;
-                 if (synced && Processed)
-                    return Processed;
-                 if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
-                    return Processed; // need more data, in case the frame type is not stored in the first TS packet
+                 // Determine the frame rate from the PTS values in the PES headers:
                  if (framesPerSecond <= 0.0) {
                     // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < 2 || numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
-                       const uchar *Pes = Data + TsPayloadOffset(Data);
-                       if (numIFrames && PesHasPts(Pes)) {
-                          ptsValues[numPtsValues] = PesGetPts(Pes);
-                          // check for rollover:
-                          if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
-                             dbgframes("#");
-                             numPtsValues = 0;
-                             numIFrames = 0;
-                             numFrames = 0;
+                       if (newFrame) { // only take PTS values at the beginning of a frame (in case if fields!)
+                          const uchar *Pes = Data + TsPayloadOffset(Data);
+                          if (numIFrames && PesHasPts(Pes)) {
+                             ptsValues[numPtsValues] = PesGetPts(Pes);
+                             // check for rollover:
+                             if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
+                                dbgframes("#");
+                                numPtsValues = 0;
+                                numIFrames = 0;
+                                }
+                             else
+                                numPtsValues++;
                              }
-                          else
-                             numPtsValues++;
                           }
                        }
-                    else {
+                    if (numPtsValues >= 2 && numIFrames >= 2) {
                        // find the smallest PTS delta:
                        qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
                        numPtsValues--;
                        for (int i = 0; i < numPtsValues; i++)
                            ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
                        qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                       uint32_t Delta = ptsValues[0];
+                       uint32_t Delta = ptsValues[0] / framesPerPayloadUnit;
                        // determine frame info:
                        if (isVideo) {
                           if (abs(Delta - 3600) <= 1)
                              framesPerSecond = 25.0;
                           else if (Delta % 3003 == 0)
                              framesPerSecond = 30.0 / 1.001;
-                          else if (abs(Delta - 1800) <= 1) {
-                             if (numFrames > 50) {
-                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
-                                framesPerSecond = 25.0;
-                                framesPerPayloadUnit = -2;
-                                }
-                             else
-                                framesPerSecond = 50.0;
-                             }
+                          else if (abs(Delta - 1800) <= 1)
+                             framesPerSecond = 50.0;
                           else if (Delta == 1501)
-                             if (numFrames > 50) {
-                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
-                                framesPerSecond = 30.0 / 1.001;
-                                framesPerPayloadUnit = -2;
-                                }
-                             else
-                                framesPerSecond = 60.0 / 1.001;
+                             framesPerSecond = 60.0 / 1.001;
                           else {
                              framesPerSecond = DEFAULTFRAMESPERSECOND;
                              dsyslog("unknown frame delta (%d), assuming %5.2f fps", Delta, DEFAULTFRAMESPERSECOND);
                              }
                           }
                        else // audio
-                          framesPerSecond = 90000.0 / Delta; // PTS of audio frames is always increasing
-                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numFrames);
+                          framesPerSecond = double(PTSTICKS) / Delta; // PTS of audio frames is always increasing
+                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numPtsValues + 1);
+                       synced = true;
+                       parser->SetDebug(false);
                        }
-                    }
-                 scanner = EMPTY_SCANNER;
-                 scanning = true;
-                 }
-              if (scanning) {
-                 int PayloadOffset = TsPayloadOffset(Data);
-                 if (TsPayloadStart(Data)) {
-                    PayloadOffset += PesPayloadOffset(Data + PayloadOffset);
-                    if (!framesPerPayloadUnit)
-                       framesPerPayloadUnit = framesInPayloadUnit;
-                    if (DebugFrames && !synced)
-                       dbgframes("/");
-                    }
-                 for (int i = PayloadOffset; scanning && i < TS_SIZE; i++) {
-                     scanner <<= 8;
-                     scanner |= Data[i];
-                     switch (type) {
-                       case 0x01: // MPEG 1 video
-                       case 0x02: // MPEG 2 video
-                            if (scanner == 0x00000100) { // Picture Start Code
-                               scanner = EMPTY_SCANNER;
-                               if (synced && !SeenPayloadStart && Processed)
-                                  return Processed; // flush everything before this new frame
-                               int FrameTypeOffset = i + 2;
-                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
-                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
-                               newFrame = true;
-                               uchar FrameType = (Data[FrameTypeOffset] >> 3) & 0x07;
-                               independentFrame = FrameType == 1; // I-Frame
-                               if (synced) {
-                                  if (framesPerPayloadUnit <= 1)
-                                     scanning = false;
-                                  }
-                               else {
-                                  framesInPayloadUnit++;
-                                  if (independentFrame)
-                                     numIFrames++;
-                                  if (numIFrames == 1)
-                                     numFrames++;
-                                  dbgframes("%u ", FrameType);
-                                  }
-                               if (synced)
-                                  return Processed + TS_SIZE; // flag this new frame
-                               }
-                            break;
-                       case 0x1B: // MPEG 4 video
-                            if (scanner == 0x00000109) { // Access Unit Delimiter
-                               scanner = EMPTY_SCANNER;
-                               if (synced && !SeenPayloadStart && Processed)
-                                  return Processed; // flush everything before this new frame
-                               SeenAccessUnitDelimiter = true;
-                               }
-                            else if (SeenAccessUnitDelimiter && scanner == 0x00000001) { // NALU start
-                               SeenAccessUnitDelimiter = false;
-                               int FrameTypeOffset = i + 1;
-                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
-                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
-                               newFrame = true;
-                               uchar FrameType = Data[FrameTypeOffset] & 0x1F;
-                               independentFrame = FrameType == 0x07;
-                               if (synced) {
-                                  if (framesPerPayloadUnit < 0) {
-                                     payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
-                                     if (payloadUnitOfFrame != 0 && independentFrame)
-                                        payloadUnitOfFrame = 0;
-                                     if (payloadUnitOfFrame)
-                                        newFrame = false;
-                                     }
-                                  if (framesPerPayloadUnit <= 1)
-                                     scanning = false;
-                                  }
-                               else {
-                                  framesInPayloadUnit++;
-                                  if (independentFrame)
-                                     numIFrames++;
-                                  if (numIFrames == 1)
-                                     numFrames++;
-                                  dbgframes("%02X ", FrameType);
-                                  }
-                               if (synced)
-                                  return Processed + TS_SIZE; // flag this new frame
-                               }
-                            break;
-                       case 0x04: // MPEG audio
-                       case 0x06: // AC3 audio
-                            if (synced && Processed)
-                               return Processed;
-                            newFrame = true;
-                            independentFrame = true;
-                            if (!synced) {
-                               framesInPayloadUnit = 1;
-                               if (TsPayloadStart(Data))
-                                  numIFrames++;
-                               }
-                            scanning = false;
-                            break;
-                       default: esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
-                                pid = 0; // let's just ignore any further data
-                       }
-                     }
-                 if (!synced && framesPerSecond > 0.0 && independentFrame) {
-                    synced = true;
-                    dbgframes("*\n");
-                    Reset();
-                    return Processed + TS_SIZE;
                     }
                  }
               }
            else if (Pid == PATPID && synced && Processed)
               return Processed; // allow the caller to see any PAT packets
            }
-        Data += TS_SIZE;
-        Length -= TS_SIZE;
-        Processed += TS_SIZE;
+        Data += Handled;
+        Length -= Handled;
+        Processed += Handled;
+        if (newFrame)
+           break;
         }
   return Processed;
 }

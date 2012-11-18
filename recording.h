@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.37 2012/09/17 08:53:23 kls Exp $
+ * $Id: recording.h 2.40 2012/11/13 11:43:59 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -222,19 +222,35 @@ public:
 
 class cMarks : public cConfig<cMark> {
 private:
+  cString recordingFileName;
   cString fileName;
   double framesPerSecond;
+  bool isPesRecording;
   time_t nextUpdate;
   time_t lastFileTime;
   time_t lastChange;
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
+  void Align(void);
   void Sort(void);
-  cMark *Add(int Position);
+  void Add(int Position);
   cMark *Get(int Position);
   cMark *GetPrev(int Position);
   cMark *GetNext(int Position);
+  cMark *GetNextBegin(cMark *EndMark = NULL);
+       ///< Returns the next "begin" mark after EndMark, skipping any marks at the
+       ///< same position as EndMark. If EndMark is NULL, the first actual "begin"
+       ///< will be returned (if any).
+  cMark *GetNextEnd(cMark *BeginMark);
+       ///< Returns the next "end" mark after BeginMark, skipping any marks at the
+       ///< same position as BeginMark.
+  int GetNumSequences(void);
+       ///< Returns the actual number of sequences to be cut from the recording.
+       ///< If there is only one actual "begin" mark, and it is positioned at index
+       ///< 0 (the beginning of the recording), and there is no "end" mark, the
+       ///< return value is 0, which means that the result is the same as the original
+       ///< recording.
   };
 
 #define RUC_BEFORERECORDING "before"
@@ -291,8 +307,14 @@ public:
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
   int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
+  int GetClosestIFrame(int Index);
+       ///< Returns the index of the I-frame that is closest to the given Index (or Index itself,
+       ///< if it already points to an I-frame). Index may be any value, even outside the current
+       ///< range of frame indexes.
+       ///< If there is no actual index data available, 0 is returned.
   int Get(uint16_t FileNumber, off_t FileOffset);
   int Last(void) { CatchUp(); return last; }
+       ///< Returns the index of the last entry in this file, or -1 if the file is empty.
   int GetResume(void) { return resumeFile.Read(); }
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);

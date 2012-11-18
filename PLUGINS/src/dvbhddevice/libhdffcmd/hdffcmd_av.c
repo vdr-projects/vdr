@@ -449,3 +449,22 @@ int HdffCmdAvSetAudioChannel(int OsdDevice, uint8_t AudioChannel)
     osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
     return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
 }
+
+int HdffCmdAvSetSyncShift(int OsdDevice, int16_t SyncShift)
+{
+    uint8_t cmdData[16];
+    BitBuffer_t cmdBuf;
+    osd_raw_cmd_t osd_cmd;
+
+    BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
+    memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
+    osd_cmd.cmd_data = cmdData;
+    HdffCmdBuildHeader(&cmdBuf, HDFF_MSG_TYPE_COMMAND,
+                       HDFF_MSG_GROUP_AV_DECODER,
+                       HDFF_MSG_AV_SET_OPTIONS);
+    BitBuffer_SetBits(&cmdBuf, 1, 1);
+    BitBuffer_SetBits(&cmdBuf, 31, 0); // reserved
+    BitBuffer_SetBits(&cmdBuf, 16, SyncShift);
+    osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
+    return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
+}

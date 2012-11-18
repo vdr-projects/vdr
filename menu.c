@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.61 2012/09/15 11:45:28 kls Exp $
+ * $Id: menu.c 2.65 2012/11/18 13:07:53 kls Exp $
  */
 
 #include "menu.h"
@@ -3418,7 +3418,7 @@ bool cMenuMain::Update(bool Force)
         stopReplayItem = NULL;
         }
      // Color buttons:
-     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : NULL);
+     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
      result = true;
      }
 
@@ -3516,7 +3516,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osPause;
                              break;
                case kBlue:   if (!HadSubMenu)
-                                state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
+                                state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osRecordings;
                              break;
                default:      break;
                }
@@ -4482,10 +4482,6 @@ cReplayControl::~cReplayControl()
   Hide();
   cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();
-  if (marksModified) {
-     marks.Save();
-     marksModified = false;
-     }
   if (currentReplayControl == this)
      currentReplayControl = NULL;
 }
@@ -4572,6 +4568,10 @@ void cReplayControl::Hide(void)
      lastSpeed = -2; // an invalid value
      timeSearchActive = false;
      timeoutShow = 0;
+     }
+  if (marksModified) {
+     marks.Save();
+     marksModified = false;
      }
 }
 
@@ -4771,12 +4771,12 @@ void cReplayControl::MarkMove(bool Forward)
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
         if (Forward) {
-           if ((m2 = marks.Next(m)) != NULL && m2->Position() <= p)
-              return;
+           while ((m2 = marks.Next(m)) != NULL && m2->Position() == m->Position())
+                 m = m2;
            }
         else {
-           if ((m2 = marks.Prev(m)) != NULL && m2->Position() >= p)
-              return;
+           while ((m2 = marks.Prev(m)) != NULL && m2->Position() == m->Position())
+                 m = m2;
            }
         m->SetPosition(p);
         Goto(m->Position(), true);
@@ -4789,13 +4789,11 @@ void cReplayControl::EditCut(void)
 {
   if (*fileName) {
      Hide();
-     if (marksModified) {
-        marks.Save();
-        marksModified = false;
-        }
      if (!cCutter::Active()) {
         if (!marks.Count())
            Skins.Message(mtError, tr("No editing marks defined!"));
+        else if (!marks.GetNumSequences())
+           Skins.Message(mtError, tr("No editing sequences defined!"));
         else if (!cCutter::Start(fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else

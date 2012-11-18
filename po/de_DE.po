@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-15 14:04+0200\n"
+"POT-Creation-Date: 2012-11-18 14:31+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1212,6 +1212,9 @@ msgstr "Springen: "
 
 msgid "No editing marks defined!"
 msgstr "Keine Schnittmarken gesetzt!"
+
+msgid "No editing sequences defined!"
+msgstr "Keine Schnittsequenzen definiert!"
 
 msgid "Can't start editing process!"
 msgstr "Schnitt kann nicht gestartet werden!"

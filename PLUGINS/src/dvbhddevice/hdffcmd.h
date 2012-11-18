@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.h 1.20 2012/06/16 11:16:52 kls Exp $
+ * $Id: hdffcmd.h 1.21 2012/11/15 09:20:05 kls Exp $
  */
 
 #ifndef _HDFF_CMD_H_
@@ -47,6 +47,7 @@ public:
     void CmdAvSetAudioDelay(int16_t Delay);
     void CmdAvSetAudioDownmix(HdffAudioDownmixMode_t DownmixMode);
     void CmdAvSetAudioChannel(uint8_t AudioChannel);
+    void CmdAvSetSyncShift(int16_t SyncShift);
 
     void CmdOsdConfigure(const HdffOsdConfig_t * pConfig);
     void CmdOsdReset(void);

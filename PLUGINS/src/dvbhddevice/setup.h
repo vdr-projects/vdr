@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.h 1.12 2012/02/08 15:14:56 kls Exp $
+ * $Id: setup.h 1.13 2012/11/15 09:21:07 kls Exp $
  */
 
 #ifndef _HDFF_SETUP_H_
@@ -28,6 +28,7 @@ struct cHdffSetup
     int AnalogueVideo;
     int AudioDelay;
     int AudioDownmix;
+    int AvSyncShift;
     int OsdSize;
     int CecEnabled;
     int CecTvOn;

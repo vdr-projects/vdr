@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.40 2012/09/24 12:43:04 kls Exp $
+ * $Id: vdr.c 2.42 2012/10/13 12:48:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -892,7 +892,7 @@ int main(int argc, char *argv[])
                            Timer->SetInVpsMargin(InVpsMargin);
                            }
                         else if (Timer->Event()) {
-                           InVpsMargin = Timer->Event()->StartTime() <= Now && Timer->Event()->RunningStatus() == SI::RunningStatusUndefined;
+                           InVpsMargin = Timer->Event()->StartTime() <= Now && Now < Timer->Event()->EndTime();
                            NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
                            }
                         else {
@@ -1238,6 +1238,8 @@ int main(int argc, char *argv[])
                      cControl::Shutdown();
                      cControl::Launch(new cReplayControl);
                      }
+                  else
+                     DirectMainFunction(osRecordings); // no last viewed recording, so enter the Recordings menu
                   break;
              default:    break;
              }

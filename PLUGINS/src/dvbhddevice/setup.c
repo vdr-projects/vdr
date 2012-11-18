@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.17 2012/02/08 15:14:01 kls Exp $
+ * $Id: setup.c 1.18 2012/11/15 09:20:50 kls Exp $
  */
 
 #include "setup.h"
@@ -26,6 +26,7 @@ cHdffSetup::cHdffSetup(void)
     AnalogueVideo = HDFF_VIDEO_OUT_CVBS_YUV;
     AudioDelay = 0;
     AudioDownmix = HDFF_AUDIO_DOWNMIX_AUTOMATIC;
+    AvSyncShift = 0;
     OsdSize = 0;
     CecEnabled = 1;
     CecTvOn = 1;
@@ -46,6 +47,7 @@ bool cHdffSetup::SetupParse(const char *Name, const char *Value)
     else if (strcmp(Name, "AnalogueVideo")     == 0) AnalogueVideo     = atoi(Value);
     else if (strcmp(Name, "AudioDelay")        == 0) AudioDelay        = atoi(Value);
     else if (strcmp(Name, "AudioDownmix")      == 0) AudioDownmix      = atoi(Value);
+    else if (strcmp(Name, "AvSyncShift")       == 0) AvSyncShift       = atoi(Value);
     else if (strcmp(Name, "OsdSize")           == 0) OsdSize           = atoi(Value);
     else if (strcmp(Name, "CecEnabled")        == 0) CecEnabled        = atoi(Value);
     else if (strcmp(Name, "CecTvOn")           == 0) CecTvOn           = atoi(Value);
@@ -256,6 +258,7 @@ cHdffSetupPage::cHdffSetupPage(HDFF::cHdffCmdIf * pHdffCmdIf)
     Add(new cMenuEditStraItem(tr("Analogue Video"), &mNewHdffSetup.AnalogueVideo, kAnalogueVideos, AnalogueVideoItems));
     Add(new cMenuEditIntItem(tr("Audio Delay (ms)"), &mNewHdffSetup.AudioDelay, 0, 500));
     Add(new cMenuEditStraItem(tr("Audio Downmix"), &mNewHdffSetup.AudioDownmix, kAudioDownmixes, AudioDownmixItems));
+    Add(new cMenuEditIntItem(tr("A/V Sync Shift (ms)"), &mNewHdffSetup.AvSyncShift, -500, 500));
     Add(new cMenuEditStraItem(tr("OSD Size"), &mNewHdffSetup.OsdSize, kOsdSizes, OsdSizeItems));
     Add(new cMenuEditBoolItem(tr("HDMI CEC"), &mNewHdffSetup.CecEnabled));
     Add(new cMenuEditBoolItem(tr("CEC: Switch TV on"), &mNewHdffSetup.CecTvOn));
@@ -385,6 +388,7 @@ void cHdffSetupPage::Store(void)
     SetupStore("AnalogueVideo", mNewHdffSetup.AnalogueVideo);
     SetupStore("AudioDelay", mNewHdffSetup.AudioDelay);
     SetupStore("AudioDownmix", mNewHdffSetup.AudioDownmix);
+    SetupStore("AvSyncShift", mNewHdffSetup.AvSyncShift);
     SetupStore("OsdSize", mNewHdffSetup.OsdSize);
     SetupStore("CecEnabled", mNewHdffSetup.CecEnabled);
     SetupStore("CecTvOn", mNewHdffSetup.CecTvOn);
@@ -412,6 +416,7 @@ void cHdffSetupPage::Store(void)
 
         mHdffCmdIf->CmdAvSetAudioDelay(mNewHdffSetup.AudioDelay);
         mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) mNewHdffSetup.AudioDownmix);
+        mHdffCmdIf->CmdAvSetSyncShift(mNewHdffSetup.AvSyncShift);
 
         mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) mNewHdffSetup.AnalogueVideo);
 

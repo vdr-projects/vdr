@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.21 2012/09/29 14:29:49 kls Exp $
+ * $Id: epg.c 2.22 2012/10/04 12:21:24 kls Exp $
  */
 
 #include "epg.h"
@@ -1148,14 +1148,12 @@ public:
   };
 
 cEpgDataWriter::cEpgDataWriter(void)
-:cThread("epg data writer")
+:cThread("epg data writer", true)
 {
 }
 
 void cEpgDataWriter::Action(void)
 {
-  SetPriority(19);
-  SetIOPriority(7);
   Perform();
 }
 

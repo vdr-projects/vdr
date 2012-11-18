@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.72 2012/09/20 10:07:54 kls Exp $
+ * $Id: dvbdevice.c 2.74 2012/10/07 11:11:30 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -21,7 +21,9 @@
 #include "menuitems.h"
 #include "sourceparams.h"
 
-#define FE_CAN_TURBO_FEC  0x8000000 // TODO: remove this once it is defined in the driver
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0508
+#define DTV_STREAM_ID DTV_DVBT2_PLP_ID
+#endif
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -408,7 +410,7 @@ cString cDvbTuner::GetBondingParams(const cChannel *Channel) const
         return diseqc->Commands();
      }
   else {
-     bool ToneOff = Channel->Frequency() < (unsigned int)Setup.LnbSLOF;
+     bool ToneOff = Channel->Frequency() < Setup.LnbSLOF;
      bool VoltOff = dtp.Polarization() == 'V' || dtp.Polarization() == 'R';
      return cString::sprintf("%c %c", ToneOff ? 't' : 'T', VoltOff ? 'v' : 'V');
      }
@@ -574,40 +576,52 @@ int cDvbTuner::GetSignalQuality(void) const
            return 3;
         return 4;
         }
+#ifdef DEBUG_SIGNALQUALITY
      bool HasSnr = true;
+#endif
      uint16_t Snr;
      while (1) {
            if (ioctl(fd_frontend, FE_READ_SNR, &Snr) != -1)
               break;
            if (errno == EOPNOTSUPP) {
               Snr = 0xFFFF;
+#ifdef DEBUG_SIGNALQUALITY
               HasSnr = false;
+#endif
               break;
               }
            if (errno != EINTR)
               return -1;
            }
+#ifdef DEBUG_SIGNALQUALITY
      bool HasBer = true;
+#endif
      uint32_t Ber;
      while (1) {
            if (ioctl(fd_frontend, FE_READ_BER, &Ber) != -1)
               break;
            if (errno == EOPNOTSUPP) {
               Ber = 0;
+#ifdef DEBUG_SIGNALQUALITY
               HasBer = false;
+#endif
               break;
               }
            if (errno != EINTR)
               return -1;
            }
+#ifdef DEBUG_SIGNALQUALITY
      bool HasUnc = true;
+#endif
      uint32_t Unc;
      while (1) {
            if (ioctl(fd_frontend, FE_READ_UNCORRECTED_BLOCKS, &Unc) != -1)
               break;
            if (errno == EOPNOTSUPP) {
               Unc = 0;
+#ifdef DEBUG_SIGNALQUALITY
               HasUnc = false;
+#endif
               break;
               }
            if (errno != EINTR)
@@ -810,7 +824,7 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
      if (frontendType == SYS_DVBT2) {
         // DVB-T2
-        SETCMD(DTV_DVBT2_PLP_ID, dtp.PlpId());
+        SETCMD(DTV_STREAM_ID, dtp.PlpId());
         }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;

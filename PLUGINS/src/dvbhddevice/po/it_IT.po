@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2012-02-07 20:13+0100\n"
+"POT-Creation-Date: 2012-11-13 20:08+0100\n"
 "PO-Revision-Date: 2011-07-10 00:23+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <see README>\n"
@@ -93,6 +93,9 @@ msgstr "Ritardo audio (ms)"
 
 msgid "Audio Downmix"
 msgstr "Scala Audio"
+
+msgid "A/V Sync Shift (ms)"
+msgstr ""
 
 msgid "OSD Size"
 msgstr "Dimensione OSD"

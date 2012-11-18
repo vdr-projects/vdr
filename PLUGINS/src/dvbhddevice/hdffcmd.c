@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.c 1.25 2012/06/16 11:16:38 kls Exp $
+ * $Id: hdffcmd.c 1.26 2012/11/15 09:19:47 kls Exp $
  */
 
 #include <stdint.h>
@@ -168,6 +168,11 @@ void cHdffCmdIf::CmdAvSetAudioDownmix(HdffAudioDownmixMode_t DownmixMode)
 void cHdffCmdIf::CmdAvSetAudioChannel(uint8_t AudioChannel)
 {
     HdffCmdAvSetAudioChannel(mOsdDev, AudioChannel);
+}
+
+void cHdffCmdIf::CmdAvSetSyncShift(int16_t SyncShift)
+{
+    HdffCmdAvSetSyncShift(mOsdDev, SyncShift);
 }
 
 

@@ -24,6 +24,18 @@ CFLAGS  ?= -g -O2 -fPIC -Wall
 AR      ?= ar
 ARFLAGS ?= r
 
+### The directory environment:
+
+VDRDIR ?= ../../../..
+
+### Make sure that necessary options are included:
+
+include $(VDRDIR)/Make.global
+
+### Allow user defined options to overwrite defaults:
+
+-include $(VDRDIR)/Make.config
+
 ### Implicit rules:
 
 %.o: %.c

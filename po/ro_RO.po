@@ -2,19 +2,19 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
-# Lucian Muresan <lucianm@users.sourceforge.net>, 2004, 2005, 2006, 2008, 2010, 2011
+# Lucian Muresan <lucianm@users.sourceforge.net>, 2004, 2005, 2006, 2008, 2010, 2011, 2012
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-15 14:04+0200\n"
-"PO-Revision-Date: 2011-03-10 23:52+0100\n"
+"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"PO-Revision-Date: 2012-11-05 01:28+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Romanian\n"
 "X-Poedit-Country: ROMANIA\n"
@@ -47,7 +47,7 @@ msgid "System"
 msgstr "Sistem"
 
 msgid "Srate"
-msgstr "Ratã simboluri"
+msgstr "RatÄƒ simboluri"
 
 msgid "Inversion"
 msgstr "Inversiune"
@@ -59,10 +59,10 @@ msgid "CoderateL"
 msgstr "CoderateL"
 
 msgid "Modulation"
-msgstr "Modulaşie"
+msgstr "ModulaÅ£ie"
 
 msgid "Bandwidth"
-msgstr "Lãrgime de bandã"
+msgstr "LÄƒrgime de bandÄƒ"
 
 msgid "Transmission"
 msgstr "Transmisie"
@@ -77,52 +77,52 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "Identificator PLP"
 
 msgid "Starting EPG scan"
-msgstr "Pornesc achizişia EPG"
+msgstr "Pornesc achiziÅ£ia EPG"
 
 msgid "Content$Movie/Drama"
-msgstr "Film/Dramã"
+msgstr "Film/DramÄƒ"
 
 msgid "Content$Detective/Thriller"
-msgstr "Polişist/Suspense"
+msgstr "PoliÅ£ist/Suspense"
 
 msgid "Content$Adventure/Western/War"
-msgstr "Aventuri/Western/Rãzboi"
+msgstr "Aventuri/Western/RÄƒzboi"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr "Science-Fiction/Fantastic/Groazã"
+msgstr "Science-Fiction/Fantastic/GroazÄƒ"
 
 msgid "Content$Comedy"
 msgstr "Comedie"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr "Telenovelã/Melodramã/Folclor"
+msgstr "TelenovelÄƒ/MelodramÄƒ/Folclor"
 
 msgid "Content$Romance"
 msgstr "Film romantic"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Film serios/clasic/religios/istoric/Dramã"
+msgstr "Film serios/clasic/religios/istoric/DramÄƒ"
 
 msgid "Content$Adult Movie/Drama"
-msgstr "Film pentru adulşi/Dramã"
+msgstr "Film pentru adulÅ£i/DramÄƒ"
 
 msgid "Content$News/Current Affairs"
-msgstr "ªtiri/Actualitãşi"
+msgstr "Åtiri/ActualitÄƒÅ£i"
 
 msgid "Content$News/Weather Report"
-msgstr "ªtiri/Buletin meteorologic"
+msgstr "Åtiri/Buletin meteorologic"
 
 msgid "Content$News Magazine"
-msgstr "Magazin de ºtiri"
+msgstr "Magazin de ÅŸtiri"
 
 msgid "Content$Documentary"
 msgstr "Documentar"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr "Discuşie/Interviu/Dezbatere"
+msgstr "DiscuÅ£ie/Interviu/Dezbatere"
 
 msgid "Content$Show/Game Show"
 msgstr "Show/Jocuri"
@@ -131,7 +131,7 @@ msgid "Content$Game Show/Quiz/Contest"
 msgstr "Emisiune jocuri/quiz/concurs"
 
 msgid "Content$Variety Show"
-msgstr "Varietãşi"
+msgstr "VarietÄƒÅ£i"
 
 msgid "Content$Talk Show"
 msgstr "Talk Show"
@@ -152,7 +152,7 @@ msgid "Content$Tennis/Squash"
 msgstr "Tenis/Squash"
 
 msgid "Content$Team Sports"
-msgstr "Sporturi de echipã"
+msgstr "Sporturi de echipÄƒ"
 
 msgid "Content$Athletics"
 msgstr "Atletism"
@@ -164,19 +164,19 @@ msgid "Content$Water Sport"
 msgstr "Sporturi acvatice"
 
 msgid "Content$Winter Sports"
-msgstr "Sporturi de iarnã"
+msgstr "Sporturi de iarnÄƒ"
 
 msgid "Content$Equestrian"
-msgstr "Echitaşie"
+msgstr "EchitaÅ£ie"
 
 msgid "Content$Martial Sports"
-msgstr "Arte marşiale"
+msgstr "Arte marÅ£iale"
 
 msgid "Content$Children's/Youth Programme"
 msgstr "Emisiune pentru copii/tineret"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr "Emisiune pentru copii preºcolari"
+msgstr "Emisiune pentru copii preÅŸcolari"
 
 msgid "Content$Entertainment Programme for 6 to 14"
 msgstr "Divertisment pentru copii intre 6 - 16 ani"
@@ -185,34 +185,34 @@ msgid "Content$Entertainment Programme for 10 to 16"
 msgstr "Divertisment pentru copii intre 10 - 16 ani"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr "Informaşional/Educaşional/Emisiune ºcoalã"
+msgstr "InformaÅ£ional/EducaÅ£ional/Emisiune ÅŸcoalÄƒ"
 
 msgid "Content$Cartoons/Puppets"
-msgstr "Desene animate/Teatru de pãpuºi"
+msgstr "Desene animate/Teatru de pÄƒpuÅŸi"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr "Muzicã/Balet/Dans"
+msgstr "MuzicÄƒ/Balet/Dans"
 
 msgid "Content$Rock/Pop"
 msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr "Muzicã clasicã/serioasã"
+msgstr "MuzicÄƒ clasicÄƒ/serioasÄƒ"
 
 msgid "Content$Folk/Tradional Music"
-msgstr "Muzicã folk/tradişionalã"
+msgstr "MuzicÄƒ folk/tradiÅ£ionalÄƒ"
 
 msgid "Content$Jazz"
 msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr "Teatru muzical/Operã/Operetã"
+msgstr "Teatru muzical/OperÄƒ/OperetÄƒ"
 
 msgid "Content$Ballet"
 msgstr "Balet"
 
 msgid "Content$Arts/Culture"
-msgstr "Artã/Culturã"
+msgstr "ArtÄƒ/CulturÄƒ"
 
 msgid "Content$Performing Arts"
 msgstr "Spectacole"
@@ -224,10 +224,10 @@ msgid "Content$Religion"
 msgstr "Religie"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr "Culturã Pop/Arte tradişionale"
+msgstr "CulturÄƒ Pop/Arte tradiÅ£ionale"
 
 msgid "Content$Literature"
-msgstr "Literaturã"
+msgstr "LiteraturÄƒ"
 
 msgid "Content$Film/Cinema"
 msgstr "Film/Cinema"
@@ -236,16 +236,16 @@ msgid "Content$Experimental Film/Video"
 msgstr "Film experimental/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr "Radiodifuziune/Presã"
+msgstr "Radiodifuziune/PresÄƒ"
 
 msgid "Content$New Media"
 msgstr "Medii noi"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr "Artã/Magazin cultural"
+msgstr "ArtÄƒ/Magazin cultural"
 
 msgid "Content$Fashion"
-msgstr "Modã"
+msgstr "ModÄƒ"
 
 msgid "Content$Social/Political/Economics"
 msgstr "Social/Politic/Economie"
@@ -254,28 +254,28 @@ msgid "Content$Magazine/Report/Documentary"
 msgstr "Magazin/Reportaj/Documentar"
 
 msgid "Content$Economics/Social Advisory"
-msgstr "Economie/Consiliere socialã"
+msgstr "Economie/Consiliere socialÄƒ"
 
 msgid "Content$Remarkable People"
 msgstr "Oameni remarcabili"
 
 msgid "Content$Education/Science/Factual"
-msgstr "Educaşie/ªtiinşã/Practic"
+msgstr "EducaÅ£ie/ÅtiinÅ£Äƒ/Practic"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr "Naturã/Animale/Mediu"
+msgstr "NaturÄƒ/Animale/Mediu"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr "Tehnologie/ªtiinşe naturale"
+msgstr "Tehnologie/ÅtiinÅ£e naturale"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr "Medicinã/Fiziologie/Psihologie"
+msgstr "MedicinÄƒ/Fiziologie/Psihologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr "Şãri strãine/Expedişii"
+msgstr "Å¢Äƒri strÄƒine/ExpediÅ£ii"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr "Social/ªtiinşe spirituale"
+msgstr "Social/ÅtiinÅ£e spirituale"
 
 msgid "Content$Further Education"
 msgstr "Cursuri de aprofundare"
@@ -287,28 +287,28 @@ msgid "Content$Leisure/Hobbies"
 msgstr "Timp liber/Hobby"
 
 msgid "Content$Tourism/Travel"
-msgstr "Turism/Cãlãtorie"
+msgstr "Turism/CÄƒlÄƒtorie"
 
 msgid "Content$Handicraft"
-msgstr "Meºteºug"
+msgstr "MeÅŸteÅŸug"
 
 msgid "Content$Motoring"
 msgstr "Motoare"
 
 msgid "Content$Fitness & Health"
-msgstr "Miºcare & Sãnãtate"
+msgstr "MiÅŸcare & SÄƒnÄƒtate"
 
 msgid "Content$Cooking"
-msgstr "Gãtit"
+msgstr "GÄƒtit"
 
 msgid "Content$Advertisement/Shopping"
-msgstr "Publicitate/Cumpãrãturi"
+msgstr "Publicitate/CumpÄƒrÄƒturi"
 
 msgid "Content$Gardening"
-msgstr "Grãdinãrit"
+msgstr "GrÄƒdinÄƒrit"
 
 msgid "Content$Original Language"
-msgstr "Limba originalã"
+msgstr "Limba originalÄƒ"
 
 msgid "Content$Black & White"
 msgstr "Alb-Negru"
@@ -317,65 +317,65 @@ msgid "Content$Unpublished"
 msgstr "Nepublicat"
 
 msgid "Content$Live Broadcast"
-msgstr "Transmisie în direct"
+msgstr "Transmisie Ã®n direct"
 
 #, c-format
 msgid "ParentalRating$from %d"
 msgstr "de la %d ani"
 
 msgid "No title"
-msgstr "Fãrã titlu"
+msgstr "FÄƒrÄƒ titlu"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
-msgstr "Românã"
+msgstr "RomÃ¢nÄƒ"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
 msgstr "rom"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Faza 1: Detecşia tipului telecomenzii"
+msgstr "Faza 1: DetecÅ£ia tipului telecomenzii"
 
 msgid "Press any key on the RC unit"
-msgstr "Apãsaşi o tastã pe telecomandã"
+msgstr "ApÄƒsaÅ£i o tastÄƒ pe telecomandÄƒ"
 
 msgid "RC code detected!"
 msgstr "S-a detectat tipul telecomenzii!"
 
 msgid "Do not press any key..."
-msgstr "Nu apãsaşi nici o tastã..."
+msgstr "Nu apÄƒsaÅ£i nici o tastÄƒ..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Faza 2: Învãşarea codurilor anumitor taste"
+msgstr "Faza 2: ÃnvÄƒÅ£area codurilor anumitor taste"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Apãsaşi tasta pentru '%s'"
+msgstr "ApÄƒsaÅ£i tasta pentru '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Apãsaşi 'Sus' pentru confirmare"
+msgstr "ApÄƒsaÅ£i 'Sus' pentru confirmare"
 
 msgid "Press 'Down' to continue"
-msgstr "Apãsaşi 'Jos' pentru continuare"
+msgstr "ApÄƒsaÅ£i 'Jos' pentru continuare"
 
 msgid "(press 'Up' to go back)"
-msgstr "(Apãsaşi 'Sus' pentru revenire)"
+msgstr "(ApÄƒsaÅ£i 'Sus' pentru revenire)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(Apãsaşi 'Jos' pentru terminare)"
+msgstr "(ApÄƒsaÅ£i 'Jos' pentru terminare)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "Apãsaşi 'Meniu' pentru a sãri peste aceastã tastã"
+msgstr "ApÄƒsaÅ£i 'Meniu' pentru a sÄƒri peste aceastÄƒ tastÄƒ"
 
 msgid "Learning Remote Control Keys"
-msgstr "Învãşare taste telecomandã"
+msgstr "ÃnvÄƒÅ£are taste telecomandÄƒ"
 
 msgid "Phase 3: Saving key codes"
 msgstr "Faza 3: Salvarea codurilor de taste"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Apãsaşi 'Sus' pentru salvare, 'Jos' pentru anulare"
+msgstr "ApÄƒsaÅ£i 'Sus' pentru salvare, 'Jos' pentru anulare"
 
 msgid "Key$Up"
 msgstr "Sus"
@@ -390,16 +390,16 @@ msgid "Key$Ok"
 msgstr "OK"
 
 msgid "Key$Back"
-msgstr "Înapoi"
+msgstr "Ãnapoi"
 
 msgid "Key$Left"
-msgstr "Stânga"
+msgstr "StÃ¢nga"
 
 msgid "Key$Right"
 msgstr "Dreapta"
 
 msgid "Key$Red"
-msgstr "Roºu"
+msgstr "RoÅŸu"
 
 msgid "Key$Green"
 msgstr "Verde"
@@ -417,28 +417,28 @@ msgid "Key$Play"
 msgstr "Redare"
 
 msgid "Key$Pause"
-msgstr "Pauzã"
+msgstr "PauzÄƒ"
 
 msgid "Key$Stop"
 msgstr "Stop"
 
 msgid "Key$Record"
-msgstr "Înregistrare"
+msgstr "Ãnregistrare"
 
 msgid "Key$FastFwd"
-msgstr "Derulare înainte"
+msgstr "Derulare Ã®nainte"
 
 msgid "Key$FastRew"
-msgstr "Derulare înapoi"
+msgstr "Derulare Ã®napoi"
 
 msgid "Key$Next"
-msgstr "Urmãtor"
+msgstr "UrmÄƒtor"
 
 msgid "Key$Prev"
 msgstr "Anterior"
 
 msgid "Key$Power"
-msgstr "Închidere"
+msgstr "Ãnchidere"
 
 msgid "Key$Channel+"
 msgstr "Canal+"
@@ -456,7 +456,7 @@ msgid "Key$Volume-"
 msgstr "Volum-"
 
 msgid "Key$Mute"
-msgstr "Fãrã sunet"
+msgstr "FÄƒrÄƒ sunet"
 
 msgid "Key$Audio"
 msgstr "Sunet"
@@ -474,10 +474,10 @@ msgid "Key$Timers"
 msgstr "Timer-e"
 
 msgid "Key$Recordings"
-msgstr "Înregistrãri"
+msgstr "ÃnregistrÄƒri"
 
 msgid "Key$Setup"
-msgstr "Configuraşie"
+msgstr "ConfiguraÅ£ie"
 
 msgid "Key$Commands"
 msgstr "Comenzi"
@@ -525,10 +525,10 @@ msgid "Name"
 msgstr "Nume"
 
 msgid "Source"
-msgstr "Sursã"
+msgstr "SursÄƒ"
 
 msgid "Frequency"
-msgstr "Frecvenşã"
+msgstr "FrecvenÅ£Äƒ"
 
 msgid "Vpid"
 msgstr "PID Video"
@@ -558,7 +558,7 @@ msgid "Tpid"
 msgstr "PID Teletext"
 
 msgid "CA"
-msgstr "CA (Acces Condişional)"
+msgstr "CA (Acces CondiÅ£ional)"
 
 msgid "Sid"
 msgstr "Sid"
@@ -570,25 +570,25 @@ msgid "Channels"
 msgstr "Canale"
 
 msgid "Button$Edit"
-msgstr "Modificã"
+msgstr "ModificÄƒ"
 
 msgid "Button$New"
 msgstr "Nou"
 
 msgid "Button$Delete"
-msgstr "ªterge"
+msgstr "Återge"
 
 msgid "Button$Mark"
-msgstr "Marcheazã"
+msgstr "MarcheazÄƒ"
 
 msgid "Channel is being used by a timer!"
 msgstr "Canalul este utilizat de un timer!"
 
 msgid "Delete channel?"
-msgstr "ªterg canalul?"
+msgstr "Återg canalul?"
 
 msgid "Edit folder"
-msgstr "Editeazã directorul"
+msgstr "EditeazÄƒ directorul"
 
 msgid "New folder"
 msgstr "Director nou"
@@ -597,20 +597,20 @@ msgid "Sub folder"
 msgstr "Sub-director"
 
 msgid "Folder name already exists!"
-msgstr "Un director cu acelaºi nume existã!"
+msgstr "Un director cu acelaÅŸi nume existÄƒ!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "Numele directorului nu poate sã conşinã '%c'!"
+msgstr "Numele directorului nu poate sÄƒ conÅ£inÄƒ '%c'!"
 
 msgid "Button$Select"
-msgstr "Selecteazã"
+msgstr "SelecteazÄƒ"
 
 msgid "Delete folder and all sub folders?"
-msgstr "ªterg directorul ºi toate sub-directoarele?"
+msgstr "Återg directorul ÅŸi toate sub-directoarele?"
 
 msgid "Delete folder?"
-msgstr "ªterg directorul?"
+msgstr "Återg directorul?"
 
 msgid "Edit timer"
 msgstr "Modificare timer"
@@ -625,10 +625,10 @@ msgid "Day"
 msgstr "Ziua"
 
 msgid "Start"
-msgstr "Început"
+msgstr "Ãnceput"
 
 msgid "Stop"
-msgstr "Sfârºit"
+msgstr "SfÃ¢rÅŸit"
 
 msgid "VPS"
 msgstr "VPS"
@@ -637,25 +637,25 @@ msgid "Priority"
 msgstr "Prioritate"
 
 msgid "Lifetime"
-msgstr "Timp de pãstrare"
+msgstr "Timp de pÄƒstrare"
 
 msgid "File"
-msgstr "Fiºier"
+msgstr "FiÅŸier"
 
 msgid "Button$Folder"
 msgstr "Director"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "OdatÄƒ"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Repetitiv"
 
 msgid "First day"
 msgstr "Prima zi"
 
 msgid "Select folder"
-msgstr "Selecteazã directorul"
+msgstr "SelecteazÄƒ directorul"
 
 msgid "Timers"
 msgstr "Timer-e"
@@ -667,10 +667,10 @@ msgid "Button$Info"
 msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "ªterg timer-ul?"
+msgstr "Återg timer-ul?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Timer-ul tocmai înregistreazã - ºterg, totuºi?"
+msgstr "Timer-ul tocmai Ã®nregistreazÄƒ - ÅŸterg, totuÅŸi?"
 
 msgid "Event"
 msgstr "Emisiune"
@@ -679,19 +679,19 @@ msgid "Button$Timer"
 msgstr "Timer"
 
 msgid "Button$Record"
-msgstr "Înregistr."
+msgstr "Ãnregistr."
 
 msgid "Button$Switch"
-msgstr "Comutã"
+msgstr "ComutÄƒ"
 
 msgid "What's on now?"
 msgstr "Ce emisiuni sunt acum?"
 
 msgid "What's on next?"
-msgstr "Ce emisiuni urmeazã?"
+msgstr "Ce emisiuni urmeazÄƒ?"
 
 msgid "Button$Next"
-msgstr "Urmãtor"
+msgstr "UrmÄƒtor"
 
 msgid "Button$Now"
 msgstr "Acum"
@@ -708,32 +708,32 @@ msgstr "Programul canalului %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "Aceastã emisiune - %s"
+msgstr "AceastÄƒ emisiune - %s"
 
 msgid "This event - all channels"
-msgstr "Aceastã emisiune - toate canalele"
+msgstr "AceastÄƒ emisiune - toate canalele"
 
 msgid "All events - all channels"
 msgstr "Toate emisiunile - toate canalele"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Vã rog introduceşi %d cifre!"
+msgstr "VÄƒ rog introduceÅ£i %d cifre!"
 
 msgid "CAM not responding!"
-msgstr "CAM-ul nu reacşioneazã!"
+msgstr "CAM-ul nu reacÅ£ioneazÄƒ!"
 
 msgid "Recording info"
-msgstr "Detaliile înregistrãrii"
+msgstr "Detaliile Ã®nregistrÄƒrii"
 
 msgid "Button$Play"
 msgstr "Redare"
 
 msgid "Button$Rewind"
-msgstr "Înapoi"
+msgstr "Ãnapoi"
 
 msgid "Recordings"
-msgstr "Înregistrãri"
+msgstr "ÃnregistrÄƒri"
 
 msgid "Button$Open"
 msgstr "Deschide"
@@ -742,28 +742,28 @@ msgid "Commands"
 msgstr "Comenzi"
 
 msgid "Error while accessing recording!"
-msgstr "Eroare la accesarea înregistrãrii"
+msgstr "Eroare la accesarea Ã®nregistrÄƒrii"
 
 msgid "Delete recording?"
-msgstr "ªterg înregistrarea?"
+msgstr "Återg Ã®nregistrarea?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Montajul Ã®nregistrÄƒrii e Ã®n curs de desfÄƒÈ™urare - È™terg totuÈ™i?"
 
 msgid "Error while deleting recording!"
-msgstr "Eroare la ºtergerea înregistrãrii!"
+msgstr "Eroare la ÅŸtergerea Ã®nregistrÄƒrii!"
 
 msgid "Recording commands"
-msgstr "Comenzi pentru înregistrãri"
+msgstr "Comenzi pentru Ã®nregistrÄƒri"
 
 msgid "never"
-msgstr "niciodatã"
+msgstr "niciodatÄƒ"
 
 msgid "skin dependent"
 msgstr "dep. de skin"
 
 msgid "always"
-msgstr "întotdeauna"
+msgstr "Ã®ntotdeauna"
 
 msgid "OSD"
 msgstr "OSD"
@@ -775,22 +775,22 @@ msgid "Setup.OSD$Skin"
 msgstr "Skin"
 
 msgid "Setup.OSD$Theme"
-msgstr "Temã"
+msgstr "TemÄƒ"
 
 msgid "Setup.OSD$Left (%)"
-msgstr "Stânga (%)"
+msgstr "StÃ¢nga (%)"
 
 msgid "Setup.OSD$Top (%)"
 msgstr "Sus (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr "Lãşime OSD (%)"
+msgstr "LÄƒÅ£ime OSD (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr "Înãlşime OSD (%)"
+msgstr "ÃnÄƒlÅ£ime OSD (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Timp afiºare mesaje (sec)"
+msgstr "Timp afiÅŸare mesaje (sec)"
 
 msgid "Setup.OSD$Use small font"
 msgstr "Utilizare fonturi mici"
@@ -805,19 +805,19 @@ msgid "Setup.OSD$Small font"
 msgstr "Font mic"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Font cu lãşime fixã"
+msgstr "Font cu lÄƒÅ£ime fixÄƒ"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Mãrimea implicitã a fontului (%)"
+msgstr "MÄƒrimea implicitÄƒ a fontului (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "Mãrimea 'micã' a fontului (%)"
+msgstr "MÄƒrimea 'micÄƒ' a fontului (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Mãrimea 'fixã' a fontului (%)"
+msgstr "MÄƒrimea 'fixÄƒ' a fontului (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Pozişia informaşiilor despre canal"
+msgstr "PoziÅ£ia informaÅ£iilor despre canal"
 
 msgid "bottom"
 msgstr "jos"
@@ -826,61 +826,61 @@ msgid "top"
 msgstr "sus"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Durata afiºãrii info-canal (s)"
+msgstr "Durata afiÅŸÄƒrii info-canal (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Informaşii la comutarea canalului"
+msgstr "InformaÅ£ii la comutarea canalului"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Durata afiºãrii informaşii canal"
+msgstr "Durata afiÅŸÄƒrii informaÅ£ii canal"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "Deruleazã pagini"
+msgstr "DeruleazÄƒ pagini"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Derulare circularã"
+msgstr "Derulare circularÄƒ"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Tasta 'Meniu' închide"
+msgstr "Tasta 'Meniu' Ã®nchide"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Directoare înregistrãri"
+msgstr "Directoare Ã®nregistrÄƒri"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Directoare în meniul de timer-e"
+msgstr "Directoare Ã®n meniul de timer-e"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Caractere pe tastele numerice"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Primul buton colorat"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Al 2-lea buton colorat"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Al 3-lea buton colorat"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Al 4-lea buton colorat"
 
 msgid "EPG"
 msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "Cãutare canale"
+msgstr "CÄƒutare canale"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Interval achizişie EPG (h)"
+msgstr "Interval achiziÅ£ie EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "Nivel corecşie EPG"
+msgstr "Nivel corecÅ£ie EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Date EPG expirate cel mult (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Potriveºte ceasul sistem"
+msgstr "PotriveÅŸte ceasul sistem"
 
 msgid "Setup.EPG$Use time from transponder"
 msgstr "Preia ora din transponder"
@@ -891,7 +891,7 @@ msgstr "Limbi preferate"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "Limba preferatã"
+msgstr "Limba preferatÄƒ"
 
 msgid "pan&scan"
 msgstr "pan&scan"
@@ -915,10 +915,10 @@ msgid "names and PIDs"
 msgstr "nume si PID-uri"
 
 msgid "add new channels"
-msgstr "adãugare canale noi"
+msgstr "adÄƒugare canale noi"
 
 msgid "add new transponders"
-msgstr "adãugare transpondere noi"
+msgstr "adÄƒugare transpondere noi"
 
 msgid "DVB"
 msgstr "Dispozitiv DVB"
@@ -930,16 +930,16 @@ msgid "Button$Subtitles"
 msgstr "Subtitrare"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "Dispozitiv DVB primar"
+msgstr "InterfaÈ›Äƒ DVB primarÄƒ"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Standard de recepÈ›ie"
 
 msgid "Setup.DVB$Video format"
 msgstr "Format video"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Formatul redãrii video"
+msgstr "Formatul redÄƒrii video"
 
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Sunet Dolby Digital"
@@ -954,22 +954,22 @@ msgid "Setup.DVB$Audio language"
 msgstr "Limba sunetului"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "Afiºeazã subtitrare"
+msgstr "AfiÅŸeazÄƒ subtitrare"
 
 msgid "Setup.DVB$Subtitle languages"
 msgstr "Limbi subtitrare"
 
 msgid "Setup.DVB$Subtitle language"
-msgstr "Limbã subtitrare"
+msgstr "LimbÄƒ subtitrare"
 
 msgid "Setup.DVB$Subtitle offset"
 msgstr "Offset subtitrare"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
-msgstr "Transparenşa prim-planului subtitrãrii"
+msgstr "TransparenÅ£a prim-planului subtitrÄƒrii"
 
 msgid "Setup.DVB$Subtitle background transparency"
-msgstr "Transparenşa fundalului subtitrãrii"
+msgstr "TransparenÅ£a fundalului subtitrÄƒrii"
 
 msgid "LNB"
 msgstr "LNB"
@@ -978,20 +978,20 @@ msgid "Setup.LNB$Use DiSEqC"
 msgstr "Utilizare DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
-msgstr "Frecvenşã comutare bandã, SLOF (MHz)"
+msgstr "FrecvenÅ£Äƒ comutare bandÄƒ, SLOF (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "Frecvnşã LNB inferioarã (Mhz)"
+msgstr "FrecvnÅ£Äƒ LNB inferioarÄƒ (Mhz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "Frecvnşã LNB superioarã (MHz)"
+msgstr "FrecvnÅ£Äƒ LNB superioarÄƒ (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Receptorul %d conectat la cablul de satelit"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "propriu"
 
 msgid "CAM reset"
 msgstr "Resetare CAM"
@@ -1000,7 +1000,7 @@ msgid "CAM present"
 msgstr "CAM prezent"
 
 msgid "CAM ready"
-msgstr "CAM pregãtit"
+msgstr "CAM pregÄƒtit"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1018,19 +1018,19 @@ msgid "Can't open CAM menu!"
 msgstr "Nu pot deschide meniul CAM"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM-ul este in folosinşã - totuºi resetez?"
+msgstr "CAM-ul este in folosinÅ£Äƒ - totuÅŸi resetez?"
 
 msgid "Can't reset CAM!"
 msgstr "Nu pot reseta CAM"
 
 msgid "do not pause live video"
-msgstr "nu înregistra emisiunea"
+msgstr "nu Ã®nregistra emisiunea"
 
 msgid "confirm pause live video"
-msgstr "confirmã înregistrarea emisiunii"
+msgstr "confirmÄƒ Ã®nregistrarea emisiunii"
 
 msgid "pause live video"
-msgstr "înregistreazã emisiunea"
+msgstr "Ã®nregistreazÄƒ emisiunea"
 
 msgid "confirm"
 msgstr "confirmare"
@@ -1039,70 +1039,70 @@ msgid "yes"
 msgstr "da"
 
 msgid "Recording"
-msgstr "Înregistrare"
+msgstr "Ãnregistrare"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Marjã la pornire (min)"
+msgstr "MarjÄƒ la pornire (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Marjã la oprire (min)"
+msgstr "MarjÄƒ la oprire (min)"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Prioritate implicitã"
+msgstr "Prioritate implicitÄƒ"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Timp de pãstrare predefinit (zile)"
+msgstr "Timp de pÄƒstrare predefinit (zile)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Funcşia tastei 'pauzã'"
+msgstr "FuncÅ£ia tastei 'pauzÄƒ'"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Prioritate pauzã"
+msgstr "Prioritate pauzÄƒ"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Pãstrarea emisiunilor 'pauzate' (zile)"
+msgstr "PÄƒstrarea emisiunilor 'pauzate' (zile)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Utilizeazã numele episodului"
+msgstr "UtilizeazÄƒ numele episodului"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "Utilizeazã VPS"
+msgstr "UtilizeazÄƒ VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr "Marjã de timp la utilizare VPS (s)"
+msgstr "MarjÄƒ de timp la utilizare VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Marcheazã înregistrare imediatã"
+msgstr "MarcheazÄƒ Ã®nregistrare imediatÄƒ"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Nume înregistrare imediatã"
+msgstr "Nume Ã®nregistrare imediatÄƒ"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Timpul de înregistare imediatã (min)"
+msgstr "Timpul de Ã®nregistare imediatÄƒ (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "eveniment curent"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Dimensiune maximã a fiºierului video (MB)"
+msgstr "Dimensiune maximÄƒ a fiÅŸierului video (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Separare fiºiere montate"
+msgstr "Separare fiÅŸiere montate"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "ªterge înregistrarea pentru vizionare decalatã"
+msgstr "Återge Ã®nregistrarea pentru vizionare decalatÄƒ"
 
 msgid "Replay"
 msgstr "Redare"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Mod multi-vitezã"
+msgstr "Mod multi-vitezÄƒ"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Afiºeazã redarea"
+msgstr "AfiÅŸeazÄƒ redarea"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "AratÄƒ timpul rÄƒmas"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"
@@ -1111,10 +1111,10 @@ msgid "Miscellaneous"
 msgstr "Diverse"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Duratã minimã emisiuni (min)"
+msgstr "DuratÄƒ minimÄƒ emisiuni (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Durata minimã de inactivitate (min)"
+msgstr "Durata minimÄƒ de inactivitate (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Timeout SVDRP (sec)"
@@ -1129,28 +1129,28 @@ msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canalul de pornire"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "ca mai înainte"
+msgstr "ca mai Ã®nainte"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumul la pornire"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr "Lista de canale în buclã"
+msgstr "Lista de canale Ã®n buclÄƒ"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "AratÄƒ numele canalelor cu sursa"
 
 msgid "Setup.Miscellaneous$Emergency exit"
-msgstr "Oprire de urgenşã"
+msgstr "Oprire de urgenÅ£Äƒ"
 
 msgid "Plugins"
 msgstr "Plugin-uri"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Acest plugin nu se configureazã!"
+msgstr "Acest plugin nu se configureazÄƒ!"
 
 msgid "Setup"
-msgstr "Configuraşie"
+msgstr "ConfiguraÅ£ie"
 
 msgid "Restart"
 msgstr "Repornire"
@@ -1160,17 +1160,17 @@ msgstr "Sigur repornesc?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Opreºte înregistrarea "
+msgstr " OpreÅŸte Ã®nregistrarea "
 
 msgid "Schedule"
 msgstr "Program (EPG)"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " Opreºte redarea"
+msgstr " OpreÅŸte redarea"
 
 msgid "Button$Pause"
-msgstr "Pauzã"
+msgstr "PauzÄƒ"
 
 msgid "Button$Stop"
 msgstr "Stop"
@@ -1180,56 +1180,59 @@ msgstr "Continuare"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Opreºte montajul înregistrãrii"
+msgstr " OpreÅŸte montajul Ã®nregistrÄƒrii"
 
 msgid "Stop recording?"
-msgstr "Opresc înregistrarea?"
+msgstr "Opresc Ã®nregistrarea?"
 
 msgid "Cancel editing?"
-msgstr "Opresc montajul înregistrãrii?"
+msgstr "Opresc montajul Ã®nregistrÄƒrii?"
 
 msgid "No audio available!"
-msgstr "Lipseºte sunetul!"
+msgstr "LipseÅŸte sunetul!"
 
 msgid "No subtitles"
-msgstr "Nu afiºeazã subtirare"
+msgstr "Nu afiÅŸeazÄƒ subtirare"
 
 msgid "No subtitles available!"
-msgstr "Subtitrare indisponibilã!"
+msgstr "Subtitrare indisponibilÄƒ!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Insuficient spaşiul pe disc pentru înregistrare!"
+msgstr "Insuficient spaÅ£iul pe disc pentru Ã®nregistrare!"
 
 msgid "No free DVB device to record!"
-msgstr "Nu mai sunt dispozitive DVB disponibile pentru înregistrare!"
+msgstr "Nu mai sunt receptoare DVB disponibile pentru Ã®nregistrare!"
 
 msgid "Pausing live video..."
-msgstr "Trec în pauzã emisiunea transmisã..."
+msgstr "Trec Ã®n pauzÄƒ emisiunea transmisÄƒ..."
 
 msgid "Delete timeshift recording?"
-msgstr "ªterg înregistrarea pentru vizionare decalatã?"
+msgstr "Återg Ã®nregistrarea pentru vizionare decalatÄƒ?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Salt la: "
 
 msgid "No editing marks defined!"
-msgstr "Nu s-au pus marcaje de montaj pentru aceastã înregistrare"
+msgstr "Nu s-au pus marcaje de montaj pentru aceastÄƒ Ã®nregistrare"
+
+msgid "No editing sequences defined!"
+msgstr ""
 
 msgid "Can't start editing process!"
-msgstr "Nu pot porni montajul înregistrãrii!"
+msgstr "Nu pot porni montajul Ã®nregistrÄƒrii!"
 
 msgid "Editing process started"
-msgstr "Montajul înregistrãrii a început"
+msgstr "Montajul Ã®nregistrÄƒrii a Ã®nceput"
 
 msgid "Editing process already active!"
-msgstr "Montajul înregistrãrii este deja activ!"
+msgstr "Montajul Ã®nregistrÄƒrii este deja activ!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aÄƒÃ¢bcdefghiÃ®jklmnopqrsÅŸtÅ£uvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taãâbc2\tdef3\tghiî4\tjkl5\tmno6\tpqrsº7\ttşuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\taÄƒÃ¢bc2\tdef3\tghiÃ®4\tjkl5\tmno6\tpqrsÅŸ7\ttÅ£uv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
@@ -1238,19 +1241,19 @@ msgid "Button$Overwrite"
 msgstr "Suprascrie"
 
 msgid "Button$Insert"
-msgstr "Insereazã"
+msgstr "InsereazÄƒ"
 
 msgid "Plugin"
-msgstr "Plugin (modul adişional)"
+msgstr "Plugin (modul adiÅ£ional)"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Sus/Jos pentru noua locaşie - OK pentru a muta"
+msgstr "Sus/Jos pentru noua locaÅ£ie - OK pentru a muta"
 
 msgid "Channel locked (recording)!"
-msgstr "Canal blocat (înregistrare)!"
+msgstr "Canal blocat (Ã®nregistrare)!"
 
 msgid "Low disk space!"
-msgstr "Spaşiul pe disc e foarte scãzut!"
+msgstr "SpaÅ£iul pe disc e foarte scÄƒzut!"
 
 msgid "Regenerating index file"
 msgstr "Generez index"
@@ -1259,36 +1262,36 @@ msgid "Index file regeneration complete"
 msgstr "Generarea indexului s-a incheiat"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Generarea indexului a eÈ™uat!"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Nu pot închide - vezi opşiunea '-s'"
+msgstr "Nu pot Ã®nchide - vezi opÅ£iunea '-s'"
 
 msgid "Editing - shut down anyway?"
-msgstr "Montajul tocmai se efectueazã - închid, totuºi?"
+msgstr "Montajul tocmai se efectueazÄƒ - Ã®nchid, totuÅŸi?"
 
 msgid "Recording - shut down anyway?"
-msgstr "Tocmai se înregistreazã - închid, totuºi?"
+msgstr "Tocmai se Ã®nregistreazÄƒ - Ã®nchid, totuÅŸi?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Înregistrez peste %ld minute - închid, totuºi?"
+msgstr "Ãnregistrez peste %ld minute - Ã®nchid, totuÅŸi?"
 
 msgid "shut down anyway?"
-msgstr "închid, totuºi?"
+msgstr "Ã®nchid, totuÅŸi?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Plugin-ul %s se va trezi +n %ld min, continui?"
 
 msgid "Editing - restart anyway?"
-msgstr "Montajul tocmai se efectueazã - repornesc, totuºi?"
+msgstr "Montajul tocmai se efectueazÄƒ - repornesc, totuÅŸi?"
 
 msgid "Recording - restart anyway?"
-msgstr "Tocmai se înregistreazã - repornesc, totuºi?"
+msgstr "Tocmai se Ã®nregistreazÄƒ - repornesc, totuÅŸi?"
 
 msgid "restart anyway?"
-msgstr "repornesc, totuºi?"
+msgstr "repornesc, totuÅŸi?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1298,22 +1301,22 @@ msgid "Classic VDR"
 msgstr "VDR clasic"
 
 msgid "DISK"
-msgstr ""
+msgstr "HARD-DISC"
 
 msgid "LOAD"
-msgstr ""
+msgstr "SARCINÄ‚"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TIMER-E"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "RECEPTOARE"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "REDARE"
 
 msgid "ST:TNG Panels"
 msgstr "Cons. ST:TNG"
@@ -1324,13 +1327,13 @@ msgstr "LMMJVSD"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "LunMarMieJoiVinSâmDum"
+msgstr "LunMarMieJoiVinSÃ¢mDum"
 
 msgid "Monday"
 msgstr "Luni"
 
 msgid "Tuesday"
-msgstr "Marşi"
+msgstr "MarÅ£i"
 
 msgid "Wednesday"
 msgstr "Miercuri"
@@ -1342,41 +1345,41 @@ msgid "Friday"
 msgstr "Vineri"
 
 msgid "Saturday"
-msgstr "Sâmbãtã"
+msgstr "SÃ¢mbÄƒtÄƒ"
 
 msgid "Sunday"
-msgstr "Duminicã"
+msgstr "DuminicÄƒ"
 
 msgid "Upcoming recording!"
-msgstr "Urmeazã o înregistrare!"
+msgstr "UrmeazÄƒ o Ã®nregistrare!"
 
 msgid "Pause live video?"
-msgstr "Înregistrez emisiunea?"
+msgstr "Ãnregistrez emisiunea?"
 
 msgid "Recording started"
-msgstr "A început înregistrarea"
+msgstr "A Ã®nceput Ã®nregistrarea"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR se va închide mai târziu - apãsaşi 'Power' pentru a forşa"
+msgstr "VDR se va Ã®nchide mai tÃ¢rziu - apÄƒsaÅ£i 'Power' pentru a forÅ£a"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Apasã orice tastã pentru a anula închiderea"
+msgstr "ApasÄƒ orice tastÄƒ pentru a anula Ã®nchiderea"
 
 msgid "Switching primary DVB..."
 msgstr "Comut dispozitiv DVB primar..."
 
 msgid "Editing process failed!"
-msgstr "Montajul înregistrãrii a eºuat"
+msgstr "Montajul Ã®nregistrÄƒrii a eÅŸuat"
 
 msgid "Editing process finished"
-msgstr "Montajul înregistrãrii s-a terminat"
+msgstr "Montajul Ã®nregistrÄƒrii s-a terminat"
 
 msgid "Press any key to cancel restart"
-msgstr "Apãsaşi orice tastã pentru a anula repornirea"
+msgstr "ApÄƒsaÅ£i orice tastÄƒ pentru a anula repornirea"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR se va închide în %s minute"
+msgstr "VDR se va Ã®nchide Ã®n %s minute"
 
 msgid "Disk"
 msgstr "Disc"

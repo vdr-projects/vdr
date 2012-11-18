@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffosd.c 1.17 2012/06/16 11:17:11 kls Exp $
+ * $Id: hdffosd.c 1.18 2012/11/15 09:20:24 kls Exp $
  */
 
 #include "hdffosd.h"
@@ -390,11 +390,13 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
             }
         }
     }
+#if 0
     if (mSupportsUtf8Text)
     {
         mHdffCmdIf->CmdOsdDrawUtf8Text(mDisplay, pFont->Handle, x + mLeft, y + mTop + h, s, ColorFg);
     }
     else
+#endif
     {
         uint16_t tmp[1000];
         uint16_t len = 0;

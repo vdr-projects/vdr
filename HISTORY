@@ -7271,3 +7271,70 @@ Video Disk Recorder Revision History
   whether a directory is empty. This allows users to continue to use files such as
   ".keep" to prevent a directory from being deleted when it is empty. Currently the
   only file name that is ignored is ".sort".
+
+2012-11-18: Version 1.7.32
+
+- Pressing the Play key during normal live viewing mode now opens the Recordings menu
+  if there is no "last viewed" recording (thanks to Alexander Wenzel).
+  The same behavior has been implemented for the Blue key in the main menu.
+- cIoThrottle::Engaged() is now also checked in cRemoveDeletedRecordingsThread::Action(),
+  to suspend removing deleted recordings in case this is necessary to make room for
+  new, ongoing recordings (suggested by Udo Richter).
+- The cThread constructor now has an additional boolean parameter that can be set to
+  true to have this thread run at a lower priority. Plugin authors that use low
+  priority threads may want to use this instead of the calls to SetPriority(19) and
+  SetIOPriority(7). The priority of a thread ("low" or "high") is now logged when the
+  thread starts.
+- Changed DTV_DVBT2_PLP_ID to DTV_STREAM_ID in dvbdevice.c to adapt to an incompatible
+  change in DVB API 5.8 (reported by Derek Kelly).
+  Removed the meanwhile obsolete definition of FE_CAN_TURBO_FEC.
+- Fixed some compiler warnings under gcc version 4.7.1.
+- Fixed setting the video format in the dvbhdffdevice (thanks to Torsten Lang).
+- Fixed 'make install' to not overwrite existing configuration files (thanks to Peter
+  Münster).
+- Added including the Make.global and Make.config files to the dvbdhffdevice's
+  libhdffcmd/Makefile.
+- Added options to build a 32-bit version of VDR on a 64-bit machine to
+  Make.config.template.
+- Fixed handling VPS timers in case the running status of an event goes to '1' (not
+  running) and later goes to '4' (running).
+- If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
+  it will now be shifted towards the next I-frame, either up or down, whichever is
+  closer (suggested by Udo Richter).
+- Fixed a possible memory leak in SI::StructureLoop::getNextAsPointer() (reported by
+  Sundararaj Reel).
+- Fixed handling timers in case an event is modified and "phased out" while the timer
+  is recording.
+- Improved frame detection by parsing just far enough into the MPEG-4 NAL units to get
+  the necessary information about frames and slices.
+- The initial syncing of the frame detector is now done immediately after the first
+  complete GOP has been seen. This makes recordings and especially pausing live video
+  start up to twice as fast as before.
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Fixed handling the very last entry in a recording index.
+- The return type of cMarks::Add() has been changed to void, since due to the sorting
+  of the list of marks the returned pointer might have pointed to a totally different
+  mark. Besides, the return value was never actually used.
+- Improved editing TS recordings by
+  + stripping dangling TS packets from the beginning of a sequence
+  + including pending TS packets at the end of a sequence
+  + fixing all timestamps and continuity counters
+  + generating editing marks for the edited version in such a way that each cutting
+    point is marked by an "end" and "begin" mark with the same offset
+  + no longer generating an editing mark at the "end" of the edited recording (this
+    was actually generated at the beginning of the last GOP, so that a subsequent
+    edit would have cut off the last GOP)
+  + no longer generating any editing marks if the edited recording results on just
+    one single sequence
+  + ignoring pairs of editing marks that are placed at exactly the same position of
+    a recording when actually cutting the recording
+  + not doing anything if the editing marks in place would result in the edited
+    version being the same as the original recording
+- Editing marks can now be placed directly on top of each other, in which case they
+  simply mark a position, but have no effect on the actual cutting process.
+- When positioned at an offset where two (or more) editing marks are placed on top
+  of each other, the '4' key moves the first one of them to the left, while the '6'
+  key moves the last one of them to the right. The '7' and '9' key handle multiple
+  marks at the same place as if it were one single mark.
+- Modified editing marks are now written to disk whenever the replay progress display
+  gets hidden (thanks to Christoph Haubrich).

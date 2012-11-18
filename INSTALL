@@ -36,6 +36,10 @@ and type 'make'. This should produce an executable file
 named 'vdr', which can be run after the DVB driver has been
 installed.
 
+If you want to build a 32-bit version of VDR on a 64-bit machine, you can
+use 'make M32=1' to do so. Note that you also need to have a Make.config file
+(derived from Make.config.template) to make this work.
+
 IMPORTANT: See "Configuration files" below for information on how
 =========  to set up the configuration files at the proper location!
 

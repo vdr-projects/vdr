@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.64 2012/09/30 13:05:14 kls Exp $
+ * $Id: recording.c 2.73 2012/11/13 13:46:49 kls Exp $
  */
 
 #include "recording.h"
@@ -83,20 +83,20 @@ public:
   };
 
 cRemoveDeletedRecordingsThread::cRemoveDeletedRecordingsThread(void)
-:cThread("remove deleted recordings")
+:cThread("remove deleted recordings", true)
 {
 }
 
 void cRemoveDeletedRecordingsThread::Action(void)
 {
-  SetPriority(19);
-  SetIOPriority(7);
   // Make sure only one instance of VDR does this:
   cLockFile LockFile(VideoDirectory);
   if (LockFile.Lock()) {
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
+         if (cIoThrottle::Engaged())
+            return;
          if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
@@ -1358,8 +1358,10 @@ bool cMark::Save(FILE *f)
 
 bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool IsPesRecording)
 {
+  recordingFileName = RecordingFileName;
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
+  isPesRecording = IsPesRecording;
   nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
   lastChange = 0;
@@ -1388,12 +1390,25 @@ bool cMarks::Update(void)
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
+           Align();
            Sort();
            return true;
            }
         }
      }
   return false;
+}
+
+void cMarks::Align(void)
+{
+  cIndexFile IndexFile(recordingFileName, false, isPesRecording);
+  for (cMark *m = First(); m; m = Next(m)) {
+      int p = IndexFile.GetClosestIFrame(m->Position());
+      if (int d = m->Position() - p) {
+         isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), d, abs(d) > 1 ? "s" : "");
+         m->SetPosition(p);
+         }
+      }
 }
 
 void cMarks::Sort(void)
@@ -1408,14 +1423,10 @@ void cMarks::Sort(void)
       }
 }
 
-cMark *cMarks::Add(int Position)
+void cMarks::Add(int Position)
 {
-  cMark *m = Get(Position);
-  if (!m) {
-     cConfig<cMark>::Add(m = new cMark(Position, NULL, framesPerSecond));
-     Sort();
-     }
-  return m;
+  cConfig<cMark>::Add(new cMark(Position, NULL, framesPerSecond));
+  Sort();
 }
 
 cMark *cMarks::Get(int Position)
@@ -1443,6 +1454,54 @@ cMark *cMarks::GetNext(int Position)
          return mi;
       }
   return NULL;
+}
+
+cMark *cMarks::GetNextBegin(cMark *EndMark)
+{
+  cMark *BeginMark = EndMark ? Next(EndMark) : First();
+  if (BeginMark) {
+     while (cMark *NextMark = Next(BeginMark)) {
+           if (BeginMark->Position() == NextMark->Position()) { // skip Begin/End at the same position
+              if (!(BeginMark = Next(NextMark)))
+                 break;
+              }
+           else
+              break;
+           }
+     }
+  return BeginMark;
+}
+
+cMark *cMarks::GetNextEnd(cMark *BeginMark)
+{
+  if (!BeginMark)
+     return NULL;
+  cMark *EndMark = Next(BeginMark);
+  if (EndMark) {
+     while (cMark *NextMark = Next(EndMark)) {
+           if (EndMark->Position() == NextMark->Position()) { // skip End/Begin at the same position
+              if (!(EndMark = Next(NextMark)))
+                 break;
+              }
+           else
+              break;
+           }
+     }
+  return EndMark;
+}
+
+int cMarks::GetNumSequences(void)
+{
+  int NumSequences = 0;
+  if (cMark *BeginMark = GetNextBegin()) {
+     while (cMark *EndMark = GetNextEnd(BeginMark)) {
+           NumSequences++;
+           BeginMark = GetNextBegin(EndMark);
+           }
+     if (NumSequences == 0 && BeginMark->Position() > 0)
+        NumSequences = 1; // there is only one actual "begin" mark at a non-zero offset, and no actual "end" mark
+     }
+  return NumSequences;
 }
 
 // --- cRecordingUserCommand -------------------------------------------------
@@ -1535,7 +1594,6 @@ void cIndexFileGenerator::Action(void)
               if (Processed > 0) {
                  if (FrameDetector.Synced()) {
                     // Synced FrameDetector, so rewind for actual processing:
-                    FrameDetector.Reset();
                     Rewind = true;
                     }
                  Buffer.Del(Processed);
@@ -1546,7 +1604,7 @@ void cIndexFileGenerator::Action(void)
               uchar *p = Data;
               while (Length >= TS_SIZE) {
                     int Pid = TsPid(p);
-                    if (Pid == 0)
+                    if (Pid == PATPID)
                        PatPmtParser.ParsePat(p, TS_SIZE);
                     else if (Pid == PatPmtParser.PmtPid())
                        PatPmtParser.ParsePmt(p, TS_SIZE);
@@ -1570,6 +1628,7 @@ void cIndexFileGenerator::Action(void)
               ReplayFile = FileName.NextFile();
               FileSize = 0;
               FrameOffset = -1;
+              Buffer.Clear();
               }
            }
         // Recording has been processed:
@@ -1753,7 +1812,7 @@ bool cIndexFile::CatchUp(int Index)
   // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
      cMutexLock MutexLock(&mutex);
-     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index > last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
             if (!IsInIndexList(this)) {
@@ -1798,7 +1857,7 @@ bool cIndexFile::CatchUp(int Index)
             }
          else
             LOG_ERROR_STR(*fileName);
-         if (Index < last)
+         if (Index <= last)
             break;
          cCondWait::SleepMs(1000);
          }
@@ -1826,18 +1885,22 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
 bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length)
 {
   if (CatchUp(Index)) {
-     if (Index >= 0 && Index < last) {
+     if (Index >= 0 && Index <= last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
         if (Independent)
            *Independent = index[Index].independent;
         if (Length) {
-           uint16_t fn = index[Index + 1].number;
-           off_t fo = index[Index + 1].offset;
-           if (fn == *FileNumber)
-              *Length = int(fo - *FileOffset);
+           if (Index < last) {
+              uint16_t fn = index[Index + 1].number;
+              off_t fo = index[Index + 1].offset;
+              if (fn == *FileNumber)
+                 *Length = int(fo - *FileOffset);
+              else
+                 *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+              }
            else
-              *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+              *Length = -1;
            }
         return true;
         }
@@ -1851,7 +1914,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index < last) {
+         if (Index >= 0 && Index <= last) {
             if (index[Index].independent) {
                uint16_t fn;
                if (!FileNumber)
@@ -1882,12 +1945,40 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
   return -1;
 }
 
+int cIndexFile::GetClosestIFrame(int Index)
+{
+  if (last > 0) {
+     Index = constrain(Index, 0, last);
+     if (index[Index].independent)
+        return Index;
+     int il = Index - 1;
+     int ih = Index + 1;
+     for (;;) {
+         if (il >= 0) {
+            if (index[il].independent)
+               return il;
+            il--;
+            }
+         else if (ih > last)
+            break;
+         if (ih <= last) {
+            if (index[ih].independent)
+               return ih;
+            ih++;
+            }
+         else if (il < 0)
+            break;
+         }
+     }
+  return 0;
+}
+
 int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)
 {
   if (CatchUp()) {
      //TODO implement binary search!
      int i;
-     for (i = 0; i < last; i++) {
+     for (i = 0; i <= last; i++) {
          if (index[i].number > FileNumber || (index[i].number == FileNumber) && off_t(index[i].offset) >= FileOffset)
             break;
          }
@@ -2039,7 +2130,7 @@ bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
                   while (read(fd, buf, sizeof(buf)) == sizeof(buf)) {
                         if (buf[0] == TS_SYNC_BYTE) {
                            int Pid = TsPid(buf);
-                           if (Pid == 0)
+                           if (Pid == PATPID)
                               PatPmtParser.ParsePat(buf, sizeof(buf));
                            else if (Pid == PatPmtParser.PmtPid()) {
                               PatPmtParser.ParsePmt(buf, sizeof(buf));
