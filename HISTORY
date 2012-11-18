@@ -7336,3 +7336,5 @@ Video Disk Recorder Revision History
   of each other, the '4' key moves the first one of them to the left, while the '6'
   key moves the last one of them to the right. The '7' and '9' key handle multiple
   marks at the same place as if it were one single mark.
+- Modified editing marks are now written to disk whenever the replay progress display
+  gets hidden (thanks to Christoph Haubrich).

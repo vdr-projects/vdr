@@ -2308,6 +2308,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for fixing cRecording::LengthInSeconds(), which wrongfully rounded the result to full
  minutes
  for suggesting to check for NULL in cOsd::AddPixmap()
+ for making modified editing marks be written to disk whenever the replay progress
+ display gets hidden
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
