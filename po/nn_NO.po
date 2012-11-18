@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-15 14:04+0200\n"
+"POT-Creation-Date: 2012-11-18 14:31+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
 "Language-Team: Norwegian Nynorsk <vdr@linuxtv.org>\n"
@@ -1212,6 +1212,9 @@ msgid "Jump: "
 msgstr "Hopp: "
 
 msgid "No editing marks defined!"
+msgstr ""
+
+msgid "No editing sequences defined!"
 msgstr ""
 
 msgid "Can't start editing process!"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.72 2012/11/12 14:51:09 kls Exp $
+ * $Id: recording.c 2.73 2012/11/13 13:46:49 kls Exp $
  */
 
 #include "recording.h"
@@ -1454,6 +1454,54 @@ cMark *cMarks::GetNext(int Position)
          return mi;
       }
   return NULL;
+}
+
+cMark *cMarks::GetNextBegin(cMark *EndMark)
+{
+  cMark *BeginMark = EndMark ? Next(EndMark) : First();
+  if (BeginMark) {
+     while (cMark *NextMark = Next(BeginMark)) {
+           if (BeginMark->Position() == NextMark->Position()) { // skip Begin/End at the same position
+              if (!(BeginMark = Next(NextMark)))
+                 break;
+              }
+           else
+              break;
+           }
+     }
+  return BeginMark;
+}
+
+cMark *cMarks::GetNextEnd(cMark *BeginMark)
+{
+  if (!BeginMark)
+     return NULL;
+  cMark *EndMark = Next(BeginMark);
+  if (EndMark) {
+     while (cMark *NextMark = Next(EndMark)) {
+           if (EndMark->Position() == NextMark->Position()) { // skip End/Begin at the same position
+              if (!(EndMark = Next(NextMark)))
+                 break;
+              }
+           else
+              break;
+           }
+     }
+  return EndMark;
+}
+
+int cMarks::GetNumSequences(void)
+{
+  int NumSequences = 0;
+  if (cMark *BeginMark = GetNextBegin()) {
+     while (cMark *EndMark = GetNextEnd(BeginMark)) {
+           NumSequences++;
+           BeginMark = GetNextBegin(EndMark);
+           }
+     if (NumSequences == 0 && BeginMark->Position() > 0)
+        NumSequences = 1; // there is only one actual "begin" mark at a non-zero offset, and no actual "end" mark
+     }
+  return NumSequences;
 }
 
 // --- cRecordingUserCommand -------------------------------------------------

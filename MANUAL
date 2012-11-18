@@ -367,13 +367,13 @@ Version 1.6
   - 7, 9    Jump back and forward between editing marks. Replay goes into still
             mode after jumping to a mark.
   - 8       Positions replay at a point 3 seconds before the current or next
-            "start" mark and starts replay.
+            "begin" mark and starts replay.
   - 2       Start the actual cutting process.
 
   Editing marks are represented by black, vertical lines in the progress display.
-  A small black triangle at the top of the mark means that this is a "start"
+  A small black triangle at the top of the mark means that this is a "begin"
   mark, and a triangle at the bottom means that this is an "end" mark.
-  The cutting process will save all video data between "start" and "end" marks
+  The cutting process will save all video data between "begin" and "end" marks
   into a new file (the original recording remains untouched). The new file will
   have the same name as the original recording, preceded with a '%' character
   (imagine the '%' somehow looking like a pair of scissors ;-). Red bars in the
@@ -382,7 +382,7 @@ Version 1.6
 
   The video sequences to be saved by the cutting process are determined by an
   "even/odd" algorithm. This means that every odd numbered editing mark (i.e.
-  1, 3, 5,...) represents a "start" mark, while every even numbered mark (2, 4,
+  1, 3, 5,...) represents a "begin" mark, while every even numbered mark (2, 4,
   6,...) is an "end" mark. Inserting or toggling a mark on or off automatically
   adjusts the sequence to the right side of that mark.
 
@@ -395,11 +395,13 @@ Version 1.6
   version of the recording you can use the '8' key to jump to a point just
   before the next cut and have a look at the resulting sequence.
 
-  Currently editing marks can only be set at I-frames, which typically is
-  every 12th frame. So editing can be done with a resolution of roughly half
-  a second. A "start" mark marks the first frame of a resulting video
-  sequence, and an "end" mark marks the last frame of that sequence.
-
+  Currently editing marks can only be set at I-frames, which typically appear
+  every half of a second to a second.  A "begin" mark marks the first frame of
+  a resulting video sequence, and an "end" mark marks the last frame of that
+  sequence.  Note that the actual frame indicated by the an "end" mark will
+  not be included in the edited version of the recording. That's because every
+  recording (and every sequence of an edited recording) begins with an I-frame
+  and ends right before the next I-frame.
   An edited recording (indicated by the '%' character) will never be deleted
   automatically in case the disk runs full (no matter what "lifetime" it has).
 

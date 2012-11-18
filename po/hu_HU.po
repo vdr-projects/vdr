@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-15 14:04+0200\n"
+"POT-Creation-Date: 2012-11-18 14:31+0100\n"
 "PO-Revision-Date: 2012-01-02 11:54+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1216,6 +1216,9 @@ msgstr "Ugrás ide: "
 
 msgid "No editing marks defined!"
 msgstr "Nincs vágópont kijelölve"
+
+msgid "No editing sequences defined!"
+msgstr ""
 
 msgid "Can't start editing process!"
 msgstr "A vágás nem indítható!"

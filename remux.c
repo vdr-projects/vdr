@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.70 2012/11/13 10:00:00 kls Exp $
+ * $Id: remux.c 2.71 2012/11/18 12:18:08 kls Exp $
  */
 
 #include "remux.h"
@@ -114,6 +114,32 @@ void cRemux::SetBrokenLink(uchar *Data, int Length)
 
 // --- Some TS handling tools ------------------------------------------------
 
+void TsHidePayload(uchar *p)
+{
+  p[1] &= ~TS_PAYLOAD_START;
+  p[3] |=  TS_ADAPT_FIELD_EXISTS;
+  p[3] &= ~TS_PAYLOAD_EXISTS;
+  p[4] = TS_SIZE - 5;
+  p[5] = 0x00;
+  memset(p + 6, 0xFF, TS_SIZE - 6);
+}
+
+void TsSetPcr(uchar *p, int64_t Pcr)
+{
+  if (TsHasAdaptationField(p)) {
+     if (p[4] >= 7 && (p[5] & TS_ADAPT_PCR)) {
+        int64_t b = Pcr / PCRFACTOR;
+        int e = Pcr % PCRFACTOR;
+        p[ 6] =  b >> 25;
+        p[ 7] =  b >> 17;
+        p[ 8] =  b >>  9;
+        p[ 9] =  b >>  1;
+        p[10] = (b <<  7) | (p[10] & 0x7E) | ((e >> 8) & 0x01);
+        p[11] =  e;
+        }
+     }
+}
+
 int64_t TsGetPts(const uchar *p, int l)
 {
   // Find the first packet with a PTS and use it:
@@ -127,25 +153,75 @@ int64_t TsGetPts(const uchar *p, int l)
   return -1;
 }
 
-void TsSetTeiOnBrokenPackets(uchar *p, int l)
+int64_t TsGetDts(const uchar *p, int l)
 {
-  bool Processed[MAXPID] = { false };
-  while (l >= TS_SIZE) {
-        if (*p != TS_SYNC_BYTE)
-           break;
-        int Pid = TsPid(p);
-        if (!Processed[Pid]) {
-           if (!TsPayloadStart(p))
-              p[1] |= TS_ERROR;
-           else {
-              Processed[Pid] = true;
-              int offs = TsPayloadOffset(p);
-              cRemux::SetBrokenLink(p + offs, TS_SIZE - offs);
-              }
-           }
-        l -= TS_SIZE;
+  // Find the first packet with a DTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasDts(d))
+           return PesGetDts(d);
         p += TS_SIZE;
+        l -= TS_SIZE;
         }
+  return -1;
+}
+
+void TsSetPts(uchar *p, int l, int64_t Pts)
+{
+  // Find the first packet with a PTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasPts(d)) {
+           PesSetPts(const_cast<uchar *>(d), Pts);
+           return;
+           }
+        p += TS_SIZE;
+        l -= TS_SIZE;
+        }
+}
+
+void TsSetDts(uchar *p, int l, int64_t Dts)
+{
+  // Find the first packet with a DTS and use it:
+  while (l > 0) {
+        const uchar *d = p;
+        if (TsPayloadStart(d) && TsGetPayload(&d) && PesHasDts(d)) {
+           PesSetDts(const_cast<uchar *>(d), Dts);
+           return;
+           }
+        p += TS_SIZE;
+        l -= TS_SIZE;
+        }
+}
+
+// --- Some PES handling tools -----------------------------------------------
+
+void PesSetPts(uchar *p, int64_t Pts)
+{
+  p[ 9] = ((Pts >> 29) & 0x0E) | (p[9] & 0xF1);
+  p[10] =   Pts >> 22;
+  p[11] = ((Pts >> 14) & 0xFE) | 0x01;
+  p[12] =   Pts >>  7;
+  p[13] = ((Pts <<  1) & 0xFE) | 0x01;
+}
+
+void PesSetDts(uchar *p, int64_t Dts)
+{
+  p[14] = ((Dts >> 29) & 0x0E) | (p[14] & 0xF1);
+  p[15] =   Dts >> 22;
+  p[16] = ((Dts >> 14) & 0xFE) | 0x01;
+  p[17] =   Dts >>  7;
+  p[18] = ((Dts <<  1) & 0xFE) | 0x01;
+}
+
+int64_t PtsDiff(int64_t Pts1, int64_t Pts2)
+{
+  int64_t d = Pts2 - Pts1;
+  if (d > MAX33BIT / 2)
+     return d - (MAX33BIT + 1);
+  if (d < -MAX33BIT / 2)
+     return d + (MAX33BIT + 1);
+  return d;
 }
 
 // --- cTsPayload ------------------------------------------------------------
@@ -1395,7 +1471,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              }
                           }
                        else // audio
-                          framesPerSecond = 90000.0 / Delta; // PTS of audio frames is always increasing
+                          framesPerSecond = double(PTSTICKS) / Delta; // PTS of audio frames is always increasing
                        dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numPtsValues + 1);
                        synced = true;
                        parser->SetDebug(false);

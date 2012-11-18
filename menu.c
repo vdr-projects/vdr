@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.62 2012/10/03 10:14:53 kls Exp $
+ * $Id: menu.c 2.63 2012/11/13 11:23:25 kls Exp $
  */
 
 #include "menu.h"
@@ -4796,6 +4796,8 @@ void cReplayControl::EditCut(void)
      if (!cCutter::Active()) {
         if (!marks.Count())
            Skins.Message(mtError, tr("No editing marks defined!"));
+        else if (!marks.GetNumSequences())
+           Skins.Message(mtError, tr("No editing sequences defined!"));
         else if (!cCutter::Start(fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else

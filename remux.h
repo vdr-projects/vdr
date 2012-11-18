@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.34 2012/11/06 11:03:06 kls Exp $
+ * $Id: remux.h 2.35 2012/11/18 12:17:23 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -52,6 +52,11 @@ public:
 #define PATPID 0x0000 // PAT PID (constant 0)
 #define MAXPID 0x2000 // for arrays that use a PID as the index
 
+#define PTSTICKS  90000 // number of PTS ticks per second
+#define PCRFACTOR 300 // conversion from 27MHz PCR extension to 90kHz PCR base
+#define MAX33BIT  0x00000001FFFFFFFFLL // max. possible value with 33 bit
+#define MAX27MHZ  ((MAX33BIT + 1) * PCRFACTOR - 1) // max. possible PCR value
+
 inline bool TsHasPayload(const uchar *p)
 {
   return p[3] & TS_PAYLOAD_EXISTS;
@@ -82,6 +87,16 @@ inline bool TsIsScrambled(const uchar *p)
   return p[3] & TS_SCRAMBLING_CONTROL;
 }
 
+inline uchar TsGetContinuityCounter(const uchar *p)
+{
+  return p[3] & TS_CONT_CNT_MASK;
+}
+
+inline void TsSetContinuityCounter(uchar *p, uchar Counter)
+{
+  p[3] = (p[3] & ~TS_CONT_CNT_MASK) | (Counter & TS_CONT_CNT_MASK);
+}
+
 inline int TsPayloadOffset(const uchar *p)
 {
   int o = TsHasAdaptationField(p) ? p[4] + 5 : 4;
@@ -103,15 +118,31 @@ inline int TsContinuityCounter(const uchar *p)
   return p[3] & TS_CONT_CNT_MASK;
 }
 
-inline int TsGetAdaptationField(const uchar *p)
+inline int64_t TsGetPcr(const uchar *p)
 {
-  return TsHasAdaptationField(p) ? p[5] : 0x00;
+  if (TsHasAdaptationField(p)) {
+     if (p[4] >= 7 && (p[5] & TS_ADAPT_PCR)) {
+        return ((((int64_t)p[ 6]) << 25) |
+                (((int64_t)p[ 7]) << 17) |
+                (((int64_t)p[ 8]) <<  9) |
+                (((int64_t)p[ 9]) <<  1) |
+                (((int64_t)p[10]) >>  7)) * PCRFACTOR +
+               (((((int)p[10]) & 0x01) << 8) |
+                ( ((int)p[11])));
+        }
+     }
+  return -1;
 }
+
+void TsHidePayload(uchar *p);
+void TsSetPcr(uchar *p, int64_t Pcr);
 
 // The following functions all take a pointer to a sequence of complete TS packets.
 
 int64_t TsGetPts(const uchar *p, int l);
-void TsSetTeiOnBrokenPackets(uchar *p, int l);
+int64_t TsGetDts(const uchar *p, int l);
+void TsSetPts(uchar *p, int l, int64_t Pts);
+void TsSetDts(uchar *p, int l, int64_t Dts);
 
 // Some PES handling tools:
 // The following functions that take a pointer to PES data all assume that
@@ -142,6 +173,11 @@ inline bool PesHasPts(const uchar *p)
   return (p[7] & 0x80) && p[8] >= 5;
 }
 
+inline bool PesHasDts(const uchar *p)
+{
+  return (p[7] & 0x40) && p[8] >= 10;
+}
+
 inline int64_t PesGetPts(const uchar *p)
 {
   return ((((int64_t)p[ 9]) & 0x0E) << 29) |
@@ -150,6 +186,28 @@ inline int64_t PesGetPts(const uchar *p)
          (( (int64_t)p[12])         <<  7) |
          ((((int64_t)p[13]) & 0xFE) >>  1);
 }
+
+inline int64_t PesGetDts(const uchar *p)
+{
+  return ((((int64_t)p[14]) & 0x0E) << 29) |
+         (( (int64_t)p[15])         << 22) |
+         ((((int64_t)p[16]) & 0xFE) << 14) |
+         (( (int64_t)p[17])         <<  7) |
+         ((((int64_t)p[18]) & 0xFE) >>  1);
+}
+
+void PesSetPts(uchar *p, int64_t Pts);
+void PesSetDts(uchar *p, int64_t Dts);
+
+// PTS handling:
+
+inline int64_t PtsAdd(int64_t Pts1, int64_t Pts2) { return (Pts1 + Pts2) & MAX33BIT; }
+       ///< Adds the given PTS values, taking into account the 33bit wrap around.
+int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
+       ///< Returns the difference between two PTS values. The result of Pts2 - Pts1
+       ///< is the actual number of 90kHz time ticks that pass from Pts1 to Pts2,
+       ///< properly taking into account the 33bit wrap around. If Pts2 is "before"
+       ///< Pts1, the result is negative.
 
 // A transprent TS payload handler:
 

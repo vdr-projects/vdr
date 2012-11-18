@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.39 2012/11/12 14:51:09 kls Exp $
+ * $Id: recording.h 2.40 2012/11/13 11:43:59 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -238,6 +238,19 @@ public:
   cMark *Get(int Position);
   cMark *GetPrev(int Position);
   cMark *GetNext(int Position);
+  cMark *GetNextBegin(cMark *EndMark = NULL);
+       ///< Returns the next "begin" mark after EndMark, skipping any marks at the
+       ///< same position as EndMark. If EndMark is NULL, the first actual "begin"
+       ///< will be returned (if any).
+  cMark *GetNextEnd(cMark *BeginMark);
+       ///< Returns the next "end" mark after BeginMark, skipping any marks at the
+       ///< same position as BeginMark.
+  int GetNumSequences(void);
+       ///< Returns the actual number of sequences to be cut from the recording.
+       ///< If there is only one actual "begin" mark, and it is positioned at index
+       ///< 0 (the beginning of the recording), and there is no "end" mark, the
+       ///< return value is 0, which means that the result is the same as the original
+       ///< recording.
   };
 
 #define RUC_BEFORERECORDING "before"

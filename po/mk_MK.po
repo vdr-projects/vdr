@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-09-15 14:04+0200\n"
+"POT-Creation-Date: 2012-11-18 14:31+0100\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -1213,6 +1213,9 @@ msgstr "Скокни:"
 
 msgid "No editing marks defined!"
 msgstr "Нема одредено ознаки за сечење!"
+
+msgid "No editing sequences defined!"
+msgstr ""
 
 msgid "Can't start editing process!"
 msgstr "Не може да почне уредување!"

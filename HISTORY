@@ -7272,7 +7272,7 @@ Video Disk Recorder Revision History
   ".keep" to prevent a directory from being deleted when it is empty. Currently the
   only file name that is ignored is ".sort".
 
-2012-11-12: Version 1.7.32
+2012-11-18: Version 1.7.32
 
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu
   if there is no "last viewed" recording (thanks to Alexander Wenzel).
@@ -7315,3 +7315,18 @@ Video Disk Recorder Revision History
 - The return type of cMarks::Add() has been changed to void, since due to the sorting
   of the list of marks the returned pointer might have pointed to a totally different
   mark. Besides, the return value was never actually used.
+- Improved editing TS recordings by
+  + stripping dangling TS packets from the beginning of a sequence
+  + including pending TS packets at the end of a sequence
+  + fixing all timestamps and continuity counters
+  + generating editing marks for the edited version in such a way that each cutting
+    point is marked by an "end" and "begin" mark with the same offset
+  + no longer generating an editing mark at the "end" of the edited recording (this
+    was actually generated at the beginning of the last GOP, so that a subsequent
+    edit would have cut off the last GOP)
+  + no longer generating any editing marks if the edited recording results on just
+    one single sequence
+  + ignoring pairs of editing marks that are placed at exactly the same position of
+    a recording when actually cutting the recording
+  + not doing anything if the editing marks in place would result in the edited
+    version being the same as the original recording
