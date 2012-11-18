@@ -7330,3 +7330,9 @@ Video Disk Recorder Revision History
     a recording when actually cutting the recording
   + not doing anything if the editing marks in place would result in the edited
     version being the same as the original recording
+- Editing marks can now be placed directly on top of each other, in which case they
+  simply mark a position, but have no effect on the actual cutting process.
+- When positioned at an offset where two (or more) editing marks are placed on top
+  of each other, the '4' key moves the first one of them to the left, while the '6'
+  key moves the last one of them to the right. The '7' and '9' key handle multiple
+  marks at the same place as if it were one single mark.

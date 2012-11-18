@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.63 2012/11/13 11:23:25 kls Exp $
+ * $Id: menu.c 2.64 2012/11/18 13:00:33 kls Exp $
  */
 
 #include "menu.h"
@@ -4771,12 +4771,12 @@ void cReplayControl::MarkMove(bool Forward)
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
         if (Forward) {
-           if ((m2 = marks.Next(m)) != NULL && m2->Position() <= p)
-              return;
+           while ((m2 = marks.Next(m)) != NULL && m2->Position() == m->Position())
+                 m = m2;
            }
         else {
-           if ((m2 = marks.Prev(m)) != NULL && m2->Position() >= p)
-              return;
+           while ((m2 = marks.Prev(m)) != NULL && m2->Position() == m->Position())
+                 m = m2;
            }
         m->SetPosition(p);
         Goto(m->Position(), true);
