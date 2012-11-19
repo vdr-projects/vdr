@@ -7344,3 +7344,4 @@ Video Disk Recorder Revision History
 - In order to be able to play TS recordings from other sources, in which there is
   more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
   to 'bool cPatPmtParser::IsPatPmt(int Pid)'.
+- Fixed learning remote control keys with the LCARS skin.

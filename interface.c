@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 2.1 2011/12/04 14:52:38 kls Exp $
+ * $Id: interface.c 2.2 2012/11/19 12:21:43 kls Exp $
  */
 
 #include "interface.h"
@@ -160,6 +160,7 @@ void cInterface::LearnKeys(void)
       dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
       if (!known) {
          cSkinDisplayMenu *DisplayMenu = Skins.Current()->DisplayMenu();
+         DisplayMenu->SetMenuCategory(mcUnknown);
          char Headline[256];
          snprintf(Headline, sizeof(Headline), tr("Learning Remote Control Keys"));
          cRemote::Clear();
