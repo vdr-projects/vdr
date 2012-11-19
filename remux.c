@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.71 2012/11/18 12:18:08 kls Exp $
+ * $Id: remux.c 2.72 2012/11/19 10:23:42 kls Exp $
  */
 
 #include "remux.h"
@@ -574,7 +574,7 @@ void cPatPmtParser::Reset(void)
 {
   pmtSize = 0;
   patVersion = pmtVersion = -1;
-  pmtPid = -1;
+  pmtPids[0] = 0;
   vpid = vtype = 0;
   ppid = 0;
 }
@@ -594,14 +594,17 @@ void cPatPmtParser::ParsePat(const uchar *Data, int Length)
      dbgpatpmt("PAT: TSid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pat.getTransportStreamId(), Pat.getCurrentNextIndicator(), Pat.getVersionNumber(), Pat.getSectionNumber(), Pat.getLastSectionNumber());
      if (patVersion == Pat.getVersionNumber())
         return;
+     int NumPmtPids = 0;
      SI::PAT::Association assoc;
      for (SI::Loop::Iterator it; Pat.associationLoop.getNext(assoc, it); ) {
          dbgpatpmt("     isNITPid = %d\n", assoc.isNITPid());
          if (!assoc.isNITPid()) {
-            pmtPid = assoc.getPid();
+            if (NumPmtPids <= MAX_PMT_PIDS)
+               pmtPids[NumPmtPids++] = assoc.getPid();
             dbgpatpmt("     service id = %d, pid = %d\n", assoc.getServiceId(), assoc.getPid());
             }
          }
+     pmtPids[NumPmtPids] = 0;
      patVersion = Pat.getVersionNumber();
      }
   else
@@ -839,7 +842,7 @@ bool cPatPmtParser::ParsePatPmt(const uchar *Data, int Length)
         int Pid = TsPid(Data);
         if (Pid == PATPID)
            ParsePat(Data, TS_SIZE);
-        else if (Pid == PmtPid()) {
+        else if (IsPmtPid(Pid)) {
            ParsePmt(Data, TS_SIZE);
            if (patVersion >= 0 && pmtVersion >= 0)
               return true;

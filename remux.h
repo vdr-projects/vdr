@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.35 2012/11/18 12:17:23 kls Exp $
+ * $Id: remux.h 2.36 2012/11/19 10:22:28 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -327,13 +327,15 @@ public:
 
 // PAT/PMT Parser:
 
+#define MAX_PMT_PIDS 32
+
 class cPatPmtParser {
 private:
   uchar pmt[MAX_SECTION_SIZE];
   int pmtSize;
   int patVersion;
   int pmtVersion;
-  int pmtPid;
+  int pmtPids[MAX_PMT_PIDS + 1]; // list is zero-terminated
   int vpid;
   int ppid;
   int vtype;
@@ -373,9 +375,9 @@ public:
   bool GetVersions(int &PatVersion, int &PmtVersion) const;
        ///< Returns true if a valid PAT/PMT has been parsed and stores
        ///< the current version numbers in the given variables.
-  int PmtPid(void) const { return pmtPid; }
-       ///< Returns the PMT pid as defined by the current PAT.
-       ///< If no PAT has been received yet, -1 will be returned.
+  bool IsPmtPid(int Pid) const { for (int i = 0; pmtPids[i]; i++) if (pmtPids[i] == Pid) return true; return false; }
+       ///< Returns true if Pid the one of the PMT pids as defined by the current PAT.
+       ///< If no PAT has been received yet, false will be returned.
   int Vpid(void) const { return vpid; }
        ///< Returns the video pid as defined by the current PMT, or 0 if no video
        ///< pid has been detected, yet.

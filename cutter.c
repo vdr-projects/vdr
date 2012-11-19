@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.16 2012/11/18 12:09:00 kls Exp $
+ * $Id: cutter.c 2.17 2012/11/19 10:21:44 kls Exp $
  */
 
 #include "cutter.h"
@@ -132,7 +132,7 @@ bool cDanglingPacketStripper::Process(uchar *Data, int Length, int64_t FirstPts)
         int Pid = TsPid(Data);
         if (Pid == PATPID)
            patPmtParser.ParsePat(Data, TS_SIZE);
-        else if (Pid == patPmtParser.PmtPid())
+        else if (patPmtParser.IsPmtPid(Pid))
            patPmtParser.ParsePmt(Data, TS_SIZE);
         else {
            int64_t Pts = TsGetPts(Data, TS_SIZE);
@@ -408,7 +408,7 @@ void cCuttingThread::GetPendingPackets(uchar *Data, int &Length, int Index, int6
                int Pid = TsPid(p);
                if (Pid == PATPID)
                   PatPmtParser.ParsePat(p, TS_SIZE);
-               else if (Pid == PatPmtParser.PmtPid())
+               else if (PatPmtParser.IsPmtPid(Pid))
                   PatPmtParser.ParsePmt(p, TS_SIZE);
                else if (!Processed[Pid]) {
                   int64_t Pts = TsGetPts(p, TS_SIZE);

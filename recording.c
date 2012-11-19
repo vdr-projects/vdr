@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.73 2012/11/13 13:46:49 kls Exp $
+ * $Id: recording.c 2.74 2012/11/19 10:01:01 kls Exp $
  */
 
 #include "recording.h"
@@ -1606,7 +1606,7 @@ void cIndexFileGenerator::Action(void)
                     int Pid = TsPid(p);
                     if (Pid == PATPID)
                        PatPmtParser.ParsePat(p, TS_SIZE);
-                    else if (Pid == PatPmtParser.PmtPid())
+                    else if (PatPmtParser.IsPmtPid(Pid))
                        PatPmtParser.ParsePmt(p, TS_SIZE);
                     Length -= TS_SIZE;
                     p += TS_SIZE;
@@ -2132,7 +2132,7 @@ bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
                            int Pid = TsPid(buf);
                            if (Pid == PATPID)
                               PatPmtParser.ParsePat(buf, sizeof(buf));
-                           else if (Pid == PatPmtParser.PmtPid()) {
+                           else if (PatPmtParser.IsPmtPid(Pid)) {
                               PatPmtParser.ParsePmt(buf, sizeof(buf));
                               if (PatPmtParser.GetVersions(PatVersion, PmtVersion)) {
                                  close(fd);
