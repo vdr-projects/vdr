@@ -7339,9 +7339,10 @@ Video Disk Recorder Revision History
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
 
-2012-11-19: Version 1.7.33
+2012-11-21: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
   more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
   to 'bool cPatPmtParser::IsPatPmt(int Pid)'.
 - Fixed learning remote control keys with the LCARS skin.
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
