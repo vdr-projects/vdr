@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.17 2012/11/19 10:21:44 kls Exp $
+ * $Id: cutter.c 2.18 2012/11/25 13:59:07 kls Exp $
  */
 
 #include "cutter.h"
@@ -408,8 +408,10 @@ void cCuttingThread::GetPendingPackets(uchar *Data, int &Length, int Index, int6
                int Pid = TsPid(p);
                if (Pid == PATPID)
                   PatPmtParser.ParsePat(p, TS_SIZE);
-               else if (PatPmtParser.IsPmtPid(Pid))
+               else if (PatPmtParser.IsPmtPid(Pid)) {
                   PatPmtParser.ParsePmt(p, TS_SIZE);
+                  Processed[PatPmtParser.Vpid()] = true; // we only want non-video packets
+                  }
                else if (!Processed[Pid]) {
                   int64_t Pts = TsGetPts(p, TS_SIZE);
                   if (Pts >= 0) {
