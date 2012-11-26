@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.74 2012/11/19 10:01:01 kls Exp $
+ * $Id: recording.c 2.75 2012/11/26 09:39:59 kls Exp $
  */
 
 #include "recording.h"
@@ -1498,8 +1498,11 @@ int cMarks::GetNumSequences(void)
            NumSequences++;
            BeginMark = GetNextBegin(EndMark);
            }
-     if (NumSequences == 0 && BeginMark->Position() > 0)
-        NumSequences = 1; // there is only one actual "begin" mark at a non-zero offset, and no actual "end" mark
+     if (BeginMark) {
+        NumSequences++; // the last sequence had no actual "end" mark
+        if (NumSequences == 1 && BeginMark->Position() == 0)
+           NumSequences = 0; // there is only one actual "begin" mark at offset zero, and no actual "end" mark
+        }
      }
   return NumSequences;
 }
