@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.18 2012/11/25 13:59:07 kls Exp $
+ * $Id: cutter.c 2.19 2012/11/26 17:21:14 kls Exp $
  */
 
 #include "cutter.h"
@@ -210,7 +210,8 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
            }
         // Adjust the TS continuity counter:
         if (fixCounters) {
-           counter[Pid] = (counter[Pid] + 1) & TS_CONT_CNT_MASK;
+           if (TsHasPayload(p))
+              counter[Pid] = (counter[Pid] + 1) & TS_CONT_CNT_MASK;
            TsSetContinuityCounter(p, counter[Pid]);
            }
         else
