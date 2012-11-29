@@ -2975,6 +2975,8 @@ Sören Moch <smoch@web.de>
  for pointing out that the name H264 should be used instead of MPEG4
  for pointing out that the cutter should only increment the TS continuity counter for
  packets that have a payload
+ for pointing out that when adjusting the DTS values in the cutter, it hase to compensate
+ for dropped B-frames
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
