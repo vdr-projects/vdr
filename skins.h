@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.5 2012/05/12 11:10:30 kls Exp $
+ * $Id: skins.h 2.6 2012/12/02 13:23:44 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -49,7 +49,7 @@ public:
 
 class cSkinDisplayChannel : public cSkinDisplay {
        ///< This class is used to display the current channel, together with
-       ///< the present and following EPG even. How and to what extent this
+       ///< the present and following EPG event. How and to what extent this
        ///< is done is totally up to the derived class.
 public:
   virtual void SetChannel(const cChannel *Channel, int Number) = 0;

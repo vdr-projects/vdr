@@ -2760,6 +2760,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for a patch that was used to implement SCR (Satellite Channel Routing)
  for implementing the SVDRP command 'UPDR'
  for reporting that the SVDRP command UPDR didn't update the global recordings list
+ for fixing a typo in skins.h
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices

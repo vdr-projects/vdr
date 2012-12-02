@@ -7339,7 +7339,7 @@ Video Disk Recorder Revision History
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
 
-2012-11-29: Version 1.7.33
+2012-12-02: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
   more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
@@ -7355,3 +7355,4 @@ Video Disk Recorder Revision History
   payload (pointed out by Sören Moch).
 - Fixed adjusting the DTS values in the cutter, to compensate for dropped B-frames
   (pointed out by Sören Moch).
+- Fixed a typo in skins.h (thanks to Lars Hanisch).
