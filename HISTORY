@@ -7356,3 +7356,5 @@ Video Disk Recorder Revision History
 - Fixed adjusting the DTS values in the cutter, to compensate for dropped B-frames
   (pointed out by Sören Moch).
 - Fixed a typo in skins.h (thanks to Lars Hanisch).
+- Simplified calculating the PTS offset in cPtsFixer::Fix() and fixed the overflow
+  handling of PCR values (thanks to Sören Moch).

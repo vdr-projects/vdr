@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.20 2012/11/29 15:30:01 kls Exp $
+ * $Id: cutter.c 2.21 2012/12/02 14:30:55 kls Exp $
  */
 
 #include "cutter.h"
@@ -192,14 +192,8 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
   // Determine the PTS offset at the beginning of each sequence (except the first one):
   if (CutIn && lastPts >= 0) {
      int64_t Pts = TsGetPts(Data, Length);
-     if (Pts >= 0) {
-        // offset is calculated so that Pts + offset results in lastPts + delta:
-        offset = Pts - PtsAdd(lastPts, delta);
-        if (offset <= 0)
-           offset = -offset;
-        else
-           offset = MAX33BIT + 1 - offset;
-        }
+     if (Pts >= 0)
+        offset = (lastPts + delta - Pts) & MAX33BIT; // offset is calculated so that Pts + offset results in lastPts + delta
      fixCounters = true;
      }
   // Keep track of the highest video PTS:
@@ -262,7 +256,7 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
            int64_t Pcr = TsGetPcr(p);
            if (Pcr >= 0) {
               int64_t NewPcr = Pcr + offset * PCRFACTOR;
-              if (NewPcr >= MAX27MHZ)
+              if (NewPcr > MAX27MHZ)
                  NewPcr -= MAX27MHZ + 1;
               TsSetPcr(p, NewPcr);
               }

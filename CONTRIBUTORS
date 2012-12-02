@@ -2978,6 +2978,8 @@ Sören Moch <smoch@web.de>
  packets that have a payload
  for pointing out that when adjusting the DTS values in the cutter, it hase to compensate
  for dropped B-frames
+ for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
+ handling of PCR values
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
