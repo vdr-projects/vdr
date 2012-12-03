@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.17 2012/06/02 10:32:38 kls Exp $
+ * $Id: osd.h 2.18 2012/12/03 13:49:02 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -735,7 +735,7 @@ protected:
        ///< Initializes the OSD with the given coordinates.
        ///< By default it is assumed that the full area will be able to display
        ///< full 32 bit graphics (ARGB with eight bit for each color and the alpha
-       ///< value, repectively). However, the actual hardware in use may not be
+       ///< value, respectively). However, the actual hardware in use may not be
        ///< able to display such a high resolution OSD, so there is an option to
        ///< divide the full OSD area into several sub-areas with lower color depths
        ///< and individual palettes. The sub-areas need not necessarily cover the

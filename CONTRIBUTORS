@@ -1976,6 +1976,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for pointing out that the variable HasSnr was unused in cDvbTuner::GetSignalQuality()
  for fixing cConfig::Load() for g++ version 4.7.0
  for fixing some typos in HISTORY and CONTRIBUTORS
+ for fixing some spellings in osd.h and svdrp.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

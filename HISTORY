@@ -7363,3 +7363,4 @@ Video Disk Recorder Revision History
   live viewing mode in case there is a "last viewed" recording.
 - Fixed some #include statements in plugins to use <vdr/...> instead of "vdr/..."
   (thanks to Lars Hanisch).
+- Fixed some spellings in osd.h and svdrp.c (thanks to Ville Skyttä).
