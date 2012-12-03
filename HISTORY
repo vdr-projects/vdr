@@ -7364,3 +7364,5 @@ Video Disk Recorder Revision History
 - Fixed some #include statements in plugins to use <vdr/...> instead of "vdr/..."
   (thanks to Lars Hanisch).
 - Fixed some spellings in osd.h and svdrp.c (thanks to Ville Skyttä).
+- Fixed handling lowercase polarization characters in channel definitions if no DiSEqC
+  is used (reported by Mike Hay, actual bug pointed out by Stefan Huelswitt).

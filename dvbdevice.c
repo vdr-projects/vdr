@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.74 2012/10/07 11:11:30 kls Exp $
+ * $Id: dvbdevice.c 2.75 2012/12/03 14:07:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -261,16 +261,16 @@ bool cDvbTransponderParameters::Parse(const char *s)
           case 'C': s = ParseParameter(s, coderateH, CoderateValues); break;
           case 'D': s = ParseParameter(s, coderateL, CoderateValues); break;
           case 'G': s = ParseParameter(s, guard, GuardValues); break;
-          case 'H': polarization = *s++; break;
+          case 'H': polarization = 'H'; s++; break;
           case 'I': s = ParseParameter(s, inversion, InversionValues); break;
-          case 'L': polarization = *s++; break;
+          case 'L': polarization = 'L'; s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
           case 'P': s = ParseParameter(s, plpId); break;
-          case 'R': polarization = *s++; break;
+          case 'R': polarization = 'R'; s++; break;
           case 'S': s = ParseParameter(s, system, SystemValuesSat); break; // we only need the numerical value, so Sat or Terr doesn't matter
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
-          case 'V': polarization = *s++; break;
+          case 'V': polarization = 'V'; s++; break;
           case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
           default: esyslog("ERROR: unknown parameter key '%c'", *s);
                    return false;

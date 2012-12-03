@@ -229,6 +229,8 @@ Stefan Huelswitt <s.huelswitt@gmx.de>
  for a patch that was used to implement the --localedir option
  for reporting a problem with updating CA descriptors in transfer mode on full
  featured DVB cards
+ for pointing out a bug in handling lowercase polarization characters in channel
+ definitions if no DiSEqC is used
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -2986,3 +2988,7 @@ Sören Moch <smoch@web.de>
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
+
+Mike Hay <mike.hay@linenshorts.com>
+ for reporting a problem with handling the case of the polarization character in
+ channel definitions if no DiSEqC is used
