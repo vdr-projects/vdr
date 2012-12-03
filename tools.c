@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.26 2012/09/30 13:04:14 kls Exp $
+ * $Id: tools.c 2.27 2012/12/03 09:31:32 kls Exp $
  */
 
 #include "tools.h"
@@ -842,7 +842,8 @@ cCharSetConv::cCharSetConv(const char *FromCode, const char *ToCode)
 cCharSetConv::~cCharSetConv()
 {
   free(result);
-  iconv_close(cd);
+  if (cd != (iconv_t)-1)
+     iconv_close(cd);
 }
 
 void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)
