@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.42 2012/10/13 12:48:56 kls Exp $
+ * $Id: vdr.c 2.43 2012/12/03 13:24:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -1000,11 +1000,11 @@ int main(int argc, char *argv[])
                break;
           // Direct main menu functions:
           #define DirectMainFunction(function)\
-            DELETE_MENU;\
+            { DELETE_MENU;\
             if (cControl::Control())\
                cControl::Control()->Hide();\
             Menu = new cMenuMain(function);\
-            key = kNone; // nobody else needs to see this key
+            key = kNone; } // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
           case kChannels:   DirectMainFunction(osChannels); break;
           case kTimers:     DirectMainFunction(osTimers); break;

@@ -7359,3 +7359,5 @@ Video Disk Recorder Revision History
 - Simplified calculating the PTS offset in cPtsFixer::Fix() and fixed the overflow
   handling of PCR values (thanks to Sören Moch).
 - Fixed calling iconv_close() only with a valid iconv_t value (thanks to Juergen Lock).
+- Fixed faulty opening of the Recordings menu when pressing the Play key during normal
+  live viewing mode in case there is a "last viewed" recording.
