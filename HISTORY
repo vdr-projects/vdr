@@ -7361,3 +7361,5 @@ Video Disk Recorder Revision History
 - Fixed calling iconv_close() only with a valid iconv_t value (thanks to Juergen Lock).
 - Fixed faulty opening of the Recordings menu when pressing the Play key during normal
   live viewing mode in case there is a "last viewed" recording.
+- Fixed some #include statements in plugins to use <vdr/...> instead of "vdr/..."
+  (thanks to Lars Hanisch).

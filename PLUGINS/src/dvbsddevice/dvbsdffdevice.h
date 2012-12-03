@@ -3,14 +3,14 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.13 2011/08/27 11:32:42 kls Exp $
+ * $Id: dvbsdffdevice.h 2.14 2012/12/03 13:43:55 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
 #define __DVBSDFFDEVICE_H
 
-#include "vdr/dvbdevice.h"
-#include "vdr/dvbspu.h"
+#include <vdr/dvbdevice.h>
+#include <vdr/dvbspu.h>
 
 /// The cDvbSdFfDevice implements a DVB device which can be accessed through the Linux DVB driver API.
 
