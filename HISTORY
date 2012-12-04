@@ -7375,3 +7375,6 @@ Video Disk Recorder Revision History
 - Now always setting the TDT EIT filter, because otherwise when turning on using the
   transponder time in the Setup menu, it would only be used after the next restart
   of VDR (thanks to Sundararaj Reel).
+- The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
+  derived output devices to implement scaling the video to a given size and location
+  (based on a suggestion by Lucian Muresan).

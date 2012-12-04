@@ -1776,6 +1776,8 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for reporting duplicate texts in i18n.c
  for suggesting to use 'gettext' for internationalization
  for exporting some libsi functions
+ for suggesting to add functions to cDevice that allow derived output devices to
+ implement scaling the video to a given size and location
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.41 2012/08/26 13:25:44 kls Exp $
+ * $Id: device.h 2.42 2012/12/04 11:52:58 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -655,6 +655,33 @@ public:
   virtual bool IsPlayingVideo(void) const { return isPlayingVideo; }
        ///< \return Returns true if the currently attached player has delivered
        ///< any video packets.
+  virtual cRect CanScaleVideo(const cRect &Rect, int Alignment = taCenter) { return cRect::Null; }
+       ///< Asks the output device whether it can scale the currently shown video in
+       ///< such a way that it fits into the given Rect, while retaining its proper
+       ///< aspect ratio. If the scaled video doesn't exactly fit into Rect, Alignment
+       ///< is used to determine how to align the actual rectangle with the requested
+       ///< one. The actual rectangle can be smaller, larger or the same size as the
+       ///< given Rect, and its location may differ, depending on the capabilities of
+       ///< the output device, which may not be able to display a scaled video at
+       ///< arbitrary sizes and locations. The device shall, however, do its best to
+       ///< match the requested Rect as closely as possible, preferring a size and
+       ///< location that fits completely into the requested Rect if possible.
+       ///< Returns the rectangle that can actually be used when scaling the video.
+       ///< A skin plugin using this function should rearrange its content according
+       ///< to the rectangle returned from calling this function, and should especially
+       ///< be prepared for cases where the returned rectangle is way off the requested
+       ///< Rect, or even Null. In such cases, the skin may want to fall back to
+       ///< working with full screen video.
+       ///< If this device can't scale the video, a Null rectangle is returned (this
+       ///< is also the default implementation).
+  virtual void ScaleVideo(const cRect &Rect = cRect::Null) {}
+       ///< Scales the currently shown video in such a way that it fits into the given
+       ///< Rect. Rect should be one retrieved through a previous call to
+       ///< CanScaleVideo() (otherwise results may be undefined).
+       ///< Even if video output is scaled, the functions GetVideoSize() and
+       ///< GetOsdSize() must still return the same values as if in full screen mode!
+       ///< If this device can't scale the video, nothing happens.
+       ///< To restore full screen video, call this function with a Null rectangle.
   virtual bool HasIBPTrickSpeed(void) { return false; }
        ///< Returns true if this device can handle all frames in 'fast forward'
        ///< trick speeds.
