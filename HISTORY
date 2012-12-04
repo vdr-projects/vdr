@@ -7372,3 +7372,6 @@ Video Disk Recorder Revision History
 - The '7' and '9' keys now jump to the very beginning or end, respectively, of the
   recording, even if there is no mark set at that point (following a request from
   Andre Weidemann).
+- Now always setting the TDT EIT filter, because otherwise when turning on using the
+  transponder time in the Setup menu, it would only be used after the next restart
+  of VDR (thanks to Sundararaj Reel).

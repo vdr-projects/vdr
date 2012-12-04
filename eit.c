@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.22 2012/12/04 09:33:20 kls Exp $
+ * $Id: eit.c 2.23 2012/12/04 11:10:10 kls Exp $
  */
 
 #include "eit.h"
@@ -367,8 +367,7 @@ time_t cEitFilter::disableUntil = 0;
 cEitFilter::cEitFilter(void)
 {
   Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
-  if (Setup.SetSystemTime && Setup.TimeTransponder)
-     Set(0x14, 0x70);     // TDT
+  Set(0x14, 0x70);        // TDT
 }
 
 void cEitFilter::SetDisableUntil(time_t Time)

@@ -2631,6 +2631,9 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  that might inadvertently be called with a 'char *' as the second argument on some
  compilers and cause a crash
  for reporting a possible memory leak in SI::StructureLoop::getNextAsPointer()
+ for making the TDT EIT filter always be set, because otherwise when turning on using
+ the transponder time in the Setup menu, it would only be used after the next restart
+ of VDR
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
