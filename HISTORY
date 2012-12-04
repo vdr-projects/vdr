@@ -7334,7 +7334,7 @@ Video Disk Recorder Revision History
   simply mark a position, but have no effect on the actual cutting process.
 - When positioned at an offset where two (or more) editing marks are placed on top
   of each other, the '4' key moves the first one of them to the left, while the '6'
-  key moves the last one of them to the right. The '7' and '9' key handle multiple
+  key moves the last one of them to the right. The '7' and '9' keys handle multiple
   marks at the same place as if it were one single mark.
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
@@ -7369,3 +7369,6 @@ Video Disk Recorder Revision History
 - Synchronizing system time to the transponder time is now done using adjtime() in order
   to avoid discontinuities (suggested by Manuel Reimer). If the time difference is more
   than 10 seconds, stime() is still used to do the initial sync.
+- The '7' and '9' keys now jump to the very beginning or end, respectively, of the
+  recording, even if there is no mark set at that point (following a request from
+  Andre Weidemann).

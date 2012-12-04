@@ -2227,6 +2227,8 @@ André Weidemann <Andre.Weidemann@web.de>
  for suggesting that the primary device should only be avoided for recording if
  it is an old SD full featured card
  for his support in using convert/ffmpeg in the pic2mpg script of the 'pictures' plugin
+ for requesting a way of getting to the very end of an edited recording, since version
+ 1.7.32 no longer generates a mark at that point
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it

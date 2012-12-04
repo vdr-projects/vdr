@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.65 2012/11/18 13:07:53 kls Exp $
+ * $Id: menu.c 2.66 2012/12/04 09:50:39 kls Exp $
  */
 
 #include "menu.h"
@@ -4749,15 +4749,19 @@ void cReplayControl::MarkToggle(void)
 
 void cReplayControl::MarkJump(bool Forward)
 {
-  if (marks.Count()) {
-     int Current, Total;
-     if (GetIndex(Current, Total)) {
+  int Current, Total;
+  if (GetIndex(Current, Total)) {
+     if (marks.Count()) {
         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
         if (m) {
            Goto(m->Position(), true);
            displayFrames = true;
+           return;
            }
         }
+     // There are either no marks at all, or we already were at the first or last one,
+     // so jump to the very beginning or end:
+     Goto(Forward ? Total : 0, true);
      }
 }
 

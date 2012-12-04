@@ -365,7 +365,9 @@ Version 1.6
   - 4, 6    Move an editing mark back and forward. You need to first jump to
             an editing mark for this to work.
   - 7, 9    Jump back and forward between editing marks. Replay goes into still
-            mode after jumping to a mark.
+            mode after jumping to a mark. If the current position is at the
+            first or last mark, or if there are no marks at all, these keys
+            jump to the very beginning or end, respectively, of the recording.
   - 8       Positions replay at a point 3 seconds before the current or next
             "begin" mark and starts replay.
   - 2       Start the actual cutting process.
