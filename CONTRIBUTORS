@@ -2731,6 +2731,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  contains only the address of the local host
  for a patch that was used as a base for making editing marks be updated every 10
  seconds during replay
+ for suggesting to synchronize system time to the transponder time using adjtime() in
+ order to avoid discontinuities
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
