@@ -2272,6 +2272,8 @@ Alexander Hans <cleditor@arcor.de>
  for reporting that the "'1' for encrypted radio channels" part in the description
  of the VPID in vdr.5 is obsolete
  for a patch that was used to implement storing the channel name in info.vdr
+ for making the SVDRP command HITK discard any keys if the remote control is currently
+ turned off
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits

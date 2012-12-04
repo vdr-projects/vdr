@@ -7378,3 +7378,5 @@ Video Disk Recorder Revision History
 - The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
   derived output devices to implement scaling the video to a given size and location
   (based on a suggestion by Lucian Muresan).
+- The SVDRP command HITK now discards any keys if the remote control is currently
+  turned off (thanks to Alexander Hans).
