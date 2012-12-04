@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-04 14:36+0100\n"
 "PO-Revision-Date: 2012-06-06 22:50+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -416,6 +416,9 @@ msgstr "Blu"
 
 msgid "Key$Info"
 msgstr "Info"
+
+msgid "Key$Play/Pause"
+msgstr ""
 
 msgid "Key$Play"
 msgstr "Riproduci"

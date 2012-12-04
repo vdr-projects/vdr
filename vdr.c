@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.43 2012/12/03 13:24:39 kls Exp $
+ * $Id: vdr.c 2.44 2012/12/04 12:55:02 kls Exp $
  */
 
 #include <getopt.h>
@@ -1089,6 +1089,7 @@ int main(int argc, char *argv[])
                key = kNone;
                break;
           // Pausing live video:
+          case kPlayPause:
           case kPause:
                if (!cControl::Control()) {
                   DELETE_MENU;

@@ -7380,3 +7380,7 @@ Video Disk Recorder Revision History
   (based on a suggestion by Lucian Muresan).
 - The SVDRP command HITK now discards any keys if the remote control is currently
   turned off (thanks to Alexander Hans).
+- The new remote control key "Play/Pause" can be used with remote controls that don't
+  have separate keys for "Play" and "Pause", but rather have a single key for both
+  functions (thanks to Stefan Hofmann for suggesting to implement support for such
+  remote controls).

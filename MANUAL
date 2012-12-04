@@ -39,6 +39,7 @@ Version 1.6
 
   Info        display information on the currently viewed programme or recording,
               or on the current item in a menu
+  Play/Pause  combined key to resume or pause replay, or pause live video
   Play        resume normal replay
   Pause       pause replay or live video
   Stop        stop replay

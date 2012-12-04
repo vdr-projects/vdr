@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.66 2012/12/04 09:50:39 kls Exp $
+ * $Id: menu.c 2.67 2012/12/04 13:17:49 kls Exp $
  */
 
 #include "menu.h"
@@ -2454,6 +2454,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
+       case kPlayPause:
        case kPlay:
        case kOk:     return Play();
        case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
@@ -4685,6 +4686,7 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
          timeSearchActive = false;
          }
          break;
+    case kPlayPause:
     case kPlay:
     case kUp:
     case kPause:
@@ -4864,6 +4866,12 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   if (timeSearchActive && Key != kNone) {
      TimeSearchProcess(Key);
      return osContinue;
+     }
+  if (Key == kPlayPause) {
+     bool Play, Forward;
+     int Speed;
+     GetReplayMode(Play, Forward, Speed);
+     Key = Play ? kPause : kPlay;
      }
   bool DoShowMode = true;
   switch (int(Key)) {

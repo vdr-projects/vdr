@@ -3003,3 +3003,7 @@ Peter Münster <pmlists@free.fr>
 Mike Hay <mike.hay@linenshorts.com>
  for reporting a problem with handling the case of the polarization character in
  channel definitions if no DiSEqC is used
+
+Stefan Hofmann <stefan.hofmann@t-online.de>
+ for suggesting to implement support for remote controls that only have a combined
+ "Play/Pause" key instead of separate keys for "Play" and "Pause"

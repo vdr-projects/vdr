@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-04 14:36+0100\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -409,6 +409,9 @@ msgstr "Mėlyna"
 
 msgid "Key$Info"
 msgstr "Info"
+
+msgid "Key$Play/Pause"
+msgstr ""
 
 msgid "Key$Play"
 msgstr "Grona"
