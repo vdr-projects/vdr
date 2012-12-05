@@ -882,6 +882,10 @@ Version 1.6
                          Defines whether the replay progress display shows the
                          remaining time or the total length of the recording.
 
+  Pause replay when setting mark = no
+                         Defines whether the player automatically goes into Pause
+                         mode when setting an editing mark.
+
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with

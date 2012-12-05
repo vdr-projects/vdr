@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.67 2012/12/04 13:17:49 kls Exp $
+ * $Id: menu.c 2.68 2012/12/05 09:57:20 kls Exp $
  */
 
 #include "menu.h"
@@ -3140,6 +3140,7 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -4741,7 +4742,7 @@ void cReplayControl::MarkToggle(void)
         marks.Add(Current);
         bool Play, Forward;
         int Speed;
-        if (GetReplayMode(Play, Forward, Speed) && !Play)
+        if (Setup.PauseOnMarkSet || GetReplayMode(Play, Forward, Speed) && !Play)
            Goto(Current, true);
         }
      ShowTimed(2);

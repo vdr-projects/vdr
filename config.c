@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.28 2012/09/15 11:52:03 kls Exp $
+ * $Id: config.c 2.29 2012/12/05 09:56:02 kls Exp $
  */
 
 #include "config.h"
@@ -458,6 +458,7 @@ cSetup::cSetup(void)
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   ShowRemainingTime = 0;
+  PauseOnMarkSet = 0;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
@@ -658,6 +659,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowRemainingTime"))   ShowRemainingTime  = atoi(Value);
+  else if (!strcasecmp(Name, "PauseOnMarkSet"))      PauseOnMarkSet     = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
@@ -761,6 +763,7 @@ bool cSetup::Save(void)
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
   Store("ShowRemainingTime",  ShowRemainingTime);
+  Store("PauseOnMarkSet",     PauseOnMarkSet);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
