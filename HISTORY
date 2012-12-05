@@ -7387,3 +7387,6 @@ Video Disk Recorder Revision History
 - The new option "Setup/Replay/Pause on mark set" can be used to activate automatically
   going into Pause mode if an editing mark is set during replay (suggested by Andre
   Weidemann).
+- When regenerating the index of a recording, the frame rate stored in the info file
+  is now automatically fixed if it differs from the value detected by the frame
+  detector.

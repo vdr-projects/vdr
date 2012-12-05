@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.75 2012/11/26 09:39:59 kls Exp $
+ * $Id: recording.c 2.76 2012/12/05 10:32:00 kls Exp $
  */
 
 #include "recording.h"
@@ -1642,6 +1642,14 @@ void cIndexFileGenerator::Action(void)
         }
   if (IndexFileComplete) {
      if (IndexFileWritten) {
+        cRecordingInfo RecordingInfo(recordingName);
+        if (RecordingInfo.Read()) {
+           if (FrameDetector.FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), FrameDetector.FramesPerSecond())) {
+              RecordingInfo.SetFramesPerSecond(FrameDetector.FramesPerSecond());
+              RecordingInfo.Write();
+              Recordings.UpdateByName(recordingName);
+              }
+           }
         Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
         return;
         }
