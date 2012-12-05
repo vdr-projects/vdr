@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-05 11:07+0100\n"
+"POT-Creation-Date: 2012-12-05 12:48+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1128,6 +1128,9 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "اضهر طور الاعادة"
 
 msgid "Setup.Replay$Show remaining time"
+msgstr ""
+
+msgid "Setup.Replay$Progress display time (s)"
 msgstr ""
 
 msgid "Setup.Replay$Pause replay when setting mark"

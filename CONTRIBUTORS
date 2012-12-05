@@ -3009,3 +3009,7 @@ Mike Hay <mike.hay@linenshorts.com>
 Stefan Hofmann <stefan.hofmann@t-online.de>
  for suggesting to implement support for remote controls that only have a combined
  "Play/Pause" key instead of separate keys for "Play" and "Pause"
+
+Stefan Blochberger <Stefan.Blochberger@gmx.de>
+ for suggesting to automatically display the progress display whenever replay of a
+ recording is started

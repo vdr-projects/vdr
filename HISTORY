@@ -7393,3 +7393,6 @@ Video Disk Recorder Revision History
 - Fixed creating the edited version directory if a relative file name is given in
   the call to 'vdr --edit' (the '/video' part was stripped from the given file name
   even if it wasn't there).
+- The new option "Setup/Replay/Progress display time" can be used to activate
+  automatically displaying the progress display whenever replay of a recording is
+  started (suggested by Stefan Blochberger).
