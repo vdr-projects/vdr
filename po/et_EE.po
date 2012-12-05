@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-04 14:36+0100\n"
+"POT-Creation-Date: 2012-12-05 11:07+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -1103,6 +1103,9 @@ msgstr "Korduse režiimi kuvamine"
 
 msgid "Setup.Replay$Show remaining time"
 msgstr "Järelejäänud aja kuvamine"
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Jätkamise ID"

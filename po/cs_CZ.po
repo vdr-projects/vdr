@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-04 14:36+0100\n"
+"POT-Creation-Date: 2012-12-05 11:07+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -1104,6 +1104,9 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Zobrazit režim přehrávání"
 
 msgid "Setup.Replay$Show remaining time"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
