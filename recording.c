@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.76 2012/12/05 10:32:00 kls Exp $
+ * $Id: recording.c 2.77 2012/12/05 11:08:47 kls Exp $
  */
 
 #include "recording.h"
@@ -691,7 +691,8 @@ cRecording::cRecording(const char *FileName)
   FileName = fileName = strdup(FileName);
   if (*(fileName + strlen(fileName) - 1) == '/')
      *(fileName + strlen(fileName) - 1) = 0;
-  FileName += strlen(VideoDirectory) + 1;
+  if (strstr(FileName, VideoDirectory) == FileName)
+     FileName += strlen(VideoDirectory) + 1;
   const char *p = strrchr(FileName, '/');
 
   name = NULL;

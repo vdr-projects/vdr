@@ -7390,3 +7390,6 @@ Video Disk Recorder Revision History
 - When regenerating the index of a recording, the frame rate stored in the info file
   is now automatically fixed if it differs from the value detected by the frame
   detector.
+- Fixed creating the edited version directory if a relative file name is given in
+  the call to 'vdr --edit' (the '/video' part was stripped from the given file name
+  even if it wasn't there).
