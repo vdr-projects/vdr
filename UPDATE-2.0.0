@@ -122,6 +122,9 @@ Remote control:
   function in order to make use of this new feature. See, for instance, the function
   cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
 - Added user defined key kUser0.
+- The new remote control key "Play/Pause" can be used with remote controls that don't
+  have separate keys for "Play" and "Pause", but rather have a single key for both
+  functions.
 
 Devices:
 
@@ -174,6 +177,8 @@ Devices:
 - The new function cDevice::HasInternalCam() can be implemented by devices that
   provide encrypted channels in an already decrypted form, without requiring explicit
   handling of a CAM.
+- The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
+  derived output devices to implement scaling the video to a given size and location.
 
 DiSEqC:
 
@@ -252,6 +257,9 @@ OSD:
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu
   if there is no "last viewed" recording.
   The same behavior has been implemented for the Blue key in the main menu.
+- The new option "Setup/Replay/Progress display time" can be used to activate
+  automatically displaying the progress display whenever replay of a recording is
+  started.
 
 Time Shifting:
 
@@ -341,6 +349,10 @@ Recordings:
   of each other, the '4' key moves the first one of them to the left, while the '6'
   key moves the last one of them to the right. The '7' and '9' key handle multiple
   marks at the same place as if it were one single mark.
+- The '7' and '9' keys now jump to the very beginning or end, respectively, of the
+  recording, even if there is no mark set at that point.
+- The new option "Setup/Replay/Pause on mark set" can be used to activate automatically
+  going into Pause mode if an editing mark is set during replay.
 
 SVDRP:
 
@@ -420,3 +432,6 @@ Misc:
   in a copy of the file Make.config.template.
 - The script given to VDR with the '-r' option is now also called whenever a
   recording is deleted.
+- Synchronizing system time to the transponder time is now done using adjtime() in order
+  to avoid discontinuities. If the time difference is more than 10 seconds, stime() is
+  still used to do the initial sync.
