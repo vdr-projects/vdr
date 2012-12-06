@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.27 2012/12/03 09:31:32 kls Exp $
+ * $Id: tools.c 2.28 2012/12/06 09:40:02 kls Exp $
  */
 
 #include "tools.h"
@@ -18,6 +18,7 @@ extern "C" {
 #include <jpeglib.h>
 #undef boolean
 }
+#include <locale.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/vfs.h>
@@ -300,6 +301,31 @@ bool StrInArray(const char *a[], const char *s)
 cString AddDirectory(const char *DirName, const char *FileName)
 {
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
+}
+
+double atod(const char *s)
+{
+  static lconv *loc = localeconv();
+  char buf[strlen(s) + 1];
+  char *p = buf;
+  while (*s) {
+        if (*s == '.')
+           *p = *loc->decimal_point;
+        else
+           *p = *s;
+        p++;
+        s++;
+        }
+  *p = 0;
+  return atof(buf);
+}
+
+cString dtoa(double d, const char *Format)
+{
+  static lconv *loc = localeconv();
+  char buf[16];
+  snprintf(buf, sizeof(buf), Format, d);
+  return strreplace(buf, *loc->decimal_point, '.');
 }
 
 cString itoa(int n)

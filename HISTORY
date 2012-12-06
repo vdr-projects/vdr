@@ -7339,7 +7339,7 @@ Video Disk Recorder Revision History
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
 
-2012-12-05: Version 1.7.33
+2012-12-06: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
   more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
@@ -7396,3 +7396,19 @@ Video Disk Recorder Revision History
 - The new option "Setup/Replay/Progress display time" can be used to activate
   automatically displaying the progress display whenever replay of a recording is
   started (suggested by Stefan Blochberger).
+- Changed reading and writing of floating point numbers into configuration files to
+  make it independent of the decimal point used in the current locale. All calls to
+  atof() have been replaced with the new function atod(), which makes sure the string
+  representation of a floating point number using a '.' as decimal point will be
+  handled correctly, even if the locale in use expects a ',' as the decimal point.
+  Plugins that read floating point numbers from their own configuration files will
+  also need to use atod() for this, or use a method of their own (this is not necessary
+  if values are stored in VDR's setup.conf file, because VDR takes care of this).
+  The reason for these changes is that floating point numbers presented to the user
+  shall be displayed in the way defined by the current locale (suggested by Stefan
+  Blochberger).
+  If you use plugins that store floating point values in configuration files of their
+  own and have not yet been adapted to this change, you should set
+  export LC_NUMERIC=C
+  before running VDR. Otherwise your plugin's configuration data may not be read or
+  written correctly.

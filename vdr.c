@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.44 2012/12/04 12:55:02 kls Exp $
+ * $Id: vdr.c 2.45 2012/12/06 10:29:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
   // Initiate locale:
 
   setlocale(LC_ALL, "");
-  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Command line options:
 

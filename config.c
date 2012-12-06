@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.30 2012/12/05 11:33:14 kls Exp $
+ * $Id: config.c 2.31 2012/12/06 09:00:23 kls Exp $
  */
 
 #include "config.h"
@@ -509,7 +509,7 @@ void cSetup::Store(const char *Name, int Value, const char *Plugin)
 
 void cSetup::Store(const char *Name, double &Value, const char *Plugin)
 {
-  Store(Name, cString::sprintf("%f", Value), Plugin);
+  Store(Name, dtoa(Value), Plugin);
 }
 
 bool cSetup::Load(const char *FileName)
@@ -630,24 +630,24 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
-  else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atof(Value);
-  else if (!strcasecmp(Name, "OSDTopP"))             OSDTopP            = atof(Value);
-  else if (!strcasecmp(Name, "OSDWidthP"))         { OSDWidthP          = atof(Value); ChkDoublePlausibility(OSDWidthP, 0.87); }
-  else if (!strcasecmp(Name, "OSDHeightP"))        { OSDHeightP         = atof(Value); ChkDoublePlausibility(OSDHeightP, 0.84); }
+  else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atod(Value);
+  else if (!strcasecmp(Name, "OSDTopP"))             OSDTopP            = atod(Value);
+  else if (!strcasecmp(Name, "OSDWidthP"))         { OSDWidthP          = atod(Value); ChkDoublePlausibility(OSDWidthP, 0.87); }
+  else if (!strcasecmp(Name, "OSDHeightP"))        { OSDHeightP         = atod(Value); ChkDoublePlausibility(OSDHeightP, 0.84); }
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
   else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
   else if (!strcasecmp(Name, "OSDHeight"))           OSDHeight          = atoi(Value);
-  else if (!strcasecmp(Name, "OSDAspect"))           OSDAspect          = atof(Value);
+  else if (!strcasecmp(Name, "OSDAspect"))           OSDAspect          = atod(Value);
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
   else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
   else if (!strcasecmp(Name, "AntiAlias"))           AntiAlias          = atoi(Value);
   else if (!strcasecmp(Name, "FontOsd"))             Utf8Strn0Cpy(FontOsd, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontSml"))             Utf8Strn0Cpy(FontSml, Value, MAXFONTNAME);
   else if (!strcasecmp(Name, "FontFix"))             Utf8Strn0Cpy(FontFix, Value, MAXFONTNAME);
-  else if (!strcasecmp(Name, "FontOsdSizeP"))      { FontOsdSizeP       = atof(Value); ChkDoublePlausibility(FontOsdSizeP, 0.038); }
-  else if (!strcasecmp(Name, "FontSmlSizeP"))      { FontSmlSizeP       = atof(Value); ChkDoublePlausibility(FontSmlSizeP, 0.035); }
-  else if (!strcasecmp(Name, "FontFixSizeP"))      { FontFixSizeP       = atof(Value); ChkDoublePlausibility(FontFixSizeP, 0.031); }
+  else if (!strcasecmp(Name, "FontOsdSizeP"))      { FontOsdSizeP       = atod(Value); ChkDoublePlausibility(FontOsdSizeP, 0.038); }
+  else if (!strcasecmp(Name, "FontSmlSizeP"))      { FontSmlSizeP       = atod(Value); ChkDoublePlausibility(FontSmlSizeP, 0.035); }
+  else if (!strcasecmp(Name, "FontFixSizeP"))      { FontFixSizeP       = atod(Value); ChkDoublePlausibility(FontFixSizeP, 0.031); }
   else if (!strcasecmp(Name, "FontOsdSize"))         FontOsdSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
   else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);

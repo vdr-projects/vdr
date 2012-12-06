@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.77 2012/12/05 11:08:47 kls Exp $
+ * $Id: recording.c 2.78 2012/12/06 09:35:13 kls Exp $
  */
 
 #include "recording.h"
@@ -455,7 +455,7 @@ bool cRecordingInfo::Read(FILE *f)
                             }
                        }
                        break;
-             case 'F': framesPerSecond = atof(t);
+             case 'F': framesPerSecond = atod(t);
                        break;
              case 'L': lifetime = atoi(t);
                        break;
@@ -482,7 +482,7 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   if (channelID.Valid())
      fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
   event->Dump(f, Prefix, true);
-  fprintf(f, "%sF %.10g\n", Prefix, framesPerSecond);
+  fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
   fprintf(f, "%sP %d\n", Prefix, priority);
   fprintf(f, "%sL %d\n", Prefix, lifetime);
   if (aux)

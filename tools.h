@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.22 2012/09/30 11:02:21 kls Exp $
+ * $Id: tools.h 2.23 2012/12/06 08:59:39 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -216,6 +216,14 @@ int64_t StrToNum(const char *s);
 bool StrInArray(const char *a[], const char *s);
     ///< Returns true if the string s is equal to one of the strings pointed
     ///< to by the (NULL terminated) array a.
+double atod(const char *s);
+    ///< Converts the given string, which is a floating point number using a '.' as
+    ///< the decimal point, to a double value, independent of the currently selected
+    ///< locale.
+cString dtoa(double d, const char *Format = "%f");
+    ///< Converts the given double value to a string, making sure it uses a '.' as
+    ///< the decimal point, independent of the currently selected locale.
+    ///< If Format is given, it will be used instead of the default.
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);

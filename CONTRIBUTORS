@@ -3013,3 +3013,5 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
  recording is started
+ for suggesting that floating point numbers presented to the user shall be displayed
+ in the way defined by the current locale
