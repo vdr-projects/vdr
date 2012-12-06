@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.69 2012/12/05 11:36:48 kls Exp $
+ * $Id: menu.c 2.70 2012/12/06 11:08:56 kls Exp $
  */
 
 #include "menu.h"
@@ -4875,7 +4875,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      bool Play, Forward;
      int Speed;
      GetReplayMode(Play, Forward, Speed);
-     Key = Play ? kPause : kPlay;
+     if (Speed >= 0)
+        Key = Play ? kPlay : kPause;
+     else
+        Key = Play ? kPause : kPlay;
      }
   bool DoShowMode = true;
   switch (int(Key)) {
