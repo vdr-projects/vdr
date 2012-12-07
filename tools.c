@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.28 2012/12/06 09:40:02 kls Exp $
+ * $Id: tools.c 2.29 2012/12/07 09:00:00 kls Exp $
  */
 
 #include "tools.h"
@@ -303,21 +303,27 @@ cString AddDirectory(const char *DirName, const char *FileName)
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
 }
 
+#define DECIMAL_POINT_C '.'
+
 double atod(const char *s)
 {
   static lconv *loc = localeconv();
-  char buf[strlen(s) + 1];
-  char *p = buf;
-  while (*s) {
-        if (*s == '.')
-           *p = *loc->decimal_point;
-        else
-           *p = *s;
-        p++;
-        s++;
-        }
-  *p = 0;
-  return atof(buf);
+  if (*loc->decimal_point != DECIMAL_POINT_C) {
+     char buf[strlen(s) + 1];
+     char *p = buf;
+     while (*s) {
+           if (*s == DECIMAL_POINT_C)
+              *p = *loc->decimal_point;
+           else
+              *p = *s;
+           p++;
+           s++;
+           }
+     *p = 0;
+     return atof(buf);
+     }
+  else
+     return atof(s);
 }
 
 cString dtoa(double d, const char *Format)
@@ -325,7 +331,9 @@ cString dtoa(double d, const char *Format)
   static lconv *loc = localeconv();
   char buf[16];
   snprintf(buf, sizeof(buf), Format, d);
-  return strreplace(buf, *loc->decimal_point, '.');
+  if (*loc->decimal_point != DECIMAL_POINT_C)
+     strreplace(buf, *loc->decimal_point, DECIMAL_POINT_C);
+  return buf;
 }
 
 cString itoa(int n)
