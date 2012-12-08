@@ -7342,8 +7342,8 @@ Video Disk Recorder Revision History
 2012-12-08: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
-  more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
-  to 'bool cPatPmtParser::IsPatPmt(int Pid)'.
+  more than one PMT PID in the PAT, 'int cPatPmtParser::PmtPid(void)' has been changed
+  to 'bool cPatPmtParser::IsPmtPid(int Pid)'.
 - Fixed learning remote control keys with the LCARS skin.
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed getting only non-video packets in cCuttingThread::GetPendingPackets() (reported
