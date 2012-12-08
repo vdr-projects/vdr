@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.14 2012/10/16 08:22:39 kls Exp $
+ * $Id: timers.c 2.15 2012/12/07 13:14:00 kls Exp $
  */
 
 #include "timers.h"
@@ -480,7 +480,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 
 #define FULLMATCH 1000
 
-int cTimer::Matches(const cEvent *Event, int *Overlap) const
+eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 {
   // Overlap is the percentage of the Event's duration that is covered by
   // this timer (based on FULLMATCH for finer granularity than just 100).
@@ -758,12 +758,12 @@ cTimer *cTimers::GetMatch(time_t t)
   return t0;
 }
 
-cTimer *cTimers::GetMatch(const cEvent *Event, int *Match)
+cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match)
 {
   cTimer *t = NULL;
-  int m = tmNone;
+  eTimerMatch m = tmNone;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      int tm = ti->Matches(Event);
+      eTimerMatch tm = ti->Matches(Event);
       if (tm > m) {
          t = ti;
          m = tm;

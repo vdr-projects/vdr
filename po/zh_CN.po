@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -413,6 +413,9 @@ msgstr "蓝"
 msgid "Key$Info"
 msgstr "信息"
 
+msgid "Key$Play/Pause"
+msgstr ""
+
 msgid "Key$Play"
 msgstr "播放"
 
@@ -740,9 +743,6 @@ msgstr "打开"
 
 msgid "Commands"
 msgstr "常用操作命令"
-
-msgid "Error while accessing recording!"
-msgstr "存取录像错误！"
 
 msgid "Delete recording?"
 msgstr "是否删除录像？"
@@ -1104,6 +1104,12 @@ msgstr "显示回放模式"
 msgid "Setup.Replay$Show remaining time"
 msgstr ""
 
+msgid "Setup.Replay$Progress display time (s)"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "恢复 ID"
 
@@ -1386,3 +1392,6 @@ msgstr "硬盘已使用"
 
 msgid "free"
 msgstr "可录像时间"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "存取录像错误！"

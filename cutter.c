@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.16 2012/11/18 12:09:00 kls Exp $
+ * $Id: cutter.c 2.21 2012/12/02 14:30:55 kls Exp $
  */
 
 #include "cutter.h"
@@ -132,7 +132,7 @@ bool cDanglingPacketStripper::Process(uchar *Data, int Length, int64_t FirstPts)
         int Pid = TsPid(Data);
         if (Pid == PATPID)
            patPmtParser.ParsePat(Data, TS_SIZE);
-        else if (Pid == patPmtParser.PmtPid())
+        else if (patPmtParser.IsPmtPid(Pid))
            patPmtParser.ParsePmt(Data, TS_SIZE);
         else {
            int64_t Pts = TsGetPts(Data, TS_SIZE);
@@ -154,8 +154,10 @@ bool cDanglingPacketStripper::Process(uchar *Data, int Length, int64_t FirstPts)
 class cPtsFixer {
 private:
   int delta; // time between two frames
-  int64_t last; // the last (i.e. highest) video PTS value seen
-  int64_t offset; // offset to add to PTS values
+  int64_t deltaDts; // the difference between two consecutive DTS values (may differ from 'delta' in case of multiple fields per frame)
+  int64_t lastPts; // the video PTS of the last frame (in display order)
+  int64_t lastDts; // the last video DTS value seen
+  int64_t offset; // offset to add to all timestamps
   bool fixCounters; // controls fixing the TS continuity counters (only from the second CutIn up)
   uchar counter[MAXPID]; // the TS continuity counter for each PID
   cPatPmtParser patPmtParser;
@@ -168,7 +170,9 @@ public:
 cPtsFixer::cPtsFixer(void)
 {
   delta = 0;
-  last = -1;
+  deltaDts = 0;
+  lastPts = -1;
+  lastDts = -1;
   offset = -1;
   fixCounters = false;
   memset(counter, 0x00, sizeof(counter));
@@ -186,31 +190,44 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
         return;
      }
   // Determine the PTS offset at the beginning of each sequence (except the first one):
-  if (CutIn && last >= 0) {
+  if (CutIn && lastPts >= 0) {
      int64_t Pts = TsGetPts(Data, Length);
-     if (Pts >= 0) {
-        // offset is calculated so that Pts + offset results in last + delta:
-        offset = Pts - PtsAdd(last, delta);
-        if (offset <= 0)
-           offset = -offset;
-        else
-           offset = MAX33BIT + 1 - offset;
-        }
+     if (Pts >= 0)
+        offset = (lastPts + delta - Pts) & MAX33BIT; // offset is calculated so that Pts + offset results in lastPts + delta
      fixCounters = true;
      }
   // Keep track of the highest video PTS:
+  bool GotPts = false;
+  int64_t PrevDts = lastDts;
   uchar *p = Data;
   int len = Length;
   while (len >= TS_SIZE && *p == TS_SYNC_BYTE) {
         int Pid = TsPid(p);
         if (Pid == patPmtParser.Vpid()) {
-           int64_t Pts = PtsAdd(TsGetPts(p, TS_SIZE), offset); // offset is taken into account here, to make last have the "new" value already!
-           if (Pts >= 0 && (last < 0 || PtsDiff(last, Pts) > 0))
-              last = Pts;
+           if (!GotPts) { // in case of multiple fields per frame, the offset is calculated only with the first one
+              int64_t Pts = TsGetPts(p, TS_SIZE);
+              if (Pts >= 0) {
+                 if (offset >= 0)
+                    Pts = PtsAdd(Pts, offset); // offset is taken into account here, to make lastPts have the "new" value already!
+                 if (lastPts < 0 || PtsDiff(lastPts, Pts) > 0)
+                    lastPts = Pts;
+                 }
+              GotPts = true;
+              }
+           if (!CutIn) {
+              int64_t Dts = TsGetDts(p, TS_SIZE);
+              if (Dts >= 0) {
+                 if (offset >= 0)
+                    Dts = PtsAdd(Dts, offset); // offset is taken into account here, to make lastDts have the "new" value already!
+                 deltaDts = PtsDiff(PrevDts, Dts);
+                 PrevDts = Dts;
+                 }
+              }
            }
         // Adjust the TS continuity counter:
         if (fixCounters) {
-           counter[Pid] = (counter[Pid] + 1) & TS_CONT_CNT_MASK;
+           if (TsHasPayload(p))
+              counter[Pid] = (counter[Pid] + 1) & TS_CONT_CNT_MASK;
            TsSetContinuityCounter(p, counter[Pid]);
            }
         else
@@ -228,12 +245,18 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
            if (Pts >= 0)
               TsSetPts(p, TS_SIZE, PtsAdd(Pts, offset));
            int64_t Dts = TsGetDts(p, TS_SIZE);
-           if (Dts >= 0)
-              TsSetDts(p, TS_SIZE, PtsAdd(Dts, offset));
+           if (Dts >= 0) {
+              if (CutIn) {
+                 lastDts = PtsAdd(lastDts, deltaDts);
+                 TsSetDts(p, TS_SIZE, lastDts);
+                 }
+              else
+                 TsSetDts(p, TS_SIZE, PtsAdd(Dts, offset));
+              }
            int64_t Pcr = TsGetPcr(p);
            if (Pcr >= 0) {
               int64_t NewPcr = Pcr + offset * PCRFACTOR;
-              if (NewPcr >= MAX27MHZ)
+              if (NewPcr > MAX27MHZ)
                  NewPcr -= MAX27MHZ + 1;
               TsSetPcr(p, NewPcr);
               }
@@ -241,6 +264,7 @@ void cPtsFixer::Fix(uchar *Data, int Length, bool CutIn)
            len -= TS_SIZE;
            }
      }
+  lastDts = PrevDts;
 }
 
 // --- cCuttingThread --------------------------------------------------------
@@ -408,8 +432,10 @@ void cCuttingThread::GetPendingPackets(uchar *Data, int &Length, int Index, int6
                int Pid = TsPid(p);
                if (Pid == PATPID)
                   PatPmtParser.ParsePat(p, TS_SIZE);
-               else if (Pid == PatPmtParser.PmtPid())
+               else if (PatPmtParser.IsPmtPid(Pid)) {
                   PatPmtParser.ParsePmt(p, TS_SIZE);
+                  Processed[PatPmtParser.Vpid()] = true; // we only want non-video packets
+                  }
                else if (!Processed[Pid]) {
                   int64_t Pts = TsGetPts(p, TS_SIZE);
                   if (Pts >= 0) {

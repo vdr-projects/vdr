@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.73 2012/11/13 13:46:49 kls Exp $
+ * $Id: recording.c 2.78 2012/12/06 09:35:13 kls Exp $
  */
 
 #include "recording.h"
@@ -455,7 +455,7 @@ bool cRecordingInfo::Read(FILE *f)
                             }
                        }
                        break;
-             case 'F': framesPerSecond = atof(t);
+             case 'F': framesPerSecond = atod(t);
                        break;
              case 'L': lifetime = atoi(t);
                        break;
@@ -482,7 +482,7 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   if (channelID.Valid())
      fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
   event->Dump(f, Prefix, true);
-  fprintf(f, "%sF %.10g\n", Prefix, framesPerSecond);
+  fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
   fprintf(f, "%sP %d\n", Prefix, priority);
   fprintf(f, "%sL %d\n", Prefix, lifetime);
   if (aux)
@@ -691,7 +691,8 @@ cRecording::cRecording(const char *FileName)
   FileName = fileName = strdup(FileName);
   if (*(fileName + strlen(fileName) - 1) == '/')
      *(fileName + strlen(fileName) - 1) = 0;
-  FileName += strlen(VideoDirectory) + 1;
+  if (strstr(FileName, VideoDirectory) == FileName)
+     FileName += strlen(VideoDirectory) + 1;
   const char *p = strrchr(FileName, '/');
 
   name = NULL;
@@ -1498,8 +1499,11 @@ int cMarks::GetNumSequences(void)
            NumSequences++;
            BeginMark = GetNextBegin(EndMark);
            }
-     if (NumSequences == 0 && BeginMark->Position() > 0)
-        NumSequences = 1; // there is only one actual "begin" mark at a non-zero offset, and no actual "end" mark
+     if (BeginMark) {
+        NumSequences++; // the last sequence had no actual "end" mark
+        if (NumSequences == 1 && BeginMark->Position() == 0)
+           NumSequences = 0; // there is only one actual "begin" mark at offset zero, and no actual "end" mark
+        }
      }
   return NumSequences;
 }
@@ -1606,7 +1610,7 @@ void cIndexFileGenerator::Action(void)
                     int Pid = TsPid(p);
                     if (Pid == PATPID)
                        PatPmtParser.ParsePat(p, TS_SIZE);
-                    else if (Pid == PatPmtParser.PmtPid())
+                    else if (PatPmtParser.IsPmtPid(Pid))
                        PatPmtParser.ParsePmt(p, TS_SIZE);
                     Length -= TS_SIZE;
                     p += TS_SIZE;
@@ -1639,6 +1643,14 @@ void cIndexFileGenerator::Action(void)
         }
   if (IndexFileComplete) {
      if (IndexFileWritten) {
+        cRecordingInfo RecordingInfo(recordingName);
+        if (RecordingInfo.Read()) {
+           if (FrameDetector.FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), FrameDetector.FramesPerSecond())) {
+              RecordingInfo.SetFramesPerSecond(FrameDetector.FramesPerSecond());
+              RecordingInfo.Write();
+              Recordings.UpdateByName(recordingName);
+              }
+           }
         Skins.QueueMessage(mtInfo, tr("Index file regeneration complete"));
         return;
         }
@@ -2132,7 +2144,7 @@ bool cFileName::GetLastPatPmtVersions(int &PatVersion, int &PmtVersion)
                            int Pid = TsPid(buf);
                            if (Pid == PATPID)
                               PatPmtParser.ParsePat(buf, sizeof(buf));
-                           else if (Pid == PatPmtParser.PmtPid()) {
+                           else if (PatPmtParser.IsPmtPid(Pid)) {
                               PatPmtParser.ParsePmt(buf, sizeof(buf));
                               if (PatPmtParser.GetVersions(PatVersion, PmtVersion)) {
                                  close(fd);

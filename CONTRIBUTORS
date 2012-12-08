@@ -229,6 +229,8 @@ Stefan Huelswitt <s.huelswitt@gmx.de>
  for a patch that was used to implement the --localedir option
  for reporting a problem with updating CA descriptors in transfer mode on full
  featured DVB cards
+ for pointing out a bug in handling lowercase polarization characters in channel
+ definitions if no DiSEqC is used
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -1774,6 +1776,8 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for reporting duplicate texts in i18n.c
  for suggesting to use 'gettext' for internationalization
  for exporting some libsi functions
+ for suggesting to add functions to cDevice that allow derived output devices to
+ implement scaling the video to a given size and location
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -1976,6 +1980,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for pointing out that the variable HasSnr was unused in cDvbTuner::GetSignalQuality()
  for fixing cConfig::Load() for g++ version 4.7.0
  for fixing some typos in HISTORY and CONTRIBUTORS
+ for fixing some spellings in osd.h and svdrp.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2224,6 +2229,10 @@ André Weidemann <Andre.Weidemann@web.de>
  for suggesting that the primary device should only be avoided for recording if
  it is an old SD full featured card
  for his support in using convert/ffmpeg in the pic2mpg script of the 'pictures' plugin
+ for requesting a way of getting to the very end of an edited recording, since version
+ 1.7.32 no longer generates a mark at that point
+ for suggesting to automatically go into Pause mode if an editing mark is set during
+ replay
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
@@ -2265,6 +2274,8 @@ Alexander Hans <cleditor@arcor.de>
  for reporting that the "'1' for encrypted radio channels" part in the description
  of the VPID in vdr.5 is obsolete
  for a patch that was used to implement storing the channel name in info.vdr
+ for making the SVDRP command HITK discard any keys if the remote control is currently
+ turned off
 
 Daniel Karsubka <dkar@gmx.de>
  for suggesting to write the epg.data file when VDR exits
@@ -2626,6 +2637,9 @@ Sundararaj Reel <sundararaj.reel@googlemail.com>
  that might inadvertently be called with a 'char *' as the second argument on some
  compilers and cause a crash
  for reporting a possible memory leak in SI::StructureLoop::getNextAsPointer()
+ for making the TDT EIT filter always be set, because otherwise when turning on using
+ the transponder time in the Setup menu, it would only be used after the next restart
+ of VDR
 
 Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
@@ -2728,6 +2742,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  contains only the address of the local host
  for a patch that was used as a base for making editing marks be updated every 10
  seconds during replay
+ for suggesting to synchronize system time to the transponder time using adjtime() in
+ order to avoid discontinuities
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
@@ -2760,6 +2776,8 @@ Lars Hanisch <dvb@flensrocker.de>
  for a patch that was used to implement SCR (Satellite Channel Routing)
  for implementing the SVDRP command 'UPDR'
  for reporting that the SVDRP command UPDR didn't update the global recordings list
+ for fixing a typo in skins.h
+ for fixing some #include statements in plugins to use <vdr/...> instead of "vdr/..."
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2834,6 +2852,7 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for fixing cUnbufferedFile::Seek() in case it is compiled without USE_FADVISE
  for reporting a problem with EPG scan on systems with only a single DVB device that
  use software output
+ for fixing calling iconv_close() only with a valid iconv_t value
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
@@ -2958,7 +2977,7 @@ Oliver Schinagl <oliver@schinagl.nl>
  for a patch that was used to implement the setup options "OSD/Color key [0123]"
 
 Andrey Pridvorov <ua0lnj@bk.ru>
- for reporting a problem with detecting frames in MPEG 4 video, and pointing towards
+ for reporting a problem with detecting frames in H.264 video, and pointing towards
  a better way of doing it
 
 Jens Vogel <jens.vogel@akjv.de>
@@ -2970,6 +2989,29 @@ Sören Moch <smoch@web.de>
  for a patch that was used to move cleaning up the EPG data and writing the epg.data
  file into a separate thread to avoid sluggish response to user input on slow systems
  for fixing sorting folders before recordings in case of UTF-8
+ for reporting that cCuttingThread::GetPendingPackets() should get only non-video
+ packets
+ for pointing out that the name H264 should be used instead of MPEG4
+ for pointing out that the cutter should only increment the TS continuity counter for
+ packets that have a payload
+ for pointing out that when adjusting the DTS values in the cutter, it hase to compensate
+ for dropped B-frames
+ for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
+ handling of PCR values
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
+
+Mike Hay <mike.hay@linenshorts.com>
+ for reporting a problem with handling the case of the polarization character in
+ channel definitions if no DiSEqC is used
+
+Stefan Hofmann <stefan.hofmann@t-online.de>
+ for suggesting to implement support for remote controls that only have a combined
+ "Play/Pause" key instead of separate keys for "Play" and "Pause"
+
+Stefan Blochberger <Stefan.Blochberger@gmx.de>
+ for suggesting to automatically display the progress display whenever replay of a
+ recording is started
+ for suggesting that floating point numbers presented to the user shall be displayed
+ in the way defined by the current locale

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.19 2012/05/12 11:55:18 kls Exp $
+ * $Id: svdrp.c 2.21 2012/12/04 12:08:36 kls Exp $
  */
 
 #include "svdrp.h"
@@ -917,6 +917,10 @@ void cSVDRP::CmdHELP(const char *Option)
 void cSVDRP::CmdHITK(const char *Option)
 {
   if (*Option) {
+     if (!cRemote::Enabled()) {
+        Reply(550, "Remote control currently disabled (key \"%s\" discarded)", Option);
+        return;
+        }
      char buf[strlen(Option) + 1];
      strcpy(buf, Option);
      const char *delim = " \t";
@@ -1268,7 +1272,7 @@ void cSVDRP::CmdMOVC(const char *Option)
                        Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
                        }
                     else
-                       Reply(501, "Can't move channel to same postion");
+                       Reply(501, "Can't move channel to same position");
                     }
                  else
                     Reply(501, "Channel \"%d\" not defined", To);

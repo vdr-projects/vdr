@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.6 2012/04/23 09:41:22 kls Exp $
+ * $Id: osdbase.c 2.7 2012/12/07 09:50:47 kls Exp $
  */
 
 #include "osdbase.h"
@@ -53,6 +53,11 @@ void cOsdItem::SetSelectable(bool Selectable)
 void cOsdItem::SetFresh(bool Fresh)
 {
   fresh = Fresh;
+}
+
+void cOsdItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
+{
+  DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
 
 eOSState cOsdItem::ProcessKey(eKeys Key)
@@ -246,7 +251,7 @@ void cOsdMenu::Display(void)
      int n = 0;
      for (cOsdItem *item = Get(first); item; item = Next(item)) {
          bool CurrentSelectable = (i == current) && item->Selectable();
-         displayMenu->SetItem(item->Text(), i - first, CurrentSelectable, item->Selectable());
+         item->SetMenuItem(displayMenu, i - first, CurrentSelectable, item->Selectable());
          if (CurrentSelectable)
             cStatus::MsgOsdCurrentItem(item->Text());
          if (++n == displayMenuItems)
@@ -275,7 +280,7 @@ void cOsdMenu::DisplayCurrent(bool Current)
 {
   cOsdItem *item = Get(current);
   if (item) {
-     displayMenu->SetItem(item->Text(), current - first, Current && item->Selectable(), item->Selectable());
+     item->SetMenuItem(displayMenu, current - first, Current && item->Selectable(), item->Selectable());
      if (Current && item->Selectable())
         cStatus::MsgOsdCurrentItem(item->Text());
      if (!Current)
@@ -296,7 +301,7 @@ void cOsdMenu::DisplayItem(cOsdItem *Item)
      int Offset = Index - first;
      if (Offset >= 0 && Offset < first + displayMenuItems) {
         bool Current = Index == current;
-        displayMenu->SetItem(Item->Text(), Offset, Current && Item->Selectable(), Item->Selectable());
+        Item->SetMenuItem(displayMenu, Offset, Current && Item->Selectable(), Item->Selectable());
         if (Current && Item->Selectable())
            cStatus::MsgOsdCurrentItem(Item->Text());
         }

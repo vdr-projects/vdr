@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.42 2012/10/13 12:48:56 kls Exp $
+ * $Id: vdr.c 2.45 2012/12/06 10:29:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
   // Initiate locale:
 
   setlocale(LC_ALL, "");
-  setlocale(LC_NUMERIC, "C"); // makes sure any floating point numbers written use a decimal point
 
   // Command line options:
 
@@ -1000,11 +999,11 @@ int main(int argc, char *argv[])
                break;
           // Direct main menu functions:
           #define DirectMainFunction(function)\
-            DELETE_MENU;\
+            { DELETE_MENU;\
             if (cControl::Control())\
                cControl::Control()->Hide();\
             Menu = new cMenuMain(function);\
-            key = kNone; // nobody else needs to see this key
+            key = kNone; } // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
           case kChannels:   DirectMainFunction(osChannels); break;
           case kTimers:     DirectMainFunction(osTimers); break;
@@ -1089,6 +1088,7 @@ int main(int argc, char *argv[])
                key = kNone;
                break;
           // Pausing live video:
+          case kPlayPause:
           case kPause:
                if (!cControl::Control()) {
                   DELETE_MENU;

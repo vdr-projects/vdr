@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.26 2012/09/30 13:04:14 kls Exp $
+ * $Id: tools.c 2.29 2012/12/08 11:16:30 kls Exp $
  */
 
 #include "tools.h"
@@ -18,6 +18,7 @@ extern "C" {
 #include <jpeglib.h>
 #undef boolean
 }
+#include <locale.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/vfs.h>
@@ -300,6 +301,39 @@ bool StrInArray(const char *a[], const char *s)
 cString AddDirectory(const char *DirName, const char *FileName)
 {
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
+}
+
+#define DECIMAL_POINT_C '.'
+
+double atod(const char *s)
+{
+  static lconv *loc = localeconv();
+  if (*loc->decimal_point != DECIMAL_POINT_C) {
+     char buf[strlen(s) + 1];
+     char *p = buf;
+     while (*s) {
+           if (*s == DECIMAL_POINT_C)
+              *p = *loc->decimal_point;
+           else
+              *p = *s;
+           p++;
+           s++;
+           }
+     *p = 0;
+     return atof(buf);
+     }
+  else
+     return atof(s);
+}
+
+cString dtoa(double d, const char *Format)
+{
+  static lconv *loc = localeconv();
+  char buf[16];
+  snprintf(buf, sizeof(buf), Format, d);
+  if (*loc->decimal_point != DECIMAL_POINT_C)
+     strreplace(buf, *loc->decimal_point, DECIMAL_POINT_C);
+  return buf;
 }
 
 cString itoa(int n)
@@ -842,7 +876,8 @@ cCharSetConv::cCharSetConv(const char *FromCode, const char *ToCode)
 cCharSetConv::~cCharSetConv()
 {
   free(result);
-  iconv_close(cd);
+  if (cd != (iconv_t)-1)
+     iconv_close(cd);
 }
 
 void cCharSetConv::SetSystemCharacterTable(const char *CharacterTable)

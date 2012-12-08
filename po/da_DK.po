@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -410,6 +410,9 @@ msgstr "Blå"
 msgid "Key$Info"
 msgstr "Info"
 
+msgid "Key$Play/Pause"
+msgstr ""
+
 msgid "Key$Play"
 msgstr "Afspil"
 
@@ -737,9 +740,6 @@ msgstr "Åbn"
 
 msgid "Commands"
 msgstr "Kommandoer"
-
-msgid "Error while accessing recording!"
-msgstr "Fejl ved læsning af optagelse!"
 
 msgid "Delete recording?"
 msgstr "Slet optagelse?"
@@ -1101,6 +1101,12 @@ msgstr "Vis afspilningsmodus"
 msgid "Setup.Replay$Show remaining time"
 msgstr ""
 
+msgid "Setup.Replay$Progress display time (s)"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Genoptagelses ID"
 
@@ -1383,3 +1389,6 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "fri"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "Fejl ved læsning af optagelse!"

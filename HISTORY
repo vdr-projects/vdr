@@ -7245,7 +7245,7 @@ Video Disk Recorder Revision History
 - Decreased the ring buffer put/get trigger sizes from 1/3 to 1/10.
 - The script given to VDR with the '-r' option is now also called whenever a
   recording is deleted (thanks to Alexander Wenzel).
-- Improved detecting frames in MPEG 4 video (reported by Andrey Pridvorov).
+- Improved detecting frames in H.264 video (reported by Andrey Pridvorov).
 - cPatPmtParser::ParsePmt() now also recognizes stream type 0x81 as "AC3", so that
   recordings that have been converted from the old PES format to TS can be played
   (suggested by Jens Vogel).
@@ -7305,7 +7305,7 @@ Video Disk Recorder Revision History
   Sundararaj Reel).
 - Fixed handling timers in case an event is modified and "phased out" while the timer
   is recording.
-- Improved frame detection by parsing just far enough into the MPEG-4 NAL units to get
+- Improved frame detection by parsing just far enough into the H.264 NAL units to get
   the necessary information about frames and slices.
 - The initial syncing of the frame detector is now done immediately after the first
   complete GOP has been seen. This makes recordings and especially pausing live video
@@ -7334,7 +7334,85 @@ Video Disk Recorder Revision History
   simply mark a position, but have no effect on the actual cutting process.
 - When positioned at an offset where two (or more) editing marks are placed on top
   of each other, the '4' key moves the first one of them to the left, while the '6'
-  key moves the last one of them to the right. The '7' and '9' key handle multiple
+  key moves the last one of them to the right. The '7' and '9' keys handle multiple
   marks at the same place as if it were one single mark.
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
+
+2012-12-08: Version 1.7.33
+
+- In order to be able to play TS recordings from other sources, in which there is
+  more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
+  to 'bool cPatPmtParser::IsPatPmt(int Pid)'.
+- Fixed learning remote control keys with the LCARS skin.
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Fixed getting only non-video packets in cCuttingThread::GetPendingPackets() (reported
+  by Sören Moch).
+- Changed all occurrences of MPEG4 to H264 (pointed out by Sören Moch).
+- Fixed getting the number of editing sequences in case the last sequence has no actual
+  end mark.
+- The cutter now only increments the TS continuity counter for packets that have a
+  payload (pointed out by Sören Moch).
+- Fixed adjusting the DTS values in the cutter, to compensate for dropped B-frames
+  (pointed out by Sören Moch).
+- Fixed a typo in skins.h (thanks to Lars Hanisch).
+- Simplified calculating the PTS offset in cPtsFixer::Fix() and fixed the overflow
+  handling of PCR values (thanks to Sören Moch).
+- Fixed calling iconv_close() only with a valid iconv_t value (thanks to Juergen Lock).
+- Fixed faulty opening of the Recordings menu when pressing the Play key during normal
+  live viewing mode in case there is a "last viewed" recording.
+- Fixed some #include statements in plugins to use <vdr/...> instead of "vdr/..."
+  (thanks to Lars Hanisch).
+- Fixed some spellings in osd.h and svdrp.c (thanks to Ville Skyttä).
+- Fixed handling lowercase polarization characters in channel definitions if no DiSEqC
+  is used (reported by Mike Hay, actual bug pointed out by Stefan Huelswitt).
+- Synchronizing system time to the transponder time is now done using adjtime() in order
+  to avoid discontinuities (suggested by Manuel Reimer). If the time difference is more
+  than 10 seconds, stime() is still used to do the initial sync.
+- The '7' and '9' keys now jump to the very beginning or end, respectively, of the
+  recording, even if there is no mark set at that point (following a request from
+  Andre Weidemann).
+- Now always setting the TDT EIT filter, because otherwise when turning on using the
+  transponder time in the Setup menu, it would only be used after the next restart
+  of VDR (thanks to Sundararaj Reel).
+- The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
+  derived output devices to implement scaling the video to a given size and location
+  (based on a suggestion by Lucian Muresan).
+- The SVDRP command HITK now discards any keys if the remote control is currently
+  turned off (thanks to Alexander Hans).
+- The new remote control key "Play/Pause" can be used with remote controls that don't
+  have separate keys for "Play" and "Pause", but rather have a single key for both
+  functions (thanks to Stefan Hofmann for suggesting to implement support for such
+  remote controls).
+- The new option "Setup/Replay/Pause on mark set" can be used to activate automatically
+  going into Pause mode if an editing mark is set during replay (suggested by Andre
+  Weidemann).
+- When regenerating the index of a recording, the frame rate stored in the info file
+  is now automatically fixed if it differs from the value detected by the frame
+  detector.
+- Fixed creating the edited version directory if a relative file name is given in
+  the call to 'vdr --edit' (the '/video' part was stripped from the given file name
+  even if it wasn't there).
+- The new option "Setup/Replay/Progress display time" can be used to activate
+  automatically displaying the progress display whenever replay of a recording is
+  started (suggested by Stefan Blochberger).
+- Changed reading and writing of floating point numbers into configuration files to
+  make it independent of the decimal point used in the current locale. All calls to
+  atof() have been replaced with the new function atod(), which makes sure the string
+  representation of a floating point number using a '.' as decimal point will be
+  handled correctly, even if the locale in use expects a ',' as the decimal point.
+  Plugins that read floating point numbers from their own configuration files will
+  also need to use atod() for this, or use a method of their own (this is not necessary
+  if values are stored in VDR's setup.conf file, because VDR takes care of this).
+  The reason for these changes is that floating point numbers presented to the user
+  shall be displayed in the way defined by the current locale (suggested by Stefan
+  Blochberger).
+  If you use plugins that store floating point values in configuration files of their
+  own and have not yet been adapted to this change, you should set
+  export LC_NUMERIC=C
+  before running VDR. Otherwise your plugin's configuration data may not be read or
+  written correctly.
+- The new functions SetItemEvent(), SetItemTimer(), SetItemChannel() and
+  SetItemRecording() of the cSkinDisplayMenu class can be reimplemented by skin
+  plugins to display these items in a more elaborate way than just a simple line of
+  text.

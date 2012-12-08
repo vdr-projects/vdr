@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffosd.h 2.1 2009/12/29 11:52:05 kls Exp $
+ * $Id: dvbsdffosd.h 2.2 2012/12/03 13:43:55 kls Exp $
  */
 
 #ifndef __DVBSDFFODF_H
 #define __DVBSDFFODF_H
 
-#include "vdr/osd.h"
+#include <vdr/osd.h>
 
 class cDvbOsdProvider : public cOsdProvider {
 private:

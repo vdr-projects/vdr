@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.69 2012/11/13 09:11:43 kls Exp $
+ * $Id: device.c 2.70 2012/11/19 09:59:09 kls Exp $
  */
 
 #include "device.h"
@@ -1149,7 +1149,7 @@ void cDevice::StillPicture(const uchar *Data, int Length)
            int Pid = TsPid(Data);
            if (Pid == PATPID)
               patPmtParser.ParsePat(Data, TS_SIZE);
-           else if (Pid == patPmtParser.PmtPid())
+           else if (patPmtParser.IsPmtPid(Pid))
               patPmtParser.ParsePmt(Data, TS_SIZE);
            else if (Pid == patPmtParser.Vpid()) {
               if (TsPayloadStart(Data)) {
@@ -1486,7 +1486,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
               if (PayloadOffset < TS_SIZE) {
                  if (Pid == PATPID)
                     patPmtParser.ParsePat(Data, TS_SIZE);
-                 else if (Pid == patPmtParser.PmtPid())
+                 else if (patPmtParser.IsPmtPid(Pid))
                     patPmtParser.ParsePmt(Data, TS_SIZE);
                  else if (Pid == patPmtParser.Vpid()) {
                     isPlayingVideo = true;

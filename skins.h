@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.5 2012/05/12 11:10:30 kls Exp $
+ * $Id: skins.h 2.7 2012/12/07 17:18:44 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -17,6 +17,7 @@
 #include "recording.h"
 #include "themes.h"
 #include "thread.h"
+#include "timers.h"
 #include "tools.h"
 
 enum eMessageType { mtStatus = 0, mtInfo, mtWarning, mtError }; // will be used to calculate color offsets!
@@ -49,7 +50,7 @@ public:
 
 class cSkinDisplayChannel : public cSkinDisplay {
        ///< This class is used to display the current channel, together with
-       ///< the present and following EPG even. How and to what extent this
+       ///< the present and following EPG event. How and to what extent this
        ///< is done is totally up to the derived class.
 public:
   virtual void SetChannel(const cChannel *Channel, int Number) = 0;
@@ -152,13 +153,43 @@ public:
        ///< this function will be first called for the old current item
        ///< with Current set to false, and then for the new current item
        ///< with Current set to true.
-  /*TODO
-  virtual void SetItem(const cEvent *Event, int Index, bool Current, bool Selectable, bool NowNext???, bool Schedule???);
-  virtual void SetItem(const cTimer *Timer, int Index, bool Current, bool Selectable);
-  virtual void SetItem(const cChannel *Channel, int Index, bool Current, bool Selectable);
-  virtual void SetItem(const cRecording *Recording, int Index, bool Current, bool Selectable);
-  --> false: call SetItem(text)
-  */
+  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, int TimerMatch) { return false; }
+       ///< Sets the item at the given Index to Event. See SetItem() for more information.
+       ///< If a derived skin class implements this function, it can display an Event item
+       ///< in a more elaborate way than just a simple line of text.
+       ///< If Channel is not NULL, the channel's name and/or number shall be displayed.
+       ///< If WithDate is true, the date of the Event shall be displayed (in addition to the time).
+       ///< TimerMatch tells how much of this event will be recorded by a timer.
+       ///< If the skin displays the Event item in its own way, it shall return true.
+       ///< The default implementation does nothing and returns false, which results in
+       ///< a call to SetItem() with a proper text.
+  virtual bool SetItemTimer(const cTimer *Timer, int Index, bool Current, bool Selectable) { return false; }
+       ///< Sets the item at the given Index to Timer. See SetItem() for more information.
+       ///< If a derived skin class implements this function, it can display a Timer item
+       ///< in a more elaborate way than just a simple line of text.
+       ///< If the skin displays the Timer item in its own way, it shall return true.
+       ///< The default implementation does nothing and returns false, which results in
+       ///< a call to SetItem() with a proper text.
+  virtual bool SetItemChannel(const cChannel *Channel, int Index, bool Current, bool Selectable, bool WithProvider) { return false; }
+       ///< Sets the item at the given Index to Channel. See SetItem() for more information.
+       ///< If a derived skin class implements this function, it can display a Channel item
+       ///< in a more elaborate way than just a simple line of text.
+       ///< If WithProvider ist true, the provider shall be displayed in addition to the
+       ///< channel's name.
+       ///< If the skin displays the Channel item in its own way, it shall return true.
+       ///< The default implementation does nothing and returns false, which results in
+       ///< a call to SetItem() with a proper text.
+  virtual bool SetItemRecording(const cRecording *Recording, int Index, bool Current, bool Selectable, int Level, int Total, int New) { return false; }
+       ///< Sets the item at the given Index to Recording. See SetItem() for more information.
+       ///< If a derived skin class implements this function, it can display a Recording item
+       ///< in a more elaborate way than just a simple line of text.
+       ///< Level is the currently displayed level of the video directory, where 0 is the
+       ///< top level. A value of -1 means that the full path names of the recordings
+       ///< shall be displayed. If Total is greater than 0, this is a directory with the given
+       ///< total number of entries, and New contains the number of new (unwatched) recordings.
+       ///< If the skin displays the Recording item in its own way, it shall return true.
+       ///< The default implementation does nothing and returns false, which results in
+       ///< a call to SetItem() with a proper text.
   virtual void SetScrollbar(int Total, int Offset);
        ///< Sets the Total number of items in the currently displayed list, and the
        ///< Offset of the first item that is currently displayed (the skin knows how

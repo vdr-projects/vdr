@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2008-02-27 18:14+0100\n"
 "Last-Translator: Jean-Claude Repetto <jc@repetto.org>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -416,6 +416,9 @@ msgstr "Bleu"
 msgid "Key$Info"
 msgstr "Info"
 
+msgid "Key$Play/Pause"
+msgstr ""
+
 msgid "Key$Play"
 msgstr "Lecture"
 
@@ -743,9 +746,6 @@ msgstr "Ouvrir"
 
 msgid "Commands"
 msgstr "Commandes"
-
-msgid "Error while accessing recording!"
-msgstr "Impossible d'accéder à l'enregistrement"
 
 msgid "Delete recording?"
 msgstr "Supprimer l'enregistrement ?"
@@ -1107,6 +1107,12 @@ msgstr "Affichage mode de lecture"
 msgid "Setup.Replay$Show remaining time"
 msgstr ""
 
+msgid "Setup.Replay$Progress display time (s)"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de reprise"
 
@@ -1389,3 +1395,6 @@ msgstr "Disque"
 
 msgid "free"
 msgstr "restant"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "Impossible d'accéder à l'enregistrement"

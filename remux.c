@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.71 2012/11/18 12:18:08 kls Exp $
+ * $Id: remux.c 2.73 2012/11/25 14:16:11 kls Exp $
  */
 
 #include "remux.h"
@@ -574,7 +574,7 @@ void cPatPmtParser::Reset(void)
 {
   pmtSize = 0;
   patVersion = pmtVersion = -1;
-  pmtPid = -1;
+  pmtPids[0] = 0;
   vpid = vtype = 0;
   ppid = 0;
 }
@@ -594,14 +594,17 @@ void cPatPmtParser::ParsePat(const uchar *Data, int Length)
      dbgpatpmt("PAT: TSid = %d, c/n = %d, v = %d, s = %d, ls = %d\n", Pat.getTransportStreamId(), Pat.getCurrentNextIndicator(), Pat.getVersionNumber(), Pat.getSectionNumber(), Pat.getLastSectionNumber());
      if (patVersion == Pat.getVersionNumber())
         return;
+     int NumPmtPids = 0;
      SI::PAT::Association assoc;
      for (SI::Loop::Iterator it; Pat.associationLoop.getNext(assoc, it); ) {
          dbgpatpmt("     isNITPid = %d\n", assoc.isNITPid());
          if (!assoc.isNITPid()) {
-            pmtPid = assoc.getPid();
+            if (NumPmtPids <= MAX_PMT_PIDS)
+               pmtPids[NumPmtPids++] = assoc.getPid();
             dbgpatpmt("     service id = %d, pid = %d\n", assoc.getServiceId(), assoc.getPid());
             }
          }
+     pmtPids[NumPmtPids] = 0;
      patVersion = Pat.getVersionNumber();
      }
   else
@@ -673,7 +676,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
          switch (stream.getStreamType()) {
            case 0x01: // STREAMTYPE_11172_VIDEO
            case 0x02: // STREAMTYPE_13818_VIDEO
-           case 0x1B: // MPEG4
+           case 0x1B: // H.264
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
                       ppid = Pmt.getPCRPid();
@@ -839,7 +842,7 @@ bool cPatPmtParser::ParsePatPmt(const uchar *Data, int Length)
         int Pid = TsPid(Data);
         if (Pid == PATPID)
            ParsePat(Data, TS_SIZE);
-        else if (Pid == PmtPid()) {
+        else if (IsPmtPid(Pid)) {
            ParsePmt(Data, TS_SIZE);
            if (patVersion >= 0 && pmtVersion >= 0)
               return true;
@@ -1107,9 +1110,9 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
   return tsPayload.Used();
 }
 
-// --- cMpeg4Parser ----------------------------------------------------------
+// --- cH264Parser -----------------------------------------------------------
 
-class cMpeg4Parser : public cFrameParser {
+class cH264Parser : public cFrameParser {
 private:
   enum eNalUnitType {
     nutCodedSliceNonIdr     = 1,
@@ -1141,14 +1144,14 @@ private:
   void ParseSequenceParameterSet(void);
   void ParseSliceHeader(void);
 public:
-  cMpeg4Parser(void);
-       ///< Sets up a new MPEG-4 parser.
+  cH264Parser(void);
+       ///< Sets up a new H.264 parser.
        ///< This class parses only the data absolutely necessary to determine the
        ///< frame borders and field count of the given H264 material.
   virtual int Parse(const uchar *Data, int Length, int Pid);
   };
 
-cMpeg4Parser::cMpeg4Parser(void)
+cH264Parser::cH264Parser(void)
 {
   byte = 0;
   bit = -1;
@@ -1161,7 +1164,7 @@ cMpeg4Parser::cMpeg4Parser(void)
   gotSequenceParameterSet = false;
 }
 
-uchar cMpeg4Parser::GetByte(bool Raw)
+uchar cH264Parser::GetByte(bool Raw)
 {
   uchar b = tsPayload.GetByte();
   if (!Raw) {
@@ -1180,7 +1183,7 @@ uchar cMpeg4Parser::GetByte(bool Raw)
   return b;
 }
 
-uchar cMpeg4Parser::GetBit(void)
+uchar cH264Parser::GetBit(void)
 {
   if (bit < 0) {
      byte = GetByte();
@@ -1189,7 +1192,7 @@ uchar cMpeg4Parser::GetBit(void)
   return (byte & (1 << bit--)) ? 1 : 0;
 }
 
-uint32_t cMpeg4Parser::GetBits(int Bits)
+uint32_t cH264Parser::GetBits(int Bits)
 {
   uint32_t b = 0;
   while (Bits--)
@@ -1197,7 +1200,7 @@ uint32_t cMpeg4Parser::GetBits(int Bits)
   return b;
 }
 
-uint32_t cMpeg4Parser::GetGolombUe(void)
+uint32_t cH264Parser::GetGolombUe(void)
 {
   int z = -1;
   for (int b = 0; !b; z++)
@@ -1205,7 +1208,7 @@ uint32_t cMpeg4Parser::GetGolombUe(void)
   return (1 << z) - 1 + GetBits(z);
 }
 
-int32_t cMpeg4Parser::GetGolombSe(void)
+int32_t cH264Parser::GetGolombSe(void)
 {
   uint32_t v = GetGolombUe();
   if (v) {
@@ -1217,7 +1220,7 @@ int32_t cMpeg4Parser::GetGolombSe(void)
   return v;
 }
 
-int cMpeg4Parser::Parse(const uchar *Data, int Length, int Pid)
+int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
 {
   newFrame = independentFrame = false;
   tsPayload.Setup(const_cast<uchar *>(Data), Length, Pid);
@@ -1257,14 +1260,14 @@ int cMpeg4Parser::Parse(const uchar *Data, int Length, int Pid)
   return tsPayload.Used();
 }
 
-void cMpeg4Parser::ParseAccessUnitDelimiter(void)
+void cH264Parser::ParseAccessUnitDelimiter(void)
 {
   if (debug && gotSequenceParameterSet)
      dbgframes("A");
   GetByte(); // primary_pic_type
 }
 
-void cMpeg4Parser::ParseSequenceParameterSet(void)
+void cH264Parser::ParseSequenceParameterSet(void)
 {
   uchar profile_idc = GetByte(); // profile_idc
   GetByte(); // constraint_set[0-5]_flags, reserved_zero_2bits
@@ -1316,7 +1319,7 @@ void cMpeg4Parser::ParseSequenceParameterSet(void)
      }
 }
 
-void cMpeg4Parser::ParseSliceHeader(void)
+void cH264Parser::ParseSliceHeader(void)
 {
   newFrame = true;
   GetGolombUe(); // first_mb_in_slice
@@ -1366,13 +1369,13 @@ void cFrameDetector::SetPid(int Pid, int Type)
 {
   pid = Pid;
   type = Type;
-  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or 4
+  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or H.264
   delete parser;
   parser = NULL;
   if (type == 0x01 || type == 0x02)
      parser = new cMpeg2Parser;
   else if (type == 0x1B)
-     parser = new cMpeg4Parser;
+     parser = new cH264Parser;
   else if (type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
      parser = new cAudioParser;
   else if (type != 0)

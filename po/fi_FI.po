@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -413,6 +413,9 @@ msgstr "Sininen"
 msgid "Key$Info"
 msgstr "Tiedot"
 
+msgid "Key$Play/Pause"
+msgstr ""
+
 msgid "Key$Play"
 msgstr "Toista"
 
@@ -740,9 +743,6 @@ msgstr "Avaa"
 
 msgid "Commands"
 msgstr "Komennot"
-
-msgid "Error while accessing recording!"
-msgstr "Tallenteen toistaminen epäonnistui!"
 
 msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
@@ -1104,6 +1104,12 @@ msgstr "Näytä toiston tila"
 msgid "Setup.Replay$Show remaining time"
 msgstr "Näytä jäljellä oleva aika"
 
+msgid "Setup.Replay$Progress display time (s)"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
 
@@ -1386,3 +1392,6 @@ msgstr "Levy"
 
 msgid "free"
 msgstr "vapaana"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "Tallenteen toistaminen epäonnistui!"

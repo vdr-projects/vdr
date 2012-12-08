@@ -39,6 +39,7 @@ Version 1.6
 
   Info        display information on the currently viewed programme or recording,
               or on the current item in a menu
+  Play/Pause  combined key to resume or pause replay, or pause live video
   Play        resume normal replay
   Pause       pause replay or live video
   Stop        stop replay
@@ -365,7 +366,9 @@ Version 1.6
   - 4, 6    Move an editing mark back and forward. You need to first jump to
             an editing mark for this to work.
   - 7, 9    Jump back and forward between editing marks. Replay goes into still
-            mode after jumping to a mark.
+            mode after jumping to a mark. If the current position is at the
+            first or last mark, or if there are no marks at all, these keys
+            jump to the very beginning or end, respectively, of the recording.
   - 8       Positions replay at a point 3 seconds before the current or next
             "begin" mark and starts replay.
   - 2       Start the actual cutting process.
@@ -878,6 +881,15 @@ Version 1.6
   Show remaining time = no
                          Defines whether the replay progress display shows the
                          remaining time or the total length of the recording.
+
+  Progress display time (s) = 0
+                         Defines how long (in seconds) the progress display is shown
+                         when replay of a recording is started. The default value of 0
+                         means that it will not be shown.
+
+  Pause replay when setting mark = no
+                         Defines whether the player automatically goes into Pause
+                         mode when setting an editing mark.
 
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume

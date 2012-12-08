@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.12\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-11-18 14:31+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2012-11-05 01:28+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -413,6 +413,9 @@ msgstr "Albastru"
 msgid "Key$Info"
 msgstr "Info"
 
+msgid "Key$Play/Pause"
+msgstr ""
+
 msgid "Key$Play"
 msgstr "Redare"
 
@@ -740,9 +743,6 @@ msgstr "Deschide"
 
 msgid "Commands"
 msgstr "Comenzi"
-
-msgid "Error while accessing recording!"
-msgstr "Eroare la accesarea înregistrării"
 
 msgid "Delete recording?"
 msgstr "Şterg înregistrarea?"
@@ -1104,6 +1104,12 @@ msgstr "Afişează redarea"
 msgid "Setup.Replay$Show remaining time"
 msgstr "Arată timpul rămas"
 
+msgid "Setup.Replay$Progress display time (s)"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay when setting mark"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"
 
@@ -1386,3 +1392,6 @@ msgstr "Disc"
 
 msgid "free"
 msgstr "liber"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "Eroare la accesarea înregistrării"
