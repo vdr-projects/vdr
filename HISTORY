@@ -7339,7 +7339,7 @@ Video Disk Recorder Revision History
 - Modified editing marks are now written to disk whenever the replay progress display
   gets hidden (thanks to Christoph Haubrich).
 
-2012-12-06: Version 1.7.33
+2012-12-08: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
   more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
@@ -7412,3 +7412,7 @@ Video Disk Recorder Revision History
   export LC_NUMERIC=C
   before running VDR. Otherwise your plugin's configuration data may not be read or
   written correctly.
+- The new functions SetItemEvent(), SetItemTimer(), SetItemChannel() and
+  SetItemRecording() of the cSkinDisplayMenu class can be reimplemented by skin
+  plugins to display these items in a more elaborate way than just a simple line of
+  text.

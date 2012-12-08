@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-05 12:48+0100\n"
+"POT-Creation-Date: 2012-12-07 14:59+0100\n"
 "PO-Revision-Date: 2012-11-19 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -742,9 +742,6 @@ msgstr "Отвори"
 msgid "Commands"
 msgstr "Наредби"
 
-msgid "Error while accessing recording!"
-msgstr "Грешка при пристап до снимката!"
-
 msgid "Delete recording?"
 msgstr "Избриши снимка?"
 
@@ -1393,3 +1390,6 @@ msgstr "Диск"
 
 msgid "free"
 msgstr "слободен"
+
+#~ msgid "Error while accessing recording!"
+#~ msgstr "Грешка при пристап до снимката!"

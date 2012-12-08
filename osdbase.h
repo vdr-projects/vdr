@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 2.4 2012/04/23 09:40:07 kls Exp $
+ * $Id: osdbase.h 2.5 2012/12/07 09:49:35 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -63,6 +63,7 @@ public:
   void SetFresh(bool Fresh);
   const char *Text(void) const { return text; }
   virtual void Set(void) {}
+  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
