@@ -2321,6 +2321,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to check for NULL in cOsd::AddPixmap()
  for making modified editing marks be written to disk whenever the replay progress
  display gets hidden
+ for reporting a wrong type ('int' vs. 'eTimerEvent') in the declaration of
+ cSkinDisplayMenu::SetItemEvent()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

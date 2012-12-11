@@ -7416,3 +7416,8 @@ Video Disk Recorder Revision History
   SetItemRecording() of the cSkinDisplayMenu class can be reimplemented by skin
   plugins to display these items in a more elaborate way than just a simple line of
   text.
+
+2012-12-11: Version 1.7.34
+
+- Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
+  'int' to 'eTimerEvent' (reported by Christoph Haubrich).
