@@ -7421,3 +7421,4 @@ Video Disk Recorder Revision History
 
 - Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
   'int' to 'eTimerEvent' (reported by Christoph Haubrich).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
