@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.32 2012/06/09 14:37:24 kls Exp $
+ * $Id: osd.c 2.33 2012/12/15 11:16:41 kls Exp $
  */
 
 #include "osd.h"
@@ -1683,9 +1683,7 @@ void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
 
 cBitmap *cOsd::GetBitmap(int Area)
 {
-  if (isTrueColor)
-     Area = 0; // returns the dummy bitmap
-  return Area < numBitmaps ? bitmaps[Area] : NULL;
+  return Area < numBitmaps ? (isTrueColor ? bitmaps[0] : bitmaps[Area]) : NULL;
 }
 
 cPixmap *cOsd::CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)
