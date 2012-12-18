@@ -7427,3 +7427,5 @@ Video Disk Recorder Revision History
   "newplugin" script.
 - Fixed setting the --package-name and --package-version options in the calls to
   xgettext in several plugin Makefiles.
+- Added "-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" to the
+  DEFINES in the Makefile (somehow got lost from Make.config.template in version 1.7.13).

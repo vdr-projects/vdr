@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.30 2012/10/09 08:32:25 kls Exp $
+# $Id: Makefile 2.31 2012/12/18 13:20:17 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -68,6 +68,7 @@ LIRC_DEVICE ?= /var/run/lirc/lircd
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\"
 
 DEFINES += -D_GNU_SOURCE
+DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"
