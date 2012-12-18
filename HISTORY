@@ -7425,3 +7425,5 @@ Video Disk Recorder Revision History
 - Fixed cOsd::GetBitmap() to always return NULL if a non-exising area is requested.
 - Added several missing "`ls $^`" in the calls to xgettext in plugin Makefiles and the
   "newplugin" script.
+- Fixed setting the --package-name and --package-version options in the calls to
+  xgettext in several plugin Makefiles.
