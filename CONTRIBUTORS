@@ -2809,6 +2809,8 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
  for contributing to a patch that implements FHS support
+ for suggesting to remove some redundancy in the Makefile/Make.global/Make.config
+ mechanism
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys

@@ -7417,7 +7417,7 @@ Video Disk Recorder Revision History
   plugins to display these items in a more elaborate way than just a simple line of
   text.
 
-2012-12-18: Version 1.7.34
+2012-12-19: Version 1.7.34
 
 - Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
   'int' to 'eTimerEvent' (reported by Christoph Haubrich).
@@ -7429,3 +7429,10 @@ Video Disk Recorder Revision History
   xgettext in several plugin Makefiles.
 - Added "-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" to the
   DEFINES in the Makefile (somehow got lost from Make.config.template in version 1.7.13).
+- Removed some redundancy in the Makefile/Make.global/Make.config mechanism (suggested
+  by Christopher Reimer). The file Make.global is no longer used, and plugin Makefiles
+  don't include the file Make.config any more. Instead they now retrieve all necessary
+  information through calls to pkg-config.
+  Plugin authors (and users) can apply the patch from
+  ftp://ftp.tvdr.de/vdr/Developer/vdr-1.7.33-pluginmakefile.diff
+  to their Makefile to make the necessary changes (see comments in that file for details).

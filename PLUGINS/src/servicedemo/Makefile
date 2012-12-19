@@ -1,13 +1,12 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.5 2012/03/11 15:34:13 kls Exp $
+# $Id: Makefile 2.6 2012/12/18 13:35:40 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
 # By default the main source file also carries this name.
-#
-PLUGIN  = servicedemo # dummy name for Make.config
+
 PLUGIN1 = svccli
 PLUGIN2 = svcsvr
 
@@ -15,28 +14,24 @@ PLUGIN2 = svcsvr
 
 VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN1).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
 
-### The C++ compiler and options:
-
-CXX      ?= g++
-CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
-
 ### The directory environment:
 
-VDRDIR ?= ../../..
-LIBDIR ?= ../../lib
+# Use package data if installed...otherwise assume we're under the VDR source directory:
+PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
+INCDIR ?= $(call PKGCFG,incdir)
+LIBDIR ?= $(call PKGCFG,libdir)
+LOCDIR ?= $(call PKGCFG,locdir)
+#
 TMPDIR ?= /tmp
 
-### Make sure that necessary options are included:
+### The compiler options:
 
-include $(VDRDIR)/Make.global
+export CFLAGS   ?= $(call PKGCFG,cflags)
+export CXXFLAGS ?= $(call PKGCFG,cxxflags)
 
-### Allow user defined options to overwrite defaults:
+### The version number of VDR's plugin API:
 
--include $(VDRDIR)/Make.config
-
-### The version number of VDR's plugin API (taken from VDR's "config.h"):
-
-APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(VDRDIR)/config.h)
+APIVERSION = $(call PKGCFG,apiversion)
 
 ### The name of the distribution archive:
 
@@ -45,9 +40,9 @@ PACKAGE = vdr-$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I$(VDRDIR)/include
+INCLUDES += -I$(INCDIR)
 
-DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
 ### The object files (add further files here):
 
@@ -62,7 +57,7 @@ all: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 %.o: %.c
 	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
 
-# Dependencies:
+### Dependencies:
 
 MAKEDEP = $(CXX) -MM -MG
 DEPFILE = .dependencies
