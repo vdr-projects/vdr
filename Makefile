@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.33 2012/12/20 13:43:41 kls Exp $
+# $Id: Makefile 2.34 2012/12/21 11:56:29 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -16,7 +16,7 @@ CXX      ?= g++
 CXXFLAGS ?= $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
 CDEFINES  = -D_GNU_SOURCE
-CDEFINES  = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
+CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 CWD     := $(shell pwd)
 LSIDIR   = ./libsi
