@@ -7449,3 +7449,6 @@ Video Disk Recorder Revision History
   plugin), or apply the patch from
   ftp://ftp.tvdr.de/vdr/Developer/vdr-1.7.33-pluginmakefile.diff
   to your Makefile to make the necessary changes (see comments in that file for details).
+- Added the new menu categories mcChannelEdit, mcTimerEdit, mcScheduleNow, mcScheduleNext,
+  mcRecordingInfo, mcPluginSetup, mcSetupOsd, mcSetupEpg, mcSetupDvb, mcSetupLnb,
+  mcSetupCam, mcSetupRecord, mcSetupReplay, mcSetupMisc and mcSetupPlugins.

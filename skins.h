@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.8 2012/12/11 09:58:53 kls Exp $
+ * $Id: skins.h 2.9 2012/12/21 11:09:13 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -73,7 +73,37 @@ public:
   */
   };
 
-enum eMenuCategory { mcUndefined = -1, mcUnknown = 0, mcMain, mcSchedule, mcChannel, mcTimer, mcRecording, mcPlugin, mcSetup, mcCommand, mcEvent, mcText, mcFolder, mcCam };
+enum eMenuCategory {
+  mcUndefined = -1,
+  mcUnknown = 0,
+  mcMain,
+  mcSchedule,
+  mcScheduleNow,
+  mcScheduleNext,
+  mcChannel,
+  mcChannelEdit,
+  mcTimer,
+  mcTimerEdit,
+  mcRecording,
+  mcRecordingInfo,
+  mcPlugin,
+  mcPluginSetup,
+  mcSetup,
+  mcSetupOsd,
+  mcSetupEpg,
+  mcSetupDvb,
+  mcSetupLnb,
+  mcSetupCam,
+  mcSetupRecord,
+  mcSetupReplay,
+  mcSetupMisc,
+  mcSetupPlugins,
+  mcCommand,
+  mcEvent,
+  mcText,
+  mcFolder,
+  mcCam
+  };
 
 class cSkinDisplayMenu : public cSkinDisplay {
        ///< This class implements the general purpose menu display, which is
