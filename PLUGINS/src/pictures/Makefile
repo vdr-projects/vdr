@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.12 2012/12/20 14:00:40 kls Exp $
+# $Id: Makefile 2.13 2012/12/21 11:37:07 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -102,7 +102,7 @@ $(SOFILE): $(OBJS)
 
 install-lib: $(SOFILE)
 	@mkdir -p $(LIBDIR)
-	@cp --remove-destination $(SOFILE) $(LIBDIR)/$(SOFILE).$(APIVERSION)
+	@cp --remove-destination $^ $(LIBDIR)/$^.$(APIVERSION)
 
 install: install-lib install-i18n
 
