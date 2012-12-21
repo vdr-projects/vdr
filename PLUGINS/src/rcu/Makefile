@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.4 2012/12/19 11:17:56 kls Exp $
+# $Id: Makefile 1.5 2012/12/20 14:01:00 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -17,7 +17,6 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-INCDIR ?= $(call PKGCFG,incdir)
 LIBDIR ?= $(call PKGCFG,libdir)
 LOCDIR ?= $(call PKGCFG,locdir)
 #
@@ -37,9 +36,13 @@ APIVERSION = $(call PKGCFG,apiversion)
 ARCHIVE = $(PLUGIN)-$(VERSION)
 PACKAGE = vdr-$(ARCHIVE)
 
+### The name of the shared object file:
+
+SOFILE = libvdr-$(PLUGIN).so
+
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I$(INCDIR)
+INCLUDES +=
 
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
@@ -49,7 +52,7 @@ OBJS = $(PLUGIN).o
 
 ### The main target:
 
-all: libvdr-$(PLUGIN).so
+all: $(SOFILE)
 
 ### Implicit rules:
 
@@ -67,9 +70,14 @@ $(DEPFILE): Makefile
 
 ### Targets:
 
-libvdr-$(PLUGIN).so: $(OBJS)
+$(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
-	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+
+install-lib: $(SOFILE)
+	@mkdir -p $(LIBDIR)
+	@cp --remove-destination $(SOFILE) $(LIBDIR)/$(SOFILE).$(APIVERSION)
+
+install: install-lib
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
@@ -80,4 +88,4 @@ dist: clean
 	@echo Distribution package created as $(PACKAGE).tgz
 
 clean:
-	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~ $(PODIR)/*.mo $(PODIR)/*.pot
+	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~

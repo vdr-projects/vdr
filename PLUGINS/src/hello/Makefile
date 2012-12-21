@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.11 2012/12/19 12:10:07 kls Exp $
+# $Id: Makefile 2.12 2012/12/20 13:34:41 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -17,7 +17,6 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-INCDIR ?= $(call PKGCFG,incdir)
 LIBDIR ?= $(call PKGCFG,libdir)
 LOCDIR ?= $(call PKGCFG,locdir)
 #
@@ -37,9 +36,13 @@ APIVERSION = $(call PKGCFG,apiversion)
 ARCHIVE = $(PLUGIN)-$(VERSION)
 PACKAGE = vdr-$(ARCHIVE)
 
+### The name of the shared object file:
+
+SOFILE = libvdr-$(PLUGIN).so
+
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I$(INCDIR)
+INCLUDES +=
 
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
@@ -49,7 +52,7 @@ OBJS = $(PLUGIN).o
 
 ### The main target:
 
-all: libvdr-$(PLUGIN).so i18n
+all: $(SOFILE) i18n
 
 ### Implicit rules:
 
@@ -69,6 +72,7 @@ $(DEPFILE): Makefile
 
 PODIR     = po
 I18Npo    = $(wildcard $(PODIR)/*.po)
+I18Nmo    = $(addsuffix .mo, $(foreach file, $(I18Npo), $(basename $(file))))
 I18Nmsgs  = $(addprefix $(LOCDIR)/, $(addsuffix /LC_MESSAGES/vdr-$(PLUGIN).mo, $(notdir $(foreach file, $(I18Npo), $(basename $(file))))))
 I18Npot   = $(PODIR)/$(PLUGIN).pot
 
@@ -87,13 +91,20 @@ $(I18Nmsgs): $(LOCDIR)/%/LC_MESSAGES/vdr-$(PLUGIN).mo: $(PODIR)/%.mo
 	cp $< $@
 
 .PHONY: i18n
-i18n: $(I18Nmsgs)
+i18n: $(I18Nmo) $(I18Npot)
+
+install-i18n: $(I18Nmsgs)
 
 ### Targets:
 
-libvdr-$(PLUGIN).so: $(OBJS)
+$(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
-	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+
+install-lib: $(SOFILE)
+	@mkdir -p $(LIBDIR)
+	@cp --remove-destination $(SOFILE) $(LIBDIR)/$(SOFILE).$(APIVERSION)
+
+install: install-lib install-i18n
 
 dist: $(I18Npo) clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)

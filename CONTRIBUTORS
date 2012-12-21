@@ -2811,6 +2811,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for contributing to a patch that implements FHS support
  for suggesting to remove some redundancy in the Makefile/Make.global/Make.config
  mechanism
+ for suggesting to give the plugin Makefiles a separate 'install' target
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.32 2012/12/19 11:26:50 kls Exp $
+# $Id: Makefile 2.33 2012/12/20 13:43:41 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -114,14 +114,13 @@ vdr: $(OBJS) $(SILIB)
 # The libsi library:
 
 $(SILIB):
-	$(MAKE) -C $(LSIDIR) CXXFLAGS="$(CXXFLAGS)" DEFINES="$(CDEFINES)" all
+	$(MAKE) --no-print-directory -C $(LSIDIR) CXXFLAGS="$(CXXFLAGS)" DEFINES="$(CDEFINES)" all
 
 # pkg-config file:
 
 .PHONY: vdr.pc
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
-	@echo "incdir=$(INCDIR)" >> $@
 	@echo "configdir=$(CONFDIRDEF)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "cachedir=$(CACHEDIRDEF)" >> $@
@@ -129,8 +128,8 @@ vdr.pc:
 	@echo "libdir=$(LIBDIR)" >> $@
 	@echo "locdir=$(LOCDIR)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
-	@echo "cflags=$(CFLAGS) $(CDEFINES)" >> $@
-	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES)" >> $@
+	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
+	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
@@ -181,19 +180,23 @@ plugins: include-dir vdr.pc
 	@failed="";\
 	noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	    echo "Plugin $$i:";\
+	    echo "*** Plugin $$i:";\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-	    $(MAKE) -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) all || failed="$$failed $$i";\
+            target=all;\
+	    if [ "$(LIBDIR)" == "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" == "$(CWD)/locale" ]; then\
+	       target=install;\
+	       fi;\
+	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
 
 clean-plugins:
-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION)
 
 # Install the files:
@@ -229,8 +232,9 @@ install-doc:
 # Plugins:
 
 install-plugins: plugins
-	@mkdir -p $(DESTDIR)$(LIBDIR)
-	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(DESTDIR)$(LIBDIR)
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) install;\
+	     done
 
 # Includes:
 
@@ -257,9 +261,10 @@ srcdoc:
 # Housekeeping:
 
 clean:
-	@$(MAKE) -C $(LSIDIR) clean
+	@$(MAKE) --no-print-directory -C $(LSIDIR) clean
 	@-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
 	@-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
 	@-rm -rf include
 	@-rm -rf srcdoc
 CLEAN: clean
+distclean: clean-plugins clean

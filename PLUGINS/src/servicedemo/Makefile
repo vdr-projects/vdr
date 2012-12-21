@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.6 2012/12/18 13:35:40 kls Exp $
+# $Id: Makefile 2.7 2012/12/20 13:35:20 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -18,7 +18,6 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN1).c | awk '{ pr
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-INCDIR ?= $(call PKGCFG,incdir)
 LIBDIR ?= $(call PKGCFG,libdir)
 LOCDIR ?= $(call PKGCFG,locdir)
 #
@@ -40,7 +39,7 @@ PACKAGE = vdr-$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES += -I$(INCDIR)
+INCLUDES +=
 
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
@@ -70,11 +69,14 @@ $(DEPFILE): Makefile
 
 libvdr-$(PLUGIN1).so: $(PLUGIN1).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN1).o -o $@
-	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
 
 libvdr-$(PLUGIN2).so: $(PLUGIN2).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
-	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+
+install: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
+	@mkdir -p $(LIBDIR)
+	@cp --remove-destination libvdr-$(PLUGIN1).so $(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)
+	@cp --remove-destination libvdr-$(PLUGIN2).so $(LIBDIR)/libvdr-$(PLUGIN2).so.$(APIVERSION)
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
