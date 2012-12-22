@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.13 2012/12/21 11:37:32 kls Exp $
+# $Id: Makefile 2.14 2012/12/22 11:52:01 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -17,15 +17,15 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-LIBDIR ?= $(call PKGCFG,libdir)
-LOCDIR ?= $(call PKGCFG,locdir)
+LIBDIR ?= $(DESTDIR)$(call PKGCFG,libdir)
+LOCDIR ?= $(DESTDIR)$(call PKGCFG,locdir)
 #
 TMPDIR ?= /tmp
 
 ### The compiler options:
 
-export CFLAGS   ?= $(call PKGCFG,cflags)
-export CXXFLAGS ?= $(call PKGCFG,cxxflags)
+export CFLAGS   = $(call PKGCFG,cflags)
+export CXXFLAGS = $(call PKGCFG,cxxflags)
 
 ### The version number of VDR's plugin API:
 
@@ -87,8 +87,7 @@ $(I18Npot): $(wildcard *.c)
 	@touch $@
 
 $(I18Nmsgs): $(LOCDIR)/%/LC_MESSAGES/vdr-$(PLUGIN).mo: $(PODIR)/%.mo
-	@mkdir -p $(dir $@)
-	cp $< $@
+	install -D -m644 $< $@
 
 .PHONY: i18n
 i18n: $(I18Nmo) $(I18Npot)
@@ -101,8 +100,7 @@ $(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -lncursesw -o $@
 
 install-lib: $(SOFILE)
-	@mkdir -p $(LIBDIR)
-	@cp --remove-destination $^ $(LIBDIR)/$^.$(APIVERSION)
+	install -D $^ $(LIBDIR)/$^.$(APIVERSION)
 
 install: install-lib install-i18n
 

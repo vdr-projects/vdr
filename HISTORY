@@ -7417,7 +7417,7 @@ Video Disk Recorder Revision History
   plugins to display these items in a more elaborate way than just a simple line of
   text.
 
-2012-12-21: Version 1.7.34
+2012-12-22: Version 1.7.34
 
 - Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
   'int' to 'eTimerEvent' (reported by Christoph Haubrich).
@@ -7443,6 +7443,7 @@ Video Disk Recorder Revision History
   call to 'make install-plugins'. This now also allows a user to copy a plugin source to
   any directory, change into that directory and do 'make' and 'make install' to have the
   plugin installed to wherever the local installation of VDR expects them.
+- Plugin Makefiles now use DESTDIR and the 'install' program (thanks to Christopher Reimer).
 - Due to the changes to the plugin Makefiles, existing plugins will not build with this
   version of VDR any more. You can either use the new 'newplugin' script to generate a
   dummy plugin directory and use the Makefile from there (adapting it to your particular

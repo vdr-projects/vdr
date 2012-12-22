@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.6 2012/12/21 11:37:13 kls Exp $
+# $Id: Makefile 1.7 2012/12/22 11:51:49 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -17,15 +17,14 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG  = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-LIBDIR ?= $(call PKGCFG,libdir)
-LOCDIR ?= $(call PKGCFG,locdir)
+LIBDIR ?= $(DESTDIR)$(call PKGCFG,libdir)
 #
 TMPDIR ?= /tmp
 
 ### The compiler options:
 
-export CFLAGS   ?= $(call PKGCFG,cflags)
-export CXXFLAGS ?= $(call PKGCFG,cxxflags)
+export CFLAGS   = $(call PKGCFG,cflags)
+export CXXFLAGS = $(call PKGCFG,cxxflags)
 
 ### The version number of VDR's plugin API:
 
@@ -74,8 +73,7 @@ $(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
 
 install-lib: $(SOFILE)
-	@mkdir -p $(LIBDIR)
-	@cp --remove-destination $^ $(LIBDIR)/$^.$(APIVERSION)
+	install -D $^ $(LIBDIR)/$^.$(APIVERSION)
 
 install: install-lib
 
