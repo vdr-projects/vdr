@@ -7454,3 +7454,5 @@ Video Disk Recorder Revision History
   mcRecordingInfo, mcPluginSetup, mcSetupOsd, mcSetupEpg, mcSetupDvb, mcSetupLnb,
   mcSetupCam, mcSetupRecord, mcSetupReplay, mcSetupMisc and mcSetupPlugins.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed replay stuttering close to the end of an ongoing recording (reported by Andreas
+  Regel).

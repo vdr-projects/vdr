@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.78 2012/12/06 09:35:13 kls Exp $
+ * $Id: recording.c 2.79 2012/12/23 13:30:37 kls Exp $
  */
 
 #include "recording.h"
@@ -1824,7 +1824,9 @@ bool cIndexFile::CatchUp(int Index)
   // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
      cMutexLock MutexLock(&mutex);
-     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index > last); i++) {
+     // Note that CatchUp() is triggered even if Index is 'last' (and thus valid).
+     // This is done to make absolutely sure we don't miss any data at the very end.
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
             if (!IsInIndexList(this)) {
@@ -1869,7 +1871,7 @@ bool cIndexFile::CatchUp(int Index)
             }
          else
             LOG_ERROR_STR(*fileName);
-         if (Index <= last)
+         if (Index < last)
             break;
          cCondWait::SleepMs(1000);
          }

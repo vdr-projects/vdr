@@ -1453,6 +1453,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for making cDevice::AddPid() store the stream type of the given pid
  for adding cFont::FontName() and cFont::Size()
  for writing the dvbhddevice plugin
+ for reporting replay stuttering close to the end of an ongoing recording
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
