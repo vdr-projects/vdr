@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.35 2012/12/22 10:40:31 kls Exp $
+# $Id: Makefile 2.36 2012/12/23 11:28:13 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -239,7 +239,7 @@ install-doc:
 
 install-plugins: plugins
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) install;\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
 	     done
 
 # Includes:
