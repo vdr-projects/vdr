@@ -1392,6 +1392,3 @@ msgstr "Levy"
 
 msgid "free"
 msgstr "vapaana"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Tallenteen toistaminen epäonnistui!"

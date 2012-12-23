@@ -1396,6 +1396,3 @@ msgstr "Disco"
 
 msgid "free"
 msgstr "disponibili"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Errore accesso alla registrazione!"

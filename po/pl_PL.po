@@ -1390,6 +1390,3 @@ msgstr "Dysk"
 
 msgid "free"
 msgstr "wolnego"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Bl±d podczas dostêpu do nagrania!"

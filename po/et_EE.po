@@ -1389,6 +1389,3 @@ msgstr "Ketas"
 
 msgid "free"
 msgstr "vaba"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Salvestuse taasesitus ebaõnnestus!"

@@ -1393,6 +1393,3 @@ msgstr "Lemez"
 
 msgid "free"
 msgstr "szabad"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Hiba a felvétel hozzáférésénél"

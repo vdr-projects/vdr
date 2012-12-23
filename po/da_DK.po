@@ -1389,6 +1389,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "fri"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Fejl ved læsning af optagelse!"

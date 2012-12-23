@@ -1392,6 +1392,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "ledigt"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Inspelningen går inte att läsa!"

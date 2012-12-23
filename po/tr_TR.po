@@ -1389,6 +1389,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "boþ"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Kayýt okuma hatasý!"

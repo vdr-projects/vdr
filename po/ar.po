@@ -1418,6 +1418,3 @@ msgstr "القرص الصلب"
 
 msgid "free"
 msgstr "مساحة حرة"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "حدث خطاء عند محاولة الوصول لتسجيلات"

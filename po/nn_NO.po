@@ -1390,6 +1390,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "ledig"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Feil under lesing av opptak!"

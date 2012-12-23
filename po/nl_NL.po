@@ -1393,6 +1393,3 @@ msgstr "Schijf"
 
 msgid "free"
 msgstr "vrij"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Fout bij lezen opname!"
