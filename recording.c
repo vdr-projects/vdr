@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.79 2012/12/23 13:30:37 kls Exp $
+ * $Id: recording.c 2.80 2012/12/23 13:34:06 kls Exp $
  */
 
 #include "recording.h"
@@ -1939,15 +1939,16 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
                *FileNumber = index[Index].number;
                *FileOffset = index[Index].offset;
                if (Length) {
-                  // all recordings end with a non-independent frame, so the following should be safe:
-                  uint16_t fn = index[Index + 1].number;
-                  off_t fo = index[Index + 1].offset;
-                  if (fn == *FileNumber)
-                     *Length = int(fo - *FileOffset);
-                  else {
-                     esyslog("ERROR: 'I' frame at end of file #%d", *FileNumber);
-                     *Length = -1;
+                  if (Index < last) {
+                     uint16_t fn = index[Index + 1].number;
+                     off_t fo = index[Index + 1].offset;
+                     if (fn == *FileNumber)
+                        *Length = int(fo - *FileOffset);
+                     else
+                        *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
                      }
+                  else
+                     *Length = -1;
                   }
                return Index;
                }

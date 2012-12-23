@@ -7456,3 +7456,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed replay stuttering close to the end of an ongoing recording (reported by Andreas
   Regel).
+- Fixed cIndexFile::GetNextIFrame() to properly handle the case where the very last frame
+  is an I-frame (which normally shouldn't occur).
