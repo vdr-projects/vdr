@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 2.13 2012/12/22 11:54:34 kls Exp $
+# $Id: newplugin 2.14 2012/12/23 10:05:22 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -75,9 +75,9 @@ VERSION = \$(shell grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ 
 ### The directory environment:
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
-PKGCFG  = \$(if \$(VDRDIR),\$(shell pkg-config --variable=\$(1) \$(VDRDIR)/vdr.pc),\$(shell pkg-config --variable=\$(1) vdr || pkg-config --variable=\$(1) ../../../vdr.pc))
-LIBDIR ?= \$(DESTDIR)\$(call PKGCFG,libdir)
-LOCDIR ?= \$(DESTDIR)\$(call PKGCFG,locdir)
+PKGCFG = \$(if \$(VDRDIR),\$(shell pkg-config --variable=\$(1) \$(VDRDIR)/vdr.pc),\$(shell pkg-config --variable=\$(1) vdr || pkg-config --variable=\$(1) ../../../vdr.pc))
+LIBDIR = \$(DESTDIR)\$(call PKGCFG,libdir)
+LOCDIR = \$(DESTDIR)\$(call PKGCFG,locdir)
 #
 TMPDIR ?= /tmp
 
