@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.14 2012/04/08 11:20:37 kls Exp $
+ * $Id: menuitems.c 2.15 2012/12/23 13:44:05 kls Exp $
  */
 
 #include "menuitems.h"
@@ -1152,6 +1152,7 @@ eOSState cMenuSetupPage::ProcessKey(eKeys Key)
 
 void cMenuSetupPage::SetPlugin(cPlugin *Plugin)
 {
+  SetMenuCategory(mcPluginSetup);
   plugin = Plugin;
   SetSection(cString::sprintf("%s '%s'", tr("Plugin"), plugin->Name()));
 }
