@@ -1395,6 +1395,3 @@ msgstr "Disque"
 
 msgid "free"
 msgstr "restant"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Impossible d'accéder à l'enregistrement"

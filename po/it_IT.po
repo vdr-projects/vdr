@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2012-12-07 14:59+0100\n"
-"PO-Revision-Date: 2012-06-06 22:50+0100\n"
+"PO-Revision-Date: 2012-12-22 19:00+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -418,7 +418,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Riproduci/Pausa"
 
 msgid "Key$Play"
 msgstr "Riproduci"
@@ -857,16 +857,16 @@ msgid "Setup.OSD$Number keys for characters"
 msgstr "Tasti numerici per i caratteri"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Tasto colore 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Tasto colore 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Tasto colore 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Tasto colore 3"
 
 msgid "EPG"
 msgstr "Guida programmi EPG"
@@ -1085,7 +1085,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Durata reg. immediata (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "evento attuale"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Dim. massima file video (MB)"
@@ -1109,10 +1109,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Mostra tempo rimanente"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Mostra tempo elaborazione (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pausa riproduzione durante impostazione segni"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"
@@ -1148,7 +1148,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Riavvolgimento canali"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Mostra nomi canali con la sorgente"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Uscita di emergenza"
@@ -1227,7 +1227,7 @@ msgid "No editing marks defined!"
 msgstr "Nessun marcatore di modifica definito!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Nessuna sequenza di modifica definita!"
 
 msgid "Can't start editing process!"
 msgstr "Impossibile avviare il processo di modifica!"
@@ -1272,7 +1272,7 @@ msgid "Index file regeneration complete"
 msgstr "Rigenerazione file indice completata"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Rigenerazione file indice fallita!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Impossibile spegnere - parametro '-s' non assegnato!"
@@ -1396,6 +1396,3 @@ msgstr "Disco"
 
 msgid "free"
 msgstr "disponibili"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Errore accesso alla registrazione!"

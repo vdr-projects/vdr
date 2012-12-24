@@ -1416,6 +1416,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "slobodno"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Gre¹ka prilikom pristupa snimanju!"

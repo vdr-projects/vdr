@@ -1389,6 +1389,3 @@ msgstr "Δίσκος"
 
 msgid "free"
 msgstr "Ελεύθερος"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Πρόβλημα στήν προσπέλαση εγγραφής!"

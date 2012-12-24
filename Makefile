@@ -4,28 +4,39 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.30 2012/10/09 08:32:25 kls Exp $
+# $Id: Makefile 2.36 2012/12/23 11:28:13 kls Exp $
 
 .DELETE_ON_ERROR:
+
+# Compiler flags:
 
 CC       ?= gcc
 CFLAGS   ?= -g -O3 -Wall
 
 CXX      ?= g++
-CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
+CXXFLAGS ?= $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
+CFLAGS   += -fPIC
+CXXFLAGS += -fPIC
+
+CDEFINES  = -D_GNU_SOURCE
+CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
+
+# Directories:
+
+CWD     := $(shell pwd)
 LSIDIR   = ./libsi
 DESTDIR ?=
 PREFIX  ?= /usr/local
 MANDIR  ?= $(PREFIX)/share/man
 BINDIR  ?= $(PREFIX)/bin
-INCDIR  ?= $(PREFIX)/include
-LOCDIR  ?= ./locale
+INCDIR  ?= $(CWD)/include
+LOCDIR  ?= $(CWD)/locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
 INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 
-PLUGINDIR= ./PLUGINS
-PLUGINLIBDIR= $(PLUGINDIR)/lib
+PLUGINDIR= $(CWD)/PLUGINS
+LIBDIR   = $(PLUGINDIR)/lib
 
 # By default VDR requires only one single directory to operate:
 VIDEODIR     = /video
@@ -36,7 +47,6 @@ DOXYFILE = Doxyfile
 
 PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
 
-include Make.global
 -include Make.config
 
 SILIB    = $(LSIDIR)/libsi.a
@@ -47,6 +57,8 @@ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o d
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
        skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
        timers.o tools.o transfer.o vdr.o videodir.o
+
+DEFINES += $(CDEFINES)
 
 ifndef NO_KBD
 DEFINES += -DREMOTE_KBD
@@ -66,14 +78,11 @@ endif
 LIRC_DEVICE ?= /var/run/lirc/lircd
 
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\"
-
-DEFINES += -D_GNU_SOURCE
-
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"
 DEFINES += -DCACHEDIR=\"$(CACHEDIR)\"
 DEFINES += -DRESDIR=\"$(RESDIR)\"
-DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
+DEFINES += -DPLUGINDIR=\"$(LIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
 # Default values for directories:
@@ -87,7 +96,7 @@ RESDIRDEF   = $(firstword $(RESDIR)   $(CONFDIRDEF))
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 
-all: vdr i18n vdr.pc
+all: vdr i18n plugins
 
 # Implicit rules:
 
@@ -106,27 +115,27 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(LDFLAGS) $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(LDFLAGS) $(OBJS) $(LIBS) $(SILIB) -o vdr
 
 # The libsi library:
 
 $(SILIB):
-	$(MAKE) -C $(LSIDIR) all
+	$(MAKE) --no-print-directory -C $(LSIDIR) CXXFLAGS="$(CXXFLAGS)" DEFINES="$(CDEFINES)" all
 
 # pkg-config file:
 
-vdr.pc: Makefile Make.global
+.PHONY: vdr.pc
+vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
-	@echo "includedir=$(INCDIR)" >> $@
 	@echo "configdir=$(CONFDIRDEF)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "cachedir=$(CACHEDIRDEF)" >> $@
 	@echo "resdir=$(RESDIRDEF)" >> $@
-	@echo "plugindir=$(PLUGINLIBDIR)" >> $@
-	@echo "localedir=$(LOCDIR)" >> $@
+	@echo "libdir=$(LIBDIR)" >> $@
+	@echo "locdir=$(LOCDIR)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
-	@echo "cflags=$(CXXFLAGS) $(DEFINES) -I\$${includedir}" >> $@
-	@echo "plugincflags=\$${cflags} -fPIC" >> $@
+	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
+	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
@@ -157,7 +166,7 @@ $(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr.mo: $(PODIR)/%.mo
 	cp $< $@
 
 .PHONY: i18n
-i18n: $(I18Nmsgs)
+i18n: $(I18Nmsgs) $(I18Npot)
 
 install-i18n:
 	@mkdir -p $(DESTDIR)$(LOCDIR)
@@ -173,23 +182,27 @@ include-dir:
 
 # Plugins:
 
-plugins: include-dir
+plugins: include-dir vdr.pc
 	@failed="";\
 	noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	    echo "Plugin $$i:";\
+	    echo "*** Plugin $$i:";\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-	    $(MAKE) -C "$(PLUGINDIR)/src/$$i" all || failed="$$failed $$i";\
+            target=all;\
+	    if [ "$(LIBDIR)" == "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" == "$(CWD)/locale" ]; then\
+	       target=install;\
+	       fi;\
+	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
 
 clean-plugins:
-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION)
 
 # Install the files:
@@ -225,8 +238,9 @@ install-doc:
 # Plugins:
 
 install-plugins: plugins
-	@mkdir -p $(DESTDIR)$(PLUGINLIBDIR)
-	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(DESTDIR)$(PLUGINLIBDIR)
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
+	     done
 
 # Includes:
 
@@ -253,9 +267,10 @@ srcdoc:
 # Housekeeping:
 
 clean:
-	$(MAKE) -C $(LSIDIR) clean
-	-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
-	-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
-	-rm -rf include
-	-rm -rf srcdoc
+	@$(MAKE) --no-print-directory -C $(LSIDIR) clean
+	@-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
+	@-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
+	@-rm -rf include
+	@-rm -rf srcdoc
 CLEAN: clean
+distclean: clean-plugins clean

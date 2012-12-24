@@ -1453,6 +1453,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for making cDevice::AddPid() store the stream type of the given pid
  for adding cFont::FontName() and cFont::Size()
  for writing the dvbhddevice plugin
+ for reporting replay stuttering close to the end of an ongoing recording
 
 Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -2321,6 +2322,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to check for NULL in cOsd::AddPixmap()
  for making modified editing marks be written to disk whenever the replay progress
  display gets hidden
+ for reporting a wrong type ('int' vs. 'eTimerEvent') in the declaration of
+ cSkinDisplayMenu::SetItemEvent()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2807,6 +2810,10 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
  for contributing to a patch that implements FHS support
+ for suggesting to remove some redundancy in the Makefile/Make.global/Make.config
+ mechanism
+ for suggesting to give the plugin Makefiles a separate 'install' target
+ for making plugin Makefiles use DESTDIR and the 'install' program
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys

@@ -1389,6 +1389,3 @@ msgstr "Diskas"
 
 msgid "free"
 msgstr "laisva"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Klaida atidarant įrašą!"

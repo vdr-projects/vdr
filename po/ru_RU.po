@@ -1390,6 +1390,3 @@ msgstr "Диск"
 
 msgid "free"
 msgstr "свободно"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Ошибка доступа к записи!"

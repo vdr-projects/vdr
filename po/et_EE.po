@@ -23,7 +23,7 @@ msgid "Channel not available!"
 msgstr "Kanal ei ole kättesaadav!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Siirderežiimi start nurjus!"
+msgstr "Siirderežiimi start ebaõnnestus!"
 
 msgid "off"
 msgstr "väljas"
@@ -411,7 +411,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Start/Paus"
 
 msgid "Key$Play"
 msgstr "Start"
@@ -748,7 +748,7 @@ msgid "Recording is being edited - really delete?"
 msgstr "Salvestust on muudetud - kas kustutada?"
 
 msgid "Error while deleting recording!"
-msgstr "Salvestuse kustutamine nurjus!"
+msgstr "Salvestuse kustutamine ebaõnnestus!"
 
 msgid "Recording commands"
 msgstr "Salvestuse käsud"
@@ -850,16 +850,16 @@ msgid "Setup.OSD$Number keys for characters"
 msgstr "Teksti sisestamine numbriklahvidega"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Värviklahv 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Värviklahv 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Värviklahv 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Värviklahv 3"
 
 msgid "EPG"
 msgstr "EPG"
@@ -930,7 +930,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Esmane DVB seade"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Standardivastavavus"
 
 msgid "Setup.DVB$Video format"
 msgstr "TV külgsuhe"
@@ -1018,7 +1018,7 @@ msgid "CAM is in use - really reset?"
 msgstr "CAM on kasutuses - taaskäivitada?"
 
 msgid "Can't reset CAM!"
-msgstr "CAM mooduli taaskäivitus nurjus!"
+msgstr "CAM mooduli taaskäivitus ebaõnnestus!"
 
 msgid "do not pause live video"
 msgstr "mitte peatada"
@@ -1078,16 +1078,16 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Kiirsalvestuse kestus (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "hetkesündmus"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maks. failisuurus (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Failide jupitamine"
+msgstr "Redigeeritud failide tükeldamine"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "Kustutada ajanihke salvestus"
+msgstr "Ajanihke salvestuse kustutamine"
 
 msgid "Replay"
 msgstr "Taasesitus"
@@ -1102,10 +1102,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Järelejäänud aja kuvamine"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Edenemiseriba kuvamise aeg (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Taasesituse peatamine markeri seadmisel"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Jätkamise ID"
@@ -1141,7 +1141,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalite ringkerimine"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Kanalinimed allikaga"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Hädaväljumine"
@@ -1220,10 +1220,10 @@ msgid "No editing marks defined!"
 msgstr "Redigeerimise markerid puuduvad!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Redigeerimise järjestus puudub!"
 
 msgid "Can't start editing process!"
-msgstr "Redigeerimise start nurjus!"
+msgstr "Redigeerimise start ebaõnnestus!"
 
 msgid "Editing process started"
 msgstr "Redigeerimine käivitatud"
@@ -1265,10 +1265,10 @@ msgid "Index file regeneration complete"
 msgstr "Indeksfaili regenereerimine lõpetatud"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Indeksfaili regenereerimine ebaõnnestus!"
 
 msgid "Can't shutdown - option '-s' not given!"
-msgstr "Väljalülitamine nurjus - '-s' parameeter puudub!"
+msgstr "Väljalülitamine ebaõnnestus - '-s' parameeter puudub!"
 
 msgid "Editing - shut down anyway?"
 msgstr "Redigeerimine aktiive - lülitada välja?"
@@ -1304,22 +1304,22 @@ msgid "Classic VDR"
 msgstr "Classic VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "KETAS"
 
 msgid "LOAD"
-msgstr ""
+msgstr "KOORMUS"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TAIMERID"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "SEADMED"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "ESITUS"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Panels"
@@ -1372,7 +1372,7 @@ msgid "Switching primary DVB..."
 msgstr "Esmase DVB seadme ümberlülitus..."
 
 msgid "Editing process failed!"
-msgstr "Redigeerimine nurjus"
+msgstr "Redigeerimine ebaõnnestus!"
 
 msgid "Editing process finished"
 msgstr "Redigeerimine lõpetatud"
@@ -1389,6 +1389,3 @@ msgstr "Ketas"
 
 msgid "free"
 msgstr "vaba"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Salvestuse taasesitus nurjus!"

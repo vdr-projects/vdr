@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.7 2012/12/07 17:18:44 kls Exp $
+ * $Id: skins.h 2.9 2012/12/21 11:09:13 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -73,7 +73,37 @@ public:
   */
   };
 
-enum eMenuCategory { mcUndefined = -1, mcUnknown = 0, mcMain, mcSchedule, mcChannel, mcTimer, mcRecording, mcPlugin, mcSetup, mcCommand, mcEvent, mcText, mcFolder, mcCam };
+enum eMenuCategory {
+  mcUndefined = -1,
+  mcUnknown = 0,
+  mcMain,
+  mcSchedule,
+  mcScheduleNow,
+  mcScheduleNext,
+  mcChannel,
+  mcChannelEdit,
+  mcTimer,
+  mcTimerEdit,
+  mcRecording,
+  mcRecordingInfo,
+  mcPlugin,
+  mcPluginSetup,
+  mcSetup,
+  mcSetupOsd,
+  mcSetupEpg,
+  mcSetupDvb,
+  mcSetupLnb,
+  mcSetupCam,
+  mcSetupRecord,
+  mcSetupReplay,
+  mcSetupMisc,
+  mcSetupPlugins,
+  mcCommand,
+  mcEvent,
+  mcText,
+  mcFolder,
+  mcCam
+  };
 
 class cSkinDisplayMenu : public cSkinDisplay {
        ///< This class implements the general purpose menu display, which is
@@ -153,7 +183,7 @@ public:
        ///< this function will be first called for the old current item
        ///< with Current set to false, and then for the new current item
        ///< with Current set to true.
-  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, int TimerMatch) { return false; }
+  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch) { return false; }
        ///< Sets the item at the given Index to Event. See SetItem() for more information.
        ///< If a derived skin class implements this function, it can display an Event item
        ///< in a more elaborate way than just a simple line of text.

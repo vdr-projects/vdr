@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.71 2012/12/07 13:48:15 kls Exp $
+ * $Id: menu.c 2.72 2012/12/21 11:11:14 kls Exp $
  */
 
 #include "menu.h"
@@ -172,7 +172,7 @@ public:
 cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 :cOsdMenu(tr("Edit channel"), 16)
 {
-  SetMenuCategory(mcChannel);
+  SetMenuCategory(mcChannelEdit);
   channel = Channel;
   sourceParam = NULL;
   *name = 0;
@@ -878,7 +878,7 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
-  SetMenuCategory(mcTimer);
+  SetMenuCategory(mcTimerEdit);
   file = NULL;
   day = firstday = NULL;
   timer = Timer;
@@ -1378,7 +1378,7 @@ const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, CHNAMWIDTH, 6, 4)
 {
-  SetMenuCategory(mcSchedule);
+  SetMenuCategory(Now ? mcScheduleNow : mcScheduleNext);
   now = Now;
   helpKeys = -1;
   timerState = 0;
@@ -2120,7 +2120,7 @@ public:
 cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
-  SetMenuCategory(mcRecording);
+  SetMenuCategory(mcRecordingInfo);
   recording = Recording;
   withButtons = WithButtons;
   if (withButtons)
@@ -2534,6 +2534,7 @@ public:
 
 cMenuSetupOSD::cMenuSetupOSD(void)
 {
+  SetMenuCategory(mcSetupOsd);
   osdLanguageIndex = I18nCurrentLanguage();
   numSkins = Skins.Count();
   skinIndex = originalSkinIndex = Skins.Current()->Index();
@@ -2683,6 +2684,7 @@ public:
 
 cMenuSetupEPG::cMenuSetupEPG(void)
 {
+  SetMenuCategory(mcSetupEpg);
   for (numLanguages = 0; numLanguages < I18nLanguages()->Size() && data.EPGLanguages[numLanguages] >= 0; numLanguages++)
       ;
   originalNumLanguages = numLanguages;
@@ -2779,6 +2781,7 @@ public:
 
 cMenuSetupDVB::cMenuSetupDVB(void)
 {
+  SetMenuCategory(mcSetupDvb);
   for (numAudioLanguages = 0; numAudioLanguages < I18nLanguages()->Size() && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
       ;
   for (numSubtitleLanguages = 0; numSubtitleLanguages < I18nLanguages()->Size() && data.SubtitleLanguages[numSubtitleLanguages] >= 0; numSubtitleLanguages++)
@@ -2924,6 +2927,7 @@ public:
 cMenuSetupLNB::cMenuSetupLNB(void)
 :satCableNumbers(MAXDEVICES)
 {
+  SetMenuCategory(mcSetupLnb);
   satCableNumbers.FromString(data.DeviceBondings);
   SetSection(tr("LNB"));
   Setup();
@@ -3025,6 +3029,7 @@ public:
 
 cMenuSetupCAM::cMenuSetupCAM(void)
 {
+  SetMenuCategory(mcSetupCam);
   SetSection(tr("CAM"));
   SetCols(15);
   SetHasHotkeys();
@@ -3103,6 +3108,7 @@ public:
 
 cMenuSetupRecord::cMenuSetupRecord(void)
 {
+  SetMenuCategory(mcSetupRecord);
   pauseKeyHandlingTexts[0] = tr("do not pause live video");
   pauseKeyHandlingTexts[1] = tr("confirm pause live video");
   pauseKeyHandlingTexts[2] = tr("pause live video");
@@ -3139,6 +3145,7 @@ public:
 
 cMenuSetupReplay::cMenuSetupReplay(void)
 {
+  SetMenuCategory(mcSetupReplay);
   SetSection(tr("Replay"));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
@@ -3164,6 +3171,7 @@ public:
 
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
+  SetMenuCategory(mcSetupMisc);
   SetSection(tr("Miscellaneous"));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
@@ -3203,6 +3211,7 @@ public:
 
 cMenuSetupPlugins::cMenuSetupPlugins(void)
 {
+  SetMenuCategory(mcSetupPlugins);
   SetSection(tr("Plugins"));
   SetHasHotkeys();
   for (int i = 0; ; i++) {

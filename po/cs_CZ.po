@@ -1391,6 +1391,3 @@ msgstr "Disk"
 
 msgid "free"
 msgstr "volno"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "Chyba při přístupu k nahrávkám!"

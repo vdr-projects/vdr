@@ -7342,8 +7342,8 @@ Video Disk Recorder Revision History
 2012-12-08: Version 1.7.33
 
 - In order to be able to play TS recordings from other sources, in which there is
-  more than one PMT PID in the PAT, 'int cPatPmtParser::PatPmt(void)' has been changed
-  to 'bool cPatPmtParser::IsPatPmt(int Pid)'.
+  more than one PMT PID in the PAT, 'int cPatPmtParser::PmtPid(void)' has been changed
+  to 'bool cPatPmtParser::IsPmtPid(int Pid)'.
 - Fixed learning remote control keys with the LCARS skin.
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed getting only non-video packets in cCuttingThread::GetPendingPackets() (reported
@@ -7416,3 +7416,46 @@ Video Disk Recorder Revision History
   SetItemRecording() of the cSkinDisplayMenu class can be reimplemented by skin
   plugins to display these items in a more elaborate way than just a simple line of
   text.
+
+2012-12-24: Version 1.7.34
+
+- Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
+  'int' to 'eTimerEvent' (reported by Christoph Haubrich).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed cOsd::GetBitmap() to always return NULL if a non-exising area is requested.
+- Added several missing "`ls $^`" in the calls to xgettext in plugin Makefiles and the
+  "newplugin" script.
+- Fixed setting the --package-name and --package-version options in the calls to
+  xgettext in several plugin Makefiles.
+- Added "-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" to the
+  DEFINES in the Makefile (somehow got lost from Make.config.template in version 1.7.13).
+- Removed some redundancy in the Makefile/Make.global/Make.config mechanism (suggested
+  by Christopher Reimer). The file Make.global is no longer used, and plugin Makefiles
+  don't include the file Make.config any more. Instead they now retrieve all necessary
+  information through calls to pkg-config.
+- The plugin Makefiles now have a separate 'install' target (suggested by Christopher
+  Reimer). In order to still allow the normal building of VDR (with all plugins in its
+  ./PLUGINS/src subdirectory, the plugin libraries in ./PLUGINS/lib and the i18n files in
+  ./locale) the VDR Makefile checks the settings of LIBDIR and LOCDIR when building the
+  plugins from within the VDR source directory. If these macros have their default values,
+  then the 'install' targets of the plugins' Makefiles are called. Otherwise the 'all'
+  targets are called and the plugins are merely built, and will have to be installed by a
+  call to 'make install-plugins'. This now also allows a user to copy a plugin source to
+  any directory, change into that directory and do 'make' and 'make install' to have the
+  plugin installed to wherever the local installation of VDR expects them.
+- Plugin Makefiles now use DESTDIR and the 'install' program (thanks to Christopher Reimer).
+- Due to the changes to the plugin Makefiles, existing plugins will not build with this
+  version of VDR any more. You can either use the new 'newplugin' script to generate a
+  dummy plugin directory and use the Makefile from there (adapting it to your particular
+  plugin), or apply the patch from
+  ftp://ftp.tvdr.de/vdr/Developer/vdr-1.7.33-pluginmakefile.diff
+  to your Makefile to make the necessary changes (see comments in that file for details).
+- Added the new menu categories mcChannelEdit, mcTimerEdit, mcScheduleNow, mcScheduleNext,
+  mcRecordingInfo, mcPluginSetup, mcSetupOsd, mcSetupEpg, mcSetupDvb, mcSetupLnb,
+  mcSetupCam, mcSetupRecord, mcSetupReplay, mcSetupMisc and mcSetupPlugins.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed replay stuttering close to the end of an ongoing recording (reported by Andreas
+  Regel).
+- Fixed cIndexFile::GetNextIFrame() to properly handle the case where the very last frame
+  is an I-frame (which normally shouldn't occur).
+- Fixed replaying ongoing recordings from other VDR instances.

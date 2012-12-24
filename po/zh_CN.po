@@ -1392,6 +1392,3 @@ msgstr "硬盘已使用"
 
 msgid "free"
 msgstr "可录像时间"
-
-#~ msgid "Error while accessing recording!"
-#~ msgstr "存取录像错误！"
