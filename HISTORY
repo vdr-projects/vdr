@@ -7417,7 +7417,7 @@ Video Disk Recorder Revision History
   plugins to display these items in a more elaborate way than just a simple line of
   text.
 
-2012-12-23: Version 1.7.34
+2012-12-24: Version 1.7.34
 
 - Changed the type of the TimerMatch parameter in cSkinDisplayMenu::SetItemEvent() from
   'int' to 'eTimerEvent' (reported by Christoph Haubrich).
@@ -7458,3 +7458,4 @@ Video Disk Recorder Revision History
   Regel).
 - Fixed cIndexFile::GetNextIFrame() to properly handle the case where the very last frame
   is an I-frame (which normally shouldn't occur).
+- Fixed replaying ongoing recordings from other VDR instances.

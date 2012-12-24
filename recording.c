@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.80 2012/12/23 13:34:06 kls Exp $
+ * $Id: recording.c 2.81 2012/12/23 15:11:28 kls Exp $
  */
 
 #include "recording.h"
@@ -1666,7 +1666,8 @@ void cIndexFileGenerator::Action(void)
 #define INDEXFILESUFFIX     "/index"
 
 // The maximum time to wait before giving up while catching up on an index file:
-#define MAXINDEXCATCHUP   8 // seconds
+#define MAXINDEXCATCHUP    8 // number of retries
+#define INDEXCATCHUPWAIT 100 // milliseconds
 
 struct tIndexPes {
   uint32_t offset;
@@ -1692,9 +1693,6 @@ struct tIndexTs {
 #define MAXWAITFORINDEXFILE     10 // max. time to wait for the regenerated index file (seconds)
 #define INDEXFILECHECKINTERVAL 500 // ms between checks for existence of the regenerated index file
 #define INDEXFILETESTINTERVAL   10 // ms between tests for the size of the index file in case of pausing live video
-
-cMutex cIndexFile::indexListMutex;
-cVector<const cIndexFile *> cIndexFile::indexList;
 
 cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive)
 :resumeFile(FileName, IsPesRecording)
@@ -1776,13 +1774,10 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
            LOG_ERROR_STR(*fileName);
         }
      }
-  if (Record)
-     AddToIndexList(this);
 }
 
 cIndexFile::~cIndexFile()
 {
-  RemoveFromIndexList(this);
   if (f >= 0)
      close(f);
   free(index);
@@ -1829,11 +1824,6 @@ bool cIndexFile::CatchUp(int Index)
      for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
-            if (!IsInIndexList(this)) {
-               close(f);
-               f = -1;
-               break;
-               }
             int newLast = int(buf.st_size / sizeof(tIndexTs) - 1);
             if (newLast > last) {
                int NewSize = size;
@@ -1873,7 +1863,7 @@ bool cIndexFile::CatchUp(int Index)
             LOG_ERROR_STR(*fileName);
          if (Index < last)
             break;
-         cCondWait::SleepMs(1000);
+         cCondWait::SleepMs(INDEXCATCHUPWAIT);
          }
      }
   return index != NULL;
@@ -2026,39 +2016,6 @@ int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
   if (*s && stat(s, &buf) == 0)
      return buf.st_size / (IsPesRecording ? sizeof(tIndexTs) : sizeof(tIndexPes));
   return -1;
-}
-
-void cIndexFile::AddToIndexList(const cIndexFile *IndexFile)
-{
-  cMutexLock MutexLock(&indexListMutex);
-  for (int i = 0; i < indexList.Size(); i++) {
-      if (!indexList[i]) {
-         indexList[i] = IndexFile;
-         return;
-         }
-      }
-  indexList.Append(IndexFile);
-}
-
-void cIndexFile::RemoveFromIndexList(const cIndexFile *IndexFile)
-{
-  cMutexLock MutexLock(&indexListMutex);
-  for (int i = 0; i < indexList.Size(); i++) {
-      if (indexList[i] == IndexFile) {
-         indexList[i] = NULL;
-         return;
-         }
-      }
-}
-
-bool cIndexFile::IsInIndexList(const cIndexFile *IndexFile)
-{
-  cMutexLock MutexLock(&indexListMutex);
-  for (int i = 0; i < indexList.Size(); i++) {
-      if (indexList[i] && !strcmp(indexList[i]->fileName, IndexFile->fileName))
-         return true;
-      }
-  return false;
 }
 
 bool GenerateIndex(const char *FileName) 
