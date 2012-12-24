@@ -83,6 +83,8 @@ Plugins:
   priority threads may want to use this instead of the calls to SetPriority(19) and
   SetIOPriority(7). The priority of a thread ("low" or "high") is now logged when the
   thread starts.
+- The plugin Makefiles now have a separate 'install' target.
+- Plugin Makefiles now use DESTDIR and the 'install' program.
 
 Skins:
 
