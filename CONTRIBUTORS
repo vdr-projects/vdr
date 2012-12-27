@@ -2814,6 +2814,8 @@ Christopher Reimer <reimer.christopher@freenet.de>
  mechanism
  for suggesting to give the plugin Makefiles a separate 'install' target
  for making plugin Makefiles use DESTDIR and the 'install' program
+ for suggesting to make sure that plugins include the VDR header files from the actual
+ VDR source directory when doing "make plugins"
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys

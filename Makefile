@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.36 2012/12/23 11:28:13 kls Exp $
+# $Id: Makefile 2.37 2012/12/26 10:55:01 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -196,7 +196,11 @@ plugins: include-dir vdr.pc
 	    if [ "$(LIBDIR)" == "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" == "$(CWD)/locale" ]; then\
 	       target=install;\
 	       fi;\
-	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$target || failed="$$failed $$i";\
+	    includes=;\
+	    if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
+	       includes="INCLUDES=-I$(CWD)/include";\
+	       fi;\
+	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$includes $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
