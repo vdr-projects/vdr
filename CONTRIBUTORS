@@ -1763,6 +1763,7 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to check cIoThrottle::Engaged() in cRemoveDeletedRecordingsThread::Action()
  for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
  when a recording is played
+ for requesting to keep using relative paths when building plugins locally
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

@@ -7476,3 +7476,4 @@ Video Disk Recorder Revision History
 - Now using targets "install-lib" and "install-i18n" when building plugins locally.
 - Added MANDIR to the vdr.pc file, so that plugins that need it can retrieve it via
   MANDIR = $(DESTDIR)$(call PKGCFG,mandir).
+- Using relative paths again when building plugins locally (by request of Udo Richter).

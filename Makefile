@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.41 2012/12/27 14:00:51 kls Exp $
+# $Id: Makefile 2.42 2012/12/27 16:02:53 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -23,7 +23,7 @@ CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 # Directories:
 
-CWD     := $(shell pwd)
+CWD      = .
 LSIDIR   = ./libsi
 DESTDIR ?=
 PREFIX  ?= /usr/local
@@ -51,6 +51,8 @@ PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --vari
 ifdef DVBDIR
 CFLAGS += -I$(DVBDIR)/include
 endif
+
+UP3 = $(if $(findstring "$(LIBDIR)-$(LOCDIR)","$(CWD)/PLUGINS/lib-$(CWD)/locale"),../../../,)
 
 SILIB    = $(LSIDIR)/libsi.a
 
@@ -135,11 +137,11 @@ vdr.pc:
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "cachedir=$(CACHEDIRDEF)" >> $@
 	@echo "resdir=$(RESDIRDEF)" >> $@
-	@echo "libdir=$(LIBDIR)" >> $@
-	@echo "locdir=$(LOCDIR)" >> $@
+	@echo "libdir=$(UP3)$(LIBDIR)" >> $@
+	@echo "locdir=$(UP3)$(LOCDIR)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
-	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
-	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
+	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
+	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
@@ -202,9 +204,9 @@ plugins: include-dir vdr.pc
 	       fi;\
 	    includes=;\
 	    if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
-	       includes="INCLUDES=-I$(CWD)/include";\
+	       includes="INCLUDES=-I$(UP3)/include";\
 	       fi;\
-	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$includes $$target || failed="$$failed $$i";\
+	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3)$(CWD) $$includes $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
@@ -247,7 +249,7 @@ install-doc:
 
 install-plugins: plugins
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3)$(CWD) DESTDIR=$(DESTDIR) install;\
 	     done
 
 # Includes:
