@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.40 2012/12/27 13:03:45 kls Exp $
+# $Id: Makefile 2.41 2012/12/27 14:00:51 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -130,6 +130,7 @@ $(SILIB):
 .PHONY: vdr.pc
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
+	@echo "mandir=$(MANDIR)" >> $@
 	@echo "configdir=$(CONFDIRDEF)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "cachedir=$(CACHEDIRDEF)" >> $@
