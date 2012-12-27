@@ -7472,3 +7472,4 @@ Video Disk Recorder Revision History
   from the file Make.config.template. If set, DVBDIR is now conveyed to plugins via
   the CFLAGS.
 - Removed some redundancy from Make.config.template.
+- Changed "==" to "=" in the Makefile to make it POSIX style.

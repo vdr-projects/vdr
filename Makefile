@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.38 2012/12/27 11:28:21 kls Exp $
+# $Id: Makefile 2.39 2012/12/27 12:08:01 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -196,7 +196,7 @@ plugins: include-dir vdr.pc
 	       continue;\
 	       fi;\
             target=all;\
-	    if [ "$(LIBDIR)" == "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" == "$(CWD)/locale" ]; then\
+	    if [ "$(LIBDIR)" = "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" = "$(CWD)/locale" ]; then\
 	       target=install;\
 	       fi;\
 	    includes=;\
