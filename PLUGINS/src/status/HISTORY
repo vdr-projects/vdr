@@ -48,3 +48,7 @@ VDR Plugin 'status' Revision History
 2012-03-11: Version 0.3.1
 
 - Added new parameter LiveView to ChannelSwitch() (reported by Udo Richter).
+
+2012-12-27: Version 0.3.2
+
+- Adapted Makefile to changes introduced in recent VDR versions.

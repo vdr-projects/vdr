@@ -101,3 +101,7 @@ VDR Plugin 'skincurses' Revision History
 
 - Now displaying disk usage in the title of the main and "Recordings" menu,
   which is no longer done by the VDR core.
+
+2012-12-27: Version 0.1.13
+
+- Adapted Makefile to changes introduced in recent VDR versions.

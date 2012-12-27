@@ -4,3 +4,7 @@ VDR Plugin 'epgtableid0' Revision History
 2012-03-10: Version 0.0.1
 
 - Initial revision.
+
+2012-12-27: Version 0.0.2
+
+- Adapted Makefile to changes introduced in recent VDR versions.

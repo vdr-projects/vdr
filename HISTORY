@@ -7464,3 +7464,4 @@ Video Disk Recorder Revision History
 
 - Making sure that plugins include the VDR header files from the actual VDR source
   directory when doing "make plugins" (suggested by Christoper Reimer).
+- Increased the version numbers of all plugins to reflect the recent Makefile changes.
