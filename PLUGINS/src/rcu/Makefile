@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.8 2012/12/23 10:04:15 kls Exp $
+# $Id: Makefile 1.9 2012/12/27 13:02:41 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -66,6 +66,10 @@ $(DEPFILE): Makefile
 	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
 
 -include $(DEPFILE)
+
+### Internationalization (I18N):
+
+install-i18n:
 
 ### Targets:
 

@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.9 2012/12/23 10:04:16 kls Exp $
+# $Id: Makefile 2.10 2012/12/27 13:02:52 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -64,6 +64,10 @@ $(DEPFILE): Makefile
 
 -include $(DEPFILE)
 
+### Internationalization (I18N):
+
+install-i18n:
+
 ### Targets:
 
 libvdr-$(PLUGIN1).so: $(PLUGIN1).o
@@ -72,9 +76,11 @@ libvdr-$(PLUGIN1).so: $(PLUGIN1).o
 libvdr-$(PLUGIN2).so: $(PLUGIN2).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
 
-install: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
+install-lib: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 	install -D libvdr-$(PLUGIN1).so $(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)
 	install -D libvdr-$(PLUGIN2).so $(LIBDIR)/libvdr-$(PLUGIN2).so.$(APIVERSION)
+
+install: install-lib
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
