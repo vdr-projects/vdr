@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.37 2012/12/26 10:55:01 kls Exp $
+# $Id: Makefile 2.38 2012/12/27 11:28:21 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,7 +17,6 @@ CXX      ?= g++
 CXXFLAGS ?= $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
 CFLAGS   += -fPIC
-CXXFLAGS += -fPIC
 
 CDEFINES  = -D_GNU_SOURCE
 CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
@@ -48,6 +47,10 @@ DOXYFILE = Doxyfile
 PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
 
 -include Make.config
+
+ifdef DVBDIR
+CFLAGS += -I$(DVBDIR)/include
+endif
 
 SILIB    = $(LSIDIR)/libsi.a
 

@@ -7465,3 +7465,10 @@ Video Disk Recorder Revision History
 - Making sure that plugins include the VDR header files from the actual VDR source
   directory when doing "make plugins" (suggested by Christoper Reimer).
 - Increased the version numbers of all plugins to reflect the recent Makefile changes.
+- Removed the lines
+  ifdef DVBDIR
+  INCLUDES += -I$(DVBDIR)/include
+  endif
+  from the file Make.config.template. If set, DVBDIR is now conveyed to plugins via
+  the CFLAGS.
+- Removed some redundancy from Make.config.template.

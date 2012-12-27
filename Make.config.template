@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.12 2012/12/22 10:54:47 kls Exp $
+# $Id: Make.config.template 2.13 2012/12/27 11:34:05 kls Exp $
 
 ### The C compiler and options:
 
@@ -17,12 +17,10 @@ CXX      = g++
 CXXFLAGS = $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
 CFLAGS   += -fPIC
-CXXFLAGS += -fPIC
 
 # Use 'make M32=1 ...' to build a 32-bit version of VDR on a 64-bit machine:
 ifdef M32
 CFLAGS   += -m32
-CXXFLAGS += -m32
 endif
 
 ### The directory environment:
@@ -57,9 +55,3 @@ LIRC_DEVICE = /var/run/lirc/lircd
 
 ## Define if you want vdr to not run as root
 #VDR_USER = vdr
-
-### You don't need to touch the following:
-
-ifdef DVBDIR
-INCLUDES += -I$(DVBDIR)/include
-endif
