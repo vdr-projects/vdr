@@ -7460,7 +7460,7 @@ Video Disk Recorder Revision History
   is an I-frame (which normally shouldn't occur).
 - Fixed replaying ongoing recordings from other VDR instances.
 
-2012-12-27: Version 1.7.35
+2012-12-28: Version 1.7.35
 
 - Making sure that plugins include the VDR header files from the actual VDR source
   directory when doing "make plugins" (suggested by Christoper Reimer).
@@ -7477,3 +7477,10 @@ Video Disk Recorder Revision History
 - Added MANDIR to the vdr.pc file, so that plugins that need it can retrieve it via
   MANDIR = $(DESTDIR)$(call PKGCFG,mandir).
 - Using relative paths again when building plugins locally (by request of Udo Richter).
+- Plugin Makefiles can now include a configuration file for compile time parameters
+  (requested by Reinhard Nissl). The actual name of this file can be defined in
+  Make.config (see "PLGCFG" in Make.config.template), and existing plugin Makefiles
+  that have compile time parameters should add the lines
+  PLGCFG = $(call PKGCFG,plgcfg)
+  -include $(PLGCFG)
+  accordingly (see the "newplugin" script for details).

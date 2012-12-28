@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.42 2012/12/27 16:02:53 kls Exp $
+# $Id: Makefile 2.43 2012/12/28 09:44:43 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -139,6 +139,7 @@ vdr.pc:
 	@echo "resdir=$(RESDIRDEF)" >> $@
 	@echo "libdir=$(UP3)$(LIBDIR)" >> $@
 	@echo "locdir=$(UP3)$(LOCDIR)" >> $@
+	@echo "plgcfg=$(PLGCFG)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
 	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
 	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@

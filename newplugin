@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 2.14 2012/12/23 10:05:22 kls Exp $
+# $Id: newplugin 2.15 2012/12/28 09:52:29 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -78,6 +78,7 @@ VERSION = \$(shell grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ 
 PKGCFG = \$(if \$(VDRDIR),\$(shell pkg-config --variable=\$(1) \$(VDRDIR)/vdr.pc),\$(shell pkg-config --variable=\$(1) vdr || pkg-config --variable=\$(1) ../../../vdr.pc))
 LIBDIR = \$(DESTDIR)\$(call PKGCFG,libdir)
 LOCDIR = \$(DESTDIR)\$(call PKGCFG,locdir)
+PLGCFG = \$(call PKGCFG,plgcfg)
 #
 TMPDIR ?= /tmp
 
@@ -89,6 +90,10 @@ export CXXFLAGS = \$(call PKGCFG,cxxflags)
 ### The version number of VDR's plugin API:
 
 APIVERSION = \$(call PKGCFG,apiversion)
+
+### Allow user defined options to overwrite defaults:
+
+-include \$(PLGCFG)
 
 ### The name of the distribution archive:
 
