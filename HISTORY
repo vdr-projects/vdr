@@ -7489,3 +7489,6 @@ Video Disk Recorder Revision History
   determines whether a particular plugin uses an old style Makefile and calls it
   accordingly. Note that this only works when building plugins from within the VDR
   source tree, using "make plugins" in the VDR source directory.
+- Removed "include" from the DVBDIR setting in the VDR Makefile (reported by Oliver
+  Endriss). You may need to adjust your DVBDIR setting in Make.config, in case you
+  use it.

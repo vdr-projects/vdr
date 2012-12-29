@@ -691,6 +691,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting a better way of handling calls to realloc()
  for making the cutter set the 'broken link' flag for MPEG2 TS recordings
  for reporting a crash in a plugin using cDeviceHook when VDR ends
+ for reporting that "include" needs to be removed from the DVBDIR setting in the VDR
+ Makefile
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

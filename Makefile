@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.45 2012/12/29 11:58:32 kls Exp $
+# $Id: Makefile 2.46 2012/12/29 14:53:37 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -49,7 +49,7 @@ PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --vari
 -include Make.config
 
 ifdef DVBDIR
-CFLAGS += -I$(DVBDIR)/include
+CFLAGS += -I$(DVBDIR)
 endif
 
 UP3 = $(if $(findstring "$(LIBDIR)-$(LOCDIR)","$(CWD)/PLUGINS/lib-$(CWD)/locale"),../../../,)
