@@ -7460,7 +7460,7 @@ Video Disk Recorder Revision History
   is an I-frame (which normally shouldn't occur).
 - Fixed replaying ongoing recordings from other VDR instances.
 
-2012-12-28: Version 1.7.35
+2012-12-29: Version 1.7.35
 
 - Making sure that plugins include the VDR header files from the actual VDR source
   directory when doing "make plugins" (suggested by Christoper Reimer).
@@ -7483,3 +7483,9 @@ Video Disk Recorder Revision History
   PLGCFG = $(call PKGCFG,plgcfg)
   -include $(PLGCFG)
   accordingly (see the "newplugin" script for details).
+- Re-enabled building plugins that still use pre-version-1.7.34 Makefiles.
+  The file Make.global is present again to satisfy the "include" these Makefiles do,
+  but the file itself contains no settings. The VDR Makefile's "plugins" target
+  determines whether a particular plugin uses an old style Makefile and calls it
+  accordingly. Note that this only works when building plugins from within the VDR
+  source tree, using "make plugins" in the VDR source directory.

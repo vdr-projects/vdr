@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.44 2012/12/29 10:29:59 kls Exp $
+# $Id: Makefile 2.45 2012/12/29 11:58:32 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -194,20 +194,32 @@ plugins: include-dir vdr.pc
 	noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
 	    echo "*** Plugin $$i:";\
+	    oldmakefile=`grep "Make.global" "$(PLUGINDIR)/src/$$i/Makefile"`;\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-            target=all;\
-	    if [ "$(LIBDIR)" = "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" = "$(CWD)/locale" ]; then\
-	       target="install";\
+	    if [ -n "$$oldmakefile" ]; then\
+	       echo "********************************************************************";\
+	       echo "* Your plugin \"$$i\" is using an old Makefile!";\
+	       echo "* While this currently still works, it is strongly recommended";\
+	       echo "* that you convert that Makefile to the new style used since";\
+	       echo "* VDR version 1.7.35. Support for old style Makefiles may be dropped";\
+	       echo "* in future versions of VDR.";\
+	       echo "********************************************************************";\
+	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" CXXFLAGS="$(CXXFLAGS)" VDRDIR=$(UP3) LIBDIR=../../lib all || failed="$$failed $$i";\
+	    else\
+               target=all;\
+	       if [ "$(LIBDIR)" = "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" = "$(CWD)/locale" ]; then\
+	          target="install";\
+	          fi;\
+	       includes=;\
+	       if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
+	          includes="INCLUDES=-I$(UP3)/include";\
+	          fi;\
+	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) $$includes $$target || failed="$$failed $$i";\
 	       fi;\
-	    includes=;\
-	    if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
-	       includes="INCLUDES=-I$(UP3)/include";\
-	       fi;\
-	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3)$(CWD) $$includes $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
@@ -250,7 +262,7 @@ install-doc:
 
 install-plugins: plugins
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3)$(CWD) DESTDIR=$(DESTDIR) install;\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) DESTDIR=$(DESTDIR) install;\
 	     done
 
 # Includes:
