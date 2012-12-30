@@ -39,7 +39,11 @@ VDR Plugin 'dvbhddevice' Revision History
 - Allow to disable true color OSD support via setup option
 
 2011-04-xx: Version 0.0.4
+
 - locally define DVB OSD API extensions to support compiling with original DVB headers
 - Return correct pixel aspect ratio in GetOsdSize
 - Adapt Makefile to changes introduced in recent VDR versions
 
+2012-12-27: Version 0.0.5
+
+- Adapted Makefile to changes introduced in recent VDR versions.

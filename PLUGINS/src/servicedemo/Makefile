@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.9 2012/12/23 10:04:16 kls Exp $
+# $Id: Makefile 2.12 2012/12/29 10:29:15 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -19,6 +19,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN1).c | awk '{ pr
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
 LIBDIR = $(DESTDIR)$(call PKGCFG,libdir)
+PLGCFG = $(call PKGCFG,plgcfg)
 #
 TMPDIR ?= /tmp
 
@@ -30,6 +31,10 @@ export CXXFLAGS = $(call PKGCFG,cxxflags)
 ### The version number of VDR's plugin API:
 
 APIVERSION = $(call PKGCFG,apiversion)
+
+### Allow user defined options to overwrite defaults:
+
+-include $(PLGCFG)
 
 ### The name of the distribution archive:
 
@@ -72,9 +77,11 @@ libvdr-$(PLUGIN1).so: $(PLUGIN1).o
 libvdr-$(PLUGIN2).so: $(PLUGIN2).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
 
-install: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
+install-lib: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 	install -D libvdr-$(PLUGIN1).so $(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)
 	install -D libvdr-$(PLUGIN2).so $(LIBDIR)/libvdr-$(PLUGIN2).so.$(APIVERSION)
+
+install: install-lib
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)

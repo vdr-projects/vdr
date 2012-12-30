@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.12 2012/12/22 10:54:47 kls Exp $
+# $Id: Make.config.template 2.14 2012/12/28 09:55:22 kls Exp $
 
 ### The C compiler and options:
 
@@ -17,12 +17,10 @@ CXX      = g++
 CXXFLAGS = $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
 CFLAGS   += -fPIC
-CXXFLAGS += -fPIC
 
 # Use 'make M32=1 ...' to build a 32-bit version of VDR on a 64-bit machine:
 ifdef M32
 CFLAGS   += -m32
-CXXFLAGS += -m32
 endif
 
 ### The directory environment:
@@ -31,6 +29,10 @@ PREFIX   = /usr/local
 #DVBDIR   = /usr/src/v4l-dvb/linux
 MANDIR   = $(PREFIX)/man
 BINDIR   = $(PREFIX)/bin
+
+# Use this if you want to have a central place where you configure compile time
+# parameters for plugins:
+#PLGCFG = /etc/vdr/plugins.conf
 
 # By default locale and plugin files are built under the source directory:
 INCDIR       = $(CWD)/include
@@ -57,9 +59,3 @@ LIRC_DEVICE = /var/run/lirc/lircd
 
 ## Define if you want vdr to not run as root
 #VDR_USER = vdr
-
-### You don't need to touch the following:
-
-ifdef DVBDIR
-INCLUDES += -I$(DVBDIR)/include
-endif

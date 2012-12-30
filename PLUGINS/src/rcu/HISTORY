@@ -8,3 +8,7 @@ VDR Plugin 'rcu' Revision History
 2012-03-07: Version 0.0.2
 
 - Added new parameter LiveView to ChannelSwitch().
+
+2012-12-27: Version 0.0.3
+
+- Adapted Makefile to changes introduced in recent VDR versions.

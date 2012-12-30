@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.36 2012/12/23 11:28:13 kls Exp $
+# $Id: Makefile 2.47 2012/12/30 11:18:18 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,14 +17,13 @@ CXX      ?= g++
 CXXFLAGS ?= $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
 
 CFLAGS   += -fPIC
-CXXFLAGS += -fPIC
 
 CDEFINES  = -D_GNU_SOURCE
 CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
 # Directories:
 
-CWD     := $(shell pwd)
+CWD      = .
 LSIDIR   = ./libsi
 DESTDIR ?=
 PREFIX  ?= /usr/local
@@ -48,6 +47,12 @@ DOXYFILE = Doxyfile
 PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
 
 -include Make.config
+
+ifdef DVBDIR
+CFLAGS += -I$(DVBDIR)
+endif
+
+UP3 = $(if $(findstring "$(LIBDIR)-$(LOCDIR)","$(CWD)/PLUGINS/lib-$(CWD)/locale"),../../../,)
 
 SILIB    = $(LSIDIR)/libsi.a
 
@@ -127,15 +132,17 @@ $(SILIB):
 .PHONY: vdr.pc
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
+	@echo "mandir=$(MANDIR)" >> $@
 	@echo "configdir=$(CONFDIRDEF)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "cachedir=$(CACHEDIRDEF)" >> $@
 	@echo "resdir=$(RESDIRDEF)" >> $@
-	@echo "libdir=$(LIBDIR)" >> $@
-	@echo "locdir=$(LOCDIR)" >> $@
+	@echo "libdir=$(UP3)$(LIBDIR)" >> $@
+	@echo "locdir=$(UP3)$(LOCDIR)" >> $@
+	@echo "plgcfg=$(PLGCFG)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
-	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
-	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(INCDIR)" >> $@
+	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
+	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
@@ -192,11 +199,27 @@ plugins: include-dir vdr.pc
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-            target=all;\
-	    if [ "$(LIBDIR)" == "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" == "$(CWD)/locale" ]; then\
-	       target=install;\
+	    newmakefile=`grep "PKGCFG" "$(PLUGINDIR)/src/$$i/Makefile"`;\
+	    if [ -z "$$newmakefile" ]; then\
+	       echo "********************************************************************";\
+	       echo "* Your plugin \"$$i\" is using an old Makefile!";\
+	       echo "* While this currently still works, it is strongly recommended";\
+	       echo "* that you convert that Makefile to the new style used since";\
+	       echo "* VDR version 1.7.35. Support for old style Makefiles may be dropped";\
+	       echo "* in future versions of VDR.";\
+	       echo "********************************************************************";\
+	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" CXXFLAGS="$(CXXFLAGS)" VDRDIR=$(UP3) LIBDIR=../../lib all || failed="$$failed $$i";\
+	    else\
+               target=all;\
+	       if [ "$(LIBDIR)" = "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" = "$(CWD)/locale" ]; then\
+	          target="install";\
+	          fi;\
+	       includes=;\
+	       if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
+	          includes="INCLUDES=-I$(UP3)/include";\
+	          fi;\
+	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) $$includes $$target || failed="$$failed $$i";\
 	       fi;\
-	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) $$target || failed="$$failed $$i";\
 	    done;\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
@@ -239,7 +262,7 @@ install-doc:
 
 install-plugins: plugins
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
+	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) DESTDIR=$(DESTDIR) install;\
 	     done
 
 # Includes:

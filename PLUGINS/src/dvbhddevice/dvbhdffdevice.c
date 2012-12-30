@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.46 2012/11/15 09:19:10 kls Exp $
+ * $Id: dvbhdffdevice.c 1.47 2012/12/29 13:23:22 kls Exp $
  */
 
 #include <stdint.h>
@@ -22,6 +22,10 @@
 #include <vdr/transfer.h>
 #include "hdffosd.h"
 #include "setup.h"
+
+
+static uchar *YuvToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality);
+
 
 // --- cDvbHdFfDevice ----------------------------------------------------------
 
@@ -123,8 +127,112 @@ cSpuDecoder *cDvbHdFfDevice::GetSpuDecoder(void)
 
 uchar *cDvbHdFfDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  //TODO
-  return NULL;
+    #define BUFFER_SIZE  (sizeof(struct v4l2_pix_format) + 1920 * 1080 * 2)
+    int fd;
+    uint8_t * buffer;
+    uint8_t * result = NULL;
+
+    fd = DvbOpen(DEV_DVB_VIDEO, adapter, frontend, O_RDONLY);
+    if (fd < 0) {
+        esyslog("GrabImage: failed open DVB video device");
+        return NULL;
+    }
+
+    buffer = (uint8_t *) malloc(BUFFER_SIZE);
+    if (buffer)
+    {
+        int readBytes;
+
+        readBytes = read(fd, buffer, BUFFER_SIZE);
+        if (readBytes < (int) sizeof(struct v4l2_pix_format))
+            esyslog("GrabImage: failed reading from DVB video device");
+        else {
+            struct v4l2_pix_format * pixfmt;
+            int dataSize;
+
+            pixfmt = (struct v4l2_pix_format *) buffer;
+            dsyslog("GrabImage: Read image of size %d x %d",
+                    pixfmt->width, pixfmt->height);
+            dataSize = readBytes - sizeof(struct v4l2_pix_format);
+            if (dataSize < (int) pixfmt->sizeimage)
+                esyslog("GrabImage: image is not complete");
+            else {
+                if (Jpeg) {
+                    uint8_t * temp;
+                    temp = (uint8_t *) malloc(pixfmt->width * 3 * pixfmt->height);
+                    if (temp) {
+                        int numPixels = pixfmt->width * pixfmt->height;
+                        uint8_t * destData = temp;
+                        uint8_t * srcData = buffer + sizeof(struct v4l2_pix_format);
+                        while (numPixels > 0)
+                        {
+                            destData[0] = srcData[1];
+                            destData[1] = srcData[0];
+                            destData[2] = srcData[2];
+                            destData[3] = srcData[3];
+                            destData[4] = srcData[0];
+                            destData[5] = srcData[2];
+                            srcData += 4;
+                            destData += 6;
+                            numPixels -= 2;
+                        }
+                        if (Quality < 0)
+                            Quality = 100;
+                        result = YuvToJpeg(temp, pixfmt->width, pixfmt->height, Size, Quality);
+                        free(temp);
+                    }
+                }
+                else {
+                    // convert to PNM:
+                    char buf[32];
+                    snprintf(buf, sizeof(buf), "P6\n%d\n%d\n255\n",
+                             pixfmt->width, pixfmt->height);
+                    int l = strlen(buf);
+                    Size = l + pixfmt->width * 3 * pixfmt->height;
+                    result = (uint8_t *) malloc(Size);
+                    if (result)
+                    {
+                        memcpy(result, buf, l);
+                        uint8_t * destData = result + l;
+                        uint8_t * srcData = buffer + sizeof(struct v4l2_pix_format);
+                        int numPixels = pixfmt->width * pixfmt->height;
+                        while (numPixels > 0)
+                        {
+                            int cb = srcData[0] - 128;
+                            int y1 = srcData[1];
+                            int cr = srcData[2] - 128;
+                            int y2 = srcData[3];
+                            int r;
+                            int g;
+                            int b;
+
+                            r = y1 + (int) (1.402f * cr);
+                            g = y1 - (int) (0.344f * cb + 0.714f * cr);
+                            b = y1 + (int) (1.772f * cb);
+                            destData[0] = r > 255 ? 255 : r < 0 ? 0 : r;
+                            destData[1] = g > 255 ? 255 : g < 0 ? 0 : g;
+                            destData[2] = b > 255 ? 255 : b < 0 ? 0 : b;
+                            r = y2 + (int) (1.402f * cr);
+                            g = y2 - (int) (0.344f * cb + 0.714f * cr);
+                            b = y2 + (int) (1.772f * cb);
+                            destData[3] = r > 255 ? 255 : r < 0 ? 0 : r;
+                            destData[4] = g > 255 ? 255 : g < 0 ? 0 : g;
+                            destData[5] = b > 255 ? 255 : b < 0 ? 0 : b;
+
+                            srcData += 4;
+                            destData += 6;
+                            numPixels -= 2;
+                        }
+                    }
+                }
+            }
+        }
+        free(buffer);
+    }
+
+    close(fd);
+
+    return result;
 }
 
 void cDvbHdFfDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
@@ -423,7 +531,7 @@ bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
 
             mHdffCmdIf->CmdAvSetDecoderInput(0, 2);
             ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY);
-	}
+        }
     }
     playMode = PlayMode;
     return true;
@@ -839,4 +947,105 @@ bool cDvbHdFfDeviceProbe::Probe(int Adapter, int Frontend)
          }
       }
   return false;
+}
+
+
+// --- YuvToJpeg -------------------------------------------------------------
+
+#include <jpeglib.h>
+
+#define JPEGCOMPRESSMEM 4000000
+
+struct tJpegCompressData {
+  int size;
+  uchar *mem;
+  };
+
+static void JpegCompressInitDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     cinfo->dest->free_in_buffer = jcd->size = JPEGCOMPRESSMEM;
+     cinfo->dest->next_output_byte = jcd->mem = MALLOC(uchar, jcd->size);
+     }
+}
+
+static boolean JpegCompressEmptyOutputBuffer(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = jcd->size;
+     int NewSize = jcd->size + JPEGCOMPRESSMEM;
+     if (uchar *NewBuffer = (uchar *)realloc(jcd->mem, NewSize)) {
+        jcd->size = NewSize;
+        jcd->mem = NewBuffer;
+        }
+     else {
+        esyslog("ERROR: out of memory");
+        return false;
+        }
+     if (jcd->mem) {
+        cinfo->dest->next_output_byte = jcd->mem + Used;
+        cinfo->dest->free_in_buffer = jcd->size - Used;
+        return true;
+        }
+     }
+  return false;
+}
+
+static void JpegCompressTermDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = cinfo->dest->next_output_byte - jcd->mem;
+     if (Used < jcd->size) {
+        if (uchar *NewBuffer = (uchar *)realloc(jcd->mem, Used)) {
+           jcd->size = Used;
+           jcd->mem = NewBuffer;
+           }
+        else
+           esyslog("ERROR: out of memory");
+        }
+     }
+}
+
+static uchar *YuvToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
+{
+  if (Quality < 0)
+     Quality = 0;
+  else if (Quality > 100)
+     Quality = 100;
+
+  jpeg_destination_mgr jdm;
+
+  jdm.init_destination = JpegCompressInitDestination;
+  jdm.empty_output_buffer = JpegCompressEmptyOutputBuffer;
+  jdm.term_destination = JpegCompressTermDestination;
+
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_compress(&cinfo);
+  cinfo.dest = &jdm;
+  tJpegCompressData jcd;
+  cinfo.client_data = &jcd;
+  cinfo.image_width = Width;
+  cinfo.image_height = Height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space = JCS_YCbCr;
+
+  jpeg_set_defaults(&cinfo);
+  jpeg_set_quality(&cinfo, Quality, true);
+  jpeg_start_compress(&cinfo, true);
+
+  int rs = Width * 3;
+  JSAMPROW rp[Height];
+  for (int k = 0; k < Height; k++)
+      rp[k] = &Mem[rs * k];
+  jpeg_write_scanlines(&cinfo, rp, Height);
+  jpeg_finish_compress(&cinfo);
+  jpeg_destroy_compress(&cinfo);
+
+  Size = jcd.size;
+  return jcd.mem;
 }

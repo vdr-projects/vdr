@@ -691,6 +691,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting a better way of handling calls to realloc()
  for making the cutter set the 'broken link' flag for MPEG2 TS recordings
  for reporting a crash in a plugin using cDeviceHook when VDR ends
+ for reporting that "include" needs to be removed from the DVBDIR setting in the VDR
+ Makefile
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1324,6 +1326,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting that the Transfer Mode indicator bitmap in the LCARS skin may not
  fit with small font sizes
  for reporting a race condition when zapping in transfer mode
+ for requesting that plugin Makefiles should include a configuration file for compile
+ time parameters
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1763,6 +1767,7 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to check cIoThrottle::Engaged() in cRemoveDeletedRecordingsThread::Action()
  for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
  when a recording is played
+ for requesting to keep using relative paths when building plugins locally
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2814,6 +2819,8 @@ Christopher Reimer <reimer.christopher@freenet.de>
  mechanism
  for suggesting to give the plugin Makefiles a separate 'install' target
  for making plugin Makefiles use DESTDIR and the 'install' program
+ for suggesting to make sure that plugins include the VDR header files from the actual
+ VDR source directory when doing "make plugins"
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3022,3 +3029,6 @@ Stefan Blochberger <Stefan.Blochberger@gmx.de>
  recording is started
  for suggesting that floating point numbers presented to the user shall be displayed
  in the way defined by the current locale
+
+Cedric Dewijs <cedric.dewijs@telfort.nl>
+ for adding maximum SNR value for PCTV Systems PCTV 73ESE

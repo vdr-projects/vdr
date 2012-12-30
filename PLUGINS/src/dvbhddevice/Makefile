@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.19 2012/12/23 10:01:00 kls Exp $
+# $Id: Makefile 1.20 2012/12/28 10:08:50 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -19,6 +19,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
 LIBDIR = $(DESTDIR)$(call PKGCFG,libdir)
 LOCDIR = $(DESTDIR)$(call PKGCFG,locdir)
+PLGCFG = $(call PKGCFG,plgcfg)
 #
 TMPDIR ?= /tmp
 
@@ -30,6 +31,10 @@ export CXXFLAGS = $(call PKGCFG,cxxflags)
 ### The version number of VDR's plugin API:
 
 APIVERSION = $(call PKGCFG,apiversion)
+
+### Allow user defined options to overwrite defaults:
+
+-include $(PLGCFG)
 
 ### The name of the distribution archive:
 

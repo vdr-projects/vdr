@@ -7459,3 +7459,37 @@ Video Disk Recorder Revision History
 - Fixed cIndexFile::GetNextIFrame() to properly handle the case where the very last frame
   is an I-frame (which normally shouldn't occur).
 - Fixed replaying ongoing recordings from other VDR instances.
+
+2012-12-30: Version 1.7.35
+
+- Making sure that plugins include the VDR header files from the actual VDR source
+  directory when doing "make plugins" (suggested by Christoper Reimer).
+- Increased the version numbers of all plugins to reflect the recent Makefile changes.
+- Removed the lines
+  ifdef DVBDIR
+  INCLUDES += -I$(DVBDIR)/include
+  endif
+  from the file Make.config.template. If set, DVBDIR is now conveyed to plugins via
+  the CFLAGS.
+- Removed some redundancy from Make.config.template.
+- Changed "==" to "=" in the Makefile to make it POSIX style.
+- Added MANDIR to the vdr.pc file, so that plugins that need it can retrieve it via
+  MANDIR = $(DESTDIR)$(call PKGCFG,mandir).
+- Using relative paths again when building plugins locally (by request of Udo Richter).
+- Plugin Makefiles can now include a configuration file for compile time parameters
+  (requested by Reinhard Nissl). The actual name of this file can be defined in
+  Make.config (see "PLGCFG" in Make.config.template), and existing plugin Makefiles
+  that have compile time parameters should add the lines
+  PLGCFG = $(call PKGCFG,plgcfg)
+  -include $(PLGCFG)
+  accordingly (see the "newplugin" script for details).
+- Re-enabled building plugins that still use pre-version-1.7.34 Makefiles.
+  The file Make.global is present again to satisfy the "include" these Makefiles do,
+  but the file itself contains no settings. The VDR Makefile's "plugins" target
+  determines whether a particular plugin uses an old style Makefile and calls it
+  accordingly. Note that this only works when building plugins from within the VDR
+  source tree, using "make plugins" in the VDR source directory.
+- Removed "include" from the DVBDIR setting in the VDR Makefile (reported by Oliver
+  Endriss). You may need to adjust your DVBDIR setting in Make.config, in case you
+  use it.
+- Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).
