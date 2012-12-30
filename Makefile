@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.46 2012/12/29 14:53:37 kls Exp $
+# $Id: Makefile 2.47 2012/12/30 11:18:18 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -194,13 +194,13 @@ plugins: include-dir vdr.pc
 	noapiv="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
 	    echo "*** Plugin $$i:";\
-	    oldmakefile=`grep "Make.global" "$(PLUGINDIR)/src/$$i/Makefile"`;\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-	    if [ -n "$$oldmakefile" ]; then\
+	    newmakefile=`grep "PKGCFG" "$(PLUGINDIR)/src/$$i/Makefile"`;\
+	    if [ -z "$$newmakefile" ]; then\
 	       echo "********************************************************************";\
 	       echo "* Your plugin \"$$i\" is using an old Makefile!";\
 	       echo "* While this currently still works, it is strongly recommended";\
