@@ -7460,7 +7460,7 @@ Video Disk Recorder Revision History
   is an I-frame (which normally shouldn't occur).
 - Fixed replaying ongoing recordings from other VDR instances.
 
-2012-12-29: Version 1.7.35
+2012-12-30: Version 1.7.35
 
 - Making sure that plugins include the VDR header files from the actual VDR source
   directory when doing "make plugins" (suggested by Christoper Reimer).
@@ -7492,3 +7492,4 @@ Video Disk Recorder Revision History
 - Removed "include" from the DVBDIR setting in the VDR Makefile (reported by Oliver
   Endriss). You may need to adjust your DVBDIR setting in Make.config, in case you
   use it.
+- Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).

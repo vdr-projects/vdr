@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.75 2012/12/03 14:07:01 kls Exp $
+ * $Id: dvbdevice.c 2.76 2012/12/30 11:27:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -632,6 +632,7 @@ int cDvbTuner::GetSignalQuality(void) const
      // special treatment to map their Snr value into the range 0...0xFFFF.
      switch (subsystemId) {
        case 0x13C21019: MaxSnr = 200; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+       case 0x20130245: MaxSnr = 255; break; // PCTV Systems PCTV 73ESE
        }
      int a = int(Snr) * 100 / MaxSnr;
      int b = 100 - (Unc * 10 + (Ber / 256) * 5);
