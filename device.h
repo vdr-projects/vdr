@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.42 2012/12/04 11:52:58 kls Exp $
+ * $Id: device.h 2.43 2013/01/03 08:53:06 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -672,6 +672,8 @@ public:
        ///< be prepared for cases where the returned rectangle is way off the requested
        ///< Rect, or even Null. In such cases, the skin may want to fall back to
        ///< working with full screen video.
+       ///< The coordinates of Rect are in the range of the width and height returned
+       ///< by GetOsdSize().
        ///< If this device can't scale the video, a Null rectangle is returned (this
        ///< is also the default implementation).
   virtual void ScaleVideo(const cRect &Rect = cRect::Null) {}
