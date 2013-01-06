@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.11 2012/12/29 10:29:09 kls Exp $
+# $Id: Makefile 1.12 2013/01/06 10:19:53 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -17,7 +17,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-LIBDIR = $(DESTDIR)$(call PKGCFG,libdir)
+LIBDIR = $(call PKGCFG,libdir)
 PLGCFG = $(call PKGCFG,plgcfg)
 #
 TMPDIR ?= /tmp
@@ -68,7 +68,7 @@ all: $(SOFILE)
 MAKEDEP = $(CXX) -MM -MG
 DEPFILE = .dependencies
 $(DEPFILE): Makefile
-	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
+	@$(MAKEDEP) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
 
 -include $(DEPFILE)
 
@@ -78,7 +78,7 @@ $(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
 
 install-lib: $(SOFILE)
-	install -D $^ $(LIBDIR)/$^.$(APIVERSION)
+	install -D $^ $(DESTDIR)$(LIBDIR)/$^.$(APIVERSION)
 
 install: install-lib
 

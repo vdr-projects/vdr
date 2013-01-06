@@ -7494,10 +7494,21 @@ Video Disk Recorder Revision History
   use it.
 - Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).
 
-2013-01-03: Version 1.7.36
+2013-01-06: Version 1.7.36
 
 - Added maximum SNR value for PCTV Systems nanoStick T2 290e (thanks to Antti
   Hartikainen).
 - Added a remark indicating that the coordinates of Rect in a call to
   cDevice::CanScaleVideo() are in the range of the width and height returned by
   GetOsdSize() (suggested by Reinhard Nissl).
+- Modified the Makefiles (thanks to Christopher Reimer).
+  By default VDR is now built according to the FHS ("File system Hierarchy Standard"),
+  and a plain "make" in the VDR source directory just builds everything, but doesn't
+  copy it to ./PLUGINS/lib and ./locale any more. You can use a Make.config file
+  (copied from Make.config.template) and set the parameter LCLBLD=1 to have everything
+  built and installed under the VDR source tree (as was the default in previous
+  versions). If you already have your own Make.config file, you may want to copy the
+  new Make.config.template and adapt it to your needs. If you don't want VDR's data
+  files to be spread around your system according to the FHS, you can set the
+  parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
+  before.

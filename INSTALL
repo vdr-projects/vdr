@@ -311,7 +311,7 @@ This program must be given to VDR with the '-a' option, as in
 The video data directory:
 -------------------------
 
-All recordings are written into directories below "/video". Please
+All recordings are written into directories below "/srv/vdr/video". Please
 make sure this directory exists, and that the user who runs the 'vdr'
 program has read and write access to that directory.
 If you prefer a different location for your video files, you can use
@@ -331,12 +331,12 @@ same basic name and must end with a numeric part, which starts at 0 for
 the main directory and has increasing values for the rest of the
 directories. For example
 
-   /video0
-   /video1
-   /video2
+   /srv/vdr/video0
+   /srv/vdr/video1
+   /srv/vdr/video2
 
 would be a setup with three directories. You can use more than one
-numeric digit, and the directories need not be directly under '/':
+numeric digit:
 
    /mnt/MyVideos/vdr.00
    /mnt/MyVideos/vdr.01
@@ -351,7 +351,7 @@ with the name of the basic directory when running 'vdr':
 
    vdr -v /video0
 
-Note that you should not copy any non-VDR files into the /videoX directories,
+Note that you should not copy any non-VDR files into the video directory,
 since this might cause a lot of unnecessary disk access when VDR cleans up those
 directories and there is a large number of files and/or subdirectories in
 there. If you have a large disk that you want to use for VDR's video data as
@@ -375,9 +375,11 @@ Configuration files:
 
 There are several configuration files that hold information about
 channels, remote control keys, timers etc. By default these files are
-assumed to be located in the video directory, but a different directory
-can be used with the '-c' option. Plugins assume their configuration files
-in a subdirectory called "plugins" of this directory.
+spread around the system according to the FHS ("File system Hierarchy Standard").
+If you prefer to have VDR built to run locally under the VDR source tree,
+you can copy the file Make.config.template to Make.config and set the parameter
+LCLBLD=1. If you also want to have all data files under one single directory,
+set ONEDIR=1 in Make.config.
 
 For starters just copy all *.conf files from the VDR directory into your
 video directory.
@@ -395,15 +397,6 @@ listed in the default 'channels.conf' file have been verified by the author.
 As a starting point you can copy the 'channels.conf' file that comes with the
 VDR archive into your video directory (or into your config directory,
 respectively, in case you have redirected it with the -c option).
-
-If you prefer to have your system set up according to the FHS
-("File system Hierarchy Standard") and thus have your files spread
-all over the place ;-), you can do this by copying the file Make.config.template
-to Make.config in the VDR source directory, and activating the line
-
-#USEFHS = 1
-
-in that file.
 
 Setting up DiSEqC:
 ------------------
