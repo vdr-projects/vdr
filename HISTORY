@@ -7494,7 +7494,7 @@ Video Disk Recorder Revision History
   use it.
 - Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).
 
-2013-01-06: Version 1.7.36
+2013-01-12: Version 1.7.36
 
 - Added maximum SNR value for PCTV Systems nanoStick T2 290e (thanks to Antti
   Hartikainen).
@@ -7512,3 +7512,4 @@ Video Disk Recorder Revision History
   files to be spread around your system according to the FHS, you can set the
   parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
   before.
+- Fixed the example for cReceiver in PLUGINS.html.
