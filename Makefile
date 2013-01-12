@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.48 2013/01/06 18:45:33 kls Exp $
+# $Id: Makefile 2.49 2013/01/12 13:45:01 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -114,7 +114,7 @@ all: vdr i18n plugins
 # Implicit rules:
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 # Dependencies:
 
@@ -202,7 +202,7 @@ plugins: include-dir vdr.pc
 	noapiv="";\
 	oldmakefile="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	    echo "*** Plugin $$i:";\
+	    echo; echo "*** Plugin $$i:";\
 	    # No APIVERSION: Skip\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\

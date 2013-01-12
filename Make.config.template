@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.15 2013/01/06 18:48:29 kls Exp $
+# $Id: Make.config.template 2.16 2013/01/12 13:50:17 kls Exp $
 
 ### The C compiler and options:
 
@@ -24,9 +24,22 @@ endif
 
 ### The directory environment:
 
-# Use this if you want to have a central place where you configure compile time
-# parameters for plugins:
-#PLGCFG = /etc/vdr/plugins.conf
+# Default directories (adjust as necessary or desired):
+
+#PREFIX    = /usr/local
+#BINDIR    = $(PREFIX)/bin
+#INCDIR    = $(PREFIX)/include
+#LIBDIR    = $(PREFIX)/lib/vdr
+#LOCDIR    = $(PREFIX)/share/locale
+#MANDIR    = $(PREFIX)/share/man
+#PCDIR     = $(PREFIX)/lib/pkgconfig
+#RESDIR    = $(PREFIX)/share/vdr
+
+#VIDEODIR  = /srv/vdr/video
+#CONFDIR   = /var/lib/vdr
+#CACHEDIR  = /var/cache/vdr
+
+# Overrides for preset/legacy configurations:
 
 # Use 'make LCLBLD=1' to build locale and plugin files under the source directory:
 ifdef LCLBLD
@@ -46,14 +59,9 @@ CONFDIR      = $(VIDEODIR)
 RESDIR       = $(VIDEODIR)
 endif
 
-# Other directories:
-
-#PREFIX   = /usr/local
-#BINDIR   = $(PREFIX)/bin
-#DVBDIR   = /usr/src/v4l-dvb/linux
-#MANDIR   = $(PREFIX)/man
-#INCDIR   = $(PREFIX)/include
-#PCDIR    = $(PREFIX)/lib/pkgconfig
+# Use this if you want to have a central place where you configure compile time
+# parameters for plugins:
+#PLGCFG = $(CONFDIR)/plugins.conf
 
 ### The remote control:
 
