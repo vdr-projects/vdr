@@ -13,3 +13,7 @@ VDR Plugin 'servicedemo' Revision History
 2012-12-27: Version 0.1.3
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-01-12: Version 0.1.4
+
+- Adapted Makefile to changes introduced in recent VDR versions.

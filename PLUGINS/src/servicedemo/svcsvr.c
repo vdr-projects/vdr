@@ -3,14 +3,14 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svcsvr.c 2.1 2012/12/27 10:38:19 kls Exp $
+ * $Id: svcsvr.c 2.2 2013/01/12 14:13:05 kls Exp $
  */
 
 #include <stdlib.h>
 #include <vdr/interface.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.1.3";
+static const char *VERSION        = "0.1.4";
 static const char *DESCRIPTION    = "Service demo server";
 
 class cPluginSvcSvr : public cPlugin {
