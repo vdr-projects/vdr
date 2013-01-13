@@ -7516,3 +7516,5 @@ Video Disk Recorder Revision History
 - Fixed sorting recordings in case the locale ignores non-alphanumeric characters,
   or if two folders have the same name, but one of them ends in an additional digit,
   as in "abc" and "abc2" (reported by Andreas Mair).
+- Added "repeat" function when using the keyboard to control VDR (thanks to Reinhard
+  Nissl).
