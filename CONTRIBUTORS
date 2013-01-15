@@ -3040,3 +3040,7 @@ Stefan Blochberger <Stefan.Blochberger@gmx.de>
 
 Cedric Dewijs <cedric.dewijs@telfort.nl>
  for adding maximum SNR value for PCTV Systems PCTV 73ESE
+
+Stefan Stolz <st.stolz@gmail.com>
+ for suggesting to make the SVDRP command LSTR optionally list the actual file name of
+ a recording's directory
