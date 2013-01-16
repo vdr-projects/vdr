@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.82 2013/01/13 11:47:44 kls Exp $
+ * $Id: recording.c 2.83 2013/01/16 14:17:44 kls Exp $
  */
 
 #include "recording.h"
@@ -841,12 +841,6 @@ char *cRecording::SortName(void) const
      char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory))
                                               : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)));
      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-     for (char *p = s; *p; p++) {
-         if (*p == '/')
-            *p = '0'; // some locales ignore '/' when sorting
-         else if (*p < '0')
-            *p = ' '; // avoids multiple occurences of the same folder in case the locale ignores non-alphanumeric characters when sorting
-         }
      int l = strxfrm(NULL, s, 0) + 1;
      *sb = MALLOC(char, l);
      strxfrm(*sb, s, l);
