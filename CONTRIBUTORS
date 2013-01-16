@@ -1006,6 +1006,8 @@ Andreas Mair <amair.sob@googlemail.com>
  for fixing the type of MBperMinute in cVideoDiskUsage::HasChanged()
  for reporting a bug in sorting recordings in case two folders have the same name,
  but one of them ends in an additional digit, as in "abc" and "abc2"
+ for reporting multiple occurrences of the same directory in the recordings list ini
+ case there are directories that only differ in non-alphanumeric characters
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language

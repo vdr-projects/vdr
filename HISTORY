@@ -7494,7 +7494,7 @@ Video Disk Recorder Revision History
   use it.
 - Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).
 
-2013-01-15: Version 1.7.36
+2013-01-16: Version 1.7.36
 
 - Added maximum SNR value for PCTV Systems nanoStick T2 290e (thanks to Antti
   Hartikainen).
@@ -7520,3 +7520,6 @@ Video Disk Recorder Revision History
 - The SVDRP command LSTR now knows the additional parameter "path", which can be
   given to get the actual file name of a recording's directory (suggested by
   Stefan Stolz).
+- Fixed multiple occurrences of the same directory in the recordings list in case there
+  are directories that only differ in non-alphanumeric characters (reported by Andreas
+  Mair).
