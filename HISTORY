@@ -7525,3 +7525,5 @@ Video Disk Recorder Revision History
   Mair).
 - Absolute jumps when replaying a recording (via the Red key) are now only performed
   if an actual value has been entered (suggested by Ulf Kiener).
+- The last replayed recording is now stored in setup.conf, which allows the blue
+  "Resume" key in the main menu to work even after a restart of VDR.
