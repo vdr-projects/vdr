@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.22 2013/01/15 13:21:10 kls Exp $
+ * $Id: svdrp.c 2.23 2013/01/17 15:19:02 kls Exp $
  */
 
 #include "svdrp.h"
@@ -263,8 +263,7 @@ const char *HelpPages[] = {
   "    by the LSTC command.",
   "NEWT <settings>\n"
   "    Create a new timer. Settings must be in the same format as returned\n"
-  "    by the LSTT command. It is an error if a timer with the same channel,\n"
-  "    day, start and stop time already exists.",
+  "    by the LSTT command.",
   "NEXT [ abs | rel ]\n"
   "    Show the next timer event. If no option is given, the output will be\n"
   "    in human readable form. With option 'abs' the absolute time of the next\n"
@@ -1350,16 +1349,11 @@ void cSVDRP::CmdNEWT(const char *Option)
   if (*Option) {
      cTimer *timer = new cTimer;
      if (timer->Parse(Option)) {
-        cTimer *t = Timers.GetTimer(timer);
-        if (!t) {
-           Timers.Add(timer);
-           Timers.SetModified();
-           isyslog("timer %s added", *timer->ToDescr());
-           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
-           return;
-           }
-        else
-           Reply(550, "Timer already defined: %d %s", t->Index() + 1, *t->ToText());
+        Timers.Add(timer);
+        Timers.SetModified();
+        isyslog("timer %s added", *timer->ToDescr());
+        Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
+        return;
         }
      else
         Reply(501, "Error in timer settings");

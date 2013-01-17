@@ -7527,3 +7527,5 @@ Video Disk Recorder Revision History
   if an actual value has been entered (suggested by Ulf Kiener).
 - The last replayed recording is now stored in setup.conf, which allows the blue
   "Resume" key in the main menu to work even after a restart of VDR.
+- The SVDRP command NEWT no longer checks whether a timer with the given data already
+  exists (suggested by Malte Forkel).
