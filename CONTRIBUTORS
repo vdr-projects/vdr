@@ -2509,6 +2509,8 @@ Ulf Kiener <webmaster@ulf-kiener.de>
  for reporting a problem with audio track descriptions in the DVD plugin after a
  replay has been stopped
  for suggesting to add user defined key kUser0
+ for suggesting to perform absolute jumps when replaying a recording (via the Red key)
+ only if an actual value has been entered
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
