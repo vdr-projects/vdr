@@ -7531,3 +7531,5 @@ Video Disk Recorder Revision History
   exists (suggested by Malte Forkel).
 - Implemented scaling of SPU bitmaps (thanks to Johann Friedrichs).
 - Improved cutting MPEG-2 video (thanks to Sören Moch).
+- Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
+  in case the primary device can't handle the current live signal.
