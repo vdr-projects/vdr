@@ -3024,6 +3024,7 @@ Sören Moch <smoch@web.de>
  for dropped B-frames
  for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
  handling of PCR values
+ for improving cutting MPEG-2 video
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files

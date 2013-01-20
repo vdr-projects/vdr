@@ -7530,3 +7530,4 @@ Video Disk Recorder Revision History
 - The SVDRP command NEWT no longer checks whether a timer with the given data already
   exists (suggested by Malte Forkel).
 - Implemented scaling of SPU bitmaps (thanks to Johann Friedrichs).
+- Improved cutting MPEG-2 video (thanks to Sören Moch).
