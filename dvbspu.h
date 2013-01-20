@@ -8,13 +8,14 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 2.5 2011/03/27 14:50:48 kls Exp $
+ * $Id: dvbspu.h 2.6 2013/01/20 10:15:47 kls Exp $
  */
 
 #ifndef __DVBSPU_H
 #define __DVBSPU_H
 
 #include <inttypes.h>
+#include "device.h"
 #include "osd.h"
 #include "spu.h"
 #include "thread.h"
@@ -106,7 +107,8 @@ class cDvbSpuDecoder:public cSpuDecoder {
     enum spFlag { spNONE, spHIDE, spSHOW, spMENU };
     spFlag state;
 
-     cSpuDecoder::eScaleMode scaleMode;
+    cSpuDecoder::eScaleMode scaleMode;
+    double xscaling, yscaling;
 
     //highligh area
     bool highlight;
@@ -133,6 +135,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
         return ((spu[0] << 8) | spu[1]);
     };
 
+    void SetSpuScaling(void);
     sDvbSpuRect CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDvbSpuRect bgsize, cBitmap *bgbmp);
     int CalcAreaBpp(cBitmap *fgbmp, cBitmap *bgbmp);
 
