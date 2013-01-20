@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.31 2012/12/06 09:00:23 kls Exp $
+ * $Id: config.c 2.32 2013/01/17 14:50:51 kls Exp $
  */
 
 #include "config.h"
@@ -13,6 +13,7 @@
 #include "device.h"
 #include "i18n.h"
 #include "interface.h"
+#include "menu.h"
 #include "plugin.h"
 #include "recording.h"
 
@@ -672,6 +673,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
   else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
+  else if (!strcasecmp(Name, "LastReplayed"))        cReplayControl::SetRecording(Value);
   else
      return false;
   return true;
@@ -777,6 +779,7 @@ bool cSetup::Save(void)
   Store("ChannelsWrap",       ChannelsWrap);
   Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
   Store("EmergencyExit",      EmergencyExit);
+  Store("LastReplayed",       cReplayControl::LastReplayed());
 
   Sort();
 

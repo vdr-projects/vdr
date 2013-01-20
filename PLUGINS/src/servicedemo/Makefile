@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 2.12 2012/12/29 10:29:15 kls Exp $
+# $Id: Makefile 2.14 2013/01/12 13:45:01 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -18,7 +18,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN1).c | awk '{ pr
 
 # Use package data if installed...otherwise assume we're under the VDR source directory:
 PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
-LIBDIR = $(DESTDIR)$(call PKGCFG,libdir)
+LIBDIR = $(call PKGCFG,libdir)
 PLGCFG = $(call PKGCFG,plgcfg)
 #
 TMPDIR ?= /tmp
@@ -58,14 +58,14 @@ all: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 ### Implicit rules:
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 ### Dependencies:
 
 MAKEDEP = $(CXX) -MM -MG
 DEPFILE = .dependencies
 $(DEPFILE): Makefile
-	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
+	@$(MAKEDEP) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
 
 -include $(DEPFILE)
 
@@ -78,8 +78,8 @@ libvdr-$(PLUGIN2).so: $(PLUGIN2).o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
 
 install-lib: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
-	install -D libvdr-$(PLUGIN1).so $(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)
-	install -D libvdr-$(PLUGIN2).so $(LIBDIR)/libvdr-$(PLUGIN2).so.$(APIVERSION)
+	install -D libvdr-$(PLUGIN1).so $(DESTDIR)$(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)
+	install -D libvdr-$(PLUGIN2).so $(DESTDIR)$(LIBDIR)/libvdr-$(PLUGIN2).so.$(APIVERSION)
 
 install: install-lib
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.36 2012/11/19 10:22:28 kls Exp $
+ * $Id: remux.h 2.37 2013/01/20 11:43:59 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -217,6 +217,8 @@ private:
   int length;
   int pid;
   int index; // points to the next byte to process
+protected:
+  void Reset(void) { index = 0; }
 public:
   cTsPayload(void);
   cTsPayload(uchar *Data, int Length, int Pid = -1);

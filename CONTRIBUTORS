@@ -1004,6 +1004,10 @@ Andreas Mair <amair.sob@googlemail.com>
  for fixing initializing the timer's flags in the cTimer copy constructor
  for reporting a crash in case CutRecording() is called from a plugin
  for fixing the type of MBperMinute in cVideoDiskUsage::HasChanged()
+ for reporting a bug in sorting recordings in case two folders have the same name,
+ but one of them ends in an additional digit, as in "abc" and "abc2"
+ for reporting multiple occurrences of the same directory in the recordings list ini
+ case there are directories that only differ in non-alphanumeric characters
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1328,6 +1332,10 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a race condition when zapping in transfer mode
  for requesting that plugin Makefiles should include a configuration file for compile
  time parameters
+ for suggesting to add a remark indicating that the coordinates of Rect in a call to
+ cDevice::CanScaleVideo() are in the range of the width and height returned by
+ GetOsdSize()
+ for adding "repeat" function when using the keyboard to control VDR
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -2440,6 +2448,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
 
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
+ for adding maximum SNR value for PCTV Systems nanoStick T2 290e
 
 Bernd Melcher <bernd@bernd-melcher.de>
  for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro
@@ -2500,6 +2509,8 @@ Ulf Kiener <webmaster@ulf-kiener.de>
  for reporting a problem with audio track descriptions in the DVD plugin after a
  replay has been stopped
  for suggesting to add user defined key kUser0
+ for suggesting to perform absolute jumps when replaying a recording (via the Red key)
+ only if an actual value has been entered
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
@@ -2701,6 +2712,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for some fixes to dvbspu.[hc]
  for fixing a busy loop when moving editing marks
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
+ for implementing scaling of SPU bitmaps
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3012,6 +3024,7 @@ Sören Moch <smoch@web.de>
  for dropped B-frames
  for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
  handling of PCR values
+ for improving cutting MPEG-2 video
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
@@ -3032,3 +3045,11 @@ Stefan Blochberger <Stefan.Blochberger@gmx.de>
 
 Cedric Dewijs <cedric.dewijs@telfort.nl>
  for adding maximum SNR value for PCTV Systems PCTV 73ESE
+
+Stefan Stolz <st.stolz@gmail.com>
+ for suggesting to make the SVDRP command LSTR optionally list the actual file name of
+ a recording's directory
+
+Malte Forkel <malte.forkel@berlin.de>
+ for suggesting to make the SVDRP command NEWT no longer check whether a timer with the
+ given data already exists

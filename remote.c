@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.5 2012/01/16 16:57:00 kls Exp $
+ * $Id: remote.c 2.6 2013/01/13 12:01:52 kls Exp $
  */
 
 #include "remote.h"
@@ -356,14 +356,25 @@ uint64_t cKbdRemote::ReadKeySequence(void)
 
 void cKbdRemote::Action(void)
 {
+  uint64_t LastCommand = 0;
+  bool Repeat = false;
+
   while (Running()) {
         uint64_t Command = ReadKeySequence();
+        if (LastCommand && Command != LastCommand && Repeat) {
+           if (!rawMode)
+              Put(LastCommand, false, true);
+           Repeat = false;
+           }
         if (Command) {
-           if (rawMode || !Put(Command)) {
+           if (Command == LastCommand)
+              Repeat = true;
+           if (rawMode || !Put(Command, Repeat)) {
               int func = MapCodeToFunc(Command);
               if (func)
                  Put(KBDKEY(func));
               }
            }
+        LastCommand = Command;
         }
 }

@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.7 2012/12/27 10:36:21 kls Exp $
+ * $Id: osddemo.c 2.8 2013/01/12 14:12:23 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.2.4";
+static const char *VERSION        = "0.2.5";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 

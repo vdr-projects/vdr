@@ -1519,10 +1519,13 @@ public:
   cMyReceiver(int Pid);
   };
 
+<modified>
 cMyReceiver::cMyReceiver(int Pid)
-:cReceiver(tChannelID(), -1, Pid)
+:cReceiver(NULL, -1)
 {
+  AddPid(Pid);
 }
+</modified>
 
 cMyReceiver::~cMyReceiver()
 {

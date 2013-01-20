@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.47 2012/12/30 11:18:18 kls Exp $
+# $Id: Makefile 2.49 2013/01/12 13:45:01 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -14,45 +14,55 @@ CC       ?= gcc
 CFLAGS   ?= -g -O3 -Wall
 
 CXX      ?= g++
-CXXFLAGS ?= $(CFLAGS) -Werror=overloaded-virtual -Wno-parentheses
-
-CFLAGS   += -fPIC
+CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
 
 CDEFINES  = -D_GNU_SOURCE
 CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
-# Directories:
-
-CWD      = .
-LSIDIR   = ./libsi
-DESTDIR ?=
-PREFIX  ?= /usr/local
-MANDIR  ?= $(PREFIX)/share/man
-BINDIR  ?= $(PREFIX)/bin
-INCDIR  ?= $(CWD)/include
-LOCDIR  ?= $(CWD)/locale
-LIBS     = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
+LIBS      = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
 INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 
-PLUGINDIR= $(CWD)/PLUGINS
-LIBDIR   = $(PLUGINDIR)/lib
+# Directories:
 
-# By default VDR requires only one single directory to operate:
-VIDEODIR     = /video
-# See Make.config.template if you want to build VDR according to the FHS ("File system Hierarchy Standard")
+CWD       ?= $(shell pwd)
+LSIDIR    ?= $(CWD)/libsi
+PLUGINDIR ?= $(CWD)/PLUGINS
 
-DOXYGEN ?= /usr/bin/doxygen
-DOXYFILE = Doxyfile
+DESTDIR   ?=
+VIDEODIR  ?= /srv/vdr/video
+CONFDIR   ?= /var/lib/vdr
+CACHEDIR  ?= /var/cache/vdr
 
-PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
+PREFIX    ?= /usr/local
+BINDIR    ?= $(PREFIX)/bin
+INCDIR    ?= $(PREFIX)/include
+LIBDIR    ?= $(PREFIX)/lib/vdr
+LOCDIR    ?= $(PREFIX)/share/locale
+MANDIR    ?= $(PREFIX)/share/man
+PCDIR     ?= $(PREFIX)/lib/pkgconfig
+RESDIR    ?= $(PREFIX)/share/vdr
+
+# Source documentation
+
+DOXYGEN  ?= /usr/bin/doxygen
+DOXYFILE  = Doxyfile
+
+# User configuration
 
 -include Make.config
 
+# Mandatory compiler flags:
+
+CFLAGS   += -fPIC
+CXXFLAGS += -fPIC
+
+# Common include files:
+
 ifdef DVBDIR
-CFLAGS += -I$(DVBDIR)
+CINCLUDES += -I$(DVBDIR)
 endif
 
-UP3 = $(if $(findstring "$(LIBDIR)-$(LOCDIR)","$(CWD)/PLUGINS/lib-$(CWD)/locale"),../../../,)
+# Object files
 
 SILIB    = $(LSIDIR)/libsi.a
 
@@ -63,8 +73,12 @@ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o d
        skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
        timers.o tools.o transfer.o vdr.o videodir.o
 
-DEFINES += $(CDEFINES)
+DEFINES  += $(CDEFINES)
+INCLUDES += $(CINCLUDES)
 
+ifdef HDRDIR
+HDRDIR   := -I$(HDRDIR)
+endif
 ifndef NO_KBD
 DEFINES += -DREMOTE_KBD
 endif
@@ -90,12 +104,6 @@ DEFINES += -DRESDIR=\"$(RESDIR)\"
 DEFINES += -DPLUGINDIR=\"$(LIBDIR)\"
 DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 
-# Default values for directories:
-
-CONFDIRDEF  = $(firstword $(CONFDIR)  $(VIDEODIR))
-CACHEDIRDEF = $(firstword $(CACHEDIR) $(VIDEODIR))
-RESDIRDEF   = $(firstword $(RESDIR)   $(CONFDIRDEF))
-
 # The version numbers of VDR and the plugin API (taken from VDR's "config.h"):
 
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
@@ -106,7 +114,7 @@ all: vdr i18n plugins
 # Implicit rules:
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 # Dependencies:
 
@@ -133,16 +141,16 @@ $(SILIB):
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
 	@echo "mandir=$(MANDIR)" >> $@
-	@echo "configdir=$(CONFDIRDEF)" >> $@
+	@echo "configdir=$(CONFDIR)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
-	@echo "cachedir=$(CACHEDIRDEF)" >> $@
-	@echo "resdir=$(RESDIRDEF)" >> $@
-	@echo "libdir=$(UP3)$(LIBDIR)" >> $@
-	@echo "locdir=$(UP3)$(LOCDIR)" >> $@
+	@echo "cachedir=$(CACHEDIR)" >> $@
+	@echo "resdir=$(RESDIR)" >> $@
+	@echo "libdir=$(LIBDIR)" >> $@
+	@echo "locdir=$(LOCDIR)" >> $@
 	@echo "plgcfg=$(PLGCFG)" >> $@
 	@echo "apiversion=$(APIVERSION)" >> $@
-	@echo "cflags=$(CFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
-	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) -I$(UP3)$(INCDIR)" >> $@
+	@echo "cflags=$(CFLAGS) $(CDEFINES) $(CINCLUDES) $(HDRDIR)" >> $@
+	@echo "cxxflags=$(CXXFLAGS) $(CDEFINES) $(CINCLUDES) $(HDRDIR)" >> $@
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
@@ -155,6 +163,7 @@ vdr.pc:
 PODIR     = po
 LOCALEDIR = locale
 I18Npo    = $(wildcard $(PODIR)/*.po)
+I18Nmo    = $(addsuffix .mo, $(foreach file, $(I18Npo), $(basename $(file))))
 I18Nmsgs  = $(addprefix $(LOCALEDIR)/, $(addsuffix /LC_MESSAGES/vdr.mo, $(notdir $(foreach file, $(I18Npo), $(basename $(file))))))
 I18Npot   = $(PODIR)/vdr.pot
 
@@ -169,15 +178,14 @@ $(I18Npot): $(wildcard *.c)
 	@touch $@
 
 $(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr.mo: $(PODIR)/%.mo
-	@mkdir -p $(dir $@)
-	cp $< $@
+	install -D -m644 $< $@
 
 .PHONY: i18n
-i18n: $(I18Nmsgs) $(I18Npot)
+i18n: $(I18Nmsgs)
 
 install-i18n:
 	@mkdir -p $(DESTDIR)$(LOCDIR)
-	@(cd $(LOCALEDIR); cp -r --parents * $(DESTDIR)$(LOCDIR))
+	cp -r $(LOCALEDIR)/* $(DESTDIR)$(LOCDIR)
 
 # The 'include' directory (for plugins):
 
@@ -192,45 +200,54 @@ include-dir:
 plugins: include-dir vdr.pc
 	@failed="";\
 	noapiv="";\
+	oldmakefile="";\
 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	    echo "*** Plugin $$i:";\
+	    echo; echo "*** Plugin $$i:";\
+	    # No APIVERSION: Skip\
 	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
 	       noapiv="$$noapiv $$i";\
 	       continue;\
 	       fi;\
-	    newmakefile=`grep "PKGCFG" "$(PLUGINDIR)/src/$$i/Makefile"`;\
-	    if [ -z "$$newmakefile" ]; then\
-	       echo "********************************************************************";\
-	       echo "* Your plugin \"$$i\" is using an old Makefile!";\
-	       echo "* While this currently still works, it is strongly recommended";\
-	       echo "* that you convert that Makefile to the new style used since";\
-	       echo "* VDR version 1.7.35. Support for old style Makefiles may be dropped";\
-	       echo "* in future versions of VDR.";\
-	       echo "********************************************************************";\
-	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" CXXFLAGS="$(CXXFLAGS)" VDRDIR=$(UP3) LIBDIR=../../lib all || failed="$$failed $$i";\
-	    else\
-               target=all;\
-	       if [ "$(LIBDIR)" = "$(CWD)/PLUGINS/lib" ] && [ "$(LOCDIR)" = "$(CWD)/locale" ]; then\
-	          target="install";\
+	    # Old Makefile\
+	    if ! grep -q "PKGCFG" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
+	       echo "WARNING: plugin $$i is using an old Makefile!";\
+	       oldmakefile="$$oldmakefile $$i";\
+	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" CFLAGS="$(CFLAGS) $(CDEFINES) $(CINCLUDES)" CXXFLAGS="$(CXXFLAGS) $(CDEFINES) $(CINCLUDES)" LIBDIR="$(PLUGINDIR)/lib" VDRDIR="$(CWD)" all || failed="$$failed $$i";\
+	       continue;\
+	       fi;\
+	    # New Makefile\
+	    INCLUDES="-I$(CWD)/include"\
+	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR="$(CWD)" || failed="$$failed $$i";\
+	    if [ -n "$(LCLBLD)" ] ; then\
+	       (cd $(PLUGINDIR)/src/$$i; for l in libvdr-*.so; do install $$l $(LIBDIR)/$$l.$(APIVERSION); done);\
+	       if [ -d $(PLUGINDIR)/src/$$i/po ]; then\
+	          for l in `ls $(PLUGINDIR)/src/$$i/po/*.mo`; do\
+	              install -D -m644 $$l $(LOCDIR)/`basename $$l | cut -d. -f1`/LC_MESSAGES/vdr-$$i.mo;\
+	              done;\
 	          fi;\
-	       includes=;\
-	       if [ "$(INCDIR)" != "$(CWD)/include" ]; then\
-	          includes="INCLUDES=-I$(UP3)/include";\
-	          fi;\
-	       $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) $$includes $$target || failed="$$failed $$i";\
 	       fi;\
 	    done;\
+	# Conclusion\
 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
+	if [ -n "$$oldmakefile" ] ; then\
+	   echo; echo "*** plugins with old Makefile:$$oldmakefile"; echo;\
+	   echo "**********************************************************************";\
+	   echo "*** While this currently still works, it is strongly recommended";\
+	   echo "*** that you convert old Makefiles to the new style used since";\
+	   echo "*** VDR version 1.7.36. Support for old style Makefiles may be dropped";\
+	   echo "*** in future versions of VDR.";\
+	   echo "**********************************************************************";\
+	   fi;\
 	if [ -n "$$failed" ] ; then echo; echo "*** failed plugins:$$failed"; echo; exit 1; fi
 
 clean-plugins:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION)
 
-# Install the files:
+# Install the files (note that 'install-pc' must be first!):
 
-install: install-bin install-dirs install-conf install-doc install-plugins install-i18n install-includes install-pc
+install: install-pc install-bin install-dirs install-conf install-doc install-plugins install-i18n install-includes
 
 # VDR binary:
 
@@ -242,13 +259,12 @@ install-bin: vdr
 
 install-dirs:
 	@mkdir -p $(DESTDIR)$(VIDEODIR)
-	@mkdir -p $(DESTDIR)$(CONFDIRDEF)
-	@mkdir -p $(DESTDIR)$(CACHEDIRDEF)
-	@mkdir -p $(DESTDIR)$(RESDIRDEF)
+	@mkdir -p $(DESTDIR)$(CONFDIR)
+	@mkdir -p $(DESTDIR)$(CACHEDIR)
+	@mkdir -p $(DESTDIR)$(RESDIR)
 
 install-conf:
-	@cp -n *.conf $(DESTDIR)$(CONFDIRDEF)
-
+	@cp -n *.conf $(DESTDIR)$(CONFDIR)
 
 # Documentation:
 
@@ -261,9 +277,14 @@ install-doc:
 # Plugins:
 
 install-plugins: plugins
-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
-	     $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(UP3) DESTDIR=$(DESTDIR) install;\
-	     done
+	@-for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
+	      $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
+	      done
+	@if [ -d $(PLUGINDIR)/lib ] ; then\
+	    for i in `find $(PLUGINDIR)/lib -name 'lib*-*.so.$(APIVERSION)'`; do\
+	        install -D $$i $(DESTDIR)$(LIBDIR);\
+	        done;\
+	    fi
 
 # Includes:
 
@@ -274,10 +295,10 @@ install-includes: include-dir
 # pkg-config file:
 
 install-pc: vdr.pc
-	if [ -n "$(PCDIR)" ] ; then \
-	    mkdir -p $(DESTDIR)$(PCDIR) ; \
-	    cp vdr.pc $(DESTDIR)$(PCDIR) ; \
-	    fi
+	if [ -n "$(PCDIR)" ] ; then\
+	   mkdir -p $(DESTDIR)$(PCDIR) ;\
+	   cp vdr.pc $(DESTDIR)$(PCDIR) ;\
+	   fi
 
 # Source documentation:
 

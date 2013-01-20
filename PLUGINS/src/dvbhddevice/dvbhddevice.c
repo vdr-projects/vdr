@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhddevice.c 1.18 2012/12/27 10:30:48 kls Exp $
+ * $Id: dvbhddevice.c 1.19 2013/01/12 14:11:35 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -12,7 +12,7 @@
 #include "menu.h"
 #include "setup.h"
 
-static const char *VERSION        = "0.0.5";
+static const char *VERSION        = "0.0.6";
 static const char *DESCRIPTION    = trNOOP("HD Full Featured DVB device");
 static const char *MAINMENUENTRY  = "dvbhddevice";
 

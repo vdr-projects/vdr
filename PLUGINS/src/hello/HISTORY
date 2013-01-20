@@ -78,3 +78,7 @@ VDR Plugin 'hello' Revision History
 2012-12-27: Version 0.2.6
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-01-12: Version 0.2.7
+
+- Adapted Makefile to changes introduced in recent VDR versions.

@@ -7493,3 +7493,43 @@ Video Disk Recorder Revision History
   Endriss). You may need to adjust your DVBDIR setting in Make.config, in case you
   use it.
 - Added maximum SNR value for PCTV Systems PCTV 73ESE (thanks to Cedric Dewijs).
+
+2013-01-20: Version 1.7.36
+
+- Added maximum SNR value for PCTV Systems nanoStick T2 290e (thanks to Antti
+  Hartikainen).
+- Added a remark indicating that the coordinates of Rect in a call to
+  cDevice::CanScaleVideo() are in the range of the width and height returned by
+  GetOsdSize() (suggested by Reinhard Nissl).
+- Modified the Makefiles (thanks to Christopher Reimer).
+  By default VDR is now built according to the FHS ("File system Hierarchy Standard"),
+  and a plain "make" in the VDR source directory just builds everything, but doesn't
+  copy it to ./PLUGINS/lib and ./locale any more. You can use a Make.config file
+  (copied from Make.config.template) and set the parameter LCLBLD=1 to have everything
+  built and installed under the VDR source tree (as was the default in previous
+  versions). If you already have your own Make.config file, you may want to copy the
+  new Make.config.template and adapt it to your needs. If you don't want VDR's data
+  files to be spread around your system according to the FHS, you can set the
+  parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
+  before.
+- Fixed the example for cReceiver in PLUGINS.html.
+- Fixed sorting recordings in case two folders have the same name, but one of them
+  ends in an additional digit, as in "abc" and "abc2" (reported by Andreas Mair).
+- Added "repeat" function when using the keyboard to control VDR (thanks to Reinhard
+  Nissl).
+- The SVDRP command LSTR now knows the additional parameter "path", which can be
+  given to get the actual file name of a recording's directory (suggested by
+  Stefan Stolz).
+- Fixed multiple occurrences of the same directory in the recordings list in case there
+  are directories that only differ in non-alphanumeric characters (reported by Andreas
+  Mair).
+- Absolute jumps when replaying a recording (via the Red key) are now only performed
+  if an actual value has been entered (suggested by Ulf Kiener).
+- The last replayed recording is now stored in setup.conf, which allows the blue
+  "Resume" key in the main menu to work even after a restart of VDR.
+- The SVDRP command NEWT no longer checks whether a timer with the given data already
+  exists (suggested by Malte Forkel).
+- Implemented scaling of SPU bitmaps (thanks to Johann Friedrichs).
+- Improved cutting MPEG-2 video (thanks to Sören Moch).
+- Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
+  in case the primary device can't handle the current live signal.

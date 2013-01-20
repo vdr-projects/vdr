@@ -79,3 +79,7 @@ VDR Plugin 'pictures' Revision History
 2012-12-27: Version 0.1.4
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-01-12: Version 0.1.5
+
+- Adapted Makefile to changes introduced in recent VDR versions.

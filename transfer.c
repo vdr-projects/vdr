@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.6 2012/02/29 14:16:23 kls Exp $
+ * $Id: transfer.c 2.7 2013/01/20 13:40:30 kls Exp $
  */
 
 #include "transfer.h"
@@ -15,6 +15,7 @@ cTransfer::cTransfer(const cChannel *Channel)
 :cReceiver(Channel, TRANSFERPRIORITY)
 {
   patPmtGenerator.SetChannel(Channel);
+  retriesExceeded = false;
 }
 
 cTransfer::~cTransfer()
@@ -35,6 +36,10 @@ void cTransfer::Activate(bool On)
      cPlayer::Detach();
 }
 
+#define MAXRETRIES     5 // max. number of retries for a single TS packet
+#define RETRYWAIT      5 // time (in ms) between two retries
+#define RETRYPAUSE 10000 // time (in ms) for which to pause retrying once a packet has not been accepted
+
 void cTransfer::Receive(uchar *Data, int Length)
 {
   if (cPlayer::IsAttached()) {
@@ -42,11 +47,18 @@ void cTransfer::Receive(uchar *Data, int Length)
      // buffering here. The TS packets *must* get through here! However, every
      // now and then there may be conditions where the packet just can't be
      // handled when offered the first time, so that's why we try several times:
-     for (int i = 0; i < 100; i++) {
-         if (PlayTs(Data, Length) > 0)
+     for (int i = 0; i < MAXRETRIES; i++) {
+         if (PlayTs(Data, Length) > 0) {
+            if (retriesExceeded && timer.TimedOut())
+               retriesExceeded = false;
             return;
-         cCondWait::SleepMs(10);
+            }
+         if (retriesExceeded) // no retries once a packet has not been accepted
+            return;
+         cCondWait::SleepMs(RETRYWAIT);
          }
+     retriesExceeded = true;
+     timer.Set(RETRYPAUSE); // wait a while before retrying
      esyslog("ERROR: TS packet not accepted in Transfer Mode");
      }
 }

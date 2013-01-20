@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.72 2012/12/21 11:11:14 kls Exp $
+ * $Id: menu.c 2.74 2013/01/17 14:20:08 kls Exp $
  */
 
 #include "menu.h"
@@ -2273,7 +2273,6 @@ void cMenuRecordings::Set(bool Refresh)
 {
   const char *CurrentRecording = cReplayControl::LastReplayed();
   cMenuRecordingItem *LastItem = NULL;
-  char *LastItemText = NULL;
   cThreadLock RecordingsLock(&Recordings);
   if (Refresh) {
      if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
@@ -2285,23 +2284,32 @@ void cMenuRecordings::Set(bool Refresh)
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
       if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
-         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))) {
+         cMenuRecordingItem *LastDir = NULL;
+         if (Item->IsDirectory()) {
+            // Sorting may ignore non-alphanumeric characters, so we need to explicitly handle directories in case they only differ in such characters:
+            for (cMenuRecordingItem *p = LastItem; p; p = dynamic_cast<cMenuRecordingItem *>(p->Prev())) {
+                if (p->Name() && strcmp(p->Name(), Item->Name()) == 0) {
+                   LastDir = p;
+                   break;
+                   }
+                }
+            }
+         if (*Item->Text() && !LastDir) {
             Add(Item);
             LastItem = Item;
-            free(LastItemText);
-            LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
+            if (Item->IsDirectory())
+               LastDir = Item;
             }
          else
             delete Item;
          if (LastItem) {
             if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
                SetCurrent(LastItem);
-            if (LastItem->IsDirectory())
-               LastItem->IncrementCounter(recording->IsNew());
             }
+         if (LastDir)
+            LastDir->IncrementCounter(recording->IsNew());
          }
       }
-  free(LastItemText);
   if (Refresh)
      Display();
 }
@@ -4708,8 +4716,10 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kPause:
     case kDown:
     case kOk:
-         Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-         Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
+         if (timeSearchPos > 0) {
+            Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
+            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
+            }
          timeSearchActive = false;
          break;
     default:

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.21 2012/12/04 12:08:36 kls Exp $
+ * $Id: svdrp.c 2.23 2013/01/17 15:19:02 kls Exp $
  */
 
 #include "svdrp.h"
@@ -236,9 +236,11 @@ const char *HelpPages[] = {
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
   "    events at the given time (which must be in time_t form).",
-  "LSTR [ <number> ]\n"
+  "LSTR [ <number> [ path ] ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
-  "    the information for the given recording is listed.",
+  "    the information for the given recording is listed. If a recording\n"
+  "    number and the keyword 'path' is given, the actual file name of that\n"
+  "    recording's directory is listed.",
   "LSTT [ <number> ] [ id ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed. If the keyword 'id' is given, the\n"
@@ -261,8 +263,7 @@ const char *HelpPages[] = {
   "    by the LSTC command.",
   "NEWT <settings>\n"
   "    Create a new timer. Settings must be in the same format as returned\n"
-  "    by the LSTT command. It is an error if a timer with the same channel,\n"
-  "    day, start and stop time already exists.",
+  "    by the LSTT command.",
   "NEXT [ abs | rel ]\n"
   "    Show the next timer event. If no option is given, the output will be\n"
   "    in human readable form. With option 'abs' the absolute time of the next\n"
@@ -1080,16 +1081,44 @@ void cSVDRP::CmdLSTE(const char *Option)
 
 void cSVDRP::CmdLSTR(const char *Option)
 {
+  int Number = 0;
+  bool Path = false;
   recordings.Update(true);
   if (*Option) {
-     if (isnumber(Option)) {
+     char buf[strlen(Option) + 1];
+     strcpy(buf, Option);
+     const char *delim = " \t";
+     char *strtok_next;
+     char *p = strtok_r(buf, delim, &strtok_next);
+     while (p) {
+           if (!Number) {
+              if (isnumber(p))
+                 Number = strtol(p, NULL, 10);
+              else {
+                 Reply(501, "Error in recording number \"%s\"", Option);
+                 return;
+                 }
+              }
+           else if (strcasecmp(p, "PATH") == 0)
+              Path = true;
+           else {
+              Reply(501, "Unknown option: \"%s\"", p);
+              return;
+              }
+           p = strtok_r(NULL, delim, &strtok_next);
+           }
+     if (Number) {
         cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            FILE *f = fdopen(file, "w");
            if (f) {
-              recording->Info()->Write(f, "215-");
-              fflush(f);
-              Reply(215, "End of recording information");
+              if (Path)
+                 Reply(250, "%s", recording->FileName());
+              else {
+                 recording->Info()->Write(f, "215-");
+                 fflush(f);
+                 Reply(215, "End of recording information");
+                 }
               // don't 'fclose(f)' here!
               }
            else
@@ -1098,8 +1127,6 @@ void cSVDRP::CmdLSTR(const char *Option)
         else
            Reply(550, "Recording \"%s\" not found", Option);
         }
-     else
-        Reply(501, "Error in recording number \"%s\"", Option);
      }
   else if (recordings.Count()) {
      cRecording *recording = recordings.First();
@@ -1322,16 +1349,11 @@ void cSVDRP::CmdNEWT(const char *Option)
   if (*Option) {
      cTimer *timer = new cTimer;
      if (timer->Parse(Option)) {
-        cTimer *t = Timers.GetTimer(timer);
-        if (!t) {
-           Timers.Add(timer);
-           Timers.SetModified();
-           isyslog("timer %s added", *timer->ToDescr());
-           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
-           return;
-           }
-        else
-           Reply(550, "Timer already defined: %d %s", t->Index() + 1, *t->ToText());
+        Timers.Add(timer);
+        Timers.SetModified();
+        isyslog("timer %s added", *timer->ToDescr());
+        Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
+        return;
         }
      else
         Reply(501, "Error in timer settings");
