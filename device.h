@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.43 2013/01/03 08:53:06 kls Exp $
+ * $Id: device.h 2.44 2013/01/22 17:01:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -752,7 +752,7 @@ public:
        ///< Returns -1 in case of error, otherwise the number of actually
        ///< processed bytes is returned.
        ///< PlayTs() shall process the TS packets either as a whole (returning
-       ///< n*TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
+       ///< TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;
