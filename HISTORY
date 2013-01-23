@@ -7533,3 +7533,7 @@ Video Disk Recorder Revision History
 - Improved cutting MPEG-2 video (thanks to Sören Moch).
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
+
+2013-01-23: Version 1.7.37
+
+- Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).

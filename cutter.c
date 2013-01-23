@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.22 2013/01/20 12:04:07 kls Exp $
+ * $Id: cutter.c 2.23 2013/01/23 10:39:27 kls Exp $
  */
 
 #include "cutter.h"
@@ -206,11 +206,8 @@ void cMpeg2Fixer::AdjGopTime(int Offset, int FramesPerSecond)
 
 void cMpeg2Fixer::AdjTref(int TrefOffset)
 {
-  Reset();
-  if (!Find(0x00000100)) {
-     esyslog("ERROR: Picture header not found!");
+  if (!FindHeader(0x00000100, "picture"))
      return;
-     }
   int Tref = GetByte() << 2;
   int Index1 = GetLastIndex();
   uchar Byte2 = GetByte();

@@ -3025,6 +3025,7 @@ Sören Moch <smoch@web.de>
  for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
  handling of PCR values
  for improving cutting MPEG-2 video
+ for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
