@@ -7538,3 +7538,4 @@ Video Disk Recorder Revision History
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
+- The LCARS menu now also works if the OSD has only 1bpp (two colors).
