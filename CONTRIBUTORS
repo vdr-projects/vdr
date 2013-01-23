@@ -2735,6 +2735,7 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with getting the maximum short channel name length in case there
  are no short names at all
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
+ for reporting a missing template for DVBDIR in Make.config.template
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
