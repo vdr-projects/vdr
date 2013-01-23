@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.16 2013/01/23 13:34:12 kls Exp $
+ * $Id: skinlcars.c 2.17 2013/01/23 14:00:09 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1680,6 +1680,7 @@ private:
   int lineHeight;
   tColor frameColor;
   int lastCurrentWidth;
+  int lastTotalWidth;
   cString lastDate;
   tTrackId lastTrackId;
   void DrawDate(void);
@@ -1705,6 +1706,7 @@ cSkinLCARSDisplayReplay::cSkinLCARSDisplayReplay(bool ModeOnly)
   lineHeight = font->Height();
   frameColor = Theme.Color(clrReplayFrameBg);
   lastCurrentWidth = 0;
+  lastTotalWidth = 0;
   int d = 5 * lineHeight;
   xp00 = 0;
   xp01 = xp00 + d / 2;
@@ -1822,15 +1824,16 @@ void cSkinLCARSDisplayReplay::SetCurrent(const char *Current)
 {
   const cFont *font = cFont::GetFont(fontOsd);
   int w = font->Width(Current);
-  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, lastCurrentWidth > w ? lastCurrentWidth : w, 0, taLeft);
+  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, max(lastCurrentWidth, w), 0, taLeft);
   lastCurrentWidth = w;
 }
 
 void cSkinLCARSDisplayReplay::SetTotal(const char *Total)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  int w = font->Width(Total) + 10;
-  osd->DrawText(xp13 - w, yp03 - lineHeight, Total, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, w, 0, taRight);
+  int w = font->Width(Total);
+  osd->DrawText(xp13 - w, yp03 - lineHeight, Total, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, max(lastTotalWidth, w), 0, taRight);
+  lastTotalWidth = w;
 }
 
 void cSkinLCARSDisplayReplay::SetJump(const char *Jump)
