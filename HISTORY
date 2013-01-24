@@ -7534,10 +7534,12 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-01-23: Version 1.7.37
+2013-01-24: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
 - The LCARS menu now also works if the OSD has only 1bpp (two colors).
 - Fixed possible garbage in the remaining time of the LCARS replay display in case the
   hours change from two to one digit.
+- Fixed upscaling bitmaps. The last row and column of the scaled bitmap was not filled,
+  which resulted in empty lines between scaled subtitles.

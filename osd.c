@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.33 2012/12/15 11:16:41 kls Exp $
+ * $Id: osd.c 2.34 2013/01/24 11:37:58 kls Exp $
  */
 
 #include "osd.h"
@@ -853,12 +853,12 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
      b->SetBpp(8);
      b->Replace(*this); // copy palette (must be done *after* SetBpp()!)
      int SourceY = 0;
-     for (int y = 0; y < b->Height() - 1; y++) {
+     for (int y = 0; y < b->Height(); y++) {
          int SourceX = 0;
-         int sy = SourceY >> 16;
+         int sy = min(SourceY >> 16, Height() - 2);
          uint8_t BlendY = 0xFF - ((SourceY >> 8) & 0xFF);
-         for (int x = 0; x < b->Width() - 1; x++) {
-             int sx = SourceX >> 16;
+         for (int x = 0; x < b->Width(); x++) {
+             int sx = min(SourceX >> 16, Width() - 2);
              uint8_t BlendX = 0xFF - ((SourceX >> 8) & 0xFF);
              tColor c1 = b->Blend(GetColor(sx, sy),     GetColor(sx + 1, sy),     BlendX);
              tColor c2 = b->Blend(GetColor(sx, sy + 1), GetColor(sx + 1, sy + 1), BlendX);
