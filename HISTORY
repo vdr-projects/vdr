@@ -7543,3 +7543,5 @@ Video Disk Recorder Revision History
   hours change from two to one digit.
 - Fixed upscaling bitmaps. The last row and column of the scaled bitmap was not filled,
   which resulted in empty lines between scaled subtitles.
+- Fixed a leftover line in case a two line subtitle was followed by a one line
+  subtitle on the dvbhddevice in "high level" OSD mode.
