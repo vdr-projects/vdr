@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.83 2013/01/16 14:17:44 kls Exp $
+ * $Id: recording.c 2.84 2013/01/25 14:31:04 kls Exp $
  */
 
 #include "recording.h"
@@ -1743,12 +1743,14 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
                        esyslog("ERROR: can't read from file '%s'", *fileName);
                        free(index);
                        index = NULL;
+                       }
+                    else if (isPesRecording)
+                       ConvertFromPes(index, size);
+                    if (!index || time(NULL) - buf.st_mtime >= MININDEXAGE) {
                        close(f);
                        f = -1;
                        }
-                    // we don't close f here, see CatchUp()!
-                    else if (isPesRecording)
-                       ConvertFromPes(index, size);
+                    // otherwise we don't close f here, see CatchUp()!
                     }
                  else
                     LOG_ERROR_STR(*fileName);

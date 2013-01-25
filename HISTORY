@@ -7546,3 +7546,4 @@ Video Disk Recorder Revision History
 - Fixed a leftover line in case a two line subtitle was followed by a one line
   subtitle on the dvbhddevice in "high level" OSD mode.
 - Returning 0 from cDvbSdFfDevice::NumProvidedSystems() if option --outputonly is given.
+- The index file is now closed after initially reading it if it is older than 3600 seconds.
