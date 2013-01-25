@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.17 2013/01/23 14:00:09 kls Exp $
+ * $Id: skinlcars.c 2.18 2013/01/25 14:54:11 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -457,7 +457,7 @@ void cSkinLCARSDisplayChannel::DrawTrack(void)
 
 void cSkinLCARSDisplayChannel::DrawSeen(int Current, int Total)
 {
-  int Seen = min(xc07 - xc06, int((xc07 - xc06) * double(Current) / Total));
+  int Seen = (Total > 0) ? min(xc07 - xc06, int((xc07 - xc06) * double(Current) / Total)) : 0;
   if (initial || Seen != lastSeen) {
      int y0 = yc11 - ShowSeenExtent;
      int y1 = yc11 + lineHeight / 2 - Gap / 2;
@@ -1343,6 +1343,7 @@ void cSkinLCARSDisplayMenu::DrawLive(const cChannel *Channel)
      osd->DrawText(xa00, yt00, itoa(Channel->Number()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), tallFont, xa02 - xa00, yt02 - yt00, taTop | taRight | taBorder);
      osd->DrawText(xa03, yt00, Channel->Name(), Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xd00 - xa03, yd01 - yd00, taTop | taLeft);
      lastChannel = Channel;
+     DrawSeen(0, 0);
      }
   // The current programme:
   cSchedulesLock SchedulesLock;
@@ -1423,7 +1424,7 @@ void cSkinLCARSDisplayMenu::DrawInfo(const cEvent *Event, bool WithTime)
 
 void cSkinLCARSDisplayMenu::DrawSeen(int Current, int Total)
 {
-  int Seen = min(xm08 - xm02, int((xm08 - xm02) * double(Current) / Total));
+  int Seen = (Total > 0) ? min(xm08 - xm02, int((xm08 - xm02) * double(Current) / Total)) : 0;
   if (initial || Seen != lastSeen) {
      int y0 = yc04 - ShowSeenExtent;
      int y1 = yc04 + lineHeight / 2 - Gap / 2;

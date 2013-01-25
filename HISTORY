@@ -7548,3 +7548,5 @@ Video Disk Recorder Revision History
 - Returning 0 from cDvbSdFfDevice::NumProvidedSystems() if option --outputonly is given.
 - The index file is now closed after initially reading it if it is older than 3600 seconds.
 - Improved responsiveness during replay when close to the recording's end.
+- Fixed a leftover progress display in the LCARS main menu when replay of a recording
+  ends while the menu is open, and the live channel has no EPG information.
