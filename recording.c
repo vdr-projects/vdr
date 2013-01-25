@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.84 2013/01/25 14:31:04 kls Exp $
+ * $Id: recording.c 2.85 2013/01/25 14:33:16 kls Exp $
  */
 
 #include "recording.h"
@@ -1865,7 +1865,8 @@ bool cIndexFile::CatchUp(int Index)
             LOG_ERROR_STR(*fileName);
          if (Index < last)
             break;
-         cCondWait::SleepMs(INDEXCATCHUPWAIT);
+         cCondVar CondVar;
+         CondVar.TimedWait(mutex, INDEXCATCHUPWAIT);
          }
      }
   return index != NULL;
