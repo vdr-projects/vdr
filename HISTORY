@@ -7534,7 +7534,7 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-01-24: Version 1.7.37
+2013-01-25: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
@@ -7545,3 +7545,4 @@ Video Disk Recorder Revision History
   which resulted in empty lines between scaled subtitles.
 - Fixed a leftover line in case a two line subtitle was followed by a one line
   subtitle on the dvbhddevice in "high level" OSD mode.
+- Returning 0 from cDvbSdFfDevice::NumProvidedSystems() if option --outputonly is given.
