@@ -7534,7 +7534,7 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-01-25: Version 1.7.37
+2013-01-27: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
@@ -7550,3 +7550,4 @@ Video Disk Recorder Revision History
 - Improved responsiveness during replay when close to the recording's end.
 - Fixed a leftover progress display in the LCARS main menu when replay of a recording
   ends while the menu is open, and the live channel has no EPG information.
+- Fixed possible audio chatter when a recording is replayed to its very end.
