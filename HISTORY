@@ -7551,3 +7551,5 @@ Video Disk Recorder Revision History
 - Fixed a leftover progress display in the LCARS main menu when replay of a recording
   ends while the menu is open, and the live channel has no EPG information.
 - Fixed possible audio chatter when a recording is replayed to its very end.
+- Added dependency on 'i18n' to 'install-i18n' in the VDR Makefile (thanks to Tobias
+  Grimm).
