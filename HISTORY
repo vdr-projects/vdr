@@ -7534,7 +7534,7 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-01-27: Version 1.7.37
+2013-01-29: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
@@ -7553,3 +7553,6 @@ Video Disk Recorder Revision History
 - Fixed possible audio chatter when a recording is replayed to its very end.
 - Added dependency on 'i18n' to 'install-i18n' in the VDR Makefile (thanks to Tobias
   Grimm).
+- Changed several calls to Skins.Message() in vdr.c to Skins.QueueMessage() in order to
+  avoid a black screen while such a message is displayed in case the channel will be
+  switched (reported by Uwe Scheffler).

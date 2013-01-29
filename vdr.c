@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.45 2012/12/06 10:29:23 kls Exp $
+ * $Id: vdr.c 2.46 2013/01/29 11:17:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -924,7 +924,7 @@ int main(int argc, char *argv[])
                               Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }
                         if (cDevice::PrimaryDevice()->HasDecoder() && HadProgramme && !cDevice::PrimaryDevice()->HasProgramme())
-                           Skins.Message(mtInfo, tr("Upcoming recording!")); // the previous SwitchChannel() has switched away the current live channel
+                           Skins.QueueMessage(mtInfo, tr("Upcoming recording!")); // the previous SwitchChannel() has switched away the current live channel
                         }
                      }
                   }
@@ -1095,7 +1095,7 @@ int main(int argc, char *argv[])
                   if (Setup.PauseKeyHandling) {
                      if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?"))) {
                         if (!cRecordControls::PauseLiveVideo())
-                           Skins.Message(mtError, tr("No free DVB device to record!"));
+                           Skins.QueueMessage(mtError, tr("No free DVB device to record!"));
                         }
                      }
                   key = kNone; // nobody else needs to see this key
@@ -1105,7 +1105,7 @@ int main(int argc, char *argv[])
           case kRecord:
                if (!cControl::Control()) {
                   if (cRecordControls::Start())
-                     Skins.Message(mtInfo, tr("Recording started"));
+                     Skins.QueueMessage(mtInfo, tr("Recording started"));
                   key = kNone; // nobody else needs to see this key
                   }
                break;
@@ -1157,11 +1157,11 @@ int main(int argc, char *argv[])
            switch (state) {
              case osPause:  DELETE_MENU;
                             if (!cRecordControls::PauseLiveVideo())
-                               Skins.Message(mtError, tr("No free DVB device to record!"));
+                               Skins.QueueMessage(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecord: DELETE_MENU;
                             if (cRecordControls::Start())
-                               Skins.Message(mtInfo, tr("Recording started"));
+                               Skins.QueueMessage(mtInfo, tr("Recording started"));
                             break;
              case osRecordings:
                             DELETE_MENU;
@@ -1179,7 +1179,7 @@ int main(int argc, char *argv[])
              case osSwitchDvb:
                             DELETE_MENU;
                             cControl::Shutdown();
-                            Skins.Message(mtInfo, tr("Switching primary DVB..."));
+                            Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                             break;
              case osPlugin: DELETE_MENU;
@@ -1249,9 +1249,9 @@ int main(int argc, char *argv[])
               EITScanner.Process();
            if (!cCutter::Active() && cCutter::Ended()) {
               if (cCutter::Error())
-                 Skins.Message(mtError, tr("Editing process failed!"));
+                 Skins.QueueMessage(mtError, tr("Editing process failed!"));
               else
-                 Skins.Message(mtInfo, tr("Editing process finished"));
+                 Skins.QueueMessage(mtInfo, tr("Editing process finished"));
               }
            }
 
