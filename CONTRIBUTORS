@@ -280,6 +280,7 @@ Uwe Scheffler <linux_dvb@uni.de>
  for reporting a problem with frozen live view in conjunction with device bonding
  for reporting a problem in handling the PrimaryLimit when requesting a device for
  live viewing
+ for reporting a black screen while a "Recording started" message is displayed
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
