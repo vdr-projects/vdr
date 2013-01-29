@@ -85,6 +85,7 @@ Plugins:
   thread starts.
 - The plugin Makefiles now have a separate 'install' target.
 - Plugin Makefiles now use DESTDIR and the 'install' program.
+- Plugin Makefiles can now include a configuration file for compile time parameters.
 
 Skins:
 
@@ -379,6 +380,10 @@ SVDRP:
 - The new SVDRP command UPDR can be used to trigger an update of the list of
   recordings.
 - The SVDRP command DELR now won't delete a recording that is currently being edited.
+- The SVDRP command LSTR now knows the additional parameter "path", which can be
+  given to get the actual file name of a recording's directory.
+- The SVDRP command NEWT no longer checks whether a timer with the given data already
+  exists.
 
 Audio:
 
@@ -432,6 +437,16 @@ Misc:
   variations of the DVB standard. Currently there is "DVB" (for the original DVB
   standard) and "ANSI/SCTE", which is used to properly handle certain private stream
   types.
+- By default VDR is now built according to the FHS ("File system Hierarchy Standard"),
+  and a plain "make" in the VDR source directory just builds everything, but doesn't
+  copy it to ./PLUGINS/lib and ./locale any more. You can use a Make.config file
+  (copied from Make.config.template) and set the parameter LCLBLD=1 to have everything
+  built and installed under the VDR source tree (as was the default in previous
+  versions). If you already have your own Make.config file, you may want to copy the
+  new Make.config.template and adapt it to your needs. If you don't want VDR's data
+  files to be spread around your system according to the FHS, you can set the
+  parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
+  before.
 - VDR can now be built according to the FHS ("File system Hierarchy Standard") by
   activating the line
   #USEFHS = 1
