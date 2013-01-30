@@ -7557,3 +7557,4 @@ Video Disk Recorder Revision History
   avoid a black screen while such a message is displayed in case the channel will be
   switched (reported by Uwe Scheffler).
 - Updated the Slovakian language texts (thanks to Milan Hrala).
+- Improved LIRC timing for repeat function.
