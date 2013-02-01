@@ -7559,3 +7559,4 @@ Video Disk Recorder Revision History
 - Updated the Slovakian language texts (thanks to Milan Hrala).
 - Improved LIRC timing for repeat function.
 - When pausing live video, the current audio and subtitle tracks are now retained.
+- Added some notes about plugin Makefiles to PLUGINS.html.
