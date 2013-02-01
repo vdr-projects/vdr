@@ -7534,7 +7534,7 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-01-30: Version 1.7.37
+2013-02-01: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
@@ -7558,3 +7558,4 @@ Video Disk Recorder Revision History
   switched (reported by Uwe Scheffler).
 - Updated the Slovakian language texts (thanks to Milan Hrala).
 - Improved LIRC timing for repeat function.
+- When pausing live video, the current audio and subtitle tracks are now retained.

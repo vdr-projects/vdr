@@ -282,6 +282,7 @@ Time Shifting:
   deleted.
 - The setup parameter "Recording/Instant rec. time (min)" can now be set to '0',
   which means to record only the currently running event.
+- When pausing live video, the current audio and subtitle tracks are now retained.
 
 Timers:
 

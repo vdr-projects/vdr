@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.70 2012/11/19 09:59:09 kls Exp $
+ * $Id: device.c 2.71 2013/02/01 12:00:09 kls Exp $
  */
 
 #include "device.h"
@@ -98,6 +98,7 @@ cDevice::cDevice(void)
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
   currentSubtitleTrack = ttNone;
+  keepTracks = false;
   liveSubtitle = NULL;
   dvbSubtitleConverter = NULL;
   autoSelectPreferredSubtitleLanguage = true;
@@ -923,6 +924,8 @@ void cDevice::SetVolume(int Volume, bool Absolute)
 
 void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
 {
+  if (keepTracks)
+     return;
   if (DescriptionsOnly) {
      for (int i = ttNone; i < ttMaxTrackTypes; i++)
          *availableTracks[i].description = 0;
@@ -1044,6 +1047,8 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
 
 void cDevice::EnsureAudioTrack(bool Force)
 {
+  if (keepTracks)
+     return;
   if (Force || !availableTracks[currentAudioTrack].id) {
      eTrackType PreferredTrack = ttAudioFirst;
      int PreferredAudioChannel = 0;
@@ -1075,6 +1080,8 @@ void cDevice::EnsureAudioTrack(bool Force)
 
 void cDevice::EnsureSubtitleTrack(void)
 {
+  if (keepTracks)
+     return;
   if (Setup.DisplaySubtitles) {
      eTrackType PreferredTrack = ttNone;
      int LanguagePreference = INT_MAX; // higher than the maximum possible value

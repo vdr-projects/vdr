@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.74 2013/01/17 14:20:08 kls Exp $
+ * $Id: menu.c 2.75 2013/02/01 12:00:10 kls Exp $
  */
 
 #include "menu.h"
@@ -4485,6 +4485,7 @@ cString cReplayControl::fileName;
 cReplayControl::cReplayControl(bool PauseLive)
 :cDvbPlayerControl(fileName, PauseLive)
 {
+  cDevice::PrimaryDevice()->SetKeepTracks(PauseLive);
   currentReplayControl = this;
   displayReplay = NULL;
   marksModified = false;
@@ -4504,6 +4505,7 @@ cReplayControl::cReplayControl(bool PauseLive)
 
 cReplayControl::~cReplayControl()
 {
+  cDevice::PrimaryDevice()->SetKeepTracks(false);
   Hide();
   cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();
