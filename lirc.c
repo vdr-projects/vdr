@@ -6,15 +6,13 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.3 2013/01/31 12:13:39 kls Exp $
+ * $Id: lirc.c 2.4 2013/02/03 11:23:18 kls Exp $
  */
 
 #include "lirc.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#define REPEATDELAY 300 // ms
-#define REPEATFREQ 100 // ms
 #define RECONNECTDELAY 3000 // ms
 
 cLircRemote::cLircRemote(const char *DeviceName)
@@ -98,7 +96,7 @@ void cLircRemote::Action(void)
            int Delta = ThisTime.Elapsed(); // the time between two subsequent LIRC events
            ThisTime.Set();
            if (count == 0) {
-              if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < REPEATDELAY)
+              if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
                  continue; // skip keys coming in too fast
               if (repeat)
                  Put(LastKeyName, false, true);
@@ -108,9 +106,9 @@ void cLircRemote::Action(void)
               FirstTime.Set();
               timeout = -1;
               }
-           else if (FirstTime.Elapsed() < REPEATDELAY)
+           else if (FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
               continue; // repeat function kicks in after a short delay
-           else if (LastTime.Elapsed() < REPEATFREQ)
+           else if (LastTime.Elapsed() < (uint)Setup.RcRepeatDelta)
               continue; // skip same keys coming in too fast
            else {
               repeat = true;

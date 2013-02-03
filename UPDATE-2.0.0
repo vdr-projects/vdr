@@ -86,6 +86,10 @@ Plugins:
 - The plugin Makefiles now have a separate 'install' target.
 - Plugin Makefiles now use DESTDIR and the 'install' program.
 - Plugin Makefiles can now include a configuration file for compile time parameters.
+- Plugins that implement an interface to any kind of remote controls shall use the
+  new parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta to allow the user to
+  adjust the behavior of the remote control's repeat function. They shall also
+  remove any setup options they might have that serve the same purpose.
 
 Skins:
 
@@ -132,6 +136,10 @@ Remote control:
 - The new remote control key "Play/Pause" can be used with remote controls that don't
   have separate keys for "Play" and "Pause", but rather have a single key for both
   functions.
+- The new options "Setup/Miscellaneous/Remote control repeat delay" and
+  "Setup/Miscellaneous/Remote control repeat delta" can be used to adjust the
+  behavior of the remote control in case a key is held pressed down for a while, so
+  that the repeat function kicks in.
 
 Devices:
 

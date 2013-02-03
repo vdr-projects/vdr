@@ -7562,3 +7562,11 @@ Video Disk Recorder Revision History
 - Added some notes about plugin Makefiles to PLUGINS.html.
 - Avoiding an extra key press event if the repeat function kicks in when controlling
   VDR via the PC keyboard.
+- The new options "Setup/Miscellaneous/Remote control repeat delay" and
+  "Setup/Miscellaneous/Remote control repeat delta" can be used to adjust the
+  behavior of the remote control in case a key is held pressed down for a while, so
+  that the repeat function kicks in (see MANUAL).
+  The builtin LIRC and KBD remote controls already use these parameters. It is
+  recommended that plugins that implement an interface to any kind of remote controls 
+  also use the parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta for the desired
+  purpose, and remove any setup options they might have that serve the same purpose.

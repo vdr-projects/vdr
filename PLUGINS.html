@@ -2221,6 +2221,13 @@ Put(uint64 Code, bool Repeat = false, bool Release = false);
 </pre></td></tr></table><p>
 
 The other parameters have the same meaning as in the first version of this function.
+<p>
+<modified>
+If your remote control has a repeat function that automatically repeats key events
+if a key is held pressed down for a while, your derived class should use the global
+parameters <tt>Setup.RcRepeatDelay</tt> and <tt>Setup.RcRepeatDelta</tt> to allow
+users to configure the behavior of this function.
+</modified>
 
 <hr><h2><a name="Conditional Access">Conditional Access</a></h2>
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-07 14:59+0100\n"
+"POT-Creation-Date: 2013-02-03 16:46+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -1128,6 +1128,12 @@ msgstr "Considerar canal como visto (sg)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Tiempo introducción canal (ms)"
+
+msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canal inicial"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 2.7 2013/02/02 12:44:33 kls Exp $
+ * $Id: remote.c 2.8 2013/02/03 15:44:55 kls Exp $
  */
 
 #include "remote.h"
@@ -364,6 +364,8 @@ uint64_t cKbdRemote::ReadKeySequence(void)
 
 void cKbdRemote::Action(void)
 {
+  cTimeMs FirstTime;
+  cTimeMs LastTime;
   uint64_t FirstCommand = 0;
   uint64_t LastCommand = 0;
   bool Delayed = false;
@@ -377,8 +379,13 @@ void cKbdRemote::Action(void)
               // timeout, this is a long key press that caused the repeat function to kick in:
               Delayed = false;
               FirstCommand = 0;
+              if (FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
+                 continue; // repeat function kicks in after a short delay
+              if (LastTime.Elapsed() < (uint)Setup.RcRepeatDelta)
+                 continue; // skip same keys coming in too fast
               PutKey(Command, true);
               Repeat = true;
+              LastTime.Set();
               }
            else if (Command == FirstCommand) {
               // If the same command comes in twice with an intermediate timeout, we
@@ -391,6 +398,7 @@ void cKbdRemote::Action(void)
               PutKey(Command);
               Delayed = false;
               FirstCommand = Command;
+              FirstTime.Set();
               }
            }
         else if (Repeat) {
@@ -404,6 +412,7 @@ void cKbdRemote::Action(void)
            PutKey(FirstCommand);
            Delayed = false;
            FirstCommand = 0;
+           FirstTime.Set();
            }
         LastCommand = Command;
         }
