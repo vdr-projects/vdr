@@ -7582,3 +7582,5 @@ Video Disk Recorder Revision History
   create. However, a particular device may still be unable to create an arbitrary
   number of pixmaps, due to limited resources. So it's always a good idea to use
   as few pixmaps as possible.
+- Fixed formatting and removed some superfluous break statements in vdr.c's command
+  line option switch.

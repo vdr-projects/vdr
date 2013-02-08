@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.47 2013/02/07 13:53:01 kls Exp $
+ * $Id: vdr.c 2.48 2013/02/08 10:47:02 kls Exp $
  */
 
 #include <getopt.h>
@@ -267,7 +267,8 @@ int main(int argc, char *argv[])
                     break;
           case 'c': ConfigDirectory = optarg;
                     break;
-          case 'd': DaemonMode = true; break;
+          case 'd': DaemonMode = true;
+                    break;
           case 'D': if (isnumber(optarg)) {
                        int n = atoi(optarg);
                        if (0 <= n && n < MAXDEVICES) {
@@ -277,7 +278,6 @@ int main(int argc, char *argv[])
                        }
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
                     return 2;
-                    break;
           case 'd' | 0x100: {
                     char *s = optarg;
                     int n = strtol(s, &s, 10);
@@ -341,31 +341,30 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid instance id: %s\n", optarg);
                     return 2;
           case 'l': {
-                      char *p = strchr(optarg, '.');
-                      if (p)
-                         *p = 0;
-                      if (isnumber(optarg)) {
-                         int l = atoi(optarg);
-                         if (0 <= l && l <= 3) {
-                            SysLogLevel = l;
-                            if (!p)
-                               break;
-                            if (isnumber(p + 1)) {
-                               int l = atoi(p + 1);
-                               if (0 <= l && l <= 7) {
-                                  int targets[] = { LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7 };
-                                  SysLogTarget = targets[l];
-                                  break;
-                                  }
-                               }
-                            }
-                         }
+                    char *p = strchr(optarg, '.');
+                    if (p)
+                       *p = 0;
+                    if (isnumber(optarg)) {
+                       int l = atoi(optarg);
+                       if (0 <= l && l <= 3) {
+                          SysLogLevel = l;
+                          if (!p)
+                             break;
+                          if (isnumber(p + 1)) {
+                             int l = atoi(p + 1);
+                             if (0 <= l && l <= 7) {
+                                int targets[] = { LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7 };
+                                SysLogTarget = targets[l];
+                                break;
+                                }
+                             }
+                          }
+                       }
                     if (p)
                        *p = '.';
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
                     }
-                    break;
           case 'L': if (access(optarg, R_OK | X_OK) == 0)
                        PluginManager.SetDirectory(optarg);
                     else {
@@ -440,7 +439,6 @@ int main(int argc, char *argv[])
                        }
                     fprintf(stderr, "vdr: invalid watchdog timeout: %s\n", optarg);
                     return 2;
-                    break;
           default:  return 2;
           }
         }
