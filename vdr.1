@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.10 2013/02/07 14:40:46 kls Exp $
+.\" $Id: vdr.1 2.11 2013/02/08 10:40:00 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -43,7 +43,7 @@ which can be accessed on port 6419, for instance by \fBtelnet\fR.
 Send Dolby Digital audio to stdin of command \fIcmd\fR.
 .TP
 .BI \-\-cachedir= dir
-save cache files in \fIdir\fR
+Save cache files in \fIdir\fR
 (default is to save them in the video directory).
 .TP
 .BI \-c\  dir ,\ \-\-config= dir
@@ -171,7 +171,7 @@ Call \fIcmd\fR before and after a recording. See the file \fIINSTALL\fR for
 more information.
 .TP
 .BI \-\-resdir= dir
-read resource files from \fIdir\fR
+Read resource files from \fIdir\fR
 (default is to read them from the config directory).
 .TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
@@ -194,7 +194,7 @@ vdr can switch to a lesser privileged user id during normal
 operation.
 .TP
 .BI \-\-userdump
-allow coredumps if -u is given (only for debugging).
+Allow coredumps if -u is given (only for debugging).
 .TP
 .BI \-\-vfat
 For backwards compatibility (same as \-\-dirnames= 250,40,1.
