@@ -7578,3 +7578,7 @@ Video Disk Recorder Revision History
   available and has the same effect as --dirnames=250,40,1.
 - The macro MaxFileName is now obsolete and may be removed in future versions. Use
   NAME_MAX directly instead.
+- There is no more fixed limit to the maximum number of cPixmap objects an OSD can
+  create. However, a particular device may still be unable to create an arbitrary
+  number of pixmaps, due to limited resources. So it's always a good idea to use
+  as few pixmaps as possible.

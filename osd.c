@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.34 2013/01/24 11:37:58 kls Exp $
+ * $Id: osd.c 2.35 2013/02/08 10:16:47 kls Exp $
  */
 
 #include "osd.h"
@@ -1631,7 +1631,6 @@ cOsd::cOsd(int Left, int Top, uint Level)
   savedBitmap = NULL;
   numBitmaps = 0;
   savedPixmap = NULL;
-  numPixmaps = 0;
   left = Left;
   top = Top;
   width = height = 0;
@@ -1653,7 +1652,7 @@ cOsd::~cOsd()
       delete bitmaps[i];
   delete savedBitmap;
   delete savedPixmap;
-  for (int i = 0; i < numPixmaps; i++)
+  for (int i = 0; i < pixmaps.Size(); i++)
       delete pixmaps[i];
   for (int i = 0; i < Osds.Size(); i++) {
       if (Osds[i] == this) {
@@ -1702,15 +1701,11 @@ void cOsd::DestroyPixmap(cPixmap *Pixmap)
 {
   if (isTrueColor) {
      LOCK_PIXMAPS;
-     for (int i = 1; i < numPixmaps; i++) { // begin at 1 - don't let the background pixmap be destroyed!
+     for (int i = 1; i < pixmaps.Size(); i++) { // begin at 1 - don't let the background pixmap be destroyed!
          if (pixmaps[i] == Pixmap) {
             pixmaps[0]->MarkViewPortDirty(Pixmap->ViewPort());
             delete Pixmap;
-            while (i < numPixmaps - 1) {
-                  pixmaps[i] = pixmaps[i + 1];
-                  i++;
-                  }
-            numPixmaps--;
+            pixmaps[i] = NULL;
             return;
             }
          }
@@ -1722,12 +1717,13 @@ cPixmap *cOsd::AddPixmap(cPixmap *Pixmap)
 {
   if (Pixmap) {
      LOCK_PIXMAPS;
-     if (numPixmaps < MAXOSDPIXMAPS)
-        return pixmaps[numPixmaps++] = Pixmap;
-     else
-        esyslog("ERROR: too many OSD pixmaps requested (maximum is %d)", MAXOSDPIXMAPS);
+     for (int i = 0; i < pixmaps.Size(); i++) {
+         if (!pixmaps[i])
+            return pixmaps[i] = Pixmap;
+         }
+     pixmaps.Append(Pixmap);
      }
-  return NULL;
+  return Pixmap;
 }
 
 cPixmapMemory *cOsd::RenderPixmaps(void)
@@ -1737,12 +1733,13 @@ cPixmapMemory *cOsd::RenderPixmaps(void)
      LOCK_PIXMAPS;
      // Collect overlapping dirty rectangles:
      cRect d;
-     for (int i = 0; i < numPixmaps; i++) {
-         cPixmap *pm = pixmaps[i];
-         if (!pm->DirtyViewPort().IsEmpty()) {
-            if (d.IsEmpty() || d.Intersects(pm->DirtyViewPort())) {
-               d.Combine(pm->DirtyViewPort());
-               pm->SetClean();
+     for (int i = 0; i < pixmaps.Size(); i++) {
+         if (cPixmap *pm = pixmaps[i]) {
+            if (!pm->DirtyViewPort().IsEmpty()) {
+               if (d.IsEmpty() || d.Intersects(pm->DirtyViewPort())) {
+                  d.Combine(pm->DirtyViewPort());
+                  pm->SetClean();
+                  }
                }
             }
          }
@@ -1758,10 +1755,11 @@ cPixmapMemory *cOsd::RenderPixmaps(void)
         Pixmap->Clear();
         // Render the individual pixmaps into the resulting pixmap:
         for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
-            for (int i = 0; i < numPixmaps; i++) {
-                cPixmap *pm = pixmaps[i];
-                if (pm->Layer() == Layer)
+            for (int i = 0; i < pixmaps.Size(); i++) {
+                if (cPixmap *pm = pixmaps[i]) {
+                   if (pm->Layer() == Layer)
                    Pixmap->DrawPixmap(pm, d);
+                   }
                 }
             }
 #ifdef DebugDirty
