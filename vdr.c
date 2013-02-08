@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.46 2013/01/29 11:17:45 kls Exp $
+ * $Id: vdr.c 2.47 2013/02/07 13:53:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -227,6 +227,7 @@ int main(int argc, char *argv[])
       { "config",   required_argument, NULL, 'c' },
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
+      { "dirnames", required_argument, NULL, 'd' | 0x100 },
       { "edit",     required_argument, NULL, 'e' | 0x100 },
       { "epgfile",  required_argument, NULL, 'E' },
       { "filesize", required_argument, NULL, 'f' | 0x100 },
@@ -276,6 +277,44 @@ int main(int argc, char *argv[])
                        }
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
                     return 2;
+                    break;
+          case 'd' | 0x100: {
+                    char *s = optarg;
+                    int n = strtol(s, &s, 10);
+                    if (n <= 0 || n >= PATH_MAX) {
+                       fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
+                       return 2;
+                       }
+                    DirectoryPathMax = n;
+                    if (!*s)
+                       break;
+                    if (*s++ != ',') {
+                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                       return 2;
+                       }
+                    n = strtol(s, &s, 10);
+                    if (n <= 0 || n >= NAME_MAX) {
+                       fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
+                       return 2;
+                       }
+                    DirectoryNameMax = n;
+                    if (!*s)
+                       break;
+                    if (*s++ != ',') {
+                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                       return 2;
+                       }
+                    n = strtol(s, &s, 10);
+                    if (n != 0 && n != 1) {
+                       fprintf(stderr, "vdr: invalid directory encoding: %s\n", optarg);
+                       return 2;
+                       }
+                    DirectoryEncoding = n;
+                    if (*s) {
+                       fprintf(stderr, "vdr: unexpected data: %s\n", optarg);
+                       return 2;
+                       }
+                    }
                     break;
           case 'e' | 0x100:
                     return CutRecording(optarg) ? 0 : 2;
@@ -384,7 +423,9 @@ int main(int argc, char *argv[])
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
-                    VfatFileSystem = true;
+                    DirectoryPathMax = 250;
+                    DirectoryNameMax = 40;
+                    DirectoryEncoding = true;
                     break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
@@ -435,6 +476,13 @@ int main(int argc, char *argv[])
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
+               "            --dirnames=PATH[,NAME[,ENC]]\n"
+               "                           set the maximum directory path length to PATH\n"
+               "                           (default: %d); if NAME is also given, it defines\n"
+               "                           the maximum directory name length (default: %d);\n"
+               "                           the optional ENC can be 0 or 1, and controls whether\n"
+               "                           special characters in directory names are encoded as\n"
+               "                           hex values (default: 0)\n"
                "            --edit=REC     cut recording REC and exit\n"
                "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
                "                           '%s' in the video directory)\n"
@@ -477,13 +525,15 @@ int main(int argc, char *argv[])
                "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
-               "            --vfat         encode special characters in recording names to\n"
-               "                           avoid problems with VFAT file systems\n"
+               "            --vfat         for backwards compatibility (same as\n"
+               "                           --dirnames=250,40,1\n"
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
                DEFAULTCACHEDIR,
                DEFAULTCONFDIR,
+               PATH_MAX,
+               NAME_MAX,
                DEFAULTEPGDATAFILENAME,
                MAXVIDEOFILESIZEDEFAULT,
                DEFAULTPLUGINDIR,

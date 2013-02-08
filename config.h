@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.63 2013/02/02 13:45:19 kls Exp $
+ * $Id: config.h 2.64 2013/02/05 11:19:20 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -49,7 +49,7 @@
 #define MINOSDHEIGHT  324
 #define MAXOSDHEIGHT 1200
 
-#define MaxFileName 256
+#define MaxFileName NAME_MAX // obsolete - use NAME_MAX directly instead!
 #define MaxSkinName 16
 #define MaxThemeName 16
 
@@ -257,7 +257,7 @@ public:
   int MenuScrollWrap;
   int MenuKeyCloses;
   int MarkInstantRecord;
-  char NameInstantRecord[MaxFileName];
+  char NameInstantRecord[NAME_MAX];
   int InstantRecordTime;
   int LnbSLOF;
   int LnbFrequLo;

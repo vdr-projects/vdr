@@ -369,6 +369,12 @@ Recordings:
   recording, even if there is no mark set at that point.
 - The new option "Setup/Replay/Pause on mark set" can be used to activate automatically
   going into Pause mode if an editing mark is set during replay.
+- Timers no longer do any special "VFAT" handling to shorten directory names to 40
+  characters. When a string is used as a directory name for a recording, the maximum
+  length of the directory path, as well as the individual directory names, is now
+  limited to the values specified by the new command line option --dirnames (see
+  man vdr(1) for details). For backwards compatibility the option --vfat is still
+  available and has the same effect as --dirnames=250,40,1.
 
 SVDRP:
 

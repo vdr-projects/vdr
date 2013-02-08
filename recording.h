@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.41 2012/12/23 15:11:53 kls Exp $
+ * $Id: recording.h 2.42 2013/02/07 13:42:17 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -22,7 +22,9 @@
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
 
-extern bool VfatFileSystem;
+extern int DirectoryPathMax;
+extern int DirectoryNameMax;
+extern bool DirectoryEncoding;
 extern int InstanceId;
 
 void RemoveDeletedRecordings(void);

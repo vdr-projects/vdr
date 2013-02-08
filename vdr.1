@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.9 2012/09/01 13:40:49 kls Exp $
+.\" $Id: vdr.1 2.10 2013/02/07 14:40:46 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -56,6 +56,15 @@ Run in daemon mode (implies \-\-no\-kbd).
 .BI \-D\  num ,\ \-\-device= num
 Use only the given DVB device (\fInum\fR = 0, 1, 2...).
 There may be several \fB\-D\fR options (by default all DVB devices will be used).
+.TP
+.BI \-\-dirnames= path[,name[,enc]]
+Set the maximum directory path length to \fIpath\fR (default is the maximum value
+allowed on the system). If \fIname\fR is also given, it defines the maximum directory
+name length (default is the maximum value allowed on the system).  The optional
+\fIenc\fR can be 0 or 1, and controls whether special characters in directory names
+are encoded as hex values (default: 0).
+The length of the video directory name and that of the actual recording directory is
+subtracted from \fIpath\fR, to make sure the directory path will never become too long.
 .TP
 .BI \-\-edit= rec
 Edit the given recording.
@@ -188,8 +197,7 @@ operation.
 allow coredumps if -u is given (only for debugging).
 .TP
 .BI \-\-vfat
-Encode special characters in recording names to avoid problems
-with VFAT file systems.
+For backwards compatibility (same as \-\-dirnames= 250,40,1.
 .TP
 .BI \-v\  dir ,\ \-\-video= dir
 Use \fIdir\fR as video directory.

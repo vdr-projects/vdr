@@ -7534,7 +7534,7 @@ Video Disk Recorder Revision History
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
 
-2013-02-03: Version 1.7.37
+2013-02-08: Version 1.7.37
 
 - Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
 - Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
@@ -7570,3 +7570,11 @@ Video Disk Recorder Revision History
   recommended that plugins that implement an interface to any kind of remote controls 
   also use the parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta for the desired
   purpose, and remove any setup options they might have that serve the same purpose.
+- cTimer no longer does any special "VFAT" handling to shorten directory names to 40
+  characters. When a string is used as a directory name for a recording, the maximum
+  length of the directory path, as well as the individual directory names, is now
+  limited to the values specified by the new command line option --dirnames (see
+  man vdr(1) for details). For backwards compatibility the option --vfat is still
+  available and has the same effect as --dirnames=250,40,1.
+- The macro MaxFileName is now obsolete and may be removed in future versions. Use
+  NAME_MAX directly instead.
