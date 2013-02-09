@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.74 2013/01/17 14:20:08 kls Exp $
+ * $Id: menu.c 2.76 2013/02/02 14:00:39 kls Exp $
  */
 
 #include "menu.h"
@@ -3186,6 +3186,8 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Remote control repeat delay (ms)"), &data.RcRepeatDelay, 0));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Remote control repeat delta (ms)"), &data.RcRepeatDelta, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
@@ -4485,6 +4487,7 @@ cString cReplayControl::fileName;
 cReplayControl::cReplayControl(bool PauseLive)
 :cDvbPlayerControl(fileName, PauseLive)
 {
+  cDevice::PrimaryDevice()->SetKeepTracks(PauseLive);
   currentReplayControl = this;
   displayReplay = NULL;
   marksModified = false;
@@ -4504,6 +4507,7 @@ cReplayControl::cReplayControl(bool PauseLive)
 
 cReplayControl::~cReplayControl()
 {
+  cDevice::PrimaryDevice()->SetKeepTracks(false);
   Hide();
   cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();

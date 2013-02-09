@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.18 2012/12/03 13:49:02 kls Exp $
+ * $Id: osd.h 2.19 2013/02/08 09:47:56 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -701,7 +701,6 @@ public:
   };
 
 #define MAXOSDAREAS 16
-#define MAXOSDPIXMAPS 64
 
 /// The cOsd class is the interface to the "On Screen Display".
 /// An actual output device needs to derive from this class and implement
@@ -725,8 +724,7 @@ private:
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
   cPixmapMemory *savedPixmap;
-  cPixmap *pixmaps[MAXOSDPIXMAPS];
-  int numPixmaps;
+  cVector<cPixmap *> pixmaps;
   int left, top, width, height;
   uint level;
   bool active;
@@ -755,14 +753,10 @@ protected:
   virtual void SetActive(bool On) { active = On; }
        ///< Sets this OSD to be the active one.
        ///< A derived class must call cOsd::SetActive(On).
-  const cPixmap * const *Pixmaps(void) { return pixmaps; }
-       ///< Returns the list of currently active pixmaps in this OSD.
-  int NumPixmaps(void) { return numPixmaps; }
-       ///< Returns the number of currently active pixmaps in this OSD.
   cPixmap *AddPixmap(cPixmap *Pixmap);
        ///< Adds the given Pixmap to the list of currently active pixmaps in this OSD.
-       ///< Returns Pixmap if the operation was successful, or NULL if the maximum
-       ///< number of pixmaps has been exceeded.
+       ///< Returns Pixmap if the operation was successful, or NULL if for some reason
+       ///< the pixmap could not be added to the list.
        ///< A derived class that implements its own cPixmap class must call AddPixmap()
        ///< in order to add a newly created pixmap to the OSD's list of pixmaps.
   cPixmapMemory *RenderPixmaps(void);
@@ -824,7 +818,8 @@ public:
        ///< The caller must not delete the returned object, it will be deleted when
        ///< the OSD is deleted. DestroyPixmap() can be called if a pixmap shall be
        ///< destroyed before the OSD is deleted.
-       ///< If this is not a true color OSD, this function returns NULL.
+       ///< If this is not a true color OSD, or if the pixmap could not be created
+       ///< due to limited resources, this function returns NULL.
   virtual void DestroyPixmap(cPixmap *Pixmap);
        ///< Destroys the given Pixmap, which has previously been created by a call to
        ///< CreatePixmap(). When the OSD is deleted, all pixmaps are destroyed

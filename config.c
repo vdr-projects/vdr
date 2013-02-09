@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.32 2013/01/17 14:50:51 kls Exp $
+ * $Id: config.c 2.34 2013/02/05 11:16:08 kls Exp $
  */
 
 #include "config.h"
@@ -408,6 +408,8 @@ cSetup::cSetup(void)
   SVDRPTimeout = 300;
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
+  RcRepeatDelay = 300;
+  RcRepeatDelta = 100;
   DefaultPriority = 50;
   DefaultLifetime = MAXLIFETIME;
   PauseKeyHandling = 2;
@@ -585,7 +587,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "MenuScrollWrap"))      MenuScrollWrap     = atoi(Value);
   else if (!strcasecmp(Name, "MenuKeyCloses"))       MenuKeyCloses      = atoi(Value);
   else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
-  else if (!strcasecmp(Name, "NameInstantRecord"))   Utf8Strn0Cpy(NameInstantRecord, Value, MaxFileName);
+  else if (!strcasecmp(Name, "NameInstantRecord"))   Utf8Strn0Cpy(NameInstantRecord, Value, sizeof(NameInstantRecord));
   else if (!strcasecmp(Name, "InstantRecordTime"))   InstantRecordTime  = atoi(Value);
   else if (!strcasecmp(Name, "LnbSLOF"))             LnbSLOF            = atoi(Value);
   else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
@@ -610,6 +612,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
+  else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);
+  else if (!strcasecmp(Name, "RcRepeatDelta"))       RcRepeatDelta      = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
   else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
@@ -716,6 +720,8 @@ bool cSetup::Save(void)
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
+  Store("RcRepeatDelay",      RcRepeatDelay);
+  Store("RcRepeatDelta",      RcRepeatDelta);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
   Store("PauseKeyHandling",   PauseKeyHandling);

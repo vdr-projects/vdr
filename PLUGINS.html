@@ -173,9 +173,15 @@ The <tt>src</tt> directory contains one subdirectory for each plugin, which carr
 the name of that plugin (in the above example that would be <tt>hello</tt>).
 What's inside the individual source directory of a
 plugin is entirely up to the author of that plugin. The only prerequisites are
-that there is a <tt>Makefile</tt> that provides the targets <tt>all</tt> and
+that there is a <tt>Makefile</tt> that provides the targets <tt>all</tt><modified>, <tt>install</tt></modified> and
 <tt>clean</tt>, and that a call to <tt>make all</tt> actually produces a dynamically
 loadable library file for that plugin (we'll get to the details later).
+<modified>
+The dynamically loadable library file for the plugin shall be located directly under
+the plugin's source directory.
+See the section <a href="#Initializing a new plugin directory">Initializing a new plugin directory</a>
+for how to generate an example Makefile.
+</modified>
 <p>
 The <tt>lib</tt> directory contains the dynamically loadable libraries of all
 available plugins. Note that the names of these files are created by concatenating
@@ -2215,6 +2221,13 @@ Put(uint64 Code, bool Repeat = false, bool Release = false);
 </pre></td></tr></table><p>
 
 The other parameters have the same meaning as in the first version of this function.
+<p>
+<modified>
+If your remote control has a repeat function that automatically repeats key events
+if a key is held pressed down for a while, your derived class should use the global
+parameters <tt>Setup.RcRepeatDelay</tt> and <tt>Setup.RcRepeatDelta</tt> to allow
+users to configure the behavior of this function.
+</modified>
 
 <hr><h2><a name="Conditional Access">Conditional Access</a></h2>
 

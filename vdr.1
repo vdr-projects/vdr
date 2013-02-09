@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.9 2012/09/01 13:40:49 kls Exp $
+.\" $Id: vdr.1 2.11 2013/02/08 10:50:30 kls Exp $
 .\"
 .TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
 .SH NAME
@@ -43,7 +43,7 @@ which can be accessed on port 6419, for instance by \fBtelnet\fR.
 Send Dolby Digital audio to stdin of command \fIcmd\fR.
 .TP
 .BI \-\-cachedir= dir
-save cache files in \fIdir\fR
+Save cache files in \fIdir\fR
 (default is to save them in the video directory).
 .TP
 .BI \-c\  dir ,\ \-\-config= dir
@@ -56,6 +56,15 @@ Run in daemon mode (implies \-\-no\-kbd).
 .BI \-D\  num ,\ \-\-device= num
 Use only the given DVB device (\fInum\fR = 0, 1, 2...).
 There may be several \fB\-D\fR options (by default all DVB devices will be used).
+.TP
+.BI \-\-dirnames= path[,name[,enc]]
+Set the maximum directory path length to \fIpath\fR (default is the maximum value
+allowed on the system). If \fIname\fR is also given, it defines the maximum directory
+name length (default is the maximum value allowed on the system).  The optional
+\fIenc\fR can be 0 or 1, and controls whether special characters in directory names
+are encoded as hex values (default: 0).
+The length of the video directory name and that of the actual recording directory is
+subtracted from \fIpath\fR, to make sure the directory path will never become too long.
 .TP
 .BI \-\-edit= rec
 Edit the given recording.
@@ -162,7 +171,7 @@ Call \fIcmd\fR before and after a recording. See the file \fIINSTALL\fR for
 more information.
 .TP
 .BI \-\-resdir= dir
-read resource files from \fIdir\fR
+Read resource files from \fIdir\fR
 (default is to read them from the config directory).
 .TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
@@ -185,11 +194,10 @@ vdr can switch to a lesser privileged user id during normal
 operation.
 .TP
 .BI \-\-userdump
-allow coredumps if -u is given (only for debugging).
+Allow coredumps if -u is given (only for debugging).
 .TP
 .BI \-\-vfat
-Encode special characters in recording names to avoid problems
-with VFAT file systems.
+For backwards compatibility (same as \-\-dirnames= 250,40,1.
 .TP
 .BI \-v\  dir ,\ \-\-video= dir
 Use \fIdir\fR as video directory.

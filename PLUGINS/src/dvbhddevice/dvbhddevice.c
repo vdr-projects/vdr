@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhddevice.c 1.19 2013/01/12 14:11:35 kls Exp $
+ * $Id: dvbhddevice.c 1.21 2013/01/29 08:59:36 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -12,7 +12,7 @@
 #include "menu.h"
 #include "setup.h"
 
-static const char *VERSION        = "0.0.6";
+static const char *VERSION        = "0.0.7";
 static const char *DESCRIPTION    = trNOOP("HD Full Featured DVB device");
 static const char *MAINMENUENTRY  = "dvbhddevice";
 
@@ -26,6 +26,7 @@ public:
   virtual const char *Version(void) { return VERSION; }
   virtual const char *Description(void) { return tr(DESCRIPTION); }
   virtual void MainThreadHook(void);
+  virtual void Stop(void);
   virtual const char *MainMenuEntry(void);
   virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -56,6 +57,19 @@ void cPluginDvbhddevice::MainThreadHook(void)
             {
                 hdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_ON);
             }
+        }
+    }
+}
+
+void cPluginDvbhddevice::Stop(void)
+{
+    if (gHdffSetup.CecEnabled && gHdffSetup.CecTvOff)
+    {
+        HDFF::cHdffCmdIf * hdffCmdIf = cDvbHdFfDevice::GetHdffCmdHandler();
+        if (hdffCmdIf)
+        {
+            hdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_OFF);
+            isyslog("HDFF_CEC_COMMAND_TV_OFF");
         }
     }
 }

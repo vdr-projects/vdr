@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.47 2012/12/29 13:23:22 kls Exp $
+ * $Id: dvbhdffdevice.c 1.48 2013/01/29 08:59:36 kls Exp $
  */
 
 #include <stdint.h>
@@ -96,10 +96,6 @@ cDvbHdFfDevice::~cDvbHdFfDevice()
     delete spuDecoder;
     if (isHdffPrimary)
     {
-        if (gHdffSetup.CecEnabled && gHdffSetup.CecTvOff)
-        {
-            mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_OFF);
-        }
         delete mHdffCmdIf;
     }
     // We're not explicitly closing any device files here, since this sometimes

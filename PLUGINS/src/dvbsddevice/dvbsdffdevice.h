@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.14 2012/12/03 13:43:55 kls Exp $
+ * $Id: dvbsdffdevice.h 2.15 2013/01/25 10:43:14 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -37,6 +37,7 @@ public:
 
 public:
   virtual bool ProvidesSource(int Source) const;
+  virtual int NumProvidedSystems(void) const;
 private:
   void TurnOffLiveMode(bool LiveView);
 protected:

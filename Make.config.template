@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.16 2013/01/12 13:50:17 kls Exp $
+# $Id: Make.config.template 2.18 2013/02/08 10:31:38 kls Exp $
 
 ### The C compiler and options:
 
@@ -34,6 +34,7 @@ endif
 #MANDIR    = $(PREFIX)/share/man
 #PCDIR     = $(PREFIX)/lib/pkgconfig
 #RESDIR    = $(PREFIX)/share/vdr
+#DVBDIR    = /usr/src/v4l-dvb/linux/include/uapi
 
 #VIDEODIR  = /srv/vdr/video
 #CONFDIR   = /var/lib/vdr

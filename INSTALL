@@ -58,8 +58,10 @@ Alternatively you can use the '--lirc' option at runtime.
 This option accepts an optional path to the remote control device,
 the default of which can be set via the LIRC_DEVICE macro.
 
-If your video directory will be on a VFAT partition, you can call VDR with
-the command line option '--vfat'.
+If you want to make your video directory available to other machines that
+have limitations on directory name lengths and/or allowed characters in
+directory names, you can call VDR with the command line option '--dirnames'
+(see man vdr(1) for details).
 
 When running, the 'vdr' program writes status information into the
 system log file, which is usually /var/log/messages (or /var/log/user.log,

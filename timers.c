@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.15 2012/12/07 13:14:00 kls Exp $
+ * $Id: timers.c 2.16 2013/02/05 11:13:20 kls Exp $
  */
 
 #include "timers.h"
@@ -16,8 +16,6 @@
 #include "recording.h"
 #include "remote.h"
 #include "status.h"
-
-#define VFAT_MAX_FILENAME 40 // same as MAX_SUBTITLE_LENGTH in recording.c
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -80,11 +78,6 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
   if (Instant && channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
-  if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
-     dsyslog("timer file name too long for VFAT file system: '%s'", file);
-     file[Utf8SymChars(file, VFAT_MAX_FILENAME)] = 0;
-     dsyslog("timer file name truncated to '%s'", file);
-     }
 }
 
 cTimer::cTimer(const cEvent *Event)
@@ -120,11 +113,6 @@ cTimer::cTimer(const cEvent *Event)
   const char *Title = Event->Title();
   if (!isempty(Title))
      Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
-  if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
-     dsyslog("timer file name too long for VFAT file system: '%s'", file);
-     file[Utf8SymChars(file, VFAT_MAX_FILENAME)] = 0;
-     dsyslog("timer file name truncated to '%s'", file);
-     }
   SetEvent(Event);
 }
 
@@ -332,18 +320,6 @@ bool cTimer::Parse(const char *s)
         }
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
-     if (VfatFileSystem) {
-        char *p = strrchr(filebuffer, FOLDERDELIMCHAR);
-        if (p)
-           p++;
-        else
-           p = filebuffer;
-        if (Utf8StrLen(p) > VFAT_MAX_FILENAME) {
-           dsyslog("timer file name too long for VFAT file system: '%s'", p);
-           p[Utf8SymChars(p, VFAT_MAX_FILENAME)] = 0;
-           dsyslog("timer file name truncated to '%s'", p);
-           }
-        }
      Utf8Strn0Cpy(file, filebuffer, sizeof(file));
      strreplace(file, '|', ':');
      if (isnumber(channelbuffer))

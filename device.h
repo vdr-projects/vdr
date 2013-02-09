@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.43 2013/01/03 08:53:06 kls Exp $
+ * $Id: device.h 2.45 2013/02/01 11:54:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -490,6 +490,7 @@ private:
   cMutex mutexCurrentSubtitleTrack;
   int currentAudioTrackMissingCount;
   bool autoSelectPreferredSubtitleLanguage;
+  bool keepTracks;
   int pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
@@ -539,6 +540,10 @@ public:
   void EnsureSubtitleTrack(void);
        ///< Makes sure one of the preferred language subtitle tracks is selected.
        ///< Only has an effect if Setup.DisplaySubtitles is on.
+  void SetKeepTracks(bool KeepTracks) { keepTracks = KeepTracks; }
+       ///< Controls whether the current audio and subtitle track settings shall
+       ///< be kept as they currently are, or if they shall be automatically
+       ///< adjusted. This is used when pausing live video.
 
 // Audio facilities
 
@@ -752,7 +757,7 @@ public:
        ///< Returns -1 in case of error, otherwise the number of actually
        ///< processed bytes is returned.
        ///< PlayTs() shall process the TS packets either as a whole (returning
-       ///< n*TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
+       ///< TS_SIZE) or not at all, returning 0 or -1 and setting 'errno' accordingly).
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   bool Transferring(void) const;

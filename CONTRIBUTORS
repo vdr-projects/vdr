@@ -280,6 +280,7 @@ Uwe Scheffler <linux_dvb@uni.de>
  for reporting a problem with frozen live view in conjunction with device bonding
  for reporting a problem in handling the PrimaryLimit when requesting a device for
  live viewing
+ for reporting a black screen while a "Recording started" message is displayed
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -2384,6 +2385,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for avoiding a gcc 4.6 compiler error in the skincurses plugin.
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
+ for adding dependency on 'i18n' to 'install-i18n' in the VDR Makefile
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2735,6 +2737,7 @@ Derek Kelly (user.vdr@gmail.com)
  for reporting a problem with getting the maximum short channel name length in case there
  are no short names at all
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
+ for reporting a missing template for DVBDIR in Make.config.template
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -3025,6 +3028,7 @@ Sören Moch <smoch@web.de>
  for simplifying calculating the PTS offset in cPtsFixer::Fix() and fixing the overflow
  handling of PCR values
  for improving cutting MPEG-2 video
+ for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files

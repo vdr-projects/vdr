@@ -51,3 +51,7 @@ VDR Plugin 'dvbhddevice' Revision History
 2013-01-12: Version 0.0.6
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-01-24: Version 0.0.7
+
+- Fixed cHdffOsd::SetAreas() (didn't clear the OSD).

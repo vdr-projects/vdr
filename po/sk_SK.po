@@ -1,14 +1,14 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Milan Hrala <hrala.milan@gmail.com>, 2011
+# Milan Hrala <hrala.milan@gmail.com>, 2011, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-12-07 14:59+0100\n"
-"PO-Revision-Date: 2011-02-15 16:29+0100\n"
+"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"PO-Revision-Date: 2013-01-29 22:39+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
 "Language: sk\n"
@@ -74,7 +74,7 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Zaèína prehµadáva» EPG"
@@ -329,50 +329,50 @@ msgstr "Slovensky"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "slv"
+msgstr "slk"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Fáza 1: Detekcia typu kódu"
+msgstr "Fáza 1: Detekcia typu diaµkového ovládania"
 
 msgid "Press any key on the RC unit"
-msgstr "Stlaète µubovolnú klávesu ovládania"
+msgstr "Stlaète µubovolné tlaèidlo ovládania"
 
 msgid "RC code detected!"
-msgstr "Kód bol zistený!"
+msgstr "Bol zosnímaný kód diaµkového ovládania!"
 
 msgid "Do not press any key..."
 msgstr "Nestláèajte ¾iadne klávesy..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fáza 2: Urèenie konkrétneho kódu kláves"
+msgstr "Fáza 2: Urèenie funkcie tlaèidiel"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Stlaète klávesu pre '%s'"
+msgstr "Stlaète tlaèidlo pre funkciu  '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Pre potvrdenie stlaète klávesu 'Hore'"
+msgstr "Pre potvrdenie stlaète tlaèidlo 'Hore'"
 
 msgid "Press 'Down' to continue"
-msgstr "Pokraèujete stlaèením klávesy 'Dole' "
+msgstr "Pokraèujete stlaèením tlaèidla 'Dole' "
 
 msgid "(press 'Up' to go back)"
-msgstr "(Vrátite sa stlaèením klávesy 'hore')"
+msgstr "(Vrátite sa stlaèením tlaèidla 'hore')"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(Definovanie tlaèítok ukonèíte stlaèením klávesy 'dole')"
+msgstr "(Definovanie tlaèidiel ukonèíte stlaèením tlaèidla 'dole')"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(stlaèením 'Menu' preskoèíte definíciu klávesy)"
+msgstr "(stlaèením 'Menu' preskoèíte definíciu tlaèidla)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Urèenie kódu diaµkového ovládania"
+msgstr "Programovanie diaµkového ovládania"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Fáza 3: Ulo¾enie kódu"
+msgstr "Fáza 3: Ulo¾enie kódu tlaèidiel"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Stlaèením 'hore' ulo¾íte, 'Dole' zru¹íte"
+msgstr "Nastavenie stlaèením tlaèidla 'hore' ulo¾íte, 'Dole' zru¹íte"
 
 msgid "Key$Up"
 msgstr "Hore"
@@ -411,13 +411,13 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Prehra»/Pozastavi»"
 
 msgid "Key$Play"
 msgstr "Prehra»"
 
 msgid "Key$Pause"
-msgstr "Preru¹i»"
+msgstr "Pozastavi»"
 
 msgid "Key$Stop"
 msgstr "Zastavi»"
@@ -432,10 +432,10 @@ msgid "Key$FastRew"
 msgstr "Pretoèi» spä»"
 
 msgid "Key$Next"
-msgstr "Ïalej"
+msgstr "Nasledujúci"
 
 msgid "Key$Prev"
-msgstr "Spä»"
+msgstr "Predchádzajúci"
 
 msgid "Key$Power"
 msgstr "Vypínaè"
@@ -465,7 +465,7 @@ msgid "Key$Subtitles"
 msgstr "Titulky"
 
 msgid "Key$Schedule"
-msgstr "Program (EPG)"
+msgstr "Televízny program"
 
 msgid "Key$Channels"
 msgstr "Kanály"
@@ -519,7 +519,7 @@ msgid "encrypted"
 msgstr "kódovaný"
 
 msgid "Edit channel"
-msgstr "Úpravy kanálu"
+msgstr "Prispôsobi» kanál"
 
 msgid "Name"
 msgstr "Názov"
@@ -564,13 +564,13 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Channel settings are not unique!"
-msgstr "Nastavenia kanálu nie sú obyèajné!"
+msgstr "Nastavenia kanálu nie sú výnimoèné!"
 
 msgid "Channels"
 msgstr "Kanály"
 
 msgid "Button$Edit"
-msgstr "Úpravy"
+msgstr "Upravi»"
 
 msgid "Button$New"
 msgstr "Nový"
@@ -616,7 +616,7 @@ msgid "Edit timer"
 msgstr "Úprava plánu nahrávania"
 
 msgid "Active"
-msgstr "V èinnosti"
+msgstr "Aktívny"
 
 msgid "Channel"
 msgstr "Kanál"
@@ -625,10 +625,10 @@ msgid "Day"
 msgstr "Deò"
 
 msgid "Start"
-msgstr "Zaèiatok"
+msgstr "Zaèína"
 
 msgid "Stop"
-msgstr "Koniec"
+msgstr "Konèí"
 
 msgid "VPS"
 msgstr "VPS"
@@ -646,13 +646,13 @@ msgid "Button$Folder"
 msgstr "Zlo¾ka"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "bez opakovania"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "s opakovaním"
 
 msgid "First day"
-msgstr "Prvý deò"
+msgstr "Odo dòa"
 
 msgid "Select folder"
 msgstr "Vybra» zlo¾ku"
@@ -685,13 +685,13 @@ msgid "Button$Switch"
 msgstr "Prepnú»"
 
 msgid "What's on now?"
-msgstr "Èo ide?"
+msgstr "Èo ide aktuálne?"
 
 msgid "What's on next?"
 msgstr "Èo nasleduje?"
 
 msgid "Button$Next"
-msgstr "Ïalej"
+msgstr "Nasleduje"
 
 msgid "Button$Now"
 msgstr "Teraz"
@@ -730,7 +730,7 @@ msgid "Button$Play"
 msgstr "Prehra»"
 
 msgid "Button$Rewind"
-msgstr "Na zaèiatok"
+msgstr "Od zaèiatku"
 
 msgid "Recordings"
 msgstr "Nahrávky"
@@ -745,7 +745,7 @@ msgid "Delete recording?"
 msgstr "Zmaza» nahrávku?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Nahrávka sa upravuje - Naozaj zmaza»?"
 
 msgid "Error while deleting recording!"
 msgstr "Pri vymazávaní nahrávky pri¹lo k chybe!"
@@ -835,7 +835,7 @@ msgid "Setup.OSD$Scroll pages"
 msgstr "Rolova» strany"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Z konca na zaèiatok"
+msgstr "Rolova» cyklicky"
 
 msgid "Setup.OSD$Menu key closes"
 msgstr "Klávesa Menu zaviera"
@@ -847,25 +847,25 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Zlo¾ky v menu plánovaèa"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr "Èíselné tlaèidlá pre znaky"
+msgstr "Písa» znaky èíselnými tlaèidlami"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Farba klávesy 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Farba klávesy 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Farba klávesy 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Farba klávesy 3"
 
 msgid "EPG"
 msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "Sníma»"
+msgstr "Skenova»"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Èasový limit pre snímanie EPG (h)"
@@ -880,7 +880,7 @@ msgid "Setup.EPG$Set system time"
 msgstr "Nastavi» systémový èas"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "Pou¾i» èas z kanálu"
+msgstr "Pou¾i» èas z transpondéru"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
@@ -930,7 +930,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Hlavné DVB rozhranie"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Kompatibilná norma"
 
 msgid "Setup.DVB$Video format"
 msgstr "Formát videa"
@@ -985,10 +985,10 @@ msgstr "Horná frekvencia LNB (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Zariadenie %d je pripojené na sat. kábel"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "vlastný"
 
 msgid "CAM reset"
 msgstr "Resetnutie CAMu"
@@ -1021,13 +1021,13 @@ msgid "Can't reset CAM!"
 msgstr "CAM modul nejde re¹tartova»!"
 
 msgid "do not pause live video"
-msgstr "nepreru¹ova» ¾ivé vysielanie"
+msgstr "nepozastavova» ¾ivé vysielanie"
 
 msgid "confirm pause live video"
-msgstr "potvrdi» preru¹enie ¾ivého vysielania"
+msgstr "potvrdi» pozastavenie ¾ivého vysielania"
 
 msgid "pause live video"
-msgstr "preru¹i» ¾ivé vysielanie"
+msgstr "pozastavi» ¾ivé vysielanie"
 
 msgid "confirm"
 msgstr "overi»"
@@ -1078,7 +1078,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Då¾ka okam¾itého nahrávania (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "súèasná udalos»"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maximálna veµkos» nahrávky (MB)"
@@ -1099,34 +1099,40 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Zobrazi» spôsob prehrávania"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Zobrazi» zostávajúci èas"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Èas zobrazenia ukazovateµa priebehu (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pozastavi» prehrávanie pri stanovení znaèky"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID obnovenie"
+msgstr "ident. èíslo obnovenia prehrávania"
 
 msgid "Miscellaneous"
 msgstr "Rôzne"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. pauza medzi udalos»ami (min)"
+msgstr "limit pred nahrávaním (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Èasový limit neèinnosti (min)"
+msgstr "vymedzi» u¾ívateµskú neèinnos» (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Èasový limit SVDRP (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Èasový limit Zap (s)"
+msgstr "pamäta» predo¹lý kanál po ... (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Èas pri voµbe kanála (ms)"
+msgstr "limit pri voµbe kanála (ms)"
+
+msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanál po spustení"
@@ -1138,10 +1144,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitos» po spustení"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr "Prepína» z prvého na posledný a opaène"
+msgstr "Kanály cyklova» pri prepnutí"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Zobrazi» kanály so zdrojom"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Núdzové ukonèenie"
@@ -1192,22 +1198,22 @@ msgid "Cancel editing?"
 msgstr "Zru¹i» úpravy?"
 
 msgid "No audio available!"
-msgstr "Zvuk nie je dostupný!"
+msgstr "Zvukové stopy nie sú dostupné!"
 
 msgid "No subtitles"
 msgstr "Bez titulkov"
 
 msgid "No subtitles available!"
-msgstr "¾iadne dostupné titulky!"
+msgstr "®iadne titulky nie sú dostupné!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Málo volného miesta na nahrávanie!"
 
 msgid "No free DVB device to record!"
-msgstr "®iadna DVB karta nie je volná pre nahrávanie"
+msgstr "Pre nahrávanie nie je volné ¾iadne DVB zariadenie!"
 
 msgid "Pausing live video..."
-msgstr "Preru¹uje sa be¾iaci program ..."
+msgstr "Pozastavuje sa ¾ivé vysielanie ..."
 
 msgid "Delete timeshift recording?"
 msgstr "Vymaza» timeshift záznamy?"
@@ -1217,19 +1223,19 @@ msgid "Jump: "
 msgstr "Skok: "
 
 msgid "No editing marks defined!"
-msgstr "Nie sú urèené znaèky úprav!"
+msgstr "Neboli vyznaèené znaèky pre zostrihanie!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Neboli urèené sekvencie úprav!"
 
 msgid "Can't start editing process!"
-msgstr "Nemô¾e zaèa» spracovanie úprav!"
+msgstr "Nemô¾e zaèa» zostrihanie!"
 
 msgid "Editing process started"
-msgstr "Spracovanie úprav zaèalo"
+msgstr "Proces strihania sa spustil"
 
 msgid "Editing process already active!"
-msgstr "Spracovanie úprav je v èinnosti!"
+msgstr "Proces zostrihania je aktívny!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aáäbcèdïeéfghiíjklåµmnòoóôpqràs¹t»uúvwxyýz¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
@@ -1256,22 +1262,22 @@ msgid "Channel locked (recording)!"
 msgstr "Kanál je zamknutý (nahráva sa)!"
 
 msgid "Low disk space!"
-msgstr "Za chvíµku bude plný disk!"
+msgstr "Nedostatok miesta na disku!"
 
 msgid "Regenerating index file"
-msgstr "Regeneraèný indexový súbor"
+msgstr "Obnova indexového súboru"
 
 msgid "Index file regeneration complete"
-msgstr "Regenerácia indexového súboru hotová"
+msgstr "Obnova indexového súboru hotová"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Obnova indexového súboru zlyhala!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Vypnutie nie je mo¾né - chýba voµba '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Upravujem - aj tak vypnú»?"
+msgstr "Zostriháva sa - aj tak vypnú»?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Nahráva - aj tak vypnú»?"
@@ -1281,11 +1287,11 @@ msgid "Recording in %ld minutes, shut down anyway?"
 msgstr "Nahrávanie zaène za %ld minút - aj tak vypnú»?"
 
 msgid "shut down anyway?"
-msgstr "Aj tak vypnú»?"
+msgstr "Urèite vypnú»?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Modul %s ¹tartuje za %ld min., pokraèova»?"
+msgstr "Modul %s sa prebudí za %ld min., pokraèova»?"
 
 msgid "Editing - restart anyway?"
 msgstr "Upravuje sa - aj tak re¹tartova»?"
@@ -1294,7 +1300,7 @@ msgid "Recording - restart anyway?"
 msgstr "Nahráva - aj tak re¹tartova»?"
 
 msgid "restart anyway?"
-msgstr "Aj tak re¹tartova»?"
+msgstr "Urèite re¹tartova»?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1304,22 +1310,22 @@ msgid "Classic VDR"
 msgstr "Klasické VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISK"
 
 msgid "LOAD"
-msgstr ""
+msgstr "ZA«A®ENIE"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "PLÁNY"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "ZARIADENIA"
 
 msgid "LIVE"
-msgstr ""
+msgstr "NA®IVO"
 
 msgid "PLAY"
-msgstr ""
+msgstr "PREHRÁVA SA"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG panely"
@@ -1363,7 +1369,7 @@ msgid "Recording started"
 msgstr "Zaèalo nahrávanie"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "Vypnutie VDR bude odlo¾ené - platnos» potvrdte klávesou Power"
+msgstr "VDR sa vypne neskor¹ie. - Vynútenie potvrdte klávesou Power"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Ktorákoµvek klávesa zru¹í vypnutie"
@@ -1372,10 +1378,10 @@ msgid "Switching primary DVB..."
 msgstr "Prepína hlavný DVB..."
 
 msgid "Editing process failed!"
-msgstr "Spracovanie úprav zlyhalo!"
+msgstr "Zostrihávanie zlyhalo!"
 
 msgid "Editing process finished"
-msgstr "Spracovanie úprav skonèilo"
+msgstr "Proces zostrihávania dokonèený"
 
 msgid "Press any key to cancel restart"
 msgstr "ktorákoµvek  klávesa zru¹í re¹tart"
@@ -1388,4 +1394,4 @@ msgid "Disk"
 msgstr "Disk"
 
 msgid "free"
-msgstr "volne"
+msgstr "voµné"

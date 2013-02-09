@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 2.0 2008/02/23 14:38:47 kls Exp $
+ * $Id: remote.h 2.1 2013/02/03 14:34:56 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -111,6 +111,7 @@ private:
   int ReadKey(void);
   uint64_t ReadKeySequence(void);
   int MapCodeToFunc(uint64_t Code);
+  void PutKey(uint64_t Code, bool Repeat = false, bool Release = false);
 public:
   cKbdRemote(void);
   virtual ~cKbdRemote();

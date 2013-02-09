@@ -6,16 +6,13 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.1 2011/03/08 15:35:13 kls Exp $
+ * $Id: lirc.c 2.4 2013/02/03 11:23:18 kls Exp $
  */
 
 #include "lirc.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#define REPEATDELAY 350 // ms
-#define REPEATFREQ 100 // ms
-#define REPEATTIMEOUT 500 // ms
 #define RECONNECTDELAY 3000 // ms
 
 cLircRemote::cLircRemote(const char *DeviceName)
@@ -63,8 +60,10 @@ void cLircRemote::Action(void)
 {
   cTimeMs FirstTime;
   cTimeMs LastTime;
+  cTimeMs ThisTime;
   char buf[LIRC_BUFFER_SIZE];
   char LastKeyName[LIRC_KEY_BUF] = "";
+  bool pressed = false;
   bool repeat = false;
   int timeout = -1;
 
@@ -94,34 +93,43 @@ void cLircRemote::Action(void)
               esyslog("ERROR: unparseable lirc command: %s", buf);
               continue;
               }
+           int Delta = ThisTime.Elapsed(); // the time between two subsequent LIRC events
+           ThisTime.Set();
            if (count == 0) {
-              if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < REPEATDELAY)
+              if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
                  continue; // skip keys coming in too fast
               if (repeat)
                  Put(LastKeyName, false, true);
               strcpy(LastKeyName, KeyName);
+              pressed = true;
               repeat = false;
               FirstTime.Set();
               timeout = -1;
               }
+           else if (FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
+              continue; // repeat function kicks in after a short delay
+           else if (LastTime.Elapsed() < (uint)Setup.RcRepeatDelta)
+              continue; // skip same keys coming in too fast
            else {
-              if (LastTime.Elapsed() < REPEATFREQ)
-                 continue; // repeat function kicks in after a short delay (after last key instead of first key)
-              if (FirstTime.Elapsed() < REPEATDELAY)
-                 continue; // skip keys coming in too fast (for count != 0 as well)
               repeat = true;
-              timeout = REPEATDELAY;
+              timeout = Delta * 10 / 9;
               }
-           LastTime.Set();
-           Put(KeyName, repeat);
+           if (pressed)
+              LastTime.Set();
+              Put(KeyName, repeat);
            }
-        else if (repeat) { // the last one was a repeat, so let's generate a release
-           if (LastTime.Elapsed() >= REPEATTIMEOUT) {
-              Put(LastKeyName, false, true);
-              repeat = false;
-              *LastKeyName = 0;
-              timeout = -1;
-              }
+        else if (pressed && repeat) { // the last one was a repeat, so let's generate a release
+           Put(LastKeyName, false, true);
+           pressed = false;
+           repeat = false;
+           *LastKeyName = 0;
+           timeout = -1;
+           }
+        else {
+           pressed = false;
+           repeat = false;
+           *LastKeyName = 0;
+           timeout = -1;
            }
         }
 }

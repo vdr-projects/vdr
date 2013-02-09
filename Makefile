@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.49 2013/01/12 13:45:01 kls Exp $
+# $Id: Makefile 2.50 2013/01/27 14:19:49 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -183,7 +183,7 @@ $(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr.mo: $(PODIR)/%.mo
 .PHONY: i18n
 i18n: $(I18Nmsgs)
 
-install-i18n:
+install-i18n: i18n
 	@mkdir -p $(DESTDIR)$(LOCDIR)
 	cp -r $(LOCALEDIR)/* $(DESTDIR)$(LOCDIR)
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.83 2013/01/16 14:17:44 kls Exp $
+ * $Id: recording.c 2.86 2013/02/08 09:02:07 kls Exp $
  */
 
 #include "recording.h"
@@ -64,11 +64,11 @@
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
 #define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 
-#define MAX_SUBTITLE_LENGTH  40
-
 #define MAX_LINK_LEVEL  6
 
-bool VfatFileSystem = false;
+int DirectoryPathMax = PATH_MAX;
+int DirectoryNameMax = NAME_MAX;
+bool DirectoryEncoding = false;
 int InstanceId = 0;
 
 cRecordings DeletedRecordings(true);
@@ -540,22 +540,30 @@ tCharExchange CharExchange[] = {
   { 0, 0 }
   };
 
+const char *InvalidChars = "\"\\/:*?|<>#";
+
+bool NeedsConversion(const char *p)
+{
+  return DirectoryEncoding &&
+         (strchr(InvalidChars, *p) // characters that can't be part of a Windows file/directory name
+          || *p == '.' && (!*(p + 1) || *(p + 1) == FOLDERDELIMCHAR)); // Windows can't handle '.' at the end of file/directory names
+}
+
 char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
-        if (VfatFileSystem) {
-           // The VFAT file system can't handle all characters, so we
+        if (DirectoryEncoding) {
+           // Some file systems can't handle all characters, so we
            // have to take extra efforts to encode/decode them:
            if (ToFileSystem) {
-              const char *InvalidChars = "\"\\/:*?|<>#";
               switch (*p) {
                      // characters that can be mapped to other characters:
                      case ' ': *p = '_'; break;
                      case FOLDERDELIMCHAR: *p = '/'; break;
                      // characters that have to be encoded:
                      default:
-                       if (strchr(InvalidChars, *p) || *p == '.' && (!*(p + 1) || *(p + 1) == FOLDERDELIMCHAR)) { // Windows can't handle '.' at the end of file/directory names
+                       if (NeedsConversion(p)) {
                           int l = p - s;
                           if (char *NewBuffer = (char *)realloc(s, strlen(s) + 10)) {
                              s = NewBuffer;
@@ -610,6 +618,107 @@ char *ExchangeChars(char *s, bool ToFileSystem)
   return s;
 }
 
+char *LimitNameLengths(char *s, int PathMax, int NameMax)
+{
+  // Limits the total length of the directory path in 's' to PathMax, and each
+  // individual directory name to NameMax. The lengths of characters that need
+  // conversion when using 's' as a file name are taken into account accordingly.
+  // If a directory name exceeds NameMax, it will be truncated. If the whole
+  // directory path exceeds PathMax, individual directory names will be shortened
+  // (from right to left) until the limit is met, or until the currently handled
+  // directory name consists of only a single character. All operations are performed
+  // directly on the given 's', which may become shorter (but never longer) than
+  // the original value.
+  // Returns a pointer to 's'.
+  int Length = strlen(s);
+  int PathLength = 0;
+  // Collect the resulting lengths of each character:
+  bool NameTooLong = false;
+  int8_t a[Length];
+  int n = 0;
+  int NameLength = 0;
+  for (char *p = s; *p; p++) {
+      if (*p == FOLDERDELIMCHAR) {
+         a[n] = -1; // FOLDERDELIMCHAR is a single character, neg. sign marks it
+         NameTooLong |= NameLength > NameMax;
+         NameLength = 0;
+         PathLength += 1;
+         }
+      else if (NeedsConversion(p)) {
+         a[n] = 3; // "#xx"
+         NameLength += 3;
+         PathLength += 3;
+         }
+      else {
+         int8_t l = Utf8CharLen(p);
+         a[n] = l;
+         NameLength += l;
+         PathLength += l;
+         while (l-- > 1) {
+               a[++n] = 0;
+               p++;
+               }
+         }
+      n++;
+      }
+  NameTooLong |= NameLength > NameMax;
+  // Limit names to NameMax:
+  if (NameTooLong) {
+     while (n > 0) {
+           // Calculate the length of the current name:
+           int NameLength = 0;
+           int i = n;
+           int b = i;
+           while (i-- > 0 && a[i] >= 0) {
+                 NameLength += a[i];
+                 b = i;
+                 }
+           // Shorten the name if necessary:
+           if (NameLength > NameMax) {
+              int l = 0;
+              i = n;
+              while (i-- > 0 && a[i] >= 0) {
+                    l += a[i];
+                    if (NameLength - l <= NameMax) {
+                       memmove(s + i, s + n, Length - n + 1);
+                       memmove(a + i, a + n, Length - n + 1);
+                       Length -= n - i;
+                       PathLength -= l;
+                       break;
+                       }
+                    }
+              }
+           // Switch to the next name:
+           n = b - 1;
+           }
+     }
+  // Limit path to PathMax:
+  n = Length;
+  while (PathLength > PathMax && n > 0) {
+        // Calculate how much to cut off the current name:
+        int i = n;
+        int b = i;
+        int l = 0;
+        while (--i > 0 && a[i - 1] >= 0) {
+              if (a[i] > 0) {
+                 l += a[i];
+                 b = i;
+                 if (PathLength - l <= PathMax)
+                    break;
+                 }
+              }
+        // Shorten the name if necessary:
+        if (l > 0) {
+           memmove(s + b, s + n, Length - n + 1);
+           Length -= n - b;
+           PathLength -= l;
+           }
+        // Switch to the next name:
+        n = i - 1;
+        }
+  return s;
+}
+
 cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 {
   resume = RESUME_NOT_INITIALIZED;
@@ -628,16 +737,10 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
   const char *Subtitle = Event ? Event->ShortText() : NULL;
-  char SubtitleBuffer[MAX_SUBTITLE_LENGTH];
   if (isempty(Title))
      Title = Timer->Channel()->Name();
   if (isempty(Subtitle))
      Subtitle = " ";
-  else if (strlen(Subtitle) > MAX_SUBTITLE_LENGTH) {
-     // let's make sure the Subtitle doesn't produce too long a file name:
-     Utf8Strn0Cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
-     Subtitle = SubtitleBuffer;
-     }
   const char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
   const char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
   if (macroTITLE || macroEPISODE) {
@@ -872,9 +975,12 @@ const char *cRecording::FileName(void) const
      const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
      int ch = isPesRecording ? priority : channel;
      int ri = isPesRecording ? lifetime : instanceId;
-     name = ExchangeChars(name, true);
-     fileName = strdup(cString::sprintf(fmt, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
-     name = ExchangeChars(name, false);
+     char *Name = LimitNameLengths(strdup(name), DirectoryPathMax - strlen(VideoDirectory) - 1 - 42, DirectoryNameMax); // 42 = length of an actual recording directory name (generated with DATAFORMATTS) plus some reserve
+     if (strcmp(Name, name) != 0)
+        dsyslog("recording file name '%s' truncated to '%s'", name, Name);
+     Name = ExchangeChars(Name, true);
+     fileName = strdup(cString::sprintf(fmt, VideoDirectory, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
+     free(Name);
      }
   return fileName;
 }
@@ -1743,12 +1849,14 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
                        esyslog("ERROR: can't read from file '%s'", *fileName);
                        free(index);
                        index = NULL;
+                       }
+                    else if (isPesRecording)
+                       ConvertFromPes(index, size);
+                    if (!index || time(NULL) - buf.st_mtime >= MININDEXAGE) {
                        close(f);
                        f = -1;
                        }
-                    // we don't close f here, see CatchUp()!
-                    else if (isPesRecording)
-                       ConvertFromPes(index, size);
+                    // otherwise we don't close f here, see CatchUp()!
                     }
                  else
                     LOG_ERROR_STR(*fileName);
@@ -1863,7 +1971,8 @@ bool cIndexFile::CatchUp(int Index)
             LOG_ERROR_STR(*fileName);
          if (Index < last)
             break;
-         cCondWait::SleepMs(INDEXCATCHUPWAIT);
+         cCondVar CondVar;
+         CondVar.TimedWait(mutex, INDEXCATCHUPWAIT);
          }
      }
   return index != NULL;

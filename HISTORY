@@ -7533,3 +7533,54 @@ Video Disk Recorder Revision History
 - Improved cutting MPEG-2 video (thanks to Sören Moch).
 - Reduced the number of retries in cTransfer::Receive() to avoid blocking recordings
   in case the primary device can't handle the current live signal.
+
+2013-02-08: Version 1.7.37
+
+- Now also using FindHeader() in cMpeg2Fixer::AdjTref() (pointed out by Sören Moch).
+- Added missing template for DVBDIR to Make.config.template (reported by Derek Kelly).
+- The LCARS menu now also works if the OSD has only 1bpp (two colors).
+- Fixed possible garbage in the remaining time of the LCARS replay display in case the
+  hours change from two to one digit.
+- Fixed upscaling bitmaps. The last row and column of the scaled bitmap was not filled,
+  which resulted in empty lines between scaled subtitles.
+- Fixed a leftover line in case a two line subtitle was followed by a one line
+  subtitle on the dvbhddevice in "high level" OSD mode.
+- Returning 0 from cDvbSdFfDevice::NumProvidedSystems() if option --outputonly is given.
+- The index file is now closed after initially reading it if it is older than 3600 seconds.
+- Improved responsiveness during replay when close to the recording's end.
+- Fixed a leftover progress display in the LCARS main menu when replay of a recording
+  ends while the menu is open, and the live channel has no EPG information.
+- Fixed possible audio chatter when a recording is replayed to its very end.
+- Added dependency on 'i18n' to 'install-i18n' in the VDR Makefile (thanks to Tobias
+  Grimm).
+- Changed several calls to Skins.Message() in vdr.c to Skins.QueueMessage() in order to
+  avoid a black screen while such a message is displayed in case the channel will be
+  switched (reported by Uwe Scheffler).
+- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Improved LIRC timing for repeat function.
+- When pausing live video, the current audio and subtitle tracks are now retained.
+- Added some notes about plugin Makefiles to PLUGINS.html.
+- Avoiding an extra key press event if the repeat function kicks in when controlling
+  VDR via the PC keyboard.
+- The new options "Setup/Miscellaneous/Remote control repeat delay" and
+  "Setup/Miscellaneous/Remote control repeat delta" can be used to adjust the
+  behavior of the remote control in case a key is held pressed down for a while, so
+  that the repeat function kicks in (see MANUAL).
+  The builtin LIRC and KBD remote controls already use these parameters. It is
+  recommended that plugins that implement an interface to any kind of remote controls 
+  also use the parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta for the desired
+  purpose, and remove any setup options they might have that serve the same purpose.
+- cTimer no longer does any special "VFAT" handling to shorten directory names to 40
+  characters. When a string is used as a directory name for a recording, the maximum
+  length of the directory path, as well as the individual directory names, is now
+  limited to the values specified by the new command line option --dirnames (see
+  man vdr(1) for details). For backwards compatibility the option --vfat is still
+  available and has the same effect as --dirnames=250,40,1.
+- The macro MaxFileName is now obsolete and may be removed in future versions. Use
+  NAME_MAX directly instead.
+- There is no more fixed limit to the maximum number of cPixmap objects an OSD can
+  create. However, a particular device may still be unable to create an arbitrary
+  number of pixmaps, due to limited resources. So it's always a good idea to use
+  as few pixmaps as possible.
+- Fixed formatting and removed some superfluous break statements in vdr.c's command
+  line option switch.

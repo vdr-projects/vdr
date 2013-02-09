@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.15 2012/09/19 11:05:50 kls Exp $
+ * $Id: skinlcars.c 2.18 2013/01/25 14:54:11 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -199,6 +199,8 @@ THEME_CLR(Theme, clrTrackItemCurrentBg,     CLR_TRACK);
 
 // --- Helper functions ------------------------------------------------------
 
+static bool TwoColors = false;
+
 static cOsd *CreateOsd(int Left, int Top, int x0, int y0, int x1, int y1)
 {
   cOsd *Osd = cOsdProvider::NewOsd(Left, Top);
@@ -208,6 +210,7 @@ static cOsd *CreateOsd(int Left, int Top, int x0, int y0, int x1, int y1)
       Area.bpp = Bpp[i];
       if (Osd->CanHandleAreas(&Area, 1) == oeOk) {
          Osd->SetAreas(&Area, 1);
+         TwoColors = Area.bpp == 1;
          break;
          }
       }
@@ -272,16 +275,25 @@ static void DrawDeviceSignal(cOsd *Osd, const cDevice *Device, int x0, int y0, i
   int y01 = y00 + h;
   int y03 = y1 - d;
   int y02 = y03 - h;
+  tColor ColorSignalValue, ColorSignalRest;
+  if (TwoColors) {
+     ColorSignalValue = Theme.Color(clrBackground);
+     ColorSignalRest = Theme.Color(clrMenuFrameBg);
+     }
+  else {
+     ColorSignalValue = Theme.Color(clrSignalValue);
+     ColorSignalRest = Theme.Color(clrSignalRest);
+     }
   if (SignalStrength >= 0 && (Initial || SignalStrength != LastSignalStrength)) {
      int s = SignalStrength * w / 100;
-     Osd->DrawRectangle(x00, y00, x00 + s - 1, y01 - 1, Theme.Color(clrSignalValue));
-     Osd->DrawRectangle(x00 + s, y00, x01 - 1, y01 - 1, Theme.Color(clrSignalRest));
+     Osd->DrawRectangle(x00, y00, x00 + s - 1, y01 - 1, ColorSignalValue);
+     Osd->DrawRectangle(x00 + s, y00, x01 - 1, y01 - 1, ColorSignalRest);
      LastSignalStrength = SignalStrength;
      }
   if (SignalQuality >= 0 && (Initial || SignalQuality != LastSignalQuality)) {
      int q = SignalQuality * w / 100;
-     Osd->DrawRectangle(x00, y02, x00 + q - 1, y03 - 1, Theme.Color(clrSignalValue));
-     Osd->DrawRectangle(x00 + q, y02, x01 - 1, y03 - 1, Theme.Color(clrSignalRest));
+     Osd->DrawRectangle(x00, y02, x00 + q - 1, y03 - 1, ColorSignalValue);
+     Osd->DrawRectangle(x00 + q, y02, x01 - 1, y03 - 1, ColorSignalRest);
      LastSignalQuality = SignalQuality;
      }
 }
@@ -445,7 +457,7 @@ void cSkinLCARSDisplayChannel::DrawTrack(void)
 
 void cSkinLCARSDisplayChannel::DrawSeen(int Current, int Total)
 {
-  int Seen = min(xc07 - xc06, int((xc07 - xc06) * double(Current) / Total));
+  int Seen = (Total > 0) ? min(xc07 - xc06, int((xc07 - xc06) * double(Current) / Total)) : 0;
   if (initial || Seen != lastSeen) {
      int y0 = yc11 - ShowSeenExtent;
      int y1 = yc11 + lineHeight / 2 - Gap / 2;
@@ -1331,6 +1343,7 @@ void cSkinLCARSDisplayMenu::DrawLive(const cChannel *Channel)
      osd->DrawText(xa00, yt00, itoa(Channel->Number()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), tallFont, xa02 - xa00, yt02 - yt00, taTop | taRight | taBorder);
      osd->DrawText(xa03, yt00, Channel->Name(), Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xd00 - xa03, yd01 - yd00, taTop | taLeft);
      lastChannel = Channel;
+     DrawSeen(0, 0);
      }
   // The current programme:
   cSchedulesLock SchedulesLock;
@@ -1411,7 +1424,7 @@ void cSkinLCARSDisplayMenu::DrawInfo(const cEvent *Event, bool WithTime)
 
 void cSkinLCARSDisplayMenu::DrawSeen(int Current, int Total)
 {
-  int Seen = min(xm08 - xm02, int((xm08 - xm02) * double(Current) / Total));
+  int Seen = (Total > 0) ? min(xm08 - xm02, int((xm08 - xm02) * double(Current) / Total)) : 0;
   if (initial || Seen != lastSeen) {
      int y0 = yc04 - ShowSeenExtent;
      int y1 = yc04 + lineHeight / 2 - Gap / 2;
@@ -1493,8 +1506,14 @@ void cSkinLCARSDisplayMenu::SetItem(const char *Text, int Index, bool Current, b
   int y = yi00 + Index * lineHeight;
   tColor ColorFg, ColorBg;
   if (Current) {
-     ColorFg = Theme.Color(clrMenuItemCurrentFg);
-     ColorBg = Theme.Color(clrMenuItemCurrentBg);
+     if (TwoColors) {
+        ColorFg = Theme.Color(clrBackground);
+        ColorBg = Theme.Color(clrMenuFrameBg);
+        }
+     else {
+        ColorFg = Theme.Color(clrMenuItemCurrentFg);
+        ColorBg = Theme.Color(clrMenuItemCurrentBg);
+        }
      osd->DrawRectangle(xi00, y, xi01 - 1, y + lineHeight - 1, ColorBg);
      osd->DrawRectangle(xi02, y, xi02 + lineHeight / 2 - 1, y + lineHeight - 1, ColorBg);
      osd->DrawEllipse  (xi02 + lineHeight / 2, y, xi03 - 1, y + lineHeight - 1, ColorBg, 5);
@@ -1662,6 +1681,7 @@ private:
   int lineHeight;
   tColor frameColor;
   int lastCurrentWidth;
+  int lastTotalWidth;
   cString lastDate;
   tTrackId lastTrackId;
   void DrawDate(void);
@@ -1687,6 +1707,7 @@ cSkinLCARSDisplayReplay::cSkinLCARSDisplayReplay(bool ModeOnly)
   lineHeight = font->Height();
   frameColor = Theme.Color(clrReplayFrameBg);
   lastCurrentWidth = 0;
+  lastTotalWidth = 0;
   int d = 5 * lineHeight;
   xp00 = 0;
   xp01 = xp00 + d / 2;
@@ -1804,15 +1825,16 @@ void cSkinLCARSDisplayReplay::SetCurrent(const char *Current)
 {
   const cFont *font = cFont::GetFont(fontOsd);
   int w = font->Width(Current);
-  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, lastCurrentWidth > w ? lastCurrentWidth : w, 0, taLeft);
+  osd->DrawText(xp03, yp03 - lineHeight, Current, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, max(lastCurrentWidth, w), 0, taLeft);
   lastCurrentWidth = w;
 }
 
 void cSkinLCARSDisplayReplay::SetTotal(const char *Total)
 {
   const cFont *font = cFont::GetFont(fontOsd);
-  int w = font->Width(Total) + 10;
-  osd->DrawText(xp13 - w, yp03 - lineHeight, Total, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, w, 0, taRight);
+  int w = font->Width(Total);
+  osd->DrawText(xp13 - w, yp03 - lineHeight, Total, Theme.Color(clrReplayPosition), Theme.Color(clrBackground), font, max(lastTotalWidth, w), 0, taRight);
+  lastTotalWidth = w;
 }
 
 void cSkinLCARSDisplayReplay::SetJump(const char *Jump)
