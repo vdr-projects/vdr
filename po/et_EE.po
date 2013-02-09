@@ -1129,10 +1129,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Kanali sisestamise ajalimiit (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Kaugjuhtimispuldi kordamise viide (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Kaugjuhtimispuldi kordamise delta (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanal käivitamisel"
