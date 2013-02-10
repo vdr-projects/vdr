@@ -3057,3 +3057,6 @@ Stefan Stolz <st.stolz@gmail.com>
 Malte Forkel <malte.forkel@berlin.de>
  for suggesting to make the SVDRP command NEWT no longer check whether a timer with the
  given data already exists
+
+Marc Perrudin <vdr@ekass.net>
+ for updating the French OSD texts
