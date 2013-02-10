@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Dimitar Petrovski <dimeptr@gmail.com>, 2009
+# Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013
 #
 msgid ""
 msgstr ""
@@ -412,7 +412,7 @@ msgid "Key$Info"
 msgstr "Инфо"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Старт/Пауза"
 
 msgid "Key$Play"
 msgstr "Старт"
@@ -1103,10 +1103,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Прикажи преостанато време"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Време на прикажување на прогрес (сек)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Паузирај репродукција кога се внесува ознака"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"
@@ -1130,10 +1130,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Тајмаут за внес на канал (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Оддолжување на повторување на даљинско (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Делта на повторување на даљинско (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Почетен канал"
@@ -1221,7 +1221,7 @@ msgstr "Избриши временски поместена снимка?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "Скокни:"
+msgstr "Скокни: "
 
 msgid "No editing marks defined!"
 msgstr "Нема одредено ознаки за сечење!"
@@ -1305,7 +1305,7 @@ msgstr "сеедно рестартирај?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "Глас"
+msgstr "Глас "
 
 msgid "Classic VDR"
 msgstr "Класичен VDR"
