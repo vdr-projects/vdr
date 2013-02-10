@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007, 2008, 2010
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007-2010, 2013
 #
 msgid ""
 msgstr ""
