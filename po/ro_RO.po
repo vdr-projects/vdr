@@ -2,22 +2,21 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
-# Lucian Muresan <lucianm@users.sourceforge.net>, 2004, 2005, 2006, 2008, 2010, 2011, 2012
+# Lucian Muresan <lucianm@users.sourceforge.net>, 2004-2006, 2008, 2010-2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.12\n"
+"Project-Id-Version: VDR 1.7.37\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2012-11-05 01:28+0100\n"
-"Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
+"PO-Revision-Date: 2013-02-09 23:01+0100\n"
+"Last-Translator: Lucian Muresan <lucianm@users.sorceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Romanian\n"
-"X-Poedit-Country: ROMANIA\n"
+"X-Generator: Poedit 1.5.5\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
@@ -414,7 +413,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Redare/Pauză"
 
 msgid "Key$Play"
 msgstr "Redare"
@@ -682,7 +681,7 @@ msgid "Button$Timer"
 msgstr "Timer"
 
 msgid "Button$Record"
-msgstr "Înregistr."
+msgstr "Înregistrează"
 
 msgid "Button$Switch"
 msgstr "Comută"
@@ -733,7 +732,7 @@ msgid "Button$Play"
 msgstr "Redare"
 
 msgid "Button$Rewind"
-msgstr "Înapoi"
+msgstr "De la capăt"
 
 msgid "Recordings"
 msgstr "Înregistrări"
@@ -760,7 +759,7 @@ msgid "never"
 msgstr "niciodată"
 
 msgid "skin dependent"
-msgstr "dep. de skin"
+msgstr "dependent de skin"
 
 msgid "always"
 msgstr "întotdeauna"
@@ -1105,10 +1104,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Arată timpul rămas"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Durata afișării indicatorului de progres (s) "
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pauză la punerea marcajului de montaj"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"
@@ -1132,10 +1131,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Timeout la introducerea canalului (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Întârzierea repetării semnaluilui telecomenzii (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Diferența repetării semnaluilui telecomenzii (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canalul de pornire"
@@ -1188,7 +1187,7 @@ msgid "Button$Stop"
 msgstr "Stop"
 
 msgid "Button$Resume"
-msgstr "Continuare"
+msgstr "Continuă redarea"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
@@ -1216,7 +1215,7 @@ msgid "No free DVB device to record!"
 msgstr "Nu mai sunt receptoare DVB disponibile pentru înregistrare!"
 
 msgid "Pausing live video..."
-msgstr "Trec în pauză emisiunea transmisă..."
+msgstr "Înregistrez emisiunea transmisă..."
 
 msgid "Delete timeshift recording?"
 msgstr "Şterg înregistrarea pentru vizionare decalată?"
@@ -1229,7 +1228,7 @@ msgid "No editing marks defined!"
 msgstr "Nu s-au pus marcaje de montaj pentru această înregistrare"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Nu s-au definit secvențe pentru montaj!"
 
 msgid "Can't start editing process!"
 msgstr "Nu pot porni montajul înregistrării!"
@@ -1256,7 +1255,7 @@ msgid "Button$Insert"
 msgstr "Inserează"
 
 msgid "Plugin"
-msgstr "Plugin (modul adiţional)"
+msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
 msgstr "Sus/Jos pentru noua locaţie - OK pentru a muta"
