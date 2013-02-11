@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2013-02-10 16:47+0100\n"
+"PO-Revision-Date: 2013-02-11 11:19+0100\n"
 "Last-Translator: Marc Perrudin <vdr@ekass.net>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
@@ -33,10 +33,10 @@ msgid "Can't start Transfer Mode!"
 msgstr "Impossible d'utiliser le mode transfert !"
 
 msgid "off"
-msgstr ""
+msgstr "inactive"
 
 msgid "on"
-msgstr ""
+msgstr "active"
 
 msgid "auto"
 msgstr "auto"
@@ -117,7 +117,7 @@ msgid "Content$News/Current Affairs"
 msgstr "Informations/Actualités"
 
 msgid "Content$News/Weather Report"
-msgstr "Information/Météo"
+msgstr "Informations/Météo"
 
 msgid "Content$News Magazine"
 msgstr "Magazine d'information"
@@ -159,13 +159,13 @@ msgid "Content$Team Sports"
 msgstr "Sports d'équipe"
 
 msgid "Content$Athletics"
-msgstr "Athlétismes"
+msgstr "Athlétisme"
 
 msgid "Content$Motor Sport"
-msgstr "Sport mécanique"
+msgstr "Sports mécaniques"
 
 msgid "Content$Water Sport"
-msgstr "Sport nautique"
+msgstr "Sports nautiques"
 
 msgid "Content$Winter Sports"
 msgstr "Sports d'hiver"
@@ -174,13 +174,13 @@ msgid "Content$Equestrian"
 msgstr "Équitation"
 
 msgid "Content$Martial Sports"
-msgstr "Sports Martiaux"
+msgstr "Sports de combat"
 
 msgid "Content$Children's/Youth Programme"
 msgstr "Enfant/Programme jeunesse"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr "Programme pour enfant de maternelle"
+msgstr "Programme pour enfants de maternelle"
 
 msgid "Content$Entertainment Programme for 6 to 14"
 msgstr "Programme de divertissement pour les 6/14 ans"
@@ -463,7 +463,7 @@ msgid "Key$Volume-"
 msgstr "Volume-"
 
 msgid "Key$Mute"
-msgstr "Sourdine"
+msgstr "Muet"
 
 msgid "Key$Audio"
 msgstr "Audio"
@@ -611,7 +611,7 @@ msgid "Folder name must not contain '%c'!"
 msgstr "Le nom de dossier ne doit pas contenir '%c' !"
 
 msgid "Button$Select"
-msgstr "Selectionner"
+msgstr "Sélectionner"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Effacer le dossier et tous les sous dossiers ?"
@@ -898,13 +898,13 @@ msgid "Setup.EPG$Preferred language"
 msgstr "Langue préférée"
 
 msgid "pan&scan"
-msgstr ""
+msgstr "pan&scan"
 
 msgid "letterbox"
-msgstr ""
+msgstr "letterbox"
 
 msgid "center cut out"
-msgstr ""
+msgstr "center cut out"
 
 msgid "no"
 msgstr "non"
@@ -1028,13 +1028,13 @@ msgid "Can't reset CAM!"
 msgstr "Impossible de réinitialiser le CAM !"
 
 msgid "do not pause live video"
-msgstr "ne pas arrêter le direct"
+msgstr "ne pas mettre en pause le direct"
 
 msgid "confirm pause live video"
-msgstr "confirmer l'arrêt du direct"
+msgstr "confirmer la pause du direct"
 
 msgid "pause live video"
-msgstr "arrêter le direct"
+msgstr "mettre en pause le direct"
 
 msgid "confirm"
 msgstr "confirmer"
