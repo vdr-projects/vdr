@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.86 2013/02/08 09:02:07 kls Exp $
+ * $Id: recording.c 2.87 2013/02/11 11:18:22 kls Exp $
  */
 
 #include "recording.h"
@@ -1502,6 +1502,15 @@ bool cMarks::Update(void)
            return true;
            }
         }
+     }
+  return false;
+}
+
+bool cMarks::Save(void)
+{
+  if (cConfig<cMark>::Save()) {
+     lastFileTime = LastModifiedTime(fileName);
+     return true;
      }
   return false;
 }

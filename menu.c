@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.76 2013/02/02 14:00:39 kls Exp $
+ * $Id: menu.c 2.77 2013/02/11 11:08:54 kls Exp $
  */
 
 #include "menu.h"
@@ -4763,9 +4763,8 @@ void cReplayControl::MarkToggle(void)
 {
   int Current, Total;
   if (GetIndex(Current, Total, true)) {
-     cMark *m = marks.Get(Current);
      lastCurrent = -1; // triggers redisplay
-     if (m)
+     if (cMark *m = marks.Get(Current))
         marks.Del(m);
      else {
         marks.Add(Current);
@@ -4784,8 +4783,7 @@ void cReplayControl::MarkJump(bool Forward)
   int Current, Total;
   if (GetIndex(Current, Total)) {
      if (marks.Count()) {
-        cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-        if (m) {
+        if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
            Goto(m->Position(), true);
            displayFrames = true;
            return;
@@ -4801,8 +4799,7 @@ void cReplayControl::MarkMove(bool Forward)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
-     cMark *m = marks.Get(Current);
-     if (m) {
+     if (cMark *m = marks.Get(Current)) {
         displayFrames = true;
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
@@ -4878,7 +4875,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
      return osEnd;
-  if (Key == kNone)
+  if (Key == kNone && !marksModified)
      marks.Update();
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {

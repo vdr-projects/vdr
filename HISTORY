@@ -7585,10 +7585,12 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-10: Version 1.7.38
+2013-02-11: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Updated the French OSD texts (thanks to Marc Perrudin).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Fixed moving editing marks, so that they don't get overwritten with old values
+  through an update of the marks file.

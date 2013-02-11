@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.42 2013/02/07 13:42:17 kls Exp $
+ * $Id: recording.h 2.43 2013/02/11 11:18:13 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -234,6 +234,7 @@ private:
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
+  bool Save(void);
   void Align(void);
   void Sort(void);
   void Add(int Position);
