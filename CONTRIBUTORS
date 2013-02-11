@@ -2936,6 +2936,7 @@ Dominic Evans <oldmanuk@gmail.com>
  for adding cap_net_raw to the capabilities that are not dropped
  for suggesting to make the channel name column in the "What's on now/next" menu
  adjust its width to display the full short name of each channel
+ for reporting wrong permissions of po/sr_SR.po
 
 Torsten Lang <info@torstenlang.de>
  for reporting a problem with newline characters in stream component descriptions

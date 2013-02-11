@@ -7596,3 +7596,4 @@ Video Disk Recorder Revision History
   through an update of the marks file.
 - Removed an invalid line from channels.conf.terr (reported by Lars Hanisch).
 - Fixed an unexpected k_Repeat key event after a k_Release in lirc.c.
+- Fixed permissions of po/sr_SR.po (reported by Dominic Evans).
