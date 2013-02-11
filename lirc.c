@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.4 2013/02/03 11:23:18 kls Exp $
+ * $Id: lirc.c 2.5 2013/02/11 15:25:42 kls Exp $
  */
 
 #include "lirc.h"
@@ -114,9 +114,10 @@ void cLircRemote::Action(void)
               repeat = true;
               timeout = Delta * 10 / 9;
               }
-           if (pressed)
+           if (pressed) {
               LastTime.Set();
               Put(KeyName, repeat);
+              }
            }
         else if (pressed && repeat) { // the last one was a repeat, so let's generate a release
            Put(LastKeyName, false, true);
