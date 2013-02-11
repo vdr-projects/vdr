@@ -7594,3 +7594,4 @@ Video Disk Recorder Revision History
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed moving editing marks, so that they don't get overwritten with old values
   through an update of the marks file.
+- Removed an invalid line from channels.conf.terr (reported by Lars Hanisch).

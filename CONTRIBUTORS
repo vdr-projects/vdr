@@ -2801,6 +2801,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting that the SVDRP command UPDR didn't update the global recordings list
  for fixing a typo in skins.h
  for fixing some #include statements in plugins to use <vdr/...> instead of "vdr/..."
+ for reporting an invalid line in channels.conf.terr
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
