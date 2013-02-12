@@ -7603,3 +7603,5 @@ Video Disk Recorder Revision History
 - Fixed selecting the last replayed recording in the Recordings menu in case there
   are folders and plain recordings with names that differ only in non-alphanumeric
   characters (reported by Andre Weidemann).
+- Fixed the description of the OSD drawing functions DrawEllipse() (the values -5...-8
+  for the Quadrants parameter are not implemented).
