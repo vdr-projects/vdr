@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-11: Version 1.7.38
+2013-02-12: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7597,3 +7597,4 @@ Video Disk Recorder Revision History
 - Removed an invalid line from channels.conf.terr (reported by Lars Hanisch).
 - Fixed an unexpected k_Repeat key event after a k_Release in lirc.c.
 - Fixed permissions of po/sr_SR.po (reported by Dominic Evans).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
