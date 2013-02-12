@@ -2248,6 +2248,9 @@ André Weidemann <Andre.Weidemann@web.de>
  1.7.32 no longer generates a mark at that point
  for suggesting to automatically go into Pause mode if an editing mark is set during
  replay
+ fpr reporting a bug in selecting the last replayed recording in the Recordings menu
+ in case there are folders and plain recordings with names that differ only in
+ non-alphanumeric characters
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it

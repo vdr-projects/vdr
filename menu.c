@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.77 2013/02/11 11:08:54 kls Exp $
+ * $Id: menu.c 2.78 2013/02/12 13:10:53 kls Exp $
  */
 
 #include "menu.h"
@@ -2306,8 +2306,10 @@ void cMenuRecordings::Set(bool Refresh)
             if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
                SetCurrent(LastItem);
             }
-         if (LastDir)
+         if (LastDir) {
             LastDir->IncrementCounter(recording->IsNew());
+            LastItem = LastDir;
+            }
          }
       }
   if (Refresh)

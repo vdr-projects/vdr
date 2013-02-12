@@ -7600,3 +7600,6 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed using "Pause" and "Slow motion" near the end of a recording (replay stopped
   a few seconds after the end of the recording file has been reached).
+- Fixed selecting the last replayed recording in the Recordings menu in case there
+  are folders and plain recordings with names that differ only in non-alphanumeric
+  characters (reported by Andre Weidemann).
