@@ -7598,3 +7598,5 @@ Video Disk Recorder Revision History
 - Fixed an unexpected k_Repeat key event after a k_Release in lirc.c.
 - Fixed permissions of po/sr_SR.po (reported by Dominic Evans).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed using "Pause" and "Slow motion" near the end of a recording (replay stopped
+  a few seconds after the end of the recording file has been reached).
