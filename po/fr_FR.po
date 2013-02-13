@@ -9,18 +9,19 @@
 # Bruno Roussel <bruno.roussel@free.fr>, 2007
 # Michael Nival <mnival@club-internet.fr>, 2007
 # Marc Perrudin <vdr@ekass.net>, 2013
+# Bernard Jaulin <bernard.jaulin@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2013-02-11 11:19+0100\n"
-"Last-Translator: Marc Perrudin <vdr@ekass.net>\n"
+"PO-Revision-Date: 2013-02-13 09:409+0100\n"
+"Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "*** Invalid Channel ***"
@@ -90,13 +91,13 @@ msgid "Content$Movie/Drama"
 msgstr "Film/Drame"
 
 msgid "Content$Detective/Thriller"
-msgstr "Policier/Suspence"
+msgstr "Policier/Suspense"
 
 msgid "Content$Adventure/Western/War"
 msgstr "Aventure/Western/Guerre"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr "Science Fiction/Fantasy/Horreur"
+msgstr "Science Fiction/Fantaisie/Horreur"
 
 msgid "Content$Comedy"
 msgstr "Comédie"
@@ -108,10 +109,10 @@ msgid "Content$Romance"
 msgstr "Romance"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Averti/Classique/Religieux/Film Historique/Drame"
+msgstr "Sérieux/Classique/Religieux/Film Historique/Drame"
 
 msgid "Content$Adult Movie/Drama"
-msgstr "Film pour adulte/Drame"
+msgstr "Film pour adultes/Drame"
 
 msgid "Content$News/Current Affairs"
 msgstr "Informations/Actualités"
@@ -129,7 +130,7 @@ msgid "Content$Discussion/Inverview/Debate"
 msgstr "Discussion/Interview/Débat"
 
 msgid "Content$Show/Game Show"
-msgstr "Spectacle/Jeu Télévisé"
+msgstr "Spectacle/Jeu Télévision"
 
 msgid "Content$Game Show/Quiz/Contest"
 msgstr "Jeu Télévisé/Quiz/Concours"
@@ -144,7 +145,7 @@ msgid "Content$Sports"
 msgstr "Sports"
 
 msgid "Content$Special Event"
-msgstr "Événement spécial"
+msgstr "Evénement spécial"
 
 msgid "Content$Sport Magazine"
 msgstr "Magazine sportif"
@@ -171,7 +172,7 @@ msgid "Content$Winter Sports"
 msgstr "Sports d'hiver"
 
 msgid "Content$Equestrian"
-msgstr "Équitation"
+msgstr "Equitation"
 
 msgid "Content$Martial Sports"
 msgstr "Sports de combat"
@@ -183,13 +184,13 @@ msgid "Content$Pre-school Children's Programme"
 msgstr "Programme pour enfants de maternelle"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr "Programme de divertissement pour les 6/14 ans"
+msgstr "Programme de divertissement pour les 6-14 ans"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr "Programme de divertissement pour les 10/16 ans"
+msgstr "Programme de divertissement pour les 10-16 ans"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr "Informationnel/Éducatif/Programme Scolaire "
+msgstr "Informationnel/Educatif/Programme Scolaire "
 
 msgid "Content$Cartoons/Puppets"
 msgstr "Dessins animés/Marionnettes"
@@ -201,7 +202,7 @@ msgid "Content$Rock/Pop"
 msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr "Averti/Musique Classique"
+msgstr "Sérieux/Musique Classique"
 
 msgid "Content$Folk/Tradional Music"
 msgstr "Folk/Musique Traditionnelle"
@@ -240,10 +241,10 @@ msgid "Content$Experimental Film/Video"
 msgstr "Film Expérimental/Vidéo"
 
 msgid "Content$Broadcasting/Press"
-msgstr "Émission/Presse"
+msgstr "Télédiffusion/Presse"
 
 msgid "Content$New Media"
-msgstr "Nouveau Media"
+msgstr "Nouveau Média"
 
 msgid "Content$Arts/Culture Magazine"
 msgstr "Arts/Magazine Culturel"
@@ -252,19 +253,19 @@ msgid "Content$Fashion"
 msgstr "Mode"
 
 msgid "Content$Social/Political/Economics"
-msgstr "Société/Politique/Économie"
+msgstr "Société/Politique/Economie"
 
 msgid "Content$Magazine/Report/Documentary"
 msgstr "Magazine/Reportage/Documentaire"
 
 msgid "Content$Economics/Social Advisory"
-msgstr "Économie/Reportage de Société"
+msgstr "Economie/Reportage de Société"
 
 msgid "Content$Remarkable People"
 msgstr "Personnalités"
 
 msgid "Content$Education/Science/Factual"
-msgstr "Éducation/Science/Factuel"
+msgstr "Education/Science/Factuel"
 
 msgid "Content$Nature/Animals/Environment"
 msgstr "Nature/Animaux/Environnement"
@@ -276,7 +277,7 @@ msgid "Content$Medicine/Physiology/Psychology"
 msgstr "Médecine/Physiologie/Psychologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr "Pays Étrangers/Expéditions"
+msgstr "Pays Etrangers/Expéditions"
 
 msgid "Content$Social/Spiritual Sciences"
 msgstr "Société/Sciences Spirituelles"
@@ -325,7 +326,7 @@ msgstr "Direct"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "À partir de %d"
+msgstr "A partir de %d"
 
 msgid "No title"
 msgstr "Sans titre"
@@ -339,19 +340,19 @@ msgid "LanguageCode$eng"
 msgstr "fra"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Phase 1: Détection du type de code"
+msgstr "Phase 1: Détection du type de télécommande"
 
 msgid "Press any key on the RC unit"
 msgstr "Appuyer sur une touche de la télécommande"
 
 msgid "RC code detected!"
-msgstr "Code de la télécommande détecté !"
+msgstr "Codes de la télécommande détectés !"
 
 msgid "Do not press any key..."
-msgstr "N'appuyer sur aucune touche ..."
+msgstr "N'appuyer sur aucune touche..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Phase 2: Apprentissage des codes de touches"
+msgstr "Phase 2: Apprentissage des touches"
 
 #, c-format
 msgid "Press key for '%s'"
@@ -373,10 +374,10 @@ msgid "(press 'Menu' to skip this key)"
 msgstr "(Appuyer sur 'Menu' pour passer cette touche)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Apprentissage des codes de touches de la télécommande"
+msgstr "Apprentissage des touches de la télécommande"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Phase 3: Sauvegarde des codes de touches"
+msgstr "Phase 3: Sauvegarde des touches"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
 msgstr "Appuyer sur 'Haut' pour sauvegarder, 'Bas' pour annuler"
@@ -472,13 +473,13 @@ msgid "Key$Subtitles"
 msgstr "Sous-titres"
 
 msgid "Key$Schedule"
-msgstr "Programmes"
+msgstr "Programme"
 
 msgid "Key$Channels"
 msgstr "Chaînes"
 
 msgid "Key$Timers"
-msgstr "Minuteries"
+msgstr "Programmations"
 
 msgid "Key$Recordings"
 msgstr "Enregistrements"
@@ -526,7 +527,7 @@ msgid "encrypted"
 msgstr "Crypté"
 
 msgid "Edit channel"
-msgstr "Modifier une chaîne"
+msgstr "Modifier la chaîne"
 
 msgid "Name"
 msgstr "Nom"
@@ -571,7 +572,7 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Channel settings are not unique!"
-msgstr "Les configurations des chaînes ne sont pas uniques !"
+msgstr "Cette chaîne n'est pas unique !"
 
 msgid "Channels"
 msgstr "Chaînes"
@@ -589,7 +590,7 @@ msgid "Button$Mark"
 msgstr "Marquer"
 
 msgid "Channel is being used by a timer!"
-msgstr "Cette chaîne est utilisée par une minuterie !"
+msgstr "Une programmation utilise cette chaîne !"
 
 msgid "Delete channel?"
 msgstr "Supprimer la chaîne ?"
@@ -614,13 +615,13 @@ msgid "Button$Select"
 msgstr "Sélectionner"
 
 msgid "Delete folder and all sub folders?"
-msgstr "Effacer le dossier et tous les sous dossiers ?"
+msgstr "Supprimer le dossier et tous les sous dossiers ?"
 
 msgid "Delete folder?"
-msgstr "Effacer le dossier ?"
+msgstr "Supprimer le dossier ?"
 
 msgid "Edit timer"
-msgstr "Modifier la minuterie"
+msgstr "Modifier la programmation"
 
 msgid "Active"
 msgstr "Active"
@@ -665,7 +666,7 @@ msgid "Select folder"
 msgstr "Sélectionner le dossier"
 
 msgid "Timers"
-msgstr "Minuteries"
+msgstr "Programmations"
 
 msgid "Button$On/Off"
 msgstr "Marche/Arr"
@@ -674,16 +675,16 @@ msgid "Button$Info"
 msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "Supprimer la minuterie ?"
+msgstr "Supprimer cette programmation ?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Enregistrement en cours - suppression confirmée ?"
+msgstr "Enregistrement en cours - confirmer la suppression ?"
 
 msgid "Event"
 msgstr "Evénement"
 
 msgid "Button$Timer"
-msgstr "Minuterie"
+msgstr "Programmation"
 
 msgid "Button$Record"
 msgstr "Enregistrer"
@@ -711,7 +712,7 @@ msgstr "Impossible de changer de chaîne !"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "Programmes - %s"
+msgstr "Programme - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -752,7 +753,7 @@ msgid "Delete recording?"
 msgstr "Supprimer l'enregistrement ?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "L'enregistrement est en cours de modification - suppression confirmée ?"
+msgstr "L'enregistrement est en cours de modification - confirmer la suppression ?"
 
 msgid "Error while deleting recording!"
 msgstr "Erreur lors de la suppression de l'enregistrement !"
@@ -842,7 +843,7 @@ msgid "Setup.OSD$Scroll pages"
 msgstr "Défilement par pages"
 
 msgid "Setup.OSD$Scroll wraps"
-msgstr "Défilement rotatif"
+msgstr "Défilement circulaire"
 
 msgid "Setup.OSD$Menu key closes"
 msgstr "Touche Menu pour fermer"
@@ -851,7 +852,7 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Dossiers d'enregistrements"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Dossiers dans le menu minuterie"
+msgstr "Dossiers dans le menu programmation"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Touches numériques pour les caractères"
@@ -875,13 +876,13 @@ msgid "Button$Scan"
 msgstr "Scanner"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Temps de mise à jour du guide (h)"
+msgstr "Temps d'inactivité avant mise à jour du guide-EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "Niveau de correction du guide"
+msgstr "Niveau de correction du guide-EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Montrer le guide périmé (min)"
+msgstr "Persistence du guide-EPG (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Ajuster l'heure du système"
@@ -937,7 +938,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Carte DVB primaire"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr "Conformité aux normes"
+msgstr "Conforme au flux DVB"
 
 msgid "Setup.DVB$Video format"
 msgstr "Format vidéo"
@@ -967,7 +968,7 @@ msgid "Setup.DVB$Subtitle language"
 msgstr "Langue des sous-titres"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Offset des sous-titres"
+msgstr "Décalage des sous-titres"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
 msgstr "Transparence de l'avant-plan des sous-titres"
@@ -1022,7 +1023,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossible d'ouvrir le menu CAM !"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM en cours d'utilisation - Réinitialisation confirmée ?"
+msgstr "CAM en cours d'utilisation - confirmer réinitialisation ?"
 
 msgid "Can't reset CAM!"
 msgstr "Impossible de réinitialiser le CAM !"
@@ -1046,10 +1047,10 @@ msgid "Recording"
 msgstr "Enregistrement"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Marge antérieure (min)"
+msgstr "Marge de début (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Marge postérieure (min)"
+msgstr "Marge de fin (min)"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Priorité par défaut"
@@ -1061,10 +1062,10 @@ msgid "Setup.Recording$Pause key handling"
 msgstr "Support de la touche Pause"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorité des pauses"
+msgstr "Priorité de l'enregistrement mis en pause "
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Durée de vie des pauses (j)"
+msgstr "Expiration de l'enregistrement mis en pause (j)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Utiliser le nom de l'épisode"
@@ -1094,7 +1095,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Scinder les fichiers édités"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "Effacer l'enregistrement du timeshifting"
+msgstr "Supprimer l'enregistrement timeshift"
 
 msgid "Replay"
 msgstr "Lecture"
@@ -1112,7 +1113,7 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Affichage de la barre de progression (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Arrêter la lecture lors de la définition d'une marque"
+msgstr "Arrêter la lecture lors de l'ajout d'un marqueur"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de reprise"
@@ -1151,19 +1152,19 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume initial"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr "Affichage rotatif des chaînes"
+msgstr "Affichage circulaire des chaînes"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr "Afficher le nom des chaines avec la source"
+msgstr "Afficher le nom des chaînes avec leur source"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Arrêt d'urgence"
 
 msgid "Plugins"
-msgstr "Greffons"
+msgstr "Modules"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Ce greffon n'a pas de paramètres!"
+msgstr "Ce module n'a pas de paramètres !"
 
 msgid "Setup"
 msgstr "Configuration"
@@ -1172,14 +1173,14 @@ msgid "Restart"
 msgstr "Redémarrer"
 
 msgid "Really restart?"
-msgstr "Redémarrage confirmée ?"
+msgstr "Confirmez le redémarrage ?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Arrêter l'enregistrement "
 
 msgid "Schedule"
-msgstr "Programmes"
+msgstr "Programme"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
@@ -1223,7 +1224,7 @@ msgid "Pausing live video..."
 msgstr "Pause de l'émission en direct..."
 
 msgid "Delete timeshift recording?"
-msgstr "Effacer l'enregistrement du timeshifting"
+msgstr "Supprimer l'enregistrement timeshift ?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1236,10 +1237,10 @@ msgid "No editing sequences defined!"
 msgstr "Aucune séquence d'édition définie !"
 
 msgid "Can't start editing process!"
-msgstr "Impossible de commencer le montage !"
+msgstr "Impossible de commencer l'édition !"
 
 msgid "Editing process started"
-msgstr "Opération de montage lancée"
+msgstr "Opération d'édition démarrée"
 
 msgid "Editing process already active!"
 msgstr "Montage déjà en cours !"
@@ -1260,7 +1261,7 @@ msgid "Button$Insert"
 msgstr "Insérer"
 
 msgid "Plugin"
-msgstr "Greffon"
+msgstr "Module"
 
 msgid "Up/Dn for new location - OK to move"
 msgstr "Haut/Bas -> nouvelle place - OK -> déplacer"
@@ -1301,13 +1302,13 @@ msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Le plugin %s démarre dans %ld min, continuer ?"
 
 msgid "Editing - restart anyway?"
-msgstr "Edition en cours - redémarrer ?"
+msgstr "Edition en cours - confimer redémarrage ?"
 
 msgid "Recording - restart anyway?"
-msgstr "Enregistrement en cours - redémarrer ?"
+msgstr "Enregistrement en cours - confirmer redémarrage ?"
 
 msgid "restart anyway?"
-msgstr "redémarrer ?"
+msgstr "confirmer redémarrage ?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1323,10 +1324,10 @@ msgid "LOAD"
 msgstr "CHARGER"
 
 msgid "TIMERS"
-msgstr "MINUTERIES"
+msgstr "PROGRAMMATIONS"
 
 msgid "DEVICES"
-msgstr "PÉRIPHÉRIQUES"
+msgstr "PERIPHERIQUES"
 
 msgid "LIVE"
 msgstr "DIRECT"

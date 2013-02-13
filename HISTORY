@@ -7590,7 +7590,7 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
-- Updated the French OSD texts (thanks to Marc Perrudin).
+- Updated the French OSD texts (thanks to Marc Perrudin and Bernard Jaulin).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed moving editing marks, so that they don't get overwritten with old values
   through an update of the marks file.
