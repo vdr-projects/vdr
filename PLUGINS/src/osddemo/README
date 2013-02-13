@@ -26,4 +26,9 @@ pixmap is displayed, it can be moved around with the Up, Down, Left
 and Right buttons. The Red button turns off the "Tiled Pixmaps"
 display, and the Green button toggles the color display.
 
+In both variants of the demo, pressing the '1' key displays all
+possible ellipses that can be drawn with the DrawEllipse() function,
+while pressing the '2' key shows all possible slopes the DrawSlope()
+function can draw.
+
 Press Ok to close the window.

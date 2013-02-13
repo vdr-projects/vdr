@@ -7607,3 +7607,5 @@ Video Disk Recorder Revision History
   for the Quadrants parameter are not implemented).
 - Made cOsd::DestroyPixmap() "NULL proof".
 - Now deleting any previously allocated pixmaps in cOsd::SetAreas().
+- Added demos of the DrawEllipse() and DrawSlope() function to the 'osddemo'
+  plugin (press '1' or '2', respectively).
