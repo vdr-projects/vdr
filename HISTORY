@@ -7606,3 +7606,4 @@ Video Disk Recorder Revision History
 - Fixed the description of the OSD drawing functions DrawEllipse() (the values -5...-8
   for the Quadrants parameter are not implemented).
 - Made cOsd::DestroyPixmap() "NULL proof".
+- Now deleting any previously allocated pixmaps in cOsd::SetAreas().

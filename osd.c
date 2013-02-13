@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.36 2013/02/13 12:52:07 kls Exp $
+ * $Id: osd.c 2.37 2013/02/13 12:55:26 kls Exp $
  */
 
 #include "osd.h"
@@ -1803,6 +1803,10 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
   if (Result == oeOk) {
      while (numBitmaps)
            delete bitmaps[--numBitmaps];
+     for (int i = 0; i < pixmaps.Size(); i++) {
+         delete pixmaps[i];
+         pixmaps[i] = NULL;
+         }
      width = height = 0;
      isTrueColor = NumAreas == 1 && Areas[0].bpp == 32;
      if (isTrueColor) {
