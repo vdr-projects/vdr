@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-12: Version 1.7.38
+2013-02-13: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7605,3 +7605,4 @@ Video Disk Recorder Revision History
   characters (reported by Andre Weidemann).
 - Fixed the description of the OSD drawing functions DrawEllipse() (the values -5...-8
   for the Quadrants parameter are not implemented).
+- Made cOsd::DestroyPixmap() "NULL proof".

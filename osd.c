@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.35 2013/02/08 10:16:47 kls Exp $
+ * $Id: osd.c 2.36 2013/02/13 12:52:07 kls Exp $
  */
 
 #include "osd.h"
@@ -1699,7 +1699,7 @@ cPixmap *cOsd::CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawP
 
 void cOsd::DestroyPixmap(cPixmap *Pixmap)
 {
-  if (isTrueColor) {
+  if (Pixmap) {
      LOCK_PIXMAPS;
      for (int i = 1; i < pixmaps.Size(); i++) { // begin at 1 - don't let the background pixmap be destroyed!
          if (pixmaps[i] == Pixmap) {
