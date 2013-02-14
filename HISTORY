@@ -7615,3 +7615,6 @@ Video Disk Recorder Revision History
 - No longer checking for EOPNOTSUPP in cDvbTuner::GetSignalQuality() to avoid breaking
   this function in case the driver suddenly decides to return a different errno value
   if an operation is not supported.
+- Moved the definition of TIMERMACRO_TITLE and TIMERMACRO_EPISODE from recording.h to
+  config.h and using them to initialize Setup.NameInstantRecord (avoids having the same
+  information in two places).

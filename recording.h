@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.43 2013/02/11 11:18:13 kls Exp $
+ * $Id: recording.h 2.44 2013/02/14 15:13:14 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -19,8 +19,6 @@
 #include "tools.h"
 
 #define FOLDERDELIMCHAR '~'
-#define TIMERMACRO_TITLE    "TITLE"
-#define TIMERMACRO_EPISODE  "EPISODE"
 
 extern int DirectoryPathMax;
 extern int DirectoryNameMax;

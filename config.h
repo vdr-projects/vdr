@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.66 2013/02/11 11:27:34 kls Exp $
+ * $Id: config.h 2.67 2013/02/14 15:13:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -43,6 +43,9 @@
 #define IDLEPRIORITY      (MINPRIORITY - 1)  // priority of an idle device
 #define MAXLIFETIME       99
 #define DEFINSTRECTIME    180 // default instant recording time (minutes)
+
+#define TIMERMACRO_TITLE    "TITLE"
+#define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920
