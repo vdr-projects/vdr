@@ -1,11 +1,11 @@
 # VDR language source file.
 # Copyright (C) 2009 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010, 2013.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.16\n"
+"Project-Id-Version: VDR 1.7.37\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
@@ -26,10 +26,10 @@ msgid "Can't start Transfer Mode!"
 msgstr "Negali pradėti perdavimo"
 
 msgid "off"
-msgstr "įjungti"
+msgstr "išjungti"
 
 msgid "on"
-msgstr "išjungti"
+msgstr "įjungti"
 
 msgid "auto"
 msgstr "auto"
@@ -74,7 +74,7 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
@@ -411,7 +411,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Groti/Pristabdyti"
 
 msgid "Key$Play"
 msgstr "Grona"
@@ -646,10 +646,10 @@ msgid "Button$Folder"
 msgstr "Katalogas"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Vienas"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Kartotinas"
 
 msgid "First day"
 msgstr "Pirma diena"
@@ -745,7 +745,7 @@ msgid "Delete recording?"
 msgstr "Ištrinti įrašą?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Įrašas yra redaguojamas - ar tikrai norite ištrinti?"
 
 msgid "Error while deleting recording!"
 msgstr "Klaida trinant įrašą!"
@@ -850,16 +850,16 @@ msgid "Setup.OSD$Number keys for characters"
 msgstr "Skaičių mygtukai simboliams"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Spalvotas mygtukas 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Spalvotas mygtukas 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Spalvotas mygtukas 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Spalvotas mygtukas 3"
 
 msgid "EPG"
 msgstr "Elektroninis programų gidas (EPG)"
@@ -930,7 +930,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Pirminiė DVB įvestis"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Standarto atitikimas"
 
 msgid "Setup.DVB$Video format"
 msgstr "Video formatas"
@@ -985,10 +985,10 @@ msgstr "Aukštasis LNB dažnis (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Įrenginys %d prijungtas prie sat kabelio"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "savas"
 
 msgid "CAM reset"
 msgstr "Dekodavimo modulis (CAM) perkrautas"
@@ -1078,7 +1078,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Rankiniu būdu vykdomo įrašo laikas (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "esamas įvykis"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maks. video failo dydis (MB)"
@@ -1099,13 +1099,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Rodyti pakartojimo ręžimą"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Rodyti kiek liko laiko iki pabaigos"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Progreso rodymo laikas (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pristabdyti pakartojimą kai vyksta žymėjimas"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Kūrinio ID"
@@ -1129,10 +1129,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Užlaikymas (ms) kanalo įvedimui"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Distancinio pulto komandų pakartojimų užlaikymas (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Laiko tarpai tarp distancinio pulto siunčiamų komandų (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanalas įjungimo metu"
@@ -1147,7 +1147,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalų pridengimas"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Kanalo pavadinimuose rodyti šaltinius"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Avarinis išėjimas"
@@ -1226,7 +1226,7 @@ msgid "No editing marks defined!"
 msgstr "Nenustatytos koregavimo žymės!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Nenustatyta koregavimo saka!"
 
 msgid "Can't start editing process!"
 msgstr "Negali pradėti koregavimo!"
@@ -1271,7 +1271,7 @@ msgid "Index file regeneration complete"
 msgstr "Index failo pergeneravimas baigtas"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Nepavyko pergeneruoti index failo!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sistemos negalima išjungti, nes starto metu nebuvo komandinėj eilutėj paduota savybė '-s'!"
@@ -1310,22 +1310,22 @@ msgid "Classic VDR"
 msgstr "Klasikinis VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISKAS"
 
 msgid "LOAD"
-msgstr ""
+msgstr "APKROVA"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "LAIKMAČIAI"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "ĮRENGINIAI"
 
 msgid "LIVE"
-msgstr ""
+msgstr "GYVAI"
 
 msgid "PLAY"
-msgstr ""
+msgstr "GROTI"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Skydeliai"

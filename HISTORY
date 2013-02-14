@@ -7609,3 +7609,4 @@ Video Disk Recorder Revision History
 - Now deleting any previously allocated pixmaps in cOsd::SetAreas().
 - Added demos of the DrawEllipse() and DrawSlope() function to the 'osddemo'
   plugin (press '1' or '2', respectively).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
