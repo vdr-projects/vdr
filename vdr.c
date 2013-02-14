@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.48 2013/02/08 10:47:02 kls Exp $
+ * $Id: vdr.c 2.49 2013/02/14 10:49:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -834,22 +834,26 @@ int main(int argc, char *argv[])
         time_t Now = time(NULL);
 
         // Make sure we have a visible programme in case device usage has changed:
-        if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
+        if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder()) {
            static time_t lastTime = 0;
-           if (!CamMenuActive() && Now - lastTime > MINCHANNELWAIT) { // !CamMenuActive() to avoid interfering with the CAM if a CAM menu is open
-              cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-              if (Channel && (Channel->Vpid() || Channel->Apid(0) || Channel->Dpid(0))) {
-                 if (cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(Channel->Number())) // try to switch to the original channel...
-                    ;
-                 else if (LastTimerChannel > 0) {
-                    Channel = Channels.GetByNumber(LastTimerChannel);
-                    if (Channel && cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer
+           if (!cDevice::PrimaryDevice()->HasProgramme()) {
+              if (!CamMenuActive() && Now - lastTime > MINCHANNELWAIT) { // !CamMenuActive() to avoid interfering with the CAM if a CAM menu is open
+                 cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+                 if (Channel && (Channel->Vpid() || Channel->Apid(0) || Channel->Dpid(0))) {
+                    if (cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(Channel->Number())) // try to switch to the original channel...
                        ;
+                    else if (LastTimerChannel > 0) {
+                       Channel = Channels.GetByNumber(LastTimerChannel);
+                       if (Channel && cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer
+                          ;
+                       }
                     }
+                 lastTime = Now; // don't do this too often
+                 LastTimerChannel = -1;
                  }
-              lastTime = Now; // don't do this too often
-              LastTimerChannel = -1;
               }
+           else
+              lastTime = 0; // makes sure we immediately try again next time
            }
         // Update the OSD size:
         {

@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-13: Version 1.7.38
+2013-02-14: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7610,3 +7610,5 @@ Video Disk Recorder Revision History
 - Added demos of the DrawEllipse() and DrawSlope() function to the 'osddemo'
   plugin (press '1' or '2', respectively).
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- The timeout for trying to switch to a valid programme is now reset immediately once
+  a programme has been found.
