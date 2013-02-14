@@ -7612,3 +7612,6 @@ Video Disk Recorder Revision History
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - The timeout for trying to switch to a valid programme is now reset immediately once
   a programme has been found.
+- No longer checking for EOPNOTSUPP in cDvbTuner::GetSignalQuality() to avoid breaking
+  this function in case the driver suddenly decides to return a different errno value
+  if an operation is not supported.
