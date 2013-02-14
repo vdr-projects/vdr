@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.37 2013/02/13 12:55:26 kls Exp $
+ * $Id: osd.c 2.38 2013/02/14 15:50:19 kls Exp $
  */
 
 #include "osd.h"
@@ -2057,7 +2057,7 @@ int cOsdProvider::StoreImage(const cImage &Image)
 {
   if (osdProvider)
      return osdProvider->StoreImageData(Image);
-  return -1;
+  return 0;
 }
 
 void cOsdProvider::DropImage(int ImageHandle)

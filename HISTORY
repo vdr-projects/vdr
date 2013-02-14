@@ -7618,3 +7618,4 @@ Video Disk Recorder Revision History
 - Moved the definition of TIMERMACRO_TITLE and TIMERMACRO_EPISODE from recording.h to
   config.h and using them to initialize Setup.NameInstantRecord (avoids having the same
   information in two places).
+- Fixed the return value of cOsdProvider::StoreImage() in case there is no OSD provider.
