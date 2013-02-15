@@ -7622,3 +7622,4 @@ Video Disk Recorder Revision History
 - Fixed the return value of cOsdProvider::StoreImage() in case there is no OSD provider.
 - Fixed a crash in cMenuEditChanItem::Set() when entering a channel number that
   doesn't exist (reported by Mikael Hübsch).
+- Fixed displaying pending timers in "alert" mode in the LCARS skin.
