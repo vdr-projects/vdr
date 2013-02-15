@@ -3069,3 +3069,7 @@ Marc Perrudin <vdr@ekass.net>
 
 Bernard Jaulin <bernard.jaulin@gmail.com>
  for translating OSD texts to the French language
+
+Mikael Hübsch <mikael.hubsch@gmail.com>
+ for reporting a crash in cMenuEditChanItem::Set() when entering a channel number that
+ doesn't exist

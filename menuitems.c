@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.15 2012/12/23 13:44:05 kls Exp $
+ * $Id: menuitems.c 2.16 2013/02/15 14:20:29 kls Exp $
  */
 
 #include "menuitems.h"
@@ -759,7 +759,7 @@ void cMenuEditChanItem::Set(void)
      snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
      SetValue(buf);
      if (channelID)
-        *channelID = channel->GetChannelID().ToString();
+        *channelID = channel ? channel->GetChannelID().ToString() : "";
      }
   else if (noneString) {
      SetValue(noneString);

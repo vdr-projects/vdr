@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-14: Version 1.7.38
+2013-02-15: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7620,3 +7620,5 @@ Video Disk Recorder Revision History
   config.h and using them to initialize Setup.NameInstantRecord (avoids having the same
   information in two places).
 - Fixed the return value of cOsdProvider::StoreImage() in case there is no OSD provider.
+- Fixed a crash in cMenuEditChanItem::Set() when entering a channel number that
+  doesn't exist (reported by Mikael Hübsch).
