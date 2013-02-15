@@ -10,6 +10,7 @@
 # Michael Nival <mnival@club-internet.fr>, 2007
 # Marc Perrudin <vdr@ekass.net>, 2013
 # Bernard Jaulin <bernard.jaulin@gmail.com>, 2013
+# Peter Münster <pmlists@free.fr>, 2013
 #
 msgid ""
 msgstr ""
@@ -145,7 +146,7 @@ msgid "Content$Sports"
 msgstr "Sports"
 
 msgid "Content$Special Event"
-msgstr "Evénement spécial"
+msgstr "Évènement spécial"
 
 msgid "Content$Sport Magazine"
 msgstr "Magazine sportif"
@@ -172,7 +173,7 @@ msgid "Content$Winter Sports"
 msgstr "Sports d'hiver"
 
 msgid "Content$Equestrian"
-msgstr "Equitation"
+msgstr "Équitation"
 
 msgid "Content$Martial Sports"
 msgstr "Sports de combat"
@@ -190,7 +191,7 @@ msgid "Content$Entertainment Programme for 10 to 16"
 msgstr "Programme de divertissement pour les 10-16 ans"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr "Informationnel/Educatif/Programme Scolaire "
+msgstr "Informationnel/Éducatif/Programme Scolaire "
 
 msgid "Content$Cartoons/Puppets"
 msgstr "Dessins animés/Marionnettes"
@@ -235,7 +236,7 @@ msgid "Content$Literature"
 msgstr "Littérature"
 
 msgid "Content$Film/Cinema"
-msgstr "Film/Cinema"
+msgstr "Film/Cinéma"
 
 msgid "Content$Experimental Film/Video"
 msgstr "Film Expérimental/Vidéo"
@@ -253,19 +254,19 @@ msgid "Content$Fashion"
 msgstr "Mode"
 
 msgid "Content$Social/Political/Economics"
-msgstr "Société/Politique/Economie"
+msgstr "Société/Politique/Économie"
 
 msgid "Content$Magazine/Report/Documentary"
 msgstr "Magazine/Reportage/Documentaire"
 
 msgid "Content$Economics/Social Advisory"
-msgstr "Economie/Reportage de Société"
+msgstr "Économie/Reportage de Société"
 
 msgid "Content$Remarkable People"
 msgstr "Personnalités"
 
 msgid "Content$Education/Science/Factual"
-msgstr "Education/Science/Factuel"
+msgstr "Éducation/Science/Factuel"
 
 msgid "Content$Nature/Animals/Environment"
 msgstr "Nature/Animaux/Environnement"
@@ -277,7 +278,7 @@ msgid "Content$Medicine/Physiology/Psychology"
 msgstr "Médecine/Physiologie/Psychologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr "Pays Etrangers/Expéditions"
+msgstr "Pays Étrangers/Expéditions"
 
 msgid "Content$Social/Spiritual Sciences"
 msgstr "Société/Sciences Spirituelles"
@@ -326,7 +327,7 @@ msgstr "Direct"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "A partir de %d"
+msgstr "À partir de %d"
 
 msgid "No title"
 msgstr "Sans titre"
@@ -681,7 +682,7 @@ msgid "Timer still recording - really delete?"
 msgstr "Enregistrement en cours - confirmer la suppression ?"
 
 msgid "Event"
-msgstr "Evénement"
+msgstr "Évènement"
 
 msgid "Button$Timer"
 msgstr "Programmation"
@@ -944,7 +945,7 @@ msgid "Setup.DVB$Video format"
 msgstr "Format vidéo"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Format d'affichage video"
+msgstr "Format d'affichage vidéo"
 
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Utiliser le Dolby Digital"
@@ -1086,10 +1087,10 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Durée enregistr. immédiat (min)"
 
 msgid "Setup.Recording$present event"
-msgstr "événement courrant"
+msgstr "Évènement courant"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Taille maxi des fichiers video (Mo)"
+msgstr "Taille maxi des fichiers vidéo (Mo)"
 
 msgid "Setup.Recording$Split edited files"
 msgstr "Scinder les fichiers édités"
@@ -1173,7 +1174,7 @@ msgid "Restart"
 msgstr "Redémarrer"
 
 msgid "Really restart?"
-msgstr "Confirmez le redémarrage ?"
+msgstr "Confirmer le redémarrage ?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
@@ -1255,7 +1256,7 @@ msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
-msgstr "Ecraser"
+msgstr "Écraser"
 
 msgid "Button$Insert"
 msgstr "Insérer"
@@ -1285,24 +1286,24 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Arrêt impossible - option '-s' absente !"
 
 msgid "Editing - shut down anyway?"
-msgstr "Edition en cours - confirmez l'arrêt ?"
+msgstr "Édition en cours - confirmer l'arrêt ?"
 
 msgid "Recording - shut down anyway?"
-msgstr "Enregistrement en cours - confirmez l'arrêt ?"
+msgstr "Enregistrement en cours - confirmer l'arrêt ?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Enregistrement dans %ld minutes - confirmez l'arrêt ?"
+msgstr "Enregistrement dans %ld minutes - confirmer l'arrêt ?"
 
 msgid "shut down anyway?"
-msgstr "confirmez l'arrêt ?"
+msgstr "confirmer l'arrêt ?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Le plugin %s démarre dans %ld min, continuer ?"
 
 msgid "Editing - restart anyway?"
-msgstr "Edition en cours - confimer redémarrage ?"
+msgstr "Édition en cours - confirmer redémarrage ?"
 
 msgid "Recording - restart anyway?"
 msgstr "Enregistrement en cours - confirmer redémarrage ?"
@@ -1327,7 +1328,7 @@ msgid "TIMERS"
 msgstr "PROGRAMMATIONS"
 
 msgid "DEVICES"
-msgstr "PERIPHERIQUES"
+msgstr "PÉRIPHÉRIQUES"
 
 msgid "LIVE"
 msgstr "DIRECT"
@@ -1386,7 +1387,7 @@ msgid "Switching primary DVB..."
 msgstr "Changement de périphérique DVB primaire..."
 
 msgid "Editing process failed!"
-msgstr "Echec du montage !"
+msgstr "Échec du montage !"
 
 msgid "Editing process finished"
 msgstr "Montage terminé"

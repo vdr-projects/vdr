@@ -3037,6 +3037,7 @@ Sören Moch <smoch@web.de>
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
+ for translating OSD texts to the French language
 
 Mike Hay <mike.hay@linenshorts.com>
  for reporting a problem with handling the case of the polarization character in
@@ -3064,7 +3065,7 @@ Malte Forkel <malte.forkel@berlin.de>
  given data already exists
 
 Marc Perrudin <vdr@ekass.net>
- for translating OSD texts to the French languag
+ for translating OSD texts to the French language
 
 Bernard Jaulin <bernard.jaulin@gmail.com>
  for translating OSD texts to the French language
