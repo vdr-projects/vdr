@@ -1248,7 +1248,7 @@ msgid "Editing process already active!"
 msgstr "Montage déjà en cours !"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " aàâbcçdeéèêëfghiîïjklmnoôpqrstuùûüvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " aàâbcçdeéèêëfghiîïjklmnoôöpqrstuùûüvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcàâç2\tdeféèê3\tghiîï4\tjkl5\tmnoô6\tpqrs7\ttuvù8\twxyz9"
