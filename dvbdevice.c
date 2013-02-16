@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.78 2013/02/14 13:21:34 kls Exp $
+ * $Id: dvbdevice.c 2.79 2013/02/16 12:47:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1535,7 +1535,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return true;
 }
 
-bool cDvbDevice::HasLock(int TimeoutMs)
+bool cDvbDevice::HasLock(int TimeoutMs) const
 {
   return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
 }

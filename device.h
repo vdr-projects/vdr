@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.45 2013/02/01 11:54:08 kls Exp $
+ * $Id: device.h 2.46 2013/02/16 12:47:18 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -328,13 +328,13 @@ public:
          ///< after the device has been successfully tuned to the requested transponder.
          ///< Seconds will be silently limited to MAXOCCUPIEDTIMEOUT. Values less than
          ///< 0 will be silently ignored.
-  virtual bool HasLock(int TimeoutMs = 0);
+  virtual bool HasLock(int TimeoutMs = 0) const;
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false
          ///< to indicate that it is not ready yet.
          ///< If TimeoutMs is not zero, waits for the given number of milliseconds
          ///< before returning false.
-  virtual bool HasProgramme(void);
+  virtual bool HasProgramme(void) const;
          ///< Returns true if the device is currently showing any programme to
          ///< the user, either through replaying or live.
 

@@ -7628,3 +7628,4 @@ Video Disk Recorder Revision History
 - Fixed some spellings in PLUGINS.html and Doxyfile (thanks to Ville Skyttä).
 - Added '-p' to the cp command in the install-conf target of the Makefile (thanks to
   Ville Skyttä).
+- Added missing 'const' to cDevice::HasProgramme() and cDevice::HasLock().

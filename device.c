@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.71 2013/02/01 12:00:09 kls Exp $
+ * $Id: device.c 2.72 2013/02/16 13:05:06 kls Exp $
  */
 
 #include "device.h"
@@ -845,12 +845,12 @@ bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return false;
 }
 
-bool cDevice::HasLock(int TimeoutMs)
+bool cDevice::HasLock(int TimeoutMs) const
 {
   return true;
 }
 
-bool cDevice::HasProgramme(void)
+bool cDevice::HasProgramme(void) const
 {
   return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
