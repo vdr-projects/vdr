@@ -1997,6 +1997,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing some typos in HISTORY and CONTRIBUTORS
  for fixing some spellings in osd.h and svdrp.c
  for adding missing $(LDFLAGS) to the Makefile of the dvbhddevice plugin
+ for fixing some spellings in PLUGINS.html and Doxyfile
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

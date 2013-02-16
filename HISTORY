@@ -7625,3 +7625,4 @@ Video Disk Recorder Revision History
 - Fixed displaying pending timers in "alert" mode in the LCARS skin.
 - Added missing $(LDFLAGS) to the Makefile of the dvbhddevice plugin (thanks to Ville
   Skyttä).
+- Fixed some spellings in PLUGINS.html and Doxyfile (thanks to Ville Skyttä).
