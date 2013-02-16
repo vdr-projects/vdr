@@ -7631,3 +7631,6 @@ Video Disk Recorder Revision History
 - Added missing 'const' to cDevice::HasProgramme() and cDevice::HasLock().
 - Fixed determining the priority of the primary device in case it is neither replaying
   nor receiving a live channel.
+- Removed all \return and \param tags from comment lines marked with "///<" for Doxygen.
+  There was only a rather small number of these, and I would probably always forget to
+  put them in place when writing future comments, so I decided to drop them entirely.

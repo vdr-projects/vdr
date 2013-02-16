@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.27 2013/02/16 12:48:11 kls Exp $
+ * $Id: dvbdevice.h 2.28 2013/02/16 15:20:17 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -119,7 +119,7 @@ public:
   static bool Initialize(void);
          ///< Initializes the DVB devices.
          ///< Must be called before accessing any DVB functions.
-         ///< \return True if any devices are available.
+         ///< Returns true if any devices are available.
 protected:
   int adapter, frontend;
 private:
