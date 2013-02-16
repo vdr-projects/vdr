@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.72 2013/02/16 13:05:06 kls Exp $
+ * $Id: device.c 2.73 2013/02/16 14:39:30 kls Exp $
  */
 
 #include "device.h"
@@ -1537,7 +1537,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 int cDevice::Priority(void) const
 {
   int priority = IDLEPRIORITY;
-  if (IsPrimaryDevice() && !Replaying() && ActualDevice() == PrimaryDevice())
+  if (IsPrimaryDevice() && !Replaying() && HasProgramme())
      priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {

@@ -7629,3 +7629,5 @@ Video Disk Recorder Revision History
 - Added '-p' to the cp command in the install-conf target of the Makefile (thanks to
   Ville Skyttä).
 - Added missing 'const' to cDevice::HasProgramme() and cDevice::HasLock().
+- Fixed determining the priority of the primary device in case it is neither replaying
+  nor receiving a live channel.
