@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.50 2013/01/27 14:19:49 kls Exp $
+# $Id: Makefile 2.51 2013/02/16 11:21:03 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -264,7 +264,7 @@ install-dirs:
 	@mkdir -p $(DESTDIR)$(RESDIR)
 
 install-conf:
-	@cp -n *.conf $(DESTDIR)$(CONFDIR)
+	@cp -pn *.conf $(DESTDIR)$(CONFDIR)
 
 # Documentation:
 
