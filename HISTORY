@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-15: Version 1.7.38
+2013-02-16: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7623,3 +7623,5 @@ Video Disk Recorder Revision History
 - Fixed a crash in cMenuEditChanItem::Set() when entering a channel number that
   doesn't exist (reported by Mikael Hübsch).
 - Fixed displaying pending timers in "alert" mode in the LCARS skin.
+- Added missing $(LDFLAGS) to the Makefile of the dvbhddevice plugin (thanks to Ville
+  Skyttä).
