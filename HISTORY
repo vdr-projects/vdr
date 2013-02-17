@@ -7639,3 +7639,4 @@ Video Disk Recorder Revision History
   dropped by Doxygen (reported by Ville Skyttä).
 - Using 'cat' instead of 'cp' to copy the Doxyfile to avoid problems in case Doxyfile
   is write protected.
+- Updated the Doxyfile with a newer version of Doxygen.
