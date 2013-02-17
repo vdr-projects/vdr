@@ -7585,7 +7585,7 @@ Video Disk Recorder Revision History
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
 
-2013-02-16: Version 1.7.38
+2013-02-17: Version 1.7.38
  
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
@@ -7634,3 +7634,5 @@ Video Disk Recorder Revision History
 - Removed all \return and \param tags from comment lines marked with "///<" for Doxygen.
   There was only a rather small number of these, and I would probably always forget to
   put them in place when writing future comments, so I decided to drop them entirely.
+- Added Doxyfile.filter to have special characters escaped that would otherwise be
+  dropped by Doxygen (reported by Ville Skyttä).
