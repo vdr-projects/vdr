@@ -7637,3 +7637,5 @@ Video Disk Recorder Revision History
   put them in place when writing future comments, so I decided to drop them entirely.
 - Added Doxyfile.filter to have special characters escaped that would otherwise be
   dropped by Doxygen (reported by Ville Skyttä).
+- Using 'cat' instead of 'cp' to copy the Doxyfile to avoid problems in case Doxyfile
+  is write protected.
