@@ -7640,3 +7640,4 @@ Video Disk Recorder Revision History
 - Using 'cat' instead of 'cp' to copy the Doxyfile to avoid problems in case Doxyfile
   is write protected.
 - Updated the Doxyfile with a newer version of Doxygen.
+- Turned off following symlinks in the Doxyfile.
