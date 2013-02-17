@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.22 2012/10/04 12:21:24 kls Exp $
+ * $Id: epg.c 2.23 2013/02/17 14:12:07 kls Exp $
  */
 
 #include "epg.h"
@@ -1135,7 +1135,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
   return false;
 }
 
-// --- cEpgDataWriter ---------------------------------------------------------
+// --- cEpgDataWriter --------------------------------------------------------
 
 class cEpgDataWriter : public cThread {
 private:

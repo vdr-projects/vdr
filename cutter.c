@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.23 2013/01/23 10:39:27 kls Exp $
+ * $Id: cutter.c 2.24 2013/02/17 14:11:03 kls Exp $
  */
 
 #include "cutter.h"
@@ -104,7 +104,7 @@ void cPacketStorage::Flush(int Pid, uchar *Data, int &Length, int MaxLength)
      buffers[Pid]->Flush(Data, Length, MaxLength);
 }
 
-// --- cMpeg2Fixer --------------------------------------------------------
+// --- cMpeg2Fixer -----------------------------------------------------------
 
 class cMpeg2Fixer : private cTsPayload {
 private:

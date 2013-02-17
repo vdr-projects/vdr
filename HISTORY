@@ -7643,3 +7643,4 @@ Video Disk Recorder Revision History
 - Turned off following symlinks in the Doxyfile.
 - Removed trailing whitespace.
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
+- Some formatting fixes.

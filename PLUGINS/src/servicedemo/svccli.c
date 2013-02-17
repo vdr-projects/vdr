@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svccli.c 2.2 2013/01/12 14:13:00 kls Exp $
+ * $Id: svccli.c 2.3 2013/02/17 14:10:26 kls Exp $
  */
 
 #include <stdlib.h>
@@ -32,7 +32,7 @@ struct AddService_v1_0 {
   int sum;
   };
 
-// --- cPluginSvcCli ----------------------------------------------------------
+// --- cPluginSvcCli ---------------------------------------------------------
 
 cOsdObject *cPluginSvcCli::MainMenuAction(void)
 {
