@@ -7642,3 +7642,4 @@ Video Disk Recorder Revision History
 - Updated the Doxyfile with a newer version of Doxygen.
 - Turned off following symlinks in the Doxyfile.
 - Removed trailing whitespace.
+- Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
