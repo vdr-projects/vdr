@@ -7630,7 +7630,8 @@ Video Disk Recorder Revision History
   Ville Skyttä).
 - Added missing 'const' to cDevice::HasProgramme() and cDevice::HasLock().
 - Fixed determining the priority of the primary device in case it is neither replaying
-  nor receiving a live channel.
+  nor receiving a live channel (thanks to Matthias Senzel for reporting a problem with
+  switching back to live viewing after replay in a setup with device bonding).
 - Removed all \return and \param tags from comment lines marked with "///<" for Doxygen.
   There was only a rather small number of these, and I would probably always forget to
   put them in place when writing future comments, so I decided to drop them entirely.

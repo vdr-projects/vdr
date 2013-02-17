@@ -3078,3 +3078,7 @@ Bernard Jaulin <bernard.jaulin@gmail.com>
 Mikael Hübsch <mikael.hubsch@gmail.com>
  for reporting a crash in cMenuEditChanItem::Set() when entering a channel number that
  doesn't exist
+
+Matthias Senzel <matthias.senzel@t-online.de>
+ for reporting a problem with switching back to live viewing after replay in a setup
+ with device bonding
