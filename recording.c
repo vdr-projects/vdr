@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.87 2013/02/11 11:18:22 kls Exp $
+ * $Id: recording.c 2.88 2013/02/17 13:17:55 kls Exp $
  */
 
 #include "recording.h"
@@ -1103,7 +1103,7 @@ bool cRecording::WriteInfo(void)
   return true;
 }
 
-void cRecording::SetStartTime(time_t Start) 
+void cRecording::SetStartTime(time_t Start)
 {
   start = Start;
   free(fileName);
@@ -2136,7 +2136,7 @@ int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
   return -1;
 }
 
-bool GenerateIndex(const char *FileName) 
+bool GenerateIndex(const char *FileName)
 {
   if (DirectoryOk(FileName)) {
      cRecording Recording(FileName);

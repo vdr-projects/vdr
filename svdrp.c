@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.23 2013/01/17 15:19:02 kls Exp $
+ * $Id: svdrp.c 2.24 2013/02/17 13:18:01 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1512,7 +1512,7 @@ void cSVDRP::CmdPUTE(const char *Option)
      else
         Reply(501, "Cannot open file \"%s\"", Option);
      }
-  else {     
+  else {
      delete PUTEhandler;
      PUTEhandler = new cPUTEhandler;
      Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.15 2013/01/25 10:43:14 kls Exp $
+ * $Id: dvbsdffdevice.h 2.16 2013/02/17 13:16:29 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -112,5 +112,5 @@ public:
   void SetOutputOnly(bool On) { outputOnly = On; }
   virtual bool Probe(int Adapter, int Frontend);
   };
- 
+
 #endif //__DVBSDFFDEVICE_H

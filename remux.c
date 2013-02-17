@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.73 2012/11/25 14:16:11 kls Exp $
+ * $Id: remux.c 2.74 2013/02/17 13:17:58 kls Exp $
  */
 
 #include "remux.h"
@@ -1244,7 +1244,7 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
                                          break;
            case nutCodedSliceNonIdr:
            case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {
-                                            ParseSliceHeader(); 
+                                            ParseSliceHeader();
                                             gotAccessUnitDelimiter = false;
                                             return tsPayload.Used();
                                             }

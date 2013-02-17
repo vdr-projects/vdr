@@ -7567,7 +7567,7 @@ Video Disk Recorder Revision History
   behavior of the remote control in case a key is held pressed down for a while, so
   that the repeat function kicks in (see MANUAL).
   The builtin LIRC and KBD remote controls already use these parameters. It is
-  recommended that plugins that implement an interface to any kind of remote controls 
+  recommended that plugins that implement an interface to any kind of remote controls
   also use the parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta for the desired
   purpose, and remove any setup options they might have that serve the same purpose.
 - cTimer no longer does any special "VFAT" handling to shorten directory names to 40
@@ -7586,7 +7586,7 @@ Video Disk Recorder Revision History
   line option switch.
 
 2013-02-17: Version 1.7.38
- 
+
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
@@ -7641,3 +7641,4 @@ Video Disk Recorder Revision History
   is write protected.
 - Updated the Doxyfile with a newer version of Doxygen.
 - Turned off following symlinks in the Doxyfile.
+- Removed trailing whitespace.

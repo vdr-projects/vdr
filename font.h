@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.6 2011/12/04 13:38:17 kls Exp $
+ * $Id: font.h 2.7 2013/02/17 13:17:42 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -43,7 +43,7 @@ public:
           ///< Returns the font name.
   virtual int Size(void) const { return Height(); }
           ///< Returns the original size as requested when the font was created.
-          ///< This may be different than the actual height. 
+          ///< This may be different than the actual height.
   virtual int Width(uint c) const = 0;
           ///< Returns the width of the given character in pixel.
   virtual int Width(const char *s) const = 0;

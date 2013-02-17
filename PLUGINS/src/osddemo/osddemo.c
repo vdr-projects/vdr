@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.9 2013/02/13 13:46:31 kls Exp $
+ * $Id: osddemo.c 2.10 2013/02/17 13:16:34 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -335,7 +335,7 @@ void cTrueColorDemo::Action(void)
                        State++;
                      }
                      break;
-             case 1: { 
+             case 1: {
                        FadeInPixmap = CreateTextPixmap("Video Disk Recorder", Line, 3, clrYellow, clrTransparent, OsdFont);
                        if (FadeInPixmap)
                           Line += FadeInPixmap->DrawPort().Height();

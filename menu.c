@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.78 2013/02/12 13:10:53 kls Exp $
+ * $Id: menu.c 2.79 2013/02/17 13:17:49 kls Exp $
  */
 
 #include "menu.h"
@@ -2811,7 +2811,7 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   standardComplianceTexts[1] = "ANSI/SCTE";
 
   SetSection(tr("DVB"));
-  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL); 
+  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL);
   Setup();
 }
 
@@ -2865,7 +2865,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
        case kYellow: cRemote::Put(kSubtitles, true);
                      state = osEnd;
                      break;
-       default: { 
+       default: {
             bool DoSetup = data.VideoFormat != newVideoFormat;
             DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
             if (numAudioLanguages != oldnumAudioLanguages) {
@@ -4961,7 +4961,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    if (Setup.DelTimeshiftRec) { 
+            case kBack:    if (Setup.DelTimeshiftRec) {
                               cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
                               return rc && rc->InstantId() ? osEnd : osRecordings;
                               }
