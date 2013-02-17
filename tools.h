@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.23 2012/12/06 08:59:39 kls Exp $
+ * $Id: tools.h 2.24 2013/02/17 13:18:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -45,7 +45,7 @@ extern int SysLogLevel;
 
 #define MALLOC(type, size)  (type *)malloc(sizeof(type) * (size))
 
-template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; } 
+template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; }
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)

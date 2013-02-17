@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.32 2012/05/08 08:17:17 kls Exp $
+ * $Id: dvbsubtitle.c 2.33 2013/02/17 13:17:38 kls Exp $
  */
 
 
@@ -1283,7 +1283,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
         }
   cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
   bitmaps->Add(Bitmaps);
-  for (int i = 0; i < NumAreas; i++) { 
+  for (int i = 0; i < NumAreas; i++) {
       cSubtitleRegion *sr = Page->regions.Get(i);
       cSubtitleClut *clut = Page->GetClutById(sr->ClutId());
       if (!clut)

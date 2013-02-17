@@ -55,3 +55,7 @@ VDR Plugin 'dvbhddevice' Revision History
 2013-01-24: Version 0.0.7
 
 - Fixed cHdffOsd::SetAreas() (didn't clear the OSD).
+
+2013-02-16: Version 0.0.8
+
+- Added missing $(LDFLAGS) to the Makefile (thanks to Ville Skyttä).

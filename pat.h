@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 2.2 2011/12/04 13:38:17 kls Exp $
+ * $Id: pat.h 2.3 2013/02/16 15:20:24 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -37,7 +37,7 @@ int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSy
          ///< Copies all available CA descriptors for the given Source, Transponder and ServiceId
          ///< into the provided buffer at Data (at most BufSize bytes). Only those CA descriptors
          ///< are copied that match one of the given CA system IDs.
-         ///< \return Returns the number of bytes copied into Data (0 if no CA descriptors are
+         ///< Returns the number of bytes copied into Data (0 if no CA descriptors are
          ///< available), or -1 if BufSize was too small to hold all CA descriptors.
          ///< The return value tells whether these CA descriptors are to be used
          ///< for the individual streams.

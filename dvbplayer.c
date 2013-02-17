@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.29 2013/01/27 14:03:16 kls Exp $
+ * $Id: dvbplayer.c 2.30 2013/02/12 10:50:10 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -576,7 +576,7 @@ void cDvbPlayer::Action(void)
           if (eof || SwitchToPlayFrame) {
              bool SwitchToPlay = false;
              uint32_t Stc = DeviceGetSTC();
-             if (Stc != LastStc)
+             if (Stc != LastStc || playMode == pmPause)
                 StuckAtEof = 0;
              else if (!StuckAtEof)
                 StuckAtEof = time(NULL);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.26 2012/03/31 11:13:31 kls Exp $
+ * $Id: dvbdevice.h 2.28 2013/02/16 15:20:17 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -119,7 +119,7 @@ public:
   static bool Initialize(void);
          ///< Initializes the DVB devices.
          ///< Must be called before accessing any DVB functions.
-         ///< \return True if any devices are available.
+         ///< Returns true if any devices are available.
 protected:
   int adapter, frontend;
 private:
@@ -192,7 +192,7 @@ public:
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 public:
-  virtual bool HasLock(int TimeoutMs = 0);
+  virtual bool HasLock(int TimeoutMs = 0) const;
 
 // PID handle facilities
 

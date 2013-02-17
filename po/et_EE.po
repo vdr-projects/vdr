@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Arthur Konovalov <artlov@gmail.com>, 2004-2010
+# Arthur Konovalov <artlov@gmail.com>, 2004-2013
 #
 msgid ""
 msgstr ""
@@ -1129,10 +1129,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Kanali sisestamise ajalimiit (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Kaugjuhtimispuldi kordamise viide (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Kaugjuhtimispuldi kordamise delta (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanal käivitamisel"

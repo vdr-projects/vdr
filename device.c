@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.71 2013/02/01 12:00:09 kls Exp $
+ * $Id: device.c 2.73 2013/02/16 14:39:30 kls Exp $
  */
 
 #include "device.h"
@@ -845,12 +845,12 @@ bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return false;
 }
 
-bool cDevice::HasLock(int TimeoutMs)
+bool cDevice::HasLock(int TimeoutMs) const
 {
   return true;
 }
 
-bool cDevice::HasProgramme(void)
+bool cDevice::HasProgramme(void) const
 {
   return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
@@ -1537,7 +1537,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 int cDevice::Priority(void) const
 {
   int priority = IDLEPRIORITY;
-  if (IsPrimaryDevice() && !Replaying() && ActualDevice() == PrimaryDevice())
+  if (IsPrimaryDevice() && !Replaying() && HasProgramme())
      priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {

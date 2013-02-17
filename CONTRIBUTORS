@@ -1996,6 +1996,11 @@ Ville Skyttä <ville.skytta@iki.fi>
  for fixing cConfig::Load() for g++ version 4.7.0
  for fixing some typos in HISTORY and CONTRIBUTORS
  for fixing some spellings in osd.h and svdrp.c
+ for adding missing $(LDFLAGS) to the Makefile of the dvbhddevice plugin
+ for fixing some spellings in PLUGINS.html and Doxyfile
+ for adding '-p' to the cp command in the install-conf target of the Makefile
+ for reporting that some special characters are dropped by Doxygen and thus need to
+ be escaped
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2248,6 +2253,9 @@ André Weidemann <Andre.Weidemann@web.de>
  1.7.32 no longer generates a mark at that point
  for suggesting to automatically go into Pause mode if an editing mark is set during
  replay
+ for reporting a bug in selecting the last replayed recording in the Recordings menu
+ in case there are folders and plain recordings with names that differ only in
+ non-alphanumeric characters
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
@@ -2801,6 +2809,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting that the SVDRP command UPDR didn't update the global recordings list
  for fixing a typo in skins.h
  for fixing some #include statements in plugins to use <vdr/...> instead of "vdr/..."
+ for reporting an invalid line in channels.conf.terr
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2935,6 +2944,7 @@ Dominic Evans <oldmanuk@gmail.com>
  for adding cap_net_raw to the capabilities that are not dropped
  for suggesting to make the channel name column in the "What's on now/next" menu
  adjust its width to display the full short name of each channel
+ for reporting wrong permissions of po/sr_SR.po
 
 Torsten Lang <info@torstenlang.de>
  for reporting a problem with newline characters in stream component descriptions
@@ -3032,6 +3042,7 @@ Sören Moch <smoch@web.de>
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
+ for translating OSD texts to the French language
 
 Mike Hay <mike.hay@linenshorts.com>
  for reporting a problem with handling the case of the polarization character in
@@ -3057,3 +3068,17 @@ Stefan Stolz <st.stolz@gmail.com>
 Malte Forkel <malte.forkel@berlin.de>
  for suggesting to make the SVDRP command NEWT no longer check whether a timer with the
  given data already exists
+
+Marc Perrudin <vdr@ekass.net>
+ for translating OSD texts to the French language
+
+Bernard Jaulin <bernard.jaulin@gmail.com>
+ for translating OSD texts to the French language
+
+Mikael Hübsch <mikael.hubsch@gmail.com>
+ for reporting a crash in cMenuEditChanItem::Set() when entering a channel number that
+ doesn't exist
+
+Matthias Senzel <matthias.senzel@t-online.de>
+ for reporting a problem with switching back to live viewing after replay in a setup
+ with device bonding

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.64 2013/02/05 11:19:20 kls Exp $
+ * $Id: config.h 2.67 2013/02/14 15:13:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.37"
-#define VDRVERSNUM   10737  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.38"
+#define VDRVERSNUM   10738  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.37"
-#define APIVERSNUM   10737  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.38"
+#define APIVERSNUM   10738  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -43,6 +43,9 @@
 #define IDLEPRIORITY      (MINPRIORITY - 1)  // priority of an idle device
 #define MAXLIFETIME       99
 #define DEFINSTRECTIME    180 // default instant recording time (minutes)
+
+#define TIMERMACRO_TITLE    "TITLE"
+#define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.76 2013/02/02 14:00:39 kls Exp $
+ * $Id: menu.c 2.79 2013/02/17 13:17:49 kls Exp $
  */
 
 #include "menu.h"
@@ -2306,8 +2306,10 @@ void cMenuRecordings::Set(bool Refresh)
             if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
                SetCurrent(LastItem);
             }
-         if (LastDir)
+         if (LastDir) {
             LastDir->IncrementCounter(recording->IsNew());
+            LastItem = LastDir;
+            }
          }
       }
   if (Refresh)
@@ -2809,7 +2811,7 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   standardComplianceTexts[1] = "ANSI/SCTE";
 
   SetSection(tr("DVB"));
-  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL); 
+  SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL);
   Setup();
 }
 
@@ -2863,7 +2865,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
        case kYellow: cRemote::Put(kSubtitles, true);
                      state = osEnd;
                      break;
-       default: { 
+       default: {
             bool DoSetup = data.VideoFormat != newVideoFormat;
             DoSetup |= data.DisplaySubtitles != newDisplaySubtitles;
             if (numAudioLanguages != oldnumAudioLanguages) {
@@ -4763,9 +4765,8 @@ void cReplayControl::MarkToggle(void)
 {
   int Current, Total;
   if (GetIndex(Current, Total, true)) {
-     cMark *m = marks.Get(Current);
      lastCurrent = -1; // triggers redisplay
-     if (m)
+     if (cMark *m = marks.Get(Current))
         marks.Del(m);
      else {
         marks.Add(Current);
@@ -4784,8 +4785,7 @@ void cReplayControl::MarkJump(bool Forward)
   int Current, Total;
   if (GetIndex(Current, Total)) {
      if (marks.Count()) {
-        cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-        if (m) {
+        if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
            Goto(m->Position(), true);
            displayFrames = true;
            return;
@@ -4801,8 +4801,7 @@ void cReplayControl::MarkMove(bool Forward)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
-     cMark *m = marks.Get(Current);
-     if (m) {
+     if (cMark *m = marks.Get(Current)) {
         displayFrames = true;
         int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
@@ -4878,7 +4877,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
      return osEnd;
-  if (Key == kNone)
+  if (Key == kNone && !marksModified)
      marks.Update();
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
@@ -4962,7 +4961,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    if (Setup.DelTimeshiftRec) { 
+            case kBack:    if (Setup.DelTimeshiftRec) {
                               cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
                               return rc && rc->InstantId() ? osEnd : osRecordings;
                               }

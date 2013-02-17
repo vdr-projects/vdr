@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.48 2013/01/29 08:59:36 kls Exp $
+ * $Id: dvbhdffdevice.c 1.49 2013/02/17 14:10:06 kls Exp $
  */
 
 #include <stdint.h>
@@ -27,7 +27,7 @@
 static uchar *YuvToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality);
 
 
-// --- cDvbHdFfDevice ----------------------------------------------------------
+// --- cDvbHdFfDevice --------------------------------------------------------
 
 int cDvbHdFfDevice::devHdffOffset = -1;
 

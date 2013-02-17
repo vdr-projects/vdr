@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.18 2013/01/25 14:54:11 kls Exp $
+ * $Id: skinlcars.c 2.19 2013/02/15 15:08:02 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1136,7 +1136,7 @@ void cSkinLCARSDisplayMenu::DrawTimer(const cTimer *Timer, int y, bool MultiRec)
   // The timer data:
   bool Alert = !Timer->Recording() && Timer->Pending();
   tColor ColorFg = Alert ? Theme.Color(clrAlertFg) : Theme.Color(clrTimerFg);
-  tColor ColorBg = Alert ? Theme.Color(clrAlertFg) : Theme.Color(clrTimerBg);
+  tColor ColorBg = Alert ? Theme.Color(clrAlertBg) : Theme.Color(clrTimerBg);
   osd->DrawRectangle(xs00, y, xs03 - 1, y + lineHeight - 1, ColorBg);
   cString Date;
   if (Timer->Recording())

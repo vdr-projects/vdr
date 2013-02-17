@@ -7567,7 +7567,7 @@ Video Disk Recorder Revision History
   behavior of the remote control in case a key is held pressed down for a while, so
   that the repeat function kicks in (see MANUAL).
   The builtin LIRC and KBD remote controls already use these parameters. It is
-  recommended that plugins that implement an interface to any kind of remote controls 
+  recommended that plugins that implement an interface to any kind of remote controls
   also use the parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta for the desired
   purpose, and remove any setup options they might have that serve the same purpose.
 - cTimer no longer does any special "VFAT" handling to shorten directory names to 40
@@ -7584,3 +7584,63 @@ Video Disk Recorder Revision History
   as few pixmaps as possible.
 - Fixed formatting and removed some superfluous break statements in vdr.c's command
   line option switch.
+
+2013-02-17: Version 1.7.38
+
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the French OSD texts (thanks to Marc Perrudin, Bernard Jaulini and Peter
+  Münster).
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Fixed moving editing marks, so that they don't get overwritten with old values
+  through an update of the marks file.
+- Removed an invalid line from channels.conf.terr (reported by Lars Hanisch).
+- Fixed an unexpected k_Repeat key event after a k_Release in lirc.c.
+- Fixed permissions of po/sr_SR.po (reported by Dominic Evans).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed using "Pause" and "Slow motion" near the end of a recording (replay stopped
+  a few seconds after the end of the recording file has been reached).
+- Fixed selecting the last replayed recording in the Recordings menu in case there
+  are folders and plain recordings with names that differ only in non-alphanumeric
+  characters (reported by Andre Weidemann).
+- Fixed the description of the OSD drawing functions DrawEllipse() (the values -5...-8
+  for the Quadrants parameter are not implemented).
+- Made cOsd::DestroyPixmap() "NULL proof".
+- Now deleting any previously allocated pixmaps in cOsd::SetAreas().
+- Added demos of the DrawEllipse() and DrawSlope() function to the 'osddemo'
+  plugin (press '1' or '2', respectively).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- The timeout for trying to switch to a valid programme is now reset immediately once
+  a programme has been found.
+- No longer checking for EOPNOTSUPP in cDvbTuner::GetSignalQuality() to avoid breaking
+  this function in case the driver suddenly decides to return a different errno value
+  if an operation is not supported.
+- Moved the definition of TIMERMACRO_TITLE and TIMERMACRO_EPISODE from recording.h to
+  config.h and using them to initialize Setup.NameInstantRecord (avoids having the same
+  information in two places).
+- Fixed the return value of cOsdProvider::StoreImage() in case there is no OSD provider.
+- Fixed a crash in cMenuEditChanItem::Set() when entering a channel number that
+  doesn't exist (reported by Mikael Hübsch).
+- Fixed displaying pending timers in "alert" mode in the LCARS skin.
+- Added missing $(LDFLAGS) to the Makefile of the dvbhddevice plugin (thanks to Ville
+  Skyttä).
+- Fixed some spellings in PLUGINS.html and Doxyfile (thanks to Ville Skyttä).
+- Added '-p' to the cp command in the install-conf target of the Makefile (thanks to
+  Ville Skyttä).
+- Added missing 'const' to cDevice::HasProgramme() and cDevice::HasLock().
+- Fixed determining the priority of the primary device in case it is neither replaying
+  nor receiving a live channel (thanks to Matthias Senzel for reporting a problem with
+  switching back to live viewing after replay in a setup with device bonding).
+- Removed all \return and \param tags from comment lines marked with "///<" for Doxygen.
+  There was only a rather small number of these, and I would probably always forget to
+  put them in place when writing future comments, so I decided to drop them entirely.
+- Added Doxyfile.filter to have special characters escaped that would otherwise be
+  dropped by Doxygen (reported by Ville Skyttä).
+- Using 'cat' instead of 'cp' to copy the Doxyfile to avoid problems in case Doxyfile
+  is write protected.
+- Updated the Doxyfile with a newer version of Doxygen.
+- Turned off following symlinks in the Doxyfile.
+- Removed trailing whitespace.
+- Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
+- Some formatting fixes.

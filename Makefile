@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.50 2013/01/27 14:19:49 kls Exp $
+# $Id: Makefile 2.52 2013/02/17 11:08:04 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -264,7 +264,7 @@ install-dirs:
 	@mkdir -p $(DESTDIR)$(RESDIR)
 
 install-conf:
-	@cp -n *.conf $(DESTDIR)$(CONFDIR)
+	@cp -pn *.conf $(DESTDIR)$(CONFDIR)
 
 # Documentation:
 
@@ -303,7 +303,7 @@ install-pc: vdr.pc
 # Source documentation:
 
 srcdoc:
-	@cp $(DOXYFILE) $(DOXYFILE).tmp
+	@cat $(DOXYFILE) > $(DOXYFILE).tmp
 	@echo PROJECT_NUMBER = $(VDRVERSION) >> $(DOXYFILE).tmp
 	$(DOXYGEN) $(DOXYFILE).tmp
 	@rm $(DOXYFILE).tmp

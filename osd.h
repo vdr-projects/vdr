@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.19 2013/02/08 09:47:56 kls Exp $
+ * $Id: osd.h 2.20 2013/02/12 13:39:08 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -253,7 +253,7 @@ public:
        ///< 0       draws the entire ellipse
        ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
        ///< 5..8    draws the right, top, left or bottom half, respectively
-       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< -1..-4  draws the inverted part of the given quadrant
        ///< If Quadrants is not 0, the coordinates are those of the actual area, not
        ///< the full circle!
   void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
@@ -624,7 +624,7 @@ public:
        ///< 0       draws the entire ellipse
        ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
        ///< 5..8    draws the right, top, left or bottom half, respectively
-       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< -1..-4  draws the inverted part of the given quadrant
        ///< If Quadrants is not 0, the coordinates are those of the actual area, not
        ///< the full circle!
   virtual void DrawSlope(const cRect &Rect, tColor Color, int Type) = 0;
@@ -897,7 +897,7 @@ public:
        ///< 0       draws the entire ellipse
        ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
        ///< 5..8    draws the right, top, left or bottom half, respectively
-       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< -1..-4  draws the inverted part of the given quadrant
        ///< If Quadrants is not 0, the coordinates are those of the actual area, not
        ///< the full circle!
   virtual void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);

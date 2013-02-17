@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.42 2013/02/07 13:42:17 kls Exp $
+ * $Id: recording.h 2.44 2013/02/14 15:13:14 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -19,8 +19,6 @@
 #include "tools.h"
 
 #define FOLDERDELIMCHAR '~'
-#define TIMERMACRO_TITLE    "TITLE"
-#define TIMERMACRO_EPISODE  "EPISODE"
 
 extern int DirectoryPathMax;
 extern int DirectoryNameMax;
@@ -234,6 +232,7 @@ private:
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
+  bool Save(void);
   void Align(void);
   void Sort(void);
   void Add(int Position);

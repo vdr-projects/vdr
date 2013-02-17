@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.77 2012/12/30 13:08:41 kls Exp $
+ * $Id: dvbdevice.c 2.80 2013/02/17 13:17:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -583,15 +583,13 @@ int cDvbTuner::GetSignalQuality(void) const
      while (1) {
            if (ioctl(fd_frontend, FE_READ_SNR, &Snr) != -1)
               break;
-           if (errno == EOPNOTSUPP) {
+           if (errno != EINTR) {
               Snr = 0xFFFF;
 #ifdef DEBUG_SIGNALQUALITY
               HasSnr = false;
 #endif
               break;
               }
-           if (errno != EINTR)
-              return -1;
            }
 #ifdef DEBUG_SIGNALQUALITY
      bool HasBer = true;
@@ -600,15 +598,13 @@ int cDvbTuner::GetSignalQuality(void) const
      while (1) {
            if (ioctl(fd_frontend, FE_READ_BER, &Ber) != -1)
               break;
-           if (errno == EOPNOTSUPP) {
+           if (errno != EINTR) {
               Ber = 0;
 #ifdef DEBUG_SIGNALQUALITY
               HasBer = false;
 #endif
               break;
               }
-           if (errno != EINTR)
-              return -1;
            }
 #ifdef DEBUG_SIGNALQUALITY
      bool HasUnc = true;
@@ -617,15 +613,13 @@ int cDvbTuner::GetSignalQuality(void) const
      while (1) {
            if (ioctl(fd_frontend, FE_READ_UNCORRECTED_BLOCKS, &Unc) != -1)
               break;
-           if (errno == EOPNOTSUPP) {
+           if (errno != EINTR) {
               Unc = 0;
 #ifdef DEBUG_SIGNALQUALITY
               HasUnc = false;
 #endif
               break;
               }
-           if (errno != EINTR)
-              return -1;
            }
      uint16_t MaxSnr = 0xFFFF; // Let's assume the default is using the entire range.
      // Use the subsystemId to identify individual devices in case they need
@@ -665,7 +659,7 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
      }
   static cMutex Mutex;
   if (Diseqc->IsScr())
-     Mutex.Lock(); 
+     Mutex.Lock();
   struct dvb_diseqc_master_cmd cmd;
   const char *CurrentAction = NULL;
   for (;;) {
@@ -687,7 +681,7 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
   if (scr)
      ResetToneAndVoltage(); // makes sure we don't block the bus!
   if (Diseqc->IsScr())
-     Mutex.Unlock(); 
+     Mutex.Unlock();
 }
 
 void cDvbTuner::ResetToneAndVoltage(void)
@@ -1541,7 +1535,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return true;
 }
 
-bool cDvbDevice::HasLock(int TimeoutMs)
+bool cDvbDevice::HasLock(int TimeoutMs) const
 {
   return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
 }

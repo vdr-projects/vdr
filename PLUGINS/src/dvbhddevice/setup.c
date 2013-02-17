@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: setup.c 1.18 2012/11/15 09:20:50 kls Exp $
+ * $Id: setup.c 1.19 2013/02/17 13:25:17 kls Exp $
  */
 
 #include "setup.h"
@@ -436,26 +436,26 @@ void cHdffSetupPage::Store(void)
 
 eOSState cHdffSetupPage::ProcessKey(eKeys key)
 {
-	eOSState state = cMenuSetupPage::ProcessKey(key);
+        eOSState state = cMenuSetupPage::ProcessKey(key);
 
-	if (state == osContinue)
-	{
-		cOsdItem * item;
-		switch (key)
-		{
-			case kLeft:
-			case kRight:
-				item = Get(Current());
-				if (item == mTvFormatItem)
-				{
-				    mVideoConversion = 0;
-					BuildVideoConversionItem();
-					Display();
-				}
-				break;
-			default:
-				break;
-		}
-	}
-	return state;
+        if (state == osContinue)
+        {
+                cOsdItem * item;
+                switch (key)
+                {
+                        case kLeft:
+                        case kRight:
+                                item = Get(Current());
+                                if (item == mTvFormatItem)
+                                {
+                                    mVideoConversion = 0;
+                                        BuildVideoConversionItem();
+                                        Display();
+                                }
+                                break;
+                        default:
+                                break;
+                }
+        }
+        return state;
 }

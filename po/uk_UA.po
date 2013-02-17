@@ -1,20 +1,21 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007, 2008, 2010
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007-2010, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.7\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2010-04-25 16:35+0200\n"
+"PO-Revision-Date: 2013-02-09 16:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Неправильний канал ***"
@@ -50,10 +51,10 @@ msgid "Inversion"
 msgstr "Інверсія"
 
 msgid "CoderateH"
-msgstr "CoderateH"
+msgstr "Шв.кодуванняH"
 
 msgid "CoderateL"
-msgstr "CoderateL"
+msgstr "Шв.кодуванняL"
 
 msgid "Modulation"
 msgstr "Модуляція"
@@ -74,7 +75,7 @@ msgid "Rolloff"
 msgstr "Крен"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Починаю EPG-сканування"
@@ -128,7 +129,7 @@ msgid "Content$Game Show/Quiz/Contest"
 msgstr "Ігрове шоу/Тести"
 
 msgid "Content$Variety Show"
-msgstr "Вар’єте"
+msgstr "Вар'єте"
 
 msgid "Content$Talk Show"
 msgstr "Ток шоу"
@@ -411,7 +412,7 @@ msgid "Key$Info"
 msgstr "Інфо"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Програвати/Пауза"
 
 msgid "Key$Play"
 msgstr "Програвання"
@@ -456,7 +457,7 @@ msgid "Key$Volume-"
 msgstr "Гучність -"
 
 msgid "Key$Mute"
-msgstr "Виключити звук"
+msgstr "Без звуку"
 
 msgid "Key$Audio"
 msgstr "Мова"
@@ -588,29 +589,29 @@ msgid "Delete channel?"
 msgstr "Видалити канал?"
 
 msgid "Edit folder"
-msgstr "Редагувати каталог"
+msgstr "Редагувати теку"
 
 msgid "New folder"
-msgstr "Новий каталог"
+msgstr "Нова тека"
 
 msgid "Sub folder"
-msgstr "Підкаталог"
+msgstr "Підтека"
 
 msgid "Folder name already exists!"
-msgstr "Назва каталогу вже існує!"
+msgstr "Назва теки вже існує!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "Назва каталогу не повинна містити '%c'!"
+msgstr "Назва теки не повинна містити '%c'!"
 
 msgid "Button$Select"
 msgstr "Вибрати"
 
 msgid "Delete folder and all sub folders?"
-msgstr "Видалити каталог і всі підкаталоги?"
+msgstr "Видалити теку і всі підтеки?"
 
 msgid "Delete folder?"
-msgstr "Видалити каталог?"
+msgstr "Видалити теку?"
 
 msgid "Edit timer"
 msgstr "Налаштування таймера"
@@ -643,19 +644,19 @@ msgid "File"
 msgstr "Файл"
 
 msgid "Button$Folder"
-msgstr "Каталог"
+msgstr "Тека"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Одинарне"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Повтор"
 
 msgid "First day"
 msgstr "Перший день"
 
 msgid "Select folder"
-msgstr "Вибрати каталог"
+msgstr "Вибрати теку"
 
 msgid "Timers"
 msgstr "Таймери"
@@ -745,7 +746,7 @@ msgid "Delete recording?"
 msgstr "Витерти запис?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Запис редагується - дійсно вилучити?"
 
 msgid "Error while deleting recording!"
 msgstr "Помилка видалення запису!"
@@ -790,28 +791,28 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Час показу повідомлень (сек)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Викор. малий фонт"
+msgstr "Викор. малий шрифт"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Згладжування фонтів"
+msgstr "Згладжування шрифтів"
 
 msgid "Setup.OSD$Default font"
-msgstr "Стандартний фонт"
+msgstr "Стандартний шрифт"
 
 msgid "Setup.OSD$Small font"
-msgstr "Малий фонт"
+msgstr "Малий шрифт"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Фіксований фонт"
+msgstr "Фіксований шрифт"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Розмір типового фонта (%)"
+msgstr "Розмір типового шрифта (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr "Размір малого фонта (%)"
+msgstr "Розмір малого шрифта (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Размір фіксованого фонта (%)"
+msgstr "Розмір фіксованого шрифта (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Положення інформації про канал"
@@ -841,25 +842,25 @@ msgid "Setup.OSD$Menu key closes"
 msgstr "Кнопку Меню закрити"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Каталоги зберігання записів"
+msgstr "Теки зберігання записів"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Каталоги в меню таймера"
+msgstr "Теки в меню таймера"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Кількість клавіш для символів"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Кольорова кнопка 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Кольорова кнопка 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Кольорова кнопка 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Кольорова кнопка 3"
 
 msgid "EPG"
 msgstr "Телегід (EPG)"
@@ -930,7 +931,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Основний DVB-пристрій"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Відповідність стандарту"
 
 msgid "Setup.DVB$Video format"
 msgstr "Формат відео"
@@ -985,10 +986,10 @@ msgstr "Верхня частота конвертера (МГц)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Пристрій %d під’єднано до сателітарного кабелю"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "власне"
 
 msgid "CAM reset"
 msgstr "Перезавантаження CAM"
@@ -1009,7 +1010,7 @@ msgid "Button$Reset"
 msgstr "Скинути"
 
 msgid "Opening CAM menu..."
-msgstr "Відкриваю меню CAM-модуля..."
+msgstr "Відкривання меню CAM-модуля..."
 
 msgid "Can't open CAM menu!"
 msgstr "Меню CAM-модуля недоступне!"
@@ -1078,7 +1079,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Протяжність ручного запису (хв)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "теперішня передача"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Макс. размір відеофайлу (Мб)"
@@ -1099,13 +1100,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Віображати режим перегляду"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Показати час що зашився"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Час показу індикатора (с)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Пауза програвання при встановленні мітки"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID продовження"
@@ -1129,10 +1130,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Затримка часу для впровадження каналу (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Затримка повтору кнопок пульта (мс)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Різниця повторів кнопок пульта (мс)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Канал при включенні"
@@ -1147,7 +1148,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Кінець каналів"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Показати назву каналу з джерелом"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Аварійний вихід"
@@ -1226,7 +1227,7 @@ msgid "No editing marks defined!"
 msgstr "Не задано міток для монтажу!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Не задано послідовності монтажу!"
 
 msgid "Can't start editing process!"
 msgstr "Неможливо почати монтаж запису!"
@@ -1271,7 +1272,7 @@ msgid "Index file regeneration complete"
 msgstr "Регенерацію файлу індексу завершено"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Генерація індексного файлу не вдалася!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Виключенння неможливе - не задано параметр '-s'!"
@@ -1310,22 +1311,22 @@ msgid "Classic VDR"
 msgstr "Класичний VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "ДИСК"
 
 msgid "LOAD"
-msgstr ""
+msgstr "ЗАВАНТАЖЕННЯ"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "ТАЙМЕРИ"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "ПРИСТРОЇ"
 
 msgid "LIVE"
-msgstr ""
+msgstr "ЕФІР"
 
 msgid "PLAY"
-msgstr ""
+msgstr "ПРОГРАВАННЯ"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG панелі"

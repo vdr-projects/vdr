@@ -46,3 +46,8 @@ VDR Plugin 'osddemo' Revision History
 2013-01-12: Version 0.2.5
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-02-13: Version 0.3.0
+
+- Added demos of the DrawEllipse() and DrawSlope() function (press '1' or '2',
+  respectively).

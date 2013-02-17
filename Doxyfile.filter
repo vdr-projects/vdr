@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+# Filter source files for use with Doxygen.
+#
+# Escapes special characters in comments marked with "///<".
+#
+# Usage: Doxyfile.filter filename
+#
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
+#
+# $Id: Doxyfile.filter 2.1 2013/02/17 10:54:05 kls Exp $
+
+$TAG = "///<";
+
+while (<>) {
+      $t = $_;
+      $p = index($t, $TAG);
+      if ($p >= 0) {
+         $p += length($TAG);
+         print substr($t, 0, $p);
+         $quote = 0;
+         while (1) {
+               $s = substr($t, $p++, 1);
+               last        if ($s eq "");
+               $quote ^= 1 if ($s eq '"');
+               print "\\"  if (!$quote && $s =~ /[\\\@<>]/);
+               print $s;
+               }
+         }
+      else {
+         print $t;
+         }
+      }

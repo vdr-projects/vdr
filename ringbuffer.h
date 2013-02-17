@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 2.4 2012/09/20 09:29:32 kls Exp $
+ * $Id: ringbuffer.h 2.5 2013/02/16 15:20:37 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -84,17 +84,17 @@ public:
     ///< Reads at most Max bytes from FileHandle and stores them in the
     ///< ring buffer. If Max is 0, reads as many bytes as possible.
     ///< Only one actual read() call is done.
-    ///< \return Returns the number of bytes actually read and stored, or
+    ///< Returns the number of bytes actually read and stored, or
     ///< an error value from the actual read() call.
   int Read(cUnbufferedFile *File, int Max = 0);
     ///< Like Read(int FileHandle, int Max), but reads from a cUnbufferedFile).
   int Put(const uchar *Data, int Count);
     ///< Puts at most Count bytes of Data into the ring buffer.
-    ///< \return Returns the number of bytes actually stored.
+    ///< Returns the number of bytes actually stored.
   uchar *Get(int &Count);
     ///< Gets data from the ring buffer.
     ///< The data will remain in the buffer until a call to Del() deletes it.
-    ///< \return Returns a pointer to the data, and stores the number of bytes
+    ///< Returns a pointer to the data, and stores the number of bytes
     ///< actually available in Count. If the returned pointer is NULL, Count has no meaning.
   void Del(int Count);
     ///< Deletes at most Count bytes from the ring buffer.

@@ -3,15 +3,92 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.8 2013/01/12 14:12:23 kls Exp $
+ * $Id: osddemo.c 2.10 2013/02/17 13:16:34 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.2.5";
+static const char *VERSION        = "0.3.0";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
+
+// --- DrawEllipses ----------------------------------------------------------
+
+void DrawEllipse(cOsd *Osd, int x1, int y1, int x2, int y2, int Quadrants)
+{
+  Osd->DrawRectangle(x1 + 2, y1 + 2, x2 - 2, y2 - 2, clrGreen);
+  Osd->DrawEllipse(x1 + 3, y1 + 3, x2 - 3, y2 - 3, clrRed, Quadrants);
+}
+
+void DrawEllipses(cOsd *Osd)
+{
+  int xa = 0;
+  int ya = 0;
+  int xb = Osd->Width() - 1;
+  int yb = Osd->Height() - 1;
+  int x0 = xa;
+  int x5 = xb;
+  int x1 = x0 + (xb - xa) / 5;
+  int x2 = x0 + (xb - xa) * 2 / 5;
+  int x3 = x0 + (xb - xa) * 3 / 5;
+  int x4 = x0 + (xb - xa) * 4 / 5;
+  int y0 = ya;
+  int y4 = yb;
+  int y2 = (y0 + y4) / 2;
+  int y1 = (y0 + y2) / 2;
+  int y3 = (y2 + y4) / 2;
+  Osd->DrawRectangle(xa, ya, xb, yb, clrGray50);
+  DrawEllipse(Osd, x4, y0, x5, y4, 0);
+  DrawEllipse(Osd, x2, y1, x3, y2, 1);
+  DrawEllipse(Osd, x1, y1, x2, y2, 2);
+  DrawEllipse(Osd, x1, y2, x2, y3, 3);
+  DrawEllipse(Osd, x2, y2, x3, y3, 4);
+  DrawEllipse(Osd, x3, y1, x4, y3, 5);
+  DrawEllipse(Osd, x1, y0, x3, y1, 6);
+  DrawEllipse(Osd, x0, y1, x1, y3, 7);
+  DrawEllipse(Osd, x1, y3, x3, y4, 8);
+  DrawEllipse(Osd, x3, y0, x4, y1, -1);
+  DrawEllipse(Osd, x0, y0, x1, y1, -2);
+  DrawEllipse(Osd, x0, y3, x1, y4, -3);
+  DrawEllipse(Osd, x3, y3, x4, y4, -4);
+  Osd->Flush();
+}
+
+// --- DrawSlopes ------------------------------------------------------------
+
+void DrawSlope(cOsd *Osd, int x1, int y1, int x2, int y2, int Type)
+{
+  Osd->DrawRectangle(x1 + 2, y1 + 2, x2 - 2, y2 - 2, clrGreen);
+  Osd->DrawSlope(x1 + 3, y1 + 3, x2 - 3, y2 - 3, clrRed, Type);
+}
+
+void DrawSlopes(cOsd *Osd)
+{
+  int xa = 0;
+  int ya = 0;
+  int xb = Osd->Width() - 1;
+  int yb = Osd->Height() - 1;
+  int x0 = xa;
+  int x4 = xb;
+  int x2 = (x0 + x4) / 2;
+  int x1 = (x0 + x2) / 2;
+  int x3 = (x2 + x4) / 2;
+  int y0 = ya;
+  int y3 = yb;
+  int y2 = (y0 + y3) / 2;
+  int y1 = (y0 + y2) / 2;
+  Osd->DrawRectangle(xa, ya, xb, yb, clrGray50);
+  DrawSlope(Osd, x0, y0, x2, y1, 0);
+  DrawSlope(Osd, x2, y0, x4, y1, 1);
+  DrawSlope(Osd, x0, y1, x2, y2, 2);
+  DrawSlope(Osd, x2, y1, x4, y2, 3);
+  DrawSlope(Osd, x0, y2, x1, y3, 4);
+  DrawSlope(Osd, x1, y2, x2, y3, 5);
+  DrawSlope(Osd, x2, y2, x3, y3, 6);
+  DrawSlope(Osd, x3, y2, x4, y3, 7);
+  Osd->Flush();
+}
 
 // --- cLineGame -------------------------------------------------------------
 
@@ -31,7 +108,7 @@ public:
 cLineGame::cLineGame(void)
 {
   osd = NULL;
-  x = y = 50;
+  x = y = 0;
   color = clrRed;
 }
 
@@ -42,12 +119,23 @@ cLineGame::~cLineGame()
 
 void cLineGame::Show(void)
 {
-  osd = cOsdProvider::NewOsd(100, 50, 50);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
   if (osd) {
-     tArea Area = { 0, 0, 99, 199,  4 };
-     osd->SetAreas(&Area, 1);
-     osd->DrawRectangle(0, 0, 99, 199, clrGray50);
-     osd->Flush();
+     int x1 = cOsd::OsdWidth() - 1;
+     int y1 = cOsd::OsdHeight() - 1;
+     while (x1 > 0 && y1 > 0) {
+           tArea Area = { 0, 0, x1, y1, 4 };
+           if (osd->CanHandleAreas(&Area, 1) == oeOk) {
+              osd->SetAreas(&Area, 1);
+              osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, clrGray50);
+              osd->Flush();
+              x = osd->Width() / 2;
+              y = osd->Height() / 2;
+              break;
+              }
+           x1 = x1 * 9 / 10;
+           y1 = y1 * 9 / 10;
+           }
      }
 }
 
@@ -55,19 +143,24 @@ eOSState cLineGame::ProcessKey(eKeys Key)
 {
   eOSState state = cOsdObject::ProcessKey(Key);
   if (state == osUnknown) {
+     const int d = 4;
      switch (Key & ~k_Repeat) {
-       case kUp:     if (y > 0)   y--; break;
-       case kDown:   if (y < 196) y++; break;
-       case kLeft:   if (x > 0)   x--; break;
-       case kRight:  if (x < 96)  x++; break;
+       case kUp:     y = max(0, y - d); break;
+       case kDown:   y = min(osd->Height() - d, y + d); break;
+       case kLeft:   x = max(0, x - d); break;
+       case kRight:  x = min(osd->Width() - d, x + d); break;
        case kRed:    color = clrRed; break;
        case kGreen:  color = clrGreen; break;
        case kYellow: color = clrYellow; break;
        case kBlue:   color = clrBlue; break;
+       case k1:      DrawEllipses(osd);
+                     return osContinue;
+       case k2:      DrawSlopes(osd);
+                     return osContinue;
        case kOk:     return osEnd;
        default: return state;
        }
-     osd->DrawRectangle(x, y, x + 3, y + 3, color);
+     osd->DrawRectangle(x, y, x + d - 1, y + d - 1, color);
      osd->Flush();
      state = osContinue;
      }
@@ -84,6 +177,7 @@ private:
   bool clockwise;
   cPixmap *destroyablePixmap;
   cPixmap *toggleablePixmap;
+  bool SetArea(void);
   virtual void Action(void);
   cPixmap *CreateTextPixmap(const char *s, int Line, int Layer, tColor ColorFg, tColor ColorBg, const cFont *Font);
 public:
@@ -241,7 +335,7 @@ void cTrueColorDemo::Action(void)
                        State++;
                      }
                      break;
-             case 1: { 
+             case 1: {
                        FadeInPixmap = CreateTextPixmap("Video Disk Recorder", Line, 3, clrYellow, clrTransparent, OsdFont);
                        if (FadeInPixmap)
                           Line += FadeInPixmap->DrawPort().Height();
@@ -390,13 +484,21 @@ void cTrueColorDemo::Action(void)
   delete LrgFont;
 }
 
+bool cTrueColorDemo::SetArea(void)
+{
+  if (osd) {
+     tArea Area = { 0, 0, cOsd::OsdWidth() - 1, cOsd::OsdHeight() - 1,  32 };
+     return osd->SetAreas(&Area, 1) == oeOk;
+     }
+  return false;
+}
+
 void cTrueColorDemo::Show(void)
 {
   osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
   if (osd) {
-     tArea Area = { 0, 0, cOsd::OsdWidth() - 1, cOsd::OsdHeight() - 1,  32 };
-     if (osd->SetAreas(&Area, 1) == oeOk) {
-        osd->DrawRectangle(0, 0, osd->Width() -1 , osd->Height() - 1, clrGray50);
+     if (SetArea()) {
+        osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, clrGray50);
         osd->Flush();
         Start();
         }
@@ -422,6 +524,14 @@ eOSState cTrueColorDemo::ProcessKey(eKeys Key)
                      break;
        case kGreen:  if (toggleablePixmap)
                         toggleablePixmap->SetLayer(-toggleablePixmap->Layer());
+                     break;
+       case k1:      Cancel(3);
+                     SetArea();
+                     DrawEllipses(osd);
+                     break;
+       case k2:      Cancel(3);
+                     SetArea();
+                     DrawSlopes(osd);
                      break;
        case kOk:     return osEnd;
        default: return state;

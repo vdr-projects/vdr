@@ -154,7 +154,7 @@ sub ConvertFile
   print "image size is $w x $h\n" if ($Detailed);
   my $Exif = ImageInfo($Pict);
   my $Orientation = $$Exif{"Orientation"};
-  my ($Degrees) = $Orientation =~ /Rotate ([0-9]+) /; 
+  my ($Degrees) = $Orientation =~ /Rotate ([0-9]+) /;
   my $Rotate = "-null";
   $Rotate = "-cw"   if $Degrees eq "90";
   $Rotate = "-ccw"  if $Degrees eq "270";

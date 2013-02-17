@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.10 2012/10/07 11:11:18 kls Exp $
+ * $Id: ci.c 2.12 2013/02/17 13:17:28 kls Exp $
  */
 
 #include "ci.h"
@@ -35,7 +35,7 @@ static bool DumpDateTime = false;
 
 static const uint8_t *GetLength(const uint8_t *Data, int &Length)
 ///< Gets the length field from the beginning of Data.
-///< \return Returns a pointer to the first byte after the length and
+///< Returns a pointer to the first byte after the length and
 ///< stores the length value in Length.
 {
   Length = *Data++;
@@ -50,7 +50,7 @@ static const uint8_t *GetLength(const uint8_t *Data, int &Length)
 
 static uint8_t *SetLength(uint8_t *Data, int Length)
 ///< Sets the length field at the beginning of Data.
-///< \return Returns a pointer to the first byte after the length.
+///< Returns a pointer to the first byte after the length.
 {
   uint8_t *p = Data;
   if (Length < 128)
@@ -70,7 +70,7 @@ static uint8_t *SetLength(uint8_t *Data, int Length)
 
 static char *CopyString(int Length, const uint8_t *Data)
 ///< Copies the string at Data.
-///< \return Returns a pointer to a newly allocated string.
+///< Returns a pointer to a newly allocated string.
 {
   // Some CAMs send funny characters at the beginning of strings.
   // Let's just skip them:
@@ -88,7 +88,7 @@ static char *CopyString(int Length, const uint8_t *Data)
 
 static char *GetString(int &Length, const uint8_t **Data)
 ///< Gets the string at Data.
-///< \return Returns a pointer to a newly allocated string, or NULL in case of error.
+///< Returns a pointer to a newly allocated string, or NULL in case of error.
 ///< Upon return Length and Data represent the remaining data after the string has been skipped.
 {
   if (Length > 0 && Data && *Data) {
@@ -371,7 +371,7 @@ cCiSession::~cCiSession()
 
 int cCiSession::GetTag(int &Length, const uint8_t **Data)
 ///< Gets the tag at Data.
-///< \return Returns the actual tag, or AOT_NONE in case of error.
+///< Returns the actual tag, or AOT_NONE in case of error.
 ///< Upon return Length and Data represent the remaining data after the tag has been skipped.
 {
   if (Length >= 3 && Data && *Data) {
@@ -959,7 +959,7 @@ cCiMMI::~cCiMMI()
 
 char *cCiMMI::GetText(int &Length, const uint8_t **Data)
 ///< Gets the text at Data.
-///< \return Returns a pointer to a newly allocated string, or NULL in case of error.
+///< Returns a pointer to a newly allocated string, or NULL in case of error.
 ///< Upon return Length and Data represent the remaining data after the text has been skipped.
 {
   int Tag = GetTag(Length, Data);
@@ -1936,7 +1936,7 @@ bool cCamSlot::CanDecrypt(const cChannel *Channel)
      for (const int *Dpid = Channel->Dpids(); *Dpid; Dpid++)
          CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
      for (const int *Spid = Channel->Spids(); *Spid; Spid++)
-         CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE); 
+         CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE);
      cas->SendPMT(&CaPmt);
      cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
      do {

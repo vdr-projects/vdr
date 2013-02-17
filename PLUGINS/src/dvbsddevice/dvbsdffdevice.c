@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.34 2013/01/25 10:48:29 kls Exp $
+ * $Id: dvbsdffdevice.c 2.35 2013/02/17 13:16:18 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -795,5 +795,5 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
          return true;
          }
       }
-  return false; 
+  return false;
 }

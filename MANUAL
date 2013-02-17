@@ -699,7 +699,7 @@ Version 1.6
                          Defines the standard compliance mode:
                          0 = DVB
                          1 = ANSI/SCTE
-                         
+
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
 

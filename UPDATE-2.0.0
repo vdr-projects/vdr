@@ -1,0 +1,475 @@
+This is a summary of the changes in VDR 2.0.0 since the last stable
+version 1.6.0. It only contains things that are of actual importance
+to the user and doesn't mention the many fixes and improvements that
+have been made "behind the scenes".
+
+See the file HISTORY for a detailed list of all changes.
+
+Satellite Channel Routing:
+
+- VDR now supports "Satellite Channel Routing" (SCR) according to EN50494 (based on
+  the "unicable" patch).
+  Since "Unicable" is a registered trademark and stands for only one of many
+  implementations of SCR, the following changes have been made compared to the patch,
+  which need to be taken into account by people who have set up their system using
+  the patch:
+  - The 'U' parameter in the diseqc.conf file has been changed to 'S' ("Scr").
+  - The configuration file name has been changed from "unicable.conf" to "scr.conf".
+
+Device Bonding:
+
+- The new setup options "LNB/Device n connected to sat cable" can be used to define
+  which DVB-S devices are connected to the same sat cable and are therefore "bonded".
+  This obsoletes the LNBSHARE patch. Users of the LNBSHARE patch will need to newly
+  set up their sat devices with the above options.
+
+Subtitles:
+
+- Implemented handling of HD resolution subtitles according to v1.3.1 of
+  ETSI EN 300 743, chapter 7.2.1.
+- Fixed handling DVB subtitles and implemented decoding textual DVB subtitles.
+
+Plugins:
+
+- Added cDevice::NumProvidedSystems() to PLUGINS.html (was missing since it had
+  been implemented).
+- The 'sky' plugin is no longer part of the VDR source.
+- IMPORTANT NOTE TO PLUGIN AUTHORS: a plugin that implements a derived cDevice
+  class that can replay video must now call the MakePrimaryDevice() function of
+  its base class.
+- Implemented cDeviceHook to allow plugins more control over which device can
+  provide which transponder.
+- Plugins can now define new sources. In order to implement this, the following
+  changes were made:
+  + The transponder parameter string is no longer interpreted by cChannel, but rather
+    stored as is and used only by the respective device. That way plugins can use a
+    channel's parameter string to store arbitrary data (see vdr.5).
+  + The new class cSourceParam can be used by plugins to define new sources, and to
+    implement OSD items that will be used in the channel editor for editing the source
+    specific parameters of a channel (see dvbdevice.c for an example of how this is
+    done for the default DVB devices).
+  + Purely numerical values are no longer accepted in the 'source' parameter of a
+    channel.
+  This obsoletes the PLUGINPARAM patch.
+- The dvbhddevice plugin is now part of the VDR distribution archive.
+- The pic2mpg script of the 'pictures' plugin now generates HD images.
+  The old SD version is still available as pic2mpg-sd.
+- The dvbsddevice plugin now supports the new option --outputonly, which disables
+  receiving on SD FF devices and uses the device only for output.
+- The code for the RCU remote control unit has been moved into a separate plugin
+  named "rcu".
+  The REMOTE=RCU option in the 'make' call for VDR is now obsolete.
+  The command line option --rcu is now obsolete. Use -Prcu instead. If you have
+  used --rcu with a device path, use -P"rcu -d<device>".
+- Removed the obsolete function cEITScanner::UsesDevice(). If a plugin has used this
+  function to find out whether a call to its cStatus::ChannelSwitch() function was
+  due to a live channel switch, it can use that function's new parameter LiveView.
+  Any plugins that implement cStatus::ChannelSwitch() need to add the parameter
+  'bool LiveView' to that function.
+- Added a new plugin interface for implementing EPG handlers.
+  + A plugin can implement an EPG handler by creating an object derived from
+    cEpgHandler and implementing the necessary member functions.
+  + The special handling of events with table id 0x00 has been dropped.
+    For backwards compatibility EPG events with table ids lower than 0x4E will
+    be treated as if they had a table id of 0x4E, and the new plugin 'epgtableid0'
+    can be used to have them handled like in previous versions.
+  + The default table id for a newly created cEvent has been changed to 0xFF,
+    which is higher than any normal table id that is broadcast in the EIT data.
+  See PLUGINS.html, section "Electronic Program Guide" for more information.
+- The cThread constructor now has an additional boolean parameter that can be set to
+  true to have this thread run at a lower priority. Plugin authors that use low
+  priority threads may want to use this instead of the calls to SetPriority(19) and
+  SetIOPriority(7). The priority of a thread ("low" or "high") is now logged when the
+  thread starts.
+- The plugin Makefiles now have a separate 'install' target.
+- Plugin Makefiles now use DESTDIR and the 'install' program.
+- Plugin Makefiles can now include a configuration file for compile time parameters.
+- Plugins that implement an interface to any kind of remote controls shall use the
+  new parameters Setup.RcRepeatDelay and Setup.RcRepeatDelta to allow the user to
+  adjust the behavior of the remote control's repeat function. They shall also
+  remove any setup options they might have that serve the same purpose.
+- Added demos of the DrawEllipse() and DrawSlope() function to the 'osddemo'
+  plugin (press '1' or '2', respectively).
+
+Skins:
+
+- The 'sttng' skin now displays two colored bars at the bottom of the channel display,
+  indicating the strength (upper bar) and quality (lower bar) of the received signal.
+  The number to the left of these bars indicates the actual device the current
+  channel is being received with.
+- Skins can now inquire the menu category for which their cSkinDisplayMenu is currently
+  being used. This can be done either through a call to cSkinDisplayMenu::MenuCategory()
+  or by reimplementing cSkinDisplayMenu::SetMenuCategory(). This information allows a
+  skin to use special icons or decorations for the various types of menus in VDR.
+- The new member function cSkinDisplayReplay::SetRecording() allows a skin to display
+  more information about the currently played recording.
+- The new skin "LCARS" is an enhanced version of the "ST:TNG" skin (which is still
+  there in its original layout, for those who don't like the LCARS skin, or can't use
+  it due to OSD limitations). The LCARS skin utilizes the new "menu category" feature
+  to display additional information on the main menu page. It shows upcoming timers
+  and the system's devices, as well as which device is recording which timers. The
+  upper pane of the main menu displays the programme data in live and replay mode,
+  and a progress bar. An indicator on the right side of the device list shows which
+  device is currently used for live viewing, and whether it is in transfer mode.
+  The individual device displays show the device number, the device type, which CAM
+  (if any ) is currently assigned to the device, and the signal strength and quality.
+  On the left side of the OSD there is a permanent display of the current date and
+  time, the disk usage and the system load.
+  "LCARS" is the new default skin of VDR. It requires at least a 4bpp (16 color) full
+  screen OSD, but you can still operate it if your OSD can handle only fewer colors
+  (in which case you may want to switch to the "ST:TNG" or "Classic VDR" skin).
+- The new functions SetItemEvent(), SetItemTimer(), SetItemChannel() and
+  SetItemRecording() of the cSkinDisplayMenu class can be reimplemented by skin
+  plugins to display these items in a more elaborate way than just a simple line of
+  text.
+
+Remote control:
+
+- Changed the default location for the LIRC socket to /var/run/lirc/lircd.
+- The new setup options "OSD/Color key [0123]" can be used to adjust the sequence
+  of the color buttons displayed in the menus to that of the color keys on your
+  remote control.
+  Authors of plugins that implement skins may want to adapt their SetButtons()
+  function in order to make use of this new feature. See, for instance, the function
+  cSkinClassicDisplayMenu::SetButtons() in skinclassic.c for details.
+- Added user defined key kUser0.
+- The new remote control key "Play/Pause" can be used with remote controls that don't
+  have separate keys for "Play" and "Pause", but rather have a single key for both
+  functions.
+- The new options "Setup/Miscellaneous/Remote control repeat delay" and
+  "Setup/Miscellaneous/Remote control repeat delta" can be used to adjust the
+  behavior of the remote control in case a key is held pressed down for a while, so
+  that the repeat function kicks in.
+
+Devices:
+
+- Re-implemented handling of DVB-S2, which first appeared in version 1.5.14, but was
+  revoked in version 1.5.15 in favor of making a stable version 1.6.0.
+  Note that the channels.conf file now supports additional parameters, so you may
+  want to make sure you have a backup of this file in case you need to go back to
+  the previous version of VDR!
+- cDvbDevice now uses the FE_CAN_2G_MODULATION flag to determine whether a device
+  can handle DVB-S2.
+- The support for full featured DVB cards of the TT/FuSi design has been moved
+  into the new plugin 'dvbsddevice'. On systems that use such a card as their
+  primary device, this plugin now needs to be loaded when running VDR in order
+  to view live or recorded video. If the plugin is not loaded, the card will
+  be treated like a budget DVB card, and there will be no OSD or viewing
+  capability.
+- Added support for DVB cards with multiple fontends. Note that this only
+  works for DVB cards where each frontend can be used independently of all
+  the others on the same adapter.
+- Added support for ATSC devices. This obsoletes the ATSC patch.
+- The new functions cDevice::SignalStrength() and cDevice::SignalQuality() can be
+  used to determine the signal strength and quality of a given device.
+- The new function cDevice::ProvidesEIT() is used to determine whether a device can
+  provide EIT data and will thus be used in cEITScanner::Process() to receive EIT
+  data from the channels it can receive. Note that by default it is assumed that
+  a device can't provide EIT data, and only the builtin cDvbDevice returns true
+  from this function.
+- Added support for devices with more than one delivery system per frontend.
+  This requires a DVB driver with version 5.5 or higher that can handle the
+  DTV_ENUM_DELSYS call. With older drivers it will fall back to one delivery
+  system per frontend.
+- Added support for handling DVB-T2 transponders.  This requires a DVB driver
+  with version 5.3 or higher that can handle the DTV_DVBT2_PLP_ID call (which has
+  been renamed to DTV_STREAM_ID in DVB API 5.8).
+- The DVB device adapters/frontends are now probed by scanning the /dev/dvb directory
+  instead of looping through adapter/frontend numbers. This allows for "holes" in the
+  device numbering.
+- Removed the "PrimaryLimit". Old "full featured" DVB cards can be run with the
+  --outputonly option to avoid problems with recording high bandwidth channels.
+  Besides, with HDTV becoming ever more popular those cards are pretty much obsolete
+  by now (the TT S2-6400 has no problems recording and replaying high bandwidth
+  channels simultaneously). And, last but not least, people using software players
+  won't notice this change, anyway.
+- The new function cDevice::DeviceName() returns a string identifying the name of
+  the given device.
+- The new function cDevice::DeviceType() returns a string identifying the type of
+  the given device.
+- The new function cDevice::ReadFilter() can be used by devices to implement their
+  own way of retrieving section filter data.
+- The new function cDevice::HasInternalCam() can be implemented by devices that
+  provide encrypted channels in an already decrypted form, without requiring explicit
+  handling of a CAM.
+- The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
+  derived output devices to implement scaling the video to a given size and location.
+
+DiSEqC:
+
+- Added device definitions to the diseqc.conf file format, so that certain satellite
+  positions can be limited to a given list of devices.
+  This obsoletes the SOURCECAPS patch.
+- Transponders that use "8psk turbo fec" (a non-standard mode used by North American
+  providers) are now identified by assuming that all 8psk transponders on DVB-S use
+  "turbo fec".
+
+EPG:
+
+- The epg.data file is now read in a separate thread to make the startup process
+  faster in case the file is very large.
+- Moved cleaning up the EPG data and writing the epg.data file into a separate
+  thread to avoid sluggish response to user input on slow systems
+
+OSD:
+
+- The OSD and font sizes are now defined in percent of the actual video display
+  size. The maximum OSD size has been raised to 1920x1080, to allow full
+  screen OSD on HD systems.
+- The OSD size is now automatically adjusted to the actual video display
+  (provided the output device implements the GetOsdSize() function).
+- The OSD now has full TrueColor support. There can be several "pixmaps" that can
+  be overlayed with alpha blending. All existing skins should work out of the box
+  with the TrueColor OSD - the only exception being cOsd::GetBitmap(). Since the
+  TrueColor OSD doesn't use bitmaps, this function will return a dummy bitmap, which
+  may not be what the plugin expects. As long as this bitmap is only used for setting
+  the palette, there is no problem. However, any other operations on this bitmap will
+  have no effect. See the description of the cPixmap functions in osd.h for details
+  about the new functionalities.
+  The "ST:TNG Panels" skin has been enhanced to automatically use the TrueColor OSD
+  if available.
+  The "osddemo" plugin has been extended to show some of the possibilities of the
+  TrueColor OSD if it is run on a system that actually provides TrueColor support.
+- The Audio and Subtitles options are now available through the Green and Yellow
+  keys in the Setup/DVB menu. This is mainly for remote controls that don't have
+  dedicated keys for these functions.
+- The Recordings menu now displays the length (in hours:minutes) of each recording
+  Note that the "new" indicator has been moved from the recording time to the length
+  column. This new format is also used by the SVDRP command LSTR, so in case you have
+  an application that parses the LSTR output, you will need to adjust it to the new
+  format.
+- The new setup option "Replay/Show remaining time" can be used to switch between
+  showing the total length or the remaining time of the recording that is currently
+  replayed.
+- The replay progress display is now turned on whenever a mark is toggled (not
+  only when one is set).
+- The Green button in the "Edit timer" menu can now be used to toggle between single
+  shot and repeating timers. This is the same as pressing '0' when the "Day" field
+  is selected, but it works at any time (and is more obvious).
+- When estimating the remaining disk space (in hours), the average data rate of all
+  existing recordings is now taken into account. If this value can't be determined,
+  the previous value of 25.75 MB/min is taken.
+- The disk usage is no longer automatically added to the title of the main and
+  "Recordings" menus. This has always been a mekeshift solution and it is now up
+  to the individual skin if, where and how it wants to display this information.
+  A skin can use the new cVideoDiskUsage class to implement such a display. For
+  compatibility, the default skins "Classic VDR", "ST:TNG Panels" and "Text mode"
+  (i.e. curses) have been changed to behave like before. Other skins may want to
+  display the disk usage in totally different ways.
+- A cOsdMenu can now handle skins that display different numbers of items in the
+  various menu categories.
+- OSD and skin are now reinitialized after a plugin setup page has been confirmed,
+  to have them react immediately in case any change to a plugin's setup parameter
+  has an effect on the OSD.
+- Now making sure that the "small font" is never larger than the "osd font".
+- Within the "Recordings" menu, pressing the '0' key now toggles sorting between
+  "by time" and "by name". The selected sort mode is stored separately for each
+  folder (provided you have write access to that folder).
+  If a folder is newly created by a repeating timer, the sort mode for that
+  folder is initially set to "by time".
+- The new setup option "Miscellaneous/Show channel names with source" can be used to
+  turn on adding the source character to channel names whenever they are displayed.
+- Pressing the Play key during normal live viewing mode now opens the Recordings menu
+  if there is no "last viewed" recording.
+  The same behavior has been implemented for the Blue key in the main menu.
+- The new option "Setup/Replay/Progress display time" can be used to activate
+  automatically displaying the progress display whenever replay of a recording is
+  started.
+
+Time Shifting:
+
+- The new setup option "Recording/Pause key handling" can be used to define
+  what happens if the Pause key on the remote control is pressed during
+  live tv.
+- The new setup option "Recording/Delete timeshift recording" controls whether a timeshift
+  recording is automatically deleted after viewing it.
+  This obsoletes the DELTIMESHIFTREC patch.
+  Note that the meaning of the values for this option is different from the DELTIMESHIFTREC
+  patch: 0 means timeshift recordings are not automatically deleted (the default behavior
+  as in previous versions), while 1 means to ask the user whether the recording shall be
+  deleted.
+- The setup parameter "Recording/Instant rec. time (min)" can now be set to '0',
+  which means to record only the currently running event.
+- When pausing live video, the current audio and subtitle tracks are now retained.
+
+Timers:
+
+- The "Edit timer" menu can now set the folder for the recording from a list of
+  folders stored in "folders.conf".
+- The file name in the "Timers" menu now shows only the base name of the recording
+  without the folder path (if any). Otherwise with long folder paths the actual
+  recording name was not visible at all.
+- The new setup option "Folders in timer menu" controls whether the file names in
+  the timer menu are shown with their full folder path.
+
+Recordings:
+
+- The recording format is now TS (Transport Stream).
+  Existing recordings in PES format can still be replayed and edited, but new
+  recordings are done in TS.
+  All code for recording in PES has been removed.
+  The following changes were made to switch to TS recording format:
+  + Since a TS needs to have a PAT/PMT, which requires the video stream type to
+    be explicitly given, the format of the VPID field in the channels.conf file
+    and the SVDRP commands NEWC/MODC/LSTC has been extended. The video stream type
+    now follows the VPID and optional PPID, separated by an '=' sign.
+  + The index file format has been changed to support file sizes of up to 1TB
+    (previously 2GB), and up to 65535 separate files per recording (previously
+    255).
+  + The recording file names are now of the form 00001.ts (previously 001.vdr).
+  + The frame rate is now detected by looking at two subsequent PTS values.
+    The "frames per second" is stored in the "info" file using the new tag F.
+  + The directory name for a recording has been changed from
+    YYYY-MM-DD-hh[.:]mm.pr.lt.rec (pr=priority, lt=lifetime) to
+    YYYY-MM-DD-hh.mm.ch-ri.rec (ch=channel, ri=resumeId).
+    Priority and Lifetime are now stored in the "info" file with the new
+    tags P and L (if no such file exists, the maximum values are assumed by
+    default, which avoids inadvertently deleting a recording if disk space
+    is low). No longer storing Priority and Lifetime in the directory name
+    avoids starting a new recording if one of these is changed in the timer
+    and the recording is re-started for some reason.
+    Instead of Priority and Lifetime, the directory name now contains the
+    channel number from which the recording was made, and the "instance id"
+    this instance of VDR. This avoids problems if several VDR instances record
+    the same show on different channels, or even on the same channel.
+    The '-' between channel number and resumeId prevents older versions of
+    VDR from "seeing" these recordings, which makes sure they won't even try
+    to replay them, or remove them in case the disk runs full.
+  + The files "index", "info", "marks" and "resume" within a TS recording
+    directory are now created without the ".vdr" extension.
+  + The "resume" file is no longer a binary file, but contains tagged lines
+    to be able to store additional information, like the selected audio or
+    subtitle track.
+  + cDvbPlayer::Goto() no longer appends a "sequence end code" to the data.
+    If the output device needs this, it has to take care of it by itself.
+- The index file for TS recordings is now regenerated on-the-fly if a
+  recording is replayed that has no index. This can also be used to
+  re-create a broken index file by manually deleting the index file and then
+  replaying the recording (at least until the index file has been generated).
+- The new command line options --edit and --genindex can be used to edit a
+  recording or generate its index without actually starting the entire VDR.
+- The new command line options --filesize and --split can be used together with --edit
+  to set the maximum video file size and turn on splitting edited files at the editing
+  marks. These options must be given before --edit to have an effect.
+- The start time of an edited recording is now set to the time of the first
+  editing mark.
+  This obsoletes the CUTTIME patch.
+- An ongoing editing process is now canceled if either the original or the edited
+  version of the recording is deleted from the Recordings menu.
+- If a frame position in the 'marks' file of a recording doesn't point to an I-frame,
+  it will now be shifted towards the next I-frame (either up or down, whichever is
+  closer).
+- Editing marks can now be placed directly on top of each other, in which case they
+  simply mark a position, but have no effect on the actual cutting process.
+- When positioned at an offset where two (or more) editing marks are placed on top
+  of each other, the '4' key moves the first one of them to the left, while the '6'
+  key moves the last one of them to the right. The '7' and '9' key handle multiple
+  marks at the same place as if it were one single mark.
+- The '7' and '9' keys now jump to the very beginning or end, respectively, of the
+  recording, even if there is no mark set at that point.
+- The new option "Setup/Replay/Pause on mark set" can be used to activate automatically
+  going into Pause mode if an editing mark is set during replay.
+- Timers no longer do any special "VFAT" handling to shorten directory names to 40
+  characters. When a string is used as a directory name for a recording, the maximum
+  length of the directory path, as well as the individual directory names, is now
+  limited to the values specified by the new command line option --dirnames (see
+  man vdr(1) for details). For backwards compatibility the option --vfat is still
+  available and has the same effect as --dirnames=250,40,1.
+- Improved cutting videos.
+
+SVDRP:
+
+- The SVDRP signon message now indicates the character encoding in use, as in
+  "220 video SVDRP VideoDiskRecorder 1.7.1; Fri May  2 16:17:10 2008; ISO-8859-1".
+  This may be useful for instance for external tools that provide EPG data, so that
+  they can correctly encode the strings.
+- The SVDRP command PUTE now supports reading the EPG data from a given file.
+- After a CLRE command, no further EPG processing is now done for 10 seconds,
+  so that data sent with subsequent PUTE commands doesn't interfere with data
+  from the broadcasters.
+- If svdrphosts.conf contains only the address of the local host, the SVDRP port
+  is opened only for the local host.
+- The default SVDRP port is now 6419 (registered with ICANN/IANA).
+  Use '-p 2001' to switch back to the old port if necessary.
+- The SVDRP command HITK now accepts multiple keys (up to 31).
+- The SVDRP command LSTC now also accepts channel IDs.
+- The new SVDRP command UPDR can be used to trigger an update of the list of
+  recordings.
+- The SVDRP command DELR now won't delete a recording that is currently being edited.
+- The SVDRP command LSTR now knows the additional parameter "path", which can be
+  given to get the actual file name of a recording's directory.
+- The SVDRP command NEWT no longer checks whether a timer with the given data already
+  exists.
+
+Audio:
+
+- Implemented handling the standard component descriptor for AC3 (stream=4).
+  The previously used "Premiere pseudo standard" (stream=2, type=5) still works, but
+  has apparently been wrongfully used by broadcasters from the beginning.
+- Improved fast-forward/-rewind for audio recordings. The actual data is now sent
+  to the output device, so that it can be replayed and thus cause the proper delay.
+  For pure audio recordings the audio is no longer muted in fast-forward/-rewind
+  mode, so that some orientation regarding the position within the recording is
+  possible.
+- The option "Setup/DVB/Use Dolby Digital" now only controls whether Dolby Digital
+  tracks appear in the "Audio" menu. Dolby Digital is always recorded.
+  This obsoletes the DOLBYINREC patch.
+
+Internationalization:
+
+- Added Lithuanian language texts.
+- Added Slovakian language texts.
+- Added Macedonian language texts.
+- Added support for languages that are written right-to-left.
+  See INSTALL for information on how to turn this on.
+- Added Arabian language texts.
+- Added Serbian language texts.
+
+Misc:
+
+- Errors in config files no longer keep VDR from starting.
+- The new command line option -i can be used to set an "instance id", which will
+  be used to distinguish recordings of the same broadcast made by different instances
+  of VDR.
+- Implemented handling the "Parental Rating Descriptor".
+  The 'classic', 'sttng' and 'curses' skins display the parental
+  rating (if given) in their event displays. The epg.data file stores
+  the parental rating using the tag character 'R'.
+  IMPORTANT NOTE: if VDR doesn't display a parental rating, this does not
+  necessarily mean that the given programme is suitable for all audiences!
+- Renamed 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
+  in 'make install'.
+- The new setup option "Miscellaneous/Channels wrap" controls whether the current
+  channel wraps around the beginning or end of the channel list when zapping.
+- The files "commands.conf" and "reccmd.conf" can now contain nested lists of
+  commands. See vdr.5 for information about the new file format.
+  This obsoletes the CMDSUBMENU patch.
+- The new setup option "OSD/Number keys for characters" can be used to control whether
+  the number keys can be used to enter characters in a text input field.
+- While replaying, the editing marks are now updated every 10 seconds.
+- Added generating a pkg-config file to the Makefile.
+- Removed the '.pl' suffix from all scripts.
+- The new setup option "DVB/Standard compliance" can be used to switch between different
+  variations of the DVB standard. Currently there is "DVB" (for the original DVB
+  standard) and "ANSI/SCTE", which is used to properly handle certain private stream
+  types.
+- By default VDR is now built according to the FHS ("File system Hierarchy Standard"),
+  and a plain "make" in the VDR source directory just builds everything, but doesn't
+  copy it to ./PLUGINS/lib and ./locale any more. You can use a Make.config file
+  (copied from Make.config.template) and set the parameter LCLBLD=1 to have everything
+  built and installed under the VDR source tree (as was the default in previous
+  versions). If you already have your own Make.config file, you may want to copy the
+  new Make.config.template and adapt it to your needs. If you don't want VDR's data
+  files to be spread around your system according to the FHS, you can set the
+  parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
+  before.
+- VDR can now be built according to the FHS ("File system Hierarchy Standard") by
+  activating the line
+  #USEFHS = 1
+  in a copy of the file Make.config.template.
+- The script given to VDR with the '-r' option is now also called whenever a
+  recording is deleted.
+- Synchronizing system time to the transponder time is now done using adjtime() in order
+  to avoid discontinuities. If the time difference is more than 10 seconds, stime() is
+  still used to do the initial sync.
+- Implemented scaling of SPU bitmaps.

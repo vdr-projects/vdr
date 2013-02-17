@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svcsvr.c 2.2 2013/01/12 14:13:05 kls Exp $
+ * $Id: svcsvr.c 2.3 2013/02/17 14:10:38 kls Exp $
  */
 
 #include <stdlib.h>
@@ -29,7 +29,7 @@ struct AddService_v1_0 {
   int sum;
   };
 
-// --- cPluginSvcSvr ----------------------------------------------------------
+// --- cPluginSvcSvr ---------------------------------------------------------
 
 bool cPluginSvcSvr::Service(const char *Id, void *Data)
 {
