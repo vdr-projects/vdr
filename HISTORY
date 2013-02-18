@@ -7652,3 +7652,4 @@ Video Disk Recorder Revision History
 - Modified handling user inactivity in the shutdown handler to avoid a problem in case
   the system time is changed after VDR has been started (thanks to Udo Richter, reported
   by Sören Moch).
+- Updated the Czech OSD texts (thanks to Ales Jurik).

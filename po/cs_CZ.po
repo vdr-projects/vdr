@@ -4,6 +4,7 @@
 # Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006, 2008
 # Jiří Dobrý <jdobry@centrum.cz>, 2008
 # Radek Šťastný <dedkus@gmail.com>, 2010
+# Aleš Juřík <ajurik@quick.cz>, 2013
 #
 msgid ""
 msgstr ""
@@ -11,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
-"Last-Translator: Radek Šťastný <dedkus@gmail.com>\n"
+"Last-Translator: Aleš Ju�~Yík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -46,16 +47,16 @@ msgid "System"
 msgstr "Systém"
 
 msgid "Srate"
-msgstr ""
+msgstr "Symbolová rychlost"
 
 msgid "Inversion"
-msgstr ""
+msgstr "Inverze"
 
 msgid "CoderateH"
-msgstr ""
+msgstr "CoderateH"
 
 msgid "CoderateL"
-msgstr ""
+msgstr "CoderateL"
 
 msgid "Modulation"
 msgstr "Modulace"
@@ -73,10 +74,10 @@ msgid "Hierarchy"
 msgstr "Hierarchický mód"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "RollOff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Začíná prohledávání EPG"
@@ -413,13 +414,13 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Přehrát/Pozastavit"
 
 msgid "Key$Play"
 msgstr "Přehrát"
 
 msgid "Key$Pause"
-msgstr "Přerušit"
+msgstr "Pozastavit"
 
 msgid "Key$Stop"
 msgstr "Zastavit"
@@ -648,10 +649,10 @@ msgid "Button$Folder"
 msgstr "Složka"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Bez opakování"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "S opakováním"
 
 msgid "First day"
 msgstr "První den"
@@ -747,7 +748,7 @@ msgid "Delete recording?"
 msgstr "Smazat nahrávku?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Nahrávka je editována - opravdu smazat?"
 
 msgid "Error while deleting recording!"
 msgstr "Chyba při mazání nahrávky!"
@@ -849,19 +850,19 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Složky v menu časovače"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Psát písmena pomocí číselných kláves"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Barva klávesy 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Barva klávesy 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Barva klávesy 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Barva klávesy 3"
 
 msgid "EPG"
 msgstr "EPG"
@@ -932,7 +933,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primární DVB zařízení"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Kompatibilní norma"
 
 msgid "Setup.DVB$Video format"
 msgstr "Formát videa"
@@ -987,10 +988,10 @@ msgstr "Horní frekvence LNB (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Zařízení %d připojeno k sat. kabelu"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "vlastní"
 
 msgid "CAM reset"
 msgstr "Reset CAMu"
@@ -1080,7 +1081,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Délka okamžitého nahrávání (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "současná událost"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maximální velikost nahrávky (MB)"
@@ -1101,13 +1102,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Zobrazit režim přehrávání"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Zobrazit zbývající čas"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Čas zobrazení ukazatele průběhu (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pozastavit přehrávání při nastavování značky"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID obnovení"
@@ -1131,10 +1132,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Prodleva při volbě kanálu (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Zpoždění pro začátek opakování stisku klávesy (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Perioda opakování stisku klávesy (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanál po spuštění"
@@ -1146,10 +1147,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitost po spuštění"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Přecházet z konce na začátek seznamu kanálů"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Zobrazit kanály se zdrojem"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Nouzové ukončení"
@@ -1228,7 +1229,7 @@ msgid "No editing marks defined!"
 msgstr "Nejsou definovány editační značky!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Nejsou definováný žádné editační sekvence!"
 
 msgid "Can't start editing process!"
 msgstr "Nelze začít editační proces!"
@@ -1273,7 +1274,7 @@ msgid "Index file regeneration complete"
 msgstr "Generování index souboru dokončeno"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Generování index souboru skončilo s chybou!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Vypnutí není možné - chybí volba '-s'!"
@@ -1312,22 +1313,22 @@ msgid "Classic VDR"
 msgstr "Klasické VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISK"
 
 msgid "LOAD"
-msgstr ""
+msgstr "VYTÍŽENÍ"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "ČASOVAČE"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "ZAŘÍZENÍ"
 
 msgid "LIVE"
-msgstr ""
+msgstr "ŽIVĚ"
 
 msgid "PLAY"
-msgstr ""
+msgstr "PŘEHRÁVÁNÍ"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konzola"
