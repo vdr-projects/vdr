@@ -7654,3 +7654,4 @@ Video Disk Recorder Revision History
   by Sören Moch).
 - Updated the Czech OSD texts (thanks to Ales Jurik).
 - Changed the template for PLGCFG to $(CONFDIR)/plugins.mk (thanks to Ville Skyttä).
+- Updated the Swedish OSD texts (thanks to Richard Lithvall).
