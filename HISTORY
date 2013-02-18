@@ -7644,3 +7644,7 @@ Video Disk Recorder Revision History
 - Removed trailing whitespace.
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
+
+2013-02-18: Version 1.7.39
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

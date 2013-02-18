@@ -414,7 +414,7 @@ msgid "Key$Info"
 msgstr "Tiedot"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Toista/Tauko"
 
 msgid "Key$Play"
 msgstr "Toista"
@@ -853,16 +853,16 @@ msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Värinäppäin 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Värinäppäin 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Värinäppäin 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Värinäppäin 3"
 
 msgid "EPG"
 msgstr "Ohjelmaopas"
@@ -1105,10 +1105,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Näytä jäljellä oleva aika"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Näytä toiston kontrollit (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pysäytä toisto asetettaessa merkki"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
@@ -1132,10 +1132,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Kanavasyötteen odotusaika (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Kaukosäätimen toistoviive (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Kaukosäätimen toistoväli (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanava käynnistettäessä"
@@ -1229,7 +1229,7 @@ msgid "No editing marks defined!"
 msgstr "Muokkausmerkinnät puuttuvat!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Muokkausosiot puuttuvat!"
 
 msgid "Can't start editing process!"
 msgstr "Muokkauksen aloitus epäonnistui!"
@@ -1274,7 +1274,7 @@ msgid "Index file regeneration complete"
 msgstr "Indeksitiedosto valmistui"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Indeksitiedoston luonti epäonnistui!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Sammutus ei onnistu - '-s' parametri puuttuu!"
