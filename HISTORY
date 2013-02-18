@@ -7649,3 +7649,6 @@ Video Disk Recorder Revision History
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
+- Modified handling user inactivity in the shutdown handler to avoid a problem in case
+  the system time is changed after VDR has been started (thanks to Udo Richter, reported
+  by Sören Moch).

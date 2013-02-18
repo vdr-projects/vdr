@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 1.5 2008/02/24 10:29:00 kls Exp $
+ * $Id: shutdown.c 2.1 2013/02/18 10:33:26 kls Exp $
  */
 
 #include "shutdown.h"
@@ -117,7 +117,7 @@ void cShutdownHandler::CheckManualStart(int ManualStart)
   else {
      // Set inactive from now on
      dsyslog("scheduled wakeup time in %ld minutes, assuming automatic start of VDR", Delta / 60);
-     SetUserInactive();
+     SetUserInactiveTimeout(-3, true);
      }
 }
 
@@ -147,9 +147,14 @@ void cShutdownHandler::SetUserInactiveTimeout(int Seconds, bool Force)
      activeTimeout = 0;
      return;
      }
-  if (Seconds < 0)
-     Seconds = Setup.MinUserInactivity * 60;
-  activeTimeout = time(NULL) + Seconds;
+  if (Seconds >= 0)
+     activeTimeout = time(NULL) + Seconds;
+  else if (Seconds == -1)
+     activeTimeout = time(NULL) + Setup.MinUserInactivity * 60;
+  else if (Seconds == -2)
+     activeTimeout = 0;
+  else if (Seconds == -3)
+     activeTimeout = 1;
 }
 
 bool cShutdownHandler::ConfirmShutdown(bool Interactive)

@@ -1777,6 +1777,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
  when a recording is played
  for requesting to keep using relative paths when building plugins locally
+ for fixing a problem with detecting user inactivity in case the system time is
+ changed after VDR has been started
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -3039,6 +3041,8 @@ Sören Moch <smoch@web.de>
  handling of PCR values
  for improving cutting MPEG-2 video
  for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
+ for reporting a problem with detecting user inactivity in case the system time is
+ changed after VDR has been started
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files

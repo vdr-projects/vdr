@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.h 1.1 2007/02/24 17:23:59 kls Exp $
+ * $Id: shutdown.h 2.1 2013/02/18 10:35:27 kls Exp $
  */
 
 #ifndef __SHUTDOWN_H
@@ -38,7 +38,7 @@ public:
 class cShutdownHandler {
 private:
   time_t activeTimeout;
-       ///< Time when VDR will become non-interactive. 0 means never.
+       ///< Time when VDR will become non-interactive. 0 means never, 1 means unknown time ago.
   time_t retry;
        ///< Time for retrying the shutdown.
   char *shutdownCommand;
@@ -73,15 +73,18 @@ public:
        ///< Check whether VDR is in interactive mode or non-interactive mode (waiting for shutdown).
        ///< AtTime checks whether VDR will probably be inactive at that time.
   time_t GetUserInactiveTime(void) { return activeTimeout; }
-       ///< Time when user will become non-inactive, or 0 if never.
+       ///< Time when user will become non-inactive, or 0 if never, 1 if a long time ago
   void SetUserInactiveTimeout(int Seconds = -1, bool Force = false);
-       ///< Set the time when VDR will switch into non-interactive mode or power down.
-       ///< -1 means Setup.MinUserInactivity in the future.
-       ///< Otherwise, seconds in the future.
-       ///< If MinUserInactivity = 0 and Force = false, Seconds is ignored and VDR will
-       ///< stay interactive forever.
+       ///< Set the time in the future when VDR will switch into non-interactive mode or power down.
+       ///< Seconds >= 0 means that many seconds in the future.
+       ///< Seconds = -1 means Setup.MinUserInactivity in the future.
+       ///< Seconds = -2 means never.
+       ///< Seconds = -3 means a long, unknown time ago.
+       ///< Setup.MinUserInactivity = 0 will overrule this, unless Force = true is given.
+       ///< If Setup.MinUserInactivity = 0 and Force = false, Seconds is ignored and VDR will
+       ///< stay interactive forever (like Seconds = -2).
   void SetUserInactive(void) { SetUserInactiveTimeout(0, true); }
-       ///< Set VDR manually into non-interactive mode.
+       ///< Set VDR manually into non-interactive mode from now on.
   bool Retry(time_t AtTime = 0) { return retry <= (AtTime ? AtTime : time(NULL)); }
        ///< Check whether its time to re-try the shutdown.
        ///< AtTime checks whether VDR will probably be inactive at that time.
