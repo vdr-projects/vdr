@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.18 2013/02/08 10:31:38 kls Exp $
+# $Id: Make.config.template 2.19 2013/02/18 10:55:39 kls Exp $
 
 ### The C compiler and options:
 
@@ -62,7 +62,7 @@ endif
 
 # Use this if you want to have a central place where you configure compile time
 # parameters for plugins:
-#PLGCFG = $(CONFDIR)/plugins.conf
+#PLGCFG = $(CONFDIR)/plugins.mk
 
 ### The remote control:
 

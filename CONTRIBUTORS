@@ -2003,6 +2003,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding '-p' to the cp command in the install-conf target of the Makefile
  for reporting that some special characters are dropped by Doxygen and thus need to
  be escaped
+ for changing the template for PLGCFG to $(CONFDIR)/plugins.mk
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

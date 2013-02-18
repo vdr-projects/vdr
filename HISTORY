@@ -7653,3 +7653,4 @@ Video Disk Recorder Revision History
   the system time is changed after VDR has been started (thanks to Udo Richter, reported
   by Sören Moch).
 - Updated the Czech OSD texts (thanks to Ales Jurik).
+- Changed the template for PLGCFG to $(CONFDIR)/plugins.mk (thanks to Ville Skyttä).
