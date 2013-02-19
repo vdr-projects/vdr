@@ -2895,6 +2895,9 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for reporting a problem with EPG scan on systems with only a single DVB device that
  use software output
  for fixing calling iconv_close() only with a valid iconv_t value
+ for reporting a problem with device bondings for devices that don't provide DVB-S
+ in case, for instance, there is now a DVB-T device where there used to be a bonded
+ DVB-S device
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect

@@ -7645,7 +7645,7 @@ Video Disk Recorder Revision History
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
 
-2013-02-18: Version 1.7.39
+2013-02-19: Version 1.7.39
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
@@ -7655,3 +7655,5 @@ Video Disk Recorder Revision History
 - Updated the Czech OSD texts (thanks to Ales Jurik).
 - Changed the template for PLGCFG to $(CONFDIR)/plugins.mk (thanks to Ville Skyttä).
 - Updated the Swedish OSD texts (thanks to Richard Lithvall).
+- Now clearing device bondings for devices that don't provide DVB-S in the Setup/LNB
+  menu (reported by Juergen Lock).

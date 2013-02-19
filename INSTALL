@@ -424,6 +424,10 @@ Note that it doesn't make sense to use "Satellite Channel Routing" and
 of these methods, it is necessary that your devices are always created in the
 same sequence when the drivers are loaded. You may need to configure some
 proper "udev" rules to make sure this happens.
+If you use "Device Bonding" and you add devices to your setup that don't
+provide DVB-S and take up a position in which there used to be a bonded DVB-S
+device, make sure you open, adjust (if necessary) and confirm the Setup/LNB
+menu to have the device bondings set correctly again.
 
 Running VDR with DVB-C (cable) or DVB-T (terrestrial):
 ------------------------------------------------------
