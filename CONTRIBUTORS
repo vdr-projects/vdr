@@ -2898,6 +2898,7 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for reporting a problem with device bondings for devices that don't provide DVB-S
  in case, for instance, there is now a DVB-T device where there used to be a bonded
  DVB-S device
+ for fixing a possible deadlock in handling the tuners of bonded devices
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect

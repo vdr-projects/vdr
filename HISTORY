@@ -7657,3 +7657,5 @@ Video Disk Recorder Revision History
 - Updated the Swedish OSD texts (thanks to Richard Lithvall).
 - Now clearing device bondings for devices that don't provide DVB-S in the Setup/LNB
   menu (reported by Juergen Lock).
+- Fixed a possible deadlock in handling the tuners of bonded devices (thanks to
+  Juergen Lock).

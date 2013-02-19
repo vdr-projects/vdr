@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.80 2013/02/17 13:17:33 kls Exp $
+ * $Id: dvbdevice.c 2.81 2013/02/19 10:24:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -307,6 +307,7 @@ private:
   bool bondedMaster;
   bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
+  cDvbTuner *GetBondedMaster(void);
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
   void ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency);
@@ -320,7 +321,6 @@ public:
   bool Bond(cDvbTuner *Tuner);
   void UnBond(void);
   bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
-  cDvbTuner *GetBondedMaster(void);
   const cChannel *GetTransponder(void) const { return &channel; }
   uint32_t SubsystemId(void) const { return subsystemId; }
   bool IsTunedTo(const cChannel *Channel) const;
@@ -742,7 +742,7 @@ bool cDvbTuner::SetFrontend(void)
         if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
            if (diseqc != lastDiseqc || diseqc->IsScr()) {
-              if (GetBondedMaster() == this) {
+              if (!bondedTuner || bondedMaster) {
                  ExecuteDiseqc(diseqc, &frequency);
                  if (frequency == 0)
                     return false;
@@ -768,7 +768,7 @@ bool cDvbTuner::SetFrontend(void)
            tone = SEC_TONE_ON;
            }
         int volt = (dtp.Polarization() == 'V' || dtp.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
-        if (GetBondedMaster() != this) {
+        if (bondedTuner && !bondedMaster) {
            tone = SEC_TONE_OFF;
            volt = SEC_VOLTAGE_13;
            }
