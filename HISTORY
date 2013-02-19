@@ -7659,3 +7659,5 @@ Video Disk Recorder Revision History
   menu (reported by Juergen Lock).
 - Fixed a possible deadlock in handling the tuners of bonded devices (thanks to
   Juergen Lock).
+- Improved working around the broken driver values for SNR in case of a "TT-budget
+  S2-3200" receiving DVB-S2.

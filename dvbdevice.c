@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.81 2013/02/19 10:24:39 kls Exp $
+ * $Id: dvbdevice.c 2.82 2013/02/19 11:55:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -621,15 +621,22 @@ int cDvbTuner::GetSignalQuality(void) const
               break;
               }
            }
+     uint16_t MinSnr = 0x0000;
      uint16_t MaxSnr = 0xFFFF; // Let's assume the default is using the entire range.
      // Use the subsystemId to identify individual devices in case they need
      // special treatment to map their Snr value into the range 0...0xFFFF.
      switch (subsystemId) {
-       case 0x13C21019: MaxSnr = 200; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+       case 0x13C21019: if (frontendType == SYS_DVBS2) { // TT-budget S2-3200 (DVB-S/DVB-S2)
+                           MinSnr = 10;
+                           MaxSnr = 70;
+                           }
+                        else
+                           MaxSnr = 200;
+                        break;
        case 0x20130245:                      // PCTV Systems PCTV 73ESE
        case 0x2013024F: MaxSnr = 255; break; // PCTV Systems nanoStick T2 290e
        }
-     int a = int(Snr) * 100 / MaxSnr;
+     int a = int(constrain(Snr, MinSnr, MaxSnr)) * 100 / (MaxSnr - MinSnr);
      int b = 100 - (Unc * 10 + (Ber / 256) * 5);
      if (b < 0)
         b = 0;
