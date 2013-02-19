@@ -7662,3 +7662,5 @@ Video Disk Recorder Revision History
 - Improved working around the broken driver values for SNR in case of a "TT-budget
   S2-3200" receiving DVB-S2.
 - The demos in the "osddemo" plugin can now also be ended with the "Back" key.
+- Fixed flashing OSD in "high level OSD" mode of the TT S2-6400 in case a menu is open
+  while subtitles are being displayed.
