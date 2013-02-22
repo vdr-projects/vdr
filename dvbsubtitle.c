@@ -7,9 +7,8 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.33 2013/02/17 13:17:38 kls Exp $
+ * $Id: dvbsubtitle.c 2.34 2013/02/22 15:25:25 kls Exp $
  */
-
 
 #include "dvbsubtitle.h"
 #define __STDC_FORMAT_MACROS // Required for format specifiers

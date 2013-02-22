@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 2.8 2012/09/09 11:39:06 kls Exp $
+ * $Id: skinclassic.c 2.9 2013/02/22 15:25:31 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -772,7 +772,6 @@ cSkinDisplayVolume *cSkinClassic::DisplayVolume(void)
 {
   return new cSkinClassicDisplayVolume;
 }
-
 
 cSkinDisplayTracks *cSkinClassic::DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
 {
