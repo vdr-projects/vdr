@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 2.6 2012/10/04 12:20:43 kls Exp $
+ * $Id: thread.c 2.7 2013/02/22 14:52:49 kls Exp $
  */
 
 #include "thread.h"
@@ -598,4 +598,3 @@ int SystemExec(const char *Command, bool Detached)
      _exit(0);
      }
 }
-

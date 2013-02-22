@@ -54,4 +54,3 @@ sub Error
   close(SOCK);
   exit 1;
 }
-
