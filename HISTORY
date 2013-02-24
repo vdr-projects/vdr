@@ -7667,3 +7667,5 @@ Video Disk Recorder Revision History
 - Fixed stuttering or asynchronous audio after changing the audio track. This is done
   by doing a "jump" to the current position, which clears all buffers.
 - Added a manual page for 'svdrpsend' (thanks to Tobias Grimm).
+- Fixed immediately disappearing subtitle track menu in "high level OSD" mode of the
+  TT S2-6400 when selecting "No subtitles".
