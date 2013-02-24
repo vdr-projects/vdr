@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.52 2013/02/17 11:08:04 kls Exp $
+# $Id: Makefile 2.53 2013/02/24 10:40:23 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -273,6 +273,7 @@ install-doc:
 	@mkdir -p $(DESTDIR)$(MANDIR)/man5
 	@gzip -c vdr.1 > $(DESTDIR)$(MANDIR)/man1/vdr.1.gz
 	@gzip -c vdr.5 > $(DESTDIR)$(MANDIR)/man5/vdr.5.gz
+	@gzip -c svdrpsend.1 > $(DESTDIR)$(MANDIR)/man1/svdrpsend.1.gz
 
 # Plugins:
 

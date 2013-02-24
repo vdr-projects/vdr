@@ -2398,6 +2398,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
  for adding dependency on 'i18n' to 'install-i18n' in the VDR Makefile
+ for adding a manual page for 'svdrpsend'
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
