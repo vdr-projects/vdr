@@ -17,14 +17,13 @@ msgstr ""
 "Project-Id-Version: VDR 1.7.37\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2013-02-15 13:26+0100\n"
+"PO-Revision-Date: 2013-02-24 12:56+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Chaîne invalide ! ***"
@@ -836,10 +835,10 @@ msgid "Setup.OSD$Channel info time (s)"
 msgstr "Durée affichage infos chaîne (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Infos lors des changements de chaînes"
+msgstr "Infos chaîne lors du changement"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Temps de demande d'infos de chaîne"
+msgstr "Compte à rebours infos chaîne"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Défilement par pages"
@@ -854,10 +853,10 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Dossiers d'enregistrements"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Dossiers dans le menu programmation"
+msgstr "Dossiers dans menu programmation"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr "Touches numériques pour les caractères"
+msgstr "Touches numériques pour caractères"
 
 msgid "Setup.OSD$Color key 0"
 msgstr "Touche de couleur 0"
@@ -878,13 +877,13 @@ msgid "Button$Scan"
 msgstr "Scanner"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Temps d'inactivité avant mise à jour du guide-EPG (h)"
+msgstr "Inactivité avant mise à jour EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Niveau de correction du guide-EPG"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Afficher les données du guide-EPG périmées (min)"
+msgstr "Afficher données EPG périmées (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Ajuster l'heure du système"
@@ -1061,13 +1060,13 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Durée de vie par défaut (j)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Support de la touche Pause"
+msgstr "Fonction de la touche Pause"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorité de l'enregistrement mis en pause "
+msgstr "Priorité de l'enregistr. mis en pause "
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Expiration de l'enregistrement mis en pause (j)"
+msgstr "Expiration enregistr. mis en pause (j)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Utiliser le nom de l'épisode"
@@ -1112,10 +1111,10 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Montrer le temps restant"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr "Affichage de la barre de progression (s)"
+msgstr "Afficher la barre de progression (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Arrêter la lecture lors de l'ajout d'un marqueur"
+msgstr "Arrêt lecture si ajout marqueur"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de reprise"
@@ -1124,10 +1123,10 @@ msgid "Miscellaneous"
 msgstr "Divers"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Temps minimal entre événements (min)"
+msgstr "Temps mini entre événements (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Durée d'inactivité utilisateur minimale (min)"
+msgstr "Inactivité de l'utilisateur (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Temps maxi SVDRP (s)"
@@ -1157,7 +1156,7 @@ msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Affichage circulaire des chaînes"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr "Afficher le nom des chaînes avec leur source"
+msgstr "Afficher chaînes avec leur source"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Arrêt d'urgence"
@@ -1323,13 +1322,13 @@ msgid "DISK"
 msgstr "DISQUE"
 
 msgid "LOAD"
-msgstr "CHARGER"
+msgstr "CHARGE SYSTÈME"
 
 msgid "TIMERS"
-msgstr "PROGRAMMATIONS"
+msgstr "MINUTEUR"
 
 msgid "DEVICES"
-msgstr "PÉRIPHÉRIQUES"
+msgstr "PÉRIPHÉRIQ."
 
 msgid "LIVE"
 msgstr "DIRECT"

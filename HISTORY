@@ -7590,7 +7590,7 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
-- Updated the French OSD texts (thanks to Marc Perrudin, Bernard Jaulini and Peter
+- Updated the French OSD texts (thanks to Marc Perrudin, Bernard Jaulin and Peter
   Münster).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed moving editing marks, so that they don't get overwritten with old values
@@ -7645,7 +7645,7 @@ Video Disk Recorder Revision History
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
 
-2013-02-24: Version 1.7.39
+2013-02-25: Version 1.7.39
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
@@ -7669,3 +7669,4 @@ Video Disk Recorder Revision History
 - Added a manual page for 'svdrpsend' (thanks to Tobias Grimm).
 - Fixed immediately disappearing subtitle track menu in "high level OSD" mode of the
   TT S2-6400 when selecting "No subtitles".
+- Updated the French OSD texts (thanks to Bernard Jaulin).
