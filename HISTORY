@@ -7665,7 +7665,9 @@ Video Disk Recorder Revision History
 - Fixed flashing OSD in "high level OSD" mode of the TT S2-6400 in case a menu is open
   while subtitles are being displayed.
 - Fixed stuttering or asynchronous audio after changing the audio track. This is done
-  by doing a "jump" to the current position, which clears all buffers.
+  by doing a "jump" to the current position, which clears all buffers. However, this
+  only works with TS recordings. With PES recordings it causes a segfault - haven't
+  been able to figure out why.
 - Added a manual page for 'svdrpsend' (thanks to Tobias Grimm).
 - Fixed immediately disappearing subtitle track menu in "high level OSD" mode of the
   TT S2-6400 when selecting "No subtitles".
