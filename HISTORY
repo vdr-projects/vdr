@@ -7675,3 +7675,5 @@ Video Disk Recorder Revision History
 - Updated the Dutch OSD texts (thanks to Carel Willemse).
 - Removed all "fuzzy" translations from the files ar.po, hu_HU.po and sr_SR.po, because
   more often than not they are just wrong.
+- Now calling DeviceClear() in cTransfer::Receive() if the output device blocks, instead
+  of not retrying for 10 seconds (reported by Andreas Mair, with help from Oliver Endriss).

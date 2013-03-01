@@ -694,6 +694,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a crash in a plugin using cDeviceHook when VDR ends
  for reporting that "include" needs to be removed from the DVBDIR setting in the VDR
  Makefile
+ for helping to debug a problem with reduced number of retries in Transfer Mode on
+ SD-FF cards
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1009,6 +1011,7 @@ Andreas Mair <amair.sob@googlemail.com>
  but one of them ends in an additional digit, as in "abc" and "abc2"
  for reporting multiple occurrences of the same directory in the recordings list ini
  case there are directories that only differ in non-alphanumeric characters
+ for reporting a problem with reduced number of retries in Transfer Mode on SD-FF cards
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
