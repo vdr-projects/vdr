@@ -7645,7 +7645,7 @@ Video Disk Recorder Revision History
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
 
-2013-02-26: Version 1.7.39
+2013-03-01: Version 1.7.39
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
@@ -7673,3 +7673,5 @@ Video Disk Recorder Revision History
   TT S2-6400 when selecting "No subtitles".
 - Updated the French OSD texts (thanks to Bernard Jaulin).
 - Updated the Dutch OSD texts (thanks to Carel Willemse).
+- Removed all "fuzzy" translations from the files ar.po, hu_HU.po and sr_SR.po, because
+  more often than not they are just wrong.

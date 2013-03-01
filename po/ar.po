@@ -32,9 +32,8 @@ msgstr "تعذر  بدء طور النقل"
 msgid "off"
 msgstr "ايقاف"
 
-#, fuzzy
 msgid "on"
-msgstr "لا يوجد"
+msgstr ""
 
 msgid "auto"
 msgstr "ذاتى"
@@ -75,9 +74,8 @@ msgstr "الدرجة"
 msgid "Hierarchy"
 msgstr "الهرمية"
 
-#, fuzzy
 msgid "Rolloff"
-msgstr "ايقاف"
+msgstr ""
 
 msgid "PlpId"
 msgstr ""
@@ -283,9 +281,8 @@ msgstr ""
 msgid "Content$Further Education"
 msgstr ""
 
-#, fuzzy
 msgid "Content$Languages"
-msgstr "اللغة"
+msgstr ""
 
 msgid "Content$Leisure/Hobbies"
 msgstr ""
@@ -489,9 +486,8 @@ msgstr "الاعدادات"
 msgid "Key$Commands"
 msgstr "اوامر"
 
-#, fuzzy
 msgid "Key$User0"
-msgstr "المستخدم 1"
+msgstr ""
 
 msgid "Key$User1"
 msgstr "المستخدم 1"
@@ -595,9 +591,8 @@ msgstr "القناة مستخدمة من قبل الموءقت"
 msgid "Delete channel?"
 msgstr "حذف القناة"
 
-#, fuzzy
 msgid "Edit folder"
-msgstr "تعديل الموءقت"
+msgstr ""
 
 msgid "New folder"
 msgstr ""
@@ -612,16 +607,14 @@ msgstr ""
 msgid "Folder name must not contain '%c'!"
 msgstr ""
 
-#, fuzzy
 msgid "Button$Select"
-msgstr "حذف"
+msgstr ""
 
 msgid "Delete folder and all sub folders?"
 msgstr ""
 
-#, fuzzy
 msgid "Delete folder?"
-msgstr "الغاء الموءقت"
+msgstr ""
 
 msgid "Edit timer"
 msgstr "تعديل الموءقت"
@@ -653,9 +646,8 @@ msgstr "معدل البقاء"
 msgid "File"
 msgstr "ملف"
 
-#, fuzzy
 msgid "Button$Folder"
-msgstr "الموءقت"
+msgstr ""
 
 msgid "Button$Single"
 msgstr ""
@@ -786,21 +778,17 @@ msgstr " الثوب"
 msgid "Setup.OSD$Theme"
 msgstr " الثيمة"
 
-#, fuzzy
 msgid "Setup.OSD$Left (%)"
-msgstr "يسار"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Top (%)"
-msgstr "الى اعلى"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Width (%)"
-msgstr "العرض"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Height (%)"
-msgstr "ارتفاع"
+msgstr ""
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "مواقيت الرسائل"
@@ -820,17 +808,14 @@ msgstr "الخط صغير"
 msgid "Setup.OSD$Fixed font"
 msgstr "الخط ثابت"
 
-#, fuzzy
 msgid "Setup.OSD$Default font size (%)"
-msgstr "  حجم الخط الافتراضى"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Small font size (%)"
-msgstr "حجم الخط الصغير"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "حجم الخط الثابت"
+msgstr ""
 
 msgid "Setup.OSD$Channel info position"
 msgstr " موضع معلومات القناة"
@@ -862,13 +847,11 @@ msgstr "زر اغلاق القاائمة"
 msgid "Setup.OSD$Recording directories"
 msgstr "مجلد التسجيلات"
 
-#, fuzzy
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "مدة معلومات القناة"
+msgstr ""
 
-#, fuzzy
 msgid "Setup.OSD$Number keys for characters"
-msgstr "زر اغلاق القاائمة"
+msgstr ""
 
 msgid "Setup.OSD$Color key 0"
 msgstr ""
@@ -1041,17 +1024,14 @@ msgstr "الكامة مستخدمة الان هل تريد اعادة تشغيل
 msgid "Can't reset CAM!"
 msgstr "تعذر اعادة تشغيل الكامة"
 
-#, fuzzy
 msgid "do not pause live video"
-msgstr "تجميد العرض الحى"
+msgstr ""
 
-#, fuzzy
 msgid "confirm pause live video"
-msgstr "تجميد العرض الحى"
+msgstr ""
 
-#, fuzzy
 msgid "pause live video"
-msgstr "تجميد العرض الحى"
+msgstr ""
 
 msgid "confirm"
 msgstr ""
@@ -1074,9 +1054,8 @@ msgstr "الاولويات الافتراضية"
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "معدل البقاء باليوم"
 
-#, fuzzy
 msgid "Setup.Recording$Pause key handling"
-msgstr "معدل الايقاف باليوم"
+msgstr ""
 
 msgid "Setup.Recording$Pause priority"
 msgstr "تعطيل الاولويات"
@@ -1111,9 +1090,8 @@ msgstr "اقصى حجم لملف الفيديو ب م ب"
 msgid "Setup.Recording$Split edited files"
 msgstr "اقسم الملف المعدل"
 
-#, fuzzy
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "اسم التسجيل الفورى"
+msgstr ""
 
 msgid "Replay"
 msgstr "اعادة عرض"
@@ -1169,9 +1147,8 @@ msgstr "كسابق"
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "فعل الصوت"
 
-#, fuzzy
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr "كسابق"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Show channel names with source"
 msgstr ""
@@ -1242,9 +1219,8 @@ msgstr "لا يوجد كرت ستالايت متاح ليتم التسجيل"
 msgid "Pausing live video..."
 msgstr "تجميد العرض الحى"
 
-#, fuzzy
 msgid "Delete timeshift recording?"
-msgstr "حذف التسجيل"
+msgstr ""
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1390,9 +1366,8 @@ msgstr "الاحد"
 msgid "Upcoming recording!"
 msgstr ""
 
-#, fuzzy
 msgid "Pause live video?"
-msgstr "تجميد العرض الحى"
+msgstr ""
 
 msgid "Recording started"
 msgstr "ابتداء التسجيل"

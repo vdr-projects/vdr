@@ -990,9 +990,8 @@ msgstr "Felsõ LNB-frekvencia (MHz)"
 msgid "Setup.LNB$Device %d connected to sat cable"
 msgstr ""
 
-#, fuzzy
 msgid "Setup.LNB$own"
-msgstr "DiSEqC használata"
+msgstr ""
 
 msgid "CAM reset"
 msgstr "CAM újraindítás"
