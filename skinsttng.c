@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.16 2012/09/09 11:39:06 kls Exp $
+ * $Id: skinsttng.c 2.17 2013/03/03 15:29:28 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -707,8 +707,7 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
   int xl = x3 + TextSpacing;
   int y = y3;
   cTextScroller ts;
-  char t[32];
-  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()));
+  cString t = cString::sprintf("%s  %s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()), Info->ChannelName() ? Info->ChannelName() : "");
   ts.Set(osd, xl, y, x4 - xl, y4 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   y += ts.Height();
   if (Info->GetEvent()->ParentalRating()) {

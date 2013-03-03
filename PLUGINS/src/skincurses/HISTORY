@@ -109,3 +109,8 @@ VDR Plugin 'skincurses' Revision History
 2013-01-12: Version 0.1.14
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-03-03: Version 0.1.15
+
+- The "Recording info" page now displays the name of the channel (if available)
+  from which this recording was taken.

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 2.11 2013/01/12 14:13:12 kls Exp $
+ * $Id: skincurses.c 2.12 2013/03/03 15:33:59 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "0.1.14";
+static const char *VERSION        = "0.1.15";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -447,8 +447,7 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   const cRecordingInfo *Info = Recording->Info();
   int y = 2;
   cTextScroller ts;
-  char t[32];
-  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()));
+  cString t = cString::sprintf("%s  %s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()), Info->ChannelName() ? Info->ChannelName() : "");
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   y += ts.Height();
   if (Info->GetEvent()->ParentalRating()) {
