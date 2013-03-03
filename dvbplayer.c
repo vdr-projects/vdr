@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.30 2013/02/12 10:50:10 kls Exp $
+ * $Id: dvbplayer.c 2.32 2013/02/25 12:15:58 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -220,6 +220,7 @@ private:
   cFrame *readFrame;
   cFrame *playFrame;
   cFrame *dropFrame;
+  bool resyncAfterPause;
   void TrickSpeed(int Increment);
   void Empty(void);
   bool NextFile(uint16_t FileNumber = 0, off_t FileOffset = -1);
@@ -240,6 +241,7 @@ public:
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
   virtual double FramesPerSecond(void) { return framesPerSecond; }
+  virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId);
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
   };
@@ -270,6 +272,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
   readFrame = NULL;
   playFrame = NULL;
   dropFrame = NULL;
+  resyncAfterPause = false;
   isyslog("replay %s", FileName);
   fileName = new cFileName(FileName, false, false, isPesRecording);
   replayFile = fileName->Open();
@@ -636,7 +639,13 @@ void cDvbPlayer::Play(void)
      DevicePlay();
      playMode = pmPlay;
      playDir = pdForward;
-    }
+     if (resyncAfterPause) {
+        int Current, Total;
+        if (GetIndex(Current, Total, true))
+           Goto(Current);
+        resyncAfterPause = false;
+        }
+     }
 }
 
 void cDvbPlayer::Forward(void)
@@ -797,6 +806,19 @@ void cDvbPlayer::Goto(int Index, bool Still)
         }
      readIndex = Index;
      }
+}
+
+void cDvbPlayer::SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
+{
+  if (isPesRecording)
+     return; // for some unknown reason this doesn't work with PES recordings - causes a segfault
+  if (playMode == pmPlay) {
+     int Current, Total;
+     if (GetIndex(Current, Total, true))
+        Goto(Current);
+     }
+  else if (playMode == pmPause)
+     resyncAfterPause = true;
 }
 
 bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)

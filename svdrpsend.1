@@ -1,0 +1,37 @@
+.TH "svdrpsend" "1" "23 Feb 2013" "1.7" "Video Disk Recorder"
+.SH NAME
+.LP
+svdrpsend \- sends commands to VDR
+.SH SYNOPSIS
+.LP
+svdrpsend [\fIoptions\fP] \fIcommand\fP
+.SH DESCRIPTION
+.LP
+This program sends commands to VDR (the Video Disk Recorder) and displays the
+result. A list of available commands can be shown by sending the HELP command.
+.SH OPTIONS
+.LP
+.TP
+\fB\-d\fR \fIhostname\fP
+Accesses the VDR at the specified \fIhostname\fP (default is localhost).
+.TP
+\fB\-p\fR \fIport\fP
+Uses the SVDRP port number \fIport\fP (default is 6419).
+.SH EXAMPLES
+.LP
+To request the available commands from the VDR running on the local host:
+.LP
+svdrpsend HELP
+.SH AUTHORS
+.LP
+Written by Tobias Grimm <tg@e\-tobi.net>
+.PP
+Permission is granted to copy, distribute and/or modify this document under
+the terms of the GNU General Public License, Version 2 any
+later version published by the Free Software Foundation.
+.PP
+On Debian systems, the complete text of the GNU General Public
+License can be found in /usr/share/common\-licenses/GPL.
+.SH SEE ALSO
+.LP
+vdr(1), vdr(5)

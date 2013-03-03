@@ -2,8 +2,6 @@
  * hdffosd.c: Implementation of the DVB HD Full Featured On Screen Display
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: hdffosd.c 1.20 2013/01/29 08:59:36 kls Exp $
  */
 
 #include "hdffosd.h"
@@ -107,6 +105,10 @@ cHdffOsd::cHdffOsd(int Left, int Top, HDFF::cHdffCmdIf * pHdffCmdIf, uint Level)
 cHdffOsd::~cHdffOsd()
 {
     //printf("~cHdffOsd %d %d\n", mLeft, mTop);
+    if (Active()) {
+        mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
+        mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
+    }
     SetActive(false);
 
     for (int i = 0; i < MAX_NUM_FONTS; i++)
@@ -124,8 +126,6 @@ cHdffOsd::~cHdffOsd()
 
     if (mBitmapPalette != HDFF_INVALID_HANDLE)
         mHdffCmdIf->CmdOsdDeletePalette(mBitmapPalette);
-    mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
-    mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
     mHdffCmdIf->CmdOsdDeleteDisplay(mDisplay);
 }
 
@@ -152,7 +152,7 @@ eOsdError cHdffOsd::SetAreas(const tArea *Areas, int NumAreas)
     {
         //printf("SetAreas %d: %d %d %d %d %d\n", i, Areas[i].x1, Areas[i].y1, Areas[i].x2, Areas[i].y2, Areas[i].bpp);
     }
-    if (mDisplay != HDFF_INVALID_HANDLE)
+    if (Active() && mDisplay != HDFF_INVALID_HANDLE)
     {
         mHdffCmdIf->CmdOsdDrawRectangle(mDisplay, 0, 0, mDispWidth, mDispHeight, 0);
         mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
@@ -251,7 +251,6 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
 {
     int w = Font->Width(s);
     int h = Font->Height();
-    int limit = 0;
     int cw = Width ? Width : w;
     int ch = Height ? Height : h;
     int i;
@@ -345,7 +344,6 @@ void cHdffOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Colo
 
     if (Width || Height)
     {
-        limit = x + cw;// - mLeft;
         if (Width)
         {
             if ((Alignment & taLeft) != 0)
@@ -510,6 +508,8 @@ void cHdffOsd::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Qua
 void cHdffOsd::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
 {
     //printf("DrawSlope\n");
+    mHdffCmdIf->CmdOsdDrawSlope(mDisplay, mLeft + x1, mTop + y1,
+                                x2 - x1 + 1, y2 - y1 + 1, Color, Type);
     mChanged = true;
 }
 

@@ -59,3 +59,11 @@ VDR Plugin 'dvbhddevice' Revision History
 2013-02-16: Version 0.0.8
 
 - Added missing $(LDFLAGS) to the Makefile (thanks to Ville Skyttä).
+
+2013-02-24: Version 0.0.9
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed flashing OSD in "high level OSD" mode in case a menu is open while subtitles
+  are being displayed.
+- Fixed immediately disappearing subtitle track menu when selecting "No subtitles".

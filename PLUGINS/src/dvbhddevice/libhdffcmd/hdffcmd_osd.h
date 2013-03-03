@@ -145,6 +145,10 @@ int HdffCmdOsdDrawEllipse(int OsdDevice, uint32_t Display, uint16_t CX,
                           uint16_t CY, uint16_t RadiusX, uint16_t RadiusY,
                           uint32_t Color, uint32_t Flags);
 
+int HdffCmdOsdDrawSlope(int OsdDevice, uint32_t Display, uint16_t X,
+                        uint16_t Y, uint16_t Width, uint16_t Height,
+                        uint32_t Color, uint32_t Type);
+
 int HdffCmdOsdDrawText(int OsdDevice, uint32_t Display, uint32_t Font,
                        uint16_t X, uint16_t Y, const char * Text,
                        uint32_t Color);

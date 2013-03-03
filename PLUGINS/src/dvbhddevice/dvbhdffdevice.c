@@ -2,8 +2,6 @@
  * dvbhdffdevice.c: The DVB HD Full Featured device interface
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: dvbhdffdevice.c 1.49 2013/02/17 14:10:06 kls Exp $
  */
 
 #include <stdint.h>
@@ -498,6 +496,7 @@ bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
         mHdffCmdIf->CmdAvSetDecoderInput(0, 0);
         mHdffCmdIf->CmdAvEnableSync(0, true);
         mHdffCmdIf->CmdAvSetPlayMode(0, true);
+        mHdffCmdIf->CmdAvMuteAudio(0, false);
     }
     else {
         if (playMode == pmNone)
@@ -562,6 +561,30 @@ int64_t cDvbHdFfDevice::GetSTC(void)
     return -1;
 }
 
+cRect cDvbHdFfDevice::CanScaleVideo(const cRect &Rect, int Alignment)
+{
+    return Rect;
+}
+
+void cDvbHdFfDevice::ScaleVideo(const cRect &Rect)
+{
+    if (Rect == cRect::Null)
+    {
+        mHdffCmdIf->CmdAvSetVideoWindow(0, false, 0, 0, 0, 0);
+    }
+    else
+    {
+        int osdWidth;
+        int osdHeight;
+        double osdPixelAspect;
+
+        GetOsdSize(osdWidth, osdHeight, osdPixelAspect);
+        mHdffCmdIf->CmdAvSetVideoWindow(0, true,
+            Rect.X() * 1000 / osdWidth, Rect.Y() * 1000 / osdHeight,
+            Rect.Width() * 1000 / osdWidth, Rect.Height() * 1000 / osdHeight);
+    }
+}
+
 void cDvbHdFfDevice::TrickSpeed(int Speed)
 {
   freezed = false;
@@ -591,6 +614,7 @@ void cDvbHdFfDevice::Play(void)
         mHdffCmdIf->CmdAvEnableSync(0, true);
     mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
     mHdffCmdIf->CmdAvSetAudioSpeed(0, 100);
+    mHdffCmdIf->CmdAvMuteAudio(0, false);
     cDevice::Play();
 }
 
@@ -604,8 +628,8 @@ void cDvbHdFfDevice::Freeze(void)
 
 void cDvbHdFfDevice::Mute(void)
 {
-  //TODO???
-  cDevice::Mute();
+    mHdffCmdIf->CmdAvMuteAudio(0, true);
+    cDevice::Mute();
 }
 
 static HdffVideoStreamType_t MapVideoStreamTypes(int Vtype)

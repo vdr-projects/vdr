@@ -151,4 +151,9 @@ int HdffCmdAvSetAudioChannel(int OsdDevice, uint8_t AudioChannel);
 
 int HdffCmdAvSetSyncShift(int OsdDevice, int16_t SyncShift);
 
+int HdffCmdAvMuteAudio(int OsdDevice, uint8_t DecoderIndex, int Mute);
+
+int HdffCmdAvMuteVideo(int OsdDevice, uint8_t DecoderIndex, int Mute);
+
+
 #endif /* HDFFCMD_AV_H */

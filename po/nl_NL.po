@@ -4,16 +4,16 @@
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
 # Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003, 2005
 # Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
-# Carel Willemse <ca_willemse@planet.nl>, 2008
+# Carel Willemse <carel@nekanali.nl>, 2008, 2013
 # Johan Schuring <johan.schuring@vetteblei.nl>, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.38\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
-"Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
+"Last-Translator: Carel Willemse <carel@nekanali.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgid "off"
 msgstr "uit"
 
 msgid "on"
-msgstr ""
+msgstr "aan"
 
 msgid "auto"
 msgstr "auto"
@@ -45,7 +45,7 @@ msgid "Polarization"
 msgstr "Polarisatie"
 
 msgid "System"
-msgstr ""
+msgstr "Systeem"
 
 msgid "Srate"
 msgstr "Srate"
@@ -75,254 +75,254 @@ msgid "Hierarchy"
 msgstr "Hierarchie"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Bezig met starten EPG scan"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Film/Drama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Detective/Thriller"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Avontuur/Western/Oorlog"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasie/Horror"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Comedie"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Soap/Melodrama/Folklore"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romantisch"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Verdieping/Klassiek/Religieus/Historische film/Drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Volwassenen/Drama"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Nieuws/Laatste nieuws"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Nieuws/Weersverwachting"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Nieuwsbulletin"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Documentaire"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Discussie/Interview/Debat"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Show/Gameshow"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Gameshow/Quiz/Wedstrijd"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Variëteitenprogramma"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Praatprogramma"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sportprogramma"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Speciale uitzending"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Sportmagazine"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Voetbal/Soccer"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Teamsporten"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Athletiek"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Motorsport"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Watersport"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Wintersport"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Equestrian"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Vechtsport"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Kinderprogramma/Jongerenprogramma"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Kleuter TV"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Kinderprogramma voor 6 tot 14 jarigen"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Kinderprogramma voor 10 tot 16 jarigen"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "School TV"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Cartoons/Tekenfilms"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Muziek/Ballet/Dans"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Serieuze muziek/Klassieke muziek"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Folk/Traditionele muziek"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Musical/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Ballet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Kunst/Cultuur"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Toneel"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Kleinkunst"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religie"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Populaire cultuur/Traditionele kunst"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literatuur"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Film/Bioscoop"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Experimentele film/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Nieuwsfeed/Pers"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Nieuwe media"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Kunst/Cultureel magazine"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Mode"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Sociaal/Politiek/Economie"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Magazine/Bericht/Documentaire"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Economie/Sociaal advies"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Bekende mensen"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Onderwijs/Wetenschap/Faculteit"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Natuur/Dierenrijk/Milieu"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Technologie/Biologie"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Pharmacie/Physiologie/Psychologie"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Buitenland/Expedities"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Sociale/Spiritualiteit"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Verdiepend onderwijs"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Talen"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Vrije tijd/Hobbies"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Toerisme/Reizen"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Handenarbeid"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motoren"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitness & Gezondheid"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Koken"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Reclame/Winkelen"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Tuinieren"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Oorspronkelijke taal"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Zwart-wit"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Ongepubliceerd"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Live uitzending"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "from %d"
 
 msgid "No title"
 msgstr "Geen titel"
@@ -415,7 +415,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Weergeven/Pauze"
 
 msgid "Key$Play"
 msgstr "Weergeven"
@@ -469,7 +469,7 @@ msgid "Key$Subtitles"
 msgstr "Ondertiteling"
 
 msgid "Key$Schedule"
-msgstr "ProgrammaGids"
+msgstr "Programmagids"
 
 msgid "Key$Channels"
 msgstr "Kanalen"
@@ -592,29 +592,29 @@ msgid "Delete channel?"
 msgstr "Kanaal verwijderen?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Bewerk map"
 
 msgid "New folder"
-msgstr ""
+msgstr "Nieuwe map"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Submap"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Map bestaat al"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Map mag geen karakter '%c' bevatten!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Kies"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Map en alle submappen verwijderen?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Map verwijderen?"
 
 msgid "Edit timer"
 msgstr "Timer veranderen"
@@ -647,19 +647,19 @@ msgid "File"
 msgstr "Bestandnaam"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Map"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Eenmalig"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Herhalen"
 
 msgid "First day"
 msgstr "Eerste dag"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Kies map"
 
 msgid "Timers"
 msgstr "Timers"
@@ -749,7 +749,7 @@ msgid "Delete recording?"
 msgstr "Opname verwijderen?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Opname wordt bewerkt - werkelijk verwijderen?"
 
 msgid "Error while deleting recording!"
 msgstr "Fout bij verwijderen opname!"
@@ -848,22 +848,22 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Opname mappen"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Mappen in timermenu"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Nummertoetsen voor karakters"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Gekleurde toets 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Gekleurde toets 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Gekleurde toets 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Gekleurde toets 3"
 
 msgid "EPG"
 msgstr "EPG"
@@ -934,7 +934,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Eerste DVB kaart"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Standaard functionaliteit"
 
 msgid "Setup.DVB$Video format"
 msgstr "Videoformaat"
@@ -989,10 +989,10 @@ msgstr "Hoogste LNB frequentie (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Apparaat %d verbionden met sat. kabel"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "eigen"
 
 msgid "CAM reset"
 msgstr "CAM herstarten"
@@ -1025,16 +1025,16 @@ msgid "Can't reset CAM!"
 msgstr "Kan CAM niet herstarten!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "live video niet pauzeren"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "bevestig pauzeren live video"
 
 msgid "pause live video"
-msgstr ""
+msgstr "pauzeer live video"
 
 msgid "confirm"
-msgstr ""
+msgstr "bevestig"
 
 msgid "yes"
 msgstr "ja"
@@ -1055,7 +1055,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Standaard levensduur (d)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Gedrag pauze toets"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pauze prioriteit"
@@ -1082,7 +1082,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Duur van de directe opname (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "huidige aflevering"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maximale omvang video file (MB)"
@@ -1091,7 +1091,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Bewerkte files opdelen"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Verwijder time-shift opname"
 
 msgid "Replay"
 msgstr "Afspelen"
@@ -1103,13 +1103,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Weergave mode aangeven"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Toon resterende tijd"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Verlopen tijd tijd (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pauzeer wanneer markering wordt geplaatst"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Hervattings ID"
@@ -1133,10 +1133,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Tijdsduur kanaalinvoer (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Afstandbediening herhalingsvertraging (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Afstandbediening herhalingsinterval (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Opstartkanaal"
@@ -1148,10 +1148,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Doorscrollen kanalenlijst"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Toon kanaalnamen met bron"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Nooduitgang"
@@ -1220,7 +1220,7 @@ msgid "Pausing live video..."
 msgstr "Pauzeren live uitzending..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Verwijder timeshift opname?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1230,7 +1230,7 @@ msgid "No editing marks defined!"
 msgstr "Geen bewerkingsmarkeringen gedefinieerd!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Geen opeenvolgende bewerkingen aanwezig!"
 
 msgid "Can't start editing process!"
 msgstr "Kan niet beginnen met bewerken!"
@@ -1269,13 +1269,13 @@ msgid "Low disk space!"
 msgstr "Hardeschijf bijna vol!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Indexbestand wordt geregenereerd"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Regenaratie indexbestand gereed"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Regeneratie indexbestand mislukt!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Shutdown onmogelijk - Optie '-s' ontbreekt!"
@@ -1314,22 +1314,22 @@ msgid "Classic VDR"
 msgstr "VDR Klassiek"
 
 msgid "DISK"
-msgstr ""
+msgstr "SCHIJF"
 
 msgid "LOAD"
-msgstr ""
+msgstr "LAADT"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TIMERS"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "APPARATEN"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "AFSPELEN"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Consoles"
@@ -1367,7 +1367,7 @@ msgid "Upcoming recording!"
 msgstr "Opname start binnenkort!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Pauzeer live video?"
 
 msgid "Recording started"
 msgstr "Opname is gestart!"

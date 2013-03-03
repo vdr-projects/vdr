@@ -2,8 +2,6 @@
  * hdffcmd.c: TODO(short description)
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: hdffcmd.c 1.26 2012/11/15 09:19:47 kls Exp $
  */
 
 #include <stdint.h>
@@ -175,6 +173,10 @@ void cHdffCmdIf::CmdAvSetSyncShift(int16_t SyncShift)
     HdffCmdAvSetSyncShift(mOsdDev, SyncShift);
 }
 
+void cHdffCmdIf::CmdAvMuteAudio(uint8_t DecoderIndex, bool Mute)
+{
+    HdffCmdAvMuteAudio(mOsdDev, DecoderIndex, Mute);
+}
 
 void cHdffCmdIf::CmdOsdConfigure(const HdffOsdConfig_t * pConfig)
 {
@@ -307,6 +309,13 @@ void cHdffCmdIf::CmdOsdDrawEllipse(uint32_t hDisplay, int CX, int CY, int Radius
 {
     //printf("Ellipse (%d,%d) %d x %d, %08X, %d\n", CX, CY, RadiusX, RadiusY, Color, Flags);
     HdffCmdOsdDrawEllipse(mOsdDev, hDisplay, CX, CY, RadiusX, RadiusY, Color, Flags);
+}
+
+void cHdffCmdIf::CmdOsdDrawSlope(uint32_t hDisplay, int X, int Y, int Width, int Height,
+                                 uint32_t Color, uint32_t Type)
+{
+    //printf("Slope (%d,%d) %d x %d, %08X, %X\n", X, Y, Width, Height, Color, Type);
+    HdffCmdOsdDrawSlope(mOsdDev, hDisplay, X, Y, Width, Height, Color, Type);
 }
 
 void cHdffCmdIf::CmdOsdDrawText(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color)

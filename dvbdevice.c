@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.80 2013/02/17 13:17:33 kls Exp $
+ * $Id: dvbdevice.c 2.83 2013/02/20 09:12:12 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -307,6 +307,8 @@ private:
   bool bondedMaster;
   bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
+  cDvbTuner *GetBondedMaster(void);
+  bool IsBondedMaster(void) const { return !bondedTuner || bondedMaster; }
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
   void ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency);
@@ -320,7 +322,6 @@ public:
   bool Bond(cDvbTuner *Tuner);
   void UnBond(void);
   bool BondingOk(const cChannel *Channel, bool ConsiderOccupied = false) const;
-  cDvbTuner *GetBondedMaster(void);
   const cChannel *GetTransponder(void) const { return &channel; }
   uint32_t SubsystemId(void) const { return subsystemId; }
   bool IsTunedTo(const cChannel *Channel) const;
@@ -621,15 +622,22 @@ int cDvbTuner::GetSignalQuality(void) const
               break;
               }
            }
+     uint16_t MinSnr = 0x0000;
      uint16_t MaxSnr = 0xFFFF; // Let's assume the default is using the entire range.
      // Use the subsystemId to identify individual devices in case they need
      // special treatment to map their Snr value into the range 0...0xFFFF.
      switch (subsystemId) {
-       case 0x13C21019: MaxSnr = 200; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+       case 0x13C21019: if (frontendType == SYS_DVBS2) { // TT-budget S2-3200 (DVB-S/DVB-S2)
+                           MinSnr = 10;
+                           MaxSnr = 70;
+                           }
+                        else
+                           MaxSnr = 200;
+                        break;
        case 0x20130245:                      // PCTV Systems PCTV 73ESE
        case 0x2013024F: MaxSnr = 255; break; // PCTV Systems nanoStick T2 290e
        }
-     int a = int(Snr) * 100 / MaxSnr;
+     int a = int(constrain(Snr, MinSnr, MaxSnr)) * 100 / (MaxSnr - MinSnr);
      int b = 100 - (Unc * 10 + (Ber / 256) * 5);
      if (b < 0)
         b = 0;
@@ -742,7 +750,7 @@ bool cDvbTuner::SetFrontend(void)
         if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
            if (diseqc != lastDiseqc || diseqc->IsScr()) {
-              if (GetBondedMaster() == this) {
+              if (IsBondedMaster()) {
                  ExecuteDiseqc(diseqc, &frequency);
                  if (frequency == 0)
                     return false;
@@ -768,7 +776,7 @@ bool cDvbTuner::SetFrontend(void)
            tone = SEC_TONE_ON;
            }
         int volt = (dtp.Polarization() == 'V' || dtp.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
-        if (GetBondedMaster() != this) {
+        if (!IsBondedMaster()) {
            tone = SEC_TONE_OFF;
            volt = SEC_VOLTAGE_13;
            }

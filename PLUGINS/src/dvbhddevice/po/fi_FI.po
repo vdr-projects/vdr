@@ -23,7 +23,7 @@ msgid "Video Conversion"
 msgstr "Näyttömuoto"
 
 msgid "TV on"
-msgstr ""
+msgstr "TV päälle"
 
 msgid "Automatic"
 msgstr "automaattinen"
@@ -92,7 +92,7 @@ msgid "Audio Downmix"
 msgstr "Äänen alasmiksaus"
 
 msgid "A/V Sync Shift (ms)"
-msgstr ""
+msgstr "A/V-synkronointi (ms)"
 
 msgid "OSD Size"
 msgstr "Kuvaruutunäytön koko"

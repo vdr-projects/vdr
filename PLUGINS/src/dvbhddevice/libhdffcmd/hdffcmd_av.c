@@ -468,3 +468,39 @@ int HdffCmdAvSetSyncShift(int OsdDevice, int16_t SyncShift)
     osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
     return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
 }
+
+int HdffCmdAvMuteAudio(int OsdDevice, uint8_t DecoderIndex, int Mute)
+{
+    uint8_t cmdData[16];
+    BitBuffer_t cmdBuf;
+    osd_raw_cmd_t osd_cmd;
+
+    BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
+    memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
+    osd_cmd.cmd_data = cmdData;
+    HdffCmdBuildHeader(&cmdBuf, HDFF_MSG_TYPE_COMMAND,
+                       HDFF_MSG_GROUP_AV_DECODER,
+                       HDFF_MSG_AV_MUTE_AUDIO);
+    BitBuffer_SetBits(&cmdBuf, 4, DecoderIndex);
+    BitBuffer_SetBits(&cmdBuf, 1, Mute ? 1 : 0);
+    osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
+    return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
+}
+
+int HdffCmdAvMuteVideo(int OsdDevice, uint8_t DecoderIndex, int Mute)
+{
+    uint8_t cmdData[16];
+    BitBuffer_t cmdBuf;
+    osd_raw_cmd_t osd_cmd;
+
+    BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
+    memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
+    osd_cmd.cmd_data = cmdData;
+    HdffCmdBuildHeader(&cmdBuf, HDFF_MSG_TYPE_COMMAND,
+                       HDFF_MSG_GROUP_AV_DECODER,
+                       HDFF_MSG_AV_MUTE_VIDEO);
+    BitBuffer_SetBits(&cmdBuf, 4, DecoderIndex);
+    BitBuffer_SetBits(&cmdBuf, 1, Mute ? 1 : 0);
+    osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
+    return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
+}

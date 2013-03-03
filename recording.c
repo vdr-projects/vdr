@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.88 2013/02/17 13:17:55 kls Exp $
+ * $Id: recording.c 2.89 2013/03/03 10:54:05 kls Exp $
  */
 
 #include "recording.h"
@@ -910,7 +910,7 @@ cRecording::~cRecording()
   delete info;
 }
 
-char *cRecording::StripEpisodeName(char *s)
+char *cRecording::StripEpisodeName(char *s, bool Strip)
 {
   char *t = s, *s1 = NULL, *s2 = NULL;
   while (*t) {
@@ -931,8 +931,10 @@ char *cRecording::StripEpisodeName(char *s)
      // by '0' in SortName() (see below), which will result in the desired
      // sequence:
      *s1 = '1';
-     s1++;
-     memmove(s1, s2, t - s2 + 1);
+     if (Strip) {
+        s1++;
+        memmove(s1, s2, t - s2 + 1);
+        }
      }
   return s;
 }
@@ -941,8 +943,7 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory))
-                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)));
+     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)), RecordingsSortMode != rsmName);
      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
      *sb = MALLOC(char, l);

@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.10 2013/02/17 13:16:34 kls Exp $
+ * $Id: osddemo.c 2.11 2013/02/19 12:43:19 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.3.0";
+static const char *VERSION        = "0.3.1";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -157,6 +157,7 @@ eOSState cLineGame::ProcessKey(eKeys Key)
                      return osContinue;
        case k2:      DrawSlopes(osd);
                      return osContinue;
+       case kBack:
        case kOk:     return osEnd;
        default: return state;
        }
@@ -533,6 +534,7 @@ eOSState cTrueColorDemo::ProcessKey(eKeys Key)
                      SetArea();
                      DrawSlopes(osd);
                      break;
+       case kBack:
        case kOk:     return osEnd;
        default: return state;
        }

@@ -2,8 +2,6 @@
  * setup.h: Setup for the DVB HD Full Featured On Screen Display
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: setup.h 1.13 2012/11/15 09:21:07 kls Exp $
  */
 
 #ifndef _HDFF_SETUP_H_

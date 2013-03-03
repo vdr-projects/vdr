@@ -694,6 +694,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a crash in a plugin using cDeviceHook when VDR ends
  for reporting that "include" needs to be removed from the DVBDIR setting in the VDR
  Makefile
+ for helping to debug a problem with reduced number of retries in Transfer Mode on
+ SD-FF cards
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1009,6 +1011,7 @@ Andreas Mair <amair.sob@googlemail.com>
  but one of them ends in an additional digit, as in "abc" and "abc2"
  for reporting multiple occurrences of the same directory in the recordings list ini
  case there are directories that only differ in non-alphanumeric characters
+ for reporting a problem with reduced number of retries in Transfer Mode on SD-FF cards
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1777,6 +1780,8 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting to shift editing marks that don't point to an I-frame towards the next I-frame
  when a recording is played
  for requesting to keep using relative paths when building plugins locally
+ for fixing a problem with detecting user inactivity in case the system time is
+ changed after VDR has been started
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2001,6 +2006,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding '-p' to the cp command in the install-conf target of the Makefile
  for reporting that some special characters are dropped by Doxygen and thus need to
  be escaped
+ for changing the template for PLGCFG to $(CONFDIR)/plugins.mk
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2362,7 +2368,7 @@ Jan Lenz <email@JanLenz.de>
  for reporting a bug in deleting recordings that have been removed externally when
  running out of disk space
 
-Oleg Roitburd <oleg@roitburd.de>
+Oleg Roitburd <oroitburd@gmail.com>
  for translating OSD texts to the Russian language
  for updating 'sources.conf'
 
@@ -2374,6 +2380,7 @@ Jurij Retzlaff <jurij@topofweb.de>
 
 Richard Lithvall <richard@lithvall.se>
  for adding a tolerance for symbol rate values that are off by one
+ for translating OSD texts to the Swedish language
 
 Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting to use geteuid() to check whether VDR is running as user 'root'
@@ -2394,6 +2401,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for suggesting to move setting LC_NUMERIC further up to make sure any floating point
  numbers use a decimal point
  for adding dependency on 'i18n' to 'install-i18n' in the VDR Makefile
+ for adding a manual page for 'svdrpsend'
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2891,6 +2899,10 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  for reporting a problem with EPG scan on systems with only a single DVB device that
  use software output
  for fixing calling iconv_close() only with a valid iconv_t value
+ for reporting a problem with device bondings for devices that don't provide DVB-S
+ in case, for instance, there is now a DVB-T device where there used to be a bonded
+ DVB-S device
+ for fixing a possible deadlock in handling the tuners of bonded devices
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
@@ -3039,6 +3051,8 @@ Sören Moch <smoch@web.de>
  handling of PCR values
  for improving cutting MPEG-2 video
  for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
+ for reporting a problem with detecting user inactivity in case the system time is
+ changed after VDR has been started
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
@@ -3082,3 +3096,6 @@ Mikael Hübsch <mikael.hubsch@gmail.com>
 Matthias Senzel <matthias.senzel@t-online.de>
  for reporting a problem with switching back to live viewing after replay in a setup
  with device bonding
+
+Marek Nazarko <mnazarko@gmail.com>
+ for translating OSD texts to the Polish language

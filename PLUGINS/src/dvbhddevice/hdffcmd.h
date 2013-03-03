@@ -2,8 +2,6 @@
  * hdffcmd.h: TODO(short description)
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: hdffcmd.h 1.21 2012/11/15 09:20:05 kls Exp $
  */
 
 #ifndef _HDFF_CMD_H_
@@ -48,6 +46,7 @@ public:
     void CmdAvSetAudioDownmix(HdffAudioDownmixMode_t DownmixMode);
     void CmdAvSetAudioChannel(uint8_t AudioChannel);
     void CmdAvSetSyncShift(int16_t SyncShift);
+    void CmdAvMuteAudio(uint8_t DecoderIndex, bool Mute);
 
     void CmdOsdConfigure(const HdffOsdConfig_t * pConfig);
     void CmdOsdReset(void);
@@ -74,6 +73,7 @@ public:
     void CmdOsdDrawRectangle(uint32_t hDisplay, int X, int Y, int Width, int Height, uint32_t Color);
     void CmdOsdDrawEllipse(uint32_t hDisplay, int CX, int CY, int RadiusX, int RadiusY,
                            uint32_t Color, uint32_t Flags);
+    void CmdOsdDrawSlope(uint32_t hDisplay, int X, int Y, int Width, int Height, uint32_t Color, uint32_t Type);
     void CmdOsdDrawText(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color);
     void CmdOsdDrawUtf8Text(uint32_t hDisplay, uint32_t hFont, int X, int Y, const char * pText, uint32_t Color);
     void CmdOsdDrawTextW(uint32_t hDisplay, uint32_t hFont, int X, int Y, const uint16_t * pText, uint32_t Color);

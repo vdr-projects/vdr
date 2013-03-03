@@ -7590,7 +7590,7 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
-- Updated the French OSD texts (thanks to Marc Perrudin, Bernard Jaulini and Peter
+- Updated the French OSD texts (thanks to Marc Perrudin, Bernard Jaulin and Peter
   Münster).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Fixed moving editing marks, so that they don't get overwritten with old values
@@ -7644,3 +7644,43 @@ Video Disk Recorder Revision History
 - Removed trailing whitespace.
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
+
+2013-03-03: Version 1.7.39
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Polish OSD texts (thanks to Marek Nazarko).
+- Modified handling user inactivity in the shutdown handler to avoid a problem in case
+  the system time is changed after VDR has been started (thanks to Udo Richter, reported
+  by Sören Moch).
+- Updated the Czech OSD texts (thanks to Ales Jurik).
+- Changed the template for PLGCFG to $(CONFDIR)/plugins.mk (thanks to Ville Skyttä).
+- Updated the Swedish OSD texts (thanks to Richard Lithvall).
+- Now clearing device bondings for devices that don't provide DVB-S in the Setup/LNB
+  menu (reported by Juergen Lock).
+- Fixed a possible deadlock in handling the tuners of bonded devices (thanks to
+  Juergen Lock).
+- Improved working around the broken driver values for SNR in case of a "TT-budget
+  S2-3200" receiving DVB-S2.
+- The demos in the "osddemo" plugin can now also be ended with the "Back" key.
+- Fixed flashing OSD in "high level OSD" mode of the TT S2-6400 in case a menu is open
+  while subtitles are being displayed.
+- Fixed stuttering or asynchronous audio after changing the audio track. This is done
+  by doing a "jump" to the current position, which clears all buffers. However, this
+  only works with TS recordings. With PES recordings it causes a segfault - haven't
+  been able to figure out why.
+- Added a manual page for 'svdrpsend' (thanks to Tobias Grimm).
+- Fixed immediately disappearing subtitle track menu in "high level OSD" mode of the
+  TT S2-6400 when selecting "No subtitles".
+- Updated the French OSD texts (thanks to Bernard Jaulin).
+- Updated the Dutch OSD texts (thanks to Carel Willemse).
+- Removed all "fuzzy" translations from the files ar.po, hu_HU.po and sr_SR.po, because
+  more often than not they are just wrong.
+- Now calling DeviceClear() in cTransfer::Receive() if the output device blocks, instead
+  of not retrying for 10 seconds (reported by Andreas Mair, with help from Oliver Endriss).
+- Updated the Spanish OSD texts (thanks to Luca Olivetti).
+- Updated the Hungarian language texts (thanks to István Füley).
+- Changed the calls to Skins.QueueMessage() in vdr.c that are related to reporting the
+  status of the editing process back to Skins.Message() in order to have them appear
+  immediately.
+- When sorting recordings by name, folders are now always at the top of the list.
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).

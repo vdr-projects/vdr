@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.79 2013/02/17 13:17:49 kls Exp $
+ * $Id: menu.c 2.80 2013/02/19 09:33:26 kls Exp $
  */
 
 #include "menu.h"
@@ -2965,6 +2965,8 @@ void cMenuSetupLNB::Setup(void)
      for (int i = 0; i < cDevice::NumDevices(); i++) {
          if (cDevice::GetDevice(i)->ProvidesSource(cSource::stSat))
             Add(new cMenuEditIntItem(cString::sprintf(tr("Setup.LNB$Device %d connected to sat cable"), i + 1), &satCableNumbers.Array()[i], 0, NumSatDevices, tr("Setup.LNB$own")));
+         else
+            satCableNumbers.Array()[i] = 0;
          }
      }
 

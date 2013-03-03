@@ -51,3 +51,7 @@ VDR Plugin 'osddemo' Revision History
 
 - Added demos of the DrawEllipse() and DrawSlope() function (press '1' or '2',
   respectively).
+
+2013-02-19: Version 0.3.1
+
+- The demos can now also be ended with the "Back" key.

@@ -2,8 +2,6 @@
  * dvbhddevice.c: A plugin for the Video Disk Recorder
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: dvbhddevice.c 1.22 2013/02/16 10:35:42 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -12,7 +10,7 @@
 #include "menu.h"
 #include "setup.h"
 
-static const char *VERSION        = "0.0.8";
+static const char *VERSION        = "0.0.9";
 static const char *DESCRIPTION    = trNOOP("HD Full Featured DVB device");
 static const char *MAINMENUENTRY  = "dvbhddevice";
 

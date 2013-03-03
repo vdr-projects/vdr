@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.49 2013/02/14 10:49:06 kls Exp $
+ * $Id: vdr.c 2.50 2013/03/03 10:25:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -1301,9 +1301,9 @@ int main(int argc, char *argv[])
               EITScanner.Process();
            if (!cCutter::Active() && cCutter::Ended()) {
               if (cCutter::Error())
-                 Skins.QueueMessage(mtError, tr("Editing process failed!"));
+                 Skins.Message(mtError, tr("Editing process failed!"));
               else
-                 Skins.QueueMessage(mtInfo, tr("Editing process finished"));
+                 Skins.Message(mtInfo, tr("Editing process finished"));
               }
            }
 

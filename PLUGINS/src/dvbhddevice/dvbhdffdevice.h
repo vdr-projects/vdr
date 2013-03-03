@@ -2,8 +2,6 @@
  * dvbhdffdevice.h: The DVB HD Full Featured device interface
  *
  * See the README file for copyright information and how to reach the author.
- *
- * $Id: dvbhdffdevice.h 1.9 2012/12/03 13:43:55 kls Exp $
  */
 
 #ifndef __DVBHDFFDEVICE_H
@@ -99,6 +97,8 @@ protected:
   virtual int PlayTsAudio(const uchar *Data, int Length);
 public:
   virtual int64_t GetSTC(void);
+  virtual cRect CanScaleVideo(const cRect &Rect, int Alignment = taCenter);
+  virtual void ScaleVideo(const cRect &Rect = cRect::Null);
   virtual void TrickSpeed(int Speed);
   virtual void Clear(void);
   virtual void Play(void);

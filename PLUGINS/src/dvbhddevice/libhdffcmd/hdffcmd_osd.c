@@ -546,6 +546,30 @@ int HdffCmdOsdDrawEllipse(int OsdDevice, uint32_t Display, uint16_t CX,
     return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
 }
 
+int HdffCmdOsdDrawSlope(int OsdDevice, uint32_t Display, uint16_t X,
+                        uint16_t Y, uint16_t Width, uint16_t Height,
+                        uint32_t Color, uint32_t Type)
+{
+    uint8_t cmdData[28];
+    BitBuffer_t cmdBuf;
+    osd_raw_cmd_t osd_cmd;
+
+    BitBuffer_Init(&cmdBuf, cmdData, sizeof(cmdData));
+    memset(&osd_cmd, 0, sizeof(osd_raw_cmd_t));
+    osd_cmd.cmd_data = cmdData;
+    HdffCmdBuildHeader(&cmdBuf, HDFF_MSG_TYPE_COMMAND, HDFF_MSG_GROUP_OSD,
+                       HDFF_MSG_OSD_DRAW_SLOPE);
+    BitBuffer_SetBits(&cmdBuf, 32, Display);
+    BitBuffer_SetBits(&cmdBuf, 16, X);
+    BitBuffer_SetBits(&cmdBuf, 16, Y);
+    BitBuffer_SetBits(&cmdBuf, 16, Width);
+    BitBuffer_SetBits(&cmdBuf, 16, Height);
+    BitBuffer_SetBits(&cmdBuf, 32, Color);
+    BitBuffer_SetBits(&cmdBuf, 32, Type);
+    osd_cmd.cmd_len = HdffCmdSetLength(&cmdBuf);
+    return ioctl(OsdDevice, OSD_RAW_CMD, &osd_cmd);
+}
+
 int HdffCmdOsdDrawText(int OsdDevice, uint32_t Display, uint32_t Font,
                        uint16_t X, uint16_t Y, const char * Text,
                        uint32_t Color)

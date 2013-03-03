@@ -2,13 +2,14 @@
 # Copyright (C) 2011 Andreas Regel
 # This file is distributed under the same license as the dvbhddevice package.
 # Christoph Haubrich, 2011
+# Diego Pierotto <vdr-italian@tiscali.it>, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vdr-dvbhddevice 0.0.4\n"
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2012-11-13 20:08+0100\n"
-"PO-Revision-Date: 2011-07-10 00:23+0100\n"
+"PO-Revision-Date: 2013-02-18 23:42+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <see README>\n"
 "Language: it\n"
@@ -20,13 +21,13 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 msgid "HD Full Featured DVB device"
-msgstr ""
+msgstr "Scheda DVB HD Full Featured"
 
 msgid "Video Conversion"
 msgstr "Conversione video"
 
 msgid "TV on"
-msgstr ""
+msgstr "TV accesa"
 
 msgid "Automatic"
 msgstr "Automatica"
@@ -47,16 +48,16 @@ msgid "Always 16/9"
 msgstr "Sempre 16:9"
 
 msgid "Zoom 16/9"
-msgstr ""
+msgstr "Ingrandimento 16/9"
 
 msgid "Off"
-msgstr ""
+msgstr "Spento"
 
 msgid "Frame rate"
-msgstr ""
+msgstr "Frame rate"
 
 msgid "HD Only"
-msgstr ""
+msgstr "Solo HD"
 
 msgid "Always"
 msgstr "Sempre"
@@ -80,7 +81,7 @@ msgid "Resolution"
 msgstr "Risoluzione"
 
 msgid "Video Mode Adaption"
-msgstr ""
+msgstr "Adattamento modalità video"
 
 msgid "TV format"
 msgstr "Formato TV"
@@ -95,7 +96,7 @@ msgid "Audio Downmix"
 msgstr "Scala Audio"
 
 msgid "A/V Sync Shift (ms)"
-msgstr ""
+msgstr "Alterna sincro A/V (ms)"
 
 msgid "OSD Size"
 msgstr "Dimensione OSD"
@@ -104,10 +105,10 @@ msgid "HDMI CEC"
 msgstr "HDMI CEC"
 
 msgid "CEC: Switch TV on"
-msgstr ""
+msgstr "CEC: Passa a TV accesa"
 
 msgid "CEC: Switch TV off"
-msgstr ""
+msgstr "CEC: Passa a TV spenta"
 
 msgid "Remote Control Protocol"
 msgstr "Protocollo controllo remoto"
@@ -122,4 +123,4 @@ msgid "Allow True Color OSD"
 msgstr "Permetti OSD True Color"
 
 msgid "Hide mainmenu entry"
-msgstr ""
+msgstr "Nascondi voce menu principale"
