@@ -7645,7 +7645,7 @@ Video Disk Recorder Revision History
 - Expanded tabs in PLUGINS/src/dvbhddevice/setup.c.
 - Some formatting fixes.
 
-2013-03-01: Version 1.7.39
+2013-03-03: Version 1.7.39
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
@@ -7679,3 +7679,6 @@ Video Disk Recorder Revision History
   of not retrying for 10 seconds (reported by Andreas Mair, with help from Oliver Endriss).
 - Updated the Spanish OSD texts (thanks to Luca Olivetti).
 - Updated the Hungarian language texts (thanks to István Füley).
+- Changed the calls to Skins.QueueMessage() in vdr.c that are related to reporting the
+  status of the editing process back to Skins.Message() in order to have them appear
+  immediately.
