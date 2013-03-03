@@ -7682,3 +7682,4 @@ Video Disk Recorder Revision History
 - Changed the calls to Skins.QueueMessage() in vdr.c that are related to reporting the
   status of the editing process back to Skins.Message() in order to have them appear
   immediately.
+- When sorting recordings by name, folders are now always at the top of the list.
