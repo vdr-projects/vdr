@@ -2,15 +2,15 @@
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Vyacheslav Dikonov <sdiconov@mail.ru>, 2004, 2005
-# Oleg Roitburd <oleg@roitburd.de>, 2005, 2006, 2007, 2008
+# Oleg Roitburd <oroitburd@gmail.com>, 2005-2008, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2008-12-15 14:37+0100\n"
-"Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
+"PO-Revision-Date: 2013-03-03 13:43+0100\n"
+"Last-Translator: Oleg Roitburd <oroitburd@gmail.com>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -75,251 +75,251 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "PlpId"
-msgstr ""
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Начинаю EPG-сканирование"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Фильм/Драма"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Детектив/Триллер"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Приключение/Вестерн/Война"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Научная фантастика/Фантазия/Ужас"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Комедия"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Мыльная опера/Мелодрама/Фольклор"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Романтика"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Серьезность/Классика/Религиозное/Исторический фильм/Драма"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Фильм для взрослых/Драма"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Новости/Актульные события"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Новости/Погода"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Новостной журнал"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Документация"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Дискуссия/Интервью/Дебаты"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Шоу/Игровое шоу"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Игровое шоу/Викторина/Соревнование"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Варьетте"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Токшоу"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Спорт"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Особенное событие"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Спорт журнал"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Футбол"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Теннис/Сквош"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Коммандные виды спорта"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Атлетика"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Моторспорт"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Водный виды спорта"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Зимние виды спорта"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Конный спорт"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Боевые искусства"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Детская/Юнешеская программа"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Программа для дошкольников"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Развлекательная программа от 6 до 14"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Развлекательная программа от 10 до 16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Информационная/Образовательная/Школьная программа"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Мултипликация/Куклы"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Музыка/Балет/Танец"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Рок/Поп"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Классическая музыка"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Фольклор/Традиционная музыка"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Джаз"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Мюзикл/Опера"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Балет"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Искусство/Культура"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Перформэнсарт"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Изящное искусство"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Религия"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Попкультура/Традиционная культура"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Литература"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Фильм/Кинйо"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Экспериментальный фильм/Видео"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Широкое вещание/Печать"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Новые средства"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Искусство/Культурный журнал"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Мода"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Социальное/Политическое/Экономическое"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Журнал/Экономика/Документация"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Экономика/Общественность"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Знаменитые люди"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Образование/Наука/Факты"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Природа/Животные/Окружение"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Технологии/Естественные науки"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Медицина/Физиология/Психология"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Страны/Экспедиции"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Социальное/Спиритуальные науки"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Повышение квалификации"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Языки"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Свободное время/Хобби"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Туризм/Путешествия"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Ремесло"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Мотор"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Фитнес и здоровье"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Кулинария"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Реклама/Покупки"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Садоводство"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Оригинальный язык"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Чернобелое"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Неопубликованное"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Прямое вещание"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "от %d"
 
 msgid "No title"
 msgstr "Без названия"
@@ -412,7 +412,7 @@ msgid "Key$Info"
 msgstr "Инфо"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Воспроизведение/Пауза"
 
 msgid "Key$Play"
 msgstr "Воспроизведение"
@@ -589,29 +589,29 @@ msgid "Delete channel?"
 msgstr "Удалить канал?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Редакция директории"
 
 msgid "New folder"
-msgstr ""
+msgstr "Новая директория"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "поддиректория"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "Директория уже существует!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "Имя директории не должно содержать '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Выбрать"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Удалить директорию и все поддиректории?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Удалить директорию?"
 
 msgid "Edit timer"
 msgstr "Установка таймера"
@@ -644,19 +644,19 @@ msgid "File"
 msgstr "Файл"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Директория"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Один раз"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Повтор"
 
 msgid "First day"
 msgstr "Первый день"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Выбор директории"
 
 msgid "Timers"
 msgstr "Таймеры"
@@ -746,7 +746,7 @@ msgid "Delete recording?"
 msgstr "Стереть запись?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Запись изменена - действительно удалить?"
 
 msgid "Error while deleting recording!"
 msgstr "Ошибка удаления записи!"
@@ -845,22 +845,22 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Каталоги хранения записей"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Директории в меню таймер"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Количество кнопок для символов"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Цветная кнопка 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Цветная кнопка 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Цветная кнопка 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Цветная кнопка 3"
 
 msgid "EPG"
 msgstr "Телегид"
@@ -931,7 +931,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Основное DVB-устройство"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Стандартное поведение"
 
 msgid "Setup.DVB$Video format"
 msgstr "Формат видео"
@@ -986,10 +986,10 @@ msgstr "Верхняя частота конвертера (МГц)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Устройство %d подключеное к саткабелю"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "свой"
 
 msgid "CAM reset"
 msgstr "CAM перегружен"
@@ -1022,16 +1022,16 @@ msgid "Can't reset CAM!"
 msgstr "Ошибка перезапуска CAM-модуля!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "не останавливать live video"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "подтверждение остановки live video"
 
 msgid "pause live video"
-msgstr ""
+msgstr "остановка live video"
 
 msgid "confirm"
-msgstr ""
+msgstr "подтверждение"
 
 msgid "yes"
 msgstr "да"
@@ -1052,7 +1052,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Срок хранения записи по умолчанию (д)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Функция кнопки пауза"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Приоритет отложенного просмотра"
@@ -1079,7 +1079,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Длительность ручной записи (мин)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "текущая передача"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Макс. размер видеофайла (Мб)"
@@ -1088,7 +1088,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Делить отредактированные файлы"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "удаления отложенной записи"
 
 msgid "Replay"
 msgstr "Воспроизведение"
@@ -1100,13 +1100,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Отображать режим воспроизведения"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Показ оставшегося времени"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Показ прогресса (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Пауза при установке маркировки"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID воспроизведения"
@@ -1130,10 +1130,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Предел времени для ввода канала (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Задержка ответа от пульта (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Задержка ответа от пульта (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Канал при включении"
@@ -1145,10 +1145,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Громкость при включении"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "прокрутка каналов"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Показ имени канала и источника"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Аварийный выход"
@@ -1217,7 +1217,7 @@ msgid "Pausing live video..."
 msgstr "Режим отложенного просмотра..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Удалить отложенную запись?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1227,7 +1227,7 @@ msgid "No editing marks defined!"
 msgstr "Не заданы метки для монтажа!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Порядок редкатирования не определен!"
 
 msgid "Can't start editing process!"
 msgstr "Невозможно начать монтаж записи!"
@@ -1266,13 +1266,13 @@ msgid "Low disk space!"
 msgstr "Недостаточно места на диске!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Регенерация индексного файла"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Регенерация индексного файла окончена"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Ошибка регенерация индексного файла "
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Выключение невозможно - не задан параметр '-s'!"
@@ -1311,22 +1311,22 @@ msgid "Classic VDR"
 msgstr "Классический"
 
 msgid "DISK"
-msgstr ""
+msgstr "Диск"
 
 msgid "LOAD"
-msgstr ""
+msgstr "Загруженность"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "Таймеры"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "Устройства"
 
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "Воспроизведение"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG панели"
@@ -1364,7 +1364,7 @@ msgid "Upcoming recording!"
 msgstr "Запись скоро начнется"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Остановить live video?"
 
 msgid "Recording started"
 msgstr "Запись начата"

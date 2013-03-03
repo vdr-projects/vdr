@@ -7683,3 +7683,4 @@ Video Disk Recorder Revision History
   status of the editing process back to Skins.Message() in order to have them appear
   immediately.
 - When sorting recordings by name, folders are now always at the top of the list.
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
