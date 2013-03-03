@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.74 2013/02/17 13:17:58 kls Exp $
+ * $Id: remux.c 2.75 2013/03/03 10:37:58 kls Exp $
  */
 
 #include "remux.h"
@@ -718,7 +718,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          if (updatePrimaryDevice)
                             cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, NumApids, apids[NumApids], alangs[NumApids]);
                          NumApids++;
-                         apids[NumApids]= 0;
+                         apids[NumApids] = 0;
                          }
                       }
                       break;
@@ -765,7 +765,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                     if (updatePrimaryDevice)
                                        cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, spids[NumSpids], slangs[NumSpids]);
                                     NumSpids++;
-                                    spids[NumSpids]= 0;
+                                    spids[NumSpids] = 0;
                                     }
                                  break;
                             case SI::ISO639LanguageDescriptorTag: {
@@ -786,7 +786,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             if (updatePrimaryDevice && Setup.UseDolbyDigital)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
-                            dpids[NumDpids]= 0;
+                            dpids[NumDpids] = 0;
                             }
                          }
                       }
@@ -815,7 +815,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          if (updatePrimaryDevice && Setup.UseDolbyDigital)
                             cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, stream.getPid(), lang);
                          NumDpids++;
-                         dpids[NumDpids]= 0;
+                         dpids[NumDpids] = 0;
                          }
                       }
                       break;
