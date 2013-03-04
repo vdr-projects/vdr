@@ -7685,7 +7685,8 @@ Video Disk Recorder Revision History
 - When sorting recordings by name, folders are now always at the top of the list.
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 
-2013-03-03: Version 1.7.40
+2013-03-04: Version 1.7.40
 
 - The "Recording info" page of the skins that come with VDR now displays the name of
   the channel (if available) from which this recording was taken.
+- Updated the Catalan OSD texts (thanks to Luca Olivetti).
