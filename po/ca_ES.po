@@ -1316,7 +1316,7 @@ msgid "DISK"
 msgstr "DISC"
 
 msgid "LOAD"
-msgstr "CARREGAR"
+msgstr "CÀRREGA"
 
 msgid "TIMERS"
 msgstr "TEMPORITZADORS"

@@ -1314,7 +1314,7 @@ msgid "DISK"
 msgstr "DISCO"
 
 msgid "LOAD"
-msgstr "CARGAR"
+msgstr "CARGA"
 
 msgid "TIMERS"
 msgstr "TIMERS"
