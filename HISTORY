@@ -7700,3 +7700,4 @@ Video Disk Recorder Revision History
 - Fixed a faulty UTF-8 character in cs_CZ.po.
 - Added the system's character set to the page header in the epg2html script (pointed
   out by Dimitar Petrovski).
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
