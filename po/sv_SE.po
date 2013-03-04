@@ -851,7 +851,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Visa mappar i timermenyn"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Sortera alltid mappar först"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Använd sifferknappar för bokstavsinmatning"

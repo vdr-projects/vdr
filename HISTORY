@@ -7704,3 +7704,4 @@ Video Disk Recorder Revision History
 - The new option "Setup/OSD/Always sort folders first" can be used to control whether
   folders will be always at the top of the Recordings menu, or will be interspersed
   with plain recordings when sorted alphabetically.
+- Updated the Swedish OSD texts (thanks to Richard Lithvall).
