@@ -601,6 +601,11 @@ Version 1.6
                          Controls whether the full folder path is shown in the
                          "Timers" menu, or just the basic recording name.
 
+  Always sort folders first = yes
+                         In the "Recordings" menu folders are always listed before
+                         plain recordings. Set this option to "no" if you want folders
+                         to be interspersed with recordings when sorted alphabetically.
+
   Number keys for characters = yes
                          Controls whether the number keys can be used to enter
                          characters in a text input field. You may want to set this

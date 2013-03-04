@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -848,6 +848,9 @@ msgstr "Seznam nahrávek"
 
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Složky v menu časovače"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Psát písmena pomocí číselných kláves"

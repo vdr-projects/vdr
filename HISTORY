@@ -7701,3 +7701,6 @@ Video Disk Recorder Revision History
 - Added the system's character set to the page header in the epg2html script (pointed
   out by Dimitar Petrovski).
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- The new option "Setup/OSD/Always sort folders first" can be used to control whether
+  folders will be always at the top of the Recordings menu, or will be interspersed
+  with plain recordings when sorted alphabetically.

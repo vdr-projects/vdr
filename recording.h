@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.45 2013/03/03 10:48:39 kls Exp $
+ * $Id: recording.h 2.46 2013/03/04 14:01:23 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -99,6 +99,7 @@ private:
   cRecording &operator=(const cRecording &); // can't assign cRecording
   static char *StripEpisodeName(char *s, bool Strip);
   char *SortName(void) const;
+  void ClearSortName(void);
   int GetResume(void) const;
   time_t start;
   int priority;
@@ -187,6 +188,7 @@ public:
   void ChangeState(void) { state++; }
   bool StateChanged(int &State);
   void ResetResume(const char *ResumeFileName = NULL);
+  void ClearSortNames(void);
   cRecording *GetByName(const char *FileName);
   void AddByName(const char *FileName, bool TriggerUpdate = true);
   void DelByName(const char *FileName);
