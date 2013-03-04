@@ -7175,6 +7175,10 @@ Video Disk Recorder Revision History
   folder (provided you have write access to that folder).
   If a folder is newly created by a repeating timer, the sort mode for that
   folder is initially set to "by time".
+  Note that in previous versions the default sort order of the top level video
+  directory was "by name" and all subdirectories were sorted "by time". Now the
+  default sort order for all directories is "by name", so if you have an existing
+  folder that shall be sorted "by time", press the '0' key once to achieve this.
 - Fixed several spelling errors (thanks to Ville Skyttä).
 - Fixed handling recording with more than two bonded devices.
 - Fixed the type of MBperMinute in cVideoDiskUsage::HasChanged() (thanks to Andreas
@@ -7690,3 +7694,5 @@ Video Disk Recorder Revision History
 - The "Recording info" page of the skins that come with VDR now displays the name of
   the channel (if available) from which this recording was taken.
 - Updated the Catalan OSD texts (thanks to Luca Olivetti).
+- Added a note about the new default sort order of recordings to the release notes of
+  version 1.7.29 and the UPDATE-2.0.0 file (pointed out by Wolfgang Rohdewald).

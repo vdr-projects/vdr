@@ -1919,6 +1919,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for pointing out a possible problem with asprintf() if the return value is not
  checked
  for fixing setting the OSD level in the 'osddemo' example
+ for pointing out a missing statement about the new default sort order of recordings
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
