@@ -7696,3 +7696,4 @@ Video Disk Recorder Revision History
 - Updated the Catalan OSD texts (thanks to Luca Olivetti).
 - Added a note about the new default sort order of recordings to the release notes of
   version 1.7.29 and the UPDATE-2.0.0 file (pointed out by Wolfgang Rohdewald).
+- Fixed a faulty UTF-8 character in cs_CZ.po.
