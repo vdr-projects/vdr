@@ -6176,7 +6176,7 @@ Video Disk Recorder Revision History
   is not detectable from the first TS packet of a frame.
 - Fixed writing the PCR pid into the PMT in cPatPmtGenerator::GeneratePmt()
   (reported by Rene van den Braken).
-- Added Slovakian language texts (thanks to Milan Hrala).
+- Added Slovak language texts (thanks to Milan Hrala).
 - Fixed EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0 (thanks
   to Frank Schmirler).
 - Fixed starting a recording at an I-frame.
@@ -6533,7 +6533,7 @@ Video Disk Recorder Revision History
   TrueColor OSD if it is run on a system that actually provides TrueColor support.
   Thanks to Reinhard Nissl for some valuable input, help with debugging, and an
   implementation of the AlphaBlend() function.
-- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Updated the Slovak language texts (thanks to Milan Hrala).
 - Added Serbian language texts (thanks to Milan Cvijanovic).
 - Fixed reallocating memory in the "pictures" plugin (reported by Paul Menzel, with
   input from Oliver Endriss).
@@ -7560,7 +7560,7 @@ Video Disk Recorder Revision History
 - Changed several calls to Skins.Message() in vdr.c to Skins.QueueMessage() in order to
   avoid a black screen while such a message is displayed in case the channel will be
   switched (reported by Uwe Scheffler).
-- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Updated the Slovak language texts (thanks to Milan Hrala).
 - Improved LIRC timing for repeat function.
 - When pausing live video, the current audio and subtitle tracks are now retained.
 - Added some notes about plugin Makefiles to PLUGINS.html.
@@ -7706,3 +7706,4 @@ Video Disk Recorder Revision History
   with plain recordings when sorted alphabetically.
 - Updated the Swedish OSD texts (thanks to Richard Lithvall).
 - Updated the Chinese OSD texts (thanks to Nan Feng).
+- Updated the Slovak OSD texts (thanks to Milan Hrala).
