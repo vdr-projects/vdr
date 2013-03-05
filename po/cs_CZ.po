@@ -850,7 +850,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Složky v menu časovače"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Adresáře řadit vždy na začátek"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Psát písmena pomocí číselných kláves"
