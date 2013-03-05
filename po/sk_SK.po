@@ -847,7 +847,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Zlo¾ky v menu plánovaèa"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Zlo¾ky v¾dy najprv usporiada»"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Písa» znaky èíselnými tlaèidlami"
