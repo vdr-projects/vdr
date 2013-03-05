@@ -6,6 +6,7 @@
 # Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
 # Carel Willemse <carel@nekanali.nl>, 2008, 2013
 # Johan Schuring <johan.schuring@vetteblei.nl>, 2008
+# Cedric Dewijs <cedric.dewijs@telfort.nl>, 2013
 #
 msgid ""
 msgstr ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
-"Last-Translator: Carel Willemse <carel@nekanali.nl>\n"
+"Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -851,7 +852,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Mappen in timermenu"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Altijd mappen eerst sorteren"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummertoetsen voor karakters"
