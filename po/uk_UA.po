@@ -848,7 +848,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Теки в меню таймера"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Завжди сортувати теки першими"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Кількість клавіш для символів"
