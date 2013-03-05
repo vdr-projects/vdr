@@ -847,7 +847,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Kaustad taimeri menüüs"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Sorteerida kaustad alati ette"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Teksti sisestamine numbriklahvidega"
