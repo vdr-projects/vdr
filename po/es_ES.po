@@ -848,7 +848,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Carpetas en menú timers"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Siempre ordenar primero carpetas"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Teclas numéricas para caracteres"
