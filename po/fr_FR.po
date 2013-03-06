@@ -11,6 +11,7 @@
 # Marc Perrudin <vdr@ekass.net>, 2013
 # Bernard Jaulin <bernard.jaulin@gmail.com>, 2013
 # Peter Münster <pmlists@free.fr>, 2013
+# Dominique Plu <dplu@free.fr>, 2013
 #
 msgid ""
 msgstr ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2013-02-24 12:56+0100\n"
-"Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
+"Last-Translator: Dominique Plu <dplu@free.fr>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -856,7 +857,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Dossiers dans menu programmation"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Toujours trier les dossiers en premier"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Touches numériques pour caractères"
