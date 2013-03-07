@@ -1159,6 +1159,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@saunalahti.fi>
  for fixing reduced bpp support for DVB subtitles
  for implementing "DVB Standard compliance" handling
  for fixing the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel()
+ for a patch that was used to rename the "plp id" to a more general "stream id"
+ and add support for DVB-S2 "Input Stream Identifier" (ISI)
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

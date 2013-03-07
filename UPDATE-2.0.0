@@ -194,6 +194,7 @@ Devices:
   handling of a CAM.
 - The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
   derived output devices to implement scaling the video to a given size and location.
+- Added support for DVB-S2 and DVB-T2 transponders that use "multi streaming".
 
 DiSEqC:
 

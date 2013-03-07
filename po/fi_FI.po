@@ -77,8 +77,8 @@ msgstr "Hierarkia"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PLP-tunniste"
+msgid "StreamId"
+msgstr "Lähetetunniste"
 
 msgid "Starting EPG scan"
 msgstr "Ohjelmaoppaan päivitys aloitettu"

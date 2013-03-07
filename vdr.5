@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.30 2012/10/15 10:50:23 kls Exp $
+.\" $Id: vdr.5 2.31 2013/03/07 09:42:29 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -96,7 +96,7 @@ l l.
 \fBL\fR@Left circular polarization
 \fBM\fR@Modulation (2, 5, 6, 10, 11, 16, 32, 64, 128, 256, 998)
 \fBO\fR@rollOff (0, 20, 25, 35)
-\fBP\fR@Plp id (0-255)
+\fBP\fR@stream id (0-255)
 \fBR\fR@Right circular polarization
 \fBS\fR@delivery System (0, 1)
 \fBT\fR@Transmission mode (1, 2, 4, 8, 16, 32)
@@ -137,7 +137,9 @@ l l.
 \fBRolloff:\fR The Nyquist filter rolloff factor for DVB-S (\fB35\fR) and DVB-S2 (\fB35\fR, 25, 20),
 35 = 0.35, 25 = 0.25, 20 = 0.20, DVB-S/DVB-S2 default value is 0.35
 
-\fBPLP id:\fR Physical Layer Pipe (PLP) id (\fB0\fR-255) for DVB-T2 multiplex (DVB-T2 only).
+\fBStream id:\fR Input Stream Identifier (ISI) (\fB0\fR-255) for DVB-S2 multiplex or
+Physical Layer Pipe (PLP) id (\fB0\fR-255) for DVB-T2 multiplex (DVB-S2/DVB-T2 only,
+with devices that support "multi streaming").
 
 \fBTransmission mode:\fR Number of DVB-T OFDM carriers, 32 = 32k, 16 = 16k, 8 = 8k, 4 = 4k, 2 = 2k, 1 = 1k. If in doubt, try 8k.
 

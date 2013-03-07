@@ -7689,7 +7689,7 @@ Video Disk Recorder Revision History
 - When sorting recordings by name, folders are now always at the top of the list.
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 
-2013-03-06: Version 1.7.40
+2013-03-07: Version 1.7.40
 
 - The "Recording info" page of the skins that come with VDR now displays the name of
   the channel (if available) from which this recording was taken.
@@ -7717,3 +7717,6 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Matti Lehtimäki).
 - Updated the Arabic OSD texts (thanks to Osama Alrawab).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Renamed the "plp id" to a more general "stream id" and added support for DVB-S2
+  "Input Stream Identifier" (ISI) (based on a patch from Rolf Ahrenberg).
+  With this VDR now supports "multi streaming" on DVB-S2 and DVB-T2 transponders.

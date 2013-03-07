@@ -77,8 +77,8 @@ msgstr "Hierarhia"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PLP azonosító"
+msgid "StreamId"
+msgstr "Stream azonosító"
 
 msgid "Starting EPG scan"
 msgstr "EPG adatok aktualizálása"

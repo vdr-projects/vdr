@@ -74,7 +74,7 @@ msgstr "Hierarquia"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
+msgid "StreamId"
 msgstr ""
 
 msgid "Starting EPG scan"

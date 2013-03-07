@@ -75,8 +75,8 @@ msgstr "Ierarhie"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "Identificator PLP"
+msgid "StreamId"
+msgstr "Identificator Stream"
 
 msgid "Starting EPG scan"
 msgstr "Pornesc achiziţia EPG"

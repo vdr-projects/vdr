@@ -83,8 +83,8 @@ msgstr "Hiérarchie"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PlpId"
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "Mise à jour du guide des programmes"

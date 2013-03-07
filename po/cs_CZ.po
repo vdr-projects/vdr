@@ -76,8 +76,8 @@ msgstr "Hierarchický mód"
 msgid "Rolloff"
 msgstr "RollOff"
 
-msgid "PlpId"
-msgstr "PlpId"
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "Začíná prohledávání EPG"

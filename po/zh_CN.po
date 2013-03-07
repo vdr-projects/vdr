@@ -75,8 +75,8 @@ msgstr "层次"
 msgid "Rolloff"
 msgstr "越零率"
 
-msgid "PlpId"
-msgstr "PlpId"
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "开始节目单扫描"
