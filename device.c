@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.73 2013/02/16 14:39:30 kls Exp $
+ * $Id: device.c 2.74 2013/03/07 13:18:35 kls Exp $
  */
 
 #include "device.h"
@@ -1290,7 +1290,6 @@ int cDevice::PlaySubtitle(const uchar *Data, int Length)
 
 int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 {
-  cMutexLock MutexLock(&mutexCurrentAudioTrack);
   bool FirstLoop = true;
   uchar c = Data[3];
   const uchar *Start = Data;
@@ -1468,7 +1467,7 @@ int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
 int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 {
   int Played = 0;
-  if (Data == NULL) {
+  if (!Data) {
      tsToPesVideo.Reset();
      tsToPesAudio.Reset();
      tsToPesSubtitle.Reset();
@@ -1478,7 +1477,6 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
      return Length;
      }
   else {
-     cMutexLock MutexLock(&mutexCurrentAudioTrack);
      while (Length >= TS_SIZE) {
            if (Data[0] != TS_SYNC_BYTE) {
               int Skipped = 1;

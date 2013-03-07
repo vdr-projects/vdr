@@ -7720,3 +7720,4 @@ Video Disk Recorder Revision History
 - Renamed the "plp id" to a more general "stream id" and added support for DVB-S2
   "Input Stream Identifier" (ISI) (based on a patch from Rolf Ahrenberg).
   With this VDR now supports "multi streaming" on DVB-S2 and DVB-T2 transponders.
+- Fixed a possible deadlock when changing the audio track while replaying a recording.

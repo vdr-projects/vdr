@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.32 2013/02/25 12:15:58 kls Exp $
+ * $Id: dvbplayer.c 2.33 2013/03/07 13:05:15 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -810,8 +810,6 @@ void cDvbPlayer::Goto(int Index, bool Still)
 
 void cDvbPlayer::SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
 {
-  if (isPesRecording)
-     return; // for some unknown reason this doesn't work with PES recordings - causes a segfault
   if (playMode == pmPlay) {
      int Current, Total;
      if (GetIndex(Current, Total, true))
