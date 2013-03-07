@@ -2866,7 +2866,7 @@ Cristiano A. Silva <arquithek@gmail.com>
 
 Osama Alrawab <alrawab@hotmail.com>
  for adding support for languages that are written right-to-left
- for translating OSD texts to the Arabian language
+ for translating OSD texts to the Arabic language
 
 Antti Seppälä <a.seppala@gmail.com>
  for suggesting to add cString::operator=(const char *String)
