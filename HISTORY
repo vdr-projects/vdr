@@ -7721,3 +7721,4 @@ Video Disk Recorder Revision History
   "Input Stream Identifier" (ISI) (based on a patch from Rolf Ahrenberg).
   With this VDR now supports "multi streaming" on DVB-S2 and DVB-T2 transponders.
 - Fixed a possible deadlock when changing the audio track while replaying a recording.
+- Fixed resuming replay of PES recordings (reported by Oliver Endriss).
