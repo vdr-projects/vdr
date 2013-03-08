@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.34 2013/03/07 14:38:26 kls Exp $
+ * $Id: dvbplayer.c 2.35 2013/03/08 13:44:19 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -817,6 +817,8 @@ void cDvbPlayer::Goto(int Index, bool Still)
 
 void cDvbPlayer::SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
 {
+  if (!cThread::IsMainThread())
+     return; // only do this upon user interaction
   if (playMode == pmPlay) {
      if (!ptsIndex.IsEmpty()) {
         int Current, Total;
