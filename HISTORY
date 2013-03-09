@@ -7689,7 +7689,7 @@ Video Disk Recorder Revision History
 - When sorting recordings by name, folders are now always at the top of the list.
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
 
-2013-03-08: Version 1.7.40
+2013-03-09: Version 1.7.40
 
 - The "Recording info" page of the skins that come with VDR now displays the name of
   the channel (if available) from which this recording was taken.
@@ -7724,3 +7724,5 @@ Video Disk Recorder Revision History
 - Fixed resuming replay of PES recordings (reported by Oliver Endriss).
 - Limited the Goto() call in cDvbPlayer::SetAudioTrack() to the main thread, in order
   to avoid a crash when the track is automatically set from the player thread.
+- The LCARS skin now calls SetAntiAliasGranularity(20, 16) in order to reserve enough
+  fixed colors on 8bpp displays with anti-aliasing.

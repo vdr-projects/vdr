@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.20 2013/03/03 15:23:58 kls Exp $
+ * $Id: skinlcars.c 2.21 2013/03/09 10:43:34 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -210,6 +210,7 @@ static cOsd *CreateOsd(int Left, int Top, int x0, int y0, int x1, int y1)
       Area.bpp = Bpp[i];
       if (Osd->CanHandleAreas(&Area, 1) == oeOk) {
          Osd->SetAreas(&Area, 1);
+         Osd->SetAntiAliasGranularity(20, 16);
          TwoColors = Area.bpp == 1;
          break;
          }
