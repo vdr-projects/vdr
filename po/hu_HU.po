@@ -851,7 +851,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Könyvtárválasztás az időzítő menüben"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Könyvtárakat rendezd előre"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Számgombok a betűkön"

@@ -7729,3 +7729,7 @@ Video Disk Recorder Revision History
 - Changed the default values for the OSD size back to those before version 1.7.29,
   to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
   "Classic" skin.
+
+2013-03-10: Version 1.7.41
+
+- Updated the Hungarian OSD texts (thanks to István Füley).
