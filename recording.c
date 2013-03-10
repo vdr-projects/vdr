@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.89 2013/03/03 10:54:05 kls Exp $
+ * $Id: recording.c 2.90 2013/03/04 14:02:40 kls Exp $
  */
 
 #include "recording.h"
@@ -943,7 +943,9 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory)), RecordingsSortMode != rsmName);
+     char *s = strdup(FileName() + strlen(VideoDirectory));
+     if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+        s = StripEpisodeName(s, RecordingsSortMode != rsmName);
      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
      *sb = MALLOC(char, l);
@@ -951,6 +953,12 @@ char *cRecording::SortName(void) const
      free(s);
      }
   return *sb;
+}
+
+void cRecording::ClearSortName(void)
+{
+  DELETENULL(sortBufferName);
+  DELETENULL(sortBufferTime);
 }
 
 int cRecording::GetResume(void) const
@@ -1420,6 +1428,13 @@ void cRecordings::ResetResume(const char *ResumeFileName)
          recording->ResetResume();
       }
   ChangeState();
+}
+
+void cRecordings::ClearSortNames(void)
+{
+  LOCK_THREAD;
+  for (cRecording *recording = First(); recording; recording = Next(recording))
+      recording->ClearSortName();
 }
 
 // --- cMark -----------------------------------------------------------------

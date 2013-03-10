@@ -194,6 +194,7 @@ Devices:
   handling of a CAM.
 - The new functions cDevice::CanScaleVideo() and cDevice::ScaleVideo() can be used by
   derived output devices to implement scaling the video to a given size and location.
+- Added support for DVB-S2 and DVB-T2 transponders that use "multi streaming".
 
 DiSEqC:
 
@@ -267,6 +268,10 @@ OSD:
   folder (provided you have write access to that folder).
   If a folder is newly created by a repeating timer, the sort mode for that
   folder is initially set to "by time".
+  Note that in previous versions the default sort order of the top level video
+  directory was "by name" and all subdirectories were sorted "by time". Now the
+  default sort order for all directories is "by name", so if you have an existing
+  folder that shall be sorted "by time", press the '0' key once to achieve this.
 - The new setup option "Miscellaneous/Show channel names with source" can be used to
   turn on adding the source character to channel names whenever they are displayed.
 - Pressing the Play key during normal live viewing mode now opens the Recordings menu

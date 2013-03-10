@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.1\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2011-01-09 15:57+0100\n"
 "Last-Translator: Milan Cvijanoviæ <elcom_cvijo@hotmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -73,7 +73,7 @@ msgstr "Hijerarhija"
 msgid "Rolloff"
 msgstr ""
 
-msgid "PlpId"
+msgid "StreamId"
 msgstr ""
 
 msgid "Starting EPG scan"
@@ -844,6 +844,9 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Direktorij za snimke"
 
 msgid "Setup.OSD$Folders in timer menu"
+msgstr ""
+
+msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"

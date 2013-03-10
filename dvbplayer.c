@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.32 2013/02/25 12:15:58 kls Exp $
+ * $Id: dvbplayer.c 2.35 2013/03/08 13:44:19 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -33,6 +33,7 @@ private:
 public:
   cPtsIndex(void);
   void Clear(void);
+  bool IsEmpty(void);
   void Put(uint32_t Pts, int Index);
   int FindIndex(uint32_t Pts);
   };
@@ -47,6 +48,12 @@ void cPtsIndex::Clear(void)
 {
   cMutexLock MutexLock(&mutex);
   w = r = 0;
+}
+
+bool cPtsIndex::IsEmpty(void)
+{
+  cMutexLock MutexLock(&mutex);
+  return w == r;
 }
 
 void cPtsIndex::Put(uint32_t Pts, int Index)
@@ -810,12 +817,14 @@ void cDvbPlayer::Goto(int Index, bool Still)
 
 void cDvbPlayer::SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
 {
-  if (isPesRecording)
-     return; // for some unknown reason this doesn't work with PES recordings - causes a segfault
+  if (!cThread::IsMainThread())
+     return; // only do this upon user interaction
   if (playMode == pmPlay) {
-     int Current, Total;
-     if (GetIndex(Current, Total, true))
-        Goto(Current);
+     if (!ptsIndex.IsEmpty()) {
+        int Current, Total;
+        if (GetIndex(Current, Total, true))
+           Goto(Current);
+        }
      }
   else if (playMode == pmPause)
      resyncAfterPause = true;

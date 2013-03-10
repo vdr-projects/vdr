@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.9 2012/01/12 08:43:52 kls Exp $
+ * $Id: nit.c 2.10 2013/03/07 09:42:29 kls Exp $
  */
 
 #include "nit.h"
@@ -185,6 +185,21 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     }
                  }
                  break;
+            case SI::S2SatelliteDeliverySystemDescriptorTag: {
+                 if (Setup.UpdateChannels >= 5) {
+                    for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                        if (!Channel->GroupSep() && cSource::IsSat(Channel->Source()) && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                           SI::S2SatelliteDeliverySystemDescriptor *sd = (SI::S2SatelliteDeliverySystemDescriptor *)d;
+                           cDvbTransponderParameters dtp(Channel->Parameters());
+                           dtp.SetSystem(DVB_SYSTEM_2);
+                           dtp.SetStreamId(sd->getInputStreamIdentifier());
+                           Channel->SetTransponderData(Channel->Source(), Channel->Frequency(), Channel->Srate(), dtp.ToString('S'));
+                           break;
+                           }
+                        }
+                    }
+                 }
+                 break;
             case SI::CableDeliverySystemDescriptorTag: {
                  SI::CableDeliverySystemDescriptor *sd = (SI::CableDeliverySystemDescriptor *)d;
                  cDvbTransponderParameters dtp;
@@ -317,7 +332,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   //int SystemId = td->getSystemId();
                                   cDvbTransponderParameters dtp(Channel->Parameters());
                                   dtp.SetSystem(DVB_SYSTEM_2);
-                                  dtp.SetPlpId(td->getPlpId());
+                                  dtp.SetStreamId(td->getPlpId());
                                   if (td->getExtendedDataFlag()) {
                                      static int T2Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 10000000, 1712000, 0, 0 };
                                      dtp.SetBandwidth(T2Bandwidths[td->getBandwidth()]);

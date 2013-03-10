@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.83 2013/02/20 09:12:12 kls Exp $
+ * $Id: dvbdevice.c 2.84 2013/03/07 09:42:29 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -23,6 +23,7 @@
 
 #if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0508
 #define DTV_STREAM_ID DTV_DVBT2_PLP_ID
+#define FE_CAN_MULTISTREAM 0x4000000
 #endif
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
@@ -207,7 +208,7 @@ cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
   rollOff      = ROLLOFF_AUTO;
-  plpId        = 0;
+  streamId     = 0;
   Parse(Parameters);
 }
 
@@ -230,7 +231,7 @@ cString cDvbTransponderParameters::ToString(char Type) const
   ST("ACST*")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
   ST("ACST*")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
   ST("  S 2")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
-  ST("   T2")  q += PrintParameter(q, 'P', plpId);
+  ST("  ST2")  q += PrintParameter(q, 'P', streamId);
   ST("  ST*")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
   ST("   T*")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
   ST("   T*")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
@@ -266,7 +267,7 @@ bool cDvbTransponderParameters::Parse(const char *s)
           case 'L': polarization = 'L'; s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
-          case 'P': s = ParseParameter(s, plpId); break;
+          case 'P': s = ParseParameter(s, streamId); break;
           case 'R': polarization = 'R'; s++; break;
           case 'S': s = ParseParameter(s, system, SystemValuesSat); break; // we only need the numerical value, so Sat or Terr doesn't matter
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
@@ -795,6 +796,7 @@ bool cDvbTuner::SetFrontend(void)
         // DVB-S2
         SETCMD(DTV_PILOT, PILOT_AUTO);
         SETCMD(DTV_ROLLOFF, dtp.RollOff());
+        SETCMD(DTV_STREAM_ID, dtp.StreamId());
         }
      else {
         // DVB-S
@@ -828,7 +830,7 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
      if (frontendType == SYS_DVBT2) {
         // DVB-T2
-        SETCMD(DTV_STREAM_ID, dtp.PlpId());
+        SETCMD(DTV_STREAM_ID, dtp.StreamId());
         }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
@@ -968,7 +970,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
     case  9: ST("   T")  return new cMenuEditMapItem( tr("Guard"),        &dtp.guard,        GuardValues);        else return GetOsdItem();
     case 10: ST("   T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
     case 11: ST("  S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
-    case 12: ST("   T")  return new cMenuEditIntItem( tr("PlpId"),        &dtp.plpId,        0, 255);             else return GetOsdItem();
+    case 12: ST("  ST")  return new cMenuEditIntItem( tr("StreamId"),     &dtp.streamId,     0, 255);             else return GetOsdItem();
     default: return NULL;
     }
   return NULL;
@@ -1436,6 +1438,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return false; // doesn't provide source
   cDvbTransponderParameters dtp(Channel->Parameters());
   if (!ProvidesDeliverySystem(GetRequiredDeliverySystem(Channel, &dtp)) ||
+     dtp.StreamId()   != 0        && !(frontendInfo.caps & FE_CAN_MULTISTREAM) ||
      dtp.Modulation() == QPSK     && !(frontendInfo.caps & FE_CAN_QPSK) ||
      dtp.Modulation() == QAM_16   && !(frontendInfo.caps & FE_CAN_QAM_16) ||
      dtp.Modulation() == QAM_32   && !(frontendInfo.caps & FE_CAN_QAM_32) ||

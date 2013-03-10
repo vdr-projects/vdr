@@ -1,23 +1,22 @@
 # VDR language source file.
 # Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Nan Feng <nfgx@21cn.com>, 2008
+# Nan Feng <nfvdr@live.com>, 2008, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 1.7.39\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2009-09-23 23:50+0800\n"
-"Last-Translator: Nan Feng <nfgx@21cn.com>\n"
-"Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
+"PO-Revision-Date: 2013-03-04 14:52+0800\n"
+"Last-Translator: NFVDR <nfvdr@live.com>\n"
+"Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.5\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "***无效的频道 ***"
@@ -76,252 +75,252 @@ msgstr "层次"
 msgid "Rolloff"
 msgstr "越零率"
 
-msgid "PlpId"
-msgstr ""
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "开始节目单扫描"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "电影/剧集"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "侦探/惊悚"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "冒险/西部/战争"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "科幻/幻想/恐怖"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "喜剧"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "香皂/文艺片/民俗"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "冒险故事"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "严肃的/古典/的历史宗教/电影/剧集"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "成人电影/剧集"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "新闻/时事"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "新闻/天气报告"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "新闻杂志"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "记录片"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "讨论/ Inverview/辩论"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "显示/游戏展"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "游戏展/测验/竞赛"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "综艺节目"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "脱口秀"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "体育"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "特别活动"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "体育杂志"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "足球/橄榄球"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "网球/壁球"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "团队运动"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "田径运动"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "汽车运动"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "水上运动"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "冬季运动"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "驭手"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "武术运动"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "儿童/青少年计划"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "学前儿童的计划"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "娱乐节目6〜14"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "娱乐节目为10至16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "信息/教育/学校计划"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "漫画/木偶"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "音乐/芭蕾/舞蹈"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "摇滚/流行"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "严重/古典音乐"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "民谣/传统体育专业课程设置的音乐"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "爵士乐"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "音乐/歌剧"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "芭蕾舞"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "艺术/文化"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "表演艺术"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "精美艺术"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "宗教"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "流行文化/传统艺术"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "文学"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "电影/影院"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "实验电影/视频"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "广播/新闻"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "新媒体"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "艺术/文化杂志"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "时尚"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "社会/政治/经济"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "杂志/报告/记录"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "经济/社会咨询"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "杰出人士"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "教育/科学/事实"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "自然/动物/环境"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "技术/自然科学"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "医学/生理学/心理学"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "外国国家/探险"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "精神科学"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "延续教育"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "语言"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "休闲/爱好"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "旅游/旅行"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "手工艺"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "驾驶"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "健身与健康"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "烹饪"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "广告/购物"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "园林"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "原始语言"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "黑与白"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "未出版"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "现场直播"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "从 %d"
 
 msgid "No title"
 msgstr "没有标题"
@@ -414,7 +413,7 @@ msgid "Key$Info"
 msgstr "信息"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "播放/暂停"
 
 msgid "Key$Play"
 msgstr "播放"
@@ -591,29 +590,29 @@ msgid "Delete channel?"
 msgstr "是否删除频道？"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "编辑文件夹"
 
 msgid "New folder"
-msgstr ""
+msgstr "新文件夹"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "子文件夹"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "文件夹名称已经存在！"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "文件夹名称不能包含 '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "选择"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "删除文件夹和所有子文件夹吗？"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "是否删除文件夹?"
 
 msgid "Edit timer"
 msgstr "编辑计时器"
@@ -646,19 +645,19 @@ msgid "File"
 msgstr "文件"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "文件夹"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "单个"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "重复"
 
 msgid "First day"
 msgstr "第一天"
 
 msgid "Select folder"
-msgstr ""
+msgstr "选择文件夹"
 
 msgid "Timers"
 msgstr "录像中列表"
@@ -748,7 +747,7 @@ msgid "Delete recording?"
 msgstr "是否删除录像？"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "记录正在编辑 - 真的要删除？"
 
 msgid "Error while deleting recording!"
 msgstr "删除录像错误！"
@@ -847,22 +846,25 @@ msgid "Setup.OSD$Recording directories"
 msgstr "录像目录"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "定时器菜单中的文件夹"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr "总是排序文件夹"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "数字键的字符"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "彩色键0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "彩色键1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "彩色键2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "彩色键3"
 
 msgid "EPG"
 msgstr "电子节目单设置"
@@ -897,10 +899,10 @@ msgid "pan&scan"
 msgstr "pan&scan模式"
 
 msgid "letterbox"
-msgstr "letterbox模式"
+msgstr "小盒子模式"
 
 msgid "center cut out"
-msgstr "Center-cut-out模式"
+msgstr "中心剪切模式"
 
 msgid "no"
 msgstr "不"
@@ -933,7 +935,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "使用中卫星卡接口"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "符合标准"
 
 msgid "Setup.DVB$Video format"
 msgstr "视频格式"
@@ -988,10 +990,10 @@ msgstr "高本振频率 (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "设备%d卫星连接线"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "所有"
 
 msgid "CAM reset"
 msgstr "CAM重置"
@@ -1024,16 +1026,16 @@ msgid "Can't reset CAM!"
 msgstr "不能重启CAM"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "取消暂停当前视频"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "确认暂停当前视频"
 
 msgid "pause live video"
-msgstr ""
+msgstr "暂停现在视频"
 
 msgid "confirm"
-msgstr ""
+msgstr "确认"
 
 msgid "yes"
 msgstr "是"
@@ -1081,7 +1083,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "直接录像时间(min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "当前事件"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "最大的视频文件容量 (MB)"
@@ -1090,7 +1092,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "分离编辑文件"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "删除时移记录"
 
 msgid "Replay"
 msgstr "回放设置"
@@ -1102,13 +1104,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "显示回放模式"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "显示剩余时间"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "处理显示时间(s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "暂停回放时，设置标志"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "恢复 ID"
@@ -1132,10 +1134,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "频道进入超时 (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "远程控制重复延时（ms）"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "远程控制重复增量（ms）"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "初始频道"
@@ -1147,10 +1149,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "初始化声音"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "频道排序"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "显示频道名称与源"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "突发事件退出"
@@ -1219,7 +1221,7 @@ msgid "Pausing live video..."
 msgstr "暂停当前视频"
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "是否删除时移记录？"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1229,7 +1231,7 @@ msgid "No editing marks defined!"
 msgstr "无编辑标记定义!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "不编辑定义的序列！"
 
 msgid "Can't start editing process!"
 msgstr "不能开始编辑处理"
@@ -1268,13 +1270,13 @@ msgid "Low disk space!"
 msgstr "磁盘空间不足!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "重新生成索引文件"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "索引文件再生完成"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "索引文件再生失败！"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "不能关机 - 操作 '-s' 不允许!"
@@ -1313,22 +1315,22 @@ msgid "Classic VDR"
 msgstr "经典VDR面板"
 
 msgid "DISK"
-msgstr ""
+msgstr "磁盘"
 
 msgid "LOAD"
-msgstr ""
+msgstr "读取"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "定时器"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "设备"
 
 msgid "LIVE"
-msgstr ""
+msgstr "现场"
 
 msgid "PLAY"
-msgstr ""
+msgstr "播放"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG 面板"
@@ -1366,7 +1368,7 @@ msgid "Upcoming recording!"
 msgstr "准备录像！"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "是否暂停视频播放？"
 
 msgid "Recording started"
 msgstr "录像开始！"

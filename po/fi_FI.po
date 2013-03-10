@@ -4,15 +4,16 @@
 # Hannu Savolainen <hannu@opensound.com>, 2002
 # Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002, 2003
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
-# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003, 2004, 2005, 2006, 2007, 2008
+# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003-2008, 2010-2013
+# Matti Lehtimäki <matti.lehtimaki@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
-"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
+"Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
@@ -76,8 +77,8 @@ msgstr "Hierarkia"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PLP-tunniste"
+msgid "StreamId"
+msgstr "Lähetetunniste"
 
 msgid "Starting EPG scan"
 msgstr "Ohjelmaoppaan päivitys aloitettu"
@@ -848,6 +849,9 @@ msgstr "Näytä tallennehakemistot"
 
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Näytä kansiot ajastinvalikossa"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr "Näytä kansiot ensin"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"

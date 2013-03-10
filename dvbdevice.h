@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.28 2013/02/16 15:20:17 kls Exp $
+ * $Id: dvbdevice.h 2.29 2013/03/07 09:42:29 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -69,7 +69,7 @@ private:
   int guard;
   int hierarchy;
   int rollOff;
-  int plpId;
+  int streamId;
   int PrintParameter(char *p, char Name, int Value) const;
   const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map = NULL);
 public:
@@ -85,7 +85,7 @@ public:
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
   int RollOff(void) const { return rollOff; }
-  int PlpId(void) const { return plpId; }
+  int StreamId(void) const { return streamId; }
   void SetPolarization(char Polarization) { polarization = Polarization; }
   void SetInversion(int Inversion) { inversion = Inversion; }
   void SetBandwidth(int Bandwidth) { bandwidth = Bandwidth; }
@@ -97,7 +97,7 @@ public:
   void SetGuard(int Guard) { guard = Guard; }
   void SetHierarchy(int Hierarchy) { hierarchy = Hierarchy; }
   void SetRollOff(int RollOff) { rollOff = RollOff; }
-  void SetPlpId(int PlpId) { plpId = PlpId; }
+  void SetStreamId(int StreamId) { streamId = StreamId; }
   cString ToString(char Type) const;
   bool Parse(const char *s);
   };

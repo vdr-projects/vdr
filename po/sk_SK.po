@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-02-03 16:46+0100\n"
-"PO-Revision-Date: 2013-01-29 22:39+0100\n"
+"PO-Revision-Date: 2013-03-04 21:24+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
 "Language: sk\n"
@@ -73,11 +73,11 @@ msgstr "Hierarchia"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PlpId"
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
-msgstr "Zaèína prehµadáva» EPG"
+msgstr "Spú¹»a sa snímanie EPG"
 
 msgid "Content$Movie/Drama"
 msgstr "Film/Dráma"
@@ -763,7 +763,7 @@ msgid "always"
 msgstr "v¾dy"
 
 msgid "OSD"
-msgstr "OSD"
+msgstr "OSD (Menu na obrazovke)"
 
 msgid "Setup.OSD$Language"
 msgstr "Jazyk"
@@ -841,10 +841,13 @@ msgid "Setup.OSD$Menu key closes"
 msgstr "Klávesa Menu zaviera"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Zoznam nahrávok"
+msgstr "Prevádzkova» zlo¾ky nahrávky"
 
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Zlo¾ky v menu plánovaèa"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr "Zlo¾ky v¾dy najprv usporiada»"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Písa» znaky èíselnými tlaèidlami"
@@ -862,16 +865,16 @@ msgid "Setup.OSD$Color key 3"
 msgstr "Farba klávesy 3"
 
 msgid "EPG"
-msgstr "EPG"
+msgstr "EPG (Elektronický programový sprievodca)"
 
 msgid "Button$Scan"
 msgstr "Skenova»"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Èasový limit pre snímanie EPG (h)"
+msgstr "Interval snímania EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "EPG úroveò chyb"
+msgstr "Úroveò opravy EPG chýb"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Ukazova» star¹ie EPG dáta (min)"
@@ -918,7 +921,7 @@ msgid "add new transponders"
 msgstr "prida» nové transpondéry"
 
 msgid "DVB"
-msgstr "DVB"
+msgstr "DVB (digitálne televízne vysielanie)"
 
 msgid "Button$Audio"
 msgstr "Zvuk"
@@ -969,7 +972,7 @@ msgid "Setup.DVB$Subtitle background transparency"
 msgstr "Priehµadnos» pozadia titulkov"
 
 msgid "LNB"
-msgstr "LNB"
+msgstr "LNB (nízko ¹umová jednotka)"
 
 msgid "Setup.LNB$Use DiSEqC"
 msgstr "Pou¾íva» DiSEqC"
@@ -1000,7 +1003,7 @@ msgid "CAM ready"
 msgstr "CAM pripravený"
 
 msgid "CAM"
-msgstr "CAM"
+msgstr "CAM (modul podmieneného prístupu)"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1054,10 +1057,10 @@ msgid "Setup.Recording$Pause key handling"
 msgstr "Chovanie klávesy pozastavenia"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorita preru¹enia"
+msgstr "Priorita pozastavenia"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "®ivotnos» preru¹enia (d)"
+msgstr "®ivotnos» pozastavania (d)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Pou¾íva» názov epizódy"
@@ -1072,7 +1075,7 @@ msgid "Setup.Recording$Mark instant recording"
 msgstr "Oznaèi» okam¾ité nahrávky"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Premenova» okam¾ité nahrávky"
+msgstr "Pomenova» okam¾ité nahrávky"
 
 msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Då¾ka okam¾itého nahrávania (min)"
@@ -1102,7 +1105,7 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Zobrazi» zostávajúci èas"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr "Èas zobrazenia ukazovateµa priebehu (s)"
+msgstr "Doba zobrazenia ukazovateµa priebehu (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pozastavi» prehrávanie pri stanovení znaèky"
@@ -1114,25 +1117,25 @@ msgid "Miscellaneous"
 msgstr "Rôzne"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "limit pred nahrávaním (min)"
+msgstr "V pohotovosti pred nahrávaním (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "vymedzi» u¾ívateµskú neèinnos» (min)"
+msgstr "Vymedzi» u¾ívateµskú neèinnos» (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "Èasový limit SVDRP (s)"
+msgstr "Èasový limit odpovede SVDRP (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "pamäta» predo¹lý kanál po ... (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "limit pri voµbe kanála (ms)"
+msgstr "Limit pri èíselnej voµbe kanála (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Zdr¾anie opakovaného stlaèenia  tlaèidla (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Perióda opakovania stlaèeného tlaèidla (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanál po spustení"

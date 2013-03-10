@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.35 2013/02/14 15:14:37 kls Exp $
+ * $Id: config.c 2.37 2013/03/10 14:56:51 kls Exp $
  */
 
 #include "config.h"
@@ -420,6 +420,7 @@ cSetup::cSetup(void)
   VpsMargin = 120;
   RecordingDirs = 1;
   FoldersInTimerMenu = 1;
+  AlwaysSortFoldersFirst = 1;
   NumberKeysForChars = 1;
   ColorKey0 = 0;
   ColorKey1 = 1;
@@ -431,10 +432,10 @@ cSetup::cSetup(void)
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;
-  OSDLeftP = 0.03;
-  OSDTopP = 0.03;
-  OSDWidthP = 0.93;
-  OSDHeightP = 0.93;
+  OSDLeftP = 0.08;
+  OSDTopP = 0.08;
+  OSDWidthP = 0.87;
+  OSDHeightP = 0.84;
   OSDLeft = 54;
   OSDTop = 45;
   OSDWidth = 624;
@@ -624,6 +625,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "VpsMargin"))           VpsMargin          = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
+  else if (!strcasecmp(Name, "AlwaysSortFoldersFirst")) AlwaysSortFoldersFirst = atoi(Value);
   else if (!strcasecmp(Name, "NumberKeysForChars"))  NumberKeysForChars = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey0"))           ColorKey0          = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey1"))           ColorKey1          = atoi(Value);
@@ -732,6 +734,7 @@ bool cSetup::Save(void)
   Store("VpsMargin",          VpsMargin);
   Store("RecordingDirs",      RecordingDirs);
   Store("FoldersInTimerMenu", FoldersInTimerMenu);
+  Store("AlwaysSortFoldersFirst", AlwaysSortFoldersFirst);
   Store("NumberKeysForChars", NumberKeysForChars);
   Store("ColorKey0",          ColorKey0);
   Store("ColorKey1",          ColorKey1);

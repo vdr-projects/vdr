@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -74,8 +74,8 @@ msgstr "Jerarquía"
 msgid "Rolloff"
 msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr "PlpId"
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "Iniciando la exploración de EPG"
@@ -847,6 +847,9 @@ msgstr "Mostrar carpetas de grabaciones"
 msgid "Setup.OSD$Folders in timer menu"
 msgstr "Carpetas en menú timers"
 
+msgid "Setup.OSD$Always sort folders first"
+msgstr "Siempre ordenar primero carpetas"
+
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Teclas numéricas para caracteres"
 
@@ -1314,7 +1317,7 @@ msgid "DISK"
 msgstr "DISCO"
 
 msgid "LOAD"
-msgstr "CARGAR"
+msgstr "CARGA"
 
 msgid "TIMERS"
 msgstr "TIMERS"

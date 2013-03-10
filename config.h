@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.69 2013/02/18 10:41:43 kls Exp $
+ * $Id: config.h 2.71 2013/03/04 13:58:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.39"
-#define VDRVERSNUM   10739  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.40"
+#define VDRVERSNUM   10740  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.39"
-#define APIVERSNUM   10739  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.40"
+#define APIVERSNUM   10740  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -293,6 +293,7 @@ public:
   int VpsMargin;
   int RecordingDirs;
   int FoldersInTimerMenu;
+  int AlwaysSortFoldersFirst;
   int NumberKeysForChars;
   int ColorKey0, ColorKey1, ColorKey2, ColorKey3;
   int VideoDisplayFormat;

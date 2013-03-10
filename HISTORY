@@ -6176,7 +6176,7 @@ Video Disk Recorder Revision History
   is not detectable from the first TS packet of a frame.
 - Fixed writing the PCR pid into the PMT in cPatPmtGenerator::GeneratePmt()
   (reported by Rene van den Braken).
-- Added Slovakian language texts (thanks to Milan Hrala).
+- Added Slovak language texts (thanks to Milan Hrala).
 - Fixed EntriesOnSameFileSystem() to avoid using f_fsid, which may be 0 (thanks
   to Frank Schmirler).
 - Fixed starting a recording at an I-frame.
@@ -6479,7 +6479,7 @@ Video Disk Recorder Revision History
 - Fixed following symbolic links in RemoveFileOrDir().
 - Added support for languages that are written right-to-left (based on a patch
   from Osama Alrawab). See INSTALL for information on how to turn this on.
-- Added Arabian language texts (thanks to Osama Alrawab).
+- Added Arabic language texts (thanks to Osama Alrawab).
 
 2011-03-12: Version 1.7.17
 
@@ -6533,7 +6533,7 @@ Video Disk Recorder Revision History
   TrueColor OSD if it is run on a system that actually provides TrueColor support.
   Thanks to Reinhard Nissl for some valuable input, help with debugging, and an
   implementation of the AlphaBlend() function.
-- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Updated the Slovak language texts (thanks to Milan Hrala).
 - Added Serbian language texts (thanks to Milan Cvijanovic).
 - Fixed reallocating memory in the "pictures" plugin (reported by Paul Menzel, with
   input from Oliver Endriss).
@@ -7175,6 +7175,10 @@ Video Disk Recorder Revision History
   folder (provided you have write access to that folder).
   If a folder is newly created by a repeating timer, the sort mode for that
   folder is initially set to "by time".
+  Note that in previous versions the default sort order of the top level video
+  directory was "by name" and all subdirectories were sorted "by time". Now the
+  default sort order for all directories is "by name", so if you have an existing
+  folder that shall be sorted "by time", press the '0' key once to achieve this.
 - Fixed several spelling errors (thanks to Ville Skyttä).
 - Fixed handling recording with more than two bonded devices.
 - Fixed the type of MBperMinute in cVideoDiskUsage::HasChanged() (thanks to Andreas
@@ -7556,7 +7560,7 @@ Video Disk Recorder Revision History
 - Changed several calls to Skins.Message() in vdr.c to Skins.QueueMessage() in order to
   avoid a black screen while such a message is displayed in case the channel will be
   switched (reported by Uwe Scheffler).
-- Updated the Slovakian language texts (thanks to Milan Hrala).
+- Updated the Slovak language texts (thanks to Milan Hrala).
 - Improved LIRC timing for repeat function.
 - When pausing live video, the current audio and subtitle tracks are now retained.
 - Added some notes about plugin Makefiles to PLUGINS.html.
@@ -7684,3 +7688,44 @@ Video Disk Recorder Revision History
   immediately.
 - When sorting recordings by name, folders are now always at the top of the list.
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
+
+2013-03-10: Version 1.7.40
+
+- The "Recording info" page of the skins that come with VDR now displays the name of
+  the channel (if available) from which this recording was taken.
+- Updated the Catalan OSD texts (thanks to Luca Olivetti).
+- Updated the Spanish OSD texts (thanks to Luca Olivetti).
+- Added a note about the new default sort order of recordings to the release notes of
+  version 1.7.29 and the UPDATE-2.0.0 file (pointed out by Wolfgang Rohdewald).
+- Fixed a faulty UTF-8 character in cs_CZ.po.
+- Added the system's character set to the page header in the epg2html script (pointed
+  out by Dimitar Petrovski).
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- The new option "Setup/OSD/Always sort folders first" can be used to control whether
+  folders will be always at the top of the Recordings menu, or will be interspersed
+  with plain recordings when sorted alphabetically.
+- Updated the Swedish OSD texts (thanks to Richard Lithvall).
+- Updated the Chinese OSD texts (thanks to Nan Feng).
+- Updated the Slovak OSD texts (thanks to Milan Hrala).
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Updated the Dutch OSD texts (thanks to Cedric Dewijs).
+- Updated the Czech OSD texts (thanks to Ales Jurik).
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Updated the French OSD texts (thanks to Dominique Plu).
+- Updated the Finnish OSD texts (thanks to Matti Lehtimäki).
+- Updated the Arabic OSD texts (thanks to Osama Alrawab).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Renamed the "plp id" to a more general "stream id" and added support for DVB-S2
+  "Input Stream Identifier" (ISI) (based on a patch from Rolf Ahrenberg).
+  With this VDR now supports "multi streaming" on DVB-S2 and DVB-T2 transponders.
+- Fixed a possible deadlock when changing the audio track while replaying a recording.
+- Fixed resuming replay of PES recordings (reported by Oliver Endriss).
+- Limited the Goto() call in cDvbPlayer::SetAudioTrack() to the main thread, in order
+  to avoid a crash when the track is automatically set from the player thread.
+- The LCARS skin now calls SetAntiAliasGranularity(20, 16) in order to reserve enough
+  fixed colors on 8bpp displays with anti-aliasing.
+- Changed the default values for the OSD size back to those before version 1.7.29,
+  to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
+  "Classic" skin.

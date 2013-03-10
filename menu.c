@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.80 2013/02/19 09:33:26 kls Exp $
+ * $Id: menu.c 2.81 2013/03/04 14:11:47 kls Exp $
  */
 
 #include "menu.h"
@@ -2608,6 +2608,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Menu key closes"),        &data.MenuKeyCloses));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Always sort folders first"), &data.AlwaysSortFoldersFirst));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Number keys for characters"), &data.NumberKeysForChars));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 0"),            &data.ColorKey0, 4, keyColorTexts));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 1"),            &data.ColorKey1, 4, keyColorTexts));
@@ -2649,6 +2650,8 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         ModifiedAppearance = true;
      if (strcmp(data.FontFix, Setup.FontFix) || !DoubleEqual(data.FontFixSizeP, Setup.FontFixSizeP))
         ModifiedAppearance = true;
+     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst)
+        Recordings.ClearSortNames();
      }
 
   int oldSkinIndex = skinIndex;

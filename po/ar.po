@@ -1,7 +1,7 @@
 # VDR language source file.
-# Copyright (C) 2008 Osama Alrawab <alrawab@hotmail.com>
+# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Osama Alrawab <alrawab@hotmail.com>, 2008
+# Osama Alrawab <alrawab@hotmail.com>, 2010, 2013
 #
 msgid ""
 msgstr ""
@@ -21,7 +21,7 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 msgid "*** Invalid Channel ***"
-msgstr "********قناة خاطئة***************"
+msgstr "*** قناة خاطئة ***"
 
 msgid "Channel not available!"
 msgstr "القناة غير متاحة"
@@ -33,7 +33,7 @@ msgid "off"
 msgstr "ايقاف"
 
 msgid "on"
-msgstr ""
+msgstr "تشغيل"
 
 msgid "auto"
 msgstr "ذاتى"
@@ -45,7 +45,7 @@ msgid "Polarization"
 msgstr "الاستقطاب"
 
 msgid "System"
-msgstr ""
+msgstr "النظام"
 
 msgid "Srate"
 msgstr "معدل الترميز"
@@ -75,254 +75,254 @@ msgid "Hierarchy"
 msgstr "الهرمية"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr ""
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "EPG ا لبدء بالبحث على دليل القنوات الالكترونى "
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Movie/Drama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Detective/Thriller"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Adventure/Western/War"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasy/Horror"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Comedy"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Soap/Melodrama/Folkloric"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romance"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Serious/Classical/Religious/Historical Movie/Drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Adult Movie/Drama"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "News/Current Affairs"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "News/Weather Report"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "News Magazine"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Documentary"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Discussion/Inverview/Debate"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Show/Game Show"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Game Show/Quiz/Contest"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Variety Show"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Talk Show"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Sports"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Special Event"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Sport Magazine"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Football/Soccer"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Squash"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Team Sports"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Athletics"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Motor Sport"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Water Sport"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Winter Sports"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Equestrian"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Martial Sports"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Children's/Youth Programme"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Pre-school Children's Programme"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Entertainment Programme for 6 to 14"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Entertainment Programme for 10 to 16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informational/Educational/School Programme"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Cartoons/Puppets"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Music/Ballet/Dance"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Serious/Classical Music"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Folk/Tradional Music"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Musical/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Ballet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Arts/Culture"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Performing Arts"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Fine Arts"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religion"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Popular Culture/Traditional Arts"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literature"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Film/Cinema"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Experimental Film/Video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Broadcasting/Press"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "New Media"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Arts/Culture Magazine"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Fashion"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Social/Political/Economics"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Magazine/Report/Documentary"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Economics/Social Advisory"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Remarkable People"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Education/Science/Factual"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Nature/Animals/Environment"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Technology/Natural Sciences"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicine/Physiology/Psychology"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Foreign Countries/Expeditions"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Social/Spiritual Sciences"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Further Education"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Languages"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Leisure/Hobbies"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Tourism/Travel"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Handicraft"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motoring"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitness & Health"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Cooking"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Advertisement/Shopping"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Gardening"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Original Language"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Black & White"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "Unpublished"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Live Broadcast"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "from %d"
 
 msgid "No title"
 msgstr "لايوجد عنوان"
@@ -415,7 +415,7 @@ msgid "Key$Info"
 msgstr "معلومات"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Play/Pause"
 
 msgid "Key$Play"
 msgstr "عرض"
@@ -487,7 +487,7 @@ msgid "Key$Commands"
 msgstr "اوامر"
 
 msgid "Key$User0"
-msgstr ""
+msgstr "المستخدم 0"
 
 msgid "Key$User1"
 msgstr "المستخدم 1"
@@ -547,25 +547,25 @@ msgid "Apid2"
 msgstr "PID الصوت 2"
 
 msgid "Dpid1"
-msgstr ""
+msgstr "Dpid1"
 
 msgid "Dpid2"
-msgstr ""
+msgstr "Dpid2"
 
 msgid "Spid1"
-msgstr ""
+msgstr "Spid1"
 
 msgid "Spid2"
-msgstr ""
+msgstr "Spid2"
 
 msgid "Tpid"
-msgstr ""
+msgstr "Tpid"
 
 msgid "CA"
 msgstr "الكامة"
 
 msgid "Sid"
-msgstr ""
+msgstr "Sid"
 
 msgid "Channel settings are not unique!"
 msgstr "اعدادات القناة غبر موحد"
@@ -592,29 +592,29 @@ msgid "Delete channel?"
 msgstr "حذف القناة"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "تحرير مجلد"
 
 msgid "New folder"
-msgstr ""
+msgstr "مجلد جديد"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "مجلد فرعى"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "المجلد موجود بالفعل"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "'%c'! اسم المجلد لا يجب ان يحتوى على"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "الزر"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "حذف المجلد وكل المجلدات الفرعية"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "حذف مجلد؟"
 
 msgid "Edit timer"
 msgstr "تعديل الموءقت"
@@ -635,7 +635,7 @@ msgid "Stop"
 msgstr "ايقاف"
 
 msgid "VPS"
-msgstr ""
+msgstr "VPS"
 
 msgid "Priority"
 msgstr "الاستقطاب"
@@ -647,19 +647,19 @@ msgid "File"
 msgstr "ملف"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Folder"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Single"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Repeating"
 
 msgid "First day"
 msgstr "اليوم الاول"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Select folder"
 
 msgid "Timers"
 msgstr "الموءقت"
@@ -749,7 +749,7 @@ msgid "Delete recording?"
 msgstr "حذف التسجيل"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Recording is being edited - really delete?"
 
 msgid "Error while deleting recording!"
 msgstr "حدث خطاء عند محاولة حذف التسجيل"
@@ -779,16 +779,16 @@ msgid "Setup.OSD$Theme"
 msgstr " الثيمة"
 
 msgid "Setup.OSD$Left (%)"
-msgstr ""
+msgstr "Left (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr ""
+msgstr "Top (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr ""
+msgstr "Width (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr ""
+msgstr "Height (%)"
 
 msgid "Setup.OSD$Message time (s)"
 msgstr "مواقيت الرسائل"
@@ -809,13 +809,13 @@ msgid "Setup.OSD$Fixed font"
 msgstr "الخط ثابت"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr ""
+msgstr "Default font size (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr ""
+msgstr "Small font size (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr ""
+msgstr "Fixed font size (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr " موضع معلومات القناة"
@@ -848,22 +848,25 @@ msgid "Setup.OSD$Recording directories"
 msgstr "مجلد التسجيلات"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Folders in timer menu"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr "قم دائما بسرد المجلدات اولا"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Number keys for characters"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Color key 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Color key 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Color key 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Color key 3"
 
 msgid "EPG"
 msgstr "الدليل الالكتونى للقنوات"
@@ -934,7 +937,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "كرت الستالايت الاولى"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Standard compliance"
 
 msgid "Setup.DVB$Video format"
 msgstr "نوع الفيديو  "
@@ -989,10 +992,10 @@ msgstr "التردد المرتفع للاقط م هرتز"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Device %d connected to sat cable"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "own"
 
 msgid "CAM reset"
 msgstr "اعادة تشغيل الكامة"
@@ -1025,16 +1028,16 @@ msgid "Can't reset CAM!"
 msgstr "تعذر اعادة تشغيل الكامة"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "لا تقم بايقاف الفديو الحى"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "تاكيد ايقاف الفديو الحى"
 
 msgid "pause live video"
-msgstr ""
+msgstr "ايقاف الفديو الحى"
 
 msgid "confirm"
-msgstr ""
+msgstr "confirm"
 
 msgid "yes"
 msgstr "نعم"
@@ -1043,10 +1046,10 @@ msgid "Recording"
 msgstr "تسجيل"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr ""
+msgstr "Margin at start (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr ""
+msgstr "Margin at stop (min)"
 
 msgid "Setup.Recording$Default priority"
 msgstr "الاولويات الافتراضية"
@@ -1055,7 +1058,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "معدل البقاء باليوم"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Pause key handling"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "تعطيل الاولويات"
@@ -1070,7 +1073,7 @@ msgid "Setup.Recording$Use VPS"
 msgstr "استعمل VPS"
 
 msgid "Setup.Recording$VPS margin (s)"
-msgstr ""
+msgstr "VPS margin (s)"
 
 msgid "Setup.Recording$Mark instant recording"
 msgstr "علم التسجيل الفورى"
@@ -1082,7 +1085,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "مدة التسجيل الفورى بالدقيقة"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "present event"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "اقصى حجم لملف الفيديو ب م ب"
@@ -1091,7 +1094,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "اقسم الملف المعدل"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Delete timeshift recording"
 
 msgid "Replay"
 msgstr "اعادة عرض"
@@ -1103,13 +1106,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "اضهر طور الاعادة"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Show remaining time"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Progress display time (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pause replay when setting mark"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "رقم المواصلة"
@@ -1124,19 +1127,19 @@ msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "اقل مدة لعدم تفاعل المستخدم بالدقيقة"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr ""
+msgstr "SVDRP timeout (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr ""
+msgstr "Zap timeout (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "مدة انتهاء مدخلات القناة بالدقيقة"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Remote control repeat delay (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Remote control repeat delta (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "القناة الاساسية"
@@ -1148,10 +1151,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "فعل الصوت"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Channels wrap"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Show channel names with source"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "خروج طارىء"
@@ -1220,7 +1223,7 @@ msgid "Pausing live video..."
 msgstr "تجميد العرض الحى"
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Delete timeshift recording?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1230,7 +1233,7 @@ msgid "No editing marks defined!"
 msgstr "لاتوجد علامات تعديل معرفة"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "No editing sequences defined!"
 
 msgid "Can't start editing process!"
 msgstr "لا يمكن البدء فى عملية التعديل"
@@ -1242,13 +1245,13 @@ msgid "Editing process already active!"
 msgstr "عملية التعديل نشطة بالفعل"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr ""
+msgstr " abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr ""
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 
 msgid "Button$ABC/abc"
-msgstr ""
+msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
 msgstr "اعادة الكتابة"
@@ -1269,13 +1272,13 @@ msgid "Low disk space!"
 msgstr "مساحة القرص غير كافية"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Regenerating index file"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Index file regeneration complete"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Index file regeneration failed!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "لا يمكن قفل الحاسوب الرمز s لم يحدد"
@@ -1295,16 +1298,16 @@ msgstr "الاغلاق على اى حال"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr ""
+msgstr "Plugin %s wakes up in %ld min, continue?"
 
 msgid "Editing - restart anyway?"
-msgstr ""
+msgstr "Editing - restart anyway?"
 
 msgid "Recording - restart anyway?"
-msgstr ""
+msgstr "Recording - restart anyway?"
 
 msgid "restart anyway?"
-msgstr ""
+msgstr "restart anyway?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1314,33 +1317,33 @@ msgid "Classic VDR"
 msgstr "VDR تقليدى  "
 
 msgid "DISK"
-msgstr ""
+msgstr "قرص"
 
 msgid "LOAD"
-msgstr ""
+msgstr "تجميل"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "مؤقت"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "جهاز"
 
 msgid "LIVE"
-msgstr ""
+msgstr "بث حى"
 
 msgid "PLAY"
-msgstr ""
+msgstr "عرض"
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG شاشة "
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
-msgstr ""
+msgstr "MTWTFSS"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr ""
+msgstr "MonTueWedThuFriSatSun"
 
 msgid "Monday"
 msgstr "الاحد"
@@ -1364,10 +1367,10 @@ msgid "Sunday"
 msgstr "الاحد"
 
 msgid "Upcoming recording!"
-msgstr ""
+msgstr "التسجيل القادم"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "ايقاف الفديو الحى"
 
 msgid "Recording started"
 msgstr "ابتداء التسجيل"

@@ -12,9 +12,11 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html 2.1 2011/12/04 14:17:35 kls Exp $
+# $Id: epg2html 2.2 2013/03/04 13:02:20 kls Exp $
 
 @Index = ();
+($Charset = $ENV{LANG}) =~ s/^[^.]*\.?(.*)/$1/;
+$Charset = "utf-8" unless $Charset || $ENV{LANG} == 'C';
 
 sub GetDay
 {
@@ -79,10 +81,16 @@ while (<>) {
                       }
                   push(@Schedule, "</table>\n") if (@Schedule);
                   open(PAGE, ">$Page") or die "$Page: $!\n";
-                  print PAGE "<html>\n<head><title>$Channel</title><head>\n<body>\n";
+                  print PAGE "<html>\n";
+                  print PAGE "<head>\n";
+                  print PAGE "<title>$Channel</title>\n";
+                  print PAGE "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=$Charset\">\n";
+                  print PAGE "</head>\n";
+                  print PAGE "<body>\n";
                   print PAGE "<h1>$Channel</h1>\n";
                   print PAGE @Schedule;
-                  print PAGE "</body>\n</html>\n";
+                  print PAGE "</body>\n";
+                  print PAGE "</html>\n";
                   close(PAGE);
                   last;
                   }
@@ -91,7 +99,13 @@ while (<>) {
       }
 
 open(INDEX, ">index.htm") or die "index.htm: $!\n";
-print INDEX "<html>\n<head><title>EPG Index</title><head>\n<body>\n";
+print INDEX "<html>\n";
+print INDEX "<head>\n";
+print INDEX "<title>EPG Index</title>\n";
+print INDEX "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=$Charset\">\n";
+print INDEX "</head>\n";
+print INDEX "<body>\n";
 print INDEX sort { lc($a) cmp lc($b) } @Index;
-print INDEX "</body>\n</html>\n";
+print INDEX "</body>\n";
+print INDEX "</html>\n";
 close(INDEX);

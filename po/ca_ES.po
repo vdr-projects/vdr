@@ -4,13 +4,13 @@
 # Marc Rovira Vall <tm05462@salleURL.edu>, 2003
 # Ramon Roca <ramon.roca@xcombo.com>, 2003
 # Jordi Vilà <jvila@tinet.org>, 2003
-# Luca Olivetti <luca@ventoso.org>, 2008
+# Luca Olivetti <luca@ventoso.org>, 2008, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalan <vdr@linuxtv.org>\n"
@@ -32,7 +32,7 @@ msgid "off"
 msgstr "off"
 
 msgid "on"
-msgstr ""
+msgstr "on"
 
 msgid "auto"
 msgstr "auto"
@@ -44,7 +44,7 @@ msgid "Polarization"
 msgstr "Polarització"
 
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 msgid "Srate"
 msgstr "Srate"
@@ -74,254 +74,254 @@ msgid "Hierarchy"
 msgstr "Jerarquia"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
-msgid "PlpId"
-msgstr ""
+msgid "StreamId"
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
 msgstr "Iniciant exploració EPG"
 
 msgid "Content$Movie/Drama"
-msgstr ""
+msgstr "Pel·lícula/Drama"
 
 msgid "Content$Detective/Thriller"
-msgstr ""
+msgstr "Detectiu/Thriller"
 
 msgid "Content$Adventure/Western/War"
-msgstr ""
+msgstr "Aventura/Oest/Guerra"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Ciència-ficció/Fantasia/Horror"
 
 msgid "Content$Comedy"
-msgstr ""
+msgstr "Comédia"
 
 msgid "Content$Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Telenovel·la/Melodrama/Folklore"
 
 msgid "Content$Romance"
-msgstr ""
+msgstr "Romàntic"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Seriós/Clàssic/Relogiós/Pel·lícula històrica/Drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr ""
+msgstr "Pel·lícula per a adults/Drama"
 
 msgid "Content$News/Current Affairs"
-msgstr ""
+msgstr "Notícies/Actualitat"
 
 msgid "Content$News/Weather Report"
-msgstr ""
+msgstr "Notícies/El temps"
 
 msgid "Content$News Magazine"
-msgstr ""
+msgstr "Revista de notícies"
 
 msgid "Content$Documentary"
-msgstr ""
+msgstr "Documental"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr ""
+msgstr "Discussió/Entrevista/Debat"
 
 msgid "Content$Show/Game Show"
-msgstr ""
+msgstr "Espectacle/Jocs"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Jocs/Concurso"
 
 msgid "Content$Variety Show"
-msgstr ""
+msgstr "Espectacle de varietats"
 
 msgid "Content$Talk Show"
-msgstr ""
+msgstr "Talk show"
 
 msgid "Content$Sports"
-msgstr ""
+msgstr "Esports"
 
 msgid "Content$Special Event"
-msgstr ""
+msgstr "Esdeveniment especial"
 
 msgid "Content$Sport Magazine"
-msgstr ""
+msgstr "Revista d'esports"
 
 msgid "Content$Football/Soccer"
-msgstr ""
+msgstr "Futbol"
 
 msgid "Content$Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Esquaix"
 
 msgid "Content$Team Sports"
-msgstr ""
+msgstr "Esports d'equip"
 
 msgid "Content$Athletics"
-msgstr ""
+msgstr "Atletisme"
 
 msgid "Content$Motor Sport"
-msgstr ""
+msgstr "Esports de motor"
 
 msgid "Content$Water Sport"
-msgstr ""
+msgstr "Esports aquàtics"
 
 msgid "Content$Winter Sports"
-msgstr ""
+msgstr "Esports d'hivern"
 
 msgid "Content$Equestrian"
-msgstr ""
+msgstr "Equitació"
 
 msgid "Content$Martial Sports"
-msgstr ""
+msgstr "Arts marcials"
 
 msgid "Content$Children's/Youth Programme"
-msgstr ""
+msgstr "Programa per a nens/joves"
 
 msgid "Content$Pre-school Children's Programme"
-msgstr ""
+msgstr "Programa per a nens de preescolar"
 
 msgid "Content$Entertainment Programme for 6 to 14"
-msgstr ""
+msgstr "Programa d'entreteniment de 6 a 14 anys"
 
 msgid "Content$Entertainment Programme for 10 to 16"
-msgstr ""
+msgstr "Programa d'entreteniment de 10 a 16 anys"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informatiu/Educatiu/Programa escolar"
 
 msgid "Content$Cartoons/Puppets"
-msgstr ""
+msgstr "Dibuixos/Titelles"
 
 msgid "Content$Music/Ballet/Dance"
-msgstr ""
+msgstr "Música/Ballet/Dansa"
 
 msgid "Content$Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr ""
+msgstr "Música clàssica/seriosa"
 
 msgid "Content$Folk/Tradional Music"
-msgstr ""
+msgstr "Música folklòrica/tradicional"
 
 msgid "Content$Jazz"
-msgstr ""
+msgstr "Jazz"
 
 msgid "Content$Musical/Opera"
-msgstr ""
+msgstr "Musical/Opera"
 
 msgid "Content$Ballet"
-msgstr ""
+msgstr "Ballet"
 
 msgid "Content$Arts/Culture"
-msgstr ""
+msgstr "Arts/Cultura"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Arts escèniques"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Belles arts"
 
 msgid "Content$Religion"
-msgstr ""
+msgstr "Religió"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Cultura popular/Arts tradicionals"
 
 msgid "Content$Literature"
-msgstr ""
+msgstr "Literatura"
 
 msgid "Content$Film/Cinema"
-msgstr ""
+msgstr "Pel·lícula/Cinema"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Pel·lícula/Vídeo experimental"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Radiodifusió/Premsa"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Nous mitjans de comunicació"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Revista d'art/cultura"
 
 msgid "Content$Fashion"
-msgstr ""
+msgstr "Moda"
 
 msgid "Content$Social/Political/Economics"
-msgstr ""
+msgstr "Societat/Política/Economia"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr ""
+msgstr "Revista/Informe/Documental"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Assessorament econòmic/social"
 
 msgid "Content$Remarkable People"
-msgstr ""
+msgstr "Persones notables"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Educació/Ciència/Factual"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Naturalesa/Animals/Medi ambient"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Tecnologia/Ciències naturals"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicina/Fisiologia/Psicologia"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Països estrangers/Expedicions"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Ciències socials/espirituals"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Educació superior"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Llengües"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Oci/Aficións"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turisme/Viatges"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Manualitats"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Motor"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitness i salut"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Cuina"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Publicitat/Compres"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Jardineria"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Idioma original"
 
 msgid "Content$Black & White"
-msgstr ""
+msgstr "Blanc i negre"
 
 msgid "Content$Unpublished"
-msgstr ""
+msgstr "No publicat"
 
 msgid "Content$Live Broadcast"
-msgstr ""
+msgstr "Emissió en directe"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr ""
+msgstr "de %d"
 
 msgid "No title"
 msgstr "Sense títol"
@@ -414,7 +414,7 @@ msgid "Key$Info"
 msgstr "Informació"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Repr./Pausa"
 
 msgid "Key$Play"
 msgstr "Reproduir"
@@ -591,29 +591,29 @@ msgid "Delete channel?"
 msgstr "Esborrar el canal?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Modificar carpeta"
 
 msgid "New folder"
-msgstr ""
+msgstr "Nova carpeta"
 
 msgid "Sub folder"
-msgstr ""
+msgstr "Sub carpeta"
 
 msgid "Folder name already exists!"
-msgstr ""
+msgstr "La carpeta ja existeix!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr ""
+msgstr "El nom de la carpeta no pot contenir '%c'"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Seleccionar"
 
 msgid "Delete folder and all sub folders?"
-msgstr ""
+msgstr "Esborrar carpetas i totes les sub carpetes?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Esborrar carpeta?"
 
 msgid "Edit timer"
 msgstr "Editar temporitzador"
@@ -646,19 +646,19 @@ msgid "File"
 msgstr "Arxiu"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Carpeta"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Individual"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Repetitiu"
 
 msgid "First day"
 msgstr "Primer dia"
 
 msgid "Select folder"
-msgstr ""
+msgstr "Seleccioni carpeta"
 
 msgid "Timers"
 msgstr "Temporitzadors"
@@ -748,7 +748,7 @@ msgid "Delete recording?"
 msgstr "Esborrar gravació?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "S'està editant la gravació - esborrar igualment?"
 
 msgid "Error while deleting recording!"
 msgstr "Error a l'esborrar la gravació!"
@@ -847,22 +847,25 @@ msgid "Setup.OSD$Recording directories"
 msgstr "Gravacions en subcarpetes"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Carpetes en menú temporitzadors"
+
+msgid "Setup.OSD$Always sort folders first"
+msgstr "Sempre ordenar primer carpetes"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Tecles numèriques per a caràcters "
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Tecla color 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Tecla color 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Tecla color 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Tecla color 3"
 
 msgid "EPG"
 msgstr "Guia de Programes"
@@ -900,7 +903,7 @@ msgid "letterbox"
 msgstr "letterbox"
 
 msgid "center cut out"
-msgstr "center cut out"
+msgstr "només part central"
 
 msgid "no"
 msgstr "no"
@@ -933,7 +936,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Tarja DVB primària"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Conformitat a estàndards"
 
 msgid "Setup.DVB$Video format"
 msgstr "Format del vídeo"
@@ -988,10 +991,10 @@ msgstr "Freqüència LNB alta (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Dispositiu %d connectat a cable satèl·lit"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "propi"
 
 msgid "CAM reset"
 msgstr "Reiniciar CAM"
@@ -1024,16 +1027,16 @@ msgid "Can't reset CAM!"
 msgstr "No puc reiniciar la CAM!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "no pausar emissió en directe"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "confirmar pausar emissió en directe"
 
 msgid "pause live video"
-msgstr ""
+msgstr "pausar emissió en directe"
 
 msgid "confirm"
-msgstr ""
+msgstr "confirmar"
 
 msgid "yes"
 msgstr "sí"
@@ -1054,7 +1057,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Durada predefinida"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Gestió tecla pausa"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Prioritat de la pausa"
@@ -1081,7 +1084,7 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Temps de gravació instantània (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "esdeveniment actual"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Mida màxima de l'arxiu (MB)"
@@ -1090,7 +1093,7 @@ msgid "Setup.Recording$Split edited files"
 msgstr "Separar arxius"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr ""
+msgstr "Esborrar gravacions timeshift"
 
 msgid "Replay"
 msgstr "Opcions de Reproducció"
@@ -1102,13 +1105,13 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Mostrar mode de reproducció"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Mostrar temps restant"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Visualització temps avanç (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pausar reproducció en establir marca"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de Continuar"
@@ -1132,10 +1135,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Temps d'introducció canal (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Retard repetició comandament a distáncia (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Delta repetició comandament a distáncia (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canal inicial"
@@ -1147,10 +1150,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volum inicial"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Primer canal després de l'ultim"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Mostrar noms canals amb fonts"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Sortida d'emergència"
@@ -1219,17 +1222,17 @@ msgid "Pausing live video..."
 msgstr "Pausa d'emissió en directe..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Esborrar gravació timeshift?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "Salta a:"
+msgstr "Salta a: "
 
 msgid "No editing marks defined!"
 msgstr "No hi ha marques d'edició definides"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "No hi ha seqüències d'edició definides"
 
 msgid "Can't start editing process!"
 msgstr "No puc iniciar el procés d'edició!"
@@ -1268,13 +1271,13 @@ msgid "Low disk space!"
 msgstr "Disc gairebé ple!"
 
 msgid "Regenerating index file"
-msgstr ""
+msgstr "Regenerant fitxer índex"
 
 msgid "Index file regeneration complete"
-msgstr ""
+msgstr "Regeneració fitxer índex acabada"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Ha fallat la regeneració del fitxer índex"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "No puc apagar, falta la opció -s !"
@@ -1313,22 +1316,22 @@ msgid "Classic VDR"
 msgstr "VDR clasico"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISC"
 
 msgid "LOAD"
-msgstr ""
+msgstr "CÀRREGA"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TEMPORITZADORS"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "DISPOSITIUS"
 
 msgid "LIVE"
-msgstr ""
+msgstr "EN DIRECTE"
 
 msgid "PLAY"
-msgstr ""
+msgstr "REPRODUIR"
 
 msgid "ST:TNG Panels"
 msgstr "Quadres ST:TNG"
@@ -1366,7 +1369,7 @@ msgid "Upcoming recording!"
 msgstr "Gravació a punt d'iniciar!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Pausar emissió en directe?"
 
 msgid "Recording started"
 msgstr "Gravació començada"
