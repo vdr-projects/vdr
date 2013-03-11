@@ -52,5 +52,5 @@ How to maintain an existing language file
 
 Once you have created or updated a translation file, please
 send it to the maintainer of the respective plugin (in case
-it belongs to a plugin) or to kls@tvdr.de (for core VDR
+it belongs to a plugin) or to vdr@tvdr.de (for core VDR
 language files).

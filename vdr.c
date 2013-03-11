@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * Or, point your browser to http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
- * The author can be reached at kls@tvdr.de
+ * The author can be reached at vdr@tvdr.de
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.51 2013/03/11 10:31:24 kls Exp $
+ * $Id: vdr.c 2.52 2013/03/11 11:24:11 kls Exp $
  */
 
 #include <getopt.h>

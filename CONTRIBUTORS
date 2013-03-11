@@ -1,7 +1,8 @@
 Tons of suggestions, bugreports, patches and other contributions have been
-provided by the people on the 'linux-dvb' and 'vdr' mailing lists
+provided by the people on the 'linux-dvb' and 'vdr' mailing lists, as well
+as 'vdr-portal.de'.
 Special thanks go to the following individuals (if your name is missing here,
-please send an email to kls@tvdr.de):
+please send an email to vdr@tvdr.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
