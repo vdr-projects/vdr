@@ -10,7 +10,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.38\n"
+"Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
