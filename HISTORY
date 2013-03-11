@@ -7737,3 +7737,6 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Marek Nazarko).
 - Fixed using PATH_MAX and NAME_MAX (+/-1 because the first one includes the
   terminating 0, while the latter doesn't).
+- The 'plugins' target of the VDR Makefile now also copies files matching the wildcard
+  "lib$$i-*.so" (previously only "libvdr-*.so") and also descends into subdirectories
+  of the plugin source.
