@@ -6,9 +6,6 @@ which is based on the DVB driver of the LinuxTV project (http://linuxtv.org).
 For details about the "Video Disk Recorder" project please
 refer to http://www.tvdr.de.
 
-There is also a remote control unit described on those
-Web pages, which can be used within this program.
-
 Please see the INSTALL file for details on how to install
 this program on your computer.
 
