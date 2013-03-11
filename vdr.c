@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.50 2013/03/03 10:25:11 kls Exp $
+ * $Id: vdr.c 2.51 2013/03/11 10:31:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
           case 'd' | 0x100: {
                     char *s = optarg;
                     int n = strtol(s, &s, 10);
-                    if (n <= 0 || n >= PATH_MAX) {
+                    if (n <= 0 || n >= PATH_MAX) { // PATH_MAX includes the terminating 0
                        fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
                        return 2;
                        }
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     n = strtol(s, &s, 10);
-                    if (n <= 0 || n >= NAME_MAX) {
+                    if (n <= 0 || n > NAME_MAX) { // NAME_MAX excludes the terminating 0
                        fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
                        return 2;
                        }
@@ -530,7 +530,7 @@ int main(int argc, char *argv[])
                "\n",
                DEFAULTCACHEDIR,
                DEFAULTCONFDIR,
-               PATH_MAX,
+               PATH_MAX - 1,
                NAME_MAX,
                DEFAULTEPGDATAFILENAME,
                MAXVIDEOFILESIZEDEFAULT,

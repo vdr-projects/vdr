@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 2.6 2013/02/05 11:23:24 kls Exp $
+ * $Id: timers.h 2.7 2013/03/11 10:35:53 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -39,7 +39,7 @@ private:
   int stop;
   int priority;
   int lifetime;
-  mutable char file[NAME_MAX * 2]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
+  mutable char file[NAME_MAX * 2 + 1]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
   char *aux;
   const cEvent *event;
 public:
