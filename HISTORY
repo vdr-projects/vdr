@@ -7730,7 +7730,7 @@ Video Disk Recorder Revision History
   to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
   "Classic" skin.
 
-2013-03-11: Version 1.7.41
+2013-03-12: Version 1.7.41
 
 - Updated the Hungarian OSD texts (thanks to István Füley).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
@@ -7740,3 +7740,5 @@ Video Disk Recorder Revision History
 - The 'plugins' target of the VDR Makefile now also copies files matching the wildcard
   "lib$$i-*.so" (previously only "libvdr-*.so") and also descends into subdirectories
   of the plugin source.
+- The parameters PATH and NAME to the --dirnames command line option may now be left
+  empty to use the default values if only ENC shall be set.

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.53 2013/03/11 11:51:27 kls Exp $
+ * $Id: vdr.c 2.54 2013/03/12 09:23:33 kls Exp $
  */
 
 #include <getopt.h>
@@ -280,31 +280,35 @@ int main(int argc, char *argv[])
                     return 2;
           case 'd' | 0x100: {
                     char *s = optarg;
+                    if (*s != ',') {
+                       int n = strtol(s, &s, 10);
+                       if (n <= 0 || n >= PATH_MAX) { // PATH_MAX includes the terminating 0
+                          fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
+                          return 2;
+                          }
+                       DirectoryPathMax = n;
+                       }
+                    if (!*s)
+                       break;
+                    if (*s++ != ',') {
+                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                       return 2;
+                       }
+                    if (*s != ',') {
+                       int n = strtol(s, &s, 10);
+                       if (n <= 0 || n > NAME_MAX) { // NAME_MAX excludes the terminating 0
+                          fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
+                          return 2;
+                          }
+                       DirectoryNameMax = n;
+                       }
+                    if (!*s)
+                       break;
+                    if (*s++ != ',') {
+                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                       return 2;
+                       }
                     int n = strtol(s, &s, 10);
-                    if (n <= 0 || n >= PATH_MAX) { // PATH_MAX includes the terminating 0
-                       fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
-                       return 2;
-                       }
-                    DirectoryPathMax = n;
-                    if (!*s)
-                       break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
-                    n = strtol(s, &s, 10);
-                    if (n <= 0 || n > NAME_MAX) { // NAME_MAX excludes the terminating 0
-                       fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
-                       return 2;
-                       }
-                    DirectoryNameMax = n;
-                    if (!*s)
-                       break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
-                    n = strtol(s, &s, 10);
                     if (n != 0 && n != 1) {
                        fprintf(stderr, "vdr: invalid directory encoding: %s\n", optarg);
                        return 2;
@@ -480,7 +484,9 @@ int main(int argc, char *argv[])
                "                           the maximum directory name length (default: %d);\n"
                "                           the optional ENC can be 0 or 1, and controls whether\n"
                "                           special characters in directory names are encoded as\n"
-               "                           hex values (default: 0)\n"
+               "                           hex values (default: 0); if PATH or NAME are left\n"
+               "                           empty (as in \",,1\" to only set ENC), the defaults\n"
+               "                           apply\n"
                "            --edit=REC     cut recording REC and exit\n"
                "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
                "                           '%s' in the video directory)\n"
