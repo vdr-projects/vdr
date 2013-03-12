@@ -7744,3 +7744,5 @@ Video Disk Recorder Revision History
   empty to use the default values if only ENC shall be set.
 - Fixed a possible "Channel not available" if a recording starts on a system with
   bonded devices (thanks to Siegfried Bosch).
+- Fixed stopping an ongoing recording on a system with bonded devices, if a timer with
+  a higher priority requires a different band.

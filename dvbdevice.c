@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.85 2013/03/12 10:08:34 kls Exp $
+ * $Id: dvbdevice.c 2.86 2013/03/12 11:43:29 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1494,7 +1494,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = Receiving();
+              needsDetachReceivers = true;
               }
            }
         }
