@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.54 2013/03/12 09:23:33 kls Exp $
+ * $Id: vdr.c 2.55 2013/03/12 13:27:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -287,13 +287,16 @@ int main(int argc, char *argv[])
                           return 2;
                           }
                        DirectoryPathMax = n;
+                       if (!*s)
+                          break;
+                       if (*s != ',') {
+                          fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                          return 2;
+                          }
                        }
+                    s++;
                     if (!*s)
                        break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
                     if (*s != ',') {
                        int n = strtol(s, &s, 10);
                        if (n <= 0 || n > NAME_MAX) { // NAME_MAX excludes the terminating 0
@@ -301,13 +304,16 @@ int main(int argc, char *argv[])
                           return 2;
                           }
                        DirectoryNameMax = n;
+                       if (!*s)
+                          break;
+                       if (*s != ',') {
+                          fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                          return 2;
+                          }
                        }
+                    s++;
                     if (!*s)
                        break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
                     int n = strtol(s, &s, 10);
                     if (n != 0 && n != 1) {
                        fprintf(stderr, "vdr: invalid directory encoding: %s\n", optarg);

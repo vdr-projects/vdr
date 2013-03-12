@@ -7741,7 +7741,8 @@ Video Disk Recorder Revision History
   "lib$$i-*.so" (previously only "libvdr-*.so") and also descends into subdirectories
   of the plugin source.
 - The parameters PATH and NAME to the --dirnames command line option may now be left
-  empty to use the default values if only ENC shall be set.
+  empty to use the default values if only ENC shall be set (thanks to Helmut Auer for
+  some improvements to this change).
 - Fixed a possible "Channel not available" if a recording starts on a system with
   bonded devices (thanks to Siegfried Bosch).
 - Fixed stopping an ongoing recording on a system with bonded devices, if a timer with
