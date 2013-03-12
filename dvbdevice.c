@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.84 2013/03/07 09:42:29 kls Exp $
+ * $Id: dvbdevice.c 2.85 2013/03/12 10:08:34 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -426,7 +426,7 @@ bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
      cString BondingParams = GetBondingParams(Channel);
      do {
         if (t->device->Priority() > IDLEPRIORITY || ConsiderOccupied && t->device->Occupied()) {
-           if (strcmp(BondingParams, t->GetBondingParams()) != 0)
+           if (strcmp(BondingParams, t->GetBondedMaster()->GetBondingParams()) != 0)
               return false;
            }
         t = t->bondedTuner;

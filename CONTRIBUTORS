@@ -3113,3 +3113,7 @@ Dominique Plu <dplu@free.fr>
 
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for translating OSD texts to the Finnish language
+
+Siegfried Bosch <bosch@math.uni-muenster.de>
+ for fixing a possible "Channel not available" if a recording starts on a system with
+ bonded devices
