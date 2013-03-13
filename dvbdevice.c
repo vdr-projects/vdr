@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.86 2013/03/12 11:43:29 kls Exp $
+ * $Id: dvbdevice.c 2.87 2013/03/13 11:23:53 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1485,6 +1485,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
               needsDetachReceivers = Receiving();
            }
         if (result) {
+           cMutexLock MutexLock(&bondMutex);
            if (!BondingOk(Channel)) {
               // This device is bonded, so we need to check the priorities of the others:
               for (cDvbDevice *d = bondedDevice; d && d != this; d = d->bondedDevice) {
@@ -1492,9 +1493,10 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      result = false;
                      break;
                      }
+                  needsDetachReceivers |= d->Receiving();
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = true;
+              needsDetachReceivers |= Receiving();
               }
            }
         }
