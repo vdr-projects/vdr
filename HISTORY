@@ -7750,3 +7750,5 @@ Video Disk Recorder Revision History
 - Updated the introductory text of the vdr.1 man page.
 - Added a note to the INSTALL file regarding multiple disk setup becoming deprecated
   in a future version of VDR.
+- When switching to a less privileged user id, VDR now sets the environment variables
+  HOME, USER, LOGNAME and SHELL accordingly (thanks to Manuel Reimer).

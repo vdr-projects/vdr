@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.55 2013/03/12 13:27:40 kls Exp $
+ * $Id: vdr.c 2.56 2013/03/14 09:34:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -87,7 +87,7 @@
 
 static int LastSignal = 0;
 
-static bool SetUser(const char *UserName, bool UserDump)//XXX name?
+static bool SetUser(const char *UserName, bool UserDump)
 {
   if (UserName) {
      struct passwd *user = getpwnam(UserName);
@@ -109,6 +109,10 @@ static bool SetUser(const char *UserName, bool UserDump)//XXX name?
         }
      if (UserDump && prctl(PR_SET_DUMPABLE, 1, 0, 0, 0) < 0)
         fprintf(stderr, "vdr: warning - cannot set dumpable: %s\n", strerror(errno));
+     setenv("HOME", user->pw_dir, 1);
+     setenv("USER", user->pw_name, 1);
+     setenv("LOGNAME", user->pw_name, 1);
+     setenv("SHELL", user->pw_shell, 1);
      }
   return true;
 }

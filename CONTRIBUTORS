@@ -2790,6 +2790,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  seconds during replay
  for suggesting to synchronize system time to the transponder time using adjtime() in
  order to avoid discontinuities
+ for setting the environment variables HOME, USER, LOGNAME and SHELL accordingly
+ when switching to a less privileged user id
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
