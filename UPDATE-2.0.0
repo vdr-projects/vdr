@@ -478,3 +478,7 @@ Misc:
   to avoid discontinuities. If the time difference is more than 10 seconds, stime() is
   still used to do the initial sync.
 - Implemented scaling of SPU bitmaps.
+- WARNING: Using multiple disks to form one large video directory is deprecated and
+  will be removed from VDR in a future version! Either use one of today's large
+  terabyte disks (preferably with a backup disk in a RAID-1 array), or use something
+  like "mhddfs".

@@ -7730,7 +7730,7 @@ Video Disk Recorder Revision History
   to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
   "Classic" skin.
 
-2013-03-12: Version 1.7.41
+2013-03-14: Version 1.7.41
 
 - Updated the Hungarian OSD texts (thanks to István Füley).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
@@ -7748,3 +7748,5 @@ Video Disk Recorder Revision History
 - Fixed stopping an ongoing recording on a system with bonded devices, if a timer with
   a higher priority requires a different band.
 - Updated the introductory text of the vdr.1 man page.
+- Added a note to the INSTALL file regarding multiple disk setup becoming deprecated
+  in a future version of VDR.
