@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.56 2013/03/14 09:34:57 kls Exp $
+ * $Id: vdr.c 2.57 2013/03/15 10:44:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
                "                           apply\n"
                "            --edit=REC     cut recording REC and exit\n"
                "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
-               "                           '%s' in the video directory)\n"
+               "                           '%s' in the cache directory)\n"
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
