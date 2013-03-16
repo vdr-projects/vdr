@@ -7760,3 +7760,5 @@ Video Disk Recorder Revision History
 2013-03-16: Version 1.7.42
 
 - Updated the Serbian OSD texts (thanks to Zoran Turalija).
+- Added maximum SNR and signal strength value for TechniSat SkyStar HD2 (thanks to
+  Zoran Turalija).
