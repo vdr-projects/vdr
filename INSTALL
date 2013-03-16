@@ -1,7 +1,7 @@
 Installation of the Video Disk Recorder
 ---------------------------------------
 
-Version 1.7
+Version 2.0
 -----------
 
 Compiling and running the program:
@@ -351,7 +351,12 @@ would set up twelve disks (wow, what a machine that would be!).
 To use such a multi directory setup, you need to add the '-v' option
 with the name of the basic directory when running 'vdr':
 
-   vdr -v /video0
+   vdr -v /srv/vdr/video0
+
+WARNING: Using multiple disks to form one large video directory this way
+is deprecated and will be removed from VDR in a future version! Either
+use one of today's large terabyte disks (preferably with a backup disk
+in a RAID-1 array), or use something like "mhddfs".
 
 Note that you should not copy any non-VDR files into the video directory,
 since this might cause a lot of unnecessary disk access when VDR cleans up those
@@ -359,7 +364,7 @@ directories and there is a large number of files and/or subdirectories in
 there. If you have a large disk that you want to use for VDR's video data as
 well as other stuff, you may want to create a subdirectory for VDR, as in
 
-   /mydisk/video0
+   /mydisk/video
 
 and put your other stuff into, say,
 

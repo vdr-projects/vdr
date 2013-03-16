@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.16 2013/02/05 11:13:20 kls Exp $
+ * $Id: timers.c 2.17 2013/03/16 10:37:10 kls Exp $
  */
 
 #include "timers.h"
@@ -43,7 +43,7 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   weekdays = 0;
   start = now->tm_hour * 100 + now->tm_min;
   stop = 0;
-  if (!Setup.InstantRecordTime && channel) {
+  if (!Setup.InstantRecordTime && channel && (Instant || Pause)) {
      cSchedulesLock SchedulesLock;
      if (const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock)) {
         if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {

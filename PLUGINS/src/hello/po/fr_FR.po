@@ -1,5 +1,5 @@
 # VDR plugin language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Jean-Claude Repetto <jc@repetto.org>, 2001
 # Olivier Jacques <jacquesolivier@hotmail.com>, 2003

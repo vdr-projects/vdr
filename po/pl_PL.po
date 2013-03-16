@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Michael Rakowski <mrak@gmx.de>, 2002, 2003, 2008
 # Jaroslaw Swierczynski <swiergot@gmail.com>, 2006
@@ -7,7 +7,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.6.0\n"
+"Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
@@ -849,7 +849,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Katalogi w menu timera"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Sortuj najpierw katalogi"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Klawisze numeryczne dla liter"

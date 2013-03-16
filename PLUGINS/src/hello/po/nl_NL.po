@@ -1,5 +1,5 @@
 # VDR plugin language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
 # Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003

@@ -1,7 +1,8 @@
 Tons of suggestions, bugreports, patches and other contributions have been
-provided by the people on the 'linux-dvb' and 'vdr' mailing lists
+provided by the people on the 'linux-dvb' and 'vdr' mailing lists, as well
+as 'vdr-portal.de'.
 Special thanks go to the following individuals (if your name is missing here,
-please send an email to kls@tvdr.de):
+please send an email to vdr@tvdr.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
@@ -615,6 +616,8 @@ Helmut Auer <vdr@helmutauer.de>
  --genindex
  for suggesting to disable EPG processing for a while after a CLRE command
  for suggesting to read the epg.data file in a separate thread
+ for some improvements to allowing the parameters PATH and NAME to the --dirnames
+ command line option to be left empty to use the default values if only ENC shall be set
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -2011,6 +2014,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting that some special characters are dropped by Doxygen and thus need to
  be escaped
  for changing the template for PLGCFG to $(CONFDIR)/plugins.mk
+ for updating the help and man page entry about the location of the epg.data file
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2735,6 +2739,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing a busy loop when moving editing marks
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
  for implementing scaling of SPU bitmaps
+ for fixing creating a new VPS timer with the SVDRP command NEWT
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -2787,6 +2792,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  seconds during replay
  for suggesting to synchronize system time to the transponder time using adjtime() in
  order to avoid discontinuities
+ for setting the environment variables HOME, USER, LOGNAME and SHELL accordingly
+ when switching to a less privileged user id
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
@@ -3112,3 +3119,7 @@ Dominique Plu <dplu@free.fr>
 
 Matti Lehtimäki <matti.lehtimaki@gmail.com>
  for translating OSD texts to the Finnish language
+
+Siegfried Bosch <bosch@math.uni-muenster.de>
+ for fixing a possible "Channel not available" if a recording starts on a system with
+ bonded devices

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.90 2013/03/04 14:02:40 kls Exp $
+ * $Id: recording.c 2.91 2013/03/11 10:34:41 kls Exp $
  */
 
 #include "recording.h"
@@ -66,7 +66,7 @@
 
 #define MAX_LINK_LEVEL  6
 
-int DirectoryPathMax = PATH_MAX;
+int DirectoryPathMax = PATH_MAX - 1;
 int DirectoryNameMax = NAME_MAX;
 bool DirectoryEncoding = false;
 int InstanceId = 0;

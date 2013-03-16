@@ -2,15 +2,15 @@
 .\" ** The above line should force tbl to be a preprocessor **
 .\" Man page for vdr
 .\"
-.\" Copyright (C) 2008 Klaus Schmidinger
+.\" Copyright (C) 2013 Klaus Schmidinger
 .\"
 .\" You may distribute under the terms of the GNU General Public
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 2.12 2013/02/24 10:41:12 kls Exp $
+.\" $Id: vdr.1 2.17 2013/03/15 10:44:54 kls Exp $
 .\"
-.TH vdr 1 "10 Feb 2008" "1.6" "Video Disk Recorder"
+.TH vdr 1 "31 Mar 2013" "2.0" "Video Disk Recorder"
 .SH NAME
 vdr \- the Video Disk Recorder
 .SH SYNOPSIS
@@ -27,13 +27,16 @@ live TV while recording one or more other broadcasts from the same transponder.
 It is also possible to start watching a recorded programme before the live
 broadcast has ended (\fBtime shifting\fR). In order to record from different
 transponders simultaneously two or more DVB cards are necessary.
-By default \fBvdr\fR can support up to four
-DVB cards. The primary DVB card (the one your TV set is connected to) has
-to be a "full featured" card, which means it must contain an MPEG decoder
-and provide audio and video signal outputs.
+By default \fBvdr\fR can support up to eight DVB cards.
+The primary DVB card (the one your TV set is connected to) can either
+be a "full featured" card, which means it contains an MPEG decoder
+and provides audio and video signal outputs, or you can use some third party
+plugin that implements software decoding of the MPEG data and displays it via
+the system's graphics adapter.
 
-\fBvdr\fR uses the On Screen Display of the DVB card to display its menus.
-It can be controlled by the PC keyboard or the "Linux Infrared Remote Control" (LIRC).
+\fBvdr\fR uses an On Screen Display (OSD) to display its menus.
+It can be controlled by the PC keyboard, the "Linux Infrared Remote Control" (LIRC),
+or any other means of remote control, implemented by a third party plugin.
 
 Remote access is possible via the "Simple Video Disk Recorder Protocol" (SVDRP),
 which can be accessed on port 6419, for instance by \fBtelnet\fR.
@@ -57,12 +60,13 @@ Run in daemon mode (implies \-\-no\-kbd).
 Use only the given DVB device (\fInum\fR = 0, 1, 2...).
 There may be several \fB\-D\fR options (by default all DVB devices will be used).
 .TP
-.BI \-\-dirnames= path[,name[,enc]]
+.BI \-\-dirnames= path [, name [, enc ]]
 Set the maximum directory path length to \fIpath\fR (default is the maximum value
 allowed on the system). If \fIname\fR is also given, it defines the maximum directory
 name length (default is the maximum value allowed on the system).  The optional
 \fIenc\fR can be 0 or 1, and controls whether special characters in directory names
 are encoded as hex values (default: 0).
+If \fIpath\fR or \fIname\fR are left empty (as in ",,1" to only set \fIenc\fR), the defaults apply.
 The length of the video directory name and that of the actual recording directory is
 subtracted from \fIpath\fR, to make sure the directory path will never become too long.
 .TP
@@ -73,7 +77,7 @@ The program will return immediately after editing the recording.
 .TP
 .BI \-E\  file ,\ \-\-epgfile= file
 Write the EPG data into the given \fIfile\fR
-(default is \fI/video/epg.data\fR).
+(default is \fIepg.data\fR in the cache directory).
 Use \fB\-E\-\fR to disable this.
 If \fIfile\fR is a directory, the file \fIepg.data\fR
 will be created in that directory.
@@ -282,7 +286,7 @@ See the file \fICONTRIBUTORS\fR in the \fBvdr\fR source distribution.
 .SH REPORTING BUGS
 Report bugs to <vdr\-bugs@tvdr.de>.
 .SH COPYRIGHT
-Copyright \(co 2008 Klaus Schmidinger.
+Copyright \(co 2013 Klaus Schmidinger.
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

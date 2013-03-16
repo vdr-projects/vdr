@@ -1,7 +1,7 @@
 /*
  * vdr.c: Video Disk Recorder main program
  *
- * Copyright (C) 2000, 2003, 2006, 2008 Klaus Schmidinger
+ * Copyright (C) 2000, 2003, 2006, 2008, 2013 Klaus Schmidinger
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * Or, point your browser to http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
- * The author can be reached at kls@tvdr.de
+ * The author can be reached at vdr@tvdr.de
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.50 2013/03/03 10:25:11 kls Exp $
+ * $Id: vdr.c 2.57 2013/03/15 10:44:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -87,7 +87,7 @@
 
 static int LastSignal = 0;
 
-static bool SetUser(const char *UserName, bool UserDump)//XXX name?
+static bool SetUser(const char *UserName, bool UserDump)
 {
   if (UserName) {
      struct passwd *user = getpwnam(UserName);
@@ -109,6 +109,10 @@ static bool SetUser(const char *UserName, bool UserDump)//XXX name?
         }
      if (UserDump && prctl(PR_SET_DUMPABLE, 1, 0, 0, 0) < 0)
         fprintf(stderr, "vdr: warning - cannot set dumpable: %s\n", strerror(errno));
+     setenv("HOME", user->pw_dir, 1);
+     setenv("USER", user->pw_name, 1);
+     setenv("LOGNAME", user->pw_name, 1);
+     setenv("SHELL", user->pw_shell, 1);
      }
   return true;
 }
@@ -280,31 +284,41 @@ int main(int argc, char *argv[])
                     return 2;
           case 'd' | 0x100: {
                     char *s = optarg;
+                    if (*s != ',') {
+                       int n = strtol(s, &s, 10);
+                       if (n <= 0 || n >= PATH_MAX) { // PATH_MAX includes the terminating 0
+                          fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
+                          return 2;
+                          }
+                       DirectoryPathMax = n;
+                       if (!*s)
+                          break;
+                       if (*s != ',') {
+                          fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                          return 2;
+                          }
+                       }
+                    s++;
+                    if (!*s)
+                       break;
+                    if (*s != ',') {
+                       int n = strtol(s, &s, 10);
+                       if (n <= 0 || n > NAME_MAX) { // NAME_MAX excludes the terminating 0
+                          fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
+                          return 2;
+                          }
+                       DirectoryNameMax = n;
+                       if (!*s)
+                          break;
+                       if (*s != ',') {
+                          fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
+                          return 2;
+                          }
+                       }
+                    s++;
+                    if (!*s)
+                       break;
                     int n = strtol(s, &s, 10);
-                    if (n <= 0 || n >= PATH_MAX) {
-                       fprintf(stderr, "vdr: invalid directory path length: %s\n", optarg);
-                       return 2;
-                       }
-                    DirectoryPathMax = n;
-                    if (!*s)
-                       break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
-                    n = strtol(s, &s, 10);
-                    if (n <= 0 || n >= NAME_MAX) {
-                       fprintf(stderr, "vdr: invalid directory name length: %s\n", optarg);
-                       return 2;
-                       }
-                    DirectoryNameMax = n;
-                    if (!*s)
-                       break;
-                    if (*s++ != ',') {
-                       fprintf(stderr, "vdr: invalid delimiter: %s\n", optarg);
-                       return 2;
-                       }
-                    n = strtol(s, &s, 10);
                     if (n != 0 && n != 1) {
                        fprintf(stderr, "vdr: invalid directory encoding: %s\n", optarg);
                        return 2;
@@ -480,10 +494,12 @@ int main(int argc, char *argv[])
                "                           the maximum directory name length (default: %d);\n"
                "                           the optional ENC can be 0 or 1, and controls whether\n"
                "                           special characters in directory names are encoded as\n"
-               "                           hex values (default: 0)\n"
+               "                           hex values (default: 0); if PATH or NAME are left\n"
+               "                           empty (as in \",,1\" to only set ENC), the defaults\n"
+               "                           apply\n"
                "            --edit=REC     cut recording REC and exit\n"
                "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
-               "                           '%s' in the video directory)\n"
+               "                           '%s' in the cache directory)\n"
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
@@ -530,7 +546,7 @@ int main(int argc, char *argv[])
                "\n",
                DEFAULTCACHEDIR,
                DEFAULTCONFDIR,
-               PATH_MAX,
+               PATH_MAX - 1,
                NAME_MAX,
                DEFAULTEPGDATAFILENAME,
                MAXVIDEOFILESIZEDEFAULT,

@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Jean-Claude Repetto <jc@repetto.org>, 2001, 2002, 2008
 # Olivier Jacques <jacquesolivier@hotmail.com>, 2003, 2005
@@ -15,7 +15,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 1.7.37\n"
+"Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
 "PO-Revision-Date: 2013-02-24 12:56+0100\n"

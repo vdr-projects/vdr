@@ -7729,3 +7729,30 @@ Video Disk Recorder Revision History
 - Changed the default values for the OSD size back to those before version 1.7.29,
   to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
   "Classic" skin.
+
+2013-03-16: Version 1.7.41
+
+- Updated the Hungarian OSD texts (thanks to István Füley).
+- Updated the Russian OSD texts (thanks to Oleg Roitburd).
+- Updated the Polish OSD texts (thanks to Marek Nazarko).
+- Fixed using PATH_MAX and NAME_MAX (+/-1 because the first one includes the
+  terminating 0, while the latter doesn't).
+- The 'plugins' target of the VDR Makefile now also copies files matching the wildcard
+  "lib$$i-*.so" (previously only "libvdr-*.so") and also descends into subdirectories
+  of the plugin source.
+- The parameters PATH and NAME to the --dirnames command line option may now be left
+  empty to use the default values if only ENC shall be set (thanks to Helmut Auer for
+  some improvements to this change).
+- Fixed a possible "Channel not available" if a recording starts on a system with
+  bonded devices (thanks to Siegfried Bosch).
+- Fixed stopping an ongoing recording on a system with bonded devices, if a timer with
+  a higher priority requires a different band.
+- Updated the introductory text of the vdr.1 man page.
+- Added a note to the INSTALL file regarding multiple disk setup becoming deprecated
+  in a future version of VDR.
+- When switching to a less privileged user id, VDR now sets the environment variables
+  HOME, USER, LOGNAME and SHELL accordingly (thanks to Manuel Reimer).
+- Updated the help and man page entry about the location of the epg.data file (thanks
+  to Ville Skyttä).
+- Fixed creating a new VPS timer with the SVDRP command NEWT (thanks to Johann
+  Friedrichs).

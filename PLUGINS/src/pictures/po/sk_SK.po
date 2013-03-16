@@ -1,7 +1,7 @@
 # VDR plugin language source file.
-# Copyright (C) 2008 Klaus Schmidinger <kls@tvdr.de>
+# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Klaus Schmidinger <kls@tvdr.de>, 2008
+# Klaus Schmidinger <vdr@tvdr.de>, 2008
 #
 msgid ""
 msgstr ""

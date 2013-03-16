@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 2.71 2013/03/04 13:58:40 kls Exp $
+ * $Id: config.h 2.74 2013/03/11 11:07:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "1.7.40"
-#define VDRVERSNUM   10740  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.7.41"
+#define VDRVERSNUM   10741  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "1.7.40"
-#define APIVERSNUM   10740  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "1.7.41"
+#define APIVERSNUM   10741  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -260,7 +260,7 @@ public:
   int MenuScrollWrap;
   int MenuKeyCloses;
   int MarkInstantRecord;
-  char NameInstantRecord[NAME_MAX];
+  char NameInstantRecord[NAME_MAX + 1];
   int InstantRecordTime;
   int LnbSLOF;
   int LnbFrequLo;
