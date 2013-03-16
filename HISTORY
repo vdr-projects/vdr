@@ -7730,7 +7730,7 @@ Video Disk Recorder Revision History
   to avoid problems with SD-FF cards in case the user switches to the "ST:TNG" or
   "Classic" skin.
 
-2013-03-15: Version 1.7.41
+2013-03-16: Version 1.7.41
 
 - Updated the Hungarian OSD texts (thanks to István Füley).
 - Updated the Russian OSD texts (thanks to Oleg Roitburd).
@@ -7754,3 +7754,5 @@ Video Disk Recorder Revision History
   HOME, USER, LOGNAME and SHELL accordingly (thanks to Manuel Reimer).
 - Updated the help and man page entry about the location of the epg.data file (thanks
   to Ville Skyttä).
+- Fixed creating a new VPS timer with the SVDRP command NEWT (thanks to Johann
+  Friedrichs).
