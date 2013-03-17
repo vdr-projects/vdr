@@ -2,14 +2,15 @@
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Milan Cvijanoviæ <elcom_cvijo@hotmail.com>, 2010
+# Zoran Turalija <zoran.turalija@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-03-04 14:46+0100\n"
-"PO-Revision-Date: 2011-01-09 15:57+0100\n"
-"Last-Translator: Milan Cvijanoviæ <elcom_cvijo@hotmail.com>\n"
+"PO-Revision-Date: 2013-03-16 15:05+0100\n"
+"Last-Translator: Zoran Turalija <zoran.turalija@gmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
@@ -23,13 +24,13 @@ msgid "Channel not available!"
 msgstr "Kanal nije dostupan!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Nemoguæe zapoèeti Prenos!!"
+msgstr "Nemoguæe zapoèeti 'Transfer Mode' re¾im!"
 
 msgid "off"
 msgstr "iskljuèi"
 
 msgid "on"
-msgstr ""
+msgstr "ukljuèi"
 
 msgid "auto"
 msgstr "automatski"
@@ -41,19 +42,19 @@ msgid "Polarization"
 msgstr "Polarizacija"
 
 msgid "System"
-msgstr "Sistem"
+msgstr "Sistem (standard)"
 
 msgid "Srate"
-msgstr "Srate"
+msgstr "Srate (symbol rate)"
 
 msgid "Inversion"
 msgstr "Inverzija"
 
 msgid "CoderateH"
-msgstr "CoderateH"
+msgstr "CoderateH (FEC)"
 
 msgid "CoderateL"
-msgstr "CoderateL"
+msgstr "CoderateL (FEC)"
 
 msgid "Modulation"
 msgstr "Modulacija"
@@ -71,13 +72,13 @@ msgid "Hierarchy"
 msgstr "Hijerarhija"
 
 msgid "Rolloff"
-msgstr ""
+msgstr "Rolloff"
 
 msgid "StreamId"
-msgstr ""
+msgstr "StreamId"
 
 msgid "Starting EPG scan"
-msgstr "Poèinjem EPG pretragu"
+msgstr "Poèinje EPG pretra¾ivanje"
 
 msgid "Content$Movie/Drama"
 msgstr "Film/Drama"
@@ -89,7 +90,7 @@ msgid "Content$Adventure/Western/War"
 msgstr "Avantura/Vestern/Ratni"
 
 msgid "Content$Science Fiction/Fantasy/Horror"
-msgstr "Nauèno Fantastièni/Fantazija/Horor"
+msgstr "Nauèna fantastika/Fantazija/Horor"
 
 msgid "Content$Comedy"
 msgstr "Komedija"
@@ -101,76 +102,76 @@ msgid "Content$Romance"
 msgstr "Romansa"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Ozbiljan/Klasièni/Religiozan/Istorijski Film/Drama"
+msgstr "Ozbiljan/Klasièni/Religiozan/Istorijski/Drama"
 
 msgid "Content$Adult Movie/Drama"
-msgstr "Za odrasle Film/Drama"
+msgstr "Film za odrasle/Drama"
 
 msgid "Content$News/Current Affairs"
-msgstr "Vesti/Trenutni poslovi"
+msgstr "Vesti/Aktuelni dogaðaji"
 
 msgid "Content$News/Weather Report"
-msgstr "Vesti/Vremenski izvje¹taj"
+msgstr "Vesti/Vremenski izve¹taj"
 
 msgid "Content$News Magazine"
-msgstr "Magazin Vesti"
+msgstr "Novosti"
 
 msgid "Content$Documentary"
 msgstr "Dokumentarni"
 
 msgid "Content$Discussion/Inverview/Debate"
-msgstr "Diskusije/Intervjui/Debate"
+msgstr "Diskusija/Razgovor/Debata"
 
 msgid "Content$Show/Game Show"
-msgstr "Zabavni/Igre Zabavne"
+msgstr "Zabavni/Igre"
 
 msgid "Content$Game Show/Quiz/Contest"
-msgstr "Igre Zabavne/Kviz/Takmièenja"
+msgstr "Igre/Kviz/Takmièenje"
 
 msgid "Content$Variety Show"
-msgstr "Cirkus"
+msgstr "Kola¾ program"
 
 msgid "Content$Talk Show"
-msgstr "Talk ¹ou"
+msgstr "Diskusiona emisija"
 
 msgid "Content$Sports"
 msgstr "Sport"
 
 msgid "Content$Special Event"
-msgstr "Specijalne emisije"
+msgstr "Specijalna emisija"
 
 msgid "Content$Sport Magazine"
-msgstr "Sportski Magazin"
+msgstr "Sportski magazin"
 
 msgid "Content$Football/Soccer"
-msgstr "Futball/Igraè"
+msgstr "Fudbal"
 
 msgid "Content$Tennis/Squash"
 msgstr "Tenis/Skvo¹"
 
 msgid "Content$Team Sports"
-msgstr "Timski Sport"
+msgstr "Timski sportovi"
 
 msgid "Content$Athletics"
 msgstr "Atletika"
 
 msgid "Content$Motor Sport"
-msgstr "Moto Sport"
+msgstr "Moto-sport"
 
 msgid "Content$Water Sport"
 msgstr "Sportovi na vodi"
 
 msgid "Content$Winter Sports"
-msgstr "Zimski Sportovi"
+msgstr "Zimski sportovi"
 
 msgid "Content$Equestrian"
-msgstr "Jahaèki"
+msgstr "Konjièki sport"
 
 msgid "Content$Martial Sports"
-msgstr "Vojni Sportovi"
+msgstr "Borilaèki sportovi"
 
 msgid "Content$Children's/Youth Programme"
-msgstr "Deèiji/Program za Mlade"
+msgstr "Deèiji program/Program za mlade"
 
 msgid "Content$Pre-school Children's Programme"
 msgstr "Pred¹kolski deèiji program"
@@ -182,10 +183,10 @@ msgid "Content$Entertainment Programme for 10 to 16"
 msgstr "Zabavni program za uzrast od 10 do 16"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr "Informativni/Edukacioni/©kolski Program"
+msgstr "Informativni/Edukativni/©kolski program"
 
 msgid "Content$Cartoons/Puppets"
-msgstr "Crtiæi/Lutkarski"
+msgstr "Crtani/Lutkarski"
 
 msgid "Content$Music/Ballet/Dance"
 msgstr "Muzièki/Balet/Ples"
@@ -194,16 +195,16 @@ msgid "Content$Rock/Pop"
 msgstr "Rok/Pop"
 
 msgid "Content$Serious/Classical Music"
-msgstr "Ozbiljna/Klasièna Muzika"
+msgstr "Ozbiljna/Klasièna muzika"
 
 msgid "Content$Folk/Tradional Music"
-msgstr "Narodna/Izvorna Muzika"
+msgstr "Narodna/Izvorna muzika"
 
 msgid "Content$Jazz"
 msgstr "D¾ez"
 
 msgid "Content$Musical/Opera"
-msgstr "Mjuzikli/Opera"
+msgstr "Mjuzikl/Opera"
 
 msgid "Content$Ballet"
 msgstr "Balet"
@@ -212,116 +213,116 @@ msgid "Content$Arts/Culture"
 msgstr "Umetnost/Kultura"
 
 msgid "Content$Performing Arts"
-msgstr ""
+msgstr "Izvoðaèka umetnost"
 
 msgid "Content$Fine Arts"
-msgstr ""
+msgstr "Likovna umetnost"
 
 msgid "Content$Religion"
 msgstr "Religija"
 
 msgid "Content$Popular Culture/Traditional Arts"
-msgstr "Moderna umetnost/Tradicionalna umetnost"
+msgstr "Pop kultura/Tradicionalna umetnost"
 
 msgid "Content$Literature"
-msgstr "Literarni"
+msgstr "Knji¾evnost"
 
 msgid "Content$Film/Cinema"
-msgstr "Film/Kino"
+msgstr "Film/Bioskop"
 
 msgid "Content$Experimental Film/Video"
-msgstr ""
+msgstr "Eksperimentalni film/video"
 
 msgid "Content$Broadcasting/Press"
-msgstr ""
+msgstr "Radiodifuzija/©tampa"
 
 msgid "Content$New Media"
-msgstr ""
+msgstr "Novi mediji"
 
 msgid "Content$Arts/Culture Magazine"
-msgstr ""
+msgstr "Umetnièki/Kulturni magazin"
 
 msgid "Content$Fashion"
-msgstr "Sadr¾aj$Moda"
+msgstr "Moda"
 
 msgid "Content$Social/Political/Economics"
-msgstr "Sadr¾aj$Socijalni/Politièki/Ekonomski"
+msgstr "Socijalni/Politièki/Ekonomski"
 
 msgid "Content$Magazine/Report/Documentary"
-msgstr "Sadr¾aj$Magazin/Reporta¾a/Dokumentarni"
+msgstr "Magazin/Reporta¾a/Dokumentarni"
 
 msgid "Content$Economics/Social Advisory"
-msgstr ""
+msgstr "Ekonomija/Socijalno savetovanje"
 
 msgid "Content$Remarkable People"
-msgstr "Neverovatni Ljudi"
+msgstr "Znamenite liènosti"
 
 msgid "Content$Education/Science/Factual"
-msgstr ""
+msgstr "Obrazovni/Nauèni/Objektivni"
 
 msgid "Content$Nature/Animals/Environment"
-msgstr ""
+msgstr "Priroda/®ivotinje/Okru¾enje"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr ""
+msgstr "Tehnologija/Prirodne nauke"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicina/Fiziologija/Psihologija"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Strane zemlje/Ekspedicije"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr ""
+msgstr "Socijalne/Duhovne nauke"
 
 msgid "Content$Further Education"
-msgstr ""
+msgstr "Dalje obrazovanje"
 
 msgid "Content$Languages"
-msgstr ""
+msgstr "Jezici"
 
 msgid "Content$Leisure/Hobbies"
-msgstr ""
+msgstr "Razonoda/Hobi"
 
 msgid "Content$Tourism/Travel"
-msgstr ""
+msgstr "Turizam/Putovanja"
 
 msgid "Content$Handicraft"
-msgstr ""
+msgstr "Zanatstvo"
 
 msgid "Content$Motoring"
-msgstr ""
+msgstr "Vo¾nja"
 
 msgid "Content$Fitness & Health"
-msgstr ""
+msgstr "Fitnes i zdravlje"
 
 msgid "Content$Cooking"
-msgstr ""
+msgstr "Kuvanje"
 
 msgid "Content$Advertisement/Shopping"
-msgstr ""
+msgstr "Reklama/Kupovina"
 
 msgid "Content$Gardening"
-msgstr ""
+msgstr "Ba¹tovanstvo"
 
 msgid "Content$Original Language"
-msgstr ""
+msgstr "Originalni jezik"
 
 msgid "Content$Black & White"
-msgstr "Crno i Belo"
+msgstr "Crno-belo"
 
 msgid "Content$Unpublished"
 msgstr "Neobjavljeno"
 
 msgid "Content$Live Broadcast"
-msgstr "Prenos U¾ivo"
+msgstr "Prenos u¾ivo"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "Roditeljska ocena$od %d"
+msgstr "od %d"
 
 msgid "No title"
-msgstr "Nema naslova"
+msgstr "Bez naslova"
 
 #. TRANSLATORS: The name of the language, as written natively
 msgid "LanguageName$English"
@@ -332,47 +333,47 @@ msgid "LanguageCode$eng"
 msgstr "scc"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Faza 1: detekcija koda daljinskog upravljaèa"
+msgstr "Faza 1: detekcija kôda daljinskog upravljaèa"
 
 msgid "Press any key on the RC unit"
-msgstr "Pritisnite jedan taster na daljinskom upravljaèu"
+msgstr "Pritisnite bilo koje dugme na daljinskom upravljaèu"
 
 msgid "RC code detected!"
-msgstr "Kod daljinskog upravljaèa je prepoznat!"
+msgstr "Kôd daljinskog upravljaèa je prepoznat!"
 
 msgid "Do not press any key..."
-msgstr "Ne pritiskaj nijedan taster..."
+msgstr "Ne pritiskajte dugmad..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Faza 2: Uèenje posebnih kodova"
+msgstr "Faza 2: Uèenje posebnih kôdova"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Pritisnite taster za '%s'"
+msgstr "Pritisnite dugme za '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Pritisni 'Gore' za prihvatanje"
+msgstr "Pritisnite 'Gore' da potvrdite"
 
 msgid "Press 'Down' to continue"
-msgstr "Pritisni 'Dole' za nastavak"
+msgstr "Pritisnite 'Dole' da nastavite"
 
 msgid "(press 'Up' to go back)"
-msgstr "(pritisni 'Gore' za nazad)"
+msgstr "(pritisnite 'Gore' za nazad)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(pritisni 'Dole' za kraj)"
+msgstr "(pritisnite 'Dole' za kraj)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "pritisni 'Meni' da preskoèite ovu tipku"
+msgstr "(pritisnite 'Meni' da preskoèite ovo dugme)"
 
 msgid "Learning Remote Control Keys"
-msgstr "Uèenje rasporeda tastera daljinskog upravljaèa"
+msgstr "Uèenje rasporeda dugmadi daljinskog upravljaèa"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Faza 3: Snimanje kodova tastera"
+msgstr "Faza 3: Snimanje kôdova dugmadi"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "'Gore' za snimi, 'Dole' za prekid"
+msgstr "Pritisnite 'Gore' da snimite, 'Dole' da odustanete"
 
 msgid "Key$Up"
 msgstr "Gore"
@@ -411,7 +412,7 @@ msgid "Key$Info"
 msgstr "Info"
 
 msgid "Key$Play/Pause"
-msgstr ""
+msgstr "Start/Pauza"
 
 msgid "Key$Play"
 msgstr "Start"
@@ -423,7 +424,7 @@ msgid "Key$Stop"
 msgstr "Stop"
 
 msgid "Key$Record"
-msgstr "Snimaj"
+msgstr "Snimi"
 
 msgid "Key$FastFwd"
 msgstr "Napred"
@@ -438,7 +439,7 @@ msgid "Key$Prev"
 msgstr "Prethodno"
 
 msgid "Key$Power"
-msgstr "Power"
+msgstr "Iskljuèi"
 
 msgid "Key$Channel+"
 msgstr "Kanal+"
@@ -474,13 +475,13 @@ msgid "Key$Timers"
 msgstr "Tajmeri"
 
 msgid "Key$Recordings"
-msgstr "Snimke"
+msgstr "Snimci"
 
 msgid "Key$Setup"
 msgstr "Pode¹avanje"
 
 msgid "Key$Commands"
-msgstr "Naredbe"
+msgstr "Komande"
 
 msgid "Key$User0"
 msgstr "Korisnik0"
@@ -513,13 +514,13 @@ msgid "Key$User9"
 msgstr "Korisnik9"
 
 msgid "Free To Air"
-msgstr "Slobodno"
+msgstr "FTA (nekodiran)"
 
 msgid "encrypted"
-msgstr "kriptirano"
+msgstr "kodiran"
 
 msgid "Edit channel"
-msgstr "Ispravke kanala"
+msgstr "Izmeni postavke kanala"
 
 msgid "Name"
 msgstr "Naziv"
@@ -531,31 +532,31 @@ msgid "Frequency"
 msgstr "Frekvencija"
 
 msgid "Vpid"
-msgstr "Vpid"
+msgstr "Vpid (video)"
 
 msgid "Ppid"
-msgstr "Ppid"
+msgstr "Ppid (PCR)"
 
 msgid "Apid1"
-msgstr "Apid1"
+msgstr "Apid1 (audio 1)"
 
 msgid "Apid2"
-msgstr "Apid2"
+msgstr "Apid2 (audio 2)"
 
 msgid "Dpid1"
-msgstr "Dpid1"
+msgstr "Dpid1 (AC3 1)"
 
 msgid "Dpid2"
-msgstr "Dpid2"
+msgstr "Dpid2 (AC3 2)"
 
 msgid "Spid1"
-msgstr "Spid1"
+msgstr "Spid1 (titl 1)"
 
 msgid "Spid2"
-msgstr "Spid2"
+msgstr "Spid2 (titl 2)"
 
 msgid "Tpid"
-msgstr "Tpid"
+msgstr "Tpid (teletekst)"
 
 msgid "CA"
 msgstr "Kodiranje (CA)"
@@ -564,13 +565,13 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Channel settings are not unique!"
-msgstr "Postavke programa nisu jedinstvene!"
+msgstr "Postavke kanala nisu jedinstvene!"
 
 msgid "Channels"
 msgstr "Kanali"
 
 msgid "Button$Edit"
-msgstr "Promeni"
+msgstr "Izmeni"
 
 msgid "Button$New"
 msgstr "Novi"
@@ -582,38 +583,38 @@ msgid "Button$Mark"
 msgstr "Oznaèi"
 
 msgid "Channel is being used by a timer!"
-msgstr "Kanal je trenutno zauzet tajmerom!"
+msgstr "Kanal je zauzet tajmerom za snimanje!"
 
 msgid "Delete channel?"
 msgstr "Obrisati kanal?"
 
 msgid "Edit folder"
-msgstr ""
+msgstr "Izmeni direktorijum"
 
 msgid "New folder"
-msgstr "Novi direktorij"
+msgstr "Novi direktorijum"
 
 msgid "Sub folder"
-msgstr "Pod Direktorij"
+msgstr "Poddirektorijum"
 
 msgid "Folder name already exists!"
-msgstr "Ime direktorija veæ postoji"
+msgstr "Naziv direktorijuma veæ postoji!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "Naziv direktorija ne smije sadr¾avati '%c'! "
+msgstr "Naziv direktorijuma ne sme da sadr¾i '%c'!"
 
 msgid "Button$Select"
-msgstr ""
+msgstr "Izaberi"
 
 msgid "Delete folder and all sub folders?"
-msgstr "Obri¹i direktorij i sve poddirektorije"
+msgstr "Obri¹i direktorijum i sve poddirektorijume?"
 
 msgid "Delete folder?"
-msgstr ""
+msgstr "Izbri¹i direktorijum?"
 
 msgid "Edit timer"
-msgstr "Ureðivanje tajmera"
+msgstr "Izmeni tajmer"
 
 msgid "Active"
 msgstr "Aktivan"
@@ -631,7 +632,7 @@ msgid "Stop"
 msgstr "Kraj"
 
 msgid "VPS"
-msgstr "VPS"
+msgstr "VPS (PDC)"
 
 msgid "Priority"
 msgstr "Prioritet"
@@ -643,34 +644,34 @@ msgid "File"
 msgstr "Datoteka"
 
 msgid "Button$Folder"
-msgstr ""
+msgstr "Direktorijum"
 
 msgid "Button$Single"
-msgstr ""
+msgstr "Jedinstven"
 
 msgid "Button$Repeating"
-msgstr ""
+msgstr "Ponavljajuæi"
 
 msgid "First day"
 msgstr "Prvi dan"
 
 msgid "Select folder"
-msgstr "Odaberi direktorij"
+msgstr "Izaberi direktorijum"
 
 msgid "Timers"
 msgstr "Tajmeri"
 
 msgid "Button$On/Off"
-msgstr "Taster$ukljuèi/iskljuèi"
+msgstr "Ukljuèi/Iskljuèi"
 
 msgid "Button$Info"
-msgstr "Taster$Info"
+msgstr "Info"
 
 msgid "Delete timer?"
-msgstr "Obri¹i tajmer?"
+msgstr "Izbrisati tajmer?"
 
 msgid "Timer still recording - really delete?"
-msgstr "Tajmer jo¹ snima - zaista obri¹i?"
+msgstr "Tajmer jo¹ snima - stvarno izbrisati?"
 
 msgid "Event"
 msgstr "Emisija"
@@ -685,10 +686,10 @@ msgid "Button$Switch"
 msgstr "Prebaci"
 
 msgid "What's on now?"
-msgstr "Trenutno na programu ?"
+msgstr "©ta je trenutno na programu?"
 
 msgid "What's on next?"
-msgstr "©ta je sledeæe?"
+msgstr "©ta je sledeæe na programu?"
 
 msgid "Button$Next"
 msgstr "Sledi"
@@ -697,14 +698,14 @@ msgid "Button$Now"
 msgstr "Trenutno"
 
 msgid "Button$Schedule"
-msgstr "TV Raspored"
+msgstr "Raspored"
 
 msgid "Can't switch channel!"
 msgstr "Nemoguæe promeniti kanal!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "TV Raspored - %s"
+msgstr "Raspored - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -718,7 +719,7 @@ msgstr "Svi dogaðaji - svi kanali"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Molim unesi %d brojeve!"
+msgstr "Molimo unesite %d brojeve!"
 
 msgid "CAM not responding!"
 msgstr "CAM ne reaguje!"
@@ -730,34 +731,34 @@ msgid "Button$Play"
 msgstr "Start"
 
 msgid "Button$Rewind"
-msgstr "Poèetak"
+msgstr "Na poèetak"
 
 msgid "Recordings"
-msgstr ""
+msgstr "Snimci"
 
 msgid "Button$Open"
-msgstr ""
+msgstr "Otvori"
 
 msgid "Commands"
-msgstr ""
+msgstr "Komande"
 
 msgid "Delete recording?"
-msgstr "Obri¹i snimku?"
+msgstr "Izbri¹i snimak?"
 
 msgid "Recording is being edited - really delete?"
-msgstr ""
+msgstr "Snimak je izmenjen - stvarno izbrisati?"
 
 msgid "Error while deleting recording!"
-msgstr "Gre¹ka prilikom brisanja snimke!"
+msgstr "Gre¹ka prilikom brisanja snimka!"
 
 msgid "Recording commands"
-msgstr "Naredbe snimanja"
+msgstr "Komande snimanja"
 
 msgid "never"
-msgstr "Nikada"
+msgstr "nikada"
 
 msgid "skin dependent"
-msgstr "Zavisi od skin-a"
+msgstr "zavisi od stila (skin-a)"
 
 msgid "always"
 msgstr "uvek"
@@ -769,52 +770,52 @@ msgid "Setup.OSD$Language"
 msgstr "Jezik"
 
 msgid "Setup.OSD$Skin"
-msgstr "Izgled"
+msgstr "Stil (skin)"
 
 msgid "Setup.OSD$Theme"
 msgstr "Tema"
 
 msgid "Setup.OSD$Left (%)"
-msgstr ""
+msgstr "Levo (%)"
 
 msgid "Setup.OSD$Top (%)"
-msgstr ""
+msgstr "Gore (%)"
 
 msgid "Setup.OSD$Width (%)"
-msgstr ""
+msgstr "©irina (%)"
 
 msgid "Setup.OSD$Height (%)"
-msgstr ""
+msgstr "Visina (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Du¾ina prikaza poruka (s)"
+msgstr "Trajanje prikaza poruke (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Koristi mala slova"
+msgstr "Upotrebi mala slova"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Anti-alias"
 
 msgid "Setup.OSD$Default font"
-msgstr "Zadani font"
+msgstr "Podrazumevani font"
 
 msgid "Setup.OSD$Small font"
 msgstr "Mali font"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Nepromenjiv font"
+msgstr "Fiksni font"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr ""
+msgstr "Velièina podrazumevanog fonta (%)"
 
 msgid "Setup.OSD$Small font size (%)"
-msgstr ""
+msgstr "Velièina malog fonta (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr ""
+msgstr "Velièina fiksnog fonta (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Pozicija informacija o programu"
+msgstr "Pozicija informacija o kanalu"
 
 msgid "bottom"
 msgstr "dno"
@@ -823,61 +824,61 @@ msgid "top"
 msgstr "vrh"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Vreme prikaza informacije o kanalu (s)"
+msgstr "Trajanje prikaza informacija o kanalu (s)"
 
 msgid "Setup.OSD$Info on channel switch"
 msgstr "Informacije kod promene kanala"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Du¾ina prikaza informacije o kanalu"
+msgstr "Zatvori zatra¾ene informacije o kanalu"
 
 msgid "Setup.OSD$Scroll pages"
-msgstr "Listaj po stranicama"
+msgstr "Skrolovanje stranica (klizaè)"
 
 msgid "Setup.OSD$Scroll wraps"
 msgstr "Skoèi s kraja na poèetak"
 
 msgid "Setup.OSD$Menu key closes"
-msgstr "Taster Meni zatvara"
+msgstr "Dugme 'Meni' zatvara"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Direktorij za snimke"
+msgstr "Direktorijum za snimke"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr ""
+msgstr "Direktorijumi u meniju tajmera"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Uvek sortiraj direktorijume prve"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr ""
+msgstr "Pi¹ite pomoæu numerièkih dugmiæa (kao SMS)"
 
 msgid "Setup.OSD$Color key 0"
-msgstr ""
+msgstr "Obojeno dugme 0"
 
 msgid "Setup.OSD$Color key 1"
-msgstr ""
+msgstr "Obojeno dugme 1"
 
 msgid "Setup.OSD$Color key 2"
-msgstr ""
+msgstr "Obojeno dugme 2"
 
 msgid "Setup.OSD$Color key 3"
-msgstr ""
+msgstr "Obojeno dugme 3"
 
 msgid "EPG"
-msgstr "EPG (TV Raspored¨)"
+msgstr "EPG (elektronski programski vodiè)"
 
 msgid "Button$Scan"
 msgstr "Pretra¾i"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
-msgstr "Vreme do EPG pregleda (h)"
+msgstr "Interval do a¾uriranja EPG (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "Nivo ispravaka EPG gre¹aka"
+msgstr "Nivo EPG korekcije gre¹aka"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Vreme EPG zadr¾avanja (min)"
+msgstr "Vreme zadr¾avanja starih EPG podataka (min)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Podesi sistemsko vreme"
@@ -887,32 +888,32 @@ msgstr "Koristi vreme sa transpondera"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "Odaberi jezike"
+msgstr "®eljeni jezici (EPG)"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
-msgstr "Odaberi jezik"
+msgstr "®eljeni jezik (EPG)"
 
 msgid "pan&scan"
-msgstr "pro¹iri i ispitaj"
+msgstr "pan&scan"
 
 msgid "letterbox"
-msgstr "pravougaonik"
+msgstr "letterbox"
 
 msgid "center cut out"
 msgstr "izre¾i sredinu"
 
 msgid "no"
-msgstr ""
+msgstr "ne"
 
 msgid "names only"
-msgstr "samo imena"
+msgstr "samo nazivi"
 
 msgid "PIDs only"
-msgstr "Samo PID-ovi"
+msgstr "samo PID-ovi"
 
 msgid "names and PIDs"
-msgstr "imena i (PIDs)"
+msgstr "nazivi i PID-ovi"
 
 msgid "add new channels"
 msgstr "dodaj nove kanale"
@@ -933,7 +934,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Primarni DVB ureðaj"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr ""
+msgstr "Usklaðenost sa standardom"
 
 msgid "Setup.DVB$Video format"
 msgstr "Video format"
@@ -954,7 +955,7 @@ msgid "Setup.DVB$Audio language"
 msgstr "Audio jezik"
 
 msgid "Setup.DVB$Display subtitles"
-msgstr "Poka¾i titlove"
+msgstr "Prika¾i titlove"
 
 msgid "Setup.DVB$Subtitle languages"
 msgstr "Jezici titla"
@@ -963,7 +964,7 @@ msgid "Setup.DVB$Subtitle language"
 msgstr "Jezik titla"
 
 msgid "Setup.DVB$Subtitle offset"
-msgstr "Pomak titla"
+msgstr "Pomeranje titla"
 
 msgid "Setup.DVB$Subtitle foreground transparency"
 msgstr "Providnost titla"
@@ -978,20 +979,20 @@ msgid "Setup.LNB$Use DiSEqC"
 msgstr "Koristi DiSEqC"
 
 msgid "Setup.LNB$SLOF (MHz)"
-msgstr "SLOF (MHz)"
+msgstr "Frekvencija prebacivanja (SLOF) (MHz)"
 
 msgid "Setup.LNB$Low LNB frequency (MHz)"
-msgstr "Donja LNB frekv. (MHz)"
+msgstr "Donja LNB frekvencija (MHz)"
 
 msgid "Setup.LNB$High LNB frequency (MHz)"
-msgstr "Gornja LNB frekv. (MHz)"
+msgstr "Gornja LNB frekvencija (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr ""
+msgstr "Ureðaj %d je prikljuèen na satelitski kabl"
 
 msgid "Setup.LNB$own"
-msgstr ""
+msgstr "sopstven"
 
 msgid "CAM reset"
 msgstr "Ponovno pokreni CAM"
@@ -1018,25 +1019,25 @@ msgid "Can't open CAM menu!"
 msgstr "Otvaranje CAM menija neuspe¹no!"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM u upotrebi - ponovno pokrenuti?"
+msgstr "CAM u upotrebi - stvarno ponovno pokrenuti?"
 
 msgid "Can't reset CAM!"
 msgstr "Ponovno pokretanje CAM-a neuspe¹no!"
 
 msgid "do not pause live video"
-msgstr ""
+msgstr "ne zaustavljaj signal u¾ivo"
 
 msgid "confirm pause live video"
-msgstr ""
+msgstr "potvrdi zaustavljanje signala u¾ivo"
 
 msgid "pause live video"
-msgstr ""
+msgstr "zaustavi signal u¾ivo"
 
 msgid "confirm"
 msgstr "potvrdi"
 
 msgid "yes"
-msgstr ""
+msgstr "da"
 
 msgid "Recording"
 msgstr "Snimanje"
@@ -1045,16 +1046,16 @@ msgid "Setup.Recording$Margin at start (min)"
 msgstr "Rezerva na poèetku snimanja (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Rezerva na kraju (min)"
+msgstr "Rezerva na kraju snimanja (min)"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Zadani prioritet"
+msgstr "Podrazumevani prioritet"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Zadano trajanje (d)"
+msgstr "Podrazumevano trajanje (d)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr ""
+msgstr "Funkcija dugme za pauzu"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Prioritet pauze"
@@ -1081,49 +1082,49 @@ msgid "Setup.Recording$Instant rec. time (min)"
 msgstr "Trajanje trenutnog snimanja (min)"
 
 msgid "Setup.Recording$present event"
-msgstr ""
+msgstr "aktuelni dogaðaj"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Maks. velièina datoteke (MB)"
+msgstr "Maksimalna velièina datoteke (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Podeli ureðene datoteke"
+msgstr "Podeli izmenjene datoteke"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "Bri¹i vremenski pomak snimke"
+msgstr "Izbri¹i odlo¾eni (timeshift) snimak"
 
 msgid "Replay"
 msgstr "Reprodukcija"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Vi¹estruke brzine reprodukcije"
+msgstr "Vi¹estruka brzina reprodukcije"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Prika¾i re¾im reprodukcije"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr ""
+msgstr "Prika¾i preostalo vreme"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr ""
+msgstr "Trajanje prikazivanja progresa (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr ""
+msgstr "Pauziraj reprodukciju prilikom obele¾avanja"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "ID nastavka"
+msgstr "ID reprodukcije"
 
 msgid "Miscellaneous"
 msgstr "Razno"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. vreme pauze (min)"
+msgstr "Min. vreme izmeðu tajmera (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Min. vreme neaktivnosti (min)"
+msgstr "Min. vreme neaktivnosti pre ga¹enja VDR-a (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP vreme (s)"
+msgstr "Ga¹enje SVDRP-a usled neaktivnosti (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap istièe (s)"
@@ -1132,10 +1133,10 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Upis kanala istièe (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr ""
+msgstr "Pauza ponavljanja komande daljinskog (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr ""
+msgstr "Ka¹njenje ponavljanja komande daljinskog (ms)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Poèetni kanal"
@@ -1147,10 +1148,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Poèetna jaèina tona"
 
 msgid "Setup.Miscellaneous$Channels wrap"
-msgstr ""
+msgstr "Prelazak sa kraja na poèetak liste kanala"
 
 msgid "Setup.Miscellaneous$Show channel names with source"
-msgstr ""
+msgstr "Prika¾i nazive kanala sa izvorom"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Izlaz u sluèaju nu¾de"
@@ -1159,7 +1160,7 @@ msgid "Plugins"
 msgstr "Dodaci"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Ovaj dodatak nema parametara!"
+msgstr "Ovaj dodatak nema parametare za pode¹avanje!"
 
 msgid "Setup"
 msgstr "Podesi"
@@ -1168,14 +1169,14 @@ msgid "Restart"
 msgstr "Restart sistema"
 
 msgid "Really restart?"
-msgstr "Ponovo pokretanje ???"
+msgstr "Stvarno restartovati sistem?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Zaustavi snimanje "
 
 msgid "Schedule"
-msgstr "Raspored Programa"
+msgstr "Raspored"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
@@ -1192,65 +1193,65 @@ msgstr "Nastavi"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr "Zaustavi ispravke"
+msgstr "Odustani od izmena"
 
 msgid "Stop recording?"
 msgstr "Zaustavi snimanje?"
 
 msgid "Cancel editing?"
-msgstr "Otka¾i ispravke?"
+msgstr "Odustani od izmena?"
 
 msgid "No audio available!"
-msgstr "Ton nedostupan"
+msgstr "Ton nedostupan!"
 
 msgid "No subtitles"
 msgstr "Bez titlova"
 
 msgid "No subtitles available!"
-msgstr "Titlovi nisu dostupni!"
+msgstr "Nema titlova!"
 
 msgid "Not enough disk space to start recording!"
 msgstr "Nedovoljno prostora na disku za snimanje!"
 
 msgid "No free DVB device to record!"
-msgstr ""
+msgstr "Nema slobodnog DVB ureðaja za snimanje!"
 
 msgid "Pausing live video..."
-msgstr "Zaustavljanje izravnog prenosa..."
+msgstr "Zaustavljanje signala u¾ivo..."
 
 msgid "Delete timeshift recording?"
-msgstr ""
+msgstr "Izbri¹i odlo¾eni (timeshift) snimak?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
 msgstr "Skoèi: "
 
 msgid "No editing marks defined!"
-msgstr "Nijedna taèka rezanja nije odreðena!"
+msgstr "Nijedna taèka oznaèavanja nije odreðena!"
 
 msgid "No editing sequences defined!"
-msgstr ""
+msgstr "Nijedan oznaèeni deo nije odreðen!"
 
 msgid "Can't start editing process!"
-msgstr "Ne mogu zapoèeti ureðivanje!"
+msgstr "Nije moguæe zapoèeti ureðivanje!"
 
 msgid "Editing process started"
 msgstr "Ureðivanje zapoèelo"
 
 msgid "Editing process already active!"
-msgstr "Ureðivanje je veæ u toku!!"
+msgstr "Ureðivanje je veæ u toku!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr "abcÄ‡dÄ‘efghijklmnopqrstuvwxyzÅ¾Å¸0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " abcèædðefghijklmnopqrs¹tuvwxyz¾0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr "0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcèæ2\tdefð3\tghi4\tjkl5\tmno6\tpqrs¹7\ttuv8\twxyz¾9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
 
 msgid "Button$Overwrite"
-msgstr "Prepi¹i"
+msgstr "Zameni"
 
 msgid "Button$Insert"
 msgstr "Ubaci"
@@ -1259,7 +1260,7 @@ msgid "Plugin"
 msgstr "Dodatak"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Gore/Dole na novu poziciju - OK za prihvati"
+msgstr "Gore/Dole za novu poziciju - OK za potvrdu"
 
 msgid "Channel locked (recording)!"
 msgstr "Kanal zakljuèan (snimanje)!"
@@ -1274,36 +1275,36 @@ msgid "Index file regeneration complete"
 msgstr "Obnavljanje index datoteke zavr¹eno"
 
 msgid "Index file regeneration failed!"
-msgstr ""
+msgstr "Obnavljanje index datoteke neuspe¹no!"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Ga¹enje nemoguæe - nedostaje opcija '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Ispravke u toku - u svakom sluèaju iskljuèi ?"
+msgstr "Ureðivanje u toku - svejedno iskljuèi?"
 
 msgid "Recording - shut down anyway?"
-msgstr "Snimanje u toku - u svakom sluèaju iskljuèi ?"
+msgstr "Snimanje u toku - svejedno iskljuèi?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Snimanje za %ld minuta - u svakom sluèaju iskljuèi?"
+msgstr "Snimanje za %ld minuta - svejedno iskljuèi?"
 
 msgid "shut down anyway?"
-msgstr "u svakom sluèaju iskljuèi?"
+msgstr "svejedno iskljuèi?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Dodatak %s budi se u %ld min, nastavi?"
+msgstr "Dodatak %s se budi za %ld min, nastavi?"
 
 msgid "Editing - restart anyway?"
-msgstr "Ureðivanje u toku - ponovno pokreni!!!?"
+msgstr "Ureðivanje u toku - svejedno ponovno pokreni?"
 
 msgid "Recording - restart anyway?"
-msgstr "Snimanje je u toku - ponovno pokreni!!!?"
+msgstr "Snimanje u toku - svejedno ponovno pokreni!!!?"
 
 msgid "restart anyway?"
-msgstr "ponovo pokreni?"
+msgstr "svejedno ponovo pokreni?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1313,25 +1314,25 @@ msgid "Classic VDR"
 msgstr "Klasièni VDR"
 
 msgid "DISK"
-msgstr ""
+msgstr "DISK"
 
 msgid "LOAD"
-msgstr ""
+msgstr "OPTEREÆENJE"
 
 msgid "TIMERS"
-msgstr ""
+msgstr "TAJMERI"
 
 msgid "DEVICES"
-msgstr ""
+msgstr "UREÐAJI"
 
 msgid "LIVE"
-msgstr ""
+msgstr "U®IVO"
 
 msgid "PLAY"
-msgstr ""
+msgstr "REPRODUKCIJA"
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG Panele"
+msgstr "ST:TNG paneli"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
@@ -1363,35 +1364,35 @@ msgid "Sunday"
 msgstr "Nedelja"
 
 msgid "Upcoming recording!"
-msgstr "Predstojeæe snimanje!"
+msgstr "Uskoro poèinje snimanje!"
 
 msgid "Pause live video?"
-msgstr ""
+msgstr "Zaustavi signal u¾ivo?"
 
 msgid "Recording started"
 msgstr "Snimanje zapoèelo"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR æe se iskljuèiti kasnije - pritisni Power-taster za prisilno iskljuèenje"
+msgstr "VDR æe se iskljuèiti kasnije - pritisnite dugme 'Power' za prisilno iskljuèenje"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Pritisni taster za prekid iskljuèenja"
+msgstr "Pritisnite bilo koje dugme da otka¾ete iskljuèenje"
 
 msgid "Switching primary DVB..."
-msgstr "Prebacivanje primarnog DVB ureðaja..."
+msgstr "Promena primarnog DVB ureðaja..."
 
 msgid "Editing process failed!"
-msgstr "Ureðivanje neusp¹jeno!"
+msgstr "Ureðivanje neuspe¹eno!"
 
 msgid "Editing process finished"
 msgstr "Ureðivanje zavr¹eno"
 
 msgid "Press any key to cancel restart"
-msgstr "Pritisni jedan taster za poni¹tenje restart-a"
+msgstr "Pritisnite bilo koje dugme da otka¾ete ponovno pokretanje"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR se iskljuèuje za %s minuta"
+msgstr "VDR æe se iskljuèiti za %s minuta"
 
 msgid "Disk"
 msgstr "Disk"

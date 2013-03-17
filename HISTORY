@@ -7757,8 +7757,9 @@ Video Disk Recorder Revision History
 - Fixed creating a new VPS timer with the SVDRP command NEWT (thanks to Johann
   Friedrichs).
 
-2013-03-16: Version 1.7.42
+2013-03-17: Version 1.7.42
 
 - Updated the Serbian OSD texts (thanks to Zoran Turalija).
 - Added maximum SNR and signal strength value for TechniSat SkyStar HD2 (thanks to
   Zoran Turalija).
+- Renamed the language file sr_SR.po to sr_RS.po (pointed out by Zoran Turalija).

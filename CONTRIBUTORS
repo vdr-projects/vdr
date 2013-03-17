@@ -3127,3 +3127,4 @@ Siegfried Bosch <bosch@math.uni-muenster.de>
 Zoran Turalija <zoran.turalija@gmail.com>
  for translating OSD texts to the Serbian language
  for adding maximum SNR and signal strength value for TechniSat SkyStar HD2
+ for pointing out that the language file sr_SR.po should be renamed to sr_RS.po
