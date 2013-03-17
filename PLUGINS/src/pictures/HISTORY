@@ -9,7 +9,7 @@ VDR Plugin 'pictures' Revision History
 
 - Fixed the Play function (when used from a directory in the pictures menu
   it always started with the next directory).
-- Added Finnish texts (thanks to Rolf Ahrenberg <rahrenbe@cc.hut.fi>).
+- Added Finnish texts (thanks to Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>).
 
 2008-01-27: Version 0.0.3
 
