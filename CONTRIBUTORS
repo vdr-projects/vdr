@@ -2741,6 +2741,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for implementing scaling of SPU bitmaps
  for fixing creating a new VPS timer with the SVDRP command NEWT
  for fixing loading the setup.conf file in case a parameter contains the '#' character
+ for reporting that the "Resume" button in the main menu was active even if the
+ respective recording did not exist
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

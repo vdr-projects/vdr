@@ -7765,3 +7765,5 @@ Video Disk Recorder Revision History
 - Renamed the language file sr_SR.po to sr_RS.po (pointed out by Zoran Turalija).
 - Fixed loading the setup.conf file in case a parameter contains the '#' character
   (thanks to Johann Friedrichs).
+- The "Resume" button in the main menu is now only active if the respective recording
+  actually exists (reported by Johann Friedrichs).
