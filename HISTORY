@@ -7767,3 +7767,5 @@ Video Disk Recorder Revision History
   (thanks to Johann Friedrichs).
 - The "Resume" button in the main menu is now only active if the respective recording
   actually exists (reported by Johann Friedrichs).
+- The cutter now allocates its buffers on the heap to avoid problems on systems with
+  limited stack space (suggested by Juergen Lock).

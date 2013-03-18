@@ -2919,6 +2919,8 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  in case, for instance, there is now a DVB-T device where there used to be a bonded
  DVB-S device
  for fixing a possible deadlock in handling the tuners of bonded devices
+ for suggesting to allocate the cutter's buffers on the heap to avoid problems on
+ systems with limited stack space
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.24 2013/02/17 14:11:03 kls Exp $
+ * $Id: cutter.c 2.25 2013/03/18 09:40:49 kls Exp $
  */
 
 #include "cutter.h"
@@ -362,11 +362,22 @@ bool cCuttingThread::SwitchFile(bool Force)
   return true;
 }
 
+class cHeapBuffer {
+private:
+  uchar *buffer;
+public:
+  cHeapBuffer(int Size) { buffer = MALLOC(uchar, Size); }
+  ~cHeapBuffer() { free(buffer); }
+  operator uchar * () { return buffer; }
+  };
+
 bool cCuttingThread::FramesAreEqual(int Index1, int Index2)
 {
+  cHeapBuffer Buffer1(MAXFRAMESIZE);
+  cHeapBuffer Buffer2(MAXFRAMESIZE);
+  if (!Buffer1 || !Buffer2)
+     return false;
   bool Independent;
-  uchar Buffer1[MAXFRAMESIZE];
-  uchar Buffer2[MAXFRAMESIZE];
   int Length1;
   int Length2;
   if (LoadFrame(Index1, Buffer1, Independent, Length1) && LoadFrame(Index2, Buffer2, Independent, Length2)) {
@@ -386,12 +397,14 @@ bool cCuttingThread::FramesAreEqual(int Index1, int Index2)
 
 void cCuttingThread::GetPendingPackets(uchar *Data, int &Length, int Index)
 {
+  cHeapBuffer Buffer(MAXFRAMESIZE);
+  if (!Buffer)
+     return;
   bool Processed[MAXPID] = { false };
   cPacketStorage PacketStorage;
   int64_t LastPts = lastVidPts + delta;// adding one frame length to fully cover the very last frame
   Processed[patPmtParser.Vpid()] = true; // we only want non-video packets
   for (int NumIndependentFrames = 0; NumIndependentFrames < 2; Index++) {
-      uchar Buffer[MAXFRAMESIZE];
       bool Independent;
       int len;
       if (LoadFrame(Index, Buffer, Independent, len)) {
@@ -534,8 +547,12 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
   bool SeamlessBegin = LastEndIndex >= 0 && FramesAreEqual(LastEndIndex, BeginIndex);
   bool SeamlessEnd = NextBeginIndex >= 0 && FramesAreEqual(EndIndex, NextBeginIndex);
   // Process all frames from BeginIndex (included) to EndIndex (excluded):
+  cHeapBuffer Buffer(MAXFRAMESIZE);
+  if (!Buffer) {
+     error = "malloc";
+     return false;
+     }
   for (int Index = BeginIndex; Running() && Index < EndIndex; Index++) {
-      uchar Buffer[MAXFRAMESIZE];
       bool Independent;
       int Length;
       if (LoadFrame(Index, Buffer, Independent, Length)) {
