@@ -2740,6 +2740,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
  for implementing scaling of SPU bitmaps
  for fixing creating a new VPS timer with the SVDRP command NEWT
+ for fixing loading the setup.conf file in case a parameter contains the '#' character
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
