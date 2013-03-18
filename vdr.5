@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.33 2013/03/11 13:17:12 kls Exp $
+.\" $Id: vdr.5 2.34 2013/03/18 12:37:17 kls Exp $
 .\"
 .TH vdr 5 "31 Mar 2013" "2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -45,7 +45,11 @@ Such a delimiter will not appear in the Channels menu.
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
+.TS
+tab (@);
+l.
 \fBRTL Television,RTL;RTL World:12187:hC34M2O0S0:S19.2E:27500:163=2:104=deu;106=deu:105:0:12003:1:1089:0\fR
+.TE
 
 The line number of a channel definition (not counting group separators,
 and based on a possible previous '@...' parameter)

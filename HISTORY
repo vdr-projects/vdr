@@ -7769,3 +7769,5 @@ Video Disk Recorder Revision History
   actually exists (reported by Johann Friedrichs).
 - The cutter now allocates its buffers on the heap to avoid problems on systems with
   limited stack space (suggested by Juergen Lock).
+- Fixed formatting the channel definition example in the vdr(5) man page (thanks to
+  Dominic Evans).
