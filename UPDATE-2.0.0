@@ -5,6 +5,10 @@ have been made "behind the scenes".
 
 See the file HISTORY for a detailed list of all changes.
 
+Full support for HDTV:
+
+- VDR now fully supports HDTV.
+
 Satellite Channel Routing:
 
 - VDR now supports "Satellite Channel Routing" (SCR) according to EN50494 (based on
