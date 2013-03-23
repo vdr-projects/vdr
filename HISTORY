@@ -7757,7 +7757,7 @@ Video Disk Recorder Revision History
 - Fixed creating a new VPS timer with the SVDRP command NEWT (thanks to Johann
   Friedrichs).
 
-2013-03-18: Version 1.7.42
+2013-03-23: Version 1.7.42
 
 - Updated the Serbian OSD texts (thanks to Zoran Turalija).
 - Added maximum SNR and signal strength value for TechniSat SkyStar HD2 (thanks to
@@ -7771,3 +7771,4 @@ Video Disk Recorder Revision History
   limited stack space (suggested by Juergen Lock).
 - Fixed formatting the channel definition example in the vdr(5) man page (thanks to
   Dominic Evans).
+- Updated the default channels.conf file.
