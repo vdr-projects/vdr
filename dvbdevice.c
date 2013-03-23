@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.87 2013/03/13 11:23:53 kls Exp $
+ * $Id: dvbdevice.c 2.88 2013/03/16 15:23:35 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -549,7 +549,9 @@ int cDvbTuner::GetSignalStrength(void) const
   // Use the subsystemId to identify individual devices in case they need
   // special treatment to map their Signal value into the range 0...0xFFFF.
   switch (subsystemId) {
-    case 0x13C21019: MaxSignal = 670; break; // TT-budget S2-3200 (DVB-S/DVB-S2)
+    case 0x13C21019: // TT-budget S2-3200 (DVB-S/DVB-S2)
+    case 0x1AE40001: // TechniSat SkyStar HD2 (DVB-S/DVB-S2)
+                     MaxSignal = 670; break;
     }
   int s = int(Signal) * 100 / MaxSignal;
   if (s > 100)
@@ -628,15 +630,18 @@ int cDvbTuner::GetSignalQuality(void) const
      // Use the subsystemId to identify individual devices in case they need
      // special treatment to map their Snr value into the range 0...0xFFFF.
      switch (subsystemId) {
-       case 0x13C21019: if (frontendType == SYS_DVBS2) { // TT-budget S2-3200 (DVB-S/DVB-S2)
+       case 0x13C21019: // TT-budget S2-3200 (DVB-S/DVB-S2)
+       case 0x1AE40001: // TechniSat SkyStar HD2 (DVB-S/DVB-S2)
+                        if (frontendType == SYS_DVBS2) {
                            MinSnr = 10;
                            MaxSnr = 70;
                            }
                         else
                            MaxSnr = 200;
                         break;
-       case 0x20130245:                      // PCTV Systems PCTV 73ESE
-       case 0x2013024F: MaxSnr = 255; break; // PCTV Systems nanoStick T2 290e
+       case 0x20130245: // PCTV Systems PCTV 73ESE
+       case 0x2013024F: // PCTV Systems nanoStick T2 290e
+                        MaxSnr = 255; break;
        }
      int a = int(constrain(Snr, MinSnr, MaxSnr)) * 100 / (MaxSnr - MinSnr);
      int b = 100 - (Unc * 10 + (Ber / 256) * 5);

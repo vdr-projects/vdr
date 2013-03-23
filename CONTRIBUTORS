@@ -1063,7 +1063,7 @@ Lars Bläser <LBlaeser@hofheim.de>
 Niko Tarnanen <niko.tarnanen@hut.fi>
  for translating OSD texts to the Finnish language
 
-Rolf Ahrenberg <Rolf.Ahrenberg@saunalahti.fi>
+Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for translating OSD texts to the Finnish language
  for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
  for making pressing the Power button not stop Transfer Mode or replay immediately
@@ -2740,6 +2740,9 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for making cPalette::ClosestColor() treat fully transparent colors as "equal"
  for implementing scaling of SPU bitmaps
  for fixing creating a new VPS timer with the SVDRP command NEWT
+ for fixing loading the setup.conf file in case a parameter contains the '#' character
+ for reporting that the "Resume" button in the main menu was active even if the
+ respective recording did not exist
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -2916,6 +2919,8 @@ Juergen Lock <vdr-l@jelal.kn-bremen.de>
  in case, for instance, there is now a DVB-T device where there used to be a bonded
  DVB-S device
  for fixing a possible deadlock in handling the tuners of bonded devices
+ for suggesting to allocate the cutter's buffers on the heap to avoid problems on
+ systems with limited stack space
 
 Sergiu Dotenco <sergiu.dotenco@googlemail.com>
  for reporting a missing initialization in sDvbSpuRect
@@ -2970,6 +2975,7 @@ Dominic Evans <oldmanuk@gmail.com>
  for suggesting to make the channel name column in the "What's on now/next" menu
  adjust its width to display the full short name of each channel
  for reporting wrong permissions of po/sr_SR.po
+ for fixing formatting the channel definition example in the vdr(5) man page
 
 Torsten Lang <info@torstenlang.de>
  for reporting a problem with newline characters in stream component descriptions
@@ -3123,3 +3129,8 @@ Matti Lehtimäki <matti.lehtimaki@gmail.com>
 Siegfried Bosch <bosch@math.uni-muenster.de>
  for fixing a possible "Channel not available" if a recording starts on a system with
  bonded devices
+
+Zoran Turalija <zoran.turalija@gmail.com>
+ for translating OSD texts to the Serbian language
+ for adding maximum SNR and signal strength value for TechniSat SkyStar HD2
+ for pointing out that the language file sr_SR.po should be renamed to sr_RS.po

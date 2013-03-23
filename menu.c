@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.81 2013/03/04 14:11:47 kls Exp $
+ * $Id: menu.c 2.82 2013/03/18 09:11:48 kls Exp $
  */
 
 #include "menu.h"
@@ -4566,6 +4566,8 @@ const char *cReplayControl::NowReplaying(void)
 
 const char *cReplayControl::LastReplayed(void)
 {
+  if (!Recordings.GetByName(fileName))
+     fileName = NULL;
   return fileName;
 }
 

@@ -5,6 +5,10 @@ have been made "behind the scenes".
 
 See the file HISTORY for a detailed list of all changes.
 
+Full support for HDTV:
+
+- VDR now fully supports HDTV.
+
 Satellite Channel Routing:
 
 - VDR now supports "Satellite Channel Routing" (SCR) according to EN50494 (based on
@@ -468,10 +472,6 @@ Misc:
   files to be spread around your system according to the FHS, you can set the
   parameter ONEDIR=1 (using Make.config) to have all files in one /video directory as
   before.
-- VDR can now be built according to the FHS ("File system Hierarchy Standard") by
-  activating the line
-  #USEFHS = 1
-  in a copy of the file Make.config.template.
 - The script given to VDR with the '-r' option is now also called whenever a
   recording is deleted.
 - Synchronizing system time to the transponder time is now done using adjtime() in order

@@ -4,7 +4,7 @@
 # Hannu Savolainen <hannu@opensound.com>, 2002
 # Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002, 2003
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
-# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003-2008, 2010-2013
+# Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2003-2008, 2010-2013
 # Matti Lehtimäki <matti.lehtimaki@gmail.com>, 2013
 #
 msgid ""

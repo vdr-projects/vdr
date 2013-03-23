@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.37 2013/03/10 14:56:51 kls Exp $
+ * $Id: config.c 2.38 2013/03/18 08:57:50 kls Exp $
  */
 
 #include "config.h"
@@ -518,7 +518,7 @@ void cSetup::Store(const char *Name, double &Value, const char *Plugin)
 
 bool cSetup::Load(const char *FileName)
 {
-  if (cConfig<cSetupLine>::Load(FileName, true)) {
+  if (cConfig<cSetupLine>::Load(FileName)) {
      bool result = true;
      for (cSetupLine *l = First(); l; l = Next(l)) {
          bool error = false;

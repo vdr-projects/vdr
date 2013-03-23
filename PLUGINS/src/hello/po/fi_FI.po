@@ -4,7 +4,7 @@
 # Hannu Savolainen <hannu@opensound.com>, 2002
 # Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
-# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003
+# Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2003
 #
 msgid ""
 msgstr ""
@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2012-12-18 14:04+0100\n"
 "PO-Revision-Date: 2007-08-11 12:34+0200\n"
-"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
+"Last-Translator: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"

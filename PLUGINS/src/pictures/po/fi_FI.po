@@ -1,7 +1,7 @@
 # VDR plugin language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2008
+# Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2008
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2012-12-18 12:57+0100\n"
 "PO-Revision-Date: 2008-01-12 17:41+0100\n"
-"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
+"Last-Translator: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
