@@ -7777,3 +7777,4 @@ Video Disk Recorder Revision History
 2013-03-28: Version 2.0.0
 
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- Fixed the description of the 'M' parameter of channel definitions in vdr.5.
