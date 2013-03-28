@@ -847,7 +847,7 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Katalogai esantys laikmačių meniu"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr ""
+msgstr "Visada pirmiau rūšiuoti katalogus"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Skaičių mygtukai simboliams"
