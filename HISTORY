@@ -7779,3 +7779,4 @@ Video Disk Recorder Revision History
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - Fixed the description of the 'M' parameter of channel definitions in vdr.5.
 - Updated the French OSD texts (thanks to Dominique Plu).
+- Fixed handling overlapping pending timers (reported by Matthias Senzel).
