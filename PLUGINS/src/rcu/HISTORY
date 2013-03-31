@@ -16,3 +16,7 @@ VDR Plugin 'rcu' Revision History
 2013-01-12: Version 0.0.4
 
 - Adapted Makefile to changes introduced in recent VDR versions.
+
+2013-03-31: Version 2.0.0
+
+- Official release.

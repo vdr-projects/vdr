@@ -114,3 +114,7 @@ VDR Plugin 'skincurses' Revision History
 
 - The "Recording info" page now displays the name of the channel (if available)
   from which this recording was taken.
+
+2013-03-31: Version 2.0.0
+
+- Official release.
