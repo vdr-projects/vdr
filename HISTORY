@@ -7772,3 +7772,13 @@ Video Disk Recorder Revision History
 - Fixed formatting the channel definition example in the vdr(5) man page (thanks to
   Dominic Evans).
 - Updated the default channels.conf file.
+
+
+2013-03-31: Version 2.0.0
+
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- Fixed the description of the 'M' parameter of channel definitions in vdr.5.
+- Updated the French OSD texts (thanks to Dominique Plu).
+- Fixed handling overlapping pending timers (reported by Matthias Senzel).
+- Bumped all version numbers to 2.0.0.
+- Official release.

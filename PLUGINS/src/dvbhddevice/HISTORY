@@ -67,3 +67,7 @@ VDR Plugin 'dvbhddevice' Revision History
 - Fixed flashing OSD in "high level OSD" mode in case a menu is open while subtitles
   are being displayed.
 - Fixed immediately disappearing subtitle track menu when selecting "No subtitles".
+
+2013-03-31: Version 2.0.0
+
+- Official release.

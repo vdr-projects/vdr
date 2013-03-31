@@ -41,3 +41,7 @@ VDR Plugin 'dvbsddevice' Revision History
 2013-01-25: Version 0.0.9
 
 - Returning 0 from cDvbSdFfDevice::NumProvidedSystems() if option --outputonly is given.
+
+2013-03-31: Version 2.0.0
+
+- Official release.

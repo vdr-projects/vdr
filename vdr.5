@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.34 2013/03/18 12:37:17 kls Exp $
+.\" $Id: vdr.5 2.36 2013/03/29 10:25:56 kls Exp $
 .\"
 .TH vdr 5 "31 Mar 2013" "2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -98,7 +98,7 @@ l l.
 \fBH\fR@Horizontal polarization
 \fBI\fR@Inversion (0, 1)
 \fBL\fR@Left circular polarization
-\fBM\fR@Modulation (2, 5, 6, 10, 11, 16, 32, 64, 128, 256, 998)
+\fBM\fR@Modulation (2, 5, 6, 7, 10, 11, 12, 16, 32, 64, 128, 256, 999)
 \fBO\fR@rollOff (0, 20, 25, 35)
 \fBP\fR@stream id (0-255)
 \fBR\fR@Right circular polarization
@@ -126,13 +126,14 @@ If no hierarchy is used, set to 0.
 tab (@);
 l l.
 \fB2\fR@QPSK (DVB-S, DVB-S2, DVB-T, DVB-T2, ISDB-T)
-\fB5\fR@8PSK (DVB-S2)
+\fB5\fR@8PSK (DVB-S, DVB-S2)
 \fB6\fR@16APSK (DVB-S2)
 \fB7\fR@32APSK (DVB-S2)
 \fB10\fR@VSB8 (ATSC aerial)
 \fB11\fR@VSB16 (ATSC aerial)
 \fB12\fR@DQPSK (ISDB-T)
 \fB16\fR@QAM16 (DVB-T, DVB-T2, ISDB-T)
+\fB32\fR@QAM32
 \fB64\fR@QAM64 (DVB-C, DVB-T, DVB-T2, ISDB-T)
 \fB128\fR@QAM128 (DVB-C)
 \fB256\fR@QAM256 (DVB-C, DVB-T2)

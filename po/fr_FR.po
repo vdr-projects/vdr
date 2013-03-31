@@ -839,7 +839,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Infos chaîne lors du changement"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Compte à rebours infos chaîne"
+msgstr "Affichage infos chaîne non permanent"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Défilement par pages"
@@ -1112,7 +1112,7 @@ msgid "Setup.Replay$Show replay mode"
 msgstr "Affichage mode de lecture"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr "Montrer le temps restant"
+msgstr "Afficher le temps restant"
 
 msgid "Setup.Replay$Progress display time (s)"
 msgstr "Afficher la barre de progression (s)"
