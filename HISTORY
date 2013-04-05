@@ -7782,3 +7782,7 @@ Video Disk Recorder Revision History
 - Fixed handling overlapping pending timers (reported by Matthias Senzel).
 - Bumped all version numbers to 2.0.0.
 - Official release.
+
+2013-04-05: Version 2.1.1
+
+- Fixed initializing cDevice::keepTracks.
