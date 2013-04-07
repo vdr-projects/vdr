@@ -1788,6 +1788,7 @@ Udo Richter <udo_richter@gmx.de>
  for requesting to keep using relative paths when building plugins locally
  for fixing a problem with detecting user inactivity in case the system time is
  changed after VDR has been started
+ for a patch that was used to add definitions for older DVB API versions, back until 5.0
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -3135,3 +3136,7 @@ Zoran Turalija <zoran.turalija@gmail.com>
  for translating OSD texts to the Serbian language
  for adding maximum SNR and signal strength value for TechniSat SkyStar HD2
  for pointing out that the language file sr_SR.po should be renamed to sr_RS.po
+
+Stefan Braun <louis.braun@gmx.de>
+ for reporting an endless loop in cTextWrapper::Set() in case the given Width is smaller
+ than one character
