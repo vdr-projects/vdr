@@ -7783,6 +7783,8 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.0.0.
 - Official release.
 
-2013-04-05: Version 2.0.1
+2013-04-07: Version 2.0.1
 
 - Fixed initializing cDevice::keepTracks.
+- Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
+  one character (reported by Stefan Braun).
