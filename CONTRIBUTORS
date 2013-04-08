@@ -537,7 +537,7 @@ Andreas Böttger <fboettger@t-online.de>
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
 
-Rudi Hofer (Rudi.Hofer@gmx.de)
+Rudi Hofer <Rudi.Hofer@gmx.de>
  for his help in keeping 'channels.conf' up to date
  for reporting a problem with overlapping tab positions in skins when using wide fonts
 
@@ -2748,7 +2748,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
 
-Derek Kelly (user.vdr@gmail.com)
+Derek Kelly <user.vdr@gmail.com>
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
