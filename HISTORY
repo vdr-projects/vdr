@@ -7794,3 +7794,4 @@ Video Disk Recorder Revision History
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
   one character (reported by Stefan Braun).
+- Removed all "modified since version 1.6" markers from PLUGINS.html.
