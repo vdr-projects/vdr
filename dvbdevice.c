@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.88 2013/03/16 15:23:35 kls Exp $
+ * $Id: dvbdevice.c 2.88.1.1 2013/04/09 13:42:26 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -21,10 +21,7 @@
 #include "menuitems.h"
 #include "sourceparams.h"
 
-#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0508
-#define DTV_STREAM_ID DTV_DVBT2_PLP_ID
-#define FE_CAN_MULTISTREAM 0x4000000
-#endif
+static int DvbApiVersion = 0x0000; // the version of the DVB driver actually in use (will be determined by the first device created)
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -801,7 +798,8 @@ bool cDvbTuner::SetFrontend(void)
         // DVB-S2
         SETCMD(DTV_PILOT, PILOT_AUTO);
         SETCMD(DTV_ROLLOFF, dtp.RollOff());
-        SETCMD(DTV_STREAM_ID, dtp.StreamId());
+        if (DvbApiVersion >= 0x0508)
+           SETCMD(DTV_STREAM_ID, dtp.StreamId());
         }
      else {
         // DVB-S
@@ -835,7 +833,11 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
      if (frontendType == SYS_DVBT2) {
         // DVB-T2
-        SETCMD(DTV_STREAM_ID, dtp.StreamId());
+        if (DvbApiVersion >= 0x0508) {
+           SETCMD(DTV_STREAM_ID, dtp.StreamId());
+           }
+        else if (DvbApiVersion >= 0x0503)
+           SETCMD(DTV_DVBT2_PLP_ID_LEGACY, dtp.StreamId());
         }
 
      tuneTimeout = DVBT_TUNE_TIMEOUT;
@@ -1178,28 +1180,44 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
      LOG_ERROR;
      return false;
      }
-#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) >= 0x0505
   dtv_property Frontend[1];
-  memset(&Frontend, 0, sizeof(Frontend));
   dtv_properties CmdSeq;
-  memset(&CmdSeq, 0, sizeof(CmdSeq));
-  CmdSeq.props = Frontend;
-  SETCMD(DTV_ENUM_DELSYS, 0);
-  int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
-  if (Result == 0) {
-     for (uint i = 0; i < Frontend[0].u.buffer.len; i++) {
-         if (numDeliverySystems >= MAXDELIVERYSYSTEMS) {
-            esyslog("ERROR: too many delivery systems on frontend %d/%d", adapter, frontend);
-            break;
-            }
-         deliverySystems[numDeliverySystems++] = Frontend[0].u.buffer.data[i];
-         }
+  // Determine the version of the running DVB API:
+  if (!DvbApiVersion) {
+     memset(&Frontend, 0, sizeof(Frontend));
+     memset(&CmdSeq, 0, sizeof(CmdSeq));
+     CmdSeq.props = Frontend;
+     SETCMD(DTV_API_VERSION, 0);
+     if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+        LOG_ERROR;
+        return false;
+        }
+     DvbApiVersion = Frontend[0].u.data;
+     isyslog("DVB API version is 0x%04X (VDR was built with 0x%04X)", DvbApiVersion, DVBAPIVERSION);
      }
-  else {
-     esyslog("ERROR: can't query delivery systems on frontend %d/%d - falling back to legacy mode", adapter, frontend);
-#else
-     {
-#endif
+  // Determine the types of delivery systems this device provides:
+  bool LegacyMode = true;
+  if (DvbApiVersion >= 0x0505) {
+     memset(&Frontend, 0, sizeof(Frontend));
+     memset(&CmdSeq, 0, sizeof(CmdSeq));
+     CmdSeq.props = Frontend;
+     SETCMD(DTV_ENUM_DELSYS, 0);
+     int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
+     if (Result == 0) {
+        for (uint i = 0; i < Frontend[0].u.buffer.len; i++) {
+            if (numDeliverySystems >= MAXDELIVERYSYSTEMS) {
+               esyslog("ERROR: too many delivery systems on frontend %d/%d", adapter, frontend);
+               break;
+               }
+            deliverySystems[numDeliverySystems++] = Frontend[0].u.buffer.data[i];
+            }
+        LegacyMode = false;
+        }
+     else {
+        esyslog("ERROR: can't query delivery systems on frontend %d/%d - falling back to legacy mode", adapter, frontend);
+        }
+     }
+  if (LegacyMode) {
      // Legacy mode (DVB-API < 5.5):
      switch (frontendInfo.type) {
        case FE_QPSK: deliverySystems[numDeliverySystems++] = SYS_DVBS;
