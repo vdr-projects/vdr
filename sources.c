@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 2.2 2010/02/28 15:15:39 kls Exp $
+ * $Id: sources.c 3.1 2013/04/09 11:10:30 kls Exp $
  */
 
 #include "sources.h"
@@ -95,7 +95,7 @@ int cSource::FromData(eSourceType SourceType, int Position, bool East)
   if (SourceType == stSat) {
      if (East)
         Position = -Position;
-     code |= (Position & st_Pos);;
+     code |= (Position & st_Pos);
      }
   return code;
 }
