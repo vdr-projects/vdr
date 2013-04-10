@@ -7791,7 +7791,7 @@ Video Disk Recorder Revision History
 - Added definitions for older DVB API versions, back until 5.0 (based on a patch from
   Udo Richter).
 
-2013-04-09: Version 2.1.1
+2013-04-10: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7799,3 +7799,6 @@ Video Disk Recorder Revision History
 - Removed all "modified since version 1.6" markers from PLUGINS.html.
 - Added definitions for older DVB API versions, back until 5.0 (based on a patch from
   Udo Richter).
+- Changed cThread::SetIOPriority() from "best effort class" to "idle class" in order to
+  improve overall performance when an editing process is running (thanks to Jochen
+  Dolze).
