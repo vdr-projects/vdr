@@ -2833,6 +2833,8 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing a typo in skins.h
  for fixing some #include statements in plugins to use <vdr/...> instead of "vdr/..."
  for reporting an invalid line in channels.conf.terr
+ for fixing handling '/' and '~' in recording file names in case DirectoryEncoding is
+ used
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
