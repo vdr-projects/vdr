@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 3.1 2013/04/09 11:10:30 kls Exp $
+ * $Id: sources.c 3.2 2013/04/11 10:24:05 kls Exp $
  */
 
 #include "sources.h"
@@ -37,17 +37,22 @@ bool cSource::Parse(const char *s)
   return code != stNone && description && *description;
 }
 
+int cSource::Position(int Code)
+{
+  int n = (Code & st_Pos);
+  if (n > 0x00007FFF)
+     n |= 0xFFFF0000;
+  return n;
+}
+
 cString cSource::ToString(int Code)
 {
   char buffer[16];
   char *q = buffer;
   *q++ = (Code & st_Mask) >> 24;
-  int n = (Code & st_Pos);
-  if (n > 0x00007FFF)
-     n |= 0xFFFF0000;
-  if (n) {
+  if (int n = Position(Code)) {
      q += snprintf(q, sizeof(buffer) - 2, "%u.%u", abs(n) / 10, abs(n) % 10); // can't simply use "%g" here since the silly 'locale' messes up the decimal point
-     *q++ = (n < 0) ? 'E' : 'W';
+     *q++ = (n < 0) ? 'W' : 'E';
      }
   *q = 0;
   return buffer;
@@ -69,8 +74,8 @@ int cSource::FromString(const char *s)
                                      break;
                    case '.':         dot = true;
                                      break;
-                   case 'E':         neg = true; // fall through to 'W'
-                   case 'W':         if (!dot)
+                   case 'W':         neg = true; // fall through to 'E'
+                   case 'E':         if (!dot)
                                         pos *= 10;
                                      break;
                    default: esyslog("ERROR: unknown source character '%c'", *s);
@@ -93,7 +98,7 @@ int cSource::FromData(eSourceType SourceType, int Position, bool East)
 {
   int code = SourceType;
   if (SourceType == stSat) {
-     if (East)
+     if (!East)
         Position = -Position;
      code |= (Position & st_Pos);
      }
