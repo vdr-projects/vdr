@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 2.4 2013/02/16 15:20:44 kls Exp $
+ * $Id: thread.h 3.1 2013/04/11 08:47:31 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -181,7 +181,6 @@ public:
   static bool Engaged(void);
        ///< Returns true if any I/O throttling object is currently active.
   };
-
 
 // cPipe implements a pipe that closes all unnecessary file descriptors in
 // the child process.
