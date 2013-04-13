@@ -574,14 +574,35 @@ void cDvbHdFfDevice::ScaleVideo(const cRect &Rect)
     }
     else
     {
+        //printf("ScaleVideo: Rect = %d %d %d %d\n", Rect.X(), Rect.Y(), Rect.Width(), Rect.Height());
+
         int osdWidth;
         int osdHeight;
         double osdPixelAspect;
 
         GetOsdSize(osdWidth, osdHeight, osdPixelAspect);
-        mHdffCmdIf->CmdAvSetVideoWindow(0, true,
-            Rect.X() * 1000 / osdWidth, Rect.Y() * 1000 / osdHeight,
-            Rect.Width() * 1000 / osdWidth, Rect.Height() * 1000 / osdHeight);
+        //printf("ScaleVideo: OsdSize = %d %d %g\n", osdWidth, osdHeight, osdPixelAspect);
+
+        // Convert the video window coordinates in 1/10 percent of the display
+        // resolution.
+        int x = (Rect.X() * 1000 + osdWidth / 2) / osdWidth;
+        int y = (Rect.Y() * 1000 + osdHeight / 2) / osdHeight;
+        int w = (Rect.Width() * 1000 + osdWidth / 2) / osdWidth;
+        int h = (Rect.Height() * 1000 + osdHeight / 2) / osdHeight;
+        //printf("ScaleVideo: Win1 = %d %d %d %d\n", x, y, w, h);
+
+        // fix aspect ratio, reposition video
+        if (w > h) {
+            x += (w - h) / 2;
+            w = h;
+        }
+        else if (w < h) {
+            y += (h - w) / 2;
+            h = w;
+        }
+
+        //printf("ScaleVideo: Win2 = %d %d %d %d\n", x, y, w, h);
+        mHdffCmdIf->CmdAvSetVideoWindow(0, true, x, y, w, h);
     }
 }
 

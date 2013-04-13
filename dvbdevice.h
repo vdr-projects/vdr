@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.29 2013/03/07 09:42:29 kls Exp $
+ * $Id: dvbdevice.h 2.29.1.1 2013/04/09 13:43:33 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,9 +14,58 @@
 #include <linux/dvb/version.h>
 #include "device.h"
 
-#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) < 0x0503
-#error VDR requires Linux DVB driver API version 5.3 or higher!
+#define DVBAPIVERSION (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR)
+
+#if DVBAPIVERSION < 0x0500
+#error VDR requires Linux DVB driver API version 5.0 or higher!
 #endif
+
+// --- Definitions for older DVB API versions --------------------------------
+
+#if DVBAPIVERSION < 0x0501
+enum {
+  FE_CAN_2G_MODULATION = 0x10000000,
+  };
+enum {
+  TRANSMISSION_MODE_4K = TRANSMISSION_MODE_AUTO + 1,
+  };
+#endif
+
+#if DVBAPIVERSION < 0x0502
+enum {
+  FE_CAN_TURBO_FEC = 0x8000000,
+  };
+#endif
+
+#if DVBAPIVERSION < 0x0503
+enum {
+  TRANSMISSION_MODE_1K = TRANSMISSION_MODE_4K + 1,
+  TRANSMISSION_MODE_16K,
+  TRANSMISSION_MODE_32K,
+  };
+enum {
+  GUARD_INTERVAL_1_128 = GUARD_INTERVAL_AUTO + 1,
+  GUARD_INTERVAL_19_128,
+  GUARD_INTERVAL_19_256,
+  };
+enum {
+  SYS_DVBT2 = SYS_DAB + 1,
+  };
+#endif
+
+#if DVBAPIVERSION < 0x0505
+#define DTV_ENUM_DELSYS  44
+#endif
+
+#if DVBAPIVERSION < 0x0508
+enum {
+  FE_CAN_MULTISTREAM = 0x4000000,
+  };
+#define DTV_STREAM_ID            42
+#define DTV_DVBT2_PLP_ID_LEGACY  43
+#endif
+
+// --- End of definitions for older DVB API versions -------------------------
 
 #define MAXDVBDEVICES  8
 #define MAXDELIVERYSYSTEMS 8

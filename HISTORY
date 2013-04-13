@@ -7773,7 +7773,6 @@ Video Disk Recorder Revision History
   Dominic Evans).
 - Updated the default channels.conf file.
 
-
 2013-03-31: Version 2.0.0
 
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
@@ -7782,3 +7781,16 @@ Video Disk Recorder Revision History
 - Fixed handling overlapping pending timers (reported by Matthias Senzel).
 - Bumped all version numbers to 2.0.0.
 - Official release.
+
+2013-04-13: Version 2.0.1
+
+- Fixed initializing cDevice::keepTracks.
+- Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
+  one character (reported by Stefan Braun).
+- Added definitions for older DVB API versions, back until 5.0 (based on a patch from
+  Udo Richter).
+- Fixed handling '/' and '~' in recording file names in case DirectoryEncoding is
+  used (thanks to Lars Hanisch).
+- Changed cThread::SetIOPriority() from "best effort class" to "idle class" in order to
+  improve overall performance when an editing process is running (thanks to Jochen
+  Dolze).

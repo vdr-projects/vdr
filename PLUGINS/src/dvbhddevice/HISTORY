@@ -71,3 +71,7 @@ VDR Plugin 'dvbhddevice' Revision History
 2013-03-31: Version 2.0.0
 
 - Official release.
+
+2013-04-11: Version 2.0.1
+
+- Fixed aspect ratio and position of scaled video.

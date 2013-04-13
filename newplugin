@@ -353,7 +353,7 @@ The next steps you should perform now are:
 sub CreateFile
 {
   my ($Name, $Content) = @_;
-  open(FILE, ">$PLUGINDIR/$Name") || die "$Name:  $!\n";
+  open(FILE, ">$PLUGINDIR/$Name") || die "$Name: V20001 $!\n";
   print FILE $Content;
   close(FILE);
 }

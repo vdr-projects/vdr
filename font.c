@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.13 2012/06/02 13:38:28 kls Exp $
+ * $Id: font.c 2.13.1.1 2013/04/07 14:54:15 kls Exp $
  */
 
 #include "font.h"
@@ -592,7 +592,7 @@ void cTextWrapper::Set(const char *Text, const cFont *Font, int Width)
             p = Blank;
             continue;
             }
-         else {
+         else if (w > 0) { // there has to be at least one character before the newline
             // Here's the ugly part, where we don't have any whitespace to
             // punch in a newline, so we need to make room for it:
             if (Delim)
@@ -608,8 +608,7 @@ void cTextWrapper::Set(const char *Text, const cFont *Font, int Width)
             continue;
             }
          }
-      else
-         w += cw;
+      w += cw;
       if (strchr("-.,:;!?_", *p)) {
          Delim = p;
          Blank = NULL;

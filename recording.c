@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.91 2013/03/11 10:34:41 kls Exp $
+ * $Id: recording.c 2.91.1.1 2013/04/11 08:20:03 kls Exp $
  */
 
 #include "recording.h"
@@ -561,6 +561,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                      // characters that can be mapped to other characters:
                      case ' ': *p = '_'; break;
                      case FOLDERDELIMCHAR: *p = '/'; break;
+                     case '/': *p = FOLDERDELIMCHAR; break;
                      // characters that have to be encoded:
                      default:
                        if (NeedsConversion(p)) {
@@ -583,6 +584,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
               switch (*p) {
                 // mapped characters:
                 case '_': *p = ' '; break;
+                case FOLDERDELIMCHAR: *p = '/'; break;
                 case '/': *p = FOLDERDELIMCHAR; break;
                 // encoded characters:
                 case '#': {

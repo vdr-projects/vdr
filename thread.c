@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 2.7 2013/02/22 14:52:49 kls Exp $
+ * $Id: thread.c 2.7.1.1 2013/04/11 08:59:26 kls Exp $
  */
 
 #include "thread.h"
@@ -229,7 +229,7 @@ void cThread::SetPriority(int Priority)
 
 void cThread::SetIOPriority(int Priority)
 {
-  if (syscall(SYS_ioprio_set, 1, 0, (Priority & 0xff) | (2 << 13)) < 0) // best effort class
+  if (syscall(SYS_ioprio_set, 1, 0, (Priority & 0xff) | (3 << 13)) < 0) // idle class
      LOG_ERROR;
 }
 

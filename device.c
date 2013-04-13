@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.74 2013/03/07 13:18:35 kls Exp $
+ * $Id: device.c 2.74.1.1 2013/04/05 10:47:38 kls Exp $
  */
 
 #include "device.h"
@@ -94,11 +94,11 @@ cDevice::cDevice(void)
 
   player = NULL;
   isPlayingVideo = false;
+  keepTracks = false; // used in ClrAvailableTracks()!
   ClrAvailableTracks();
   currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
   currentSubtitleTrack = ttNone;
-  keepTracks = false;
   liveSubtitle = NULL;
   dvbSubtitleConverter = NULL;
   autoSelectPreferredSubtitleLanguage = true;

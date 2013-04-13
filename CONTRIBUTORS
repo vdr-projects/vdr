@@ -2832,6 +2832,8 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing a typo in skins.h
  for fixing some #include statements in plugins to use <vdr/...> instead of "vdr/..."
  for reporting an invalid line in channels.conf.terr
+ for fixing handling '/' and '~' in recording file names in case DirectoryEncoding is
+ used
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -3135,3 +3137,11 @@ Zoran Turalija <zoran.turalija@gmail.com>
  for translating OSD texts to the Serbian language
  for adding maximum SNR and signal strength value for TechniSat SkyStar HD2
  for pointing out that the language file sr_SR.po should be renamed to sr_RS.po
+
+Stefan Braun <louis.braun@gmx.de>
+ for reporting an endless loop in cTextWrapper::Set() in case the given Width is smaller
+ than one character
+
+Jochen Dolze <vdr@dolze.de>
+ for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
+ to improve overall performance when an editing process is running
