@@ -7794,3 +7794,11 @@ Video Disk Recorder Revision History
 - Changed cThread::SetIOPriority() from "best effort class" to "idle class" in order to
   improve overall performance when an editing process is running (thanks to Jochen
   Dolze).
+
+2013-04-27: Version 2.0.2
+
+- Fixed multiple occurrences of the same directory in the recordings list in case there
+  are directories that only differ in non-alphanumeric characters (was broken by
+  "Fixed selecting the last replayed recording in the Recordings menu in case there
+  are folders and plain recordings with names that differ only in non-alphanumeric
+  characters" in version 1.7.36).
