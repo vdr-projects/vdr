@@ -2102,6 +2102,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
  which results in using tr(FileNameChars)
  for fixing handling "none" color entries in XPM files
+ for fixing displaying the frame number when setting an editing mark
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
