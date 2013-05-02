@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.25 2013/03/18 09:40:49 kls Exp $
+ * $Id: cutter.c 2.25.1.1 2013/05/02 09:21:18 kls Exp $
  */
 
 #include "cutter.h"
@@ -581,7 +581,7 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
             }
          fileSize += Length;
          // Generate marks at the editing points in the edited recording:
-         if (numSequences > 0 && Index == BeginIndex) {
+         if (numSequences > 1 && Index == BeginIndex) {
             if (toMarks.Count() > 0)
                toMarks.Add(toIndex->Last());
             toMarks.Add(toIndex->Last());
