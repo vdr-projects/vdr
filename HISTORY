@@ -7806,6 +7806,7 @@ Video Disk Recorder Revision History
   Günther).
 - Fixed no longer generating any editing marks if the edited recording results in just
   one single sequence (reported by Halim Sahin).
+- Fixed an error message when parsing SCR values in diseqc.conf.
 
 2013-05-02: Version 2.1.1
 
