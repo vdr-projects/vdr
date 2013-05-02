@@ -2602,6 +2602,8 @@ Halim Sahin <halim.sahin@t-online.de>
  for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
  list of sources
  for reporting a crash when creating a new channel if the channel list is empty
+ for reporting that editing marks were generated even if the edited recording resulted
+ in just one single sequence
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts

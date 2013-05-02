@@ -7328,7 +7328,7 @@ Video Disk Recorder Revision History
   + no longer generating an editing mark at the "end" of the edited recording (this
     was actually generated at the beginning of the last GOP, so that a subsequent
     edit would have cut off the last GOP)
-  + no longer generating any editing marks if the edited recording results on just
+  + no longer generating any editing marks if the edited recording results in just
     one single sequence
   + ignoring pairs of editing marks that are placed at exactly the same position of
     a recording when actually cutting the recording
@@ -7806,7 +7806,7 @@ Video Disk Recorder Revision History
 - Fixed displaying the frame number when setting an editing mark (thanks to Thomas
   Günther).
 
-2013-04-27: Version 2.1.1
+2013-05-02: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7829,3 +7829,5 @@ Video Disk Recorder Revision History
   characters" in version 1.7.36).
 - Fixed displaying the frame number when setting an editing mark (thanks to Thomas
   Günther).
+- Fixed no longer generating any editing marks if the edited recording results in just
+  one single sequence (reported by Halim Sahin).
