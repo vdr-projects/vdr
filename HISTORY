@@ -7807,3 +7807,4 @@ Video Disk Recorder Revision History
 - Fixed no longer generating any editing marks if the edited recording results in just
   one single sequence.
 - Fixed an error message when parsing SCR values in diseqc.conf.
+- Fixed an unexpected RCS version tag in the newplugin script.
