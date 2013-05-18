@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 2.38 2013/02/14 15:50:19 kls Exp $
+ * $Id: osd.c 2.38.1.1 2013/05/18 12:41:48 kls Exp $
  */
 
 #include "osd.h"
@@ -639,8 +639,8 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
     case 8:          cy = y1; rx /= 2; break;
     default: ;
     }
-  int TwoASquare = 2 * rx * rx;
-  int TwoBSquare = 2 * ry * ry;
+  int TwoASquare = max(1, 2 * rx * rx);
+  int TwoBSquare = max(1, 2 * ry * ry);
   int x = rx;
   int y = 0;
   int XChange = ry * ry * (1 - 2 * rx);
@@ -1380,8 +1380,8 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
     case 8:          cy = y1; rx /= 2; break;
     default: ;
     }
-  int TwoASquare = 2 * rx * rx;
-  int TwoBSquare = 2 * ry * ry;
+  int TwoASquare = max(1, 2 * rx * rx);
+  int TwoBSquare = max(1, 2 * ry * ry);
   int x = rx;
   int y = 0;
   int XChange = ry * ry * (1 - 2 * rx);
