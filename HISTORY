@@ -7809,7 +7809,7 @@ Video Disk Recorder Revision History
 - Fixed an error message when parsing SCR values in diseqc.conf.
 - Fixed an unexpected RCS version tag in the newplugin script.
 
-2013-05-02: Version 2.1.1
+2013-05-18: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7836,3 +7836,5 @@ Video Disk Recorder Revision History
   one single sequence (reported by Halim Sahin).
 - Fixed an error message when parsing SCR values in diseqc.conf.
 - Fixed an unexpected RCS version tag in the newplugin script.
+- Fixed an endless loop in the DrawEllipse() functions for very small ellipses (reported
+  by Stefan Braun).
