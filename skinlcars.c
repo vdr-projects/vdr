@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.21 2013/03/09 10:43:34 kls Exp $
+ * $Id: skinlcars.c 2.21.1.1 2013/05/19 12:08:52 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1340,6 +1340,8 @@ void cSkinLCARSDisplayMenu::DrawLive(const cChannel *Channel)
      DrawMainFrameUpper(Theme.Color(clrChannelFrameBg));
      osd->DrawText(xd00, yd00, tr("LIVE"), Theme.Color(clrChannelFrameBg), Theme.Color(clrBackground), tallFont, xd07 - xd00, yd01 - yd00, taTop | taRight | taBorder);
      }
+  if (!Channel)
+     return;
   if (initial || Channel != lastChannel) {
      osd->DrawText(xa00, yt00, itoa(Channel->Number()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), tallFont, xa02 - xa00, yt02 - yt00, taTop | taRight | taBorder);
      osd->DrawText(xa03, yt00, Channel->Name(), Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xd00 - xa03, yd01 - yd00, taTop | taLeft);

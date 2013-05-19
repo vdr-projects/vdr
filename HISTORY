@@ -7795,7 +7795,7 @@ Video Disk Recorder Revision History
   improve overall performance when an editing process is running (thanks to Jochen
   Dolze).
 
-2013-05-18: Version 2.0.2
+2013-05-19: Version 2.0.2
 
 - Fixed multiple occurrences of the same directory in the recordings list in case there
   are directories that only differ in non-alphanumeric characters (was broken by
@@ -7810,3 +7810,5 @@ Video Disk Recorder Revision History
 - Fixed an unexpected RCS version tag in the newplugin script.
 - Fixed an endless loop in the DrawEllipse() functions for very small ellipses (reported
   by Stefan Braun).
+- Fixed a crash in the LCARS skin's main menu in case there is no current channel
+  (reported by Dominique Dumont).
