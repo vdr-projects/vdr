@@ -3152,3 +3152,6 @@ Stefan Braun <louis.braun@gmx.de>
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
  to improve overall performance when an editing process is running
+
+Dominique Dumont <domi.dumont@free.fr>
+ for reporting a crash in the LCARS skin's main menu in case there is no current channel
