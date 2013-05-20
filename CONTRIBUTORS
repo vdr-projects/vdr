@@ -1013,9 +1013,11 @@ Andreas Mair <amair.sob@googlemail.com>
  for fixing the type of MBperMinute in cVideoDiskUsage::HasChanged()
  for reporting a bug in sorting recordings in case two folders have the same name,
  but one of them ends in an additional digit, as in "abc" and "abc2"
- for reporting multiple occurrences of the same directory in the recordings list ini
+ for reporting multiple occurrences of the same directory in the recordings list in
  case there are directories that only differ in non-alphanumeric characters
  for reporting a problem with reduced number of retries in Transfer Mode on SD-FF cards
+ for fixing multiple occurrences of the same directory in the recordings list in case
+ there are directories that only differ in non-alphanumeric characters
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -2100,6 +2102,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for suggesting to make the 'Allowed' parameter in cMenuEditStrItem() NULL by default,
  which results in using tr(FileNameChars)
  for fixing handling "none" color entries in XPM files
+ for fixing displaying the frame number when setting an editing mark
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -2598,6 +2601,8 @@ Halim Sahin <halim.sahin@t-online.de>
  for suggesting to make the "Source" item in the "Edit channel" menu wrap around the
  list of sources
  for reporting a crash when creating a new channel if the channel list is empty
+ for reporting that editing marks were generated even if the edited recording resulted
+ in just one single sequence
 
 Denis Knauf <denis.knauf@gmail.com>
  for reporting a missing '-' at the next to last line of SVDRP help texts
@@ -3141,7 +3146,11 @@ Zoran Turalija <zoran.turalija@gmail.com>
 Stefan Braun <louis.braun@gmx.de>
  for reporting an endless loop in cTextWrapper::Set() in case the given Width is smaller
  than one character
+ for reporting an endless loop in the DrawEllipse() functions for very small ellipses
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
  to improve overall performance when an editing process is running
+
+Dominique Dumont <domi.dumont@free.fr>
+ for reporting a crash in the LCARS skin's main menu in case there is no current channel

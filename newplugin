@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 2.17 2013/01/12 13:46:00 kls Exp $
+# $Id: newplugin 2.17.1.1 2013/05/02 10:04:06 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -352,8 +352,8 @@ The next steps you should perform now are:
 
 sub CreateFile
 {
-  my ($Name, $Content) = @_;
-  open(FILE, ">$PLUGINDIR/$Name") || die "$Name: V20001 $!\n";
+  my ($FileName, $Content) = @_;
+  open(FILE, ">$PLUGINDIR/$FileName") || die "$FileName: $!\n";
   print FILE $Content;
   close(FILE);
 }

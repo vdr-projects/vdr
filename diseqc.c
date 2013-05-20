@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 2.9 2011/09/17 14:13:31 kls Exp $
+ * $Id: diseqc.c 2.9.1.1 2013/05/02 09:33:12 kls Exp $
  */
 
 #include "diseqc.h"
@@ -192,7 +192,7 @@ const char *cDiseqc::GetScrBank(const char *s) const
         }
      return p;
      }
-  esyslog("ERROR: more than one scr bank in '%s'", s - 1);
+  esyslog("ERROR: invalid value for scr bank in '%s'", s - 1);
   return NULL;
 }
 
