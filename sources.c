@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 3.2 2013/04/11 10:24:05 kls Exp $
+ * $Id: sources.c 3.3 2013/05/23 09:41:54 kls Exp $
  */
 
 #include "sources.h"
@@ -89,7 +89,7 @@ int cSource::FromString(const char *s)
         return code;
         }
      else
-       esyslog("ERROR: unknown source key '%c'", *s);
+        esyslog("ERROR: unknown source key '%c'", *s);
      }
   return stNone;
 }
