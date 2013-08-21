@@ -7869,3 +7869,5 @@ Video Disk Recorder Revision History
     position has been reached.
 - The LCARS skin now shows the source value of the current channel in its channel display.
 - Fixed asserting free disk space in the cutter.
+- No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
+  Priority is less than 1.
