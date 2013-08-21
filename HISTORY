@@ -7816,3 +7816,5 @@ Video Disk Recorder Revision History
 2013-08-21: Version 2.0.3
 
 - Fixed asserting free disk space in the cutter.
+- No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
+  Priority is less than 1.

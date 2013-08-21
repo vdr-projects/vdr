@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.91.1.1 2013/04/11 08:20:03 kls Exp $
+ * $Id: recording.c 2.91.1.2 2013/08/21 13:58:35 kls Exp $
  */
 
 #include "recording.h"
@@ -178,34 +178,38 @@ void AssertFreeDiskSpace(int Priority, bool Force)
               return; // the next call will actually remove it
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
-        isyslog("...no deleted recording found, trying to delete an old recording...");
-        cThreadLock RecordingsLock(&Recordings);
-        if (Recordings.Count()) {
-           cRecording *r = Recordings.First();
-           cRecording *r0 = NULL;
-           while (r) {
-                 if (r->IsOnVideoDirectoryFileSystem()) { // only delete recordings that will actually increase the free video disk space
-                    if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                       if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                           (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
-                          if (r0) {
-                             if (r->Priority() < r0->Priority() || (r->Priority() == r0->Priority() && r->Start() < r0->Start()))
-                                r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+        if (Priority > 0) {
+           isyslog("...no deleted recording found, trying to delete an old recording...");
+           cThreadLock RecordingsLock(&Recordings);
+           if (Recordings.Count()) {
+              cRecording *r = Recordings.First();
+              cRecording *r0 = NULL;
+              while (r) {
+                    if (r->IsOnVideoDirectoryFileSystem()) { // only delete recordings that will actually increase the free video disk space
+                       if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                          if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                              (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
+                             if (r0) {
+                                if (r->Priority() < r0->Priority() || (r->Priority() == r0->Priority() && r->Start() < r0->Start()))
+                                   r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                                }
+                             else
+                                r0 = r;
                              }
-                          else
-                             r0 = r;
                           }
                        }
+                    r = Recordings.Next(r);
                     }
-                 r = Recordings.Next(r);
+              if (r0 && r0->Delete()) {
+                 Recordings.Del(r0);
+                 return;
                  }
-           if (r0 && r0->Delete()) {
-              Recordings.Del(r0);
-              return;
               }
+           // Unable to free disk space, but there's nothing we can do about that...
+           isyslog("...no old recording found, giving up");
            }
-        // Unable to free disk space, but there's nothing we can do about that...
-        isyslog("...no old recording found, giving up");
+        else
+           isyslog("...no deleted recording found, priority %d too low to trigger deleting an old recording", Priority);
         Skins.QueueMessage(mtWarning, tr("Low disk space!"), 5, -1);
         }
      LastFreeDiskCheck = time(NULL);
