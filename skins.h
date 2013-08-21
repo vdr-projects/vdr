@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 2.9 2012/12/21 11:09:13 kls Exp $
+ * $Id: skins.h 3.1 2013/08/21 10:29:10 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -14,6 +14,7 @@
 #include "epg.h"
 #include "keys.h"
 #include "osd.h"
+#include "positioner.h"
 #include "recording.h"
 #include "themes.h"
 #include "thread.h"
@@ -52,7 +53,10 @@ class cSkinDisplayChannel : public cSkinDisplay {
        ///< This class is used to display the current channel, together with
        ///< the present and following EPG event. How and to what extent this
        ///< is done is totally up to the derived class.
+private:
+  const cPositioner *positioner;
 public:
+  cSkinDisplayChannel(void);
   virtual void SetChannel(const cChannel *Channel, int Number) = 0;
        ///< Sets the current channel to Channel. If Number is not 0, the
        ///< user is in the process of entering a channel number, which must
@@ -65,6 +69,17 @@ public:
        ///< to determine, e.g., the colors for displaying the Text.
        ///< If Text is NULL, any previously displayed message must be removed, and
        ///< any previous contents overwritten by the message must be restored.
+  virtual void SetPositioner(const cPositioner *Positioner);
+       ///< Sets the Positioner used to move the satellite dish. The skin may use the
+       ///< data provided by Positioner to implement some form of progress display,
+       ///< since moving the dish may take a while. This function will only be called
+       ///< if the device receiving the current live channel actually uses a positioner,
+       ///< and it will be called with NULL once the dish has reached its target
+       ///< position (or the user switches to a channel that doesn't require positioning
+       ///< the dish). While the dish is moving, SetPositioner() is called repeatedly,
+       ///< so the skin has a chance to update the progress display.
+       ///< The default implementation calls SetMessage() with a text that indicates
+       ///< that the dish is being moved to a new position.
   /*TODO
   SetButtons
     Red    = Video options

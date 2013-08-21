@@ -99,6 +99,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <li><a href="#Devices">Devices</a>
+<li><modified><a href="#Positioners">Positioners</a></modified>
 <li><a href="#Audio">Audio</a>
 <li><a href="#Remote Control">Remote Control</a>
 <li><a href="#Conditional Access">Conditional Access</a>
@@ -2023,6 +2024,49 @@ new cMyDeviceHook;
 </pre></td></tr></table><p>
 
 and shall not delete this object. It will be automatically deleted when the program ends.
+
+<div class="modified">
+<hr><h2><a name="Positioners">Positioners</a></h2>
+
+<div class="blurb">Now you see me - now you don't!</div><p>
+
+If you are using a positioner (also known as "motor" or "rotor") to move your
+satellite dish to receive various satellites, you will be using the 'P' command
+in the <tt>diseqc.conf</tt> file. This command sends the necessary data to the
+positioner to move the dish to the satellite's orbital position. By default VDR
+uses its builtin DiSEqC positioner control. If your positioner requires a different
+method of controlling (like maybe via a serial link), you can derive a class
+from <tt>cPositioner</tt>, as in
+
+<p><table><tr><td class="code"><pre>
+#include &lt;vdr/positioner.h&gt;
+
+class cMyPositioner : public cPositioner {
+private:
+  void SendDiseqc(uint8_t *Codes, int NumCodes);
+public:
+  cMyPositioner(void);
+  virtual void Drive(ePositionerDirection Direction);
+  virtual void Step(ePositionerDirection Direction, uint Steps = 1);
+  virtual void Halt(void);
+  virtual void SetLimit(ePositionerDirection Direction);
+  virtual void DisableLimits(void);
+  virtual void EnableLimits(void);
+  virtual void StorePosition(uint Number);
+  virtual void RecalcPositions(uint Number);
+  virtual void GotoPosition(uint Number, int Longitude);
+  virtual void GotoAngle(int Longitude);
+  };
+</pre></td></tr></table><p>
+
+See the implementation of <tt>cDiseqcPositioner</tt> in <tt>diseqc.c</tt> for details.
+<p>
+You should create your derived positioner object in the
+<a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
+Note that the object has to be created on the heap (using <tt>new</tt>),
+and you shall not delete it at any point (it will be deleted automatically
+when the program ends).
+</div modified>
 
 <hr><h2><a name="Audio">Audio</a></h2>
 

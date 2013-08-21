@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.57 2013/03/15 10:44:54 kls Exp $
+ * $Id: vdr.c 3.1 2013/06/10 14:28:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -800,6 +800,11 @@ int main(int argc, char *argv[])
   if (AudioCommand)
      new cExternalAudio(AudioCommand);
 
+  // Positioner:
+
+  if (!cPositioner::GetPositioner()) // no plugin has created a positioner
+     new cDiseqcPositioner;
+
   // Channel:
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
@@ -1400,6 +1405,7 @@ Exit:
      Setup.Save();
      }
   cDevice::Shutdown();
+  cPositioner::DestroyPositioner();
   EpgHandlers.Clear();
   PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);

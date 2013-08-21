@@ -7144,7 +7144,7 @@ Video Disk Recorder Revision History
   Christian Richter).
 - Added DeleteEvent() to the EPG handler interface, so that an EPG handler can trigger
   deleting of an event (thanks to Christian Kaiser).
-- Speeded up opening menus on systems with many (several thousands) of recordings, by
+- Speeded up opening menus on systems with many (several thousands of) recordings, by
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
 
@@ -7813,7 +7813,7 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-05-19: Version 2.1.1
+2013-08-21: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7844,3 +7844,27 @@ Video Disk Recorder Revision History
   by Stefan Braun).
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
+- Added basic support for positioners to control steerable satellite dishes (based on
+  a patch from Seppo Ingalsuo and Ales Jurik).
+  + Supports GotoN (aka "DiSEqC 1.2") and GotoX (aka "USALS").
+  + The new DiSEqC command code 'P' can be used to instruct a positioner to move the
+    dish to the required satellite position. When a 'P' code is processed, further
+    execution of the remaining DiSEqC sequence (if any) is postponed until the positioner
+    has reached the new satellite position.
+  + The new special source value of "S360E" can be used in diseqc.conf to indicate that
+    an entry using a positioner can move the dish to any requested position within its
+    range. Think of it as "full circle".
+  + The devices a particular cDiseqc or cScr applies to are now stored directly in each
+    cDiseqc or cScr, respectively.
+  + A plugin can implement a custom positioner control (see PLUGINS.html, section "Positioners").
+  + The new function cSkinDisplayChannel::SetPositioner() can be implemented by skins to
+    show the user a progress display when the dish is being moved. The default implementation
+    calls SetMessage() with a string indicating the new position the dish is being moved to.
+    The LCARS skin shows a progress bar indicating the movement of the dish.
+  + The new parameters "Site latitude", "Site longitude", "Positioner speed", and
+    "Positioner swing" in the "Setup/LNB" menu can be used to configure the necessary
+    values for a steerable dish.
+  + The cDvbTuner now has a new status tsPositioning, in which it waits until a steerable
+    dish has reached its target position. Parsing SI data is paused until the target
+    position has been reached.
+- The LCARS skin now shows the source value of the current channel in its channel display.

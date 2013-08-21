@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 2.7 2012/12/07 09:50:47 kls Exp $
+ * $Id: osdbase.c 3.1 2013/05/24 10:19:31 kls Exp $
  */
 
 #include "osdbase.h"
@@ -286,7 +286,7 @@ void cOsdMenu::DisplayCurrent(bool Current)
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
      if (cMenuEditItem *MenuEditItem = dynamic_cast<cMenuEditItem *>(item)) {
-        if (!MenuEditItem->DisplayHelp())
+        if (!MenuEditItem->DisplayHelp(Current))
            DisplayHelp();
         else
            helpDisplayed = false;

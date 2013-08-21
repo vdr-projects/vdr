@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.16 2013/02/15 14:20:29 kls Exp $
+ * $Id: menuitems.c 3.1 2013/05/24 10:26:01 kls Exp $
  */
 
 #include "menuitems.h"
@@ -51,14 +51,14 @@ void cMenuEditItem::SetHelp(const char *Red, const char *Green, const char *Yell
   helpDisplayed = false;
 }
 
-bool cMenuEditItem::DisplayHelp(void)
+bool cMenuEditItem::DisplayHelp(bool Current)
 {
   bool HasHelp = helpRed || helpGreen || helpYellow || helpBlue;
-  if (HasHelp && !helpDisplayed) {
+  if (HasHelp && !helpDisplayed && Current) {
      cSkinDisplay::Current()->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
      cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
-     helpDisplayed = true;
      }
+  helpDisplayed = Current;
   return HasHelp;
 }
 
@@ -219,6 +219,50 @@ eOSState cMenuEditNumItem::ProcessKey(eKeys Key)
        }
      Set();
      state = osContinue;
+     }
+  return state;
+}
+
+// --- cMenuEditIntxItem -----------------------------------------------------
+
+cMenuEditIntxItem::cMenuEditIntxItem(const char *Name, int *Value, int Min, int Max, int Factor, const char *NegString, const char *PosString)
+:cMenuEditIntItem(Name, Value, Min, Max)
+{
+  factor = ::max(Factor, 1);
+  negString = NegString;
+  posString = PosString;
+  Set();
+}
+
+void cMenuEditIntxItem::SetHelpKeys(void)
+{
+  if (negString && posString)
+     SetHelp(NULL, (*value < 0) ? posString : negString);
+}
+
+void cMenuEditIntxItem::Set(void)
+{
+  const char *s = (*value < 0) ? negString : posString;
+  int v = *value;
+  if (negString && posString)
+     v = abs(v);
+  SetValue(cString::sprintf(s ? "%.*f %s" : "%.*f", factor / 10, double(v) / factor, s));
+  SetHelpKeys();
+}
+
+eOSState cMenuEditIntxItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditIntItem::ProcessKey(Key);
+  if (state == osUnknown) {
+     switch (Key) {
+       case kGreen: if (negString && posString) {
+                       *value = -*value;
+                       Set();
+                       state = osContinue;
+                       }
+                    break;
+       default: ;
+       }
      }
   return state;
 }

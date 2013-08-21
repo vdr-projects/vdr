@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-02-03 16:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -995,6 +995,33 @@ msgstr "设备%d卫星连接线"
 msgid "Setup.LNB$own"
 msgstr "所有"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM重置"
 
@@ -1331,6 +1358,10 @@ msgstr "现场"
 
 msgid "PLAY"
 msgstr "播放"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG 面板"

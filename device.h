@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.47 2013/02/16 15:20:01 kls Exp $
+ * $Id: device.h 3.1 2013/06/01 11:35:23 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -17,6 +17,7 @@
 #include "filter.h"
 #include "nit.h"
 #include "pat.h"
+#include "positioner.h"
 #include "remux.h"
 #include "ringbuffer.h"
 #include "sdt.h"
@@ -273,6 +274,11 @@ public:
          ///< actually provide channels must implement this function.
          ///< The result of this function is used when selecting a device, in order
          ///< to avoid devices that provide more than one system.
+  virtual const cPositioner *Positioner(void) const;
+         ///< Returns a pointer to the positioner (if any) this device has used to
+         ///< move the satellite dish to the requested position (only applies to DVB-S
+         ///< devices). If no positioner is involved, or this is not a DVB-S device,
+         ///< NULL will be returned.
   virtual int SignalStrength(void) const;
          ///< Returns the "strength" of the currently received signal.
          ///< This is a value in the range 0 (no signal at all) through

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 3.3 2013/05/23 09:41:54 kls Exp $
+ * $Id: sources.c 3.4 2013/05/23 10:20:28 kls Exp $
  */
 
 #include "sources.h"
@@ -35,6 +35,13 @@ bool cSource::Parse(const char *s)
      code = FromString(codeBuf);
   free(codeBuf);
   return code != stNone && description && *description;
+}
+
+bool cSource::Matches(int Code1, int Code2)
+{
+  if (Code1 == (stSat | st_Any))
+     return IsSat(Code2);
+  return Code1 == Code2;
 }
 
 int cSource::Position(int Code)

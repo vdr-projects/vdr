@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -996,6 +996,33 @@ msgstr "Zařízení %d připojeno k sat. kabelu"
 msgid "Setup.LNB$own"
 msgstr "vlastní"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Reset CAMu"
 
@@ -1332,6 +1359,10 @@ msgstr "ŽIVĚ"
 
 msgid "PLAY"
 msgstr "PŘEHRÁVÁNÍ"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konzola"

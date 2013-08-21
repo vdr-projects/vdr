@@ -4,14 +4,32 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 2.5 2011/09/17 13:15:17 kls Exp $
+ * $Id: diseqc.h 3.1 2013/06/12 11:52:17 kls Exp $
  */
 
 #ifndef __DISEQC_H
 #define __DISEQC_H
 
 #include "config.h"
+#include "positioner.h"
 #include "thread.h"
+
+class cDiseqcPositioner : public cPositioner {
+private:
+  void SendDiseqc(uint8_t *Codes, int NumCodes);
+public:
+  cDiseqcPositioner(void);
+  virtual void Drive(ePositionerDirection Direction);
+  virtual void Step(ePositionerDirection Direction, uint Steps = 1);
+  virtual void Halt(void);
+  virtual void SetLimit(ePositionerDirection Direction);
+  virtual void DisableLimits(void);
+  virtual void EnableLimits(void);
+  virtual void StorePosition(uint Number);
+  virtual void RecalcPositions(uint Number);
+  virtual void GotoPosition(uint Number, int Longitude);
+  virtual void GotoAngle(int Longitude);
+  };
 
 class cScr : public cListObject {
 private:
@@ -35,6 +53,7 @@ class cScrs : public cConfig<cScr> {
 private:
   cMutex mutex;
 public:
+  bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   cScr *GetUnused(int Device);
   };
 
@@ -50,8 +69,11 @@ public:
     daVoltage18,
     daMiniA,
     daMiniB,
+    daPositionN,
+    daPositionA,
     daScr,
     daCodes,
+    daWait,
     };
   enum { MaxDiseqcCodes = 6 };
 private:
@@ -60,12 +82,14 @@ private:
   int slof;
   char polarization;
   int lof;
+  mutable int position;
   mutable int scrBank;
   char *commands;
   bool parsing;
   uint SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes) const;
   int SetScrPin(const cScr *Scr, uint8_t *Codes) const;
   const char *Wait(const char *s) const;
+  const char *GetPosition(const char *s) const;
   const char *GetScrBank(const char *s) const;
   const char *GetCodes(const char *s, uchar *Codes = NULL, uint8_t *MaxCodes = NULL) const;
 public:
@@ -89,16 +113,31 @@ public:
       ///< Frequency must be the frequency the tuner will be tuned to, and will be
       ///< set to the proper SCR frequency upon return (if SCR is used).
   int Devices(void) const { return devices; }
+      ///< Returns an integer where each bit represents one of the system's devices.
+      ///< If a bit is set, this DiSEqC sequence applies to the corresponding device.
   int Source(void) const { return source; }
+      ///< Returns the satellite source this DiSEqC sequence applies to.
   int Slof(void) const { return slof; }
+      ///< Returns the switch frequency of the LNB this DiSEqC sequence applies to.
   char Polarization(void) const { return polarization; }
+      ///< Returns the signal polarization this DiSEqC sequence applies to.
   int Lof(void) const { return lof; }
-  bool IsScr() const { return scrBank >= 0; }
+      ///< Returns the local oscillator frequency of the LNB this DiSEqC sequence applies to.
+  int Position(void) const { return position; }
+      ///< Indicates which positioning mode to use in order to move the dish to a given
+      ///< satellite position. -1 means "no positioning" (i.e. fixed dish); 0 means the
+      ///< positioner can be moved to any arbitrary satellite position (within its
+      ///< limits); and a positive number means "move the dish to the position stored
+      ///< under the given number".
+  bool IsScr(void) const { return scrBank >= 0; }
+      ///< Returns true if this DiSEqC sequence uses Satellite Channel Routing.
   const char *Commands(void) const { return commands; }
+      ///< Returns a pointer to the actual commands of this DiSEqC sequence.
   };
 
 class cDiseqcs : public cConfig<cDiseqc> {
 public:
+  bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   const cDiseqc *Get(int Device, int Source, int Frequency, char Polarization, const cScr **Scr) const;
       ///< Selects a DiSEqC entry suitable for the given Device and tuning parameters.
       ///< If this DiSEqC entry requires SCR and the given *Scr is NULL

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -994,6 +994,33 @@ msgstr "Naprava %d prikljuèena na satelitski kabel"
 msgid "Setup.LNB$own"
 msgstr "lastni"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Reset CAM-a"
 
@@ -1330,6 +1357,10 @@ msgstr "V ®IVO"
 
 msgid "PLAY"
 msgstr "PREDVAJAJ"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Konsola"

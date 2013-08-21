@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2013-02-09 16:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -994,6 +994,33 @@ msgstr "Пристрій %d під’єднано до сателітарног�
 msgid "Setup.LNB$own"
 msgstr "власне"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Перезавантаження CAM"
 
@@ -1330,6 +1357,10 @@ msgstr "ЕФІР"
 
 msgid "PLAY"
 msgstr "ПРОГРАВАННЯ"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG панелі"

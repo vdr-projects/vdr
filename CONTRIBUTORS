@@ -2696,6 +2696,7 @@ Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
  character set to ISO-8859-9
  for adding MPEG 1 handling to remux.c
+ for a patch that was used as a base for implementing support for positioners
 
 Magnus Andersson <svankan@bahnhof.se>
  for translating OSD texts to the Swedish language
@@ -3155,3 +3156,6 @@ Jochen Dolze <vdr@dolze.de>
 
 Dominique Dumont <domi.dumont@free.fr>
  for reporting a crash in the LCARS skin's main menu in case there is no current channel
+
+Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
+ for a patch that was used as a base for implementing support for positioners
