@@ -7868,3 +7868,4 @@ Video Disk Recorder Revision History
     dish has reached its target position. Parsing SI data is paused until the target
     position has been reached.
 - The LCARS skin now shows the source value of the current channel in its channel display.
+- Fixed asserting free disk space in the cutter.
