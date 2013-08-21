@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.25.1.1 2013/05/02 09:21:18 kls Exp $
+ * $Id: cutter.c 2.25.1.2 2013/08/21 13:43:46 kls Exp $
  */
 
 #include "cutter.h"
@@ -556,6 +556,8 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
       bool Independent;
       int Length;
       if (LoadFrame(Index, Buffer, Independent, Length)) {
+         // Make sure there is enough disk space:
+         AssertFreeDiskSpace(-1);
          bool CutIn = !SeamlessBegin && Index == BeginIndex;
          bool CutOut = !SeamlessEnd && Index == EndIndex - 1;
          bool DeletedFrame = false;
@@ -608,8 +610,6 @@ void cCuttingThread::Action(void)
               cCondWait::SleepMs(100);
               continue;
               }
-           // Make sure there is enough disk space:
-           AssertFreeDiskSpace(-1);
            // Determine the actual begin and end marks, skipping any marks at the same position:
            cMark *EndMark = fromMarks.GetNextEnd(BeginMark);
            // Process the current sequence:

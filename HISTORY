@@ -7812,3 +7812,7 @@ Video Disk Recorder Revision History
   by Stefan Braun).
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
+
+2013-08-21: Version 2.0.3
+
+- Fixed asserting free disk space in the cutter.
