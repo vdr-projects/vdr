@@ -3,14 +3,14 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsddevice.c 1.10 2013/03/31 09:30:18 kls Exp $
+ * $Id: dvbsddevice.c 1.10.1.1 2013/08/22 08:30:52 kls Exp $
  */
 
 #include <getopt.h>
 #include <vdr/plugin.h>
 #include "dvbsdffdevice.h"
 
-static const char *VERSION        = "2.0.0";
+static const char *VERSION        = "2.0.1";
 static const char *DESCRIPTION    = "SD Full Featured DVB device";
 
 class cPluginDvbsddevice : public cPlugin {
@@ -48,7 +48,7 @@ bool cPluginDvbsddevice::ProcessArgs(int argc, char *argv[])
      };
 
   int c;
-  while ((c = getopt_long(argc, argv, "", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "o", long_options, NULL)) != -1) {
         switch (c) {
           case 'o': probe->SetOutputOnly(true);
                     break;
