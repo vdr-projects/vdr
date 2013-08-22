@@ -7874,3 +7874,6 @@ Video Disk Recorder Revision History
 - Fixed handling LIRC events in case repeated events are lost.
 - Fixed a possible crash when shutting down VDR while subtitles are being displayed
   (reported by Ville Skyttä).
+- cDevice::IsPrimaryDevice() now also checks whether the primary device actually has
+  a decoder and returns false otherwise. This should improve device allocation on
+  systems that are only used as a receiver and don't actually display anything.

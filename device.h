@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.1 2013/06/01 11:35:23 kls Exp $
+ * $Id: device.h 3.2 2013/08/22 11:57:34 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -197,7 +197,7 @@ protected:
          ///< A derived class must call the MakePrimaryDevice() function of its
          ///< base class.
 public:
-  bool IsPrimaryDevice(void) const { return this == primaryDevice; }
+  bool IsPrimaryDevice(void) const { return this == primaryDevice && HasDecoder(); }
   int CardIndex(void) const { return cardIndex; }
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
