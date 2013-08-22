@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 2.8 2013/03/01 09:50:15 kls Exp $
+ * $Id: transfer.c 2.8.1.1 2013/08/22 12:37:02 kls Exp $
  */
 
 #include "transfer.h"
@@ -35,7 +35,7 @@ void cTransfer::Activate(bool On)
      cPlayer::Detach();
 }
 
-#define MAXRETRIES     5 // max. number of retries for a single TS packet
+#define MAXRETRIES    20 // max. number of retries for a single TS packet
 #define RETRYWAIT      5 // time (in ms) between two retries
 
 void cTransfer::Receive(uchar *Data, int Length)
