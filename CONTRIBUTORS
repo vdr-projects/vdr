@@ -2017,6 +2017,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  be escaped
  for changing the template for PLGCFG to $(CONFDIR)/plugins.mk
  for updating the help and man page entry about the location of the epg.data file
+ for reporting a possible crash when shutting down VDR while subtitles are being
+ displayed
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

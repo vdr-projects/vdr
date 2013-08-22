@@ -7819,3 +7819,5 @@ Video Disk Recorder Revision History
 - No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
   Priority is less than 1.
 - Fixed handling LIRC events in case repeated events are lost.
+- Fixed a possible crash when shutting down VDR while subtitles are being displayed
+  (reported by Ville Skyttä).
