@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.5 2013/02/11 15:25:42 kls Exp $
+ * $Id: lirc.c 3.1 2013/08/22 09:22:14 kls Exp $
  */
 
 #include "lirc.h"
@@ -111,6 +111,7 @@ void cLircRemote::Action(void)
            else if (LastTime.Elapsed() < (uint)Setup.RcRepeatDelta)
               continue; // skip same keys coming in too fast
            else {
+              pressed = true;
               repeat = true;
               timeout = Delta * 10 / 9;
               }

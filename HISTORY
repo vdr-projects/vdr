@@ -7813,7 +7813,7 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-08-21: Version 2.1.1
+2013-08-22: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7871,3 +7871,4 @@ Video Disk Recorder Revision History
 - Fixed asserting free disk space in the cutter.
 - No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
   Priority is less than 1.
+- Fixed handling LIRC events in case repeated events are lost.
