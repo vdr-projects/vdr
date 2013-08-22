@@ -7813,8 +7813,9 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-08-21: Version 2.0.3
+2013-08-22: Version 2.0.3
 
 - Fixed asserting free disk space in the cutter.
 - No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
   Priority is less than 1.
+- Fixed handling LIRC events in case repeated events are lost.
