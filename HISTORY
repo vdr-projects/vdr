@@ -7882,3 +7882,5 @@ Video Disk Recorder Revision History
 - All bonded devices (except for the master) now turn off their LNB power completely
   to avoid problems when receiving vertically polarized transponders (suggested by
   Manfred Völkel and Oliver Endriss).
+- Reverted the change from version 1.5.7 that made all logging go to LOG_ERR (thanks
+  to Christopher Reimer).
