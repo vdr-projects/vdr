@@ -700,6 +700,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for helping to debug a problem with reduced number of retries in Transfer Mode on
  SD-FF cards
  for reporting a problem with resuming replay of PES recordings
+ for suggesting to make all bonded devices (except for the master) turn off their LNB
+ power completely to avoid problems when receiving vertically polarized transponders
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -3161,3 +3163,7 @@ Dominique Dumont <domi.dumont@free.fr>
 
 Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
  for a patch that was used as a base for implementing support for positioners
+
+Manfred Völkel <mvoelkel@digitaldevices.de>
+ for suggesting to make all bonded devices (except for the master) turn off their LNB
+ power completely to avoid problems when receiving vertically polarized transponders

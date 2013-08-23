@@ -7813,7 +7813,7 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-08-22: Version 2.1.1
+2013-08-23: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7879,3 +7879,6 @@ Video Disk Recorder Revision History
   systems that are only used as a receiver and don't actually display anything.
 - Increased the value of MAXRETRIES to 20 to reduce the probability of disturbances
   in transfer mode.
+- All bonded devices (except for the master) now turn off their LNB power completely
+  to avoid problems when receiving vertically polarized transponders (suggested by
+  Manfred Völkel and Oliver Endriss).
