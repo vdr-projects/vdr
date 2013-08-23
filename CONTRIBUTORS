@@ -2550,6 +2550,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
  for adding HandledExternally() to the EPG handler interface
  for adding IsUpdate() to the EPG handler interface
+ for adding Begin/EndSegmentTransfer() to the EPG handler interface
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems

@@ -7884,3 +7884,4 @@ Video Disk Recorder Revision History
   Manfred Völkel and Oliver Endriss).
 - Reverted the change from version 1.5.7 that made all logging go to LOG_ERR (thanks
   to Christopher Reimer).
+- Added Begin/EndSegmentTransfer() to the EPG handler interface (thanks to Jörg Wendel).
