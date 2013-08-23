@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.88.1.1 2013/04/09 13:42:26 kls Exp $
+ * $Id: dvbdevice.c 2.88.1.2 2013/08/23 09:52:14 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -697,7 +697,7 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
 
 void cDvbTuner::ResetToneAndVoltage(void)
 {
-  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13));
+  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, bondedTuner ? SEC_VOLTAGE_OFF : SEC_VOLTAGE_13));
   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
 }
 

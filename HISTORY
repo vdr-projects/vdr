@@ -7813,7 +7813,7 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-08-22: Version 2.0.3
+2013-08-23: Version 2.0.3
 
 - Fixed asserting free disk space in the cutter.
 - No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
@@ -7826,3 +7826,6 @@ Video Disk Recorder Revision History
   systems that are only used as a receiver and don't actually display anything.
 - Increased the value of MAXRETRIES to 20 to reduce the probability of disturbances
   in transfer mode.
+- All bonded devices (except for the master) now turn off their LNB power completely
+  to avoid problems when receiving vertically polarized transponders (suggested by
+  Manfred Völkel and Oliver Endriss).
