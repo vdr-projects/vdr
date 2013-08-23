@@ -7885,3 +7885,17 @@ Video Disk Recorder Revision History
 - Reverted the change from version 1.5.7 that made all logging go to LOG_ERR (thanks
   to Christopher Reimer).
 - Added Begin/EndSegmentTransfer() to the EPG handler interface (thanks to Jörg Wendel).
+- The code for distributing recordings over several video directories is now
+  deprecated and disabled by default.
+  You can re-enable this feature by removing the comment sign ('//') from the beginning
+  of the line
+  //#define DEPRECATED_DISTRIBUTED_VIDEODIR // Code enclosed with this macro is ...
+  in the file videodir.c. Note, though, that this can only be a temporary workaround.
+  This feature will be completely removed in one of the next developer versions.
+  Distributing the video directory over several disks was a useful feature in times
+  when disks were still relatively small, but it also caused serious problems in case
+  one of the disks failed. Nowadays hard disks come in sizes measured in terabytes,
+  and tools like "mhddfs" can be used to combine several disks to form one large volume.
+  A recommended method for a relatively safe disk setup in a VDR system is to use two
+  1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
+  fails, you can replace it without data loss.
