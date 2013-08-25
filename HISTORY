@@ -7813,7 +7813,7 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 
-2013-08-23: Version 2.1.1
+2013-08-25: Version 2.1.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
