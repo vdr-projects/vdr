@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-dvbhddevice 0.0.4\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2012-11-13 20:08+0100\n"
+"POT-Creation-Date: 2013-08-23 12:10+0200\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
 "Last-Translator: Christoph Haubrich\n"
 "Language-Team: <see README>\n"
@@ -24,6 +24,9 @@ msgstr "Bildanpassung"
 
 msgid "TV on"
 msgstr "TV ein"
+
+msgid "TV off"
+msgstr "TV aus"
 
 msgid "Automatic"
 msgstr "automatisch"

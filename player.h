@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 2.6 2012/04/28 13:04:17 kls Exp $
+ * $Id: player.h 3.0 2012/04/28 13:04:17 kls Exp $
  */
 
 #ifndef __PLAYER_H

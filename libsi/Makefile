@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 2.4 2012/12/18 13:35:54 kls Exp $
+# $Id: Makefile 3.0 2012/12/18 13:35:54 kls Exp $
 
 ### The archiver options:
 

@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 2.19 2013/02/18 10:55:39 kls Exp $
+# $Id: Make.config.template 3.0 2013/02/18 10:55:39 kls Exp $
 
 ### The C compiler and options:
 

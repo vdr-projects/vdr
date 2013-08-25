@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.37 2013/01/20 11:43:59 kls Exp $
+ * $Id: remux.h 3.0 2013/01/20 11:43:59 kls Exp $
  */
 
 #ifndef __REMUX_H

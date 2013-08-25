@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 2.7.1.1 2013/04/11 08:59:26 kls Exp $
+ * $Id: thread.c 3.1 2013/04/10 14:37:37 kls Exp $
  */
 
 #include "thread.h"

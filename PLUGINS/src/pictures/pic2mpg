@@ -7,7 +7,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 2.5 2013/02/17 13:17:13 kls Exp $
+# $Id: pic2mpg 3.1 2013/07/01 08:33:38 kls Exp $
 
 use File::Path;
 use File::Spec;
@@ -23,9 +23,10 @@ Options: -f             Force conversion
          -o percent     overscan in percent
          -s size        Screen size (WIDTHxHEIGHT, default is 1920x1080)
          -v num         Verbose (0=none, 1=list files, 2=detailed)
+         -x dir[,...]   eXclude the given directories
 };
 
-getopts("fho:s:v:") || die $Usage;
+getopts("fho:s:v:x:") || die $Usage;
 
 die $Usage if $opt_h;
 
@@ -33,6 +34,7 @@ $Force     = $opt_f;
 $Overscan  = $opt_o || 0;
 $Size      = $opt_s || "1920x1080";
 $Verbose   = $opt_v;
+@Exclude   = split(',', $opt_x || "");
 
 $ListFiles = $Verbose >= 1;
 $Detailed  = $Verbose >= 2;
@@ -85,7 +87,11 @@ chdir($PICDIR) || die "$PICDIR: $!\n";
 @Pictures = `find -type f | sort`;
 chomp(@Pictures);
 
+PIC:
 for $pic (@Pictures) {
+    for (@Exclude) {
+        next PIC if ($pic =~ /\/$_\//);
+        }
     my $mpg = "$MPGDIR/$pic.mpg";
     if ($Force || !-e $mpg || -M $mpg > -M $pic) {
        (my $dir = $mpg) =~ s/\/[^\/]*$//;

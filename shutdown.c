@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 2.1 2013/02/18 10:33:26 kls Exp $
+ * $Id: shutdown.c 3.0 2013/02/18 10:33:26 kls Exp $
  */
 
 #include "shutdown.h"

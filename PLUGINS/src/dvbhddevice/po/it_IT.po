@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-dvbhddevice 0.0.4\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2012-11-13 20:08+0100\n"
+"POT-Creation-Date: 2013-08-23 12:10+0200\n"
 "PO-Revision-Date: 2013-02-18 23:42+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <see README>\n"
@@ -28,6 +28,9 @@ msgstr "Conversione video"
 
 msgid "TV on"
 msgstr "TV accesa"
+
+msgid "TV off"
+msgstr ""
 
 msgid "Automatic"
 msgstr "Automatica"

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: pictures.c 2.9 2013/03/31 09:30:18 kls Exp $
+ * $Id: pictures.c 3.0 2013/03/31 09:30:18 kls Exp $
  */
 
 #include <getopt.h>

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.46 2013/03/04 14:01:23 kls Exp $
+ * $Id: recording.h 3.0 2013/03/04 14:01:23 kls Exp $
  */
 
 #ifndef __RECORDING_H

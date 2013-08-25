@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.29 2012/12/08 11:16:30 kls Exp $
+ * $Id: tools.c 3.1 2013/05/07 08:48:00 kls Exp $
  */
 
 #include "tools.h"
@@ -691,12 +691,12 @@ void cTimeMs::Set(int Ms)
   begin = Now() + Ms;
 }
 
-bool cTimeMs::TimedOut(void)
+bool cTimeMs::TimedOut(void) const
 {
   return Now() >= begin;
 }
 
-uint64_t cTimeMs::Elapsed(void)
+uint64_t cTimeMs::Elapsed(void) const
 {
   return Now() - begin;
 }

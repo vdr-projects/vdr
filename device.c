@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.74.1.1 2013/04/05 10:47:38 kls Exp $
+ * $Id: device.c 3.3 2013/08/22 10:28:55 kls Exp $
  */
 
 #include "device.h"
@@ -118,6 +118,8 @@ cDevice::~cDevice()
   DetachAllReceivers();
   delete liveSubtitle;
   delete dvbSubtitleConverter;
+  if (this == primaryDevice)
+     primaryDevice = NULL;
 }
 
 bool cDevice::WaitForAllDevicesReady(int Timeout)
@@ -362,7 +364,6 @@ void cDevice::SetCamSlot(cCamSlot *CamSlot)
 void cDevice::Shutdown(void)
 {
   deviceHooks.Clear();
-  primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];
       device[i] = NULL;
@@ -663,6 +664,11 @@ bool cDevice::ProvidesEIT(void) const
 int cDevice::NumProvidedSystems(void) const
 {
   return 0;
+}
+
+const cPositioner *cDevice::Positioner(void) const
+{
+  return NULL;
 }
 
 int cDevice::SignalStrength(void) const

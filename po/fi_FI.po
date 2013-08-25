@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -997,6 +997,33 @@ msgstr "DVB-sovitin %d kytketty SAT-kaapeliin"
 msgid "Setup.LNB$own"
 msgstr "oma"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM nollaus"
 
@@ -1333,6 +1360,10 @@ msgstr "LIVE"
 
 msgid "PLAY"
 msgstr "TOISTO"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsoli"

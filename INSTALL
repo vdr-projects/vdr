@@ -325,38 +325,9 @@ Note that the file system need not be 64-bit proof, since the 'vdr'
 program splits video files into chunks of about 2GB. You should use
 a disk with several gigabytes of free space. One GB can store roughly
 half an hour of SD video data, or 10 minutes of HD video.
-
-If you have more than one disk and don't want to combine them to form
-one large logical volume, you can set up several video directories as
-mount points for these disks. All of these directories must have the
-same basic name and must end with a numeric part, which starts at 0 for
-the main directory and has increasing values for the rest of the
-directories. For example
-
-   /srv/vdr/video0
-   /srv/vdr/video1
-   /srv/vdr/video2
-
-would be a setup with three directories. You can use more than one
-numeric digit:
-
-   /mnt/MyVideos/vdr.00
-   /mnt/MyVideos/vdr.01
-   /mnt/MyVideos/vdr.02
-   ...
-   /mnt/MyVideos/vdr.11
-
-would set up twelve disks (wow, what a machine that would be!).
-
-To use such a multi directory setup, you need to add the '-v' option
-with the name of the basic directory when running 'vdr':
-
-   vdr -v /srv/vdr/video0
-
-WARNING: Using multiple disks to form one large video directory this way
-is deprecated and will be removed from VDR in a future version! Either
-use one of today's large terabyte disks (preferably with a backup disk
-in a RAID-1 array), or use something like "mhddfs".
+Either use one of today's large terabyte disks (preferably with a backup disk
+in a RAID-1 array), or use something like "mhddfs" to group several disks
+into one large volume.
 
 Note that you should not copy any non-VDR files into the video directory,
 since this might cause a lot of unnecessary disk access when VDR cleans up those

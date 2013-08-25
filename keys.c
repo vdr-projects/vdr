@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 2.2 2012/12/04 12:52:52 kls Exp $
+ * $Id: keys.c 3.0 2012/12/04 12:52:52 kls Exp $
  */
 
 #include "keys.h"

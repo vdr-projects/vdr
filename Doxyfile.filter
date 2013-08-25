@@ -9,7 +9,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Doxyfile.filter 2.1 2013/02/17 10:54:05 kls Exp $
+# $Id: Doxyfile.filter 3.0 2013/02/17 10:54:05 kls Exp $
 
 $TAG = "///<";
 

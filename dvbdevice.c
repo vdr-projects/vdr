@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.88.1.1 2013/04/09 13:42:26 kls Exp $
+ * $Id: dvbdevice.c 3.3 2013/08/23 09:19:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -284,7 +284,7 @@ bool cDvbTransponderParameters::Parse(const char *s)
 class cDvbTuner : public cThread {
 private:
   static cMutex bondMutex;
-  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  enum eTunerStatus { tsIdle, tsSet, tsPositioning, tsTuned, tsLocked };
   int frontendType;
   const cDvbDevice *device;
   int fd_frontend;
@@ -295,6 +295,9 @@ private:
   time_t lastTimeoutReport;
   cChannel channel;
   const cDiseqc *lastDiseqc;
+  int diseqcOffset;
+  int lastSource;
+  cPositioner *positioner;
   const cScr *scr;
   bool lnbPowerTurnedOn;
   eTunerStatus tunerStatus;
@@ -309,6 +312,7 @@ private:
   bool IsBondedMaster(void) const { return !bondedTuner || bondedMaster; }
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
+  cPositioner *GetPositioner(void);
   void ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency);
   void ResetToneAndVoltage(void);
   bool SetFrontend(void);
@@ -325,6 +329,7 @@ public:
   bool IsTunedTo(const cChannel *Channel) const;
   void SetChannel(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
+  const cPositioner *Positioner(void) const { return positioner; }
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
   };
@@ -343,6 +348,9 @@ cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int
   lockTimeout = 0;
   lastTimeoutReport = 0;
   lastDiseqc = NULL;
+  diseqcOffset = 0;
+  lastSource = 0;
+  positioner = NULL;
   scr = NULL;
   lnbPowerTurnedOn = false;
   tunerStatus = tsIdle;
@@ -482,6 +490,7 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
      cMutexLock MutexLock(&mutex);
      if (!IsTunedTo(Channel))
         tunerStatus = tsSet;
+     diseqcOffset = 0;
      channel = *Channel;
      lastTimeoutReport = 0;
      newSet.Broadcast();
@@ -662,6 +671,15 @@ static unsigned int FrequencyToHz(unsigned int f)
   return f;
 }
 
+cPositioner *cDvbTuner::GetPositioner(void)
+{
+  if (!positioner) {
+     positioner = cPositioner::GetPositioner();
+     positioner->SetFrontend(fd_frontend);
+     }
+  return positioner;
+}
+
 void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
 {
   if (!lnbPowerTurnedOn) {
@@ -673,23 +691,47 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
      Mutex.Lock();
   struct dvb_diseqc_master_cmd cmd;
   const char *CurrentAction = NULL;
-  for (;;) {
+  cPositioner *Positioner = NULL;
+  bool Break = false;
+  for (int i = 0; !Break; i++) {
       cmd.msg_len = sizeof(cmd.msg);
       cDiseqc::eDiseqcActions da = Diseqc->Execute(&CurrentAction, cmd.msg, &cmd.msg_len, scr, Frequency);
-      if (da == cDiseqc::daNone)
+      if (da == cDiseqc::daNone) {
+         diseqcOffset = 0;
          break;
+         }
+      bool d = i >= diseqcOffset;
       switch (da) {
-        case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
-        case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
-        case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
-        case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
-        case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
-        case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
-        case cDiseqc::daCodes:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd)); break;
+        case cDiseqc::daToneOff:   if (d) CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
+        case cDiseqc::daToneOn:    if (d) CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
+        case cDiseqc::daVoltage13: if (d) CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
+        case cDiseqc::daVoltage18: if (d) CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
+        case cDiseqc::daMiniA:     if (d) CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
+        case cDiseqc::daMiniB:     if (d) CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
+        case cDiseqc::daCodes:     if (d) CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd)); break;
+        case cDiseqc::daPositionN: if ((Positioner = GetPositioner()) != NULL) {
+                                      if (d) {
+                                         Positioner->GotoPosition(Diseqc->Position(), cSource::Position(channel.Source()));
+                                         Break = Positioner->IsMoving();
+                                         }
+                                      }
+                                   break;
+        case cDiseqc::daPositionA: if ((Positioner = GetPositioner()) != NULL) {
+                                      if (d) {
+                                         Positioner->GotoAngle(cSource::Position(channel.Source()));
+                                         Break = Positioner->IsMoving();
+                                         }
+                                      }
+                                   break;
+        case cDiseqc::daScr:
+        case cDiseqc::daWait:      break;
         default: esyslog("ERROR: unknown diseqc command %d", da);
         }
+      if (Break)
+         diseqcOffset = i + 1;
       }
-  if (scr)
+  positioner = Positioner;
+  if (scr && !Break)
      ResetToneAndVoltage(); // makes sure we don't block the bus!
   if (Diseqc->IsScr())
      Mutex.Unlock();
@@ -697,7 +739,7 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
 
 void cDvbTuner::ResetToneAndVoltage(void)
 {
-  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13));
+  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, bondedTuner ? SEC_VOLTAGE_OFF : SEC_VOLTAGE_13));
   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
 }
 
@@ -752,7 +794,7 @@ bool cDvbTuner::SetFrontend(void)
      if (Setup.DiSEqC) {
         if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
-           if (diseqc != lastDiseqc || diseqc->IsScr()) {
+           if (diseqc != lastDiseqc || diseqc->IsScr() || diseqc->Position() >= 0 && channel.Source() != lastSource) {
               if (IsBondedMaster()) {
                  ExecuteDiseqc(diseqc, &frequency);
                  if (frequency == 0)
@@ -761,6 +803,7 @@ bool cDvbTuner::SetFrontend(void)
               else
                  ResetToneAndVoltage();
               lastDiseqc = diseqc;
+              lastSource = channel.Source();
               }
            }
         else {
@@ -877,15 +920,30 @@ void cDvbTuner::Action(void)
         int WaitTime = 1000;
         switch (tunerStatus) {
           case tsIdle:
-               break;
+               break; // we want the TimedWait() below!
           case tsSet:
-               tunerStatus = SetFrontend() ? tsTuned : tsIdle;
-               Timer.Set(tuneTimeout + (scr ? rand() % SCR_RANDOM_TIMEOUT : 0));
+               tunerStatus = SetFrontend() ? tsPositioning : tsIdle;
                continue;
+          case tsPositioning:
+               if (positioner) {
+                  if (positioner->IsMoving())
+                     break; // we want the TimedWait() below!
+                  else if (diseqcOffset) {
+                     lastDiseqc = NULL;
+                     tunerStatus = tsSet; // have it process the rest of the DiSEqC sequence
+                     continue;
+                     }
+                  }
+               tunerStatus = tsTuned;
+               Timer.Set(tuneTimeout + (scr ? rand() % SCR_RANDOM_TIMEOUT : 0));
+               if (positioner)
+                  continue;
+               // otherwise run directly into tsTuned...
           case tsTuned:
                if (Timer.TimedOut()) {
                   tunerStatus = tsSet;
                   lastDiseqc = NULL;
+                  lastSource = 0;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
                      isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
@@ -893,10 +951,12 @@ void cDvbTuner::Action(void)
                   continue;
                   }
                WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
+               // run into tsLocked...
           case tsLocked:
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
                   lastDiseqc = NULL;
+                  lastSource = 0;
                   isyslog("frontend %d/%d was reinitialized", adapter, frontend);
                   lastTimeoutReport = 0;
                   continue;
@@ -1357,7 +1417,7 @@ void cDvbDevice::UnBond(void)
 bool cDvbDevice::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
 {
   cMutexLock MutexLock(&bondMutex);
-  if (bondedDevice)
+  if (bondedDevice || Positioner())
      return dvbTuner && dvbTuner->BondingOk(Channel, ConsiderOccupied);
   return true;
 }
@@ -1537,6 +1597,11 @@ bool cDvbDevice::ProvidesEIT(void) const
 int cDvbDevice::NumProvidedSystems(void) const
 {
   return numDeliverySystems + numModulations;
+}
+
+const cPositioner *cDvbDevice::Positioner(void) const
+{
+  return dvbTuner ? dvbTuner->Positioner() : NULL;
 }
 
 int cDvbDevice::SignalStrength(void) const

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.16 2013/02/17 13:16:29 kls Exp $
+ * $Id: dvbsdffdevice.h 3.0 2013/02/17 13:16:29 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H

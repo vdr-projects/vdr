@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.38 2013/03/18 08:57:50 kls Exp $
+ * $Id: config.c 3.1 2013/05/23 12:41:06 kls Exp $
  */
 
 #include "config.h"
@@ -389,6 +389,12 @@ cSetup::cSetup(void)
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
   DiSEqC = 0;
+  UsePositioner = 0;
+  SiteLat = 0;
+  SiteLon = 0;
+  PositionerSpeed = 15;
+  PositionerSwing = 65;
+  PositionerLastLon = 0;
   SetSystemTime = 0;
   TimeSource = 0;
   TimeTransponder = 0;
@@ -594,6 +600,12 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
   else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
   else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
+  else if (!strcasecmp(Name, "UsePositioner"))       UsePositioner      = atoi(Value);
+  else if (!strcasecmp(Name, "SiteLat"))             SiteLat            = atoi(Value);
+  else if (!strcasecmp(Name, "SiteLon"))             SiteLon            = atoi(Value);
+  else if (!strcasecmp(Name, "PositionerSpeed"))     PositionerSpeed    = atoi(Value);
+  else if (!strcasecmp(Name, "PositionerSwing"))     PositionerSwing    = atoi(Value);
+  else if (!strcasecmp(Name, "PositionerLastLon"))   PositionerLastLon  = atoi(Value);
   else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
   else if (!strcasecmp(Name, "TimeSource"))          TimeSource         = cSource::FromString(Value);
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
@@ -703,6 +715,12 @@ bool cSetup::Save(void)
   Store("LnbFrequLo",         LnbFrequLo);
   Store("LnbFrequHi",         LnbFrequHi);
   Store("DiSEqC",             DiSEqC);
+  Store("UsePositioner",      UsePositioner);
+  Store("SiteLat",            SiteLat);
+  Store("SiteLon",            SiteLon);
+  Store("PositionerSpeed",    PositionerSpeed);
+  Store("PositionerSwing",    PositionerSwing);
+  Store("PositionerLastLon",  PositionerLastLon);
   Store("SetSystemTime",      SetSystemTime);
   Store("TimeSource",         cSource::ToString(TimeSource));
   Store("TimeTransponder",    TimeTransponder);

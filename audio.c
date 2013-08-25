@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: audio.c 2.2 2010/05/16 13:30:11 kls Exp $
+ * $Id: audio.c 3.0 2010/05/16 13:30:11 kls Exp $
  */
 
 #include "audio.h"

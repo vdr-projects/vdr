@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: epgtableid0.c 1.4 2013/03/31 09:30:18 kls Exp $
+ * $Id: epgtableid0.c 3.0 2013/03/31 09:30:18 kls Exp $
  */
 
 #include <vdr/epg.h>

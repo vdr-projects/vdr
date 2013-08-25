@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.24 2013/02/17 13:18:01 kls Exp $
+ * $Id: svdrp.c 3.0 2013/02/17 13:18:01 kls Exp $
  */
 
 #include "svdrp.h"

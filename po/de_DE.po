@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -993,6 +993,33 @@ msgstr "Device %d angeschlossen an Sat-Kabel"
 msgid "Setup.LNB$own"
 msgstr "eigenes"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr "Antennen-Positionierer benutzen"
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr "Standort Längengrad"
+
+msgid "South"
+msgstr "Süd"
+
+msgid "North"
+msgstr "Nord"
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr "Standort Breitengrad"
+
+msgid "West"
+msgstr "West"
+
+msgid "East"
+msgstr "Ost"
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr "Max. Positionier-Winkel (Grad)"
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr "Max. Positionier-Geschwindigkeit (Grad/s)"
+
 msgid "CAM reset"
 msgstr "CAM zurückgesetzt"
 
@@ -1329,6 +1356,10 @@ msgstr "LIVE"
 
 msgid "PLAY"
 msgstr "WIEDERGABE"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr "Antenne wird auf %.1f gedreht..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG-Konsolen"

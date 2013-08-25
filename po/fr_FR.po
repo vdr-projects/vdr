@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-03-04 14:46+0100\n"
+"POT-Creation-Date: 2013-06-10 12:16+0200\n"
 "PO-Revision-Date: 2013-02-24 12:56+0100\n"
 "Last-Translator: Dominique Plu <dplu@free.fr>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -1003,6 +1003,33 @@ msgstr "Le périphérique %d est connecté au câble satellite"
 msgid "Setup.LNB$own"
 msgstr "Propriétaire"
 
+msgid "Setup.LNB$Use dish positioner"
+msgstr ""
+
+msgid "Setup.LNB$Site latitude (degrees)"
+msgstr ""
+
+msgid "South"
+msgstr ""
+
+msgid "North"
+msgstr ""
+
+msgid "Setup.LNB$Site longitude (degrees)"
+msgstr ""
+
+msgid "West"
+msgstr ""
+
+msgid "East"
+msgstr ""
+
+msgid "Setup.LNB$Max. positioner swing (degrees)"
+msgstr ""
+
+msgid "Setup.LNB$Positioner speed (degrees/s)"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM réinitialisé"
 
@@ -1339,6 +1366,10 @@ msgstr "DIRECT"
 
 msgid "PLAY"
 msgstr "LECTURE"
+
+#, c-format
+msgid "Moving dish to %.1f..."
+msgstr ""
 
 msgid "ST:TNG Panels"
 msgstr "Consoles ST:TNG"

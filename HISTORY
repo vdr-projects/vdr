@@ -7144,7 +7144,7 @@ Video Disk Recorder Revision History
   Christian Richter).
 - Added DeleteEvent() to the EPG handler interface, so that an EPG handler can trigger
   deleting of an event (thanks to Christian Kaiser).
-- Speeded up opening menus on systems with many (several thousands) of recordings, by
+- Speeded up opening menus on systems with many (several thousands of) recordings, by
   caching the information whether a recording is stored on the video directory file
   system within the cRecording data (based on a patch from Torsten Lang).
 
@@ -7782,7 +7782,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.0.0.
 - Official release.
 
-2013-04-13: Version 2.0.1
+2013-04-11: Version 2.0.1
 
 - Fixed initializing cDevice::keepTracks.
 - Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
@@ -7805,10 +7805,97 @@ Video Disk Recorder Revision History
 - Fixed displaying the frame number when setting an editing mark (thanks to Thomas
   Günther).
 - Fixed no longer generating any editing marks if the edited recording results in just
-  one single sequence.
+  one single sequence (reported by Halim Sahin).
 - Fixed an error message when parsing SCR values in diseqc.conf.
 - Fixed an unexpected RCS version tag in the newplugin script.
 - Fixed an endless loop in the DrawEllipse() functions for very small ellipses (reported
   by Stefan Braun).
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
+
+2013-08-25: Version 2.1.1
+
+- Fixed initializing cDevice::keepTracks.
+- Fixed an endless loop in cTextWrapper::Set() in case the given Width is smaller than
+  one character (reported by Stefan Braun).
+- Removed all "modified since version 1.6" markers from PLUGINS.html.
+- Added definitions for older DVB API versions, back until 5.0 (based on a patch from
+  Udo Richter).
+- Changed cThread::SetIOPriority() from "best effort class" to "idle class" in order to
+  improve overall performance when an editing process is running (thanks to Jochen
+  Dolze).
+- Fixed handling '/' and '~' in recording file names in case DirectoryEncoding is
+  used (thanks to Lars Hanisch).
+- Changed the sign of the satellite position value in cSource to reflect the standard
+  of western values being negative. The new member function cSource::Position() can be
+  used to retrieve the orbital position of a satellite.
+- Fixed multiple occurrences of the same directory in the recordings list in case there
+  are directories that only differ in non-alphanumeric characters (was broken by
+  "Fixed selecting the last replayed recording in the Recordings menu in case there
+  are folders and plain recordings with names that differ only in non-alphanumeric
+  characters" in version 1.7.36).
+- Fixed displaying the frame number when setting an editing mark (thanks to Thomas
+  Günther).
+- Fixed no longer generating any editing marks if the edited recording results in just
+  one single sequence (reported by Halim Sahin).
+- Fixed an error message when parsing SCR values in diseqc.conf.
+- Fixed an unexpected RCS version tag in the newplugin script.
+- Fixed an endless loop in the DrawEllipse() functions for very small ellipses (reported
+  by Stefan Braun).
+- Fixed a crash in the LCARS skin's main menu in case there is no current channel
+  (reported by Dominique Dumont).
+- Added basic support for positioners to control steerable satellite dishes (based on
+  a patch from Seppo Ingalsuo and Ales Jurik).
+  + Supports GotoN (aka "DiSEqC 1.2") and GotoX (aka "USALS").
+  + The new DiSEqC command code 'P' can be used to instruct a positioner to move the
+    dish to the required satellite position. When a 'P' code is processed, further
+    execution of the remaining DiSEqC sequence (if any) is postponed until the positioner
+    has reached the new satellite position.
+  + The new special source value of "S360E" can be used in diseqc.conf to indicate that
+    an entry using a positioner can move the dish to any requested position within its
+    range. Think of it as "full circle".
+  + The devices a particular cDiseqc or cScr applies to are now stored directly in each
+    cDiseqc or cScr, respectively.
+  + A plugin can implement a custom positioner control (see PLUGINS.html, section "Positioners").
+  + The new function cSkinDisplayChannel::SetPositioner() can be implemented by skins to
+    show the user a progress display when the dish is being moved. The default implementation
+    calls SetMessage() with a string indicating the new position the dish is being moved to.
+    The LCARS skin shows a progress bar indicating the movement of the dish.
+  + The new parameters "Site latitude", "Site longitude", "Positioner speed", and
+    "Positioner swing" in the "Setup/LNB" menu can be used to configure the necessary
+    values for a steerable dish.
+  + The cDvbTuner now has a new status tsPositioning, in which it waits until a steerable
+    dish has reached its target position. Parsing SI data is paused until the target
+    position has been reached.
+- The LCARS skin now shows the source value of the current channel in its channel display.
+- Fixed asserting free disk space in the cutter.
+- No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
+  Priority is less than 1.
+- Fixed handling LIRC events in case repeated events are lost.
+- Fixed a possible crash when shutting down VDR while subtitles are being displayed
+  (reported by Ville Skyttä).
+- cDevice::IsPrimaryDevice() now also checks whether the primary device actually has
+  a decoder and returns false otherwise. This should improve device allocation on
+  systems that are only used as a receiver and don't actually display anything.
+- Increased the value of MAXRETRIES to 20 to reduce the probability of disturbances
+  in transfer mode.
+- All bonded devices (except for the master) now turn off their LNB power completely
+  to avoid problems when receiving vertically polarized transponders (suggested by
+  Manfred Völkel and Oliver Endriss).
+- Reverted the change from version 1.5.7 that made all logging go to LOG_ERR (thanks
+  to Christopher Reimer).
+- Added Begin/EndSegmentTransfer() to the EPG handler interface (thanks to Jörg Wendel).
+- The code for distributing recordings over several video directories is now
+  deprecated and disabled by default.
+  You can re-enable this feature by removing the comment sign ('//') from the beginning
+  of the line
+  //#define DEPRECATED_DISTRIBUTED_VIDEODIR // Code enclosed with this macro is ...
+  in the file videodir.c. Note, though, that this can only be a temporary workaround.
+  This feature will be completely removed in one of the next developer versions.
+  Distributing the video directory over several disks was a useful feature in times
+  when disks were still relatively small, but it also caused serious problems in case
+  one of the disks failed. Nowadays hard disks come in sizes measured in terabytes,
+  and tools like "mhddfs" can be used to combine several disks to form one large volume.
+  A recommended method for a relatively safe disk setup in a VDR system is to use two
+  1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
+  fails, you can replace it without data loss.

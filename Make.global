@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.global 1.2 2012/12/29 12:03:01 kls Exp $
+# $Id: Make.global 3.0 2012/12/29 12:03:01 kls Exp $
 
 # This is just a dummy file for plugins that use old style (version 1.7.33
 # or earlier) Makefiles.

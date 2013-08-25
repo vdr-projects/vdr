@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.10 2013/03/07 09:42:29 kls Exp $
+ * $Id: nit.c 3.0 2013/03/07 09:42:29 kls Exp $
  */
 
 #include "nit.h"

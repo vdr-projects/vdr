@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 2.24 2013/02/17 13:18:06 kls Exp $
+ * $Id: tools.h 3.2 2013/08/23 10:32:51 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -31,9 +31,9 @@ typedef unsigned char uchar;
 
 extern int SysLogLevel;
 
-#define esyslog(a...) void( (SysLogLevel > 0) ? syslog_with_tid(LOG_ERR, a) : void() )
-#define isyslog(a...) void( (SysLogLevel > 1) ? syslog_with_tid(LOG_ERR, a) : void() )
-#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_ERR, a) : void() )
+#define esyslog(a...) void( (SysLogLevel > 0) ? syslog_with_tid(LOG_ERR,   a) : void() )
+#define isyslog(a...) void( (SysLogLevel > 1) ? syslog_with_tid(LOG_INFO,  a) : void() )
+#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_DEBUG, a) : void() )
 
 #define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
 #define LOG_ERROR_STR(s)  esyslog("ERROR (%s,%d): %s: %m", __FILE__, __LINE__, s)
@@ -63,6 +63,8 @@ void syslog_with_tid(int priority, const char *format, ...) __attribute__ ((form
 
 #define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
 int BCD2INT(int x);
+
+#define IsBitSet(v, b) ((v) & (1 << (b))) // checks if the bit at index b is set in v, where the least significant bit has index 0
 
 // Unfortunately there are no platform independent macros for unaligned
 // access, so we do it this way:
@@ -330,8 +332,8 @@ public:
       ///< time.
   static uint64_t Now(void);
   void Set(int Ms = 0);
-  bool TimedOut(void);
-  uint64_t Elapsed(void);
+  bool TimedOut(void) const;
+  uint64_t Elapsed(void) const;
   };
 
 class cReadLine {

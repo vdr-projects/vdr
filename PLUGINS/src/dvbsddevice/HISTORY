@@ -45,3 +45,8 @@ VDR Plugin 'dvbsddevice' Revision History
 2013-03-31: Version 2.0.0
 
 - Official release.
+
+2013-08-22: Version 2.0.1
+
+- Fixed handling the -o option (short form of --outputonly; problem reported by
+  Mario Edelmann).

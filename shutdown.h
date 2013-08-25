@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.h 2.1 2013/02/18 10:35:27 kls Exp $
+ * $Id: shutdown.h 3.0 2013/02/18 10:35:27 kls Exp $
  */
 
 #ifndef __SHUTDOWN_H

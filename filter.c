@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 2.0 2004/01/11 13:31:34 kls Exp $
+ * $Id: filter.c 3.0 2004/01/11 13:31:34 kls Exp $
  */
 
 #include "filter.h"

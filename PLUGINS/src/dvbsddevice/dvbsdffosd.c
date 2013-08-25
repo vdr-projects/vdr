@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffosd.c 2.3 2011/04/17 12:55:09 kls Exp $
+ * $Id: dvbsdffosd.c 3.0 2011/04/17 12:55:09 kls Exp $
  */
 
 #include "dvbsdffosd.h"

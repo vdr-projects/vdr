@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 2.15 2012/09/24 12:53:53 kls Exp $
+ * $Id: epg.h 3.1 2013/08/23 10:50:05 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -273,6 +273,12 @@ public:
   virtual bool DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version) { return false; }
           ///< Takes a look at all EPG events between SegmentStart and SegmentEnd and
           ///< drops outdated events.
+  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus) { return false; }
+          ///< Called directly after IgnoreChannel() before any other handler method is called.
+          ///< Designed to give handlers the possibility to prepare a database transaction.
+  virtual bool EndSegmentTransfer(bool Modified, bool OnlyRunningStatus) { return false; }
+          ///< Called after the segment data has been processed.
+          ///< At this point handlers should close/commit/rollback any pending database transactions.
   };
 
 class cEpgHandlers : public cList<cEpgHandler> {
@@ -295,6 +301,8 @@ public:
   void HandleEvent(cEvent *Event);
   void SortSchedule(cSchedule *Schedule);
   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
+  void BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus);
+  void EndSegmentTransfer(bool Modified, bool OnlyRunningStatus);
   };
 
 extern cEpgHandlers EpgHandlers;

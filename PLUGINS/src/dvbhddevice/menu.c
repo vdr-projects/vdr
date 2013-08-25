@@ -13,7 +13,7 @@ cHdffMenu::cHdffMenu(HDFF::cHdffCmdIf * pHdffCmdIf)
 {
     mVideoConversionItem = new cOsdItem("", osUnknown, false);
     Add(mVideoConversionItem);
-    SetHelp(tr("Video Conversion"), tr("TV on"));
+    SetHelp(tr("Video Conversion"), tr("TV on"), tr("TV off"));
     SetVideoConversion();
 }
 
@@ -35,6 +35,11 @@ eOSState cHdffMenu::ProcessKey(eKeys key)
 
             case kGreen:
                 mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_ON);
+                state = osEnd;
+                break;
+
+            case kYellow:
+                mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_OFF);
                 state = osEnd;
                 break;
 

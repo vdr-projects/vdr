@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.10 2012/06/02 11:44:14 kls Exp $
+ * $Id: skins.c 3.1 2013/08/18 12:07:22 kls Exp $
  */
 
 #include "skins.h"
@@ -61,6 +61,22 @@ cSkinDisplay::cSkinDisplay(void)
 cSkinDisplay::~cSkinDisplay()
 {
   current = NULL;
+}
+
+// --- cSkinDisplayChannel ---------------------------------------------------
+
+cSkinDisplayChannel::cSkinDisplayChannel(void)
+{
+  positioner = NULL;
+}
+
+void cSkinDisplayChannel::SetPositioner(const cPositioner *Positioner)
+{
+  if (positioner && Positioner != positioner)
+     SetMessage(mtInfo, NULL);
+  positioner = Positioner;
+  if (positioner)
+     SetMessage(mtInfo, cString::sprintf(tr("Moving dish to %.1f..."), double(positioner->TargetLongitude()) / 10));
 }
 
 // --- cSkinDisplayMenu ------------------------------------------------------

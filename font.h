@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.7 2013/02/17 13:17:42 kls Exp $
+ * $Id: font.h 3.0 2013/02/17 13:17:42 kls Exp $
  */
 
 #ifndef __FONT_H

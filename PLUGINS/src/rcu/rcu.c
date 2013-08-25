@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: rcu.c 1.5 2013/03/31 09:30:18 kls Exp $
+ * $Id: rcu.c 3.0 2013/03/31 09:30:18 kls Exp $
  */
 
 #include <getopt.h>

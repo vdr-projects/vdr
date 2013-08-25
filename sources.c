@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 2.2 2010/02/28 15:15:39 kls Exp $
+ * $Id: sources.c 3.4 2013/05/23 10:20:28 kls Exp $
  */
 
 #include "sources.h"
@@ -37,17 +37,29 @@ bool cSource::Parse(const char *s)
   return code != stNone && description && *description;
 }
 
+bool cSource::Matches(int Code1, int Code2)
+{
+  if (Code1 == (stSat | st_Any))
+     return IsSat(Code2);
+  return Code1 == Code2;
+}
+
+int cSource::Position(int Code)
+{
+  int n = (Code & st_Pos);
+  if (n > 0x00007FFF)
+     n |= 0xFFFF0000;
+  return n;
+}
+
 cString cSource::ToString(int Code)
 {
   char buffer[16];
   char *q = buffer;
   *q++ = (Code & st_Mask) >> 24;
-  int n = (Code & st_Pos);
-  if (n > 0x00007FFF)
-     n |= 0xFFFF0000;
-  if (n) {
+  if (int n = Position(Code)) {
      q += snprintf(q, sizeof(buffer) - 2, "%u.%u", abs(n) / 10, abs(n) % 10); // can't simply use "%g" here since the silly 'locale' messes up the decimal point
-     *q++ = (n < 0) ? 'E' : 'W';
+     *q++ = (n < 0) ? 'W' : 'E';
      }
   *q = 0;
   return buffer;
@@ -69,8 +81,8 @@ int cSource::FromString(const char *s)
                                      break;
                    case '.':         dot = true;
                                      break;
-                   case 'E':         neg = true; // fall through to 'W'
-                   case 'W':         if (!dot)
+                   case 'W':         neg = true; // fall through to 'E'
+                   case 'E':         if (!dot)
                                         pos *= 10;
                                      break;
                    default: esyslog("ERROR: unknown source character '%c'", *s);
@@ -84,7 +96,7 @@ int cSource::FromString(const char *s)
         return code;
         }
      else
-       esyslog("ERROR: unknown source key '%c'", *s);
+        esyslog("ERROR: unknown source key '%c'", *s);
      }
   return stNone;
 }
@@ -93,9 +105,9 @@ int cSource::FromData(eSourceType SourceType, int Position, bool East)
 {
   int code = SourceType;
   if (SourceType == stSat) {
-     if (East)
+     if (!East)
         Position = -Position;
-     code |= (Position & st_Pos);;
+     code |= (Position & st_Pos);
      }
   return code;
 }

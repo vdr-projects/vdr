@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 2.2 2012/02/17 13:57:32 kls Exp $
+ * $Id: themes.c 3.0 2012/02/17 13:57:32 kls Exp $
  */
 
 #include "themes.h"

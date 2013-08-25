@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.4 2012/06/17 11:19:23 kls Exp $
+ * $Id: sources.h 3.2 2013/08/21 10:27:32 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -22,6 +22,7 @@ public:
     stTerr  = ('T' << 24),
     st_Mask = 0xFF000000,
     st_Pos  = 0x0000FFFF,
+    st_Any  = 0x00000E10, // 3600 - special value indicating "any position"
     };
 private:
   int code;
@@ -31,8 +32,22 @@ public:
   cSource(char Source, const char *Description);
   ~cSource();
   int Code(void) const { return code; }
+  int Position(void) { return Position(code); }
+      ///< Returns the orbital position of the satellite in case this is a DVB-S
+      ///< source (zero otherwise). The returned value is in the range -1800...+1800,
+      ///< except for the special value 3600, which indicates "any position". This is
+      ///< used with positioners that can move the dish to any requested satellite
+      ///< within their range.
+      ///< A positive sign indicates a position east of Greenwich, while western
+      ///< positions have a negative sign. The absolute value is in "degrees * 10",
+      ///< which allows for a resolution of 1/10 of a degree.
   const char *Description(void) const { return description; }
   bool Parse(const char *s);
+  static bool Matches(int Code1, int Code2);
+      ///< Returns true if Code2 matches Code1. This is simply a check whether the
+      ///< two codes are equal, except for the special case that Code1 is stSat|st_Any,
+      ///< in which case it matches any Code2 that is stSat.
+  static int Position(int Code);
   static char ToChar(int Code) { return (Code & st_Mask) >> 24; }
   static cString ToString(int Code);
   static int FromString(const char *s);

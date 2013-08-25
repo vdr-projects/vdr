@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 2.21.1.1 2013/05/19 12:08:52 kls Exp $
+ * $Id: skinlcars.c 3.3 2013/08/18 13:45:36 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -27,6 +27,7 @@
 #include "font.h"
 #include "menu.h"
 #include "osd.h"
+#include "positioner.h"
 #include "themes.h"
 #include "videodir.h"
 
@@ -299,6 +300,44 @@ static void DrawDeviceSignal(cOsd *Osd, const cDevice *Device, int x0, int y0, i
      }
 }
 
+static void DrawDevicePosition(cOsd *Osd, const cPositioner *Positioner, int x0, int y0, int x1, int y1, int &LastCurrent)
+{
+  int HorizonLeft = Positioner->HorizonLongitude(cPositioner::pdLeft);
+  int HorizonRight = Positioner->HorizonLongitude(cPositioner::pdRight);
+  int HardLimitLeft = cPositioner::NormalizeAngle(HorizonLeft - Positioner->HardLimitLongitude(cPositioner::pdLeft));
+  int HardLimitRight = cPositioner::NormalizeAngle(Positioner->HardLimitLongitude(cPositioner::pdRight) - HorizonRight);
+  int HorizonDelta = cPositioner::NormalizeAngle(HorizonLeft - HorizonRight);
+  int Current = cPositioner::NormalizeAngle(HorizonLeft - Positioner->CurrentLongitude());
+  int Target = cPositioner::NormalizeAngle(HorizonLeft - Positioner->TargetLongitude());
+  int d = (y1 - y0) / 2;
+  int w = x1 - x0 - 2 * d;
+  int l = max(x0 + d, x0 + d + w * HardLimitLeft / HorizonDelta);
+  int r = min(x1 - d, x1 - d - w * HardLimitRight / HorizonDelta) - 1;
+  int c = constrain(x0 + d + w * Current / HorizonDelta, l, r);
+  int t = constrain(x0 + d + w * Target / HorizonDelta, l, r);
+  if (c == LastCurrent)
+     return;
+  if (c > t)
+     swap(c, t);
+  tColor ColorRange, ColorMove;
+  if (TwoColors) {
+     ColorRange = Theme.Color(clrChannelFrameBg);
+     ColorMove = Theme.Color(clrBackground);
+     }
+  else {
+     ColorRange = Theme.Color(clrChannelFrameBg);
+     ColorMove = Theme.Color(clrDeviceBg);
+     }
+  Osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, Theme.Color(clrBackground));
+  Osd->DrawEllipse(l - d, y0, l, y1 - 1, ColorRange, 7);
+  Osd->DrawRectangle(l, y0, r, y1 - 1, ColorRange);
+  Osd->DrawEllipse(r, y0, r + d, y1 - 1, ColorRange, 5);
+  Osd->DrawEllipse(c - d, y0, c, y1 - 1, ColorMove, 7);
+  Osd->DrawRectangle(c, y0, t, y1 - 1, ColorMove);
+  Osd->DrawEllipse(t, y0, t + d, y1 - 1, ColorMove, 5);
+  LastCurrent = c;
+}
+
 // --- cSkinLCARSDisplayChannel ----------------------------------------------
 
 class cSkinLCARSDisplayChannel : public cSkinDisplayChannel {
@@ -317,6 +356,7 @@ private:
   bool initial;
   cString lastDate;
   int lastSeen;
+  int lastCurrentPosition;
   int lastDeviceNumber;
   cString lastDeviceType;
   cCamSlot *lastCamSlot;
@@ -336,6 +376,7 @@ public:
   virtual void SetChannel(const cChannel *Channel, int Number);
   virtual void SetEvents(const cEvent *Present, const cEvent *Following);
   virtual void SetMessage(eMessageType Type, const char *Text);
+  virtual void SetPositioner(const cPositioner *Positioner);
   virtual void Flush(void);
   };
 
@@ -352,6 +393,7 @@ cSkinLCARSDisplayChannel::cSkinLCARSDisplayChannel(bool WithInfo)
   initial = true;
   present = NULL;
   lastSeen = -1;
+  lastCurrentPosition = -1;
   lastDeviceNumber = -1;
   lastCamSlot = NULL;
   lastSignalStrength = -1;
@@ -458,6 +500,8 @@ void cSkinLCARSDisplayChannel::DrawTrack(void)
 
 void cSkinLCARSDisplayChannel::DrawSeen(int Current, int Total)
 {
+  if (lastCurrentPosition >= 0)
+     return; // to not interfere with SetPositioner()
   int Seen = (Total > 0) ? min(xc07 - xc06, int((xc07 - xc06) * double(Current) / Total)) : 0;
   if (initial || Seen != lastSeen) {
      int y0 = yc11 - ShowSeenExtent;
@@ -532,8 +576,13 @@ void cSkinLCARSDisplayChannel::SetChannel(const cChannel *Channel, int Number)
   osd->DrawText(xc00, yc00, ChNumber, Theme.Color(clrChannelFrameFg), frameColor, tallFont, xc02 - xc00, yc02 - yc00, taTop | taRight | taBorder);
   osd->DrawText(xc03, yc00, ChName, Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xi - xc03 - lineHeight, 0, taTop | taLeft);
   lastSignalDisplay = 0;
-  if (withInfo)
+  if (withInfo) {
+     if (Channel) {
+        int x = xc00 + (yc10 - yc09); // compensate for the arc
+        osd->DrawText(x, yc07, cSource::ToString(Channel->Source()), Theme.Color(clrChannelFrameFg), frameColor, cFont::GetFont(fontOsd), xc02 - x, yc10 - yc07, taTop | taRight | taBorder);
+        }
      DrawDevice();
+     }
 }
 
 void cSkinLCARSDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Following)
@@ -585,6 +634,20 @@ void cSkinLCARSDisplayChannel::SetMessage(eMessageType Type, const char *Text)
      osd->RestoreRegion();
      message = false;
      }
+}
+
+void cSkinLCARSDisplayChannel::SetPositioner(const cPositioner *Positioner)
+{
+  if (Positioner) {
+     int y0 = yc11 - ShowSeenExtent;
+     int y1 = yc11 + lineHeight / 2 - Gap / 2;
+     DrawDevicePosition(osd, Positioner, xc06, y0, xc07, y1, lastCurrentPosition);
+     }
+  else {
+     lastCurrentPosition = -1;
+     initial = true; // to have DrawSeen() refresh the progress bar
+     }
+  return;
 }
 
 void cSkinLCARSDisplayChannel::Flush(void)
@@ -854,7 +917,7 @@ cSkinLCARSDisplayMenu::cSkinLCARSDisplayMenu(void)
   xb12 = xb08 + w;
   xb11 = xb12 - Gap;
   xb13 = xb12 + lineHeight / 2;
-  xb14 = xb13 + Gap;;
+  xb14 = xb13 + Gap;
 
   // The color buttons in the main menu:
   int r = lineHeight;
@@ -1345,6 +1408,8 @@ void cSkinLCARSDisplayMenu::DrawLive(const cChannel *Channel)
   if (initial || Channel != lastChannel) {
      osd->DrawText(xa00, yt00, itoa(Channel->Number()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), tallFont, xa02 - xa00, yt02 - yt00, taTop | taRight | taBorder);
      osd->DrawText(xa03, yt00, Channel->Name(), Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xd00 - xa03, yd01 - yd00, taTop | taLeft);
+     int x = xa00 + (yc03 - yc02); // compensate for the arc
+     osd->DrawText(x, yc00, cSource::ToString(Channel->Source()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), cFont::GetFont(fontOsd), xa02 - x, yc03 - yc00, taTop | taRight | taBorder);
      lastChannel = Channel;
      DrawSeen(0, 0);
      }

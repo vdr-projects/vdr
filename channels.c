@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 2.24 2012/07/14 12:34:47 kls Exp $
+ * $Id: channels.c 3.0 2012/07/14 12:34:47 kls Exp $
  */
 
 #include "channels.h"

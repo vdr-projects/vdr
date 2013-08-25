@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: menu.c 2.0 2008/01/13 11:35:18 kls Exp $
+ * $Id: menu.c 3.0 2008/01/13 11:35:18 kls Exp $
  */
 
 #include "menu.h"

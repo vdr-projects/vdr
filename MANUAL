@@ -776,6 +776,28 @@ Version 2.0
                          are connected to the same sat cable must be set to the same
                          number here.
 
+  Use dish positioner = no
+                         By default, the 'P' command code in DiSEqC command sequences
+                         is ignored. Set this parameter to 'yes' if you are using a
+                         satellite dish positioner.
+
+  Site latitude (degrees) = 0
+  Site longitude (degrees) = 0
+                         Set these to the latitude and longitude of your dish's
+                         location if you use a satellite dish positioner. Use the
+                         "Green" key to switch between north/south and east/west,
+                         respectively.
+
+  Max. positioner swing (degrees) = 65
+                         Defines the maximum angle by which the positioner can move
+                         the dish away from due south (or north) in either direction.
+                         The valid range is 0...90.
+
+  Positioner speed (degrees/s) = 1.5
+                         Defines the speed at which the positioner moves the dish.
+                         The valid range is 0.1...180. This value is used to calculate
+                         how long it takes the positioner to reach the target position.
+
   CAM:
 
   n CAM Name             Shows the CAM slots that are present in this system, where

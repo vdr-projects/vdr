@@ -537,7 +537,7 @@ Andreas Böttger <fboettger@t-online.de>
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
 
-Rudi Hofer (Rudi.Hofer@gmx.de)
+Rudi Hofer <Rudi.Hofer@gmx.de>
  for his help in keeping 'channels.conf' up to date
  for reporting a problem with overlapping tab positions in skins when using wide fonts
 
@@ -700,6 +700,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for helping to debug a problem with reduced number of retries in Transfer Mode on
  SD-FF cards
  for reporting a problem with resuming replay of PES recordings
+ for suggesting to make all bonded devices (except for the master) turn off their LNB
+ power completely to avoid problems when receiving vertically polarized transponders
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1790,6 +1792,7 @@ Udo Richter <udo_richter@gmx.de>
  for requesting to keep using relative paths when building plugins locally
  for fixing a problem with detecting user inactivity in case the system time is
  changed after VDR has been started
+ for a patch that was used to add definitions for older DVB API versions, back until 5.0
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2017,6 +2020,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  be escaped
  for changing the template for PLGCFG to $(CONFDIR)/plugins.mk
  for updating the help and man page entry about the location of the epg.data file
+ for reporting a possible crash when shutting down VDR while subtitles are being
+ displayed
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2545,6 +2550,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
  for adding HandledExternally() to the EPG handler interface
  for adding IsUpdate() to the EPG handler interface
+ for adding Begin/EndSegmentTransfer() to the EPG handler interface
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2695,6 +2701,7 @@ Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
  character set to ISO-8859-9
  for adding MPEG 1 handling to remux.c
+ for a patch that was used as a base for implementing support for positioners
 
 Magnus Andersson <svankan@bahnhof.se>
  for translating OSD texts to the Swedish language
@@ -2752,7 +2759,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
 
-Derek Kelly (user.vdr@gmail.com)
+Derek Kelly <user.vdr@gmail.com>
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
@@ -2876,6 +2883,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for making plugin Makefiles use DESTDIR and the 'install' program
  for suggesting to make sure that plugins include the VDR header files from the actual
  VDR source directory when doing "make plugins"
+ for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3154,3 +3162,10 @@ Jochen Dolze <vdr@dolze.de>
 
 Dominique Dumont <domi.dumont@free.fr>
  for reporting a crash in the LCARS skin's main menu in case there is no current channel
+
+Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
+ for a patch that was used as a base for implementing support for positioners
+
+Manfred Völkel <mvoelkel@digitaldevices.de>
+ for suggesting to make all bonded devices (except for the master) turn off their LNB
+ power completely to avoid problems when receiving vertically polarized transponders

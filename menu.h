@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.13 2012/12/07 13:44:13 kls Exp $
+ * $Id: menu.h 3.1 2013/06/01 13:44:57 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -120,6 +120,7 @@ private:
   cTimeMs lastTime;
   int number;
   bool timeout;
+  const cPositioner *positioner;
   cChannel *channel;
   const cEvent *lastPresent;
   const cEvent *lastFollowing;

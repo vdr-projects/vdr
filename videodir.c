@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 2.4 2012/09/30 12:06:33 kls Exp $
+ * $Id: videodir.c 3.1 2013/08/23 12:28:06 kls Exp $
  */
 
 #include "videodir.h"
@@ -19,6 +19,8 @@
 #include "recording.h"
 #include "tools.h"
 
+//#define DEPRECATED_DISTRIBUTED_VIDEODIR // Code enclosed with this macro is deprecated and will be removed in a future version
+
 const char *VideoDirectory = VIDEODIR;
 
 void SetVideoDirectory(const char *Directory)
@@ -27,43 +29,60 @@ void SetVideoDirectory(const char *Directory)
 }
 
 class cVideoDirectory {
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
 private:
   char *name, *stored, *adjusted;
   int length, number, digits;
+#endif
 public:
   cVideoDirectory(void);
   ~cVideoDirectory();
   int FreeMB(int *UsedMB = NULL);
-  const char *Name(void) { return name ? name : VideoDirectory; }
+  const char *Name(void) { return
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
+                                  name ? name :
+#endif
+                                                VideoDirectory; }
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   const char *Stored(void) { return stored; }
   int Length(void) { return length; }
   bool IsDistributed(void) { return name != NULL; }
   bool Next(void);
   void Store(void);
   const char *Adjust(const char *FileName);
+#endif
   };
 
 cVideoDirectory::cVideoDirectory(void)
 {
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   length = strlen(VideoDirectory);
   name = (VideoDirectory[length - 1] == '0') ? strdup(VideoDirectory) : NULL;
   stored = adjusted = NULL;
   number = -1;
   digits = 0;
+#endif
 }
 
 cVideoDirectory::~cVideoDirectory()
 {
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   free(name);
   free(stored);
   free(adjusted);
+#endif
 }
 
 int cVideoDirectory::FreeMB(int *UsedMB)
 {
-  return FreeDiskSpaceMB(name ? name : VideoDirectory, UsedMB);
+  return FreeDiskSpaceMB(
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
+                         name ? name :
+#endif
+                                       VideoDirectory, UsedMB);
 }
 
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
 bool cVideoDirectory::Next(void)
 {
   if (name) {
@@ -107,6 +126,7 @@ const char *cVideoDirectory::Adjust(const char *FileName)
      }
   return NULL;
 }
+#endif
 
 cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags)
 {
@@ -118,6 +138,7 @@ cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags)
      errno = ENOENT; // must set 'errno' - any ideas for a better value?
      return NULL;
      }
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   // Are we going to create a new file?
   if ((Flags & O_CREAT) != 0) {
      cVideoDirectory Dir;
@@ -143,6 +164,7 @@ cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags)
            }
         }
      }
+#endif
   cUnbufferedFile *File = cUnbufferedFile::Create(ActualFileName, Flags, DEFFILEMODE);
   if (ActualFileName != FileName)
      free((char *)ActualFileName);
@@ -176,6 +198,7 @@ bool RemoveVideoFile(const char *FileName)
 bool VideoFileSpaceAvailable(int SizeMB)
 {
   cVideoDirectory Dir;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   if (Dir.IsDistributed()) {
      if (Dir.FreeMB() >= SizeMB * 2) // base directory needs additional space
         return true;
@@ -185,6 +208,7 @@ bool VideoFileSpaceAvailable(int SizeMB)
            }
      return false;
      }
+#endif
   return Dir.FreeMB() >= SizeMB;
 }
 
@@ -193,11 +217,15 @@ int VideoDiskSpace(int *FreeMB, int *UsedMB)
   int free = 0, used = 0;
   int deleted = DeletedRecordings.TotalFileSizeMB();
   cVideoDirectory Dir;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   do {
+#endif
      int u;
      free += Dir.FreeMB(&u);
      used += u;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
      } while (Dir.Next());
+#endif
   if (deleted > used)
      deleted = used; // let's not get beyond 100%
   free += deleted;
@@ -232,18 +260,26 @@ cString PrefixVideoFileName(const char *FileName, char Prefix)
 void RemoveEmptyVideoDirectories(const char *IgnoreFiles[])
 {
   cVideoDirectory Dir;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   do {
+#endif
      RemoveEmptyDirectories(Dir.Name(), false, IgnoreFiles);
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
      } while (Dir.Next());
+#endif
 }
 
 bool IsOnVideoDirectoryFileSystem(const char *FileName)
 {
   cVideoDirectory Dir;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
   do {
+#endif
      if (EntriesOnSameFileSystem(Dir.Name(), FileName))
         return true;
+#ifdef DEPRECATED_DISTRIBUTED_VIDEODIR
      } while (Dir.Next());
+#endif
   return false;
 }
 

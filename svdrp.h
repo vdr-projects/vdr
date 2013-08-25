@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 2.3 2012/04/26 10:30:06 kls Exp $
+ * $Id: svdrp.h 3.0 2012/04/26 10:30:06 kls Exp $
  */
 
 #ifndef __SVDRP_H

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svdrpdemo.c 2.3 2013/03/31 09:30:18 kls Exp $
+ * $Id: svdrpdemo.c 3.0 2013/03/31 09:30:18 kls Exp $
  */
 
 #include <vdr/plugin.h>

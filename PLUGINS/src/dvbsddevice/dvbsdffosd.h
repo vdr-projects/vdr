@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffosd.h 2.2 2012/12/03 13:43:55 kls Exp $
+ * $Id: dvbsdffosd.h 3.0 2012/12/03 13:43:55 kls Exp $
  */
 
 #ifndef __DVBSDFFODF_H

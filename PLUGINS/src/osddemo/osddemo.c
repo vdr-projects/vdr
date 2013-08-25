@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 2.12 2013/03/31 09:30:18 kls Exp $
+ * $Id: osddemo.c 3.0 2013/03/31 09:30:18 kls Exp $
  */
 
 #include <vdr/osd.h>
