@@ -998,31 +998,31 @@ msgid "Setup.LNB$own"
 msgstr "oma"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Käytä kääntömoottoria lautaselle"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Paikkakunnan leveysaste (°)"
 
 msgid "South"
-msgstr ""
+msgstr "etelään"
 
 msgid "North"
-msgstr ""
+msgstr "pohjoiseen"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Paikkakunnan pituusaste (°)"
 
 msgid "West"
-msgstr ""
+msgstr "länteen"
 
 msgid "East"
-msgstr ""
+msgstr "itään"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Laajin kääntömoottorin pyyhkäisy (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Kääntömoottorin nopeus (°/s)"
 
 msgid "CAM reset"
 msgstr "CAM nollaus"
@@ -1363,7 +1363,7 @@ msgstr "TOISTO"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Käännetaan lautasta %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsoli"

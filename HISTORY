@@ -7899,3 +7899,7 @@ Video Disk Recorder Revision History
   A recommended method for a relatively safe disk setup in a VDR system is to use two
   1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
   fails, you can replace it without data loss.
+
+2013-08-26: Version 2.1.2
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
