@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 2.34 2013/02/22 15:25:25 kls Exp $
+ * $Id: dvbsubtitle.c 3.1 2013/08/27 10:21:05 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1081,9 +1081,9 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             bs.SkipBits(2); // reserved
             if (regionFillFlag) {
                switch (region->Bpp()) {
-                 case 2: region->FillRegion(region8bitPixelCode); break;
+                 case 2: region->FillRegion(region2bitPixelCode); break;
                  case 4: region->FillRegion(region4bitPixelCode); break;
-                 case 8: region->FillRegion(region2bitPixelCode); break;
+                 case 8: region->FillRegion(region8bitPixelCode); break;
                  default: dbgregions("unknown bpp %d (%s %d)\n", region->Bpp(), __FUNCTION__, __LINE__);
                  }
                }
