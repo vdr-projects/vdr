@@ -5,9 +5,9 @@
  * how to reach the author.
  *
  * Original author: Marco Schluessler <marco@lordzodiac.de>
- * With some input from the "subtitle plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
+ * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.1 2013/08/27 10:21:05 kls Exp $
+ * $Id: dvbsubtitle.c 3.2 2013/08/30 09:40:35 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -15,8 +15,6 @@
 #include <inttypes.h>
 #include "device.h"
 #include "libsi/si.h"
-
-//#define FINISHPAGE_HACK
 
 #define PAGE_COMPOSITION_SEGMENT    0x10
 #define REGION_COMPOSITION_SEGMENT  0x11
@@ -34,13 +32,18 @@ static bool DebugPages = false;
 static bool DebugRegions = false;
 static bool DebugObjects = false;
 static bool DebugCluts = false;
+static bool DebugBitmaps = false; // generates dbg-log.htm and dbg-*.jpg to visualize subtitle handling
 
 #define dbgconverter(a...) if (DebugConverter) fprintf(stderr, a)
-#define dbgsegments(a...) if (DebugSegments) fprintf(stderr, a)
-#define dbgpages(a...) if (DebugPages) fprintf(stderr, a)
-#define dbgregions(a...) if (DebugRegions) fprintf(stderr, a)
-#define dbgobjects(a...) if (DebugObjects) fprintf(stderr, a)
-#define dbgcluts(a...) if (DebugCluts) fprintf(stderr, a)
+#define dbgsegments(a...)  if (DebugSegments)  fprintf(stderr, "  " a)
+#define dbgpages(a...)     if (DebugPages)     fprintf(stderr, "    " a)
+#define dbgregions(a...)   if (DebugRegions)   fprintf(stderr, "      " a)
+#define dbgobjects(a...)   if (DebugObjects)   fprintf(stderr, "        " a)
+#define dbgcluts(a...)     if (DebugCluts)     fprintf(stderr, "    " a)
+#define dbgbitmaps(a...)   if (DebugBitmaps)   fprintf(stderr, "      " a)
+
+static int DbgImgCnt = 0;
+static int64_t DbgFirstPts = -1;
 
 // --- cSubtitleClut ---------------------------------------------------------
 
@@ -207,30 +210,29 @@ cSubtitleObject::cSubtitleObject(int ObjectId, cBitmap *Bitmap)
 
 void cSubtitleObject::DecodeCharacterString(const uchar *Data, int NumberOfCodes)
 {
+  // "ETSI EN 300 743 V1.3.1 (2006-11)", chapter 7.2.5 "Object data segment" specifies
+  // character_code to be a 16-bit index number into the character table identified
+  // in the subtitle_descriptor. However, the "subtitling_descriptor" <sic> according to
+  // "ETSI EN 300 468 V1.13.1 (2012-04)" doesn't contain a "character table identifier".
+  // It only contains a three letter language code, without any specification as to how
+  // this is related to a specific character table.
+  // Apparently the first "code" in textual subtitles contains the character table
+  // identifier, and all codes are 8-bit only. So let's first make Data a string of
+  // 8-bit characters:
   if (NumberOfCodes > 0) {
+     char txt[NumberOfCodes + 1];
+     for (int i = 0; i < NumberOfCodes; i++)
+         txt[i] = Data[i * 2 + 1];
+     txt[NumberOfCodes] = 0;
      bool singleByte;
-     const uchar *from = &Data[1];
-     int len = NumberOfCodes * 2 - 1;
-     cCharSetConv conv(SI::getCharacterTable(from, len, &singleByte));
-     if (singleByte) {
-        char txt[NumberOfCodes + 1];
-        char *p = txt;
-        for (int i = 2; i < NumberOfCodes; ++i) {
-            uchar c = Data[i * 2 + 1] & 0xFF;
-            if (c == 0)
-               break;
-            if (' ' <= c && c <= '~' || c == '\n' || 0xA0 <= c)
-               *(p++) = c;
-            else if (c == 0x8A)
-               *(p++) = '\n';
-            }
-        *p = 0;
-        const char *s = conv.Convert(txt);
-        Utf8Strn0Cpy(textData, s, Utf8StrLen(s));
-        }
-     else {
-        // TODO: add proper multibyte support for "UTF-16", "EUC-KR", "GB2312", "GBK", "UTF-8"
-        }
+     const uchar *from = (uchar *)txt;
+     int len = NumberOfCodes;
+     const char *CharacterTable = SI::getCharacterTable(from, len, &singleByte);
+     dbgobjects("%s %d '%s'\n", CharacterTable, singleByte, from);
+     cCharSetConv conv(CharacterTable, cCharSetConv::SystemCharacterTable());
+     const char *s = conv.Convert((const char *)from);
+     dbgobjects("converted text: '%s'\n", s);
+     Utf8Strn0Cpy(textData, s, sizeof(textData));
      }
 }
 
@@ -464,7 +466,7 @@ cSubtitleRegion::cSubtitleRegion(int RegionId)
 
 void cSubtitleRegion::FillRegion(tIndex Index)
 {
-  dbgregions("FillRegion %d\n", Index);
+  dbgregions("fill region %d\n", Index);
   for (int y = 0; y < Height(); y++) {
       for (int x = 0; x < Width(); x++)
           SetIndex(x, y, Index);
@@ -489,7 +491,7 @@ void cSubtitleRegion::UpdateTextData(cSubtitleClut *Clut)
 {
   const cPalette *palette = Clut ? Clut->GetPalette(Depth()) : NULL;
   for (cSubtitleObject *so = objects.First(); so && palette; so = objects.Next(so)) {
-      if (Utf8StrLen(so->TextData()) > 0) {
+      if (*so->TextData()) {
          cFont *font = cFont::CreateFont(Setup.FontOsd, Setup.FontOsdSize);
          cBitmap tmp(font->Width(so->TextData()), font->Height(), Depth());
          double factor = (double)lineHeight / font->Height();
@@ -523,6 +525,7 @@ private:
   int state;
   int64_t pts;
   int timeout;
+  bool pending;
   cList<cSubtitleClut> cluts;
 public:
   cList<cSubtitleRegion> regions;
@@ -537,10 +540,12 @@ public:
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
   int64_t Pts(void) const { return pts; }
   int Timeout(void) { return timeout; }
+  bool Pending(void) { return pending; }
   void SetVersion(int Version) { version = Version; }
   void SetPts(int64_t Pts) { pts = Pts; }
   void SetState(int State);
   void SetTimeout(int Timeout) { timeout = Timeout; }
+  void SetPending(bool Pending) { pending = Pending; }
   };
 
 cDvbSubtitlePage::cDvbSubtitlePage(int PageId)
@@ -548,8 +553,9 @@ cDvbSubtitlePage::cDvbSubtitlePage(int PageId)
   pageId = PageId;
   version = -1;
   state = -1;
-  pts = 0;
+  pts = -1;
   timeout = 0;
+  pending = false;
 }
 
 cDvbSubtitlePage::~cDvbSubtitlePage()
@@ -624,7 +630,7 @@ void cDvbSubtitlePage::SetState(int State)
          regions.Clear();
          break;
     case 2: // mode change - new page
-         dbgpages("new Page\n");
+         dbgpages("new page\n");
          regions.Clear();
          cluts.Clear();
          break;
@@ -714,6 +720,7 @@ void cDvbSubtitleAssembler::Put(const uchar *Data, int Length)
 
 class cDvbSubtitleBitmaps : public cListObject {
 private:
+  int state;
   int64_t pts;
   int timeout;
   tArea *areas;
@@ -722,16 +729,20 @@ private:
   double osdFactorY;
   cVector<cBitmap *> bitmaps;
 public:
-  cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY);
+  cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY);
   ~cDvbSubtitleBitmaps();
+  int State(void) { return state; }
   int64_t Pts(void) { return pts; }
   int Timeout(void) { return timeout; }
   void AddBitmap(cBitmap *Bitmap);
   void Draw(cOsd *Osd);
+  void DbgDrawJpeg(const char *FileName, int Width, int Height, double Factor);
+  static void DbgPrintBitmap(cDvbSubtitleBitmaps *Bitmaps, int WindowWidth, int WindowHeight);
   };
 
-cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY)
+cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY)
 {
+  state = State;
   pts = Pts;
   timeout = Timeout;
   areas = Areas;
@@ -765,11 +776,11 @@ void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
          }
      if (Osd->CanHandleAreas(areas, numAreas) != oeOk) {
         for (int i = 0; i < numAreas; i++)
-            Bpp[i] = areas[i].bpp = Bpp[i];
+            areas[i].bpp = Bpp[i];
         AntiAlias = false;
         }
      }
-  if (Osd->SetAreas(areas, numAreas) == oeOk) {
+  if (State() == 0 || Osd->SetAreas(areas, numAreas) == oeOk) {
      for (int i = 0; i < bitmaps.Size(); i++) {
          cBitmap *b = bitmaps[i];
          if (Scale)
@@ -780,6 +791,73 @@ void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
          }
      Osd->Flush();
      }
+}
+
+void cDvbSubtitleBitmaps::DbgDrawJpeg(const char *FileName, int Width, int Height, double Factor)
+{
+  uchar mem[Width * Height * 3];
+  memset(mem, 0, sizeof(mem));
+  for (int i = 0; i < bitmaps.Size(); i++) {
+      cBitmap *b = bitmaps[i]->Scaled(Factor, Factor, true);
+      int x0 = b->X0() * Factor;
+      int y0 = b->Y0() * Factor;
+      for (int x = 0; x < b->Width(); x++) {
+          for (int y = 0; y < b->Height(); y++) {
+              tColor c = b->GetColor(x, y);
+              int o = ((y0 + y) * Width + x0 + x) * 3;
+              mem[o++] = (c & 0x00FF0000) >> 16;
+              mem[o++] = (c & 0x0000FF00) >> 8;
+              mem[o]   = (c & 0x000000FF);
+              }
+          }
+      delete b;
+      }
+  int Size = 0;
+  uchar *jpeg = RgbToJpeg(mem, Width, Height, Size);
+  int f = open(FileName, O_WRONLY | O_CREAT, DEFFILEMODE);
+  if (write(f, jpeg, Size) < 0)
+     LOG_ERROR_STR(FileName);
+  close(f);
+}
+
+void cDvbSubtitleBitmaps::DbgPrintBitmap(cDvbSubtitleBitmaps *Bitmap, int WindowWidth, int WindowHeight)
+{
+#define DBGMAXBITMAPS  100
+#define DBGBITMAPWIDTH 300
+  if (DbgImgCnt > DBGMAXBITMAPS)
+     return; // sanity check - don't flood the disk
+  if (!Bitmap)
+     return;
+  double fac = double(DBGBITMAPWIDTH) / WindowWidth;
+  int w = WindowWidth * fac;
+  int h = WindowHeight * fac;
+  if (w <= 0 || h <= 0)
+     return;
+  const char *Mode = "a";
+  if (DbgFirstPts < 0) {
+     DbgFirstPts = Bitmap->Pts();
+     Mode = "w";
+     }
+  FILE *f = fopen("dbg-log.htm", Mode);
+  double STC = double(cDevice::PrimaryDevice()->GetSTC() - DbgFirstPts) / 90000;
+  double Start = double(Bitmap->Pts() - DbgFirstPts) / 90000;
+  double Duration = Bitmap->Timeout();
+  double End = Start + Duration;
+  cString ImgName = cString::sprintf("dbg-%03d.jpg", DbgImgCnt++);
+  Bitmap->DbgDrawJpeg(ImgName, w, h, fac);
+#define BORDER //" border=1"
+  fprintf(f, "state = %d (%s)<br>", Bitmap->State(), Bitmap->State() == 0 ? "page update" : Bitmap->State() == 1 ? "page refresh" : Bitmap->State() == 2 ? "new page" : "???");
+  fprintf(f, "<table" BORDER "><tr><td>");
+  fprintf(f, "%.2f", STC);
+  fprintf(f, "</td><td>");
+  fprintf(f, "<img src=\"%s\">", *ImgName);
+  fprintf(f, "</td><td style=\"height:100%%\"><table" BORDER " style=\"height:100%%\">");
+  fprintf(f, "<tr><td valign=top>%.2f</td></tr>", Start);
+  fprintf(f, "<tr><td valign=middle>%.2f</td></tr>", Duration);
+  fprintf(f, "<tr><td valign=bottom>%.2f</td></tr>", End);
+  fprintf(f, "</table></td>");
+  fprintf(f, "</tr></table><p>\n");
+  fclose(f);
 }
 
 // --- cDvbSubtitleConverter -------------------------------------------------
@@ -799,6 +877,8 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   windowVerticalOffset = 0;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
+  DbgImgCnt = 0;
+  DbgFirstPts = -1;
   Start();
 }
 
@@ -818,7 +898,7 @@ void cDvbSubtitleConverter::SetupChanged(void)
 
 void cDvbSubtitleConverter::Reset(void)
 {
-  dbgconverter("Converter reset -----------------------\n");
+  dbgconverter("converter reset -----------------------\n");
   dvbSubtitleAssembler->Reset();
   Lock();
   pages->Clear();
@@ -848,9 +928,9 @@ int cDvbSubtitleConverter::ConvertFragments(const uchar *Data, int Length)
         }
 
      if (Length > PayloadOffset + SubstreamHeaderLength) {
-        int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : 0;
-        if (pts)
-           dbgconverter("Converter PTS: %"PRId64"\n", pts);
+        int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : -1;
+        if (pts >= 0)
+           dbgconverter("converter PTS: %"PRId64"\n", pts);
         const uchar *data = Data + PayloadOffset + SubstreamHeaderLength; // skip substream header
         int length = Length - PayloadOffset - SubstreamHeaderLength; // skip substream header
         if (ResetSubtitleAssembler)
@@ -884,9 +964,9 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
   if (Data && Length > 8) {
      int PayloadOffset = PesPayloadOffset(Data);
      if (Length > PayloadOffset) {
-        int64_t pts = PesGetPts(Data);
-        if (pts)
-           dbgconverter("Converter PTS: %"PRId64"\n", pts);
+        int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : -1;
+        if (pts >= 0)
+           dbgconverter("converter PTS: %"PRId64"\n", pts);
         const uchar *data = Data + PayloadOffset;
         int length = Length - PayloadOffset;
         if (length > 3) {
@@ -914,7 +994,6 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
 }
 
 #define LimitTo32Bit(n) ((n) & 0x00000000FFFFFFFFL)
-#define MAXDELTA 40000 // max. reasonable PTS/STC delta in ms
 
 void cDvbSubtitleConverter::Action(void)
 {
@@ -927,34 +1006,38 @@ void cDvbSubtitleConverter::Action(void)
            if (osd) {
               int NewSetupLevel = setupLevel;
               if (Timeout.TimedOut() || LastSetupLevel != NewSetupLevel) {
+                 dbgbitmaps("closing osd\n");
                  DELETENULL(osd);
                  }
               LastSetupLevel = NewSetupLevel;
               }
-           if (cDvbSubtitleBitmaps *sb = bitmaps->First()) {
-              int64_t STC = cDevice::PrimaryDevice()->GetSTC();
-              int64_t Delta = LimitTo32Bit(sb->Pts()) - LimitTo32Bit(STC); // some devices only deliver 32 bits
-              if (Delta > (int64_t(1) << 31))
-                 Delta -= (int64_t(1) << 32);
-              else if (Delta < -((int64_t(1) << 31) - 1))
-                 Delta += (int64_t(1) << 32);
-              Delta /= 90; // STC and PTS are in 1/90000s
-              if (Delta <= MAXDELTA) {
-                 if (Delta <= 0) {
-                    dbgconverter("Got %d bitmaps, showing #%d\n", bitmaps->Count(), sb->Index() + 1);
-                    if (AssertOsd()) {
-                       sb->Draw(osd);
-                       Timeout.Set(sb->Timeout() * 1000);
-                       dbgconverter("PTS: %"PRId64"  STC: %"PRId64" (%"PRId64") timeout: %d\n", sb->Pts(), cDevice::PrimaryDevice()->GetSTC(), Delta, sb->Timeout());
-                       }
-                    bitmaps->Del(sb);
-                    }
-                 else if (Delta < WaitMs)
-                    WaitMs = Delta;
-                 }
-              else
-                 bitmaps->Del(sb);
-              }
+           for (cDvbSubtitleBitmaps *sb = bitmaps->First(); sb; sb = bitmaps->Next(sb)) {
+               // Calculate the Delta between the STC (the current timestamp of the video)
+               // and the bitmap's PTS (the timestamp when the bitmap shall be presented).
+               // A negative Delta means that the bitmap will be presented in the future:
+               int64_t STC = cDevice::PrimaryDevice()->GetSTC();
+               int64_t Delta = LimitTo32Bit(STC) - LimitTo32Bit(sb->Pts()); // some devices only deliver 32 bits
+               if (Delta > (int64_t(1) << 31))
+                  Delta -= (int64_t(1) << 32);
+               else if (Delta < -((int64_t(1) << 31) - 1))
+                  Delta += (int64_t(1) << 32);
+               Delta /= 90; // STC and PTS are in 1/90000s
+               if (Delta >= 0) { // found a bitmap that shall be displayed...
+                  if (Delta < sb->Timeout() * 1000) { // ...and has not timed out yet
+                     if (AssertOsd()) {
+                        dbgbitmaps("showing bitmap #%d of %d\n", sb->Index() + 1, bitmaps->Count());
+                        sb->Draw(osd);
+                        Timeout.Set(sb->Timeout() * 1000);
+                        dbgconverter("PTS: %"PRId64"  STC: %"PRId64" (%"PRId64") timeout: %d\n", sb->Pts(), STC, Delta, sb->Timeout());
+                        }
+                     }
+                  else
+                     WaitMs = 0; // bitmap already timed out, so try next one immediately
+                  dbgbitmaps("deleting bitmap #%d of %d\n", sb->Index() + 1, bitmaps->Count());
+                  bitmaps->Del(sb);
+                  break;
+                  }
+               }
            }
         cCondWait::SleepMs(WaitMs);
         }
@@ -1028,13 +1111,17 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
      if (!page) {
         page = new cDvbSubtitlePage(pageId);
         pages->Add(page);
-        dbgpages("Create SubtitlePage %d (total pages = %d)\n", pageId, pages->Count());
+        dbgpages("create page %d (total pages = %d)\n", pageId, pages->Count());
         }
-     if (Pts)
-        page->SetPts(Pts);
      switch (segmentType) {
        case PAGE_COMPOSITION_SEGMENT: {
+            if (page->Pending()) {
+               dbgsegments("END_OF_DISPLAY_SET_SEGMENT (simulated)\n");
+               FinishPage(page);
+               }
             dbgsegments("PAGE_COMPOSITION_SEGMENT\n");
+            if (Pts >= 0)
+               page->SetPts(Pts);
             int pageTimeout = bs.GetBits(8);
             int pageVersion = bs.GetBits(4);
             if (pageVersion == page->Version())
@@ -1043,13 +1130,15 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             page->SetTimeout(pageTimeout);
             page->SetState(bs.GetBits(2));
             bs.SkipBits(2); // reserved
-            dbgpages("Update page id %d version %d pts %"PRId64" timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
+            dbgpages("update page id %d version %d pts %"PRId64" timeout %d state %d\n", pageId, page->Version(), page->Pts(), page->Timeout(), page->State());
             while (!bs.IsEOF()) {
                   cSubtitleRegion *region = page->GetRegionById(bs.GetBits(8), true);
                   bs.SkipBits(8); // reserved
                   region->SetHorizontalAddress(bs.GetBits(16));
                   region->SetVerticalAddress(bs.GetBits(16));
+                  dbgregions("region id %d x %d y %d\n", region->RegionId(), region->HorizontalAddress(), region->VerticalAddress());
                   }
+            page->SetPending(true);
             break;
             }
        case REGION_COMPOSITION_SEGMENT: {
@@ -1074,7 +1163,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             region->SetDepth(bs.GetBits(3));
             bs.SkipBits(2); // reserved
             region->SetClutId(bs.GetBits(8));
-            dbgregions("Region pageId %d id %d version %d fill %d width %d height %d level %d depth %d clutId %d\n", pageId, region->RegionId(), region->Version(), regionFillFlag, regionWidth, regionHeight, region->Level(), region->Depth(), region->ClutId());
+            dbgregions("region pageId %d id %d version %d fill %d width %d height %d level %d depth %d clutId %d\n", pageId, region->RegionId(), region->Version(), regionFillFlag, regionWidth, regionHeight, region->Level(), region->Depth(), region->ClutId());
             int region8bitPixelCode = bs.GetBits(8);
             int region4bitPixelCode = bs.GetBits(4);
             int region2bitPixelCode = bs.GetBits(2);
@@ -1111,7 +1200,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                break; // no update
             clut->SetVersion(clutVersion);
             bs.SkipBits(4); // reserved
-            dbgcluts("Clut pageId %d id %d version %d\n", pageId, clut->ClutId(), clut->Version());
+            dbgcluts("clut pageId %d id %d version %d\n", pageId, clut->ClutId(), clut->Version());
             while (!bs.IsEOF()) {
                   uchar clutEntryId = bs.GetBits(8);
                   bool entryClut2Flag = bs.GetBit();
@@ -1147,7 +1236,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                   if (entryClut8Flag)
                      clut->SetColor(8, clutEntryId, value);
                   }
-            dbgcluts("\n");
             break;
             }
        case OBJECT_DATA_SEGMENT: {
@@ -1162,7 +1250,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             int codingMethod = bs.GetBits(2);
             object->SetNonModifyingColorFlag(bs.GetBit());
             bs.SkipBit(); // reserved
-            dbgobjects("Object pageId %d id %d version %d method %d modify %d\n", pageId, object->ObjectId(), object->Version(), object->CodingMethod(), object->NonModifyingColorFlag());
+            dbgobjects("object pageId %d id %d version %d method %d modify %d\n", pageId, object->ObjectId(), object->Version(), object->CodingMethod(), object->NonModifyingColorFlag());
             if (codingMethod == 0) { // coding of pixels
                int topFieldLength = bs.GetBits(16);
                int bottomFieldLength = bs.GetBits(16);
@@ -1177,9 +1265,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                int numberOfCodes = bs.GetBits(8);
                object->DecodeCharacterString(bs.GetData(), numberOfCodes);
                }
-#ifdef FINISHPAGE_HACK
-            FinishPage(page); // flush to OSD right away
-#endif
             break;
             }
        case DISPLAY_DEFINITION_SEGMENT: {
@@ -1199,7 +1284,6 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
                   windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                   }
                SetOsdData();
-               SetupChanged();
                ddsVersionNumber = version;
                }
             break;
@@ -1248,6 +1332,7 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
        case END_OF_DISPLAY_SET_SEGMENT: {
             dbgsegments("END_OF_DISPLAY_SET_SEGMENT\n");
             FinishPage(page);
+            page->SetPending(false);
             break;
             }
        default:
@@ -1267,6 +1352,7 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   int Bpp = 8;
   bool Reduced = false;
   while (osd && osd->CanHandleAreas(Areas, NumAreas) != oeOk) {
+        dbgbitmaps("CanHandleAreas: %d\n", osd->CanHandleAreas(Areas, NumAreas));
         int HalfBpp = Bpp / 2;
         if (HalfBpp >= 2) {
            for (int i = 0; i < NumAreas; i++) {
@@ -1280,7 +1366,8 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
         else
            return; // unable to draw bitmaps
         }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
+  LOCK_THREAD;
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->State(), Page->Pts(), Page->Timeout(), Areas, NumAreas, osdFactorX, osdFactorY);
   bitmaps->Add(Bitmaps);
   for (int i = 0; i < NumAreas; i++) {
       cSubtitleRegion *sr = Page->regions.Get(i);
@@ -1313,4 +1400,6 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
          Bitmaps->AddBitmap(bm);
          }
       }
+  if (DebugBitmaps)
+     cDvbSubtitleBitmaps::DbgPrintBitmap(Bitmaps, windowWidth, windowHeight);
 }
