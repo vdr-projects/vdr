@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.1 2013/05/23 12:41:06 kls Exp $
+ * $Id: config.c 3.2 2013/08/31 12:41:28 kls Exp $
  */
 
 #include "config.h"
@@ -393,7 +393,7 @@ cSetup::cSetup(void)
   SiteLat = 0;
   SiteLon = 0;
   PositionerSpeed = 15;
-  PositionerSwing = 65;
+  PositionerSwing = 650;
   PositionerLastLon = 0;
   SetSystemTime = 0;
   TimeSource = 0;

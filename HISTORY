@@ -7901,7 +7901,7 @@ Video Disk Recorder Revision History
   1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
   fails, you can replace it without data loss.
 
-2013-08-30: Version 2.1.2
+2013-08-31: Version 2.1.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed displaying DVB subtitles (thanks to Rolf Ahrenberg for helping to debug and
@@ -7915,3 +7915,4 @@ Video Disk Recorder Revision History
   + The debug output now uses some indentation for better structuring.
   + Fixed handling subtitles encoded as a string of characters (the very first
     character was always skipped).
+- Fixed wrong initialization of Setup.PositionerSwing (reported by Arthur Konovalov).
