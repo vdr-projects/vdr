@@ -994,31 +994,31 @@ msgid "Setup.LNB$own"
 msgstr "oma"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Antenni positsioneerija kasutamine"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Asukoha laiuskraad (°)"
 
 msgid "South"
-msgstr ""
+msgstr "lõunasse (S)"
 
 msgid "North"
-msgstr ""
+msgstr "põhja (N)"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Asukoha pikkuskraad (°)"
 
 msgid "West"
-msgstr ""
+msgstr "läände (W)"
 
 msgid "East"
-msgstr ""
+msgstr "itta (E)"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Positsioneerija max pöördeulatus (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Positsioneerija kiirus (°/s)"
 
 msgid "CAM reset"
 msgstr "CAM taaskäivitamine"
@@ -1359,7 +1359,7 @@ msgstr "ESITUS"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Antenni pööramine positsioonile %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Panels"

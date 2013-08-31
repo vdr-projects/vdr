@@ -7916,3 +7916,4 @@ Video Disk Recorder Revision History
   + Fixed handling subtitles encoded as a string of characters (the very first
     character was always skipped).
 - Fixed wrong initialization of Setup.PositionerSwing (reported by Arthur Konovalov).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
