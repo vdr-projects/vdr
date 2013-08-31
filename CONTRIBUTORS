@@ -1492,6 +1492,8 @@ Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing handling the '0' key for switching between the last two channels
  for making cPatFilter::Process() check whether the channel exists before setting
  the PMT filter
+ for the Rotor plugin, from which code was used by a patch that was used as a base for
+ implementing support for positioners
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h

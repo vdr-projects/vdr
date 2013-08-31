@@ -7845,7 +7845,8 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 - Added basic support for positioners to control steerable satellite dishes (based on
-  a patch from Seppo Ingalsuo and Ales Jurik).
+  a patch from Seppo Ingalsuo and Ales Jurik, which in turn used code from Thomas
+  Bergwinkl's Rotor plugin).
   + Supports GotoN (aka "DiSEqC 1.2") and GotoX (aka "USALS").
   + The new DiSEqC command code 'P' can be used to instruct a positioner to move the
     dish to the required satellite position. When a 'P' code is processed, further
