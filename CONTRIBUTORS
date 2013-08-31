@@ -2965,6 +2965,7 @@ Johan Andersson <jna@jna.pp.se>
 Dave Pickles <dave@pickles.me.uk>
  for adding support for "content identifier descriptor" and "default authority
  descriptor" to 'libsi'
+ for reporting that old EPG events are not cleaned up in case no epg data file is given
 
 Holger Dengler <holger.dengler@gmx.de>
  for making the isnumber() function check the given pointer for NULL

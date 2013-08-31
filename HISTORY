@@ -7917,3 +7917,5 @@ Video Disk Recorder Revision History
     character was always skipped).
 - Fixed wrong initialization of Setup.PositionerSwing (reported by Arthur Konovalov).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed cleaning up old EPG events in case no epg data file is given (reported by
+  Dave Pickles).
