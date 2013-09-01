@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.23 2013/02/17 14:12:07 kls Exp $
+ * $Id: epg.c 2.23.1.1 2013/09/01 09:16:53 kls Exp $
  */
 
 #include "epg.h"
@@ -1140,16 +1140,19 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 class cEpgDataWriter : public cThread {
 private:
   cMutex mutex;
+  bool dump;
 protected:
   virtual void Action(void);
 public:
   cEpgDataWriter(void);
+  void SetDump(bool Dump) { dump = Dump; }
   void Perform(void);
   };
 
 cEpgDataWriter::cEpgDataWriter(void)
 :cThread("epg data writer", true)
 {
+  dump = false;
 }
 
 void cEpgDataWriter::Action(void)
@@ -1169,7 +1172,8 @@ void cEpgDataWriter::Perform(void)
            p->Cleanup(now);
        }
   }
-  cSchedules::Dump();
+  if (dump)
+     cSchedules::Dump();
 }
 
 static cEpgDataWriter EpgDataWriter;
@@ -1203,6 +1207,7 @@ void cSchedules::SetEpgDataFileName(const char *FileName)
 {
   free(epgDataFileName);
   epgDataFileName = FileName ? strdup(FileName) : NULL;
+  EpgDataWriter.SetDump(epgDataFileName != NULL);
 }
 
 void cSchedules::SetModified(cSchedule *Schedule)
@@ -1217,12 +1222,10 @@ void cSchedules::Cleanup(bool Force)
      lastDump = 0;
   time_t now = time(NULL);
   if (now - lastDump > EPGDATAWRITEDELTA) {
-     if (epgDataFileName) {
-        if (Force)
-           EpgDataWriter.Perform();
-        else if (!EpgDataWriter.Active())
-           EpgDataWriter.Start();
-        }
+     if (Force)
+        EpgDataWriter.Perform();
+     else if (!EpgDataWriter.Active())
+        EpgDataWriter.Start();
      lastDump = now;
      }
 }
