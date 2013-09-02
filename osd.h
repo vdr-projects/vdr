@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 2.20 2013/02/12 13:39:08 kls Exp $
+ * $Id: osd.h 3.1 2013/09/02 07:53:54 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -657,7 +657,7 @@ public:
        ///< covers the entire view port. This may be of advantage if, e.g.,
        ///< there is a draw port that holds, say, 11 lines of text, while the
        ///< view port displays only 10 lines. By Pan()'ing the draw port up one
-       ///< line, an new bottom line can be written into the draw port (without
+       ///< line, a new bottom line can be written into the draw port (without
        ///< being seen through the view port), and later the draw port can be
        ///< shifted smoothly, resulting in a smooth scrolling.
        ///< It is the caller's responsibility to make sure that Source and Dest
