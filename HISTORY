@@ -7901,6 +7901,25 @@ Video Disk Recorder Revision History
   1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
   fails, you can replace it without data loss.
 
+2013-09-01: Version 2.0.3
+
+- Fixed asserting free disk space in the cutter.
+- No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
+  Priority is less than 1.
+- Fixed handling LIRC events in case repeated events are lost.
+- Fixed a possible crash when shutting down VDR while subtitles are being displayed
+  (reported by Ville Skyttä).
+- cDevice::IsPrimaryDevice() now also checks whether the primary device actually has
+  a decoder and returns false otherwise. This should improve device allocation on
+  systems that are only used as a receiver and don't actually display anything.
+- Increased the value of MAXRETRIES to 20 to reduce the probability of disturbances
+  in transfer mode.
+- All bonded devices (except for the master) now turn off their LNB power completely
+  to avoid problems when receiving vertically polarized transponders (suggested by
+  Manfred Völkel and Oliver Endriss).
+- Fixed cleaning up old EPG events in case no epg data file is given (reported by
+  Dave Pickles).
+
 2013-08-31: Version 2.1.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
