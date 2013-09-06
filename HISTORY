@@ -7920,7 +7920,7 @@ Video Disk Recorder Revision History
 - Fixed cleaning up old EPG events in case no epg data file is given (reported by
   Dave Pickles).
 
-2013-08-31: Version 2.1.2
+2013-09-06: Version 2.1.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed displaying DVB subtitles (thanks to Rolf Ahrenberg for helping to debug and
@@ -7928,10 +7928,11 @@ Video Disk Recorder Revision History
   + Fixed handling DVB subtitle fill region codes for 2 and 8 bpp.
   + Fixed handling pages without an explicit END_OF_DISPLAY_SET_SEGMENT.
     The FINISHPAGE_HACK is no longer necessary.
-  + Fixed handling "page refreshes".
-  + Added DebugBitmaps, which, if set to true, generates an HTML page with a sequence
-    of images, showing the subtitle data as it is processed.
-  + The debug output now uses some indentation for better structuring.
+  + Fixed handling "page refreshes". The data is now parsed and stored closer to the
+    DVB standard specs, introducing "object refs" and "region refs".
+  + The debug output now goes into an HTML file named dbg-log.htm and shows the actual
+    bitmaps (dbg-nnn.jpg) used to display the subtitles. That way it is much easier to
+    see what's actually going on.
   + Fixed handling subtitles encoded as a string of characters (the very first
     character was always skipped).
 - Fixed wrong initialization of Setup.PositionerSwing (reported by Arthur Konovalov).

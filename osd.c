@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.1 2013/05/18 12:33:16 kls Exp $
+ * $Id: osd.c 3.2 2013/09/03 11:59:17 kls Exp $
  */
 
 #include "osd.h"
@@ -512,6 +512,17 @@ void cBitmap::SetIndex(int x, int y, tIndex Index)
      }
 }
 
+void cBitmap::Fill(tIndex Index)
+{
+  if (bitmap) {
+     memset(bitmap, Index, width * height);
+     dirtyX1 = 0;
+     dirtyY1 = 0;
+     dirtyX2 = width - 1;
+     dirtyY2 = height - 1;
+     }
+}
+
 void cBitmap::DrawPixel(int x, int y, tColor Color)
 {
   x -= x0;
@@ -824,7 +835,7 @@ void cBitmap::ShrinkBpp(int NewBpp)
      }
 }
 
-cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias)
+cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias) const
 {
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
