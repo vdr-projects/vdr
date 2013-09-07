@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.82.1.2 2013/04/27 10:32:28 kls Exp $
+ * $Id: menu.c 2.82.1.3 2013/09/07 10:24:48 kls Exp $
  */
 
 #include "menu.h"
@@ -4968,10 +4968,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    if (Setup.DelTimeshiftRec) {
-                              cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
-                              return rc && rc->InstantId() ? osEnd : osRecordings;
-                              }
+            case kBack:    Hide();
+                           Stop();
                            return osRecordings;
             default:       return osUnknown;
             }

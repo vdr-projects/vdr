@@ -7831,3 +7831,8 @@ Video Disk Recorder Revision History
   Manfred Völkel and Oliver Endriss).
 - Fixed cleaning up old EPG events in case no epg data file is given (reported by
   Dave Pickles).
+
+2013-09-07: Version 2.0.4
+
+- Unified the internal sequence of actions when pressing the Blue and the Back key,
+  respectively, during replay (reported by Thomas Maass).
