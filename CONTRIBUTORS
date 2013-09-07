@@ -3174,3 +3174,7 @@ Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
 Manfred Völkel <mvoelkel@digitaldevices.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+
+Thomas Maass <mase@setho.org>
+ for reporting a difference in the internal sequence of actions when pressing the Blue
+ and the Back key, respectively, during replay
