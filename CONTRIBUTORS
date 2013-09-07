@@ -2544,6 +2544,8 @@ Ulf Kiener <webmaster@ulf-kiener.de>
  for suggesting to add user defined key kUser0
  for suggesting to perform absolute jumps when replaying a recording (via the Red key)
  only if an actual value has been entered
+ for suggesting to make the Yellow button in the main menu not act as "Pause" if
+ "Pause key handling" is set to "do not pause live video"
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
