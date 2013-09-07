@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.3 2013/09/06 12:16:16 kls Exp $
+ * $Id: dvbsubtitle.c 3.4 2013/09/07 10:39:46 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -106,9 +106,11 @@ cString cSubtitleDebug::WriteJpeg(const cBitmap *Bitmap, int MaxX, int MaxY)
   uchar *Jpeg = RgbToJpeg(mem, w, h, Size);
   cString ImgName = cString::sprintf("dbg-%03d.jpg", imgCnt++);
   int f = open(ImgName, O_WRONLY | O_CREAT, DEFFILEMODE);
-  if (write(f, Jpeg, Size) < 0)
-     LOG_ERROR_STR(*ImgName);
-  close(f);
+  if (f >= 0) {
+     if (write(f, Jpeg, Size) < 0)
+        LOG_ERROR_STR(*ImgName);
+     close(f);
+     }
   free(Jpeg);
   return ImgName;
 }
@@ -118,13 +120,14 @@ void cSubtitleDebug::WriteHtml(const char *Format, ...)
   if (!Active())
      return;
   cMutexLock MutexLock(&mutex);
-  FILE *f = fopen("dbg-log.htm", newFile ? "w" : "a");
-  va_list ap;
-  va_start(ap, Format);
-  vfprintf(f, Format, ap);
-  va_end(ap);
-  fclose(f);
-  newFile = false;
+  if (FILE *f = fopen("dbg-log.htm", newFile ? "w" : "a")) {
+     va_list ap;
+     va_start(ap, Format);
+     vfprintf(f, Format, ap);
+     va_end(ap);
+     fclose(f);
+     newFile = false;
+     }
 }
 
 static cSubtitleDebug SD;
