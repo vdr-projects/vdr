@@ -7941,3 +7941,5 @@ Video Disk Recorder Revision History
   Dave Pickles).
 - Unified the internal sequence of actions when pressing the Blue and the Back key,
   respectively, during replay (reported by Thomas Maass).
+- The Yellow button in the main menu no longer acts as "Pause" if "Pause key handling"
+  is set to "do not pause live video" (suggested by Ulf Kiener).
