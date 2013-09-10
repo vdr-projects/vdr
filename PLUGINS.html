@@ -2042,8 +2042,6 @@ from <tt>cPositioner</tt>, as in
 #include &lt;vdr/positioner.h&gt;
 
 class cMyPositioner : public cPositioner {
-private:
-  void SendDiseqc(uint8_t *Codes, int NumCodes);
 public:
   cMyPositioner(void);
   virtual void Drive(ePositionerDirection Direction);
