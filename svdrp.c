@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.24 2013/02/17 13:18:01 kls Exp $
+ * $Id: svdrp.c 3.1 2013/09/10 13:21:38 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1550,7 +1550,7 @@ void cSVDRP::CmdSTAT(const char *Option)
   if (*Option) {
      if (strcasecmp(Option, "DISK") == 0) {
         int FreeMB, UsedMB;
-        int Percent = VideoDiskSpace(&FreeMB, &UsedMB);
+        int Percent = cVideoDirectory::VideoDiskSpace(&FreeMB, &UsedMB);
         Reply(250, "%dMB %dMB %d%%", FreeMB + UsedMB, FreeMB, Percent);
         }
      else

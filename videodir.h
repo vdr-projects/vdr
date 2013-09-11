@@ -1,10 +1,10 @@
 /*
- * videodir.h: Functions to maintain a distributed video directory
+ * videodir.h: Functions to maintain the video directory
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.h 2.3 2012/09/30 11:01:15 kls Exp $
+ * $Id: videodir.h 3.1 2013/09/11 12:19:47 kls Exp $
  */
 
 #ifndef __VIDEODIR_H
@@ -13,18 +13,80 @@
 #include <stdlib.h>
 #include "tools.h"
 
+#define DEPRECATED_VIDEODIR
+#ifdef DEPRECATED_VIDEODIR
 extern const char *VideoDirectory;
+#endif
 
-void SetVideoDirectory(const char *Directory);
-cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags);
-int CloseVideoFile(cUnbufferedFile *File);
-bool RenameVideoFile(const char *OldName, const char *NewName);
-bool RemoveVideoFile(const char *FileName);
-bool VideoFileSpaceAvailable(int SizeMB);
-int VideoDiskSpace(int *FreeMB = NULL, int *UsedMB = NULL); // returns the used disk space in percent
-cString PrefixVideoFileName(const char *FileName, char Prefix);
-void RemoveEmptyVideoDirectories(const char *IgnoreFiles[] = NULL);
-bool IsOnVideoDirectoryFileSystem(const char *FileName);
+class cVideoDirectory {
+private:
+  static cString name;
+  static cVideoDirectory *current;
+  static cVideoDirectory *Current(void);
+public:
+  cVideoDirectory(void);
+  virtual ~cVideoDirectory();
+  virtual int FreeMB(int *UsedMB = NULL);
+      ///< Returns the total amount (in MB) of free disk space for recording.
+      ///< If UsedMB is given, it returns the amount of disk space in use by
+      ///< existing recordings (or anything else) on that disk.
+  virtual bool Register(const char *FileName);
+      ///< By default VDR assumes that the video directory consists of one large
+      ///< volume, on which it can store its recordings. A derived cVideoDirectory
+      ///< may, for instance, use several separate disks to store recordings.
+      ///< The given FileName is the full path name (including the video directory) of
+      ///< a recording file ('*.ts') that is about to be opened for writing. If the actual
+      ///< file shall be put on an other disk, the derived cVideoDirectory should
+      ///< create a symbolic link from the given FileName to the other location.
+      ///< Returns true if the operation was successful.
+      ///< The default implementation just checks whether the incoming file name really
+      ///< is under the video directory.
+  virtual bool Rename(const char *OldName, const char *NewName);
+      ///< Renames the directory OldName to NewName.
+      ///< OldName and NewName are full path names that begin with the name of the
+      ///< video directory and end with '*.rec' or '*.del'. Only the base name (the
+      ///< rightmost component) of the two names may be different.
+      ///< Returns true if the operation was successful.
+      ///< The default implementation just calls the system's rename() function.
+  virtual bool Move(const char *FromName, const char *ToName);
+      ///< Moves the directory FromName to the location ToName. FromName is the full
+      ///< path name of a recording's '*.rec' directory. ToName has the same '*.rec'
+      ///< part as FromName, but a different directory path above it.
+      ///< Returns true if the operation was successful.
+      ///< The default implementation just calls the system's rename() function.
+  virtual bool Remove(const char *Name);
+      ///< Removes the directory with the given Name and everything it contains.
+      ///< Name is a full path name that begins with the name of the video directory.
+      ///< Returns true if the operation was successful.
+      ///< The default implementation calls RemoveFileOrDir().
+  virtual void Cleanup(const char *IgnoreFiles[] = NULL);
+      ///< Recursively removes all empty directories under the video directory.
+      ///< If IgnoreFiles is given, the file names in this (NULL terminated) array
+      ///< are ignored when checking whether a directory is empty. These are
+      ///< typically "dot files", like e.g. ".sort".
+      ///< The default implementation calls RemoveEmptyDirectories().
+  virtual bool Contains(const char *Name);
+      ///< Checks whether the directory Name is on the same file system as the
+      ///< video directory. Name is the full path name of a recording's '*.rec'
+      ///< directory. This function is usually called when an ongoing recording
+      ///< is about to run out of disk space, and an existing (old) recording needs
+      ///< to be deleted. It shall make sure that deleting this old recording will
+      ///< actually free up space in the video directory, and not on some other
+      ///< device that just happens to be mounted.
+      ///< The default implementation calls EntriesOnSameFileSystem().
+  static const char *Name(void);
+  static void SetName(const char *Name);
+  static void Destroy(void);
+  static cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags);
+  static bool RenameVideoFile(const char *OldName, const char *NewName);
+  static bool MoveVideoFile(const char *FromName, const char *ToName);
+  static bool RemoveVideoFile(const char *FileName);
+  static bool VideoFileSpaceAvailable(int SizeMB);
+  static int VideoDiskSpace(int *FreeMB = NULL, int *UsedMB = NULL); // returns the used disk space in percent
+  static cString PrefixVideoFileName(const char *FileName, char Prefix);
+  static void RemoveEmptyVideoDirectories(const char *IgnoreFiles[] = NULL);
+  static bool IsOnVideoDirectoryFileSystem(const char *FileName);
+  };
 
 class cVideoDiskUsage {
 private:

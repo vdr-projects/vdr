@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 3.2 2013/08/21 13:15:24 kls Exp $
+ * $Id: cutter.c 3.3 2013/09/10 14:51:45 kls Exp $
  */
 
 #include "cutter.h"
@@ -664,19 +664,7 @@ bool cCutter::Start(const char *FileName)
         Recording.SetStartTime(Recording.Start() + (int(First->Position() / Recording.FramesPerSecond() + 30) / 60) * 60);
 
      const char *evn = Recording.PrefixFileName('%');
-     if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
-        // XXX this can be removed once RenameVideoFile() follows symlinks (see videodir.c)
-        // remove a possible deleted recording with the same name to avoid symlink mixups:
-        char *s = strdup(evn);
-        char *e = strrchr(s, '.');
-        if (e) {
-           if (strcmp(e, ".rec") == 0) {
-              strcpy(e, ".del");
-              RemoveVideoFile(s);
-              }
-           }
-        free(s);
-        // XXX
+     if (evn && cVideoDirectory::RemoveVideoFile(evn) && MakeDirs(evn, true)) {
         editedVersionName = evn;
         Recording.WriteInfo();
         Recordings.AddByName(editedVersionName, false);
@@ -701,7 +689,7 @@ void cCutter::Stop(void)
         esyslog("ERROR: '%s' during editing process", Error);
      if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), editedVersionName) == 0)
         cControl::Shutdown();
-     RemoveVideoFile(editedVersionName);
+     cVideoDirectory::RemoveVideoFile(editedVersionName);
      Recordings.DelByName(editedVersionName);
      }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.5 2013/09/07 12:43:26 kls Exp $
+ * $Id: menu.c 3.6 2013/09/10 13:16:40 kls Exp $
  */
 
 #include "menu.h"
@@ -2316,7 +2316,7 @@ void cMenuRecordings::Set(bool Refresh)
 
 cString cMenuRecordings::DirectoryName(void)
 {
-  cString d(VideoDirectory);
+  cString d(cVideoDirectory::Name());
   if (base) {
      char *s = ExchangeChars(strdup(base), true);
      d = AddDirectory(d, s);
@@ -4342,7 +4342,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      AssertFreeDiskSpace(Timer->Priority(), !Timer->Pending());
      Timer->SetPending(true);
      }
-  VideoDiskSpace(&FreeMB);
+  cVideoDirectory::VideoDiskSpace(&FreeMB);
   if (FreeMB < MINFREEDISK) {
      if (!Timer || time(NULL) - LastNoDiskSpaceMessage > NODISKSPACEDELTA) {
         isyslog("not enough disk space to start recording%s%s", Timer ? " timer " : "", Timer ? *Timer->ToDescr() : "");

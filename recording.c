@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.2 2013/08/21 13:56:33 kls Exp $
+ * $Id: recording.c 3.3 2013/09/11 08:28:27 kls Exp $
  */
 
 #include "recording.h"
@@ -90,7 +90,7 @@ cRemoveDeletedRecordingsThread::cRemoveDeletedRecordingsThread(void)
 void cRemoveDeletedRecordingsThread::Action(void)
 {
   // Make sure only one instance of VDR does this:
-  cLockFile LockFile(VideoDirectory);
+  cLockFile LockFile(cVideoDirectory::Name());
   if (LockFile.Lock()) {
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
@@ -109,7 +109,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
          }
      if (deleted) {
         const char *IgnoreFiles[] = { SORTMODEFILE, NULL };
-        RemoveEmptyVideoDirectories(IgnoreFiles);
+        cVideoDirectory::RemoveEmptyVideoDirectories(IgnoreFiles);
         }
      }
 }
@@ -145,9 +145,9 @@ void AssertFreeDiskSpace(int Priority, bool Force)
   static time_t LastFreeDiskCheck = 0;
   int Factor = (Priority == -1) ? 10 : 1;
   if (Force || time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA / Factor) {
-     if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
+     if (!cVideoDirectory::VideoFileSpaceAvailable(MINDISKSPACE)) {
         // Make sure only one instance of VDR does this:
-        cLockFile LockFile(VideoDirectory);
+        cLockFile LockFile(cVideoDirectory::Name());
         if (!LockFile.Lock())
            return;
         // Remove the oldest file that has been "deleted":
@@ -800,8 +800,8 @@ cRecording::cRecording(const char *FileName)
   FileName = fileName = strdup(FileName);
   if (*(fileName + strlen(fileName) - 1) == '/')
      *(fileName + strlen(fileName) - 1) = 0;
-  if (strstr(FileName, VideoDirectory) == FileName)
-     FileName += strlen(VideoDirectory) + 1;
+  if (strstr(FileName, cVideoDirectory::Name()) == FileName)
+     FileName += strlen(cVideoDirectory::Name()) + 1;
   const char *p = strrchr(FileName, '/');
 
   name = NULL;
@@ -949,7 +949,7 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = strdup(FileName() + strlen(VideoDirectory));
+     char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
      if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
         s = StripEpisodeName(s, RecordingsSortMode != rsmName);
      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
@@ -990,11 +990,11 @@ const char *cRecording::FileName(void) const
      const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
      int ch = isPesRecording ? priority : channel;
      int ri = isPesRecording ? lifetime : instanceId;
-     char *Name = LimitNameLengths(strdup(name), DirectoryPathMax - strlen(VideoDirectory) - 1 - 42, DirectoryNameMax); // 42 = length of an actual recording directory name (generated with DATAFORMATTS) plus some reserve
+     char *Name = LimitNameLengths(strdup(name), DirectoryPathMax - strlen(cVideoDirectory::Name()) - 1 - 42, DirectoryNameMax); // 42 = length of an actual recording directory name (generated with DATAFORMATTS) plus some reserve
      if (strcmp(Name, name) != 0)
         dsyslog("recording file name '%s' truncated to '%s'", name, Name);
      Name = ExchangeChars(Name, true);
-     fileName = strdup(cString::sprintf(fmt, VideoDirectory, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
+     fileName = strdup(cString::sprintf(fmt, cVideoDirectory::Name(), Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
      free(Name);
      }
   return fileName;
@@ -1063,7 +1063,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
 
 const char *cRecording::PrefixFileName(char Prefix)
 {
-  cString p = PrefixVideoFileName(FileName(), Prefix);
+  cString p = cVideoDirectory::PrefixVideoFileName(FileName(), Prefix);
   if (*p) {
      free(fileName);
      fileName = strdup(p);
@@ -1093,7 +1093,7 @@ bool cRecording::IsEdited(void) const
 bool cRecording::IsOnVideoDirectoryFileSystem(void) const
 {
   if (isOnVideoDirectoryFileSystem < 0)
-     isOnVideoDirectoryFileSystem = ::IsOnVideoDirectoryFileSystem(FileName());
+     isOnVideoDirectoryFileSystem = cVideoDirectory::IsOnVideoDirectoryFileSystem(FileName());
   return isOnVideoDirectoryFileSystem;
 }
 
@@ -1135,11 +1135,11 @@ bool cRecording::Delete(void)
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
         isyslog("removing recording '%s'", NewName);
-        RemoveVideoFile(NewName);
+        cVideoDirectory::RemoveVideoFile(NewName);
         }
      isyslog("deleting recording '%s'", FileName());
      if (access(FileName(), F_OK) == 0) {
-        result = RenameVideoFile(FileName(), NewName);
+        result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
         cRecordingUserCommand::InvokeCommand(RUC_DELETERECORDING, NewName);
         }
      else {
@@ -1159,7 +1159,7 @@ bool cRecording::Remove(void)
      return false;
      }
   isyslog("removing recording %s", FileName());
-  return RemoveVideoFile(FileName());
+  return cVideoDirectory::RemoveVideoFile(FileName());
 }
 
 bool cRecording::Undelete(void)
@@ -1177,7 +1177,7 @@ bool cRecording::Undelete(void)
      else {
         isyslog("undeleting recording '%s'", FileName());
         if (access(FileName(), F_OK) == 0)
-           result = RenameVideoFile(FileName(), NewName);
+           result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
         else {
            isyslog("deleted recording '%s' vanished", FileName());
            result = false;
@@ -1250,7 +1250,7 @@ void cRecordings::Action(void)
 const char *cRecordings::UpdateFileName(void)
 {
   if (!updateFileName)
-     updateFileName = strdup(AddDirectory(VideoDirectory, ".update"));
+     updateFileName = strdup(AddDirectory(cVideoDirectory::Name(), ".update"));
   return updateFileName;
 }
 
@@ -1261,7 +1261,7 @@ void cRecordings::Refresh(bool Foreground)
   Clear();
   ChangeState();
   Unlock();
-  ScanVideoDir(VideoDirectory, Foreground);
+  ScanVideoDir(cVideoDirectory::Name(), Foreground);
 }
 
 void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
@@ -2274,7 +2274,7 @@ cUnbufferedFile *cFileName::Open(void)
      int BlockingFlag = blocking ? 0 : O_NONBLOCK;
      if (record) {
         dsyslog("recording to '%s'", fileName);
-        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_LARGEFILE | BlockingFlag);
+        file = cVideoDirectory::OpenVideoFile(fileName, O_RDWR | O_CREAT | O_LARGEFILE | BlockingFlag);
         if (!file)
            LOG_ERROR_STR(fileName);
         }
@@ -2295,8 +2295,9 @@ cUnbufferedFile *cFileName::Open(void)
 void cFileName::Close(void)
 {
   if (file) {
-     if (CloseVideoFile(file) < 0)
+     if (file->Close() < 0)
         LOG_ERROR_STR(fileName);
+     delete file;
      file = NULL;
      }
 }

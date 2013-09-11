@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.1 2013/06/10 14:28:43 kls Exp $
+ * $Id: vdr.c 3.2 2013/09/10 13:58:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -663,7 +663,7 @@ int main(int argc, char *argv[])
 
   // Directories:
 
-  SetVideoDirectory(VideoDirectory);
+  cVideoDirectory::SetName(VideoDirectory);
   if (!ConfigDirectory)
      ConfigDirectory = DEFAULTCONFDIR;
   cPlugin::SetConfigDirectory(ConfigDirectory);
@@ -1406,6 +1406,7 @@ Exit:
      }
   cDevice::Shutdown();
   cPositioner::DestroyPositioner();
+  cVideoDirectory::Destroy();
   EpgHandlers.Clear();
   PluginManager.Shutdown(true);
   cSchedules::Cleanup(true);

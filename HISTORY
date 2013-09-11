@@ -7943,3 +7943,26 @@ Video Disk Recorder Revision History
   respectively, during replay (reported by Thomas Maass).
 - The Yellow button in the main menu no longer acts as "Pause" if "Pause key handling"
   is set to "do not pause live video" (suggested by Ulf Kiener).
+- The code for distributing recordings over several video directories has been
+  removed. VDR now by default assumes that the video directory is one big disk.
+  If you absolutely need to use several separate disks to store recordings, you can
+  write a plugin that uses the new cVideoDirectory API to implement the necessary
+  functionality (see PLUGINS.html, section "The video directory"). You can copy the
+  respective code from previous versions of videodir.c.
+  IMPORTANT NOTE: If you write a plugin that implements a distributed video directory,
+  =============== be sure to make cVideoDirectory::Rename() follow symbolic links!
+                  This functionality was never implemented in VDR and it therefore
+                  used a workaround in cutter.c. See the section marked with
+                  // XXX this can be removed once RenameVideoFile() follows symlinks
+                  in previous versions of cutter.c.
+  + CloseVideoFile() is obsolete and has been removed.
+  + The functions OpenVideoFile(), RenameVideoFile(), RemoveVideoFile(), VideoFileSpaceAvailable(),
+    VideoDiskSpace(), RemoveEmptyVideoDirectories(), IsOnVideoDirectoryFileSystem() and
+    PrefixVideoFileName() are now static members of cVideoDirectory and need to be called
+    with the proper prefix.
+  + The name of the video directory is now available through cVideoDirectory::Name().
+    The former global variable VideoDirectory is still there for backwards compatibility,
+    but will be removed in a future version. Comment out the line
+    #define DEPRECATED_VIDEODIR
+    in videodir.h and recompile your plugins to see whether your code will work without
+    this variable. If you get a compile error, replace it with cVideoDirectory::Name().
