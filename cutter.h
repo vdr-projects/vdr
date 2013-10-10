@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.h 2.3 2012/02/16 12:05:33 kls Exp $
+ * $Id: cutter.h 3.1 2013/10/05 11:34:55 kls Exp $
  */
 
 #ifndef __CUTTER_H
@@ -17,21 +17,31 @@ class cCuttingThread;
 
 class cCutter {
 private:
-  static cMutex mutex;
-  static cString originalVersionName;
-  static cString editedVersionName;
-  static cCuttingThread *cuttingThread;
-  static bool error;
-  static bool ended;
+  cString originalVersionName;
+  cString editedVersionName;
+  cCuttingThread *cuttingThread;
+  bool error;
 public:
-  static bool Start(const char *FileName);
-  static void Stop(void);
-  static bool Active(const char *FileName = NULL);
-         ///< Returns true if the cutter is currently active.
-         ///< If a FileName is given, true is only returned if either the
-         ///< original or the edited file name is equal to FileName.
-  static bool Error(void);
-  static bool Ended(void);
+  cCutter(const char *FileName);
+      ///< Sets up a new cutter for the given FileName, which must be the full path
+      ///< name of an existing recording directory.
+  ~cCutter();
+  static cString EditedFileName(const char *FileName);
+      ///< Returns the full path name of the edited version of the recording with
+      ///< the given FileName. This static function can be used independent of any
+      ///< cCutter object, to determine the file name beforehand.
+      ///< Returns NULL in case of error.
+  bool Start(void);
+      ///< Starts the actual cutting process.
+      ///< Returns true if successful.
+      ///< If Start() is called while the cutting process is already active, nothing
+      ///< happens and false will be returned.
+  void Stop(void);
+      ///< Stops an ongoing cutting process.
+  bool Active(void);
+      ///< Returns true if the cutter is currently active.
+  bool Error(void);
+      ///< Returns true if an error occurred while cutting the recording.
   };
 
 bool CutRecording(const char *FileName);

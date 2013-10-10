@@ -504,6 +504,30 @@ Version 2.0
   folder, or enters a sub folder. Once a folder has been selected, the entire
   path of the timer's file name will be replaced with the selected folder.
 
+  In the "Recordings" menu the folders of existing recordings can be renamed or
+  moved by pressing the "Blue" key ("Edit") while the cursor is positioned on
+  a folder. This will open a menu in which the folder's name and location (the
+  "parent" folder) can be edited. If such an operation will result in moving
+  more than one recording, you will be asked for confirmation.
+  The name, folder, priority and lifetime of an individual recording can be
+  changed by pressing the "Blue" key ("Info") while the cursor is positioned
+  on a recording, and in the resulting Info menu pressing the "Blue" key again
+  to bring up the "Edit recording" menu.
+  In the "Edit recording" menu the Red button ("Folder") allows you to select one
+  of your predefined folders. The Green button has multiple functions, depending
+  on what is currently going on with the recording. It can either stop or cancel
+  a cut, move or copy operation. If the button reads "Stop..." it means that the
+  respective operation is already happening, while "Cancel..." means that the
+  operation is still pending execution. If no operation is currently happening
+  and the recording has editing marks, the Button will read "Cut" and triggers
+  cutting the recording (same as pressing '2' while replaying the recording).
+  The Yellow button ("Delete marks") allows you to delete all editing marks from
+  the selected recording (if there are any and the recording is not currently
+  being cut). To directly edit the folder or name of the recording, position the
+  cursor to the respective line and press the Right key to start editing (press
+  Ok to confirm the edit, or Back to return to the previous value). Once you are
+  finished with editing the recording properties, press Ok to confirm the changes.
+
 * Parameters in the "Setup" menu
 
   Select "Setup" from the "VDR" menu to enter the setup menu. From there you can

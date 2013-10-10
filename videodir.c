@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 3.2 2013/09/11 12:20:37 kls Exp $
+ * $Id: videodir.c 3.3 2013/10/08 13:26:41 kls Exp $
  */
 
 #include "videodir.h"
@@ -79,6 +79,7 @@ bool cVideoDirectory::Register(const char *FileName)
 
 bool cVideoDirectory::Rename(const char *OldName, const char *NewName)
 {
+  dsyslog("renaming '%s' to '%s'", OldName, NewName);
   if (rename(OldName, NewName) == -1) {
      LOG_ERROR_STR(NewName);
      return false;
@@ -88,10 +89,15 @@ bool cVideoDirectory::Rename(const char *OldName, const char *NewName)
 
 bool cVideoDirectory::Move(const char *FromName, const char *ToName)
 {
-  if (rename(FromName, ToName) == -1) {
-     LOG_ERROR_STR(ToName);
-     return false;
+  dsyslog("moving '%s' to '%s'", FromName, ToName);
+  if (EntriesOnSameFileSystem(FromName, ToName)) {
+     if (rename(FromName, ToName) == -1) {
+        LOG_ERROR_STR(ToName);
+        return false;
+        }
      }
+  else
+     return RecordingsHandler.Add(ruMove, FromName, ToName);
   return true;
 }
 

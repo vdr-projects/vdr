@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.46 2013/03/04 14:01:23 kls Exp $
+ * $Id: recording.h 3.1 2013/10/10 12:08:15 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -24,6 +24,21 @@ extern int DirectoryPathMax;
 extern int DirectoryNameMax;
 extern bool DirectoryEncoding;
 extern int InstanceId;
+
+enum eRecordingUsage {
+  ruNone     = 0x0000, // the recording is currently unused
+  ruTimer    = 0x0001, // the recording is currently written to by a timer
+  ruReplay   = 0x0002, // the recording is being replayed
+  // mutually exclusive:
+  ruCut      = 0x0004, // the recording is being cut
+  ruMove     = 0x0008, // the recording is being moved
+  ruCopy     = 0x0010, // the recording is being copied
+  // mutually exclusive:
+  ruSrc      = 0x0020, // the recording is the source of a cut, move or copy process
+  ruDst      = 0x0040, // the recording is the destination of a cut, move or copy process
+  //
+  ruPending  = 0x0080, // the recording is pending a cut, move or copy process
+  };
 
 void RemoveDeletedRecordings(void);
 void AssertFreeDiskSpace(int Priority = 0, bool Force = false);
@@ -73,6 +88,7 @@ public:
   const char *Aux(void) const { return aux; }
   double FramesPerSecond(void) const { return framesPerSecond; }
   void SetFramesPerSecond(double FramesPerSecond);
+  void SetFileName(const char *FileName);
   bool Write(FILE *f, const char *Prefix = "") const;
   bool Read(void);
   bool Write(void) const;
@@ -114,8 +130,21 @@ public:
   int Lifetime(void) const { return lifetime; }
   time_t Deleted(void) const { return deleted; }
   virtual int Compare(const cListObject &ListObject) const;
+  bool IsInPath(const char *Path);
+       ///< Returns true if this recording is stored anywhere under the given Path.
+       ///< If Path is NULL or an empty string, the entire video directory is checked.
+  cString Folder(void) const;
+       ///< Returns the name of the folder this recording is stored in (without the
+       ///< video directory). For use in menus etc.
+  cString BaseName(void) const;
+       ///< Returns the base name of this recording (without the
+       ///< video directory and folder). For use in menus etc.
   const char *Name(void) const { return name; }
+       ///< Returns the full name of the recording (without the video directory.
+       ///< For use in menus etc.
   const char *FileName(void) const;
+       ///< Returns the full path name to the recording directory, including the
+       ///< video directory and the actual '*.rec'. For disk file access use.
   const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
   const cRecordingInfo *Info(void) const { return info; }
   const char *PrefixFileName(char Prefix);
@@ -134,8 +163,17 @@ public:
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
   bool IsOnVideoDirectoryFileSystem(void) const;
+  bool HasMarks(void);
+       ///< Returns true if this recording has any editing marks.
+  bool DeleteMarks(void);
+       ///< Deletes the editing marks from this recording (if any).
+       ///< Returns true if the operation was successful. If there is no marks file
+       ///< for this recording, it also returns true.
   void ReadInfo(void);
-  bool WriteInfo(void);
+  bool WriteInfo(const char *OtherFileName = NULL);
+       ///< Writes in info file of this recording. If OtherFileName is given, the info
+       ///< file will be written under that recording file name instead of this
+       ///< recording's file name.
   void SetStartTime(time_t Start);
        ///< Sets the start time of this recording to the given value.
        ///< If a filename has already been set for this recording, it will be
@@ -144,6 +182,17 @@ public:
        ///< Use this function with care - it does not check whether a recording with
        ///< this new name already exists, and if there is one, results may be
        ///< unexpected!
+  bool ChangePriorityLifetime(int NewPriority, int NewLifetime);
+       ///< Changes the priority and lifetime of this recording to the given values.
+       ///< If the new values are the same as the old ones, nothing happens.
+       ///< Returns false in case of error.
+  bool ChangeName(const char *NewName);
+       ///< Changes the name of this recording to the given value. NewName is in the
+       ///< same format as the one returned by Name(), i.e. without the video directory
+       ///< and the actual '*.rec' part, and using FOLDERDELIMCHAR as the directory
+       ///< delimiter.
+       ///< If the new name is the same as the old one, nothing happens.
+       ///< Returns false in case of error.
   bool Delete(void);
        ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
        ///< Returns false in case of error
@@ -154,6 +203,14 @@ public:
        ///< Changes the file name so that it will be visible in the "Recordings" menu again and
        ///< not processed by cRemoveDeletedRecordingsThread.
        ///< Returns false in case of error
+  int IsInUse(void) const;
+       ///< Checks whether this recording is currently in use and therefore shall not
+       ///< be tampered with. Returns 0 (ruNone) if the recording is not in use.
+       ///< The return value may consist of several or'd eRecordingUsage flags. If the
+       ///< caller is just interested in whether the recording is in use or not, the
+       ///< return value can be used like a boolean value.
+       ///< A recording may be in use for several reasons (like being recorded and replayed,
+       ///< as in time-shift).
   };
 
 class cRecordings : public cList<cRecording>, public cThread {
@@ -197,10 +254,75 @@ public:
   double MBperMinute(void);
        ///< Returns the average data rate (in MB/min) of all recordings, or -1 if
        ///< this value is unknown.
+  int PathIsInUse(const char *Path);
+       ///< Checks whether any recording in the given Path is currently in use and therefore
+       ///< the whole Path shall not be tampered with. Returns 0 (ruNone) if no recording
+       ///< is in use.
+       ///< See cRecording::IsInUse() for details about the possible non-zero return values.
+       ///< If several recordings in the Path are currently in use, the return value will
+       ///< be the combination of all individual recordings' flags.
+       ///< If Path is NULL or an empty string, the entire video directory is checked.
+  int GetNumRecordingsInPath(const char *Path);
+       ///< Returns the total number of recordings in the given Path, including all
+       ///< sub-folders of Path.
+       ///< If Path is NULL or an empty string, the entire video directory is checked.
+  bool MoveRecordings(const char *OldPath, const char *NewPath);
+       ///< Moves all recordings in OldPath to NewPath.
+       ///< Returns true if all recordings were successfully moved.
+       ///< As soon as the operation fails for one recording, the whole
+       ///< action is aborted and false will be returned. Any recordings that
+       ///< have been successfully moved thus far will keep their new name.
+       ///< If OldPath and NewPath are on different file systems, the recordings
+       ///< will be moved in a background process and this function returns true
+       ///< if all recordings have been successfully added to the RecordingsHandler.
   };
 
 extern cRecordings Recordings;
 extern cRecordings DeletedRecordings;
+
+class cRecordingsHandlerEntry;
+
+class cRecordingsHandler {
+private:
+  cMutex mutex;
+  cList<cRecordingsHandlerEntry> operations;
+  bool finished;
+  bool error;
+  cRecordingsHandlerEntry *Get(const char *FileName);
+public:
+  cRecordingsHandler(void);
+  ~cRecordingsHandler();
+  bool Add(int Usage, const char *FileNameSrc, const char *FileNameDst = NULL);
+       ///< Adds the given FileNameSrc to the recordings handler for (later)
+       ///< processing. Usage can be either ruCut, ruMove or ruCopy. FileNameDst
+       ///< is only applicable for ruMove and ruCopy.
+       ///< At any given time there can be only one operation for any FileNameSrc
+       ///< or FileNameDst in the list. An attempt to add a file name twice will
+       ///< result in an error.
+       ///< Returns true if the operation was successfully added to the list.
+  void Del(const char *FileName);
+       ///< Deletes the given FileName from the list of operations.
+       ///< If an action is already in progress, it will be terminated.
+       ///< FileName can be either the FileNameSrc or FileNameDst (if applicable)
+       ///< that was given when the operation was added with Add().
+  void DelAll(void);
+       ///< Deletes/terminates all operations.
+  int GetUsage(const char *FileName);
+       ///< Returns the usage type for the given FileName.
+  bool Active(void);
+       ///< Checks whether there is currently any operation running and starts
+       ///> the next one form the list if the previous one has finished.
+       ///< This function must be called regularly to trigger switching to the
+       ///< next operation in the list.
+       ///< Returns true if there are any operations in the list.
+  bool Finished(bool &Error);
+       ///< Returns true if all operations in the list have been finished.
+       ///< If there have been any errors, Errors will be set to true.
+       ///< This function will only return true once if the list of operations
+       ///< has actually become empty since the last call.
+  };
+
+extern cRecordingsHandler RecordingsHandler;
 
 #define DEFAULTFRAMESPERSECOND 25.0
 
@@ -232,6 +354,9 @@ private:
   time_t lastFileTime;
   time_t lastChange;
 public:
+  static cString MarksFileName(const cRecording *Recording);
+       ///< Returns the marks file name for the given Recording (regardless whether such
+       ///< a file actually exists).
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
   bool Save(void);

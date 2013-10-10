@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 2.1 2013/02/18 10:33:26 kls Exp $
+ * $Id: shutdown.c 3.1 2013/10/02 09:02:01 kls Exp $
  */
 
 #include "shutdown.h"
@@ -16,11 +16,11 @@
 #include <sys/wait.h>
 #include "channels.h"
 #include "config.h"
-#include "cutter.h"
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
 #include "plugin.h"
+#include "recording.h"
 #include "timers.h"
 #include "tools.h"
 
@@ -167,7 +167,7 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
         Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
      return false;
      }
-  if (cCutter::Active()) {
+  if (RecordingsHandler.Active()) {
      if (!Interactive || !Interface->Confirm(tr("Editing - shut down anyway?")))
         return false;
      }
@@ -210,7 +210,7 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
 
 bool cShutdownHandler::ConfirmRestart(bool Interactive)
 {
-  if (cCutter::Active()) {
+  if (RecordingsHandler.Active()) {
      if (!Interactive || !Interface->Confirm(tr("Editing - restart anyway?")))
         return false;
      }

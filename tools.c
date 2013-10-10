@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 3.1 2013/05/23 10:10:00 kls Exp $
+ * $Id: tools.c 3.2 2013/09/22 13:19:19 kls Exp $
  */
 
 #include "tools.h"
@@ -173,6 +173,31 @@ char *strreplace(char *s, const char *s1, const char *s2)
   return s;
 }
 
+const char *strchrn(const char *s, char c, size_t n)
+{
+  if (n == 0)
+     return s;
+  if (s) {
+     for ( ; *s; s++) {
+         if (*s == c && --n == 0)
+            return s;
+         }
+     }
+  return NULL;
+}
+
+int strcountchr(const char *s, char c)
+{
+  int n = 0;
+  if (s && c) {
+     for ( ; *s; s++) {
+         if (*s == c)
+            n++;
+         }
+     }
+  return n;
+}
+
 char *stripspace(char *s)
 {
   if (s && *s) {
@@ -198,6 +223,30 @@ char *compactspace(char *s)
            }
      if (t != s)
         memmove(s, t, strlen(t) + 1);
+     }
+  return s;
+}
+
+char *compactchars(char *s, char c)
+{
+  if (s && *s && c) {
+     char *t = s;
+     char *p = s;
+     int n = 0;
+     while (*p) {
+           if (*p != c) {
+              *t++ = *p;
+              n = 0;
+              }
+           else if (t != s && n == 0) {
+              *t++ = *p;
+              n++;
+              }
+           p++;
+           }
+     if (n)
+        t--; // the last character was c
+     *t = 0;
      }
   return s;
 }
@@ -970,6 +1019,20 @@ cString::cString(const char *S, bool TakePointer)
   s = TakePointer ? (char *)S : S ? strdup(S) : NULL;
 }
 
+cString::cString(const char *S, const char *To)
+{
+  if (!S)
+     s = NULL;
+  else if (!To)
+     s = strdup(S);
+  else {
+     int l = To - S;
+     s = MALLOC(char, l + 1);
+     strncpy(s, S, l);
+     s[l] = 0;
+     }
+}
+
 cString::cString(const cString &String)
 {
   s = String.s ? strdup(String.s) : NULL;
@@ -1005,6 +1068,12 @@ cString &cString::Truncate(int Index)
      Index = l + Index;
   if (Index >= 0 && Index < l)
      s[Index] = 0;
+  return *this;
+}
+
+cString &cString::CompactChars(char c)
+{
+  compactchars(s, c);
   return *this;
 }
 

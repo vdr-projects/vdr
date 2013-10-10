@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 2.5 2012/12/07 09:49:35 kls Exp $
+ * $Id: osdbase.h 3.1 2013/09/22 14:00:47 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -119,7 +119,7 @@ protected:
   void Mark(void);
   eOSState HotKey(eKeys Key);
   eOSState AddSubMenu(cOsdMenu *SubMenu);
-  eOSState CloseSubMenu();
+  eOSState CloseSubMenu(bool ReDisplay = true);
   bool HasSubMenu(void) { return subMenu; }
   cOsdMenu *SubMenu(void) { return subMenu; }
   void SetStatus(const char *s);

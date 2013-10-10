@@ -1170,6 +1170,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for a patch that was used to rename the "plp id" to a more general "stream id"
  and add support for DVB-S2 "Input Stream Identifier" (ISI)
  for helping to debug and understand subtitle page refreshes
+ for a patch that was used to implement the SVDRP command RENR
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -3180,3 +3181,7 @@ Manfred Völkel <mvoelkel@digitaldevices.de>
 Thomas Maass <mase@setho.org>
  for reporting a difference in the internal sequence of actions when pressing the Blue
  and the Back key, respectively, during replay
+
+Martin Prochnow <nordlicht@martins-kabuff.de>
+ for writing the "extrecmenu" plugin, which inspired the implementation of editing
+ recording properties

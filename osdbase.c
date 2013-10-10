@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 3.1 2013/05/24 10:19:31 kls Exp $
+ * $Id: osdbase.c 3.2 2013/09/22 14:01:17 kls Exp $
  */
 
 #include "osdbase.h"
@@ -502,12 +502,14 @@ eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
   return osContinue; // convenience return value
 }
 
-eOSState cOsdMenu::CloseSubMenu()
+eOSState cOsdMenu::CloseSubMenu(bool ReDisplay)
 {
   delete subMenu;
   subMenu = NULL;
-  RefreshCurrent();
-  Display();
+  if (ReDisplay) {
+     RefreshCurrent();
+     Display();
+     }
   return osContinue; // convenience return value
 }
 

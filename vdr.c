@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.2 2013/09/10 13:58:34 kls Exp $
+ * $Id: vdr.c 3.3 2013/10/10 12:25:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -1320,8 +1320,9 @@ int main(int argc, char *argv[])
         if (!Menu) {
            if (!InhibitEpgScan)
               EITScanner.Process();
-           if (!cCutter::Active() && cCutter::Ended()) {
-              if (cCutter::Error())
+           bool Error = false;
+           if (RecordingsHandler.Finished(Error)) {
+              if (Error)
                  Skins.Message(mtError, tr("Editing process failed!"));
               else
                  Skins.Message(mtInfo, tr("Editing process finished"));
@@ -1341,7 +1342,10 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        // Keep the recordings handler alive:
+        RecordingsHandler.Active();
+
+        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
            // Shutdown:
@@ -1390,7 +1394,7 @@ Exit:
 
   PluginManager.StopPlugins();
   cRecordControls::Shutdown();
-  cCutter::Stop();
+  RecordingsHandler.DelAll();
   delete Menu;
   cControl::Shutdown();
   delete Interface;

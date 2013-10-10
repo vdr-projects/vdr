@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.6 2013/09/10 13:16:40 kls Exp $
+ * $Id: menu.c 3.7 2013/10/10 12:31:08 kls Exp $
  */
 
 #include "menu.h"
@@ -16,7 +16,6 @@
 #include <string.h>
 #include "channels.h"
 #include "config.h"
-#include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
@@ -828,8 +827,7 @@ eOSState cMenuFolder::Edit(void)
 
 eOSState cMenuFolder::SetFolder(void)
 {
-  cMenuEditFolder *mef = (cMenuEditFolder *)SubMenu();
-  if (mef) {
+  if (cMenuEditFolder *mef = dynamic_cast<cMenuEditFolder *>(SubMenu())) {
      Set(mef->GetFolder());
      SetHelpKeys();
      Display();
@@ -843,8 +841,7 @@ cString cMenuFolder::GetFolder(void)
   if (firstFolder) {
      cMenuFolderItem *Folder = (cMenuFolderItem *)Get(Current());
      if (Folder) {
-        cMenuFolder *mf = (cMenuFolder *)SubMenu();
-        if (mf)
+        if (cMenuFolder *mf = dynamic_cast<cMenuFolder *>(SubMenu()))
            return cString::sprintf("%s%c%s", Folder->Folder()->Text(), FOLDERDELIMCHAR, *mf->GetFolder());
         return Folder->Folder()->Text();
         }
@@ -930,8 +927,7 @@ void cMenuEditTimer::SetFirstDayItem(void)
 
 eOSState cMenuEditTimer::SetFolder(void)
 {
-  cMenuFolder *mf = (cMenuFolder *)SubMenu();
-  if (mf) {
+  if (cMenuFolder *mf = dynamic_cast<cMenuFolder *>(SubMenu())) {
      cString Folder = mf->GetFolder();
      char *p = strrchr(data.file, FOLDERDELIMCHAR);
      if (p)
@@ -2105,26 +2101,302 @@ bool CamMenuActive(void)
   return CamMenuIsOpen;
 }
 
+// --- cMenuPathEdit ---------------------------------------------------------
+
+class cMenuPathEdit : public cOsdMenu {
+private:
+  cString path;
+  char folder[PATH_MAX];
+  char name[NAME_MAX];
+  cMenuEditStrItem *folderItem;
+  int pathIsInUse;
+  eOSState SetFolder(void);
+  eOSState Folder(void);
+  eOSState ApplyChanges(void);
+public:
+  cMenuPathEdit(const char *Path);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuPathEdit::cMenuPathEdit(const char *Path)
+:cOsdMenu(tr("Edit path"), 12)
+{
+  SetMenuCategory(mcRecording);
+  path = Path;
+  *folder = 0;
+  *name = 0;
+  const char *s = strrchr(path, FOLDERDELIMCHAR);
+  if (s) {
+     strn0cpy(folder, cString(path, s), sizeof(folder));
+     s++;
+     }
+  else
+     s = path;
+  strn0cpy(name, s, sizeof(name));
+  pathIsInUse = Recordings.PathIsInUse(path);
+  if (pathIsInUse) {
+     Add(new cOsdItem(tr("This folder is currently in use - no changes are possible!"), osUnknown, false));
+     Add(new cOsdItem("", osUnknown, false));
+     }
+  cOsdItem *p;
+  Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
+  p->SetSelectable(!pathIsInUse);
+  Add(p = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
+  p->SetSelectable(!pathIsInUse);
+  Display();
+  if (!pathIsInUse)
+     SetHelp(tr("Button$Folder"));
+}
+
+eOSState cMenuPathEdit::SetFolder(void)
+{
+  if (cMenuFolder *mf = dynamic_cast<cMenuFolder *>(SubMenu())) {
+     strn0cpy(folder, mf->GetFolder(), sizeof(folder));
+     SetCurrent(folderItem);
+     Display();
+     }
+  return CloseSubMenu();
+}
+
+eOSState cMenuPathEdit::Folder(void)
+{
+  return AddSubMenu(new cMenuFolder(tr("Select folder"), &Folders, path));
+}
+
+eOSState cMenuPathEdit::ApplyChanges(void)
+{
+  if (!*name)
+     *name = ' '; // name must not be empty!
+  cString NewPath = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
+  NewPath.CompactChars(FOLDERDELIMCHAR);
+  if (strcmp(NewPath, path)) {
+     int NumRecordings = Recordings.GetNumRecordingsInPath(path);
+     if (NumRecordings > 1 && !Interface->Confirm(cString::sprintf(tr("Move entire folder containing %d recordings?"), NumRecordings)))
+        return osContinue;
+     if (!Recordings.MoveRecordings(path, NewPath)) {
+        Skins.Message(mtError, tr("Error while moving folder!"));
+        return osContinue;
+        }
+     cMenuRecordings::SetPath(NewPath); // makes sure the Recordings menu will reposition to the new path
+     return osUser1;
+     }
+  return osBack;
+}
+
+eOSState cMenuPathEdit::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+  if (state == osUnknown) {
+     if (!pathIsInUse) {
+        switch (Key) {
+          case kRed: return Folder();
+          case kOk:  return ApplyChanges();
+          default: break;
+          }
+        }
+     else if (Key == kOk)
+        return osBack;
+     }
+  else if (state == osEnd && HasSubMenu())
+     state = SetFolder();
+  return state;
+}
+
+// --- cMenuRecordingEdit ----------------------------------------------------
+
+class cMenuRecordingEdit : public cOsdMenu {
+private:
+  cRecording *recording;
+  char folder[PATH_MAX];
+  char name[NAME_MAX];
+  int priority;
+  int lifetime;
+  cMenuEditStrItem *folderItem;
+  const char *buttonFolder;
+  const char *buttonAction;
+  const char *buttonDeleteMarks;
+  const char *actionCancel;
+  const char *doCut;
+  int recordingIsInUse;
+  void Set(void);
+  void SetHelpKeys(void);
+  eOSState SetFolder(void);
+  eOSState Folder(void);
+  eOSState Action(void);
+  eOSState DeleteMarks(void);
+  eOSState ApplyChanges(void);
+public:
+  cMenuRecordingEdit(cRecording *Recording);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
+:cOsdMenu(tr("Edit recording"), 12)
+{
+  SetMenuCategory(mcRecording);
+  recording = Recording;
+  strn0cpy(folder, recording->Folder(), sizeof(folder));
+  strn0cpy(name, recording->BaseName(), sizeof(name));
+  priority = recording->Priority();
+  lifetime = recording->Lifetime();
+  folderItem = NULL;
+  buttonFolder = NULL;
+  buttonAction = NULL;
+  buttonDeleteMarks = NULL;
+  actionCancel = NULL;
+  doCut = NULL;
+  recordingIsInUse = recording->IsInUse();
+  Set();
+}
+
+void cMenuRecordingEdit::Set(void)
+{
+  Clear();
+  if (recordingIsInUse) {
+     Add(new cOsdItem(tr("This recording is currently in use - no changes are possible!"), osUnknown, false));
+     Add(new cOsdItem("", osUnknown, false));
+     }
+  cOsdItem *p;
+  Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
+  p->SetSelectable(!recordingIsInUse);
+  Add(p = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
+  p->SetSelectable(!recordingIsInUse);
+  Add(p = new cMenuEditIntItem(tr("Priority"), &priority, 0, MAXPRIORITY));
+  p->SetSelectable(!recordingIsInUse);
+  Add(p = new cMenuEditIntItem(tr("Lifetime"), &lifetime, 0, MAXLIFETIME));
+  p->SetSelectable(!recordingIsInUse);
+  Display();
+  SetHelpKeys();
+}
+
+void cMenuRecordingEdit::SetHelpKeys(void)
+{
+  buttonFolder = !recordingIsInUse ? tr("Button$Folder") : NULL;
+  buttonAction = NULL;
+  buttonDeleteMarks = NULL;
+  actionCancel = NULL;
+  doCut = NULL;
+  if ((recordingIsInUse & ruCut) != 0)
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop cutting") : tr("Button$Cancel cutting");
+  else if ((recordingIsInUse & ruMove) != 0)
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop moving") : tr("Button$Cancel moving");
+  else if ((recordingIsInUse & ruCopy) != 0)
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop copying") : tr("Button$Cancel copying");
+  else if (recording->HasMarks()) {
+     buttonAction = doCut = tr("Button$Cut");
+     buttonDeleteMarks = tr("Button$Delete marks");
+     }
+  SetHelp(buttonFolder, buttonAction, buttonDeleteMarks);
+}
+
+eOSState cMenuRecordingEdit::SetFolder(void)
+{
+  if (cMenuFolder *mf = dynamic_cast<cMenuFolder *>(SubMenu())) {
+     strn0cpy(folder, mf->GetFolder(), sizeof(folder));
+     SetCurrent(folderItem);
+     Display();
+     }
+  return CloseSubMenu();
+}
+
+eOSState cMenuRecordingEdit::Folder(void)
+{
+  return AddSubMenu(new cMenuFolder(tr("Select folder"), &Folders, recording->Name()));
+}
+
+eOSState cMenuRecordingEdit::Action(void)
+{
+  if (actionCancel)
+     RecordingsHandler.Del(recording->FileName());
+  else if (doCut) {
+     if (!RecordingsHandler.Add(ruCut, recording->FileName()))
+        Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
+     }
+  recordingIsInUse = recording->IsInUse();
+  SetHelpKeys();
+  return osContinue;
+}
+
+eOSState cMenuRecordingEdit::DeleteMarks(void)
+{
+  if (buttonDeleteMarks && Interface->Confirm(tr("Delete editing marks for this recording?"))) {
+     if (recording->DeleteMarks())
+        SetHelpKeys();
+     else
+        Skins.Message(mtError, tr("Error while deleting editing marks!"));
+     }
+  return osContinue;
+}
+
+eOSState cMenuRecordingEdit::ApplyChanges(void)
+{
+  bool Modified = false;
+  if (priority != recording->Priority() || lifetime != recording->Lifetime()) {
+     if (!recording->ChangePriorityLifetime(priority, lifetime)) {
+        Skins.Message(mtError, tr("Error while changing priority/lifetime!"));
+        return osContinue;
+        }
+     Modified = true;
+     }
+  if (!*name)
+     *name = ' '; // name must not be empty!
+  cString NewName = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
+  NewName.CompactChars(FOLDERDELIMCHAR);
+  if (strcmp(NewName, recording->Name())) {
+     if (!recording->ChangeName(NewName)) {
+        Skins.Message(mtError, tr("Error while changing folder/name!"));
+        return osContinue;
+        }
+     Modified = true;
+     }
+  if (Modified) {
+     cMenuRecordings::SetRecording(recording->FileName()); // makes sure the Recordings menu will reposition to the renamed recording
+     return osUser1;
+     }
+  return osBack;
+}
+
+eOSState cMenuRecordingEdit::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+  if (state == osUnknown) {
+     if (!recordingIsInUse) {
+        switch (Key) {
+          case kRed:    return Folder();
+          case kGreen:  return Action();
+          case kYellow: return DeleteMarks();
+          case kOk:     return ApplyChanges();
+          default: break;
+          }
+        }
+     else if (Key == kOk)
+        return osBack;
+     }
+  else if (state == osEnd && HasSubMenu())
+     state = SetFolder();
+  return state;
+}
+
 // --- cMenuRecording --------------------------------------------------------
 
 class cMenuRecording : public cOsdMenu {
 private:
-  const cRecording *recording;
+  cRecording *recording;
   bool withButtons;
 public:
-  cMenuRecording(const cRecording *Recording, bool WithButtons = false);
+  cMenuRecording(cRecording *Recording, bool WithButtons = false);
   virtual void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
 };
 
-cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
+cMenuRecording::cMenuRecording(cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
   SetMenuCategory(mcRecordingInfo);
   recording = Recording;
   withButtons = WithButtons;
   if (withButtons)
-     SetHelp(tr("Button$Play"), tr("Button$Rewind"));
+     SetHelp(tr("Button$Play"), tr("Button$Rewind"), NULL, tr("Button$Edit"));
 }
 
 void cMenuRecording::Display(void)
@@ -2137,6 +2409,12 @@ void cMenuRecording::Display(void)
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
 {
+  if (HasSubMenu()) {
+     eOSState state = cOsdMenu::ProcessKey(Key);
+     if (state == osUser1)
+        CloseSubMenu();
+     return state;
+     }
   switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:
@@ -2164,6 +2442,9 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
                      cRemote::Put(Key, true);
                      // continue with osBack to close the info menu and process the key
        case kOk:     return osBack;
+       case kBlue:   if (withButtons)
+                        return AddSubMenu(new cMenuRecordingEdit(recording));
+                     break;
        default: break;
        }
      }
@@ -2183,6 +2464,7 @@ public:
   ~cMenuRecordingItem();
   void IncrementCounter(bool New);
   const char *Name(void) { return name; }
+  int Level(void) { return level; }
   cRecording *Recording(void) { return recording; }
   bool IsDirectory(void) { return name != NULL; }
   virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
@@ -2220,6 +2502,9 @@ void cMenuRecordingItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, b
 
 // --- cMenuRecordings -------------------------------------------------------
 
+cString cMenuRecordings::path;
+cString cMenuRecordings::fileName;
+
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 :cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
@@ -2232,8 +2517,12 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
   Set();
   if (Current() < 0)
      SetCurrent(First());
-  else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
-     return;
+  else if (OpenSubMenus && (cReplayControl::LastReplayed() || *path || *fileName)) {
+     if (!*path || Level < strcountchr(path, FOLDERDELIMCHAR)) {
+        if (Open(true))
+           return;
+        }
+     }
   Display();
   SetHelpKeys();
 }
@@ -2251,18 +2540,14 @@ void cMenuRecordings::SetHelpKeys(void)
   if (ri) {
      if (ri->IsDirectory())
         NewHelpKeys = 1;
-     else {
+     else
         NewHelpKeys = 2;
-        if (ri->Recording()->Info()->Title())
-           NewHelpKeys = 3;
-        }
      }
   if (NewHelpKeys != helpKeys) {
      switch (NewHelpKeys) {
        case 0: SetHelp(NULL); break;
-       case 1: SetHelp(tr("Button$Open")); break;
-       case 2:
-       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Button$Info") : NULL);
+       case 1: SetHelp(tr("Button$Open"), NULL, NULL, tr("Button$Edit")); break;
+       case 2: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), tr("Button$Info"));
        default: ;
        }
      helpKeys = NewHelpKeys;
@@ -2271,7 +2556,7 @@ void cMenuRecordings::SetHelpKeys(void)
 
 void cMenuRecordings::Set(bool Refresh)
 {
-  const char *CurrentRecording = cReplayControl::LastReplayed();
+  const char *CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
   cMenuRecordingItem *LastItem = NULL;
   cThreadLock RecordingsLock(&Recordings);
   if (Refresh) {
@@ -2303,7 +2588,11 @@ void cMenuRecordings::Set(bool Refresh)
          else
             delete Item;
          if (LastItem || LastDir) {
-            if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
+            if (*path) {
+               if (strcmp(path, recording->Folder()) == 0)
+                  SetCurrent(LastDir ? LastDir : LastItem);
+               }
+            else if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
                SetCurrent(LastDir ? LastDir : LastItem);
             }
          if (LastDir)
@@ -2312,6 +2601,16 @@ void cMenuRecordings::Set(bool Refresh)
       }
   if (Refresh)
      Display();
+}
+
+void cMenuRecordings::SetPath(const char *Path)
+{
+  path = Path;
+}
+
+void cMenuRecordings::SetRecording(const char *FileName)
+{
+  fileName = FileName;
 }
 
 cString cMenuRecordings::DirectoryName(void)
@@ -2328,11 +2627,11 @@ cString cMenuRecordings::DirectoryName(void)
 bool cMenuRecordings::Open(bool OpenSubMenus)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  if (ri && ri->IsDirectory()) {
+  if (ri && ri->IsDirectory() && (!*path || strcountchr(path, FOLDERDELIMCHAR) > 0)) {
      const char *t = ri->Name();
      cString buffer;
      if (base) {
-        buffer = cString::sprintf("%s~%s", base, t);
+        buffer = cString::sprintf("%s%c%s", base, FOLDERDELIMCHAR, t);
         t = buffer;
         }
      AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus));
@@ -2395,10 +2694,10 @@ eOSState cMenuRecordings::Delete(void)
            }
         cRecording *recording = ri->Recording();
         cString FileName = recording->FileName();
-        if (cCutter::Active(ri->Recording()->FileName())) {
+        if (RecordingsHandler.GetUsage(FileName)) {
            if (Interface->Confirm(tr("Recording is being edited - really delete?"))) {
-              cCutter::Stop();
-              recording = Recordings.GetByName(FileName); // cCutter::Stop() might have deleted it if it was the edited version
+              RecordingsHandler.Del(FileName);
+              recording = Recordings.GetByName(FileName); // RecordingsHandler.Del() might have deleted it if it was the edited version
               // we continue with the code below even if recording is NULL,
               // in order to have the menu updated etc.
               }
@@ -2428,9 +2727,12 @@ eOSState cMenuRecordings::Info(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  if (ri && !ri->IsDirectory() && ri->Recording()->Info()->Title())
-     return AddSubMenu(new cMenuRecording(ri->Recording(), true));
+  if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+     if (ri->IsDirectory())
+        return AddSubMenu(new cMenuPathEdit(cString(ri->Recording()->Name(), strchrn(ri->Recording()->Name(), FOLDERDELIMCHAR, ri->Level() + 1))));
+     else
+        return AddSubMenu(new cMenuRecording(ri->Recording(), true));
+     }
   return osContinue;
 }
 
@@ -2480,6 +2782,17 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
                      break;
        default: break;
        }
+     }
+  else if (state == osUser1) {
+     // a recording or path was renamed, so let's refresh the menu
+     CloseSubMenu(false);
+     if (base)
+        return state; // closes all recording menus except for the top one
+     Set(); // this is the top level menu, so we refresh it...
+     Open(true); // ...and open any necessary submenus to show the new name
+     Display();
+     path = NULL;
+     fileName = NULL;
      }
   if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
      // the last recording in a subdirectory was deleted, so let's go back up
@@ -3462,13 +3775,13 @@ bool cMenuMain::Update(bool Force)
      }
 
   // Editing control:
-  bool CutterActive = cCutter::Active();
-  if (CutterActive && !cancelEditingItem) {
+  bool EditingActive = RecordingsHandler.Active();
+  if (EditingActive && !cancelEditingItem) {
      // TRANSLATORS: note the leading blank!
      Add(cancelEditingItem = new cOsdItem(tr(" Cancel editing"), osCancelEdit));
      result = true;
      }
-  else if (cancelEditingItem && !CutterActive) {
+  else if (cancelEditingItem && !EditingActive) {
      Del(cancelEditingItem->Index());
      cancelEditingItem = NULL;
      result = true;
@@ -3518,7 +3831,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                           }
                        break;
     case osCancelEdit: if (Interface->Confirm(tr("Cancel editing?"))) {
-                          cCutter::Stop();
+                          RecordingsHandler.DelAll();
                           return osEnd;
                           }
                        break;
@@ -4853,12 +5166,12 @@ void cReplayControl::EditCut(void)
 {
   if (*fileName) {
      Hide();
-     if (!cCutter::Active()) {
+     if (!RecordingsHandler.GetUsage(fileName)) {
         if (!marks.Count())
            Skins.Message(mtError, tr("No editing marks defined!"));
         else if (!marks.GetNumSequences())
            Skins.Message(mtError, tr("No editing sequences defined!"));
-        else if (!cCutter::Start(fileName))
+        else if (!RecordingsHandler.Add(ruCut, fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else
            Skins.Message(mtInfo, tr("Editing process started"));
