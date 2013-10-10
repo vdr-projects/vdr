@@ -7986,3 +7986,5 @@ Video Disk Recorder Revision History
     Ahrenberg).
   + Note that in several places in the source code a "copy" operation is mentioned,
     however there is no user interface for this, yet.
+- Changed some variable names in positioner.c to match the names used in the page with
+  the explanation on vdr-portal.de.
