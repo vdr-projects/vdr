@@ -3185,3 +3185,6 @@ Thomas Maass <mase@setho.org>
 Martin Prochnow <nordlicht@martins-kabuff.de>
  for writing the "extrecmenu" plugin, which inspired the implementation of editing
  recording properties
+
+Eike Edener <eike@edener.de>
+ for reporting a bug in writing group separators to channels.conf that contain a comma
