@@ -3169,3 +3169,6 @@ Manfred Völkel <mvoelkel@digitaldevices.de>
 Thomas Maass <mase@setho.org>
  for reporting a difference in the internal sequence of actions when pressing the Blue
  and the Back key, respectively, during replay
+
+Eike Edener <eike@edener.de>
+ for reporting a bug in writing group separators to channels.conf that contain a comma
