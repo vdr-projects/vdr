@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.h 3.1 2013/09/11 12:19:47 kls Exp $
+ * $Id: videodir.h 3.2 2013/10/11 09:37:48 kls Exp $
  */
 
 #ifndef __VIDEODIR_H
@@ -12,11 +12,6 @@
 
 #include <stdlib.h>
 #include "tools.h"
-
-#define DEPRECATED_VIDEODIR
-#ifdef DEPRECATED_VIDEODIR
-extern const char *VideoDirectory;
-#endif
 
 class cVideoDirectory {
 private:

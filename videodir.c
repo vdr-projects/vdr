@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 3.3 2013/10/08 13:26:41 kls Exp $
+ * $Id: videodir.c 3.4 2013/10/11 09:38:07 kls Exp $
  */
 
 #include "videodir.h"
@@ -19,9 +19,6 @@
 #include "recording.h"
 #include "tools.h"
 
-#ifdef DEPRECATED_VIDEODIR
-const char *VideoDirectory = VIDEODIR;
-#endif
 cString cVideoDirectory::name;
 cVideoDirectory *cVideoDirectory::current = NULL;
 
@@ -61,9 +58,6 @@ const char *cVideoDirectory::Name(void)
 void cVideoDirectory::SetName(const char *Name)
 {
   name = Name;
-#ifdef DEPRECATED_VIDEODIR
-  VideoDirectory = Name;
-#endif
 }
 
 bool cVideoDirectory::Register(const char *FileName)

@@ -7961,11 +7961,6 @@ Video Disk Recorder Revision History
     PrefixVideoFileName() are now static members of cVideoDirectory and need to be called
     with the proper prefix.
   + The name of the video directory is now available through cVideoDirectory::Name().
-    The former global variable VideoDirectory is still there for backwards compatibility,
-    but will be removed in a future version. Comment out the line
-    #define DEPRECATED_VIDEODIR
-    in videodir.h and recompile your plugins to see whether your code will work without
-    this variable. If you get a compile error, replace it with cVideoDirectory::Name().
 - Added renaming and moving recordings and folders, editing a recording's priority and
   lifetime, and queueing cutting jobs (inspired by the "extrecmenu" plugin from Martin
   Prochnow).
