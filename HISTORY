@@ -7983,3 +7983,4 @@ Video Disk Recorder Revision History
     however there is no user interface for this, yet.
 - Changed some variable names in positioner.c to match the names used in the page with
   the explanation on vdr-portal.de.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
