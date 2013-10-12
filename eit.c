@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 2.23 2012/12/04 11:10:10 kls Exp $
+ * $Id: eit.c 2.23.1.1 2013/10/12 11:24:51 kls Exp $
  */
 
 #include "eit.h"
@@ -404,7 +404,7 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          }
          break;
     case 0x14: {
-         if (Setup.SetSystemTime && Setup.TimeTransponder && ISTRANSPONDER(Transponder(), Setup.TimeTransponder))
+         if (Setup.SetSystemTime && Setup.TimeSource == Source() && Setup.TimeTransponder && ISTRANSPONDER(Transponder(), Setup.TimeTransponder))
             cTDT TDT(Data);
          }
          break;

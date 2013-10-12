@@ -7832,7 +7832,7 @@ Video Disk Recorder Revision History
 - Fixed cleaning up old EPG events in case no epg data file is given (reported by
   Dave Pickles).
 
-2013-10-11: Version 2.0.4
+2013-10-12: Version 2.0.4
 
 - Unified the internal sequence of actions when pressing the Blue and the Back key,
   respectively, during replay (reported by Thomas Maass).
@@ -7840,3 +7840,7 @@ Video Disk Recorder Revision History
   is set to "do not pause live video" (suggested by Ulf Kiener).
 - Fixed writing group separators to channels.conf that contain a comma (reported by
   Eike Edener).
+- Now also checking the source (in addition to the transponder) when setting the
+  system time from the TDT, which avoids problems in case devices are tuned to the
+  same transponder on different sources, and these broadcast different time data
+  (reported by Torsten Lang).
