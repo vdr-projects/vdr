@@ -3011,6 +3011,8 @@ Torsten Lang <info@torstenlang.de>
  for reporting a problem with setting the system time from the TDT in case devices
  are tuned to the same transponder on different sources, and these broadcast different
  time data
+ for reporting a problem with unjustified "video data stream broken" errors in case
+ the system time is changed while a recording is active
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles

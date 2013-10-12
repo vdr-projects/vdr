@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.17 2012/09/22 11:53:57 kls Exp $
+ * $Id: recorder.c 2.17.1.1 2013/10/12 12:10:05 kls Exp $
  */
 
 #include "recorder.h"
@@ -14,7 +14,7 @@
 
 // The maximum time we wait before assuming that a recorded video data stream
 // is broken:
-#define MAXBROKENTIMEOUT 30 // seconds
+#define MAXBROKENTIMEOUT 30000 // milliseconds
 
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
@@ -117,7 +117,7 @@ void cRecorder::Receive(uchar *Data, int Length)
 
 void cRecorder::Action(void)
 {
-  time_t t = time(NULL);
+  cTimeMs t(MAXBROKENTIMEOUT);
   bool InfoWritten = false;
   bool FirstIframeSeen = false;
   while (Running()) {
@@ -160,16 +160,16 @@ void cRecorder::Action(void)
                        break;
                        }
                     fileSize += Count;
-                    t = time(NULL);
+                    t.Set(MAXBROKENTIMEOUT);
                     }
                  }
               ringBuffer->Del(Count);
               }
            }
-        if (time(NULL) - t > MAXBROKENTIMEOUT) {
+        if (t.TimedOut()) {
            esyslog("ERROR: video data stream broken");
            ShutdownHandler.RequestEmergencyExit();
-           t = time(NULL);
+           t.Set(MAXBROKENTIMEOUT);
            }
         }
 }
