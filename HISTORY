@@ -7993,3 +7993,7 @@ Video Disk Recorder Revision History
 - Changed cRecorder::Action() to use cTimeMs instead of time() to avoid problems with
   unjustified "video data stream broken" errors in case the system time is changed
   while a recording is active (reported by Torsten Lang).
+- Revised the section on "Learning the remote control keys" in the INSTALL file to
+  avoid the impression that there actually is a default remote.conf file, and to
+  not use any alphabetic keys for special functions, so that they remain available
+  for textual input.
