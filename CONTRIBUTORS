@@ -3193,3 +3193,7 @@ Martin Prochnow <nordlicht@martins-kabuff.de>
 
 Eike Edener <eike@edener.de>
  for reporting a bug in writing group separators to channels.conf that contain a comma
+
+Harald Koenig <koenig@tat.physik.uni-tuebingen.de>
+ for making the function cRecordings::MBperMinute() only take into account recordings
+ with less than 5 seconds per megabyte, to filter out radio recordings

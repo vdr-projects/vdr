@@ -7997,3 +7997,7 @@ Video Disk Recorder Revision History
   avoid the impression that there actually is a default remote.conf file, and to
   not use any alphabetic keys for special functions, so that they remain available
   for textual input.
+- The function cRecordings::MBperMinute() now only takes into account recordings with
+  less than 5 seconds per megabyte, in an attempt to filter out radio recordings
+  (thanks to Harald Koenig). The result of this function was way off any realistic
+  value in case there are many radio recordings in the video directory.

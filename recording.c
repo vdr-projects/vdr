@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.4 2013/10/09 11:53:37 kls Exp $
+ * $Id: recording.c 3.5 2013/10/12 13:48:32 kls Exp $
  */
 
 #include "recording.h"
@@ -67,6 +67,8 @@
 #define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 
 #define MAX_LINK_LEVEL  6
+
+#define LIMIT_SECS_PER_MB_RADIO 5 // radio recordings typically have more than this
 
 int DirectoryPathMax = PATH_MAX - 1;
 int DirectoryNameMax = NAME_MAX;
@@ -1528,8 +1530,10 @@ double cRecordings::MBperMinute(void)
          if (FileSizeMB > 0) {
             int LengthInSeconds = recording->LengthInSeconds();
             if (LengthInSeconds > 0) {
-               size += FileSizeMB;
-               length += LengthInSeconds;
+               if (LengthInSeconds / FileSizeMB < LIMIT_SECS_PER_MB_RADIO) { // don't count radio recordings
+                  size += FileSizeMB;
+                  length += LengthInSeconds;
+                  }
                }
             }
          }
