@@ -3197,3 +3197,6 @@ Eike Edener <eike@edener.de>
 Harald Koenig <koenig@tat.physik.uni-tuebingen.de>
  for making the function cRecordings::MBperMinute() only take into account recordings
  with less than 5 seconds per megabyte, to filter out radio recordings
+
+Guido Cordaro <guido.cordaro@tiscali.it>
+ for adding maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P

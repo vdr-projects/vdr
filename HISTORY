@@ -7920,7 +7920,7 @@ Video Disk Recorder Revision History
 - Fixed cleaning up old EPG events in case no epg data file is given (reported by
   Dave Pickles).
 
-2013-10-12: Version 2.1.2
+2013-10-13: Version 2.1.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed displaying DVB subtitles (thanks to Rolf Ahrenberg for helping to debug and
@@ -8001,3 +8001,5 @@ Video Disk Recorder Revision History
   less than 5 seconds per megabyte, in an attempt to filter out radio recordings
   (thanks to Harald Koenig). The result of this function was way off any realistic
   value in case there are many radio recordings in the video directory.
+- Added maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P (thanks
+  to Guido Cordaro).
