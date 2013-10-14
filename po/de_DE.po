@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-10 14:32+0200\n"
+"POT-Creation-Date: 2013-10-14 11:56+0200\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -726,11 +726,11 @@ msgstr "CAM antwortet nicht!"
 msgid "Edit path"
 msgstr "Pfad editieren"
 
-msgid "This folder is currently in use - no changes are possible!"
-msgstr "Dieser Ordner ist zur Zeit in Verwendung - es sind keine Änderungen möglich!"
-
 msgid "Folder"
 msgstr "Ordner"
+
+msgid "This folder is currently in use - no changes are possible!"
+msgstr "Dieser Ordner ist zur Zeit in Verwendung - es sind keine Änderungen möglich!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
@@ -745,29 +745,32 @@ msgstr "Aufnahme editieren"
 msgid "This recording is currently in use - no changes are possible!"
 msgstr "Diese Aufnahme ist zur Zeit in Verwendung - es sind keine Änderungen möglich!"
 
-msgid "Button$Stop cutting"
-msgstr "Schnitt beenden"
-
 msgid "Button$Cancel cutting"
 msgstr "Schnitt abbrechen"
 
-msgid "Button$Stop moving"
-msgstr "Verschieben beenden"
+msgid "Button$Stop cutting"
+msgstr "Schnitt beenden"
 
 msgid "Button$Cancel moving"
 msgstr "Verschieben abbrechen"
 
-msgid "Button$Stop copying"
-msgstr "Kopieren beenden"
+msgid "Button$Stop moving"
+msgstr "Verschieben beenden"
 
 msgid "Button$Cancel copying"
 msgstr "Kopieren abbrechen"
+
+msgid "Button$Stop copying"
+msgstr "Kopieren beenden"
 
 msgid "Button$Cut"
 msgstr "Schneiden"
 
 msgid "Button$Delete marks"
 msgstr "Marken löschen"
+
+msgid "Recording vanished!"
+msgstr "Aufnahme verschwunden!"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Fehler beim Hinzufügen der Aufnahme zur Schnittwarteschlange"

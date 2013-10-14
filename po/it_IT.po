@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-06-10 12:16+0200\n"
+"POT-Creation-Date: 2013-10-14 11:56+0200\n"
 "PO-Revision-Date: 2013-09-18 23:57+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -733,10 +733,10 @@ msgstr "La CAM non risponde!"
 msgid "Edit path"
 msgstr ""
 
-msgid "This folder is currently in use - no changes are possible!"
+msgid "Folder"
 msgstr ""
 
-msgid "Folder"
+msgid "This folder is currently in use - no changes are possible!"
 msgstr ""
 
 #, c-format
@@ -752,28 +752,31 @@ msgstr ""
 msgid "This recording is currently in use - no changes are possible!"
 msgstr ""
 
-msgid "Button$Stop cutting"
-msgstr ""
-
 msgid "Button$Cancel cutting"
 msgstr ""
 
-msgid "Button$Stop moving"
+msgid "Button$Stop cutting"
 msgstr ""
 
 msgid "Button$Cancel moving"
 msgstr ""
 
-msgid "Button$Stop copying"
+msgid "Button$Stop moving"
 msgstr ""
 
 msgid "Button$Cancel copying"
+msgstr ""
+
+msgid "Button$Stop copying"
 msgstr ""
 
 msgid "Button$Cut"
 msgstr ""
 
 msgid "Button$Delete marks"
+msgstr ""
+
+msgid "Recording vanished!"
 msgstr ""
 
 msgid "Error while queueing recording for cutting!"

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 3.2 2013/10/10 12:18:12 kls Exp $
+ * $Id: svdrp.c 3.3 2013/10/14 09:49:38 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1570,7 +1570,7 @@ void cSVDRP::CmdRENR(const char *Option)
                  option = skipspace(++option);
               if (*option) {
                  cString oldName = recording->Name();
-                 if (recording->ChangeName(option))
+                 if ((recording = Recordings.GetByName(recording->FileName())) != NULL && recording->ChangeName(option))
                     Reply(250, "Recording \"%s\" renamed to \"%s\"", *oldName, recording->Name());
                  else
                     Reply(554, "Error while renaming recording \"%s\" to \"%s\"!", *oldName, option);

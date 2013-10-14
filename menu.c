@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.7 2013/10/10 12:31:08 kls Exp $
+ * $Id: menu.c 3.8 2013/10/14 09:53:53 kls Exp $
  */
 
 #include "menu.h"
@@ -2134,15 +2134,15 @@ cMenuPathEdit::cMenuPathEdit(const char *Path)
      s = path;
   strn0cpy(name, s, sizeof(name));
   pathIsInUse = Recordings.PathIsInUse(path);
-  if (pathIsInUse) {
-     Add(new cOsdItem(tr("This folder is currently in use - no changes are possible!"), osUnknown, false));
-     Add(new cOsdItem("", osUnknown, false));
-     }
   cOsdItem *p;
   Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
   p->SetSelectable(!pathIsInUse);
   Add(p = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
   p->SetSelectable(!pathIsInUse);
+  if (pathIsInUse) {
+     Add(new cOsdItem("", osUnknown, false));
+     Add(new cOsdItem(tr("This folder is currently in use - no changes are possible!"), osUnknown, false));
+     }
   Display();
   if (!pathIsInUse)
      SetHelp(tr("Button$Folder"));
@@ -2207,6 +2207,8 @@ eOSState cMenuPathEdit::ProcessKey(eKeys Key)
 class cMenuRecordingEdit : public cOsdMenu {
 private:
   cRecording *recording;
+  cString originalFileName;
+  int recordingsState;
   char folder[PATH_MAX];
   char name[NAME_MAX];
   int priority;
@@ -2220,6 +2222,7 @@ private:
   int recordingIsInUse;
   void Set(void);
   void SetHelpKeys(void);
+  bool RefreshRecording(void);
   eOSState SetFolder(void);
   eOSState Folder(void);
   eOSState Action(void);
@@ -2235,6 +2238,8 @@ cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
 {
   SetMenuCategory(mcRecording);
   recording = Recording;
+  originalFileName = recording->FileName();
+  Recordings.StateChanged(recordingsState); // just to get the current state
   strn0cpy(folder, recording->Folder(), sizeof(folder));
   strn0cpy(name, recording->BaseName(), sizeof(name));
   priority = recording->Priority();
@@ -2245,17 +2250,15 @@ cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
   buttonDeleteMarks = NULL;
   actionCancel = NULL;
   doCut = NULL;
-  recordingIsInUse = recording->IsInUse();
+  recordingIsInUse = ruNone;
   Set();
 }
 
 void cMenuRecordingEdit::Set(void)
 {
+  int current = Current();
   Clear();
-  if (recordingIsInUse) {
-     Add(new cOsdItem(tr("This recording is currently in use - no changes are possible!"), osUnknown, false));
-     Add(new cOsdItem("", osUnknown, false));
-     }
+  recordingIsInUse = recording->IsInUse();
   cOsdItem *p;
   Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
   p->SetSelectable(!recordingIsInUse);
@@ -2265,6 +2268,11 @@ void cMenuRecordingEdit::Set(void)
   p->SetSelectable(!recordingIsInUse);
   Add(p = new cMenuEditIntItem(tr("Lifetime"), &lifetime, 0, MAXLIFETIME));
   p->SetSelectable(!recordingIsInUse);
+  if (recordingIsInUse) {
+     Add(new cOsdItem("", osUnknown, false));
+     Add(new cOsdItem(tr("This recording is currently in use - no changes are possible!"), osUnknown, false));
+     }
+  SetCurrent(Get(current));
   Display();
   SetHelpKeys();
 }
@@ -2277,16 +2285,29 @@ void cMenuRecordingEdit::SetHelpKeys(void)
   actionCancel = NULL;
   doCut = NULL;
   if ((recordingIsInUse & ruCut) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop cutting") : tr("Button$Cancel cutting");
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel cutting") : tr("Button$Stop cutting");
   else if ((recordingIsInUse & ruMove) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop moving") : tr("Button$Cancel moving");
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel moving") : tr("Button$Stop moving");
   else if ((recordingIsInUse & ruCopy) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Stop copying") : tr("Button$Cancel copying");
+     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel copying") : tr("Button$Stop copying");
   else if (recording->HasMarks()) {
      buttonAction = doCut = tr("Button$Cut");
      buttonDeleteMarks = tr("Button$Delete marks");
      }
   SetHelp(buttonFolder, buttonAction, buttonDeleteMarks);
+}
+
+bool cMenuRecordingEdit::RefreshRecording(void)
+{
+  if (Recordings.StateChanged(recordingsState)) {
+     if ((recording = Recordings.GetByName(originalFileName)) != NULL)
+        Set();
+     else {
+        Skins.Message(mtWarning, tr("Recording vanished!"));
+        return false;
+        }
+     }
+  return true;
 }
 
 eOSState cMenuRecordingEdit::SetFolder(void)
@@ -2313,6 +2334,7 @@ eOSState cMenuRecordingEdit::Action(void)
         Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
      }
   recordingIsInUse = recording->IsInUse();
+  RefreshRecording();
   SetHelpKeys();
   return osContinue;
 }
@@ -2358,6 +2380,10 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
 
 eOSState cMenuRecordingEdit::ProcessKey(eKeys Key)
 {
+  if (!HasSubMenu()) {
+     if (!RefreshRecording())
+        return osBack; // the recording has vanished, so close this menu
+     }
   eOSState state = cOsdMenu::ProcessKey(Key);
   if (state == osUnknown) {
      if (!recordingIsInUse) {
@@ -2382,7 +2408,10 @@ eOSState cMenuRecordingEdit::ProcessKey(eKeys Key)
 class cMenuRecording : public cOsdMenu {
 private:
   cRecording *recording;
+  cString originalFileName;
+  int recordingsState;
   bool withButtons;
+  bool RefreshRecording(void);
 public:
   cMenuRecording(cRecording *Recording, bool WithButtons = false);
   virtual void Display(void);
@@ -2394,13 +2423,32 @@ cMenuRecording::cMenuRecording(cRecording *Recording, bool WithButtons)
 {
   SetMenuCategory(mcRecordingInfo);
   recording = Recording;
+  originalFileName = recording->FileName();
+  Recordings.StateChanged(recordingsState); // just to get the current state
   withButtons = WithButtons;
   if (withButtons)
      SetHelp(tr("Button$Play"), tr("Button$Rewind"), NULL, tr("Button$Edit"));
 }
 
+bool cMenuRecording::RefreshRecording(void)
+{
+  if (Recordings.StateChanged(recordingsState)) {
+     if ((recording = Recordings.GetByName(originalFileName)) != NULL)
+        Display();
+     else {
+        Skins.Message(mtWarning, tr("Recording vanished!"));
+        return false;
+        }
+     }
+  return true;
+}
+
 void cMenuRecording::Display(void)
 {
+  if (HasSubMenu()) {
+     SubMenu()->Display();
+     return;
+     }
   cOsdMenu::Display();
   DisplayMenu()->SetRecording(recording);
   if (recording->Info()->Description())
@@ -2415,6 +2463,8 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
         CloseSubMenu();
      return state;
      }
+  else if (!RefreshRecording())
+     return osBack; // the recording has vanished, so close this menu
   switch (int(Key)) {
     case kUp|k_Repeat:
     case kUp:

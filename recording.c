@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.5 2013/10/12 13:48:32 kls Exp $
+ * $Id: recording.c 3.6 2013/10/14 09:40:00 kls Exp $
  */
 
 #include "recording.h"
@@ -1834,16 +1834,16 @@ bool cRecordingsHandlerEntry::Active(bool &Error)
         copier->Start();
         }
      ClearPending();
+     Recordings.ChangeState();
      return true;
      }
-  else {
-     if (CopierFinishedOk && (Usage() & ruMove) != 0) {
-        cRecording Recording(FileNameSrc());
-        Recording.Delete();
-        Recordings.ChangeState();
-        Recordings.TouchUpdate();
-        }
+  // Clean up:
+  if (CopierFinishedOk && (Usage() & ruMove) != 0) {
+     cRecording Recording(FileNameSrc());
+     Recording.Delete();
      }
+  Recordings.ChangeState();
+  Recordings.TouchUpdate();
   return false;
 }
 
@@ -1887,6 +1887,7 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
               operations.Add(new cRecordingsHandlerEntry(Usage, FileNameSrc, FileNameDst));
               finished = false;
               Active(); // start it right away if possible
+              Recordings.ChangeState();
               return true;
               }
            else
@@ -1906,14 +1907,17 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
 void cRecordingsHandler::Del(const char *FileName)
 {
   cMutexLock MutexLock(&mutex);
-  if (cRecordingsHandlerEntry *r = Get(FileName))
+  if (cRecordingsHandlerEntry *r = Get(FileName)) {
      operations.Del(r);
+     Recordings.ChangeState();
+     }
 }
 
 void cRecordingsHandler::DelAll(void)
 {
   cMutexLock MutexLock(&mutex);
   operations.Clear();
+  Recordings.ChangeState();
 }
 
 int cRecordingsHandler::GetUsage(const char *FileName)
