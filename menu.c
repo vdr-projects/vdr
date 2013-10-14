@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.8 2013/10/14 09:53:53 kls Exp $
+ * $Id: menu.c 3.9 2013/10/14 10:28:10 kls Exp $
  */
 
 #include "menu.h"
@@ -2386,17 +2386,13 @@ eOSState cMenuRecordingEdit::ProcessKey(eKeys Key)
      }
   eOSState state = cOsdMenu::ProcessKey(Key);
   if (state == osUnknown) {
-     if (!recordingIsInUse) {
-        switch (Key) {
-          case kRed:    return Folder();
-          case kGreen:  return Action();
-          case kYellow: return DeleteMarks();
-          case kOk:     return ApplyChanges();
-          default: break;
-          }
-        }
-     else if (Key == kOk)
-        return osBack;
+     switch (Key) {
+       case kRed:    return buttonFolder ? Folder() : osContinue;
+       case kGreen:  return buttonAction ? Action() : osContinue;
+       case kYellow: return buttonDeleteMarks ? DeleteMarks() : osContinue;
+       case kOk:     return !recordingIsInUse ? ApplyChanges() : osBack;
+       default: break;
+       }
      }
   else if (state == osEnd && HasSubMenu())
      state = SetFolder();
