@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.9 2013/10/14 10:28:10 kls Exp $
+ * $Id: menu.c 3.10 2013/10/16 09:15:36 kls Exp $
  */
 
 #include "menu.h"
@@ -3732,7 +3732,7 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
-cMenuMain::cMenuMain(eOSState State)
+cMenuMain::cMenuMain(eOSState State, bool OpenSubMenus)
 :cOsdMenu("")
 {
   SetMenuCategory(mcMain);
@@ -3749,7 +3749,7 @@ cMenuMain::cMenuMain(eOSState State)
     case osSchedule:   AddSubMenu(new cMenuSchedule); break;
     case osChannels:   AddSubMenu(new cMenuChannels); break;
     case osTimers:     AddSubMenu(new cMenuTimers); break;
-    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
+    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, OpenSubMenus)); break;
     case osSetup:      AddSubMenu(new cMenuSetup); break;
     case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
     default: break;
