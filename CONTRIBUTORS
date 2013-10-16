@@ -618,6 +618,8 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to read the epg.data file in a separate thread
  for some improvements to allowing the parameters PATH and NAME to the --dirnames
  command line option to be left empty to use the default values if only ENC shall be set
+ for reporting an inconsistent behavior between opening the Recordings menu manually
+ via the main menu and by pressing the Recordings key
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

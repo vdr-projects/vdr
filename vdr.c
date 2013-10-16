@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.57 2013/03/15 10:44:54 kls Exp $
+ * $Id: vdr.c 2.57.1.1 2013/10/16 09:46:36 kls Exp $
  */
 
 #include <getopt.h>
@@ -1234,7 +1234,7 @@ int main(int argc, char *argv[])
              case osRecordings:
                             DELETE_MENU;
                             cControl::Shutdown();
-                            Menu = new cMenuMain(osRecordings);
+                            Menu = new cMenuMain(osRecordings, true);
                             break;
              case osReplay: DELETE_MENU;
                             cControl::Shutdown();
