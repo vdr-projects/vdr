@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.6 2013/10/14 09:40:00 kls Exp $
+ * $Id: recording.c 3.7 2013/10/16 10:24:28 kls Exp $
  */
 
 #include "recording.h"
@@ -1754,6 +1754,7 @@ void cDirCopier::Stop(void)
   Cancel(3);
   if (error) {
      cVideoDirectory::RemoveVideoFile(dirNameDst);
+     Recordings.AddByName(dirNameSrc);
      Recordings.DelByName(dirNameDst);
      }
 }
