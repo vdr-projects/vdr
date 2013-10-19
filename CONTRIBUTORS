@@ -618,6 +618,8 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to read the epg.data file in a separate thread
  for some improvements to allowing the parameters PATH and NAME to the --dirnames
  command line option to be left empty to use the default values if only ENC shall be set
+ for reporting an inconsistent behavior between opening the Recordings menu manually
+ via the main menu and by pressing the Recordings key
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1169,6 +1171,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for fixing the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel()
  for a patch that was used to rename the "plp id" to a more general "stream id"
  and add support for DVB-S2 "Input Stream Identifier" (ISI)
+ for helping to debug and understand subtitle page refreshes
+ for a patch that was used to implement the SVDRP command RENR
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1491,6 +1495,8 @@ Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing handling the '0' key for switching between the last two channels
  for making cPatFilter::Process() check whether the channel exists before setting
  the PMT filter
+ for the Rotor plugin, from which code was used by a patch that was used as a base for
+ implementing support for positioners
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
@@ -1699,6 +1705,7 @@ Arthur Konovalov <artlov@gmail.com>
  for reporting references to old *.vdr file names in MANUAL
  for reporting that the video stream type was set to 2 even if the vpid was 0
  for updates to 'sources.conf'
+ for reporting a wrong initialization of Setup.PositionerSwing
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -2545,6 +2552,8 @@ Ulf Kiener <webmaster@ulf-kiener.de>
  for suggesting to add user defined key kUser0
  for suggesting to perform absolute jumps when replaying a recording (via the Red key)
  only if an actual value has been entered
+ for suggesting to make the Yellow button in the main menu not act as "Pause" if
+ "Pause key handling" is set to "do not pause live video"
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
@@ -2961,6 +2970,7 @@ Johan Andersson <jna@jna.pp.se>
 Dave Pickles <dave@pickles.me.uk>
  for adding support for "content identifier descriptor" and "default authority
  descriptor" to 'libsi'
+ for reporting that old EPG events are not cleaned up in case no epg data file is given
 
 Holger Dengler <holger.dengler@gmx.de>
  for making the isnumber() function check the given pointer for NULL
@@ -3009,6 +3019,11 @@ Torsten Lang <info@torstenlang.de>
  for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
  buffer to 20MB to better handle HD recordings
  for fixing setting the video format in the dvbhdffdevice
+ for reporting a problem with setting the system time from the TDT in case devices
+ are tuned to the same transponder on different sources, and these broadcast different
+ time data
+ for reporting a problem with unjustified "video data stream broken" errors in case
+ the system time is changed while a recording is active
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -3169,3 +3184,21 @@ Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
 Manfred Völkel <mvoelkel@digitaldevices.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+
+Thomas Maass <mase@setho.org>
+ for reporting a difference in the internal sequence of actions when pressing the Blue
+ and the Back key, respectively, during replay
+
+Martin Prochnow <nordlicht@martins-kabuff.de>
+ for writing the "extrecmenu" plugin, which inspired the implementation of editing
+ recording properties
+
+Eike Edener <eike@edener.de>
+ for reporting a bug in writing group separators to channels.conf that contain a comma
+
+Harald Koenig <koenig@tat.physik.uni-tuebingen.de>
+ for making the function cRecordings::MBperMinute() only take into account recordings
+ with less than 5 seconds per megabyte, to filter out radio recordings
+
+Guido Cordaro <guido.cordaro@tiscali.it>
+ for adding maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.2 2013/08/22 11:57:34 kls Exp $
+ * $Id: device.h 3.3 2013/10/09 08:25:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -201,7 +201,7 @@ public:
   int CardIndex(void) const { return cardIndex; }
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
-         ///< Returns the number of this device (0 ... numDevices).
+         ///< Returns the number of this device (0 ... numDevices - 1).
   virtual cString DeviceType(void) const;
          ///< Returns a string identifying the type of this device (like "DVB-S").
          ///< If this device can receive different delivery systems, the returned

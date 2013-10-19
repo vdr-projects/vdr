@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.2 2013/08/23 10:32:51 kls Exp $
+ * $Id: tools.h 3.3 2013/09/22 13:30:14 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -170,6 +170,7 @@ private:
   char *s;
 public:
   cString(const char *S = NULL, bool TakePointer = false);
+  cString(const char *S, const char *To); ///< Copies S up to To (exclusive). To must be a valid pointer into S. If To is NULL, everything is copied.
   cString(const cString &String);
   virtual ~cString();
   operator const void * () const { return s; } // to catch cases where operator*() should be used
@@ -178,6 +179,7 @@ public:
   cString &operator=(const cString &String);
   cString &operator=(const char *String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
+  cString &CompactChars(char c); ///< Compact any sequence of characters 'c' to a single character, and strip all of them from the beginning and end of this string.
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
   static cString vsprintf(const char *fmt, va_list &ap);
   };
@@ -193,6 +195,8 @@ char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
+const char *strchrn(const char *s, char c, size_t n); ///< returns a pointer to the n'th occurrence (counting from 1) of c in s, or NULL if no such character was found. If n is 0, s is returned.
+int strcountchr(const char *s, char c); ///< returns the number of occurrences of 'c' in 's'.
 inline char *skipspace(const char *s)
 {
   if ((uchar)*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible
@@ -203,6 +207,7 @@ inline char *skipspace(const char *s)
 }
 char *stripspace(char *s);
 char *compactspace(char *s);
+char *compactchars(char *s, char c); ///< removes all occurrences of 'c' from the beginning an end of 's' and replaces sequences of multiple 'c's with a single 'c'.
 cString strescape(const char *s, const char *chars);
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);

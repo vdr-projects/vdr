@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-06-10 12:16+0200\n"
-"PO-Revision-Date: 2013-02-11 23:46+0100\n"
+"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"PO-Revision-Date: 2013-09-18 23:57+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -730,6 +730,70 @@ msgstr "Inserisci %d cifre!"
 msgid "CAM not responding!"
 msgstr "La CAM non risponde!"
 
+msgid "Edit path"
+msgstr ""
+
+msgid "Folder"
+msgstr ""
+
+msgid "This folder is currently in use - no changes are possible!"
+msgstr ""
+
+#, c-format
+msgid "Move entire folder containing %d recordings?"
+msgstr ""
+
+msgid "Error while moving folder!"
+msgstr ""
+
+msgid "Edit recording"
+msgstr ""
+
+msgid "This recording is currently in use - no changes are possible!"
+msgstr ""
+
+msgid "Button$Cancel cutting"
+msgstr ""
+
+msgid "Button$Stop cutting"
+msgstr ""
+
+msgid "Button$Cancel moving"
+msgstr ""
+
+msgid "Button$Stop moving"
+msgstr ""
+
+msgid "Button$Cancel copying"
+msgstr ""
+
+msgid "Button$Stop copying"
+msgstr ""
+
+msgid "Button$Cut"
+msgstr ""
+
+msgid "Button$Delete marks"
+msgstr ""
+
+msgid "Recording vanished!"
+msgstr ""
+
+msgid "Error while queueing recording for cutting!"
+msgstr ""
+
+msgid "Delete editing marks for this recording?"
+msgstr ""
+
+msgid "Error while deleting editing marks!"
+msgstr ""
+
+msgid "Error while changing priority/lifetime!"
+msgstr ""
+
+msgid "Error while changing folder/name!"
+msgstr ""
+
 msgid "Recording info"
 msgstr "Info registrazione"
 
@@ -1001,31 +1065,31 @@ msgid "Setup.LNB$own"
 msgstr "propria"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Utilizza motore antenna"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Latitudine attuale (gradi)"
 
 msgid "South"
-msgstr ""
+msgstr "Sud"
 
 msgid "North"
-msgstr ""
+msgstr "Nord"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Longitudine attuale (gradi)"
 
 msgid "West"
-msgstr ""
+msgstr "Ovest"
 
 msgid "East"
-msgstr ""
+msgstr "Est"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Rotazione massima motore (gradi)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Velocità motore (gradi/s)"
 
 msgid "CAM reset"
 msgstr "Reimposta la CAM"
@@ -1366,7 +1430,7 @@ msgstr "RIPRODUCI"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Muovi antenna verso %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "Consolle ST:TNG"

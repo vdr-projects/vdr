@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.0 2013/02/12 13:39:08 kls Exp $
+ * $Id: osd.h 3.2 2013/09/06 12:13:47 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -192,6 +192,8 @@ public:
        ///< contents of the bitmap will be lost. If Width and Height are the same
        ///< as the current values, nothing will happen and the bitmap remains
        ///< unchanged.
+  void SetOffset(int X0, int Y0) { x0 = X0; y0 = Y0; }
+       ///< Sets the offset of this bitmap to the given values.
   bool Contains(int x, int y) const;
        ///< Returns true if this bitmap contains the point (x, y).
   bool Covers(int x1, int y1, int x2, int y2) const;
@@ -221,6 +223,8 @@ public:
   void SetIndex(int x, int y, tIndex Index);
        ///< Sets the index at the given coordinates to Index.
        ///< Coordinates are relative to the bitmap's origin.
+  void Fill(tIndex Index);
+       ///< Fills the bitmap data with the given Index.
   void DrawPixel(int x, int y, tColor Color);
        ///< Sets the pixel at the given coordinates to the given Color, which is
        ///< a full 32 bit ARGB value.
@@ -283,7 +287,7 @@ public:
        ///< the 2^NewBpp most frequently used colors as defined in the current palette.
        ///< If NewBpp is not smaller than the bitmap's current color depth,
        ///< or if it is not one of 4bpp or 2bpp, nothing happens.
-  cBitmap *Scaled(double FactorX, double FactorY, bool AntiAlias = false);
+  cBitmap *Scaled(double FactorX, double FactorY, bool AntiAlias = false) const;
        ///< Creates a copy of this bitmap, scaled by the given factors.
        ///< If AntiAlias is true and either of the factors is greater than 1.0,
        ///< anti-aliasing is applied. This will also set the color depth of the
@@ -657,7 +661,7 @@ public:
        ///< covers the entire view port. This may be of advantage if, e.g.,
        ///< there is a draw port that holds, say, 11 lines of text, while the
        ///< view port displays only 10 lines. By Pan()'ing the draw port up one
-       ///< line, an new bottom line can be written into the draw port (without
+       ///< line, a new bottom line can be written into the draw port (without
        ///< being seen through the view port), and later the draw port can be
        ///< shifted smoothly, resulting in a smooth scrolling.
        ///< It is the caller's responsibility to make sure that Source and Dest

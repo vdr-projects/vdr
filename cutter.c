@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 3.2 2013/08/21 13:15:24 kls Exp $
+ * $Id: cutter.c 3.4 2013/10/02 13:18:02 kls Exp $
  */
 
 #include "cutter.h"
@@ -642,46 +642,47 @@ void cCuttingThread::Action(void)
 
 // --- cCutter ---------------------------------------------------------------
 
-cMutex cCutter::mutex;
-cString cCutter::originalVersionName;
-cString cCutter::editedVersionName;
-cCuttingThread *cCutter::cuttingThread = NULL;
-bool cCutter::error = false;
-bool cCutter::ended = false;
-
-bool cCutter::Start(const char *FileName)
+cCutter::cCutter(const char *FileName)
 {
-  cMutexLock MutexLock(&mutex);
+  cuttingThread = NULL;
+  error = false;
+  originalVersionName = FileName;
+}
+
+cCutter::~cCutter()
+{
+  Stop();
+}
+
+cString cCutter::EditedFileName(const char *FileName)
+{
+  cRecording Recording(FileName);
+  cMarks Marks;
+  if (Marks.Load(FileName, Recording.FramesPerSecond(), Recording.IsPesRecording())) {
+     if (cMark *First = Marks.GetNextBegin())
+        Recording.SetStartTime(Recording.Start() + (int(First->Position() / Recording.FramesPerSecond() + 30) / 60) * 60);
+     return Recording.PrefixFileName('%');
+     }
+  return NULL;
+}
+
+bool cCutter::Start(void)
+{
   if (!cuttingThread) {
      error = false;
-     ended = false;
-     originalVersionName = FileName;
-     cRecording Recording(FileName);
-
-     cMarks FromMarks;
-     FromMarks.Load(FileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
-     if (cMark *First = FromMarks.GetNextBegin())
-        Recording.SetStartTime(Recording.Start() + (int(First->Position() / Recording.FramesPerSecond() + 30) / 60) * 60);
-
-     const char *evn = Recording.PrefixFileName('%');
-     if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
-        // XXX this can be removed once RenameVideoFile() follows symlinks (see videodir.c)
-        // remove a possible deleted recording with the same name to avoid symlink mixups:
-        char *s = strdup(evn);
-        char *e = strrchr(s, '.');
-        if (e) {
-           if (strcmp(e, ".rec") == 0) {
-              strcpy(e, ".del");
-              RemoveVideoFile(s);
+     if (*originalVersionName) {
+        cRecording Recording(originalVersionName);
+        editedVersionName = EditedFileName(originalVersionName);
+        if (*editedVersionName) {
+           if (strcmp(originalVersionName, editedVersionName) != 0) { // names must be different!
+              if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
+                 Recording.WriteInfo(editedVersionName);
+                 Recordings.AddByName(editedVersionName, false);
+                 cuttingThread = new cCuttingThread(originalVersionName, editedVersionName);
+                 return true;
+                 }
               }
            }
-        free(s);
-        // XXX
-        editedVersionName = evn;
-        Recording.WriteInfo();
-        Recordings.AddByName(editedVersionName, false);
-        cuttingThread = new cCuttingThread(FileName, editedVersionName);
-        return true;
         }
      }
   return false;
@@ -689,7 +690,6 @@ bool cCutter::Start(const char *FileName)
 
 void cCutter::Stop(void)
 {
-  cMutexLock MutexLock(&mutex);
   bool Interrupted = cuttingThread && cuttingThread->Active();
   const char *Error = cuttingThread ? cuttingThread->Error() : NULL;
   delete cuttingThread;
@@ -701,42 +701,27 @@ void cCutter::Stop(void)
         esyslog("ERROR: '%s' during editing process", Error);
      if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), editedVersionName) == 0)
         cControl::Shutdown();
-     RemoveVideoFile(editedVersionName);
+     cVideoDirectory::RemoveVideoFile(editedVersionName);
      Recordings.DelByName(editedVersionName);
      }
 }
 
-bool cCutter::Active(const char *FileName)
+bool cCutter::Active(void)
 {
-  cMutexLock MutexLock(&mutex);
   if (cuttingThread) {
      if (cuttingThread->Active())
-        return !FileName || strcmp(FileName, originalVersionName) == 0 || strcmp(FileName, editedVersionName) == 0;
+        return true;
      error = cuttingThread->Error();
      Stop();
      if (!error)
         cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName, originalVersionName);
-     originalVersionName = NULL;
-     editedVersionName = NULL;
-     ended = true;
      }
   return false;
 }
 
 bool cCutter::Error(void)
 {
-  cMutexLock MutexLock(&mutex);
-  bool result = error;
-  error = false;
-  return result;
-}
-
-bool cCutter::Ended(void)
-{
-  cMutexLock MutexLock(&mutex);
-  bool result = ended;
-  ended = false;
-  return result;
+  return error;
 }
 
 #define CUTTINGCHECKINTERVAL 500 // ms between checks for the active cutting process
@@ -749,10 +734,13 @@ bool CutRecording(const char *FileName)
         cMarks Marks;
         if (Marks.Load(FileName, Recording.FramesPerSecond(), Recording.IsPesRecording()) && Marks.Count()) {
            if (Marks.GetNumSequences()) {
-              if (cCutter::Start(FileName)) {
-                 while (cCutter::Active())
+              cCutter Cutter(FileName);
+              if (Cutter.Start()) {
+                 while (Cutter.Active())
                        cCondWait::SleepMs(CUTTINGCHECKINTERVAL);
-                 return true;
+                 if (!Cutter.Error())
+                    return true;
+                 fprintf(stderr, "error while cutting\n");
                  }
               else
                  fprintf(stderr, "can't start editing process\n");

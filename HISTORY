@@ -7845,7 +7845,8 @@ Video Disk Recorder Revision History
 - Fixed a crash in the LCARS skin's main menu in case there is no current channel
   (reported by Dominique Dumont).
 - Added basic support for positioners to control steerable satellite dishes (based on
-  a patch from Seppo Ingalsuo and Ales Jurik).
+  a patch from Seppo Ingalsuo and Ales Jurik, which in turn used code from Thomas
+  Bergwinkl's Rotor plugin).
   + Supports GotoN (aka "DiSEqC 1.2") and GotoX (aka "USALS").
   + The new DiSEqC command code 'P' can be used to instruct a positioner to move the
     dish to the required satellite position. When a 'P' code is processed, further
@@ -7899,3 +7900,112 @@ Video Disk Recorder Revision History
   A recommended method for a relatively safe disk setup in a VDR system is to use two
   1TB (or larger) disks and use them as a RAID-1 (mirrored). That way, if one disk
   fails, you can replace it without data loss.
+
+2013-09-01: Version 2.0.3
+
+- Fixed asserting free disk space in the cutter.
+- No longer trying to delete old recordings in AssertFreeDiskSpace() if the given
+  Priority is less than 1.
+- Fixed handling LIRC events in case repeated events are lost.
+- Fixed a possible crash when shutting down VDR while subtitles are being displayed
+  (reported by Ville Skyttä).
+- cDevice::IsPrimaryDevice() now also checks whether the primary device actually has
+  a decoder and returns false otherwise. This should improve device allocation on
+  systems that are only used as a receiver and don't actually display anything.
+- Increased the value of MAXRETRIES to 20 to reduce the probability of disturbances
+  in transfer mode.
+- All bonded devices (except for the master) now turn off their LNB power completely
+  to avoid problems when receiving vertically polarized transponders (suggested by
+  Manfred Völkel and Oliver Endriss).
+- Fixed cleaning up old EPG events in case no epg data file is given (reported by
+  Dave Pickles).
+
+2013-10-19: Version 2.1.2
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed displaying DVB subtitles (thanks to Rolf Ahrenberg for helping to debug and
+  understand subtitle page refreshes):
+  + Fixed handling DVB subtitle fill region codes for 2 and 8 bpp.
+  + Fixed handling pages without an explicit END_OF_DISPLAY_SET_SEGMENT.
+    The FINISHPAGE_HACK is no longer necessary.
+  + Fixed handling "page refreshes". The data is now parsed and stored closer to the
+    DVB standard specs, introducing "object refs" and "region refs".
+  + The debug output now goes into an HTML file named dbg-log.htm and shows the actual
+    bitmaps (dbg-nnn.jpg) used to display the subtitles. That way it is much easier to
+    see what's actually going on.
+  + Fixed handling subtitles encoded as a string of characters (the very first
+    character was always skipped).
+- Fixed wrong initialization of Setup.PositionerSwing (reported by Arthur Konovalov).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed cleaning up old EPG events in case no epg data file is given (reported by
+  Dave Pickles).
+- Unified the internal sequence of actions when pressing the Blue and the Back key,
+  respectively, during replay (reported by Thomas Maass).
+- The Yellow button in the main menu no longer acts as "Pause" if "Pause key handling"
+  is set to "do not pause live video" (suggested by Ulf Kiener).
+- The code for distributing recordings over several video directories has been
+  removed. VDR now by default assumes that the video directory is one big disk.
+  If you absolutely need to use several separate disks to store recordings, you can
+  write a plugin that uses the new cVideoDirectory API to implement the necessary
+  functionality (see PLUGINS.html, section "The video directory"). You can copy the
+  respective code from previous versions of videodir.c.
+  IMPORTANT NOTE: If you write a plugin that implements a distributed video directory,
+  =============== be sure to make cVideoDirectory::Rename() follow symbolic links!
+                  This functionality was never implemented in VDR and it therefore
+                  used a workaround in cutter.c. See the section marked with
+                  // XXX this can be removed once RenameVideoFile() follows symlinks
+                  in previous versions of cutter.c.
+  + CloseVideoFile() is obsolete and has been removed.
+  + The functions OpenVideoFile(), RenameVideoFile(), RemoveVideoFile(), VideoFileSpaceAvailable(),
+    VideoDiskSpace(), RemoveEmptyVideoDirectories(), IsOnVideoDirectoryFileSystem() and
+    PrefixVideoFileName() are now static members of cVideoDirectory and need to be called
+    with the proper prefix.
+  + The name of the video directory is now available through cVideoDirectory::Name().
+- Added renaming and moving recordings and folders, editing a recording's priority and
+  lifetime, and queueing cutting jobs (inspired by the "extrecmenu" plugin from Martin
+  Prochnow).
+  + The "Recording info" menu now has a new Blue button named "Edit", which opens a
+    dialog in which several properties of the selected recording can be changed. It can
+    be renamed or moved into another folder and its priority and lifetime can be
+    modified (inspired by the "extrecmenu" plugin from Martin Prochnow).
+    The new blue "Edit" button in the "Recordings" menu opens a dialog in which a folder
+    can be renamed or moved. See MANUAL, section "Managing folders".
+  + In the "Edit recording" menu the Yellow button ("Delete marks") allows you to delete
+    all editing marks of the selected recording.
+  + cCutter is no longer a static class. Cutting requests should now be invoked by
+    calling RecordingsHandler.Add(ruCut, FileName). See the new cRecordingsHandler
+    class in recording.h.
+  + Cutting jobs are now placed in a queue (together with any move or copy jobs) and
+    are processed one by one.
+  + The new SVDRP command RENR can be used to rename a recording (suggested by Rolf
+    Ahrenberg).
+  + Note that in several places in the source code a "copy" operation is mentioned,
+    however there is no user interface for this, yet.
+- Changed some variable names in positioner.c to match the names used in the page with
+  the explanation on vdr-portal.de.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed writing group separators to channels.conf that contain a comma (reported by
+  Eike Edener).
+- Now also checking the source (in addition to the transponder) when setting the
+  system time from the TDT, which avoids problems in case devices are tuned to the
+  same transponder on different sources, and these broadcast different time data
+  (reported by Torsten Lang).
+- Changed cRecorder::Action() to use cTimeMs instead of time() to avoid problems with
+  unjustified "video data stream broken" errors in case the system time is changed
+  while a recording is active (reported by Torsten Lang).
+- Revised the section on "Learning the remote control keys" in the INSTALL file to
+  avoid the impression that there actually is a default remote.conf file, and to
+  not use any alphabetic keys for special functions, so that they remain available
+  for textual input.
+- The function cRecordings::MBperMinute() now only takes into account recordings with
+  less than 5 seconds per megabyte, in an attempt to filter out radio recordings
+  (thanks to Harald Koenig). The result of this function was way off any realistic
+  value in case there are many radio recordings in the video directory.
+- Added maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P (thanks
+  to Guido Cordaro).
+- Fixed an inconsistent behavior between opening the Recordings menu manually via the
+  main menu and by pressing the Recordings key. In the latter case it automatically
+  opened all sub folders to position the cursor to the last replayed recording, which
+  is unexpected at this point (reported by Helmut Auer). You can still navigate to
+  the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
+  menu.

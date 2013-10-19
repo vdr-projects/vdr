@@ -104,6 +104,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Remote Control">Remote Control</a>
 <li><a href="#Conditional Access">Conditional Access</a>
 <li><a href="#Electronic Program Guide">Electronic Program Guide</a>
+<li><modified><a href="#The video directory">The video directory</a></modified>
 </ul>
 </ul>
 
@@ -2042,8 +2043,6 @@ from <tt>cPositioner</tt>, as in
 #include &lt;vdr/positioner.h&gt;
 
 class cMyPositioner : public cPositioner {
-private:
-  void SendDiseqc(uint8_t *Codes, int NumCodes);
 public:
   cMyPositioner(void);
   virtual void Drive(ePositionerDirection Direction);
@@ -2301,6 +2300,42 @@ where <tt>DescriptionFromDatabase()</tt> would derive the description of the
 to signal VDR that no other EPG handlers shall be queried after this one.
 <p>
 See <tt>VDR/epg.h</tt> for details.
+
+<div class="modified">
+<hr><h2><a name="The video directory">The video directory</a></h2>
+
+<div class="blurb">Bits and pieces...</div><p>
+
+By default VDR assumes that the video directory consists of one large
+volume, on which it can store its recordings. If you want to distribute your
+recordings over several physical drives, you can derive from <tt>cVideoDirectory</tt>,
+as in
+
+<p><table><tr><td class="code"><pre>
+#include &lt;vdr/videodir.h&gt;
+
+class cMyVideoDirectory : public cVideoDirectory {
+public:
+  cMyVideoDirectory(void);
+  virtual ~cMyVideoDirectory();
+  virtual int FreeMB(int *UsedMB = NULL);
+  virtual bool Register(const char *FileName);
+  virtual bool Rename(const char *OldName, const char *NewName);
+  virtual bool Move(const char *FromName, const char *ToName);
+  virtual bool Remove(const char *Name);
+  virtual void Cleanup(const char *IgnoreFiles[] = NULL);
+  virtual bool Contains(const char *Name);
+  };
+</pre></td></tr></table><p>
+
+See the description in <tt>videodir.h</tt> for details.
+<p>
+You should create your derived video directory object in the
+<a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
+Note that the object has to be created on the heap (using <tt>new</tt>),
+and you shall not delete it at any point (it will be deleted automatically
+when the program ends).
+</div modified>
 
 </body>
 </html>

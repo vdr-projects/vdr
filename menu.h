@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 3.1 2013/06/01 13:44:57 kls Exp $
+ * $Id: menu.h 3.3 2013/10/16 09:14:58 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -107,7 +107,7 @@ private:
   void Set(void);
   bool Update(bool Force = false);
 public:
-  cMenuMain(eOSState State = osUnknown);
+  cMenuMain(eOSState State = osUnknown, bool OpenSubMenus = false);
   virtual eOSState ProcessKey(eKeys Key);
   static cOsdObject *PluginOsdObject(void);
   };
@@ -198,6 +198,8 @@ private:
   int level;
   int recordingsState;
   int helpKeys;
+  static cString path;
+  static cString fileName;
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
   bool Open(bool OpenSubMenus = false);
@@ -213,6 +215,8 @@ public:
   cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false);
   ~cMenuRecordings();
   virtual eOSState ProcessKey(eKeys Key);
+  static void SetPath(const char *Path);
+  static void SetRecording(const char *FileName);
   };
 
 class cRecordControl {

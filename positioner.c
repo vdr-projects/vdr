@@ -7,7 +7,7 @@
  * For an explanation (in German) of the theory behind the calculations see
  * http://www.vdr-portal.de/board17-developer/board97-vdr-core/p1154305-grundlagen-und-winkelberechnungen-f%C3%BCr-h-h-diseqc-motor-antennenanlagen
  *
- * $Id: positioner.c 3.1 2013/08/21 11:02:52 kls Exp $
+ * $Id: positioner.c 3.2 2013/10/10 14:14:10 kls Exp $
  */
 
 #include "positioner.h"
@@ -49,20 +49,20 @@ int cPositioner::NormalizeAngle(int Angle)
 
 int cPositioner::CalcHourAngle(int Longitude)
 {
-  double Delta = RAD(Longitude - Setup.SiteLon);
+  double Alpha = RAD(Longitude - Setup.SiteLon);
   double Lat = RAD(Setup.SiteLat);
   int Sign = Setup.SiteLat >= 0 ? -1 : 1; // angles to the right are positive, angles to the left are negative
-  return Sign * round(DEG(atan2(sin(Delta), cos(Delta) - cos(Lat) * SAT_EARTH_RATIO)));
+  return Sign * round(DEG(atan2(sin(Alpha), cos(Alpha) - cos(Lat) * SAT_EARTH_RATIO)));
 }
 
 int cPositioner::CalcLongitude(int HourAngle)
 {
   double Lat = RAD(Setup.SiteLat);
   double Lon = RAD(Setup.SiteLon);
-  double Alpha = RAD(HourAngle);
-  double Delta = Alpha - asin(sin(M_PI - Alpha) * cos(Lat) * SAT_EARTH_RATIO);
+  double Delta = RAD(HourAngle);
+  double Alpha = Delta - asin(sin(M_PI - Delta) * cos(Lat) * SAT_EARTH_RATIO);
   int Sign = Setup.SiteLat >= 0 ? 1 : -1;
-  return NormalizeAngle(round(DEG(Lon - Sign * Delta)));
+  return NormalizeAngle(round(DEG(Lon - Sign * Alpha)));
 }
 
 int cPositioner::HorizonLongitude(ePositionerDirection Direction)

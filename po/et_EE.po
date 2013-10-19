@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-06-10 12:16+0200\n"
+"POT-Creation-Date: 2013-10-14 11:56+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -723,6 +723,70 @@ msgstr "Palun sisestada %d numbrit!"
 msgid "CAM not responding!"
 msgstr "CAM ei vasta"
 
+msgid "Edit path"
+msgstr ""
+
+msgid "Folder"
+msgstr ""
+
+msgid "This folder is currently in use - no changes are possible!"
+msgstr ""
+
+#, c-format
+msgid "Move entire folder containing %d recordings?"
+msgstr ""
+
+msgid "Error while moving folder!"
+msgstr ""
+
+msgid "Edit recording"
+msgstr ""
+
+msgid "This recording is currently in use - no changes are possible!"
+msgstr ""
+
+msgid "Button$Cancel cutting"
+msgstr ""
+
+msgid "Button$Stop cutting"
+msgstr ""
+
+msgid "Button$Cancel moving"
+msgstr ""
+
+msgid "Button$Stop moving"
+msgstr ""
+
+msgid "Button$Cancel copying"
+msgstr ""
+
+msgid "Button$Stop copying"
+msgstr ""
+
+msgid "Button$Cut"
+msgstr ""
+
+msgid "Button$Delete marks"
+msgstr ""
+
+msgid "Recording vanished!"
+msgstr ""
+
+msgid "Error while queueing recording for cutting!"
+msgstr ""
+
+msgid "Delete editing marks for this recording?"
+msgstr ""
+
+msgid "Error while deleting editing marks!"
+msgstr ""
+
+msgid "Error while changing priority/lifetime!"
+msgstr ""
+
+msgid "Error while changing folder/name!"
+msgstr ""
+
 msgid "Recording info"
 msgstr "Salvestuse info"
 
@@ -994,31 +1058,31 @@ msgid "Setup.LNB$own"
 msgstr "oma"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Antenni positsioneerija kasutamine"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Asukoha laiuskraad (°)"
 
 msgid "South"
-msgstr ""
+msgstr "lõunasse (S)"
 
 msgid "North"
-msgstr ""
+msgstr "põhja (N)"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Asukoha pikkuskraad (°)"
 
 msgid "West"
-msgstr ""
+msgstr "läände (W)"
 
 msgid "East"
-msgstr ""
+msgstr "itta (E)"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Positsioneerija max pöördeulatus (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Positsioneerija kiirus (°/s)"
 
 msgid "CAM reset"
 msgstr "CAM taaskäivitamine"
@@ -1359,7 +1423,7 @@ msgstr "ESITUS"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Antenni pööramine positsioonile %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Panels"
