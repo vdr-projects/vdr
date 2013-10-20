@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.7 2013/10/16 10:24:28 kls Exp $
+ * $Id: recording.c 3.8 2013/10/20 09:51:23 kls Exp $
  */
 
 #include "recording.h"
@@ -1693,7 +1693,7 @@ void cDirCopier::Action(void)
                     off_t FileSizeSrc = FileSize(FileNameSrc);
                     off_t FileSizeDst = FileSize(FileNameDst);
                     if (FileSizeSrc != FileSizeDst) {
-                       esyslog("ERROR: file size discrepancy: %lld != %lld", FileSizeSrc, FileSizeDst);
+                       esyslog("ERROR: file size discrepancy: %"PRId64" != %"PRId64, FileSizeSrc, FileSizeDst);
                        break;
                        }
                     }

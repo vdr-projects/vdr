@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 3.3 2013/10/14 09:49:38 kls Exp $
+ * $Id: svdrp.c 3.4 2013/10/20 09:53:13 kls Exp $
  */
 
 #include "svdrp.h"
@@ -686,7 +686,7 @@ void cSVDRP::CmdDELR(const char *Option)
         cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            if (int RecordingInUse = recording->IsInUse())
-              Reply(550, RecordingInUseMessage(RecordingInUse, Option, recording));
+              Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, recording));
            else {
               if (recording->Delete()) {
                  Reply(250, "Recording \"%s\" deleted", Option);
@@ -1564,7 +1564,7 @@ void cSVDRP::CmdRENR(const char *Option)
         cRecording *recording = recordings.Get(strtol(num, NULL, 10) - 1);
         if (recording) {
            if (int RecordingInUse = recording->IsInUse())
-              Reply(550, RecordingInUseMessage(RecordingInUse, Option, recording));
+              Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, recording));
            else {
               if (c)
                  option = skipspace(++option);
