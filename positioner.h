@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: positioner.h 3.1 2013/06/10 14:27:14 kls Exp $
+ * $Id: positioner.h 3.2 2013/10/20 09:29:41 kls Exp $
  */
 
 #ifndef __POSITIONER_H
@@ -94,7 +94,7 @@ public:
           ///< horizon when looking in the given Direction. Note that this function
           ///< only delivers reasonable values for site latitudes between +/-81 degrees.
           ///< Beyond these limits (i.e. near the north or south pole) a constant value
-          ///< of +/-14.5 degrees (integer value 145) will be returned.
+          ///< of 0 will be returned.
   int HardLimitLongitude(ePositionerDirection Direction) const;
           ///< Returns the longitude of the positioner's hard limit in the given
           ///< Direction. Note that the value returned here may be larger (or smaller,

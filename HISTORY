@@ -8009,3 +8009,8 @@ Video Disk Recorder Revision History
   is unexpected at this point (reported by Helmut Auer). You can still navigate to
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
+
+2013-10-20: Version 2.1.3
+
+- Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
+  latitude of the antenna location is beyond +/-81 degrees.
