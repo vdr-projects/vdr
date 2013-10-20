@@ -8014,3 +8014,4 @@ Video Disk Recorder Revision History
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
