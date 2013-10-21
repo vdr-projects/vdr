@@ -8020,3 +8020,5 @@ Video Disk Recorder Revision History
 - When cutting a recording it is now checked whether there is already an edited
   version of this recording (with the same name, but starting with '%'), and the
   user is prompted for confirmation to overwrite it (suggested by Rolf Ahrenberg).
+- Revoked "Added maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P"
+  because it broke things for the "TechniSat AirStar 2" DVB-T card.
