@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-10-21 11:07+0200\n"
 "PO-Revision-Date: 2013-02-24 12:56+0100\n"
 "Last-Translator: Dominique Plu <dplu@free.fr>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -780,6 +780,9 @@ msgid "Button$Delete marks"
 msgstr ""
 
 msgid "Recording vanished!"
+msgstr ""
+
+msgid "Edited version already exists - overwrite?"
 msgstr ""
 
 msgid "Error while queueing recording for cutting!"

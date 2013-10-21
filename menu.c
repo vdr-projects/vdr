@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.10 2013/10/16 09:15:36 kls Exp $
+ * $Id: menu.c 3.11 2013/10/21 08:05:59 kls Exp $
  */
 
 #include "menu.h"
@@ -16,6 +16,7 @@
 #include <string.h>
 #include "channels.h"
 #include "config.h"
+#include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
@@ -2330,8 +2331,10 @@ eOSState cMenuRecordingEdit::Action(void)
   if (actionCancel)
      RecordingsHandler.Del(recording->FileName());
   else if (doCut) {
-     if (!RecordingsHandler.Add(ruCut, recording->FileName()))
-        Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
+     if (access(cCutter::EditedFileName(recording->FileName()), F_OK) != 0 || Interface->Confirm(tr("Edited version already exists - overwrite?"))) {
+        if (!RecordingsHandler.Add(ruCut, recording->FileName()))
+           Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
+        }
      }
   recordingIsInUse = recording->IsInUse();
   RefreshRecording();
@@ -5217,6 +5220,8 @@ void cReplayControl::EditCut(void)
            Skins.Message(mtError, tr("No editing marks defined!"));
         else if (!marks.GetNumSequences())
            Skins.Message(mtError, tr("No editing sequences defined!"));
+        else if (access(cCutter::EditedFileName(fileName), F_OK) == 0 && !Interface->Confirm(tr("Edited version already exists - overwrite?")))
+           ;
         else if (!RecordingsHandler.Add(ruCut, fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else

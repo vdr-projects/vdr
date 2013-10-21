@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-10-21 11:07+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -775,6 +775,9 @@ msgstr "Poista merkinnät"
 
 msgid "Recording vanished!"
 msgstr "Tallenne katosi!"
+
+msgid "Edited version already exists - overwrite?"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"

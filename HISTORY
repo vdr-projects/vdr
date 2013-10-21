@@ -8017,3 +8017,6 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed some compiler warnings with gcc-4.6.3 (thanks to Rolf Ahrenberg).
 - Changed the name of the SVDRP command RENR to MOVR (suggested by Rolf Ahrenberg).
+- When cutting a recording it is now checked whether there is already an edited
+  version of this recording (with the same name, but starting with '%'), and the
+  user is prompted for confirmation to overwrite it (suggested by Rolf Ahrenberg).
