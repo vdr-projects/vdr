@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.88.1.3 2013/10/13 14:45:52 kls Exp $
+ * $Id: dvbdevice.c 2.88.1.4 2013/10/21 09:01:21 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -549,8 +549,6 @@ int cDvbTuner::GetSignalStrength(void) const
     case 0x13C21019: // TT-budget S2-3200 (DVB-S/DVB-S2)
     case 0x1AE40001: // TechniSat SkyStar HD2 (DVB-S/DVB-S2)
                      MaxSignal = 670; break;
-    case 0x13D02103: // TechniSat SkyStar 2 DVB-S rev 2.3P
-                     MaxSignal = 0x4925; break;
     }
   int s = int(Signal) * 100 / MaxSignal;
   if (s > 100)

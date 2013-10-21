@@ -7847,8 +7847,6 @@ Video Disk Recorder Revision History
 - Changed cRecorder::Action() to use cTimeMs instead of time() to avoid problems with
   unjustified "video data stream broken" errors in case the system time is changed
   while a recording is active (reported by Torsten Lang).
-- Added maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P (thanks
-  to Guido Cordaro).
 - Fixed an inconsistent behavior between opening the Recordings menu manually via the
   main menu and by pressing the Recordings key. In the latter case it automatically
   opened all sub folders to position the cursor to the last replayed recording, which
