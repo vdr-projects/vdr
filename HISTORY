@@ -8010,6 +8010,28 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
+2013-10-23: Version 2.0.4
+
+- Unified the internal sequence of actions when pressing the Blue and the Back key,
+  respectively, during replay (reported by Thomas Maass).
+- The Yellow button in the main menu no longer acts as "Pause" if "Pause key handling"
+  is set to "do not pause live video" (suggested by Ulf Kiener).
+- Fixed writing group separators to channels.conf that contain a comma (reported by
+  Eike Edener).
+- Now also checking the source (in addition to the transponder) when setting the
+  system time from the TDT, which avoids problems in case devices are tuned to the
+  same transponder on different sources, and these broadcast different time data
+  (reported by Torsten Lang).
+- Changed cRecorder::Action() to use cTimeMs instead of time() to avoid problems with
+  unjustified "video data stream broken" errors in case the system time is changed
+  while a recording is active (reported by Torsten Lang).
+- Fixed an inconsistent behavior between opening the Recordings menu manually via the
+  main menu and by pressing the Recordings key. In the latter case it automatically
+  opened all sub folders to position the cursor to the last replayed recording, which
+  is unexpected at this point (reported by Helmut Auer). You can still navigate to
+  the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
+  menu.
+
 2013-10-21: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
