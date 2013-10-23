@@ -777,7 +777,7 @@ msgid "Recording vanished!"
 msgstr "Tallenne katosi!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Muokattava versio on jo olemassa - ylikirjoitetaanko?"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
