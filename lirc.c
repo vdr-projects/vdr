@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 2.5.1.1 2013/08/22 09:36:49 kls Exp $
+ * $Id: lirc.c 2.5.1.2 2013/10/29 16:06:20 kls Exp $
  */
 
 #include "lirc.h"
@@ -21,11 +21,9 @@ cLircRemote::cLircRemote(const char *DeviceName)
 {
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, DeviceName);
-  if (Connect()) {
-     Start();
-     return;
-     }
-  f = -1;
+  if (!Connect())
+     f = -1;
+  Start();
 }
 
 cLircRemote::~cLircRemote()
@@ -67,14 +65,15 @@ void cLircRemote::Action(void)
   bool repeat = false;
   int timeout = -1;
 
-  while (Running() && f >= 0) {
+  while (Running()) {
 
-        bool ready = cFile::FileReady(f, timeout);
+        bool ready = f >= 0 && cFile::FileReady(f, timeout);
         int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
 
-        if (ready && ret <= 0 ) {
+        if (f < 0 || ready && ret <= 0) {
            esyslog("ERROR: lircd connection broken, trying to reconnect every %.1f seconds", float(RECONNECTDELAY) / 1000);
-           close(f);
+           if (f >= 0)
+              close(f);
            f = -1;
            while (Running() && f < 0) {
                  cCondWait::SleepMs(RECONNECTDELAY);

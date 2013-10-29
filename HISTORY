@@ -7853,3 +7853,8 @@ Video Disk Recorder Revision History
   is unexpected at this point (reported by Helmut Auer). You can still navigate to
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
+
+2013-10-29: Version 2.0.5
+
+- The LIRC remote control now connects to the socket even if it doesn't yet exist when
+  VDR is started (thanks to Lars Hanisch).

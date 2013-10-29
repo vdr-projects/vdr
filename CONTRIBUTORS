@@ -2847,6 +2847,8 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting an invalid line in channels.conf.terr
  for fixing handling '/' and '~' in recording file names in case DirectoryEncoding is
  used
+ for making the LIRC remote control connect to the socket even if it doesn't yet exist
+ when VDR is started
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
