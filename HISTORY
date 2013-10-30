@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-10-29: Version 2.1.3
+2013-10-30: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8046,3 +8046,4 @@ Video Disk Recorder Revision History
   because it broke things for the "TechniSat AirStar 2" DVB-T card.
 - The LIRC remote control now connects to the socket even if it doesn't yet exist when
   VDR is started (thanks to Lars Hanisch).
+- Changed the absolute latitude limit for visible satellites to 81.2 degrees.
