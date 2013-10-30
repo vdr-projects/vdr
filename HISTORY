@@ -8047,3 +8047,4 @@ Video Disk Recorder Revision History
 - The LIRC remote control now connects to the socket even if it doesn't yet exist when
   VDR is started (thanks to Lars Hanisch).
 - Changed the absolute latitude limit for visible satellites to 81.2 degrees.
+- Added code for parsing LCN and AVC descriptors to libsi (thanks to Rolf Ahrenberg).

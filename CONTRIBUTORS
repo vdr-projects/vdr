@@ -1176,6 +1176,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for fixing some compiler warnings with gcc-4.6.3
  for suggesting to prompt the user for confirmation before overwriting an already
  existing edited version of a recording
+ for adding code for parsing LCN and AVC descriptors to libsi
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

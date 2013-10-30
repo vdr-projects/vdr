@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 2.4 2012/01/11 11:35:17 kls Exp $
+ *   $Id: descriptor.c 3.1 2013/10/30 10:16:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -922,6 +922,48 @@ int T2DeliverySystemDescriptor::getTfsFlag() const {
    return extended_data_flag ? s->tfs_flag : -1;
 }
 
+void LogicalChannelDescriptor::Parse() {
+   //this descriptor is only a header and a loop
+   logicalChannelLoop.setData(data+sizeof(descr_logical_channel), getLength()-sizeof(descr_logical_channel));
+}
+
+int LogicalChannelDescriptor::LogicalChannel::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+int LogicalChannelDescriptor::LogicalChannel::getVisibleServiceFlag() const {
+   return s->visible_service_flag;
+}
+
+int LogicalChannelDescriptor::LogicalChannel::getLogicalChannelNumber() const {
+   return HILO(s->logical_channel_number);
+}
+
+void LogicalChannelDescriptor::LogicalChannel::Parse() {
+   s=data.getData<const item_logical_channel>();
+}
+
+void HdSimulcastLogicalChannelDescriptor::Parse() {
+   //this descriptor is only a header and a loop
+   hdSimulcastLogicalChannelLoop.setData(data+sizeof(descr_hd_simulcast_logical_channel), getLength()-sizeof(descr_hd_simulcast_logical_channel));
+}
+
+int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getVisibleServiceFlag() const {
+   return s->visible_service_flag;
+}
+
+int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getLogicalChannelNumber() const {
+   return HILO(s->logical_channel_number);
+}
+
+void HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::Parse() {
+   s=data.getData<const item_hd_simulcast_logical_channel>();
+}
+
 int PremiereContentTransmissionDescriptor::getOriginalNetworkId() const {
    return HILO(s->original_network_id);
 }
@@ -1141,6 +1183,61 @@ int RegistrationDescriptor::getFormatIdentifier() const {
 void RegistrationDescriptor::Parse() {
    int offset=0;
    data.setPointerAndOffset<const descr_registration>(s, offset);
+   if (checkSize(getLength()-offset))
+      privateData.assign(data.getData(offset), getLength()-offset);
+}
+
+int AVCDescriptor::getProfileIdc() const {
+   return s->profile_idc;
+}
+
+int AVCDescriptor::getConstraintSet0Flag() const {
+   return s->constraint_set0_flag;
+}
+
+int AVCDescriptor::getConstraintSet1Flag() const {
+   return s->constraint_set1_flag;
+}
+
+int AVCDescriptor::getConstraintSet2Flag() const {
+   return s->constraint_set2_flag;
+}
+
+int AVCDescriptor::getConstraintSet3Flag() const {
+   return s->constraint_set3_flag;
+}
+
+int AVCDescriptor::getConstraintSet4Flag() const {
+   return s->constraint_set4_flag;
+}
+
+int AVCDescriptor::getConstraintSet5Flag() const {
+   return s->constraint_set5_flag;
+}
+
+int AVCDescriptor::getAVCCompatibleFlags() const {
+   return s->avc_compatible_flags;
+}
+
+int AVCDescriptor::getLevelIdc() const {
+   return s->level_idc;
+}
+
+int AVCDescriptor::getAVCStillPresent() const {
+   return s->avc_still_present;
+}
+
+int AVCDescriptor::getAVC24HourPictureFlag() const {
+   return s->avc_24_hour_picture_flag;
+}
+
+int AVCDescriptor::getFramePackingSEINotPresentFlag() const {
+   return s->frame_packing_sei_not_present_flag;
+}
+
+void AVCDescriptor::Parse() {
+   int offset=0;
+   data.setPointerAndOffset<const descr_avc>(s, offset);
    if (checkSize(getLength()-offset))
       privateData.assign(data.getData(offset), getLength()-offset);
 }

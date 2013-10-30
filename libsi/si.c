@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 2.8 2012/09/29 14:44:20 kls Exp $
+ *   $Id: si.c 3.1 2013/10/30 10:16:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -508,6 +508,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
          case CarouselIdentifierDescriptorTag:
             d=new CarouselIdentifierDescriptor();
             break;
+         case AVCDescriptorTag:
+            d=new AVCDescriptor();
+            break;
          case NetworkNameDescriptorTag:
             d=new NetworkNameDescriptor();
             break;
@@ -613,6 +616,12 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, 
             break;
          case ExtensionDescriptorTag:
             d=new ExtensionDescriptor();
+            break;
+         case LogicalChannelDescriptorTag:
+            d=new LogicalChannelDescriptor();
+            break;
+         case HdSimulcastLogicalChannelDescriptorTag:
+            d=new HdSimulcastLogicalChannelDescriptor();
             break;
          case RegistrationDescriptorTag:
             d=new RegistrationDescriptor();

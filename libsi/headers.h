@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 2.5 2012/06/09 14:37:24 kls Exp $
+ *   $Id: headers.h 3.1 2013/10/30 10:16:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1870,6 +1870,54 @@ struct descr_t2_delivery_system {
    fields looping to the end */
 };
 
+/* 0x83 logical_channel_descriptor */
+
+#define DESCR_LOGICAL_CHANNEL_LEN 2
+struct descr_logical_channel {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+#define ITEM_LOGICAL_CHANNEL_LEN 4
+struct item_logical_channel {
+   u_char service_id_hi                          :8;
+   u_char service_id_lo                          :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char visible_service_flag                   :1;
+   u_char reserved                               :5;
+   u_char logical_channel_number_hi              :2;
+#else
+   u_char logical_channel_number_hi              :2;
+   u_char reserved                               :5;
+   u_char visible_service_flag                   :1;
+#endif
+   u_char logical_channel_number_lo              :8;
+};
+
+/* 0x88 hd_simulcast_logical_channel_descriptor */
+
+#define DESCR_HD_SIMULCAST_LOGICAL_CHANNEL_LEN 2
+struct descr_hd_simulcast_logical_channel {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+};
+
+#define ITEM_HD_SIMULCAST_LOGICAL_CHANNEL_LEN 4
+struct item_hd_simulcast_logical_channel {
+   u_char service_id_hi                          :8;
+   u_char service_id_lo                          :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char visible_service_flag                   :1;
+   u_char reserved                               :5;
+   u_char logical_channel_number_hi              :2;
+#else
+   u_char logical_channel_number_hi              :2;
+   u_char reserved                               :5;
+   u_char visible_service_flag                   :1;
+#endif
+   u_char logical_channel_number_lo              :8;
+};
+
 /* MHP 0x00 application_descriptor */
 
 #define DESCR_APPLICATION_LEN 3
@@ -2086,6 +2134,27 @@ struct descr_registration {
    u_char format_identifier_hi_lo                :8;
    u_char format_identifier_lo_hi                :8;
    u_char format_identifier_lo_lo                :8;
+};
+
+/* 0x28 avc_descriptor */
+
+#define DESCR_AVC_LEN 6
+struct descr_avc {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char profile_idc                            :8;
+   u_char constraint_set0_flag                   :1;
+   u_char constraint_set1_flag                   :1;
+   u_char constraint_set2_flag                   :1;
+   u_char constraint_set3_flag                   :1;
+   u_char constraint_set4_flag                   :1;
+   u_char constraint_set5_flag                   :1;
+   u_char avc_compatible_flags                   :2;
+   u_char level_idc                              :8;
+   u_char avc_still_present                      :1;
+   u_char avc_24_hour_picture_flag               :1;
+   u_char frame_packing_sei_not_present_flag     :1;
+   u_char reserved                               :5;
 };
 
 } //end of namespace
