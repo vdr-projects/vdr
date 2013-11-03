@@ -8053,3 +8053,5 @@ Video Disk Recorder Revision History
   can press the Red key.
 - Fixed a possible access to uninitialized data in cEIT::cEIT() (reported by Dominik
   Strasser).
+- The new menu category mcRecordingEdit is now used to mark menus that edit recording
+  properties (suggested by Stefan Braun).

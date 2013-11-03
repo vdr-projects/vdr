@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.12 2013/11/03 13:27:17 kls Exp $
+ * $Id: menu.c 3.13 2013/11/03 14:08:35 kls Exp $
  */
 
 #include "menu.h"
@@ -2139,7 +2139,7 @@ public:
 cMenuPathEdit::cMenuPathEdit(const char *Path)
 :cOsdMenu(tr("Edit path"), 12)
 {
-  SetMenuCategory(mcRecording);
+  SetMenuCategory(mcRecordingEdit);
   path = Path;
   *folder = 0;
   *name = 0;
@@ -2254,7 +2254,7 @@ public:
 cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
 :cOsdMenu(tr("Edit recording"), 12)
 {
-  SetMenuCategory(mcRecording);
+  SetMenuCategory(mcRecordingEdit);
   recording = Recording;
   originalFileName = recording->FileName();
   Recordings.StateChanged(recordingsState); // just to get the current state

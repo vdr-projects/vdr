@@ -3177,6 +3177,8 @@ Stefan Braun <louis.braun@gmx.de>
  for reporting an endless loop in cTextWrapper::Set() in case the given Width is smaller
  than one character
  for reporting an endless loop in the DrawEllipse() functions for very small ellipses
+ for suggesting to add the menu category mcRecordingEdit for marking menus that edit
+ recording properties
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order

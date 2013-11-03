@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 3.1 2013/08/21 10:29:10 kls Exp $
+ * $Id: skins.h 3.2 2013/11/03 14:07:34 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -101,6 +101,7 @@ enum eMenuCategory {
   mcTimerEdit,
   mcRecording,
   mcRecordingInfo,
+  mcRecordingEdit,
   mcPlugin,
   mcPluginSetup,
   mcSetup,
