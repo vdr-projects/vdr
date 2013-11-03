@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 3.3 2013/10/16 09:14:58 kls Exp $
+ * $Id: menu.h 3.4 2013/10/30 14:32:13 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -38,11 +38,12 @@ private:
   cString dir;
   cOsdItem *firstFolder;
   bool editing;
+  int helpKeys;
   void SetHelpKeys(void);
   void Set(const char *CurrentFolder = NULL);
   void DescendPath(const char *Path);
   eOSState SetFolder(void);
-  eOSState Select(void);
+  eOSState Select(bool Open);
   eOSState New(void);
   eOSState Delete(void);
   eOSState Edit(void);

@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-10-30: Version 2.1.3
+2013-11-03: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8048,3 +8048,6 @@ Video Disk Recorder Revision History
   VDR is started (thanks to Lars Hanisch).
 - Changed the absolute latitude limit for visible satellites to 81.2 degrees.
 - Added code for parsing LCN and AVC descriptors to libsi (thanks to Rolf Ahrenberg).
+- In the "Select folder" menu pressing Ok now selects the folder, even if this is a
+  folder that contains sub folders (marked with "..."). To open such a folder you
+  can press the Red key.
