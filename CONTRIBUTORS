@@ -2919,6 +2919,7 @@ Henning Heinold <heinold@inf.fu-berlin.de>
 
 Dominik Strasser <dominik@die-strassers.de>
  for making a cRemote be removed from the Remotes list in case its initialization failed
+ for reporting a possible access to uninitialized data in cEIT::cEIT()
 
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
