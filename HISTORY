@@ -8057,3 +8057,4 @@ Video Disk Recorder Revision History
   properties (suggested by Stefan Braun).
 - Changes in the teletext PID no longer cause retuning (and thus interrupting a
   recording).
+- Removed '_' from the FileNameChars and CharMap translations in uk_UA.po.
