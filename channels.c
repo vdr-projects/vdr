@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.1 2013/10/11 11:03:26 kls Exp $
+ * $Id: channels.c 3.2 2013/11/04 10:11:51 kls Exp $
  */
 
 #include "channels.h"
@@ -330,8 +330,10 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
 void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
-  if (vpid != Vpid || ppid != Ppid || vtype != Vtype || tpid != Tpid)
+  if (vpid != Vpid || ppid != Ppid || vtype != Vtype)
      mod |= CHANNELMOD_PIDS;
+  if (tpid != Tpid)
+     mod |= CHANNELMOD_AUX;
   int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(atypes, Atypes) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(dtypes, Dtypes) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
      mod |= CHANNELMOD_LANGS;
@@ -388,7 +390,8 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      spids[MAXSPIDS] = 0;
      tpid = Tpid;
      modification |= mod;
-     Channels.SetModified();
+     if (Number())
+        Channels.SetModified();
      }
 }
 

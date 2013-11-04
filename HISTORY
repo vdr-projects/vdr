@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-11-03: Version 2.1.3
+2013-11-04: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8055,3 +8055,5 @@ Video Disk Recorder Revision History
   Strasser).
 - The new menu category mcRecordingEdit is now used to mark menus that edit recording
   properties (suggested by Stefan Braun).
+- Changes in the teletext PID no longer cause retuning (and thus interrupting a
+  recording).

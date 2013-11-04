@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 2.16 2012/06/17 11:21:33 kls Exp $
+ * $Id: channels.h 3.1 2013/11/04 09:52:02 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -22,6 +22,7 @@
 #define CHANNELMOD_NAME     0x01
 #define CHANNELMOD_PIDS     0x02
 #define CHANNELMOD_ID       0x04
+#define CHANNELMOD_AUX      0x08
 #define CHANNELMOD_CA       0x10
 #define CHANNELMOD_TRANSP   0x20
 #define CHANNELMOD_LANGS    0x40
