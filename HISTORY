@@ -7858,3 +7858,5 @@ Video Disk Recorder Revision History
 
 - The LIRC remote control now connects to the socket even if it doesn't yet exist when
   VDR is started (thanks to Lars Hanisch).
+- Fixed a missing initialization in the c'tor of cSkinLCARSDisplayChannel (thanks to
+  Marko Mäkelä).
