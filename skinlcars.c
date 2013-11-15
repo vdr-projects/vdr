@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 3.3 2013/08/18 13:45:36 kls Exp $
+ * $Id: skinlcars.c 3.4 2013/11/15 15:21:00 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1775,6 +1775,7 @@ cSkinLCARSDisplayReplay::cSkinLCARSDisplayReplay(bool ModeOnly)
   frameColor = Theme.Color(clrReplayFrameBg);
   lastCurrentWidth = 0;
   lastTotalWidth = 0;
+  memset(&lastTrackId, 0, sizeof(lastTrackId));
   int d = 5 * lineHeight;
   xp00 = 0;
   xp01 = xp00 + d / 2;
