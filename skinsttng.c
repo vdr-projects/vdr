@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 2.17 2013/03/03 15:29:28 kls Exp $
+ * $Id: skinsttng.c 3.1 2013/11/15 15:33:14 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -338,7 +338,7 @@ void cSkinSTTNGDisplayChannel::Flush(void)
            }
         cDevice *Device = cDevice::PrimaryDevice();
         const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
-        if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
+        if (Track ? strcmp(lastTrackId.description, Track->description) : *lastTrackId.description) {
            osd->DrawText(x3 + TextFrame, y6, Track ? Track->description : "", Theme.Color(clrChannelName), frameColor, font, x4 - x3 - w - 2 * TextFrame);
            strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
            }

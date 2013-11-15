@@ -8061,3 +8061,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a missing initialization in the c'tor of cSkinLCARSDisplayChannel (thanks to
   Marko Mäkelä).
+- Simplified some conditional expressions in skinlcars.c and skinsttng.c (suggested
+  by Marko Mäkelä).

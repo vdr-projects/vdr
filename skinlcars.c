@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 3.4 2013/11/15 15:21:00 kls Exp $
+ * $Id: skinlcars.c 3.5 2013/11/15 15:33:00 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -492,7 +492,7 @@ void cSkinLCARSDisplayChannel::DrawTrack(void)
 {
   cDevice *Device = cDevice::PrimaryDevice();
   const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
-  if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
+  if (Track ? strcmp(lastTrackId.description, Track->description) : *lastTrackId.description) {
      osd->DrawText(xc03, yc07, Track ? Track->description : "", Theme.Color(clrTrackName), Theme.Color(clrBackground), cFont::GetFont(fontOsd), xc07 - xc03);
      strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
      }
@@ -1849,7 +1849,7 @@ void cSkinLCARSDisplayReplay::DrawTrack(void)
 {
   cDevice *Device = cDevice::PrimaryDevice();
   const tTrackId *Track = Device->GetTrack(Device->GetCurrentAudioTrack());
-  if (!Track && *lastTrackId.description || Track && strcmp(lastTrackId.description, Track->description)) {
+  if (Track ? strcmp(lastTrackId.description, Track->description) : *lastTrackId.description) {
      osd->DrawText(xp03, yp04, Track ? Track->description : "", Theme.Color(clrTrackName), Theme.Color(clrBackground), cFont::GetFont(fontOsd), xp07 - xp03);
      strn0cpy(lastTrackId.description, Track ? Track->description : "", sizeof(lastTrackId.description));
      }
