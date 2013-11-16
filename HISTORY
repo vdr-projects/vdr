@@ -8063,3 +8063,5 @@ Video Disk Recorder Revision History
   Marko Mäkelä).
 - Simplified some conditional expressions in skinlcars.c and skinsttng.c (suggested
   by Marko Mäkelä).
+- Fixed uninitialized item area coordinates in cSkinLCARSDisplayMenu (reported by
+  Marko Mäkelä).

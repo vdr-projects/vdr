@@ -2148,6 +2148,7 @@ Marko Mäkelä <marko.makela@hut.fi>
  for pointing out that "Menu button closes" should actually be "Menu key closes"
  for fixing a missing initialization in the c'tor of cSkinLCARSDisplayChannel
  for suggesting to simplify some conditional expressions in skinlcars.c and skinsttng.c
+ for reporting some uninitialized item area coordinates in cSkinLCARSDisplayMenu
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
