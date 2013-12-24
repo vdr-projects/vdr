@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.4 2013/10/16 09:33:58 kls Exp $
+ * $Id: vdr.c 3.5 2013/12/24 13:19:55 kls Exp $
  */
 
 #include <getopt.h>
@@ -1369,6 +1369,7 @@ int main(int argc, char *argv[])
 
            // Disk housekeeping:
            RemoveDeletedRecordings();
+           ClearVanishedRecordings();
            cSchedules::Cleanup();
            // Plugins housekeeping:
            PluginManager.Housekeeping();

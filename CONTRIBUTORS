@@ -2864,6 +2864,8 @@ Lars Hanisch <dvb@flensrocker.de>
  used
  for making the LIRC remote control connect to the socket even if it doesn't yet exist
  when VDR is started
+ for reporting a possible crash if the recordings list is updated externally while the
+ Recordings menu is open
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices

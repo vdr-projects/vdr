@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-11-15: Version 2.1.3
+2013-12-24: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8065,3 +8065,5 @@ Video Disk Recorder Revision History
   by Marko Mäkelä).
 - Fixed uninitialized item area coordinates in cSkinLCARSDisplayMenu (reported by
   Marko Mäkelä).
+- Fixed a possible crash if the recordings list is updated externally while the
+  Recordings menu is open (reported by Lars Hanisch).
