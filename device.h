@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.5 2013/12/25 13:19:58 kls Exp $
+ * $Id: device.h 3.6 2013/12/25 13:53:35 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -35,6 +35,7 @@
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
+// Note that VDR itself always uses pmAudioVideo when replaying a recording!
 enum ePlayMode { pmNone,           // audio/video from decoder
                  pmAudioVideo,     // audio/video from player
                  pmAudioOnly,      // audio only from player, video from decoder

@@ -8084,3 +8084,5 @@ Video Disk Recorder Revision History
   trick modes. Authors of plugins that implement output devices will need to add this
   parameter to their derived cDevice class, regardless of whether they will make use
   of it or not.
+- Added a note to ePlayMode in device.h that VDR itself always uses pmAudioVideo when
+  replaying a recording (suggested by Thomas Reufer).

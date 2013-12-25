@@ -3226,3 +3226,5 @@ Thomas Reufer <thomas@reufer.ch>
  for making it clear that the Data parameter in cDevice::StillPicture() may point to a
  series of packets, not just a single one
  for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()
+ for suggesting to add a note to ePlayMode in device.h that VDR itself always uses
+ pmAudioVideo when replaying a recording
