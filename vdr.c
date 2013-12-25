@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.5 2013/12/24 13:19:55 kls Exp $
+ * $Id: vdr.c 3.6 2013/12/25 11:01:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -540,7 +540,7 @@ int main(int argc, char *argv[])
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         for backwards compatibility (same as\n"
-               "                           --dirnames=250,40,1\n"
+               "                           --dirnames=250,40,1)\n"
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",

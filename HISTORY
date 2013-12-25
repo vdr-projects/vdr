@@ -8067,3 +8067,5 @@ Video Disk Recorder Revision History
   Marko Mäkelä).
 - Fixed a possible crash if the recordings list is updated externally while the
   Recordings menu is open (reported by Lars Hanisch).
+- Added a missing closing ')' in the help and man page entry of the --vfat option
+  (reported by Lars Hanisch).
