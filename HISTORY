@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-12-24: Version 2.1.3
+2013-12-25: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8069,3 +8069,6 @@ Video Disk Recorder Revision History
   Recordings menu is open (reported by Lars Hanisch).
 - Added a missing closing ')' in the help and man page entry of the --vfat option
   (reported by Lars Hanisch).
+- Fixed setting the name of the video directory to avoid a crash when using --genindex,
+  and also to use the correct directory with --edit (the latter reported by Marko
+  Mäkelä).
