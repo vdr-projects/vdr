@@ -7854,7 +7854,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-11-16: Version 2.0.5
+2013-12-25: Version 2.0.5
 
 - The LIRC remote control now connects to the socket even if it doesn't yet exist when
   VDR is started (thanks to Lars Hanisch).
@@ -7862,3 +7862,5 @@ Video Disk Recorder Revision History
   Marko Mäkelä).
 - Fixed uninitialized item area coordinates in cSkinLCARSDisplayMenu (reported by
   Marko Mäkelä).
+- Fixed a possible crash if the recordings list is updated externally while the
+  Recordings menu is open (reported by Lars Hanisch).

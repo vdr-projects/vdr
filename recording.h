@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.46 2013/03/04 14:01:23 kls Exp $
+ * $Id: recording.h 2.46.1.1 2013/12/25 10:54:05 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -26,6 +26,7 @@ extern bool DirectoryEncoding;
 extern int InstanceId;
 
 void RemoveDeletedRecordings(void);
+void ClearVanishedRecordings(void);
 void AssertFreeDiskSpace(int Priority = 0, bool Force = false);
      ///< The special Priority value -1 means that we shall get rid of any
      ///< deleted recordings faster than normal (because we're cutting).
@@ -160,11 +161,12 @@ class cRecordings : public cList<cRecording>, public cThread {
 private:
   static char *updateFileName;
   bool deleted;
+  bool initial;
   time_t lastUpdate;
   int state;
   const char *UpdateFileName(void);
   void Refresh(bool Foreground = false);
-  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0);
+  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
 protected:
   void Action(void);
 public:
@@ -199,6 +201,8 @@ public:
        ///< this value is unknown.
   };
 
+/// Any access to Recordings that loops through the list of recordings
+/// needs to hold a thread lock on this object!
 extern cRecordings Recordings;
 extern cRecordings DeletedRecordings;
 

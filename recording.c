@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.91.1.2 2013/08/21 13:58:35 kls Exp $
+ * $Id: recording.c 2.91.1.3 2013/12/25 10:55:32 kls Exp $
  */
 
 #include "recording.h"
@@ -72,6 +72,7 @@ bool DirectoryEncoding = false;
 int InstanceId = 0;
 
 cRecordings DeletedRecordings(true);
+static cRecordings VanishedRecordings;
 
 // --- cRemoveDeletedRecordingsThread ----------------------------------------
 
@@ -214,6 +215,14 @@ void AssertFreeDiskSpace(int Priority, bool Force)
         }
      LastFreeDiskCheck = time(NULL);
      }
+}
+
+// --- Clear vanished recordings ---------------------------------------------
+
+void ClearVanishedRecordings(void)
+{
+  cThreadLock RecordingsLock(&Recordings); // yes, it *is* Recordings!
+  VanishedRecordings.Clear();
 }
 
 // --- cResumeFile -----------------------------------------------------------
@@ -1233,6 +1242,7 @@ cRecordings::cRecordings(bool Deleted)
 :cThread("video directory scanner")
 {
   deleted = Deleted;
+  initial = true;
   lastUpdate = 0;
   state = 0;
 }
@@ -1264,8 +1274,9 @@ void cRecordings::Refresh(bool Foreground)
   ScanVideoDir(VideoDirectory, Foreground);
 }
 
-void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
+void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel, int DirLevel)
 {
+  // Find any new recordings:
   cReadDir d(DirName);
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
@@ -1284,25 +1295,41 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
               }
            if (S_ISDIR(st.st_mode)) {
               if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
-                 cRecording *r = new cRecording(buffer);
-                 if (r->Name()) {
-                    r->NumFrames(); // initializes the numFrames member
-                    r->FileSizeMB(); // initializes the fileSizeMB member
-                    if (deleted)
-                       r->deleted = time(NULL);
-                    Lock();
-                    Add(r);
-                    ChangeState();
-                    Unlock();
+                 if (deleted || initial || !GetByName(buffer)) {
+                    cRecording *r = new cRecording(buffer);
+                    if (r->Name()) {
+                       r->NumFrames(); // initializes the numFrames member
+                       r->FileSizeMB(); // initializes the fileSizeMB member
+                       if (deleted)
+                          r->deleted = time(NULL);
+                       Lock();
+                       Add(r);
+                       ChangeState();
+                       Unlock();
+                       }
+                    else
+                       delete r;
                     }
-                 else
-                    delete r;
                  }
               else
-                 ScanVideoDir(buffer, Foreground, LinkLevel + Link);
+                 ScanVideoDir(buffer, Foreground, LinkLevel + Link, DirLevel + 1);
               }
            }
         }
+  // Handle any vanished recordings:
+  if (!deleted && !initial && DirLevel == 0) {
+     for (cRecording *recording = First(); recording; ) {
+         cRecording *r = recording;
+         recording = Next(recording);
+         if (access(r->FileName(), F_OK) != 0) {
+            Lock();
+            Del(r, false);
+            VanishedRecordings.Add(r);
+            ChangeState();
+            Unlock();
+            }
+         }
+     }
 }
 
 bool cRecordings::StateChanged(int &State)
@@ -1343,6 +1370,7 @@ bool cRecordings::Update(bool Wait)
 cRecording *cRecordings::GetByName(const char *FileName)
 {
   if (FileName) {
+     LOCK_THREAD;
      for (cRecording *recording = First(); recording; recording = Next(recording)) {
          if (strcmp(recording->FileName(), FileName) == 0)
             return recording;
