@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.57.1.3 2013/12/25 11:05:21 kls Exp $
+ * $Id: vdr.c 2.57.1.4 2013/12/25 11:40:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -223,6 +223,7 @@ int main(int argc, char *argv[])
   VdrUser = VDR_USER;
 #endif
 
+  SetVideoDirectory(VideoDirectory);
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
 
   static struct option long_options[] = {
@@ -443,6 +444,7 @@ int main(int argc, char *argv[])
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
+                    SetVideoDirectory(VideoDirectory);
                     break;
           case 'w': if (isnumber(optarg)) {
                        int t = atoi(optarg);
@@ -663,7 +665,6 @@ int main(int argc, char *argv[])
 
   // Directories:
 
-  SetVideoDirectory(VideoDirectory);
   if (!ConfigDirectory)
      ConfigDirectory = DEFAULTCONFDIR;
   cPlugin::SetConfigDirectory(ConfigDirectory);

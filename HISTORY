@@ -7866,3 +7866,6 @@ Video Disk Recorder Revision History
   Recordings menu is open (reported by Lars Hanisch).
 - Added a missing closing ')' in the help and man page entry of the --vfat option
   (reported by Lars Hanisch).
+- Fixed setting the name of the video directory to avoid a crash when using --genindex,
+  and also to use the correct directory with --edit (the latter reported by Marko
+  Mäkelä).
