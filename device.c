@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.3 2013/08/22 10:28:55 kls Exp $
+ * $Id: device.c 3.4 2013/12/25 13:20:19 kls Exp $
  */
 
 #include "device.h"
@@ -1121,7 +1121,7 @@ int64_t cDevice::GetSTC(void)
   return -1;
 }
 
-void cDevice::TrickSpeed(int Speed)
+void cDevice::TrickSpeed(int Speed, bool Forward)
 {
 }
 

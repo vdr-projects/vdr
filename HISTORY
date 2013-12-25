@@ -8078,3 +8078,9 @@ Video Disk Recorder Revision History
 - Added handling UTF-8 'umlaut' characters to cKbdRemote (thanks to Lars Hanisch).
 - Made it clear that the Data parameter in cDevice::StillPicture() may point to a
   series of packets, not just a single one (thanks to Thomas Reufer).
+- cDevice::TrickSpeed() now has an additional parameter named Forward, which indicates
+  the direction in which replay is being done (suggested by Thomas Reufer). This
+  information may be necessary for some output devices in order to properly implement
+  trick modes. Authors of plugins that implement output devices will need to add this
+  parameter to their derived cDevice class, regardless of whether they will make use
+  of it or not.

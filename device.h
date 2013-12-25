@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.4 2013/12/25 13:08:44 kls Exp $
+ * $Id: device.h 3.5 2013/12/25 13:19:58 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -698,10 +698,11 @@ public:
   virtual bool HasIBPTrickSpeed(void) { return false; }
        ///< Returns true if this device can handle all frames in 'fast forward'
        ///< trick speeds.
-  virtual void TrickSpeed(int Speed);
+  virtual void TrickSpeed(int Speed, bool Forward);
        ///< Sets the device into a mode where replay is done slower.
        ///< Every single frame shall then be displayed the given number of
-       ///< times.
+       ///< times. Forward is true if replay is done in the normal (forward)
+       ///< direction, false if it is done reverse.
        ///< The cDvbPlayer uses the following values for the various speeds:
        ///<                   1x   2x   3x
        ///< Fast Forward       6    3    1

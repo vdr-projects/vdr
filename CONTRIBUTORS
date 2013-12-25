@@ -3225,3 +3225,4 @@ Guido Cordaro <guido.cordaro@tiscali.it>
 Thomas Reufer <thomas@reufer.ch>
  for making it clear that the Data parameter in cDevice::StillPicture() may point to a
  series of packets, not just a single one
+ for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()

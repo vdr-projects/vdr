@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.35 2013/02/17 13:16:18 kls Exp $
+ * $Id: dvbsdffdevice.c 3.1 2013/12/25 13:27:00 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -593,7 +593,7 @@ int64_t cDvbSdFfDevice::GetSTC(void)
   return -1;
 }
 
-void cDvbSdFfDevice::TrickSpeed(int Speed)
+void cDvbSdFfDevice::TrickSpeed(int Speed, bool Forward)
 {
   if (fd_video >= 0)
      CHECK(ioctl(fd_video, VIDEO_SLOWMOTION, Speed));
