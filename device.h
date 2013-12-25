@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.3 2013/10/10 13:23:30 kls Exp $
+ * $Id: device.h 3.4 2013/12/25 13:08:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -723,7 +723,7 @@ public:
        ///< all registered cAudio objects are notified.
   virtual void StillPicture(const uchar *Data, int Length);
        ///< Displays the given I-frame as a still picture.
-       ///< Data points either to TS (first byte is 0x47) or PES (first byte
+       ///< Data points either to a series of TS (first byte is 0x47) or PES (first byte
        ///< is 0x00) data of the given Length. The default implementation
        ///< converts TS to PES and calls itself again, allowing a derived class
        ///< to display PES if it can't handle TS directly.

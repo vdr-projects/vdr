@@ -8076,3 +8076,5 @@ Video Disk Recorder Revision History
   caller to have it display only a certain subset of the recordings (thanks to Lars
   Hanisch).
 - Added handling UTF-8 'umlaut' characters to cKbdRemote (thanks to Lars Hanisch).
+- Made it clear that the Data parameter in cDevice::StillPicture() may point to a
+  series of packets, not just a single one (thanks to Thomas Reufer).
