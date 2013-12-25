@@ -8075,3 +8075,4 @@ Video Disk Recorder Revision History
 - The Recordings menu can now be called with a cRecordingFilter, which allows the
   caller to have it display only a certain subset of the recordings (thanks to Lars
   Hanisch).
+- Added handling UTF-8 'umlaut' characters to cKbdRemote (thanks to Lars Hanisch).
