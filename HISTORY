@@ -8072,3 +8072,6 @@ Video Disk Recorder Revision History
 - Fixed setting the name of the video directory to avoid a crash when using --genindex,
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
+- The Recordings menu can now be called with a cRecordingFilter, which allows the
+  caller to have it display only a certain subset of the recordings (thanks to Lars
+  Hanisch).

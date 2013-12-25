@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.13 2013/11/03 14:08:35 kls Exp $
+ * $Id: menu.c 3.14 2013/12/25 12:03:32 kls Exp $
  */
 
 #include "menu.h"
@@ -2571,12 +2571,13 @@ void cMenuRecordingItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, b
 cString cMenuRecordings::path;
 cString cMenuRecordings::fileName;
 
-cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
+cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus, const cRecordingFilter *Filter)
 :cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
   SetMenuCategory(mcRecording);
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  filter = Filter;
   Recordings.StateChanged(recordingsState); // just to get the current state
   helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
@@ -2633,7 +2634,7 @@ void cMenuRecordings::Set(bool Refresh)
   GetRecordingsSortMode(DirectoryName());
   Recordings.Sort();
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-      if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
+      if ((!filter || filter->Filter(recording)) && (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR))) {
          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
          cMenuRecordingItem *LastDir = NULL;
          if (Item->IsDirectory()) {
