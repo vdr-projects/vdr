@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.9 2013/12/24 14:32:29 kls Exp $
+ * $Id: recording.c 3.10 2013/12/27 08:46:17 kls Exp $
  */
 
 #include "recording.h"
@@ -1392,6 +1392,7 @@ void cRecordings::Refresh(bool Foreground)
 
 void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel, int DirLevel)
 {
+  bool DoChangeState = false;
   // Find any new recordings:
   cReadDir d(DirName);
   struct dirent *e;
@@ -1420,7 +1421,10 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                           r->deleted = time(NULL);
                        Lock();
                        Add(r);
-                       ChangeState();
+                       if (initial)
+                          ChangeState();
+                       else
+                          DoChangeState = true;
                        Unlock();
                        }
                     else
@@ -1441,11 +1445,13 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
             Lock();
             Del(r, false);
             VanishedRecordings.Add(r);
-            ChangeState();
+            DoChangeState = true;
             Unlock();
             }
          }
      }
+  if (DoChangeState)
+     ChangeState();
 }
 
 bool cRecordings::StateChanged(int &State)
