@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.2 2013/12/24 13:32:18 kls Exp $
+ * $Id: recording.h 3.3 2013/12/27 11:05:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -223,7 +223,7 @@ private:
   int state;
   const char *UpdateFileName(void);
   void Refresh(bool Foreground = false);
-  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
+  bool ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
 protected:
   void Action(void);
 public:
