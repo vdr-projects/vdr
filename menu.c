@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.14 2013/12/25 12:03:32 kls Exp $
+ * $Id: menu.c 3.15 2013/12/27 09:00:24 kls Exp $
  */
 
 #include "menu.h"
@@ -2701,7 +2701,7 @@ bool cMenuRecordings::Open(bool OpenSubMenus)
         buffer = cString::sprintf("%s%c%s", base, FOLDERDELIMCHAR, t);
         t = buffer;
         }
-     AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus));
+     AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus, filter));
      return true;
      }
   return false;
