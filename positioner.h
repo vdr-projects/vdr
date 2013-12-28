@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: positioner.h 3.2 2013/10/20 09:29:41 kls Exp $
+ * $Id: positioner.h 3.3 2013/12/28 11:15:56 kls Exp $
  */
 
 #ifndef __POSITIONER_H
@@ -133,8 +133,8 @@ public:
           ///< Number can be in the range 1...255. However, a particular positioner
           ///< may only have a limited number of satellite positions it can store.
   virtual void RecalcPositions(uint Number) {}
-          ///< Take the difference betwen the current actual position of the dish and
-          ///< the position stored with teh given Number, and apply the difference to
+          ///< Take the difference between the current actual position of the dish and
+          ///< the position stored with the given Number, and apply the difference to
           ///< all stored positions.
   virtual void GotoPosition(uint Number, int Longitude);
           ///< Move the dish to the satellite position stored under the given Number.

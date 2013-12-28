@@ -8086,3 +8086,4 @@ Video Disk Recorder Revision History
   of it or not.
 - Added a note to ePlayMode in device.h that VDR itself always uses pmAudioVideo when
   replaying a recording (suggested by Thomas Reufer).
+- Fixed some spellings in positioner.h and Doxyfile (thanks to Ville Skyttä).
