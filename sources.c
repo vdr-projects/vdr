@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 3.4 2013/05/23 10:20:28 kls Exp $
+ * $Id: sources.c 3.5 2013/12/28 11:33:08 kls Exp $
  */
 
 #include "sources.h"
@@ -31,7 +31,7 @@ cSource::~cSource()
 bool cSource::Parse(const char *s)
 {
   char *codeBuf = NULL;
-  if (2 == sscanf(s, "%a[^ ] %a[^\n]", &codeBuf, &description))
+  if (2 == sscanf(s, "%m[^ ] %m[^\n]", &codeBuf, &description))
      code = FromString(codeBuf);
   free(codeBuf);
   return code != stNone && description && *description;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.18 2013/03/29 15:37:16 kls Exp $
+ * $Id: timers.c 3.1 2013/12/28 11:33:08 kls Exp $
  */
 
 #include "timers.h"
@@ -296,7 +296,7 @@ bool cTimer::Parse(const char *s)
   char *filebuffer = NULL;
   free(aux);
   aux = NULL;
-  //XXX Apparently sscanf() doesn't work correctly if the last %a argument
+  //XXX Apparently sscanf() doesn't work correctly if the last %m argument
   //XXX results in an empty string (this first occurred when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
@@ -312,7 +312,7 @@ bool cTimer::Parse(const char *s)
      s = s2;
      }
   bool result = false;
-  if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &aux)) {
+  if (8 <= sscanf(s, "%u :%m[^:]:%m[^:]:%d :%d :%d :%d :%m[^:\n]:%m[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &aux)) {
      ClrFlags(tfRecording);
      if (aux && !*skipspace(aux)) {
         free(aux);

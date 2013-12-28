@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.2 2013/11/04 10:11:51 kls Exp $
+ * $Id: channels.c 3.3 2013/12/28 11:33:08 kls Exp $
  */
 
 #include "channels.h"
@@ -29,7 +29,7 @@ tChannelID tChannelID::FromString(const char *s)
   int tid;
   int sid;
   int rid = 0;
-  int fields = sscanf(s, "%a[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
+  int fields = sscanf(s, "%m[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
   if (fields == 4 || fields == 5) {
      int source = cSource::FromString(sourcebuf);
      free(sourcebuf);
@@ -589,7 +589,7 @@ bool cChannel::Parse(const char *s)
      char *apidbuf = NULL;
      char *tpidbuf = NULL;
      char *caidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%a[^:]:%a[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpidbuf, &caidbuf, &sid, &nid, &tid, &rid);
+     int fields = sscanf(s, "%m[^:]:%d :%m[^:]:%m[^:] :%d :%m[^:]:%m[^:]:%m[^:]:%m[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpidbuf, &caidbuf, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
