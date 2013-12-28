@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.6 2013/12/25 13:53:35 kls Exp $
+ * $Id: device.h 3.7 2013/12/28 12:59:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -829,8 +829,14 @@ private:
   virtual void Action(void);
 public:
   cTSBuffer(int File, int Size, int CardIndex);
-  ~cTSBuffer();
-  uchar *Get(void);
+  virtual ~cTSBuffer();
+  uchar *Get(int *Available = NULL);
+     ///< Returns a pointer to the first TS packet in the buffer. If Available is given,
+     ///< it will return the total number of consecutive bytes pointed to in the buffer.
+     ///< It is guaranteed that the returned pointer points to a TS_SYNC_BYTE and that
+     ///< there are at least TS_SIZE bytes in the buffer. Otherwise NULL will be
+     ///< returned and the value in Available (if given) is undefined.
+     ///< Each call to Get() returns a pointer to the next TS packet in the buffer.
   };
 
 #endif //__DEVICE_H

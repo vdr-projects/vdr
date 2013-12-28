@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.4 2013/12/25 13:20:19 kls Exp $
+ * $Id: device.c 3.5 2013/12/28 12:56:24 kls Exp $
  */
 
 #include "device.h"
@@ -1764,7 +1764,7 @@ void cTSBuffer::Action(void)
      }
 }
 
-uchar *cTSBuffer::Get(void)
+uchar *cTSBuffer::Get(int *Available)
 {
   int Count = 0;
   if (delivered) {
@@ -1785,6 +1785,8 @@ uchar *cTSBuffer::Get(void)
         return NULL;
         }
      delivered = true;
+     if (Available)
+        *Available = Count;
      return p;
      }
   return NULL;

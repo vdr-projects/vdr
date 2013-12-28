@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.12 2013/02/17 13:17:28 kls Exp $
+ * $Id: ci.c 3.1 2013/12/28 11:57:51 kls Exp $
  */
 
 #include "ci.h"
@@ -1981,6 +1981,10 @@ bool cCamSlot::IsDecrypting(void)
          }
      }
   return false;
+}
+
+void cCamSlot::Decrypt(uchar *Data, int Count)
+{
 }
 
 // --- cChannelCamRelation ---------------------------------------------------

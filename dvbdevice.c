@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.5 2013/10/21 08:59:59 kls Exp $
+ * $Id: dvbdevice.c 3.6 2013/12/28 13:21:37 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1668,7 +1668,10 @@ void cDvbDevice::CloseDvr(void)
 bool cDvbDevice::GetTSPacket(uchar *&Data)
 {
   if (tsBuffer) {
-     Data = tsBuffer->Get();
+     int Available;
+     Data = tsBuffer->Get(&Available);
+     if (Data && CamSlot())
+        CamSlot()->Decrypt(Data, Available);
      return true;
      }
   return false;

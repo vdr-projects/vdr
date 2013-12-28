@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 2.2 2012/02/29 10:24:27 kls Exp $
+ * $Id: ci.h 3.1 2013/12/28 13:20:08 kls Exp $
  */
 
 #ifndef __CI_H
@@ -169,50 +169,50 @@ public:
   int SlotNumber(void) { return slotNumber; }
        ///< Returns the number of this CAM slot within the whole system.
        ///< The first slot has the number 1.
-  bool Reset(void);
+  virtual bool Reset(void);
        ///< Resets the CAM in this slot.
        ///< Returns true if the operation was successful.
-  eModuleStatus ModuleStatus(void);
+  virtual eModuleStatus ModuleStatus(void);
        ///< Returns the status of the CAM in this slot.
-  const char *GetCamName(void);
+  virtual const char *GetCamName(void);
        ///< Returns the name of the CAM in this slot, or NULL if there is
        ///< no ready CAM in this slot.
-  bool Ready(void);
+  virtual bool Ready(void);
        ///< Returns 'true' if the CAM in this slot is ready to decrypt.
-  bool HasMMI(void);
+  virtual bool HasMMI(void);
        ///< Returns 'true' if the CAM in this slot has an active MMI.
-  bool HasUserIO(void);
+  virtual bool HasUserIO(void);
        ///< Returns true if there is a pending user interaction, which shall
        ///< be retrieved via GetMenu() or GetEnquiry().
-  bool EnterMenu(void);
+  virtual bool EnterMenu(void);
        ///< Requests the CAM in this slot to start its menu.
-  cCiMenu *GetMenu(void);
+  virtual cCiMenu *GetMenu(void);
        ///< Gets a pending menu, or NULL if there is no menu.
-  cCiEnquiry *GetEnquiry(void);
+  virtual cCiEnquiry *GetEnquiry(void);
        ///< Gets a pending enquiry, or NULL if there is no enquiry.
   int Priority(void);
        ///< Returns the priority if the device this slot is currently assigned
        ///< to, or IDLEPRIORITY if it is not assigned to any device.
-  bool ProvidesCa(const int *CaSystemIds);
+  virtual bool ProvidesCa(const int *CaSystemIds);
        ///< Returns true if the CAM in this slot provides one of the given
        ///< CaSystemIds. This doesn't necessarily mean that it will be
        ///< possible to actually decrypt such a programme, since CAMs
        ///< usually advertise several CA system ids, while the actual
        ///< decryption is controlled by the smart card inserted into
        ///< the CAM.
-  void AddPid(int ProgramNumber, int Pid, int StreamType);
+  virtual void AddPid(int ProgramNumber, int Pid, int StreamType);
        ///< Adds the given PID information to the list of PIDs. A later call
        ///< to SetPid() will (de)activate one of these entries.
-  void SetPid(int Pid, bool Active);
+  virtual void SetPid(int Pid, bool Active);
        ///< Sets the given Pid (which has previously been added through a
        ///< call to AddPid()) to Active. A later call to StartDecrypting() will
        ///< send the full list of currently active CA_PMT entries to the CAM.
-  void AddChannel(const cChannel *Channel);
+  virtual void AddChannel(const cChannel *Channel);
        ///< Adds all PIDs if the given Channel to the current list of PIDs.
        ///< If the source or transponder of the channel are different than
        ///< what was given in a previous call to AddChannel(), any previously
        ///< added PIDs will be cleared.
-  bool CanDecrypt(const cChannel *Channel);
+  virtual bool CanDecrypt(const cChannel *Channel);
        ///< Returns true if there is a CAM in this slot that is able to decrypt
        ///< the given Channel (or at least claims to be able to do so).
        ///< Since the QUERY/REPLY mechanism for CAMs is pretty unreliable (some
@@ -223,13 +223,26 @@ public:
        ///< to the initial QUERY will perform this check at all. CAMs that never
        ///< replied to the initial QUERY are assumed not to be able to handle
        ///< more than one channel at a time.
-  void StartDecrypting(void);
+  virtual void StartDecrypting(void);
        ///< Triggers sending all currently active CA_PMT entries to the CAM,
        ///< so that it will start decrypting.
-  void StopDecrypting(void);
+  virtual void StopDecrypting(void);
        ///< Clears the list of CA_PMT entries and tells the CAM to stop decrypting.
-  bool IsDecrypting(void);
+  virtual bool IsDecrypting(void);
        ///< Returns true if the CAM in this slot is currently used for decrypting.
+  virtual void Decrypt(uchar *Data, int Count);
+       ///< If this is a CAM slot that can be freely assigned to any device,
+       ///< but will not be directly inserted into the full TS data stream
+       ///< in hardware, it can implement this function to be given access
+       ///< to the data in the device's TS buffer. Data points to a buffer
+       ///< of Count bytes of TS packets. The first byte in Data is guaranteed
+       ///< to be a TS_SYNC_BYTE. This function may decrypt as many TS packets
+       ///< in Data as it wants, but it must decrypt at least the very first
+       ///< TS packet. Only this very first TS packet will be further processed
+       ///< after the call to this function. The next call will be done with
+       ///< Data pointing to the TS packet immediately following the previous
+       ///< one. However, it can not be assumed that a call to Decrypt() with
+       ///< a Data pointer of P will be followed by a call with P + TS_SIZE.
   };
 
 class cCamSlots : public cList<cCamSlot> {};

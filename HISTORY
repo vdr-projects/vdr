@@ -8089,3 +8089,11 @@ Video Disk Recorder Revision History
 - Fixed some spellings in positioner.h and Doxyfile (thanks to Ville Skyttä).
 - Changed '%a' to the POSIX compliant '%m' in all scanf() calls (thanks to Ville
   Skyttä).
+- The new function cCamSlot::Decrypt() can be used by derived classes to implement a
+  CAM slot that can be freely assigned to any device, without being directly inserted
+  into the full TS data stream in hardware.
+- Many member functions of cCamSlot have been made virtual to allow for easier
+  implementation of derived classes.
+- cTSBuffer now provides the number of available bytes in its Get() function.
+- cDvbDevice::GetTSPacket() now calls CamSlot()->Decrypt() in order to allow CAM slots
+  that can be freely assigned to any device access to the TS data stream.
