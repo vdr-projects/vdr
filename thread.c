@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 3.1 2013/04/10 15:37:32 kls Exp $
+ * $Id: thread.c 3.2 2013/12/29 17:21:53 kls Exp $
  */
 
 #include "thread.h"
@@ -494,7 +494,6 @@ bool cPipe::Open(const char *Command, const char *Mode)
   else { // child process
      int iofd = STDOUT_FILENO;
      if (strcmp(Mode, "w") == 0) {
-        mode = "r";
         iopipe = 1;
         iofd = STDIN_FILENO;
         }

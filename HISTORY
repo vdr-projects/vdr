@@ -8099,3 +8099,4 @@ Video Disk Recorder Revision History
   that can be freely assigned to any device access to the TS data stream.
 - Added a check to avoid a possible NULL pointer dereference in cCiSession::SendData()
   (reported by Ville Skyttä).
+- Deleted a superfluous assignment in cPipe::Open() (reported by Ville Skyttä).
