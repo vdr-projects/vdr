@@ -2035,6 +2035,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  displayed
  for fixing some spellings in positioner.h and Doxyfile
  for changing '%a' to the POSIX compliant '%m' in all scanf() calls
+ for reporting a possible NULL pointer dereference in cCiSession::SendData()
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

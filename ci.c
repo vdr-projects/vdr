@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.1 2013/12/28 11:57:51 kls Exp $
+ * $Id: ci.c 3.2 2013/12/29 15:51:08 kls Exp $
  */
 
 #include "ci.h"
@@ -403,7 +403,8 @@ void cCiSession::SendData(int Tag, int Length, const uint8_t *Data)
   *p++ =  Tag        & 0xFF;
   p = SetLength(p, Length);
   if (p - buffer + Length < int(sizeof(buffer))) {
-     memcpy(p, Data, Length);
+     if (Data)
+        memcpy(p, Data, Length);
      p += Length;
      tc->SendData(p - buffer, buffer);
      }

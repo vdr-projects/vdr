@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-12-28: Version 2.1.3
+2013-12-29: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8097,3 +8097,5 @@ Video Disk Recorder Revision History
 - cTSBuffer now provides the number of available bytes in its Get() function.
 - cDvbDevice::GetTSPacket() now calls CamSlot()->Decrypt() in order to allow CAM slots
   that can be freely assigned to any device access to the TS data stream.
+- Added a check to avoid a possible NULL pointer dereference in cCiSession::SendData()
+  (reported by Ville Skyttä).
