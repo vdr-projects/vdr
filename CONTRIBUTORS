@@ -3079,7 +3079,7 @@ Christian Richter <cr@crichter.net>
  for extending the interface to the script that gets called for recordings, so that in
  the "edited" case it also provides the name of the original recording
 
-Christian Kaiser <christian.kaiser@teleservice.com>
+Christian Kaiser <chr-kaiser@arcor.de>
  for adding DeleteEvent() to the EPG handler interface
  for making the script given to VDR with the '-r' option also be called after the
  recording process has actually started
