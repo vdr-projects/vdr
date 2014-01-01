@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.6 2013/12/28 13:21:37 kls Exp $
+ * $Id: dvbdevice.c 3.7 2014/01/01 14:14:32 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1204,8 +1204,8 @@ bool cDvbDevice::Initialize(void)
               }
            }
      }
-  int Checked = 0;
   int Found = 0;
+  int Used = 0;
   if (Nodes.Size() > 0) {
      Nodes.Sort();
      for (int i = 0; i < Nodes.Size(); i++) {
@@ -1213,10 +1213,11 @@ bool cDvbDevice::Initialize(void)
          int Frontend;
          if (2 == sscanf(Nodes[i], "%d %d", &Adapter, &Frontend)) {
             if (Exists(Adapter, Frontend)) {
-               if (Checked++ < MAXDVBDEVICES) {
+               if (Found < MAXDEVICES) {
+                  Found++;
                   if (UseDevice(NextCardIndex())) {
                      if (Probe(Adapter, Frontend))
-                        Found++;
+                        Used++;
                      }
                   else
                      NextCardIndex(1); // skips this one
@@ -1225,9 +1226,11 @@ bool cDvbDevice::Initialize(void)
             }
          }
      }
-  NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
-  if (Found > 0)
+  if (Found > 0) {
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
+     if (Used != Found)
+        isyslog("using only %d DVB device%s", Used, Used > 1 ? "s" : "");
+     }
   else
      isyslog("no DVB device found");
   return Found > 0;
