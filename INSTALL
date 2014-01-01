@@ -254,6 +254,7 @@ The program will be called with two or three (in case of "edited") string
 parameters. The first parameter is one of
 
   before      if this is *before* a recording starts
+  started     if this is after a recording has *started*
   after       if this is *after* a recording has finished
   edited      if this is after a recording has been *edited*
   deleted     if this is after a recording has been *deleted*
@@ -278,6 +279,9 @@ An example script for use with the '-r' option could look like this:
 case "$1" in
      before)
             echo "Before recording $2"
+            ;;
+     started)
+            echo "Started recording $2"
             ;;
      after)
             echo "After recording $2"

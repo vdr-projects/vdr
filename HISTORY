@@ -8103,3 +8103,5 @@ Video Disk Recorder Revision History
 - Added a check to avoid a possible NULL pointer dereference in cCiSession::SendData()
   (reported by Ville Skyttä).
 - Deleted a superfluous assignment in cPipe::Open() (reported by Ville Skyttä).
+- The script given to VDR with the '-r' option is now also called after the recording
+  process has actually started (thanks to Christian Kaiser).

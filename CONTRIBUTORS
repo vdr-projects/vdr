@@ -3081,6 +3081,8 @@ Christian Richter <cr@crichter.net>
 
 Christian Kaiser <christian.kaiser@teleservice.com>
  for adding DeleteEvent() to the EPG handler interface
+ for making the script given to VDR with the '-r' option also be called after the
+ recording process has actually started
 
 Dirk Heiser <dirk-vdr@gmx.de>
  for adding SetComponents() to the EPG handler interface
