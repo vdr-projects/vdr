@@ -2037,6 +2037,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for changing '%a' to the POSIX compliant '%m' in all scanf() calls
  for reporting a possible NULL pointer dereference in cCiSession::SendData()
  for reporting a superfluous assignment in cPipe::Open()
+ for avoiding unnecessary pkg-config warnings in plugin Makefiles
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next

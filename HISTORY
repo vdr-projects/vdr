@@ -8105,3 +8105,7 @@ Video Disk Recorder Revision History
 - Deleted a superfluous assignment in cPipe::Open() (reported by Ville Skyttä).
 - The script given to VDR with the '-r' option is now also called after the recording
   process has actually started (thanks to Christian Kaiser).
+- Avoiding unnecessary pkg-config warnings in plugin Makefiles (thanks to Ville Skyttä).
+  Plugin authors may want to apply the following change to their Makefile:
+  -PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
+  +PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell PKG_CONFIG_PATH="$$PKG_CONFIG_PATH:../../.." pkg-config --variable=$(1) vdr))
