@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.1 2013/12/28 13:20:08 kls Exp $
+ * $Id: ci.h 3.2 2014/01/01 12:13:04 kls Exp $
  */
 
 #ifndef __CI_H
@@ -121,6 +121,7 @@ class cTPDU;
 class cCiTransportConnection;
 class cCiSession;
 class cCiCaProgramData;
+class cReceiver;
 
 class cCamSlot : public cListObject {
   friend class cCiAdapter;
@@ -129,6 +130,7 @@ private:
   cMutex mutex;
   cCondVar processed;
   cCiAdapter *ciAdapter;
+  cReceiver *caPidReceiver;
   int slotIndex;
   int slotNumber;
   cCiTransportConnection *tc[MAX_CONNECTIONS_PER_CAM_SLOT + 1];  // connection numbering starts with 1
@@ -147,10 +149,13 @@ private:
   void Write(cTPDU *TPDU);
   cCiSession *GetSessionByResourceId(uint32_t ResourceId);
 public:
-  cCamSlot(cCiAdapter *CiAdapter);
+  cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids = false);
        ///< Creates a new CAM slot for the given CiAdapter.
        ///< The CiAdapter will take care of deleting the CAM slot,
        ///< so the caller must not delete it!
+       ///< If ReceiveCaPids is true, the CAM slot will take care that the CA pids
+       ///< of the selected programmes will be included in the TS data stream that
+       ///< is presented to the Decrypt() function.
   virtual ~cCamSlot();
   bool Assign(cDevice *Device, bool Query = false);
        ///< Assigns this CAM slot to the given Device, if this is possible.
@@ -243,6 +248,9 @@ public:
        ///< Data pointing to the TS packet immediately following the previous
        ///< one. However, it can not be assumed that a call to Decrypt() with
        ///< a Data pointer of P will be followed by a call with P + TS_SIZE.
+       ///< A derived class that implements this function will also need
+       ///< to set the ReceiveCaPids parameter in the call to the base class
+       ///< constructor to true in order to receive the CA pid data.
   };
 
 class cCamSlots : public cList<cCamSlot> {};

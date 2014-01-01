@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.5 2013/12/28 12:56:24 kls Exp $
+ * $Id: device.c 3.6 2014/01/01 11:51:17 kls Exp $
  */
 
 #include "device.h"
@@ -1666,7 +1666,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Receiver->device = this;
          receiver[i] = Receiver;
          Unlock();
-         if (camSlot) {
+         if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
             startScrambleDetection = time(NULL);
             }
@@ -1697,7 +1697,7 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
-  if (camSlot)
+  if (camSlot && Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
      camSlot->StartDecrypting();
   if (!receiversLeft)
      Cancel(-1);

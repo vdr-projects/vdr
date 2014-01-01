@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2013-12-29: Version 2.1.3
+2014-01-01: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8091,7 +8091,10 @@ Video Disk Recorder Revision History
   Skyttä).
 - The new function cCamSlot::Decrypt() can be used by derived classes to implement a
   CAM slot that can be freely assigned to any device, without being directly inserted
-  into the full TS data stream in hardware.
+  into the full TS data stream in hardware. A derived class that implements Decrypt()
+  will also need to set the new parameter ReceiveCaPids in the call to the cCamSlot
+  base class constructor to true, in order to receive the CA pid TS packets that
+  contain data necessary for decrypting.
 - Many member functions of cCamSlot have been made virtual to allow for easier
   implementation of derived classes.
 - cTSBuffer now provides the number of available bytes in its Get() function.
