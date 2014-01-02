@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.7 2014/01/01 14:14:32 kls Exp $
+ * $Id: dvbdevice.c 3.8 2014/01/02 10:30:15 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1673,8 +1673,10 @@ bool cDvbDevice::GetTSPacket(uchar *&Data)
   if (tsBuffer) {
      int Available;
      Data = tsBuffer->Get(&Available);
-     if (Data && CamSlot())
-        CamSlot()->Decrypt(Data, Available);
+     if (Data && CamSlot()) {
+        Data = CamSlot()->Decrypt(Data, Available);
+        tsBuffer->Skip(Available);
+        }
      return true;
      }
   return false;

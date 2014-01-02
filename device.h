@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.7 2013/12/28 12:59:13 kls Exp $
+ * $Id: device.h 3.8 2014/01/02 10:47:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -837,6 +837,13 @@ public:
      ///< there are at least TS_SIZE bytes in the buffer. Otherwise NULL will be
      ///< returned and the value in Available (if given) is undefined.
      ///< Each call to Get() returns a pointer to the next TS packet in the buffer.
+  void Skip(int Count);
+     ///< If after a call to Get() more or less than TS_SIZE of the available data
+     ///< has been processed, a call to Skip() with the number of processed bytes
+     ///< will disable the automatic incrementing of the data pointer as described
+     ///< in Get() and skip the given number of bytes instead. Count may be 0 if the
+     ///< caller wants the previous TS packet to be delivered again in the next call
+     ///< to Get().
   };
 
 #endif //__DEVICE_H

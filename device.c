@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.6 2014/01/01 11:51:17 kls Exp $
+ * $Id: device.c 3.7 2014/01/02 10:31:58 kls Exp $
  */
 
 #include "device.h"
@@ -1790,4 +1790,10 @@ uchar *cTSBuffer::Get(int *Available)
      return p;
      }
   return NULL;
+}
+
+void cTSBuffer::Skip(int Count)
+{
+  ringBuffer->Del(Count);
+  delivered = false;
 }

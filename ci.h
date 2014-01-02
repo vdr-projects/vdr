@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.2 2014/01/01 12:13:04 kls Exp $
+ * $Id: ci.h 3.3 2014/01/02 10:14:39 kls Exp $
  */
 
 #ifndef __CI_H
@@ -235,19 +235,33 @@ public:
        ///< Clears the list of CA_PMT entries and tells the CAM to stop decrypting.
   virtual bool IsDecrypting(void);
        ///< Returns true if the CAM in this slot is currently used for decrypting.
-  virtual void Decrypt(uchar *Data, int Count);
+  virtual uchar *Decrypt(uchar *Data, int &Count);
        ///< If this is a CAM slot that can be freely assigned to any device,
        ///< but will not be directly inserted into the full TS data stream
        ///< in hardware, it can implement this function to be given access
        ///< to the data in the device's TS buffer. Data points to a buffer
-       ///< of Count bytes of TS packets. The first byte in Data is guaranteed
-       ///< to be a TS_SYNC_BYTE. This function may decrypt as many TS packets
-       ///< in Data as it wants, but it must decrypt at least the very first
-       ///< TS packet. Only this very first TS packet will be further processed
-       ///< after the call to this function. The next call will be done with
-       ///< Data pointing to the TS packet immediately following the previous
-       ///< one. However, it can not be assumed that a call to Decrypt() with
-       ///< a Data pointer of P will be followed by a call with P + TS_SIZE.
+       ///< of Count bytes of TS data. The first byte in Data is guaranteed
+       ///< to be a TS_SYNC_BYTE.
+       ///< There are three possible ways a CAM can handle decryption:
+       ///< 1. If the full TS data is physically routed through the CAM in hardware,
+       ///< there is no need to reimplement this function.
+       ///< The default implementation simply sets Count to TS_SIZE and returns Data.
+       ///< 2. If the CAM works directly on Data and decrypts the TS "in place" it
+       ///< shall decrypt at least the very first TS packet in Data, set Count to
+       ///< TS_SIZE and return Data. It may decrypt as many TS packets in Data as it
+       ///< wants, but it must decrypt at least the very first TS packet. Only this
+       ///< very first TS packet will be further processed after the call to this
+       ///< function. The next call will be done with Data pointing to the TS packet
+       ///< immediately following the previous one.
+       ///< 3. If the CAM needs to copy the data into a buffer of its own, and/or send
+       ///< the data to some file handle for processing and later retrieval, it shall
+       ///< set Count to the number of bytes it has read from Data and return a pointer
+       ///< to the next available decrypted TS packet (which will *not* be in the
+       ///< memory area pointed to by Data, but rather in some buffer that is under
+       ///< the CAM's control). If no decrypted TS packet is currently available, NULL
+       ///< shall be returned. If no data from Data can currently be processed, Count
+       ///< shall be set to 0 and the same Data pointer will be offered in the next
+       ///< call to Decrypt().
        ///< A derived class that implements this function will also need
        ///< to set the ReceiveCaPids parameter in the call to the base class
        ///< constructor to true in order to receive the CA pid data.
