@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 3.1 2014/01/01 12:02:39 kls Exp $
+ * $Id: pat.c 3.2 2014/01/04 11:17:24 kls Exp $
  */
 
 #include "pat.h"
@@ -167,7 +167,7 @@ int cCaDescriptors::GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar 
          if (EsPid < 0 || d->EsPid() == EsPid) {
             const int *caids = CaSystemIds;
             do {
-               if (d->CaSystem() == *caids) {
+               if (*caids == 0xFFFF || d->CaSystem() == *caids) {
                   if (length + d->Length() <= BufSize) {
                      memcpy(Data + length, d->Data(), d->Length());
                      length += d->Length();
@@ -192,7 +192,7 @@ int cCaDescriptors::GetCaPids(const int *CaSystemIds, int BufSize, int *Pids)
      for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
          const int *caids = CaSystemIds;
          do {
-            if (d->CaSystem() == *caids) {
+            if (*caids == 0xFFFF || d->CaSystem() == *caids) {
                if (numPids + 1 < BufSize) {
                   Pids[numPids++] = d->CaPid();
                   Pids[numPids] = 0;
