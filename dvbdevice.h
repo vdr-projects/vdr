@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 3.2 2013/06/01 11:36:18 kls Exp $
+ * $Id: dvbdevice.h 3.3 2014/01/01 14:00:56 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -67,7 +67,6 @@ enum {
 
 // --- End of definitions for older DVB API versions -------------------------
 
-#define MAXDVBDEVICES  8
 #define MAXDELIVERYSYSTEMS 8
 
 #define DEV_VIDEO         "/dev/video"

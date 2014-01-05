@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 3.0 2013/02/17 13:16:29 kls Exp $
+ * $Id: dvbsdffdevice.h 3.1 2014/01/01 13:39:30 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -94,7 +94,7 @@ protected:
   virtual int PlayTsAudio(const uchar *Data, int Length);
 public:
   virtual int64_t GetSTC(void);
-  virtual void TrickSpeed(int Speed);
+  virtual void TrickSpeed(int Speed, bool Forward);
   virtual void Clear(void);
   virtual void Play(void);
   virtual void Freeze(void);

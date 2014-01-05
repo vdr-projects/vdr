@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -603,8 +603,8 @@ msgstr "Toks katalogo vardas jau egzistuoja!"
 msgid "Folder name must not contain '%c'!"
 msgstr "Katalogo pavadinimas turi būti sudarytas iš '%c'!"
 
-msgid "Button$Select"
-msgstr "Pasirinkti"
+msgid "Button$Open"
+msgstr "Atidaryti"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Ištrinti katalogą ir jo visus pakatalogius?"
@@ -772,6 +772,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -798,9 +801,6 @@ msgstr "Atsukti"
 
 msgid "Recordings"
 msgstr "Įrašai"
-
-msgid "Button$Open"
-msgstr "Atidaryti"
 
 msgid "Commands"
 msgstr "Komandos"

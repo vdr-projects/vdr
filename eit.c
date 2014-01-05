@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 3.2 2013/10/12 11:10:11 kls Exp $
+ * $Id: eit.c 3.3 2013/11/03 13:55:00 kls Exp $
  */
 
 #include "eit.h"
@@ -54,8 +54,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   bool Modified = false;
   time_t SegmentStart = 0;
   time_t SegmentEnd = 0;
-  struct tm tm_r;
-  struct tm t = *localtime_r(&Now, &tm_r); // this initializes the time zone in 't'
+  struct tm t = { 0 };
+  localtime_r(&Now, &t); // this initializes the time zone in 't'
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {

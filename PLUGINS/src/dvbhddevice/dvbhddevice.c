@@ -10,7 +10,7 @@
 #include "menu.h"
 #include "setup.h"
 
-static const char *VERSION        = "2.1.2";
+static const char *VERSION        = "2.1.3";
 static const char *DESCRIPTION    = trNOOP("HD Full Featured DVB device");
 static const char *MAINMENUENTRY  = "dvbhddevice";
 

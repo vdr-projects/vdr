@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.3 2013/08/22 10:28:55 kls Exp $
+ * $Id: device.c 3.7 2014/01/02 10:31:58 kls Exp $
  */
 
 #include "device.h"
@@ -1121,7 +1121,7 @@ int64_t cDevice::GetSTC(void)
   return -1;
 }
 
-void cDevice::TrickSpeed(int Speed)
+void cDevice::TrickSpeed(int Speed, bool Forward)
 {
 }
 
@@ -1666,7 +1666,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Receiver->device = this;
          receiver[i] = Receiver;
          Unlock();
-         if (camSlot) {
+         if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
             startScrambleDetection = time(NULL);
             }
@@ -1697,7 +1697,7 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
-  if (camSlot)
+  if (camSlot && Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
      camSlot->StartDecrypting();
   if (!receiversLeft)
      Cancel(-1);
@@ -1764,7 +1764,7 @@ void cTSBuffer::Action(void)
      }
 }
 
-uchar *cTSBuffer::Get(void)
+uchar *cTSBuffer::Get(int *Available)
 {
   int Count = 0;
   if (delivered) {
@@ -1785,7 +1785,15 @@ uchar *cTSBuffer::Get(void)
         return NULL;
         }
      delivered = true;
+     if (Available)
+        *Available = Count;
      return p;
      }
   return NULL;
+}
+
+void cTSBuffer::Skip(int Count)
+{
+  ringBuffer->Del(Count);
+  delivered = false;
 }

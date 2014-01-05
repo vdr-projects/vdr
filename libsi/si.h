@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 3.0 2012/10/15 11:56:06 kls Exp $
+ *   $Id: si.h 3.1 2013/10/30 10:16:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -70,6 +70,10 @@ enum DescriptorTag {
   // defined by ISO-13818-6 (DSM-CC)
                CarouselIdentifierDescriptorTag = 0x13,
                // 0x14 - 0x3F  Reserved
+  // defined by ISO/IEC 13818-1 Amendment
+               AVCDescriptorTag = 0x28,
+               SVCExtensionDescriptorTag = 0x30,
+               MVCExtensionDescriptorTag = 0x31,
   // defined by ETSI (EN 300 468)
                NetworkNameDescriptorTag = 0x40,
                ServiceListDescriptorTag = 0x41,
@@ -134,6 +138,12 @@ enum DescriptorTag {
                DTSDescriptorTag = 0x7B,
                AACDescriptorTag = 0x7C,
                ExtensionDescriptorTag = 0x7F,
+ // defined by EICTA/EACEM/DIGITALEUROPE
+               LogicalChannelDescriptorTag = 0x83,
+               PreferredNameListDescriptorTag = 0x84,
+               PreferredNameIdentifierDescriptorTag = 0x85,
+               EacemStreamIdentifierDescriptorTag = 0x86,
+               HdSimulcastLogicalChannelDescriptorTag = 0x88,
  // Extension descriptors
                ImageIconDescriptorTag = 0x00,
                CpcmDeliverySignallingDescriptor = 0x01,
@@ -147,6 +157,12 @@ enum DescriptorTag {
                TargetRegionDescriptorTag = 0x09,
                TargetRegionNameDescriptorTag = 0x0A,
                ServiceRelocatedDescriptorTag = 0x0B,
+ // defined by ETSI (EN 300 468) v 1.12.1
+               XAITPidDescriptorTag = 0x0C,
+               C2DeliverySystemDescriptorTag = 0x0D,
+               // 0x0E - 0x0F Reserved
+               VideoDepthRangeDescriptorTag = 0x10,
+               T2MIDescriptorTag = 0x11,
 
  // Defined by ETSI TS 102 812 (MHP)
                // They once again start with 0x00 (see page 234, MHP specification)

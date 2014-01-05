@@ -84,3 +84,8 @@ VDR Plugin 'dvbhddevice' Revision History
 2013-08-26: Version 2.1.2
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+
+2014-01-01: Version 2.1.3
+
+- Avoiding unnecessary pkg-config warnings in plugin Makefiles.
+- cDevice::TrickSpeed() now has an additional parameter named Forward.

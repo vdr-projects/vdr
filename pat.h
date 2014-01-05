@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 3.0 2013/02/16 15:20:24 kls Exp $
+ * $Id: pat.h 3.2 2014/01/04 11:16:48 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -36,10 +36,18 @@ int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSy
          ///< Gets all CA descriptors for a given channel.
          ///< Copies all available CA descriptors for the given Source, Transponder and ServiceId
          ///< into the provided buffer at Data (at most BufSize bytes). Only those CA descriptors
-         ///< are copied that match one of the given CA system IDs.
+         ///< are copied that match one of the given CA system IDs (or all of them, if CaSystemIds
+         ///< is 0xFFFF).
          ///< Returns the number of bytes copied into Data (0 if no CA descriptors are
          ///< available), or -1 if BufSize was too small to hold all CA descriptors.
-         ///< The return value tells whether these CA descriptors are to be used
-         ///< for the individual streams.
+
+int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids);
+         ///< Gets all CA pids for a given channel.
+         ///< Copies all available CA pids from the CA descriptors for the given Source, Transponder and ServiceId
+         ///< into the provided buffer at Pids (at most BufSize - 1 entries, the list will be zero-terminated).
+         ///< Only the CA pids of those CA descriptors are copied that match one of the given CA system IDs
+         ///< (or all of them, if CaSystemIds is 0xFFFF).
+         ///< Returns the number of pids copied into Pids (0 if no CA descriptors are
+         ///< available), or -1 if BufSize was too small to hold all CA pids.
 
 #endif //__PAT_H

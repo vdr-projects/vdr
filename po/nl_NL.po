@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -608,8 +608,8 @@ msgstr "Map bestaat al"
 msgid "Folder name must not contain '%c'!"
 msgstr "Map mag geen karakter '%c' bevatten!"
 
-msgid "Button$Select"
-msgstr "Kies"
+msgid "Button$Open"
+msgstr "Openen"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Map en alle submappen verwijderen?"
@@ -777,6 +777,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -803,9 +806,6 @@ msgstr "Naar begin"
 
 msgid "Recordings"
 msgstr "Opnames"
-
-msgid "Button$Open"
-msgstr "Openen"
 
 msgid "Commands"
 msgstr "Commando's"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -603,8 +603,8 @@ msgstr ""
 msgid "Folder name must not contain '%c'!"
 msgstr ""
 
-msgid "Button$Select"
-msgstr ""
+msgid "Button$Open"
+msgstr "Aç"
 
 msgid "Delete folder and all sub folders?"
 msgstr ""
@@ -772,6 +772,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -798,9 +801,6 @@ msgstr "Baslangýç"
 
 msgid "Recordings"
 msgstr "Kayýtlar"
-
-msgid "Button$Open"
-msgstr "Aç"
 
 msgid "Commands"
 msgstr "Komutlar"

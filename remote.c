@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 3.0 2013/02/03 15:44:55 kls Exp $
+ * $Id: remote.c 3.1 2013/12/25 12:45:43 kls Exp $
  */
 
 #include "remote.h"
@@ -260,6 +260,7 @@ cKbdRemote::cKbdRemote(void)
      tcsetattr(STDIN_FILENO, TCSANOW, &tm);
      }
   kbdAvailable = true;
+  systemIsUtf8 = !cCharSetConv::SystemCharacterTable() || strcmp(cCharSetConv::SystemCharacterTable(), "UTF-8") == 0;
   Start();
 }
 
@@ -324,7 +325,23 @@ uint64_t cKbdRemote::ReadKeySequence(void)
 
   if ((key1 = ReadKey()) >= 0) {
      k = key1;
-     if (key1 == 0x1B) {
+     if (systemIsUtf8 && (key1 & 0xC0) == 0xC0) {
+        char bytes[4] = { 0 };
+        bytes[0] = key1;
+        int bytescount = 1;
+        if ((key1 & 0xF0) == 0xF0)
+           bytescount = 3;
+        else if ((key1 & 0xE0) == 0xE0)
+           bytescount = 2;
+        for (int i = 0; i < bytescount; i++) {
+            if ((key1 = ReadKey()) >= 0)
+               bytes[i + 1] = key1;
+            }
+        k = Utf8CharGet(bytes);
+        if (k > 0xFF)
+           k = 0;
+        }
+     else if (key1 == 0x1B) {
         // Start of escape sequence
         if ((key1 = ReadKey()) >= 0) {
            k <<= 8;

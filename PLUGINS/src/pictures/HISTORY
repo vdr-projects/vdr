@@ -91,3 +91,7 @@ VDR Plugin 'pictures' Revision History
 2013-07-01:
 
 - Added option -x to pic2mpg.
+
+2014-01-01: Version 2.1.1
+
+- Avoiding unnecessary pkg-config warnings in plugin Makefiles.

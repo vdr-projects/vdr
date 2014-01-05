@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 3.0 2012/06/02 13:20:38 kls Exp $
+ * $Id: receiver.c 3.1 2014/01/01 12:03:00 kls Exp $
  */
 
 #include "receiver.h"
@@ -70,6 +70,28 @@ bool cReceiver::SetPids(const cChannel *Channel)
             AddPids(Channel->Spids());
      }
   return true;
+}
+
+void cReceiver::DelPid(int Pid)
+{
+  if (Pid) {
+     for (int i = 0; i < numPids; i++) {
+         if (pids[i] == Pid) {
+            for ( ; i < numPids; i++) // we also copy the terminating 0!
+                pids[i] = pids[i + 1];
+            numPids--;
+            return;
+            }
+         }
+     }
+}
+
+void cReceiver::DelPids(const int *Pids)
+{
+  if (Pids) {
+     while (*Pids)
+           DelPid(*Pids++);
+     }
 }
 
 bool cReceiver::WantsPid(int Pid)

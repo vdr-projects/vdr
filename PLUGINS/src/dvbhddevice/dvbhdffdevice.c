@@ -606,7 +606,7 @@ void cDvbHdFfDevice::ScaleVideo(const cRect &Rect)
     }
 }
 
-void cDvbHdFfDevice::TrickSpeed(int Speed)
+void cDvbHdFfDevice::TrickSpeed(int Speed, bool Forward)
 {
   freezed = false;
   mHdffCmdIf->CmdAvEnableSync(0, false);

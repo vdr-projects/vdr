@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.0 2013/02/17 13:17:28 kls Exp $
+ * $Id: ci.c 3.4 2014/01/02 10:31:12 kls Exp $
  */
 
 #include "ci.h"
@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include "device.h"
 #include "pat.h"
+#include "receiver.h"
 #include "tools.h"
 
 // Set these to 'true' for debug output:
@@ -101,6 +102,16 @@ static char *GetString(int &Length, const uint8_t **Data)
      }
   return NULL;
 }
+
+// --- cCaPidReceiver --------------------------------------------------------
+
+// A dummy receiver, just used to make the device receive the CA pids.
+
+class cCaPidReceiver : public cReceiver {
+public:
+  virtual ~cCaPidReceiver() { Detach(); }
+  virtual void Receive(uchar *Data, int Length) {}
+  };
 
 // --- cTPDU -----------------------------------------------------------------
 
@@ -403,7 +414,8 @@ void cCiSession::SendData(int Tag, int Length, const uint8_t *Data)
   *p++ =  Tag        & 0xFF;
   p = SetLength(p, Length);
   if (p - buffer + Length < int(sizeof(buffer))) {
-     memcpy(p, Data, Length);
+     if (Data)
+        memcpy(p, Data, Length);
      p += Length;
      tc->SendData(p - buffer, buffer);
      }
@@ -569,7 +581,7 @@ bool cCiApplicationInformation::EnterMenu(void)
 #define CPCI_QUERY            0x03
 #define CPCI_NOT_SELECTED     0x04
 
-class cCiCaPmt : public cListObject {
+class cCiCaPmt {
   friend class cCiConditionalAccessSupport;
 private:
   uint8_t cmdId;
@@ -1552,9 +1564,10 @@ cCamSlots CamSlots;
 #define MODULE_CHECK_INTERVAL 500 // ms
 #define MODULE_RESET_TIMEOUT    2 // s
 
-cCamSlot::cCamSlot(cCiAdapter *CiAdapter)
+cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 {
   ciAdapter = CiAdapter;
+  caPidReceiver = ReceiveCaPids ? new cCaPidReceiver : NULL;
   slotIndex = -1;
   lastModuleStatus = msReset; // avoids initial reset log message
   resetTime = 0;
@@ -1571,6 +1584,7 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter)
 
 cCamSlot::~cCamSlot()
 {
+  delete caPidReceiver;
   CamSlots.Del(this, false);
   DeleteAllConnections();
 }
@@ -1801,6 +1815,10 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
      const int *CaSystemIds = cas->GetCaSystemIds();
      if (CaSystemIds && *CaSystemIds) {
         if (caProgramList.Count()) {
+           if (caPidReceiver && caPidReceiver->NumPids()) {
+              if (cDevice *d = Device())
+                 d->Detach(caPidReceiver);
+              }
            for (int Loop = 1; Loop <= 2; Loop++) {
                for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
                    if (p->modified || resendPmt) {
@@ -1813,6 +1831,15 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                              }
                           }
                       if ((Loop == 1) != Active) { // first remove, then add
+                         if (caPidReceiver) {
+                            int CaPids[MAXRECEIVEPIDS + 1];
+                            if (GetCaPids(source, transponder, p->programNumber, CaSystemIds, MAXRECEIVEPIDS + 1, CaPids) > 0) {
+                               if (Loop == 1)
+                                  caPidReceiver->DelPids(CaPids);
+                               else
+                                  caPidReceiver->AddPids(CaPids);
+                               }
+                            }
                          if (cas->RepliesToQuery())
                             CaPmt.SetListManagement(Active ? CPLM_ADD : CPLM_UPDATE);
                          if (Active || cas->RepliesToQuery())
@@ -1822,6 +1849,10 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                       }
                    }
                }
+           if (caPidReceiver && caPidReceiver->NumPids()) {
+              if (cDevice *d = Device())
+                 d->AttachReceiver(caPidReceiver);
+              }
            resendPmt = false;
            }
         else {
@@ -1981,6 +2012,12 @@ bool cCamSlot::IsDecrypting(void)
          }
      }
   return false;
+}
+
+uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
+{
+  Count = TS_SIZE;
+  return Data;
 }
 
 // --- cChannelCamRelation ---------------------------------------------------

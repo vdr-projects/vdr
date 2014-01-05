@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -604,8 +604,8 @@ msgstr "Ime direktorija ¾e obstaja"
 msgid "Folder name must not contain '%c'!"
 msgstr "Direkotrij ne sme vsebobati '%c'!"
 
-msgid "Button$Select"
-msgstr "Izberi"
+msgid "Button$Open"
+msgstr "Odpri"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Izbri¹i direktorij in vse pod direktorije"
@@ -773,6 +773,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -799,9 +802,6 @@ msgstr "Na zaèetek"
 
 msgid "Recordings"
 msgstr "Posnetki"
-
-msgid "Button$Open"
-msgstr "Odpri"
 
 msgid "Commands"
 msgstr "Ukazi"

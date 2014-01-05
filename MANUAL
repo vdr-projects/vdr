@@ -500,9 +500,10 @@ Version 2.0
   folder name in the list). The "Yellow" key deletes the current folder (note
   that this will merely delete the folder definition stored in 'folders.conf'
   and has no effect on existing timers or recordings). The "Blue" key can be
-  used to edit an existing folder definition. The "Red" key selects the current
-  folder, or enters a sub folder. Once a folder has been selected, the entire
-  path of the timer's file name will be replaced with the selected folder.
+  used to edit an existing folder definition. The "Red" key opens a folder that
+  contains sub folders, while pressing Ok selects the current folder. Once a
+  folder has been selected, the entire path of the timer's file name will be
+  replaced with the selected folder.
 
   In the "Recordings" menu the folders of existing recordings can be renamed or
   moved by pressing the "Blue" key ("Edit") while the cursor is positioned on

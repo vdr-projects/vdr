@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.3 2013/10/09 08:25:16 kls Exp $
+ * $Id: device.h 3.8 2014/01/02 10:47:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -35,6 +35,7 @@
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
+// Note that VDR itself always uses pmAudioVideo when replaying a recording!
 enum ePlayMode { pmNone,           // audio/video from decoder
                  pmAudioVideo,     // audio/video from player
                  pmAudioOnly,      // audio only from player, video from decoder
@@ -698,10 +699,11 @@ public:
   virtual bool HasIBPTrickSpeed(void) { return false; }
        ///< Returns true if this device can handle all frames in 'fast forward'
        ///< trick speeds.
-  virtual void TrickSpeed(int Speed);
+  virtual void TrickSpeed(int Speed, bool Forward);
        ///< Sets the device into a mode where replay is done slower.
        ///< Every single frame shall then be displayed the given number of
-       ///< times.
+       ///< times. Forward is true if replay is done in the normal (forward)
+       ///< direction, false if it is done reverse.
        ///< The cDvbPlayer uses the following values for the various speeds:
        ///<                   1x   2x   3x
        ///< Fast Forward       6    3    1
@@ -723,7 +725,7 @@ public:
        ///< all registered cAudio objects are notified.
   virtual void StillPicture(const uchar *Data, int Length);
        ///< Displays the given I-frame as a still picture.
-       ///< Data points either to TS (first byte is 0x47) or PES (first byte
+       ///< Data points either to a series of TS (first byte is 0x47) or PES (first byte
        ///< is 0x00) data of the given Length. The default implementation
        ///< converts TS to PES and calls itself again, allowing a derived class
        ///< to display PES if it can't handle TS directly.
@@ -827,8 +829,21 @@ private:
   virtual void Action(void);
 public:
   cTSBuffer(int File, int Size, int CardIndex);
-  ~cTSBuffer();
-  uchar *Get(void);
+  virtual ~cTSBuffer();
+  uchar *Get(int *Available = NULL);
+     ///< Returns a pointer to the first TS packet in the buffer. If Available is given,
+     ///< it will return the total number of consecutive bytes pointed to in the buffer.
+     ///< It is guaranteed that the returned pointer points to a TS_SYNC_BYTE and that
+     ///< there are at least TS_SIZE bytes in the buffer. Otherwise NULL will be
+     ///< returned and the value in Available (if given) is undefined.
+     ///< Each call to Get() returns a pointer to the next TS packet in the buffer.
+  void Skip(int Count);
+     ///< If after a call to Get() more or less than TS_SIZE of the available data
+     ///< has been processed, a call to Skip() with the number of processed bytes
+     ///< will disable the automatic incrementing of the data pointer as described
+     ///< in Get() and skip the given number of bytes instead. Count may be 0 if the
+     ///< caller wants the previous TS packet to be delivered again in the next call
+     ///< to Get().
   };
 
 #endif //__DEVICE_H

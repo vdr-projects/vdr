@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -603,8 +603,8 @@ msgstr "Verzeichnisname existiert bereits!"
 msgid "Folder name must not contain '%c'!"
 msgstr "Verzeichnisname darf kein '%c' enthalten!"
 
-msgid "Button$Select"
-msgstr "Auswählen"
+msgid "Button$Open"
+msgstr "Öffnen"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Verzeichnis und alle Unterverzeichnisse löschen?"
@@ -772,6 +772,9 @@ msgstr "Marken löschen"
 msgid "Recording vanished!"
 msgstr "Aufnahme verschwunden!"
 
+msgid "Edited version already exists - overwrite?"
+msgstr "Geschnittene Version existiert bereits - überschreiben?"
+
 msgid "Error while queueing recording for cutting!"
 msgstr "Fehler beim Hinzufügen der Aufnahme zur Schnittwarteschlange"
 
@@ -798,9 +801,6 @@ msgstr "Anfang"
 
 msgid "Recordings"
 msgstr "Aufzeichnungen"
-
-msgid "Button$Open"
-msgstr "Öffnen"
 
 msgid "Commands"
 msgstr "Befehle"

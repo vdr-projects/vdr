@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.10 2013/10/16 09:15:36 kls Exp $
+ * $Id: menu.c 3.15 2013/12/27 09:00:24 kls Exp $
  */
 
 #include "menu.h"
@@ -16,6 +16,7 @@
 #include <string.h>
 #include "channels.h"
 #include "config.h"
+#include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
@@ -718,9 +719,11 @@ cMenuFolder::cMenuFolder(const char *Title, cNestedItemList *NestedItemList, con
   list = nestedItemList = NestedItemList;
   firstFolder = NULL;
   editing = false;
+  helpKeys = -1;
   Set();
-  SetHelpKeys();
   DescendPath(Path);
+  Display();
+  SetHelpKeys();
 }
 
 cMenuFolder::cMenuFolder(const char *Title, cList<cNestedItem> *List, cNestedItemList *NestedItemList, const char *Dir, const char *Path)
@@ -732,14 +735,28 @@ cMenuFolder::cMenuFolder(const char *Title, cList<cNestedItem> *List, cNestedIte
   dir = Dir;
   firstFolder = NULL;
   editing = false;
+  helpKeys = -1;
   Set();
-  SetHelpKeys();
   DescendPath(Path);
+  Display();
+  SetHelpKeys();
 }
 
 void cMenuFolder::SetHelpKeys(void)
 {
-  SetHelp(firstFolder ? tr("Button$Select") : NULL, tr("Button$New"), firstFolder ? tr("Button$Delete") : NULL, firstFolder ? tr("Button$Edit") : NULL);
+  if (HasSubMenu())
+     return;
+  int NewHelpKeys = 0;
+  if (firstFolder) {
+     if (cMenuFolderItem *Folder = (cMenuFolderItem *)Get(Current())) {
+        if (Folder->Folder()->SubItems())
+           NewHelpKeys = 1;
+        }
+     }
+  if (NewHelpKeys != helpKeys) {
+     helpKeys = NewHelpKeys;
+     SetHelp(NewHelpKeys > 0 ? tr("Button$Open") : NULL, tr("Button$New"), firstFolder ? tr("Button$Delete") : NULL, firstFolder ? tr("Button$Edit") : NULL);
+     }
 }
 
 void cMenuFolder::Set(const char *CurrentFolder)
@@ -768,7 +785,7 @@ void cMenuFolder::DescendPath(const char *Path)
         for (cMenuFolderItem *Folder = (cMenuFolderItem *)firstFolder; Folder; Folder = (cMenuFolderItem *)Next(Folder)) {
             if (strncmp(Folder->Folder()->Text(), Path, p - Path) == 0) {
                SetCurrent(Folder);
-               if (Folder->Folder()->SubItems())
+               if (Folder->Folder()->SubItems() && strchr(p + 1, FOLDERDELIMCHAR))
                   AddSubMenu(new cMenuFolder(Title(), Folder->Folder()->SubItems(), nestedItemList, !isempty(dir) ? *cString::sprintf("%s%c%s", *dir, FOLDERDELIMCHAR, Folder->Folder()->Text()) : Folder->Folder()->Text(), p + 1));
                break;
                }
@@ -777,12 +794,12 @@ void cMenuFolder::DescendPath(const char *Path)
     }
 }
 
-eOSState cMenuFolder::Select(void)
+eOSState cMenuFolder::Select(bool Open)
 {
   if (firstFolder) {
      cMenuFolderItem *Folder = (cMenuFolderItem *)Get(Current());
      if (Folder) {
-        if (Folder->Folder()->SubItems())
+        if (Open && Folder->Folder()->SubItems())
            return AddSubMenu(new cMenuFolder(Title(), Folder->Folder()->SubItems(), nestedItemList, !isempty(dir) ? *cString::sprintf("%s%c%s", *dir, FOLDERDELIMCHAR, Folder->Folder()->Text()) : Folder->Folder()->Text()));
         else
            return osEnd;
@@ -857,8 +874,8 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk:
-       case kRed:    return Select();
+       case kOk:     return Select(false);
+       case kRed:    return Select(true);
        case kGreen:  return New();
        case kYellow: return Delete();
        case kBlue:   return Edit();
@@ -867,6 +884,7 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
      }
   else if (state == osEnd && HasSubMenu() && editing)
      state = SetFolder();
+  SetHelpKeys();
   return state;
 }
 
@@ -2121,7 +2139,7 @@ public:
 cMenuPathEdit::cMenuPathEdit(const char *Path)
 :cOsdMenu(tr("Edit path"), 12)
 {
-  SetMenuCategory(mcRecording);
+  SetMenuCategory(mcRecordingEdit);
   path = Path;
   *folder = 0;
   *name = 0;
@@ -2236,7 +2254,7 @@ public:
 cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
 :cOsdMenu(tr("Edit recording"), 12)
 {
-  SetMenuCategory(mcRecording);
+  SetMenuCategory(mcRecordingEdit);
   recording = Recording;
   originalFileName = recording->FileName();
   Recordings.StateChanged(recordingsState); // just to get the current state
@@ -2330,8 +2348,10 @@ eOSState cMenuRecordingEdit::Action(void)
   if (actionCancel)
      RecordingsHandler.Del(recording->FileName());
   else if (doCut) {
-     if (!RecordingsHandler.Add(ruCut, recording->FileName()))
-        Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
+     if (access(cCutter::EditedFileName(recording->FileName()), F_OK) != 0 || Interface->Confirm(tr("Edited version already exists - overwrite?"))) {
+        if (!RecordingsHandler.Add(ruCut, recording->FileName()))
+           Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
+        }
      }
   recordingIsInUse = recording->IsInUse();
   RefreshRecording();
@@ -2551,12 +2571,13 @@ void cMenuRecordingItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, b
 cString cMenuRecordings::path;
 cString cMenuRecordings::fileName;
 
-cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
+cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus, const cRecordingFilter *Filter)
 :cOsdMenu(Base ? Base : tr("Recordings"), 9, 6, 6)
 {
   SetMenuCategory(mcRecording);
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  filter = Filter;
   Recordings.StateChanged(recordingsState); // just to get the current state
   helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
@@ -2613,7 +2634,7 @@ void cMenuRecordings::Set(bool Refresh)
   GetRecordingsSortMode(DirectoryName());
   Recordings.Sort();
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-      if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
+      if ((!filter || filter->Filter(recording)) && (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR))) {
          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
          cMenuRecordingItem *LastDir = NULL;
          if (Item->IsDirectory()) {
@@ -2680,7 +2701,7 @@ bool cMenuRecordings::Open(bool OpenSubMenus)
         buffer = cString::sprintf("%s%c%s", base, FOLDERDELIMCHAR, t);
         t = buffer;
         }
-     AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus));
+     AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus, filter));
      return true;
      }
   return false;
@@ -5217,6 +5238,8 @@ void cReplayControl::EditCut(void)
            Skins.Message(mtError, tr("No editing marks defined!"));
         else if (!marks.GetNumSequences())
            Skins.Message(mtError, tr("No editing sequences defined!"));
+        else if (access(cCutter::EditedFileName(fileName), F_OK) == 0 && !Interface->Confirm(tr("Edited version already exists - overwrite?")))
+           ;
         else if (!RecordingsHandler.Add(ruCut, fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else

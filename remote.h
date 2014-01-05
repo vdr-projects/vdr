@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 3.0 2013/02/03 14:34:56 kls Exp $
+ * $Id: remote.h 3.1 2013/12/25 12:32:44 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -106,6 +106,7 @@ class cKbdRemote : public cRemote, private cThread {
 private:
   static bool kbdAvailable;
   static bool rawMode;
+  bool systemIsUtf8;
   struct termios savedTm;
   virtual void Action(void);
   int ReadKey(void);

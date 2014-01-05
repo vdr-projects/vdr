@@ -50,3 +50,8 @@ VDR Plugin 'dvbsddevice' Revision History
 
 - Fixed handling the -o option (short form of --outputonly; problem reported by
   Mario Edelmann).
+
+2014-01-01: Version 2.1.1
+
+- Avoiding unnecessary pkg-config warnings in plugin Makefiles.
+- cDevice::TrickSpeed() now has an additional parameter named Forward.

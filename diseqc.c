@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 3.2 2013/08/21 09:26:11 kls Exp $
+ * $Id: diseqc.c 3.3 2013/12/28 11:33:08 kls Exp $
  */
 
 #include "diseqc.h"
@@ -228,9 +228,9 @@ bool cDiseqc::Parse(const char *s)
   devices = CurrentDevices;
   bool result = false;
   char *sourcebuf = NULL;
-  int fields = sscanf(s, "%a[^ ] %d %c %d %a[^\n]", &sourcebuf, &slof, &polarization, &lof, &commands);
+  int fields = sscanf(s, "%m[^ ] %d %c %d %m[^\n]", &sourcebuf, &slof, &polarization, &lof, &commands);
   if (fields == 4)
-     commands = NULL; //XXX Apparently sscanf() doesn't work correctly if the last %a argument results in an empty string
+     commands = NULL; //XXX Apparently sscanf() doesn't work correctly if the last %m argument results in an empty string
   if (4 <= fields && fields <= 5) {
      source = cSource::FromString(sourcebuf);
      if (Sources.Get(source)) {

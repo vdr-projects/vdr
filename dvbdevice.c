@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.4 2013/10/13 14:41:57 kls Exp $
+ * $Id: dvbdevice.c 3.8 2014/01/02 10:30:15 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -558,8 +558,6 @@ int cDvbTuner::GetSignalStrength(void) const
     case 0x13C21019: // TT-budget S2-3200 (DVB-S/DVB-S2)
     case 0x1AE40001: // TechniSat SkyStar HD2 (DVB-S/DVB-S2)
                      MaxSignal = 670; break;
-    case 0x13D02103: // TechniSat SkyStar 2 DVB-S rev 2.3P
-                     MaxSignal = 0x4925; break;
     }
   int s = int(Signal) * 100 / MaxSignal;
   if (s > 100)
@@ -1206,8 +1204,8 @@ bool cDvbDevice::Initialize(void)
               }
            }
      }
-  int Checked = 0;
   int Found = 0;
+  int Used = 0;
   if (Nodes.Size() > 0) {
      Nodes.Sort();
      for (int i = 0; i < Nodes.Size(); i++) {
@@ -1215,10 +1213,11 @@ bool cDvbDevice::Initialize(void)
          int Frontend;
          if (2 == sscanf(Nodes[i], "%d %d", &Adapter, &Frontend)) {
             if (Exists(Adapter, Frontend)) {
-               if (Checked++ < MAXDVBDEVICES) {
+               if (Found < MAXDEVICES) {
+                  Found++;
                   if (UseDevice(NextCardIndex())) {
                      if (Probe(Adapter, Frontend))
-                        Found++;
+                        Used++;
                      }
                   else
                      NextCardIndex(1); // skips this one
@@ -1227,9 +1226,11 @@ bool cDvbDevice::Initialize(void)
             }
          }
      }
-  NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
-  if (Found > 0)
+  if (Found > 0) {
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
+     if (Used != Found)
+        isyslog("using only %d DVB device%s", Used, Used > 1 ? "s" : "");
+     }
   else
      isyslog("no DVB device found");
   return Found > 0;
@@ -1670,7 +1671,12 @@ void cDvbDevice::CloseDvr(void)
 bool cDvbDevice::GetTSPacket(uchar *&Data)
 {
   if (tsBuffer) {
-     Data = tsBuffer->Get();
+     int Available;
+     Data = tsBuffer->Get(&Available);
+     if (Data && CamSlot()) {
+        Data = CamSlot()->Decrypt(Data, Available);
+        tsBuffer->Skip(Available);
+        }
      return true;
      }
   return false;

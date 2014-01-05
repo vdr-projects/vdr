@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 3.0 2013/03/08 13:44:19 kls Exp $
+ * $Id: dvbplayer.c 3.1 2013/12/25 13:24:07 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -324,7 +324,7 @@ void cDvbPlayer::TrickSpeed(int Increment)
      int sp = (Speeds[nts] > 0) ? Mult / Speeds[nts] : -Speeds[nts] * Mult;
      if (sp > MAX_VIDEO_SLOWMOTION)
         sp = MAX_VIDEO_SLOWMOTION;
-     DeviceTrickSpeed(sp);
+     DeviceTrickSpeed(sp, playDir == pdForward);
      }
 }
 

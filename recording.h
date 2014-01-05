@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.1 2013/10/10 12:08:15 kls Exp $
+ * $Id: recording.h 3.4 2014/01/01 12:45:18 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -41,6 +41,7 @@ enum eRecordingUsage {
   };
 
 void RemoveDeletedRecordings(void);
+void ClearVanishedRecordings(void);
 void AssertFreeDiskSpace(int Priority = 0, bool Force = false);
      ///< The special Priority value -1 means that we shall get rid of any
      ///< deleted recordings faster than normal (because we're cutting).
@@ -217,11 +218,12 @@ class cRecordings : public cList<cRecording>, public cThread {
 private:
   static char *updateFileName;
   bool deleted;
+  bool initial;
   time_t lastUpdate;
   int state;
   const char *UpdateFileName(void);
   void Refresh(bool Foreground = false);
-  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0);
+  bool ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
 protected:
   void Action(void);
 public:
@@ -277,6 +279,8 @@ public:
        ///< if all recordings have been successfully added to the RecordingsHandler.
   };
 
+/// Any access to Recordings that loops through the list of recordings
+/// needs to hold a thread lock on this object!
 extern cRecordings Recordings;
 extern cRecordings DeletedRecordings;
 
@@ -382,6 +386,7 @@ public:
   };
 
 #define RUC_BEFORERECORDING "before"
+#define RUC_STARTRECORDING  "started"
 #define RUC_AFTERRECORDING  "after"
 #define RUC_EDITEDRECORDING "edited"
 #define RUC_DELETERECORDING "deleted"

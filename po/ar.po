@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -607,8 +607,8 @@ msgstr "المجلد موجود بالفعل"
 msgid "Folder name must not contain '%c'!"
 msgstr "'%c'! اسم المجلد لا يجب ان يحتوى على"
 
-msgid "Button$Select"
-msgstr "الزر"
+msgid "Button$Open"
+msgstr "افتح"
 
 msgid "Delete folder and all sub folders?"
 msgstr "حذف المجلد وكل المجلدات الفرعية"
@@ -776,6 +776,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -802,9 +805,6 @@ msgstr "اعادة"
 
 msgid "Recordings"
 msgstr "التسجيلات"
-
-msgid "Button$Open"
-msgstr "افتح"
 
 msgid "Commands"
 msgstr "الاوامر"

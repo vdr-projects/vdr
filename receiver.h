@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 3.0 2012/09/02 09:27:20 kls Exp $
+ * $Id: receiver.h 3.1 2014/01/01 11:45:09 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -64,7 +64,13 @@ public:
                ///< through ChannelID(). The ChannelID is necessary to allow the device
                ///< that will be used for this receiver to detect and store whether the
                ///< channel can be decrypted in case this is an encrypted channel.
+  void DelPid(int Pid);
+               ///< Deletes the given Pid from the list of PIDs of this receiver.
+  void DelPids(const int *Pids);
+               ///< Deletes the given zero terminated list of Pids from the list of PIDs of this
+               ///< receiver.
   tChannelID ChannelID(void) { return channelID; }
+  int NumPids(void) const { return numPids; }
   bool IsAttached(void) { return device != NULL; }
                ///< Returns true if this receiver is (still) attached to a device.
                ///< A receiver may be automatically detached from its device in

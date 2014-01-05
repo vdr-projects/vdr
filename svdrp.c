@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 3.3 2013/10/14 09:49:38 kls Exp $
+ * $Id: svdrp.c 3.5 2013/10/21 07:46:04 kls Exp $
  */
 
 #include "svdrp.h"
@@ -257,6 +257,11 @@ const char *HelpPages[] = {
   "    used to easily activate or deactivate a timer.",
   "MOVC <number> <to>\n"
   "    Move a channel to a new position.",
+  "MOVR <number> <new name>\n"
+  "    Move the recording with the given number. Before a recording can be\n"
+  "    moved, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers. The numbers don't change during subsequent MOVR\n"
+  "    commands.n",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
@@ -304,11 +309,6 @@ const char *HelpPages[] = {
   "REMO [ on | off ]\n"
   "    Turns the remote control on or off. Without a parameter, the current\n"
   "    status of the remote control is reported.",
-  "RENR <number> <new name>\n"
-  "    Rename the recording with the given number. Before a recording can be\n"
-  "    renamed, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers. The numbers don't change during subsequent RENR\n"
-  "    commands.n",
   "SCAN\n"
   "    Forces an EPG scan. If this is a single DVB device system, the scan\n"
   "    will be done on the primary device unless it is currently recording.",
@@ -686,7 +686,7 @@ void cSVDRP::CmdDELR(const char *Option)
         cRecording *recording = recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
            if (int RecordingInUse = recording->IsInUse())
-              Reply(550, RecordingInUseMessage(RecordingInUse, Option, recording));
+              Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, recording));
            else {
               if (recording->Delete()) {
                  Reply(250, "Recording \"%s\" deleted", Option);
@@ -1331,6 +1331,46 @@ void cSVDRP::CmdMOVC(const char *Option)
      Reply(501, "Missing channel number");
 }
 
+void cSVDRP::CmdMOVR(const char *Option)
+{
+  if (*Option) {
+     char *opt = strdup(Option);
+     char *num = skipspace(opt);
+     char *option = num;
+     while (*option && !isspace(*option))
+           option++;
+     char c = *option;
+     *option = 0;
+     if (isnumber(num)) {
+        cRecording *recording = recordings.Get(strtol(num, NULL, 10) - 1);
+        if (recording) {
+           if (int RecordingInUse = recording->IsInUse())
+              Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, recording));
+           else {
+              if (c)
+                 option = skipspace(++option);
+              if (*option) {
+                 cString oldName = recording->Name();
+                 if ((recording = Recordings.GetByName(recording->FileName())) != NULL && recording->ChangeName(option))
+                    Reply(250, "Recording \"%s\" moved to \"%s\"", *oldName, recording->Name());
+                 else
+                    Reply(554, "Error while moving recording \"%s\" to \"%s\"!", *oldName, option);
+                 }
+              else
+                 Reply(501, "Missing new recording name");
+              }
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", num, recordings.Count() ? "" : " (use LSTR before moving)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", num);
+     free(opt);
+     }
+  else
+     Reply(501, "Missing recording number");
+}
+
 void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
@@ -1550,46 +1590,6 @@ void cSVDRP::CmdREMO(const char *Option)
      Reply(250, "Remote control is %s", cRemote::Enabled() ? "enabled" : "disabled");
 }
 
-void cSVDRP::CmdRENR(const char *Option)
-{
-  if (*Option) {
-     char *opt = strdup(Option);
-     char *num = skipspace(opt);
-     char *option = num;
-     while (*option && !isspace(*option))
-           option++;
-     char c = *option;
-     *option = 0;
-     if (isnumber(num)) {
-        cRecording *recording = recordings.Get(strtol(num, NULL, 10) - 1);
-        if (recording) {
-           if (int RecordingInUse = recording->IsInUse())
-              Reply(550, RecordingInUseMessage(RecordingInUse, Option, recording));
-           else {
-              if (c)
-                 option = skipspace(++option);
-              if (*option) {
-                 cString oldName = recording->Name();
-                 if ((recording = Recordings.GetByName(recording->FileName())) != NULL && recording->ChangeName(option))
-                    Reply(250, "Recording \"%s\" renamed to \"%s\"", *oldName, recording->Name());
-                 else
-                    Reply(554, "Error while renaming recording \"%s\" to \"%s\"!", *oldName, option);
-                 }
-              else
-                 Reply(501, "Missing new recording name");
-              }
-           }
-        else
-           Reply(550, "Recording \"%s\" not found%s", num, recordings.Count() ? "" : " (use LSTR before renaming)");
-        }
-     else
-        Reply(501, "Error in recording number \"%s\"", num);
-     free(opt);
-     }
-  else
-     Reply(501, "Missing recording number");
-}
-
 void cSVDRP::CmdSCAN(const char *Option)
 {
   EITScanner.ForceScan();
@@ -1710,6 +1710,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("MODC"))  CmdMODC(s);
   else if (CMD("MODT"))  CmdMODT(s);
   else if (CMD("MOVC"))  CmdMOVC(s);
+  else if (CMD("MOVR"))  CmdMOVR(s);
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
@@ -1717,7 +1718,6 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("REMO"))  CmdREMO(s);
-  else if (CMD("RENR"))  CmdRENR(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);
   else if (CMD("UPDR"))  CmdUPDR(s);

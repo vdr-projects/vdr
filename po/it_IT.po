@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2013-10-14 11:56+0200\n"
-"PO-Revision-Date: 2013-09-18 23:57+0100\n"
+"PO-Revision-Date: 2013-11-10 23:02+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -610,8 +610,8 @@ msgstr "Nome cartella già esistente!"
 msgid "Folder name must not contain '%c'!"
 msgstr "Il nome cartella non deve contenere '%c'!"
 
-msgid "Button$Select"
-msgstr "Seleziona"
+msgid "Button$Open"
+msgstr "Apri"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Eliminare la cartella e sue sottocartelle?"
@@ -731,68 +731,71 @@ msgid "CAM not responding!"
 msgstr "La CAM non risponde!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Modifica percorso"
 
 msgid "Folder"
-msgstr ""
+msgstr "Cartella"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "La cartella è attualmente in uso - nessuna modifica possibile!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Spostare tutta la cartella contenente %d registrazioni?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Errore durante lo spostamento della cartella!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Modifica registrazione"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "La registrazione è attualmente in uso - nessuna modifica possibile!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Annulla taglio"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Ferma taglio"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Annulla spostamento"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Ferma spostamento"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Annulla copia"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Ferma copia"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Taglia"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Elimina marcatori"
 
 msgid "Recording vanished!"
+msgstr "Registrazione sparita!"
+
+msgid "Edited version already exists - overwrite?"
 msgstr ""
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Errore durante l'accodamento della registrazione per il taglio!"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Eliminare i marcatori di modifica della registrazione?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Errore durante la cancellazione dei marcatori di modifica!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Errore durante la modifica priorità/durata!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Errore durante la modifica cartella/nome!"
 
 msgid "Recording info"
 msgstr "Info registrazione"
@@ -805,9 +808,6 @@ msgstr "Riavvolgi"
 
 msgid "Recordings"
 msgstr "Registrazioni"
-
-msgid "Button$Open"
-msgstr "Apri"
 
 msgid "Commands"
 msgstr "Comandi"

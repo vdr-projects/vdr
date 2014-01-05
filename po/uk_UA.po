@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2013-02-09 16:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -604,8 +604,8 @@ msgstr "Назва теки вже існує!"
 msgid "Folder name must not contain '%c'!"
 msgstr "Назва теки не повинна містити '%c'!"
 
-msgid "Button$Select"
-msgstr "Вибрати"
+msgid "Button$Open"
+msgstr "Відкрити"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Видалити теку і всі підтеки?"
@@ -773,6 +773,9 @@ msgstr ""
 msgid "Recording vanished!"
 msgstr ""
 
+msgid "Edited version already exists - overwrite?"
+msgstr ""
+
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
@@ -799,9 +802,6 @@ msgstr "Назад"
 
 msgid "Recordings"
 msgstr "Записи"
-
-msgid "Button$Open"
-msgstr "Відкрити"
 
 msgid "Commands"
 msgstr "Команди"
@@ -1333,10 +1333,10 @@ msgid "Editing process already active!"
 msgstr "Процес відеомонтажу вже запущений!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr " abcdefghijklmnopqrstuvwxyzабвгдеєёжзиіїйклмнопрстуфхцчшщъыьюя0123456789-.#~,/_@"
+msgstr " abcdefghijklmnopqrstuvwxyzабвгдеєёжзиіїйклмнопрстуфхцчшщъыьюя0123456789-.#~,/@"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr " 0\t-.#~,/_@1\tabcабвг2\tdefдеєёжз3\tghiиіїйкл4\tjklмно5\tmnoпрс6\tpqrsтуфх7\ttuvцчшщъ8\twxyzыьэюя9"
+msgstr " 0\t-.#~,/@1\tabcабвг2\tdefдеєёжз3\tghiиіїйкл4\tjklмно5\tmnoпрс6\tpqrsтуфх7\ttuvцчшщъ8\twxyzыьэюя9"
 
 msgid "Button$ABC/abc"
 msgstr "АБВ/абв"

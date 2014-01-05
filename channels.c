@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.1 2013/10/11 11:03:26 kls Exp $
+ * $Id: channels.c 3.4 2014/01/04 15:01:52 kls Exp $
  */
 
 #include "channels.h"
@@ -29,7 +29,7 @@ tChannelID tChannelID::FromString(const char *s)
   int tid;
   int sid;
   int rid = 0;
-  int fields = sscanf(s, "%a[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
+  int fields = sscanf(s, "%m[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
   if (fields == 4 || fields == 5) {
      int source = cSource::FromString(sourcebuf);
      free(sourcebuf);
@@ -64,6 +64,7 @@ cChannel::cChannel(void)
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
   parameters = "";
   modification = CHANNELMOD_NONE;
+  seen         = 0;
   schedule     = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
@@ -330,8 +331,10 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
 void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
-  if (vpid != Vpid || ppid != Ppid || vtype != Vtype || tpid != Tpid)
+  if (vpid != Vpid || ppid != Ppid || vtype != Vtype)
      mod |= CHANNELMOD_PIDS;
+  if (tpid != Tpid)
+     mod |= CHANNELMOD_AUX;
   int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(atypes, Atypes) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs) | IntArraysDiffer(dtypes, Dtypes) | IntArraysDiffer(spids, Spids, slangs, SLangs);
   if (m & STRDIFF)
      mod |= CHANNELMOD_LANGS;
@@ -388,7 +391,8 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      spids[MAXSPIDS] = 0;
      tpid = Tpid;
      modification |= mod;
-     Channels.SetModified();
+     if (Number())
+        Channels.SetModified();
      }
 }
 
@@ -406,6 +410,11 @@ void cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *Compos
      for (int i = 0; i < MAXSPIDS; i++)
          ancillaryPageIds[i] = AncillaryPageIds[i];
      }
+}
+
+void cChannel::SetSeen(void)
+{
+  seen = time(NULL);
 }
 
 void cChannel::SetCaIds(const int *CaIds)
@@ -586,7 +595,7 @@ bool cChannel::Parse(const char *s)
      char *apidbuf = NULL;
      char *tpidbuf = NULL;
      char *caidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%a[^:]:%a[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpidbuf, &caidbuf, &sid, &nid, &tid, &rid);
+     int fields = sscanf(s, "%m[^:]:%d :%m[^:]:%m[^:] :%d :%m[^:]:%m[^:]:%m[^:]:%m[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpidbuf, &caidbuf, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
@@ -1016,11 +1025,25 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
      NewChannel->CopyTransponderData(Transponder);
      NewChannel->SetId(Nid, Tid, Sid, Rid);
      NewChannel->SetName(Name, ShortName, Provider);
+     NewChannel->SetSeen();
      Add(NewChannel);
      ReNumber();
      return NewChannel;
      }
   return NULL;
+}
+
+#define CHANNELMARKOBSOLETE "OBSOLETE"
+#define CHANNELTIMEOBSOLETE 3600 // seconds to wait before declaring a channel obsolete (in case it has actually been seen before)
+
+void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
+{
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid) {
+         if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
+            channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
+         }
+      }
 }
 
 cString ChannelString(const cChannel *Channel, int Number)

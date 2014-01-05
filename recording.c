@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.7 2013/10/16 10:24:28 kls Exp $
+ * $Id: recording.c 3.11 2013/12/27 11:06:01 kls Exp $
  */
 
 #include "recording.h"
@@ -76,6 +76,7 @@ bool DirectoryEncoding = false;
 int InstanceId = 0;
 
 cRecordings DeletedRecordings(true);
+static cRecordings VanishedRecordings;
 
 // --- cRemoveDeletedRecordingsThread ----------------------------------------
 
@@ -218,6 +219,14 @@ void AssertFreeDiskSpace(int Priority, bool Force)
         }
      LastFreeDiskCheck = time(NULL);
      }
+}
+
+// --- Clear vanished recordings ---------------------------------------------
+
+void ClearVanishedRecordings(void)
+{
+  cThreadLock RecordingsLock(&Recordings); // yes, it *is* Recordings!
+  VanishedRecordings.Clear();
 }
 
 // --- cResumeFile -----------------------------------------------------------
@@ -1346,6 +1355,7 @@ cRecordings::cRecordings(bool Deleted)
 :cThread("video directory scanner")
 {
   deleted = Deleted;
+  initial = true;
   lastUpdate = 0;
   state = 0;
 }
@@ -1370,15 +1380,20 @@ const char *cRecordings::UpdateFileName(void)
 void cRecordings::Refresh(bool Foreground)
 {
   lastUpdate = time(NULL); // doing this first to make sure we don't miss anything
-  Lock();
-  Clear();
-  ChangeState();
-  Unlock();
+  initial = Count() == 0; // no name checking if the list is initially empty
+  if (deleted) {
+     Lock();
+     Clear();
+     ChangeState();
+     Unlock();
+     }
   ScanVideoDir(cVideoDirectory::Name(), Foreground);
 }
 
-void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
+bool cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel, int DirLevel)
 {
+  bool DoChangeState = false;
+  // Find any new recordings:
   cReadDir d(DirName);
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
@@ -1397,25 +1412,47 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
               }
            if (S_ISDIR(st.st_mode)) {
               if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
-                 cRecording *r = new cRecording(buffer);
-                 if (r->Name()) {
-                    r->NumFrames(); // initializes the numFrames member
-                    r->FileSizeMB(); // initializes the fileSizeMB member
-                    if (deleted)
-                       r->deleted = time(NULL);
-                    Lock();
-                    Add(r);
-                    ChangeState();
-                    Unlock();
+                 if (deleted || initial || !GetByName(buffer)) {
+                    cRecording *r = new cRecording(buffer);
+                    if (r->Name()) {
+                       r->NumFrames(); // initializes the numFrames member
+                       r->FileSizeMB(); // initializes the fileSizeMB member
+                       if (deleted)
+                          r->deleted = time(NULL);
+                       Lock();
+                       Add(r);
+                       if (initial)
+                          ChangeState();
+                       else
+                          DoChangeState = true;
+                       Unlock();
+                       }
+                    else
+                       delete r;
                     }
-                 else
-                    delete r;
                  }
               else
-                 ScanVideoDir(buffer, Foreground, LinkLevel + Link);
+                 DoChangeState |= ScanVideoDir(buffer, Foreground, LinkLevel + Link, DirLevel + 1);
               }
            }
         }
+  // Handle any vanished recordings:
+  if (!deleted && !initial && DirLevel == 0) {
+     for (cRecording *recording = First(); recording; ) {
+         cRecording *r = recording;
+         recording = Next(recording);
+         if (access(r->FileName(), F_OK) != 0) {
+            Lock();
+            Del(r, false);
+            VanishedRecordings.Add(r);
+            DoChangeState = true;
+            Unlock();
+            }
+         }
+     }
+  if (DoChangeState && DirLevel == 0)
+     ChangeState();
+  return DoChangeState;
 }
 
 bool cRecordings::StateChanged(int &State)
@@ -1456,6 +1493,7 @@ bool cRecordings::Update(bool Wait)
 cRecording *cRecordings::GetByName(const char *FileName)
 {
   if (FileName) {
+     LOCK_THREAD;
      for (cRecording *recording = First(); recording; recording = Next(recording)) {
          if (strcmp(recording->FileName(), FileName) == 0)
             return recording;
@@ -1693,7 +1731,7 @@ void cDirCopier::Action(void)
                     off_t FileSizeSrc = FileSize(FileNameSrc);
                     off_t FileSizeDst = FileSize(FileNameDst);
                     if (FileSizeSrc != FileSizeDst) {
-                       esyslog("ERROR: file size discrepancy: %lld != %lld", FileSizeSrc, FileSizeDst);
+                       esyslog("ERROR: file size discrepancy: %"PRId64" != %"PRId64, FileSizeSrc, FileSizeDst);
                        break;
                        }
                     }

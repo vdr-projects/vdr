@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 3.0 2012/01/11 11:35:17 kls Exp $
+ *   $Id: descriptor.h 3.1 2013/10/30 10:16:18 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -557,6 +557,42 @@ private:
    int extended_data_flag;
 };
 
+class LogicalChannelDescriptor : public Descriptor {
+public:
+   class LogicalChannel : public LoopElement {
+   public:
+      int getServiceId() const;
+      int getVisibleServiceFlag() const;
+      int getLogicalChannelNumber() const;
+      virtual int getLength() { return sizeof(item_logical_channel); }
+   protected:
+      virtual void Parse();
+   private:
+      const item_logical_channel *s;
+   };
+   StructureLoop<LogicalChannel> logicalChannelLoop;
+protected:
+   virtual void Parse();
+};
+
+class HdSimulcastLogicalChannelDescriptor : public Descriptor {
+public:
+   class HdSimulcastLogicalChannel : public LoopElement {
+   public:
+      int getServiceId() const;
+      int getVisibleServiceFlag() const;
+      int getLogicalChannelNumber() const;
+      virtual int getLength() { return sizeof(item_hd_simulcast_logical_channel); }
+   protected:
+      virtual void Parse();
+   private:
+      const item_hd_simulcast_logical_channel *s;
+   };
+   StructureLoop<HdSimulcastLogicalChannel> hdSimulcastLogicalChannelLoop;
+protected:
+   virtual void Parse();
+};
+
 // Private DVB Descriptor  Premiere.de
 // 0xF2  Content Transmission Descriptor
 // http://dvbsnoop.sourceforge.net/examples/example-private-section.html
@@ -733,6 +769,27 @@ protected:
    virtual void Parse();
 private:
    const descr_registration *s;
+};
+
+class AVCDescriptor : public Descriptor {
+public:
+   int getProfileIdc() const;
+   int getConstraintSet0Flag() const;
+   int getConstraintSet1Flag() const;
+   int getConstraintSet2Flag() const;
+   int getConstraintSet3Flag() const;
+   int getConstraintSet4Flag() const;
+   int getConstraintSet5Flag() const;
+   int getAVCCompatibleFlags() const;
+   int getLevelIdc() const;
+   int getAVCStillPresent() const;
+   int getAVC24HourPictureFlag() const;
+   int getFramePackingSEINotPresentFlag() const;
+   CharArray privateData;
+protected:
+   virtual void Parse();
+private:
+   const descr_avc *s;
 };
 
 } //end of namespace

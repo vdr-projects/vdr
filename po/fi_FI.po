@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -607,8 +607,8 @@ msgstr "Kansio on jo olemassa!"
 msgid "Folder name must not contain '%c'!"
 msgstr "Kansion nimessä ei saa olla '%c'-merkkiä!"
 
-msgid "Button$Select"
-msgstr "Valitse"
+msgid "Button$Open"
+msgstr "Avaa"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Poistetaanko kansio alikansioineen?"
@@ -728,68 +728,71 @@ msgid "CAM not responding!"
 msgstr "CA-moduuli ei vastaa!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Muokkaa polkua"
 
 msgid "Folder"
-msgstr ""
+msgstr "Kansio"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Kansio on käytössä - muokkaukset eivät mahdollisia!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Siirrä koko kansio sisältäen %d tallennetta?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Kansion siirto epäonnistui!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Muokkaa tallennetta"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Tallenne on käytössä - muokkaus ei mahdollista!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Peru leikkaus"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Lopeta leikkaus"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Peru siirto"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Lopeta siirto"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Peru kopiointi"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Lopeta kopiointi"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Leikkaa"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Poista merkinnät"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Tallenne katosi!"
+
+msgid "Edited version already exists - overwrite?"
+msgstr "Muokattava versio on jo olemassa - ylikirjoitetaanko?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Poistetaanko muokkausmerkinnät tallenteelta?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Muokkausmerkintöjen poistaminen epäonnistui!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Prioriteetin/elinajan vaihtaminen epäonnistui!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Kansion/nimen vaihtaminen epäonnistui!"
 
 msgid "Recording info"
 msgstr "Tallenteen tiedot"
@@ -802,9 +805,6 @@ msgstr "Alkuun"
 
 msgid "Recordings"
 msgstr "Tallenteet"
-
-msgid "Button$Open"
-msgstr "Avaa"
 
 msgid "Commands"
 msgstr "Komennot"

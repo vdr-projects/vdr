@@ -704,6 +704,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with resuming replay of PES recordings
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+ for suggesting to eliminate MAXDVBDEVICES
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1173,6 +1174,10 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  and add support for DVB-S2 "Input Stream Identifier" (ISI)
  for helping to debug and understand subtitle page refreshes
  for a patch that was used to implement the SVDRP command RENR
+ for fixing some compiler warnings with gcc-4.6.3
+ for suggesting to prompt the user for confirmation before overwriting an already
+ existing edited version of a recording
+ for adding code for parsing LCN and AVC descriptors to libsi
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2029,6 +2034,11 @@ Ville Skyttä <ville.skytta@iki.fi>
  for updating the help and man page entry about the location of the epg.data file
  for reporting a possible crash when shutting down VDR while subtitles are being
  displayed
+ for fixing some spellings in positioner.h and Doxyfile
+ for changing '%a' to the POSIX compliant '%m' in all scanf() calls
+ for reporting a possible NULL pointer dereference in cCiSession::SendData()
+ for reporting a superfluous assignment in cPipe::Open()
+ for avoiding unnecessary pkg-config warnings in plugin Makefiles
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2142,6 +2152,10 @@ Marko Mäkelä <marko.makela@hut.fi>
  pressed in string input fields
  for fixing missing ',' in the Italian and Polish OSD texts
  for pointing out that "Menu button closes" should actually be "Menu key closes"
+ for fixing a missing initialization in the c'tor of cSkinLCARSDisplayChannel
+ for suggesting to simplify some conditional expressions in skinlcars.c and skinsttng.c
+ for reporting some uninitialized item area coordinates in cSkinLCARSDisplayMenu
+ for reporting a problem with the video directory not being set correctly with --edit
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -2855,6 +2869,14 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting an invalid line in channels.conf.terr
  for fixing handling '/' and '~' in recording file names in case DirectoryEncoding is
  used
+ for making the LIRC remote control connect to the socket even if it doesn't yet exist
+ when VDR is started
+ for reporting a possible crash if the recordings list is updated externally while the
+ Recordings menu is open
+ for reporting a missing closing ')' in the help entry of the --vfat option
+ for making the Recordings menu able to be called with a cRecordingFilter, which allows
+ the caller to have it display only a certain subset of the recordings
+ for adding handling UTF-8 'umlaut' characters to cKbdRemote
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2913,6 +2935,7 @@ Henning Heinold <heinold@inf.fu-berlin.de>
 
 Dominik Strasser <dominik@die-strassers.de>
  for making a cRemote be removed from the Remotes list in case its initialization failed
+ for reporting a possible access to uninitialized data in cEIT::cEIT()
 
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
@@ -3058,8 +3081,10 @@ Christian Richter <cr@crichter.net>
  for extending the interface to the script that gets called for recordings, so that in
  the "edited" case it also provides the name of the original recording
 
-Christian Kaiser <christian.kaiser@teleservice.com>
+Christian Kaiser <chr-kaiser@arcor.de>
  for adding DeleteEvent() to the EPG handler interface
+ for making the script given to VDR with the '-r' option also be called after the
+ recording process has actually started
 
 Dirk Heiser <dirk-vdr@gmx.de>
  for adding SetComponents() to the EPG handler interface
@@ -3170,6 +3195,8 @@ Stefan Braun <louis.braun@gmx.de>
  for reporting an endless loop in cTextWrapper::Set() in case the given Width is smaller
  than one character
  for reporting an endless loop in the DrawEllipse() functions for very small ellipses
+ for suggesting to add the menu category mcRecordingEdit for marking menus that edit
+ recording properties
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
@@ -3202,3 +3229,10 @@ Harald Koenig <koenig@tat.physik.uni-tuebingen.de>
 
 Guido Cordaro <guido.cordaro@tiscali.it>
  for adding maximum signal strength value for TechniSat SkyStar 2 DVB-S rev 2.3P
+
+Thomas Reufer <thomas@reufer.ch>
+ for making it clear that the Data parameter in cDevice::StillPicture() may point to a
+ series of packets, not just a single one
+ for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()
+ for suggesting to add a note to ePlayMode in device.h that VDR itself always uses
+ pmAudioVideo when replaying a recording

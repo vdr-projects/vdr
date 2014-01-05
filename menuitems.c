@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 3.1 2013/05/24 10:26:01 kls Exp $
+ * $Id: menuitems.c 3.2 2013/11/03 14:48:21 kls Exp $
  */
 
 #include "menuitems.h"
@@ -487,12 +487,12 @@ void cMenuEditStrItem::Set(void)
   if (InEditMode()) {
      // This is an ugly hack to make editing strings work with the 'skincurses' plugin.
      const cFont *font = dynamic_cast<cSkinDisplayMenu *>(cSkinDisplay::Current())->GetTextAreaFont(false);
-     if (!font || font->Width("W") != 1) // all characters have with == 1 in the font used by 'skincurses'
+     if (!font || font->Width("W") != 1) // all characters have width == 1 in the font used by 'skincurses'
         font = cFont::GetFont(fontOsd);
 
      int width = cSkinDisplay::Current()->EditableWidth();
      width -= font->Width("[]");
-     width -= font->Width("<>"); // reserving this anyway make the whole thing simpler
+     width -= font->Width("<>"); // reserving this anyway makes the whole thing simpler
 
      if (pos < offset)
         offset = pos;

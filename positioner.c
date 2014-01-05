@@ -7,7 +7,7 @@
  * For an explanation (in German) of the theory behind the calculations see
  * http://www.vdr-portal.de/board17-developer/board97-vdr-core/p1154305-grundlagen-und-winkelberechnungen-f%C3%BCr-h-h-diseqc-motor-antennenanlagen
  *
- * $Id: positioner.c 3.2 2013/10/10 14:14:10 kls Exp $
+ * $Id: positioner.c 3.4 2013/10/30 09:56:34 kls Exp $
  */
 
 #include "positioner.h"
@@ -15,7 +15,7 @@
 #include "config.h"
 
 #define SAT_EARTH_RATIO    0.1513 // the Earth's radius, divided by the distance from the Earth's center to the satellite
-#define SAT_VISIBILITY_LAT 810    // the absolute latitude beyond which no satellite can be seen (degrees * 10)
+#define SAT_VISIBILITY_LAT 812    // the absolute latitude beyond which no satellite can be seen (degrees * 10)
 
 #define RAD(x) ((x) * M_PI / 1800)
 #define DEG(x) ((x) * 1800 / M_PI)
@@ -68,10 +68,10 @@ int cPositioner::CalcLongitude(int HourAngle)
 int cPositioner::HorizonLongitude(ePositionerDirection Direction)
 {
   double Delta;
-  if (abs(Setup.SiteLat) < SAT_VISIBILITY_LAT)
+  if (abs(Setup.SiteLat) <= SAT_VISIBILITY_LAT)
      Delta = acos(SAT_EARTH_RATIO / cos(RAD(Setup.SiteLat)));
   else
-     Delta = RAD(145);
+     Delta = 0;
   if ((Setup.SiteLat >= 0) != (Direction == pdLeft))
      Delta = -Delta;
   return NormalizeAngle(round(DEG(RAD(Setup.SiteLon) + Delta)));
