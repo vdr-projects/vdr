@@ -8032,7 +8032,7 @@ Video Disk Recorder Revision History
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
 
-2014-01-01: Version 2.1.3
+2014-01-05: Version 2.1.3
 
 - Changed the return value of cPositioner::HorizonLongitude() to 0 in case the
   latitude of the antenna location is beyond +/-81 degrees.
@@ -8110,3 +8110,8 @@ Video Disk Recorder Revision History
   -PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell pkg-config --variable=$(1) vdr || pkg-config --variable=$(1) ../../../vdr.pc))
   +PKGCFG = $(if $(VDRDIR),$(shell pkg-config --variable=$(1) $(VDRDIR)/vdr.pc),$(shell PKG_CONFIG_PATH="$$PKG_CONFIG_PATH:../../.." pkg-config --variable=$(1) vdr))
 - Eliminated MAXDVBDEVICES (suggested by Oliver Endriss).
+- Channels that are no longer contained in the current SDT of a transponder are now
+  marked with the keyword OBSOLETE in their name and provider fields. That way you can
+  identify obsolete channels when you switch to them, and you can get the complete
+  overview of all obsolete channels by sorting the Channels list by provider (by
+  pressing the 0 key twice). Automatic deletion of obsolete channels may follow later.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.3 2013/12/28 11:33:08 kls Exp $
+ * $Id: channels.c 3.4 2014/01/04 15:01:52 kls Exp $
  */
 
 #include "channels.h"
@@ -64,6 +64,7 @@ cChannel::cChannel(void)
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
   parameters = "";
   modification = CHANNELMOD_NONE;
+  seen         = 0;
   schedule     = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
@@ -409,6 +410,11 @@ void cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *Compos
      for (int i = 0; i < MAXSPIDS; i++)
          ancillaryPageIds[i] = AncillaryPageIds[i];
      }
+}
+
+void cChannel::SetSeen(void)
+{
+  seen = time(NULL);
 }
 
 void cChannel::SetCaIds(const int *CaIds)
@@ -1019,11 +1025,25 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
      NewChannel->CopyTransponderData(Transponder);
      NewChannel->SetId(Nid, Tid, Sid, Rid);
      NewChannel->SetName(Name, ShortName, Provider);
+     NewChannel->SetSeen();
      Add(NewChannel);
      ReNumber();
      return NewChannel;
      }
   return NULL;
+}
+
+#define CHANNELMARKOBSOLETE "OBSOLETE"
+#define CHANNELTIMEOBSOLETE 3600 // seconds to wait before declaring a channel obsolete (in case it has actually been seen before)
+
+void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
+{
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid) {
+         if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
+            channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
+         }
+      }
 }
 
 cString ChannelString(const cChannel *Channel, int Number)
