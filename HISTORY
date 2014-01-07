@@ -7869,3 +7869,7 @@ Video Disk Recorder Revision History
 - Fixed setting the name of the video directory to avoid a crash when using --genindex,
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
+
+2014-01-07: Version 2.0.6
+
+- Updated 'sources.conf' (thanks to Antti Hartikainen).
