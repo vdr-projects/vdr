@@ -8115,3 +8115,7 @@ Video Disk Recorder Revision History
   identify obsolete channels when you switch to them, and you can get the complete
   overview of all obsolete channels by sorting the Channels list by provider (by
   pressing the 0 key twice). Automatic deletion of obsolete channels may follow later.
+
+2014-01-07: Version 2.1.4
+
+- Updated 'sources.conf' (thanks to Antti Hartikainen).
