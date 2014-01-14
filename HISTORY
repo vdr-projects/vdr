@@ -8132,8 +8132,11 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-01-07: Version 2.1.4
+2014-01-14: Version 2.1.4
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
   This prevents a crash with the LCARS skin on a system that has no fonts.
+- Improved locking for CAM slots and made the pure functions of cCiAdapter have
+  default implementations, to fix a possible crash with CI adapters and CAM slots
+  that are implemented in a plugin.
