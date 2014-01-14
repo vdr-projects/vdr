@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.5 2014/01/14 12:03:37 kls Exp $
+ * $Id: ci.c 3.6 2014/01/14 14:36:29 kls Exp $
  */
 
 #include "ci.h"
@@ -592,6 +592,7 @@ private:
   int transponder;
   int programNumber;
   int caSystemIds[MAXCASYSTEMIDS + 1]; // list is zero terminated!
+  bool gotCaDescriptors;
   void AddCaDescriptors(int Length, const uint8_t *Data);
 public:
   cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds);
@@ -599,10 +600,12 @@ public:
   void SetListManagement(uint8_t ListManagement);
   uint8_t ListManagement(void) { return capmt[0]; }
   void AddPid(int Pid, uint8_t StreamType);
+  bool GotCaDescriptors(void) { return gotCaDescriptors; }
   };
 
 cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds)
 {
+  gotCaDescriptors = false;
   cmdId = CmdId;
   source = Source;
   transponder = Transponder;
@@ -658,6 +661,7 @@ void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
            int l = length - esInfoLengthPos - 2;
            capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
            capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+           gotCaDescriptors = true;
            }
         }
      else
@@ -1812,6 +1816,7 @@ cCiEnquiry *cCamSlot::GetEnquiry(void)
 void cCamSlot::SendCaPmt(uint8_t CmdId)
 {
   cMutexLock MutexLock(&mutex);
+  bool needResend = false;
   cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT);
   if (cas) {
      const int *CaSystemIds = cas->GetCaSystemIds();
@@ -1844,8 +1849,12 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                             }
                          if (cas->RepliesToQuery())
                             CaPmt.SetListManagement(Active ? CPLM_ADD : CPLM_UPDATE);
-                         if (Active || cas->RepliesToQuery())
-                            cas->SendPMT(&CaPmt);
+                         if (Active || cas->RepliesToQuery()) {
+                            if ((CaPmt.ListManagement() == CPLM_ADD || CaPmt.ListManagement() == CPLM_ONLY) && !CaPmt.GotCaDescriptors())
+                               needResend = true;
+                            else
+                               cas->SendPMT(&CaPmt);
+                            }
                          p->modified = false;
                          }
                       }
@@ -1855,7 +1864,7 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
               if (cDevice *d = Device())
                  d->AttachReceiver(caPidReceiver);
               }
-           resendPmt = false;
+           resendPmt = needResend;
            }
         else {
            cCiCaPmt CaPmt(CmdId, 0, 0, 0, NULL);

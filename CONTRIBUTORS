@@ -3237,3 +3237,7 @@ Thomas Reufer <thomas@reufer.ch>
  for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()
  for suggesting to add a note to ePlayMode in device.h that VDR itself always uses
  pmAudioVideo when replaying a recording
+
+Mariusz Bialonczyk <manio@skyboo.net>
+ for fixing sending CA descriptors to CAMs in case a cReceiver is not used for a
+ recording or live view, like e.g. streaming clients
