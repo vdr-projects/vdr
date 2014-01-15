@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.6 2014/01/14 14:36:29 kls Exp $
+ * $Id: ci.c 3.7 2014/01/15 10:20:48 kls Exp $
  */
 
 #include "ci.h"
@@ -723,11 +723,13 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
      switch (Tag) {
        case AOT_CA_INFO: {
             dbgprotocol("Slot %d: <== Ca Info (%d)", Tc()->CamSlot()->SlotNumber(), SessionId());
+            cString Ids;
             numCaSystemIds = 0;
             int l = 0;
             const uint8_t *d = GetData(Data, l);
             while (l > 1) {
                   uint16_t id = ((uint16_t)(*d) << 8) | *(d + 1);
+                  Ids = cString::sprintf("%s %04X", *Ids ? *Ids : "", id);
                   dbgprotocol(" %04X", id);
                   d += 2;
                   l -= 2;
@@ -744,6 +746,7 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
                timer.Set(QUERY_WAIT_TIME); // WORKAROUND: Alphacrypt 3.09 doesn't reply to QUERY immediately after reset
                state = 2; // got ca info
                }
+            dsyslog("CAM %d: system ids:%s", Tc()->CamSlot()->SlotNumber(), *Ids ? *Ids : " none");
             }
             break;
        case AOT_CA_PMT_REPLY: {
