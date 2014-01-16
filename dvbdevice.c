@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.8 2014/01/02 10:30:15 kls Exp $
+ * $Id: dvbdevice.c 3.9 2014/01/16 11:45:22 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1318,13 +1318,6 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
   else
      esyslog("ERROR: frontend %d/%d doesn't provide any delivery systems", adapter, frontend);
   return false;
-}
-
-bool cDvbDevice::Ready(void)
-{
-  if (ciAdapter)
-     return ciAdapter->Ready();
-  return true;
 }
 
 bool cDvbDevice::BondDevices(const char *Bondings)

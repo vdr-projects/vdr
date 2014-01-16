@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.7 2013/12/25 11:24:26 kls Exp $
+ * $Id: vdr.c 3.8 2014/01/16 11:25:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -810,6 +810,8 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
+  if (!CamSlots.WaitForAllCamSlotsReady(DEVICEREADYTIMEOUT))
+     dsyslog("not all CAM slots ready after %d seconds", DEVICEREADYTIMEOUT);
   if (*Setup.InitialChannel) {
      if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
         if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))

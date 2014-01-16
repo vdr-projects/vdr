@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.4 2014/01/14 11:53:52 kls Exp $
+ * $Id: ci.h 3.5 2014/01/16 11:45:08 kls Exp $
  */
 
 #ifndef __CI_H
@@ -113,8 +113,6 @@ public:
   cCiAdapter(void);
   virtual ~cCiAdapter();
        ///< The derived class must call Cancel(3) in its destructor.
-  virtual bool Ready(void);
-       ///< Returns 'true' if all present CAMs in this adapter are ready.
   };
 
 class cTPDU;
@@ -267,7 +265,15 @@ public:
        ///< constructor to true in order to receive the CA pid data.
   };
 
-class cCamSlots : public cList<cCamSlot> {};
+class cCamSlots : public cList<cCamSlot> {
+public:
+  bool WaitForAllCamSlotsReady(int Timeout = 0);
+       ///< Waits until all CAM slots have become ready, or the given Timeout
+       ///< (seconds) has expired. While waiting, the Ready() function of each
+       ///< CAM slot is called in turn, until they all return true.
+       ///< Returns true if all CAM slots have become ready within the given
+       ///< timeout.
+  };
 
 extern cCamSlots CamSlots;
 

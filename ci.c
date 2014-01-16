@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.7 2014/01/15 10:20:48 kls Exp $
+ * $Id: ci.c 3.8 2014/01/16 11:43:33 kls Exp $
  */
 
 #include "ci.h"
@@ -1536,15 +1536,6 @@ void cCiAdapter::AddCamSlot(cCamSlot *CamSlot)
      }
 }
 
-bool cCiAdapter::Ready(void)
-{
-  for (int i = 0; i < MAX_CAM_SLOTS_PER_ADAPTER; i++) {
-      if (camSlots[i] && !camSlots[i]->Ready())
-         return false;
-      }
-  return true;
-}
-
 void cCiAdapter::Action(void)
 {
   cTPDU TPDU;
@@ -1565,8 +1556,6 @@ void cCiAdapter::Action(void)
 }
 
 // --- cCamSlot --------------------------------------------------------------
-
-cCamSlots CamSlots;
 
 #define MODULE_CHECK_INTERVAL 500 // ms
 #define MODULE_RESET_TIMEOUT    2 // s
@@ -2032,6 +2021,26 @@ uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
 {
   Count = TS_SIZE;
   return Data;
+}
+
+// --- cCamSlots -------------------------------------------------------------
+
+cCamSlots CamSlots;
+
+bool cCamSlots::WaitForAllCamSlotsReady(int Timeout)
+{
+  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
+      bool ready = true;
+      for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+          if (!CamSlot->Ready()) {
+             ready = false;
+             cCondWait::SleepMs(100);
+             }
+          }
+      if (ready)
+         return true;
+      }
+  return false;
 }
 
 // --- cChannelCamRelation ---------------------------------------------------

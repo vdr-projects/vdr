@@ -8148,3 +8148,7 @@ Video Disk Recorder Revision History
   Eike Sauer).
 - Fixed deleting the source recording after moving it to a different volume (reported
   by Christoph Haubrich).
+- Now waiting explicitly until all CAM slots are ready before switching to the
+  initial channel when VDR is started. This is necessary in case CI adapters are
+  used that are not physically connected to a dedicated device. The respective checks
+  in cDvbDevice have been removed to avoid redundancy.

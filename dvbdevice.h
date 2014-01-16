@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 3.3 2014/01/01 14:00:56 kls Exp $
+ * $Id: dvbdevice.h 3.4 2014/01/16 11:45:35 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -185,7 +185,6 @@ public:
   virtual ~cDvbDevice();
   int Adapter(void) const { return adapter; }
   int Frontend(void) const { return frontend; }
-  virtual bool Ready(void);
   virtual cString DeviceType(void) const;
   virtual cString DeviceName(void) const;
   static bool BondDevices(const char *Bondings);
