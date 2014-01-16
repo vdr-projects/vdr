@@ -2389,6 +2389,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  display gets hidden
  for reporting a wrong type ('int' vs. 'eTimerEvent') in the declaration of
  cSkinDisplayMenu::SetItemEvent()
+ for reporting that the source recording was not deleted after moving it to a different
+ volume
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
