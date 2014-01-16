@@ -7870,6 +7870,9 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-01-07: Version 2.0.6
+2014-01-16: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
+- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 10 in order to be able to record
+  channels that need more than 5 TS packets for detecting frame borders (reported by
+  Eike Sauer).
