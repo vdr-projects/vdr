@@ -3241,3 +3241,7 @@ Thomas Reufer <thomas@reufer.ch>
 Mariusz Bialonczyk <manio@skyboo.net>
  for fixing sending CA descriptors to CAMs in case a cReceiver is not used for a
  recording or live view, like e.g. streaming clients
+
+Eike Sauer <EikeSauer@t-online.de>
+ for reporting a problem with channels that need more than 5 TS packets for detecting
+ frame borders
