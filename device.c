@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.8 2014/01/14 11:58:49 kls Exp $
+ * $Id: device.c 3.9 2014/01/18 14:26:06 kls Exp $
  */
 
 #include "device.h"
@@ -1697,8 +1697,12 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
-  if (camSlot && Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
-     camSlot->StartDecrypting();
+  if (camSlot) {
+     if (Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
+        camSlot->StartDecrypting();
+     if (!camSlot->IsDecrypting())
+        camSlot->Assign(NULL);
+     }
   if (!receiversLeft)
      Cancel(-1);
 }
