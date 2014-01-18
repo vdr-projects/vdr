@@ -8132,7 +8132,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-01-16: Version 2.1.4
+2014-01-17: Version 2.1.4
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -8152,3 +8152,5 @@ Video Disk Recorder Revision History
   initial channel when VDR is started. This is necessary in case CI adapters are
   used that are not physically connected to a dedicated device. The respective checks
   in cDvbDevice have been removed to avoid redundancy.
+- Fixed detecting frame borders in MPEG-2 streams that have "bottom fields" or varying
+  GOP structures (reported by Christian Paulick, with help from Helmut Auer).
