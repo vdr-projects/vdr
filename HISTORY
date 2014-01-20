@@ -8132,7 +8132,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-01-18: Version 2.1.4
+2014-01-20: Version 2.1.4
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -8155,3 +8155,5 @@ Video Disk Recorder Revision History
 - Fixed detecting frame borders in MPEG-2 streams that have "bottom fields" or varying
   GOP structures (reported by Christian Paulick, with help from Helmut Auer).
 - Now unassigning CAMs from their devices when they are no longer used.
+- Now making sure the primary device goes into transfer mode for live viewing if the
+  CAM wants to receive the TS data.

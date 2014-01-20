@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.5 2014/01/16 11:45:08 kls Exp $
+ * $Id: ci.h 3.6 2014/01/20 12:01:01 kls Exp $
  */
 
 #ifndef __CI_H
@@ -147,13 +147,13 @@ private:
   void Write(cTPDU *TPDU);
   cCiSession *GetSessionByResourceId(uint32_t ResourceId);
 public:
-  cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids = false);
+  cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData = false);
        ///< Creates a new CAM slot for the given CiAdapter.
        ///< The CiAdapter will take care of deleting the CAM slot,
        ///< so the caller must not delete it!
-       ///< If ReceiveCaPids is true, the CAM slot will take care that the CA pids
-       ///< of the selected programmes will be included in the TS data stream that
-       ///< is presented to the Decrypt() function.
+       ///< If WantsTsData is true, the device this CAM slot is assigned to will
+       ///< call the Decrypt() function of this CAM slot, presenting it the complete
+       ///< TS data stream of the encrypted programme, including the CA pids.
   virtual ~cCamSlot();
   bool Assign(cDevice *Device, bool Query = false);
        ///< Assigns this CAM slot to the given Device, if this is possible.
@@ -166,6 +166,9 @@ public:
        ///< 'true'.
   cDevice *Device(void);
        ///< Returns the device this CAM slot is currently assigned to.
+  bool WantsTsData(void) const { return caPidReceiver != NULL; }
+       ///< Returns true if this CAM slot wants to receive the TS data through
+       ///< its Decrypt() function.
   int SlotIndex(void) { return slotIndex; }
        ///< Returns the index of this CAM slot within its CI adapter.
        ///< The first slot has an index of 0.
@@ -261,8 +264,8 @@ public:
        ///< shall be set to 0 and the same Data pointer will be offered in the next
        ///< call to Decrypt().
        ///< A derived class that implements this function will also need
-       ///< to set the ReceiveCaPids parameter in the call to the base class
-       ///< constructor to true in order to receive the CA pid data.
+       ///< to set the WantsTsData parameter in the call to the base class
+       ///< constructor to true in order to receive the TS data.
   };
 
 class cCamSlots : public cList<cCamSlot> {

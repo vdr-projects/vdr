@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.9 2014/01/18 14:26:06 kls Exp $
+ * $Id: device.c 3.10 2014/01/20 11:53:47 kls Exp $
  */
 
 #include "device.h"
@@ -761,6 +761,9 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
   bool NeedsTransferMode = Device != this;
+  // If the CAM slot wants the TS data, we need to switch to Transfer Mode:
+  if (!NeedsTransferMode && LiveView && IsPrimaryDevice() && CamSlot() && CamSlot()->WantsTsData())
+     NeedsTransferMode = true;
 
   eSetChannelResult Result = scrOk;
 
