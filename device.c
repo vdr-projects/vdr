@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.10 2014/01/20 11:53:47 kls Exp $
+ * $Id: device.c 3.11 2014/01/21 11:12:01 kls Exp $
  */
 
 #include "device.h"
@@ -1579,7 +1579,6 @@ void cDevice::Action(void)
      while (Running()) {
            // Read data from the DVR device:
            uchar *b = NULL;
-           LOCK_THREAD;
            if (GetTSPacket(b)) {
               if (b) {
                  int Pid = TsPid(b);
@@ -1604,6 +1603,7 @@ void cDevice::Action(void)
                        }
                     }
                  // Distribute the packet to all attached receivers:
+                 Lock();
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
                         if (DetachReceivers) {
@@ -1616,6 +1616,7 @@ void cDevice::Action(void)
                            ChannelCamRelations.SetDecrypt(receiver[i]->ChannelID(), CamSlotNumber);
                         }
                      }
+                 Unlock();
                  }
               }
            else
