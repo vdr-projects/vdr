@@ -7876,3 +7876,4 @@ Video Disk Recorder Revision History
 - Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 10 in order to be able to record
   channels that need more than 5 TS packets for detecting frame borders (reported by
   Eike Sauer).
+- Fixed a wrong alignment in cCiDateTime::SendDateTime().

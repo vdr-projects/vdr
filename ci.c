@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 2.12 2013/02/17 13:17:28 kls Exp $
+ * $Id: ci.c 2.12.1.1 2014/01/22 09:43:48 kls Exp $
  */
 
 #include "ci.h"
@@ -846,7 +846,9 @@ void cCiDateTime::SendDateTime(void)
      int L = (M == 1 || M == 2) ? 1 : 0;
      int MJD = 14956 + D + int((Y - L) * 365.25) + int((M + 1 + L * 12) * 30.6001);
 #define DEC2BCD(d) uint8_t(((d / 10) << 4) + (d % 10))
+#pragma pack(1)
      struct tTime { uint16_t mjd; uint8_t h, m, s; short offset; };
+#pragma pack()
      tTime T = { mjd : htons(MJD), h : DEC2BCD(tm_gmt.tm_hour), m : DEC2BCD(tm_gmt.tm_min), s : DEC2BCD(tm_gmt.tm_sec), offset : short(htons(tm_loc.tm_gmtoff / 60)) };
      bool OldDumpTPDUDataTransfer = DumpTPDUDataTransfer;
      DumpTPDUDataTransfer &= DumpDateTime;
