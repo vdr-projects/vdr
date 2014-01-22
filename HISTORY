@@ -8158,3 +8158,9 @@ Video Disk Recorder Revision History
 - Now making sure the primary device goes into transfer mode for live viewing if the
   CAM wants to receive the TS data.
 - Fixed a wrong alignment in cCiDateTime::SendDateTime().
+- Since the new cRecordingsHandler that was introduced in version 2.1.2 not only
+  handles "cutting", but also "moving" and "copying" recordings, the German word
+  "Schnitt" has been replaced with the more generic "Bearbeitung", which covers all
+  three variations of "editing" a recording (suggested by Christoph Haubrich).
+  Maintainers of translations for other languages may want to change their *.po files
+  accordingly.

@@ -2393,6 +2393,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  cSkinDisplayMenu::SetItemEvent()
  for reporting that the source recording was not deleted after moving it to a different
  volume
+ for suggesting to replace "Schnitt" with "Bearbeitung" in the German OSD texts
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
