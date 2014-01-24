@@ -8140,8 +8140,6 @@ Video Disk Recorder Revision History
 - Improved locking for CAM slots and made the pure functions of cCiAdapter have
   default implementations, to fix a possible crash with CI adapters and CAM slots
   that are implemented in a plugin.
-- Fixed sending CA descriptors to CAMs in case a cReceiver is not used for a
-  recording or live view, like e.g. streaming clients (thanks to Mariusz Bialonczyk).
 - Added logging the supported system ids of a CAM.
 - Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 10 in order to be able to record
   channels that need more than 5 TS packets for detecting frame borders (reported by
