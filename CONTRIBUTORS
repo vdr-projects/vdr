@@ -3250,3 +3250,7 @@ Eike Sauer <EikeSauer@t-online.de>
 Christian Paulick <cpaulick@xeatre.tv>
  for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
+
+Mariusz Bialonczyk <manio@skyboo.net>
+ for reporting a problem with live streaming of encrypted channels, when there are no
+ CA descriptors, yet, on initial tuning

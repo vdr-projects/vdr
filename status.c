@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 2.1 2012/03/07 14:17:24 kls Exp $
+ * $Id: status.c 3.1 2014/01/25 10:47:39 kls Exp $
  */
 
 #include "status.h"
@@ -21,6 +21,12 @@ cStatus::cStatus(void)
 cStatus::~cStatus()
 {
   statusMonitors.Del(this, false);
+}
+
+void cStatus::MsgChannelChange(const cChannel *Channel)
+{
+  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+      sm->ChannelChange(Channel);
 }
 
 void cStatus::MsgTimerChange(const cTimer *Timer, eTimerChange Change)

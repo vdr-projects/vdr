@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.8 2014/01/16 11:25:03 kls Exp $
+ * $Id: vdr.c 3.9 2014/01/25 10:47:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -60,6 +60,7 @@
 #include "skinsttng.h"
 #include "sourceparams.h"
 #include "sources.h"
+#include "status.h"
 #include "themes.h"
 #include "timers.h"
 #include "tools.h"
@@ -924,6 +925,7 @@ int main(int argc, char *argv[])
                               }
                            }
                         }
+                     cStatus::MsgChannelChange(Channel);
                      }
                   }
               Channels.Unlock();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 2.1 2012/03/07 14:16:57 kls Exp $
+ * $Id: status.h 3.1 2014/01/25 10:47:39 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -24,6 +24,9 @@ private:
   static cList<cStatus> statusMonitors;
 protected:
   // These functions can be implemented by derived classes to receive status information:
+  virtual void ChannelChange(const cChannel *Channel) {}
+               // Indicates a change in the parameters of the given Channel that may
+               // require a retune.
   virtual void TimerChange(const cTimer *Timer, eTimerChange Change) {}
                // Indicates a change in the timer settings.
                // If Change is tcAdd or tcDel, Timer points to the timer that has
@@ -85,6 +88,7 @@ public:
   cStatus(void);
   virtual ~cStatus();
   // These functions are called whenever the related status information changes:
+  static void MsgChannelChange(const cChannel *Channel);
   static void MsgTimerChange(const cTimer *Timer, eTimerChange Change);
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
   static void MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On);
