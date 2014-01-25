@@ -620,6 +620,8 @@ Helmut Auer <vdr@helmutauer.de>
  command line option to be left empty to use the default values if only ENC shall be set
  for reporting an inconsistent behavior between opening the Recordings menu manually
  via the main menu and by pressing the Recordings key
+ for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -3192,3 +3194,7 @@ Eike Edener <eike@edener.de>
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
  frame borders
+
+Christian Paulick <cpaulick@xeatre.tv>
+ for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
