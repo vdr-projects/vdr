@@ -8167,3 +8167,5 @@ Video Disk Recorder Revision History
   This may, for instance, be useful for plugins that implement live streaming, so that
   they can react on changes to a channel's PIDs or CA descriptors (problem reported
   by Mariusz Bialonczyk).
+- Fixed a superfluous call to the skin's SetRecording() function after renaming a
+  recording (reported by Christoph Haubrich).
