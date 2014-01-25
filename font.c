@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 2.13.1.1 2013/04/07 14:54:15 kls Exp $
+ * $Id: font.c 2.13.1.2 2014/01/25 14:25:29 kls Exp $
  */
 
 #include "font.h"
@@ -382,10 +382,13 @@ void cFreetypeFont::DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColo
 // A dummy font, in case there are no fonts installed:
 
 class cDummyFont : public cFont {
+private:
+  int height;
 public:
-  virtual int Width(uint c) const { return 10; }
-  virtual int Width(const char *s) const { return 50; }
-  virtual int Height(void) const { return 20; }
+  cDummyFont(int CharHeight) { height = CharHeight; }
+  virtual int Width(uint c) const { return height; }
+  virtual int Width(const char *s) const { return height; }
+  virtual int Height(void) const { return height; }
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
   virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {};
   };
@@ -396,11 +399,8 @@ cFont *cFont::fonts[eDvbFontSize] = { NULL };
 
 void cFont::SetFont(eDvbFont Font, const char *Name, int CharHeight)
 {
-  cFont *f = CreateFont(Name, constrain(CharHeight, MINFONTSIZE, MAXFONTSIZE));
-  if (!f || !f->Height())
-     f = new cDummyFont;
   delete fonts[Font];
-  fonts[Font] = f;
+  fonts[Font] = CreateFont(Name, constrain(CharHeight, MINFONTSIZE, MAXFONTSIZE));
 }
 
 const cFont *cFont::GetFont(eDvbFont Font)
@@ -423,9 +423,10 @@ const cFont *cFont::GetFont(eDvbFont Font)
 cFont *cFont::CreateFont(const char *Name, int CharHeight, int CharWidth)
 {
   cString fn = GetFontFileName(Name);
-  if (*fn)
-     return new cFreetypeFont(fn, CharHeight, CharWidth);
-  return NULL;
+  cFont *f = *fn ? new cFreetypeFont(fn, CharHeight, CharWidth) : NULL;
+  if (!f || !f->Height())
+     f = new cDummyFont(CharHeight);
+  return f;
 }
 
 bool cFont::GetAvailableFontNames(cStringList *FontNames, bool Monospaced)

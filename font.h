@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 2.7 2013/02/17 13:17:42 kls Exp $
+ * $Id: font.h 2.7.1.1 2014/01/25 14:24:51 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -75,7 +75,7 @@ public:
           ///< default width. Name is of the form "Family:Style", for instance
           ///< "Verdana:Bold Italic" or "Times New Roman". See GetAvailableFontNames()
           ///< for how to get a list of all available font names.
-          ///< If the requested font can't be created, NULL is returned.
+          ///< If the requested font can't be created, a dummy font is returned.
           ///< The caller must delete the font when it is no longer needed.
   static bool GetAvailableFontNames(cStringList *FontNames, bool Monospaced = false);
           ///< Queries the font configuration for a list of available font names,
