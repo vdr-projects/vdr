@@ -8169,3 +8169,9 @@ Video Disk Recorder Revision History
   by Mariusz Bialonczyk).
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
+
+2014-01-26: Version 2.1.5
+
+- Now checking whether the primary device actually has a decoder before retuning the
+  current channel after a change in its parameters. This fixes broken recordings on
+  the primary device on "headless" systems.
