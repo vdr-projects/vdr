@@ -89,3 +89,7 @@ VDR Plugin 'dvbhddevice' Revision History
 
 - Avoiding unnecessary pkg-config warnings in plugin Makefiles.
 - cDevice::TrickSpeed() now has an additional parameter named Forward.
+
+2014-01-17: Version 2.1.4
+
+- Using PCR based clock recovery in transfer mode.

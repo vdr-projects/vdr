@@ -51,6 +51,12 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      isHdffPrimary = true;
      mHdffCmdIf = new HDFF::cHdffCmdIf(fd_osd);
 
+     uint32_t firmwareVersion = mHdffCmdIf->CmdGetFirmwareVersion(NULL, 0);
+     if (firmwareVersion < 0x401)
+        supportsPcrInTransferMode = false;
+     else
+        supportsPcrInTransferMode = true;
+
      /* reset some stuff in case the VDR was killed before and had no chance
         to clean up. */
      mHdffCmdIf->CmdOsdReset();
@@ -511,13 +517,15 @@ bool cDvbHdFfDevice::SetPlayMode(ePlayMode PlayMode)
         }
         else
         {
-            mHdffCmdIf->CmdAvSetPlayMode(1, Transferring() || (cTransferControl::ReceiverDevice() == this));
+            isTransferMode = Transferring() || (cTransferControl::ReceiverDevice() == this);
+            mHdffCmdIf->CmdAvSetPlayMode(1, isTransferMode);
             mHdffCmdIf->CmdAvSetStc(0, 100000);
             mHdffCmdIf->CmdAvEnableSync(0, false);
             mHdffCmdIf->CmdAvEnableVideoAfterStop(0, true);
 
             playVideoPid = -1;
             playAudioPid = -1;
+            playPcrPid = -1;
             audioCounter = 0;
             videoCounter = 0;
             freezed = false;
@@ -606,7 +614,11 @@ void cDvbHdFfDevice::ScaleVideo(const cRect &Rect)
     }
 }
 
+#if (APIVERSNUM >= 20103)
 void cDvbHdFfDevice::TrickSpeed(int Speed, bool Forward)
+#else
+void cDvbHdFfDevice::TrickSpeed(int Speed)
+#endif
 {
   freezed = false;
   mHdffCmdIf->CmdAvEnableSync(0, false);
@@ -894,6 +906,14 @@ int cDvbHdFfDevice::PlayTsVideo(const uchar *Data, int Length)
         if (pid == PatPmtParser()->Vpid()) {
             playVideoPid = pid;
             mHdffCmdIf->CmdAvSetVideoPid(0, playVideoPid, MapVideoStreamTypes(PatPmtParser()->Vtype()), true);
+        }
+    }
+    if (isTransferMode && supportsPcrInTransferMode) {
+        if (pid != playPcrPid) {
+            if (pid == PatPmtParser()->Ppid()) {
+                playPcrPid = pid;
+                mHdffCmdIf->CmdAvSetPcrPid(0, playPcrPid);
+            }
         }
     }
     return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);

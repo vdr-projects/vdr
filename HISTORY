@@ -8115,3 +8115,57 @@ Video Disk Recorder Revision History
   identify obsolete channels when you switch to them, and you can get the complete
   overview of all obsolete channels by sorting the Channels list by provider (by
   pressing the 0 key twice). Automatic deletion of obsolete channels may follow later.
+
+2014-01-07: Version 2.0.5
+
+- The LIRC remote control now connects to the socket even if it doesn't yet exist when
+  VDR is started (thanks to Lars Hanisch).
+- Fixed a missing initialization in the c'tor of cSkinLCARSDisplayChannel (thanks to
+  Marko Mäkelä).
+- Fixed uninitialized item area coordinates in cSkinLCARSDisplayMenu (reported by
+  Marko Mäkelä).
+- Fixed a possible crash if the recordings list is updated externally while the
+  Recordings menu is open (reported by Lars Hanisch).
+- Added a missing closing ')' in the help and man page entry of the --vfat option
+  (reported by Lars Hanisch).
+- Fixed setting the name of the video directory to avoid a crash when using --genindex,
+  and also to use the correct directory with --edit (the latter reported by Marko
+  Mäkelä).
+
+2014-01-26: Version 2.1.4
+
+- Updated 'sources.conf' (thanks to Antti Hartikainen).
+- cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
+  This prevents a crash with the LCARS skin on a system that has no fonts.
+- Improved locking for CAM slots and made the pure functions of cCiAdapter have
+  default implementations, to fix a possible crash with CI adapters and CAM slots
+  that are implemented in a plugin.
+- Added logging the supported system ids of a CAM.
+- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 10 in order to be able to record
+  channels that need more than 5 TS packets for detecting frame borders (reported by
+  Eike Sauer).
+- Fixed deleting the source recording after moving it to a different volume (reported
+  by Christoph Haubrich).
+- Now waiting explicitly until all CAM slots are ready before switching to the
+  initial channel when VDR is started. This is necessary in case CI adapters are
+  used that are not physically connected to a dedicated device. The respective checks
+  in cDvbDevice have been removed to avoid redundancy.
+- Fixed detecting frame borders in MPEG-2 streams that have "bottom fields" or varying
+  GOP structures (reported by Christian Paulick, with help from Helmut Auer).
+- Now unassigning CAMs from their devices when they are no longer used.
+- Now making sure the primary device goes into transfer mode for live viewing if the
+  CAM wants to receive the TS data.
+- Fixed a wrong alignment in cCiDateTime::SendDateTime().
+- Since the new cRecordingsHandler that was introduced in version 2.1.2 not only
+  handles "cutting", but also "moving" and "copying" recordings, the German word
+  "Schnitt" has been replaced with the more generic "Bearbeitung", which covers all
+  three variations of "editing" a recording (suggested by Christoph Haubrich).
+  Maintainers of translations for other languages may want to change their *.po files
+  accordingly.
+- The new function cStatus::ChannelChange() can be implemented by plugins to be
+  informed about changes to the parameters of a channel that may require a retune.
+  This may, for instance, be useful for plugins that implement live streaming, so that
+  they can react on changes to a channel's PIDs or CA descriptors (problem reported
+  by Mariusz Bialonczyk).
+- Fixed a superfluous call to the skin's SetRecording() function after renaming a
+  recording (reported by Christoph Haubrich).

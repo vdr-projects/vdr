@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.11 2013/12/27 11:06:01 kls Exp $
+ * $Id: recording.c 3.13 2014/01/18 12:54:56 kls Exp $
  */
 
 #include "recording.h"
@@ -1519,22 +1519,24 @@ void cRecordings::DelByName(const char *FileName)
 {
   LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
-  if (recording) {
-     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+  cRecording *dummy = NULL;
+  if (!recording)
+     recording = dummy = new cRecording(FileName); // allows us to use a FileName that is not in the Recordings list
+  cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+  if (!dummy)
      Del(recording, false);
-     char *ext = strrchr(recording->fileName, '.');
-     if (ext) {
-        strncpy(ext, DELEXT, strlen(ext));
-        if (access(recording->FileName(), F_OK) == 0) {
-           recording->deleted = time(NULL);
-           DeletedRecordings.Add(recording);
-           recording = NULL; // to prevent it from being deleted below
-           }
+  char *ext = strrchr(recording->fileName, '.');
+  if (ext) {
+     strncpy(ext, DELEXT, strlen(ext));
+     if (access(recording->FileName(), F_OK) == 0) {
+        recording->deleted = time(NULL);
+        DeletedRecordings.Add(recording);
+        recording = NULL; // to prevent it from being deleted below
         }
-     delete recording;
-     ChangeState();
-     TouchUpdate();
      }
+  delete recording;
+  ChangeState();
+  TouchUpdate();
 }
 
 void cRecordings::UpdateByName(const char *FileName)
@@ -1879,7 +1881,8 @@ bool cRecordingsHandlerEntry::Active(bool &Error)
   // Clean up:
   if (CopierFinishedOk && (Usage() & ruMove) != 0) {
      cRecording Recording(FileNameSrc());
-     Recording.Delete();
+     if (Recording.Delete())
+        Recordings.DelByName(Recording.FileName());
      }
   Recordings.ChangeState();
   Recordings.TouchUpdate();

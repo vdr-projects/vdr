@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.3 2014/01/02 10:14:39 kls Exp $
+ * $Id: ci.h 3.6 2014/01/20 12:01:01 kls Exp $
  */
 
 #ifndef __CI_H
@@ -88,19 +88,19 @@ protected:
        ///< Handles the attached CAM slots in a separate thread.
        ///< The derived class must call the Start() function to
        ///< actually start CAM handling.
-  virtual int Read(uint8_t *Buffer, int MaxLength) = 0;
+  virtual int Read(uint8_t *Buffer, int MaxLength) { return 0; }
        ///< Reads one chunk of data into the given Buffer, up to MaxLength bytes.
        ///< If no data is available immediately, wait for up to CAM_READ_TIMEOUT.
        ///< Returns the number of bytes read (in case of an error it will also
        ///< return 0).
-  virtual void Write(const uint8_t *Buffer, int Length) = 0;
+  virtual void Write(const uint8_t *Buffer, int Length) {}
        ///< Writes Length bytes of the given Buffer.
-  virtual bool Reset(int Slot) = 0;
+  virtual bool Reset(int Slot) { return false; }
        ///< Resets the CAM in the given Slot.
        ///< Returns true if the operation was successful.
-  virtual eModuleStatus ModuleStatus(int Slot) = 0;
+  virtual eModuleStatus ModuleStatus(int Slot) { return msNone; }
        ///< Returns the status of the CAM in the given Slot.
-  virtual bool Assign(cDevice *Device, bool Query = false) = 0;
+  virtual bool Assign(cDevice *Device, bool Query = false) { return false; }
        ///< Assigns this adapter to the given Device, if this is possible.
        ///< If Query is 'true', the adapter only checks whether it can be
        ///< assigned to the Device, but doesn't actually assign itself to it.
@@ -113,8 +113,6 @@ public:
   cCiAdapter(void);
   virtual ~cCiAdapter();
        ///< The derived class must call Cancel(3) in its destructor.
-  virtual bool Ready(void);
-       ///< Returns 'true' if all present CAMs in this adapter are ready.
   };
 
 class cTPDU;
@@ -149,13 +147,13 @@ private:
   void Write(cTPDU *TPDU);
   cCiSession *GetSessionByResourceId(uint32_t ResourceId);
 public:
-  cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids = false);
+  cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData = false);
        ///< Creates a new CAM slot for the given CiAdapter.
        ///< The CiAdapter will take care of deleting the CAM slot,
        ///< so the caller must not delete it!
-       ///< If ReceiveCaPids is true, the CAM slot will take care that the CA pids
-       ///< of the selected programmes will be included in the TS data stream that
-       ///< is presented to the Decrypt() function.
+       ///< If WantsTsData is true, the device this CAM slot is assigned to will
+       ///< call the Decrypt() function of this CAM slot, presenting it the complete
+       ///< TS data stream of the encrypted programme, including the CA pids.
   virtual ~cCamSlot();
   bool Assign(cDevice *Device, bool Query = false);
        ///< Assigns this CAM slot to the given Device, if this is possible.
@@ -168,6 +166,9 @@ public:
        ///< 'true'.
   cDevice *Device(void);
        ///< Returns the device this CAM slot is currently assigned to.
+  bool WantsTsData(void) const { return caPidReceiver != NULL; }
+       ///< Returns true if this CAM slot wants to receive the TS data through
+       ///< its Decrypt() function.
   int SlotIndex(void) { return slotIndex; }
        ///< Returns the index of this CAM slot within its CI adapter.
        ///< The first slot has an index of 0.
@@ -263,11 +264,19 @@ public:
        ///< shall be set to 0 and the same Data pointer will be offered in the next
        ///< call to Decrypt().
        ///< A derived class that implements this function will also need
-       ///< to set the ReceiveCaPids parameter in the call to the base class
-       ///< constructor to true in order to receive the CA pid data.
+       ///< to set the WantsTsData parameter in the call to the base class
+       ///< constructor to true in order to receive the TS data.
   };
 
-class cCamSlots : public cList<cCamSlot> {};
+class cCamSlots : public cList<cCamSlot> {
+public:
+  bool WaitForAllCamSlotsReady(int Timeout = 0);
+       ///< Waits until all CAM slots have become ready, or the given Timeout
+       ///< (seconds) has expired. While waiting, the Ready() function of each
+       ///< CAM slot is called in turn, until they all return true.
+       ///< Returns true if all CAM slots have become ready within the given
+       ///< timeout.
+  };
 
 extern cCamSlots CamSlots;
 

@@ -809,7 +809,7 @@ msgid "Delete recording?"
 msgstr "Aufzeichnung löschen?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "Aufzeichnung wird geschnitten - trotzdem löschen?"
+msgstr "Aufzeichnung wird bearbeitet - trotzdem löschen?"
 
 msgid "Error while deleting recording!"
 msgstr "Fehler beim Löschen der Aufzeichnung!"
@@ -1283,13 +1283,13 @@ msgstr "Weiter"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Schneiden abbrechen"
+msgstr " Bearbeitung abbrechen"
 
 msgid "Stop recording?"
 msgstr "Aufzeichnung beenden?"
 
 msgid "Cancel editing?"
-msgstr "Schneiden abbrechen?"
+msgstr "Bearbeitung abbrechen?"
 
 msgid "No audio available!"
 msgstr "Kein Audio verfügbar!"
@@ -1371,7 +1371,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Ausschalten unmöglich - Option '-s' fehlt!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Schnitt läuft - trotzdem ausschalten?"
+msgstr "Bearbeitung läuft - trotzdem ausschalten?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Aufnahme läuft - trotzdem ausschalten?"
@@ -1388,7 +1388,7 @@ msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Plugin %s wacht in %ld Min auf, weiter?"
 
 msgid "Editing - restart anyway?"
-msgstr "Schnitt läuft - trotzdem neu starten?"
+msgstr "Bearbeitung läuft - trotzdem neu starten?"
 
 msgid "Recording - restart anyway?"
 msgstr "Aufnahme läuft - trotzdem neu starten?"
@@ -1476,10 +1476,10 @@ msgid "Switching primary DVB..."
 msgstr "Primäres Interface wird umgeschaltet..."
 
 msgid "Editing process failed!"
-msgstr "Schnitt gescheitert!"
+msgstr "Bearbeitung gescheitert!"
 
 msgid "Editing process finished"
-msgstr "Schnitt beendet"
+msgstr "Bearbeitung beendet"
 
 msgid "Press any key to cancel restart"
 msgstr "Taste drücken, um Neustart abzubrechen"

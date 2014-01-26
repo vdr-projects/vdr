@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.15 2013/12/27 09:00:24 kls Exp $
+ * $Id: menu.c 3.16 2014/01/25 12:40:28 kls Exp $
  */
 
 #include "menu.h"
@@ -2473,12 +2473,8 @@ void cMenuRecording::Display(void)
 
 eOSState cMenuRecording::ProcessKey(eKeys Key)
 {
-  if (HasSubMenu()) {
-     eOSState state = cOsdMenu::ProcessKey(Key);
-     if (state == osUser1)
-        CloseSubMenu();
-     return state;
-     }
+  if (HasSubMenu())
+     return cOsdMenu::ProcessKey(Key);
   else if (!RefreshRecording())
      return osBack; // the recording has vanished, so close this menu
   switch (int(Key)) {

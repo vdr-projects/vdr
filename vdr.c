@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.7 2013/12/25 11:24:26 kls Exp $
+ * $Id: vdr.c 3.9 2014/01/25 10:47:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -60,6 +60,7 @@
 #include "skinsttng.h"
 #include "sourceparams.h"
 #include "sources.h"
+#include "status.h"
 #include "themes.h"
 #include "timers.h"
 #include "tools.h"
@@ -810,6 +811,8 @@ int main(int argc, char *argv[])
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
      dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
+  if (!CamSlots.WaitForAllCamSlotsReady(DEVICEREADYTIMEOUT))
+     dsyslog("not all CAM slots ready after %d seconds", DEVICEREADYTIMEOUT);
   if (*Setup.InitialChannel) {
      if (isnumber(Setup.InitialChannel)) { // for compatibility with old setup.conf files
         if (cChannel *Channel = Channels.GetByNumber(atoi(Setup.InitialChannel)))
@@ -922,6 +925,7 @@ int main(int argc, char *argv[])
                               }
                            }
                         }
+                     cStatus::MsgChannelChange(Channel);
                      }
                   }
               Channels.Unlock();

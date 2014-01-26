@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.8 2014/01/02 10:30:15 kls Exp $
+ * $Id: dvbdevice.c 3.10 2014/01/20 11:46:26 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1320,13 +1320,6 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
   return false;
 }
 
-bool cDvbDevice::Ready(void)
-{
-  if (ciAdapter)
-     return ciAdapter->Ready();
-  return true;
-}
-
 bool cDvbDevice::BondDevices(const char *Bondings)
 {
   UnBondDevices();
@@ -1671,12 +1664,18 @@ void cDvbDevice::CloseDvr(void)
 bool cDvbDevice::GetTSPacket(uchar *&Data)
 {
   if (tsBuffer) {
-     int Available;
-     Data = tsBuffer->Get(&Available);
-     if (Data && CamSlot()) {
-        Data = CamSlot()->Decrypt(Data, Available);
-        tsBuffer->Skip(Available);
+     if (cCamSlot *cs = CamSlot()) {
+        if (cs->WantsTsData()) {
+           int Available;
+           Data = tsBuffer->Get(&Available);
+           if (Data) {
+              Data = cs->Decrypt(Data, Available);
+              tsBuffer->Skip(Available);
+              }
+           return true;
+           }
         }
+     Data = tsBuffer->Get();
      return true;
      }
   return false;

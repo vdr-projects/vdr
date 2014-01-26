@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.0 2013/03/03 10:37:58 kls Exp $
+ * $Id: remux.c 3.1 2014/01/18 11:27:30 kls Exp $
  */
 
 #include "remux.h"
@@ -1004,6 +1004,7 @@ protected:
   bool debug;
   bool newFrame;
   bool independentFrame;
+  int iFrameTemporalReferenceOffset;
 public:
   cFrameParser(void);
   virtual ~cFrameParser() {};
@@ -1017,6 +1018,7 @@ public:
   void SetDebug(bool Debug) { debug = Debug; }
   bool NewFrame(void) { return newFrame; }
   bool IndependentFrame(void) { return independentFrame; }
+  int IFrameTemporalReferenceOffset(void) { return iFrameTemporalReferenceOffset; }
   };
 
 cFrameParser::cFrameParser(void)
@@ -1024,6 +1026,7 @@ cFrameParser::cFrameParser(void)
   debug = true;
   newFrame = false;
   independentFrame = false;
+  iFrameTemporalReferenceOffset = 0;
 }
 
 // --- cAudioParser ----------------------------------------------------------
@@ -1056,6 +1059,7 @@ class cMpeg2Parser : public cFrameParser {
 private:
   uint32_t scanner;
   bool seenIndependentFrame;
+  int lastIFrameTemporalReference;
 public:
   cMpeg2Parser(void);
   virtual int Parse(const uchar *Data, int Length, int Pid);
@@ -1065,6 +1069,7 @@ cMpeg2Parser::cMpeg2Parser(void)
 {
   scanner = EMPTY_SCANNER;
   seenIndependentFrame = false;
+  lastIFrameTemporalReference = -1; // invalid
 }
 
 int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
@@ -1089,10 +1094,25 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
             scanner = OldScanner;
             return tsPayload.Used() - TS_SIZE;
             }
+         uchar b1 = tsPayload.GetByte();
+         uchar b2 = tsPayload.GetByte();
+         int TemporalReference = (b1 << 2 ) + ((b2 & 0xC0) >> 6);
+         uchar FrameType = (b2 >> 3) & 0x07;
+         if (tsPayload.Find(0x000001B5)) { // Extension start code
+            if (((tsPayload.GetByte() & 0xF0) >> 4) == 0x08) { // Picture coding extension
+               tsPayload.GetByte();
+               uchar PictureStructure = tsPayload.GetByte() & 0x03;
+               if (PictureStructure == 0x02) // bottom field
+                  break;
+               }
+            }
          newFrame = true;
-         tsPayload.GetByte();
-         uchar FrameType = (tsPayload.GetByte() >> 3) & 0x07;
          independentFrame = FrameType == 1; // I-Frame
+         if (independentFrame) {
+            if (lastIFrameTemporalReference >= 0)
+               iFrameTemporalReferenceOffset = TemporalReference - lastIFrameTemporalReference;
+            lastIFrameTemporalReference = TemporalReference;
+            }
          if (debug) {
             seenIndependentFrame |= independentFrame;
             if (seenIndependentFrame) {
@@ -1457,7 +1477,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        for (int i = 0; i < numPtsValues; i++)
                            ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
                        qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                       uint32_t Delta = ptsValues[0] / framesPerPayloadUnit;
+                       uint32_t Delta = ptsValues[0] / (framesPerPayloadUnit +  parser->IFrameTemporalReferenceOffset());
                        // determine frame info:
                        if (isVideo) {
                           if (abs(Delta - 3600) <= 1)
@@ -1475,7 +1495,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                           }
                        else // audio
                           framesPerSecond = double(PTSTICKS) / Delta; // PTS of audio frames is always increasing
-                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numPtsValues + 1);
+                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d TRO = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numPtsValues + 1, parser->IFrameTemporalReferenceOffset());
                        synced = true;
                        parser->SetDebug(false);
                        }

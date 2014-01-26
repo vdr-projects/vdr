@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.7 2014/01/02 10:31:58 kls Exp $
+ * $Id: device.c 3.11 2014/01/21 11:12:01 kls Exp $
  */
 
 #include "device.h"
@@ -358,6 +358,7 @@ bool cDevice::HasCi(void)
 
 void cDevice::SetCamSlot(cCamSlot *CamSlot)
 {
+  LOCK_THREAD;
   camSlot = CamSlot;
 }
 
@@ -760,6 +761,9 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
   bool NeedsTransferMode = Device != this;
+  // If the CAM slot wants the TS data, we need to switch to Transfer Mode:
+  if (!NeedsTransferMode && LiveView && IsPrimaryDevice() && CamSlot() && CamSlot()->WantsTsData())
+     NeedsTransferMode = true;
 
   eSetChannelResult Result = scrOk;
 
@@ -1697,8 +1701,12 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
-  if (camSlot && Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
-     camSlot->StartDecrypting();
+  if (camSlot) {
+     if (Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
+        camSlot->StartDecrypting();
+     if (!camSlot->IsDecrypting())
+        camSlot->Assign(NULL);
+     }
   if (!receiversLeft)
      Cancel(-1);
 }

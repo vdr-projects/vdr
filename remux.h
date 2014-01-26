@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 3.0 2013/01/20 11:43:59 kls Exp $
+ * $Id: remux.h 3.1 2014/01/16 10:15:50 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -462,7 +462,7 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
-#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 5
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 10
 
 class cFrameParser;
 

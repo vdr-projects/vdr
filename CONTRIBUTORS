@@ -620,6 +620,8 @@ Helmut Auer <vdr@helmutauer.de>
  command line option to be left empty to use the default values if only ENC shall be set
  for reporting an inconsistent behavior between opening the Recordings menu manually
  via the main menu and by pressing the Recordings key
+ for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -2389,6 +2391,11 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  display gets hidden
  for reporting a wrong type ('int' vs. 'eTimerEvent') in the declaration of
  cSkinDisplayMenu::SetItemEvent()
+ for reporting that the source recording was not deleted after moving it to a different
+ volume
+ for suggesting to replace "Schnitt" with "Bearbeitung" in the German OSD texts
+ for reporting a superfluous call to the skin's SetRecording() function after renaming
+ a recording
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2504,6 +2511,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
  for adding maximum SNR value for PCTV Systems nanoStick T2 290e
+ for updating 'sources.conf'
 
 Bernd Melcher <bernd@bernd-melcher.de>
  for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro
@@ -3236,3 +3244,15 @@ Thomas Reufer <thomas@reufer.ch>
  for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()
  for suggesting to add a note to ePlayMode in device.h that VDR itself always uses
  pmAudioVideo when replaying a recording
+
+Eike Sauer <EikeSauer@t-online.de>
+ for reporting a problem with channels that need more than 5 TS packets for detecting
+ frame borders
+
+Christian Paulick <cpaulick@xeatre.tv>
+ for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
+
+Mariusz Bialonczyk <manio@skyboo.net>
+ for reporting a problem with live streaming of encrypted channels, when there are no
+ CA descriptors, yet, on initial tuning

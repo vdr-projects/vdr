@@ -77,9 +77,12 @@ protected:
 private:
   int playVideoPid;
   int playAudioPid;
+  int playPcrPid;
   bool freezed;
   bool trickMode;
   bool isPlayingVideo;
+  bool isTransferMode;
+  bool supportsPcrInTransferMode;
 
   // Pes2Ts conversion stuff
   uint8_t videoCounter;
@@ -99,7 +102,11 @@ public:
   virtual int64_t GetSTC(void);
   virtual cRect CanScaleVideo(const cRect &Rect, int Alignment = taCenter);
   virtual void ScaleVideo(const cRect &Rect = cRect::Null);
+#if (APIVERSNUM >= 20103)
   virtual void TrickSpeed(int Speed, bool Forward);
+#else
+  virtual void TrickSpeed(int Speed);
+#endif
   virtual void Clear(void);
   virtual void Play(void);
   virtual void Freeze(void);

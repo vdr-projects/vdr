@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.4 2014/01/02 10:31:12 kls Exp $
+ * $Id: ci.c 3.10 2014/01/22 09:46:38 kls Exp $
  */
 
 #include "ci.h"
@@ -719,11 +719,13 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
      switch (Tag) {
        case AOT_CA_INFO: {
             dbgprotocol("Slot %d: <== Ca Info (%d)", Tc()->CamSlot()->SlotNumber(), SessionId());
+            cString Ids;
             numCaSystemIds = 0;
             int l = 0;
             const uint8_t *d = GetData(Data, l);
             while (l > 1) {
                   uint16_t id = ((uint16_t)(*d) << 8) | *(d + 1);
+                  Ids = cString::sprintf("%s %04X", *Ids ? *Ids : "", id);
                   dbgprotocol(" %04X", id);
                   d += 2;
                   l -= 2;
@@ -740,6 +742,7 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
                timer.Set(QUERY_WAIT_TIME); // WORKAROUND: Alphacrypt 3.09 doesn't reply to QUERY immediately after reset
                state = 2; // got ca info
                }
+            dsyslog("CAM %d: system ids:%s", Tc()->CamSlot()->SlotNumber(), *Ids ? *Ids : " none");
             }
             break;
        case AOT_CA_PMT_REPLY: {
@@ -858,7 +861,9 @@ void cCiDateTime::SendDateTime(void)
      int L = (M == 1 || M == 2) ? 1 : 0;
      int MJD = 14956 + D + int((Y - L) * 365.25) + int((M + 1 + L * 12) * 30.6001);
 #define DEC2BCD(d) uint8_t(((d / 10) << 4) + (d % 10))
+#pragma pack(1)
      struct tTime { uint16_t mjd; uint8_t h, m, s; short offset; };
+#pragma pack()
      tTime T = { mjd : htons(MJD), h : DEC2BCD(tm_gmt.tm_hour), m : DEC2BCD(tm_gmt.tm_min), s : DEC2BCD(tm_gmt.tm_sec), offset : short(htons(tm_loc.tm_gmtoff / 60)) };
      bool OldDumpTPDUDataTransfer = DumpTPDUDataTransfer;
      DumpTPDUDataTransfer &= DumpDateTime;
@@ -1529,15 +1534,6 @@ void cCiAdapter::AddCamSlot(cCamSlot *CamSlot)
      }
 }
 
-bool cCiAdapter::Ready(void)
-{
-  for (int i = 0; i < MAX_CAM_SLOTS_PER_ADAPTER; i++) {
-      if (camSlots[i] && !camSlots[i]->Ready())
-         return false;
-      }
-  return true;
-}
-
 void cCiAdapter::Action(void)
 {
   cTPDU TPDU;
@@ -1558,8 +1554,6 @@ void cCiAdapter::Action(void)
 }
 
 // --- cCamSlot --------------------------------------------------------------
-
-cCamSlots CamSlots;
 
 #define MODULE_CHECK_INTERVAL 500 // ms
 #define MODULE_RESET_TIMEOUT    2 // s
@@ -1584,6 +1578,8 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 
 cCamSlot::~cCamSlot()
 {
+  if (ciAdapter && ciAdapter->assignedDevice)
+     ciAdapter->assignedDevice->SetCamSlot(NULL);
   delete caPidReceiver;
   CamSlots.Del(this, false);
   DeleteAllConnections();
@@ -2018,6 +2014,26 @@ uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
 {
   Count = TS_SIZE;
   return Data;
+}
+
+// --- cCamSlots -------------------------------------------------------------
+
+cCamSlots CamSlots;
+
+bool cCamSlots::WaitForAllCamSlotsReady(int Timeout)
+{
+  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
+      bool ready = true;
+      for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+          if (!CamSlot->Ready()) {
+             ready = false;
+             cCondWait::SleepMs(100);
+             }
+          }
+      if (ready)
+         return true;
+      }
+  return false;
 }
 
 // --- cChannelCamRelation ---------------------------------------------------
