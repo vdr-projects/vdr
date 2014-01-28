@@ -706,6 +706,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with resuming replay of PES recordings
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+ for reporting that there are channels that need even more than 10 TS packets in order
+ to detect the frame type
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

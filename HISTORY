@@ -7870,17 +7870,18 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-01-26: Version 2.0.6
+2014-01-28: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
   This prevents a crash with the LCARS skin on a system that has no fonts.
-- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 10 in order to be able to record
-  channels that need more than 5 TS packets for detecting frame borders (reported by
-  Eike Sauer).
 - Fixed detecting frame borders in MPEG-2 streams that have "bottom fields" or varying
   GOP structures (reported by Christian Paulick, with help from Helmut Auer).
 - Fixed a wrong alignment in cCiDateTime::SendDateTime().
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
   the primary device on "headless" systems.
+- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 100 and introduced counting the number
+  of actual video TS packets in cTsPayload in order to be able to record channels that
+  sometimes need even more than 10 TS packets for detecting frame borders (reported by
+  Eike Sauer and Oliver Endriss).
