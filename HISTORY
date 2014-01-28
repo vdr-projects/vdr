@@ -8175,3 +8175,7 @@ Video Disk Recorder Revision History
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
   the primary device on "headless" systems.
+- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 100 and introduced counting the number
+  of actual video TS packets in cTsPayload in order to be able to record channels that
+  sometimes need even more than 10 TS packets for detecting frame borders (reported by
+  Oliver Endriss).
