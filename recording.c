@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.13 2014/01/18 12:54:56 kls Exp $
+ * $Id: recording.c 3.14 2014/01/29 10:38:46 kls Exp $
  */
 
 #include "recording.h"
@@ -969,14 +969,22 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
-     if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
-        s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-     strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-     int l = strxfrm(NULL, s, 0) + 1;
-     *sb = MALLOC(char, l);
-     strxfrm(*sb, s, l);
-     free(s);
+     if (RecordingsSortMode == rsmTime && !Setup.RecordingDirs) {
+        char buf[32];
+        struct tm tm_r;
+        strftime(buf, sizeof(buf), "%Y%m%d%H%I", localtime_r(&start, &tm_r));
+        *sb = strdup(buf);
+        }
+     else {
+        char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
+        if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+           s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+        strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+        int l = strxfrm(NULL, s, 0) + 1;
+        *sb = MALLOC(char, l);
+        strxfrm(*sb, s, l);
+        free(s);
+        }
      }
   return *sb;
 }

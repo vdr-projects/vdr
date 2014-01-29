@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.16 2014/01/25 12:40:28 kls Exp $
+ * $Id: menu.c 3.17 2014/01/29 10:41:10 kls Exp $
  */
 
 #include "menu.h"
@@ -3024,7 +3024,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         ModifiedAppearance = true;
      if (strcmp(data.FontFix, Setup.FontFix) || !DoubleEqual(data.FontFixSizeP, Setup.FontFixSizeP))
         ModifiedAppearance = true;
-     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst)
+     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst || data.RecordingDirs != Setup.RecordingDirs)
         Recordings.ClearSortNames();
      }
 
