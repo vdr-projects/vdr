@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-01-29: Version 2.1.5
+2014-01-30: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8181,3 +8181,4 @@ Video Disk Recorder Revision History
   Oliver Endriss).
 - Fixed sorting recordings by time in the Recordings menu if "Setup/OSD/Recording
   directories" is set to "no".
+- Fixed clearing non-editable members in the channel editor (thanks to Rolf Ahrenberg).

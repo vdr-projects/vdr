@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.17 2014/01/29 10:41:10 kls Exp $
+ * $Id: menu.c 3.18 2014/01/30 09:04:06 kls Exp $
  */
 
 #include "menu.h"
@@ -181,9 +181,13 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
      strn0cpy(name, data.name, sizeof(name));
      if (New) {
         channel = NULL;
+        // clear non-editable members:
         data.nid = 0;
         data.tid = 0;
         data.rid = 0;
+        *data.shortName  = 0;
+        *data.provider   = 0;
+        *data.portalName = 0;
         }
      }
   Setup();

@@ -1182,6 +1182,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for suggesting to prompt the user for confirmation before overwriting an already
  existing edited version of a recording
  for adding code for parsing LCN and AVC descriptors to libsi
+ for fixing clearing non-editable members in the channel editor
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
