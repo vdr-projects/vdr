@@ -8183,3 +8183,4 @@ Video Disk Recorder Revision History
   directories" is set to "no".
 - Fixed clearing non-editable members in the channel editor (thanks to Rolf Ahrenberg).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Further clarified the semantics of cCamSlot::Decrypt().
