@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 3.1 2014/01/01 13:29:54 kls Exp $
+ * $Id: osddemo.c 3.2 2014/02/04 10:41:50 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.1.2";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -119,7 +119,7 @@ cLineGame::~cLineGame()
 
 void cLineGame::Show(void)
 {
-  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
   if (osd) {
      int x1 = cOsd::OsdWidth() - 1;
      int y1 = cOsd::OsdHeight() - 1;
@@ -496,7 +496,7 @@ bool cTrueColorDemo::SetArea(void)
 
 void cTrueColorDemo::Show(void)
 {
-  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
   if (osd) {
      if (SetArea()) {
         osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, clrGray50);
