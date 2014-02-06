@@ -7870,7 +7870,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-02-04: Version 2.0.6
+2014-02-06: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -7889,3 +7889,8 @@ Video Disk Recorder Revision History
   directories" is set to "no".
 - Fixed clearing non-editable members in the channel editor (thanks to Rolf Ahrenberg).
 - Fixed flickering if subtitles are active while the OSD demo is running.
+- Fixed numbering frames. Previously they were numbered starting from 1, while it
+  is apparently standard to number them from 0. Any existing recordings with editing
+  marks (which will now be off by one) can still be cut with all VDR versions from
+  1.7.32, because these will automatically adjust editing marks to I-frames.
+  Users of stable releases shouldn't notice any problems.
