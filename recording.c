@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.14 2014/01/29 10:38:46 kls Exp $
+ * $Id: recording.c 3.15 2014/02/05 10:08:41 kls Exp $
  */
 
 #include "recording.h"
@@ -2923,7 +2923,7 @@ cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
      Sign = "-";
      }
   double Seconds;
-  int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
+  int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
@@ -2936,9 +2936,9 @@ int HMSFToIndex(const char *HMSF, double FramesPerSecond)
   int h, m, s, f = 1;
   int n = sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f);
   if (n == 1)
-     return h - 1; // plain frame number
+     return h; // plain frame number
   if (n >= 3)
-     return int(round((h * 3600 + m * 60 + s) * FramesPerSecond)) + f - 1;
+     return int(round((h * 3600 + m * 60 + s) * FramesPerSecond)) + f;
   return 0;
 }
 

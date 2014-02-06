@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-04: Version 2.1.5
+2014-02-06: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8185,3 +8185,8 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Further clarified the semantics of cCamSlot::Decrypt().
 - Fixed flickering if subtitles are active while the OSD demo is running.
+- Fixed numbering frames. Previously they were numbered starting from 1, while it
+  is apparently standard to number them from 0. Any existing recordings with editing
+  marks (which will now be off by one) can still be cut with all VDR versions from
+  1.7.32, because these will automatically adjust editing marks to I-frames.
+  Users of stable releases shouldn't notice any problems.
