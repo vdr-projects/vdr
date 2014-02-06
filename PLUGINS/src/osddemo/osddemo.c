@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 3.2 2014/02/04 10:41:50 kls Exp $
+ * $Id: osddemo.c 3.3 2014/02/06 11:51:53 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -480,6 +480,8 @@ void cTrueColorDemo::Action(void)
         if (Delta < FrameTime)
            cCondWait::SleepMs(FrameTime - Delta);
         }
+  destroyablePixmap = NULL;
+  toggleablePixmap = NULL;
   delete OsdFont;
   delete SmlFont;
   delete LrgFont;
