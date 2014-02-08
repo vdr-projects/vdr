@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 3.1 2014/01/01 12:03:00 kls Exp $
+ * $Id: receiver.c 3.2 2014/02/08 15:57:30 kls Exp $
  */
 
 #include "receiver.h"
@@ -22,10 +22,10 @@ cReceiver::cReceiver(const cChannel *Channel, int Priority)
 cReceiver::~cReceiver()
 {
   if (device) {
-     const char *msg = "ERROR: cReceiver has not been detached yet! This is a design fault and VDR will segfault now!";
+     const char *msg = "ERROR: cReceiver has not been detached yet! This is a design fault and VDR will abort now!";
      esyslog("%s", msg);
      fprintf(stderr, "%s\n", msg);
-     *(char *)0 = 0; // cause a segfault
+     abort();
      }
 }
 

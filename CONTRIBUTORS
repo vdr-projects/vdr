@@ -3265,3 +3265,5 @@ Mariusz Bialonczyk <manio@skyboo.net>
 Tony Houghton <h@realh.co.uk>
  for suggesting to add LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler
  warning with Clang 3.4.1
+ for suggesting to replace the NULL pointer assignment in ~cReceiver() to force a
+ segfault with a call to abort()

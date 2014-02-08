@@ -8194,3 +8194,5 @@ Video Disk Recorder Revision History
 - Fixed some compiler warnings with Clang 3.4.1 (reported by Paul Menzel).
 - Added LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler warning with
   Clang 3.4.1 (suggested by Tony Houghten).
+- Replaced the NULL pointer assignment in ~cReceiver() to force a segfault with
+  a call to abort() (suggested by Tony Houghten).
