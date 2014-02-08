@@ -2907,6 +2907,7 @@ Paul Menzel <paulepanter@users.sourceforge.net>
  for reporting a possible memory leak in the "pictures" plugin
  for removing an obsolete local variable in dvbsdffosd.c
  for reporting a possible NULL pointer dereference in osddemo.c
+ for reporting some compiler warnings with Clang 3.4.1
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language

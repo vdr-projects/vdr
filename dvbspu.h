@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 2.6 2013/01/20 10:15:47 kls Exp $
+ * $Id: dvbspu.h 3.1 2014/02/08 12:27:34 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -101,7 +101,6 @@ class cDvbSpuDecoder:public cSpuDecoder {
     uint8_t *spu;
     uint32_t spupts;
     bool clean;
-    bool ready;
     bool restricted_osd;
 
     enum spFlag { spNONE, spHIDE, spSHOW, spMENU };

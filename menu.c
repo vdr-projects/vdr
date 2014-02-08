@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.18 2014/01/30 09:04:06 kls Exp $
+ * $Id: menu.c 3.19 2014/02/08 12:36:12 kls Exp $
  */
 
 #include "menu.h"
@@ -983,7 +983,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                        if (!*data.file)
                           strcpy(data.file, data.Channel()->ShortName(true));
                        if (timer) {
-                          if (memcmp(timer, &data, sizeof(data)) != 0)
+                          if (memcmp((void *)timer, &data, sizeof(data)) != 0)
                              *timer = data;
                           if (addIfConfirmed)
                              Timers.Add(timer);

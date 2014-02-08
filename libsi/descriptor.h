@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 3.1 2013/10/30 10:16:18 kls Exp $
+ *   $Id: descriptor.h 3.2 2014/02/08 12:44:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -489,8 +489,6 @@ public:
    StructureLoop<Language> languageLoop;
 protected:
    virtual void Parse();
-private:
-   const descr_iso_639_language *s;
 };
 
 class PDCDescriptor : public Descriptor {

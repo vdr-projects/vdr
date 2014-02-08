@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 3.2 2014/01/28 11:06:37 kls Exp $
+ * $Id: remux.h 3.3 2014/02/08 12:41:50 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -483,7 +483,6 @@ private:
   bool independentFrame;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
-  int numFrames;
   int numIFrames;
   bool isVideo;
   double framesPerSecond;

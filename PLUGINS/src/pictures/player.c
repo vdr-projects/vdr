@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 2.2 2012/04/28 11:58:15 kls Exp $
+ * $Id: player.c 3.1 2014/02/08 12:48:12 kls Exp $
  */
 
 #include "player.h"
@@ -211,7 +211,7 @@ cString cPictureControl::GetHeader(void)
 
 eOSState cPictureControl::ProcessKey(eKeys Key)
 {
-  switch (Key) {
+  switch (int(Key)) {
     case kUp:
     case kPlay:   slideShowDelay.Set();
                   slideShow = true;

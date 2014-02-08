@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-06: Version 2.1.5
+2014-02-08: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8191,3 +8191,4 @@ Video Disk Recorder Revision History
   1.7.32, because these will automatically adjust editing marks to I-frames.
   Users of stable releases shouldn't notice any problems.
 - Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
+- Fixed some compiler warnings with Clang 3.4.1 (reported by Paul Menzel).
