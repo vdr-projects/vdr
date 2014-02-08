@@ -3261,3 +3261,7 @@ Christian Paulick <cpaulick@xeatre.tv>
 Mariusz Bialonczyk <manio@skyboo.net>
  for reporting a problem with live streaming of encrypted channels, when there are no
  CA descriptors, yet, on initial tuning
+
+Tony Houghton <h@realh.co.uk>
+ for suggesting to add LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler
+ warning with Clang 3.4.1

@@ -8192,3 +8192,5 @@ Video Disk Recorder Revision History
   Users of stable releases shouldn't notice any problems.
 - Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
 - Fixed some compiler warnings with Clang 3.4.1 (reported by Paul Menzel).
+- Added LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler warning with
+  Clang 3.4.1 (suggested by Tony Houghten).

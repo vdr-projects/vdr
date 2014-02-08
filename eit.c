@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 3.4 2014/02/08 12:33:01 kls Exp $
+ * $Id: eit.c 3.5 2014/02/08 14:20:27 kls Exp $
  */
 
 #include "eit.h"
@@ -220,7 +220,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
             case SI::LinkageDescriptorTag: {
                  SI::LinkageDescriptor *ld = (SI::LinkageDescriptor *)d;
                  tChannelID linkID(Source, ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
-                 if (uint(ld->getLinkageType()) == 0xB0) { // Premiere World
+                 if (ld->getLinkageType() == SI::LinkageTypePremiere) { // Premiere World
                     bool hit = StartTime <= Now && Now < StartTime + Duration;
                     if (hit) {
                        char linkName[ld->privateData.getLength() + 1];
