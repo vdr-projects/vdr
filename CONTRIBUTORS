@@ -2888,6 +2888,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for making the Recordings menu able to be called with a cRecordingFilter, which allows
  the caller to have it display only a certain subset of the recordings
  for adding handling UTF-8 'umlaut' characters to cKbdRemote
+ for fixing learning keyboard remote control codes
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices

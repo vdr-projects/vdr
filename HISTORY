@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-08: Version 2.1.5
+2014-02-15: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8196,3 +8196,4 @@ Video Disk Recorder Revision History
   Clang 3.4.1 (suggested by Tony Houghten).
 - Replaced the NULL pointer assignment in ~cReceiver() to force a segfault with
   a call to abort() (suggested by Tony Houghten).
+- Fixed learning keyboard remote control codes (thanks to Lars Hanisch).
