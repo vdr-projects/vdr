@@ -3203,3 +3203,7 @@ Eike Sauer <EikeSauer@t-online.de>
 Christian Paulick <cpaulick@xeatre.tv>
  for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
+
+Mariusz Bialonczyk <manio@skyboo.net>
+ for reporting that acquiring the CA descriptors takes way too long on transponders
+ with many PAT entries, and his help in debugging this

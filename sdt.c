@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 2.5 2010/05/16 14:23:21 kls Exp $
+ * $Id: sdt.c 2.5.1.1 2014/02/18 14:12:33 kls Exp $
  */
 
 #include "sdt.h"
@@ -92,7 +92,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         else if (*pn && Setup.UpdateChannels >= 4) {
                            channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
-                           patFilter->Trigger();
+                           patFilter->Trigger(SiSdtService.getServiceId());
                            }
                         }
                    default: ;
@@ -118,7 +118,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 4) {
                         link = Channels.NewChannel(Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
-                        patFilter->Trigger();
+                        patFilter->Trigger(Service.getServiceId());
                         }
                      if (link) {
                         if (!LinkChannels)

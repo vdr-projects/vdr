@@ -7892,3 +7892,5 @@ Video Disk Recorder Revision History
 - Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
 - Fixed learning keyboard remote control codes (thanks to Lars Hanisch).
 - Fixed the replay progress display for very long recordings.
+- Improved PAT/PMT scanning to speed up initial tuning to encrypted channels on
+  transponders with many PAT entries (reported by Mariusz Bialonczyk).
