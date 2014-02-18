@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-15: Version 2.1.5
+2014-02-18: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8197,3 +8197,5 @@ Video Disk Recorder Revision History
 - Replaced the NULL pointer assignment in ~cReceiver() to force a segfault with
   a call to abort() (suggested by Tony Houghten).
 - Fixed learning keyboard remote control codes (thanks to Lars Hanisch).
+- Improved PAT/PMT scanning to speed up initial tuning to encrypted channels on
+  transponders with many PAT entries (reported by Mariusz Bialonczyk).

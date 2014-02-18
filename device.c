@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.11 2014/01/21 11:12:01 kls Exp $
+ * $Id: device.c 3.12 2014/02/18 13:12:39 kls Exp $
  */
 
 #include "device.h"
@@ -794,6 +794,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
+           patFilter->Trigger(Channel->Sid());
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }

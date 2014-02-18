@@ -3262,6 +3262,8 @@ Christian Paulick <cpaulick@xeatre.tv>
 Mariusz Bialonczyk <manio@skyboo.net>
  for reporting a problem with live streaming of encrypted channels, when there are no
  CA descriptors, yet, on initial tuning
+ for reporting that acquiring the CA descriptors takes way too long on transponders
+ with many PAT entries, and his help in debugging this
 
 Tony Houghton <h@realh.co.uk>
  for suggesting to add LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler

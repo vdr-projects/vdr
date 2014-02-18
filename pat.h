@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 3.2 2014/01/04 11:16:48 kls Exp $
+ * $Id: pat.h 3.3 2014/02/18 11:22:34 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -12,24 +12,30 @@
 
 #include <stdint.h>
 #include "filter.h"
+#include "thread.h"
 
 #define MAXPMTENTRIES 64
 
 class cPatFilter : public cFilter {
 private:
-  time_t lastPmtScan;
+  cMutex mutex;
+  cTimeMs timer;
+  int patVersion;
   int pmtIndex;
-  int pmtPid;
-  int pmtSid;
-  uint64_t pmtVersion[MAXPMTENTRIES];
+  int pmtId[MAXPMTENTRIES];
+  int pmtVersion[MAXPMTENTRIES];
   int numPmtEntries;
-  bool PmtVersionChanged(int PmtPid, int Sid, int Version);
+  int sid;
+  int GetPmtPid(int Index) { return pmtId[Index] & 0x0000FFFF; }
+  int MakePmtId(int PmtPid, int Sid) { return PmtPid | (Sid << 16); }
+  bool PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNewVersion = false);
+  void SwitchToNextPmtPid(void);
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
   cPatFilter(void);
   virtual void SetStatus(bool On);
-  void Trigger(void);
+  void Trigger(int Sid = -1);
   };
 
 int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid);
