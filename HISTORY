@@ -7870,7 +7870,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-02-15: Version 2.0.6
+2014-02-18: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -7891,3 +7891,4 @@ Video Disk Recorder Revision History
 - Fixed flickering if subtitles are active while the OSD demo is running.
 - Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
 - Fixed learning keyboard remote control codes (thanks to Lars Hanisch).
+- Fixed the replay progress display for very long recordings.
