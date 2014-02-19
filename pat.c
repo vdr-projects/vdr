@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 2.19.1.1 2014/02/18 14:12:17 kls Exp $
+ * $Id: pat.c 2.19.1.2 2014/02/19 09:31:29 kls Exp $
  */
 
 #include "pat.h"
@@ -297,7 +297,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         if (!pat.CheckCRCAndParse())
            return;
         if (pat.getVersionNumber() != patVersion) {
-           DBGLOG("PAT %d/%d %d %d -> %d", pat.getSectionNumber(), pat.getLastSectionNumber(), Transponder(), patVersion, pat.getVersionNumber());
+           DBGLOG("PAT %d %d -> %d", Transponder(), patVersion, pat.getVersionNumber());
            if (pmtIndex >= 0) {
               Del(GetPmtPid(pmtIndex), SI::TableIdPMT);
               pmtIndex = -1;
