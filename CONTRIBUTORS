@@ -3254,6 +3254,7 @@ Thomas Reufer <thomas@reufer.ch>
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
  frame borders
+ for reporting a problem in handling the frame detection buffer length
 
 Christian Paulick <cpaulick@xeatre.tv>
  for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
