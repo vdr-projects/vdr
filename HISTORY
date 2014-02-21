@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-18: Version 2.1.5
+2014-02-21: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
@@ -8200,3 +8200,4 @@ Video Disk Recorder Revision History
 - Improved PAT/PMT scanning to speed up initial tuning to encrypted channels on
   transponders with many PAT entries (reported by Mariusz Bialonczyk).
 - Fixed the replay progress display for very long recordings.
+- Fixed detecting broken video data streams when recording.

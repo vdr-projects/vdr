@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 3.2 2014/01/01 12:46:37 kls Exp $
+ * $Id: recorder.c 3.3 2014/02/21 09:19:52 kls Exp $
  */
 
 #include "recorder.h"
@@ -155,13 +155,13 @@ void cRecorder::Action(void)
                              recordFile->Write(pmt, TS_SIZE);
                              fileSize += TS_SIZE;
                              }
+                       t.Set(MAXBROKENTIMEOUT);
                        }
                     if (recordFile->Write(b, Count) < 0) {
                        LOG_ERROR_STR(fileName->Name());
                        break;
                        }
                     fileSize += Count;
-                    t.Set(MAXBROKENTIMEOUT);
                     }
                  }
               ringBuffer->Del(Count);
