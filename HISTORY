@@ -7895,3 +7895,4 @@ Video Disk Recorder Revision History
 - Improved PAT/PMT scanning to speed up initial tuning to encrypted channels on
   transponders with many PAT entries (reported by Mariusz Bialonczyk).
 - Fixed detecting broken video data streams when recording.
+- Fixed handling frame detection buffer length (reported by Eike Sauer).

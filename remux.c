@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.75.1.2 2014/01/28 12:36:57 kls Exp $
+ * $Id: remux.c 2.75.1.3 2014/02/21 14:37:51 kls Exp $
  */
 
 #include "remux.h"
@@ -1153,8 +1153,7 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
          break;
          }
       if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
-         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
-            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         || tsPayload.Eof()) // or if we're out of data
          break;
       }
   return tsPayload.Used();
@@ -1305,8 +1304,7 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
            }
          }
       if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
-         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
-            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         || tsPayload.Eof()) // or if we're out of data
          break;
       }
   return tsPayload.Used();
