@@ -697,14 +697,14 @@ msgid "Button$Now"
 msgstr "Hetkel"
 
 msgid "Button$Schedule"
-msgstr "Ajakava"
+msgstr "Kava"
 
 msgid "Can't switch channel!"
 msgstr "Kanali vahetus ei ole võimalik!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "Ajakava - %s"
+msgstr "Kava - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -724,71 +724,71 @@ msgid "CAM not responding!"
 msgstr "CAM ei vasta"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Muuda teed"
 
 msgid "Folder"
-msgstr ""
+msgstr "Kaust"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Kaust on juba kasutusel - muutmine ei ole võimalik!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Teisaldada kaust mis sisaldab %d salvestust?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Kausta teisaldamise viga!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Salvestuse redigeerimine"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Salvestus hetkel kasutusel - muutmine ei ole võimalik!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Lõikamise tühistamine"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Lõikamise peatamine"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Teisaldamise tühistamine"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Teisaldamise peatamine"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Kopeerimise tühistamine"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Kopeerimise peatamine"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Lõika"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Markerite kustutamine"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Salvestus kadunud!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Redigeeritud versioon juba olemas - kirjutada üle?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Salvestuse lõikamiseks lisamine ebaõnnestus!"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Kustutada selle salvestuse markerid?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Markerite kustutamine ebaõnnestus!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Prioriteedi/eluea muutmine ebaõnnestus!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Kausta/nime muutmine ebaõnnestus!"
 
 msgid "Recording info"
 msgstr "Salvestuse info"
@@ -1283,13 +1283,13 @@ msgstr "Jätkata"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Katkestada redigeerimine"
+msgstr " Tühistada töötlemine"
 
 msgid "Stop recording?"
 msgstr "Lõpetada salvestamine?"
 
 msgid "Cancel editing?"
-msgstr "Tühistada redigeermine?"
+msgstr "Tühistada töötlemine?"
 
 msgid "No audio available!"
 msgstr "Audio kättesaamatu!"
@@ -1371,7 +1371,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Väljalülitamine ebaõnnestus - '-s' parameeter puudub!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Redigeerimine aktiive - lülitada välja?"
+msgstr "Töötlemine aktiive - lülitada välja?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Salvestamine aktiivne - lülitada välja?"
@@ -1388,7 +1388,7 @@ msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Laiendusmoodul %s ärkab %ld minuti pärast, jätkata?"
 
 msgid "Editing - restart anyway?"
-msgstr "Redigeerimine aktiivne - restart?"
+msgstr "Töötlemine aktiivne - restart?"
 
 msgid "Recording - restart anyway?"
 msgstr "Salvestamine aktiivne - restart?"
@@ -1423,7 +1423,7 @@ msgstr "ESITUS"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr "Antenni pööramine positsioonile %.1f..."
+msgstr "Liikumine positsioonile %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Panels"
@@ -1476,10 +1476,10 @@ msgid "Switching primary DVB..."
 msgstr "Esmase DVB seadme ümberlülitus..."
 
 msgid "Editing process failed!"
-msgstr "Redigeerimine ebaõnnestus!"
+msgstr "Töötlemine ebaõnnestus!"
 
 msgid "Editing process finished"
-msgstr "Redigeerimine lõpetatud"
+msgstr "Töötlemine lõpetatud"
 
 msgid "Press any key to cancel restart"
 msgstr "Restardi katkestamiseks vajuta suvalist klahvi"

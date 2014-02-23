@@ -707,6 +707,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
  for suggesting to eliminate MAXDVBDEVICES
+ for reporting that there are channels that need even more than 10 TS packets in order
+ to detect the frame type
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1180,6 +1182,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for suggesting to prompt the user for confirmation before overwriting an already
  existing edited version of a recording
  for adding code for parsing LCN and AVC descriptors to libsi
+ for fixing clearing non-editable members in the channel editor
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2885,6 +2888,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for making the Recordings menu able to be called with a cRecordingFilter, which allows
  the caller to have it display only a certain subset of the recordings
  for adding handling UTF-8 'umlaut' characters to cKbdRemote
+ for fixing learning keyboard remote control codes
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2904,6 +2908,7 @@ Paul Menzel <paulepanter@users.sourceforge.net>
  for reporting a possible memory leak in the "pictures" plugin
  for removing an obsolete local variable in dvbsdffosd.c
  for reporting a possible NULL pointer dereference in osddemo.c
+ for reporting some compiler warnings with Clang 3.4.1
 
 Radek Stastny <dedkus@gmail.com>
  for translating OSD texts to the Czech language
@@ -2923,6 +2928,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for suggesting to make sure that plugins include the VDR header files from the actual
  VDR source directory when doing "make plugins"
  for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
+ for reporting a possible crash in the OSD demo
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3248,6 +3254,7 @@ Thomas Reufer <thomas@reufer.ch>
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
  frame borders
+ for reporting a problem in handling the frame detection buffer length
 
 Christian Paulick <cpaulick@xeatre.tv>
  for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
@@ -3256,3 +3263,11 @@ Christian Paulick <cpaulick@xeatre.tv>
 Mariusz Bialonczyk <manio@skyboo.net>
  for reporting a problem with live streaming of encrypted channels, when there are no
  CA descriptors, yet, on initial tuning
+ for reporting that acquiring the CA descriptors takes way too long on transponders
+ with many PAT entries, and his help in debugging this
+
+Tony Houghton <h@realh.co.uk>
+ for suggesting to add LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler
+ warning with Clang 3.4.1
+ for suggesting to replace the NULL pointer assignment in ~cReceiver() to force a
+ segfault with a call to abort()

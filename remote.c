@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 3.1 2013/12/25 12:45:43 kls Exp $
+ * $Id: remote.c 3.2 2014/02/15 12:40:39 kls Exp $
  */
 
 #include "remote.h"
@@ -298,7 +298,7 @@ int cKbdRemote::MapCodeToFunc(uint64_t Code)
 
 void cKbdRemote::PutKey(uint64_t Code, bool Repeat, bool Release)
 {
-  if (rawMode || !Put(Code, Repeat, Release)) {
+  if (rawMode || (!Put(Code, Repeat, Release) && !IsLearning())) {
      if (int func = MapCodeToFunc(Code))
         Put(KBDKEY(func), Repeat, Release);
      }

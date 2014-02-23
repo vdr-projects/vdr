@@ -8169,3 +8169,36 @@ Video Disk Recorder Revision History
   by Mariusz Bialonczyk).
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
+
+2014-02-23: Version 2.1.5
+
+- Now checking whether the primary device actually has a decoder before retuning the
+  current channel after a change in its parameters. This fixes broken recordings on
+  the primary device on "headless" systems.
+- Increased MIN_TS_PACKETS_FOR_FRAME_DETECTOR to 100 and introduced counting the number
+  of actual video TS packets in cTsPayload in order to be able to record channels that
+  sometimes need even more than 10 TS packets for detecting frame borders (reported by
+  Oliver Endriss).
+- Fixed sorting recordings by time in the Recordings menu if "Setup/OSD/Recording
+  directories" is set to "no".
+- Fixed clearing non-editable members in the channel editor (thanks to Rolf Ahrenberg).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Further clarified the semantics of cCamSlot::Decrypt().
+- Fixed flickering if subtitles are active while the OSD demo is running.
+- Fixed numbering frames. Previously they were numbered starting from 1, while it
+  is apparently standard to number them from 0. Any existing recordings with editing
+  marks (which will now be off by one) can still be cut with all VDR versions from
+  1.7.32, because these will automatically adjust editing marks to I-frames.
+  Users of stable releases shouldn't notice any problems.
+- Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
+- Fixed some compiler warnings with Clang 3.4.1 (reported by Paul Menzel).
+- Added LinkageTypePremiere to libsi/si.h and eit.c to avoid a compiler warning with
+  Clang 3.4.1 (suggested by Tony Houghten).
+- Replaced the NULL pointer assignment in ~cReceiver() to force a segfault with
+  a call to abort() (suggested by Tony Houghten).
+- Fixed learning keyboard remote control codes (thanks to Lars Hanisch).
+- Improved PAT/PMT scanning to speed up initial tuning to encrypted channels on
+  transponders with many PAT entries (reported by Mariusz Bialonczyk).
+- Fixed the replay progress display for very long recordings.
+- Fixed detecting broken video data streams when recording.
+- Fixed handling frame detection buffer length (reported by Eike Sauer).

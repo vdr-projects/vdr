@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.6 2014/01/20 12:01:01 kls Exp $
+ * $Id: ci.h 3.7 2014/01/31 09:21:21 kls Exp $
  */
 
 #ifndef __CI_H
@@ -250,10 +250,12 @@ public:
        ///< 2. If the CAM works directly on Data and decrypts the TS "in place" it
        ///< shall decrypt at least the very first TS packet in Data, set Count to
        ///< TS_SIZE and return Data. It may decrypt as many TS packets in Data as it
-       ///< wants, but it must decrypt at least the very first TS packet. Only this
-       ///< very first TS packet will be further processed after the call to this
-       ///< function. The next call will be done with Data pointing to the TS packet
-       ///< immediately following the previous one.
+       ///< wants, but it must decrypt at least the very first TS packet (if at all
+       ///< possible - if, for whatever reasons, it can't decrypt the very first
+       ///< packet, it must return it regardless). Only this very first TS packet will
+       ///< be further processed after the call to this function. The next call will
+       ///< be done with Data pointing to the TS packet immediately following the
+       ///< previous one.
        ///< 3. If the CAM needs to copy the data into a buffer of its own, and/or send
        ///< the data to some file handle for processing and later retrieval, it shall
        ///< set Count to the number of bytes it has read from Data and return a pointer

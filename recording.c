@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.13 2014/01/18 12:54:56 kls Exp $
+ * $Id: recording.c 3.16 2014/02/08 11:16:02 kls Exp $
  */
 
 #include "recording.h"
@@ -969,14 +969,22 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
-     if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
-        s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-     strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-     int l = strxfrm(NULL, s, 0) + 1;
-     *sb = MALLOC(char, l);
-     strxfrm(*sb, s, l);
-     free(s);
+     if (RecordingsSortMode == rsmTime && !Setup.RecordingDirs) {
+        char buf[32];
+        struct tm tm_r;
+        strftime(buf, sizeof(buf), "%Y%m%d%H%I", localtime_r(&start, &tm_r));
+        *sb = strdup(buf);
+        }
+     else {
+        char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
+        if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+           s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+        strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+        int l = strxfrm(NULL, s, 0) + 1;
+        *sb = MALLOC(char, l);
+        strxfrm(*sb, s, l);
+        free(s);
+        }
      }
   return *sb;
 }
@@ -2915,7 +2923,7 @@ cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
      Sign = "-";
      }
   double Seconds;
-  int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
+  int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
@@ -2925,12 +2933,12 @@ cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 
 int HMSFToIndex(const char *HMSF, double FramesPerSecond)
 {
-  int h, m, s, f = 1;
+  int h, m, s, f = 0;
   int n = sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f);
   if (n == 1)
-     return h - 1; // plain frame number
+     return h; // plain frame number
   if (n >= 3)
-     return int(round((h * 3600 + m * 60 + s) * FramesPerSecond)) + f - 1;
+     return int(round((h * 3600 + m * 60 + s) * FramesPerSecond)) + f;
   return 0;
 }
 

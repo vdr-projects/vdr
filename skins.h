@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 3.2 2013/11/03 14:07:34 kls Exp $
+ * $Id: skins.h 3.3 2014/02/17 11:05:29 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -280,7 +280,7 @@ protected:
   class cProgressBar : public cBitmap {
   protected:
     int total;
-    int Pos(int p) { return p * Width() / total; }
+    int Pos(int p) { return int(int64_t(p) * Width() / total); }
     void Mark(int x, bool Start, bool Current, tColor ColorMark, tColor ColorCurrent);
   public:
     cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent);

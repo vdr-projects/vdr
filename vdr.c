@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.9 2014/01/25 10:47:39 kls Exp $
+ * $Id: vdr.c 3.10 2014/01/26 12:27:51 kls Exp $
  */
 
 #include <getopt.h>
@@ -917,7 +917,7 @@ int main(int argc, char *argv[])
               for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                   if (Channel->Modification(CHANNELMOD_RETUNE)) {
                      cRecordControls::ChannelDataModified(Channel);
-                     if (Channel->Number() == cDevice::CurrentChannel()) {
+                     if (Channel->Number() == cDevice::CurrentChannel() && cDevice::PrimaryDevice()->HasDecoder()) {
                         if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring()) {
                            if (cDevice::ActualDevice()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
                               isyslog("retuning due to modification of channel %d", Channel->Number());

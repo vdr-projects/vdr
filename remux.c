@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.1 2014/01/18 11:27:30 kls Exp $
+ * $Id: remux.c 3.3 2014/02/21 11:51:55 kls Exp $
  */
 
 #include "remux.h"
@@ -22,6 +22,10 @@ static bool DebugFrames = false;
 
 #define dbgpatpmt(a...) if (DebugPatPmt) fprintf(stderr, a)
 #define dbgframes(a...) if (DebugFrames) fprintf(stderr, a)
+
+#define MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION 6
+#define WRN_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION (MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION / 2)
+#define WRN_TS_PACKETS_FOR_FRAME_DETECTOR (MIN_TS_PACKETS_FOR_FRAME_DETECTOR / 2)
 
 #define EMPTY_SCANNER (0xFFFFFFFF)
 
@@ -231,7 +235,7 @@ cTsPayload::cTsPayload(void)
   data = NULL;
   length = 0;
   pid = -1;
-  index = 0;
+  Reset();
 }
 
 cTsPayload::cTsPayload(uchar *Data, int Length, int Pid)
@@ -239,12 +243,25 @@ cTsPayload::cTsPayload(uchar *Data, int Length, int Pid)
   Setup(Data, Length, Pid);
 }
 
+uchar cTsPayload::SetEof(void)
+{
+  length = index; // triggers EOF
+  return 0x00;
+}
+
+void cTsPayload::Reset(void)
+{
+  index = 0;
+  numPacketsPid = 0;
+  numPacketsOther = 0;
+}
+
 void cTsPayload::Setup(uchar *Data, int Length, int Pid)
 {
   data = Data;
   length = Length;
   pid = Pid >= 0 ? Pid : TsPid(Data);
-  index = 0;
+  Reset();
 }
 
 uchar cTsPayload::GetByte(void)
@@ -255,20 +272,20 @@ uchar cTsPayload::GetByte(void)
             if (data[index] == TS_SYNC_BYTE && index + TS_SIZE <= length) { // to make sure we are at a TS header start and drop incomplete TS packets at the end
                uchar *p = data + index;
                if (TsPid(p) == pid) { // only handle TS packets for the initial PID
+                  if (numPacketsPid++ > MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
+                     return SetEof();
                   if (TsHasPayload(p)) {
-                     if (index > 0 && TsPayloadStart(p)) { // checking index to not skip the very first TS packet
-                        length = index; // triggers EOF
-                        return 0x00;
-                        }
+                     if (index > 0 && TsPayloadStart(p)) // checking index to not skip the very first TS packet
+                        return SetEof();
                      index += TsPayloadOffset(p);
                      break;
                      }
                   }
+               else
+                  numPacketsOther++;
                }
-            else {
-               length = index; // triggers EOF
-               return 0x00;
-               }
+            else
+               return SetEof();
            }
         }
      return data[index++];
@@ -302,6 +319,8 @@ void cTsPayload::SetByte(uchar Byte, int Index)
 bool cTsPayload::Find(uint32_t Code)
 {
   int OldIndex = index;
+  int OldNumPacketsPid = numPacketsPid;
+  int OldNumPacketsOther = numPacketsOther;
   uint32_t Scanner = EMPTY_SCANNER;
   while (!Eof()) {
         Scanner = (Scanner << 8) | GetByte();
@@ -309,7 +328,17 @@ bool cTsPayload::Find(uint32_t Code)
            return true;
         }
   index = OldIndex;
+  numPacketsPid = OldNumPacketsPid;
+  numPacketsOther = OldNumPacketsOther;
   return false;
+}
+
+void cTsPayload::Statistics(void) const
+{
+  if (numPacketsPid + numPacketsOther > WRN_TS_PACKETS_FOR_FRAME_DETECTOR)
+     dsyslog("WARNING: required (%d+%d) TS packets to determine frame type", numPacketsOther, numPacketsPid);
+  if (numPacketsPid > WRN_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
+     dsyslog("WARNING: required %d video TS packets to determine frame type", numPacketsPid);
 }
 
 // --- cPatPmtGenerator ------------------------------------------------------
@@ -1120,11 +1149,11 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
                dbgframes("%c", FrameTypes[FrameType]);
                }
             }
+         tsPayload.Statistics();
          break;
          }
       if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
-         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
-            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         || tsPayload.Eof()) // or if we're out of data
          break;
       }
   return tsPayload.Used();
@@ -1266,6 +1295,8 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
            case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {
                                             ParseSliceHeader();
                                             gotAccessUnitDelimiter = false;
+                                            if (newFrame)
+                                               tsPayload.Statistics();
                                             return tsPayload.Used();
                                             }
                                          break;
@@ -1273,8 +1304,7 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
            }
          }
       if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
-         || (tsPayload.Available() < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE // stop if the available data is below the limit...
-            && (tsPayload.Available() <= 0 || tsPayload.AtTsStart()))) // ...but only if there is no more data at all, or if we are at a TS boundary
+         || tsPayload.Eof()) // or if we're out of data
          break;
       }
   return tsPayload.Used();

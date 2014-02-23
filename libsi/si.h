@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 3.1 2013/10/30 10:16:18 kls Exp $
+ *   $Id: si.h 3.2 2014/02/08 14:11:32 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -210,7 +210,8 @@ enum LinkageType { LinkageTypeInformationService = 0x01,
                    LinkageTypeRCSMap = 0x07,
                    LinkageTypeMobileHandover = 0x08,
                    LinkageTypeSystemSoftwareUpdateService = 0x09,
-                   LinkageTypeTSContainingSsuBatOrNit = 0x0A
+                   LinkageTypeTSContainingSsuBatOrNit = 0x0A,
+                   LinkageTypePremiere = 0xB0
                  };
 
 enum AudioType { AudioTypeUndefined = 0x00,

@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 3.1 2014/01/05 10:56:18 kls Exp $
+ * $Id: osddemo.c 3.3 2014/02/06 11:51:53 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.1.2";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -119,7 +119,7 @@ cLineGame::~cLineGame()
 
 void cLineGame::Show(void)
 {
-  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
   if (osd) {
      int x1 = cOsd::OsdWidth() - 1;
      int y1 = cOsd::OsdHeight() - 1;
@@ -480,6 +480,8 @@ void cTrueColorDemo::Action(void)
         if (Delta < FrameTime)
            cCondWait::SleepMs(FrameTime - Delta);
         }
+  destroyablePixmap = NULL;
+  toggleablePixmap = NULL;
   delete OsdFont;
   delete SmlFont;
   delete LrgFont;
@@ -496,7 +498,7 @@ bool cTrueColorDemo::SetArea(void)
 
 void cTrueColorDemo::Show(void)
 {
-  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop(), 50);
+  osd = cOsdProvider::NewOsd(cOsd::OsdLeft(), cOsd::OsdTop());
   if (osd) {
      if (SetArea()) {
         osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, clrGray50);

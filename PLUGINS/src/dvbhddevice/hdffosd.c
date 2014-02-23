@@ -42,7 +42,6 @@ private:
     tFont mFonts[MAX_NUM_FONTS];
     uint32_t mBitmapPalette;
     uint32_t mBitmapColors[256];
-    uint32_t mBitmapNumColors;
 
     bool mSupportsUtf8Text;
 
@@ -555,7 +554,6 @@ private:
     uint32_t mDisplay;
     uint32_t mBitmapPalette;
     uint32_t mBitmapColors[256];
-    uint32_t mBitmapNumColors;
 
 protected:
     virtual void SetActive(bool On);

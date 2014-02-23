@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 3.1 2014/01/16 10:15:50 kls Exp $
+ * $Id: remux.h 3.3 2014/02/08 12:41:50 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -217,8 +217,11 @@ private:
   int length;
   int pid;
   int index; // points to the next byte to process
+  int numPacketsPid; // the number of TS packets with the given PID (for statistical purposes)
+  int numPacketsOther; // the number of TS packets with other PIDs (for statistical purposes)
+  uchar SetEof(void);
 protected:
-  void Reset(void) { index = 0; }
+  void Reset(void);
 public:
   cTsPayload(void);
   cTsPayload(uchar *Data, int Length, int Pid = -1);
@@ -246,6 +249,10 @@ public:
        ///< is counted with its full size.
   bool Eof(void) const { return index >= length; }
        ///< Returns true if all available bytes of the TS payload have been processed.
+  void Statistics(void) const;
+       ///< May be called after a new frame has been detected, and will log a warning
+       ///< if the number of TS packets required to determine the frame type exceeded
+       ///< some safety limits.
   uchar GetByte(void);
        ///< Gets the next byte of the TS payload, skipping any intermediate TS header data.
   bool SkipBytes(int Bytes);
@@ -462,7 +469,7 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
-#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 10
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 100
 
 class cFrameParser;
 
@@ -476,7 +483,6 @@ private:
   bool independentFrame;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
-  int numFrames;
   int numIFrames;
   bool isVideo;
   double framesPerSecond;

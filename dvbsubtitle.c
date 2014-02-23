@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.4 2013/09/07 10:39:46 kls Exp $
+ * $Id: dvbsubtitle.c 3.5 2014/02/08 12:29:13 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -34,7 +34,6 @@ static bool DebugDisplay   = DebugVerbose || DebugNormal;
 static bool DebugPages     = DebugVerbose || DebugNormal;
 static bool DebugRegions   = DebugVerbose || DebugNormal;
 static bool DebugObjects   = DebugVerbose || DebugNormal;
-static bool DebugBitmaps   = DebugVerbose || DebugNormal;
 static bool DebugConverter = DebugVerbose;
 static bool DebugSegments  = DebugVerbose;
 static bool DebugPixel     = DebugVerbose;
@@ -45,7 +44,6 @@ static bool DebugOutput    = DebugVerbose;
 #define dbgpages(a...)     if (DebugPages)     SD.WriteHtml(a)
 #define dbgregions(a...)   if (DebugRegions)   SD.WriteHtml(a)
 #define dbgobjects(a...)   if (DebugObjects)   SD.WriteHtml(a)
-#define dbgbitmaps(a...)   if (DebugBitmaps)   SD.WriteHtml(a)
 #define dbgconverter(a...) if (DebugConverter) SD.WriteHtml(a)
 #define dbgsegments(a...)  if (DebugSegments)  SD.WriteHtml(a)
 #define dbgpixel(a...)     if (DebugPixel)     SD.WriteHtml(a)

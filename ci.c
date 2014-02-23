@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.10 2014/01/22 09:46:38 kls Exp $
+ * $Id: ci.c 3.11 2014/02/08 12:25:55 kls Exp $
  */
 
 #include "ci.h"
@@ -864,7 +864,7 @@ void cCiDateTime::SendDateTime(void)
 #pragma pack(1)
      struct tTime { uint16_t mjd; uint8_t h, m, s; short offset; };
 #pragma pack()
-     tTime T = { mjd : htons(MJD), h : DEC2BCD(tm_gmt.tm_hour), m : DEC2BCD(tm_gmt.tm_min), s : DEC2BCD(tm_gmt.tm_sec), offset : short(htons(tm_loc.tm_gmtoff / 60)) };
+     tTime T = { .mjd = htons(MJD), .h = DEC2BCD(tm_gmt.tm_hour), .m = DEC2BCD(tm_gmt.tm_min), .s = DEC2BCD(tm_gmt.tm_sec), .offset = short(htons(tm_loc.tm_gmtoff / 60)) };
      bool OldDumpTPDUDataTransfer = DumpTPDUDataTransfer;
      DumpTPDUDataTransfer &= DumpDateTime;
      if (DumpDateTime)
@@ -1004,7 +1004,7 @@ void cCiMMI::Process(int Length, const uint8_t *Data)
                  case DCC_SET_MMI_MODE:
                       if (l == 2 && *++d == MM_HIGH_LEVEL) {
                          struct tDisplayReply { uint8_t id; uint8_t mode; };
-                         tDisplayReply dr = { id : DRI_MMI_MODE_ACK, mode : MM_HIGH_LEVEL };
+                         tDisplayReply dr = { .id = DRI_MMI_MODE_ACK, .mode = MM_HIGH_LEVEL };
                          dbgprotocol("Slot %d: ==> Display Reply (%d)\n", Tc()->CamSlot()->SlotNumber(), SessionId());
                          SendData(AOT_DISPLAY_REPLY, 2, (uint8_t *)&dr);
                          }
