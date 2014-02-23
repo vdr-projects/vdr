@@ -8170,7 +8170,7 @@ Video Disk Recorder Revision History
 - Fixed a superfluous call to the skin's SetRecording() function after renaming a
   recording (reported by Christoph Haubrich).
 
-2014-02-21: Version 2.1.5
+2014-02-23: Version 2.1.5
 
 - Now checking whether the primary device actually has a decoder before retuning the
   current channel after a change in its parameters. This fixes broken recordings on
