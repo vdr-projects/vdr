@@ -8202,3 +8202,8 @@ Video Disk Recorder Revision History
 - Fixed the replay progress display for very long recordings.
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
+
+2014-02-25: Version 2.1.6
+
+- Revoked "Fixed some compiler warnings with Clang 3.4.1" from ci.c, because this
+  did not compile with older versions of gcc (thanks to Sören Moch).

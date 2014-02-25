@@ -3141,6 +3141,8 @@ Sören Moch <smoch@web.de>
  for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
  for reporting a problem with detecting user inactivity in case the system time is
  changed after VDR has been started
+ for reporting that the change "Fixed some compiler warnings with Clang 3.4.1" caused
+ ci.c to no longer compile with older versions of gcc
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
