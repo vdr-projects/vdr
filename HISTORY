@@ -7870,7 +7870,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-02-21: Version 2.0.6
+2014-02-26: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -7896,3 +7896,5 @@ Video Disk Recorder Revision History
   transponders with many PAT entries (reported by Mariusz Bialonczyk).
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
+- Fixed keeping the current position in the Recordings menu if a recording was
+  deleted in a sub folder.
