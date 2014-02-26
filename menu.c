@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.19 2014/02/08 12:36:12 kls Exp $
+ * $Id: menu.c 3.20 2014/02/26 11:23:28 kls Exp $
  */
 
 #include "menu.h"
@@ -2533,6 +2533,7 @@ public:
   int Level(void) { return level; }
   cRecording *Recording(void) { return recording; }
   bool IsDirectory(void) { return name != NULL; }
+  void SetRecording(cRecording *Recording) { recording = Recording; }
   virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
   };
 
@@ -2782,6 +2783,7 @@ eOSState cMenuRecordings::Delete(void)
            Display();
            if (!Count())
               return osBack;
+           return osUser2;
            }
         else
            Skins.Message(mtError, tr("Error while deleting recording!"));
@@ -2860,6 +2862,14 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
      Display();
      path = NULL;
      fileName = NULL;
+     }
+  else if (state == osUser2) {
+     // a recording in a sub folder was deleted, so update the current item
+     cOsdMenu *m = HasSubMenu() ? SubMenu() : this;
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+        if (cMenuRecordingItem *riSub = (cMenuRecordingItem *)m->Get(m->Current()))
+           ri->SetRecording(riSub->Recording());
+        }
      }
   if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
      // the last recording in a subdirectory was deleted, so let's go back up
