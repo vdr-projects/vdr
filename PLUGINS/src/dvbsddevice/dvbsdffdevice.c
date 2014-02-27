@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 3.1 2013/12/25 13:27:00 kls Exp $
+ * $Id: dvbsdffdevice.c 3.2 2014/02/27 15:34:33 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -400,8 +400,8 @@ bool cDvbSdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   bool DoTune = !IsTunedToTransponder(Channel);
 
-  bool pidHandlesVideo = pidHandles[ptVideo].pid == vpid;
-  bool pidHandlesAudio = pidHandles[ptAudio].pid == apid;
+  bool pidHandlesVideo = vpid && pidHandles[ptVideo].pid == vpid;
+  bool pidHandlesAudio = apid && pidHandles[ptAudio].pid == apid;
 
   bool TurnOffLivePIDs = DoTune
                          || !IsPrimaryDevice()
