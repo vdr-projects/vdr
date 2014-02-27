@@ -3208,3 +3208,7 @@ Christian Paulick <cpaulick@xeatre.tv>
 Mariusz Bialonczyk <manio@skyboo.net>
  for reporting that acquiring the CA descriptors takes way too long on transponders
  with many PAT entries, and his help in debugging this
+
+Christian Winkler <winkler_chr@yahoo.de>
+ for reporting a problem with transfer mode on full featured DVB cards for encrypted
+ channels that have no audio pid
