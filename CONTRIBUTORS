@@ -2917,7 +2917,7 @@ Luis Fernandes <telping@gmail.com>
  for suggesting to add handling MPEG audio type "ISO/IEC 14496-3 Audio with LATM
  transport syntax"
 
-Christopher Reimer <reimer.christopher@freenet.de>
+Christopher Reimer <vdr@creimer.net>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
  for contributing to a patch that implements FHS support
