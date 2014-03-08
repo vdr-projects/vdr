@@ -8203,7 +8203,7 @@ Video Disk Recorder Revision History
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
 
-2014-02-27: Version 2.1.6
+2014-03-08: Version 2.1.6
 
 - Revoked "Fixed some compiler warnings with Clang 3.4.1" from ci.c, because this
   did not compile with older versions of gcc (thanks to Sören Moch).
@@ -8211,3 +8211,5 @@ Video Disk Recorder Revision History
   deleted in a sub folder.
 - Fixed handling transfer mode on full featured DVB cards for encrypted channels
   that have no audio pid (reported by Christian Winkler).
+- Fixed a possible endless loop in cH264Parser::GetGolombUe(), which caused recordings
+  on some HD channels to get stuck and resulted in buffer overflows.
