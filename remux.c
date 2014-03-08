@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.4 2014/03/08 15:04:03 kls Exp $
+ * $Id: remux.c 3.5 2014/03/08 15:05:35 kls Exp $
  */
 
 #include "remux.h"
@@ -281,6 +281,8 @@ uchar cTsPayload::GetByte(void)
                      break;
                      }
                   }
+               else if (TsPid(p) == PATPID)
+                  return SetEof(); // caller must see PAT packets in case of index regeneration
                else
                   numPacketsOther++;
                }

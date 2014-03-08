@@ -8213,3 +8213,5 @@ Video Disk Recorder Revision History
   that have no audio pid (reported by Christian Winkler).
 - Fixed a possible endless loop in cH264Parser::GetGolombUe(), which caused recordings
   on some HD channels to get stuck and resulted in buffer overflows.
+- Fixed handling PAT packets when detecting frames, so that they can be properly
+  taken into account when regenerating the index of a recording.
