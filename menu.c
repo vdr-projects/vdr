@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.21 2014/03/09 13:03:10 kls Exp $
+ * $Id: menu.c 3.22 2014/03/09 15:01:31 kls Exp $
  */
 
 #include "menu.h"
@@ -2597,6 +2597,10 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus,
 
 cMenuRecordings::~cMenuRecordings()
 {
+  if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+     if (!ri->IsDirectory())
+        SetRecording(ri->Recording()->FileName());
+     }
   free(base);
 }
 
@@ -4961,6 +4965,7 @@ void cReplayControl::Stop(void)
         }
      }
   cDvbPlayerControl::Stop();
+  cMenuRecordings::SetRecording(NULL); // make sure opening the Recordings menu navigates to the last replayed recording
 }
 
 void cReplayControl::SetRecording(const char *FileName)

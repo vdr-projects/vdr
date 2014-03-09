@@ -8218,3 +8218,7 @@ Video Disk Recorder Revision History
 - Fixed adding new source types in case they are already registered (reported by Rolf
   Ahrenberg).
 - Removed an unnecessary assignment from cMenuRecordings::~cMenuRecordings().
+- The Recordings menu now remembers the last recording the cursor was positioned on,
+  independent of the last replayed recording. When a replay ends, however, the cursor
+  will initially be positioned to the last replayed recording again when the menu
+  is opened.
