@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 2.2 2010/02/28 15:15:39 kls Exp $
+ * $Id: sources.c 2.2.1.1 2014/03/09 12:13:25 kls Exp $
  */
 
 #include "sources.h"
@@ -111,4 +111,13 @@ cSource *cSources::Get(int Code)
          return p;
       }
   return NULL;
+}
+
+bool cSources::ContainsSourceType(char SourceType)
+{
+  for (cSource *p = First(); p; p = Next(p)) {
+      if (cSource::ToChar(p->Code()) == SourceType)
+         return true;
+      }
+  return false;
 }

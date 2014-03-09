@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.h 2.4 2012/06/17 11:19:23 kls Exp $
+ * $Id: sources.h 2.4.1.1 2014/03/09 12:13:34 kls Exp $
  */
 
 #ifndef __SOURCES_H
@@ -47,6 +47,7 @@ public:
 class cSources : public cConfig<cSource> {
 public:
   cSource *Get(int Code);
+  bool ContainsSourceType(char SourceType);
   };
 
 extern cSources Sources;
