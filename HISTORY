@@ -8217,3 +8217,4 @@ Video Disk Recorder Revision History
   taken into account when regenerating the index of a recording.
 - Fixed adding new source types in case they are already registered (reported by Rolf
   Ahrenberg).
+- Removed an unnecessary assignment from cMenuRecordings::~cMenuRecordings().

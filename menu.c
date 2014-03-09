@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.20 2014/02/26 11:23:28 kls Exp $
+ * $Id: menu.c 3.21 2014/03/09 13:03:10 kls Exp $
  */
 
 #include "menu.h"
@@ -2597,7 +2597,6 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus,
 
 cMenuRecordings::~cMenuRecordings()
 {
-  helpKeys = -1;
   free(base);
 }
 
