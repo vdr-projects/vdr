@@ -1183,6 +1183,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  existing edited version of a recording
  for adding code for parsing LCN and AVC descriptors to libsi
  for fixing clearing non-editable members in the channel editor
+ for reporting a problem with adding new source types in case they are already
+ registered
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
