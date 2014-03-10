@@ -709,6 +709,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to eliminate MAXDVBDEVICES
  for reporting that there are channels that need even more than 10 TS packets in order
  to detect the frame type
+ for suggesting to ignore channels with an RID that is not 0 when checking for obsolete
+ channels
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

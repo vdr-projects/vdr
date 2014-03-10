@@ -8224,3 +8224,5 @@ Video Disk Recorder Revision History
   is opened.
 - Updated the Finnish OSD texts (thanks to Antti Hartikainen).
 - Fixed drawing the live indicator in the LCARS skin in case there are no devices.
+- When checking for obsolete channels, those with an RID that is not 0 are now
+  ignored (suggested by Oliver Endriss).
