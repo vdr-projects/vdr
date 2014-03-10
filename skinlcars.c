@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 3.6 2013/11/16 13:20:19 kls Exp $
+ * $Id: skinlcars.c 3.7 2014/03/10 12:04:06 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1361,7 +1361,7 @@ void cSkinLCARSDisplayMenu::DrawLiveIndicator(void)
   if (initial || y != lastLiveIndicatorY || Transferring != lastLiveIndicatorTransferring) {
      if (lastLiveIndicatorY >= 0)
         osd->DrawRectangle(xs12, lastLiveIndicatorY, xs13 - 1, lastLiveIndicatorY + lineHeight - 1, Theme.Color(clrBackground));
-     if (y >= 0) {
+     if (y > 0) {
         tColor ColorBg = Theme.Color(clrChannelFrameBg);
         osd->DrawRectangle(xs12, y, xs12 + lineHeight / 2 - 1, y + lineHeight - 1, ColorBg);
         osd->DrawEllipse  (xs12 + lineHeight / 2, y, xs13 - 1, y + lineHeight - 1, ColorBg, 5);

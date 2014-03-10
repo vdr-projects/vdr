@@ -8223,3 +8223,4 @@ Video Disk Recorder Revision History
   will initially be positioned to the last replayed recording again when the menu
   is opened.
 - Updated the Finnish OSD texts (thanks to Antti Hartikainen).
+- Fixed drawing the live indicator in the LCARS skin in case there are no devices.
