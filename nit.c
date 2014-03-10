@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.10 2013/03/07 09:42:29 kls Exp $
+ * $Id: nit.c 3.1 2014/03/10 13:31:23 kls Exp $
  */
 
 #include "nit.h"
@@ -243,7 +243,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         }
                     if (!found || forceTransponderUpdate) {
-                        for (int n = 0; n < NumFrequencies; n++) {
+                       for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('C')))
@@ -314,7 +314,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            else
                               delete Channel;
                            }
-                        }
+                       }
                     }
                  }
                  break;
