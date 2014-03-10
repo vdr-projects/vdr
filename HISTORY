@@ -8226,3 +8226,6 @@ Video Disk Recorder Revision History
 - Fixed drawing the live indicator in the LCARS skin in case there are no devices.
 - When checking for obsolete channels, those with an RID that is not 0 are now
   ignored (suggested by Oliver Endriss).
+- The SDT is now only parsed *after* the NIT has been read, and it explicitly uses
+  the source value derived from the NIT. This should prevent new channels from being
+  created with the wrong source.

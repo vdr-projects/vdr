@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 3.2 2014/02/18 10:37:50 kls Exp $
+ * $Id: sdt.c 3.3 2014/03/10 14:42:20 kls Exp $
  */
 
 #include "sdt.h"
@@ -17,19 +17,30 @@
 
 cSdtFilter::cSdtFilter(cPatFilter *PatFilter)
 {
+  source = cSource::stNone;
   patFilter = PatFilter;
   Set(0x11, 0x42);  // SDT
 }
 
 void cSdtFilter::SetStatus(bool On)
 {
+  cMutexLock MutexLock(&mutex);
   cFilter::SetStatus(On);
   sectionSyncer.Reset();
+  if (!On)
+     source = cSource::stNone;
+}
+
+void cSdtFilter::Trigger(int Source)
+{
+  cMutexLock MutexLock(&mutex);
+  source = Source;
 }
 
 void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
-  if (!(Source() && Transponder()))
+  cMutexLock MutexLock(&mutex);
+  if (!(source && Transponder()))
      return;
   SI::SDT sdt(Data, false);
   if (!sdt.CheckCRCAndParse())
@@ -40,9 +51,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      return;
   SI::SDT::Service SiSdtService;
   for (SI::Loop::Iterator it; sdt.serviceLoop.getNext(SiSdtService, it); ) {
-      cChannel *channel = Channels.GetByChannelID(tChannelID(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
+      cChannel *channel = Channels.GetByChannelID(tChannelID(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
       if (!channel)
-         channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
+         channel = Channels.GetByChannelID(tChannelID(source, 0, Transponder(), SiSdtService.getServiceId()));
       if (channel)
          channel->SetSeen();
 
@@ -66,7 +77,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         sd->serviceName.getText(NameBuf, ShortNameBuf, sizeof(NameBuf), sizeof(ShortNameBuf));
                         char *pn = compactspace(NameBuf);
                         char *ps = compactspace(ShortNameBuf);
-                        if (!*ps && cSource::IsCable(Source())) {
+                        if (!*ps && cSource::IsCable(source)) {
                            // Some cable providers don't mark short channel names according to the
                            // standard, but rather go their own way and use "name>short name":
                            char *p = strchr(pn, '>'); // fix for UPC Wien
@@ -117,7 +128,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::NVODReferenceDescriptor *nrd = (SI::NVODReferenceDescriptor *)d;
                  SI::NVODReferenceDescriptor::Service Service;
                  for (SI::Loop::Iterator it; nrd->serviceLoop.getNext(Service, it); ) {
-                     cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
+                     cChannel *link = Channels.GetByChannelID(tChannelID(source, Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 4) {
                         link = Channels.NewChannel(Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
                         patFilter->Trigger(Service.getServiceId());
@@ -142,6 +153,6 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          }
       }
   if (sdt.getSectionNumber() == sdt.getLastSectionNumber())
-     Channels.MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+     Channels.MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
   Channels.Unlock();
 }
