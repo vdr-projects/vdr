@@ -8203,7 +8203,7 @@ Video Disk Recorder Revision History
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
 
-2014-03-09: Version 2.1.6
+2014-03-10: Version 2.1.6
 
 - Revoked "Fixed some compiler warnings with Clang 3.4.1" from ci.c, because this
   did not compile with older versions of gcc (thanks to Sören Moch).
@@ -8222,3 +8222,4 @@ Video Disk Recorder Revision History
   independent of the last replayed recording. When a replay ends, however, the cursor
   will initially be positioned to the last replayed recording again when the menu
   is opened.
+- Updated the Finnish OSD texts (thanks to Antti Hartikainen).

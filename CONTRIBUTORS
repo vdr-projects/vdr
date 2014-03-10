@@ -2517,6 +2517,7 @@ Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
  for adding maximum SNR value for PCTV Systems nanoStick T2 290e
  for updating 'sources.conf'
+ for translating OSD texts to the Finnish language
 
 Bernd Melcher <bernd@bernd-melcher.de>
  for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro

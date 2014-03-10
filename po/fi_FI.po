@@ -1427,7 +1427,7 @@ msgstr "TOISTO"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr "Käännetaan lautasta %.1f..."
+msgstr "Käännetään lautasta %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG konsoli"
