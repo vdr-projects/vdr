@@ -7870,7 +7870,7 @@ Video Disk Recorder Revision History
   and also to use the correct directory with --edit (the latter reported by Marko
   Mäkelä).
 
-2014-03-09: Version 2.0.6
+2014-03-10: Version 2.0.6
 
 - Updated 'sources.conf' (thanks to Antti Hartikainen).
 - cFont::CreateFont() now returns a dummy font in case there are no fonts installed.
@@ -7906,3 +7906,4 @@ Video Disk Recorder Revision History
   taken into account when regenerating the index of a recording.
 - Fixed adding new source types in case they are already registered (reported by Rolf
   Ahrenberg).
+- Fixed drawing the live indicator in the LCARS skin in case there are no devices.
