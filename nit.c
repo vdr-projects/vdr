@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 2.10 2013/03/07 09:42:29 kls Exp $
+ * $Id: nit.c 2.10.1.1 2014/03/11 09:29:59 kls Exp $
  */
 
 #include "nit.h"
@@ -19,8 +19,9 @@
 #define DVB_SYSTEM_1 0 // see also dvbdevice.c
 #define DVB_SYSTEM_2 1
 
-cNitFilter::cNitFilter(void)
+cNitFilter::cNitFilter(cSdtFilter *SdtFilter)
 {
+  sdtFilter = SdtFilter;
   numNits = 0;
   networkId = 0;
   Set(0x10, 0x40);  // NIT
@@ -183,6 +184,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::S2SatelliteDeliverySystemDescriptorTag: {
@@ -253,6 +255,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
@@ -316,6 +319,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::ExtensionDescriptorTag: {

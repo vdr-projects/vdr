@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.h 1.2 2004/01/05 14:30:14 kls Exp $
+ * $Id: sdt.h 2.0.1.1 2014/03/11 09:31:08 kls Exp $
  */
 
 #ifndef __SDT_H
@@ -15,13 +15,16 @@
 
 class cSdtFilter : public cFilter {
 private:
+  cMutex mutex;
   cSectionSyncer sectionSyncer;
+  int source;
   cPatFilter *patFilter;
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
   cSdtFilter(cPatFilter *PatFilter);
   virtual void SetStatus(bool On);
+  void Trigger(int Source);
   };
 
 #endif //__SDT_H
