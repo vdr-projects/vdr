@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.13 2014/03/10 14:12:27 kls Exp $
+ * $Id: device.c 3.14 2014/03/11 09:48:40 kls Exp $
  */
 
 #include "device.h"
@@ -1608,6 +1608,7 @@ void cDevice::Action(void)
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
                         if (DetachReceivers) {
+                           dsyslog("detaching receiver - won't decrypt channel %s with CAM %d", *receiver[i]->ChannelID().ToString(), CamSlotNumber);
                            ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
                            Detach(receiver[i]);
                            }

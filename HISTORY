@@ -8203,7 +8203,7 @@ Video Disk Recorder Revision History
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
 
-2014-03-10: Version 2.1.6
+2014-03-11: Version 2.1.6
 
 - Revoked "Fixed some compiler warnings with Clang 3.4.1" from ci.c, because this
   did not compile with older versions of gcc (thanks to Sören Moch).
@@ -8229,3 +8229,5 @@ Video Disk Recorder Revision History
 - The SDT is now only parsed *after* the NIT has been read, and it explicitly uses
   the source value derived from the NIT. This should prevent new channels from being
   created with the wrong source.
+- Added a log message in case a receiver is detached from its device because the
+  assigned CAM can't decrypt the channel.
