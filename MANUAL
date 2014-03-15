@@ -731,13 +731,13 @@ Version 2.0
                          1 = ANSI/SCTE
 
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
-                         (4:3 or 16:9).
+                         (4:3 or 16:9). Applies only to SD output devices.
 
   Video display format = letterbox
                          The display format to use for playing wide screen video on
                          a 4:3 tv set ("pan & scan", "letterbox" or "center cut out").
                          This option is only available if "Video format" is set to
-                         4:3.
+                         4:3. Applies only to SD output devices.
 
   Use Dolby Digital = yes
                          Controls whether Dolby Digital tracks appear in the "Audio"

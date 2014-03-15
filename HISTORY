@@ -8231,3 +8231,22 @@ Video Disk Recorder Revision History
   created with the wrong source.
 - Added a log message in case a receiver is detached from its device because the
   assigned CAM can't decrypt the channel.
+- Refactored setup parameter handling for output devices:
+  + The function cDevice::GetVideoSystem() has been deprecated and will be removed
+    in a future version. In order to check whether a particular plugin needs to be
+    modified if this function is removed, you can comment out the line
+    #define DEPRECATED_VIDEOSYSTEM
+    in device.h.
+  + Handling the "video (display) format" (things like 16:9, 4:3, pan&scan, letterbox
+    etc) shall now be done by the individual output devices, because the types and
+    numbers of parameters are too device specific. The Setup/DVB parameters
+    "Video format" and "Video display format" are still there for now and can be used
+    by SD devices. HD devices, however, shall not use these parameters (any more),
+    but rather implement their own setup menu with the necessary parameters for
+    controlling output.
+  + The dvbhdffdevice plugin has been modified accordingly.
+  + Made it clear that cDevice::SetDigitalAudioDevice() merely tells the output device
+    that the current audio track is Dolby Digital. This function was only used by the
+    original "full featured" DVB cards - do not use it for new developments!
+    If an output device has several ways of replaying audio (like HDMI or analog jack)
+    it shall implement the proper options in its plugin's SetupMenu() function.

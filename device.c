@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.14 2014/03/11 09:48:40 kls Exp $
+ * $Id: device.c 3.15 2014/03/15 13:23:28 kls Exp $
  */
 
 #include "device.h"
@@ -428,11 +428,6 @@ void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
 
 void cDevice::SetVideoFormat(bool VideoFormat16_9)
 {
-}
-
-eVideoSystem cDevice::GetVideoSystem(void)
-{
-  return vsPAL;
 }
 
 void cDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)

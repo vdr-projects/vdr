@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 3.2 2014/02/27 15:34:33 kls Exp $
+ * $Id: dvbsdffdevice.c 3.3 2014/03/15 12:35:21 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -239,21 +239,6 @@ void cDvbSdFfDevice::SetVideoFormat(bool VideoFormat16_9)
 {
   CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
   SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
-}
-
-eVideoSystem cDvbSdFfDevice::GetVideoSystem(void)
-{
-  eVideoSystem VideoSystem = vsPAL;
-  if (fd_video >= 0) {
-     video_size_t vs;
-     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-        if (vs.h == 480 || vs.h == 240)
-           VideoSystem = vsNTSC;
-        }
-     else
-        LOG_ERROR;
-     }
-  return VideoSystem;
 }
 
 void cDvbSdFfDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)

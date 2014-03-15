@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.8 2014/01/02 10:47:08 kls Exp $
+ * $Id: device.h 3.9 2014/03/15 14:04:58 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -55,9 +55,12 @@ enum ePlayMode { pmNone,           // audio/video from decoder
                  // KNOWN TO YOUR PLAYER.
                };
 
+#define DEPRECATED_VIDEOSYSTEM
+#ifdef DEPRECATED_VIDEOSYSTEM
 enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
+#endif
 
 enum eVideoDisplayFormat { vdfPanAndScan,
                            vdfLetterBox,
@@ -462,12 +465,19 @@ public:
          ///< Sets the video display format to the given one (only useful
          ///< if this device has an MPEG decoder).
          ///< A derived class must first call the base class function!
+         ///< NOTE: this is only for SD devices. HD devices shall implement their
+         ///< own setup menu with the necessary parameters for controlling output.
   virtual void SetVideoFormat(bool VideoFormat16_9);
          ///< Sets the output video format to either 16:9 or 4:3 (only useful
          ///< if this device has an MPEG decoder).
-  virtual eVideoSystem GetVideoSystem(void);
+         ///< NOTE: this is only for SD devices. HD devices shall implement their
+         ///< own setup menu with the necessary parameters for controlling output.
+#ifdef DEPRECATED_VIDEOSYSTEM
+  virtual eVideoSystem GetVideoSystem(void) { return vsPAL; }
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
+         ///< This function is deprecated and will be removed in a future version!
+#endif
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
          ///< Returns the Width, Height and VideoAspect ratio of the currently
          ///< displayed video material. Width and Height are given in pixel
@@ -566,8 +576,9 @@ protected:
   virtual void SetVolumeDevice(int Volume);
        ///< Sets the audio volume on this device (Volume = 0...255).
   virtual void SetDigitalAudioDevice(bool On);
-       ///< Tells the actual device that digital audio output shall be switched
-       ///< on or off.
+       ///< Tells the output device that the current audio track is Dolby Digital.
+       ///< Only used by the original "full featured" DVB cards - do not use for new
+       ///< developments!
 public:
   bool IsMute(void) const { return mute; }
   bool ToggleMute(void);

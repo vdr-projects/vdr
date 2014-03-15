@@ -55,3 +55,7 @@ VDR Plugin 'dvbsddevice' Revision History
 
 - Avoiding unnecessary pkg-config warnings in plugin Makefiles.
 - cDevice::TrickSpeed() now has an additional parameter named Forward.
+
+2014-03-15: Version 2.1.2
+
+- The function cDevice::GetVideoSystem() has been deprecated.
