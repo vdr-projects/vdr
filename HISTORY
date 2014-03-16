@@ -8252,3 +8252,6 @@ Video Disk Recorder Revision History
     it shall implement the proper options in its plugin's SetupMenu() function.
 - Added support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters (thanks to
   Rolf Ahrenberg).
+- Now initializing the isOnVideoDirectoryFileSystem member of cRecording when
+  scanning the video directory, so that it won't cause a delay when opening the menu
+  on a system with a large number of recordings.
