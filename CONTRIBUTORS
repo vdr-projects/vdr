@@ -2935,6 +2935,7 @@ Christopher Reimer <vdr@creimer.net>
  VDR source directory when doing "make plugins"
  for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
  for reporting a possible crash in the OSD demo
+ for adding support for systemd
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
