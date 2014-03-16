@@ -8255,3 +8255,6 @@ Video Disk Recorder Revision History
 - Now initializing the isOnVideoDirectoryFileSystem member of cRecording when
   scanning the video directory, so that it won't cause a delay when opening the menu
   on a system with a large number of recordings.
+- Now resetting the isOnVideoDirectoryFileSystem member of a cRecording to -1 after
+  renaming it, so that it will be re-checked upon the next call to
+  IsOnVideoDirectoryFileSystem().
