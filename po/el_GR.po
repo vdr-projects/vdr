@@ -76,6 +76,15 @@ msgstr ""
 msgid "StreamId"
 msgstr ""
 
+msgid "Pilot"
+msgstr ""
+
+msgid "T2SystemId"
+msgstr ""
+
+msgid "SISO/MISO"
+msgstr ""
+
 msgid "Starting EPG scan"
 msgstr "Αρχή σάρωση EPG"
 
@@ -562,6 +571,12 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
+
+msgid "Nid"
+msgstr ""
+
+msgid "Tid"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Οι ριθμύσεις τον καναλιών αλλυλοσυμπίπτουν!"

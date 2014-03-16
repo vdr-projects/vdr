@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.19 2014/02/08 12:36:12 kls Exp $
+ * $Id: menu.c 3.23 2014/03/16 10:38:31 kls Exp $
  */
 
 #include "menu.h"
@@ -214,9 +214,9 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0]));
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
-  /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
   Add(new cMenuEditIntItem( tr("Tid"),          &data.tid, 0));
+  /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
   XXX*/
   // Parameters for specific types of sources:
@@ -2533,6 +2533,7 @@ public:
   int Level(void) { return level; }
   cRecording *Recording(void) { return recording; }
   bool IsDirectory(void) { return name != NULL; }
+  void SetRecording(cRecording *Recording) { recording = Recording; }
   virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
   };
 
@@ -2596,7 +2597,10 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus,
 
 cMenuRecordings::~cMenuRecordings()
 {
-  helpKeys = -1;
+  if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+     if (!ri->IsDirectory())
+        SetRecording(ri->Recording()->FileName());
+     }
   free(base);
 }
 
@@ -2782,6 +2786,7 @@ eOSState cMenuRecordings::Delete(void)
            Display();
            if (!Count())
               return osBack;
+           return osUser2;
            }
         else
            Skins.Message(mtError, tr("Error while deleting recording!"));
@@ -2860,6 +2865,14 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
      Display();
      path = NULL;
      fileName = NULL;
+     }
+  else if (state == osUser2) {
+     // a recording in a sub folder was deleted, so update the current item
+     cOsdMenu *m = HasSubMenu() ? SubMenu() : this;
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+        if (cMenuRecordingItem *riSub = (cMenuRecordingItem *)m->Get(m->Current()))
+           ri->SetRecording(riSub->Recording());
+        }
      }
   if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
      // the last recording in a subdirectory was deleted, so let's go back up
@@ -4952,6 +4965,7 @@ void cReplayControl::Stop(void)
         }
      }
   cDvbPlayerControl::Stop();
+  cMenuRecordings::SetRecording(NULL); // make sure opening the Recordings menu navigates to the last replayed recording
 }
 
 void cReplayControl::SetRecording(const char *FileName)

@@ -108,8 +108,16 @@ cDvbHdFfDevice::~cDvbHdFfDevice()
 
 void cDvbHdFfDevice::MakePrimaryDevice(bool On)
 {
-  if (On)
+  if (On) {
      new cHdffOsdProvider(mHdffCmdIf);
+     //TODO the same code is also used in cHdffSetupPage::Store() and cHdffMenu::SetVideoConversion() - combine?
+     HdffVideoFormat_t videoFormat;
+     videoFormat.AutomaticEnabled = true;
+     videoFormat.AfdEnabled = false;
+     videoFormat.TvFormat = (HdffTvFormat_t) gHdffSetup.TvFormat;
+     videoFormat.VideoConversion = (HdffVideoConversion_t) gHdffSetup.VideoConversion;
+     mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
+     }
   cDvbDevice::MakePrimaryDevice(On);
 }
 
@@ -235,37 +243,6 @@ uchar *cDvbHdFfDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, i
     return result;
 }
 
-void cDvbHdFfDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
-{
-  //TODO???
-  cDevice::SetVideoDisplayFormat(VideoDisplayFormat);
-}
-
-void cDvbHdFfDevice::SetVideoFormat(bool VideoFormat16_9)
-{
-  HdffVideoFormat_t videoFormat;
-  videoFormat.AutomaticEnabled = true;
-  videoFormat.AfdEnabled = false;
-  videoFormat.TvFormat = (HdffTvFormat_t) gHdffSetup.TvFormat;
-  videoFormat.VideoConversion = (HdffVideoConversion_t) gHdffSetup.VideoConversion;
-  mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
-}
-
-eVideoSystem cDvbHdFfDevice::GetVideoSystem(void)
-{
-  eVideoSystem VideoSystem = vsPAL;
-  if (fd_video >= 0) {
-     video_size_t vs;
-     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-        if (vs.h == 480 || vs.h == 240)
-           VideoSystem = vsNTSC;
-        }
-     else
-        LOG_ERROR;
-     }
-  return VideoSystem;
-}
-
 void cDvbHdFfDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
   if (fd_video >= 0) {
@@ -383,8 +360,8 @@ bool cDvbHdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   bool DoTune = !IsTunedToTransponder(Channel);
 
-  bool pidHandlesVideo = pidHandles[ptVideo].pid == vpid;
-  bool pidHandlesAudio = pidHandles[ptAudio].pid == apid;
+  bool pidHandlesVideo = vpid && pidHandles[ptVideo].pid == vpid;
+  bool pidHandlesAudio = apid && pidHandles[ptAudio].pid == apid;
 
   bool TurnOffLivePIDs = DoTune
                          || !IsPrimaryDevice()
@@ -441,11 +418,6 @@ void cDvbHdFfDevice::SetAudioChannelDevice(int AudioChannel)
 void cDvbHdFfDevice::SetVolumeDevice(int Volume)
 {
   mHdffCmdIf->CmdMuxSetVolume(Volume * 100 / 255);
-}
-
-void cDvbHdFfDevice::SetDigitalAudioDevice(bool On)
-{
-  // not needed
 }
 
 void cDvbHdFfDevice::SetAudioTrackDevice(eTrackType Type)

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.h 3.0 2007/06/10 08:50:21 kls Exp $
+ * $Id: nit.h 3.1 2014/03/10 14:12:05 kls Exp $
  */
 
 #ifndef __NIT_H
 #define __NIT_H
 
 #include "filter.h"
+#include "sdt.h"
 
 #define MAXNITS 16
 #define MAXNETWORKNAME Utf8BufSize(256)
@@ -26,13 +27,14 @@ private:
     };
 
   cSectionSyncer sectionSyncer;
+  cSdtFilter *sdtFilter;
   cNit nits[MAXNITS];
   u_short networkId;
   int numNits;
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
-  cNitFilter(void);
+  cNitFilter(cSdtFilter *SdtFilter);
   virtual void SetStatus(bool On);
   };
 

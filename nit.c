@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 3.0 2013/03/07 09:42:29 kls Exp $
+ * $Id: nit.c 3.3 2014/03/16 10:38:31 kls Exp $
  */
 
 #include "nit.h"
@@ -19,8 +19,9 @@
 #define DVB_SYSTEM_1 0 // see also dvbdevice.c
 #define DVB_SYSTEM_2 1
 
-cNitFilter::cNitFilter(void)
+cNitFilter::cNitFilter(cSdtFilter *SdtFilter)
 {
+  sdtFilter = SdtFilter;
   numNits = 0;
   networkId = 0;
   Set(0x10, 0x40);  // NIT
@@ -183,6 +184,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::S2SatelliteDeliverySystemDescriptorTag: {
@@ -243,7 +245,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         }
                     if (!found || forceTransponderUpdate) {
-                        for (int n = 0; n < NumFrequencies; n++) {
+                       for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('C')))
@@ -253,6 +255,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
@@ -314,8 +317,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            else
                               delete Channel;
                            }
-                        }
+                       }
                     }
+                 sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::ExtensionDescriptorTag: {
@@ -329,11 +333,12 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   SI::T2DeliverySystemDescriptor *td = (SI::T2DeliverySystemDescriptor *)d;
                                   int Frequency = Channel->Frequency();
                                   int SymbolRate = Channel->Srate();
-                                  //int SystemId = td->getSystemId();
                                   cDvbTransponderParameters dtp(Channel->Parameters());
                                   dtp.SetSystem(DVB_SYSTEM_2);
                                   dtp.SetStreamId(td->getPlpId());
+                                  dtp.SetT2SystemId(td->getT2SystemId());
                                   if (td->getExtendedDataFlag()) {
+                                     dtp.SetSisoMiso(td->getSisoMiso());
                                      static int T2Bandwidths[] = { 8000000, 7000000, 6000000, 5000000, 10000000, 1712000, 0, 0 };
                                      dtp.SetBandwidth(T2Bandwidths[td->getBandwidth()]);
                                      static int T2GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4, GUARD_INTERVAL_1_128, GUARD_INTERVAL_19_128, GUARD_INTERVAL_19_256, 0 };

@@ -8202,3 +8202,61 @@ Video Disk Recorder Revision History
 - Fixed the replay progress display for very long recordings.
 - Fixed detecting broken video data streams when recording.
 - Fixed handling frame detection buffer length (reported by Eike Sauer).
+
+2014-03-16: Version 2.1.6
+
+- Revoked "Fixed some compiler warnings with Clang 3.4.1" from ci.c, because this
+  did not compile with older versions of gcc (thanks to Sören Moch).
+- Fixed keeping the current position in the Recordings menu if a recording was
+  deleted in a sub folder.
+- Fixed handling transfer mode on full featured DVB cards for encrypted channels
+  that have no audio pid (reported by Christian Winkler).
+- Fixed a possible endless loop in cH264Parser::GetGolombUe(), which caused recordings
+  on some HD channels to get stuck and resulted in buffer overflows.
+- Fixed handling PAT packets when detecting frames, so that they can be properly
+  taken into account when regenerating the index of a recording.
+- Fixed adding new source types in case they are already registered (reported by Rolf
+  Ahrenberg).
+- Removed an unnecessary assignment from cMenuRecordings::~cMenuRecordings().
+- The Recordings menu now remembers the last recording the cursor was positioned on,
+  independent of the last replayed recording. When a replay ends, however, the cursor
+  will initially be positioned to the last replayed recording again when the menu
+  is opened.
+- Updated the Finnish OSD texts (thanks to Antti Hartikainen).
+- Fixed drawing the live indicator in the LCARS skin in case there are no devices.
+- When checking for obsolete channels, those with an RID that is not 0 are now
+  ignored (suggested by Oliver Endriss).
+- The SDT is now only parsed *after* the NIT has been read, and it explicitly uses
+  the source value derived from the NIT. This should prevent new channels from being
+  created with the wrong source.
+- Added a log message in case a receiver is detached from its device because the
+  assigned CAM can't decrypt the channel.
+- Refactored setup parameter handling for output devices:
+  + The function cDevice::GetVideoSystem() has been deprecated and will be removed
+    in a future version. In order to check whether a particular plugin needs to be
+    modified if this function is removed, you can comment out the line
+    #define DEPRECATED_VIDEOSYSTEM
+    in device.h.
+  + Handling the "video (display) format" (things like 16:9, 4:3, pan&scan, letterbox
+    etc) shall now be done by the individual output devices, because the types and
+    numbers of parameters are too device specific. The Setup/DVB parameters
+    "Video format" and "Video display format" are still there for now and can be used
+    by SD devices. HD devices, however, shall not use these parameters (any more),
+    but rather implement their own setup menu with the necessary parameters for
+    controlling output.
+  + The dvbhdffdevice plugin has been modified accordingly.
+  + Made it clear that cDevice::SetDigitalAudioDevice() merely tells the output device
+    that the current audio track is Dolby Digital. This function was only used by the
+    original "full featured" DVB cards - do not use it for new developments!
+    If an output device has several ways of replaying audio (like HDMI or analog jack)
+    it shall implement the proper options in its plugin's SetupMenu() function.
+- Added support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters (thanks to
+  Rolf Ahrenberg).
+- Now initializing the isOnVideoDirectoryFileSystem member of cRecording when
+  scanning the video directory, so that it won't cause a delay when opening the menu
+  on a system with a large number of recordings.
+- Now resetting the isOnVideoDirectoryFileSystem member of a cRecording to -1 after
+  renaming it, so that it will be re-checked upon the next call to
+  IsOnVideoDirectoryFileSystem().
+- Added support for systemd (thanks to Christopher Reimer). To activate this you
+  need to add "SDNOTIFY=1" to the 'make' call.

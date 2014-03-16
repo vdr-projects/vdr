@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.4 2014/01/04 15:01:52 kls Exp $
+ * $Id: channels.c 3.5 2014/03/10 13:14:02 kls Exp $
  */
 
 #include "channels.h"
@@ -1039,7 +1039,7 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
 void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid) {
+      if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid && channel->Rid() == 0) {
          if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
             channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
          }

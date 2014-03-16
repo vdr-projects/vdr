@@ -76,6 +76,15 @@ msgstr "Rolloff"
 msgid "StreamId"
 msgstr "StreamId"
 
+msgid "Pilot"
+msgstr ""
+
+msgid "T2SystemId"
+msgstr ""
+
+msgid "SISO/MISO"
+msgstr ""
+
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
 
@@ -562,6 +571,12 @@ msgstr "CA (dekodavimo sistema)"
 
 msgid "Sid"
 msgstr "Serviso id"
+
+msgid "Nid"
+msgstr ""
+
+msgid "Tid"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Kanalų nustatymai neunikalūs!"

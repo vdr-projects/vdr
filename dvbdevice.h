@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 3.4 2014/01/16 11:45:35 kls Exp $
+ * $Id: dvbdevice.h 3.5 2014/03/16 10:38:31 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -92,6 +92,7 @@ int MapToDriver(int Value, const tDvbParameterMap *Map);
 int UserIndex(int Value, const tDvbParameterMap *Map);
 int DriverIndex(int Value, const tDvbParameterMap *Map);
 
+extern const tDvbParameterMap PilotValues[];
 extern const tDvbParameterMap InversionValues[];
 extern const tDvbParameterMap BandwidthValues[];
 extern const tDvbParameterMap CoderateValues[];
@@ -118,6 +119,9 @@ private:
   int hierarchy;
   int rollOff;
   int streamId;
+  int t2systemId;
+  int sisoMiso;
+  int pilot;
   int PrintParameter(char *p, char Name, int Value) const;
   const char *ParseParameter(const char *s, int &Value, const tDvbParameterMap *Map = NULL);
 public:
@@ -134,6 +138,9 @@ public:
   int Hierarchy(void) const { return hierarchy; }
   int RollOff(void) const { return rollOff; }
   int StreamId(void) const { return streamId; }
+  int T2SystemId(void) const { return t2systemId; }
+  int SisoMiso(void) const { return sisoMiso; }
+  int Pilot(void) const { return pilot; }
   void SetPolarization(char Polarization) { polarization = Polarization; }
   void SetInversion(int Inversion) { inversion = Inversion; }
   void SetBandwidth(int Bandwidth) { bandwidth = Bandwidth; }
@@ -146,6 +153,9 @@ public:
   void SetHierarchy(int Hierarchy) { hierarchy = Hierarchy; }
   void SetRollOff(int RollOff) { rollOff = RollOff; }
   void SetStreamId(int StreamId) { streamId = StreamId; }
+  void SetT2SystemId(int T2SystemId) { t2systemId = T2SystemId; }
+  void SetSisoMiso(int SisoMiso) { sisoMiso = SisoMiso; }
+  void SetPilot(int Pilot) { pilot = Pilot; }
   cString ToString(char Type) const;
   bool Parse(const char *s);
   };

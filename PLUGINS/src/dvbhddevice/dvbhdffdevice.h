@@ -51,9 +51,6 @@ public:
 // Video format facilities
 
 public:
-  virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
-  virtual void SetVideoFormat(bool VideoFormat16_9);
-  virtual eVideoSystem GetVideoSystem(void);
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
 
@@ -70,7 +67,6 @@ protected:
   virtual int GetAudioChannelDevice(void);
   virtual void SetAudioChannelDevice(int AudioChannel);
   virtual void SetVolumeDevice(int Volume);
-  virtual void SetDigitalAudioDevice(bool On);
 
 // Player facilities
 

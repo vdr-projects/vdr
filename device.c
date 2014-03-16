@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.12 2014/02/18 13:12:39 kls Exp $
+ * $Id: device.c 3.15 2014/03/15 13:23:28 kls Exp $
  */
 
 #include "device.h"
@@ -430,11 +430,6 @@ void cDevice::SetVideoFormat(bool VideoFormat16_9)
 {
 }
 
-eVideoSystem cDevice::GetVideoSystem(void)
-{
-  return vsPAL;
-}
-
 void cDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
   Width = 0;
@@ -575,7 +570,7 @@ void cDevice::StartSectionHandler(void)
      AttachFilter(eitFilter = new cEitFilter);
      AttachFilter(patFilter = new cPatFilter);
      AttachFilter(sdtFilter = new cSdtFilter(patFilter));
-     AttachFilter(nitFilter = new cNitFilter);
+     AttachFilter(nitFilter = new cNitFilter(sdtFilter));
      }
 }
 
@@ -1608,6 +1603,7 @@ void cDevice::Action(void)
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
                         if (DetachReceivers) {
+                           dsyslog("detaching receiver - won't decrypt channel %s with CAM %d", *receiver[i]->ChannelID().ToString(), CamSlotNumber);
                            ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
                            Detach(receiver[i]);
                            }

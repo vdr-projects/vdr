@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 3.1 2014/01/01 13:39:24 kls Exp $
+ * $Id: dvbsdffdevice.c 3.3 2014/03/15 12:35:21 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -241,21 +241,6 @@ void cDvbSdFfDevice::SetVideoFormat(bool VideoFormat16_9)
   SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
 }
 
-eVideoSystem cDvbSdFfDevice::GetVideoSystem(void)
-{
-  eVideoSystem VideoSystem = vsPAL;
-  if (fd_video >= 0) {
-     video_size_t vs;
-     if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
-        if (vs.h == 480 || vs.h == 240)
-           VideoSystem = vsNTSC;
-        }
-     else
-        LOG_ERROR;
-     }
-  return VideoSystem;
-}
-
 void cDvbSdFfDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
 {
   if (fd_video >= 0) {
@@ -400,8 +385,8 @@ bool cDvbSdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   bool DoTune = !IsTunedToTransponder(Channel);
 
-  bool pidHandlesVideo = pidHandles[ptVideo].pid == vpid;
-  bool pidHandlesAudio = pidHandles[ptAudio].pid == apid;
+  bool pidHandlesVideo = vpid && pidHandles[ptVideo].pid == vpid;
+  bool pidHandlesAudio = apid && pidHandles[ptAudio].pid == apid;
 
   bool TurnOffLivePIDs = DoTune
                          || !IsPrimaryDevice()

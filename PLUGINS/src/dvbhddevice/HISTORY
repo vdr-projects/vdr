@@ -93,3 +93,8 @@ VDR Plugin 'dvbhddevice' Revision History
 2014-01-17: Version 2.1.4
 
 - Using PCR based clock recovery in transfer mode.
+
+2014-03-15: Version 2.1.6
+
+- The function cDevice::GetVideoSystem() has been deprecated.
+- Removed old-style video format setting functions.

@@ -3,14 +3,14 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsddevice.c 3.2 2014/01/01 13:43:28 kls Exp $
+ * $Id: dvbsddevice.c 3.3 2014/03/15 12:28:14 kls Exp $
  */
 
 #include <getopt.h>
 #include <vdr/plugin.h>
 #include "dvbsdffdevice.h"
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.1.2";
 static const char *DESCRIPTION    = "SD Full Featured DVB device";
 
 class cPluginDvbsddevice : public cPlugin {

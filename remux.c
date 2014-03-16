@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.3 2014/02/21 11:51:55 kls Exp $
+ * $Id: remux.c 3.5 2014/03/08 15:05:35 kls Exp $
  */
 
 #include "remux.h"
@@ -272,7 +272,7 @@ uchar cTsPayload::GetByte(void)
             if (data[index] == TS_SYNC_BYTE && index + TS_SIZE <= length) { // to make sure we are at a TS header start and drop incomplete TS packets at the end
                uchar *p = data + index;
                if (TsPid(p) == pid) { // only handle TS packets for the initial PID
-                  if (numPacketsPid++ > MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
+                  if (++numPacketsPid > MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
                      return SetEof();
                   if (TsHasPayload(p)) {
                      if (index > 0 && TsPayloadStart(p)) // checking index to not skip the very first TS packet
@@ -281,6 +281,8 @@ uchar cTsPayload::GetByte(void)
                      break;
                      }
                   }
+               else if (TsPid(p) == PATPID)
+                  return SetEof(); // caller must see PAT packets in case of index regeneration
                else
                   numPacketsOther++;
                }
@@ -1252,7 +1254,7 @@ uint32_t cH264Parser::GetBits(int Bits)
 uint32_t cH264Parser::GetGolombUe(void)
 {
   int z = -1;
-  for (int b = 0; !b; z++)
+  for (int b = 0; !b && z < 32; z++) // limiting z to no get stuck if GetBit() always returns 0
       b = GetBit();
   return (1 << z) - 1 + GetBits(z);
 }
@@ -1288,8 +1290,10 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
            case nutAccessUnitDelimiter:  ParseAccessUnitDelimiter();
                                          gotAccessUnitDelimiter = true;
                                          break;
-           case nutSequenceParameterSet: ParseSequenceParameterSet();
-                                         gotSequenceParameterSet = true;
+           case nutSequenceParameterSet: if (gotAccessUnitDelimiter) {
+                                            ParseSequenceParameterSet();
+                                            gotSequenceParameterSet = true;
+                                            }
                                          break;
            case nutCodedSliceNonIdr:
            case nutCodedSliceIdr:        if (gotAccessUnitDelimiter && gotSequenceParameterSet) {

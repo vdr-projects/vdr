@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.10 2014/01/26 12:27:51 kls Exp $
+ * $Id: vdr.c 3.11 2014/03/16 12:49:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -34,6 +34,9 @@
 #include <stdlib.h>
 #include <sys/capability.h>
 #include <sys/prctl.h>
+#ifdef SDNOTIFY
+#include <systemd/sd-daemon.h>
+#endif
 #include <termios.h>
 #include <unistd.h>
 #include "audio.h"
@@ -844,6 +847,10 @@ int main(int argc, char *argv[])
      dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
      alarm(WatchdogTimeout); // Initial watchdog timer start
      }
+
+#ifdef SDNOTIFY
+  sd_notify(0, "READY=1");
+#endif
 
   // Main program loop:
 

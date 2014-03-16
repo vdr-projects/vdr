@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-10-14 11:56+0200\n"
+"POT-Creation-Date: 2013-11-03 15:59+0100\n"
 "PO-Revision-Date: 2013-11-10 23:02+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -82,6 +82,15 @@ msgstr "Rolloff"
 
 msgid "StreamId"
 msgstr "StreamId"
+
+msgid "Pilot"
+msgstr ""
+
+msgid "T2SystemId"
+msgstr ""
+
+msgid "SISO/MISO"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -569,6 +578,12 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
+
+msgid "Nid"
+msgstr ""
+
+msgid "Tid"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"

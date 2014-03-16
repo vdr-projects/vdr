@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.16 2014/02/08 11:16:02 kls Exp $
+ * $Id: recording.c 3.18 2014/03/16 11:09:17 kls Exp $
  */
 
 #include "recording.h"
@@ -1237,6 +1237,7 @@ bool cRecording::ChangeName(const char *NewName)
         fileName = strdup(OldFileName);
         return false;
         }
+     isOnVideoDirectoryFileSystem = -1; // it might have been moved to a different file system
      ClearSortName();
      Recordings.ChangeState();
      Recordings.TouchUpdate();
@@ -1425,6 +1426,7 @@ bool cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                     if (r->Name()) {
                        r->NumFrames(); // initializes the numFrames member
                        r->FileSizeMB(); // initializes the fileSizeMB member
+                       r->IsOnVideoDirectoryFileSystem(); // initializes the isOnVideoDirectoryFileSystem member
                        if (deleted)
                           r->deleted = time(NULL);
                        Lock();

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 3.1 2014/01/01 13:39:30 kls Exp $
+ * $Id: dvbsdffdevice.h 3.2 2014/03/15 12:36:35 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -63,7 +63,6 @@ public:
 public:
   virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
   virtual void SetVideoFormat(bool VideoFormat16_9);
-  virtual eVideoSystem GetVideoSystem(void);
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
 

@@ -76,6 +76,15 @@ msgstr "Rolloff"
 msgid "StreamId"
 msgstr "StreamId"
 
+msgid "Pilot"
+msgstr "Pilot"
+
+msgid "T2SystemId"
+msgstr "T2-Systemkennung"
+
+msgid "SISO/MISO"
+msgstr "SISO/MISO"
+
 msgid "Starting EPG scan"
 msgstr "Aktualisiere EPG-Daten"
 
@@ -562,6 +571,12 @@ msgstr "CA"
 
 msgid "Sid"
 msgstr "Sid"
+
+msgid "Nid"
+msgstr "Nid"
+
+msgid "Tid"
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaleinstellungen sind nicht eindeutig!"

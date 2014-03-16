@@ -709,6 +709,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to eliminate MAXDVBDEVICES
  for reporting that there are channels that need even more than 10 TS packets in order
  to detect the frame type
+ for suggesting to ignore channels with an RID that is not 0 when checking for obsolete
+ channels
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1183,6 +1185,9 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  existing edited version of a recording
  for adding code for parsing LCN and AVC descriptors to libsi
  for fixing clearing non-editable members in the channel editor
+ for reporting a problem with adding new source types in case they are already
+ registered
+ for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2515,6 +2520,7 @@ Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
  for adding maximum SNR value for PCTV Systems nanoStick T2 290e
  for updating 'sources.conf'
+ for translating OSD texts to the Finnish language
 
 Bernd Melcher <bernd@bernd-melcher.de>
  for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro
@@ -2917,7 +2923,7 @@ Luis Fernandes <telping@gmail.com>
  for suggesting to add handling MPEG audio type "ISO/IEC 14496-3 Audio with LATM
  transport syntax"
 
-Christopher Reimer <reimer.christopher@freenet.de>
+Christopher Reimer <vdr@creimer.net>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
  for contributing to a patch that implements FHS support
@@ -2929,6 +2935,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  VDR source directory when doing "make plugins"
  for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
  for reporting a possible crash in the OSD demo
+ for adding support for systemd
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3141,6 +3148,8 @@ Sören Moch <smoch@web.de>
  for pointing out that FindHeader() can also be used in cMpeg2Fixer::AdjTref()
  for reporting a problem with detecting user inactivity in case the system time is
  changed after VDR has been started
+ for reporting that the change "Fixed some compiler warnings with Clang 3.4.1" caused
+ ci.c to no longer compile with older versions of gcc
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
@@ -3271,3 +3280,7 @@ Tony Houghton <h@realh.co.uk>
  warning with Clang 3.4.1
  for suggesting to replace the NULL pointer assignment in ~cReceiver() to force a
  segfault with a call to abort()
+
+Christian Winkler <winkler_chr@yahoo.de>
+ for reporting a problem with transfer mode on full featured DVB cards for encrypted
+ channels that have no audio pid
