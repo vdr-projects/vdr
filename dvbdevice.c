@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.10 2014/01/20 11:46:26 kls Exp $
+ * $Id: dvbdevice.c 3.11 2014/03/16 10:38:31 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -35,6 +35,13 @@ static int DvbApiVersion = 0x0000; // the version of the DVB driver actually in 
 #define SCR_RANDOM_TIMEOUT  500 // ms (add random value up to this when tuning SCR device to avoid lockups)
 
 // --- DVB Parameter Maps ----------------------------------------------------
+
+const tDvbParameterMap PilotValues[] = {
+  {   0, PILOT_OFF,  trNOOP("off") },
+  {   1, PILOT_ON,   trNOOP("on") },
+  { 999, PILOT_AUTO, trNOOP("auto") },
+  {  -1, 0, NULL }
+  };
 
 const tDvbParameterMap InversionValues[] = {
   {   0, INVERSION_OFF,  trNOOP("off") },
@@ -206,6 +213,9 @@ cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
   hierarchy    = HIERARCHY_AUTO;
   rollOff      = ROLLOFF_AUTO;
   streamId     = 0;
+  t2systemId   = 0;
+  sisoMiso     = 0;
+  pilot        = PILOT_AUTO;
   Parse(Parameters);
 }
 
@@ -227,10 +237,13 @@ cString cDvbTransponderParameters::ToString(char Type) const
   ST("   T*")  q += PrintParameter(q, 'G', MapToUser(guard, GuardValues));
   ST("ACST*")  q += PrintParameter(q, 'I', MapToUser(inversion, InversionValues));
   ST("ACST*")  q += PrintParameter(q, 'M', MapToUser(modulation, ModulationValues));
+  ST("  S 2")  q += PrintParameter(q, 'N', MapToUser(pilot, PilotValues));
   ST("  S 2")  q += PrintParameter(q, 'O', MapToUser(rollOff, RollOffValues));
   ST("  ST2")  q += PrintParameter(q, 'P', streamId);
+  ST("   T2")  q += PrintParameter(q, 'Q', t2systemId);
   ST("  ST*")  q += PrintParameter(q, 'S', MapToUser(system, SystemValuesSat)); // we only need the numerical value, so Sat or Terr doesn't matter
   ST("   T*")  q += PrintParameter(q, 'T', MapToUser(transmission, TransmissionValues));
+  ST("   T2")  q += PrintParameter(q, 'X', sisoMiso);
   ST("   T*")  q += PrintParameter(q, 'Y', MapToUser(hierarchy, HierarchyValues));
   return buffer;
 }
@@ -263,12 +276,15 @@ bool cDvbTransponderParameters::Parse(const char *s)
           case 'I': s = ParseParameter(s, inversion, InversionValues); break;
           case 'L': polarization = 'L'; s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
+          case 'N': s = ParseParameter(s, pilot, PilotValues); break;
           case 'O': s = ParseParameter(s, rollOff, RollOffValues); break;
           case 'P': s = ParseParameter(s, streamId); break;
+          case 'Q': s = ParseParameter(s, t2systemId); break;
           case 'R': polarization = 'R'; s++; break;
           case 'S': s = ParseParameter(s, system, SystemValuesSat); break; // we only need the numerical value, so Sat or Terr doesn't matter
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
           case 'V': polarization = 'V'; s++; break;
+          case 'X': s = ParseParameter(s, sisoMiso); break;
           case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
           default: esyslog("ERROR: unknown parameter key '%c'", *s);
                    return false;
@@ -839,7 +855,7 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_INVERSION, dtp.Inversion());
      if (frontendType == SYS_DVBS2) {
         // DVB-S2
-        SETCMD(DTV_PILOT, PILOT_AUTO);
+        SETCMD(DTV_PILOT, dtp.Pilot());
         SETCMD(DTV_ROLLOFF, dtp.RollOff());
         if (DvbApiVersion >= 0x0508)
            SETCMD(DTV_STREAM_ID, dtp.StreamId());
@@ -1038,6 +1054,9 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
     case 10: ST("   T")  return new cMenuEditMapItem( tr("Hierarchy"),    &dtp.hierarchy,    HierarchyValues);    else return GetOsdItem();
     case 11: ST("  S ")  return new cMenuEditMapItem( tr("Rolloff"),      &dtp.rollOff,      RollOffValues);      else return GetOsdItem();
     case 12: ST("  ST")  return new cMenuEditIntItem( tr("StreamId"),     &dtp.streamId,     0, 255);             else return GetOsdItem();
+    case 13: ST("  S ")  return new cMenuEditMapItem( tr("Pilot"),        &dtp.pilot,        PilotValues);        else return GetOsdItem();
+    case 14: ST("   T")  return new cMenuEditIntItem( tr("T2SystemId"),   &dtp.t2systemId,   0, 65535);           else return GetOsdItem();
+    case 15: ST("   T")  return new cMenuEditIntItem( tr("SISO/MISO"),    &dtp.sisoMiso,     0, 1);               else return GetOsdItem();
     default: return NULL;
     }
   return NULL;

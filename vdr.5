@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 3.1 2013/08/11 13:50:42 kls Exp $
+.\" $Id: vdr.5 3.2 2014/03/16 10:38:31 kls Exp $
 .\"
 .TH vdr 5 "31 Mar 2013" "2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -99,12 +99,15 @@ l l.
 \fBI\fR@Inversion (0, 1)
 \fBL\fR@Left circular polarization
 \fBM\fR@Modulation (2, 5, 6, 7, 10, 11, 12, 16, 32, 64, 128, 256, 999)
+\fBN\fR@pilot mode (0, 1, 999)
 \fBO\fR@rollOff (0, 20, 25, 35)
 \fBP\fR@stream id (0-255)
+\fBQ\fR@t2 system id (0-65535)
 \fBR\fR@Right circular polarization
 \fBS\fR@delivery System (0, 1)
 \fBT\fR@Transmission mode (1, 2, 4, 8, 16, 32)
 \fBV\fR@Vertical polarization
+\fBX\fR@siso/miso mode (0, 1)
 \fBY\fR@hierarchY (0, 1, 2, 4)
 .TE
 
@@ -139,6 +142,8 @@ l l.
 \fB256\fR@QAM256 (DVB-C, DVB-T2)
 .TE
 
+\fBPilot mode:\fR The pilot mode (0 = "off", 1 = "on", 999 = "auto") for DVB-S2 multiplex (DVB-S2 only).
+
 \fBRolloff:\fR The Nyquist filter rolloff factor for DVB-S (\fB35\fR) and DVB-S2 (\fB35\fR, 25, 20),
 35 = 0.35, 25 = 0.25, 20 = 0.20, DVB-S/DVB-S2 default value is 0.35
 
@@ -146,7 +151,11 @@ l l.
 Physical Layer Pipe (PLP) id (\fB0\fR-255) for DVB-T2 multiplex (DVB-S2/DVB-T2 only,
 with devices that support "multi streaming").
 
+\fBT2 System id:\fR Unique identifier (\fB0\fR-65535) of T2 system within the DVB network (DVB-T2).
+
 \fBTransmission mode:\fR Number of DVB-T OFDM carriers, 32 = 32k, 16 = 16k, 8 = 8k, 4 = 4k, 2 = 2k, 1 = 1k. If in doubt, try 8k.
+
+\fBSISO/MISO mode:\fR Specifies the Single-Input/Multiple-Input Single-Output mode (\fB0\fR = SISO, 1 = MISO) (DVB-T2).
 
 \fBHierarchy:\fR If set to 1, this transponder uses two streams, high priority and low priority.
 If in doubt, try 0 (off). (DVB-T/DVB-T2 only).

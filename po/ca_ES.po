@@ -79,6 +79,15 @@ msgstr "Rolloff"
 msgid "StreamId"
 msgstr "StreamId"
 
+msgid "Pilot"
+msgstr ""
+
+msgid "T2SystemId"
+msgstr ""
+
+msgid "SISO/MISO"
+msgstr ""
+
 msgid "Starting EPG scan"
 msgstr "Iniciant exploració EPG"
 
@@ -565,6 +574,12 @@ msgstr "Accés Condicional"
 
 msgid "Sid"
 msgstr "Sid"
+
+msgid "Nid"
+msgstr ""
+
+msgid "Tid"
+msgstr ""
 
 msgid "Channel settings are not unique!"
 msgstr "Propietats del canal duplicades!"

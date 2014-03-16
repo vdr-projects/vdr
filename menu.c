@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.22 2014/03/09 15:01:31 kls Exp $
+ * $Id: menu.c 3.23 2014/03/16 10:38:31 kls Exp $
  */
 
 #include "menu.h"
@@ -214,9 +214,9 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0]));
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
-  /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
   Add(new cMenuEditIntItem( tr("Tid"),          &data.tid, 0));
+  /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
   XXX*/
   // Parameters for specific types of sources:
