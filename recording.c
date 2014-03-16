@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.91.1.6 2014/02/08 10:57:26 kls Exp $
+ * $Id: recording.c 2.91.1.7 2014/03/16 11:03:18 kls Exp $
  */
 
 #include "recording.h"
@@ -1308,6 +1308,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                     if (r->Name()) {
                        r->NumFrames(); // initializes the numFrames member
                        r->FileSizeMB(); // initializes the fileSizeMB member
+                       r->IsOnVideoDirectoryFileSystem(); // initializes the isOnVideoDirectoryFileSystem member
                        if (deleted)
                           r->deleted = time(NULL);
                        Lock();
