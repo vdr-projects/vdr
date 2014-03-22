@@ -7913,3 +7913,5 @@ Video Disk Recorder Revision History
 - Now initializing the isOnVideoDirectoryFileSystem member of cRecording when
   scanning the video directory, so that it won't cause a delay when opening the menu
   on a system with a large number of recordings.
+- The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
+  the functional modification to cFont::CreateFont().
