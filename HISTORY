@@ -8261,9 +8261,10 @@ Video Disk Recorder Revision History
 - Added support for systemd (thanks to Christopher Reimer). To activate this you
   need to add "SDNOTIFY=1" to the 'make' call.
 
-2014-03-22: Version 2.1.7
+2014-03-24: Version 2.1.7
 
 - No longer logging an error message in DirSizeMB() if the given directory doesn't
   exist. This avoids lots of log entries in case several VDRs use the same video
   directory and one of them has already physically removed a recording directory,
   while the others still have it in their list of deleted recordings.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
