@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.7 2014/01/31 09:21:21 kls Exp $
+ * $Id: ci.h 3.8 2014/03/26 11:42:17 kls Exp $
  */
 
 #ifndef __CI_H
@@ -119,7 +119,7 @@ class cTPDU;
 class cCiTransportConnection;
 class cCiSession;
 class cCiCaProgramData;
-class cReceiver;
+class cCaPidReceiver;
 
 class cCamSlot : public cListObject {
   friend class cCiAdapter;
@@ -128,7 +128,7 @@ private:
   cMutex mutex;
   cCondVar processed;
   cCiAdapter *ciAdapter;
-  cReceiver *caPidReceiver;
+  cCaPidReceiver *caPidReceiver;
   int slotIndex;
   int slotNumber;
   cCiTransportConnection *tc[MAX_CONNECTIONS_PER_CAM_SLOT + 1];  // connection numbering starts with 1

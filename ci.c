@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.12 2014/02/25 09:59:55 kls Exp $
+ * $Id: ci.c 3.13 2014/03/26 11:51:09 kls Exp $
  */
 
 #include "ci.h"
@@ -20,6 +20,8 @@
 #include "device.h"
 #include "pat.h"
 #include "receiver.h"
+#include "remux.h"
+#include "libsi/si.h"
 #include "tools.h"
 
 // Set these to 'true' for debug output:
@@ -105,13 +107,88 @@ static char *GetString(int &Length, const uint8_t **Data)
 
 // --- cCaPidReceiver --------------------------------------------------------
 
-// A dummy receiver, just used to make the device receive the CA pids.
+// A receiver that is used to make the device receive the ECM pids, as well as the
+// CAT and the EMM pids.
 
 class cCaPidReceiver : public cReceiver {
+private:
+  int catVersion;
+  cVector<int> emmPids;
+  void AddEmmPid(int Pid);
+  void DelEmmPids(void);
+protected:
+  virtual void Activate(bool On);
 public:
+  cCaPidReceiver(void);
   virtual ~cCaPidReceiver() { Detach(); }
-  virtual void Receive(uchar *Data, int Length) {}
+  virtual void Receive(uchar *Data, int Length);
+  bool HasCaPids(void) { return NumPids() - emmPids.Size() - 1 > 0; }
   };
+
+cCaPidReceiver::cCaPidReceiver(void)
+{
+  catVersion = -1;
+  AddPid(CATPID);
+}
+
+void cCaPidReceiver::AddEmmPid(int Pid)
+{
+  for (int i = 0; i < emmPids.Size(); i++) {
+      if (emmPids[i] == Pid)
+         return;
+      }
+  emmPids.Append(Pid);
+  AddPid(Pid);
+}
+
+void cCaPidReceiver::DelEmmPids(void)
+{
+  for (int i = 0; i < emmPids.Size(); i++)
+      DelPid(emmPids[i]);
+  emmPids.Clear();
+}
+
+void cCaPidReceiver::Activate(bool On)
+{
+  catVersion = -1; // can be done independent of 'On'
+}
+
+void cCaPidReceiver::Receive(uchar *Data, int Length)
+{
+  if (TsPid(Data) == CATPID && Data[5] == SI::TableIdCAT) {
+     int l = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
+     if (l > 5) {
+        int v = (Data[10] & 0x3E) >> 1; // version number
+        if (v != catVersion) {
+           if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
+              if (l <= TS_SIZE - 8) {
+                 DelEmmPids();
+                 for (int i = 13; i < l + 8 - 4; i++) { // +8 = header, -4 = checksum
+                     if (Data[i] == 0x09) {
+                        int CaId = int(Data[i + 2] << 8) | Data[i + 3];
+                        int EmmPid = int(((Data[i + 4] & 0x1F) << 8)) | Data[i + 5];
+                        AddEmmPid(EmmPid);
+                        switch (CaId >> 8) {
+                          case 0x01: for (int j = i + 7; j < Data[i + 1] + 2; j += 4) {
+                                         EmmPid = (int(Data[j] & 0x0F) << 8) | Data[j + 1];
+                                         AddEmmPid(EmmPid);
+                                         }
+                                     break;
+                          }
+                        i += Data[i + 1] - 1; // -1 to compensate for the loop increment
+                        }
+                     }
+                 }
+              else
+                 dsyslog("multi packet CAT section - unhandled!");
+              }
+           else
+              dsyslog("multi table CAT section - unhandled!");
+           catVersion = v;
+           }
+        }
+     }
+}
 
 // --- cTPDU -----------------------------------------------------------------
 
@@ -1811,7 +1888,7 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
      const int *CaSystemIds = cas->GetCaSystemIds();
      if (CaSystemIds && *CaSystemIds) {
         if (caProgramList.Count()) {
-           if (caPidReceiver && caPidReceiver->NumPids()) {
+           if (caPidReceiver && caPidReceiver->HasCaPids()) {
               if (cDevice *d = Device())
                  d->Detach(caPidReceiver);
               }
@@ -1845,7 +1922,7 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                       }
                    }
                }
-           if (caPidReceiver && caPidReceiver->NumPids()) {
+           if (caPidReceiver && caPidReceiver->HasCaPids()) {
               if (cDevice *d = Device())
                  d->AttachReceiver(caPidReceiver);
               }
