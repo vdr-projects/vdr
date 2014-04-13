@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.6 2014/04/13 11:49:40 kls Exp $
+ * $Id: remux.c 3.7 2014/04/13 13:48:35 kls Exp $
  */
 
 #include "remux.h"
@@ -1511,7 +1511,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        for (int i = 0; i < numPtsValues; i++)
                            ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
                        qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                       uint32_t Delta = ptsValues[0] / (framesPerPayloadUnit + parser->IFrameTemporalReferenceOffset());
+                       int Div = framesPerPayloadUnit;
+                       if (framesPerPayloadUnit > 1)
+                          Div += parser->IFrameTemporalReferenceOffset();
+                       if (Div <= 0)
+                          Div = 1;
+                       uint32_t Delta = ptsValues[0] / Div;
                        // determine frame info:
                        if (isVideo) {
                           if (abs(Delta - 3600) <= 1)
