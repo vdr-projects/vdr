@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.11 2014/03/16 12:49:13 kls Exp $
+ * $Id: vdr.c 3.12 2014/04/14 12:17:17 kls Exp $
  */
 
 #include <getopt.h>
@@ -39,6 +39,7 @@
 #endif
 #include <termios.h>
 #include <unistd.h>
+#include "args.h"
 #include "audio.h"
 #include "channels.h"
 #include "config.h"
@@ -190,6 +191,7 @@ int main(int argc, char *argv[])
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTVIDEODIR VIDEODIR
 #define DEFAULTCONFDIR dd(CONFDIR, VideoDirectory)
+#define DEFAULTARGSDIR dd(ARGSDIR, "/etc/vdr/conf.d")
 #define DEFAULTCACHEDIR dd(CACHEDIR, VideoDirectory)
 #define DEFAULTRESDIR dd(RESDIR, ConfigDirectory)
 #define DEFAULTPLUGINDIR PLUGINDIR
@@ -227,6 +229,15 @@ int main(int argc, char *argv[])
   VdrUser = VDR_USER;
 #endif
 
+  cArgs *Args = NULL;
+  if (argc == 1) {
+     Args = new cArgs(argv[0]);
+     if (Args->ReadDirectory(DEFAULTARGSDIR)) {
+        argc = Args->GetArgc();
+        argv = Args->GetArgv();
+        }
+     }
+
   cVideoDirectory::SetName(VideoDirectory);
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
 
@@ -254,6 +265,7 @@ int main(int argc, char *argv[])
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
       { "resdir",   required_argument, NULL, 'r' | 0x100 },
+      { "showargs", optional_argument, NULL, 's' | 0x200 },
       { "shutdown", required_argument, NULL, 's' },
       { "split",    no_argument,       NULL, 's' | 0x100 },
       { "terminal", required_argument, NULL, 't' },
@@ -426,6 +438,19 @@ int main(int argc, char *argv[])
           case 's' | 0x100:
                     Setup.SplitEditedFiles = 1;
                     break;
+          case 's' | 0x200: {
+                    const char *ArgsDir = optarg ? optarg : DEFAULTARGSDIR;
+                    cArgs Args(argv[0]);
+                    if (!Args.ReadDirectory(ArgsDir)) {
+                       fprintf(stderr, "vdr: can't read arguments from directory: %s\n", ArgsDir);
+                       return 2;
+                       }
+                    int c = Args.GetArgc();
+                    char **v = Args.GetArgv();
+                    for (int i = 1; i < c; i++)
+                        printf("%s\n", v[i]);
+                    return 0;
+                    }
           case 't': Terminal = optarg;
                     if (access(Terminal, R_OK | W_OK) < 0) {
                        fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
@@ -539,6 +564,8 @@ int main(int argc, char *argv[])
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "            --split        split edited files at the editing marks (only\n"
                "                           useful in conjunction with --edit)\n"
+               "            --showargs[=DIR] print the arguments read from DIR and exit\n"
+               "                           (default: %s)\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root\n"
@@ -561,6 +588,7 @@ int main(int argc, char *argv[])
                DEFAULTLOCDIR,
                DEFAULTSVDRPPORT,
                DEFAULTRESDIR,
+               DEFAULTARGSDIR,
                DEFAULTVIDEODIR,
                DEFAULTWATCHDOG
                );

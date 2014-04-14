@@ -8307,7 +8307,7 @@ Video Disk Recorder Revision History
 - The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
   the functional modification to cFont::CreateFont().
 
-2014-04-13: Version 2.1.7
+2014-04-14: Version 2.1.7
 
 - No longer logging an error message in DirSizeMB() if the given directory doesn't
   exist. This avoids lots of log entries in case several VDRs use the same video
@@ -8317,3 +8317,5 @@ Video Disk Recorder Revision History
 - A cCamSlot that has WantsTsData set to true in its constructor now also gets
   the CAT and EMM PIDs data.
 - Fixed a possible division by zero in frame rate detection.
+- VDR now reads command line options from *.conf files in /etc/vdr/conf.d (thanks
+  to Lars Hanisch). See vdr.1 and vdr.5 for details.

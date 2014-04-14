@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 3.1 2013/12/25 11:01:36 kls Exp $
+.\" $Id: vdr.1 3.2 2014/04/14 12:52:45 kls Exp $
 .\"
 .TH vdr 1 "31 Mar 2013" "2.0" "Video Disk Recorder"
 .SH NAME
@@ -178,6 +178,10 @@ more information.
 Read resource files from \fIdir\fR
 (default is to read them from the config directory).
 .TP
+.BI \-\-showargs[= dir ]
+Read command line arguments from \fIdir\fR (default is \fI/etc/vdr/conf.d\fR),
+display them to the console and exit.
+.TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
 Call \fIcmd\fR to shutdown the computer. See the file \fIINSTALL\fR for more
 information.
@@ -213,6 +217,10 @@ Print version information and exit.
 .BI \-w\  sec ,\ \-\-watchdog= sec
 Activate the watchdog timer with a timeout of \fIsec\fR seconds.
 A value of \fB0\fR (default) disables the watchdog.
+.P
+If started without any options, vdr tries to read command line options
+from files named '*.conf' in the directory /etc/vdr/conf.d. Files are
+read in alphabetical order. See vdr(5) for details.
 .SH SIGNALS
 .TP
 .B SIGINT, SIGTERM

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 3.2 2014/03/16 12:47:35 kls Exp $
+# $Id: Makefile 3.3 2014/04/14 12:08:24 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -31,6 +31,7 @@ PLUGINDIR ?= $(CWD)/PLUGINS
 DESTDIR   ?=
 VIDEODIR  ?= /srv/vdr/video
 CONFDIR   ?= /var/lib/vdr
+ARGSDIR   ?= /etc/vdr/conf.d
 CACHEDIR  ?= /var/cache/vdr
 
 PREFIX    ?= /usr/local
@@ -66,7 +67,7 @@ endif
 
 SILIB    = $(LSIDIR)/libsi.a
 
-OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
+OBJS = args.o audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
        dvbplayer.o dvbspu.o dvbsubtitle.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o positioner.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
@@ -104,6 +105,7 @@ LIRC_DEVICE ?= /var/run/lirc/lircd
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\"
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"
+DEFINES += -DARGSDIR=\"$(ARGSDIR)\"
 DEFINES += -DCACHEDIR=\"$(CACHEDIR)\"
 DEFINES += -DRESDIR=\"$(RESDIR)\"
 DEFINES += -DPLUGINDIR=\"$(LIBDIR)\"
@@ -146,8 +148,9 @@ $(SILIB):
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
 	@echo "mandir=$(MANDIR)" >> $@
-	@echo "configdir=$(CONFDIR)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
+	@echo "configdir=$(CONFDIR)" >> $@
+	@echo "argsdir=$(ARGSDIR)" >> $@
 	@echo "cachedir=$(CACHEDIR)" >> $@
 	@echo "resdir=$(RESDIR)" >> $@
 	@echo "libdir=$(LIBDIR)" >> $@
@@ -265,6 +268,7 @@ install-bin: vdr
 install-dirs:
 	@mkdir -p $(DESTDIR)$(VIDEODIR)
 	@mkdir -p $(DESTDIR)$(CONFDIR)
+	@mkdir -p $(DESTDIR)$(ARGSDIR)
 	@mkdir -p $(DESTDIR)$(CACHEDIR)
 	@mkdir -p $(DESTDIR)$(RESDIR)
 
