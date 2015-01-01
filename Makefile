@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.54 2013/03/11 15:01:01 kls Exp $
+# $Id: Makefile 2.54.1.1 2015/01/01 13:59:51 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -220,7 +220,7 @@ plugins: include-dir vdr.pc
 	    INCLUDES="-I$(CWD)/include"\
 	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR="$(CWD)" || failed="$$failed $$i";\
 	    if [ -n "$(LCLBLD)" ] ; then\
-	       (cd $(PLUGINDIR)/src/$$i; for l in `find -name 'libvdr-*.so' -o -name 'lib$$i-*.so'`; do install $$l $(LIBDIR)/`basename $$l`.$(APIVERSION); done);\
+	       (cd $(PLUGINDIR)/src/$$i; for l in `find -name "libvdr-*.so" -o -name "lib$$i-*.so"`; do install $$l $(LIBDIR)/`basename $$l`.$(APIVERSION); done);\
 	       if [ -d $(PLUGINDIR)/src/$$i/po ]; then\
 	          for l in `ls $(PLUGINDIR)/src/$$i/po/*.mo`; do\
 	              install -D -m644 $$l $(LOCDIR)/`basename $$l | cut -d. -f1`/LC_MESSAGES/vdr-$$i.mo;\

@@ -7919,3 +7919,5 @@ Video Disk Recorder Revision History
 2014-04-13: Version 2.0.7
 
 - Fixed a possible division by zero in frame rate detection.
+- Fixed a bug in the Makefile when installing plugins with LCLBLD=1 (thanks to
+  Stefan Huelswitt).
