@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.5 2014/03/10 13:14:02 kls Exp $
+ * $Id: channels.c 3.6 2015/01/04 15:02:21 kls Exp $
  */
 
 #include "channels.h"
@@ -1040,8 +1040,11 @@ void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid && channel->Rid() == 0) {
+         bool OldShowChannelNamesWithSource = Setup.ShowChannelNamesWithSource;
+         Setup.ShowChannelNamesWithSource = false;
          if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
             channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
+         Setup.ShowChannelNamesWithSource = OldShowChannelNamesWithSource;
          }
       }
 }

@@ -8329,3 +8329,5 @@ Video Disk Recorder Revision History
   with the OctopusNet receiver via the 'satip' plugin).
 - Channels that are not listed in the SDT are now only marked as OBSOLETE if
   "Setup/DVB/Update channels" is set to a value other than "no" or "PIDs only".
+- Fixed multiple OBSOLETE marks in channels that are not listed in the SDT in case
+  "Setup/Miscellaneous/Show channel names with source" is set to "yes".
