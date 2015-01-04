@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.2 2013/09/06 12:13:47 kls Exp $
+ * $Id: osd.h 3.3 2015/01/04 15:51:03 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -885,6 +885,11 @@ public:
        ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
        ///< not overwrite the corresponding pixel in the target area.
        ///< If this is a true color OSD, ReplacePalette has no meaning.
+  virtual void DrawScaledBitmap(int x, int y, const cBitmap &Bitmap, double FactorX, double FactorY, bool AntiAlias = false);
+       ///< Sets the pixels in the OSD with the data from the given Bitmap, putting
+       ///< the upper left corner of the Bitmap at (x, y) and scaled by the given
+       ///< factors. If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
   virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text

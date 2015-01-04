@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.2 2013/09/03 11:59:17 kls Exp $
+ * $Id: osd.c 3.3 2015/01/04 15:46:39 kls Exp $
  */
 
 #include "osd.h"
@@ -1915,6 +1915,16 @@ void cOsd::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColo
      for (int i = 0; i < numBitmaps; i++)
          bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg, ReplacePalette, Overlay);
      }
+}
+
+void cOsd::DrawScaledBitmap(int x, int y, const cBitmap &Bitmap, double FactorX, double FactorY, bool AntiAlias)
+{
+  const cBitmap *b = &Bitmap;
+  if (!DoubleEqual(FactorX, 1.0) || !DoubleEqual(FactorY, 1.0))
+     b = b->Scaled(FactorX, FactorY, AntiAlias);
+  DrawBitmap(x, y, *b);
+  if (b != &Bitmap)
+     delete b;
 }
 
 void cOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)

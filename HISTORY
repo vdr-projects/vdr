@@ -8331,3 +8331,6 @@ Video Disk Recorder Revision History
   "Setup/DVB/Update channels" is set to a value other than "no" or "PIDs only".
 - Fixed multiple OBSOLETE marks in channels that are not listed in the SDT in case
   "Setup/Miscellaneous/Show channel names with source" is set to "yes".
+- The new function cOsd::DrawScaledBitmap() is now used for drawing subtitles.
+  This function can be reimplemented by high level OSDs which may be able to do
+  the scaling in hardware or otherwise more efficiently (thanks to Thomas Reufer).

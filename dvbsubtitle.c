@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.5 2014/02/08 12:29:13 kls Exp $
+ * $Id: dvbsubtitle.c 3.6 2015/01/04 15:46:39 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1077,11 +1077,7 @@ void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
   if (State() == 0 || Osd->SetAreas(areas, numAreas) == oeOk) {
      for (int i = 0; i < bitmaps.Size(); i++) {
          cBitmap *b = bitmaps[i];
-         if (Scale)
-            b = b->Scaled(osdFactorX, osdFactorY, AntiAlias);
-         Osd->DrawBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b);
-         if (b != bitmaps[i])
-            delete b;
+         Osd->DrawScaledBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b, osdFactorX, osdFactorY, AntiAlias);
          }
      Osd->Flush();
      }
