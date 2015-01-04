@@ -8327,3 +8327,5 @@ Video Disk Recorder Revision History
   is now stored together with the CA descriptors and can be retrieved by calling
   GetPmtPid() (this information is only required to receive encrypted channels
   with the OctopusNet receiver via the 'satip' plugin).
+- Channels that are not listed in the SDT are now only marked as OBSOLETE if
+  "Setup/DVB/Update channels" is set to a value other than "no" or "PIDs only".
