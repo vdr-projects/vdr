@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 3.4 2014/02/19 08:57:43 kls Exp $
+ * $Id: pat.c 3.5 2015/01/04 13:14:01 kls Exp $
  */
 
 #include "pat.h"
@@ -69,12 +69,13 @@ private:
   int source;
   int transponder;
   int serviceId;
+  int pmtPid; // needed for OctopusNet - otherwise irrelevant!
   int numCaIds;
   int caIds[MAXCAIDS + 1];
   cList<cCaDescriptor> caDescriptors;
   void AddCaId(int CaId);
 public:
-  cCaDescriptors(int Source, int Transponder, int ServiceId);
+  cCaDescriptors(int Source, int Transponder, int ServiceId, int PmtPid);
   bool operator== (const cCaDescriptors &arg) const;
   bool Is(int Source, int Transponder, int ServiceId);
   bool Is(cCaDescriptors * CaDescriptors);
@@ -82,14 +83,16 @@ public:
   void AddCaDescriptor(SI::CaDescriptor *d, int EsPid);
   int GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar *Data, int EsPid);
   int GetCaPids(const int *CaSystemIds, int BufSize, int *Pids);
+  const int GetPmtPid(void) { return pmtPid; };
   const int *CaIds(void) { return caIds; }
   };
 
-cCaDescriptors::cCaDescriptors(int Source, int Transponder, int ServiceId)
+cCaDescriptors::cCaDescriptors(int Source, int Transponder, int ServiceId, int PmtPid)
 {
   source = Source;
   transponder = Transponder;
   serviceId = ServiceId;
+  pmtPid = PmtPid;
   numCaIds = 0;
   caIds[0] = 0;
 }
@@ -218,6 +221,7 @@ public:
       // and 2 if an existing descriptor was changed.
   int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid);
   int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids);
+  int GetPmtPid(int Source, int Transponder, int ServiceId);
   };
 
 int cCaDescriptorHandler::AddCaDescriptors(cCaDescriptors *CaDescriptors)
@@ -258,6 +262,16 @@ int cCaDescriptorHandler::GetCaPids(int Source, int Transponder, int ServiceId, 
   return 0;
 }
 
+int cCaDescriptorHandler::GetPmtPid(int Source, int Transponder, int ServiceId)
+{
+  cMutexLock MutexLock(&mutex);
+  for (cCaDescriptors *ca = First(); ca; ca = Next(ca)) {
+      if (ca->Is(Source, Transponder, ServiceId))
+         return ca->GetPmtPid();
+      }
+  return 0;
+}
+
 cCaDescriptorHandler CaDescriptorHandler;
 
 int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid)
@@ -268,6 +282,11 @@ int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSy
 int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids)
 {
   return CaDescriptorHandler.GetCaPids(Source, Transponder, ServiceId, CaSystemIds, BufSize, Pids);
+}
+
+int GetPmtPid(int Source, int Transponder, int ServiceId)
+{
+  return CaDescriptorHandler.GetPmtPid(Source, Transponder, ServiceId);
 }
 
 // --- cPatFilter ------------------------------------------------------------
@@ -384,7 +403,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      cChannel *Channel = Channels.GetByServiceID(Source(), Transponder(), pmt.getServiceId());
      if (Channel) {
         SI::CaDescriptor *d;
-        cCaDescriptors *CaDescriptors = new cCaDescriptors(Channel->Source(), Channel->Transponder(), Channel->Sid());
+        cCaDescriptors *CaDescriptors = new cCaDescriptors(Channel->Source(), Channel->Transponder(), Channel->Sid(), Pid);
         // Scan the common loop:
         for (SI::Loop::Iterator it; (d = (SI::CaDescriptor*)pmt.commonDescriptors.getNext(it, SI::CaDescriptorTag)); ) {
             CaDescriptors->AddCaDescriptor(d, 0);

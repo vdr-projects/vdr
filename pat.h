@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 3.3 2014/02/18 11:22:34 kls Exp $
+ * $Id: pat.h 3.4 2015/01/04 13:17:22 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -55,5 +55,8 @@ int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds
          ///< (or all of them, if CaSystemIds is 0xFFFF).
          ///< Returns the number of pids copied into Pids (0 if no CA descriptors are
          ///< available), or -1 if BufSize was too small to hold all CA pids.
+
+int GetPmtPid(int Source, int Transponder, int ServiceId);
+         ///< Gets the Pid of the PMT in which the CA descriptors for this channel are defined.
 
 #endif //__PAT_H
