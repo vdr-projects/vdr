@@ -3289,3 +3289,7 @@ Tony Houghton <h@realh.co.uk>
 Christian Winkler <winkler_chr@yahoo.de>
  for reporting a problem with transfer mode on full featured DVB cards for encrypted
  channels that have no audio pid
+
+Dietmar Spingler <d_spingler@gmx.de>
+ for reporting a problem that led to a fix in detaching receivers from devices in case
+ a CAM needs to receive the TS
