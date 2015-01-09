@@ -8340,3 +8340,6 @@ Video Disk Recorder Revision History
   (reported by Dietmar Spingler).
 - Fixed resetting the receiver for EMM pids for CAMs that need to receive the TS
   (reported by Dietmar Spingler).
+- Fixed (well, actually worked around) a problem with subtitles not being displayed
+  because the broadcaster doesn't set the data's version numbers as required by the
+  DVB standard (thanks to Rolf Ahrenberg).

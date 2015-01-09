@@ -1190,6 +1190,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  registered
  for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
  for increasing the PMT_SCAN_TIMEOUT to avoid timeouts when scanning PMTs
+ for fixing a problem with subtitles not being displayed because the broadcaster
+ doesn't set the data's version numbers as required by the DVB standard
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

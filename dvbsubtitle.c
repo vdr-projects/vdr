@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.6 2015/01/04 15:46:39 kls Exp $
+ * $Id: dvbsubtitle.c 3.7 2015/01/09 11:56:25 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -52,6 +52,8 @@ static bool DebugOutput    = DebugVerbose;
 
 #define DBGMAXBITMAPS  100 // debug output will be stopped after this many bitmaps
 #define DBGBITMAPWIDTH 400
+
+#define FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY // some don't properly handle version numbers, which renders them useless because subtitles are not displayed
 
 // --- cSubtitleDebug --------------------------------------------------------
 
@@ -221,8 +223,10 @@ cSubtitleClut::cSubtitleClut(int ClutId)
 void cSubtitleClut::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (clutVersionNumber == Version)
      return; // no update
+#endif
   clutVersionNumber = Version;
   bs.SkipBits(4); // reserved
   dbgcluts("<b>clut</b> id %d version %d<br>\n", clutId, clutVersionNumber);
@@ -355,8 +359,10 @@ cSubtitleObject::~cSubtitleObject()
 void cSubtitleObject::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (objectVersionNumber == Version)
      return; // no update
+#endif
   objectVersionNumber = Version;
   objectCodingMethod = bs.GetBits(2);
   nonModifyingColorFlag = bs.GetBit();
@@ -740,8 +746,10 @@ cSubtitleRegion::cSubtitleRegion(int RegionId)
 void cSubtitleRegion::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (regionVersionNumber == Version)
      return; // no update
+#endif
   regionVersionNumber = Version;
   regionFillFlag = bs.GetBit();
   bs.SkipBits(3); // reserved
@@ -849,8 +857,10 @@ void cDvbSubtitlePage::Parse(int64_t Pts, cBitStream &bs)
      pts = Pts;
   pageTimeout = bs.GetBits(8);
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (pageVersionNumber == Version)
      return; // no update
+#endif
   pageVersionNumber = Version;
   pageState = bs.GetBits(2);
   switch (pageState) {
@@ -1387,23 +1397,25 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
        case DISPLAY_DEFINITION_SEGMENT: {
             dbgsegments("DISPLAY_DEFINITION_SEGMENT<br>\n");
             int version = bs.GetBits(4);
-            if (version != ddsVersionNumber) {
-               bool displayWindowFlag = bs.GetBit();
-               windowHorizontalOffset = 0;
-               windowVerticalOffset   = 0;
-               bs.SkipBits(3); // reserved
-               displayWidth  = windowWidth  = bs.GetBits(16) + 1;
-               displayHeight = windowHeight = bs.GetBits(16) + 1;
-               if (displayWindowFlag) {
-                  windowHorizontalOffset = bs.GetBits(16);                              // displayWindowHorizontalPositionMinimum
-                  windowWidth            = bs.GetBits(16) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
-                  windowVerticalOffset   = bs.GetBits(16);                              // displayWindowVerticalPositionMinimum
-                  windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
-                  }
-               SetOsdData();
-               ddsVersionNumber = version;
-               dbgdisplay("<b>display</b> version %d flag %d width %d height %d ofshor %d ofsver %d<br>\n", ddsVersionNumber, displayWindowFlag, windowWidth, windowHeight, windowHorizontalOffset, windowVerticalOffset);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
+            if (version == ddsVersionNumber)
+               break; // no update
+#endif
+            bool displayWindowFlag = bs.GetBit();
+            windowHorizontalOffset = 0;
+            windowVerticalOffset   = 0;
+            bs.SkipBits(3); // reserved
+            displayWidth  = windowWidth  = bs.GetBits(16) + 1;
+            displayHeight = windowHeight = bs.GetBits(16) + 1;
+            if (displayWindowFlag) {
+               windowHorizontalOffset = bs.GetBits(16);                              // displayWindowHorizontalPositionMinimum
+               windowWidth            = bs.GetBits(16) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+               windowVerticalOffset   = bs.GetBits(16);                              // displayWindowVerticalPositionMinimum
+               windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                }
+            SetOsdData();
+            ddsVersionNumber = version;
+            dbgdisplay("<b>display</b> version %d flag %d width %d height %d ofshor %d ofsver %d<br>\n", ddsVersionNumber, displayWindowFlag, windowWidth, windowHeight, windowHorizontalOffset, windowVerticalOffset);
             break;
             }
        case DISPARITY_SIGNALING_SEGMENT: {
