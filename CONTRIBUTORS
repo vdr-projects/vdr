@@ -3293,3 +3293,5 @@ Christian Winkler <winkler_chr@yahoo.de>
 Dietmar Spingler <d_spingler@gmx.de>
  for reporting a problem that led to a fix in detaching receivers from devices in case
  a CAM needs to receive the TS
+ for reporting a problem that led to a fix with EMM pids not being properly reset for
+ CAMs that need to receive the TS

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.13 2014/03/26 11:51:09 kls Exp $
+ * $Id: ci.c 3.14 2015/01/09 09:41:20 kls Exp $
  */
 
 #include "ci.h"
@@ -123,6 +123,7 @@ public:
   virtual ~cCaPidReceiver() { Detach(); }
   virtual void Receive(uchar *Data, int Length);
   bool HasCaPids(void) { return NumPids() - emmPids.Size() - 1 > 0; }
+  void Reset(void) { DelEmmPids(); }
   };
 
 cCaPidReceiver::cCaPidReceiver(void)
@@ -1931,6 +1932,11 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
         else {
            cCiCaPmt CaPmt(CmdId, 0, 0, 0, NULL);
            cas->SendPMT(&CaPmt);
+           if (caPidReceiver) {
+              if (cDevice *d = Device())
+                 d->Detach(caPidReceiver);
+              caPidReceiver->Reset();
+              }
            }
         }
      }
