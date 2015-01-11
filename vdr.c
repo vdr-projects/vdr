@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.12 2014/04/14 12:17:17 kls Exp $
+ * $Id: vdr.c 3.13 2015/01/11 13:36:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -877,7 +877,7 @@ int main(int argc, char *argv[])
      }
 
 #ifdef SDNOTIFY
-  sd_notify(0, "READY=1");
+  sd_notify(0, "READY=1\nSTATUS=Ready");
 #endif
 
   // Main program loop:

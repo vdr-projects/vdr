@@ -4,12 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 2.2 2012/11/19 12:21:43 kls Exp $
+ * $Id: interface.c 3.1 2015/01/11 13:37:47 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
 #include <stdlib.h>
+#ifdef SDNOTIFY
+#include <systemd/sd-daemon.h>
+#endif
 #include <unistd.h>
 #include "i18n.h"
 #include "status.h"
@@ -159,6 +162,9 @@ void cInterface::LearnKeys(void)
       bool known = Keys.KnowsRemote(Remote->Name());
       dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
       if (!known) {
+#ifdef SDNOTIFY
+         sd_notify(0, "READY=1\nSTATUS=Learning keys...");
+#endif
          cSkinDisplayMenu *DisplayMenu = Skins.Current()->DisplayMenu();
          DisplayMenu->SetMenuCategory(mcUnknown);
          char Headline[256];
