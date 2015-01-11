@@ -8334,8 +8334,6 @@ Video Disk Recorder Revision History
 - The new function cOsd::DrawScaledBitmap() is now used for drawing subtitles.
   This function can be reimplemented by high level OSDs which may be able to do
   the scaling in hardware or otherwise more efficiently (thanks to Thomas Reufer).
-- Increased the PMT_SCAN_TIMEOUT to avoid timeouts when scanning PMTs (thanks to
-  Rolf Ahrenberg).
 - Fixed detaching receivers from devices in case a CAM needs to receive the TS
   (reported by Dietmar Spingler).
 - Fixed resetting the receiver for EMM pids for CAMs that need to receive the TS

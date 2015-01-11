@@ -1189,7 +1189,6 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for reporting a problem with adding new source types in case they are already
  registered
  for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
- for increasing the PMT_SCAN_TIMEOUT to avoid timeouts when scanning PMTs
  for fixing a problem with subtitles not being displayed because the broadcaster
  doesn't set the data's version numbers as required by the DVB standard
 
