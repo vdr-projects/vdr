@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.4 2015/01/12 12:03:59 kls Exp $
+ * $Id: tools.h 3.5 2015/01/12 12:13:33 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -575,6 +575,8 @@ public:
   }
   virtual void Remove(int Index)
   {
+    if (Index < 0)
+       return; // prevents out-of-bounds access
     if (Index < size - 1)
        memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
     size--;
