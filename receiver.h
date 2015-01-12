@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 3.2 2015/01/12 10:24:20 kls Exp $
+ * $Id: receiver.h 3.3 2015/01/12 14:03:22 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -49,6 +49,8 @@ public:
                ///< that this cReceiver may be detached at any time in favor of a timer recording
                ///< or live viewing (without blocking the cDevice it is attached to).
   virtual ~cReceiver();
+  int Priority(void) { return priority; }
+  void SetPriority(int Priority);
   bool AddPid(int Pid);
                ///< Adds the given Pid to the list of PIDs of this receiver.
   bool AddPids(const int *Pids);

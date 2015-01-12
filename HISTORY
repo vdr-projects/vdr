@@ -8349,3 +8349,5 @@ Video Disk Recorder Revision History
 - Added the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
   to the cVector class (thanks to Stefan Schallenberg).
 - Fixed a possible out-of-bounds access in cVector::Remove().
+- Added functions to set and retrieve the priority of a cReceiver (suggested by
+  Frank Schmirler).

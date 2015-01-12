@@ -2549,6 +2549,7 @@ Frank Schmirler <vdr@schmirler.de>
  for suggestions used in revising priority handling to allow receivers with a priority
  that is lower than that of live viewing
  for fixing handling IDLEPRIORITY in cDvbDevice::ProvidesChannel()
+ for suggesting to add functions to set and retrieve the priority of a cReceiver
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
