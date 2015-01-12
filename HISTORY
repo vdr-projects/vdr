@@ -8344,3 +8344,5 @@ Video Disk Recorder Revision History
 - Fixed support for systemd (thanks to Christopher Reimer).
 - Added a missing backslash to the help text of the SVDRP command MOVR (thanks to
   Lars Hanisch).
+- Added subsystem id support for DVB devices connected via USB (thanks to Jose
+  Alberto Reguero).

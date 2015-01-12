@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.11 2014/03/16 10:38:31 kls Exp $
+ * $Id: dvbdevice.c 3.12 2015/01/12 11:24:51 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1751,11 +1751,27 @@ uint32_t cDvbDeviceProbe::GetSubsystemId(int Adapter, int Frontend)
                                 SubsystemId = strtoul(s, NULL, 0) << 16;
                              fclose(f);
                              }
+                          else {
+                             FileName = cString::sprintf("/sys/class/dvb/%s/device/idVendor", e->d_name);
+                             if ((f = fopen(FileName, "r")) != NULL) {
+                                if (char *s = ReadLine.Read(f))
+                                   SubsystemId = strtoul(s, NULL, 16) << 16;
+                                fclose(f);
+                                }
+                             }
                           FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_device", e->d_name);
                           if ((f = fopen(FileName, "r")) != NULL) {
                              if (char *s = ReadLine.Read(f))
                                 SubsystemId |= strtoul(s, NULL, 0);
                              fclose(f);
+                             }
+                          else {
+                             FileName = cString::sprintf("/sys/class/dvb/%s/device/idProduct", e->d_name);
+                             if ((f = fopen(FileName, "r")) != NULL) {
+                                if (char *s = ReadLine.Read(f))
+                                   SubsystemId |= strtoul(s, NULL, 16);
+                                fclose(f);
+                                }
                              }
                           break;
                           }
