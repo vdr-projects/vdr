@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.14 2015/01/09 09:41:20 kls Exp $
+ * $Id: ci.c 3.15 2015/01/12 10:44:58 kls Exp $
  */
 
 #include "ci.h"
@@ -123,7 +123,7 @@ public:
   virtual ~cCaPidReceiver() { Detach(); }
   virtual void Receive(uchar *Data, int Length);
   bool HasCaPids(void) { return NumPids() - emmPids.Size() - 1 > 0; }
-  void Reset(void) { DelEmmPids(); }
+  void Reset(void) { DelEmmPids(); catVersion = -1; }
   };
 
 cCaPidReceiver::cCaPidReceiver(void)
@@ -163,6 +163,9 @@ void cCaPidReceiver::Receive(uchar *Data, int Length)
         if (v != catVersion) {
            if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
               if (l <= TS_SIZE - 8) {
+                 cDevice *AttachedDevice = Device();
+                 if (AttachedDevice)
+                    AttachedDevice->Detach(this);
                  DelEmmPids();
                  for (int i = 13; i < l + 8 - 4; i++) { // +8 = header, -4 = checksum
                      if (Data[i] == 0x09) {
@@ -179,6 +182,8 @@ void cCaPidReceiver::Receive(uchar *Data, int Length)
                         i += Data[i + 1] - 1; // -1 to compensate for the loop increment
                         }
                      }
+                 if (AttachedDevice)
+                    AttachedDevice->AttachReceiver(this);
                  }
               else
                  dsyslog("multi packet CAT section - unhandled!");
