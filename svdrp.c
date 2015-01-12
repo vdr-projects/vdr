@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 3.5 2013/10/21 07:46:04 kls Exp $
+ * $Id: svdrp.c 3.6 2015/01/12 11:16:27 kls Exp $
  */
 
 #include "svdrp.h"
@@ -261,7 +261,7 @@ const char *HelpPages[] = {
   "    Move the recording with the given number. Before a recording can be\n"
   "    moved, an LSTR command must have been executed in order to retrieve\n"
   "    the recording numbers. The numbers don't change during subsequent MOVR\n"
-  "    commands.n",
+  "    commands.\n",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",

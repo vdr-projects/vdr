@@ -2899,6 +2899,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for adding handling UTF-8 'umlaut' characters to cKbdRemote
  for fixing learning keyboard remote control codes
  for making VDR read command line options from *.conf files in /etc/vdr/conf.d
+ for adding a missing backslash to the help text of the SVDRP command MOVR
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
