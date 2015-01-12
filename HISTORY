@@ -8346,3 +8346,5 @@ Video Disk Recorder Revision History
   Lars Hanisch).
 - Added subsystem id support for DVB devices connected via USB (thanks to Jose
   Alberto Reguero).
+- Added the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
+  to the cVector class (thanks to Stefan Schallenberg).

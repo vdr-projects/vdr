@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.3 2013/09/22 13:30:14 kls Exp $
+ * $Id: tools.h 3.4 2015/01/12 12:03:59 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -537,6 +537,14 @@ public:
   {
     return At(Index);
   }
+  int IndexOf(const T &Data) // returns the index of Data, or -1 if not found
+  {
+    for (int i = 0; i < size; i++) {
+        if (data[i] == Data)
+           return i;
+        }
+    return -1;
+  }
   int Size(void) const { return size; }
   virtual void Insert(T Data, int Before = 0)
   {
@@ -549,17 +557,33 @@ public:
     else
        Append(Data);
   }
+  void InsertUnique(T Data, int Before = 0)
+  {
+    if (IndexOf(Data) < 0)
+       Insert(Data, Before);
+  }
   virtual void Append(T Data)
   {
     if (size >= allocated)
        Realloc(allocated * 3 / 2); // increase size by 50%
     data[size++] = Data;
   }
+  void AppendUnique(T Data)
+  {
+    if (IndexOf(Data) < 0)
+       Append(Data);
+  }
   virtual void Remove(int Index)
   {
     if (Index < size - 1)
        memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
     size--;
+  }
+  void RemoveElement(const T &Data)
+  {
+    int i = IndexOf(Data);
+    if (i >= 0)
+       Remove(i);
   }
   virtual void Clear(void)
   {
