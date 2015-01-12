@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
+"POT-Creation-Date: 2015-01-12 15:40+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -1256,6 +1256,12 @@ msgstr "zoals eerder"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Doorscrollen kanalenlijst"

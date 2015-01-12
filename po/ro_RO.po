@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
+"POT-Creation-Date: 2015-01-12 15:40+0100\n"
 "PO-Revision-Date: 2013-02-09 23:01+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sorceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -1253,6 +1253,12 @@ msgstr "ca mai înainte"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumul la pornire"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Lista de canale în buclă"

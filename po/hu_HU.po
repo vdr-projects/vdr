@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
+"POT-Creation-Date: 2015-01-12 15:40+0100\n"
 "PO-Revision-Date: 2013-03-01 19:22+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1255,6 +1255,12 @@ msgstr "ahogy az előbb"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hangerő indulásnál"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Csatornalista görgetése"

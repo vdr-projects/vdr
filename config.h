@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.9 2014/03/22 14:23:44 kls Exp $
+ * $Id: config.h 3.10 2015/01/12 14:32:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -336,6 +336,8 @@ public:
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;
+  int VolumeSteps;
+  int VolumeLinearize;
   int CurrentDolby;
   int InitialVolume;
   int ChannelsWrap;

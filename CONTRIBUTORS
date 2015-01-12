@@ -3303,3 +3303,7 @@ Dietmar Spingler <d_spingler@gmx.de>
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
  to the cVector class
+
+Claus Muus <email@clausmuus.de>
+ for adding the new parameters "Setup/Miscellaneous/Volume steps" and
+ ".../Volume linearize"

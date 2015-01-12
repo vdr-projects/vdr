@@ -8351,3 +8351,5 @@ Video Disk Recorder Revision History
 - Fixed a possible out-of-bounds access in cVector::Remove().
 - Added functions to set and retrieve the priority of a cReceiver (suggested by
   Frank Schmirler).
+- Added the new parameters "Setup/Miscellaneous/Volume steps" and
+  ".../Volume linearize" (thanks to Claus Muus). See the MANUAL for details.

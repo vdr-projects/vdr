@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
+"POT-Creation-Date: 2015-01-12 15:40+0100\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
 "Last-Translator: Marek Nazarko <mnazarko@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -1253,6 +1253,12 @@ msgstr "jak ostatnio"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Pocz±tkowa g³o¶no¶æ"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Zawijanie kana³ów"

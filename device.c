@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.16 2015/01/07 12:53:55 kls Exp $
+ * $Id: device.c 3.17 2015/01/12 14:38:23 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
+#include <math.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "audio.h"
@@ -918,8 +919,10 @@ void cDevice::SetAudioChannel(int AudioChannel)
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
   int OldVolume = volume;
-  volume = constrain(Absolute ? Volume : volume + Volume, 0, MAXVOLUME);
-  SetVolumeDevice(volume);
+  double VolumeDelta = double(MAXVOLUME) / Setup.VolumeSteps;
+  double VolumeLinearize = (Setup.VolumeLinearize >= 0) ? (Setup.VolumeLinearize / 10.0 + 1.0) : (1.0 / ((-Setup.VolumeLinearize / 10.0) + 1.0));
+  volume = constrain(int(floor((Absolute ? Volume : volume + Volume) / VolumeDelta + 0.5) * VolumeDelta), 0, MAXVOLUME);
+  SetVolumeDevice(MAXVOLUME - int(pow(1.0 - pow(double(volume) / MAXVOLUME, VolumeLinearize), 1.0 / VolumeLinearize) * MAXVOLUME));
   Absolute |= mute;
   cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);
   if (volume > 0) {
