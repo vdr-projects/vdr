@@ -8357,3 +8357,4 @@ Video Disk Recorder Revision History
   (reported by Dieter Ferdinand).
 - Changed the German weekday names from "MonDieMitDonFreSamSon" to
   "Mo.Di.Mi.Do.Fr.Sa.So." (thanks to Stefan Blochberger).
+- Now handling CAT sections that consist of more than one TS packet.

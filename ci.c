@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.15 2015/01/12 10:44:58 kls Exp $
+ * $Id: ci.c 3.16 2015/01/13 14:42:32 kls Exp $
  */
 
 #include "ci.h"
@@ -114,6 +114,9 @@ class cCaPidReceiver : public cReceiver {
 private:
   int catVersion;
   cVector<int> emmPids;
+  uchar buffer[2048]; // 11 bit length, max. 2048 byte
+  uchar *bufp;
+  int length;
   void AddEmmPid(int Pid);
   void DelEmmPids(void);
 protected:
@@ -129,6 +132,8 @@ public:
 cCaPidReceiver::cCaPidReceiver(void)
 {
   catVersion = -1;
+  bufp = NULL;
+  length = 0;
   AddPid(CATPID);
 }
 
@@ -156,42 +161,77 @@ void cCaPidReceiver::Activate(bool On)
 
 void cCaPidReceiver::Receive(uchar *Data, int Length)
 {
-  if (TsPid(Data) == CATPID && Data[5] == SI::TableIdCAT) {
-     int l = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
-     if (l > 5) {
-        int v = (Data[10] & 0x3E) >> 1; // version number
-        if (v != catVersion) {
-           if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
-              if (l <= TS_SIZE - 8) {
-                 cDevice *AttachedDevice = Device();
-                 if (AttachedDevice)
-                    AttachedDevice->Detach(this);
-                 DelEmmPids();
-                 for (int i = 13; i < l + 8 - 4; i++) { // +8 = header, -4 = checksum
-                     if (Data[i] == 0x09) {
-                        int CaId = int(Data[i + 2] << 8) | Data[i + 3];
-                        int EmmPid = int(((Data[i + 4] & 0x1F) << 8)) | Data[i + 5];
-                        AddEmmPid(EmmPid);
-                        switch (CaId >> 8) {
-                          case 0x01: for (int j = i + 7; j < Data[i + 1] + 2; j += 4) {
-                                         EmmPid = (int(Data[j] & 0x0F) << 8) | Data[j + 1];
-                                         AddEmmPid(EmmPid);
-                                         }
-                                     break;
-                          }
-                        i += Data[i + 1] - 1; // -1 to compensate for the loop increment
-                        }
-                     }
-                 if (AttachedDevice)
-                    AttachedDevice->AttachReceiver(this);
+  if (TsPid(Data) == CATPID) {
+     uchar *p = NULL;
+     if (TsPayloadStart(Data)) {
+        if (Data[5] == SI::TableIdCAT) {
+           length = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
+           if (length > 5) {
+              int v = (Data[10] & 0x3E) >> 1; // version number
+              if (v != catVersion) {
+                 if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
+                    if (length > TS_SIZE - 8) {
+                       int n = TS_SIZE - 13;
+                       memcpy(buffer, Data + 13, n);
+                       bufp = buffer + n;
+                       length -= n + 5; // 5 = header
+                       }
+                    else {
+                       p = Data + 13; // no need to copy the data
+                       length -= 5; // header
+                       }
+                    }
+                 else
+                    dsyslog("multi table CAT section - unhandled!");
+                 catVersion = v;
                  }
-              else
-                 dsyslog("multi packet CAT section - unhandled!");
               }
-           else
-              dsyslog("multi table CAT section - unhandled!");
-           catVersion = v;
            }
+        }
+     else if (bufp && length > 0) {
+        int n = min(length, TS_SIZE - 4);
+        if (bufp + n - buffer <= int(sizeof(buffer))) {
+           memcpy(bufp, Data + 4, n);
+           bufp += n;
+           length -= n;
+           if (length <= 0) {
+              p = buffer;
+              length = bufp - buffer;
+              }
+           }
+        else {
+           esyslog("ERROR: buffer overflow in cCaPidReceiver::Receive()");
+           bufp = 0;
+           length = 0;
+           }
+        }
+     if (p) {
+        int OldCatVersion = catVersion; // must preserve the current version number
+        cDevice *AttachedDevice = Device();
+        if (AttachedDevice)
+           AttachedDevice->Detach(this);
+        DelEmmPids();
+        for (int i = 0; i < length - 4; i++) { // -4 = checksum
+            if (p[i] == 0x09) {
+               int CaId = int(p[i + 2] << 8) | p[i + 3];
+               int EmmPid = int(((p[i + 4] & 0x1F) << 8)) | p[i + 5];
+               AddEmmPid(EmmPid);
+               switch (CaId >> 8) {
+                 case 0x01: for (int j = i + 7; j < p[i + 1] + 2; j += 4) {
+                                EmmPid = (int(p[j] & 0x0F) << 8) | p[j + 1];
+                                AddEmmPid(EmmPid);
+                                }
+                            break;
+                 }
+               i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
+               }
+            }
+        if (AttachedDevice)
+           AttachedDevice->AttachReceiver(this);
+        catVersion = OldCatVersion;
+        p = NULL;
+        bufp = 0;
+        length = 0;
         }
      }
 }
