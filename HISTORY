@@ -8307,7 +8307,7 @@ Video Disk Recorder Revision History
 - The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
   the functional modification to cFont::CreateFont().
 
-2015-01-12: Version 2.1.7
+2015-01-13: Version 2.1.7
 
 - No longer logging an error message in DirSizeMB() if the given directory doesn't
   exist. This avoids lots of log entries in case several VDRs use the same video
@@ -8353,3 +8353,5 @@ Video Disk Recorder Revision History
   Frank Schmirler).
 - Added the new parameters "Setup/Miscellaneous/Volume steps" and
   ".../Volume linearize" (thanks to Claus Muus). See the MANUAL for details.
+- Fixed jumping to an absolute position via the Red key in case replay was paused
+  (reported by Dieter Ferdinand).

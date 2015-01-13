@@ -3307,3 +3307,7 @@ Stefan Schallenberg <infos@nafets.de>
 Claus Muus <email@clausmuus.de>
  for adding the new parameters "Setup/Miscellaneous/Volume steps" and
  ".../Volume linearize"
+
+Dieter Ferdinand <dieter.ferdinand@gmx.de>
+ for reporting a problem with jumping to an absolute position via the Red key in
+ case replay was paused
