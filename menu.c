@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.82.1.8 2014/02/26 11:42:28 kls Exp $
+ * $Id: menu.c 2.82.1.9 2015/01/13 09:52:59 kls Exp $
  */
 
 #include "menu.h"
@@ -4743,7 +4743,10 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kOk:
          if (timeSearchPos > 0) {
             Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
+            bool Still = Key == kDown || Key == kPause || Key == kOk;
+            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Still);
+            if (!Still)
+               Play();
             }
          timeSearchActive = false;
          break;

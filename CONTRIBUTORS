@@ -3215,3 +3215,7 @@ Mariusz Bialonczyk <manio@skyboo.net>
 Christian Winkler <winkler_chr@yahoo.de>
  for reporting a problem with transfer mode on full featured DVB cards for encrypted
  channels that have no audio pid
+
+Dieter Ferdinand <dieter.ferdinand@gmx.de>
+ for reporting a problem with jumping to an absolute position via the Red key in
+ case replay was paused

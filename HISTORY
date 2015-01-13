@@ -7916,8 +7916,10 @@ Video Disk Recorder Revision History
 - The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
   the functional modification to cFont::CreateFont().
 
-2014-04-13: Version 2.0.7
+2015-01-13: Version 2.0.7
 
 - Fixed a possible division by zero in frame rate detection.
 - Fixed a bug in the Makefile when installing plugins with LCLBLD=1 (thanks to
   Stefan Huelswitt).
+- Fixed jumping to an absolute position via the Red key in case replay was paused
+  (reported by Dieter Ferdinand).
