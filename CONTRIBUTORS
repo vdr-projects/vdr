@@ -3175,6 +3175,7 @@ Stefan Blochberger <Stefan.Blochberger@gmx.de>
  recording is started
  for suggesting that floating point numbers presented to the user shall be displayed
  in the way defined by the current locale
+ for changing the German weekday names from "MonDieMitDonFreSamSon" to "Mo.Di.Mi.Do.Fr.Sa.So."
 
 Cedric Dewijs <cedric.dewijs@telfort.nl>
  for adding maximum SNR value for PCTV Systems PCTV 73ESE

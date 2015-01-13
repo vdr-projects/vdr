@@ -1455,7 +1455,7 @@ msgstr "MDMDFSS"
 
 #. TRANSLATORS: abbreviated weekdays, beginning with monday (must all be 3 letters!)
 msgid "MonTueWedThuFriSatSun"
-msgstr "MonDieMitDonFreSamSon"
+msgstr "Mo.Di.Mi.Do.Fr.Sa.So."
 
 msgid "Monday"
 msgstr "Montag"

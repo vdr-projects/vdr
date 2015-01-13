@@ -8355,3 +8355,5 @@ Video Disk Recorder Revision History
   ".../Volume linearize" (thanks to Claus Muus). See the MANUAL for details.
 - Fixed jumping to an absolute position via the Red key in case replay was paused
   (reported by Dieter Ferdinand).
+- Changed the German weekday names from "MonDieMitDonFreSamSon" to
+  "Mo.Di.Mi.Do.Fr.Sa.So." (thanks to Stefan Blochberger).
