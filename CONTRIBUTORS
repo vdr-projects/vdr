@@ -3270,6 +3270,7 @@ Thomas Reufer <thomas@reufer.ch>
  for fixing a possible crash in the LCARS skin
  for implementing cOsd::DrawScaledBitmap()
  for adding handling for DTS audio tracks to cPatPmtParser::ParsePmt()
+ for adding support for PGS subtitles
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

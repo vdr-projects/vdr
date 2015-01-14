@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 3.1 2013/09/06 10:53:30 kls Exp $
+ * $Id: dvbsubtitle.h 3.2 2015/01/14 10:01:48 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -43,6 +43,7 @@ private:
   void SetOsdData(void);
   bool AssertOsd(void);
   int ExtractSegment(const uchar *Data, int Length, int64_t Pts);
+  int ExtractPgsSegment(const uchar *Data, int Length, int64_t Pts);
   void FinishPage(cDvbSubtitlePage *Page);
 public:
   cDvbSubtitleConverter(void);
