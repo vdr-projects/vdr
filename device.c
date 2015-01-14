@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.17 2015/01/12 14:38:23 kls Exp $
+ * $Id: device.c 3.18 2015/01/14 11:06:13 kls Exp $
  */
 
 #include "device.h"
@@ -77,7 +77,7 @@ cDevice::cDevice(void)
   cardIndex = nextCardIndex++;
   dsyslog("new device number %d", CardIndex() + 1);
 
-  SetDescription("receiver on device %d", CardIndex() + 1);
+  SetDescription("device %d receiver", CardIndex() + 1);
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -1735,7 +1735,7 @@ void cDevice::DetachAllReceivers(void)
 
 cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
 {
-  SetDescription("TS buffer on device %d", CardIndex);
+  SetDescription("device %d TS buffer", CardIndex);
   f = File;
   cardIndex = CardIndex;
   delivered = false;

@@ -8365,3 +8365,7 @@ Video Disk Recorder Revision History
   and it may be made 'protected' in a future version, since it doesn't work with
   TrueColor OSDs. Plugin authors may want to modify their code so that it
   works without this function.
+- Modified the descriptions of several threads, so that the important information
+  (like device or frontend numbers) is within the first 15 characters of the
+  string, because only these are displayed in thread listings. Plugin authors may
+  want to do the same.

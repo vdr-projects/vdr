@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 3.1 2013/04/11 08:47:31 kls Exp $
+ * $Id: thread.h 3.2 2015/01/14 11:39:55 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -110,12 +110,16 @@ public:
   cThread(const char *Description = NULL, bool LowPriority = false);
        ///< Creates a new thread.
        ///< If Description is present, a log file entry will be made when
-       ///< the thread starts and stops. The Start() function must be called
-       ///< to actually start the thread.
+       ///< the thread starts and stops (see SetDescription()).
+       ///< The Start() function must be called to actually start the thread.
        ///< LowPriority can be set to true to make this thread run at a lower
        ///< priority.
   virtual ~cThread();
   void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
+       ///< Sets the description of this thread, which will be used when logging
+       ///< starting or stopping of the thread. Make sure any important information
+       ///< is within the first 15 characters of Description, because only these
+       ///< may be displayed in thread listings (like 'htop', for instance).
   bool Start(void);
        ///< Actually starts the thread.
        ///< If the thread is already running, nothing happens.

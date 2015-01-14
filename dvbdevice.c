@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.12 2015/01/12 11:24:51 kls Exp $
+ * $Id: dvbdevice.c 3.13 2015/01/14 11:06:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -372,7 +372,7 @@ cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int
   tunerStatus = tsIdle;
   bondedTuner = NULL;
   bondedMaster = false;
-  SetDescription("tuner on frontend %d/%d", adapter, frontend);
+  SetDescription("frontend %d/%d tuner", adapter, frontend);
   Start();
 }
 

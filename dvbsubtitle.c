@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.8 2015/01/14 10:30:50 kls Exp $
+ * $Id: dvbsubtitle.c 3.9 2015/01/14 11:31:09 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1320,7 +1320,7 @@ void cDvbSubtitleBitmaps::DbgDump(int WindowWidth, int WindowHeight)
 int cDvbSubtitleConverter::setupLevel = 0;
 
 cDvbSubtitleConverter::cDvbSubtitleConverter(void)
-:cThread("subtitleConverter")
+:cThread("subtitle converter")
 {
   dvbSubtitleAssembler = new cDvbSubtitleAssembler;
   osd = NULL;
