@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.7 2014/04/13 13:48:35 kls Exp $
+ * $Id: remux.c 3.8 2015/01/14 09:28:24 kls Exp $
  */
 
 #include "remux.h"
@@ -822,9 +822,12 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          }
                       }
                       break;
-           case 0x81: // STREAMTYPE_USER_PRIVATE
+           case 0x81: // STREAMTYPE_USER_PRIVATE - AC3 audio for ATSC and BD
+           case 0x82: // STREAMTYPE_USER_PRIVATE - DTS audio for BD
                       {
-                      dbgpatpmt(" AC3");
+                      dbgpatpmt(" %s",
+                          stream.getStreamType() == 0x81 ? "AC3" :
+                          stream.getStreamType() == 0x82 ? "DTS" : "");
                       char lang[MAXLANGCODE1] = { 0 };
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
