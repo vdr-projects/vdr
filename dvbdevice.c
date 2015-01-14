@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.13 2015/01/14 11:06:42 kls Exp $
+ * $Id: dvbdevice.c 3.14 2015/01/14 12:09:19 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -771,7 +771,7 @@ static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTranspon
   else if (Channel->IsTerr())
      ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBT : SYS_DVBT2;
   else
-     esyslog("ERROR: can't determine frontend type for channel %d", Channel->Number());
+     esyslog("ERROR: can't determine frontend type for channel %d (%s)", Channel->Number(), Channel->Name());
   return ds;
 }
 
@@ -823,7 +823,7 @@ bool cDvbTuner::SetFrontend(void)
               }
            }
         else {
-           esyslog("ERROR: no DiSEqC parameters found for channel %d", channel.Number());
+           esyslog("ERROR: no DiSEqC parameters found for channel %d (%s)", channel.Number(), channel.Name());
            return false;
            }
         }
@@ -961,7 +961,7 @@ void cDvbTuner::Action(void)
                   lastDiseqc = NULL;
                   lastSource = 0;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
-                     isyslog("frontend %d/%d timed out while tuning to channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
+                     isyslog("frontend %d/%d timed out while tuning to channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
                   continue;
@@ -979,7 +979,7 @@ void cDvbTuner::Action(void)
                   }
                else if (Status & FE_HAS_LOCK) {
                   if (LostLock) {
-                     isyslog("frontend %d/%d regained lock on channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
+                     isyslog("frontend %d/%d regained lock on channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                      LostLock = false;
                      }
                   tunerStatus = tsLocked;
@@ -988,7 +988,7 @@ void cDvbTuner::Action(void)
                   }
                else if (tunerStatus == tsLocked) {
                   LostLock = true;
-                  isyslog("frontend %d/%d lost lock on channel %d, tp %d", adapter, frontend, channel.Number(), channel.Transponder());
+                  isyslog("frontend %d/%d lost lock on channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                   tunerStatus = tsTuned;
                   Timer.Set(lockTimeout);
                   lastTimeoutReport = 0;

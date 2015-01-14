@@ -3302,6 +3302,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  a CAM needs to receive the TS
  for reporting a problem that led to a fix with EMM pids not being properly reset for
  CAMs that need to receive the TS
+ for suggesting to add the channel name to log messages that reference a channel
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()

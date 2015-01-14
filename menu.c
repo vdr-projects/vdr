@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.25 2015/01/13 09:40:59 kls Exp $
+ * $Id: menu.c 3.26 2015/01/14 12:10:58 kls Exp $
  */
 
 #include "menu.h"
@@ -4756,7 +4756,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(channel, Priority, false);
      if (device) {
-        dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
+        dsyslog("switching device %d to channel %d (%s)", device->DeviceNumber() + 1, channel->Number(), channel->Name());
         if (!device->SwitchChannel(channel, false)) {
            ShutdownHandler.RequestEmergencyExit();
            return false;
@@ -4771,7 +4771,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            }
         }
      else if (!Timer || !Timer->Pending()) {
-        isyslog("no free DVB device to record channel %d!", ch);
+        isyslog("no free DVB device to record channel %d (%s)!", ch, channel->Name());
         Skins.Message(mtError, tr("No free DVB device to record!"));
         }
      }
@@ -4866,7 +4866,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
       if (RecordControls[i]) {
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
             if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
-               isyslog("stopping recording due to modification of channel %d", Channel->Number());
+               isyslog("stopping recording due to modification of channel %d (%s)", Channel->Number(), Channel->Name());
                RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.

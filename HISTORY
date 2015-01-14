@@ -8369,3 +8369,5 @@ Video Disk Recorder Revision History
   (like device or frontend numbers) is within the first 15 characters of the
   string, because only these are displayed in thread listings. Plugin authors may
   want to do the same.
+- Added the channel name to log messages that reference a channel (suggested by
+  Dietmar Spingler).

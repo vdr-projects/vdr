@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.13 2015/01/11 13:36:28 kls Exp $
+ * $Id: vdr.c 3.14 2015/01/14 12:11:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -955,7 +955,7 @@ int main(int argc, char *argv[])
                      if (Channel->Number() == cDevice::CurrentChannel() && cDevice::PrimaryDevice()->HasDecoder()) {
                         if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring()) {
                            if (cDevice::ActualDevice()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
-                              isyslog("retuning due to modification of channel %d", Channel->Number());
+                              isyslog("retuning due to modification of channel %d (%s)", Channel->Number(), Channel->Name());
                               Channels.SwitchTo(Channel->Number());
                               }
                            }
@@ -1032,7 +1032,7 @@ int main(int argc, char *argv[])
                         if (!Device->IsTunedToTransponder(Timer->Channel())) {
                            if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                               cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
-                           dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
+                           dsyslog("switching device %d to channel %d (%s)", Device->DeviceNumber() + 1, Timer->Channel()->Number(), Timer->Channel()->Name());
                            if (Device->SwitchChannel(Timer->Channel(), false))
                               Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }
