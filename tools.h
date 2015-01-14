@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.5 2015/01/12 12:13:33 kls Exp $
+ * $Id: tools.h 3.6 2015/01/14 09:09:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -557,10 +557,13 @@ public:
     else
        Append(Data);
   }
-  void InsertUnique(T Data, int Before = 0)
+  bool InsertUnique(T Data, int Before = 0)
   {
-    if (IndexOf(Data) < 0)
+    if (IndexOf(Data) < 0) {
        Insert(Data, Before);
+       return true;
+       }
+    return false;
   }
   virtual void Append(T Data)
   {
@@ -568,10 +571,13 @@ public:
        Realloc(allocated * 3 / 2); // increase size by 50%
     data[size++] = Data;
   }
-  void AppendUnique(T Data)
+  bool AppendUnique(T Data)
   {
-    if (IndexOf(Data) < 0)
+    if (IndexOf(Data) < 0) {
        Append(Data);
+       return true;
+       }
+    return false;
   }
   virtual void Remove(int Index)
   {
@@ -581,11 +587,14 @@ public:
        memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
     size--;
   }
-  void RemoveElement(const T &Data)
+  bool RemoveElement(const T &Data)
   {
     int i = IndexOf(Data);
-    if (i >= 0)
+    if (i >= 0) {
        Remove(i);
+       return true;
+       }
+    return false;
   }
   virtual void Clear(void)
   {
