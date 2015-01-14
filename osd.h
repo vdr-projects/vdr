@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.3 2015/01/04 15:51:03 kls Exp $
+ * $Id: osd.h 3.4 2015/01/14 10:50:55 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -817,6 +817,8 @@ public:
        ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
        ///< is returned. This is done so that skins that call this function
        ///< in order to preset the bitmap's palette won't crash.
+       ///< Use of this function outside of derived classes is deprecated and it
+       ///< may be made 'protected' in a future version.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
        ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
        ///< The caller must not delete the returned object, it will be deleted when

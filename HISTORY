@@ -8361,3 +8361,7 @@ Video Disk Recorder Revision History
 - Added handling for DTS audio tracks to cPatPmtParser::ParsePmt() (thanks to
   Thomas Reufer).
 - Added support for PGS subtitles (thanks to Thomas Reufer).
+- Use of the function cOsd::GetBitmap() outside of derived classes is now deprecated,
+  and it may be made 'protected' in a future version, since it doesn't work with
+  TrueColor OSDs. Plugin authors may want to modify their code so that it
+  works without this function.
