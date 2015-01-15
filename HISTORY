@@ -8373,3 +8373,6 @@ Video Disk Recorder Revision History
   Dietmar Spingler).
 - Modified the CAM API so that it is possible to implement CAMs that can be freely
   assigned to any devices (thanks to Jasmin Jessich).
+- Plugins can now implement the function SetMenuSortMode() in their skin objects
+  derived from cSkinDisplayMenu, to get informed about the currently used sort
+  mode, if applicable (suggested by Martin Schirrmacher).

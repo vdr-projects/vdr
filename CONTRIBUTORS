@@ -3319,3 +3319,7 @@ Dieter Ferdinand <dieter.ferdinand@gmx.de>
 Jasmin Jessich <jasmin@anw.at>
  for modifying the CAM API so that it is possible to implement CAMs that can be freely
  assigned to any devices
+
+Martin Schirrmacher <schirrmie@gmail.com>
+ for suggesting to provide a way for skin plugins to get informed about the currently
+ used sort mode of a menu

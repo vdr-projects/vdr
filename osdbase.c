@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 3.2 2013/09/22 14:01:17 kls Exp $
+ * $Id: osdbase.c 3.3 2015/01/15 10:11:11 kls Exp $
  */
 
 #include "osdbase.h"
@@ -86,6 +86,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   displayMenuItems = 0;
   title = NULL;
   menuCategory = mcUnknown;
+  menuSortMode = msmUnknown;
   SetTitle(Title);
   SetCols(c0, c1, c2, c3, c4);
   first = 0;
@@ -112,6 +113,11 @@ cOsdMenu::~cOsdMenu()
 void cOsdMenu::SetMenuCategory(eMenuCategory MenuCategory)
 {
   menuCategory = MenuCategory;
+}
+
+void cOsdMenu::SetMenuSortMode(eMenuSortMode MenuSortMode)
+{
+  menuSortMode = MenuSortMode;
 }
 
 void cOsdMenu::SetDisplayMenu(void)
@@ -224,6 +230,7 @@ void cOsdMenu::Display(void)
   cStatus::MsgOsdClear();
   if (menuCategory != displayMenu->MenuCategory())
      displayMenu->SetMenuCategory(menuCategory);
+  displayMenu->SetMenuSortMode(menuSortMode);
   displayMenuItems = displayMenu->MaxItems();
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);

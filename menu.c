@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.26 2015/01/14 12:10:58 kls Exp $
+ * $Id: menu.c 3.27 2015/01/15 10:31:41 kls Exp $
  */
 
 #include "menu.h"
@@ -387,6 +387,9 @@ void cMenuChannels::Setup(void)
             currentItem = item;
          }
       }
+  SetMenuSortMode(cMenuChannelItem::SortMode() == cMenuChannelItem::csmName ? msmName :
+                  cMenuChannelItem::SortMode() == cMenuChannelItem::csmProvider ? msmProvider :
+                  msmNumber);
   if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
      Sort();
   SetCurrent(currentItem);
@@ -2670,6 +2673,7 @@ void cMenuRecordings::Set(bool Refresh)
             LastDir->IncrementCounter(recording->IsNew());
          }
       }
+  SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
   if (Refresh)
      Display();
 }
