@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 2.3 2010/12/27 11:17:04 kls Exp $
+ * $Id: recorder.h 3.1 2015/01/15 14:27:02 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -31,12 +31,16 @@ private:
   bool NextFile(void);
 protected:
   virtual void Activate(bool On);
+       ///< If you override Activate() you need to call Detach() (which is a
+       ///< member of the cReceiver class) from your own destructor in order
+       ///< to properly get a call to Activate(false) when your object is
+       ///< destroyed.
   virtual void Receive(uchar *Data, int Length);
   virtual void Action(void);
 public:
   cRecorder(const char *FileName, const cChannel *Channel, int Priority);
-               // Creates a new recorder for the given Channel and
-               // the given Priority that will record into the file FileName.
+       ///< Creates a new recorder for the given Channel and
+       ///< the given Priority that will record into the file FileName.
   virtual ~cRecorder();
   };
 

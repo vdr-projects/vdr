@@ -8379,3 +8379,5 @@ Video Disk Recorder Revision History
 - Added cOsdProvider::OsdSizeChanged(), which plugins that implement an output device
   can call to signal a change in the OSD that requires a redraw of the currently
   displayed object (thanks to Thomas Reufer).
+- Added a comment to cRecorder::Activate() about the need to call Detach() in the
+  destructor (suggested by Eike Sauer).
