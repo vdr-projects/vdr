@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.16 2015/01/13 14:42:32 kls Exp $
+ * $Id: ci.c 3.17 2015/01/15 09:14:57 kls Exp $
  */
 
 #include "ci.h"
@@ -1631,7 +1631,6 @@ public:
 cCiAdapter::cCiAdapter(void)
 :cThread("CI adapter")
 {
-  assignedDevice = NULL;
   for (int i = 0; i < MAX_CAM_SLOTS_PER_ADAPTER; i++)
       camSlots[i] = NULL;
 }
@@ -1655,6 +1654,17 @@ void cCiAdapter::AddCamSlot(cCamSlot *CamSlot)
         }
      esyslog("ERROR: no free CAM slot in CI adapter");
      }
+}
+
+cCamSlot *cCiAdapter::ItCamSlot(int &Iter)
+{
+  if (Iter >= 0) {
+     for (; Iter < MAX_CAM_SLOTS_PER_ADAPTER; ) {
+         if (cCamSlot *Found = camSlots[Iter++])
+            return Found;
+         }
+     }
+  return NULL;
 }
 
 void cCiAdapter::Action(void)
@@ -1684,6 +1694,7 @@ void cCiAdapter::Action(void)
 cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 {
   ciAdapter = CiAdapter;
+  assignedDevice = NULL;
   caPidReceiver = ReceiveCaPids ? new cCaPidReceiver : NULL;
   slotIndex = -1;
   lastModuleStatus = msReset; // avoids initial reset log message
@@ -1701,8 +1712,8 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 
 cCamSlot::~cCamSlot()
 {
-  if (ciAdapter && ciAdapter->assignedDevice)
-     ciAdapter->assignedDevice->SetCamSlot(NULL);
+  if (assignedDevice)
+     assignedDevice->SetCamSlot(NULL);
   delete caPidReceiver;
   CamSlots.Del(this, false);
   DeleteAllConnections();
@@ -1713,13 +1724,13 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
   cMutexLock MutexLock(&mutex);
   if (ciAdapter) {
      if (ciAdapter->Assign(Device, true)) {
-        if (!Device && ciAdapter->assignedDevice)
-           ciAdapter->assignedDevice->SetCamSlot(NULL);
+        if (!Device && assignedDevice)
+           assignedDevice->SetCamSlot(NULL);
         if (!Query) {
            StopDecrypting();
            source = transponder = 0;
            if (ciAdapter->Assign(Device)) {
-              ciAdapter->assignedDevice = Device;
+              assignedDevice = Device;
               if (Device) {
                  Device->SetCamSlot(this);
                  dsyslog("CAM %d: assigned to device %d", slotNumber, Device->DeviceNumber() + 1);
@@ -1734,17 +1745,6 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
         }
      }
   return false;
-}
-
-cDevice *cCamSlot::Device(void)
-{
-  cMutexLock MutexLock(&mutex);
-  if (ciAdapter) {
-     cDevice *d = ciAdapter->assignedDevice;
-     if (d && d->CamSlot() == this)
-        return d;
-     }
-  return NULL;
 }
 
 void cCamSlot::NewConnection(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.8 2014/03/26 11:42:17 kls Exp $
+ * $Id: ci.h 3.9 2015/01/15 09:18:09 kls Exp $
  */
 
 #ifndef __CI_H
@@ -79,11 +79,14 @@ enum eModuleStatus { msNone, msReset, msPresent, msReady };
 class cCiAdapter : public cThread {
   friend class cCamSlot;
 private:
-  cDevice *assignedDevice;
   cCamSlot *camSlots[MAX_CAM_SLOTS_PER_ADAPTER];
   void AddCamSlot(cCamSlot *CamSlot);
        ///< Adds the given CamSlot to this CI adapter.
 protected:
+  cCamSlot *ItCamSlot(int &Iter);
+       ///< Iterates over all added CAM slots of this adapter. Iter has to be
+       ///< initialized to 0 and is required to store the iteration state.
+       ///< Returns NULL if no further CAM slot is found.
   virtual void Action(void);
        ///< Handles the attached CAM slots in a separate thread.
        ///< The derived class must call the Start() function to
@@ -128,6 +131,7 @@ private:
   cMutex mutex;
   cCondVar processed;
   cCiAdapter *ciAdapter;
+  cDevice *assignedDevice;
   cCaPidReceiver *caPidReceiver;
   int slotIndex;
   int slotNumber;
@@ -164,7 +168,7 @@ public:
        ///< device it was previously assigned to. The value of Query
        ///< is ignored in that case, and this function always returns
        ///< 'true'.
-  cDevice *Device(void);
+  cDevice *Device(void) { return assignedDevice; }
        ///< Returns the device this CAM slot is currently assigned to.
   bool WantsTsData(void) const { return caPidReceiver != NULL; }
        ///< Returns true if this CAM slot wants to receive the TS data through
