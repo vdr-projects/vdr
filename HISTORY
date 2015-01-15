@@ -8376,3 +8376,6 @@ Video Disk Recorder Revision History
 - Plugins can now implement the function SetMenuSortMode() in their skin objects
   derived from cSkinDisplayMenu, to get informed about the currently used sort
   mode, if applicable (suggested by Martin Schirrmacher).
+- Added cOsdProvider::OsdSizeChanged(), which plugins that implement an output device
+  can call to signal a change in the OSD that requires a redraw of the currently
+  displayed object (thanks to Thomas Reufer).

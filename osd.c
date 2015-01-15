@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.3 2015/01/04 15:46:39 kls Exp $
+ * $Id: osd.c 3.4 2015/01/15 11:20:56 kls Exp $
  */
 
 #include "osd.h"
@@ -1978,6 +1978,7 @@ int cOsdProvider::oldWidth = 0;
 int cOsdProvider::oldHeight = 0;
 double cOsdProvider::oldAspect = 1.0;
 cImage *cOsdProvider::images[MAXOSDIMAGES] = { NULL };
+int cOsdProvider::osdState = 0;
 
 cOsdProvider::cOsdProvider(void)
 {
@@ -2015,6 +2016,7 @@ void cOsdProvider::UpdateOsdSize(bool Force)
   int Width;
   int Height;
   double Aspect;
+  cMutexLock MutexLock(&cOsd::mutex);
   cDevice::PrimaryDevice()->GetOsdSize(Width, Height, Aspect);
   if (Width != oldWidth || Height != oldHeight || !DoubleEqual(Aspect, oldAspect) || Force) {
      Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
@@ -2032,7 +2034,16 @@ void cOsdProvider::UpdateOsdSize(bool Force)
      oldHeight = Height;
      oldAspect = Aspect;
      dsyslog("OSD size changed to %dx%d @ %g", Width, Height, Aspect);
+     osdState++;
      }
+}
+
+bool cOsdProvider::OsdSizeChanged(int &State)
+{
+  cMutexLock MutexLock(&cOsd::mutex);
+  bool Result = osdState != State;
+  State = osdState;
+  return Result;
 }
 
 bool cOsdProvider::SupportsTrueColor(void)

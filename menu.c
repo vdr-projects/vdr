@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.27 2015/01/15 10:31:41 kls Exp $
+ * $Id: menu.c 3.28 2015/01/15 11:14:21 kls Exp $
  */
 
 #include "menu.h"
@@ -4033,6 +4033,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   number = 0;
   timeout = Switched || Setup.TimeoutRequChInfo;
+  cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   positioner = NULL;
   channel = Channels.GetByNumber(Number);
   lastPresent = lastFollowing = NULL;
@@ -4118,6 +4119,10 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
+  if (cOsdProvider::OsdSizeChanged(osdState)) {
+     delete displayChannel;
+     displayChannel = Skins.Current()->DisplayChannel(withInfo);
+     }
   cChannel *NewChannel = NULL;
   if (Key != kNone)
      lastTime.Set();

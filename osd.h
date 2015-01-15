@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.4 2015/01/14 10:50:55 kls Exp $
+ * $Id: osd.h 3.5 2015/01/15 11:23:52 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -949,6 +949,7 @@ private:
   static int oldHeight;
   static double oldAspect;
   static cImage *images[MAXOSDIMAGES];
+  static int osdState;
 protected:
   virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located
@@ -985,6 +986,12 @@ public:
       ///< font sizes accordingly. If Force is true, all settings are recalculated,
       ///< even if the video resolution hasn't changed since the last call to
       ///< this function.
+  static bool OsdSizeChanged(int &State);
+      ///< Checks if the OSD size has changed and a currently displayed OSD needs to
+      ///< be redrawn. An internal reference value is incremented on every size change
+      ///< and is compared against State when calling the method.
+      ///< OsdSizeChanged() can be called with an uninitialized State to just get
+      ///< the current value of State.
   static bool SupportsTrueColor(void);
       ///< Returns true if the current OSD provider is able to handle a true color OSD.
   static int StoreImage(const cImage &Image);
