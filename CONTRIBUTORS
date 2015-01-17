@@ -623,6 +623,7 @@ Helmut Auer <vdr@helmutauer.de>
  via the main menu and by pressing the Recordings key
  for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
+ for a patch that was used to implement the command line option --updindex
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

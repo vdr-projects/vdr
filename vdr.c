@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.14 2015/01/14 12:11:41 kls Exp $
+ * $Id: vdr.c 3.15 2015/01/17 14:48:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -269,6 +269,7 @@ int main(int argc, char *argv[])
       { "shutdown", required_argument, NULL, 's' },
       { "split",    no_argument,       NULL, 's' | 0x100 },
       { "terminal", required_argument, NULL, 't' },
+      { "updindex", required_argument, NULL, 'u' | 0x200 },
       { "user",     required_argument, NULL, 'u' },
       { "userdump", no_argument,       NULL, 'u' | 0x100 },
       { "version",  no_argument,       NULL, 'V' },
@@ -463,6 +464,8 @@ int main(int argc, char *argv[])
           case 'u' | 0x100:
                     UserDump = true;
                     break;
+          case 'u' | 0x200:
+                    return GenerateIndex(optarg, true) ? 0 : 2;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -569,6 +572,7 @@ int main(int argc, char *argv[])
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root\n"
+               "            --updindex=REC update index for recording REC and exit\n"
                "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
