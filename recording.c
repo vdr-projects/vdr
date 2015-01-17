@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.19 2015/01/17 10:49:03 kls Exp $
+ * $Id: recording.c 3.20 2015/01/17 13:47:33 kls Exp $
  */
 
 #include "recording.h"
@@ -2275,6 +2275,7 @@ void cIndexFileGenerator::Action(void)
   off_t FileSize = 0;
   off_t FrameOffset = -1;
   Skins.QueueMessage(mtInfo, tr("Regenerating index file"));
+  bool Stuffed = false;
   while (Running()) {
         // Rewind input file:
         if (Rewind) {
@@ -2338,10 +2339,25 @@ void cIndexFileGenerator::Action(void)
         else if (ReplayFile) {
            int Result = Buffer.Read(ReplayFile, BufferChunks);
            if (Result == 0) { // EOF
-              ReplayFile = FileName.NextFile();
-              FileSize = 0;
-              FrameOffset = -1;
-              Buffer.Clear();
+              if (Buffer.Available() > 0 && !Stuffed) {
+                 // So the last call to Buffer.Get() returned NULL, but there is still
+                 // data in the buffer, and we're at the end of the current TS file.
+                 // The remaining data in the buffer is less than what's needed for the
+                 // frame detector to analyze frames, so we need to put some stuffing
+                 // packets into the buffer to flush out the rest of the data (otherwise
+                 // any frames within the remaining data would not be seen here):
+                 uchar StuffingPacket[TS_SIZE] = { TS_SYNC_BYTE, 0xFF };
+                 for (int i = 0; i <= MIN_TS_PACKETS_FOR_FRAME_DETECTOR; i++)
+                     Buffer.Put(StuffingPacket, sizeof(StuffingPacket));
+                 Stuffed = true;
+                 }
+              else {
+                 ReplayFile = FileName.NextFile();
+                 FileSize = 0;
+                 FrameOffset = -1;
+                 Buffer.Clear();
+                 Stuffed = false;
+                 }
               }
            }
         // Recording has been processed:
