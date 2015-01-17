@@ -8307,7 +8307,7 @@ Video Disk Recorder Revision History
 - The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
   the functional modification to cFont::CreateFont().
 
-2015-01-15: Version 2.1.7
+2015-01-17: Version 2.1.7
 
 - No longer logging an error message in DirSizeMB() if the given directory doesn't
   exist. This avoids lots of log entries in case several VDRs use the same video
@@ -8381,3 +8381,6 @@ Video Disk Recorder Revision History
   displayed object (thanks to Thomas Reufer).
 - Added a comment to cRecorder::Activate() about the need to call Detach() in the
   destructor (suggested by Eike Sauer).
+- Now returning from removing deleted recordings after at most 10 seconds, or if the
+  user presses a remote control key, to keep the system from getting unresponsive
+  when removing a huge number of files (reported by Dieter Ferdinand).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.18 2014/03/16 11:09:17 kls Exp $
+ * $Id: recording.c 3.19 2015/01/17 10:49:03 kls Exp $
  */
 
 #include "recording.h"
@@ -65,6 +65,7 @@
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
 #define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
+#define MAXREMOVETIME      10 // seconds after which to return from removing deleted recordings
 
 #define MAX_LINK_LEVEL  6
 
@@ -97,11 +98,16 @@ void cRemoveDeletedRecordingsThread::Action(void)
   // Make sure only one instance of VDR does this:
   cLockFile LockFile(cVideoDirectory::Name());
   if (LockFile.Lock()) {
+     time_t StartTime = time(NULL);
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
          if (cIoThrottle::Engaged())
             return;
+         if (time(NULL) - StartTime > MAXREMOVETIME)
+            return; // don't stay here too long
+         if (cRemote::HasKeys())
+            return; // react immediately on user input
          if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
