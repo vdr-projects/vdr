@@ -3219,3 +3219,5 @@ Christian Winkler <winkler_chr@yahoo.de>
 Dieter Ferdinand <dieter.ferdinand@gmx.de>
  for reporting a problem with jumping to an absolute position via the Red key in
  case replay was paused
+ for reporting a problem with the system getting unresponsive when removing a huge
+ number of files in the thread that removes deleted recordings
