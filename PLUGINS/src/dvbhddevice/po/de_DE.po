@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-dvbhddevice 0.0.4\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-08-23 12:10+0200\n"
+"POT-Creation-Date: 2014-09-21 14:01+0200\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
 "Last-Translator: Christoph Haubrich\n"
 "Language-Team: <see README>\n"
@@ -120,6 +120,9 @@ msgstr "High Level OSD"
 
 msgid "Allow True Color OSD"
 msgstr "Erlaube True Color OSD"
+
+msgid "True Color format"
+msgstr "True Color Format"
 
 msgid "Hide mainmenu entry"
 msgstr "Hauptmenüeintrag verstecken"

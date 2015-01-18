@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.8 2014/02/25 10:00:23 kls Exp $
+ * $Id: config.h 3.10 2015/01/12 14:32:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "2.1.6"
-#define VDRVERSNUM   20106  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "2.1.7"
+#define VDRVERSNUM   20107  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.1.6"
-#define APIVERSNUM   20106  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "2.1.7"
+#define APIVERSNUM   20107  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -336,6 +336,8 @@ public:
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;
+  int VolumeSteps;
+  int VolumeLinearize;
   int CurrentDolby;
   int InitialVolume;
   int ChannelsWrap;

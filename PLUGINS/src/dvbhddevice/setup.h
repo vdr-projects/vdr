@@ -18,6 +18,7 @@ struct cHdffSetup
     HdffVideoMode_t GetVideoMode(void);
     void SetNextVideoConversion(void);
     const char * GetVideoConversionString(void);
+    void SetVideoFormat(HDFF::cHdffCmdIf * HdffCmdIf);
 
     int Resolution;
     int VideoModeAdaption;
@@ -36,6 +37,7 @@ struct cHdffSetup
 
     int HighLevelOsd;
     int TrueColorOsd;
+    int TrueColorFormat;
 
     int HideMainMenu;
 };

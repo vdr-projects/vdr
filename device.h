@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.9 2014/03/15 14:04:58 kls Exp $
+ * $Id: device.h 3.10 2015/01/12 14:39:09 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -30,7 +30,7 @@
 #define MAXPIDHANDLES      64 // the maximum number of different PIDs per device
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
-#define VOLUMEDELTA         5 // used to increase/decrease the volume
+#define VOLUMEDELTA       (MAXVOLUME / Setup.VolumeSteps) // used to increase/decrease the volume
 #define MAXOCCUPIEDTIMEOUT 99 // max. time (in seconds) a device may be occupied
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };

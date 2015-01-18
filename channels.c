@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.5 2014/03/10 13:14:02 kls Exp $
+ * $Id: channels.c 3.7 2015/01/14 12:15:03 kls Exp $
  */
 
 #include "channels.h"
@@ -221,7 +221,7 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      nameSource = NULL;
      shortNameSource = NULL;
      if (Number() && !Quiet) {
-        dsyslog("changing transponder data of channel %d from %s to %s", Number(), *OldTransponderData, *TransponderDataToString());
+        dsyslog("changing transponder data of channel %d (%s) from %s to %s", Number(), name, *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -233,7 +233,7 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
 {
   if (nid != Nid || tid != Tid || sid != Sid || rid != Rid) {
      if (Number()) {
-        dsyslog("changing id of channel %d from %d-%d-%d-%d to %d-%d-%d-%d", Number(), nid, tid, sid, rid, Nid, Tid, Sid, Rid);
+        dsyslog("changing id of channel %d (%s) from %d-%d-%d-%d to %d-%d-%d-%d", Number(), name, nid, tid, sid, rid, Nid, Tid, Sid, Rid);
         modification |= CHANNELMOD_ID;
         Channels.SetModified();
         Channels.UnhashChannel(this);
@@ -278,7 +278,7 @@ void cChannel::SetPortalName(const char *PortalName)
 {
   if (!isempty(PortalName) && strcmp(portalName, PortalName) != 0) {
      if (Number()) {
-        dsyslog("changing portal name of channel %d from '%s' to '%s'", Number(), portalName, PortalName);
+        dsyslog("changing portal name of channel %d (%s) from '%s' to '%s'", Number(), name, portalName, PortalName);
         modification |= CHANNELMOD_NAME;
         Channels.SetModified();
         }
@@ -368,7 +368,7 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      q += IntArrayToString(q, Spids, 10, SLangs);
      *q = 0;
      if (Number())
-        dsyslog("changing pids of channel %d from %d+%d=%d:%s:%s:%d to %d+%d=%d:%s:%s:%d", Number(), vpid, ppid, vtype, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, Vtype, NewApidsBuf, NewSpidsBuf, Tpid);
+        dsyslog("changing pids of channel %d (%s) from %d+%d=%d:%s:%s:%d to %d+%d=%d:%s:%s:%d", Number(), name, vpid, ppid, vtype, OldApidsBuf, OldSpidsBuf, tpid, Vpid, Ppid, Vtype, NewApidsBuf, NewSpidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
      vtype = Vtype;
@@ -427,7 +427,7 @@ void cChannel::SetCaIds(const int *CaIds)
      IntArrayToString(OldCaIdsBuf, caids, 16);
      IntArrayToString(NewCaIdsBuf, CaIds, 16);
      if (Number())
-        dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
+        dsyslog("changing caids of channel %d (%s) from %s to %s", Number(), name, OldCaIdsBuf, NewCaIdsBuf);
      for (int i = 0; i <= MAXCAIDS; i++) { // <= to copy the terminating 0
          caids[i] = CaIds[i];
          if (!CaIds[i])
@@ -444,7 +444,7 @@ void cChannel::SetCaDescriptors(int Level)
      modification |= CHANNELMOD_CA;
      Channels.SetModified();
      if (Number() && Level > 1)
-        dsyslog("changing ca descriptors of channel %d", Number());
+        dsyslog("changing ca descriptors of channel %d (%s)", Number(), name);
      }
 }
 
@@ -470,7 +470,7 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
      }
   char buffer[((linkChannels ? linkChannels->Count() : 0) + (LinkChannels ? LinkChannels->Count() : 0)) * 6 + 256]; // 6: 5 digit channel number plus blank, 256: other texts (see below) plus reserve
   char *q = buffer;
-  q += sprintf(q, "linking channel %d from", Number());
+  q += sprintf(q, "linking channel %d (%s) from", Number(), name);
   if (linkChannels) {
      for (cLinkChannel *lc = linkChannels->First(); lc; lc = linkChannels->Next(lc)) {
          lc->Channel()->SetRefChannel(NULL);
@@ -1040,8 +1040,11 @@ void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid && channel->Rid() == 0) {
+         bool OldShowChannelNamesWithSource = Setup.ShowChannelNamesWithSource;
+         Setup.ShowChannelNamesWithSource = false;
          if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
             channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
+         Setup.ShowChannelNamesWithSource = OldShowChannelNamesWithSource;
          }
       }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 3.3 2014/02/08 12:41:50 kls Exp $
+ * $Id: remux.h 3.4 2014/03/22 14:58:24 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -50,6 +50,7 @@ public:
 #define TS_ADAPT_EXTENSION    0x01
 
 #define PATPID 0x0000 // PAT PID (constant 0)
+#define CATPID 0x0001 // CAT PID (constant 1)
 #define MAXPID 0x2000 // for arrays that use a PID as the index
 
 #define PTSTICKS  90000 // number of PTS ticks per second

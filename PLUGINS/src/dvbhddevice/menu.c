@@ -56,12 +56,7 @@ eOSState cHdffMenu::ProcessKey(eKeys key)
 
 void cHdffMenu::SetVideoConversion(void)
 {
-    HdffVideoFormat_t videoFormat;
-    videoFormat.AutomaticEnabled = true;
-    videoFormat.AfdEnabled = false;
-    videoFormat.TvFormat = (HdffTvFormat_t) gHdffSetup.TvFormat;
-    videoFormat.VideoConversion = (HdffVideoConversion_t) gHdffSetup.VideoConversion;
-    mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
+    gHdffSetup.SetVideoFormat(mHdffCmdIf);
 
     char str[128];
     sprintf(str, "%s: %s", tr("Video Conversion"), gHdffSetup.GetVideoConversionString());

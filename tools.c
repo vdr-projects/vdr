@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 3.2 2013/09/22 13:19:19 kls Exp $
+ * $Id: tools.c 3.3 2014/03/22 14:22:55 kls Exp $
  */
 
 #include "tools.h"
@@ -609,7 +609,7 @@ int DirSizeMB(const char *DirName)
            }
      return size;
      }
-  else
+  else if (errno != ENOENT)
      LOG_ERROR_STR(DirName);
   return -1;
 }

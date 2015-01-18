@@ -51,6 +51,7 @@ public:
 // Video format facilities
 
 public:
+  virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
 

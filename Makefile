@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 3.2 2014/03/16 12:47:35 kls Exp $
+# $Id: Makefile 3.4 2015/01/01 13:52:07 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -31,6 +31,7 @@ PLUGINDIR ?= $(CWD)/PLUGINS
 DESTDIR   ?=
 VIDEODIR  ?= /srv/vdr/video
 CONFDIR   ?= /var/lib/vdr
+ARGSDIR   ?= /etc/vdr/conf.d
 CACHEDIR  ?= /var/cache/vdr
 
 PREFIX    ?= /usr/local
@@ -66,7 +67,7 @@ endif
 
 SILIB    = $(LSIDIR)/libsi.a
 
-OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
+OBJS = args.o audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
        dvbplayer.o dvbspu.o dvbsubtitle.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o positioner.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
@@ -104,6 +105,7 @@ LIRC_DEVICE ?= /var/run/lirc/lircd
 DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\"
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DCONFDIR=\"$(CONFDIR)\"
+DEFINES += -DARGSDIR=\"$(ARGSDIR)\"
 DEFINES += -DCACHEDIR=\"$(CACHEDIR)\"
 DEFINES += -DRESDIR=\"$(RESDIR)\"
 DEFINES += -DPLUGINDIR=\"$(LIBDIR)\"
@@ -146,8 +148,9 @@ $(SILIB):
 vdr.pc:
 	@echo "bindir=$(BINDIR)" > $@
 	@echo "mandir=$(MANDIR)" >> $@
-	@echo "configdir=$(CONFDIR)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
+	@echo "configdir=$(CONFDIR)" >> $@
+	@echo "argsdir=$(ARGSDIR)" >> $@
 	@echo "cachedir=$(CACHEDIR)" >> $@
 	@echo "resdir=$(RESDIR)" >> $@
 	@echo "libdir=$(LIBDIR)" >> $@
@@ -225,7 +228,7 @@ plugins: include-dir vdr.pc
 	    INCLUDES="-I$(CWD)/include"\
 	    $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR="$(CWD)" || failed="$$failed $$i";\
 	    if [ -n "$(LCLBLD)" ] ; then\
-	       (cd $(PLUGINDIR)/src/$$i; for l in `find -name 'libvdr-*.so' -o -name 'lib$$i-*.so'`; do install $$l $(LIBDIR)/`basename $$l`.$(APIVERSION); done);\
+	       (cd $(PLUGINDIR)/src/$$i; for l in `find -name "libvdr-*.so" -o -name "lib$$i-*.so"`; do install $$l $(LIBDIR)/`basename $$l`.$(APIVERSION); done);\
 	       if [ -d $(PLUGINDIR)/src/$$i/po ]; then\
 	          for l in `ls $(PLUGINDIR)/src/$$i/po/*.mo`; do\
 	              install -D -m644 $$l $(LOCDIR)/`basename $$l | cut -d. -f1`/LC_MESSAGES/vdr-$$i.mo;\
@@ -265,6 +268,7 @@ install-bin: vdr
 install-dirs:
 	@mkdir -p $(DESTDIR)$(VIDEODIR)
 	@mkdir -p $(DESTDIR)$(CONFDIR)
+	@mkdir -p $(DESTDIR)$(ARGSDIR)
 	@mkdir -p $(DESTDIR)$(CACHEDIR)
 	@mkdir -p $(DESTDIR)$(RESDIR)
 

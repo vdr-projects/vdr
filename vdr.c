@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.11 2014/03/16 12:49:13 kls Exp $
+ * $Id: vdr.c 3.15 2015/01/17 14:48:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -39,6 +39,7 @@
 #endif
 #include <termios.h>
 #include <unistd.h>
+#include "args.h"
 #include "audio.h"
 #include "channels.h"
 #include "config.h"
@@ -190,6 +191,7 @@ int main(int argc, char *argv[])
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTVIDEODIR VIDEODIR
 #define DEFAULTCONFDIR dd(CONFDIR, VideoDirectory)
+#define DEFAULTARGSDIR dd(ARGSDIR, "/etc/vdr/conf.d")
 #define DEFAULTCACHEDIR dd(CACHEDIR, VideoDirectory)
 #define DEFAULTRESDIR dd(RESDIR, ConfigDirectory)
 #define DEFAULTPLUGINDIR PLUGINDIR
@@ -227,6 +229,15 @@ int main(int argc, char *argv[])
   VdrUser = VDR_USER;
 #endif
 
+  cArgs *Args = NULL;
+  if (argc == 1) {
+     Args = new cArgs(argv[0]);
+     if (Args->ReadDirectory(DEFAULTARGSDIR)) {
+        argc = Args->GetArgc();
+        argv = Args->GetArgv();
+        }
+     }
+
   cVideoDirectory::SetName(VideoDirectory);
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
 
@@ -254,9 +265,11 @@ int main(int argc, char *argv[])
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
       { "resdir",   required_argument, NULL, 'r' | 0x100 },
+      { "showargs", optional_argument, NULL, 's' | 0x200 },
       { "shutdown", required_argument, NULL, 's' },
       { "split",    no_argument,       NULL, 's' | 0x100 },
       { "terminal", required_argument, NULL, 't' },
+      { "updindex", required_argument, NULL, 'u' | 0x200 },
       { "user",     required_argument, NULL, 'u' },
       { "userdump", no_argument,       NULL, 'u' | 0x100 },
       { "version",  no_argument,       NULL, 'V' },
@@ -426,6 +439,19 @@ int main(int argc, char *argv[])
           case 's' | 0x100:
                     Setup.SplitEditedFiles = 1;
                     break;
+          case 's' | 0x200: {
+                    const char *ArgsDir = optarg ? optarg : DEFAULTARGSDIR;
+                    cArgs Args(argv[0]);
+                    if (!Args.ReadDirectory(ArgsDir)) {
+                       fprintf(stderr, "vdr: can't read arguments from directory: %s\n", ArgsDir);
+                       return 2;
+                       }
+                    int c = Args.GetArgc();
+                    char **v = Args.GetArgv();
+                    for (int i = 1; i < c; i++)
+                        printf("%s\n", v[i]);
+                    return 0;
+                    }
           case 't': Terminal = optarg;
                     if (access(Terminal, R_OK | W_OK) < 0) {
                        fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
@@ -438,6 +464,8 @@ int main(int argc, char *argv[])
           case 'u' | 0x100:
                     UserDump = true;
                     break;
+          case 'u' | 0x200:
+                    return GenerateIndex(optarg, true) ? 0 : 2;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -539,9 +567,12 @@ int main(int argc, char *argv[])
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "            --split        split edited files at the editing marks (only\n"
                "                           useful in conjunction with --edit)\n"
+               "            --showargs[=DIR] print the arguments read from DIR and exit\n"
+               "                           (default: %s)\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root\n"
+               "            --updindex=REC update index for recording REC and exit\n"
                "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
@@ -561,6 +592,7 @@ int main(int argc, char *argv[])
                DEFAULTLOCDIR,
                DEFAULTSVDRPPORT,
                DEFAULTRESDIR,
+               DEFAULTARGSDIR,
                DEFAULTVIDEODIR,
                DEFAULTWATCHDOG
                );
@@ -849,7 +881,7 @@ int main(int argc, char *argv[])
      }
 
 #ifdef SDNOTIFY
-  sd_notify(0, "READY=1");
+  sd_notify(0, "READY=1\nSTATUS=Ready");
 #endif
 
   // Main program loop:
@@ -927,7 +959,7 @@ int main(int argc, char *argv[])
                      if (Channel->Number() == cDevice::CurrentChannel() && cDevice::PrimaryDevice()->HasDecoder()) {
                         if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring()) {
                            if (cDevice::ActualDevice()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
-                              isyslog("retuning due to modification of channel %d", Channel->Number());
+                              isyslog("retuning due to modification of channel %d (%s)", Channel->Number(), Channel->Name());
                               Channels.SwitchTo(Channel->Number());
                               }
                            }
@@ -1004,7 +1036,7 @@ int main(int argc, char *argv[])
                         if (!Device->IsTunedToTransponder(Timer->Channel())) {
                            if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                               cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
-                           dsyslog("switching device %d to channel %d", Device->DeviceNumber() + 1, Timer->Channel()->Number());
+                           dsyslog("switching device %d to channel %d (%s)", Device->DeviceNumber() + 1, Timer->Channel()->Number(), Timer->Channel()->Name());
                            if (Device->SwitchChannel(Timer->Channel(), false))
                               Device->SetOccupied(TIMERDEVICETIMEOUT);
                            }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbci.c 3.0 2007/01/04 12:49:10 kls Exp $
+ * $Id: dvbci.c 3.1 2015/01/14 11:13:49 kls Exp $
  */
 
 #include "dvbci.h"
@@ -17,7 +17,7 @@
 cDvbCiAdapter::cDvbCiAdapter(cDevice *Device, int Fd)
 {
   device = Device;
-  SetDescription("CI adapter on device %d", device->DeviceNumber());
+  SetDescription("device %d CI adapter", device->DeviceNumber());
   fd = Fd;
   ca_caps_t Caps;
   if (ioctl(fd, CA_GET_CAP, &Caps) == 0) {

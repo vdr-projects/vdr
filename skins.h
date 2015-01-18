@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 3.3 2014/02/17 11:05:29 kls Exp $
+ * $Id: skins.h 3.4 2015/01/15 10:45:47 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -121,6 +121,14 @@ enum eMenuCategory {
   mcCam
   };
 
+enum eMenuSortMode {
+  msmUnknown = 0,
+  msmNumber,
+  msmName,
+  msmTime,
+  msmProvider
+  };
+
 class cSkinDisplayMenu : public cSkinDisplay {
        ///< This class implements the general purpose menu display, which is
        ///< used throughout the program to display information and let the
@@ -167,6 +175,10 @@ public:
   virtual void SetTabs(int Tab1, int Tab2 = 0, int Tab3 = 0, int Tab4 = 0, int Tab5 = 0);
        ///< Sets the tab columns to the given values, which are the number of
        ///< characters in each column.
+  virtual void SetMenuSortMode(eMenuSortMode MenuSortMode) {}
+       ///< Sets the mode by which the items in this menu are sorted.
+       ///< This is purely informative and may be used by a skin to display the
+       ///< current sort mode by means of some text or symbol.
   virtual void Scroll(bool Up, bool Page);
        ///< If this menu contains a text area that can be scrolled, this function
        ///< will be called to actually scroll the text. Up indicates whether the

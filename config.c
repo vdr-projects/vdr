@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.2 2013/08/31 12:41:28 kls Exp $
+ * $Id: config.c 3.3 2015/01/12 14:32:17 kls Exp $
  */
 
 #include "config.h"
@@ -473,6 +473,8 @@ cSetup::cSetup(void)
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
+  VolumeSteps = 51;
+  VolumeLinearize = 0;
   CurrentDolby = 0;
   InitialChannel = "";
   DeviceBondings = "";
@@ -686,6 +688,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = Value;
+  else if (!strcasecmp(Name, "VolumeSteps"))         VolumeSteps        = atoi(Value);
+  else if (!strcasecmp(Name, "VolumeLinearize"))     VolumeLinearize    = atoi(Value);
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
@@ -801,6 +805,8 @@ bool cSetup::Save(void)
   Store("CurrentVolume",      CurrentVolume);
   Store("CurrentDolby",       CurrentDolby);
   Store("InitialChannel",     InitialChannel);
+  Store("VolumeSteps",        VolumeSteps);
+  Store("VolumeLinearize",    VolumeLinearize);
   Store("InitialVolume",      InitialVolume);
   Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);

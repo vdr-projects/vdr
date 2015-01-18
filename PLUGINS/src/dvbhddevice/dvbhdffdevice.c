@@ -108,17 +108,12 @@ cDvbHdFfDevice::~cDvbHdFfDevice()
 
 void cDvbHdFfDevice::MakePrimaryDevice(bool On)
 {
-  if (On) {
-     new cHdffOsdProvider(mHdffCmdIf);
-     //TODO the same code is also used in cHdffSetupPage::Store() and cHdffMenu::SetVideoConversion() - combine?
-     HdffVideoFormat_t videoFormat;
-     videoFormat.AutomaticEnabled = true;
-     videoFormat.AfdEnabled = false;
-     videoFormat.TvFormat = (HdffTvFormat_t) gHdffSetup.TvFormat;
-     videoFormat.VideoConversion = (HdffVideoConversion_t) gHdffSetup.VideoConversion;
-     mHdffCmdIf->CmdAvSetVideoFormat(0, &videoFormat);
-     }
-  cDvbDevice::MakePrimaryDevice(On);
+    if (On) {
+        new cHdffOsdProvider(mHdffCmdIf);
+
+        gHdffSetup.SetVideoFormat(mHdffCmdIf);
+    }
+    cDvbDevice::MakePrimaryDevice(On);
 }
 
 bool cDvbHdFfDevice::HasDecoder(void) const
@@ -241,6 +236,26 @@ uchar *cDvbHdFfDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, i
     close(fd);
 
     return result;
+}
+
+void cDvbHdFfDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
+{
+    if (gHdffSetup.TvFormat == HDFF_TV_FORMAT_4_BY_3)
+    {
+        switch (VideoDisplayFormat)
+        {
+            case vdfPanAndScan:
+            case vdfCenterCutOut:
+                gHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_CENTRE_CUT_OUT;
+                break;
+
+            case vdfLetterBox:
+                gHdffSetup.VideoConversion = HDFF_VIDEO_CONVERSION_LETTERBOX_16_BY_9;
+                break;
+        }
+        gHdffSetup.SetVideoFormat(mHdffCmdIf);
+    }
+    cDevice::SetVideoDisplayFormat(VideoDisplayFormat);
 }
 
 void cDvbHdFfDevice::GetVideoSize(int &Width, int &Height, double &VideoAspect)
@@ -795,6 +810,11 @@ int cDvbHdFfDevice::PlayVideo(const uchar *Data, int Length)
         mHdffCmdIf->CmdAvEnableSync(0, true);
         isPlayingVideo = true;
     }
+
+    // ignore padding PES packets
+    if (Data[3] == 0xBE)
+        return Length;
+
     //TODO: support greater Length
     uint8_t tsBuffer[188 * 16];
     uint32_t tsLength;

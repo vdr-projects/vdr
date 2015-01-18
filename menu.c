@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.23 2014/03/16 10:38:31 kls Exp $
+ * $Id: menu.c 3.28 2015/01/15 11:14:21 kls Exp $
  */
 
 #include "menu.h"
@@ -387,6 +387,9 @@ void cMenuChannels::Setup(void)
             currentItem = item;
          }
       }
+  SetMenuSortMode(cMenuChannelItem::SortMode() == cMenuChannelItem::csmName ? msmName :
+                  cMenuChannelItem::SortMode() == cMenuChannelItem::csmProvider ? msmProvider :
+                  msmNumber);
   if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
      Sort();
   SetCurrent(currentItem);
@@ -2670,6 +2673,7 @@ void cMenuRecordings::Set(bool Refresh)
             LastDir->IncrementCounter(recording->IsNew());
          }
       }
+  SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
   if (Refresh)
      Display();
 }
@@ -3597,6 +3601,8 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Remote control repeat delta (ms)"), &data.RcRepeatDelta, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume steps"),               &data.VolumeSteps, 5, 255));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume linearize"),           &data.VolumeLinearize, -20, 20));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
@@ -4027,6 +4033,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   number = 0;
   timeout = Switched || Setup.TimeoutRequChInfo;
+  cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   positioner = NULL;
   channel = Channels.GetByNumber(Number);
   lastPresent = lastFollowing = NULL;
@@ -4112,6 +4119,10 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
+  if (cOsdProvider::OsdSizeChanged(osdState)) {
+     delete displayChannel;
+     displayChannel = Skins.Current()->DisplayChannel(withInfo);
+     }
   cChannel *NewChannel = NULL;
   if (Key != kNone)
      lastTime.Set();
@@ -4754,7 +4765,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(channel, Priority, false);
      if (device) {
-        dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
+        dsyslog("switching device %d to channel %d (%s)", device->DeviceNumber() + 1, channel->Number(), channel->Name());
         if (!device->SwitchChannel(channel, false)) {
            ShutdownHandler.RequestEmergencyExit();
            return false;
@@ -4769,7 +4780,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            }
         }
      else if (!Timer || !Timer->Pending()) {
-        isyslog("no free DVB device to record channel %d!", ch);
+        isyslog("no free DVB device to record channel %d (%s)!", ch, channel->Name());
         Skins.Message(mtError, tr("No free DVB device to record!"));
         }
      }
@@ -4864,7 +4875,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
       if (RecordControls[i]) {
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
             if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
-               isyslog("stopping recording due to modification of channel %d", Channel->Number());
+               isyslog("stopping recording due to modification of channel %d (%s)", Channel->Number(), Channel->Name());
                RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.
@@ -5145,7 +5156,10 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kOk:
          if (timeSearchPos > 0) {
             Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
+            bool Still = Key == kDown || Key == kPause || Key == kOk;
+            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Still);
+            if (!Still)
+               Play();
             }
          timeSearchActive = false;
          break;

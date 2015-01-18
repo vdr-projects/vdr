@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.18 2014/03/16 11:09:17 kls Exp $
+ * $Id: recording.c 3.21 2015/01/17 14:52:28 kls Exp $
  */
 
 #include "recording.h"
@@ -65,6 +65,7 @@
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
 #define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
+#define MAXREMOVETIME      10 // seconds after which to return from removing deleted recordings
 
 #define MAX_LINK_LEVEL  6
 
@@ -97,11 +98,16 @@ void cRemoveDeletedRecordingsThread::Action(void)
   // Make sure only one instance of VDR does this:
   cLockFile LockFile(cVideoDirectory::Name());
   if (LockFile.Lock()) {
+     time_t StartTime = time(NULL);
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
          if (cIoThrottle::Engaged())
             return;
+         if (time(NULL) - StartTime > MAXREMOVETIME)
+            return; // don't stay here too long
+         if (cRemote::HasKeys())
+            return; // react immediately on user input
          if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
@@ -2235,17 +2241,19 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 class cIndexFileGenerator : public cThread {
 private:
   cString recordingName;
+  bool update;
 protected:
   virtual void Action(void);
 public:
-  cIndexFileGenerator(const char *RecordingName);
+  cIndexFileGenerator(const char *RecordingName, bool Update = false);
   ~cIndexFileGenerator();
   };
 
-cIndexFileGenerator::cIndexFileGenerator(const char *RecordingName)
+cIndexFileGenerator::cIndexFileGenerator(const char *RecordingName, bool Update)
 :cThread("index file generator")
 ,recordingName(RecordingName)
 {
+  update = Update;
   Start();
 }
 
@@ -2264,15 +2272,34 @@ void cIndexFileGenerator::Action(void)
   cRingBufferLinear Buffer(IFG_BUFFER_SIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE);
   cPatPmtParser PatPmtParser;
   cFrameDetector FrameDetector;
-  cIndexFile IndexFile(recordingName, true);
+  cIndexFile IndexFile(recordingName, true, false, false, true);
   int BufferChunks = KILOBYTE(1); // no need to read a lot at the beginning when parsing PAT/PMT
   off_t FileSize = 0;
   off_t FrameOffset = -1;
+  uint16_t FileNumber = 1;
+  off_t FileOffset = 0;
+  int Last = -1;
+  if (update) {
+     // Look for current index and position to end of it if present:
+     bool Independent;
+     int Length;
+     Last = IndexFile.Last();
+     if (Last >= 0 && !IndexFile.Get(Last, &FileNumber, &FileOffset, &Independent, &Length))
+        Last = -1; // reset Last if an error occurred
+     if (Last >= 0) {
+        Rewind = true;
+        isyslog("updating index file");
+        }
+     else
+        isyslog("generating index file");
+     }
   Skins.QueueMessage(mtInfo, tr("Regenerating index file"));
+  bool Stuffed = false;
   while (Running()) {
         // Rewind input file:
         if (Rewind) {
-           ReplayFile = FileName.SetOffset(1);
+           ReplayFile = FileName.SetOffset(FileNumber, FileOffset);
+           FileSize = FileOffset;
            Buffer.Clear();
            Rewind = false;
            }
@@ -2287,7 +2314,8 @@ void cIndexFileGenerator::Action(void)
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
                  if (FrameDetector.NewFrame()) {
-                    IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
+                    if (IndexFileWritten || Last < 0) // check for first frame and do not write if in update mode
+                       IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
                     FrameOffset = -1;
                     IndexFileWritten = true;
                     }
@@ -2332,10 +2360,25 @@ void cIndexFileGenerator::Action(void)
         else if (ReplayFile) {
            int Result = Buffer.Read(ReplayFile, BufferChunks);
            if (Result == 0) { // EOF
-              ReplayFile = FileName.NextFile();
-              FileSize = 0;
-              FrameOffset = -1;
-              Buffer.Clear();
+              if (Buffer.Available() > 0 && !Stuffed) {
+                 // So the last call to Buffer.Get() returned NULL, but there is still
+                 // data in the buffer, and we're at the end of the current TS file.
+                 // The remaining data in the buffer is less than what's needed for the
+                 // frame detector to analyze frames, so we need to put some stuffing
+                 // packets into the buffer to flush out the rest of the data (otherwise
+                 // any frames within the remaining data would not be seen here):
+                 uchar StuffingPacket[TS_SIZE] = { TS_SYNC_BYTE, 0xFF };
+                 for (int i = 0; i <= MIN_TS_PACKETS_FOR_FRAME_DETECTOR; i++)
+                     Buffer.Put(StuffingPacket, sizeof(StuffingPacket));
+                 Stuffed = true;
+                 }
+              else {
+                 ReplayFile = FileName.NextFile();
+                 FileSize = 0;
+                 FrameOffset = -1;
+                 Buffer.Clear();
+                 Stuffed = false;
+                 }
               }
            }
         // Recording has been processed:
@@ -2397,7 +2440,7 @@ struct tIndexTs {
 #define INDEXFILECHECKINTERVAL 500 // ms between checks for existence of the regenerated index file
 #define INDEXFILETESTINTERVAL   10 // ms between tests for the size of the index file in case of pausing live video
 
-cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive)
+cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive, bool Update)
 :resumeFile(FileName, IsPesRecording)
 {
   f = -1;
@@ -2436,7 +2479,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
               esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, *fileName);
               }
            last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
-           if (!Record && last >= 0) {
+           if ((!Record || Update) && last >= 0) {
               size = last + 1;
               index = MALLOC(tIndexTs, size);
               if (index) {
@@ -2724,15 +2767,16 @@ int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
   return -1;
 }
 
-bool GenerateIndex(const char *FileName)
+bool GenerateIndex(const char *FileName, bool Update)
 {
   if (DirectoryOk(FileName)) {
      cRecording Recording(FileName);
      if (Recording.Name()) {
         if (!Recording.IsPesRecording()) {
            cString IndexFileName = AddDirectory(FileName, INDEXFILESUFFIX);
-           unlink(IndexFileName);
-           cIndexFileGenerator *IndexFileGenerator = new cIndexFileGenerator(FileName);
+           if (!Update)
+              unlink(IndexFileName);
+           cIndexFileGenerator *IndexFileGenerator = new cIndexFileGenerator(FileName, Update);
            while (IndexFileGenerator->Active())
                  cCondWait::SleepMs(INDEXFILECHECKINTERVAL);
            if (access(IndexFileName, R_OK) == 0)

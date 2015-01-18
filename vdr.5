@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 3.2 2014/03/16 10:38:31 kls Exp $
+.\" $Id: vdr.5 3.3 2014/04/14 13:11:49 kls Exp $
 .\"
 .TH vdr 5 "31 Mar 2013" "2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -899,6 +899,33 @@ Note that the \fBevent id\fR that comes from the DVB data stream is actually
 just 16 bit wide. The internal representation in VDR allows for 32 bit to
 be used, so that external tools can generate EPG data that is guaranteed
 not to collide with the ids of existing data.
+.SS COMMANDLINE OPTIONS
+If started without any options, vdr tries to read any files in the directory
+/etc/vdr/conf.d with names that do not begin with a '.' and that end with '.conf'.
+These files are read in alphabetical order. The format of these files is
+
+# comment
+.br
+[name]
+.br
+-a
+.br
+-b 123
+.br
+--long
+.br
+--longarg=123
+.br
+
+Any lines that begin with '#' as the first non-whitespace character are considered
+comments and are ignored.
+A command line option file consists of one or more sections, indicated by '[name]',
+where 'name' is either the fixed word 'vdr' (if this section contains options for
+the main VDR program) or the name of the plugin this section applies to.
+Each option must be written on a separate line, including the leading '-' (for
+a short option) or '--' (for a long option). If the option has additional arguments,
+they have to be written on the same line as the option itself, separated from the
+option with a blank (short option) or equal sign (long option).
 .SH SEE ALSO
 .BR vdr (1)
 .SH AUTHOR

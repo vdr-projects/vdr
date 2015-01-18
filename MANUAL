@@ -999,6 +999,17 @@ Version 2.0
                          VDR was stopped will be used. The valid range is from
                          0 (silent) to 255 (loudest).
 
+  Volume steps = 51      The number of steps the volume will use when moving from
+                         the lowest to the highest value. The valid range is from
+                         5 to 255.
+
+  Volume linearize = 0   How to linearize the volume control. The valid range is
+                         from -20 to 20. A value of 0 results in no linearization.
+                         The higher this value is, the more fine grained the control
+                         of the volume is for low sound levels. Lower values do the
+                         same for high sound levels. This allows you to adjust the
+                         more or less linear volume control of your sound card.
+
   Channels wrap = no     During zapping with the "Up" and "Down" keys (or the
                          "Channel+" and "Channel-" keys) the current channel will
                          wrap around the beginning or end of the channel list if

@@ -232,6 +232,7 @@ Stefan Huelswitt <s.huelswitt@gmx.de>
  featured DVB cards
  for pointing out a bug in handling lowercase polarization characters in channel
  definitions if no DiSEqC is used
+ for fixing a bug in the Makefile when installing plugins with LCLBLD=1
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -622,6 +623,7 @@ Helmut Auer <vdr@helmutauer.de>
  via the main menu and by pressing the Recordings key
  for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
+ for a patch that was used to implement the command line option --updindex
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1188,6 +1190,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for reporting a problem with adding new source types in case they are already
  registered
  for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
+ for fixing a problem with subtitles not being displayed because the broadcaster
+ doesn't set the data's version numbers as required by the DVB standard
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2546,6 +2550,7 @@ Frank Schmirler <vdr@schmirler.de>
  for suggestions used in revising priority handling to allow receivers with a priority
  that is lower than that of live viewing
  for fixing handling IDLEPRIORITY in cDvbDevice::ProvidesChannel()
+ for suggesting to add functions to set and retrieve the priority of a cReceiver
 
 Jörn Reder <joern@zyn.de>
  for reporting that a recording may unnecessarily block a device with a CAM, while
@@ -2615,6 +2620,7 @@ Jose Alberto Reguero <jareguero@telefonica.net>
  for a patch that fixed part of a crash in i18n character set conversion
  for fixing cDvbPlayer::NextFile() to handle files larger than 2GB
  for implementing full handling of the stream types of Dolby Digital pids
+ for adding subsystem id support for DVB devices connected via USB
 
 Patrice Staudt <staudt@engsystem.net>
  for adding full weekday names to i18n.c for plugins to use
@@ -2895,6 +2901,8 @@ Lars Hanisch <dvb@flensrocker.de>
  the caller to have it display only a certain subset of the recordings
  for adding handling UTF-8 'umlaut' characters to cKbdRemote
  for fixing learning keyboard remote control codes
+ for making VDR read command line options from *.conf files in /etc/vdr/conf.d
+ for adding a missing backslash to the help text of the SVDRP command MOVR
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -3168,6 +3176,7 @@ Stefan Blochberger <Stefan.Blochberger@gmx.de>
  recording is started
  for suggesting that floating point numbers presented to the user shall be displayed
  in the way defined by the current locale
+ for changing the German weekday names from "MonDieMitDonFreSamSon" to "Mo.Di.Mi.Do.Fr.Sa.So."
 
 Cedric Dewijs <cedric.dewijs@telfort.nl>
  for adding maximum SNR value for PCTV Systems PCTV 73ESE
@@ -3259,11 +3268,18 @@ Thomas Reufer <thomas@reufer.ch>
  for suggesting to add an additional parameter named Forward to cDevice::TrickSpeed()
  for suggesting to add a note to ePlayMode in device.h that VDR itself always uses
  pmAudioVideo when replaying a recording
+ for fixing a possible crash in the LCARS skin
+ for implementing cOsd::DrawScaledBitmap()
+ for adding handling for DTS audio tracks to cPatPmtParser::ParsePmt()
+ for adding support for PGS subtitles
+ for adding cOsdProvider::OsdSizeChanged()
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
  frame borders
  for reporting a problem in handling the frame detection buffer length
+ for suggesting to add a comment to cRecorder::Activate() about the need to call
+ Detach() in the destructor
 
 Christian Paulick <cpaulick@xeatre.tv>
  for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
@@ -3284,3 +3300,32 @@ Tony Houghton <h@realh.co.uk>
 Christian Winkler <winkler_chr@yahoo.de>
  for reporting a problem with transfer mode on full featured DVB cards for encrypted
  channels that have no audio pid
+
+Dietmar Spingler <d_spingler@gmx.de>
+ for reporting a problem that led to a fix in detaching receivers from devices in case
+ a CAM needs to receive the TS
+ for reporting a problem that led to a fix with EMM pids not being properly reset for
+ CAMs that need to receive the TS
+ for suggesting to add the channel name to log messages that reference a channel
+
+Stefan Schallenberg <infos@nafets.de>
+ for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
+ to the cVector class
+
+Claus Muus <email@clausmuus.de>
+ for adding the new parameters "Setup/Miscellaneous/Volume steps" and
+ ".../Volume linearize"
+
+Dieter Ferdinand <dieter.ferdinand@gmx.de>
+ for reporting a problem with jumping to an absolute position via the Red key in
+ case replay was paused
+ for reporting a problem with the system getting unresponsive when removing a huge
+ number of files in the thread that removes deleted recordings
+
+Jasmin Jessich <jasmin@anw.at>
+ for modifying the CAM API so that it is possible to implement CAMs that can be freely
+ assigned to any devices
+
+Martin Schirrmacher <schirrmie@gmail.com>
+ for suggesting to provide a way for skin plugins to get informed about the currently
+ used sort mode of a menu

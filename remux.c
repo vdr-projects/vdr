@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.5 2014/03/08 15:05:35 kls Exp $
+ * $Id: remux.c 3.9 2015/01/14 09:57:09 kls Exp $
  */
 
 #include "remux.h"
@@ -822,9 +822,12 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          }
                       }
                       break;
-           case 0x81: // STREAMTYPE_USER_PRIVATE
+           case 0x81: // STREAMTYPE_USER_PRIVATE - AC3 audio for ATSC and BD
+           case 0x82: // STREAMTYPE_USER_PRIVATE - DTS audio for BD
                       {
-                      dbgpatpmt(" AC3");
+                      dbgpatpmt(" %s",
+                          stream.getStreamType() == 0x81 ? "AC3" :
+                          stream.getStreamType() == 0x82 ? "DTS" : "");
                       char lang[MAXLANGCODE1] = { 0 };
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
@@ -848,6 +851,36 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          NumDpids++;
                          dpids[NumDpids] = 0;
                          }
+                      }
+                      break;
+           case 0x90: // PGS subtitles for BD
+                      {
+                      dbgpatpmt(" subtitling");
+                      char lang[MAXLANGCODE1] = { 0 };
+                      SI::Descriptor *d;
+                      for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                          switch (d->getDescriptorTag()) {
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 dbgpatpmt(" '%s'", ld->languageCode);
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
+                                 if (NumSpids < MAXSPIDS) {
+                                    spids[NumSpids] = stream.getPid();
+                                    *slangs[NumSpids] = 0;
+                                    subtitlingTypes[NumSpids] = 0;
+                                    compositionPageIds[NumSpids] = 0;
+                                    ancillaryPageIds[NumSpids] = 0;
+                                    if (updatePrimaryDevice)
+                                       cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, NumSpids, stream.getPid(), lang);
+                                    NumSpids++;
+                                    spids[NumSpids] = 0;
+                                    }
+                                 }
+                                 break;
+                            default: ;
+                            }
+                          delete d;
+                          }
                       }
                       break;
            default: ;
@@ -1511,7 +1544,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        for (int i = 0; i < numPtsValues; i++)
                            ptsValues[i] = ptsValues[i + 1] - ptsValues[i];
                        qsort(ptsValues, numPtsValues, sizeof(uint32_t), CmpUint32);
-                       uint32_t Delta = ptsValues[0] / (framesPerPayloadUnit +  parser->IFrameTemporalReferenceOffset());
+                       int Div = framesPerPayloadUnit;
+                       if (framesPerPayloadUnit > 1)
+                          Div += parser->IFrameTemporalReferenceOffset();
+                       if (Div <= 0)
+                          Div = 1;
+                       uint32_t Delta = ptsValues[0] / Div;
                        // determine frame info:
                        if (isVideo) {
                           if (abs(Delta - 3600) <= 1)

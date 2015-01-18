@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 3.3 2014/03/10 14:42:20 kls Exp $
+ * $Id: sdt.c 3.4 2015/01/04 14:33:35 kls Exp $
  */
 
 #include "sdt.h"
@@ -152,7 +152,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             delete LinkChannels;
          }
       }
-  if (sdt.getSectionNumber() == sdt.getLastSectionNumber())
-     Channels.MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+  if (sdt.getSectionNumber() == sdt.getLastSectionNumber()) {
+     if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
+        Channels.MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+     }
   Channels.Unlock();
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.2 2013/09/06 12:13:47 kls Exp $
+ * $Id: osd.h 3.5 2015/01/15 11:23:52 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -817,6 +817,8 @@ public:
        ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
        ///< is returned. This is done so that skins that call this function
        ///< in order to preset the bitmap's palette won't crash.
+       ///< Use of this function outside of derived classes is deprecated and it
+       ///< may be made 'protected' in a future version.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
        ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
        ///< The caller must not delete the returned object, it will be deleted when
@@ -885,6 +887,11 @@ public:
        ///< If Overlay is true, any pixel in Bitmap that has color index 0 will
        ///< not overwrite the corresponding pixel in the target area.
        ///< If this is a true color OSD, ReplacePalette has no meaning.
+  virtual void DrawScaledBitmap(int x, int y, const cBitmap &Bitmap, double FactorX, double FactorY, bool AntiAlias = false);
+       ///< Sets the pixels in the OSD with the data from the given Bitmap, putting
+       ///< the upper left corner of the Bitmap at (x, y) and scaled by the given
+       ///< factors. If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
   virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
@@ -942,6 +949,7 @@ private:
   static int oldHeight;
   static double oldAspect;
   static cImage *images[MAXOSDIMAGES];
+  static int osdState;
 protected:
   virtual cOsd *CreateOsd(int Left, int Top, uint Level) = 0;
       ///< Returns a pointer to a newly created cOsd object, which will be located
@@ -978,6 +986,12 @@ public:
       ///< font sizes accordingly. If Force is true, all settings are recalculated,
       ///< even if the video resolution hasn't changed since the last call to
       ///< this function.
+  static bool OsdSizeChanged(int &State);
+      ///< Checks if the OSD size has changed and a currently displayed OSD needs to
+      ///< be redrawn. An internal reference value is incremented on every size change
+      ///< and is compared against State when calling the method.
+      ///< OsdSizeChanged() can be called with an uninitialized State to just get
+      ///< the current value of State.
   static bool SupportsTrueColor(void);
       ///< Returns true if the current OSD provider is able to handle a true color OSD.
   static int StoreImage(const cImage &Image);

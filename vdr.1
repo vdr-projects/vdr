@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 3.1 2013/12/25 11:01:36 kls Exp $
+.\" $Id: vdr.1 3.3 2015/01/17 14:46:22 kls Exp $
 .\"
 .TH vdr 1 "31 Mar 2013" "2.0" "Video Disk Recorder"
 .SH NAME
@@ -178,6 +178,10 @@ more information.
 Read resource files from \fIdir\fR
 (default is to read them from the config directory).
 .TP
+.BI \-\-showargs[= dir ]
+Read command line arguments from \fIdir\fR (default is \fI/etc/vdr/conf.d\fR),
+display them to the console and exit.
+.TP
 .BI \-s\  cmd ,\ \-\-shutdown= cmd
 Call \fIcmd\fR to shutdown the computer. See the file \fIINSTALL\fR for more
 information.
@@ -197,6 +201,18 @@ be set from the transponder data, but for security reasons
 vdr can switch to a lesser privileged user id during normal
 operation.
 .TP
+.BI \-\-updindex= rec
+Update the index file for the given recording.
+\fIrec\fR must be the full path name of an existing recording.
+The recording must be in TS format.
+If the recording already has an index file, it will be checked
+whether it is complete, and will be updated if it isn't. If
+there is no index file yet, a new one will be generated.
+The program will return immediately after updating the index.
+Note that using this option while another instance of VDR is
+currently replaying the given recording, or if the recording
+has not been finished yet, may lead to unexpected results.
+.TP
 .BI \-\-userdump
 Allow coredumps if -u is given (only for debugging).
 .TP
@@ -213,6 +229,10 @@ Print version information and exit.
 .BI \-w\  sec ,\ \-\-watchdog= sec
 Activate the watchdog timer with a timeout of \fIsec\fR seconds.
 A value of \fB0\fR (default) disables the watchdog.
+.P
+If started without any options, vdr tries to read command line options
+from files named '*.conf' in the directory /etc/vdr/conf.d. Files are
+read in alphabetical order. See vdr(5) for details.
 .SH SIGNALS
 .TP
 .B SIGINT, SIGTERM

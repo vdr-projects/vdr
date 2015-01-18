@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.5 2014/02/08 12:29:13 kls Exp $
+ * $Id: dvbsubtitle.c 3.9 2015/01/14 11:31:09 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -24,6 +24,12 @@
 #define DISPARITY_SIGNALING_SEGMENT 0x15 // DVB BlueBook A156
 #define END_OF_DISPLAY_SET_SEGMENT  0x80
 #define STUFFING_SEGMENT            0xFF
+
+#define PGS_PALETTE_SEGMENT         0x14
+#define PGS_OBJECT_SEGMENT          0x15
+#define PGS_PRESENTATION_SEGMENT    0x16
+#define PGS_WINDOW_SEGMENT          0x17
+#define PGS_DISPLAY_SEGMENT         0x80
 
 // Set these to 'true' for debug output, which is written into the file dbg-log.htm
 // in the current working directory. The HTML file shows the actual bitmaps (dbg-nnn.jpg)
@@ -52,6 +58,8 @@ static bool DebugOutput    = DebugVerbose;
 
 #define DBGMAXBITMAPS  100 // debug output will be stopped after this many bitmaps
 #define DBGBITMAPWIDTH 400
+
+#define FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY // some don't properly handle version numbers, which renders them useless because subtitles are not displayed
 
 // --- cSubtitleDebug --------------------------------------------------------
 
@@ -144,6 +152,7 @@ private:
 public:
   cSubtitleClut(int ClutId);
   void Parse(cBitStream &bs);
+  void ParsePgs(cBitStream &bs);
   int ClutId(void) { return clutId; }
   int ClutVersionNumber(void) { return clutVersionNumber; }
   const cPalette *GetPalette(int Bpp);
@@ -221,8 +230,10 @@ cSubtitleClut::cSubtitleClut(int ClutId)
 void cSubtitleClut::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (clutVersionNumber == Version)
      return; // no update
+#endif
   clutVersionNumber = Version;
   bs.SkipBits(4); // reserved
   dbgcluts("<b>clut</b> id %d version %d<br>\n", clutId, clutVersionNumber);
@@ -260,6 +271,31 @@ void cSubtitleClut::Parse(cBitStream &bs)
            SetColor(4, clutEntryId, value);
         if (entryClut8Flag)
            SetColor(8, clutEntryId, value);
+        }
+}
+
+void cSubtitleClut::ParsePgs(cBitStream &bs)
+{
+  int Version = bs.GetBits(8);
+  if (clutVersionNumber == Version)
+     return; // no update
+  clutVersionNumber = Version;
+  dbgcluts("<b>clut</b> id %d version %d<br>\n", clutId, clutVersionNumber);
+  for (int i = 0; i < 256; ++i)
+      SetColor(8, i, ArgbToColor(0, 0, 0, 0));
+  while (!bs.IsEOF()) {
+        uchar clutEntryId = bs.GetBits(8);
+        uchar yval  = bs.GetBits(8);
+        uchar crval = bs.GetBits(8);
+        uchar cbval = bs.GetBits(8);
+        uchar tval  = bs.GetBits(8);
+        tColor value = 0;
+        if (yval) {
+           value = yuv2rgb(yval, cbval, crval);
+           value |= ((10 - (clutEntryId ? Setup.SubtitleFgTransparency : Setup.SubtitleBgTransparency)) * tval / 10) << 24;
+           }
+        dbgcluts("%2d %08X<br>\n", clutEntryId, value);
+        SetColor(8, clutEntryId, value);
         }
 }
 
@@ -310,6 +346,7 @@ private:
   bool nonModifyingColorFlag;
   int topLength;
   int botLength;
+  int topIndex;
   uchar *topData;
   uchar *botData;
   char *txtData;
@@ -318,12 +355,14 @@ private:
   bool Decode2BppCodeString(cBitmap *Bitmap, int px, int py, cBitStream *bs, int&x, int y, const uint8_t *MapTable);
   bool Decode4BppCodeString(cBitmap *Bitmap, int px, int py, cBitStream *bs, int&x, int y, const uint8_t *MapTable);
   bool Decode8BppCodeString(cBitmap *Bitmap, int px, int py, cBitStream *bs, int&x, int y);
+  bool DecodePgsCodeString(cBitmap *Bitmap, int px, int py, cBitStream *bs, int&x, int y);
   void DecodeSubBlock(cBitmap *Bitmap, int px, int py, const uchar *Data, int Length, bool Even);
   void DecodeCharacterString(const uchar *Data, int NumberOfCodes);
 public:
   cSubtitleObject(int ObjectId);
   ~cSubtitleObject();
   void Parse(cBitStream &bs);
+  void ParsePgs(cBitStream &bs);
   int ObjectId(void) { return objectId; }
   int ObjectVersionNumber(void) { return objectVersionNumber; }
   int ObjectCodingMethod(void) { return objectCodingMethod; }
@@ -339,6 +378,7 @@ cSubtitleObject::cSubtitleObject(int ObjectId)
   nonModifyingColorFlag = false;
   topLength = 0;
   botLength = 0;
+  topIndex = 0;
   topData = NULL;
   botData = NULL;
   txtData = NULL;
@@ -355,8 +395,10 @@ cSubtitleObject::~cSubtitleObject()
 void cSubtitleObject::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (objectVersionNumber == Version)
      return; // no update
+#endif
   objectVersionNumber = Version;
   objectCodingMethod = bs.GetBits(2);
   nonModifyingColorFlag = bs.GetBit();
@@ -396,6 +438,29 @@ void cSubtitleObject::Parse(cBitStream &bs)
         dbgobjects("<img src=\"%s\"><br>\n", *ImgName);
         }
      }
+}
+
+void cSubtitleObject::ParsePgs(cBitStream &bs)
+{
+  int Version = bs.GetBits(8);
+  if (objectVersionNumber == Version)
+     return; // no update
+  objectVersionNumber = Version;
+  objectCodingMethod = 0;
+  int sequenceDescriptor = bs.GetBits(8);
+  if (!(sequenceDescriptor & 0x80) && topData != NULL) {
+     memcpy(topData + topIndex, bs.GetData(), (bs.Length() - bs.Index()) / 8);
+     topIndex += (bs.Length() - bs.Index()) / 8;
+     return;
+     }
+  topLength = bs.GetBits(24) - 4 + 1; // exclude width / height, add sub block type
+  bs.SkipBits(32);
+  if ((topData = MALLOC(uchar, topLength)) != NULL) {
+     topData[topIndex++] = 0xFF; // PGS end of line
+     memcpy(topData + 1, bs.GetData(), (bs.Length() - bs.Index()) / 8);
+     topIndex += (bs.Length() - bs.Index()) / 8 + 1;
+     }
+  dbgobjects("<b>object</b> id %d version %d method %d modify %d", objectId, objectVersionNumber, objectCodingMethod, nonModifyingColorFlag);
 }
 
 void cSubtitleObject::DecodeCharacterString(const uchar *Data, int NumberOfCodes)
@@ -483,6 +548,13 @@ void cSubtitleObject::DecodeSubBlock(cBitmap *Bitmap, int px, int py, const ucha
                dbgpixel("end of object line<br>\n");
                x = 0;
                y += 2;
+               break;
+          case 0xFF:
+               dbgpixel("PGS code string, including EOLs<br>\n");
+               while (DecodePgsCodeString(Bitmap, px, py, &bs, x, y) && !bs.IsEOF()) {
+                     x = 0;
+                     y++;
+                     }
                break;
           default: dbgpixel("unknown sub block %s %d<br>\n", __FUNCTION__, __LINE__);
           }
@@ -607,6 +679,28 @@ bool cSubtitleObject::Decode8BppCodeString(cBitmap *Bitmap, int px, int py, cBit
   return true;
 }
 
+bool cSubtitleObject::DecodePgsCodeString(cBitmap *Bitmap, int px, int py, cBitStream *bs, int &x, int y)
+{
+  while (!bs->IsEOF()) {
+        int color = bs->GetBits(8);
+        int rl = 1;
+        if (!color) {
+           int flags = bs->GetBits(8);
+           rl = flags & 0x3f;
+           if (flags & 0x40)
+              rl = (rl << 8) + bs->GetBits(8);
+           color = flags & 0x80 ? bs->GetBits(8) : 0;
+           }
+        if (rl > 0) {
+           DrawLine(Bitmap, px + x, py + y, color, rl);
+           x += rl;
+           }
+        else if (!rl)
+           return true;
+        }
+  return false;
+}
+
 void cSubtitleObject::Render(cBitmap *Bitmap, int px, int py, tIndex IndexFg, tIndex IndexBg)
 {
   if (objectCodingMethod == 0) { // coding of pixels
@@ -654,7 +748,7 @@ cSubtitleObject *cSubtitleObjects::GetObjectById(int ObjectId, bool New)
 // --- cSubtitleObjectRef ----------------------------------------------------
 
 class cSubtitleObjectRef : public cListObject {
-private:
+protected:
   int objectId;
   int objectType;
   int objectProviderFlag;
@@ -663,6 +757,7 @@ private:
   int foregroundPixelCode;
   int backgroundPixelCode;
 public:
+  cSubtitleObjectRef(void);
   cSubtitleObjectRef(cBitStream &bs);
   int ObjectId(void) { return objectId; }
   int ObjectType(void) { return objectType; }
@@ -672,6 +767,17 @@ public:
   int ForegroundPixelCode(void) { return foregroundPixelCode; }
   int BackgroundPixelCode(void) { return backgroundPixelCode; }
   };
+
+cSubtitleObjectRef::cSubtitleObjectRef(void)
+{
+  objectId = 0;
+  objectType = 0;
+  objectProviderFlag = 0;
+  objectHorizontalPosition = 0;
+  objectVerticalPosition = 0;
+  foregroundPixelCode = 0;
+  backgroundPixelCode = 0;
+}
 
 cSubtitleObjectRef::cSubtitleObjectRef(cBitStream &bs)
 {
@@ -690,6 +796,38 @@ cSubtitleObjectRef::cSubtitleObjectRef(cBitStream &bs)
      backgroundPixelCode = 0;
      }
   dbgregions("<b>objectref</b> id %d type %d flag %d x %d y %d fg %d bg %d<br>\n", objectId, objectType, objectProviderFlag, objectHorizontalPosition, objectVerticalPosition, foregroundPixelCode, backgroundPixelCode);
+}
+
+// --- cSubtitleObjectRefPgs - PGS variant of cSubtitleObjectRef -------------
+
+class cSubtitleObjectRefPgs : public cSubtitleObjectRef {
+private:
+  int windowId;
+  int compositionFlag;
+  int cropX;
+  int cropY;
+  int cropW;
+  int cropH;
+public:
+  cSubtitleObjectRefPgs(cBitStream &bs);
+};
+
+cSubtitleObjectRefPgs::cSubtitleObjectRefPgs(cBitStream &bs)
+:cSubtitleObjectRef()
+{
+  objectId = bs.GetBits(16);
+  windowId = bs.GetBits(8);
+  compositionFlag = bs.GetBits(8);
+  bs.SkipBits(32); // skip absolute position, object is aligned to region
+  if ((compositionFlag & 0x80) != 0) {
+     cropX = bs.GetBits(16);
+     cropY = bs.GetBits(16);
+     cropW = bs.GetBits(16);
+     cropH = bs.GetBits(16);
+     }
+  else
+     cropX = cropY = cropW = cropH = 0;
+  dbgregions("<b>objectrefPgs</b> id %d flag %d x %d y %d cropX %d cropY %d cropW %d cropH %d<br>\n", objectId, compositionFlag, objectHorizontalPosition, objectVerticalPosition, cropX, cropY, cropW, cropH);
 }
 
 // --- cSubtitleRegion -------------------------------------------------------
@@ -711,6 +849,8 @@ private:
 public:
   cSubtitleRegion(int RegionId);
   void Parse(cBitStream &bs);
+  void ParsePgs(cBitStream &bs);
+  void SetDimensions(int Width, int Height);
   int RegionId(void) { return regionId; }
   int RegionVersionNumber(void) { return regionVersionNumber; }
   bool RegionFillFlag(void) { return regionFillFlag; }
@@ -740,8 +880,10 @@ cSubtitleRegion::cSubtitleRegion(int RegionId)
 void cSubtitleRegion::Parse(cBitStream &bs)
 {
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (regionVersionNumber == Version)
      return; // no update
+#endif
   regionVersionNumber = Version;
   regionFillFlag = bs.GetBit();
   bs.SkipBits(3); // reserved
@@ -759,6 +901,24 @@ void cSubtitleRegion::Parse(cBitStream &bs)
   // no objectRefs.Clear() here!
   while (!bs.IsEOF())
         objectRefs.Add(new cSubtitleObjectRef(bs));
+}
+
+void cSubtitleRegion::ParsePgs(cBitStream &bs)
+{
+  regionDepth = 8;
+  bs.SkipBits(8); // skip palette update flag
+  clutId = bs.GetBits(8);
+  dbgregions("<b>region</b> id %d version %d clutId %d<br>\n", regionId, regionVersionNumber, clutId);
+  int objects = bs.GetBits(8);
+  while (objects--)
+        objectRefs.Add(new cSubtitleObjectRefPgs(bs));
+}
+
+void cSubtitleRegion::SetDimensions(int Width, int Height)
+{
+  regionWidth = Width;
+  regionHeight = Height;
+  dbgregions("<b>region</b> id %d width %d height %d<br>\n", regionId, regionWidth, regionHeight);
 }
 
 void cSubtitleRegion::Render(cBitmap *Bitmap, cSubtitleObjects *Objects)
@@ -786,12 +946,20 @@ private:
   int regionHorizontalAddress;
   int regionVerticalAddress;
 public:
+  cSubtitleRegionRef(int id, int x, int y);
   cSubtitleRegionRef(cBitStream &bs);
   int RegionId(void) { return regionId; }
   int RegionHorizontalAddress(void) { return regionHorizontalAddress; }
   int RegionVerticalAddress(void) { return regionVerticalAddress; }
   };
 
+cSubtitleRegionRef::cSubtitleRegionRef(int id, int x, int y)
+{
+  regionId = id;
+  regionHorizontalAddress = x;
+  regionVerticalAddress = y;
+  dbgpages("<b>regionref</b> id %d tx %d y %d<br>\n", regionId, regionHorizontalAddress, regionVerticalAddress);
+}
 cSubtitleRegionRef::cSubtitleRegionRef(cBitStream &bs)
 {
   regionId = bs.GetBits(8);
@@ -818,6 +986,7 @@ private:
 public:
   cDvbSubtitlePage(int PageId);
   void Parse(int64_t Pts, cBitStream &bs);
+  void ParsePgs(int64_t Pts, cBitStream &bs);
   int PageId(void) { return pageId; }
   int PageTimeout(void) { return pageTimeout; }
   int PageVersionNumber(void) { return pageVersionNumber; }
@@ -830,6 +999,7 @@ public:
   cSubtitleClut *GetClutById(int ClutId, bool New = false);
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
   cSubtitleRegionRef *GetRegionRefByIndex(int RegionRefIndex) { return regionRefs.Get(RegionRefIndex); }
+  void AddRegionRef(cSubtitleRegionRef *rf) { regionRefs.Add(rf); }
   void SetPending(bool Pending) { pending = Pending; }
   };
 
@@ -849,8 +1019,10 @@ void cDvbSubtitlePage::Parse(int64_t Pts, cBitStream &bs)
      pts = Pts;
   pageTimeout = bs.GetBits(8);
   int Version = bs.GetBits(4);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
   if (pageVersionNumber == Version)
      return; // no update
+#endif
   pageVersionNumber = Version;
   pageState = bs.GetBits(2);
   switch (pageState) {
@@ -874,6 +1046,35 @@ void cDvbSubtitlePage::Parse(int64_t Pts, cBitStream &bs)
   regionRefs.Clear();
   while (!bs.IsEOF())
         regionRefs.Add(new cSubtitleRegionRef(bs));
+  pending = true;
+}
+
+void cDvbSubtitlePage::ParsePgs(int64_t Pts, cBitStream &bs)
+{
+  if (Pts >= 0)
+     pts = Pts;
+  pageTimeout = 60000;
+  int Version = bs.GetBits(16);
+  if (pageVersionNumber == Version)
+     return;
+  pageVersionNumber = Version;
+  pageState = bs.GetBits(2);
+  switch (pageState) {
+    case 0: // normal case - page update
+         regions.Clear();
+         break;
+    case 1: // acquisition point - page refresh
+    case 2: // epoch start - new page
+    case 3: // epoch continue - new page
+         regions.Clear();
+         cluts.Clear();
+         objects.Clear();
+         break;
+    default: dbgpages("unknown page state: %d<br>\n", pageState);
+    }
+  bs.SkipBits(6);
+  dbgpages("<hr>\n<b>page</b> id %d version %d pts %"PRId64" timeout %d state %d<br>\n", pageId, pageVersionNumber, pts, pageTimeout, pageState);
+  regionRefs.Clear();
   pending = true;
 }
 
@@ -1077,11 +1278,7 @@ void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
   if (State() == 0 || Osd->SetAreas(areas, numAreas) == oeOk) {
      for (int i = 0; i < bitmaps.Size(); i++) {
          cBitmap *b = bitmaps[i];
-         if (Scale)
-            b = b->Scaled(osdFactorX, osdFactorY, AntiAlias);
-         Osd->DrawBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b);
-         if (b != bitmaps[i])
-            delete b;
+         Osd->DrawScaledBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b, osdFactorX, osdFactorY, AntiAlias);
          }
      Osd->Flush();
      }
@@ -1123,7 +1320,7 @@ void cDvbSubtitleBitmaps::DbgDump(int WindowWidth, int WindowHeight)
 int cDvbSubtitleConverter::setupLevel = 0;
 
 cDvbSubtitleConverter::cDvbSubtitleConverter(void)
-:cThread("subtitleConverter")
+:cThread("subtitle converter")
 {
   dvbSubtitleAssembler = new cDvbSubtitleAssembler;
   osd = NULL;
@@ -1226,22 +1423,24 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
            dbgconverter("converter PTS: %"PRId64"<br>\n", pts);
         const uchar *data = Data + PayloadOffset;
         int length = Length - PayloadOffset;
-        if (length > 3) {
-           if (data[0] == 0x20 && data[1] == 0x00 && data[2] == 0x0F) {
+        if (length > 0) {
+           if (length > 2 && data[0] == 0x20 && data[1] == 0x00 && data[2] == 0x0F) {
               data += 2;
               length -= 2;
               }
            const uchar *b = data;
            while (length > 0) {
-                 if (b[0] == 0x0F) {
-                    int n = ExtractSegment(b, length, pts);
-                    if (n < 0)
-                       break;
-                    b += n;
-                    length -= n;
-                    }
-                 else
+                 if (b[0] == STUFFING_SEGMENT)
                     break;
+                 int n;
+                 if (b[0] == 0x0F)
+                    n = ExtractSegment(b, length, pts);
+                 else
+                    n = ExtractPgsSegment(b, length, pts);
+                 if (n < 0)
+                    break;
+                 b += n;
+                 length -= n;
                  }
            }
         }
@@ -1391,23 +1590,25 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
        case DISPLAY_DEFINITION_SEGMENT: {
             dbgsegments("DISPLAY_DEFINITION_SEGMENT<br>\n");
             int version = bs.GetBits(4);
-            if (version != ddsVersionNumber) {
-               bool displayWindowFlag = bs.GetBit();
-               windowHorizontalOffset = 0;
-               windowVerticalOffset   = 0;
-               bs.SkipBits(3); // reserved
-               displayWidth  = windowWidth  = bs.GetBits(16) + 1;
-               displayHeight = windowHeight = bs.GetBits(16) + 1;
-               if (displayWindowFlag) {
-                  windowHorizontalOffset = bs.GetBits(16);                              // displayWindowHorizontalPositionMinimum
-                  windowWidth            = bs.GetBits(16) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
-                  windowVerticalOffset   = bs.GetBits(16);                              // displayWindowVerticalPositionMinimum
-                  windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
-                  }
-               SetOsdData();
-               ddsVersionNumber = version;
-               dbgdisplay("<b>display</b> version %d flag %d width %d height %d ofshor %d ofsver %d<br>\n", ddsVersionNumber, displayWindowFlag, windowWidth, windowHeight, windowHorizontalOffset, windowVerticalOffset);
+#ifndef FIX_SUBTITLE_VERSION_BROADCASTER_STUPIDITY
+            if (version == ddsVersionNumber)
+               break; // no update
+#endif
+            bool displayWindowFlag = bs.GetBit();
+            windowHorizontalOffset = 0;
+            windowVerticalOffset   = 0;
+            bs.SkipBits(3); // reserved
+            displayWidth  = windowWidth  = bs.GetBits(16) + 1;
+            displayHeight = windowHeight = bs.GetBits(16) + 1;
+            if (displayWindowFlag) {
+               windowHorizontalOffset = bs.GetBits(16);                              // displayWindowHorizontalPositionMinimum
+               windowWidth            = bs.GetBits(16) - windowHorizontalOffset + 1; // displayWindowHorizontalPositionMaximum
+               windowVerticalOffset   = bs.GetBits(16);                              // displayWindowVerticalPositionMinimum
+               windowHeight           = bs.GetBits(16) - windowVerticalOffset + 1;   // displayWindowVerticalPositionMaximum
                }
+            SetOsdData();
+            ddsVersionNumber = version;
+            dbgdisplay("<b>display</b> version %d flag %d width %d height %d ofshor %d ofsver %d<br>\n", ddsVersionNumber, displayWindowFlag, windowWidth, windowHeight, windowHorizontalOffset, windowVerticalOffset);
             break;
             }
        case DISPARITY_SIGNALING_SEGMENT: {
@@ -1459,6 +1660,71 @@ int cDvbSubtitleConverter::ExtractSegment(const uchar *Data, int Length, int64_t
             }
        default:
             dbgsegments("*** unknown segment type: %02X<br>\n", segmentType);
+       }
+     return bs.Length() / 8;
+     }
+  return -1;
+}
+
+int cDvbSubtitleConverter::ExtractPgsSegment(const uchar *Data, int Length, int64_t Pts)
+{
+  cBitStream bs(Data, Length * 8);
+  if (Length >= 3) {
+     int segmentType = bs.GetBits(8);
+     int segmentLength = bs.GetBits(16);
+     if (!bs.SetLength(bs.Index() + segmentLength * 8))
+        return -1;
+     LOCK_THREAD;
+     cDvbSubtitlePage *page = GetPageById(0, true);
+     switch (segmentType) {
+       case PGS_PRESENTATION_SEGMENT: {
+            if (page->Pending()) {
+               dbgsegments("PGS_DISPLAY_SEGMENT (simulated)<br>\n");
+               FinishPage(page);
+               }
+            dbgsegments("PGS_PRESENTATION_SEGMENT<br>\n");
+            displayWidth  = windowWidth  = bs.GetBits(16);
+            displayHeight = windowHeight = bs.GetBits(16);
+            bs.SkipBits(8);
+            page->ParsePgs(Pts, bs);
+            SD.SetFactor(double(DBGBITMAPWIDTH) / windowWidth);
+            cSubtitleRegion *region = page->GetRegionById(0, true);
+            region->ParsePgs(bs);
+            break;
+            }
+       case PGS_WINDOW_SEGMENT: {
+            bs.SkipBits(16);
+            int regionHorizontalAddress = bs.GetBits(16);
+            int regionVerticalAddress   = bs.GetBits(16);
+            int regionWidth  = bs.GetBits(16);
+            int regionHeight = bs.GetBits(16);
+            cSubtitleRegion *region = page->GetRegionById(0, true);
+            region->SetDimensions(regionWidth, regionHeight);
+            page->AddRegionRef(new cSubtitleRegionRef(0, regionHorizontalAddress, regionVerticalAddress));
+            dbgsegments("PGS_WINDOW_SEGMENT<br>\n");
+            break;
+            }
+       case PGS_PALETTE_SEGMENT: {
+            dbgsegments("PGS_PALETTE_SEGMENT<br>\n");
+            cSubtitleClut *clut = page->GetClutById(bs.GetBits(8), true);
+            clut->ParsePgs(bs);
+            break;
+            }
+       case PGS_OBJECT_SEGMENT: {
+            dbgsegments("PGS_OBJECT_SEGMENT<br>\n");
+            cSubtitleObject *object = page->GetObjectById(bs.GetBits(16), true);
+            object->ParsePgs(bs);
+            break;
+            }
+       case PGS_DISPLAY_SEGMENT: {
+            dbgsegments("PGS_DISPLAY_SEGMENT<br>\n");
+            FinishPage(page);
+            page->SetPending(false);
+            break;
+            }
+       default:
+            dbgsegments("*** unknown segment type: %02X<br>\n", segmentType);
+            return -1;
        }
      return bs.Length() / 8;
      }

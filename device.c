@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.15 2014/03/15 13:23:28 kls Exp $
+ * $Id: device.c 3.19 2015/01/14 12:02:44 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
+#include <math.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "audio.h"
@@ -76,7 +77,7 @@ cDevice::cDevice(void)
   cardIndex = nextCardIndex++;
   dsyslog("new device number %d", CardIndex() + 1);
 
-  SetDescription("receiver on device %d", CardIndex() + 1);
+  SetDescription("device %d receiver", CardIndex() + 1);
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -695,7 +696,7 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
-     isyslog("switching to channel %d", Channel->Number());
+     isyslog("switching to channel %d (%s)", Channel->Number(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
      }
   for (int i = 3; i--;) {
@@ -918,8 +919,10 @@ void cDevice::SetAudioChannel(int AudioChannel)
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
   int OldVolume = volume;
-  volume = constrain(Absolute ? Volume : volume + Volume, 0, MAXVOLUME);
-  SetVolumeDevice(volume);
+  double VolumeDelta = double(MAXVOLUME) / Setup.VolumeSteps;
+  double VolumeLinearize = (Setup.VolumeLinearize >= 0) ? (Setup.VolumeLinearize / 10.0 + 1.0) : (1.0 / ((-Setup.VolumeLinearize / 10.0) + 1.0));
+  volume = constrain(int(floor((Absolute ? Volume : volume + Volume) / VolumeDelta + 0.5) * VolumeDelta), 0, MAXVOLUME);
+  SetVolumeDevice(MAXVOLUME - int(pow(1.0 - pow(double(volume) / MAXVOLUME, VolumeLinearize), 1.0 / VolumeLinearize) * MAXVOLUME));
   Absolute |= mute;
   cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);
   if (volume > 0) {
@@ -1699,10 +1702,11 @@ void cDevice::Detach(cReceiver *Receiver)
          receiversLeft = true;
       }
   if (camSlot) {
-     if (Receiver->priority > MINPRIORITY) // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
+     if (Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
         camSlot->StartDecrypting();
-     if (!camSlot->IsDecrypting())
-        camSlot->Assign(NULL);
+        if (!camSlot->IsDecrypting())
+           camSlot->Assign(NULL);
+        }
      }
   if (!receiversLeft)
      Cancel(-1);
@@ -1731,7 +1735,7 @@ void cDevice::DetachAllReceivers(void)
 
 cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
 {
-  SetDescription("TS buffer on device %d", CardIndex);
+  SetDescription("device %d TS buffer", CardIndex);
   f = File;
   cardIndex = CardIndex;
   delivered = false;

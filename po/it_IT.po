@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
-"PO-Revision-Date: 2013-11-10 23:02+0100\n"
+"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"PO-Revision-Date: 2014-03-23 00:54+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -84,13 +84,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2SystemId"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -580,10 +580,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametri canale non univoci!"
@@ -795,7 +795,7 @@ msgid "Recording vanished!"
 msgstr "Registrazione sparita!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Versione modificata già esistente. Sovrascrivere?"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Errore durante l'accodamento della registrazione per il taglio!"
@@ -1258,6 +1258,12 @@ msgstr "come prima"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Riavvolgimento canali"

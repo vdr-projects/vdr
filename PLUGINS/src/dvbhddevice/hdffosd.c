@@ -663,14 +663,23 @@ void cHdffOsdRaw::Flush(void)
 {
     if (!Active() || (mDisplay == HDFF_INVALID_HANDLE))
         return;
-    //struct timeval start;
-    //struct timeval end;
-    //struct timezone timeZone;
-    //gettimeofday(&start, &timeZone);
+#ifdef MEASURE_OSD_TIME
+    struct timeval start;
+    struct timeval end;
+    struct timezone timeZone;
+    gettimeofday(&start, &timeZone);
+#endif
 
     bool render = false;
     if (IsTrueColor())
     {
+        uint8_t * buffer = 0;
+        if (gHdffSetup.TrueColorFormat != 0)
+        {
+            buffer = new uint8_t[MAX_BITMAP_SIZE];
+            if (!buffer)
+                return;
+        }
         LOCK_PIXMAPS;
         while (cPixmapMemory *pm = RenderPixmaps())
         {
@@ -682,17 +691,56 @@ void cHdffOsdRaw::Flush(void)
                 Chunk = h;
             for (int y = 0; y < h; y += Chunk)
             {
-                 int hc = Chunk;
-                 if (y + hc > h)
-                     hc = h - y;
-                 mHdffCmdIf->CmdOsdDrawBitmap(mDisplay,
-                     Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y() + y,
-                     pm->Data() + y * d, w, hc, hc * d,
-                     HDFF_COLOR_TYPE_ARGB8888, HDFF_INVALID_HANDLE);
+                int hc = Chunk;
+                if (y + hc > h)
+                    hc = h - y;
+                if (gHdffSetup.TrueColorFormat == 0) // ARGB8888 (32 bit)
+                {
+                    mHdffCmdIf->CmdOsdDrawBitmap(mDisplay,
+                        Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y() + y,
+                        pm->Data() + y * d, w, hc, hc * d,
+                        HDFF_COLOR_TYPE_ARGB8888, HDFF_INVALID_HANDLE);
+                }
+                else if (gHdffSetup.TrueColorFormat == 1) // ARGB8565 (24 bit)
+                {
+                    const tColor * pixmapData = (const tColor *) (pm->Data() + y * d);
+                    uint8_t * bitmapData = buffer;
+                    for (int i = 0; i < hc * w; i++)
+                    {
+                        bitmapData[2] =  (pixmapData[i] & 0xFF000000) >> 24;
+                        bitmapData[1] = ((pixmapData[i] & 0x00F80000) >> 16)
+                                      | ((pixmapData[i] & 0x0000E000) >> 13);
+                        bitmapData[0] = ((pixmapData[i] & 0x00001C00) >> 5)
+                                      | ((pixmapData[i] & 0x000000F8) >> 3);
+                        bitmapData += 3;
+                    }
+                    mHdffCmdIf->CmdOsdDrawBitmap(mDisplay,
+                        Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y() + y,
+                        buffer, w, hc, hc * w * 3,
+                        HDFF_COLOR_TYPE_ARGB8565, HDFF_INVALID_HANDLE);
+                }
+                else if (gHdffSetup.TrueColorFormat == 2) // ARGB4444 (16 bit)
+                {
+                    const tColor * pixmapData = (const tColor *) (pm->Data() + y * d);
+                    uint16_t * bitmapData = (uint16_t *) buffer;
+                    for (int i = 0; i < hc * w; i++)
+                    {
+                        bitmapData[i] = ((pixmapData[i] & 0xF0000000) >> 16)
+                                      | ((pixmapData[i] & 0x00F00000) >> 12)
+                                      | ((pixmapData[i] & 0x0000F000) >> 8)
+                                      | ((pixmapData[i] & 0x000000F0) >> 4);
+                    }
+                    mHdffCmdIf->CmdOsdDrawBitmap(mDisplay,
+                        Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y() + y,
+                        buffer, w, hc, hc * w * 2,
+                        HDFF_COLOR_TYPE_ARGB4444, HDFF_INVALID_HANDLE);
+                }
             }
             delete pm;
             render = true;
         }
+        if (buffer)
+            delete[] buffer;
     }
     else
     {
@@ -755,10 +803,12 @@ void cHdffOsdRaw::Flush(void)
     if (render)
     {
         mHdffCmdIf->CmdOsdRenderDisplay(mDisplay);
-        //gettimeofday(&end, &timeZone);
-        //int timeNeeded = end.tv_usec - start.tv_usec;
-        //timeNeeded += (end.tv_sec - start.tv_sec) * 1000000;
-        //printf("time = %d\n", timeNeeded);
+#ifdef MEASURE_OSD_TIME
+        gettimeofday(&end, &timeZone);
+        int timeNeeded = end.tv_usec - start.tv_usec;
+        timeNeeded += (end.tv_sec - start.tv_sec) * 1000000;
+        printf("time = %d\n", timeNeeded);
+#endif
     }
     refresh = false;
 }
