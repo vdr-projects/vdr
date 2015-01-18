@@ -8307,7 +8307,7 @@ Video Disk Recorder Revision History
 - The APIVERSION has been increased to 2.0.6 due to the changes to pat.h, sdt.h and
   the functional modification to cFont::CreateFont().
 
-2015-01-17: Version 2.1.7
+2015-01-18: Version 2.1.7
 
 - No longer logging an error message in DirSizeMB() if the given directory doesn't
   exist. This avoids lots of log entries in case several VDRs use the same video
