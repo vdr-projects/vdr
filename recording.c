@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.21 2015/01/17 14:52:28 kls Exp $
+ * $Id: recording.c 3.22 2015/01/20 14:53:57 kls Exp $
  */
 
 #include "recording.h"
@@ -1749,7 +1749,7 @@ void cDirCopier::Action(void)
                     off_t FileSizeSrc = FileSize(FileNameSrc);
                     off_t FileSizeDst = FileSize(FileNameDst);
                     if (FileSizeSrc != FileSizeDst) {
-                       esyslog("ERROR: file size discrepancy: %"PRId64" != %"PRId64, FileSizeSrc, FileSizeDst);
+                       esyslog("ERROR: file size discrepancy: %" PRId64 " != %" PRId64, FileSizeSrc, FileSizeDst);
                        break;
                        }
                     }
@@ -2476,7 +2476,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
            delta = int(buf.st_size % sizeof(tIndexTs));
            if (delta) {
               delta = sizeof(tIndexTs) - delta;
-              esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, *fileName);
+              esyslog("ERROR: invalid file size (%" PRId64 ") in '%s'", buf.st_size, *fileName);
               }
            last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
            if ((!Record || Update) && last >= 0) {

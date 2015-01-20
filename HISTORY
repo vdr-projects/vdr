@@ -8417,3 +8417,5 @@ Video Disk Recorder Revision History
 2015-01-20: Version 2.1.8
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
+  Bornkessel).
