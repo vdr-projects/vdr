@@ -8419,3 +8419,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
   Bornkessel).
+- Fixed the link to "svdrpsend (1)" in the vdr.1 man page (thanks to Chris Mayo).
