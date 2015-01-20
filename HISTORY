@@ -8394,3 +8394,7 @@ Video Disk Recorder Revision History
   do so again with this version to make sure the index is OK.
 - Added the new command line option --updindex, which can be used to update an
   incomplete index of a recording (based on a patch from Helmut Auer).
+
+2015-01-20: Version 2.1.8
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
