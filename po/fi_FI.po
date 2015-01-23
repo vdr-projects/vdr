@@ -1257,10 +1257,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Äänenvoimakkuus käynnistettäessä"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Äänenvoimakkuuden askellus"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Äänenvoimakkuuden lineaarisuus"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanavien rullaus"
