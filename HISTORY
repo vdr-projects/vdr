@@ -8414,10 +8414,11 @@ Video Disk Recorder Revision History
   generated an index file with VDR version 2.0.6 you may want to do so again with this
   version to make sure the index is OK.
 
-2015-01-23: Version 2.1.8
+2015-01-24: Version 2.1.8
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
   Bornkessel).
 - Fixed the link to "svdrpsend (1)" in the vdr.1 man page (thanks to Chris Mayo).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
