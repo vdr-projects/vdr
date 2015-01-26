@@ -8434,3 +8434,5 @@ Video Disk Recorder Revision History
   + The '8' key for testing an edited sequence now always jumps to the next *end*
     mark. This allows for testing edits in recordings that have actually been cut, as
     well as recordings that have not been cut, in case "Skip edited parts" is enabled.
+- Added support for "Satellite Channel Routing" (SCR) according to EN50607, also
+  known as "JESS" (thanks to Manfred Völkel and Frank Neumann).

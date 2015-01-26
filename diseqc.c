@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 3.3 2013/12/28 11:33:08 kls Exp $
+ * $Id: diseqc.c 3.4 2015/01/26 12:02:14 kls Exp $
  */
 
 #include "diseqc.h"
@@ -164,7 +164,7 @@ bool cScr::Parse(const char *s)
   bool result = false;
   int fields = sscanf(s, "%d %u %d", &channel, &userBand, &pin);
   if (fields == 2 || fields == 3) {
-     if (channel >= 0 && channel < 8) {
+     if (channel >= 0 && channel < 32) {
         result = true;
         if (fields == 3 && (pin < 0 || pin > 255)) {
            esyslog("Error: invalid SCR pin '%d'", pin);
@@ -255,26 +255,52 @@ bool cDiseqc::Parse(const char *s)
 
 uint cDiseqc::SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes) const
 {
-  uint t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350; // '+ 2' together with '/ 4' results in rounding!
-  if (t < 1024 && Scr->Channel() >= 0 && Scr->Channel() < 8) {
-     Codes[3] = t >> 8 | (t == 0 ? 0 : scrBank << 2) | Scr->Channel() << 5;
-     Codes[4] = t;
-     if (t)
-        return (t + 350) * 4 - SatFrequency;
+  if ((Codes[0] & 0xF0) == 0x70 ) { // EN50607 aka JESS
+     uint t = SatFrequency == 0 ? 0 : (SatFrequency - 100);
+     if (t < 2048 && Scr->Channel() >= 0 && Scr->Channel() < 32) {
+        Codes[1] = t >> 8 | Scr->Channel() << 3;
+        Codes[2] = t;
+        Codes[3] = (t == 0 ? 0 : scrBank);
+        if (t)
+           return Scr->UserBand();
+        }
      }
+  else { // EN50494 aka Unicable
+     uint t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350; // '+ 2' together with '/ 4' results in rounding!
+     if (t < 1024 && Scr->Channel() >= 0 && Scr->Channel() < 8) {
+        Codes[3] = t >> 8 | (t == 0 ? 0 : scrBank << 2) | Scr->Channel() << 5;
+        Codes[4] = t;
+        if (t)
+           return (t + 350) * 4 - SatFrequency;
+        }
+     }
+  esyslog("ERROR: invalid SCR channel number %d or frequency %d", Scr->Channel(),SatFrequency);
   return 0;
 }
 
 int cDiseqc::SetScrPin(const cScr *Scr, uint8_t *Codes) const
 {
-  if (Scr->Pin() >= 0 && Scr->Pin() <= 255) {
-     Codes[2] = 0x5C;
-     Codes[5] = Scr->Pin();
-     return 6;
+  if ((Codes[0] & 0xF0) == 0x70 ) { // EN50607 aka JESS
+     if (Scr->Pin() >= 0 && Scr->Pin() <= 255) {
+        Codes[0] = 0x71;
+        Codes[4] = Scr->Pin();
+        return 5;
+        }
+     else {
+        Codes[0] = 0x70;
+        return 4;
+        }
      }
-  else {
-     Codes[2] = 0x5A;
-     return 5;
+  else { // EN50494 aka Unicable
+     if (Scr->Pin() >= 0 && Scr->Pin() <= 255) {
+        Codes[2] = 0x5C;
+        Codes[5] = Scr->Pin();
+        return 6;
+        }
+     else {
+        Codes[2] = 0x5A;
+        return 5;
+        }
      }
 }
 
@@ -319,7 +345,7 @@ const char *cDiseqc::GetScrBank(const char *s) const
   char *p = NULL;
   errno = 0;
   int n = strtol(s, &p, 10);
-  if (!errno && p != s && n >= 0 && n < 8) {
+  if (!errno && p != s && n >= 0 && n < 256) {
      if (parsing) {
         if (scrBank < 0)
            scrBank = n;

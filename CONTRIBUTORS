@@ -2984,6 +2984,7 @@ Frank Neumann <fnu@yavdr.org>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
  for fixing the German translation of "VDR will shut down in %s minutes"
+ for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
@@ -3247,6 +3248,7 @@ Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
 Manfred Völkel <mvoelkel@digitaldevices.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+ for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
 
 Thomas Maass <mase@setho.org>
  for reporting a difference in the internal sequence of actions when pressing the Blue
