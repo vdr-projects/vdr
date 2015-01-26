@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1215,6 +1215,15 @@ msgstr "Anzeigedauer für Fortschrittsanzeige (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pause beim Setzen einer Schnittmarke"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr "Pause beim Sprung auf eine Schnittmarke"
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr "Herausgeschnittene Teile überspringen"
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Pause an der letzten Schnittmarke"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"

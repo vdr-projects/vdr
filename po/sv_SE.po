@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2013-02-18 17:04+0100\n"
 "Last-Translator: Richard Lithvall <r-vdr@boomer.se>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1219,6 +1219,15 @@ msgstr "Tid för visning av förloppsindikatorn (sek)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pausa uppspelningen vid sättande av redigeringsmärke"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Återupptagnings-ID"

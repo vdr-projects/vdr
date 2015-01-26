@@ -1220,6 +1220,15 @@ msgstr "Näytä toiston kontrollit (s)"
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pysäytä toisto asetettaessa merkki"
 
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr "Pysäytä toisto hypätessä merkkiin"
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr "Ohita muokatut kohdat"
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Pysäytä toisto viimeiseen merkkiin"
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
 

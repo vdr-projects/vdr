@@ -8414,7 +8414,7 @@ Video Disk Recorder Revision History
   generated an index file with VDR version 2.0.6 you may want to do so again with this
   version to make sure the index is OK.
 
-2015-01-24: Version 2.1.8
+2015-01-26: Version 2.1.8
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
@@ -8422,3 +8422,15 @@ Video Disk Recorder Revision History
 - Fixed the link to "svdrpsend (1)" in the vdr.1 man page (thanks to Chris Mayo).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Added functionality based on the "jumpplay" patch from Torsten Kunkel and Thomas
+  Günther:
+  + The new option "Setup/Replay/Pause replay when jumping to a mark" can be used to
+    turn off pausing replay when jumping to an editing mark with the '9' key.
+  + The new option "Setup/Replay/Skip edited parts" can be used to automatically skip
+    the edited parts of a recording during replay, without the need to actually cut
+    the recording.
+  + The new option "Setup/Replay/Pause replay at last mark" can be used to make replay
+    go into Pause mode when it has reached the last "end" mark.
+  + The '8' key for testing an edited sequence now always jumps to the next *end*
+    mark. This allows for testing edits in recordings that have actually been cut, as
+    well as recordings that have not been cut, in case "Skip edited parts" is enabled.

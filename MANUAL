@@ -943,6 +943,30 @@ Version 2.0
                          Defines whether the player automatically goes into Pause
                          mode when setting an editing mark.
 
+  Pause replay when jumping to a mark = yes
+                         By default replay is automatically paused whenever you jump
+                         to an editing mark with the '7' or '9' key in order to allow
+                         you to easily adjust those marks. If this option is set to
+                         'no', the '9' key will not pause if you are in Play mode and
+                         the mark you jump to is not within 3 seconds of the end of
+                         the recording.
+
+  Skip edited parts = no Defines whether the edited parts of a recording are
+                         automatically skipped during replay. This includes jumping
+                         to the first mark if replay starts at the beginning of the
+                         recording, and stopping at the last mark.
+                         In order to work, this option must be enabled before starting
+                         replay.
+
+  Pause replay at last mark = no
+                         If enabled, replay of a recording will go into Pause mode
+                         when it has reached the last "end" mark (if any). Note that
+                         the actual position at which the pause occurs may be a couple
+                         of frames before the last "end" mark, depending on how much
+                         data is buffered by your output device.
+                         In order to work, this option must be enabled before starting
+                         replay.
+
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with

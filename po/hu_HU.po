@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2013-03-01 19:22+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1219,6 +1219,15 @@ msgstr "Lejátszósáv felüntetésének ideje (mp)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "A visszajátszás megállítása vágópont kijelölésnél"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Lejátszás ID"

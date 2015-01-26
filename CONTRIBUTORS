@@ -2139,6 +2139,7 @@ Thomas Günther <tom1@toms-cafe.de>
  which results in using tr(FileNameChars)
  for fixing handling "none" color entries in XPM files
  for fixing displaying the frame number when setting an editing mark
+ for the "jumpplay" patch
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -2677,6 +2678,7 @@ Torsten Kunkel <vdrml@tkunkel.de>
  for pointing out that it was not obvious how to initiate internationalization
  support for a plugin
  for suggesting to add a section about "Logging" to PLUGINS.html
+ for the "jumpplay" patch
 
 Michael Nival <mnival@club-internet.fr>
  for translating OSD texts to the French language

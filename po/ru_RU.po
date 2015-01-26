@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2013-03-10 17:13+0100\n"
 "Last-Translator: Oleg Roitburd <oroitburd@gmail.com>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -1216,6 +1216,15 @@ msgstr "Показ прогресса (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Пауза при установке маркировки"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID воспроизведения"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1217,6 +1217,15 @@ msgstr "处理显示时间(s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "暂停回放时，设置标志"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "恢复 ID"

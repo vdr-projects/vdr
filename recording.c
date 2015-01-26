@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.23 2015/01/23 15:12:47 kls Exp $
+ * $Id: recording.c 3.24 2015/01/25 15:39:24 kls Exp $
  */
 
 #include "recording.h"
@@ -2072,7 +2072,7 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 bool cMarks::Update(void)
 {
   time_t t = time(NULL);
-  if (t > nextUpdate) {
+  if (t > nextUpdate && *fileName) {
      time_t LastModified = LastModifiedTime(fileName);
      if (LastModified != lastFileTime) // change detected, or first run
         lastChange = LastModified > 0 ? LastModified : t;

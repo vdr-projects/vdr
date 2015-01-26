@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.28 2015/01/15 11:14:21 kls Exp $
+ * $Id: menu.c 3.29 2015/01/25 15:21:42 kls Exp $
  */
 
 #include "menu.h"
@@ -3571,6 +3571,9 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
   Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when jumping to a mark"), &data.PauseOnMarkJump));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Skip edited parts"), &data.SkipEdited));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay at last mark"), &data.PauseAtLastMark));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -5223,6 +5226,15 @@ void cReplayControl::MarkJump(bool Forward)
   if (GetIndex(Current, Total)) {
      if (marks.Count()) {
         if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
+           if (!Setup.PauseOnMarkJump) {
+              bool Playing, Fwd;
+              int Speed;
+              if (GetReplayMode(Playing, Fwd, Speed) && Playing && Forward && m->Position() < Total - SecondsToFrames(3, FramesPerSecond())) {
+                 Goto(m->Position());
+                 Play();
+                 return;
+                 }
+              }
            Goto(m->Position(), true);
            displayFrames = true;
            return;
@@ -5287,7 +5299,7 @@ void cReplayControl::EditTest(void)
      if (!m)
         m = marks.GetNext(Current);
      if (m) {
-        if ((m->Index() & 0x01) != 0)
+        if ((m->Index() & 0x01) == 0) // this is a "start" mark, so get the next "end" mark
            m = marks.Next(m);
         if (m) {
            Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));

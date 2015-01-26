@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-26 11:17+0100\n"
 "PO-Revision-Date: 2013-03-04 21:24+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -1215,6 +1215,15 @@ msgstr "Doba zobrazenia ukazovateµa priebehu (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pozastavi» prehrávanie pri stanovení znaèky"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ident. èíslo obnovenia prehrávania"
