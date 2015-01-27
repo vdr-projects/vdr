@@ -8414,7 +8414,7 @@ Video Disk Recorder Revision History
   generated an index file with VDR version 2.0.6 you may want to do so again with this
   version to make sure the index is OK.
 
-2015-01-26: Version 2.1.8
+2015-01-27: Version 2.1.8
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
@@ -8436,3 +8436,6 @@ Video Disk Recorder Revision History
     well as recordings that have not been cut, in case "Skip edited parts" is enabled.
 - Added support for "Satellite Channel Routing" (SCR) according to EN50607, also
   known as "JESS" (thanks to Manfred Völkel and Frank Neumann).
+- The keys '1' and '3' can now be used in replay mode to position an editing mark
+  in "binary" mode (based on a patch from Rolf Ahrenberg, with modifications by Helmut
+  Auer). See MANUAL, section "Editing a Recording".

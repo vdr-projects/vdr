@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 2.2 2012/12/04 12:51:25 kls Exp $
+ * $Id: keys.h 3.1 2015/01/27 10:45:18 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -65,6 +65,8 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 
 // This is in preparation for having more key codes:
 #define kMarkToggle      k0
+#define kMarkSkipBack    k1
+#define kMarkSkipForward k3
 #define kMarkMoveBack    k4
 #define kMarkMoveForward k6
 #define kMarkJumpBack    k7

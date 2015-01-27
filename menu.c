@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.29 2015/01/25 15:21:42 kls Exp $
+ * $Id: menu.c 3.30 2015/01/27 14:09:49 kls Exp $
  */
 
 #include "menu.h"
@@ -3574,6 +3574,8 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when jumping to a mark"), &data.PauseOnMarkJump));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Skip edited parts"), &data.SkipEdited));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay at last mark"), &data.PauseAtLastMark));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip initial value (s)"), &data.BinarySkipInitial, 10, 600));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip timeout (ms)"), &data.BinarySkipTimeout, 1000, 10000));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -4913,6 +4915,39 @@ bool cRecordControls::StateChanged(int &State)
   return Result;
 }
 
+// --- cBinarySkipper --------------------------------------------------------
+
+cBinarySkipper::cBinarySkipper(void)
+{
+  initialValue = NULL;
+  currentValue = 0;
+  framesPerSecond = 0;
+  lastKey = kNone;
+}
+
+void cBinarySkipper::Initialize(int *InitialValue, double FramesPerSecond)
+{
+  initialValue = InitialValue;
+  framesPerSecond = FramesPerSecond;
+  currentValue = 0;
+}
+
+int cBinarySkipper::GetValue(eKeys Key)
+{
+  if (!initialValue)
+     return 0;
+  if (timeout.TimedOut()) {
+     currentValue = int(round(*initialValue * framesPerSecond));
+     lastKey = Key;
+     }
+  else if (Key != lastKey) {
+     currentValue /= 2;
+     lastKey = kNone; // once the direction has changed, every further call halves the value
+     }
+  timeout.Set(Setup.BinarySkipTimeout);
+  return max(currentValue, 1);
+}
+
 // --- cReplayControl --------------------------------------------------------
 
 cReplayControl *cReplayControl::currentReplayControl = NULL;
@@ -4934,6 +4969,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
   marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
+  binarySkipper.Initialize(&Setup.BinarySkipInitial, Recording.FramesPerSecond());
   SetTrackDescriptions(false);
   if (Setup.ProgressDisplayTime)
      ShowTimed(Setup.ProgressDisplayTime);
@@ -5246,25 +5282,42 @@ void cReplayControl::MarkJump(bool Forward)
      }
 }
 
-void cReplayControl::MarkMove(bool Forward)
+void cReplayControl::MarkMove(int Frames, bool MarkRequired)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
-     if (cMark *m = marks.Get(Current)) {
+     bool Play, Forward;
+     int Speed;
+     GetReplayMode(Play, Forward, Speed);
+     cMark *m = marks.Get(Current);
+     if (!Play && m) {
         displayFrames = true;
-        int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
-        if (Forward) {
+        if (Frames > 0) {
+           // Handle marks at the same offset:
            while ((m2 = marks.Next(m)) != NULL && m2->Position() == m->Position())
                  m = m2;
+           // Don't skip the next mark:
+           if ((m2 = marks.Next(m)) != NULL)
+              Frames = min(Frames, m2->Position() - m->Position() - 1);
            }
         else {
+           // Handle marks at the same offset:
            while ((m2 = marks.Prev(m)) != NULL && m2->Position() == m->Position())
                  m = m2;
+           // Don't skip the next mark:
+           if ((m2 = marks.Prev(m)) != NULL)
+              Frames = -min(-Frames, m->Position() - m2->Position() - 1);
            }
+        int p = SkipFrames(Frames);
         m->SetPosition(p);
         Goto(m->Position(), true);
         marksModified = true;
+        }
+     else if (!MarkRequired) {
+        Goto(SkipFrames(Frames), !Play);
+        if (Play)
+           this->Play();
         }
      }
 }
@@ -5396,9 +5449,13 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         case kMarkJumpForward|k_Repeat:
         case kMarkJumpForward: MarkJump(true); break;
         case kMarkMoveBack|k_Repeat:
-        case kMarkMoveBack:    MarkMove(false); break;
+        case kMarkMoveBack:    MarkMove(-1, true); break;
         case kMarkMoveForward|k_Repeat:
-        case kMarkMoveForward: MarkMove(true); break;
+        case kMarkMoveForward: MarkMove(+1, true); break;
+        case kMarkSkipBack|k_Repeat:
+        case kMarkSkipBack:    MarkMove(-binarySkipper.GetValue(RAWKEY(Key)), false); break;
+        case kMarkSkipForward|k_Repeat:
+        case kMarkSkipForward: MarkMove(+binarySkipper.GetValue(RAWKEY(Key)), false); break;
         case kEditCut:         EditCut(); break;
         case kEditTest:        EditTest(); break;
         default: {

@@ -624,6 +624,7 @@ Helmut Auer <vdr@helmutauer.de>
  for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
  for a patch that was used to implement the command line option --updindex
+ for modifying the "binary skip" patch to move editing marks
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1192,6 +1193,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
  for fixing a problem with subtitles not being displayed because the broadcaster
  doesn't set the data's version numbers as required by the DVB standard
+ for the "binary skip" patch
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

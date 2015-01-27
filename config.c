@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.4 2015/01/25 14:17:45 kls Exp $
+ * $Id: config.c 3.5 2015/01/27 10:51:19 kls Exp $
  */
 
 #include "config.h"
@@ -473,6 +473,8 @@ cSetup::cSetup(void)
   PauseOnMarkJump = 1;
   SkipEdited = 0;
   PauseAtLastMark = 0;
+  BinarySkipInitial = 120;
+  BinarySkipTimeout = 3000;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
@@ -689,6 +691,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PauseOnMarkJump"))     PauseOnMarkJump    = atoi(Value);
   else if (!strcasecmp(Name, "SkipEdited"))          SkipEdited         = atoi(Value);
   else if (!strcasecmp(Name, "PauseAtLastMark"))     PauseAtLastMark    = atoi(Value);
+  else if (!strcasecmp(Name, "BinarySkipInitial"))   BinarySkipInitial  = atoi(Value);
+  else if (!strcasecmp(Name, "BinarySkipTimeout"))   BinarySkipTimeout  = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
@@ -809,6 +813,8 @@ bool cSetup::Save(void)
   Store("PauseOnMarkJump",    PauseOnMarkJump);
   Store("SkipEdited",         SkipEdited);
   Store("PauseAtLastMark",    PauseAtLastMark);
+  Store("BinarySkipInitial",  BinarySkipInitial);
+  Store("BinarySkipTimeout",  BinarySkipTimeout);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
