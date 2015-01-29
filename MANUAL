@@ -985,10 +985,14 @@ Version 2.0
                          Defines the number of seconds to jump from the current replay
                          position in either direction, when pressing the '1' or '3'
                          key for the first time after the "Binary skip timeout".
+                         The valid range is 10...600.
 
-  Binary skip timeout (ms) = 3000
-                         Defines the number of milliseconds after which pressing the
+  Binary skip timeout (s) = 3
+                         Defines the number of seconds after which pressing the
                          '1' or '3' key falls back to the "Binary skip initial value".
+                         The valid range is 0...10. Setting the timeout to 0 disables
+                         the binary mode and makes '1' and '3' always skip the number
+                         of seconds configured as the initial value.
 
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume

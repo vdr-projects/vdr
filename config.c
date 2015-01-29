@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.5 2015/01/27 10:51:19 kls Exp $
+ * $Id: config.c 3.6 2015/01/29 09:01:30 kls Exp $
  */
 
 #include "config.h"
@@ -474,7 +474,7 @@ cSetup::cSetup(void)
   SkipEdited = 0;
   PauseAtLastMark = 0;
   BinarySkipInitial = 120;
-  BinarySkipTimeout = 3000;
+  BinarySkipTimeout = 3;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
