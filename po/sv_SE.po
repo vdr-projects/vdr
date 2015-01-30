@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-27 13:59+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2013-02-18 17:04+0100\n"
 "Last-Translator: Richard Lithvall <r-vdr@boomer.se>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -22,6 +22,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Felaktig kanal ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Kanalen är inte tillgänglig!"
@@ -1112,8 +1115,18 @@ msgstr "CAM närvarande"
 msgid "CAM ready"
 msgstr "CAM klar"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Meny"
@@ -1126,6 +1139,9 @@ msgstr "Öppnar CAM menyn..."
 
 msgid "Can't open CAM menu!"
 msgstr "Det går inte att öppna CAM menyn!"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM upptagen, vill du verkligen återställa?"

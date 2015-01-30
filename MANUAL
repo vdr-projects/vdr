@@ -845,7 +845,19 @@ Version 2.0
                          if it is in the process of being reset, its current status
                          is displayed.  The "Red" key can be pressed to enter the CAM
                          menu, and the "Green" key triggers a reset of the selected
-                         slot. The "Ok" key also opens the CAM menu.
+                         slot. The "Ok" key also opens the CAM menu. The "Yellow" key
+                         assigns the selected CAM to a device and switches it to the
+                         current channel. The CAM/device combination remains tuned to
+                         the current channel until the smart card in the CAM has been
+                         activated and thus starts to descramble, or until a recording
+                         needs this device. Pressing the "Yellow" key while a CAM is
+                         in activation mode cancels the activation. The activation mode
+                         remains in effect even if you switch to a different channel
+                         (provided there is more than one device in the system) or
+                         watch a recording. To activate your smart card simply switch
+                         to the channel you want to watch, open the "Setup/CAM" menu,
+                         select the CAM that contains the smart card (in case you
+                         have more than one CAM) and press the "Yellow" key.
 
   Recording:
 

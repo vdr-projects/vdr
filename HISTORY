@@ -8414,7 +8414,7 @@ Video Disk Recorder Revision History
   generated an index file with VDR version 2.0.6 you may want to do so again with this
   version to make sure the index is OK.
 
-2015-01-27: Version 2.1.8
+2015-01-30: Version 2.1.8
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed "warning: invalid suffix on literal" with GCC 4.8 and C++11 (thanks to Joerg
@@ -8439,3 +8439,8 @@ Video Disk Recorder Revision History
 - The keys '1' and '3' can now be used in replay mode to position an editing mark
   in "binary" mode (based on a patch from Rolf Ahrenberg, with modifications by Helmut
   Auer). See MANUAL, section "Editing a Recording".
+- The Yellow button in the "Setup/CAM" menu can now be used to put the selected
+  CAM into a mode where it remains assigned to a device that is tuned to the current
+  channel until the smart card it contains is activated and the CAM thus starts to
+  descramble (see MANUAL for details).
+- Added support for smart card activation (see MANUAL, section "Setup/CAM").

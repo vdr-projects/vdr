@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-27 13:59+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2015-01-21 22:34+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -20,6 +20,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Canal indisponibil"
@@ -1110,8 +1113,18 @@ msgstr "CAM prezent"
 msgid "CAM ready"
 msgstr "CAM pregătit"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Meniu"
@@ -1124,6 +1137,9 @@ msgstr "Deschid meniul CAM..."
 
 msgid "Can't open CAM menu!"
 msgstr "Nu pot deschide meniul CAM"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM-ul este in folosinţă - totuşi resetez?"

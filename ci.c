@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.17 2015/01/15 09:14:57 kls Exp $
+ * $Id: ci.c 3.18 2015/01/30 12:24:53 kls Exp $
  */
 
 #include "ci.h"
@@ -22,6 +22,7 @@
 #include "receiver.h"
 #include "remux.h"
 #include "libsi/si.h"
+#include "skins.h"
 #include "tools.h"
 
 // Set these to 'true' for debug output:
@@ -232,6 +233,53 @@ void cCaPidReceiver::Receive(uchar *Data, int Length)
         p = NULL;
         bufp = 0;
         length = 0;
+        }
+     }
+}
+
+// --- cCaActivationReceiver -------------------------------------------------
+
+// A receiver that is used to make the device stay on a given channel and
+// keep the CAM slot assigned.
+
+#define UNSCRAMBLE_TIME     5 // seconds of receiving purely unscrambled data before considering the smart card "activated"
+#define TS_PACKET_FACTOR 1024 // only process every TS_PACKET_FACTORth packet to keep the load down
+
+class cCaActivationReceiver : public cReceiver {
+private:
+  cCamSlot *camSlot;
+  time_t lastScrambledTime;
+  int numTsPackets;
+protected:
+  virtual void Receive(uchar *Data, int Length);
+public:
+  cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot);
+  virtual ~cCaActivationReceiver();
+  };
+
+cCaActivationReceiver::cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot)
+:cReceiver(Channel, MINPRIORITY + 1)
+{
+  camSlot = CamSlot;
+  lastScrambledTime = time(NULL);
+  numTsPackets = 0;
+}
+
+cCaActivationReceiver::~cCaActivationReceiver()
+{
+  Detach();
+}
+
+void cCaActivationReceiver::Receive(uchar *Data, int Length)
+{
+  if (numTsPackets++ % TS_PACKET_FACTOR == 0) {
+     time_t Now = time(NULL);
+     if (TsIsScrambled(Data))
+        lastScrambledTime = Now;
+     else if (Now - lastScrambledTime > UNSCRAMBLE_TIME) {
+        dsyslog("CAM %d: activated!", camSlot->SlotNumber());
+        Skins.QueueMessage(mtInfo, tr("CAM activated!"));
+        Detach();
         }
      }
 }
@@ -1696,6 +1744,7 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
   ciAdapter = CiAdapter;
   assignedDevice = NULL;
   caPidReceiver = ReceiveCaPids ? new cCaPidReceiver : NULL;
+  caActivationReceiver = NULL;
   slotIndex = -1;
   lastModuleStatus = msReset; // avoids initial reset log message
   resetTime = 0;
@@ -1715,6 +1764,7 @@ cCamSlot::~cCamSlot()
   if (assignedDevice)
      assignedDevice->SetCamSlot(NULL);
   delete caPidReceiver;
+  delete caActivationReceiver;
   CamSlots.Del(this, false);
   DeleteAllConnections();
 }
@@ -1735,8 +1785,10 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
                  Device->SetCamSlot(this);
                  dsyslog("CAM %d: assigned to device %d", slotNumber, Device->DeviceNumber() + 1);
                  }
-              else
+              else {
+                 CancelActivation();
                  dsyslog("CAM %d: unassigned", slotNumber);
+                 }
               }
            else
               return false;
@@ -1772,6 +1824,8 @@ void cCamSlot::DeleteAllConnections(void)
 void cCamSlot::Process(cTPDU *TPDU)
 {
   cMutexLock MutexLock(&mutex);
+  if (caActivationReceiver && !caActivationReceiver->IsAttached())
+     CancelActivation();
   if (TPDU) {
      int n = TPDU->Tcid();
      if (1 <= n && n <= MAX_CONNECTIONS_PER_CAM_SLOT) {
@@ -1795,6 +1849,7 @@ void cCamSlot::Process(cTPDU *TPDU)
                dbgprotocol("Slot %d: no module present\n", slotNumber);
                isyslog("CAM %d: no module present", slotNumber);
                DeleteAllConnections();
+               CancelActivation();
                break;
           case msReset:
                dbgprotocol("Slot %d: module reset\n", slotNumber);
@@ -1854,6 +1909,37 @@ bool cCamSlot::Reset(void)
      dbgprotocol("failed!\n");
      }
   return false;
+}
+
+bool cCamSlot::CanActivate(void)
+{
+  return ModuleStatus() == msReady;
+}
+
+void cCamSlot::StartActivation(void)
+{
+  cMutexLock MutexLock(&mutex);
+  if (!caActivationReceiver) {
+     if (cDevice *d = Device()) {
+        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+           caActivationReceiver = new cCaActivationReceiver(Channel, this);
+           d->AttachReceiver(caActivationReceiver);
+           dsyslog("CAM %d: activating on device %d with channel %d (%s)", SlotNumber(), d->DeviceNumber() + 1, Channel->Number(), Channel->Name());
+           }
+        }
+     }
+}
+
+void cCamSlot::CancelActivation(void)
+{
+  cMutexLock MutexLock(&mutex);
+  delete caActivationReceiver;
+  caActivationReceiver = NULL;
+}
+
+bool cCamSlot::IsActivating(void)
+{
+  return caActivationReceiver;
 }
 
 eModuleStatus cCamSlot::ModuleStatus(void)

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-27 13:59+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -22,6 +22,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Virheellinen kanavavalinta ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Kanava ei ole käytettävissä!"
@@ -1112,8 +1115,18 @@ msgstr "CAM havaittu"
 msgid "CAM ready"
 msgstr "CAM valmis"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Valikko"
@@ -1126,6 +1139,9 @@ msgstr "Avataan CA-moduulin valikkoa..."
 
 msgid "Can't open CAM menu!"
 msgstr "CA-moduulin valikko ei saatavilla"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CA-moduuli käytössä - nollataanko?"

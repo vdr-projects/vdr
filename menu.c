@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.31 2015/01/29 09:00:37 kls Exp $
+ * $Id: menu.c 3.32 2015/01/30 12:27:37 kls Exp $
  */
 
 #include "menu.h"
@@ -3419,7 +3419,7 @@ cMenuSetupCAMItem::cMenuSetupCAMItem(cCamSlot *CamSlot)
 
 bool cMenuSetupCAMItem::Changed(void)
 {
-  char buffer[32];
+  const char *Activating = "";
   const char *CamName = camSlot->GetCamName();
   if (!CamName) {
      switch (camSlot->ModuleStatus()) {
@@ -3429,7 +3429,10 @@ bool cMenuSetupCAMItem::Changed(void)
        default:        CamName = "-"; break;
        }
      }
-  snprintf(buffer, sizeof(buffer), " %d %s", camSlot->SlotNumber(), CamName);
+  else if (camSlot->IsActivating())
+     // TRANSLATORS: note the leading blank!
+     Activating = tr(" (activating)");
+  cString buffer = cString::sprintf(" %d %s%s", camSlot->SlotNumber(), CamName, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
      return true;
@@ -3439,8 +3442,11 @@ bool cMenuSetupCAMItem::Changed(void)
 
 class cMenuSetupCAM : public cMenuSetupBase {
 private:
+  const char *activationHelp;
   eOSState Menu(void);
   eOSState Reset(void);
+  eOSState Activate(void);
+  void SetHelpKeys(void);
 public:
   cMenuSetupCAM(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -3448,13 +3454,33 @@ public:
 
 cMenuSetupCAM::cMenuSetupCAM(void)
 {
+  activationHelp = NULL;
   SetMenuCategory(mcSetupCam);
   SetSection(tr("CAM"));
   SetCols(15);
   SetHasHotkeys();
   for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
       Add(new cMenuSetupCAMItem(CamSlot));
-  SetHelp(tr("Button$Menu"), tr("Button$Reset"));
+  SetHelpKeys();
+}
+
+void cMenuSetupCAM::SetHelpKeys(void)
+{
+  if (HasSubMenu())
+     return;
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
+  const char *NewActivationHelp = "";
+  if (item) {
+     cCamSlot *CamSlot = item->CamSlot();
+     if (CamSlot->IsActivating())
+        NewActivationHelp = tr("Button$Cancel activation");
+     else if (CamSlot->CanActivate())
+        NewActivationHelp = tr("Button$Activate");
+     }
+  if (NewActivationHelp != activationHelp) {
+     activationHelp = NewActivationHelp;
+     SetHelp(tr("Button$Menu"), tr("Button$Reset"), activationHelp);
+     }
 }
 
 eOSState cMenuSetupCAM::Menu(void)
@@ -3484,6 +3510,41 @@ eOSState cMenuSetupCAM::Menu(void)
   return osContinue;
 }
 
+eOSState cMenuSetupCAM::Activate(void)
+{
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
+  if (item) {
+     cCamSlot *CamSlot = item->CamSlot();
+     if (CamSlot->IsActivating())
+        CamSlot->CancelActivation();
+     else if (CamSlot->CanActivate()) {
+        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+           for (int i = 0; i < cDevice::NumDevices(); i++) {
+               if (cDevice *Device = cDevice::GetDevice(i)) {
+                  if (Device->ProvidesChannel(Channel)) {
+                     if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
+                        if (CamSlot->CanActivate()) {
+                           if (CamSlot->Assign(Device, true)) { // query
+                              cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
+                              if (CamSlot->Assign(Device)) {
+                                 if (Device->SwitchChannel(Channel, true)) {
+                                    CamSlot->StartActivation();
+                                    return osContinue;
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+           }
+        Skins.Message(mtError, tr("Can't activate CAM!"));
+        }
+     }
+  return osContinue;
+}
+
 eOSState cMenuSetupCAM::Reset(void)
 {
   cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
@@ -3505,12 +3566,14 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
        case kOk:
        case kRed:    return Menu();
        case kGreen:  state = Reset(); break;
+       case kYellow: state = Activate(); break;
        default: break;
        }
      for (cMenuSetupCAMItem *ci = (cMenuSetupCAMItem *)First(); ci; ci = (cMenuSetupCAMItem *)ci->Next()) {
          if (ci->Changed())
             DisplayItem(ci);
          }
+     SetHelpKeys();
      }
   return state;
 }
