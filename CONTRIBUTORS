@@ -2828,6 +2828,7 @@ Derek Kelly <user.vdr@gmail.com>
  are no short names at all
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
  for reporting a missing template for DVBDIR in Make.config.template
+ for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
