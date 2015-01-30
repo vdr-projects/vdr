@@ -8444,3 +8444,4 @@ Video Disk Recorder Revision History
   channel until the smart card it contains is activated and the CAM thus starts to
   descramble (see MANUAL for details).
 - Added support for smart card activation (see MANUAL, section "Setup/CAM").
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
