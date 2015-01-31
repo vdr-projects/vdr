@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.33 2015/01/31 11:36:08 kls Exp $
+ * $Id: menu.c 3.34 2015/01/31 14:50:55 kls Exp $
  */
 
 #include "menu.h"
@@ -3518,18 +3518,20 @@ eOSState cMenuSetupCAM::Activate(void)
      if (CamSlot->IsActivating())
         CamSlot->CancelActivation();
      else if (CamSlot->CanActivate()) {
-        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
-           for (int i = 0; i < cDevice::NumDevices(); i++) {
-               if (cDevice *Device = cDevice::GetDevice(i)) {
-                  if (Device->ProvidesChannel(Channel)) {
-                     if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
-                        if (CamSlot->CanActivate()) {
-                           if (CamSlot->Assign(Device, true)) { // query
-                              cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
-                              if (CamSlot->Assign(Device)) {
-                                 if (Device->SwitchChannel(Channel, true)) {
-                                    CamSlot->StartActivation();
-                                    return osContinue;
+        if (CamSlot->Priority() < LIVEPRIORITY) { // don't interrupt recordings
+           if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+              for (int i = 0; i < cDevice::NumDevices(); i++) {
+                  if (cDevice *Device = cDevice::GetDevice(i)) {
+                     if (Device->ProvidesChannel(Channel)) {
+                        if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
+                           if (CamSlot->CanActivate()) {
+                              if (CamSlot->Assign(Device, true)) { // query
+                                 cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
+                                 if (CamSlot->Assign(Device)) {
+                                    if (Device->SwitchChannel(Channel, true)) {
+                                       CamSlot->StartActivation();
+                                       return osContinue;
+                                       }
                                     }
                                  }
                               }
@@ -3537,7 +3539,7 @@ eOSState cMenuSetupCAM::Activate(void)
                         }
                      }
                   }
-               }
+              }
            }
         Skins.Message(mtError, tr("Can't activate CAM!"));
         }
