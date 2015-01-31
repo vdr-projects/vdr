@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.10 2015/01/30 12:24:38 kls Exp $
+ * $Id: ci.h 3.11 2015/01/31 14:36:41 kls Exp $
  */
 
 #ifndef __CI_H
@@ -220,7 +220,7 @@ public:
   virtual cCiEnquiry *GetEnquiry(void);
        ///< Gets a pending enquiry, or NULL if there is no enquiry.
   int Priority(void);
-       ///< Returns the priority if the device this slot is currently assigned
+       ///< Returns the priority of the device this slot is currently assigned
        ///< to, or IDLEPRIORITY if it is not assigned to any device.
   virtual bool ProvidesCa(const int *CaSystemIds);
        ///< Returns true if the CAM in this slot provides one of the given
