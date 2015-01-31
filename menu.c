@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.32 2015/01/30 12:27:37 kls Exp $
+ * $Id: menu.c 3.33 2015/01/31 11:36:08 kls Exp $
  */
 
 #include "menu.h"
@@ -5415,7 +5415,7 @@ void cReplayControl::EditTest(void)
      if (!m)
         m = marks.GetNext(Current);
      if (m) {
-        if ((m->Index() & 0x01) == 0) // this is a "start" mark, so get the next "end" mark
+        if ((m->Index() & 0x01) != 0 && !Setup.SkipEdited) // when skipping edited parts we also need to jump to end marks
            m = marks.Next(m);
         if (m) {
            Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
