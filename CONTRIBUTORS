@@ -3237,6 +3237,7 @@ Stefan Braun <louis.braun@gmx.de>
  for reporting an endless loop in the DrawEllipse() functions for very small ellipses
  for suggesting to add the menu category mcRecordingEdit for marking menus that edit
  recording properties
+ for suggesting to make cRecording::GetResume() public
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order

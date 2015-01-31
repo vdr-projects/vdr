@@ -8448,3 +8448,4 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Added ARGSDIR to the ONEDIR section of Make.config.template (suggested by Derek
   Kelly).
+- Made cRecording::GetResume() public (suggested by Stefan Braun).
