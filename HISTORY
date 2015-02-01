@@ -8450,3 +8450,5 @@ Video Disk Recorder Revision History
 - Made cRecording::GetResume() public (suggested by Stefan Braun).
 - Fixed setting the read index in cDvbPlayer::Goto() in case Still is false.
 - The function cDvbPlayer::Goto() now automatically calls Play() if Still is false.
+- Added support for LCN (Logical Channel Numbers), which plugins may use to sort
+  channels (thanks to Rolf Ahrenberg).

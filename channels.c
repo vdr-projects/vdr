@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.7 2015/01/14 12:15:03 kls Exp $
+ * $Id: channels.c 3.8 2015/02/01 13:47:05 kls Exp $
  */
 
 #include "channels.h"
@@ -245,6 +245,15 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
      if (Number())
         Channels.HashChannel(this);
      schedule = NULL;
+     }
+}
+
+void cChannel::SetLcn(int Lcn)
+{
+  if (lcn != Lcn) {
+     if (Number())
+        dsyslog("changing lcn of channel %d (%s) from %d to %d\n", Number(), name, lcn, Lcn);
+     lcn = Lcn;
      }
 }
 

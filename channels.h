@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 3.2 2014/01/04 15:01:21 kls Exp $
+ * $Id: channels.h 3.3 2015/02/01 13:30:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -121,6 +121,7 @@ private:
   int tid;
   int sid;
   int rid;
+  int lcn;       // Logical channel number assigned by data stream (or -1 if not available)
   int number;    // Sequence number assigned on load
   bool groupSep;
   int __EndData__;
@@ -174,6 +175,7 @@ public:
   int Tid(void) const { return tid; }
   int Sid(void) const { return sid; }
   int Rid(void) const { return rid; }
+  int Lcn(void) const { return lcn; }
   int Number(void) const { return number; }
   void SetNumber(int Number) { number = Number; }
   bool GroupSep(void) const { return groupSep; }
@@ -192,6 +194,7 @@ public:
   void CopyTransponderData(const cChannel *Channel);
   bool SetTransponderData(int Source, int Frequency, int Srate, const char *Parameters, bool Quiet = false);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
+  void SetLcn(int Lcn);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
   void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);

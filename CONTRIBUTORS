@@ -1194,6 +1194,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for fixing a problem with subtitles not being displayed because the broadcaster
  doesn't set the data's version numbers as required by the DVB standard
  for the "binary skip" patch
+ for adding support for LCN (Logical Channel Numbers)
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

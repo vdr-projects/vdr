@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 3.3 2014/03/16 10:38:31 kls Exp $
+ * $Id: nit.c 3.4 2015/02/01 13:46:00 kls Exp $
  */
 
 #include "nit.h"
@@ -355,6 +355,40 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         break;
                    default: ;
                    }
+                 }
+                 break;
+            case SI::LogicalChannelDescriptorTag: {
+                 SI::LogicalChannelDescriptor *lcd = (SI::LogicalChannelDescriptor *)d;
+                 SI::LogicalChannelDescriptor::LogicalChannel LogicalChannel;
+                 for (SI::Loop::Iterator it4; lcd->logicalChannelLoop.getNext(LogicalChannel, it4); ) {
+                     int lcn = LogicalChannel.getLogicalChannelNumber();
+                     int sid = LogicalChannel.getServiceId();
+                     if (LogicalChannel.getVisibleServiceFlag()) {
+                        for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                            if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                               Channel->SetLcn(lcn);
+                               break;
+                               }
+                            }
+                        }
+                     }
+                 }
+                 break;
+            case SI::HdSimulcastLogicalChannelDescriptorTag: {
+                 SI::HdSimulcastLogicalChannelDescriptor *lcd = (SI::HdSimulcastLogicalChannelDescriptor *)d;
+                 SI::HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel HdSimulcastLogicalChannel;
+                 for (SI::Loop::Iterator it4; lcd->hdSimulcastLogicalChannelLoop.getNext(HdSimulcastLogicalChannel, it4); ) {
+                     int lcn = HdSimulcastLogicalChannel.getLogicalChannelNumber();
+                     int sid = HdSimulcastLogicalChannel.getServiceId();
+                     if (HdSimulcastLogicalChannel.getVisibleServiceFlag()) {
+                        for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                            if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                               Channel->SetLcn(lcn);
+                               break;
+                               }
+                            }
+                        }
+                     }
                  }
                  break;
             default: ;
