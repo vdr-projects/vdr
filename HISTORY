@@ -8443,8 +8443,7 @@ Video Disk Recorder Revision History
 - The Yellow button in the "Setup/CAM" menu can now be used to put the selected
   CAM into a mode where it remains assigned to a device that is tuned to the current
   channel until the smart card it contains is activated and the CAM thus starts to
-  descramble (see MANUAL for details).
-- Added support for smart card activation (see MANUAL, section "Setup/CAM").
+  descramble (see MANUAL, section "Setup/CAM" for details).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Added ARGSDIR to the ONEDIR section of Make.config.template (suggested by Derek
   Kelly).
