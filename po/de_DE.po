@@ -1245,7 +1245,7 @@ msgid "Setup.Replay$Binary skip initial value (s)"
 msgstr "Anfangswert für binäres Springen (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Zeitlimit für binäres Springen (ms)"
+msgstr "Zeitlimit für binäres Springen (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"

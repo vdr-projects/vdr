@@ -8457,3 +8457,5 @@ Video Disk Recorder Revision History
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
+- Fixed the German translation of "Binary skip timeout (s)" (thanks to Matthias
+  Senzel).
