@@ -2909,6 +2909,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing learning keyboard remote control codes
  for making VDR read command line options from *.conf files in /etc/vdr/conf.d
  for adding a missing backslash to the help text of the SVDRP command MOVR
+ for fixing a memory leak in case of broken Extended Event Descriptors
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices

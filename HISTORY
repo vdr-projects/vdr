@@ -8452,3 +8452,8 @@ Video Disk Recorder Revision History
 - The function cDvbPlayer::Goto() now automatically calls Play() if Still is false.
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
+
+2015-02-01: Version 2.1.9
+
+- Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
+  Hanisch).
