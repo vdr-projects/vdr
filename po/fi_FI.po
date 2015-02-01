@@ -24,7 +24,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Virheellinen kanavavalinta ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CA-moduuli aktivoitu!"
 
 msgid "Channel not available!"
 msgstr "Kanava ei ole käytettävissä!"
@@ -1117,16 +1117,16 @@ msgstr "CAM valmis"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (aktivoidaan)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Peruuta aktivointi"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Aktivoi"
 
 msgid "Button$Menu"
 msgstr "Valikko"
@@ -1141,7 +1141,7 @@ msgid "Can't open CAM menu!"
 msgstr "CA-moduulin valikko ei saatavilla"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "CA-moduulin aktivointi epäonnistui!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CA-moduuli käytössä - nollataanko?"
