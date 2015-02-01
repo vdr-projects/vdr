@@ -1519,7 +1519,7 @@ msgid "Recording started"
 msgstr "Aufzeichnung gestartet"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR schaltet später aus - Power zum erzwingen"
+msgstr "VDR schaltet später aus - Power zum Erzwingen"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Taste drücken, um Ausschalten abzubrechen"
