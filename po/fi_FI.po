@@ -1249,7 +1249,7 @@ msgid "Setup.Replay$Binary skip initial value (s)"
 msgstr "Binäärihypyn oletuspituus (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Binäärihypyn odotusaika (ms)"
+msgstr "Binäärihypyn odotusaika (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

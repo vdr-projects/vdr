@@ -8460,3 +8460,5 @@ Video Disk Recorder Revision History
 - Fixed the German translation of "Binary skip timeout (s)" (thanks to Matthias
   Senzel).
 - Fixed the German translation of "VDR will shut down later - press Power to force".
+- Fixed the Finnish translation of "Binary skip timeout (s)" (thanks to Rolf
+  Ahrenberg).
