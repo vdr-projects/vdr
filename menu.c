@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.34 2015/01/31 14:50:55 kls Exp $
+ * $Id: menu.c 3.35 2015/02/01 10:42:11 kls Exp $
  */
 
 #include "menu.h"
@@ -5262,8 +5262,6 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
             Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
             bool Still = Key == kDown || Key == kPause || Key == kOk;
             Goto(SecondsToFrames(Seconds, FramesPerSecond()), Still);
-            if (!Still)
-               Play();
             }
          timeSearchActive = false;
          break;
@@ -5332,7 +5330,6 @@ void cReplayControl::MarkJump(bool Forward)
               int Speed;
               if (GetReplayMode(Playing, Fwd, Speed) && Playing && Forward && m->Position() < Total - SecondsToFrames(3, FramesPerSecond())) {
                  Goto(m->Position());
-                 Play();
                  return;
                  }
               }
@@ -5379,11 +5376,8 @@ void cReplayControl::MarkMove(int Frames, bool MarkRequired)
         Goto(m->Position(), true);
         marksModified = true;
         }
-     else if (!MarkRequired) {
+     else if (!MarkRequired)
         Goto(SkipFrames(Frames), !Play);
-        if (Play)
-           this->Play();
-        }
      }
 }
 
@@ -5419,10 +5413,8 @@ void cReplayControl::EditTest(void)
      if (m) {
         if ((m->Index() & 0x01) != 0 && !Setup.SkipEdited) // when skipping edited parts we also need to jump to end marks
            m = marks.Next(m);
-        if (m) {
+        if (m)
            Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
-           Play();
-           }
         }
      }
 }

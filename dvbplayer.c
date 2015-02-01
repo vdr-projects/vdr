@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 3.2 2015/01/25 13:12:13 kls Exp $
+ * $Id: dvbplayer.c 3.3 2015/02/01 10:45:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -852,18 +852,26 @@ void cDvbPlayer::Goto(int Index, bool Still)
      off_t FileOffset;
      int Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
-     if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        uchar b[MAXFRAMESIZE];
-        int r = ReadFrame(replayFile, b, Length, sizeof(b));
-        if (r > 0) {
-           if (playMode == pmPause)
-              DevicePlay();
-           DeviceStillPicture(b, r);
-           ptsIndex.Put(isPesRecording ? PesGetPts(b) : TsGetPts(b, r), Index);
+     if (Index >= 0) {
+        if (Still) {
+           if (NextFile(FileNumber, FileOffset)) {
+              uchar b[MAXFRAMESIZE];
+              int r = ReadFrame(replayFile, b, Length, sizeof(b));
+              if (r > 0) {
+                 if (playMode == pmPause)
+                    DevicePlay();
+                 DeviceStillPicture(b, r);
+                 ptsIndex.Put(isPesRecording ? PesGetPts(b) : TsGetPts(b, r), Index);
+                 }
+              playMode = pmStill;
+              readIndex = Index;
+              }
            }
-        playMode = pmStill;
+        else {
+           readIndex = Index - 1; // Action() will first increment it!
+           Play();
+           }
         }
-     readIndex = Index;
      }
 }
 
