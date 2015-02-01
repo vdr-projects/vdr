@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 3.6 2015/01/15 11:12:57 kls Exp $
+ * $Id: menu.h 3.7 2015/01/27 11:38:20 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -270,9 +270,23 @@ public:
   static bool StateChanged(int &State);
   };
 
+class cBinarySkipper {
+private:
+  int *initialValue;
+  int currentValue;
+  double framesPerSecond;
+  eKeys lastKey;
+  cTimeMs timeout;
+public:
+  cBinarySkipper(void);
+  void Initialize(int *InitialValue, double FramesPerSecond);
+  int GetValue(eKeys Key);
+  };
+
 class cReplayControl : public cDvbPlayerControl {
 private:
   cSkinDisplayReplay *displayReplay;
+  cBinarySkipper binarySkipper;
   cMarks marks;
   bool marksModified;
   bool visible, modeOnly, shown, displayFrames;
@@ -292,7 +306,7 @@ private:
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
   void MarkJump(bool Forward);
-  void MarkMove(bool Forward);
+  void MarkMove(int Frames, bool MarkRequired);
   void EditCut(void);
   void EditTest(void);
 public:

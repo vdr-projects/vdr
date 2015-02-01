@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 3.1 2014/04/14 11:43:53 kls Exp $
+# $Id: Make.config.template 3.2 2015/01/30 15:18:47 kls Exp $
 
 ### The C compiler and options:
 
@@ -58,6 +58,7 @@ ifdef ONEDIR
 VIDEODIR     = /video
 CACHEDIR     = $(VIDEODIR)
 CONFDIR      = $(VIDEODIR)
+ARGSDIR      = $(VIDEODIR)/conf.d
 RESDIR       = $(VIDEODIR)
 endif
 

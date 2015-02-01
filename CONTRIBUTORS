@@ -624,6 +624,7 @@ Helmut Auer <vdr@helmutauer.de>
  for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
  or varying GOP structures
  for a patch that was used to implement the command line option --updindex
+ for modifying the "binary skip" patch to move editing marks
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1192,6 +1193,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for adding support for "Pilot", "T2-System-Id" and "SISO/MISO" parameters
  for fixing a problem with subtitles not being displayed because the broadcaster
  doesn't set the data's version numbers as required by the DVB standard
+ for the "binary skip" patch
+ for adding support for LCN (Logical Channel Numbers)
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2139,6 +2142,7 @@ Thomas Günther <tom1@toms-cafe.de>
  which results in using tr(FileNameChars)
  for fixing handling "none" color entries in XPM files
  for fixing displaying the frame number when setting an editing mark
+ for the "jumpplay" patch
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -2677,6 +2681,7 @@ Torsten Kunkel <vdrml@tkunkel.de>
  for pointing out that it was not obvious how to initiate internationalization
  support for a plugin
  for suggesting to add a section about "Logging" to PLUGINS.html
+ for the "jumpplay" patch
 
 Michael Nival <mnival@club-internet.fr>
  for translating OSD texts to the French language
@@ -2824,6 +2829,7 @@ Derek Kelly <user.vdr@gmail.com>
  are no short names at all
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
  for reporting a missing template for DVBDIR in Make.config.template
+ for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2969,6 +2975,7 @@ Dominik Strasser <dominik@die-strassers.de>
 Joerg Bornkessel <hd_brummy@gentoo.org>
  for adding LDFLAGS to the linker calls in the Makefiles
  for fixing font handling with fontconfig 2.9.0 or newer
+ for fixing "warning: invalid suffix on literal" with GCC 4.8 and C++11
 
 Andreas Oberritter <obi@opendreambox.org>
  for suggesting to retrieve the include path to the freetype2 header files
@@ -2981,6 +2988,7 @@ Frank Neumann <fnu@yavdr.org>
  for suggesting to reduce the thread and I/O priority cCuttingThread::Action()
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
  for fixing the German translation of "VDR will shut down in %s minutes"
+ for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
@@ -3045,6 +3053,7 @@ Frank Niederwipper <f.niederwipper@gmail.com>
 
 Chris Mayo <aklhfex@gmail.com>
  for reporting a problem with detecting frames on radio channels
+ for fixing the link to "svdrpsend (1)" in the vdr.1 man page
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
@@ -3229,6 +3238,7 @@ Stefan Braun <louis.braun@gmx.de>
  for reporting an endless loop in the DrawEllipse() functions for very small ellipses
  for suggesting to add the menu category mcRecordingEdit for marking menus that edit
  recording properties
+ for suggesting to make cRecording::GetResume() public
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
@@ -3243,6 +3253,7 @@ Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
 Manfred Völkel <mvoelkel@digitaldevices.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+ for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
 
 Thomas Maass <mase@setho.org>
  for reporting a difference in the internal sequence of actions when pressing the Blue

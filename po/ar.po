@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -22,6 +22,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** قناة خاطئة ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "القناة غير متاحة"
@@ -1112,8 +1115,18 @@ msgstr "الكامة موجودة"
 msgid "CAM ready"
 msgstr "الكامة جاهزة"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "الكامة "
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "القائمة"
@@ -1126,6 +1139,9 @@ msgstr "فتح قائمة الكامة"
 
 msgid "Can't open CAM menu!"
 msgstr "تعذر فتح قائمة الكامة"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "الكامة مستخدمة الان هل تريد اعادة تشغيلها"
@@ -1219,6 +1235,21 @@ msgstr "Progress display time (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pause replay when setting mark"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "رقم المواصلة"

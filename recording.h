@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.5 2015/01/17 14:33:05 kls Exp $
+ * $Id: recording.h 3.6 2015/01/31 13:34:44 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -117,7 +117,6 @@ private:
   static char *StripEpisodeName(char *s, bool Strip);
   char *SortName(void) const;
   void ClearSortName(void);
-  int GetResume(void) const;
   time_t start;
   int priority;
   int lifetime;
@@ -160,6 +159,9 @@ public:
   int FileSizeMB(void) const;
        ///< Returns the total file size of this recording (in MB), or -1 if the file
        ///< size is unknown.
+  int GetResume(void) const;
+       ///< Returns the index of the frame where replay of this recording shall
+       ///< be resumed, or -1 in case of an error.
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }

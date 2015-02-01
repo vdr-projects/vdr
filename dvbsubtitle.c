@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 3.9 2015/01/14 11:31:09 kls Exp $
+ * $Id: dvbsubtitle.c 3.10 2015/01/20 14:53:57 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1042,7 +1042,7 @@ void cDvbSubtitlePage::Parse(int64_t Pts, cBitStream &bs)
     default: dbgpages("unknown page state: %d<br>\n", pageState);
     }
   bs.SkipBits(2); // reserved
-  dbgpages("<hr>\n<b>page</b> id %d version %d pts %"PRId64" timeout %d state %d<br>\n", pageId, pageVersionNumber, pts, pageTimeout, pageState);
+  dbgpages("<hr>\n<b>page</b> id %d version %d pts %" PRId64 " timeout %d state %d<br>\n", pageId, pageVersionNumber, pts, pageTimeout, pageState);
   regionRefs.Clear();
   while (!bs.IsEOF())
         regionRefs.Add(new cSubtitleRegionRef(bs));
@@ -1073,7 +1073,7 @@ void cDvbSubtitlePage::ParsePgs(int64_t Pts, cBitStream &bs)
     default: dbgpages("unknown page state: %d<br>\n", pageState);
     }
   bs.SkipBits(6);
-  dbgpages("<hr>\n<b>page</b> id %d version %d pts %"PRId64" timeout %d state %d<br>\n", pageId, pageVersionNumber, pts, pageTimeout, pageState);
+  dbgpages("<hr>\n<b>page</b> id %d version %d pts %" PRId64 " timeout %d state %d<br>\n", pageId, pageVersionNumber, pts, pageTimeout, pageState);
   regionRefs.Clear();
   pending = true;
 }
@@ -1384,7 +1384,7 @@ int cDvbSubtitleConverter::ConvertFragments(const uchar *Data, int Length)
      if (Length > PayloadOffset + SubstreamHeaderLength) {
         int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : -1;
         if (pts >= 0)
-           dbgconverter("converter PTS: %"PRId64"<br>\n", pts);
+           dbgconverter("converter PTS: %" PRId64 "<br>\n", pts);
         const uchar *data = Data + PayloadOffset + SubstreamHeaderLength; // skip substream header
         int length = Length - PayloadOffset - SubstreamHeaderLength; // skip substream header
         if (ResetSubtitleAssembler)
@@ -1420,7 +1420,7 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
      if (Length > PayloadOffset) {
         int64_t pts = PesHasPts(Data) ? PesGetPts(Data) : -1;
         if (pts >= 0)
-           dbgconverter("converter PTS: %"PRId64"<br>\n", pts);
+           dbgconverter("converter PTS: %" PRId64 "<br>\n", pts);
         const uchar *data = Data + PayloadOffset;
         int length = Length - PayloadOffset;
         if (length > 0) {
@@ -1488,7 +1488,7 @@ void cDvbSubtitleConverter::Action(void)
                         dbgoutput("showing bitmap #%d of %d<br>\n", sb->Index() + 1, bitmaps->Count());
                         sb->Draw(osd);
                         Timeout.Set(sb->Timeout() * 1000);
-                        dbgconverter("PTS: %"PRId64"  STC: %"PRId64" (%"PRId64") timeout: %d<br>\n", sb->Pts(), STC, Delta, sb->Timeout());
+                        dbgconverter("PTS: %" PRId64 "  STC: %" PRId64 " (%" PRId64 ") timeout: %d<br>\n", sb->Pts(), STC, Delta, sb->Timeout());
                         }
                      }
                   else

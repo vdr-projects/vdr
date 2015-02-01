@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.9 2015/01/15 09:18:09 kls Exp $
+ * $Id: ci.h 3.11 2015/01/31 14:36:41 kls Exp $
  */
 
 #ifndef __CI_H
@@ -123,6 +123,7 @@ class cCiTransportConnection;
 class cCiSession;
 class cCiCaProgramData;
 class cCaPidReceiver;
+class cCaActivationReceiver;
 
 class cCamSlot : public cListObject {
   friend class cCiAdapter;
@@ -133,6 +134,7 @@ private:
   cCiAdapter *ciAdapter;
   cDevice *assignedDevice;
   cCaPidReceiver *caPidReceiver;
+  cCaActivationReceiver *caActivationReceiver;
   int slotIndex;
   int slotNumber;
   cCiTransportConnection *tc[MAX_CONNECTIONS_PER_CAM_SLOT + 1];  // connection numbering starts with 1
@@ -182,6 +184,23 @@ public:
   virtual bool Reset(void);
        ///< Resets the CAM in this slot.
        ///< Returns true if the operation was successful.
+  virtual bool CanActivate(void);
+       ///< Returns true if there is a CAM in this slot that can be put into
+       ///< activation mode.
+  virtual void StartActivation(void);
+       ///< Puts the CAM in this slot into a mode where an inserted smart card
+       ///< can be activated. The default action is to make IsActivating() return
+       ///< true, which causes the device this CAM slot is attached to to never
+       ///< automatically detach any receivers with negative priority if the
+       ///< PIDs they want to receive are not decrypted by the CAM.
+       ///< StartActivation() must be called *after* the CAM slot has been assigned
+       ///< to a device. The CAM slot will stay in activation mode until the CAM
+       ///< begins to decrypt, a call to CancelActivation() is made, or the device
+       ///< is needed for a recording.
+  virtual void CancelActivation(void);
+       ///< Cancels a previously started activation (if any).
+  virtual bool IsActivating(void);
+       ///< Returns true if this CAM slot is currently activating a smart card.
   virtual eModuleStatus ModuleStatus(void);
        ///< Returns the status of the CAM in this slot.
   virtual const char *GetCamName(void);
@@ -201,7 +220,7 @@ public:
   virtual cCiEnquiry *GetEnquiry(void);
        ///< Gets a pending enquiry, or NULL if there is no enquiry.
   int Priority(void);
-       ///< Returns the priority if the device this slot is currently assigned
+       ///< Returns the priority of the device this slot is currently assigned
        ///< to, or IDLEPRIORITY if it is not assigned to any device.
   virtual bool ProvidesCa(const int *CaSystemIds);
        ///< Returns true if the CAM in this slot provides one of the given

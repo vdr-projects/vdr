@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
-"PO-Revision-Date: 2014-03-23 00:54+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"PO-Revision-Date: 2015-01-19 20:19+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -25,6 +25,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Canale non disponibile!"
@@ -1115,8 +1118,18 @@ msgstr "La CAM è presente"
 msgid "CAM ready"
 msgstr "La CAM è pronta"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1129,6 +1142,9 @@ msgstr "Apertura menu CAM..."
 
 msgid "Can't open CAM menu!"
 msgstr "Impossibile aprire il menu CAM!"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "La CAM è in uso - vuoi reimpostarla?"
@@ -1223,6 +1239,21 @@ msgstr "Mostra tempo elaborazione (s)"
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pausa riproduzione durante impostazione segni"
 
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"
 
@@ -1260,10 +1291,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume iniziale"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Volume a tacche"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Volume lineare"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Riavvolgimento canali"

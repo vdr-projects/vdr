@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -17,7 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** Vigane kanal ***"
+msgstr "*** Kehtetu kanal ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Kanal ei ole kättesaadav!"
@@ -74,16 +77,16 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "StreamId"
-msgstr "Stream-tunnus"
+msgstr "Vootunnus"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Piloot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2 tunnus"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "EPG skaneerimine käivitatud"
@@ -573,10 +576,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaliseaded ei ole unikaalsed!"
@@ -597,7 +600,7 @@ msgid "Button$Mark"
 msgstr "Märkimine"
 
 msgid "Channel is being used by a timer!"
-msgstr "Kanal on taimeri kasutuses!"
+msgstr "Kanal on taimeris kasutusel!"
 
 msgid "Delete channel?"
 msgstr "Kustutada kanal?"
@@ -1108,8 +1111,18 @@ msgstr "CAM esitletud"
 msgid "CAM ready"
 msgstr "CAM töövalmis"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Menüü"
@@ -1122,6 +1135,9 @@ msgstr "CAM-menüü avamine..."
 
 msgid "Can't open CAM menu!"
 msgstr "Ei saa avada CAM menüüd!"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM on kasutuses - taaskäivitada?"
@@ -1216,6 +1232,21 @@ msgstr "Edenemiseriba kuvamise aeg (s)"
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Taasesituse peatamine markeri seadmisel"
 
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Jätkamise ID"
 
@@ -1253,10 +1284,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Helitugevus käivitamisel"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Helitugevuse samm"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Helitugevuse lineariseerimine"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalite ringkerimine"

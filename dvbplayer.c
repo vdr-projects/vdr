@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 3.1 2013/12/25 13:24:07 kls Exp $
+ * $Id: dvbplayer.c 3.3 2015/02/01 10:45:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -211,6 +211,7 @@ private:
   cNonBlockingFileReader *nonBlockingFileReader;
   cRingBufferFrame *ringBuffer;
   cPtsIndex ptsIndex;
+  cMarks marks;
   cFileName *fileName;
   cIndexFile *index;
   cUnbufferedFile *replayFile;
@@ -296,6 +297,8 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
      }
   else if (PauseLive)
      framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
+  if (Setup.SkipEdited || Setup.PauseAtLastMark)
+     marks.Load(FileName, framesPerSecond, isPesRecording);
 }
 
 cDvbPlayer::~cDvbPlayer()
@@ -402,8 +405,19 @@ void cDvbPlayer::Action(void)
   int pc = 0;
 
   readIndex = Resume();
-  if (readIndex >= 0)
+  if (readIndex > 0)
      isyslog("resuming replay at index %d (%s)", readIndex, *IndexToHMSF(readIndex, true, framesPerSecond));
+  else if (Setup.SkipEdited) {
+     if (marks.First() && index) {
+        int Index = marks.First()->Position();
+        uint16_t FileNumber;
+        off_t FileOffset;
+        if (index->Get(Index, &FileNumber, &FileOffset) && NextFile(FileNumber, FileOffset)) {
+           isyslog("starting replay at first mark %d (%s)", Index, *IndexToHMSF(Index, true, framesPerSecond));
+           readIndex = Index;
+           }
+        }
+     }
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;
@@ -413,6 +427,8 @@ void cDvbPlayer::Action(void)
   uint32_t LastStc = 0;
   int LastReadIFrame = -1;
   int SwitchToPlayFrame = 0;
+  bool CutIn = false;
+  bool AtLastMark = false;
 
   if (pauseLive)
      Goto(0, true);
@@ -431,7 +447,7 @@ void cDvbPlayer::Action(void)
 
           // Read the next frame from the file:
 
-          if (playMode != pmStill && playMode != pmPause) {
+          if (playMode != pmStill && playMode != pmPause && !AtLastMark) {
              if (!readFrame && (replayFile || readIndex >= 0)) {
                 if (!nonBlockingFileReader->Reading()) {
                    if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
@@ -468,8 +484,30 @@ void cDvbPlayer::Action(void)
                    else if (index) {
                       uint16_t FileNumber;
                       off_t FileOffset;
-                      if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
+                      if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset)) {
                          readIndex++;
+                         if (Setup.SkipEdited || Setup.PauseAtLastMark) {
+                            marks.Update();
+                            cMark *m = marks.Get(readIndex);
+                            if (m && (m->Index() & 0x01) != 0) { // we're at an end mark
+                               m = marks.GetNextBegin(m);
+                               int Index = -1;
+                               if (m)
+                                  Index = m->Position(); // skip to next begin mark
+                               else if (Setup.PauseAtLastMark)
+                                  AtLastMark = true; // triggers going into Pause mode
+                               else if (index->IsStillRecording())
+                                  Index = index->GetNextIFrame(index->Last() - int(round(MAXSTUCKATEOF * framesPerSecond)), false); // skip, but stay off end of live-recordings
+                               else
+                                  AtLastMark = true; // triggers stopping replay
+                               if (Setup.SkipEdited && Index > readIndex) {
+                                  isyslog("skipping from %d (%s) to %d (%s)", readIndex - 1, *IndexToHMSF(readIndex - 1, true, framesPerSecond), Index, *IndexToHMSF(Index, true, framesPerSecond));
+                                  readIndex = Index;
+                                  CutIn = true;
+                                  }
+                               }
+                            }
+                         }
                       else
                          eof = true;
                       }
@@ -512,6 +550,11 @@ void cDvbPlayer::Action(void)
              // Store the frame in the buffer:
 
              if (readFrame) {
+                if (CutIn) {
+                   if (isPesRecording)
+                      cRemux::SetBrokenLink(readFrame->Data(), readFrame->Count());
+                   CutIn = false;
+                   }
                 if (ringBuffer->Put(readFrame))
                    readFrame = NULL;
                 else
@@ -578,8 +621,17 @@ void cDvbPlayer::Action(void)
                 p = NULL;
                 }
              }
-          else
+          else {
+             if (AtLastMark) {
+                if (Setup.PauseAtLastMark) {
+                   playMode = pmPause;
+                   AtLastMark = false;
+                   }
+                else
+                   eof = true;
+                }
              Sleep = true;
+             }
 
           // Handle hitting begin/end of recording:
 
@@ -800,18 +852,26 @@ void cDvbPlayer::Goto(int Index, bool Still)
      off_t FileOffset;
      int Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
-     if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        uchar b[MAXFRAMESIZE];
-        int r = ReadFrame(replayFile, b, Length, sizeof(b));
-        if (r > 0) {
-           if (playMode == pmPause)
-              DevicePlay();
-           DeviceStillPicture(b, r);
-           ptsIndex.Put(isPesRecording ? PesGetPts(b) : TsGetPts(b, r), Index);
+     if (Index >= 0) {
+        if (Still) {
+           if (NextFile(FileNumber, FileOffset)) {
+              uchar b[MAXFRAMESIZE];
+              int r = ReadFrame(replayFile, b, Length, sizeof(b));
+              if (r > 0) {
+                 if (playMode == pmPause)
+                    DevicePlay();
+                 DeviceStillPicture(b, r);
+                 ptsIndex.Put(isPesRecording ? PesGetPts(b) : TsGetPts(b, r), Index);
+                 }
+              playMode = pmStill;
+              readIndex = Index;
+              }
            }
-        playMode = pmStill;
+        else {
+           readIndex = Index - 1; // Action() will first increment it!
+           Play();
+           }
         }
-     readIndex = Index;
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.19 2015/01/14 12:02:44 kls Exp $
+ * $Id: device.c 3.20 2015/01/30 12:11:30 kls Exp $
  */
 
 #include "device.h"
@@ -756,7 +756,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
-  bool NeedsTransferMode = Device != this;
+  bool NeedsTransferMode = LiveView && Device != PrimaryDevice();
   // If the CAM slot wants the TS data, we need to switch to Transfer Mode:
   if (!NeedsTransferMode && LiveView && IsPrimaryDevice() && CamSlot() && CamSlot()->WantsTsData())
      NeedsTransferMode = true;
@@ -767,7 +767,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     if (Device && CanReplay()) {
+     if (Device && PrimaryDevice()->CanReplay()) {
         if (Device->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(Device, Channel));
         else
@@ -1585,13 +1585,13 @@ void cDevice::Action(void)
                  bool DetachReceivers = false;
                  bool DescramblingOk = false;
                  int CamSlotNumber = 0;
+                 cCamSlot *cs = NULL;
                  if (startScrambleDetection) {
-                    cCamSlot *cs = CamSlot();
+                    cs = CamSlot();
                     CamSlotNumber = cs ? cs->SlotNumber() : 0;
                     if (CamSlotNumber) {
-                       bool Scrambled = b[3] & TS_SCRAMBLING_CONTROL;
                        int t = time(NULL) - startScrambleDetection;
-                       if (Scrambled) {
+                       if (TsIsScrambled(b)) {
                           if (t > TS_SCRAMBLING_TIMEOUT)
                              DetachReceivers = true;
                           }
@@ -1605,7 +1605,7 @@ void cDevice::Action(void)
                  Lock();
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
-                        if (DetachReceivers) {
+                        if (DetachReceivers && cs && (!cs->IsActivating() || receiver[i]->Priority() >= LIVEPRIORITY)) {
                            dsyslog("detaching receiver - won't decrypt channel %s with CAM %d", *receiver[i]->ChannelID().ToString(), CamSlotNumber);
                            ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
                            Detach(receiver[i]);
@@ -1704,7 +1704,7 @@ void cDevice::Detach(cReceiver *Receiver)
   if (camSlot) {
      if (Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
         camSlot->StartDecrypting();
-        if (!camSlot->IsDecrypting())
+        if (!camSlot->IsDecrypting() && !camSlot->IsActivating())
            camSlot->Assign(NULL);
         }
      }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2013-02-09 16:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -19,6 +19,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Неправильний канал ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Канал недоступний!"
@@ -1109,8 +1112,18 @@ msgstr "CAM присутній"
 msgid "CAM ready"
 msgstr "CAM готовий"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM (Умовний доступ)"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Меню"
@@ -1123,6 +1136,9 @@ msgstr "Відкривання меню CAM-модуля..."
 
 msgid "Can't open CAM menu!"
 msgstr "Меню CAM-модуля недоступне!"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM використовується - дійсно перезапустити?"
@@ -1216,6 +1232,21 @@ msgstr "Час показу індикатора (с)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Пауза програвання при встановленні мітки"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID продовження"

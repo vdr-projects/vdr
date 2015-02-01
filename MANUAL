@@ -363,15 +363,29 @@ Version 2.0
   - 0       Toggles an editing mark. If the mark indicator shows a red triangle,
             the current mark is deleted. Otherwise a new mark is set at the
             current position.
-  - 4, 6    Move an editing mark back and forward. You need to first jump to
-            an editing mark for this to work.
+  - 1, 3    Move an editing mark back and forward in "binary" mode. Pressing
+            either of these keys for the first time moves the mark 120 seconds
+            in the given direction (configurable via "Setup/Replay/Binary skip
+            initial value"). Further presses of the same key keep moving
+            the mark by the same value. Once the other key is pressed, the value
+            is divided by 2 (hence the name "binary") with every further press
+            of either key. Pressing '1' and '3' alternatingly divides the
+            distance all the way down to a single I-frame. That way a particular
+            place in a recording (for instance the beginning or end of a
+            commercial break) can be found very quickly. If none of these two
+            keys is pressed for a while (configurable via "Setup/Replay/Binary
+            skip timeout") the distance falls back to the initial value.
+            If replay is not in Pause mode, or if there is no mark at the
+            current position, the skip is performed without moving any mark.
+  - 4, 6    Move an editing mark back and forward by one I-frame. You need to
+            first jump to an editing mark for this to work.
   - 7, 9    Jump back and forward between editing marks. Replay goes into still
             mode after jumping to a mark. If the current position is at the
             first or last mark, or if there are no marks at all, these keys
             jump to the very beginning or end, respectively, of the recording.
   - 8       Positions replay at a point 3 seconds before the current or next
             "begin" mark and starts replay.
-  - 2       Start the actual cutting process.
+  - 2       Starts the actual cutting process.
 
   Editing marks are represented by black, vertical lines in the progress display.
   A small black triangle at the top of the mark means that this is a "begin"
@@ -831,7 +845,19 @@ Version 2.0
                          if it is in the process of being reset, its current status
                          is displayed.  The "Red" key can be pressed to enter the CAM
                          menu, and the "Green" key triggers a reset of the selected
-                         slot. The "Ok" key also opens the CAM menu.
+                         slot. The "Ok" key also opens the CAM menu. The "Yellow" key
+                         assigns the selected CAM to a device and switches it to the
+                         current channel. The CAM/device combination remains tuned to
+                         the current channel until the smart card in the CAM has been
+                         activated and thus starts to descramble, or until a recording
+                         needs this device. Pressing the "Yellow" key while a CAM is
+                         in activation mode cancels the activation. The activation mode
+                         remains in effect even if you switch to a different channel
+                         (provided there is more than one device in the system) or
+                         watch a recording. To activate your smart card simply switch
+                         to the channel you want to watch, open the "Setup/CAM" menu,
+                         select the CAM that contains the smart card (in case you
+                         have more than one CAM) and press the "Yellow" key.
 
   Recording:
 
@@ -942,6 +968,43 @@ Version 2.0
   Pause replay when setting mark = no
                          Defines whether the player automatically goes into Pause
                          mode when setting an editing mark.
+
+  Pause replay when jumping to a mark = yes
+                         By default replay is automatically paused whenever you jump
+                         to an editing mark with the '7' or '9' key in order to allow
+                         you to easily adjust those marks. If this option is set to
+                         'no', the '9' key will not pause if you are in Play mode and
+                         the mark you jump to is not within 3 seconds of the end of
+                         the recording.
+
+  Skip edited parts = no Defines whether the edited parts of a recording are
+                         automatically skipped during replay. This includes jumping
+                         to the first mark if replay starts at the beginning of the
+                         recording, and stopping at the last mark.
+                         In order to work, this option must be enabled before starting
+                         replay.
+
+  Pause replay at last mark = no
+                         If enabled, replay of a recording will go into Pause mode
+                         when it has reached the last "end" mark (if any). Note that
+                         the actual position at which the pause occurs may be a couple
+                         of frames before the last "end" mark, depending on how much
+                         data is buffered by your output device.
+                         In order to work, this option must be enabled before starting
+                         replay.
+
+  Binary skip initial value (s) = 120
+                         Defines the number of seconds to jump from the current replay
+                         position in either direction, when pressing the '1' or '3'
+                         key for the first time after the "Binary skip timeout".
+                         The valid range is 10...600.
+
+  Binary skip timeout (s) = 3
+                         Defines the number of seconds after which pressing the
+                         '1' or '3' key falls back to the "Binary skip initial value".
+                         The valid range is 0...10. Setting the timeout to 0 disables
+                         the binary mode and makes '1' and '3' always skip the number
+                         of seconds configured as the initial value.
 
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume

@@ -8,18 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
-"PO-Revision-Date: 2013-02-09 23:01+0100\n"
-"Last-Translator: Lucian Muresan <lucianm@users.sorceforge.net>\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"PO-Revision-Date: 2015-01-21 22:34+0100\n"
+"Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.9\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Canal indisponibil"
@@ -79,13 +82,13 @@ msgid "StreamId"
 msgstr "Identificator Stream"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "ID sistem T2"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Pornesc achiziţia EPG"
@@ -575,10 +578,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Parametrii canalului nu sunt univoci!"
@@ -741,71 +744,71 @@ msgid "CAM not responding!"
 msgstr "CAM-ul nu reacţionează!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Editează calea"
 
 msgid "Folder"
-msgstr ""
+msgstr "Director"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Acest director tocmai este accesat - nu sunt posibile modificări!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Mut întregul director conținând %d înregistrări?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Eroare la mutarea directorului!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Editează înregistrarea"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Această înregistrare tocmai este accesată - nu sunt posibile modificări!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Anulează tăierea"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Oprește tăierea"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Anuleaza mutarea"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Oprește mutarea"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Anulează copierea"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Oprește copierea"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Taie"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Șterge marcajele"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Înregistrarea a dispărut!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Deja există o versiune editată - o suprascriu?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Eroare la punerea în coada pentru tăiere!"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Șterg marcajele de editare pentru această înregistrare?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Eroare la ștergerea marcajelor de editare!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Eroare la schimbarea priorității/timpului de păstrare!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Eroare la schimbarea directorului/numelui!"
 
 msgid "Recording info"
 msgstr "Detaliile înregistrării"
@@ -826,7 +829,7 @@ msgid "Delete recording?"
 msgstr "Şterg înregistrarea?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "Montajul înregistrării e în curs de desfășurare - șterg totuși?"
+msgstr "Editarea înregistrării e în curs de desfășurare - șterg totuși?"
 
 msgid "Error while deleting recording!"
 msgstr "Eroare la ştergerea înregistrării!"
@@ -1075,31 +1078,31 @@ msgid "Setup.LNB$own"
 msgstr "propriu"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Folosește actuator de poziționare"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Latitudinea locului (grade)"
 
 msgid "South"
-msgstr ""
+msgstr "Sud"
 
 msgid "North"
-msgstr ""
+msgstr "Nord"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Longitudinea locului (grade)"
 
 msgid "West"
-msgstr ""
+msgstr "Vest"
 
 msgid "East"
-msgstr ""
+msgstr "Est"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Unghi maxim al actuatorului (grade)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Viteza actuatorului (grade/s)"
 
 msgid "CAM reset"
 msgstr "Resetare CAM"
@@ -1110,8 +1113,18 @@ msgstr "CAM prezent"
 msgid "CAM ready"
 msgstr "CAM pregătit"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Meniu"
@@ -1124,6 +1137,9 @@ msgstr "Deschid meniul CAM..."
 
 msgid "Can't open CAM menu!"
 msgstr "Nu pot deschide meniul CAM"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM-ul este in folosinţă - totuşi resetez?"
@@ -1195,7 +1211,7 @@ msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Dimensiune maximă a fişierului video (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Separare fişiere montate"
+msgstr "Separare fişiere editate"
 
 msgid "Setup.Recording$Delete timeshift recording"
 msgstr "Şterge înregistrarea pentru vizionare decalată"
@@ -1216,7 +1232,22 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Durata afișării indicatorului de progres (s) "
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Pauză la punerea marcajului de montaj"
+msgstr "Pauză la punerea marcajului de editare"
+
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"
@@ -1255,10 +1286,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumul la pornire"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Numărul de pași ai reglajului de volum"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Liniarizează caracteristica de volum"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Lista de canale în buclă"
@@ -1306,13 +1337,13 @@ msgstr "Continuă redarea"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Opreşte montajul înregistrării"
+msgstr " Anulează editarea înregistrării"
 
 msgid "Stop recording?"
 msgstr "Opresc înregistrarea?"
 
 msgid "Cancel editing?"
-msgstr "Opresc montajul înregistrării?"
+msgstr "Anulez editarea înregistrării?"
 
 msgid "No audio available!"
 msgstr "Lipseşte sunetul!"
@@ -1340,19 +1371,19 @@ msgid "Jump: "
 msgstr "Salt la: "
 
 msgid "No editing marks defined!"
-msgstr "Nu s-au pus marcaje de montaj pentru această înregistrare"
+msgstr "Nu s-au pus marcaje de editare pentru această înregistrare"
 
 msgid "No editing sequences defined!"
-msgstr "Nu s-au definit secvențe pentru montaj!"
+msgstr "Nu s-au definit secvențe pentru editare!"
 
 msgid "Can't start editing process!"
-msgstr "Nu pot porni montajul înregistrării!"
+msgstr "Nu pot porni editarea înregistrării!"
 
 msgid "Editing process started"
-msgstr "Montajul înregistrării a început"
+msgstr "Editarea înregistrării a început"
 
 msgid "Editing process already active!"
-msgstr "Montajul înregistrării este deja activ!"
+msgstr "Editarea înregistrării este deja activă!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " aăâbcdefghiîjklmnopqrsştţuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
@@ -1394,7 +1425,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nu pot închide - vezi opţiunea '-s'"
 
 msgid "Editing - shut down anyway?"
-msgstr "Montajul tocmai se efectuează - închid, totuşi?"
+msgstr "Editarea tocmai se efectuează - închid, totuşi?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Tocmai se înregistrează - închid, totuşi?"
@@ -1411,7 +1442,7 @@ msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Plugin-ul %s se va trezi +n %ld min, continui?"
 
 msgid "Editing - restart anyway?"
-msgstr "Montajul tocmai se efectuează - repornesc, totuşi?"
+msgstr "Editarea tocmai se efectuează - repornesc, totuşi?"
 
 msgid "Recording - restart anyway?"
 msgstr "Tocmai se înregistrează - repornesc, totuşi?"
@@ -1446,7 +1477,7 @@ msgstr "REDARE"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Rotesc antena la %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "Cons. ST:TNG"
@@ -1499,10 +1530,10 @@ msgid "Switching primary DVB..."
 msgstr "Comut dispozitiv DVB primar..."
 
 msgid "Editing process failed!"
-msgstr "Montajul înregistrării a eşuat"
+msgstr "Editarea înregistrării a eşuat"
 
 msgid "Editing process finished"
-msgstr "Montajul înregistrării s-a terminat"
+msgstr "Editarea înregistrării s-a încheiat"
 
 msgid "Press any key to cancel restart"
 msgstr "Apăsaţi orice tastă pentru a anula repornirea"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-12 15:40+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -22,6 +22,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Virheellinen kanavavalinta ***"
+
+msgid "CAM activated!"
+msgstr "CA-moduuli aktivoitu!"
 
 msgid "Channel not available!"
 msgstr "Kanava ei ole käytettävissä!"
@@ -1112,8 +1115,18 @@ msgstr "CAM havaittu"
 msgid "CAM ready"
 msgstr "CAM valmis"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr " (aktivoidaan)"
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr "Peruuta aktivointi"
+
+msgid "Button$Activate"
+msgstr "Aktivoi"
 
 msgid "Button$Menu"
 msgstr "Valikko"
@@ -1126,6 +1139,9 @@ msgstr "Avataan CA-moduulin valikkoa..."
 
 msgid "Can't open CAM menu!"
 msgstr "CA-moduulin valikko ei saatavilla"
+
+msgid "Can't activate CAM!"
+msgstr "CA-moduulin aktivointi epäonnistui!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CA-moduuli käytössä - nollataanko?"
@@ -1220,6 +1236,21 @@ msgstr "Näytä toiston kontrollit (s)"
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pysäytä toisto asetettaessa merkki"
 
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr "Pysäytä toisto hypätessä merkkiin"
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr "Ohita muokatut kohdat"
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Pysäytä toisto viimeiseen merkkiin"
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr "Binäärihypyn oletuspituus (s)"
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr "Binäärihypyn odotusaika (ms)"
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
 
@@ -1257,10 +1288,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Äänenvoimakkuus käynnistettäessä"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Äänenvoimakkuuden askellus"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Äänenvoimakkuuden lineaarisuus"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanavien rullaus"
