@@ -3119,6 +3119,7 @@ Marco Skambraks <marco@ammec.de>
 Christian Richter <cr@crichter.net>
  for extending the interface to the script that gets called for recordings, so that in
  the "edited" case it also provides the name of the original recording
+ for suggesting to add SDNOTIFY to Make.config.template
 
 Christian Kaiser <chr-kaiser@arcor.de>
  for adding DeleteEvent() to the EPG handler interface
