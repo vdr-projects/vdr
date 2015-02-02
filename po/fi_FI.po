@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-02 14:58+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -1250,6 +1250,9 @@ msgstr "Binäärihypyn oletuspituus (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
 msgstr "Binäärihypyn odotusaika (s)"
+
+msgid "Setup.Replay$Binary skip strict"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

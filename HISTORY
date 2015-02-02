@@ -8467,3 +8467,7 @@ Video Disk Recorder Revision History
   added NO_KBD and BIDI.
 - Added code from the "jumpplay" patch that makes the recording still be considered
   unviewed when stopping replay within RESUMEBACKUP seconds of the first mark.
+- The new option "Setup/Replay/Binary skip strict" can be used to make binary skipping
+  only halve the skip distance when the direction changes. That way you can reach the
+  desired point in a recording even if you make one too many skips in a certain
+  direction (see MANUAL for details).

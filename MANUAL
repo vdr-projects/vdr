@@ -1006,6 +1006,18 @@ Version 2.0
                          the binary mode and makes '1' and '3' always skip the number
                          of seconds configured as the initial value.
 
+  Binary skip strict = yes
+                         When skipping in binary mode with the '1' and '3' keys, the
+                         distance of the skip is halved with every key press after the
+                         first change of direction. While this allows for locating a
+                         particular position in a recording very fast, once you make
+                         one step too many in the current direction you have no chance
+                         of ever reaching the desired point any more. You will have to
+                         wait for the timeout to occur and start binary skipping anew.
+                         If this option is set to 'no', the skip distance will only be
+                         halved if the direction actually changes. That way, even if
+                         you missed the target point, you can still back up to it.
+
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with

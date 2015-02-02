@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-02 14:58+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -1250,6 +1250,9 @@ msgid "Setup.Replay$Binary skip initial value (s)"
 msgstr ""
 
 msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip strict"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

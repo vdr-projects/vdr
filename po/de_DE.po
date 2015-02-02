@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-02 14:58+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1246,6 +1246,9 @@ msgstr "Anfangswert für binäres Springen (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
 msgstr "Zeitlimit für binäres Springen (s)"
+
+msgid "Setup.Replay$Binary skip strict"
+msgstr "Striktes binäres Springen"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"

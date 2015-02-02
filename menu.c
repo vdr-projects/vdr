@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.35 2015/02/01 10:42:11 kls Exp $
+ * $Id: menu.c 3.36 2015/02/02 12:23:18 kls Exp $
  */
 
 #include "menu.h"
@@ -3641,6 +3641,7 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay at last mark"), &data.PauseAtLastMark));
   Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip initial value (s)"), &data.BinarySkipInitial, 10, 600));
   Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip timeout (s)"), &data.BinarySkipTimeout, 0, 10));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Binary skip strict"), &data.BinarySkipStrict));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -5007,7 +5008,10 @@ int cBinarySkipper::GetValue(eKeys Key)
      }
   else if (Key != lastKey) {
      currentValue /= 2;
-     lastKey = kNone; // once the direction has changed, every further call halves the value
+     if (Setup.BinarySkipStrict)
+        lastKey = kNone; // once the direction has changed, every further call halves the value
+     else
+        lastKey = Key; // only halve the value when the direction is changed
      }
   timeout.Set(Setup.BinarySkipTimeout * 1000);
   return max(currentValue, 1);
