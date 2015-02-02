@@ -1,7 +1,7 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Klaus Schmidinger <vdr@tvdr.de>, 2000-2008
+# Klaus Schmidinger <vdr@tvdr.de>, 2000-2015
 #
 msgid ""
 msgstr ""
