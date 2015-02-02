@@ -8473,3 +8473,5 @@ Video Disk Recorder Revision History
   direction (see MANUAL for details).
 - Fixed cCamSlot::Assign(), so that it actually ignores the value of Query if Device
   is NULL (as described in the header file).
+- Added a missing VDRDIR="$(CWD)" to the clean-plugins target of the Makefile, to
+  avoid error messages regarding the missing vdr.pc file.
