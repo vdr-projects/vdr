@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 3.3 2015/02/01 10:45:41 kls Exp $
+ * $Id: dvbplayer.c 3.4 2015/02/02 09:51:32 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -377,6 +377,8 @@ bool cDvbPlayer::Save(void)
   if (index) {
      int Index = ptsIndex.FindIndex(DeviceGetSTC());
      if (Index >= 0) {
+        if (Setup.SkipEdited && marks.First() && abs(Index - marks.First()->Position()) <= int(round(RESUMEBACKUP * framesPerSecond)))
+           Index = 0; // when stopping within RESUMEBACKUP seconds of the first mark the recording shall still be considered unviewed
         Index -= int(round(RESUMEBACKUP * framesPerSecond));
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false);

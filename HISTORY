@@ -8465,4 +8465,5 @@ Video Disk Recorder Revision History
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - Added SDNOTIFY to Make.config.template (suggested by Christian Richter). Also
   added NO_KBD and BIDI.
-
+- Added code from the "jumpplay" patch that makes the recording still be considered
+  unviewed when stopping replay within RESUMEBACKUP seconds of the first mark.
