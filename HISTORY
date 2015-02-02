@@ -8471,3 +8471,5 @@ Video Disk Recorder Revision History
   only halve the skip distance when the direction changes. That way you can reach the
   desired point in a recording even if you make one too many skips in a certain
   direction (see MANUAL for details).
+- Fixed cCamSlot::Assign(), so that it actually ignores the value of Query if Device
+  is NULL (as described in the header file).
