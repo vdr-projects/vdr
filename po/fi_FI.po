@@ -1252,7 +1252,7 @@ msgid "Setup.Replay$Binary skip timeout (s)"
 msgstr "Binäärihypyn odotusaika (s)"
 
 msgid "Setup.Replay$Binary skip strict"
-msgstr ""
+msgstr "Tulkitse binäärihyppy täsmällisesti"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

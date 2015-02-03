@@ -8453,7 +8453,7 @@ Video Disk Recorder Revision History
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
 
-2015-02-02: Version 2.1.9
+2015-02-03: Version 2.1.9
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
@@ -8475,3 +8475,4 @@ Video Disk Recorder Revision History
   is NULL (as described in the header file).
 - Added a missing VDRDIR="$(CWD)" to the clean-plugins target of the Makefile, to
   avoid error messages regarding the missing vdr.pc file.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
