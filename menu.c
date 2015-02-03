@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.36 2015/02/02 12:23:18 kls Exp $
+ * $Id: menu.c 3.37 2015/02/03 10:42:55 kls Exp $
  */
 
 #include "menu.h"
@@ -1748,9 +1748,12 @@ eOSState cMenuSchedule::Record(void)
 
 eOSState cMenuSchedule::Switch(void)
 {
-  if (otherChannel) {
-     if (Channels.SwitchTo(otherChannel))
-        return osEnd;
+  cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
+  if (item) {
+     if (cChannel *Channel = Channels.GetByChannelID(item->event->ChannelID(), true)) {
+        if (Channels.SwitchTo(Channel->Number()))
+           return osEnd;
+        }
      }
   Skins.Message(mtError, tr("Can't switch channel!"));
   return osContinue;

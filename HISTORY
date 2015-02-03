@@ -8480,3 +8480,5 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Updated the Hungarian OSD texts (thanks to István Füley).
+- Fixed switching channels in the Schedule menu after going through various Now and
+  Schedule menus for different channels (reported by Matthias Senzel).
