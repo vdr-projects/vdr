@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.37 2015/02/03 10:42:55 kls Exp $
+ * $Id: menu.c 3.38 2015/02/03 11:51:29 kls Exp $
  */
 
 #include "menu.h"
@@ -1377,6 +1377,7 @@ void cMenuScheduleItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bo
 class cMenuWhatsOn : public cOsdMenu {
 private:
   bool now;
+  bool canSwitch;
   int helpKeys;
   int timerState;
   eOSState Record(void);
@@ -1401,7 +1402,8 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 {
   SetMenuCategory(Now ? mcScheduleNow : mcScheduleNext);
   now = Now;
-  helpKeys = -1;
+  canSwitch = false;
+  helpKeys = 0;
   timerState = 0;
   Timers.Modified(timerState);
   for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
@@ -1434,16 +1436,27 @@ bool cMenuWhatsOn::Update(void)
 void cMenuWhatsOn::SetHelpKeys(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
+  canSwitch = false;
   int NewHelpKeys = 0;
   if (item) {
      if (item->timerMatch == tmFull)
-        NewHelpKeys = 2;
+        NewHelpKeys |= 0x02; // "Timer"
      else
-        NewHelpKeys = 1;
+        NewHelpKeys |= 0x01; // "Record"
+     if (now)
+        NewHelpKeys |= 0x04; // "Next"
+     else
+        NewHelpKeys |= 0x08; // "Now"
+     if (cChannel *Channel = Channels.GetByChannelID(item->event->ChannelID(), true)) {
+        if (Channel->Number() != cDevice::CurrentChannel()) {
+           NewHelpKeys |= 0x10; // "Switch"
+           canSwitch = true;
+           }
+        }
      }
   if (NewHelpKeys != helpKeys) {
      const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
-     SetHelp(Red[NewHelpKeys], now ? tr("Button$Next") : tr("Button$Now"), tr("Button$Schedule"), tr("Button$Switch"));
+     SetHelp(Red[NewHelpKeys & 0x03], now ? tr("Button$Next") : tr("Button$Now"), tr("Button$Schedule"), canSwitch ? tr("Button$Switch") : NULL);
      helpKeys = NewHelpKeys;
      }
 }
@@ -1519,10 +1532,12 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                           }
                      }
                      break;
-       case kBlue:   return Switch();
+       case kBlue:   if (canSwitch)
+                        return Switch();
+                     break;
        case kInfo:
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true, true));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, canSwitch, true));
                      break;
        default:      break;
        }
@@ -1543,7 +1558,7 @@ private:
   cSchedulesLock schedulesLock;
   const cSchedules *schedules;
   bool now, next;
-  int otherChannel;
+  bool canSwitch;
   int helpKeys;
   int timerState;
   eOSState Number(void);
@@ -1566,8 +1581,8 @@ cMenuSchedule::cMenuSchedule(void)
 {
   SetMenuCategory(mcSchedule);
   now = next = false;
-  otherChannel = 0;
-  helpKeys = -1;
+  canSwitch = false;
+  helpKeys = 0;
   timerState = 0;
   Timers.Modified(timerState);
   cMenuScheduleItem::SetSortMode(cMenuScheduleItem::ssmAllThis);
@@ -1673,16 +1688,23 @@ bool cMenuSchedule::Update(void)
 void cMenuSchedule::SetHelpKeys(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
+  canSwitch = false;
   int NewHelpKeys = 0;
   if (item) {
      if (item->timerMatch == tmFull)
-        NewHelpKeys = 2;
+        NewHelpKeys |= 0x02; // "Timer"
      else
-        NewHelpKeys = 1;
+        NewHelpKeys |= 0x01; // "Record"
+     if (cChannel *Channel = Channels.GetByChannelID(item->event->ChannelID(), true)) {
+        if (Channel->Number() != cDevice::CurrentChannel()) {
+           NewHelpKeys |= 0x10; // "Switch"
+           canSwitch = true;
+           }
+        }
      }
   if (NewHelpKeys != helpKeys) {
      const char *Red[] = { NULL, tr("Button$Record"), tr("Button$Timer") };
-     SetHelp(Red[NewHelpKeys], tr("Button$Now"), tr("Button$Next"));
+     SetHelp(Red[NewHelpKeys & 0x03], tr("Button$Now"), tr("Button$Next"), canSwitch ? tr("Button$Switch") : NULL);
      helpKeys = NewHelpKeys;
      }
 }
@@ -1787,12 +1809,12 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kYellow: if (schedules)
                         return AddSubMenu(new cMenuWhatsOn(schedules, false, cMenuWhatsOn::CurrentChannel()));
                      break;
-       case kBlue:   if (Count() && otherChannel)
+       case kBlue:   if (canSwitch)
                         return Switch();
                      break;
        case kInfo:
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, otherChannel, true));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, canSwitch, true));
                      break;
        default:      break;
        }
@@ -1805,10 +1827,6 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
         if (channel) {
            cMenuScheduleItem::SetSortMode(cMenuScheduleItem::ssmAllThis);
            PrepareScheduleAllThis(NULL, channel);
-           if (channel->Number() != cDevice::CurrentChannel()) {
-              otherChannel = channel->Number();
-              SetHelp(Count() ? tr("Button$Record") : NULL, tr("Button$Now"), tr("Button$Next"), tr("Button$Switch"));
-              }
            Display();
            }
         }
