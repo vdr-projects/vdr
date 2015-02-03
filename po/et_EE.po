@@ -20,7 +20,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Kehtetu kanal ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM aktiveeritud!"
 
 msgid "Channel not available!"
 msgstr "Kanal ei ole kättesaadav!"
@@ -1113,16 +1113,16 @@ msgstr "CAM töövalmis"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (aktiveerimine)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Aktiveerimise tühistamine"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Aktiveeri"
 
 msgid "Button$Menu"
 msgstr "Menüü"
@@ -1137,7 +1137,7 @@ msgid "Can't open CAM menu!"
 msgstr "Ei saa avada CAM menüüd!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Ei saa CAM'i aktiveerida!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM on kasutuses - taaskäivitada?"
@@ -1230,22 +1230,22 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Edenemiseriba kuvamise aeg (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Taasesituse peatamine markeri seadmisel"
+msgstr "Paus markeri seadmisel"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Paus markerile siirdamisel"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Redigeeritud osade vahelejätmine"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Paus viimasel markeril"
 
 msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr ""
+msgstr "Binaarhüppe algväärtus (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr ""
+msgstr "Binaarhüppe ajalimiit (s)"
 
 msgid "Setup.Replay$Binary skip strict"
 msgstr ""
@@ -1290,7 +1290,7 @@ msgid "Setup.Miscellaneous$Volume steps"
 msgstr "Helitugevuse samm"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr "Helitugevuse lineariseerimine"
+msgstr "Helitugevuse lineaarsus"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalite ringkerimine"
@@ -1325,7 +1325,7 @@ msgstr "Kava"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " Lõpetada taasesitamine"
+msgstr " Lõpetada taasesitus"
 
 msgid "Button$Pause"
 msgstr "Paus"
@@ -1334,7 +1334,7 @@ msgid "Button$Stop"
 msgstr "Stopp"
 
 msgid "Button$Resume"
-msgstr "Jätkata"
+msgstr "Jätkamine"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"

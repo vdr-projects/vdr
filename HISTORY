@@ -8476,3 +8476,4 @@ Video Disk Recorder Revision History
 - Added a missing VDRDIR="$(CWD)" to the clean-plugins target of the Makefile, to
   avoid error messages regarding the missing vdr.pc file.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
