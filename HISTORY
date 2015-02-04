@@ -8492,3 +8492,5 @@ Video Disk Recorder Revision History
   recording's folder path name (suggested by Christoph Haubrich). See MANUAL, section
   "Managing folders" for details.
 - Updated the Italian OSD texts (thanks to Nino Gerbino).
+- The "Select folder" menu now adds the folder names of all existing recordings to
+  any names that have been predefined in "folders.conf" (suggested by Sören Moch).

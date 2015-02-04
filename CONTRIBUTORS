@@ -3171,6 +3171,8 @@ Sören Moch <smoch@web.de>
  changed after VDR has been started
  for reporting that the change "Fixed some compiler warnings with Clang 3.4.1" caused
  ci.c to no longer compile with older versions of gcc
+ for suggesting to make the "Select folder" menu add the folder names of all existing
+ recordings to any names that have been predefined in "folders.conf"
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files

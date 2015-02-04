@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.40 2015/02/04 09:21:55 kls Exp $
+ * $Id: menu.c 3.41 2015/02/04 12:18:27 kls Exp $
  */
 
 #include "menu.h"
@@ -766,8 +766,48 @@ void cMenuFolder::SetHelpKeys(void)
      }
 }
 
+#define FOLDERDELIMCHARSUBST 0x01
+static void AddRecordingFolders(cList<cNestedItem> *List, char *Path)
+{
+  if (Path) {
+     char *p = strchr(Path, FOLDERDELIMCHARSUBST);
+     if (p)
+        *p++ = 0;
+     cNestedItem *Folder;
+     for (Folder = List->First(); Folder; Folder = List->Next(Folder)) {
+         if (strcmp(Path, Folder->Text()) == 0)
+            break;
+         }
+     if (!Folder)
+        List->Add(Folder = new cNestedItem(Path));
+     if (p) {
+        Folder->SetSubItems(true);
+        AddRecordingFolders(Folder->SubItems(), p);
+        }
+     }
+  else {
+     cThreadLock RecordingsLock(&Recordings);
+     cStringList Dirs;
+     for (cRecording *Recording = Recordings.First(); Recording; Recording = Recordings.Next(Recording)) {
+         cString Folder = Recording->Folder();
+         strreplace((char *)*Folder, FOLDERDELIMCHAR, FOLDERDELIMCHARSUBST); // makes sure parent folders come before subfolders
+         if (Dirs.Find(Folder) < 0)
+            Dirs.Append(strdup(Folder));
+         }
+     Dirs.Sort();
+     for (int i = 0; i < Dirs.Size(); i++) {
+         char *s = Dirs[i];
+         if (*s)
+            AddRecordingFolders(&Folders, s);
+         }
+     }
+}
+
 void cMenuFolder::Set(const char *CurrentFolder)
 {
+  static int RecordingsState = -1;
+  if (list == &Folders && Recordings.StateChanged(RecordingsState))
+     AddRecordingFolders(&Folders, NULL);
   firstFolder = NULL;
   Clear();
   if (!isempty(dir)) {
