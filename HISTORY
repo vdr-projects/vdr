@@ -8491,3 +8491,4 @@ Video Disk Recorder Revision History
   remove the name of the recording and replace it with the last element of the
   recording's folder path name (suggested by Christoph Haubrich). See MANUAL, section
   "Managing folders" for details.
+- Updated the Italian OSD texts (thanks to Nino Gerbino).

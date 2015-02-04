@@ -4,14 +4,14 @@
 # Alberto Carraro <bertocar@tin.it>, 2001
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
-# Nino Gerbino <ngerb@interfree.it>, 2006
+# Nino Gerbino <ngerb@interfree.it>, 2006, 2015
 # Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-02 14:58+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2015-01-19 20:19+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -27,7 +27,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM attivata!"
 
 msgid "Channel not available!"
 msgstr "Canale non disponibile!"
@@ -354,7 +354,7 @@ msgid "Phase 1: Detecting RC code type"
 msgstr "Fase 1: Rilevamento tipo codice RC"
 
 msgid "Press any key on the RC unit"
-msgstr "Premi un tasto dell'unità RC"
+msgstr "Premere un tasto dell'unità RC"
 
 msgid "RC code detected!"
 msgstr "Codice RC rilevato!"
@@ -367,22 +367,22 @@ msgstr "Fase 2: Apprendimento codici dei tasti"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Premi il tasto '%s'"
+msgstr "Premere il tasto '%s'"
 
 msgid "Press 'Up' to confirm"
-msgstr "Premi 'Su' per confermare"
+msgstr "Premere 'Su' per confermare"
 
 msgid "Press 'Down' to continue"
-msgstr "Premi 'Giù' per continuare"
+msgstr "Premere 'Giù' per continuare"
 
 msgid "(press 'Up' to go back)"
-msgstr "(premi 'Su' per tornare indietro)"
+msgstr "(premere 'Su' per tornare indietro)"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(premi 'Giù' per concludere definizione tasti)"
+msgstr "(premere 'Giù' per concludere definizione tasti)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "(premi 'Menu' per saltare questo tasto)"
+msgstr "(premere 'Menu' per saltare questo tasto)"
 
 msgid "Learning Remote Control Keys"
 msgstr "Apprendimento tasti RC"
@@ -391,7 +391,7 @@ msgid "Phase 3: Saving key codes"
 msgstr "Fase 3: Salvataggio codici tasti"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
-msgstr "Premi 'Su' per salvare, 'Giù' per annullare"
+msgstr "Premere 'Su' per salvare, 'Giù' per annullare"
 
 msgid "Key$Up"
 msgstr "Su"
@@ -604,7 +604,7 @@ msgid "Button$Delete"
 msgstr "Elimina"
 
 msgid "Button$Mark"
-msgstr "Segna"
+msgstr "Marca"
 
 msgid "Channel is being used by a timer!"
 msgstr "Canale occupato da un timer!"
@@ -804,7 +804,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Errore durante l'accodamento della registrazione per il taglio!"
 
 msgid "Delete editing marks for this recording?"
-msgstr "Eliminare i marcatori di modifica della registrazione?"
+msgstr "Eliminare i marcatori di modifica per questa registrazione?"
 
 msgid "Error while deleting editing marks!"
 msgstr "Errore durante la cancellazione dei marcatori di modifica!"
@@ -1120,16 +1120,16 @@ msgstr "La CAM è pronta"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (in attivazione)"
 
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Cancella attivazione"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Attivare"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1144,7 +1144,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossibile aprire il menu CAM!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Impossibile attivare la CAM!"
 
 msgid "CAM is in use - really reset?"
 msgstr "La CAM è in uso - vuoi reimpostarla?"
@@ -1201,7 +1201,7 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "Margine VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Segna reg. immediata"
+msgstr "Marca registrazione immediata"
 
 msgid "Setup.Recording$Name instant recording"
 msgstr "Nome reg. immediata"
@@ -1237,22 +1237,22 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Mostra tempo elaborazione (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Pausa riproduzione durante impostazione segni"
+msgstr "Pausa riproduzione quando imposta marcatore"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pausa riproduzione quando passa a un marcatore"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Salta parti modificate"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Pausa riproduzione a fine marcatura"
 
 msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr ""
+msgstr "Salta valore iniziale binario (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr ""
+msgstr "Salta timeout binario (s)"
 
 msgid "Setup.Replay$Binary skip strict"
 msgstr ""
@@ -1523,16 +1523,16 @@ msgid "Upcoming recording!"
 msgstr "Registrazione imminente!"
 
 msgid "Pause live video?"
-msgstr "Pausare video dal vivo?"
+msgstr "Pausa video dal vivo?"
 
 msgid "Recording started"
 msgstr "Registrazione avviata"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR si spegnerà più tardi - premi Power per forzare"
+msgstr "VDR si spegnerà più tardi - premere Power per forzare"
 
 msgid "Press any key to cancel shutdown"
-msgstr "Premi un tasto per annullare lo spegnimento"
+msgstr "Premere un tasto per annullare lo spegnimento"
 
 msgid "Switching primary DVB..."
 msgstr "Cambio della scheda DVB primaria..."
@@ -1544,7 +1544,7 @@ msgid "Editing process finished"
 msgstr "Processo di modifica terminato"
 
 msgid "Press any key to cancel restart"
-msgstr "Premi un tasto per annullare il riavvio"
+msgstr "Premere un tasto per annullare il riavvio"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
