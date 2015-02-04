@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.39 2015/02/04 09:13:54 kls Exp $
+ * $Id: menu.c 3.40 2015/02/04 09:21:55 kls Exp $
  */
 
 #include "menu.h"
@@ -2260,6 +2260,7 @@ private:
   int priority;
   int lifetime;
   cMenuEditStrItem *folderItem;
+  cMenuEditStrItem *nameItem;
   const char *buttonFolder;
   const char *buttonAction;
   const char *buttonDeleteMarks;
@@ -2272,6 +2273,7 @@ private:
   eOSState SetFolder(void);
   eOSState Folder(void);
   eOSState Action(void);
+  eOSState RemoveName(void);
   eOSState DeleteMarks(void);
   eOSState ApplyChanges(void);
 public:
@@ -2291,6 +2293,7 @@ cMenuRecordingEdit::cMenuRecordingEdit(cRecording *Recording)
   priority = recording->Priority();
   lifetime = recording->Lifetime();
   folderItem = NULL;
+  nameItem = NULL;
   buttonFolder = NULL;
   buttonAction = NULL;
   buttonDeleteMarks = NULL;
@@ -2308,7 +2311,7 @@ void cMenuRecordingEdit::Set(void)
   cOsdItem *p;
   Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
   p->SetSelectable(!recordingIsInUse);
-  Add(p = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
+  Add(p = nameItem = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
   p->SetSelectable(!recordingIsInUse);
   Add(p = new cMenuEditIntItem(tr("Priority"), &priority, 0, MAXPRIORITY));
   p->SetSelectable(!recordingIsInUse);
@@ -2387,6 +2390,22 @@ eOSState cMenuRecordingEdit::Action(void)
   return osContinue;
 }
 
+eOSState cMenuRecordingEdit::RemoveName(void)
+{
+  if (Get(Current()) == nameItem) {
+     char *s = strrchr(folder, FOLDERDELIMCHAR);
+     if (s)
+        *s++ = 0;
+     else
+        s = folder;
+     strn0cpy(name, s, sizeof(name));
+     if (s == folder)
+        *s = 0;
+     Set();
+     }
+  return osContinue;
+}
+
 eOSState cMenuRecordingEdit::DeleteMarks(void)
 {
   if (buttonDeleteMarks && Interface->Confirm(tr("Delete editing marks for this recording?"))) {
@@ -2435,6 +2454,7 @@ eOSState cMenuRecordingEdit::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
   if (state == osUnknown) {
      switch (Key) {
+       case k0:      return RemoveName();
        case kRed:    return buttonFolder ? Folder() : osContinue;
        case kGreen:  return buttonAction ? Action() : osContinue;
        case kYellow: return buttonDeleteMarks ? DeleteMarks() : osContinue;

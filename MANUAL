@@ -540,8 +540,16 @@ Version 2.0
   the selected recording (if there are any and the recording is not currently
   being cut). To directly edit the folder or name of the recording, position the
   cursor to the respective line and press the Right key to start editing (press
-  Ok to confirm the edit, or Back to return to the previous value). Once you are
-  finished with editing the recording properties, press Ok to confirm the changes.
+  Ok to confirm the edit, or Back to return to the previous value). If you want
+  to remove the name of the recording and make the folder name the actual
+  recording's name, you can position the cursor to the "Name:" field and press
+  the '0' key. This will take the last element of the recording's folder path
+  and make it the actual name of the recording. You can do this in turn until
+  the recording is moved all the way up to the root of the video directory.
+  Note that, in case you inadvertently pressed the '0' key, you can leave the
+  "Edit recording" menu with the "Back" key and any changes you have made so far
+  will not be applied. Once you are finished with editing the recording
+  properties, press Ok to confirm the changes.
 
 * Parameters in the "Setup" menu
 

@@ -8487,3 +8487,7 @@ Video Disk Recorder Revision History
 - Added "NORDIG" to the list of "DVB/Standard compliance" options and using it to
   restrict the LCN (Logical Channel Numbers) parsing to networks that actually use
   this non-standard feature (thanks to Rolf Ahrenberg).
+- In the "Edit recording" menu the '0' key can now be used on the "Name:" field to
+  remove the name of the recording and replace it with the last element of the
+  recording's folder path name (suggested by Christoph Haubrich). See MANUAL, section
+  "Managing folders" for details.
