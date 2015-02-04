@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.38 2015/02/03 11:51:29 kls Exp $
+ * $Id: menu.c 3.39 2015/02/04 09:13:54 kls Exp $
  */
 
 #include "menu.h"
@@ -3202,7 +3202,7 @@ private:
   void Setup(void);
   const char *videoDisplayFormatTexts[3];
   const char *updateChannelsTexts[6];
-  const char *standardComplianceTexts[2];
+  const char *standardComplianceTexts[3];
 public:
   cMenuSetupDVB(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -3228,6 +3228,7 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[5] = tr("add new transponders");
   standardComplianceTexts[0] = "DVB";
   standardComplianceTexts[1] = "ANSI/SCTE";
+  standardComplianceTexts[2] = "NORDIG";
 
   SetSection(tr("DVB"));
   SetHelp(NULL, tr("Button$Audio"), tr("Button$Subtitles"), NULL);
@@ -3241,7 +3242,7 @@ void cMenuSetupDVB::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
-  Add(new cMenuEditStraItem(tr("Setup.DVB$Standard compliance"),   &data.StandardCompliance, 2, standardComplianceTexts));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Standard compliance"),   &data.StandardCompliance, 3, standardComplianceTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
   if (data.VideoFormat == 0)
      Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));

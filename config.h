@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.15 2015/02/02 12:21:13 kls Exp $
+ * $Id: config.h 3.16 2015/02/04 09:13:54 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -65,6 +65,7 @@
 
 #define STANDARD_DVB       0
 #define STANDARD_ANSISCTE  1
+#define STANDARD_NORDIG    2
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 

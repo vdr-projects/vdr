@@ -8453,7 +8453,7 @@ Video Disk Recorder Revision History
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
 
-2015-02-03: Version 2.1.9
+2015-02-04: Version 2.1.9
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
@@ -8484,3 +8484,6 @@ Video Disk Recorder Revision History
   Schedule menus for different channels (reported by Matthias Senzel).
 - Fixed setting the Blue button in the Schedule/Now/Next menus, so that it only shows
   "Switch" if the selected event is on a different channel.
+- Added "NORDIG" to the list of "DVB/Standard compliance" options and using it to
+  restrict the LCN (Logical Channel Numbers) parsing to networks that actually use
+  this non-standard feature (thanks to Rolf Ahrenberg).
