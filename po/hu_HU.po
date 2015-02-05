@@ -5,6 +5,7 @@
 # Guido Josten <guido.josten@t-online.de>, 2002, 2003, 2006
 # Thomas Günther <tom@toms-cafe.de>, 2007
 # István Füley <ifuley@tigercomp.ro>, 2007, 2012, 2013, 2015
+# Mario Fenneis <admin@mediastreambox.at>, 2015
 #
 msgid ""
 msgstr ""
@@ -12,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2015-02-03 11:35+0200\n"
-"Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
+"Last-Translator: Mario Fenneis <admin@mediastreambox.at>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
@@ -117,7 +118,7 @@ msgid "Content$Romance"
 msgstr "Romantikus film"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Komolyzenei/Klasszikus/Vallási/Történelmi film/Dráma"
+msgstr "Komoly/Klasszikus/Vallási/Történelmi film/Dráma"
 
 msgid "Content$Adult Movie/Drama"
 msgstr "Felnőtt tartalom/Dráma"
@@ -159,7 +160,7 @@ msgid "Content$Sport Magazine"
 msgstr "Sporthíradó"
 
 msgid "Content$Football/Soccer"
-msgstr "Fotball/Labdarúgás"
+msgstr "Futball/Labdarúgás"
 
 msgid "Content$Tennis/Squash"
 msgstr "Tenisz/Squash"
@@ -228,7 +229,7 @@ msgid "Content$Arts/Culture"
 msgstr "Művészet/Kultúra"
 
 msgid "Content$Performing Arts"
-msgstr "Előadás"
+msgstr "Előadóművészet"
 
 msgid "Content$Fine Arts"
 msgstr "Belle arte"
@@ -379,7 +380,7 @@ msgid "(press 'Down' to end key definition)"
 msgstr "('Le' megnyomása a befejezéshez)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "A Menü gombot nyomni ennek a gombnak a kihagyásához"
+msgstr "A Menü gombot megnyomni ennek a gombnak a kihagyásához"
 
 msgid "Learning Remote Control Keys"
 msgstr "Távirányító betanítása"
@@ -448,7 +449,7 @@ msgid "Key$FastRew"
 msgstr "Vissza pörgetni"
 
 msgid "Key$Next"
-msgstr "Előre"
+msgstr "Következöre"
 
 msgid "Key$Prev"
 msgstr "Vissza"
@@ -472,7 +473,7 @@ msgid "Key$Volume-"
 msgstr "Hangerő-"
 
 msgid "Key$Mute"
-msgstr "Csend"
+msgstr "Néma üzemmód"
 
 msgid "Key$Audio"
 msgstr "Hang"
@@ -635,7 +636,7 @@ msgid "Delete folder?"
 msgstr "Töröljem a könyvtárat?"
 
 msgid "Edit timer"
-msgstr "Időzítő megváltoztatása"
+msgstr "Időzítő beállítása"
 
 msgid "Active"
 msgstr "Aktiv"
@@ -707,7 +708,7 @@ msgid "Button$Switch"
 msgstr "Átkapcsolni"
 
 msgid "What's on now?"
-msgstr "Most adásban"
+msgstr "Mi van most adásban"
 
 msgid "What's on next?"
 msgstr "Mi következik?"
@@ -733,14 +734,14 @@ msgid "This event - %s"
 msgstr "Ez az adás - %s"
 
 msgid "This event - all channels"
-msgstr "Ez az adás - összes adón"
+msgstr "Ez az adás - összes adó"
 
 msgid "All events - all channels"
-msgstr "Az összes adás - az összes adón"
+msgstr "Az összes adás -  összes adó"
 
 #, c-format
 msgid "Please enter %d digits!"
-msgstr "Üssön be %d számot!"
+msgstr "Üsse be a %d számot!"
 
 msgid "CAM not responding!"
 msgstr "A CAM nem válaszol!"
@@ -768,19 +769,19 @@ msgid "This recording is currently in use - no changes are possible!"
 msgstr "A felvétel használatban van - változtatás nem lehetséges!"
 
 msgid "Button$Cancel cutting"
-msgstr "Vágás mégse"
+msgstr "Vágás mégsem"
 
 msgid "Button$Stop cutting"
 msgstr "Vágás leállítása"
 
 msgid "Button$Cancel moving"
-msgstr "Áthelyezés mégse"
+msgstr "Áthelyezés mégsem"
 
 msgid "Button$Stop moving"
 msgstr "Áthelyezés leállítása"
 
 msgid "Button$Cancel copying"
-msgstr "Másolás mégse"
+msgstr "Másolás mégsem"
 
 msgid "Button$Stop copying"
 msgstr "Másolása leállítása"
@@ -816,7 +817,7 @@ msgid "Recording info"
 msgstr "Felvétel infó"
 
 msgid "Button$Play"
-msgstr "Lejátszani"
+msgstr "Lejátszás"
 
 msgid "Button$Rewind"
 msgstr "Vissza az elejére"
@@ -831,19 +832,19 @@ msgid "Delete recording?"
 msgstr "Felvétel törlése?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "A felvétel szerkesztés alatt - biztos törölni?"
+msgstr "A felvétel szerkesztés alatt - biztos töröljem?"
 
 msgid "Error while deleting recording!"
 msgstr "Hiba a felvétel törlésénél!"
 
 msgid "Recording commands"
-msgstr "Parancsok a felvett filmekhez"
+msgstr "Parancsok a felvételhez"
 
 msgid "never"
 msgstr "soha"
 
 msgid "skin dependent"
-msgstr "Menü nézetétől függően"
+msgstr "Menütől függően"
 
 msgid "always"
 msgstr "mindig"
@@ -915,7 +916,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Információ az adó váltásánál"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "A lekérdezett adásinformáció bezárása"
+msgstr "A lekérdezett adásinformáció"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Oldalanként léptetni"
@@ -1074,7 +1075,7 @@ msgstr "Felső LNB-frekvencia (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr "Fejkábel a %d. tunerhez"
+msgstr "Fejkábel a %d. tunerhez csatlakoztatva"
 
 msgid "Setup.LNB$own"
 msgstr "saját"
@@ -1252,7 +1253,7 @@ msgid "Setup.Replay$Binary skip timeout (s)"
 msgstr "Bináris ugrás időkorláta (s)"
 
 msgid "Setup.Replay$Binary skip strict"
-msgstr ""
+msgstr "Bináris ugrás végpont"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Lejátszás ID"
@@ -1345,13 +1346,13 @@ msgid " Cancel editing"
 msgstr " Vágást megszakítani"
 
 msgid "Stop recording?"
-msgstr "Felvétel befejezni?"
+msgstr "Felvételt befejezni?"
 
 msgid "Cancel editing?"
 msgstr "Vágást befejezni?"
 
 msgid "No audio available!"
-msgstr "Hang nem lehetséges!"
+msgstr "Hang nem eléhetö!"
 
 msgid "No subtitles"
 msgstr "Felirat ki"
@@ -1526,7 +1527,7 @@ msgid "Recording started"
 msgstr "A felvétel elindítva"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "A VDR később fog leállni - Kikapcs gombbal kényszerített leállítás"
+msgstr "A VDR később fog leállni - Kikapcsol gombbal kényszerített leállítás"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Nyomj egy gombot a leállás megszakításához"
