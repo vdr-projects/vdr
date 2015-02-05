@@ -20,7 +20,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr.template 2.2 2011/04/17 12:34:30 kls Exp $
+# $Id: runvdr.template 3.1 2015/02/05 10:28:53 kls Exp $
 
 VDRPRG="./vdr"
 
@@ -43,19 +43,21 @@ KILL="/usr/bin/killall -q -TERM"
 
 # Detect whether the DVB driver is already loaded
 # and return 0 if it *is* loaded, 1 if not:
-function DriverLoaded()
+DriverLoaded()
 {
   return 1
 }
 
 # Load all DVB driver modules needed for your hardware:
-function LoadDriver()
+LoadDriver()
 {
+  return 0
 }
 
 # Unload all DVB driver modules loaded in LoadDriver():
-function UnloadDriver()
+UnloadDriver()
 {
+  return 0
 }
 
 # Load driver if it hasn't been loaded already:

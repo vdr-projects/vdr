@@ -8497,3 +8497,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed the German translations of "latitude" and "longitude" (they were swapped).
 - Updated the Hungarian OSD texts (thanks to Mario Fenneis).
+- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
