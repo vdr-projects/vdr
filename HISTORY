@@ -8495,3 +8495,4 @@ Video Disk Recorder Revision History
 - The "Select folder" menu now adds the folder names of all existing recordings to
   any names that have been predefined in "folders.conf" (suggested by Sören Moch).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed the German translations of "latitude" and "longitude" (they were swapped).

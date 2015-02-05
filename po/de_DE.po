@@ -1079,7 +1079,7 @@ msgid "Setup.LNB$Use dish positioner"
 msgstr "Antennen-Positionierer benutzen"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr "Standort Längengrad"
+msgstr "Standort Breitengrad"
 
 msgid "South"
 msgstr "Süd"
@@ -1088,7 +1088,7 @@ msgid "North"
 msgstr "Nord"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr "Standort Breitengrad"
+msgstr "Standort Längengrad"
 
 msgid "West"
 msgstr "West"
