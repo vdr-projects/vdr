@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.24 2015/01/25 15:39:24 kls Exp $
+ * $Id: recording.c 3.25 2015/02/05 13:50:39 kls Exp $
  */
 
 #include "recording.h"
@@ -2169,7 +2169,7 @@ cMark *cMarks::GetNext(int Position)
 cMark *cMarks::GetNextBegin(cMark *EndMark)
 {
   cMark *BeginMark = EndMark ? Next(EndMark) : First();
-  if (BeginMark) {
+  if (BeginMark && EndMark && BeginMark->Position() == EndMark->Position()) {
      while (cMark *NextMark = Next(BeginMark)) {
            if (BeginMark->Position() == NextMark->Position()) { // skip Begin/End at the same position
               if (!(BeginMark = Next(NextMark)))
@@ -2187,7 +2187,7 @@ cMark *cMarks::GetNextEnd(cMark *BeginMark)
   if (!BeginMark)
      return NULL;
   cMark *EndMark = Next(BeginMark);
-  if (EndMark) {
+  if (EndMark && BeginMark && BeginMark->Position() == EndMark->Position()) {
      while (cMark *NextMark = Next(EndMark)) {
            if (EndMark->Position() == NextMark->Position()) { // skip End/Begin at the same position
               if (!(EndMark = Next(NextMark)))

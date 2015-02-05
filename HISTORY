@@ -8502,3 +8502,7 @@ Video Disk Recorder Revision History
   on a suggestion by Thomas Reufer).
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
   two separate positions (thanks to Arthur Konovalov).
+- Fixed cMarks::GetNextBegin() and cMarks::GetNextEnd(). The behavior of these two
+  functions is now exacly as described in the header file. Editing marks that are
+  placed at exactly the same offset in a recording are now preserved in the cutting
+  process.
