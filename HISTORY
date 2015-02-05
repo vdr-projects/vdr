@@ -8500,3 +8500,5 @@ Video Disk Recorder Revision History
 - Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
 - Changed the German translations if the texts related to "binary skipping" (based
   on a suggestion by Thomas Reufer).
+- Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
+  two separate positions (thanks to Arthur Konovalov).

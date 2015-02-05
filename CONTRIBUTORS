@@ -1728,6 +1728,8 @@ Arthur Konovalov <artlov@gmail.com>
  for reporting that the video stream type was set to 2 even if the vpid was 0
  for updates to 'sources.conf'
  for reporting a wrong initialization of Setup.PositionerSwing
+ for updating sources.conf to reflect the fact that Astra 4A and SES5 are actually in
+ two separate positions
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
