@@ -3293,6 +3293,8 @@ Thomas Reufer <thomas@reufer.ch>
  for adding handling for DTS audio tracks to cPatPmtParser::ParsePmt()
  for adding support for PGS subtitles
  for adding cOsdProvider::OsdSizeChanged()
+ for suggesting to change the German translations if the texts related to "binary
+ skipping"
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

@@ -1242,13 +1242,13 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pause an der letzten Schnittmarke"
 
 msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Anfangswert für binäres Springen (s)"
+msgstr "Anfangswert beim Halbieren der Sprungweite (s)"
 
 msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Zeitlimit für binäres Springen (s)"
+msgstr "Zeitlimit für Halbieren der Sprungweite (s)"
 
 msgid "Setup.Replay$Binary skip strict"
-msgstr "Striktes binäres Springen"
+msgstr "Sprungweite immer halbieren"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"
