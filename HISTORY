@@ -8453,7 +8453,7 @@ Video Disk Recorder Revision History
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
 
-2015-02-04: Version 2.1.9
+2015-02-05: Version 2.1.9
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
@@ -8494,3 +8494,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Nino Gerbino).
 - The "Select folder" menu now adds the folder names of all existing recordings to
   any names that have been predefined in "folders.conf" (suggested by Sören Moch).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
