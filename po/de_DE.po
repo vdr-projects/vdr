@@ -1245,10 +1245,10 @@ msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr "Anfangswert beim Halbieren der Sprungweite (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr "Zeitlimit für Halbieren der Sprungweite (s)"
+msgstr "Zeitlimit beim Halbieren der Sprungweite (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Alternatives Verhalten beim Halbieren der Sprungweite"
+msgstr "Sprungweite nur bei Richtungswechsel halbieren"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"
