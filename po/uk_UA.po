@@ -1242,13 +1242,13 @@ msgstr "Пропустити редаговані частини"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Призупинити програвання на останній мітці"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Цифровий пропуск початкового значення (нь)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Цифровий пропуск тайм-ауту (ів)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip strict"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

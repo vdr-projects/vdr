@@ -1243,13 +1243,13 @@ msgstr "Săritură peste părțile editate"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pauză la ultimul marcaj"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Valoarea inițială (s) pentru săritul \"binar\" al marcajelor"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Timeout (s) pentru săritul \"binar\" al marcajelor"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip strict"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

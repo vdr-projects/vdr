@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.16 2015/02/04 09:13:54 kls Exp $
+ * $Id: config.h 3.17 2015/02/06 09:53:50 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -337,9 +337,9 @@ public:
   int PauseOnMarkJump;
   int SkipEdited;
   int PauseAtLastMark;
-  int BinarySkipInitial;
-  int BinarySkipTimeout;
-  int BinarySkipStrict;
+  int AdaptiveSkipInitial;
+  int AdaptiveSkipTimeout;
+  int AdaptiveSkipAlternate;
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;

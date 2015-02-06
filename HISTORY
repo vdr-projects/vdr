@@ -8453,7 +8453,7 @@ Video Disk Recorder Revision History
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
 
-2015-02-05: Version 2.1.9
+2015-02-06: Version 2.1.9
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
@@ -8506,3 +8506,5 @@ Video Disk Recorder Revision History
   functions is now exacly as described in the header file. Editing marks that are
   placed at exactly the same offset in a recording are now preserved in the cutting
   process.
+- Changed the naming of "binary skip mode" to "adaptive skip mode" (suggested by
+  Rolf Ahrenberg and Derek Kelly).

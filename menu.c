@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.41 2015/02/04 12:18:27 kls Exp $
+ * $Id: menu.c 3.42 2015/02/06 09:53:25 kls Exp $
  */
 
 #include "menu.h"
@@ -3721,9 +3721,9 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when jumping to a mark"), &data.PauseOnMarkJump));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Skip edited parts"), &data.SkipEdited));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay at last mark"), &data.PauseAtLastMark));
-  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip initial value (s)"), &data.BinarySkipInitial, 10, 600));
-  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip timeout (s)"), &data.BinarySkipTimeout, 0, 10));
-  Add(new cMenuEditBoolItem(tr("Setup.Replay$Binary skip strict"), &data.BinarySkipStrict));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Initial duration for adaptive skipping (s)"), &data.AdaptiveSkipInitial, 10, 600));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Reset timeout for adaptive skipping (s)"), &data.AdaptiveSkipTimeout, 0, 10));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Alternate behavior for adaptive skipping"), &data.AdaptiveSkipAlternate));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -5063,9 +5063,9 @@ bool cRecordControls::StateChanged(int &State)
   return Result;
 }
 
-// --- cBinarySkipper --------------------------------------------------------
+// --- cAdaptiveSkipper ------------------------------------------------------
 
-cBinarySkipper::cBinarySkipper(void)
+cAdaptiveSkipper::cAdaptiveSkipper(void)
 {
   initialValue = NULL;
   currentValue = 0;
@@ -5073,14 +5073,14 @@ cBinarySkipper::cBinarySkipper(void)
   lastKey = kNone;
 }
 
-void cBinarySkipper::Initialize(int *InitialValue, double FramesPerSecond)
+void cAdaptiveSkipper::Initialize(int *InitialValue, double FramesPerSecond)
 {
   initialValue = InitialValue;
   framesPerSecond = FramesPerSecond;
   currentValue = 0;
 }
 
-int cBinarySkipper::GetValue(eKeys Key)
+int cAdaptiveSkipper::GetValue(eKeys Key)
 {
   if (!initialValue)
      return 0;
@@ -5090,12 +5090,12 @@ int cBinarySkipper::GetValue(eKeys Key)
      }
   else if (Key != lastKey) {
      currentValue /= 2;
-     if (Setup.BinarySkipStrict)
-        lastKey = kNone; // once the direction has changed, every further call halves the value
-     else
+     if (Setup.AdaptiveSkipAlternate)
         lastKey = Key; // only halve the value when the direction is changed
+     else
+        lastKey = kNone; // once the direction has changed, every further call halves the value
      }
-  timeout.Set(Setup.BinarySkipTimeout * 1000);
+  timeout.Set(Setup.AdaptiveSkipTimeout * 1000);
   return max(currentValue, 1);
 }
 
@@ -5120,7 +5120,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
   marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
-  binarySkipper.Initialize(&Setup.BinarySkipInitial, Recording.FramesPerSecond());
+  adaptiveSkipper.Initialize(&Setup.AdaptiveSkipInitial, Recording.FramesPerSecond());
   SetTrackDescriptions(false);
   if (Setup.ProgressDisplayTime)
      ShowTimed(Setup.ProgressDisplayTime);
@@ -5596,9 +5596,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         case kMarkMoveForward|k_Repeat:
         case kMarkMoveForward: MarkMove(+1, true); break;
         case kMarkSkipBack|k_Repeat:
-        case kMarkSkipBack:    MarkMove(-binarySkipper.GetValue(RAWKEY(Key)), false); break;
+        case kMarkSkipBack:    MarkMove(-adaptiveSkipper.GetValue(RAWKEY(Key)), false); break;
         case kMarkSkipForward|k_Repeat:
-        case kMarkSkipForward: MarkMove(+binarySkipper.GetValue(RAWKEY(Key)), false); break;
+        case kMarkSkipForward: MarkMove(+adaptiveSkipper.GetValue(RAWKEY(Key)), false); break;
         case kEditCut:         EditCut(); break;
         case kEditTest:        EditTest(); break;
         default: {

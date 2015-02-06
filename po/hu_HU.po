@@ -1246,14 +1246,14 @@ msgstr "Vágott részek kihagyása"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Utolsó vágópontnál szünet a lejátszásban"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Bináris ugrás kezdeti értéke (s)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Bináris ugrás időkorláta (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip strict"
-msgstr "Bináris ugrás végpont"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Lejátszás ID"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 3.7 2015/01/27 11:38:20 kls Exp $
+ * $Id: menu.h 3.8 2015/02/06 09:47:30 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -270,7 +270,7 @@ public:
   static bool StateChanged(int &State);
   };
 
-class cBinarySkipper {
+class cAdaptiveSkipper {
 private:
   int *initialValue;
   int currentValue;
@@ -278,7 +278,7 @@ private:
   eKeys lastKey;
   cTimeMs timeout;
 public:
-  cBinarySkipper(void);
+  cAdaptiveSkipper(void);
   void Initialize(int *InitialValue, double FramesPerSecond);
   int GetValue(eKeys Key);
   };
@@ -286,7 +286,7 @@ public:
 class cReplayControl : public cDvbPlayerControl {
 private:
   cSkinDisplayReplay *displayReplay;
-  cBinarySkipper binarySkipper;
+  cAdaptiveSkipper adaptiveSkipper;
   cMarks marks;
   bool marksModified;
   bool visible, modeOnly, shown, displayFrames;

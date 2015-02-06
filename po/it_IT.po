@@ -1247,14 +1247,14 @@ msgstr "Salta parti modificate"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pausa riproduzione all'ultimo marcatore"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Valore iniziale salto binario (s)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Scadenza salto binario (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr ""
 
-msgid "Setup.Replay$Binary skip strict"
-msgstr "Forza salto binario"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"

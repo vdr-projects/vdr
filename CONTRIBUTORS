@@ -1195,6 +1195,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  doesn't set the data's version numbers as required by the DVB standard
  for the "binary skip" patch
  for adding support for LCN (Logical Channel Numbers)
+ for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2834,6 +2835,7 @@ Derek Kelly <user.vdr@gmail.com>
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
  for reporting a missing template for DVBDIR in Make.config.template
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
+ for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
