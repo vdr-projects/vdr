@@ -991,8 +991,6 @@ Version 2.0
                          automatically skipped during replay. This includes jumping
                          to the first mark if replay starts at the beginning of the
                          recording, and stopping at the last mark.
-                         In order to work, this option must be enabled before starting
-                         replay.
 
   Pause replay at last mark = no
                          If enabled, replay of a recording will go into Pause mode
@@ -1000,8 +998,6 @@ Version 2.0
                          the actual position at which the pause occurs may be a couple
                          of frames before the last "end" mark, depending on how much
                          data is buffered by your output device.
-                         In order to work, this option must be enabled before starting
-                         replay.
 
   Initial duration for adaptive skipping (s) = 120
                          Defines the number of seconds to jump from the current replay

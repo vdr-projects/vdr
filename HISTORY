@@ -8508,3 +8508,6 @@ Video Disk Recorder Revision History
   process.
 - Changed the naming of "binary skip mode" to "adaptive skip mode" (suggested by
   Rolf Ahrenberg and Derek Kelly).
+- cDvbPlayer and cReplayControl now use the same list of editing marks. This avoids
+  inconsistent behavior with the "Skip edited parts" or "Pause replay at last mark"
+  functions when the editing marks are manipulated during replay.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.42 2015/02/06 09:53:25 kls Exp $
+ * $Id: menu.c 3.43 2015/02/06 15:20:11 kls Exp $
  */
 
 #include "menu.h"
@@ -5120,6 +5120,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
   marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
+  SetMarks(&marks);
   adaptiveSkipper.Initialize(&Setup.AdaptiveSkipInitial, Recording.FramesPerSecond());
   SetTrackDescriptions(false);
   if (Setup.ProgressDisplayTime)
@@ -5389,6 +5390,7 @@ void cReplayControl::MarkToggle(void)
   int Current, Total;
   if (GetIndex(Current, Total, true)) {
      lastCurrent = -1; // triggers redisplay
+     cMutexLock MutexLock(&marks);
      if (cMark *m = marks.Get(Current))
         marks.Del(m);
      else {
@@ -5409,6 +5411,7 @@ void cReplayControl::MarkJump(bool Forward)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
+     cMutexLock MutexLock(&marks);
      if (marks.Count()) {
         if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
            if (!Setup.PauseOnMarkJump) {
@@ -5437,6 +5440,7 @@ void cReplayControl::MarkMove(int Frames, bool MarkRequired)
      bool Play, Forward;
      int Speed;
      GetReplayMode(Play, Forward, Speed);
+     cMutexLock MutexLock(&marks);
      cMark *m = marks.Get(Current);
      if (!Play && m) {
         displayFrames = true;
@@ -5472,6 +5476,7 @@ void cReplayControl::EditCut(void)
   if (*fileName) {
      Hide();
      if (!RecordingsHandler.GetUsage(fileName)) {
+        cMutexLock MutexLock(&marks);
         if (!marks.Count())
            Skins.Message(mtError, tr("No editing marks defined!"));
         else if (!marks.GetNumSequences())
@@ -5493,6 +5498,7 @@ void cReplayControl::EditTest(void)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
+     cMutexLock MutexLock(&marks);
      cMark *m = marks.Get(Current);
      if (!m)
         m = marks.GetNext(Current);

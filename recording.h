@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.6 2015/01/31 13:34:44 kls Exp $
+ * $Id: recording.h 3.7 2015/02/06 15:17:04 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -350,7 +350,7 @@ public:
   bool Save(FILE *f);
   };
 
-class cMarks : public cConfig<cMark> {
+class cMarks : public cConfig<cMark>, public cMutex {
 private:
   cString recordingFileName;
   cString fileName;
@@ -370,15 +370,25 @@ public:
   void Sort(void);
   void Add(int Position);
   cMark *Get(int Position);
+       ///< If this cMarks object is used by multiple threads, the caller must hold a lock
+       ///< on this object as long as it handles the returned pointer.
   cMark *GetPrev(int Position);
+       ///< If this cMarks object is used by multiple threads, the caller must hold a lock
+       ///< on this object as long as it handles the returned pointer.
   cMark *GetNext(int Position);
+       ///< If this cMarks object is used by multiple threads, the caller must hold a lock
+       ///< on this object as long as it handles the returned pointer.
   cMark *GetNextBegin(cMark *EndMark = NULL);
        ///< Returns the next "begin" mark after EndMark, skipping any marks at the
        ///< same position as EndMark. If EndMark is NULL, the first actual "begin"
        ///< will be returned (if any).
+       ///< If this cMarks object is used by multiple threads, the caller must hold a lock
+       ///< on this object as long as it handles the returned pointer.
   cMark *GetNextEnd(cMark *BeginMark);
        ///< Returns the next "end" mark after BeginMark, skipping any marks at the
        ///< same position as BeginMark.
+       ///< If this cMarks object is used by multiple threads, the caller must hold a lock
+       ///< on this object as long as it handles the returned pointer.
   int GetNumSequences(void);
        ///< Returns the actual number of sequences to be cut from the recording.
        ///< If there is only one actual "begin" mark, and it is positioned at index

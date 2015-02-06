@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.25 2015/02/05 13:50:39 kls Exp $
+ * $Id: recording.c 3.26 2015/02/06 15:13:59 kls Exp $
  */
 
 #include "recording.h"
@@ -2059,6 +2059,7 @@ cString cMarks::MarksFileName(const cRecording *Recording)
 
 bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool IsPesRecording)
 {
+  cMutexLock MutexLock(this);
   recordingFileName = RecordingFileName;
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
@@ -2071,6 +2072,7 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 
 bool cMarks::Update(void)
 {
+  cMutexLock MutexLock(this);
   time_t t = time(NULL);
   if (t > nextUpdate && *fileName) {
      time_t LastModified = LastModifiedTime(fileName);
@@ -2102,6 +2104,7 @@ bool cMarks::Update(void)
 
 bool cMarks::Save(void)
 {
+  cMutexLock MutexLock(this);
   if (cConfig<cMark>::Save()) {
      lastFileTime = LastModifiedTime(fileName);
      return true;
@@ -2111,6 +2114,7 @@ bool cMarks::Save(void)
 
 void cMarks::Align(void)
 {
+  cMutexLock MutexLock(this);
   cIndexFile IndexFile(recordingFileName, false, isPesRecording);
   for (cMark *m = First(); m; m = Next(m)) {
       int p = IndexFile.GetClosestIFrame(m->Position());
@@ -2123,6 +2127,7 @@ void cMarks::Align(void)
 
 void cMarks::Sort(void)
 {
+  cMutexLock MutexLock(this);
   for (cMark *m1 = First(); m1; m1 = Next(m1)) {
       for (cMark *m2 = Next(m1); m2; m2 = Next(m2)) {
           if (m2->Position() < m1->Position()) {
@@ -2135,6 +2140,7 @@ void cMarks::Sort(void)
 
 void cMarks::Add(int Position)
 {
+  cMutexLock MutexLock(this);
   cConfig<cMark>::Add(new cMark(Position, NULL, framesPerSecond));
   Sort();
 }
@@ -2202,6 +2208,7 @@ cMark *cMarks::GetNextEnd(cMark *BeginMark)
 
 int cMarks::GetNumSequences(void)
 {
+  cMutexLock MutexLock(this);
   int NumSequences = 0;
   if (cMark *BeginMark = GetNextBegin()) {
      while (cMark *EndMark = GetNextEnd(BeginMark)) {
