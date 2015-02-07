@@ -8384,7 +8384,7 @@ Video Disk Recorder Revision History
 - Now returning from removing deleted recordings after at most 10 seconds, or if the
   user presses a remote control key, to keep the system from getting unresponsive
   when removing a huge number of files (reported by Dieter Ferdinand).
-- Fixed generating the index file of an existing recording in case at the of a TS file
+- Fixed generating the index file of an existing recording in case at the end of a TS file
   there is less data in the buffer than needed by the frame detector. In such a case
   it was possible that frames were missed, and there was most likely a distortion
   when replaying that part of a recording. This is mostly a problem for recordings that
@@ -8405,7 +8405,7 @@ Video Disk Recorder Revision History
 - Now returning from removing deleted recordings after at most 10 seconds, or if the
   user presses a remote control key, to keep the system from getting unresponsive
   when removing a huge number of files (reported by Dieter Ferdinand).
-- Fixed generating the index file of an existing recording in case at the of a TS file
+- Fixed generating the index file of an existing recording in case at the end of a TS file
   there is less data in the buffer than needed by the frame detector. In such a case
   it was possible that frames were missed, and there was most likely a distortion
   when replaying that part of a recording. This is mostly a problem for recordings that
