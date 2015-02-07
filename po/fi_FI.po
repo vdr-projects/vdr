@@ -1246,13 +1246,13 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pysäytä toisto viimeiseen merkkiin"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Mukautuvan hypyn oletuskesto (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Mukautuvan hypyn nollausviive (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr ""
+msgstr "Käytä vaihtoehtoista mukautuvaa hyppyä"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
