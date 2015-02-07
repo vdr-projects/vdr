@@ -8467,10 +8467,10 @@ Video Disk Recorder Revision History
   added NO_KBD and BIDI.
 - Added code from the "jumpplay" patch that makes the recording still be considered
   unviewed when stopping replay within RESUMEBACKUP seconds of the first mark.
-- The new option "Setup/Replay/Binary skip strict" can be used to make binary skipping
-  only halve the skip distance when the direction changes. That way you can reach the
-  desired point in a recording even if you make one too many skips in a certain
-  direction (see MANUAL for details).
+- The new option "Setup/Replay/Alternate behavior for adaptive skipping" can be used
+  to make adaptive skipping only halve the skip distance when the direction changes.
+  That way you can reach the desired point in a recording even if you make one too
+  many skips in a certain direction (see MANUAL for details).
 - Fixed cCamSlot::Assign(), so that it actually ignores the value of Query if Device
   is NULL (as described in the header file).
 - Added a missing VDRDIR="$(CWD)" to the clean-plugins target of the Makefile, to
