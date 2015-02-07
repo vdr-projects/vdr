@@ -2417,6 +2417,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  a recording
  for suggesting to add a function to remove the name of a recording and replace it
  with the last element of the recording's folder path name
+ for reporting a bug in setting an empty recording name or folder to a blank in the
+ "Edit recording" menu
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.44 2015/02/07 14:14:50 kls Exp $
+ * $Id: menu.c 3.45 2015/02/07 15:42:37 kls Exp $
  */
 
 #include "menu.h"
@@ -2251,8 +2251,10 @@ eOSState cMenuPathEdit::Folder(void)
 
 eOSState cMenuPathEdit::ApplyChanges(void)
 {
-  if (!*name)
+  if (!*name) {
      *name = ' '; // name must not be empty!
+     name[1] = 0;
+     }
   cString NewPath = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
   NewPath.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewPath, path)) {
@@ -2467,8 +2469,10 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
         }
      Modified = true;
      }
-  if (!*name)
+  if (!*name) {
      *name = ' '; // name must not be empty!
+     name[1] = 0;
+     }
   cString NewName = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
   NewName.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewName, recording->Name())) {
