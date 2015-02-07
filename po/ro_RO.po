@@ -1247,10 +1247,10 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pauză la ultimul marcaj"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Durata inițială (s) pentru săritul adaptiv al marcajelor"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Timeout (s) de resetare pentru săritul adaptiv al marcajelor"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Strategie alternativă pentru săritul adaptiv al marcajelor"
