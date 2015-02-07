@@ -8515,3 +8515,8 @@ Video Disk Recorder Revision History
   menu (reported by Christoph Haubrich).
 - Added a confirmation before renaming a recording to its folder name (suggested
   by Christoph Haubrich).
+- Modified EntriesOnSameFileSystem(), so that it returns 'true' if either of the given
+  files doesn't exist (to avoid any actions that might be triggered if files are on
+  different file system), and changed handling the 'error' variable in cDirCopier, so
+  that it is initialized to 'true' and will only be set to 'false' if the entire
+  copy process has been successful (problem reported by Christoph Haubrich).

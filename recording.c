@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.26 2015/02/06 15:13:59 kls Exp $
+ * $Id: recording.c 3.27 2015/02/07 16:07:22 kls Exp $
  */
 
 #include "recording.h"
@@ -1676,7 +1676,7 @@ cDirCopier::cDirCopier(const char *DirNameSrc, const char *DirNameDst)
 {
   dirNameSrc = DirNameSrc;
   dirNameDst = DirNameDst;
-  error = false;
+  error = true; // prepare for the worst!
   suspensionLogged = false;
 }
 
@@ -1790,6 +1790,7 @@ void cDirCopier::Action(void)
               else {
                  // We're done:
                  dsyslog("done copying directory '%s' to '%s'", *dirNameSrc, *dirNameDst);
+                 error = false;
                  return;
                  }
               }
@@ -1802,7 +1803,6 @@ void cDirCopier::Action(void)
      }
   else
      esyslog("ERROR: can't access '%s'", *dirNameDst);
-  error = true;
 }
 
 void cDirCopier::Stop(void)
