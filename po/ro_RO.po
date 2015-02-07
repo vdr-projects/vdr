@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-02 14:58+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2015-02-06 23:15+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -797,6 +797,9 @@ msgstr "Deja există o versiune editată - o suprascriu?"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Eroare la punerea în coada pentru tăiere!"
+
+msgid "Rename recording to folder name?"
+msgstr ""
 
 msgid "Delete editing marks for this recording?"
 msgstr "Șterg marcajele de editare pentru această înregistrare?"

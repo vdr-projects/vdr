@@ -2419,6 +2419,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  with the last element of the recording's folder path name
  for reporting a bug in setting an empty recording name or folder to a blank in the
  "Edit recording" menu
+ for suggesting to add a confirmation before renaming a recording to its folder name
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.45 2015/02/07 15:42:37 kls Exp $
+ * $Id: menu.c 3.46 2015/02/07 15:56:26 kls Exp $
  */
 
 #include "menu.h"
@@ -2435,15 +2435,17 @@ eOSState cMenuRecordingEdit::Action(void)
 eOSState cMenuRecordingEdit::RemoveName(void)
 {
   if (Get(Current()) == nameItem) {
-     char *s = strrchr(folder, FOLDERDELIMCHAR);
-     if (s)
-        *s++ = 0;
-     else
-        s = folder;
-     strn0cpy(name, s, sizeof(name));
-     if (s == folder)
-        *s = 0;
-     Set();
+     if (Interface->Confirm(tr("Rename recording to folder name?"))) {
+        char *s = strrchr(folder, FOLDERDELIMCHAR);
+        if (s)
+           *s++ = 0;
+        else
+           s = folder;
+        strn0cpy(name, s, sizeof(name));
+        if (s == folder)
+           *s = 0;
+        Set();
+        }
      }
   return osContinue;
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-02 14:58+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -795,6 +795,9 @@ msgstr "Redigeeritud versioon juba olemas - kirjutada üle?"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Salvestuse lõikamiseks lisamine ebaõnnestus!"
+
+msgid "Rename recording to folder name?"
+msgstr ""
 
 msgid "Delete editing marks for this recording?"
 msgstr "Kustutada selle salvestuse markerid?"

@@ -8513,3 +8513,5 @@ Video Disk Recorder Revision History
   functions when the editing marks are manipulated during replay.
 - Fixed setting an empty recording name or folder to a blank in the "Edit recording"
   menu (reported by Christoph Haubrich).
+- Added a confirmation before renaming a recording to its folder name (suggested
+  by Christoph Haubrich).
