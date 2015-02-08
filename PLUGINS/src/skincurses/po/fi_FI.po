@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-skincurses 0.1.12\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2012-12-18 14:04+0100\n"
+"POT-Creation-Date: 2015-02-08 11:16+0100\n"
 "PO-Revision-Date: 2007-08-14 20:48+0300\n"
 "Last-Translator: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -22,6 +22,7 @@ msgstr "Tekstipohjainen ulkoasu"
 msgid "Key$Mute"
 msgstr "Mykistys"
 
+#. TRANSLATORS: note the trailing blank!
 msgid "Volume "
 msgstr "Äänenvoimakkuus "
 
