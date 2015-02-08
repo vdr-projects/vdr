@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.13 2015/01/27 10:50:11 kls Exp $
+ * $Id: config.h 3.17 2015/02/06 09:53:50 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "2.1.8"
-#define VDRVERSNUM   20108  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "2.1.9"
+#define VDRVERSNUM   20109  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.1.8"
-#define APIVERSNUM   20108  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "2.1.9"
+#define APIVERSNUM   20109  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -65,6 +65,7 @@
 
 #define STANDARD_DVB       0
 #define STANDARD_ANSISCTE  1
+#define STANDARD_NORDIG    2
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 
@@ -336,8 +337,9 @@ public:
   int PauseOnMarkJump;
   int SkipEdited;
   int PauseAtLastMark;
-  int BinarySkipInitial;
-  int BinarySkipTimeout;
+  int AdaptiveSkipInitial;
+  int AdaptiveSkipTimeout;
+  int AdaptiveSkipAlternate;
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;

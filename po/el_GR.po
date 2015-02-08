@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -796,6 +796,9 @@ msgstr ""
 msgid "Error while queueing recording for cutting!"
 msgstr ""
 
+msgid "Rename recording to folder name?"
+msgstr ""
+
 msgid "Delete editing marks for this recording?"
 msgstr ""
 
@@ -1241,10 +1244,13 @@ msgstr ""
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip initial value (s)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr ""
+
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

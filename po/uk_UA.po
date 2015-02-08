@@ -7,21 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
-"PO-Revision-Date: 2013-02-09 16:00+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"PO-Revision-Date: 2015-02-01 23:31+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.3\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Неправильний канал ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM активовано!"
 
 msgid "Channel not available!"
 msgstr "Канал недоступний!"
@@ -78,19 +78,19 @@ msgid "Rolloff"
 msgstr "Крен"
 
 msgid "StreamId"
-msgstr "StreamId"
+msgstr "Id потоку"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Пілот"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2SystemId"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
-msgstr "Починаю EPG-сканування"
+msgstr "Початок сканування EPG"
 
 msgid "Content$Movie/Drama"
 msgstr "Фільм/Драма"
@@ -249,7 +249,7 @@ msgid "Content$Broadcasting/Press"
 msgstr "Трансляція/Преса"
 
 msgid "Content$New Media"
-msgstr "Нові медія"
+msgstr "Нові медіа"
 
 msgid "Content$Arts/Culture Magazine"
 msgstr "Мистецтво/Культурний журнал"
@@ -424,7 +424,7 @@ msgid "Key$Info"
 msgstr "Інфо"
 
 msgid "Key$Play/Pause"
-msgstr "Програвати/Пауза"
+msgstr "Програвання/Пауза"
 
 msgid "Key$Play"
 msgstr "Програвання"
@@ -577,10 +577,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Настройки каналу не єдині!"
@@ -604,7 +604,7 @@ msgid "Channel is being used by a timer!"
 msgstr "Канал зайнятий таймером!"
 
 msgid "Delete channel?"
-msgstr "Видалити канал?"
+msgstr "Вилучити канал?"
 
 msgid "Edit folder"
 msgstr "Редагувати теку"
@@ -719,7 +719,7 @@ msgid "Button$Schedule"
 msgstr "Програма"
 
 msgid "Can't switch channel!"
-msgstr "Неможливо переключити канал!"
+msgstr "Неможливо перемкнути канал!"
 
 #, c-format
 msgid "Schedule - %s"
@@ -743,71 +743,74 @@ msgid "CAM not responding!"
 msgstr "CAM не відповідає!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Редагувати шлях"
 
 msgid "Folder"
-msgstr ""
+msgstr "Тека"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Ця тека зараз використовується - не дозволено жодних змін!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Перемістити цілу теку, що містить %d записів?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Помилка перенесення теки!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Редагувати запис"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Цей запис зараз використовується - не дозволено жодних змін!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Відмінити обрізання"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Зупинити обрізання"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Відмінити перенесення"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Зупинити перенесення"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Відмінити копіювання"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Зупинити копіювання"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Обрізання"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Вилучити мітки"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Запис зник!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Вже існує редагована версія - перезаписати?"
 
 msgid "Error while queueing recording for cutting!"
+msgstr "Помилка перешуковування запису для обрізання!"
+
+msgid "Rename recording to folder name?"
 msgstr ""
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Вилучити мітки редагування для цього запису?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Помилка вилучення міток редагування!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Помилка при зміні пріоритету/тривалості!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Помилка при зміні теки/назви!"
 
 msgid "Recording info"
 msgstr "Про запис"
@@ -831,7 +834,7 @@ msgid "Recording is being edited - really delete?"
 msgstr "Запис редагується - дійсно вилучити?"
 
 msgid "Error while deleting recording!"
-msgstr "Помилка видалення запису!"
+msgstr "Помилка вилучення запису!"
 
 msgid "Recording commands"
 msgstr "Команди запису"
@@ -840,7 +843,7 @@ msgid "never"
 msgstr "ніколи"
 
 msgid "skin dependent"
-msgstr "згідно з стилем"
+msgstr "згідно зі стилем"
 
 msgid "always"
 msgstr "завжди"
@@ -1077,31 +1080,31 @@ msgid "Setup.LNB$own"
 msgstr "власне"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Використання позиціонеру тарілки"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Широта (градуси)"
 
 msgid "South"
-msgstr ""
+msgstr "Південь"
 
 msgid "North"
-msgstr ""
+msgstr "Північ"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Довгота (градуси)"
 
 msgid "West"
-msgstr ""
+msgstr "Захід"
 
 msgid "East"
-msgstr ""
+msgstr "Схід"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Макс. кут позиціонера (градуси)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Швидкість позиціонера (градуси/с)"
 
 msgid "CAM reset"
 msgstr "Перезавантаження CAM"
@@ -1114,16 +1117,16 @@ msgstr "CAM готовий"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (активування)"
 
 msgid "CAM"
 msgstr "CAM (Умовний доступ)"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Відмінити активацію"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Активувати"
 
 msgid "Button$Menu"
 msgstr "Меню"
@@ -1138,7 +1141,7 @@ msgid "Can't open CAM menu!"
 msgstr "Меню CAM-модуля недоступне!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Не можу активувати CAM!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM використовується - дійсно перезапустити?"
@@ -1222,10 +1225,10 @@ msgid "Setup.Replay$Multi speed mode"
 msgstr "Багатошвидкісний режим"
 
 msgid "Setup.Replay$Show replay mode"
-msgstr "Віображати режим перегляду"
+msgstr "Показати режим перегляду"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr "Показати час що зашився"
+msgstr "Показати час що залишився"
 
 msgid "Setup.Replay$Progress display time (s)"
 msgstr "Час показу індикатора (с)"
@@ -1234,18 +1237,21 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Пауза програвання при встановленні мітки"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Призупинити програвання при перескакуванні до мітки"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Пропустити редаговані частини"
 
 msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Призупинити програвання на останній мітці"
+
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip initial value (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
@@ -1261,13 +1267,13 @@ msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "Мін. час очікування вводу (хв)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "Затримкка обриву з'єднання SVDRP (сек)"
+msgstr "Затримка обриву з'єднання SVDRP (сек)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Затримка переключання каналу (сек)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Затримка часу для впровадження каналу (ms)"
+msgstr "Затримка часу для впровадження каналу (мс)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
 msgstr "Затримка повтору кнопок пульта (мс)"
@@ -1285,10 +1291,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Гучність при включенні"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Кроки гучності"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Лінеаризована гучність"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Кінець каналів"
@@ -1363,7 +1369,7 @@ msgid "Pausing live video..."
 msgstr "Режим відкладеного перегляду..."
 
 msgid "Delete timeshift recording?"
-msgstr "Видалити запис з часовим зсувом?"
+msgstr "Вилучити запис з часовим зсувом?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1476,7 +1482,7 @@ msgstr "ПРОГРАВАННЯ"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Повертання тарілки до %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG панелі"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.18 2015/01/30 12:24:53 kls Exp $
+ * $Id: ci.c 3.19 2015/02/02 13:57:39 kls Exp $
  */
 
 #include "ci.h"
@@ -1776,7 +1776,7 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
      if (ciAdapter->Assign(Device, true)) {
         if (!Device && assignedDevice)
            assignedDevice->SetCamSlot(NULL);
-        if (!Query) {
+        if (!Query || !Device) {
            StopDecrypting();
            source = transponder = 0;
            if (ciAdapter->Assign(Device)) {

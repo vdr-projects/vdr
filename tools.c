@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 3.3 2014/03/22 14:22:55 kls Exp $
+ * $Id: tools.c 3.4 2015/02/07 15:09:17 kls Exp $
  */
 
 #include "tools.h"
@@ -404,7 +404,7 @@ bool EntriesOnSameFileSystem(const char *File1, const char *File2)
      }
   else
      LOG_ERROR_STR(File1);
-  return false;
+  return true; // we only return false if both files actually exist and are in different file systems!
 }
 
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB)

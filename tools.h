@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.6 2015/01/14 09:09:06 kls Exp $
+ * $Id: tools.h 3.7 2015/02/07 15:12:26 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -234,6 +234,9 @@ cString dtoa(double d, const char *Format = "%f");
 cString itoa(int n);
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
+    ///< Checks whether the given files are on the same file system. If either of the
+    ///< files doesn't exist, this function returns *true* to avoid any actions that might be
+    ///< triggered if files are on different file system.
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);

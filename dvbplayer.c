@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 3.3 2015/02/01 10:45:41 kls Exp $
+ * $Id: dvbplayer.c 3.5 2015/02/06 15:08:51 kls Exp $
  */
 
 #include "dvbplayer.h"
 #include <math.h>
 #include <stdlib.h>
-#include "recording.h"
 #include "remux.h"
 #include "ringbuffer.h"
 #include "thread.h"
@@ -211,7 +210,7 @@ private:
   cNonBlockingFileReader *nonBlockingFileReader;
   cRingBufferFrame *ringBuffer;
   cPtsIndex ptsIndex;
-  cMarks marks;
+  cMarks *marks;
   cFileName *fileName;
   cIndexFile *index;
   cUnbufferedFile *replayFile;
@@ -240,6 +239,7 @@ protected:
 public:
   cDvbPlayer(const char *FileName, bool PauseLive);
   virtual ~cDvbPlayer();
+  void SetMarks(cMarks *Marks);
   bool Active(void) { return cThread::Running(); }
   void Pause(void);
   void Play(void);
@@ -265,6 +265,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
 {
   nonBlockingFileReader = NULL;
   ringBuffer = NULL;
+  marks = NULL;
   index = NULL;
   cRecording Recording(FileName);
   framesPerSecond = Recording.FramesPerSecond();
@@ -297,8 +298,6 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
      }
   else if (PauseLive)
      framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
-  if (Setup.SkipEdited || Setup.PauseAtLastMark)
-     marks.Load(FileName, framesPerSecond, isPesRecording);
 }
 
 cDvbPlayer::~cDvbPlayer()
@@ -309,6 +308,12 @@ cDvbPlayer::~cDvbPlayer()
   delete index;
   delete fileName;
   delete ringBuffer;
+  // don't delete marks here, we don't own them!
+}
+
+void cDvbPlayer::SetMarks(cMarks *Marks)
+{
+  marks = Marks;
 }
 
 void cDvbPlayer::TrickSpeed(int Increment)
@@ -377,6 +382,12 @@ bool cDvbPlayer::Save(void)
   if (index) {
      int Index = ptsIndex.FindIndex(DeviceGetSTC());
      if (Index >= 0) {
+        if (Setup.SkipEdited && marks) {
+           marks->Lock();
+           if (marks->First() && abs(Index - marks->First()->Position()) <= int(round(RESUMEBACKUP * framesPerSecond)))
+              Index = 0; // when stopping within RESUMEBACKUP seconds of the first mark the recording shall still be considered unviewed
+           marks->Unlock();
+           }
         Index -= int(round(RESUMEBACKUP * framesPerSecond));
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false);
@@ -407,9 +418,10 @@ void cDvbPlayer::Action(void)
   readIndex = Resume();
   if (readIndex > 0)
      isyslog("resuming replay at index %d (%s)", readIndex, *IndexToHMSF(readIndex, true, framesPerSecond));
-  else if (Setup.SkipEdited) {
-     if (marks.First() && index) {
-        int Index = marks.First()->Position();
+  else if (Setup.SkipEdited && marks) {
+     marks->Lock();
+     if (marks->First() && index) {
+        int Index = marks->First()->Position();
         uint16_t FileNumber;
         off_t FileOffset;
         if (index->Get(Index, &FileNumber, &FileOffset) && NextFile(FileNumber, FileOffset)) {
@@ -417,6 +429,7 @@ void cDvbPlayer::Action(void)
            readIndex = Index;
            }
         }
+     marks->Unlock();
      }
 
   nonBlockingFileReader = new cNonBlockingFileReader;
@@ -486,11 +499,11 @@ void cDvbPlayer::Action(void)
                       off_t FileOffset;
                       if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset)) {
                          readIndex++;
-                         if (Setup.SkipEdited || Setup.PauseAtLastMark) {
-                            marks.Update();
-                            cMark *m = marks.Get(readIndex);
+                         if ((Setup.SkipEdited || Setup.PauseAtLastMark) && marks) {
+                            marks->Lock();
+                            cMark *m = marks->Get(readIndex);
                             if (m && (m->Index() & 0x01) != 0) { // we're at an end mark
-                               m = marks.GetNextBegin(m);
+                               m = marks->GetNextBegin(m);
                                int Index = -1;
                                if (m)
                                   Index = m->Position(); // skip to next begin mark
@@ -506,6 +519,7 @@ void cDvbPlayer::Action(void)
                                   CutIn = true;
                                   }
                                }
+                            marks->Unlock();
                             }
                          }
                       else
@@ -927,6 +941,12 @@ cDvbPlayerControl::cDvbPlayerControl(const char *FileName, bool PauseLive)
 cDvbPlayerControl::~cDvbPlayerControl()
 {
   Stop();
+}
+
+void cDvbPlayerControl::SetMarks(cMarks *Marks)
+{
+  if (player)
+     player->SetMarks(Marks);
 }
 
 bool cDvbPlayerControl::Active(void)

@@ -2,14 +2,14 @@
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
-# Lucian Muresan <lucianm@users.sourceforge.net>, 2004-2006, 2008, 2010-2013
+# Lucian Muresan <lucianm@users.sourceforge.net>, 2004-2006, 2008, 2010-2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
-"PO-Revision-Date: 2015-01-21 22:34+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"PO-Revision-Date: 2015-02-06 23:15+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
 "Language: ro\n"
@@ -22,7 +22,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Canal invalid ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM activat!"
 
 msgid "Channel not available!"
 msgstr "Canal indisponibil"
@@ -798,6 +798,9 @@ msgstr "Deja există o versiune editată - o suprascriu?"
 msgid "Error while queueing recording for cutting!"
 msgstr "Eroare la punerea în coada pentru tăiere!"
 
+msgid "Rename recording to folder name?"
+msgstr ""
+
 msgid "Delete editing marks for this recording?"
 msgstr "Șterg marcajele de editare pentru această înregistrare?"
 
@@ -1115,16 +1118,16 @@ msgstr "CAM pregătit"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (activez)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Anulează activarea"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Activează"
 
 msgid "Button$Menu"
 msgstr "Meniu"
@@ -1139,7 +1142,7 @@ msgid "Can't open CAM menu!"
 msgstr "Nu pot deschide meniul CAM"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Nu pot activa CAM-ul!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM-ul este in folosinţă - totuşi resetez?"
@@ -1235,19 +1238,22 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pauză la punerea marcajului de editare"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pauză după săritura la marcaj"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Săritură peste părțile editate"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Pauză la ultimul marcaj"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr ""
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr "Durata inițială (s) pentru săritul adaptiv al marcajelor"
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr ""
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr "Timeout (s) de resetare pentru săritul adaptiv al marcajelor"
+
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Strategie alternativă pentru săritul adaptiv al marcajelor"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"

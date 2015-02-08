@@ -1195,6 +1195,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  doesn't set the data's version numbers as required by the DVB standard
  for the "binary skip" patch
  for adding support for LCN (Logical Channel Numbers)
+ for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1728,6 +1729,8 @@ Arthur Konovalov <artlov@gmail.com>
  for reporting that the video stream type was set to 2 even if the vpid was 0
  for updates to 'sources.conf'
  for reporting a wrong initialization of Setup.PositionerSwing
+ for updating sources.conf to reflect the fact that Astra 4A and SES5 are actually in
+ two separate positions
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -2412,6 +2415,12 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to replace "Schnitt" with "Bearbeitung" in the German OSD texts
  for reporting a superfluous call to the skin's SetRecording() function after renaming
  a recording
+ for suggesting to add a function to remove the name of a recording and replace it
+ with the last element of the recording's folder path name
+ for reporting a bug in setting an empty recording name or folder to a blank in the
+ "Edit recording" menu
+ for suggesting to add a confirmation before renaming a recording to its folder name
+ for reporting a problem with data loss in case renaming a recording fails
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
@@ -2830,6 +2839,7 @@ Derek Kelly <user.vdr@gmail.com>
  for reporting an incompatible change from DTV_DVBT2_PLP_ID to DTV_STREAM_ID in DVB API 5.8
  for reporting a missing template for DVBDIR in Make.config.template
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
+ for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2909,6 +2919,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing learning keyboard remote control codes
  for making VDR read command line options from *.conf files in /etc/vdr/conf.d
  for adding a missing backslash to the help text of the SVDRP command MOVR
+ for fixing a memory leak in case of broken Extended Event Descriptors
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -3118,6 +3129,7 @@ Marco Skambraks <marco@ammec.de>
 Christian Richter <cr@crichter.net>
  for extending the interface to the script that gets called for recordings, so that in
  the "edited" case it also provides the name of the original recording
+ for suggesting to add SDNOTIFY to Make.config.template
 
 Christian Kaiser <chr-kaiser@arcor.de>
  for adding DeleteEvent() to the EPG handler interface
@@ -3167,6 +3179,8 @@ Sören Moch <smoch@web.de>
  changed after VDR has been started
  for reporting that the change "Fixed some compiler warnings with Clang 3.4.1" caused
  ci.c to no longer compile with older versions of gcc
+ for suggesting to make the "Select folder" menu add the folder names of all existing
+ recordings to any names that have been predefined in "folders.conf"
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
@@ -3213,6 +3227,9 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for reporting a problem with switching back to live viewing after replay in a setup
  with device bonding
  for reporting a problem with handling overlapping pending timers
+ for fixing the German translation of "Binary skip timeout (s)"
+ for reporting a bug in switching channels in the Schedule menu after going through
+ various Now and Schedule menus for different channels
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3284,6 +3301,8 @@ Thomas Reufer <thomas@reufer.ch>
  for adding handling for DTS audio tracks to cPatPmtParser::ParsePmt()
  for adding support for PGS subtitles
  for adding cOsdProvider::OsdSizeChanged()
+ for suggesting to change the German translations if the texts related to "binary
+ skipping"
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
@@ -3340,3 +3359,9 @@ Jasmin Jessich <jasmin@anw.at>
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently
  used sort mode of a menu
+
+Mario Fenneis <admin@mediastreambox.at>
+ for translating OSD texts to the Hungarian language
+
+Stefan Herdler <herdler@gmx.de>
+ for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()

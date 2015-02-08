@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 3.1 2013/10/30 10:16:18 kls Exp $
+ *   $Id: si.c 3.2 2015/02/01 14:55:27 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -198,17 +198,18 @@ void DescriptorGroup::Delete() {
       }
 }
 
-void DescriptorGroup::Add(GroupDescriptor *d) {
+bool DescriptorGroup::Add(GroupDescriptor *d) {
    if (!array) {
       length=d->getLastDescriptorNumber()+1;
       array=new GroupDescriptor*[length]; //numbering is zero-based
       for (int i=0;i<length;i++)
          array[i]=0;
    } else if (length != d->getLastDescriptorNumber()+1)
-      return; //avoid crash in case of misuse
+      return false; //avoid crash in case of misuse
    if (length <= d->getDescriptorNumber())
-      return; // see http://www.vdr-portal.de/board60-linux/board14-betriebssystem/board69-c-t-vdr/p1025777-segfault-mit-vdr-1-7-21/#post1025777
+      return false; // see http://www.vdr-portal.de/board60-linux/board14-betriebssystem/board69-c-t-vdr/p1025777-segfault-mit-vdr-1-7-21/#post1025777
    array[d->getDescriptorNumber()]=d;
+   return true;
 }
 
 bool DescriptorGroup::isComplete() {

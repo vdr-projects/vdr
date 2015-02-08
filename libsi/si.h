@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 3.2 2014/02/08 14:11:32 kls Exp $
+ *   $Id: si.h 3.3 2015/02/01 14:55:27 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -483,7 +483,7 @@ class DescriptorGroup {
 public:
    DescriptorGroup(bool deleteOnDesctruction=true);
    ~DescriptorGroup();
-   void Add(GroupDescriptor *d);
+   bool Add(GroupDescriptor *d);
    void Delete();
    int getLength() { return length; }
    GroupDescriptor **getDescriptors() { return array; }

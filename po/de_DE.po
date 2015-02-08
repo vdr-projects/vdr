@@ -1,13 +1,13 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Klaus Schmidinger <vdr@tvdr.de>, 2000-2008
+# Klaus Schmidinger <vdr@tvdr.de>, 2000-2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -796,6 +796,9 @@ msgstr "Geschnittene Version existiert bereits - überschreiben?"
 msgid "Error while queueing recording for cutting!"
 msgstr "Fehler beim Hinzufügen der Aufnahme zur Schnittwarteschlange"
 
+msgid "Rename recording to folder name?"
+msgstr "Aufnahme in Ordnername umbenennen?"
+
 msgid "Delete editing marks for this recording?"
 msgstr "Schnittmarken für diese Aufnahme löschen?"
 
@@ -1079,7 +1082,7 @@ msgid "Setup.LNB$Use dish positioner"
 msgstr "Antennen-Positionierer benutzen"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr "Standort Längengrad"
+msgstr "Standort Breitengrad"
 
 msgid "South"
 msgstr "Süd"
@@ -1088,7 +1091,7 @@ msgid "North"
 msgstr "Nord"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr "Standort Breitengrad"
+msgstr "Standort Längengrad"
 
 msgid "West"
 msgstr "West"
@@ -1241,11 +1244,14 @@ msgstr "Herausgeschnittene Teile überspringen"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pause an der letzten Schnittmarke"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Anfangswert für binäres Springen (s)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr "Anfangswert beim Halbieren der Sprungweite (s)"
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Zeitlimit für binäres Springen (ms)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr "Zeitlimit beim Halbieren der Sprungweite (s)"
+
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Sprungweite nur bei Richtungswechsel halbieren"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"
@@ -1519,7 +1525,7 @@ msgid "Recording started"
 msgstr "Aufzeichnung gestartet"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "VDR schaltet später aus - Power zum erzwingen"
+msgstr "VDR schaltet später aus - Power zum Erzwingen"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Taste drücken, um Ausschalten abzubrechen"

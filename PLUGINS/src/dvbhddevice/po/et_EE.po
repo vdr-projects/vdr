@@ -1,7 +1,7 @@
 # VDR plugin language source file
 # Copyright (C) 2011 Andreas Regel
 # This file is distributed under the same license as the dvbhddevice package.
-# Christoph Haubrich, 2011
+# Arthur Konovalov, 2015
 #
 msgid ""
 msgstr ""
@@ -9,27 +9,27 @@ msgstr ""
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2014-09-21 14:01+0200\n"
 "PO-Revision-Date: 2011-04-25 21:44+0200\n"
-"Last-Translator: Rolf Ahrenberg\n"
-"Language-Team: Finnish <vdr@linuxtv.org>\n"
-"Language: fi\n"
+"Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
+"Language-Team: Estonian <vdr@linuxtv.org>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "HD Full Featured DVB device"
-msgstr "DVB-laite HD-ulostulolla"
+msgstr "Täisfunktsionaalne HD DVB seade"
 
 msgid "Video Conversion"
-msgstr "Näyttömuoto"
+msgstr "Video konverteerimine"
 
 msgid "TV on"
-msgstr "TV päälle"
+msgstr "TV sisse"
 
 msgid "TV off"
-msgstr "TV kiinni"
+msgstr "TV välja"
 
 msgid "Automatic"
-msgstr "automaattinen"
+msgstr "automaatne"
 
 msgid "Letterbox 16/9"
 msgstr "letterbox 16:9"
@@ -44,85 +44,85 @@ msgid "CentreCutOut"
 msgstr "center cut out"
 
 msgid "Always 16/9"
-msgstr "aina 16:9"
+msgstr "alati 16:9"
 
 msgid "Zoom 16/9"
-msgstr "zoom 16/9"
+msgstr "suum 16/9"
 
 msgid "Off"
-msgstr "ei"
+msgstr "väljas"
 
 msgid "Frame rate"
-msgstr "kuvataajuuden mukaan"
+msgstr "kaadrisagedus"
 
 msgid "HD Only"
-msgstr "vain HD-resoluutiolla"
+msgstr "ainult HD-resolutsioon"
 
 msgid "Always"
-msgstr "aina"
+msgstr "alati"
 
 msgid "Disabled"
-msgstr "ei käytössä"
+msgstr "keelatud"
 
 msgid "Analogue only"
-msgstr "vain analoginen"
+msgstr "ainult analoog"
 
 msgid "HDMI only"
-msgstr "vain HDMI"
+msgstr "ainult HDMI"
 
 msgid "Follow resolution"
-msgstr "resoluution mukaan"
+msgstr "vastavalt resolutsioonile"
 
 msgid "none"
 msgstr "ei"
 
 msgid "Resolution"
-msgstr "Kuvaresoluutio"
+msgstr "Resolutsioon"
 
 msgid "Video Mode Adaption"
-msgstr "Sovita näyttömoodi"
+msgstr "Videorežiimi sobitus"
 
 msgid "TV format"
-msgstr "Näytön kuvasuhde"
+msgstr "TV külgsuhe"
 
 msgid "Analogue Video"
-msgstr "Analoginen kuvalähtö"
+msgstr "Analoogvideo"
 
 msgid "Audio Delay (ms)"
-msgstr "Äänen viive (ms)"
+msgstr "Heli viide (ms)"
 
 msgid "Audio Downmix"
-msgstr "Äänen alasmiksaus"
+msgstr "Heli downmix"
 
 msgid "A/V Sync Shift (ms)"
-msgstr "A/V-synkronointi (ms)"
+msgstr "A/V-sünkro nihe (ms)"
 
 msgid "OSD Size"
-msgstr "Kuvaruutunäytön koko"
+msgstr "Ekraanimenüü suurus"
 
 msgid "HDMI CEC"
-msgstr "Käytä HDMI CEC-toimintoa"
+msgstr "HDMI CEC"
 
 msgid "CEC: Switch TV on"
-msgstr "CEC: Laita TV päälle"
+msgstr "CEC: TV sisselülitus"
 
 msgid "CEC: Switch TV off"
-msgstr "CEC: Sammuta TV"
+msgstr "CEC: TV väljalülitus"
 
 msgid "Remote Control Protocol"
-msgstr "Kaukosäätimen protokolla"
+msgstr "Kaugjuhtimispuldi protokoll"
 
 msgid "Remote Control Address"
-msgstr "Kaukosäätimen osoite"
+msgstr "Kaugjuhtimispuldi aadress"
 
 msgid "High Level OSD"
-msgstr "Käytä korkean tason kuvaruutunäyttöä"
+msgstr "Kõrgema taseme ekraanimenüü"
 
 msgid "Allow True Color OSD"
-msgstr "Salli tosivärit kuvaruutunäytölle"
+msgstr "True Color ekraanimenüü"
 
 msgid "True Color format"
-msgstr "Näytä tosivärit muodossa"
+msgstr "True Color formaat"
 
 msgid "Hide mainmenu entry"
-msgstr "Piilota valinta päävalikosta"
+msgstr "Peita peamenüü valikus"

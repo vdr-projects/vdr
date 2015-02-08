@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.6 2015/01/31 13:34:44 kls Exp $
+ * $Id: recording.h 3.8 2015/02/07 14:29:14 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -350,7 +350,7 @@ public:
   bool Save(FILE *f);
   };
 
-class cMarks : public cConfig<cMark> {
+class cMarks : public cConfig<cMark>, public cMutex {
 private:
   cString recordingFileName;
   cString fileName;
@@ -369,6 +369,11 @@ public:
   void Align(void);
   void Sort(void);
   void Add(int Position);
+       ///< If this cMarks object is used by multiple threads, the caller must Lock()
+       ///< it before calling Add() and Unlock() it afterwards. The same applies to
+       ///< calls to Del(), or any of the functions that return a "cMark *", in case
+       ///< an other thread might modifiy the list while the returned pointer is
+       ///< considered valid.
   cMark *Get(int Position);
   cMark *GetPrev(int Position);
   cMark *GetNext(int Position);

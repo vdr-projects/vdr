@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 3.5 2014/02/08 14:20:27 kls Exp $
+ * $Id: eit.c 3.6 2015/02/01 14:55:27 kls Exp $
  */
 
 #include "eit.h"
@@ -136,8 +136,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                     UseExtendedEventDescriptor = true;
                     }
                  if (UseExtendedEventDescriptor) {
-                    ExtendedEventDescriptors->Add(eed);
-                    d = NULL; // so that it is not deleted
+                    if (ExtendedEventDescriptors->Add(eed))
+                       d = NULL; // so that it is not deleted
                     }
                  if (eed->getDescriptorNumber() == eed->getLastDescriptorNumber())
                     UseExtendedEventDescriptor = false;

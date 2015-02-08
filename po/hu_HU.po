@@ -4,30 +4,31 @@
 # Istvan Koenigsberger <istvnko@hotmail.com>, 2002, 2003, 2006
 # Guido Josten <guido.josten@t-online.de>, 2002, 2003, 2006
 # Thomas Günther <tom@toms-cafe.de>, 2007
-# István Füley <ifuley@tigercomp.ro>, 2007, 2012, 2013
+# István Füley <ifuley@tigercomp.ro>, 2007, 2012, 2013, 2015
+# Mario Fenneis <admin@mediastreambox.at>, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-01-30 13:14+0100\n"
-"PO-Revision-Date: 2013-03-01 19:22+0200\n"
+"PO-Revision-Date: 2015-02-03 11:35+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.11\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Érvénytelen csatorna ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM aktiválva!"
 
 msgid "Channel not available!"
-msgstr "Az adó nem elérhető"
+msgstr "A csatorna nem elérhető!"
 
 msgid "Can't start Transfer Mode!"
 msgstr "Transfer-Mode nem indítható!"
@@ -69,7 +70,7 @@ msgid "Bandwidth"
 msgstr "Sávszélesség"
 
 msgid "Transmission"
-msgstr "Átvitel"
+msgstr "Transmission"
 
 msgid "Guard"
 msgstr "Guard"
@@ -84,22 +85,22 @@ msgid "StreamId"
 msgstr "Stream azonosító"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2 rendszer azonosító"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
-msgstr "EPG adatok aktualizálása"
+msgstr "EPG adatok frissítése"
 
 msgid "Content$Movie/Drama"
 msgstr "Film/Dráma"
 
 msgid "Content$Detective/Thriller"
-msgstr "Nyomozó/Thriller"
+msgstr "Nyomozó/Krimi"
 
 msgid "Content$Adventure/Western/War"
 msgstr "Kaland/Western/Háborús"
@@ -117,7 +118,7 @@ msgid "Content$Romance"
 msgstr "Romantikus film"
 
 msgid "Content$Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Komolyzenei/Klasszikus/Vallási/Történelmi film/Dráma"
+msgstr "Komoly/Klasszikus/Vallási/Történelmi film/Dráma"
 
 msgid "Content$Adult Movie/Drama"
 msgstr "Felnőtt tartalom/Dráma"
@@ -159,7 +160,7 @@ msgid "Content$Sport Magazine"
 msgstr "Sporthíradó"
 
 msgid "Content$Football/Soccer"
-msgstr "Fotball/Labdarúgás"
+msgstr "Futball/Labdarúgás"
 
 msgid "Content$Tennis/Squash"
 msgstr "Tenisz/Squash"
@@ -180,13 +181,13 @@ msgid "Content$Winter Sports"
 msgstr "Télisportok"
 
 msgid "Content$Equestrian"
-msgstr "Biliárd"
+msgstr "Lovassport"
 
 msgid "Content$Martial Sports"
 msgstr "Közdősport"
 
 msgid "Content$Children's/Youth Programme"
-msgstr "Gyerekprogram/Fiataloknak"
+msgstr "Gyerek/Ifjúsági"
 
 msgid "Content$Pre-school Children's Programme"
 msgstr "Óvodáskorú gyerekeknek"
@@ -228,10 +229,10 @@ msgid "Content$Arts/Culture"
 msgstr "Művészet/Kultúra"
 
 msgid "Content$Performing Arts"
-msgstr "Előadás"
+msgstr "Előadóművészet"
 
 msgid "Content$Fine Arts"
-msgstr "Belle arte"
+msgstr "Képzőművészet"
 
 msgid "Content$Religion"
 msgstr "Vallás"
@@ -246,7 +247,7 @@ msgid "Content$Film/Cinema"
 msgstr "Film/Mozi"
 
 msgid "Content$Experimental Film/Video"
-msgstr "Amatőr film/video"
+msgstr "Avantgárd/Videó"
 
 msgid "Content$Broadcasting/Press"
 msgstr "Közvetítés/Sajtó"
@@ -279,16 +280,16 @@ msgid "Content$Nature/Animals/Environment"
 msgstr "Természet/Állatok/Környezet"
 
 msgid "Content$Technology/Natural Sciences"
-msgstr "Technológia/Természettudomány"
+msgstr "Technika/Természettudomány"
 
 msgid "Content$Medicine/Physiology/Psychology"
-msgstr "Gyógyászat/Pszichológia/Orvostan"
+msgstr "Gyógyászat/Fiziológia/Pszichológia"
 
 msgid "Content$Foreign Countries/Expeditions"
-msgstr "Idegen országok/Expedíciók"
+msgstr "Külföld/Expedíciók"
 
 msgid "Content$Social/Spiritual Sciences"
-msgstr "Társadalmi/Lélektudomány"
+msgstr "Társadalmi/Lélektudományok"
 
 msgid "Content$Further Education"
 msgstr "Továbbképzés"
@@ -297,7 +298,7 @@ msgid "Content$Languages"
 msgstr "Nyelvek"
 
 msgid "Content$Leisure/Hobbies"
-msgstr "Hobbi"
+msgstr "Szabadidő/Hobbi"
 
 msgid "Content$Tourism/Travel"
 msgstr "Turizmus/Utazás"
@@ -306,7 +307,7 @@ msgid "Content$Handicraft"
 msgstr "Kézműves"
 
 msgid "Content$Motoring"
-msgstr "Motor"
+msgstr "Autók, Motorok"
 
 msgid "Content$Fitness & Health"
 msgstr "Fitness és egészség"
@@ -379,7 +380,7 @@ msgid "(press 'Down' to end key definition)"
 msgstr "('Le' megnyomása a befejezéshez)"
 
 msgid "(press 'Menu' to skip this key)"
-msgstr "A Menü gombot nyomni ennek a gombnak a kihagyásához"
+msgstr "('Menü' megnyomása ennek a gombnak a kihagyásához)"
 
 msgid "Learning Remote Control Keys"
 msgstr "Távirányító betanítása"
@@ -463,7 +464,7 @@ msgid "Key$Channel-"
 msgstr "Csatorna-"
 
 msgid "Key$PrevChannel"
-msgstr "Az előző adás"
+msgstr "Az előző csatorna"
 
 msgid "Key$Volume+"
 msgstr "Hangerő+"
@@ -472,7 +473,7 @@ msgid "Key$Volume-"
 msgstr "Hangerő-"
 
 msgid "Key$Mute"
-msgstr "Csend"
+msgstr "Néma üzemmód"
 
 msgid "Key$Audio"
 msgstr "Hang"
@@ -535,7 +536,7 @@ msgid "encrypted"
 msgstr "Kódolt"
 
 msgid "Edit channel"
-msgstr "Csatornák beállítása"
+msgstr "Csatorna szerkesztése"
 
 msgid "Name"
 msgstr "Név"
@@ -580,13 +581,13 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
-msgstr "Az adóbeállítások nem egyértelműek"
+msgstr "A csatornabeállítások nem egyértelműek!"
 
 msgid "Channels"
 msgstr "Csatornák"
@@ -601,10 +602,10 @@ msgid "Button$Delete"
 msgstr "Törölni"
 
 msgid "Button$Mark"
-msgstr "Megjelölni"
+msgstr "Kijelölni"
 
 msgid "Channel is being used by a timer!"
-msgstr "Az adót az időzítő használja!"
+msgstr "A csatornát az időzítő használja!"
 
 msgid "Delete channel?"
 msgstr "Csatorna törlése?"
@@ -623,7 +624,7 @@ msgstr "Ez a könyvtárnév már létezik!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "A könyvtár neve nem tartalmazhatja: '%c'!"
+msgstr "A könyvtár neve nem tartalmazhat '%c'!"
 
 msgid "Button$Open"
 msgstr "Kinyitni"
@@ -635,10 +636,10 @@ msgid "Delete folder?"
 msgstr "Töröljem a könyvtárat?"
 
 msgid "Edit timer"
-msgstr "Időzítő megváltoztatása"
+msgstr "Időzítő szerkesztése"
 
 msgid "Active"
-msgstr "Aktiv"
+msgstr "Aktív"
 
 msgid "Channel"
 msgstr "Csatorna"
@@ -662,7 +663,7 @@ msgid "Lifetime"
 msgstr "Élettartam"
 
 msgid "File"
-msgstr "File"
+msgstr "Fájl"
 
 msgid "Button$Folder"
 msgstr "Könyvtár"
@@ -695,7 +696,7 @@ msgid "Timer still recording - really delete?"
 msgstr "Felvétel folyamatban van - biztos töröljem?"
 
 msgid "Event"
-msgstr "Esemény"
+msgstr "Adás"
 
 msgid "Button$Timer"
 msgstr "Időzítő"
@@ -707,10 +708,10 @@ msgid "Button$Switch"
 msgstr "Átkapcsolni"
 
 msgid "What's on now?"
-msgstr "Most adásban"
+msgstr "Most adásban?"
 
 msgid "What's on next?"
-msgstr "Mi következik?"
+msgstr "Következik?"
 
 msgid "Button$Next"
 msgstr "Következő"
@@ -722,7 +723,7 @@ msgid "Button$Schedule"
 msgstr "Műsorújság"
 
 msgid "Can't switch channel!"
-msgstr "Az adót nem lehet elkapcsolni"
+msgstr "A csatornát nem lehet elkapcsolni!"
 
 #, c-format
 msgid "Schedule - %s"
@@ -733,10 +734,10 @@ msgid "This event - %s"
 msgstr "Ez az adás - %s"
 
 msgid "This event - all channels"
-msgstr "Ez az adás - összes adón"
+msgstr "Ez az adás - összes csatornák"
 
 msgid "All events - all channels"
-msgstr "Az összes adás - az összes adón"
+msgstr "Az összes adás - összes csatornák"
 
 #, c-format
 msgid "Please enter %d digits!"
@@ -746,77 +747,77 @@ msgid "CAM not responding!"
 msgstr "A CAM nem válaszol!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Elérés szerkesztése"
 
 msgid "Folder"
-msgstr ""
+msgstr "Könyvtár"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Ez a könyvtár használatban van - szerkesztés nem lehetséges!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "A teljes könytár %d felvételt tartalmaz, áthelyezzem?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Hiba a könyvtár áthelyezése közben!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Felvétel szerkesztése"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "A felvétel használatban van - szerkesztés nem lehetséges!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Vágás mégse"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Vágás leállítása"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Áthelyezés mégse"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Áthelyezés leállítása"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Másolás mégse"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Másolása leállítása"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Vágás"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Vágópontok törlése"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "A felvétel eltűnt!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "A szerkesztett változat már létezik - felülírjam?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Hiba a felvétel vágásra előkészítése közben!"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Töröljem a felvétel vágópontjait?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Hiba a vágópontok törlése közben!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Hiba a prioritás/élettartam változtatása közben!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Hiba a könyvtár/név változtatása közben!"
 
 msgid "Recording info"
 msgstr "Felvétel infó"
 
 msgid "Button$Play"
-msgstr "Lejátszani"
+msgstr "Lejátszás"
 
 msgid "Button$Rewind"
 msgstr "Vissza az elejére"
@@ -831,13 +832,13 @@ msgid "Delete recording?"
 msgstr "Felvétel törlése?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "A felvétel szerkesztés alatt - biztos törölni?"
+msgstr "A felvétel szerkesztés alatt - biztos töröljem?"
 
 msgid "Error while deleting recording!"
 msgstr "Hiba a felvétel törlésénél!"
 
 msgid "Recording commands"
-msgstr "Parancsok a felvett filmekhez"
+msgstr "Parancsok a felvételekhez"
 
 msgid "never"
 msgstr "soha"
@@ -873,7 +874,7 @@ msgid "Setup.OSD$Height (%)"
 msgstr "Magasság (%)"
 
 msgid "Setup.OSD$Message time (s)"
-msgstr "Információ feltűntetésének időtartama"
+msgstr "Információ feltüntetésének időtartama (mp)"
 
 msgid "Setup.OSD$Use small font"
 msgstr "Kisbetűt használni"
@@ -909,10 +910,10 @@ msgid "top"
 msgstr "Fent"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Adásinformáció feltűntetésének időtartama (s)"
+msgstr "Adásinformáció feltűntetésének időtartama (mp)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Információ az adó váltásánál"
+msgstr "Információ a csatorna váltásánál"
 
 msgid "Setup.OSD$Timeout requested channel info"
 msgstr "A lekérdezett adásinformáció bezárása"
@@ -936,7 +937,7 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Könyvtárakat rendezd előre"
 
 msgid "Setup.OSD$Number keys for characters"
-msgstr "Számgombok a betűkön"
+msgstr "Betűk a számgombokon"
 
 msgid "Setup.OSD$Color key 0"
 msgstr "Színes gomb 0"
@@ -963,7 +964,7 @@ msgid "Setup.EPG$EPG bugfix level"
 msgstr "Hibaelhárítás szintje"
 
 msgid "Setup.EPG$EPG linger time (min)"
-msgstr "Eltelt EPG adatok kijelzése (perc)"
+msgstr "Eltelt EPG adatok kijelzése (p)"
 
 msgid "Setup.EPG$Set system time"
 msgstr "Óra állítása TP időhöz"
@@ -986,7 +987,7 @@ msgid "letterbox"
 msgstr "letterbox"
 
 msgid "center cut out"
-msgstr "képközép kivágás"
+msgstr "teljeskitöltés"
 
 msgid "no"
 msgstr "nem"
@@ -1001,7 +1002,7 @@ msgid "names and PIDs"
 msgstr "nevek és PIDek"
 
 msgid "add new channels"
-msgstr "új adók hozzáadása"
+msgstr "új csatornák hozzáadása"
 
 msgid "add new transponders"
 msgstr "új transponderek hozzáadása"
@@ -1016,22 +1017,22 @@ msgid "Button$Subtitles"
 msgstr "Feliratok"
 
 msgid "Setup.DVB$Primary DVB interface"
-msgstr "Első DVB interface"
+msgstr "Elsődleges DVB eszköz"
 
 msgid "Setup.DVB$Standard compliance"
 msgstr "Vételi norma"
 
 msgid "Setup.DVB$Video format"
-msgstr "Video formátum"
+msgstr "Videó formátum"
 
 msgid "Setup.DVB$Video display format"
-msgstr "Képernyőformátum"
+msgstr "Megjelenítő formátum"
 
 msgid "Setup.DVB$Use Dolby Digital"
 msgstr "Dolby-Digital hangot használni"
 
 msgid "Setup.DVB$Update channels"
-msgstr "Adók aktualizálása"
+msgstr "Csatornák frissítése"
 
 msgid "Setup.DVB$Audio languages"
 msgstr "Hangsáv nyelvek"
@@ -1074,37 +1075,37 @@ msgstr "Felső LNB-frekvencia (MHz)"
 
 #, c-format
 msgid "Setup.LNB$Device %d connected to sat cable"
-msgstr "Fejkábel a %d. tunerhez"
+msgstr "Fejkábel a %d. tunerhez csatlakoztatva"
 
 msgid "Setup.LNB$own"
 msgstr "saját"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Forgató használata"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Szélesség (fok)"
 
 msgid "South"
-msgstr ""
+msgstr "Dél"
 
 msgid "North"
-msgstr ""
+msgstr "Észak"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Hosszúság (fok)"
 
 msgid "West"
-msgstr ""
+msgstr "Nyugat"
 
 msgid "East"
-msgstr ""
+msgstr "Kelet"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Forgató maximális intervalluma (fok)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Forgató sebessége (fok/mp)"
 
 msgid "CAM reset"
 msgstr "CAM újraindítás"
@@ -1117,16 +1118,16 @@ msgstr "CAM működik"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (aktiválás)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Aktiválás mégse"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Aktiválás"
 
 msgid "Button$Menu"
 msgstr "Menü"
@@ -1141,7 +1142,7 @@ msgid "Can't open CAM menu!"
 msgstr "A CAM menü nem nyitható"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "CAM aktiválás sikertelen!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM használatban - valóban újraindítjuk?"
@@ -1168,16 +1169,16 @@ msgid "Recording"
 msgstr "Felvétel"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Időeltolás a kezdésnél (perc)"
+msgstr "Időeltolás a kezdésnél (p)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Időeltolás a befejezésnél (perc)"
+msgstr "Időeltolás a befejezésnél (p)"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Alapértelmezett prioritás"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Alapértelmezett élettartam"
+msgstr "Alapértelmezett élettartam (n)"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "A szünet gomb működése"
@@ -1186,7 +1187,7 @@ msgid "Setup.Recording$Pause priority"
 msgstr "Időeltolás prioritása"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Időeltolás élettartama"
+msgstr "Időeltolás élettartama (n)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Epizódnév"
@@ -1198,22 +1199,22 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "Időeltolás VPS-nél (mp)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Direktfelvétel megjelölése"
+msgstr "Egygombos felvétel megjelölése"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Direktfelvétel megnevezése"
+msgstr "Egygombos felvétel megnevezése"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Direktfelvétel időtartama (perc)"
+msgstr "Egygombos felvétel időtartama (p)"
 
 msgid "Setup.Recording$present event"
 msgstr "Most futó műsor"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Max. video file méret (MB)"
+msgstr "Max. videó fájl méret (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Feldolgozott file-ok felosztása"
+msgstr "Feldolgozott fájlok felosztása"
 
 msgid "Setup.Recording$Delete timeshift recording"
 msgstr "Időeltolásos felvétel törlése"
@@ -1237,22 +1238,25 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "A visszajátszás megállítása vágópont kijelölésnél"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Szünet a lejátszásban, mikor egy vágópontra ugrik"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Vágott részek kihagyása"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Utolsó vágópontnál szünet a lejátszásban"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr ""
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr "Felezett ugrás kezdeti értéke (mp)"
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr ""
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr "Felezett ugrás időkorláta (mp)"
+
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Felezett ugrás csak irányváltoztatásnál"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "Lejátszás ID"
+msgstr "Lejátszás azonosító"
 
 msgid "Miscellaneous"
 msgstr "Egyéb"
@@ -1261,22 +1265,22 @@ msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "VDR leáll ha nem következik felvétel (p)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "VDR leáll használat nélkül (perc)"
+msgstr "VDR leáll használat nélkül (p)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP szétkapcsol használat nélkül(s)"
+msgstr "SVDRP szétkapcsol használat nélkül(mp)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Adásváltás ideje (s)"
+msgstr "Adásváltás ideje (mp)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Csatornaváltás timeout (ms)"
+msgstr "Csatornaváltás timeout (emp)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr "Távirányító ismétlés késleltetése (ms)"
+msgstr "Távirányító ismétlés késleltetése (emp)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
-msgstr "Távirányító ismétlés deltája (ms)"
+msgstr "Távirányító ismétlés deltája (emp)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Csatorna induláskor"
@@ -1288,10 +1292,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hangerő indulásnál"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Hangerőállítás léptéke"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Hangerő linearizálása"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Csatornalista görgetése"
@@ -1303,7 +1307,7 @@ msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Vészleállítás"
 
 msgid "Plugins"
-msgstr "Plugins"
+msgstr "Pluginok"
 
 msgid "This plugin has no setup parameters!"
 msgstr "Ennek a plugin-nak nincs setup-paramétere!"
@@ -1342,13 +1346,13 @@ msgid " Cancel editing"
 msgstr " Vágást megszakítani"
 
 msgid "Stop recording?"
-msgstr "Felvétel befejezni?"
+msgstr "Felvételt befejezni?"
 
 msgid "Cancel editing?"
 msgstr "Vágást befejezni?"
 
 msgid "No audio available!"
-msgstr "Hang nem lehetséges!"
+msgstr "Hang nem elérhetö!"
 
 msgid "No subtitles"
 msgstr "Felirat ki"
@@ -1360,7 +1364,7 @@ msgid "Not enough disk space to start recording!"
 msgstr "Nincs elegendő hely a felvételre"
 
 msgid "No free DVB device to record!"
-msgstr "Nincs szabad DVB kártya a felvételhez!"
+msgstr "Nincs szabad DVB eszköz a felvételhez!"
 
 msgid "Pausing live video..."
 msgstr "Az élő adás megállítva..."
@@ -1406,10 +1410,10 @@ msgid "Plugin"
 msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
-msgstr "Fel/Le egy új opcióért - aztán OK"
+msgstr "Fel/Le egy új pozícióért - aztán OK"
 
 msgid "Channel locked (recording)!"
-msgstr "Az adó blokkolva (felvétel)!"
+msgstr "A csatorna blokkolva (felvétel)!"
 
 msgid "Low disk space!"
 msgstr "A merevlemez majdnem tele!"
@@ -1434,7 +1438,7 @@ msgstr "Felvétel folyamatban van - mégis kikapcsolni?"
 
 #, c-format
 msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Felvétel %ld perc mulva kezdődik - mégis kikapcsolni?"
+msgstr "Felvétel %ld perc múlva kezdődik - mégis kikapcsolni?"
 
 msgid "shut down anyway?"
 msgstr "mégis kikapcsolni?"
@@ -1479,7 +1483,7 @@ msgstr "LEJÁTSZÁS"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Antenna forgatása  %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Konzol"
@@ -1529,7 +1533,7 @@ msgid "Press any key to cancel shutdown"
 msgstr "Nyomj egy gombot a leállás megszakításához"
 
 msgid "Switching primary DVB..."
-msgstr "Elsődleges DVB kártya váltása folyamatban..."
+msgstr "Elsődleges DVB eszköz váltása folyamatban..."
 
 msgid "Editing process failed!"
 msgstr "Vágás sikertelen!"

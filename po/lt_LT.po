@@ -1,13 +1,13 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010, 2013.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010, 2013, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -20,7 +20,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Blogi kanalo nustatymai ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "Dekodavimo modulis aktyvuotas!"
 
 msgid "Channel not available!"
 msgstr "Kanalas neegzistuoja!"
@@ -80,13 +80,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilotas"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2 Sistemos ID"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
@@ -573,13 +573,13 @@ msgid "CA"
 msgstr "CA (dekodavimo sistema)"
 
 msgid "Sid"
-msgstr "Serviso id"
+msgstr "Serviso id (Sid)"
 
 msgid "Nid"
-msgstr ""
+msgstr "Tinklo id (Nid)"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanalų nustatymai neunikalūs!"
@@ -742,71 +742,74 @@ msgid "CAM not responding!"
 msgstr "Dekodavimo modulis (CAM) neveikia!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Koreguoti kelią"
 
 msgid "Folder"
-msgstr ""
+msgstr "Katalogas"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Šis katalogas šiuo metu naudojamas, tad šiuo metu negalimi jokie pakeitimai!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Perkelti šį katalogą kurio viduje yra %d įrašų?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Klaida perkeliant katalogą!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Koreguoti įrašus"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Šis įrašas šiuo metu naudojamas, tad šiuo metu negalimi jokie pakeitimai!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Button$Atšaukti karpymą"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Button$Sustabdyti karpymą"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Button$Atšaukti perkėlimą"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Button$Sustabdyti perkėlimą"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Button$Atšaukti kopijavimą"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Button$Sustabdyti kopijavimą"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Button$Iškirpti"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Button$Ištrinti žymes"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Įrašai išvalyti!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Tokia koreguota versija jau yra, vistiek perašyti?"
 
 msgid "Error while queueing recording for cutting!"
+msgstr "Klaida sustatant įrašus į karpymo eilę!"
+
+msgid "Rename recording to folder name?"
 msgstr ""
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Ar tikrai ištrinti šio įrašo koregavimo žymes?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Klaida trinant koregavimo žymes!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Klaida keičiant prioritetą/galiojimo laiką!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Klaida keičiant katalogą/pavadinimą!"
 
 msgid "Recording info"
 msgstr "Informacija apie įrašus"
@@ -1076,31 +1079,31 @@ msgid "Setup.LNB$own"
 msgstr "savas"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Setup.LNB$Naudoti pozicionierių"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Setup.LNB$Vitovės platuma (laipsniais)"
 
 msgid "South"
-msgstr ""
+msgstr "Pietūs"
 
 msgid "North"
-msgstr ""
+msgstr "Šiaurė"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Setup.LNB$Vietovės ilgima (laipsniais)"
 
 msgid "West"
-msgstr ""
+msgstr "Vakarai"
 
 msgid "East"
-msgstr ""
+msgstr "Rytai"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Maksimalus pozicionieriaus pasukimas (laipsniais)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Pozicionieriaus kreitis (laipsniais/s)"
 
 msgid "CAM reset"
 msgstr "Dekodavimo modulis (CAM) perkrautas"
@@ -1113,16 +1116,16 @@ msgstr "Dekodavimo modulis (CAM) paruoštas darbui"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (aktyvuojama)"
 
 msgid "CAM"
 msgstr "Dekodavimo modulis (CAM)"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Button$Atšaukti aktyvaciją"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Button$Aktyvuoti"
 
 msgid "Button$Menu"
 msgstr "Meniu"
@@ -1137,7 +1140,7 @@ msgid "Can't open CAM menu!"
 msgstr "Negali atidaryti dekodavimo modulio meniu!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Negali aktyvuoti dekodavimo modulio!"
 
 msgid "CAM is in use - really reset?"
 msgstr "Dekodavimo modulis šiuo metu naudojamas - tikrai perkrauti?"
@@ -1233,18 +1236,21 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pristabdyti pakartojimą kai vyksta žymėjimas"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Setup.Replay$Pristabdyti pakartojim1 kol pereinama prie žymės"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Setup.Replay$Praleisti koreguotas dalis"
 
 msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Setup.Replay$Pristabdyti pakartojimą pasiekus paskutinę žymę"
+
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip initial value (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
@@ -1284,10 +1290,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Garsas įjungimo metu"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Setup.Miscellaneous$Garso reguliavimo žingsniai"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Setup.Miscellaneous$Garso lygiavimas"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalų pridengimas"
@@ -1475,7 +1481,7 @@ msgstr "GROTI"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Lėkštė sukama į %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Skydeliai"

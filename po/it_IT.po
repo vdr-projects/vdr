@@ -4,30 +4,29 @@
 # Alberto Carraro <bertocar@tin.it>, 2001
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
-# Nino Gerbino <ngerb@interfree.it>, 2006
-# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013
+# Nino Gerbino <ngerb@interfree.it>, 2006, 2015
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
-"PO-Revision-Date: 2015-01-19 20:19+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"PO-Revision-Date: 2015-02-05 00:09+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Italian\n"
-"X-Poedit-Country: ITALY\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.4\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM attivata!"
 
 msgid "Channel not available!"
 msgstr "Canale non disponibile!"
@@ -803,6 +802,9 @@ msgstr "Versione modificata già esistente. Sovrascrivere?"
 msgid "Error while queueing recording for cutting!"
 msgstr "Errore durante l'accodamento della registrazione per il taglio!"
 
+msgid "Rename recording to folder name?"
+msgstr ""
+
 msgid "Delete editing marks for this recording?"
 msgstr "Eliminare i marcatori di modifica della registrazione?"
 
@@ -1120,16 +1122,16 @@ msgstr "La CAM è pronta"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr "(attivazione)"
 
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Annulla attivazione"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Attiva"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1144,7 +1146,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossibile aprire il menu CAM!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Impossibile attivare CAM!"
 
 msgid "CAM is in use - really reset?"
 msgstr "La CAM è in uso - vuoi reimpostarla?"
@@ -1237,21 +1239,24 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Mostra tempo elaborazione (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Pausa riproduzione durante impostazione segni"
+msgstr "Pausa riproduzione durante impostazione marcatori"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pausa riproduzione se si passa ad un marcatore"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Salta parti modificate"
 
 msgid "Setup.Replay$Pause replay at last mark"
+msgstr "Pausa riproduzione all'ultimo marcatore"
+
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip initial value (s)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
 msgstr ""
 
-msgid "Setup.Replay$Binary skip timeout (s)"
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

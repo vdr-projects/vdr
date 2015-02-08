@@ -8384,7 +8384,7 @@ Video Disk Recorder Revision History
 - Now returning from removing deleted recordings after at most 10 seconds, or if the
   user presses a remote control key, to keep the system from getting unresponsive
   when removing a huge number of files (reported by Dieter Ferdinand).
-- Fixed generating the index file of an existing recording in case at the of a TS file
+- Fixed generating the index file of an existing recording in case at the end of a TS file
   there is less data in the buffer than needed by the frame detector. In such a case
   it was possible that frames were missed, and there was most likely a distortion
   when replaying that part of a recording. This is mostly a problem for recordings that
@@ -8405,7 +8405,7 @@ Video Disk Recorder Revision History
 - Now returning from removing deleted recordings after at most 10 seconds, or if the
   user presses a remote control key, to keep the system from getting unresponsive
   when removing a huge number of files (reported by Dieter Ferdinand).
-- Fixed generating the index file of an existing recording in case at the of a TS file
+- Fixed generating the index file of an existing recording in case at the end of a TS file
   there is less data in the buffer than needed by the frame detector. In such a case
   it was possible that frames were missed, and there was most likely a distortion
   when replaying that part of a recording. This is mostly a problem for recordings that
@@ -8452,3 +8452,72 @@ Video Disk Recorder Revision History
 - The function cDvbPlayer::Goto() now automatically calls Play() if Still is false.
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
+
+2015-02-08: Version 2.1.9
+
+- Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
+  Hanisch).
+- Fixed the German translation of "Binary skip timeout (s)" (thanks to Matthias
+  Senzel).
+- Fixed the German translation of "VDR will shut down later - press Power to force".
+- Fixed the Finnish translation of "Binary skip timeout (s)" (thanks to Rolf
+  Ahrenberg).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- Added SDNOTIFY to Make.config.template (suggested by Christian Richter). Also
+  added NO_KBD and BIDI.
+- Added code from the "jumpplay" patch that makes the recording still be considered
+  unviewed when stopping replay within RESUMEBACKUP seconds of the first mark.
+- The new option "Setup/Replay/Alternate behavior for adaptive skipping" can be used
+  to make adaptive skipping only halve the skip distance when the direction changes.
+  That way you can reach the desired point in a recording even if you make one too
+  many skips in a certain direction (see MANUAL for details).
+- Fixed cCamSlot::Assign(), so that it actually ignores the value of Query if Device
+  is NULL (as described in the header file).
+- Added a missing VDRDIR="$(CWD)" to the clean-plugins target of the Makefile, to
+  avoid error messages regarding the missing vdr.pc file.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the Hungarian OSD texts (thanks to István Füley).
+- Fixed switching channels in the Schedule menu after going through various Now and
+  Schedule menus for different channels (reported by Matthias Senzel).
+- Fixed setting the Blue button in the Schedule/Now/Next menus, so that it only shows
+  "Switch" if the selected event is on a different channel.
+- Added "NORDIG" to the list of "DVB/Standard compliance" options and using it to
+  restrict the LCN (Logical Channel Numbers) parsing to networks that actually use
+  this non-standard feature (thanks to Rolf Ahrenberg).
+- In the "Edit recording" menu the '0' key can now be used on the "Name:" field to
+  remove the name of the recording and replace it with the last element of the
+  recording's folder path name (suggested by Christoph Haubrich). See MANUAL, section
+  "Managing folders" for details.
+- Updated the Italian OSD texts (thanks to Nino Gerbino).
+- The "Select folder" menu now adds the folder names of all existing recordings to
+  any names that have been predefined in "folders.conf" (suggested by Sören Moch).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed the German translations of "latitude" and "longitude" (they were swapped).
+- Updated the Hungarian OSD texts (thanks to Mario Fenneis).
+- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
+- Changed the German translations if the texts related to "binary skipping" (based
+  on a suggestion by Thomas Reufer).
+- Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
+  two separate positions (thanks to Arthur Konovalov).
+- Fixed cMarks::GetNextBegin() and cMarks::GetNextEnd() (thanks to Stefan Herdler).
+  The behavior of these two functions is now exacly as described in the header file.
+  Editing marks that are placed at exactly the same offset in a recording are now
+  preserved in the cutting process.
+- Changed the naming of "binary skip mode" to "adaptive skip mode" (suggested by
+  Rolf Ahrenberg and Derek Kelly).
+- cDvbPlayer and cReplayControl now use the same list of editing marks. This avoids
+  inconsistent behavior with the "Skip edited parts" or "Pause replay at last mark"
+  functions when the editing marks are manipulated during replay.
+- Fixed setting an empty recording name or folder to a blank in the "Edit recording"
+  menu (reported by Christoph Haubrich).
+- Added a confirmation before renaming a recording to its folder name (suggested
+  by Christoph Haubrich).
+- Modified EntriesOnSameFileSystem(), so that it returns 'true' if either of the given
+  files doesn't exist (to avoid any actions that might be triggered if files are on
+  different file system), and changed handling the 'error' variable in cDirCopier, so
+  that it is initialized to 'true' and will only be set to 'false' if the entire
+  copy process has been successful (problem reported by Christoph Haubrich).
+- Added the UPDATE-2.2.0 file.

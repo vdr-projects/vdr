@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 3.2 2015/01/30 15:18:47 kls Exp $
+# $Id: Make.config.template 3.3 2015/02/02 09:07:07 kls Exp $
 
 ### The C compiler and options:
 
@@ -67,11 +67,19 @@ endif
 #PLGCFG = $(CONFDIR)/plugins.mk
 
 ### The remote control:
-
 LIRC_DEVICE = /var/run/lirc/lircd
+
+### Define if you don't want keyboard remote control:
+#NO_KBD = 1
 
 ### Define if you want vdr to not run as root:
 #VDR_USER = vdr
+
+### Define if you want to compile in 'bidi' support:
+#BIDI = 1
+
+### Define if you want 'systemd' notification:
+#SDNOTIFY = 1
 
 ### Fallback for plugins with old makefiles:
 ifdef PLUGIN

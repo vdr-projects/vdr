@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 3.1 2014/01/05 10:56:27 kls Exp $
+ * $Id: skincurses.c 3.2 2015/02/08 10:19:00 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.1.2";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -614,6 +614,7 @@ void cSkinCursesDisplayVolume::SetVolume(int Current, int Total, bool Mute)
      osd->DrawText(0, 0, tr("Key$Mute"), clrGreen, clrBackground, &Font);
      }
   else {
+     // TRANSLATORS: note the trailing blank!
      const char *Prompt = tr("Volume ");
      int l = Utf8StrLen(Prompt);
      int p = (ScOsdWidth - l) * Current / Total;

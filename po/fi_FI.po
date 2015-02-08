@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-02-07 17:08+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -800,6 +800,9 @@ msgstr "Muokattava versio on jo olemassa - ylikirjoitetaanko?"
 msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
 
+msgid "Rename recording to folder name?"
+msgstr ""
+
 msgid "Delete editing marks for this recording?"
 msgstr "Poistetaanko muokkausmerkinnät tallenteelta?"
 
@@ -1245,11 +1248,14 @@ msgstr "Ohita muokatut kohdat"
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pysäytä toisto viimeiseen merkkiin"
 
-msgid "Setup.Replay$Binary skip initial value (s)"
-msgstr "Binäärihypyn oletuspituus (s)"
+msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
+msgstr "Mukautuvan hypyn oletuskesto (s)"
 
-msgid "Setup.Replay$Binary skip timeout (s)"
-msgstr "Binäärihypyn odotusaika (ms)"
+msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
+msgstr "Mukautuvan hypyn nollausviive (s)"
+
+msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Käytä vaihtoehtoista mukautuvaa hyppyä"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
