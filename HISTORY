@@ -8520,3 +8520,4 @@ Video Disk Recorder Revision History
   different file system), and changed handling the 'error' variable in cDirCopier, so
   that it is initialized to 'true' and will only be set to 'false' if the entire
   copy process has been successful (problem reported by Christoph Haubrich).
+- Added the UPDATE-2.2.0 file.
