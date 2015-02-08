@@ -3362,3 +3362,6 @@ Martin Schirrmacher <schirrmie@gmail.com>
 
 Mario Fenneis <admin@mediastreambox.at>
  for translating OSD texts to the Hungarian language
+
+Stefan Herdler <herdler@gmx.de>
+ for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()

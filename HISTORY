@@ -8453,7 +8453,7 @@ Video Disk Recorder Revision History
 - Added support for LCN (Logical Channel Numbers), which plugins may use to sort
   channels (thanks to Rolf Ahrenberg).
 
-2015-02-07: Version 2.1.9
+2015-02-08: Version 2.1.9
 
 - Fixed a memory leak in case of broken Extended Event Descriptors (thanks to Lars
   Hanisch).
@@ -8502,10 +8502,10 @@ Video Disk Recorder Revision History
   on a suggestion by Thomas Reufer).
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
   two separate positions (thanks to Arthur Konovalov).
-- Fixed cMarks::GetNextBegin() and cMarks::GetNextEnd(). The behavior of these two
-  functions is now exacly as described in the header file. Editing marks that are
-  placed at exactly the same offset in a recording are now preserved in the cutting
-  process.
+- Fixed cMarks::GetNextBegin() and cMarks::GetNextEnd() (thanks to Stefan Herdler).
+  The behavior of these two functions is now exacly as described in the header file.
+  Editing marks that are placed at exactly the same offset in a recording are now
+  preserved in the cutting process.
 - Changed the naming of "binary skip mode" to "adaptive skip mode" (suggested by
   Rolf Ahrenberg and Derek Kelly).
 - cDvbPlayer and cReplayControl now use the same list of editing marks. This avoids
