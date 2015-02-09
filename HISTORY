@@ -8497,7 +8497,8 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed the German translations of "latitude" and "longitude" (they were swapped).
 - Updated the Hungarian OSD texts (thanks to Mario Fenneis).
-- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
+- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells
+  (thanks to Clemens Brauers).
 - Changed the German translations if the texts related to "binary skipping" (based
   on a suggestion by Thomas Reufer).
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in

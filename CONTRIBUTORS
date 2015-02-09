@@ -3364,5 +3364,8 @@ Martin Schirrmacher <schirrmie@gmail.com>
 Mario Fenneis <admin@mediastreambox.at>
  for translating OSD texts to the Hungarian language
 
+Clemens Brauers <vdr@admin-cb.de>
+ for modifying runvdr.template to improve compatibility with the "bash" and "dash" shells
+
 Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
