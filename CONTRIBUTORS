@@ -1703,6 +1703,7 @@ Martin Dauskardt <md001@gmx.de>
  cDevice::TrickSpeed()
  for renaming 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
  in 'make install'
+ for suggesting to add "#REMOTE=LIRC" to Make.config.template
 
 Maynard Cedric <maynard.cedric@wanadoo.fr>
  for reporting a problem in handling the color button texts in cMenuEditStrItem

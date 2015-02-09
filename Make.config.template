@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 3.3 2015/02/02 09:07:07 kls Exp $
+# $Id: Make.config.template 3.4 2015/02/09 09:58:45 kls Exp $
 
 ### The C compiler and options:
 
@@ -68,6 +68,9 @@ endif
 
 ### The remote control:
 LIRC_DEVICE = /var/run/lirc/lircd
+
+### Define if you always want to use LIRC, independent of the --lirc option:
+#REMOTE=LIRC
 
 ### Define if you don't want keyboard remote control:
 #NO_KBD = 1

@@ -378,7 +378,7 @@ Misc:
   "Mo.Di.Mi.Do.Fr.Sa.So.".
 - Added the channel name to log messages that reference a channel.
 - Added ARGSDIR to the ONEDIR section of Make.config.template.
-- Added SDNOTIFY, NO_KBD and BIDI to Make.config.template.
+- Added SDNOTIFY, NO_KBD, BIDI and REMOTE to Make.config.template.
 - Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
   two separate positions.
