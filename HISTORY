@@ -8531,3 +8531,5 @@ Video Disk Recorder Revision History
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Added "#REMOTE=LIRC" to Make.config.template (suggested by Martin Dauskardt).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Increased the width of the left text column in the Setup menus to avoid cutting
+  off German texts.
