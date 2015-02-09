@@ -3182,6 +3182,8 @@ Sören Moch <smoch@web.de>
  ci.c to no longer compile with older versions of gcc
  for suggesting to make the "Select folder" menu add the folder names of all existing
  recordings to any names that have been predefined in "folders.conf"
+ for adding an empty target to the Makefile to make sure the sub-make for libsi is
+ always called
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files

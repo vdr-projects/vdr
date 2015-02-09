@@ -8533,3 +8533,5 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Increased the width of the left text column in the Setup menus to avoid cutting
   off German texts.
+- Added an empty target to the Makefile to make sure the sub-make for libsi is always
+  called (thanks to Sören Moch).

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 3.5 2015/02/02 14:47:24 kls Exp $
+# $Id: Makefile 3.6 2015/02/09 12:28:24 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -139,8 +139,9 @@ vdr: $(OBJS) $(SILIB)
 
 # The libsi library:
 
-$(SILIB):
-	$(MAKE) --no-print-directory -C $(LSIDIR) CXXFLAGS="$(CXXFLAGS)" DEFINES="$(CDEFINES)" all
+$(SILIB): make-libsi
+	@$(MAKE) --no-print-directory -C $(LSIDIR) CXXFLAGS="$(CXXFLAGS)" DEFINES="$(CDEFINES)" all
+make-libsi: # empty rule makes sure the sub-make for libsi is always called
 
 # pkg-config file:
 
