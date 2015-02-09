@@ -801,7 +801,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Nimeä tallenne kansion mukaan?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Poistetaanko muokkausmerkinnät tallenteelta?"

@@ -8521,3 +8521,7 @@ Video Disk Recorder Revision History
   that it is initialized to 'true' and will only be set to 'false' if the entire
   copy process has been successful (problem reported by Christoph Haubrich).
 - Added the UPDATE-2.2.0 file.
+
+2015-02-09: Version 2.1.10
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
