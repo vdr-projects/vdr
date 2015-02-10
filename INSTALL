@@ -141,7 +141,7 @@ According to "ETSI EN 300 468" the default character set fo SI data is
 ISO6937. But unfortunately some broadcasters actually use ISO-8859-9 or
 other encodings, but fail to correctly announce that.
 Users who want to set the default character set to something different can
-do this by setting the environment variable VDR_CHARSET_OVERRIDE to something
+do this by using the command line option --chartab with something
 like ISO-8859-9.
 
 Start script with automatic restart in case of hangups:

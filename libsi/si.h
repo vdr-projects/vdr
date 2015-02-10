@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 3.3 2015/02/01 14:55:27 kls Exp $
+ *   $Id: si.h 3.4 2015/02/10 13:54:28 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -522,6 +522,9 @@ protected:
    void decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 };
 
+// Set the character table to use for strings that do not begin with a character
+// table indicator. Call with NULL to turn this off.
+void SetOverrideCharacterTable(const char *CharacterTable);
 // Call this function to set the system character table. CharacterTable is a string
 // like "iso8859-15" or "utf-8" (case insensitive).
 // Returns true if the character table was recognized.

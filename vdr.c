@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.15 2015/01/17 14:48:09 kls Exp $
+ * $Id: vdr.c 3.16 2015/02/10 14:13:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -216,6 +216,12 @@ int main(int argc, char *argv[])
   bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
+  const char *OverrideCharacterTable = NULL;
+#define DEPRECATED_VDR_CHARSET_OVERRIDE
+#ifdef DEPRECATED_VDR_CHARSET_OVERRIDE
+  OverrideCharacterTable = getenv("VDR_CHARSET_OVERRIDE");
+  const char *DeprecatedVdrCharsetOverride = OverrideCharacterTable;
+#endif
 
   bool UseKbd = true;
   const char *LircDevice = NULL;
@@ -244,6 +250,7 @@ int main(int argc, char *argv[])
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
       { "cachedir", required_argument, NULL, 'c' | 0x100 },
+      { "chartab",  required_argument, NULL, 'c' | 0x200 },
       { "config",   required_argument, NULL, 'c' },
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
@@ -286,6 +293,9 @@ int main(int argc, char *argv[])
                     break;
           case 'c' | 0x100:
                     CacheDirectory = optarg;
+                    break;
+          case 'c' | 0x200:
+                    OverrideCharacterTable = optarg;
                     break;
           case 'c': ConfigDirectory = optarg;
                     break;
@@ -517,6 +527,11 @@ int main(int argc, char *argv[])
         printf("Usage: vdr [OPTIONS]\n\n"          // for easier orientation, this is column 80|
                "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
                "            --cachedir=DIR save cache files in DIR (default: %s)\n"
+               "            --chartab=CHARACTER_TABLE\n"
+               "                           set the character table to use for strings in the\n"
+               "                           DVB data stream that don't begin with a character\n"
+               "                           table indicator, but don't use the standard default\n"
+               "                           character table (for instance ISO-8859-9)\n"
                "  -c DIR,   --config=DIR   read config files from DIR (default: %s)\n"
                "  -d,       --daemon       run in daemon mode\n"
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
@@ -673,6 +688,14 @@ int main(int argc, char *argv[])
      bool known = SI::SetSystemCharacterTable(CodeSet);
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
+     }
+#ifdef DEPRECATED_VDR_CHARSET_OVERRIDE
+  if (DeprecatedVdrCharsetOverride)
+     isyslog("use of environment variable VDR_CHARSET_OVERRIDE (%s) is deprecated!", DeprecatedVdrCharsetOverride);
+#endif
+  if (OverrideCharacterTable) {
+     isyslog("override character table is '%s'", OverrideCharacterTable);
+     SI::SetOverrideCharacterTable(OverrideCharacterTable);
      }
 
   // Initialize internationalization:
