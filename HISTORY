@@ -8536,3 +8536,4 @@ Video Disk Recorder Revision History
 - Added an empty target to the Makefile to make sure the sub-make for libsi is always
   called (thanks to Sören Moch).
 - Updated the Italian OSD texts (thanks to Diego Pierotto and Nino Gerbino).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
