@@ -3233,6 +3233,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for fixing the German translation of "Binary skip timeout (s)"
  for reporting a bug in switching channels in the Schedule menu after going through
  various Now and Schedule menus for different channels
+ for the "jumpingseconds" patch
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3371,3 +3372,6 @@ Clemens Brauers <vdr@admin-cb.de>
 
 Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
+
+Tobias Faust <tobias.faust@gmx.de>
+ for the original "jumpingseconds" patch

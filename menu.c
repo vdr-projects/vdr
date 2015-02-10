@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.46 2015/02/07 15:56:26 kls Exp $
+ * $Id: menu.c 3.47 2015/02/10 11:51:10 kls Exp $
  */
 
 #include "menu.h"
@@ -3730,6 +3730,8 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditIntItem( tr("Setup.Replay$Initial duration for adaptive skipping (s)"), &data.AdaptiveSkipInitial, 10, 600));
   Add(new cMenuEditIntItem( tr("Setup.Replay$Reset timeout for adaptive skipping (s)"), &data.AdaptiveSkipTimeout, 0, 10));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Alternate behavior for adaptive skipping"), &data.AdaptiveSkipAlternate));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Skip distance with Green/Yellow keys (s)"), &data.SkipSeconds, 5, 600));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"), &data.SkipSecondsRepeat, 5, 600));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -5583,9 +5585,11 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kRight:   Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
-    case kGreen:   SkipSeconds(-60); break;
+                   SkipSeconds(-Setup.SkipSecondsRepeat); break;
+    case kGreen:   SkipSeconds(-Setup.SkipSeconds); break;
     case kYellow|k_Repeat:
-    case kYellow:  SkipSeconds( 60); break;
+                   SkipSeconds(Setup.SkipSecondsRepeat); break;
+    case kYellow:  SkipSeconds(Setup.SkipSeconds); break;
     case kStop:
     case kBlue:    Hide();
                    Stop();

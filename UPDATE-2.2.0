@@ -329,6 +329,10 @@ Replay:
   to make adaptive skipping only halve the skip distance when the direction changes.
   That way you can reach the desired point in a recording even if you make one too
   many skips in a certain direction (see MANUAL for details).
+- The new options "Setup/Replay/Skip distance with Green/Yellow keys" and
+  "Setup/Replay/Skip distance with Green/Yellow keys in repeat" can be used to
+  configure the number of seconds to skip when pressing these keys once or pressing
+  and holding them.
 
 SVDRP:
 

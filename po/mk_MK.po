@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"POT-Creation-Date: 2015-02-10 12:51+0100\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -1253,6 +1253,12 @@ msgstr "Време на ресетирање за адаптабилно ско�
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Алтернативно однесување за адаптабилно скокање"
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"

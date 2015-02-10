@@ -8523,7 +8523,7 @@ Video Disk Recorder Revision History
   copy process has been successful (problem reported by Christoph Haubrich).
 - Added the UPDATE-2.2.0 file.
 
-2015-02-09: Version 2.1.10
+2015-02-10: Version 2.1.10
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
@@ -8537,3 +8537,8 @@ Video Disk Recorder Revision History
   called (thanks to Sören Moch).
 - Updated the Italian OSD texts (thanks to Diego Pierotto and Nino Gerbino).
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- The new options "Setup/Replay/Skip distance with Green/Yellow keys" and
+  "Setup/Replay/Skip distance with Green/Yellow keys in repeat" can be used to
+  configure the number of seconds to skip when pressing these keys once or pressing
+  and holding them (based on a patch from Matthias Senzel, originally from Tobias
+  Faust).
