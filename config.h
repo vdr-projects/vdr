@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.18 2015/02/10 11:48:17 kls Exp $
+ * $Id: config.h 3.19 2015/02/10 12:23:10 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -340,6 +340,7 @@ public:
   int AdaptiveSkipInitial;
   int AdaptiveSkipTimeout;
   int AdaptiveSkipAlternate;
+  int AdaptiveSkipPrevNext;
   int SkipSeconds;
   int SkipSecondsRepeat;
   int ResumeID;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 12:51+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2015-02-09 00:23+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -1254,6 +1254,9 @@ msgstr "Timeout (s) de resetare pentru săritul adaptiv al marcajelor"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Strategie alternativă pentru săritul adaptiv al marcajelor"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
 msgstr ""

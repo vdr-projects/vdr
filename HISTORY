@@ -8542,3 +8542,6 @@ Video Disk Recorder Revision History
   configure the number of seconds to skip when pressing these keys once or pressing
   and holding them (based on a patch from Matthias Senzel, originally from Tobias
   Faust).
+- The new option "Setup/Replay/Use Prev/Next keys for adaptive skipping" can be used
+  to change the behavior of these keys during replay. They normally jump between
+  editing marks, but with this option set to 'yes' they will do adaptive skipping.

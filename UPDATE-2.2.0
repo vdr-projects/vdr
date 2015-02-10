@@ -333,6 +333,9 @@ Replay:
   "Setup/Replay/Skip distance with Green/Yellow keys in repeat" can be used to
   configure the number of seconds to skip when pressing these keys once or pressing
   and holding them.
+- The new option "Setup/Replay/Use Prev/Next keys for adaptive skipping" can be used
+  to change the behavior of these keys during replay. They normally jump between
+  editing marks, but with this option set to 'yes' they will do adaptive skipping.
 
 SVDRP:
 
