@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.5 2015/01/15 11:23:52 kls Exp $
+ * $Id: osd.h 3.6 2015/02/11 09:48:02 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -763,12 +763,13 @@ protected:
        ///< the pixmap could not be added to the list.
        ///< A derived class that implements its own cPixmap class must call AddPixmap()
        ///< in order to add a newly created pixmap to the OSD's list of pixmaps.
-  cPixmapMemory *RenderPixmaps(void);
+  cPixmap *RenderPixmaps(void);
        ///< Renders the dirty part of all pixmaps into a resulting pixmap that
        ///< shall be displayed on the OSD. The returned pixmap's view port is
        ///< set to the location of the rectangle on the OSD that needs to be
        ///< refreshed; its draw port's origin is at (0, 0), and it has the same
        ///< size as the view port.
+       ///< Only pixmaps with a non-negative layer value are rendered.
        ///< If there are several non-overlapping dirty rectangles from different pixmaps,
        ///< they are returned separately in order to avoid re-rendering large parts
        ///< of the OSD that haven't changed at all. The caller must therefore call
@@ -778,7 +779,7 @@ protected:
        ///< by putting a LOCK_PIXMAPS into the scope of the operation).
        ///< If there are no dirty pixmaps, or if this is not a true color OSD,
        ///< this function returns NULL.
-       ///< The caller must delete the returned pixmap after use.
+       ///< The caller must call DestroyPixmap() for the returned pixmap after use.
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
@@ -930,13 +931,16 @@ public:
        ///< pixmaps, the Flush() function should basically do something like this:
        ///<
        ///<  LOCK_PIXMAPS;
-       ///<  while (cPixmapMemory *pm = RenderPixmaps()) {
+       ///<  while (cPixmapMemory *pm = dynamic_cast<cPixmapMemory *>(RenderPixmaps())) {
        ///<        int w = pm->ViewPort().Width();
        ///<        int h = pm->ViewPort().Height();
        ///<        int d = w * sizeof(tColor);
        ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
-       ///<        delete pm;
+       ///<        DestroyPixmap(pm);
        ///<        }
+       ///<
+       ///< If a plugin uses a derived cPixmap implementation, it needs to use that
+       ///< type instead of cPixmapMemory.
   };
 
 #define MAXOSDIMAGES 64

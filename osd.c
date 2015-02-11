@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.4 2015/01/15 11:20:56 kls Exp $
+ * $Id: osd.c 3.5 2015/02/11 09:48:02 kls Exp $
  */
 
 #include "osd.h"
@@ -984,12 +984,13 @@ cPixmap::cPixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)
 
 void cPixmap::MarkViewPortDirty(const cRect &Rect)
 {
-  dirtyViewPort.Combine(Rect.Intersected(viewPort));
+  if (layer >= 0)
+     dirtyViewPort.Combine(Rect.Intersected(viewPort));
 }
 
 void cPixmap::MarkViewPortDirty(const cPoint &Point)
 {
-  if (viewPort.Contains(Point))
+  if (layer >= 0 && viewPort.Contains(Point))
      dirtyViewPort.Combine(Point);
 }
 
@@ -1025,11 +1026,18 @@ void cPixmap::SetLayer(int Layer)
      esyslog("ERROR: pixmap layer %d limited to %d", Layer, MAXPIXMAPLAYERS - 1);
      Layer = MAXPIXMAPLAYERS - 1;
      }
-  if (Layer != layer) {
-     if (Layer > 0 || layer > 0)
-        MarkViewPortDirty(viewPort);
+  // The sequence here is important, because the view port is only marked as dirty
+  // if the layer is >= 0:
+  if (layer >= 0) {
+     MarkViewPortDirty(viewPort); // the pixmap is visible and may or may not become invisible
      layer = Layer;
      }
+  else if (Layer >= 0) {
+     layer = Layer;
+     MarkViewPortDirty(viewPort); // the pixmap was invisible and has become visible
+     }
+  else
+     layer = Layer; // the pixmap was invisible and remains so
   Unlock();
 }
 
@@ -1141,6 +1149,7 @@ cPixmapMemory::cPixmapMemory(int Layer, const cRect &ViewPort, const cRect &Draw
 :cPixmap(Layer, ViewPort, DrawPort)
 {
   data = MALLOC(tColor, this->DrawPort().Width() * this->DrawPort().Height());
+  panning = false;
 }
 
 cPixmapMemory::~cPixmapMemory()
@@ -1714,7 +1723,8 @@ void cOsd::DestroyPixmap(cPixmap *Pixmap)
      LOCK_PIXMAPS;
      for (int i = 1; i < pixmaps.Size(); i++) { // begin at 1 - don't let the background pixmap be destroyed!
          if (pixmaps[i] == Pixmap) {
-            pixmaps[0]->MarkViewPortDirty(Pixmap->ViewPort());
+            if (Pixmap->Layer() >= 0)
+               pixmaps[0]->MarkViewPortDirty(Pixmap->ViewPort());
             delete Pixmap;
             pixmaps[i] = NULL;
             return;
@@ -1737,9 +1747,9 @@ cPixmap *cOsd::AddPixmap(cPixmap *Pixmap)
   return Pixmap;
 }
 
-cPixmapMemory *cOsd::RenderPixmaps(void)
+cPixmap *cOsd::RenderPixmaps(void)
 {
-  cPixmapMemory *Pixmap = NULL;
+  cPixmap *Pixmap = NULL;
   if (isTrueColor) {
      LOCK_PIXMAPS;
      // Collect overlapping dirty rectangles:
@@ -1762,25 +1772,27 @@ cPixmapMemory *cOsd::RenderPixmaps(void)
         d.Combine(OldDirty);
         OldDirty = NewDirty;
 #endif
-        Pixmap = new cPixmapMemory(0, d);
-        Pixmap->Clear();
-        // Render the individual pixmaps into the resulting pixmap:
-        for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
-            for (int i = 0; i < pixmaps.Size(); i++) {
-                if (cPixmap *pm = pixmaps[i]) {
-                   if (pm->Layer() == Layer)
-                   Pixmap->DrawPixmap(pm, d);
+        Pixmap = CreatePixmap(-1, d);
+        if (Pixmap) {
+           Pixmap->Clear();
+           // Render the individual pixmaps into the resulting pixmap:
+           for (int Layer = 0; Layer < MAXPIXMAPLAYERS; Layer++) {
+               for (int i = 0; i < pixmaps.Size(); i++) {
+                   if (cPixmap *pm = pixmaps[i]) {
+                      if (pm->Layer() == Layer)
+                         Pixmap->DrawPixmap(pm, d);
+                      }
                    }
-                }
-            }
+               }
 #ifdef DebugDirty
-        cPixmapMemory DirtyIndicator(7, NewDirty);
-        static tColor DirtyIndicatorColors[] = { 0x7FFFFF00, 0x7F00FFFF };
-        static int DirtyIndicatorIndex = 0;
-        DirtyIndicator.Fill(DirtyIndicatorColors[DirtyIndicatorIndex]);
-        DirtyIndicatorIndex = 1 - DirtyIndicatorIndex;
-        Pixmap->Render(&DirtyIndicator, DirtyIndicator.DrawPort(), DirtyIndicator.ViewPort().Point().Shifted(-Pixmap->ViewPort().Point()));
+           cPixmapMemory DirtyIndicator(7, NewDirty);
+           static tColor DirtyIndicatorColors[] = { 0x7FFFFF00, 0x7F00FFFF };
+           static int DirtyIndicatorIndex = 0;
+           DirtyIndicator.Fill(DirtyIndicatorColors[DirtyIndicatorIndex]);
+           DirtyIndicatorIndex = 1 - DirtyIndicatorIndex;
+           Pixmap->Render(&DirtyIndicator, DirtyIndicator.DrawPort(), DirtyIndicator.ViewPort().Point().Shifted(-Pixmap->ViewPort().Point()));
 #endif
+           }
         }
      }
   return Pixmap;

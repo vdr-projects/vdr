@@ -127,6 +127,15 @@ Plugins:
 - Added cOsdProvider::OsdSizeChanged(), which plugins that implement an output device
   can call to signal a change in the OSD that requires a redraw of the currently
   displayed object.
+- cOsd::RenderPixmaps() now returns a pointer to cPixmap instead of cPixmapMemory
+  This is necessary to allow plugins with derived cPixmap implementations to use this
+  function. Plugins that use this function with cPixmapMemory now need to add
+  a dynamic cast to the call, as in
+
+    cPixmapMemory *pm = dynamic_cast<cPixmapMemory *>(RenderPixmaps()));
+
+  They also need to call DestroyPixmap(pm) instead of "delete pm" to properly release
+  the resulting pixmap after use.
 
 Skins:
 
@@ -220,6 +229,15 @@ OSD:
   is unexpected at this point. You can still navigate to
   the last replayed recording (if any) by pressing Ok repeatedly in the Recordings
   menu.
+- cOsd::RenderPixmaps() now returns a pointer to cPixmap instead of cPixmapMemory
+  This is necessary to allow plugins with derived cPixmap implementations to use this
+  function. Plugins that use this function with cPixmapMemory now need to add
+  a dynamic cast to the call, as in
+
+    cPixmapMemory *pm = dynamic_cast<cPixmapMemory *>(RenderPixmaps()));
+
+  They also need to call DestroyPixmap(pm) instead of "delete pm" to properly release
+  the resulting pixmap after use.
 
 Channels:
 

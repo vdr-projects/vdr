@@ -3308,6 +3308,8 @@ Thomas Reufer <thomas@reufer.ch>
  for adding cOsdProvider::OsdSizeChanged()
  for suggesting to change the German translations if the texts related to "binary
  skipping"
+ for suggesting to change the return value of cOsd::RenderPixmaps() from cPixmapMemory
+ to cPixmap
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

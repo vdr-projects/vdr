@@ -8523,7 +8523,7 @@ Video Disk Recorder Revision History
   copy process has been successful (problem reported by Christoph Haubrich).
 - Added the UPDATE-2.2.0 file.
 
-2015-02-10: Version 2.1.10
+2015-02-11: Version 2.1.10
 
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
@@ -8551,3 +8551,17 @@ Video Disk Recorder Revision History
   of using the environment variable VDR_CHARSET_OVERRIDE still works, but is now
   deprecated and may be removed in a future version. The value given in the --chartab
   option takes precedence over that in VDR_CHARSET_OVERRIDE.
+- cOsd::RenderPixmaps() now returns a pointer to cPixmap instead of cPixmapMemory
+  (suggested by Thomas Reufer). This is necessary to allow plugins with derived
+  cPixmap implementations to use this function. Plugins that use this function
+  with cPixmapMemory now need to add a dynamic cast to the call, as in
+
+    cPixmapMemory *pm = dynamic_cast<cPixmapMemory *>(RenderPixmaps()));
+
+  They also need to call DestroyPixmap(pm) instead of "delete pm" to properly release
+  the resulting pixmap after use.
+  The dvbhddevice plugin has been modified accordingly.
+- A cPixmap with a negative layer no longer marks any portion of the OSD's view port
+  as "dirty" when drawing on it. This may improve performance when drawing on a
+  hidden pixmap, because it avoids unnecessary refreshes of the OSD.
+- Added a missing initialization of "panning" to the constructor of cPixmapMemory.
