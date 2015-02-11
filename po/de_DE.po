@@ -1278,7 +1278,7 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP trennen bei Inaktivität (s)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Mindestzeit für Kanalhistorie (s)"
+msgstr "Mindestzeit für vorherigen Kanal (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Zeitlimit für Kanaleingabe (ms)"
