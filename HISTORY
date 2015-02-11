@@ -8565,3 +8565,4 @@ Video Disk Recorder Revision History
   as "dirty" when drawing on it. This may improve performance when drawing on a
   hidden pixmap, because it avoids unnecessary refreshes of the OSD.
 - Added a missing initialization of "panning" to the constructor of cPixmapMemory.
+- Updated the Dutch OSD texts (thanks to Erik Oomen).
