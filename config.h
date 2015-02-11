@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.17 2015/02/06 09:53:50 kls Exp $
+ * $Id: config.h 3.20 2015/02/10 14:29:27 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "2.1.9"
-#define VDRVERSNUM   20109  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "2.1.10"
+#define VDRVERSNUM   20110  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.1.9"
-#define APIVERSNUM   20109  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "2.1.10"
+#define APIVERSNUM   20110  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -340,6 +340,9 @@ public:
   int AdaptiveSkipInitial;
   int AdaptiveSkipTimeout;
   int AdaptiveSkipAlternate;
+  int AdaptiveSkipPrevNext;
+  int SkipSeconds;
+  int SkipSecondsRepeat;
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;

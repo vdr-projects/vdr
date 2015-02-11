@@ -1026,6 +1026,23 @@ Version 2.0
                          halved if the direction actually changes. That way, even if
                          you missed the target point, you can still back up to it.
 
+  Use Prev/Next keys for adaptive skipping = no
+                         Normally the Prev/Next keys jump between editing marks (or
+                         the beginning/end of the recording). You can set this option
+                         to 'yes' if you want to use these keys for adaptive skipping
+                         instead.
+
+  Skip distance with Green/Yellow keys (s) = 60
+                         Defines the number of seconds to skip in either direction
+                         when pressing the "Green" or "Yellow" key, respectively.
+                         The valid range is 5...600.
+
+  Skip distance with Green/Yellow keys in repeat (s) = 60
+                         Defines the number of seconds to skip in either direction
+                         when pressing and holding the "Green" or "Yellow" key,
+                         respectively.
+                         The valid range is 5...600.
+
   Resume ID = 0          Defines an additional ID that can be used in a multi user
                          environment, so that every user has his/her own resume
                          files for each recording. The valid range is 0...99, with

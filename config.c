@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.8 2015/02/06 10:10:22 kls Exp $
+ * $Id: config.c 3.10 2015/02/10 12:24:13 kls Exp $
  */
 
 #include "config.h"
@@ -476,6 +476,9 @@ cSetup::cSetup(void)
   AdaptiveSkipInitial = 120;
   AdaptiveSkipTimeout = 3;
   AdaptiveSkipAlternate = 0;
+  AdaptiveSkipPrevNext = 0;
+  SkipSeconds = 60;
+  SkipSecondsRepeat = 60;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
@@ -695,6 +698,9 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "AdaptiveSkipInitial")) AdaptiveSkipInitial= atoi(Value);
   else if (!strcasecmp(Name, "AdaptiveSkipTimeout")) AdaptiveSkipTimeout= atoi(Value);
   else if (!strcasecmp(Name, "AdaptiveSkipAlternate")) AdaptiveSkipAlternate = atoi(Value);
+  else if (!strcasecmp(Name, "AdaptiveSkipPrevNext")) AdaptiveSkipPrevNext = atoi(Value);
+  else if (!strcasecmp(Name, "SkipSeconds"))         SkipSeconds        = atoi(Value);
+  else if (!strcasecmp(Name, "SkipSecondsRepeat"))   SkipSecondsRepeat  = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
@@ -818,6 +824,9 @@ bool cSetup::Save(void)
   Store("AdaptiveSkipInitial",AdaptiveSkipInitial);
   Store("AdaptiveSkipTimeout",AdaptiveSkipTimeout);
   Store("AdaptiveSkipAlternate", AdaptiveSkipAlternate);
+  Store("AdaptiveSkipPrevNext", AdaptiveSkipPrevNext);
+  Store("SkipSeconds",        SkipSeconds);
+  Store("SkipSecondsRepeat",  SkipSecondsRepeat);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);

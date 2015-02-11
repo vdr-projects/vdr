@@ -98,3 +98,7 @@ VDR Plugin 'dvbhddevice' Revision History
 
 - The function cDevice::GetVideoSystem() has been deprecated.
 - Removed old-style video format setting functions.
+
+2015-02-11: Version 2.1.7
+
+- Adapted to the new return value of cOsd::RenderPixmaps().

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -801,7 +801,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Nimeä tallenne kansion mukaan?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Poistetaanko muokkausmerkinnät tallenteelta?"
@@ -1256,6 +1256,15 @@ msgstr "Mukautuvan hypyn nollausviive (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Käytä vaihtoehtoista mukautuvaa hyppyä"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

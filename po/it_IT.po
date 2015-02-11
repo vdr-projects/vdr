@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2015-02-05 00:09+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"PO-Revision-Date: 2015-02-09 20:26+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -32,7 +32,7 @@ msgid "Channel not available!"
 msgstr "Canale non disponibile!"
 
 msgid "Can't start Transfer Mode!"
-msgstr "Impossibile avviare mod. trasferimento!"
+msgstr "Impossibile avviare modalità trasferimento!"
 
 msgid "off"
 msgstr "off"
@@ -803,7 +803,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Errore durante l'accodamento della registrazione per il taglio!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Rinominare registrazione come nome cartella?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Eliminare i marcatori di modifica della registrazione?"
@@ -1155,7 +1155,7 @@ msgid "Can't reset CAM!"
 msgstr "Impossibile reimpostare il modulo CAM!"
 
 msgid "do not pause live video"
-msgstr "non pausare video dal vivo"
+msgstr "non mettere in pausa il video dal vivo"
 
 msgid "confirm pause live video"
 msgstr "conferma pausa video dal vivo"
@@ -1203,13 +1203,13 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "Margine VPS (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Segna reg. immediata"
+msgstr "Segna registrazione immediata"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Nome reg. immediata"
+msgstr "Nome registrazione immediata"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Durata reg. immediata (min)"
+msgstr "Durata registrazione immediata (min)"
 
 msgid "Setup.Recording$present event"
 msgstr "evento attuale"
@@ -1251,12 +1251,21 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pausa riproduzione all'ultimo marcatore"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Durata iniziale per spostamenti adattivi (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Reimposta scadenza per spostamenti adattivi (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Comportamento alternativo per spostamenti adattivi"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
@@ -1471,10 +1480,10 @@ msgid "DISK"
 msgstr "DISCO"
 
 msgid "LOAD"
-msgstr "CARICA"
+msgstr "USO"
 
 msgid "TIMERS"
-msgstr "TIMER"
+msgstr "TIMERS"
 
 msgid "DEVICES"
 msgstr "SCHEDE"
@@ -1487,7 +1496,7 @@ msgstr "RIPRODUCI"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr "Muovi antenna verso %.1f..."
+msgstr "Spostamento antenna verso %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "Consolle ST:TNG"

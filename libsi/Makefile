@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 3.0 2012/12/18 13:35:54 kls Exp $
+# $Id: Makefile 3.1 2015/02/11 10:24:54 kls Exp $
 
 ### The archiver options:
 
@@ -32,6 +32,7 @@ $(DEPFILE): Makefile
 ### Targets:
 
 all: libsi.a
+	@:
 
 libsi.a : $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 3.4 2015/01/20 15:34:29 kls Exp $
+.\" $Id: vdr.1 3.5 2015/02/10 13:59:11 kls Exp $
 .\"
 .TH vdr 1 "31 Mar 2013" "2.0" "Video Disk Recorder"
 .SH NAME
@@ -48,6 +48,11 @@ Send Dolby Digital audio to stdin of command \fIcmd\fR.
 .BI \-\-cachedir= dir
 Save cache files in \fIdir\fR
 (default is to save them in the video directory).
+.TP
+.BI \-\-chartab= character_table
+Set the character table to use for strings in the DVB data stream that don't begin
+with a character table indicator, but don't use the standard default character table
+(for instance ISO-8859-9).
 .TP
 .BI \-c\  dir ,\ \-\-config= dir
 Read config files from directory \fIdir\fR

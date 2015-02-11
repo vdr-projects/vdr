@@ -1,13 +1,13 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Arthur Konovalov <artlov@gmail.com>, 2004-2013
+# Arthur Konovalov <artlov@gmail.com>, 2004-2013, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -483,7 +483,7 @@ msgid "Key$Channels"
 msgstr "Kanalid"
 
 msgid "Key$Timers"
-msgstr "Taimer"
+msgstr "Taimerid"
 
 msgid "Key$Recordings"
 msgstr "Salvestused"
@@ -676,7 +676,7 @@ msgid "Select folder"
 msgstr "Kausta valik"
 
 msgid "Timers"
-msgstr "Taimer"
+msgstr "Taimerid"
 
 msgid "Button$On/Off"
 msgstr "On/Off"
@@ -700,7 +700,7 @@ msgid "Button$Record"
 msgstr "Salvestada"
 
 msgid "Button$Switch"
-msgstr "Valida"
+msgstr "Vali"
 
 msgid "What's on now?"
 msgstr "Hetkel eetris"
@@ -794,10 +794,10 @@ msgid "Edited version already exists - overwrite?"
 msgstr "Redigeeritud versioon juba olemas - kirjutada üle?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr "Salvestuse lõikamiseks lisamine ebaõnnestus!"
+msgstr "Salvestuse lisamine lõikamiseks ebaõnnestus!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Nimetada salvestuse nimi kaustaks?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Kustutada selle salvestuse markerid?"
@@ -839,7 +839,7 @@ msgid "Recording commands"
 msgstr "Salvestuse käsud"
 
 msgid "never"
-msgstr "ei"
+msgstr "ealeski"
 
 msgid "skin dependent"
 msgstr "kestast sõltuv"
@@ -878,7 +878,7 @@ msgid "Setup.OSD$Use small font"
 msgstr "Väikese fondi kasutus"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Fondi silumine"
+msgstr "Fondi sakitõrje"
 
 msgid "Setup.OSD$Default font"
 msgstr "Vaikefont"
@@ -1018,7 +1018,7 @@ msgid "Setup.DVB$Primary DVB interface"
 msgstr "Esmane DVB seade"
 
 msgid "Setup.DVB$Standard compliance"
-msgstr "Standardivastavavus"
+msgstr "Standardivastavus"
 
 msgid "Setup.DVB$Video format"
 msgstr "TV külgsuhe"
@@ -1100,7 +1100,7 @@ msgid "East"
 msgstr "itta (E)"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr "Positsioneerija max pöördeulatus (°)"
+msgstr "Positsioneerija pöördeulatus (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
 msgstr "Positsioneerija kiirus (°/s)"
@@ -1179,7 +1179,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Salvestuse eluiga (päevi)"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Pausi klahvi käsitsemine"
+msgstr "Pausi klahvi käsitlemine"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pausi prioriteet"
@@ -1221,7 +1221,7 @@ msgid "Replay"
 msgstr "Taasesitus"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Mitme kiiruse režiim"
+msgstr "Mitmikkiiruse režiim"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Korduse režiimi kuvamine"
@@ -1245,12 +1245,21 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Paus viimasel markeril"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Adaptiivse hüppe kestuse algväärtus (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Adaptiivse hüppe lähtestamise viide (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Adaptiivse hüppe vaheldumine käitumine"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
@@ -1365,10 +1374,10 @@ msgid "No free DVB device to record!"
 msgstr "Puudub vaba DVB seade salvestamiseks!"
 
 msgid "Pausing live video..."
-msgstr "Otseülekande peatamine..."
+msgstr "Otseedastuse peatamine..."
 
 msgid "Delete timeshift recording?"
-msgstr "Kustutada ajanihke salvestus?"
+msgstr "Kustutada ajanihke salvestust?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1378,7 +1387,7 @@ msgid "No editing marks defined!"
 msgstr "Redigeerimise markerid puuduvad!"
 
 msgid "No editing sequences defined!"
-msgstr "Redigeerimise järjestus puudub!"
+msgstr "Redigeerimise järjestus määramata!"
 
 msgid "Can't start editing process!"
 msgstr "Redigeerimise start ebaõnnestus!"

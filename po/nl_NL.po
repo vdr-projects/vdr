@@ -7,14 +7,15 @@
 # Carel Willemse <carel@nekanali.nl>, 2008, 2013
 # Johan Schuring <johan.schuring@vetteblei.nl>, 2008
 # Cedric Dewijs <cedric.dewijs@telfort.nl>, 2013
+# Erik Oomen <oomen.e@gmail.com>, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2008-02-26 17:20+0100\n"
-"Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
+"POT-Creation-Date: 2015-02-11 10:51+0100\n"
+"PO-Revision-Date: 2015-02-10 19:43+0100\n"
+"Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +26,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Ongeldig kanaal ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM geactiveerd!"
 
 msgid "Channel not available!"
 msgstr "Kanaal niet beschikbaar"
@@ -85,13 +86,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Piloot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2SystemId"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Bezig met starten EPG scan"
@@ -581,10 +582,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Kanaalinstellingen zijn niet uniek!"
@@ -747,74 +748,74 @@ msgid "CAM not responding!"
 msgstr "CAM reageert niet!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Pad bewerken"
 
 msgid "Folder"
-msgstr ""
+msgstr "Map"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Deze map is momenteel in gebruik - geen wijzigingen zijn mogelijk!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Verplaats hele map met %d -opnames?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Fout tijdens het verplaatsen van de map!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Opname bewerken"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Deze opname is momenteel in gebruik - geen wijzigingen zijn mogelijk!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Knippen afbreken"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Knippen stoppen"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Verplaatsen afbreken"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Stoppen met verplaatsen"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Kopiëren afbreken"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Stop kopiëren"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Knip"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Verwijder markeringen"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Opname verdwenen!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Bewerkte versie bestaat al - overschrijven?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Kan opname voor knippen niet in wachtrij plaatsen!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Opname hernoemen naar mapnaam?"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Verwijder bewerkings markeringen voor deze opnamen?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Fout bij het verwijderen van alle bewerkings markeringen!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Fout tijdens het wijzigen prioriteit / duur!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Fout tijdens het wijzigen map / naam!"
 
 msgid "Recording info"
 msgstr "Opname info"
@@ -919,7 +920,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Kanaal info tonen"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Tijdsduur opgevraagde kanaalinfo."
+msgstr "Timout opgevraagde kanaalinfo"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Scrollen per pagina"
@@ -1084,31 +1085,31 @@ msgid "Setup.LNB$own"
 msgstr "eigen"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Gebruik schotel positioner"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Plaats breedtegraad (graden)"
 
 msgid "South"
-msgstr ""
+msgstr "Zuiden"
 
 msgid "North"
-msgstr ""
+msgstr "Noorden"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Plaats lengtegraad (graden)"
 
 msgid "West"
-msgstr ""
+msgstr "Westen"
 
 msgid "East"
-msgstr ""
+msgstr "Oosten"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Max. positioner swing (graden)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Positioner snelheid (graden / s)"
 
 msgid "CAM reset"
 msgstr "CAM herstarten"
@@ -1121,16 +1122,16 @@ msgstr "CAM gereed"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (Activeren)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Anuleer activering"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Activeer"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1145,7 +1146,7 @@ msgid "Can't open CAM menu!"
 msgstr "Kan CAM-menu niet openen!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Kan CAM niet te activeren!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM wordt gebruikt - werkelijk herstarten?"
@@ -1241,22 +1242,31 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pauzeer wanneer markering wordt geplaatst"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pauzeer bij het springen naar een markering"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Sla bewerkte onderdelen over"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Pauzeer bij laatste markering"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Initiële duur bij adaptief overslaan"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Reset Time-out voor adaptief overslaan"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr ""
+msgstr "Alternatief gedrag voor adaptief overslaan"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr "Gebruik Vorige/Volgende toetsen voor adaptief overslaan"
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr "Spoel sprong met groene en gele toetsen (s)"
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
+msgstr "Spoel sprong met groene en gele toesten in repeteerstand (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Hervattings ID"
@@ -1295,10 +1305,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Volume stappen"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Volume lineariseren"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Doorscrollen kanalenlijst"
@@ -1486,7 +1496,7 @@ msgstr "AFSPELEN"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Schotel verplaatsen naar% .1f ..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Consoles"

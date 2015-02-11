@@ -787,9 +787,10 @@ Peter Seyringer <e9425234@student.tuwien.ac.at>
 Stefan Schluenss <dxr3_osd@schluenss.de>
  for reporting a bug where PID handles were not closed correctly
 
-Régis Bossut <rbossut@auchan.com>
+Régis Bossut <famille.bossut@wanadoo.fr>
  for pointing out that with some providers the channels can only be distinguished
  through the RID
+ for translating OSD texts to the French language
 
 Andreas Kool <akool@akool.de>
  for his help in keeping 'channels.conf.cable' up to date
@@ -1703,6 +1704,7 @@ Martin Dauskardt <md001@gmx.de>
  cDevice::TrickSpeed()
  for renaming 'runvdr' to 'runvdr.template' and no longer copying it to the BINDIR
  in 'make install'
+ for suggesting to add "#REMOTE=LIRC" to Make.config.template
 
 Maynard Cedric <maynard.cedric@wanadoo.fr>
  for reporting a problem in handling the color button texts in cMenuEditStrItem
@@ -2961,6 +2963,7 @@ Christopher Reimer <vdr@creimer.net>
  for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
  for reporting a possible crash in the OSD demo
  for adding support for systemd
+ for suggesting to replace VDR_CHARSET_OVERRIDE with a command line option
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3181,6 +3184,8 @@ Sören Moch <smoch@web.de>
  ci.c to no longer compile with older versions of gcc
  for suggesting to make the "Select folder" menu add the folder names of all existing
  recordings to any names that have been predefined in "folders.conf"
+ for adding an empty target to the Makefile to make sure the sub-make for libsi is
+ always called
 
 Peter Münster <pmlists@free.fr>
  for fixing 'make install' to not overwrite existing configuration files
@@ -3230,6 +3235,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for fixing the German translation of "Binary skip timeout (s)"
  for reporting a bug in switching channels in the Schedule menu after going through
  various Now and Schedule menus for different channels
+ for the "jumpingseconds" patch
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3303,6 +3309,8 @@ Thomas Reufer <thomas@reufer.ch>
  for adding cOsdProvider::OsdSizeChanged()
  for suggesting to change the German translations if the texts related to "binary
  skipping"
+ for suggesting to change the return value of cOsd::RenderPixmaps() from cPixmapMemory
+ to cPixmap
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
@@ -3363,5 +3371,14 @@ Martin Schirrmacher <schirrmie@gmail.com>
 Mario Fenneis <admin@mediastreambox.at>
  for translating OSD texts to the Hungarian language
 
+Clemens Brauers <vdr@admin-cb.de>
+ for modifying runvdr.template to improve compatibility with the "bash" and "dash" shells
+
 Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
+
+Tobias Faust <tobias.faust@gmx.de>
+ for the original "jumpingseconds" patch
+
+Erik Oomen <oomen.e@gmail.com>
+ for translating OSD texts to the Dutch language

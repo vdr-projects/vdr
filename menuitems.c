@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 3.2 2013/11/03 14:48:21 kls Exp $
+ * $Id: menuitems.c 3.3 2015/02/09 11:53:10 kls Exp $
  */
 
 #include "menuitems.h"
@@ -1168,7 +1168,7 @@ eOSState cMenuEditMapItem::ProcessKey(eKeys Key)
 // --- cMenuSetupPage --------------------------------------------------------
 
 cMenuSetupPage::cMenuSetupPage(void)
-:cOsdMenu("", 33)
+:cOsdMenu("", 36)
 {
   SetMenuCategory(mcSetup);
   plugin = NULL;

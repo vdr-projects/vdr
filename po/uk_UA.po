@@ -1,14 +1,14 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007-2010, 2013
+# Yarema Aka Knedlyk <yupadmin@gmail.com>, 2007-2010, 2013, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2015-02-01 23:31+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"PO-Revision-Date: 2015-02-08 16:03+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
 "Language: uk\n"
@@ -798,7 +798,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Помилка перешуковування запису для обрізання!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Назвати запис назвою теки?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Вилучити мітки редагування для цього запису?"
@@ -1246,12 +1246,21 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Призупинити програвання на останній мітці"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Початкова тривалість для адаптивного пропуску (ів)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Скинути тайм-аут для адаптивного пропуску (ів)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Альтернативна поведінка для адаптивного пропуску (ів)"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

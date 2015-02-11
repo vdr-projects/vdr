@@ -12,14 +12,15 @@
 # Bernard Jaulin <bernard.jaulin@gmail.com>, 2013
 # Peter Münster <pmlists@free.fr>, 2013
 # Dominique Plu <dplu@free.fr>, 2013
+# Régis Bossut <famille.bossut@wanadoo.fr>, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2013-02-24 12:56+0100\n"
-"Last-Translator: Dominique Plu <dplu@free.fr>\n"
+"POT-Creation-Date: 2015-02-11 11:02+0100\n"
+"PO-Revision-Date: 2015-02-10 17:16+0100\n"
+"Last-Translator: Régis Bossut <famille.bossut@wanadoo.fr>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +31,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Chaîne invalide ! ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM activée !"
 
 msgid "Channel not available!"
 msgstr "Chaîne non disponible !"
@@ -90,13 +91,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilote"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "ID système T2"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Mise à jour du guide des programmes"
@@ -340,7 +341,7 @@ msgstr "Direct"
 
 #, c-format
 msgid "ParentalRating$from %d"
-msgstr "À partir de %d"
+msgstr "à partir de %d ans"
 
 msgid "No title"
 msgstr "Sans titre"
@@ -354,7 +355,7 @@ msgid "LanguageCode$eng"
 msgstr "fra"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Phase 1: Détection du type de télécommande"
+msgstr "Phase 1 : Détection du type de télécommande"
 
 msgid "Press any key on the RC unit"
 msgstr "Appuyer sur une touche de la télécommande"
@@ -366,7 +367,7 @@ msgid "Do not press any key..."
 msgstr "N'appuyer sur aucune touche..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Phase 2: Apprentissage des touches"
+msgstr "Phase 2 : Apprentissage des touches"
 
 #, c-format
 msgid "Press key for '%s'"
@@ -391,7 +392,7 @@ msgid "Learning Remote Control Keys"
 msgstr "Apprentissage des touches de la télécommande"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Phase 3: Sauvegarde des touches"
+msgstr "Phase 3 : Sauvegarde des touches"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
 msgstr "Appuyer sur 'Haut' pour sauvegarder, 'Bas' pour annuler"
@@ -538,7 +539,7 @@ msgid "Free To Air"
 msgstr "En clair"
 
 msgid "encrypted"
-msgstr "Crypté"
+msgstr "crypté"
 
 msgid "Edit channel"
 msgstr "Modifier la chaîne"
@@ -586,13 +587,13 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
-msgstr "Cette chaîne n'est pas unique !"
+msgstr "Les paramètres de cette chaîne ne sont pas uniques !"
 
 msgid "Channels"
 msgstr "Chaînes"
@@ -622,7 +623,7 @@ msgid "New folder"
 msgstr "Nouveau dossier"
 
 msgid "Sub folder"
-msgstr "Sous dossier"
+msgstr "Sous-dossier"
 
 msgid "Folder name already exists!"
 msgstr "Ce nom de dossier existe déjà !"
@@ -635,7 +636,7 @@ msgid "Button$Open"
 msgstr "Ouvrir"
 
 msgid "Delete folder and all sub folders?"
-msgstr "Supprimer le dossier et tous les sous dossiers ?"
+msgstr "Supprimer le dossier et tous les sous-dossiers ?"
 
 msgid "Delete folder?"
 msgstr "Supprimer le dossier ?"
@@ -689,7 +690,7 @@ msgid "Timers"
 msgstr "Programmations"
 
 msgid "Button$On/Off"
-msgstr "Marche/Arr"
+msgstr "Marche/Arrêt"
 
 msgid "Button$Info"
 msgstr "Info"
@@ -736,13 +737,13 @@ msgstr "Programme - %s"
 
 #, c-format
 msgid "This event - %s"
-msgstr "Cet événement - %s"
+msgstr "Cet évènement - %s"
 
 msgid "This event - all channels"
-msgstr "Cet événement - toutes les chaînes"
+msgstr "Cet évènement - toutes les chaînes"
 
 msgid "All events - all channels"
-msgstr "Tous les événements - toutes les chaînes"
+msgstr "Tous les évènements - toutes les chaînes"
 
 #, c-format
 msgid "Please enter %d digits!"
@@ -752,74 +753,74 @@ msgid "CAM not responding!"
 msgstr "Pas de réponse du CAM"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Éditer le chemin"
 
 msgid "Folder"
-msgstr ""
+msgstr "Dossier"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Ce dossier est en cours d'utilisation - pas de modification possible !"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Déplacer tout le dossier contenant %d enregistrements ?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Erreur lors du déplacement du dossier !"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Éditer l'enregistrement"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Cet enregistrement est en cours d'utilisation - pas de modification possible !"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Annuler la coupe"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Arrêter la coupe"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Annuler le déplacement"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Arrêter le déplacement"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Annuler la copie"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Arrêter la copie"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Couper"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Supprimer les marqueurs"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Enregistrement disparu !"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "La version éditée existe déjà - écraser ?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Erreur lors de la mise en file d'attente pour la coupe !"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Modifier le nom du dossier des enregistrements ?"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Supprimer les marqueurs d'édition de cet enregistrement ?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Erreur pendant la suppression des marqueurs d'édition !"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Erreur pendant le changement de priorité et/ou durée de vie !"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Erreur pendant le changement de dossier et/ou nom !"
 
 msgid "Recording info"
 msgstr "Infos sur l'enregistrement"
@@ -1089,31 +1090,31 @@ msgid "Setup.LNB$own"
 msgstr "Propriétaire"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Utiliser le positionneur de parabole"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Latitude du site (°)"
 
 msgid "South"
-msgstr ""
+msgstr "Sud"
 
 msgid "North"
-msgstr ""
+msgstr "Nord"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Longitude du site (°)"
 
 msgid "West"
-msgstr ""
+msgstr "Ouest"
 
 msgid "East"
-msgstr ""
+msgstr "Est"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Course max. du positionneur (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Vitesse du positionneur (°/s)"
 
 msgid "CAM reset"
 msgstr "CAM réinitialisé"
@@ -1126,16 +1127,16 @@ msgstr "CAM prêt"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (activation en cours)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Annuler l'activation"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Activer"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1150,7 +1151,7 @@ msgid "Can't open CAM menu!"
 msgstr "Impossible d'ouvrir le menu CAM !"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Impossible d'activer le CAM !"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM en cours d'utilisation - confirmer réinitialisation ?"
@@ -1243,25 +1244,34 @@ msgid "Setup.Replay$Progress display time (s)"
 msgstr "Afficher la barre de progression (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
-msgstr "Arrêt lecture si ajout marqueur"
+msgstr "Arrêt lecture pendant ajout marqueur"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Arrêt lecture après saut vers un marqueur"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Sauter les parties éditées"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Arrêt lecture au dernier marqueur"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Durée initiale pour le saut adaptatif (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Timeout du reset pour le saut adaptatif (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr ""
+msgstr "Réduire le saut adaptatif uniquement si changement de sens"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr "Utiliser les touches Préc./Suiv. pour le saut adaptatif"
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr "Distance de saut pour les touches Verte/Jaune (s)"
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
+msgstr "Distance de saut pour les touches Verte/Jaune en répétition (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de reprise"
@@ -1270,7 +1280,7 @@ msgid "Miscellaneous"
 msgstr "Divers"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Temps mini entre événements (min)"
+msgstr "Temps mini entre évènements (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "Inactivité de l'utilisateur (min)"
@@ -1300,10 +1310,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volume initial"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Pas du changement de volume"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Correction de la courbe"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Affichage circulaire des chaînes"
@@ -1385,7 +1395,7 @@ msgid "Jump: "
 msgstr "Accès direct : "
 
 msgid "No editing marks defined!"
-msgstr "Pas de marques d'édition définies !"
+msgstr "Pas de marqueurs d'édition définis !"
 
 msgid "No editing sequences defined!"
 msgstr "Aucune séquence d'édition définie !"
@@ -1491,7 +1501,7 @@ msgstr "LECTURE"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Orientation de la parabole vers %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "Consoles ST:TNG"

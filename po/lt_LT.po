@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2010-10-30 11:55+0200\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"PO-Revision-Date: 2015-02-09 17:08+0100\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
 "Language: lt\n"
@@ -797,7 +797,7 @@ msgid "Error while queueing recording for cutting!"
 msgstr "Klaida sustatant įrašus į karpymo eilę!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Priskirti įrašui katalogo pavadinimą?"
 
 msgid "Delete editing marks for this recording?"
 msgstr "Ar tikrai ištrinti šio įrašo koregavimo žymes?"
@@ -1245,12 +1245,21 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Setup.Replay$Pristabdyti pakartojimą pasiekus paskutinę žymę"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Setup.Replay$Adaptyvaus peršokimo trukmė (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Setup.Replay$Adaptyvaus peršokimo perkrovimo užlaikymas(s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Setup.Replay$Adaptyvaus peršokimo galima elgsena"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"

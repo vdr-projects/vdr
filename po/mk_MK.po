@@ -1,14 +1,14 @@
 # VDR language source file.
 # Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013
+# Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013, 2015
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-07 17:08+0100\n"
-"PO-Revision-Date: 2012-11-19 15:18+0100\n"
+"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
 "Language: mk\n"
@@ -21,7 +21,7 @@ msgid "*** Invalid Channel ***"
 msgstr "*** Невалиден Канал ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM активиран!"
 
 msgid "Channel not available!"
 msgstr "Каналот е недостапен!"
@@ -81,13 +81,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Пилот"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "Т2СистемИд"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "СИСО/МИСО"
 
 msgid "Starting EPG scan"
 msgstr "Започнувам скенирање на EPG"
@@ -577,10 +577,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "Уредбите на каналот не се уникатни!"
@@ -743,74 +743,74 @@ msgid "CAM not responding!"
 msgstr "CAM не одговара!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Уреди патека"
 
 msgid "Folder"
-msgstr ""
+msgstr "Папка"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Оваа папка е моментално во употреба - промени не се возможни!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Помести цела папка со %d снимки?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Грешка при поместување папка!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Уреди снимка"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Оваа снимка е моментално во употреба - промени не се возможни!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Откажи сечење"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Запри сечење"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Откажи преместување"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Запри преместување"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Откажи копирање"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Запри копирање"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Сечи"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Избриши ознаки"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Снимката исчезна!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Уредена верзија веќе постои - пребриши?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Грешка при редење на снимка за сечење!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Преименувај ја снимката како името на папката?"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Бриши ознаки за уредување за оваа снимка?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Грешка при бришење на ознака за уредување!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Грешка при промена на приоритет/траење!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Грешка при промена на папка/име!"
 
 msgid "Recording info"
 msgstr "Детали на снимката"
@@ -1080,31 +1080,31 @@ msgid "Setup.LNB$own"
 msgstr "свој"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Користи позиционер за чинија"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Латидута на локацијата (степени)"
 
 msgid "South"
-msgstr ""
+msgstr "Југ"
 
 msgid "North"
-msgstr ""
+msgstr "Север"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Лонгитуда на локацијата (степени)"
 
 msgid "West"
-msgstr ""
+msgstr "Запад"
 
 msgid "East"
-msgstr ""
+msgstr "Исток"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Максимален од на позиционерот (степени)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Брзина на позиционерот (степени/сек)"
 
 msgid "CAM reset"
 msgstr "Рестартирај CAM"
@@ -1117,16 +1117,16 @@ msgstr "CAM спремен"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (активирање)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Откажи активација"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Активирај"
 
 msgid "Button$Menu"
 msgstr "Мени"
@@ -1141,7 +1141,7 @@ msgid "Can't open CAM menu!"
 msgstr "Неуспешно отварање на CAM менито!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "Неуспешно активирање на CAM!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM е во употреба - рестартирај?"
@@ -1237,21 +1237,30 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Паузирај репродукција кога се внесува ознака"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Паузирај репродукција кога се скока до ознака"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Прескокни ги уредуваните делови"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Паузирај репродукција на последанта ознака"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Почетно траење на адаптабилно скокање (сек)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Време на ресетирање за адаптабилно скокање (сек)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
+msgstr "Алтернативно однесување за адаптабилно скокање"
+
+msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
+msgstr ""
+
+msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr ""
 
 msgid "Setup.Replay$Resume ID"
@@ -1291,10 +1300,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Почетна јачина на звук"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Чекори на јачина на звук"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Линеаризациај на јачина на звук"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Премотување канали"
@@ -1482,7 +1491,7 @@ msgstr "ПУШТИ"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Движење на чинијата кон %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Панели"

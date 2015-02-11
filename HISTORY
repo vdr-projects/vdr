@@ -8497,7 +8497,8 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed the German translations of "latitude" and "longitude" (they were swapped).
 - Updated the Hungarian OSD texts (thanks to Mario Fenneis).
-- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells.
+- Modified runvdr.template to improve compatibility with the "bash" and "dash" shells
+  (thanks to Clemens Brauers).
 - Changed the German translations if the texts related to "binary skipping" (based
   on a suggestion by Thomas Reufer).
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
@@ -8521,3 +8522,49 @@ Video Disk Recorder Revision History
   that it is initialized to 'true' and will only be set to 'false' if the entire
   copy process has been successful (problem reported by Christoph Haubrich).
 - Added the UPDATE-2.2.0 file.
+
+2015-02-11: Version 2.1.10
+
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Updated the Romanian OSD texts (thanks to Lucian Muresan).
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Added "#REMOTE=LIRC" to Make.config.template (suggested by Martin Dauskardt).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Increased the width of the left text column in the Setup menus to avoid cutting
+  off German texts.
+- Added an empty target to the Makefile to make sure the sub-make for libsi is always
+  called (thanks to Sören Moch).
+- Updated the Italian OSD texts (thanks to Diego Pierotto and Nino Gerbino).
+- Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
+- The new options "Setup/Replay/Skip distance with Green/Yellow keys" and
+  "Setup/Replay/Skip distance with Green/Yellow keys in repeat" can be used to
+  configure the number of seconds to skip when pressing these keys once or pressing
+  and holding them (based on a patch from Matthias Senzel, originally from Tobias
+  Faust).
+- The new option "Setup/Replay/Use Prev/Next keys for adaptive skipping" can be used
+  to change the behavior of these keys during replay. They normally jump between
+  editing marks, but with this option set to 'yes' they will do adaptive skipping.
+- The new command line option --chartab can be used to set the default character
+  table to use for strings in the DVB data stream that don't begin with a proper
+  character table indicator (suggested by Christopher Reimer). The old mechanism
+  of using the environment variable VDR_CHARSET_OVERRIDE still works, but is now
+  deprecated and may be removed in a future version. The value given in the --chartab
+  option takes precedence over that in VDR_CHARSET_OVERRIDE.
+- cOsd::RenderPixmaps() now returns a pointer to cPixmap instead of cPixmapMemory
+  (suggested by Thomas Reufer). This is necessary to allow plugins with derived
+  cPixmap implementations to use this function. Plugins that use this function
+  with cPixmapMemory now need to add a dynamic cast to the call, as in
+
+    cPixmapMemory *pm = dynamic_cast<cPixmapMemory *>(RenderPixmaps()));
+
+  They also need to call DestroyPixmap(pm) instead of "delete pm" to properly release
+  the resulting pixmap after use.
+  The dvbhddevice plugin has been modified accordingly.
+- A cPixmap with a negative layer no longer marks any portion of the OSD's view port
+  as "dirty" when drawing on it. This may improve performance when drawing on a
+  hidden pixmap, because it avoids unnecessary refreshes of the OSD.
+- Added a missing initialization of "panning" to the constructor of cPixmapMemory.
+- Updated the Dutch OSD texts (thanks to Erik Oomen).
+- Updated the French OSD texts (thanks to Régis Bossut).
+- Fixed the German translation of "Zap timeout".
