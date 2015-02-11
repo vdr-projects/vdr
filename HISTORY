@@ -8566,3 +8566,4 @@ Video Disk Recorder Revision History
   hidden pixmap, because it avoids unnecessary refreshes of the OSD.
 - Added a missing initialization of "panning" to the constructor of cPixmapMemory.
 - Updated the Dutch OSD texts (thanks to Erik Oomen).
+- Updated the French OSD texts (thanks to Régis Bossut).

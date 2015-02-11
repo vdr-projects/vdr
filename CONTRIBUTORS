@@ -787,9 +787,10 @@ Peter Seyringer <e9425234@student.tuwien.ac.at>
 Stefan Schluenss <dxr3_osd@schluenss.de>
  for reporting a bug where PID handles were not closed correctly
 
-Régis Bossut <rbossut@auchan.com>
+Régis Bossut <famille.bossut@wanadoo.fr>
  for pointing out that with some providers the channels can only be distinguished
  through the RID
+ for translating OSD texts to the French language
 
 Andreas Kool <akool@akool.de>
  for his help in keeping 'channels.conf.cable' up to date
