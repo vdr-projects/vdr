@@ -8567,7 +8567,7 @@ Video Disk Recorder Revision History
 - Added a missing initialization of "panning" to the constructor of cPixmapMemory.
 - Updated the Dutch OSD texts (thanks to Erik Oomen).
 - Updated the French OSD texts (thanks to Régis Bossut).
-- Fixed the German translation of "Zap timeout".
+- Fixed the German translation of "Zap timeout" (thanks to Albert Danis).
 
 2015-02-12: Version 2.2.0
 
