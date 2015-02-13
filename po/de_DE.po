@@ -1246,16 +1246,16 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pause an der letzten Schnittmarke"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr "Anfangswert beim Halbieren der Sprungweite (s)"
+msgstr "Anfangswert beim adaptiven Springen (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr "Zeitlimit beim Halbieren der Sprungweite (s)"
+msgstr "Zeitlimit beim adaptiven Springen (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Sprungweite nur bei Richtungswechsel halbieren"
+msgstr "Alternatives Verhalten beim adapt. Springen"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr "Zurück/Vorwärts-Tasten halbieren Sprungweite"
+msgstr "Adaptives Springen mit Zurück/Vorwärts-Tasten"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
 msgstr "Sprungweite mit Taste Grün/Gelb (s)"
