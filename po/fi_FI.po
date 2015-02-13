@@ -1258,13 +1258,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Käytä vaihtoehtoista mukautuvaa hyppyä"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Käytä Ed./Seur. mukautuvaan hyppyyn"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Hypyn kesto värinäppäimillä (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Toistohypyn kesto värinäppäimillä (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
