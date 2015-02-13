@@ -3376,6 +3376,8 @@ Clemens Brauers <vdr@admin-cb.de>
 
 Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
+ for reporting that pausing replay at the last editing mark actually paused one I-frame
+ too early
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
