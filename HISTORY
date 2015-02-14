@@ -7846,7 +7846,7 @@ Video Disk Recorder Revision History
   (reported by Dominique Dumont).
 - Added basic support for positioners to control steerable satellite dishes (based on
   a patch from Seppo Ingalsuo and Ales Jurik, which in turn used code from Thomas
-  Bergwinkl's Rotor plugin).
+  Bergwinkl's Rotor plugin; with lots of help from Albert Danis).
   + Supports GotoN (aka "DiSEqC 1.2") and GotoX (aka "USALS").
   + The new DiSEqC command code 'P' can be used to instruct a positioner to move the
     dish to the required satellite position. When a 'P' code is processed, further
@@ -7982,7 +7982,7 @@ Video Disk Recorder Revision History
   + Note that in several places in the source code a "copy" operation is mentioned,
     however there is no user interface for this, yet.
 - Changed some variable names in positioner.c to match the names used in the page with
-  the explanation on vdr-portal.de.
+  the explanation on vdr-portal.de (suggested by Albert Danis).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed writing group separators to channels.conf that contain a comma (reported by
   Eike Edener).
