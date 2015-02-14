@@ -848,7 +848,7 @@ msgid "always"
 msgstr "alati"
 
 msgid "OSD"
-msgstr "Ekraanimenüü"
+msgstr "Ekraanikuva"
 
 msgid "Setup.OSD$Language"
 msgstr "Keel"
@@ -1251,10 +1251,10 @@ msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
 msgstr "Adaptiivse hüppe lähtestamise viide (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Adaptiivse hüppe vaheldumine käitumine"
+msgstr "Adaptiivse hüppe vaheldumise omadus"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr "Klahvid Eelmine/Järgmine adaptiivses hüppes"
+msgstr "Adaptiivne hüpe klahvidega Eelmine/Järgmine"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
 msgstr "Klahvide Roheline/Kollane hüpe (s)"
@@ -1263,7 +1263,7 @@ msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
 msgstr "Klahvide Roheline/Kollane korduv hüpe (s)"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "Jätkamise ID"
+msgstr "Taasesituse tunnus"
 
 msgid "Miscellaneous"
 msgstr "Muud sätted"
