@@ -3368,9 +3368,6 @@ Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently
  used sort mode of a menu
 
-Mario Fenneis <admin@mediastreambox.at>
- for translating OSD texts to the Hungarian language
-
 Clemens Brauers <vdr@admin-cb.de>
  for modifying runvdr.template to improve compatibility with the "bash" and "dash" shells
 

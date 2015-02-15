@@ -8496,7 +8496,6 @@ Video Disk Recorder Revision History
   any names that have been predefined in "folders.conf" (suggested by Sören Moch).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed the German translations of "latitude" and "longitude" (they were swapped).
-- Updated the Hungarian OSD texts (thanks to Mario Fenneis).
 - Modified runvdr.template to improve compatibility with the "bash" and "dash" shells
   (thanks to Clemens Brauers).
 - Changed the German translations if the texts related to "binary skipping" (based
