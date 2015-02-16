@@ -3391,6 +3391,9 @@ Albert Danis <a.danis@gmx.de>
  for developing and improving several formulas used in controlling positioners
  for translating OSD texts to the Hungarian language
  for fixing the German translation of "Zap timeout"
+ for unifying the German translations of "StreamId" and "T2SystemId"
+ for improving the German translations of "EPG bugfix level"", "StreamId" and
+ "T2SystemId"
 
 Tomasz Maciej Nowak <tmn505@gmail.com>
  for translating OSD texts to the Polish language

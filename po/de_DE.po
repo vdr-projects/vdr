@@ -78,13 +78,13 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "StreamId"
-msgstr "StreamId"
+msgstr "Stream-ID"
 
 msgid "Pilot"
 msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr "T2-Systemkennung"
+msgstr "T2-System-ID"
 
 msgid "SISO/MISO"
 msgstr "SISO/MISO"
@@ -960,7 +960,7 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Zeit bis zur EPG-Aktualisierung (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "EPG-Fehlerbereinigung"
+msgstr "EPG-Fehlerbereinigungsstufe"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Alte EPG-Daten anzeigen (min)"
