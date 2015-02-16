@@ -3375,6 +3375,8 @@ Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
  for reporting that pausing replay at the last editing mark actually paused one I-frame
  too early
+ for reporting a bug in using the default sort mode in a video directory without a
+ ".sort" file
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
