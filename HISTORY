@@ -8587,3 +8587,5 @@ Video Disk Recorder Revision History
 - Improved the German translations of "EPG bugfix level"", "StreamId" and "T2SystemId"
   (thanks to Albert Danis).
 - Updated the Czech OSD texts (thanks to Ales Jurik).
+- Fixed leading/trailing blanks in the translation files.
+- Bumped all version numbers to 2.2.0.

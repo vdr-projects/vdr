@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: rcu.c 3.1 2014/01/01 13:29:54 kls Exp $
+ * $Id: rcu.c 3.2 2015/02/17 13:13:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -16,7 +16,7 @@
 #include <vdr/thread.h>
 #include <vdr/tools.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.2.0";
 static const char *DESCRIPTION    = "Remote Control Unit";
 
 #define REPEATLIMIT      150 // ms

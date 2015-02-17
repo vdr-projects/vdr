@@ -59,3 +59,7 @@ VDR Plugin 'dvbsddevice' Revision History
 2014-03-15: Version 2.1.2
 
 - The function cDevice::GetVideoSystem() has been deprecated.
+
+2015-02-19: Version 2.2.0
+
+- Official release.

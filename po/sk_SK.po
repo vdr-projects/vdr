@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Milan Hrala <hrala.milan@gmail.com>, 2011, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2013-03-04 21:24+0100\n"
@@ -366,7 +366,7 @@ msgid "Press 'Up' to confirm"
 msgstr "Pre potvrdenie stlaète tlaèidlo 'Hore'"
 
 msgid "Press 'Down' to continue"
-msgstr "Pokraèujete stlaèením tlaèidla 'Dole' "
+msgstr "Pokraèujete stlaèením tlaèidla 'Dole'"
 
 msgid "(press 'Up' to go back)"
 msgstr "(Vrátite sa stlaèením tlaèidla 'hore')"
@@ -1330,7 +1330,7 @@ msgstr "Naozaj re¹tartova»?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Zastavi» nahrávanie"
+msgstr " Zastavi» nahrávanie "
 
 msgid "Schedule"
 msgstr "TV program"
@@ -1465,7 +1465,7 @@ msgstr "Urèite re¹tartova»?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "Hlasitos»"
+msgstr "Hlasitos» "
 
 msgid "Classic VDR"
 msgstr "Klasické VDR"

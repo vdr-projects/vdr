@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Jean-Claude Repetto <jc@repetto.org>, 2001, 2002, 2008
 # Olivier Jacques <jacquesolivier@hotmail.com>, 2003, 2005
@@ -16,7 +16,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-11 11:02+0100\n"
 "PO-Revision-Date: 2015-02-10 17:16+0100\n"
@@ -205,7 +205,7 @@ msgid "Content$Entertainment Programme for 10 to 16"
 msgstr "Programme de divertissement pour les 10-16 ans"
 
 msgid "Content$Informational/Educational/School Programme"
-msgstr "Informationnel/Éducatif/Programme Scolaire "
+msgstr "Informationnel/Éducatif/Programme Scolaire"
 
 msgid "Content$Cartoons/Puppets"
 msgstr "Dessins animés/Marionnettes"
@@ -1193,7 +1193,7 @@ msgid "Setup.Recording$Pause key handling"
 msgstr "Fonction de la touche Pause"
 
 msgid "Setup.Recording$Pause priority"
-msgstr "Priorité de l'enregistr. mis en pause "
+msgstr "Priorité de l'enregistr. mis en pause"
 
 msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Expiration enregistr. mis en pause (j)"

@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Nan Feng <nfvdr@live.com>, 2008, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
@@ -355,7 +355,7 @@ msgid "RC code detected!"
 msgstr "发现RC代码!"
 
 msgid "Do not press any key..."
-msgstr "不要按下任何键... "
+msgstr "不要按下任何键..."
 
 msgid "Phase 2: Learning specific key codes"
 msgstr "阶段 2: 学习特殊的按键代码"
@@ -690,7 +690,7 @@ msgid "Delete timer?"
 msgstr "是否删除时间？"
 
 msgid "Timer still recording - really delete?"
-msgstr "录像中-是否的删除？ "
+msgstr "录像中-是否的删除？"
 
 msgid "Event"
 msgstr "事件"
@@ -974,7 +974,7 @@ msgstr "转发器使用时间"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
-msgstr "首选语种 "
+msgstr "首选语种"
 
 #. TRANSLATORS: note the singular!
 msgid "Setup.EPG$Preferred language"
@@ -1325,21 +1325,21 @@ msgid "Setup"
 msgstr "VDR系统设置"
 
 msgid "Restart"
-msgstr " 重启VDR系统"
+msgstr "重启VDR系统"
 
 msgid "Really restart?"
 msgstr "是否重启？"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr "是否停止录像?"
+msgstr " 是否停止录像? "
 
 msgid "Schedule"
 msgstr "任务列表"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr "停止回放"
+msgstr " 停止回放"
 
 msgid "Button$Pause"
 msgstr "暂停"
@@ -1352,7 +1352,7 @@ msgstr "重置"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr "取消编辑"
+msgstr " 取消编辑"
 
 msgid "Stop recording?"
 msgstr "停止录像"
@@ -1401,10 +1401,10 @@ msgid "Editing process already active!"
 msgstr "编辑处理已经激活"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr "abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr "0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
 
 msgid "Button$ABC/abc"
 msgstr "ABC/abc"
@@ -1467,7 +1467,7 @@ msgstr "现在重启?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "音量调整"
+msgstr "音量调整 "
 
 msgid "Classic VDR"
 msgstr "经典VDR面板"
