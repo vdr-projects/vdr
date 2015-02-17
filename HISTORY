@@ -8568,7 +8568,7 @@ Video Disk Recorder Revision History
 - Updated the French OSD texts (thanks to Régis Bossut).
 - Fixed the German translation of "Zap timeout" (thanks to Albert Danis).
 
-2015-02-16: Version 2.2.0
+2015-02-17: Version 2.2.0
 
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
@@ -8586,3 +8586,4 @@ Video Disk Recorder Revision History
   (reported by Stefan Herdler).
 - Improved the German translations of "EPG bugfix level"", "StreamId" and "T2SystemId"
   (thanks to Albert Danis).
+- Updated the Czech OSD texts (thanks to Ales Jurik).
