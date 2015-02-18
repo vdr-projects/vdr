@@ -1495,7 +1495,7 @@ msgstr "LEJÁTSZÁS"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr "Antenna forgatása  %.1f..."
+msgstr "Antenna forgatása %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG Konzol"

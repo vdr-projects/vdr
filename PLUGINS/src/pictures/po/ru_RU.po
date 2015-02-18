@@ -28,7 +28,7 @@ msgid "Picture directory"
 msgstr "Каталог изображений"
 
 msgid "Slide show delay (s)"
-msgstr "Задержка  слайд-шоу (сек)"
+msgstr "Задержка слайд-шоу (сек)"
 
 msgid "No picture directory has been defined!"
 msgstr "Не определён каталог изображений!"

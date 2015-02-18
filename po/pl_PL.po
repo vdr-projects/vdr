@@ -884,7 +884,7 @@ msgid "Setup.OSD$Anti-alias"
 msgstr "Wyg³adzanie"
 
 msgid "Setup.OSD$Default font"
-msgstr "Standardowa  czcionka"
+msgstr "Standardowa czcionka"
 
 msgid "Setup.OSD$Small font"
 msgstr "Ma³a czcionka"
@@ -1441,7 +1441,7 @@ msgid "Can't shutdown - option '-s' not given!"
 msgstr "Nie mo¿na wy³±czyæ - nie podano opcji '-s'!"
 
 msgid "Editing - shut down anyway?"
-msgstr "Monta¿ w trakcie  - Wy³±czyæ mimo to?"
+msgstr "Monta¿ w trakcie - Wy³±czyæ mimo to?"
 
 msgid "Recording - shut down anyway?"
 msgstr "Trwa nagrywanie - wy³±czyæ mimo to?"
@@ -1458,7 +1458,7 @@ msgid "Plugin %s wakes up in %ld min, continue?"
 msgstr "Wtyczka %s obudzi siê za %ld min, kontynuowaæ?"
 
 msgid "Editing - restart anyway?"
-msgstr "Monta¿ w trakcie  - Zrestartowaæ mimo to?"
+msgstr "Monta¿ w trakcie - Zrestartowaæ mimo to?"
 
 msgid "Recording - restart anyway?"
 msgstr "Trwa nagrywanie - zrestartowaæ mimo to?"

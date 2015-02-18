@@ -890,7 +890,7 @@ msgid "Setup.OSD$Fixed font"
 msgstr "Nustatyto dydžio šriftas"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Numatyto šrifto dydis  (%)"
+msgstr "Numatyto šrifto dydis (%)"
 
 msgid "Setup.OSD$Small font size (%)"
 msgstr "Mažo šrifto dydis (%)"
@@ -1368,7 +1368,7 @@ msgid "No subtitles available!"
 msgstr "Subtitrai nepateikiami!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Nepakanka vietos diske,  kad būtų galima įrašinėti!"
+msgstr "Nepakanka vietos diske, kad būtų galima įrašinėti!"
 
 msgid "No free DVB device to record!"
 msgstr "Nėra laisvų DVB įrenginių, kad būtų galima įrašinėti!"

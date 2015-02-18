@@ -30,7 +30,7 @@ msgid "Channel not available!"
 msgstr "القناة غير متاحة"
 
 msgid "Can't start Transfer Mode!"
-msgstr "تعذر  بدء طور النقل"
+msgstr "تعذر بدء طور النقل"
 
 msgid "off"
 msgstr "ايقاف"
@@ -348,7 +348,7 @@ msgid "LanguageCode$eng"
 msgstr "ara"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "التحقق من مفاتيح  وحدة التحكم"
+msgstr "التحقق من مفاتيح وحدة التحكم"
 
 msgid "Press any key on the RC unit"
 msgstr "الرجاء الضغط على اى زر فى وحدة التحكم"
@@ -1538,7 +1538,7 @@ msgid "Recording started"
 msgstr "ابتداء التسجيل"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر  القفل لاتمام  عملية الاغلاق"
+msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر القفل لاتمام عملية الاغلاق"
 
 msgid "Press any key to cancel shutdown"
 msgstr "اضغط اى زر لالغاء اقفال البرنامج"

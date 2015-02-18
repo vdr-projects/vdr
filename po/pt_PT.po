@@ -1535,7 +1535,7 @@ msgid "Recording started"
 msgstr "Gravação iniciada"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "O VDR vai desligar mais tarde  - pressione On/Off para forçar"
+msgstr "O VDR vai desligar mais tarde - pressione On/Off para forçar"
 
 msgid "Press any key to cancel shutdown"
 msgstr "Pressione qualquer tecla para cancelar o encerramento"

@@ -361,7 +361,7 @@ msgstr "Krok 2: Urèenie funkcie tlaèidiel"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Stlaète tlaèidlo pre funkciu  '%s'"
+msgstr "Stlaète tlaèidlo pre funkciu '%s'"
 
 msgid "Press 'Up' to confirm"
 msgstr "Pre potvrdenie stlaète tlaèidlo 'Hore'"
@@ -1104,7 +1104,7 @@ msgid "Setup.LNB$Max. positioner swing (degrees)"
 msgstr "Max. rozsah polohovania (stupòov)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr "Rýchlos» polohovania  (stupòov/s)"
+msgstr "Rýchlos» polohovania (stupòov/s)"
 
 msgid "CAM reset"
 msgstr "Resetnutie CAMu"
@@ -1285,7 +1285,7 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Limit pri èíselnej voµbe kanála (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr "Zdr¾anie opakovaného stlaèenia  tlaèidla (ms)"
+msgstr "Zdr¾anie opakovaného stlaèenia tlaèidla (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Perióda opakovania stlaèeného tlaèidla (ms)"
@@ -1550,7 +1550,7 @@ msgid "Editing process finished"
 msgstr "Proces zostrihávania dokonèený"
 
 msgid "Press any key to cancel restart"
-msgstr "ktorákoµvek  klávesa zru¹í re¹tart"
+msgstr "ktorákoµvek klávesa zru¹í re¹tart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
