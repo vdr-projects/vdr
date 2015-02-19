@@ -8568,7 +8568,7 @@ Video Disk Recorder Revision History
 - Updated the French OSD texts (thanks to Régis Bossut).
 - Fixed the German translation of "Zap timeout" (thanks to Albert Danis).
 
-2015-02-18: Version 2.2.0
+2015-02-19: Version 2.2.0
 
 - Updated the Lithuanian OSD texts (thanks to Valdemaras Pipiras).
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
@@ -8591,5 +8591,6 @@ Video Disk Recorder Revision History
 - Updated sources.conf to reflect the fact that Thor 5/6 and Intelsat 10-02 are
   actually in two separate positions.
 - Updated the French OSD texts (thanks to Régis Bossut).
+- Updated the Spanish OSD texts (thanks to Gabriel Bonich).
 - Fixed leading/trailing/multiple blanks in the translation files.
 - Bumped all version numbers to 2.2.0.
