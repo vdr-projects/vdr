@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: epgtableid0.c 3.1 2014/01/05 10:56:10 kls Exp $
+ * $Id: epgtableid0.c 3.2 2015/02/17 13:12:18 kls Exp $
  */
 
 #include <vdr/epg.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.2.0";
 static const char *DESCRIPTION    = "EPG handler for events with table id 0x00";
 
 // --- cTable0Handler --------------------------------------------------------

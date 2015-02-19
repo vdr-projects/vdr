@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
@@ -345,7 +345,7 @@ msgid "LanguageCode$eng"
 msgstr "mkd"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Фаза 1: Детекција на типот на далечински управувач "
+msgstr "Фаза 1: Детекција на типот на далечински управувач"
 
 msgid "Press any key on the RC unit"
 msgstr "Притиснете копче на далечинскиот управувач"
@@ -1255,13 +1255,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Алтернативно однесување за адаптабилно скокање"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Користи копчиња Претходно/Следно за адаптабилно скокање"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Дистанца на скокање со Зелено/Жолто копче (сек)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Дистанца на скокање со Зелено/Жолто копче при повторување (сек)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"
@@ -1400,10 +1400,10 @@ msgid "Editing process already active!"
 msgstr "Уредувањето е веќе во тек!!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
-msgstr "абвгдѓежзѕијклљмнњопрстќуфхцчџш0123456789-.,#~\\^$[]|()*+?{}/:%@&"
+msgstr " абвгдѓежзѕијклљмнњопрстќуфхцчџш0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 
 msgid "CharMap$ 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9"
-msgstr "0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcабвг2\tdefдѓеж3\tghiзѕиј4\tjklклљм5\tmnoнњоп6\tpqrsрстќ7\ttuvуфхц8\twxyzчџш9"
+msgstr " 0\t-.,1#~\\^$[]|()*+?{}/:%@&\tabcабвг2\tdefдѓеж3\tghiзѕиј4\tjklклљм5\tmnoнњоп6\tpqrsрстќ7\ttuvуфхц8\twxyzчџш9"
 
 msgid "Button$ABC/abc"
 msgstr "АБВ/абв"

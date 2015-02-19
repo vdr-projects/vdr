@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Oktay Yolgeçen <oktay_73@yahoo.de>, 2007, 2008
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
@@ -1275,7 +1275,7 @@ msgid "Setup.Miscellaneous$Min. user inactivity (min)"
 msgstr "Minimum kullanýcý hareketsizliði (dak)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP zaman aþýmý (sn) "
+msgstr "SVDRP zaman aþýmý (sn)"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zaping zaman aþýmý (sn)"

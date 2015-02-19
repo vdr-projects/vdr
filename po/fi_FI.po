@@ -1,15 +1,15 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Hannu Savolainen <hannu@opensound.com>, 2002
 # Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002, 2003
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
-# Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2003-2008, 2010-2013
+# Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2003-2008, 2010-2013, 2015
 # Matti Lehtimäki <matti.lehtimaki@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
@@ -1258,13 +1258,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Käytä vaihtoehtoista mukautuvaa hyppyä"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Käytä Ed./Seur. mukautuvaan hyppyyn"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Hypyn kesto värinäppäimillä (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Toistohypyn kesto värinäppäimillä (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"

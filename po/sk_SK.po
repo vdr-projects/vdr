@@ -1,26 +1,27 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Milan Hrala <hrala.milan@gmail.com>, 2011, 2013
+# Milan Hrala <hrala.milan@gmail.com>, 2011, 2013, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
-"PO-Revision-Date: 2013-03-04 21:24+0100\n"
+"PO-Revision-Date: 2015-02-17 18:59+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Neplatný kanál ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM Aktivovaný!"
 
 msgid "Channel not available!"
 msgstr "Kanál nie je dostupný!"
@@ -47,16 +48,16 @@ msgid "System"
 msgstr "systém"
 
 msgid "Srate"
-msgstr "Srate"
+msgstr "Symbolová rýchlos»"
 
 msgid "Inversion"
-msgstr "Inversion"
+msgstr "Inverzia"
 
 msgid "CoderateH"
-msgstr "CoderateH"
+msgstr "KonvoluènýKód-vysoká prijorita"
 
 msgid "CoderateL"
-msgstr "CoderateL"
+msgstr "KonvoluènýKód-nízka prijorita"
 
 msgid "Modulation"
 msgstr "Modulácia"
@@ -65,10 +66,10 @@ msgid "Bandwidth"
 msgstr "©írka pásma"
 
 msgid "Transmission"
-msgstr "Prenos"
+msgstr "Vysielací mód"
 
 msgid "Guard"
-msgstr "Ochrana"
+msgstr "Ochranný interval"
 
 msgid "Hierarchy"
 msgstr "Hierarchia"
@@ -80,13 +81,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2SystemId"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Spú¹»a sa snímanie EPG"
@@ -344,7 +345,7 @@ msgid "LanguageCode$eng"
 msgstr "slk"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "Fáza 1: Detekcia typu diaµkového ovládania"
+msgstr "Krok 1: Detekcia typu diaµkového ovládania"
 
 msgid "Press any key on the RC unit"
 msgstr "Stlaète µubovolné tlaèidlo ovládania"
@@ -356,23 +357,23 @@ msgid "Do not press any key..."
 msgstr "Nestláèajte ¾iadne klávesy..."
 
 msgid "Phase 2: Learning specific key codes"
-msgstr "Fáza 2: Urèenie funkcie tlaèidiel"
+msgstr "Krok 2: Urèenie funkcie tlaèidiel"
 
 #, c-format
 msgid "Press key for '%s'"
-msgstr "Stlaète tlaèidlo pre funkciu  '%s'"
+msgstr "Stlaète tlaèidlo pre funkciu '%s'"
 
 msgid "Press 'Up' to confirm"
 msgstr "Pre potvrdenie stlaète tlaèidlo 'Hore'"
 
 msgid "Press 'Down' to continue"
-msgstr "Pokraèujete stlaèením tlaèidla 'Dole' "
+msgstr "Pokraèujete stlaèením tlaèidla 'Dole'"
 
 msgid "(press 'Up' to go back)"
 msgstr "(Vrátite sa stlaèením tlaèidla 'hore')"
 
 msgid "(press 'Down' to end key definition)"
-msgstr "(Definovanie tlaèidiel ukonèíte stlaèením tlaèidla 'dole')"
+msgstr "(Stlaèením tlaèidla 'dole' ukonèíte definovanie tlaèidiel)"
 
 msgid "(press 'Menu' to skip this key)"
 msgstr "(stlaèením 'Menu' preskoèíte definíciu tlaèidla)"
@@ -381,7 +382,7 @@ msgid "Learning Remote Control Keys"
 msgstr "Programovanie diaµkového ovládania"
 
 msgid "Phase 3: Saving key codes"
-msgstr "Fáza 3: Ulo¾enie kódu tlaèidiel"
+msgstr "Krok 3: Ulo¾enie kódu tlaèidiel"
 
 msgid "Press 'Up' to save, 'Down' to cancel"
 msgstr "Nastavenie stlaèením tlaèidla 'hore' ulo¾íte, 'Dole' zru¹íte"
@@ -543,31 +544,31 @@ msgid "Frequency"
 msgstr "Frekvencia"
 
 msgid "Vpid"
-msgstr "Vpid"
+msgstr "Video pid"
 
 msgid "Ppid"
-msgstr "Ppid"
+msgstr "PCR pid"
 
 msgid "Apid1"
-msgstr "Apid1"
+msgstr "Audio pid1"
 
 msgid "Apid2"
-msgstr "Apid2"
+msgstr "Audio pid2"
 
 msgid "Dpid1"
-msgstr "Dpid1"
+msgstr "Dolby pid1"
 
 msgid "Dpid2"
-msgstr "Dpid2"
+msgstr "Dolby pid2"
 
 msgid "Spid1"
-msgstr "Spid1"
+msgstr "Spid1 (titulky)"
 
 msgid "Spid2"
-msgstr "Spid2"
+msgstr "Spid2 (titulky)"
 
 msgid "Tpid"
-msgstr "Tpid"
+msgstr "Teletext pid"
 
 msgid "CA"
 msgstr "CA"
@@ -576,13 +577,13 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Network id"
 
 msgid "Tid"
-msgstr ""
+msgstr "Transponder id"
 
 msgid "Channel settings are not unique!"
-msgstr "Nastavenia kanálu nie sú výnimoèné!"
+msgstr "Parametre kanálu sú duplicitné!"
 
 msgid "Channels"
 msgstr "Kanály"
@@ -600,7 +601,7 @@ msgid "Button$Mark"
 msgstr "Oznaèi»"
 
 msgid "Channel is being used by a timer!"
-msgstr "Plán nahrávania práve pou¾íva kanál!"
+msgstr "U¾ je naplánované nahrávanie pre tento kanál!"
 
 msgid "Delete channel?"
 msgstr "Odstráni» kanál?"
@@ -742,74 +743,74 @@ msgid "CAM not responding!"
 msgstr "CAM neodpovedá!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Upravi» umiestnenie"
 
 msgid "Folder"
-msgstr ""
+msgstr "Prieèinok"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Tento prieèinok sa práve pou¾íva - ¾iadne zmeny nie sú mo¾né!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Presunú» celý prieèinok obsahujúci %d nahrávky?"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Chyba pri presune prieèinku!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Upravi» nahrávku"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Táto nahrávka sa v súèasnej dobe pou¾íva - ¾iadne zmeny nie sú mo¾né!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Zru¹i» strih"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Zastavi» strih"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Zru¹i» presun"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Zastavi» presun"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Zru¹i» kopírovanie"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Zastavi» kopírovanie"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Vystrihnú»"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Vymaza» znaèky"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Záznam sa stratil!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Upravená verzia u¾ existuje - prepísa»?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Chyba v poradí pri zostrihu nahrávky!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Premenova» meno prieèinku nahrávky?"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Odstráni» strihové znaèky tejto nahrávky?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Chyba pri mazaní znaèiek!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Chyba pri zmene priority/¾ivotnos»i!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Chyba pri zmene prieèinka/názvu!"
 
 msgid "Recording info"
 msgstr "Podrobnosti nahrávky"
@@ -887,7 +888,7 @@ msgid "Setup.OSD$Small font"
 msgstr "Malé písmo"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Fixné písmo"
+msgstr "Písmo s kon¹tantnou ¹írkou"
 
 msgid "Setup.OSD$Default font size (%)"
 msgstr "Veµkos» predvoleného písma (%)"
@@ -896,7 +897,7 @@ msgid "Setup.OSD$Small font size (%)"
 msgstr "Veµkos» malého písma (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Veµkos» fixného písma (%)"
+msgstr "Veµkos» písma kon¹tantnej ¹írky (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Pozícia informácií o kanále"
@@ -1079,31 +1080,31 @@ msgid "Setup.LNB$own"
 msgstr "vlastný"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Pou¾i» polohovanie paraboly"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Zemepisná ¹írka (stupòov)"
 
 msgid "South"
-msgstr ""
+msgstr "Ju¾ne"
 
 msgid "North"
-msgstr ""
+msgstr "Severne"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Zemepisná då¾ka (stupòov)"
 
 msgid "West"
-msgstr ""
+msgstr "Západne"
 
 msgid "East"
-msgstr ""
+msgstr "Východne"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Max. rozsah polohovania (stupòov)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Rýchlos» polohovania (stupòov/s)"
 
 msgid "CAM reset"
 msgstr "Resetnutie CAMu"
@@ -1116,16 +1117,16 @@ msgstr "CAM pripravený"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (aktivované)"
 
 msgid "CAM"
 msgstr "CAM (modul podmieneného prístupu)"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Zru¹i» aktiváciu"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Aktivova»"
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1140,7 +1141,7 @@ msgid "Can't open CAM menu!"
 msgstr "Menu CAM nie je dostupné"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "CAM nie je mo¾né aktivova»!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM sa pou¾íva - naozaj re¹tartova»?"
@@ -1236,31 +1237,31 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pozastavi» prehrávanie pri stanovení znaèky"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pozastavi» prehrávanie pri skoku na znaèku"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Preskoèi» upravené èasti"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Pozastavi» prehrávanie na poslednej znaèke"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Poèiatoèná doba pre adaptívny skok (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Obnovi» èasový limit pre adaptívne preskakovanie (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr ""
+msgstr "Alternatívne správanie pre adaptívne preskakovanie"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Pou¾i» tlaèidlá Predo¹lý/Nasledujúci pre adaptívne preskakovanie"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Preskoèi» úsek so zeleným/¾ltým tlaèidlom (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Opakované preskoèenie úseku so Zeleným/®ltým tlaèidlom (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ident. èíslo obnovenia prehrávania"
@@ -1284,7 +1285,7 @@ msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
 msgstr "Limit pri èíselnej voµbe kanála (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
-msgstr "Zdr¾anie opakovaného stlaèenia  tlaèidla (ms)"
+msgstr "Zdr¾anie opakovaného stlaèenia tlaèidla (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Perióda opakovania stlaèeného tlaèidla (ms)"
@@ -1299,10 +1300,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Hlasitos» po spustení"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Krok zmeny hlasitosti"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Zarovna» zmenu hlasitosti"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanály cyklova» pri prepnutí"
@@ -1330,7 +1331,7 @@ msgstr "Naozaj re¹tartova»?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Zastavi» nahrávanie"
+msgstr " Zastavi» nahrávanie "
 
 msgid "Schedule"
 msgstr "TV program"
@@ -1465,7 +1466,7 @@ msgstr "Urèite re¹tartova»?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
-msgstr "Hlasitos»"
+msgstr "Hlasitos» "
 
 msgid "Classic VDR"
 msgstr "Klasické VDR"
@@ -1490,7 +1491,7 @@ msgstr "PREHRÁVA SA"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Pohyb paraboly na %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "ST:TNG panely"
@@ -1549,7 +1550,7 @@ msgid "Editing process finished"
 msgstr "Proces zostrihávania dokonèený"
 
 msgid "Press any key to cancel restart"
-msgstr "ktorákoµvek  klávesa zru¹í re¹tart"
+msgstr "ktorákoµvek klávesa zru¹í re¹tart"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"

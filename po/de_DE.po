@@ -1,11 +1,12 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Klaus Schmidinger <vdr@tvdr.de>, 2000-2015
+# Albert Danis <a.danis@gmx.de>, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
@@ -77,13 +78,13 @@ msgid "Rolloff"
 msgstr "Rolloff"
 
 msgid "StreamId"
-msgstr "StreamId"
+msgstr "Stream-ID"
 
 msgid "Pilot"
 msgstr "Pilot"
 
 msgid "T2SystemId"
-msgstr "T2-Systemkennung"
+msgstr "T2-System-ID"
 
 msgid "SISO/MISO"
 msgstr "SISO/MISO"
@@ -959,7 +960,7 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Zeit bis zur EPG-Aktualisierung (h)"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr "EPG-Fehlerbereinigung"
+msgstr "EPG-Fehlerbereinigungsstufe"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Alte EPG-Daten anzeigen (min)"
@@ -1245,16 +1246,16 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Pause an der letzten Schnittmarke"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr "Anfangswert beim Halbieren der Sprungweite (s)"
+msgstr "Anfangswert beim adaptiven Springen (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr "Zeitlimit beim Halbieren der Sprungweite (s)"
+msgstr "Zeitlimit beim adaptiven Springen (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Sprungweite nur bei Richtungswechsel halbieren"
+msgstr "Alternatives Verhalten beim adapt. Springen"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr "Zurück/Vorwärts-Tasten halbieren Sprungweite"
+msgstr "Adaptives Springen mit Zurück/Vorwärts-Tasten"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
 msgstr "Sprungweite mit Taste Grün/Gelb (s)"

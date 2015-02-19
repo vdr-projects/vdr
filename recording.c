@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.27 2015/02/07 15:28:02 kls Exp $
+ * $Id: recording.c 3.28 2015/02/16 07:49:14 kls Exp $
  */
 
 #include "recording.h"
@@ -3027,6 +3027,7 @@ bool HasRecordingsSortMode(const char *Directory)
 
 void GetRecordingsSortMode(const char *Directory)
 {
+  RecordingsSortMode = rsmName;
   if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "r")) {
      char buf[8];
      if (fgets(buf, sizeof(buf), f))

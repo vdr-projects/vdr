@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Arthur Konovalov <artlov@gmail.com>, 2004-2013, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
@@ -848,7 +848,7 @@ msgid "always"
 msgstr "alati"
 
 msgid "OSD"
-msgstr "Ekraanimenüü"
+msgstr "Ekraanikuva"
 
 msgid "Setup.OSD$Language"
 msgstr "Keel"
@@ -1245,25 +1245,25 @@ msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Paus viimasel markeril"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr "Adaptiivse hüppe kestuse algväärtus (s)"
+msgstr "Adaptiivse hüppe pikkuse algväärtus (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
 msgstr "Adaptiivse hüppe lähtestamise viide (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Adaptiivse hüppe vaheldumine käitumine"
+msgstr "Adaptiivse hüppe vaheldumise omadus"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Adaptiivne hüpe klahvidega Eelmine/Järgmine"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Klahvide Roheline/Kollane hüpe (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Klahvide Roheline/Kollane korduv hüpe (s)"
 
 msgid "Setup.Replay$Resume ID"
-msgstr "Jätkamise ID"
+msgstr "Taasesituse tunnus"
 
 msgid "Miscellaneous"
 msgstr "Muud sätted"

@@ -1,12 +1,12 @@
 # VDR plugin language source file
-# Copyright (C) 2011 Andreas Regel
+# Copyright (C) 2015 Andreas Regel
 # This file is distributed under the same license as the dvbhddevice package.
-# Christoph Haubrich, 2011
+# Christoph Haubrich <christoph1.haubrich@arcor.de>, 2011
 # Diego Pierotto <vdr-italian@tiscali.it>, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vdr-dvbhddevice 0.0.4\n"
+"Project-Id-Version: vdr-dvbhddevice 2.2.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2014-09-21 14:01+0200\n"
 "PO-Revision-Date: 2015-02-08 19:48+0100\n"

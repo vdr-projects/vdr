@@ -1,14 +1,14 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010, 2013, 2015.
+# Valdemaras Pipiras <varas@ambernet.lt>, 2009, 2010, 2013, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
-"PO-Revision-Date: 2015-02-09 17:08+0100\n"
+"PO-Revision-Date: 2015-02-11 14:02+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
 "Language: lt\n"
@@ -764,28 +764,28 @@ msgid "This recording is currently in use - no changes are possible!"
 msgstr "Šis įrašas šiuo metu naudojamas, tad šiuo metu negalimi jokie pakeitimai!"
 
 msgid "Button$Cancel cutting"
-msgstr "Button$Atšaukti karpymą"
+msgstr "Atšaukti karpymą"
 
 msgid "Button$Stop cutting"
-msgstr "Button$Sustabdyti karpymą"
+msgstr "Sustabdyti karpymą"
 
 msgid "Button$Cancel moving"
-msgstr "Button$Atšaukti perkėlimą"
+msgstr "Atšaukti perkėlimą"
 
 msgid "Button$Stop moving"
-msgstr "Button$Sustabdyti perkėlimą"
+msgstr "Sustabdyti perkėlimą"
 
 msgid "Button$Cancel copying"
-msgstr "Button$Atšaukti kopijavimą"
+msgstr "Atšaukti kopijavimą"
 
 msgid "Button$Stop copying"
-msgstr "Button$Sustabdyti kopijavimą"
+msgstr "Sustabdyti kopijavimą"
 
 msgid "Button$Cut"
-msgstr "Button$Iškirpti"
+msgstr "Iškirpti"
 
 msgid "Button$Delete marks"
-msgstr "Button$Ištrinti žymes"
+msgstr "Ištrinti žymes"
 
 msgid "Recording vanished!"
 msgstr "Įrašai išvalyti!"
@@ -890,7 +890,7 @@ msgid "Setup.OSD$Fixed font"
 msgstr "Nustatyto dydžio šriftas"
 
 msgid "Setup.OSD$Default font size (%)"
-msgstr "Numatyto šrifto dydis  (%)"
+msgstr "Numatyto šrifto dydis (%)"
 
 msgid "Setup.OSD$Small font size (%)"
 msgstr "Mažo šrifto dydis (%)"
@@ -1079,10 +1079,10 @@ msgid "Setup.LNB$own"
 msgstr "savas"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr "Setup.LNB$Naudoti pozicionierių"
+msgstr "Naudoti pozicionierių"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr "Setup.LNB$Vitovės platuma (laipsniais)"
+msgstr "Vitovės platuma (laipsniais)"
 
 msgid "South"
 msgstr "Pietūs"
@@ -1091,7 +1091,7 @@ msgid "North"
 msgstr "Šiaurė"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr "Setup.LNB$Vietovės ilgima (laipsniais)"
+msgstr "Vietovės ilgima (laipsniais)"
 
 msgid "West"
 msgstr "Vakarai"
@@ -1122,10 +1122,10 @@ msgid "CAM"
 msgstr "Dekodavimo modulis (CAM)"
 
 msgid "Button$Cancel activation"
-msgstr "Button$Atšaukti aktyvaciją"
+msgstr "Atšaukti aktyvaciją"
 
 msgid "Button$Activate"
-msgstr "Button$Aktyvuoti"
+msgstr "Aktyvuoti"
 
 msgid "Button$Menu"
 msgstr "Meniu"
@@ -1236,31 +1236,31 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pristabdyti pakartojimą kai vyksta žymėjimas"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr "Setup.Replay$Pristabdyti pakartojim1 kol pereinama prie žymės"
+msgstr "Pristabdyti pakartojim1 kol pereinama prie žymės"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr "Setup.Replay$Praleisti koreguotas dalis"
+msgstr "Praleisti koreguotas dalis"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr "Setup.Replay$Pristabdyti pakartojimą pasiekus paskutinę žymę"
+msgstr "Pristabdyti pakartojimą pasiekus paskutinę žymę"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr "Setup.Replay$Adaptyvaus peršokimo trukmė (s)"
+msgstr "Adaptyvaus peršokimo trukmė (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr "Setup.Replay$Adaptyvaus peršokimo perkrovimo užlaikymas(s)"
+msgstr "Adaptyvaus peršokimo perkrovimo užlaikymas(s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr "Setup.Replay$Adaptyvaus peršokimo galima elgsena"
+msgstr "Adaptyvaus peršokimo galima elgsena"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Adaptyviam peršokimui naudoti Atgal/Pirmyn mygtukus"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Praleisti atkarpą (s) su Žaliu/Geltonu mygtukais"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Praleisti atkarpą pakartojime (s) su Žaliu/Geltonu mygtukais"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Kūrinio ID"
@@ -1299,10 +1299,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Garsas įjungimo metu"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr "Setup.Miscellaneous$Garso reguliavimo žingsniai"
+msgstr "Garso reguliavimo žingsniai"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr "Setup.Miscellaneous$Garso lygiavimas"
+msgstr "Garso lygiavimas"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Kanalų pridengimas"
@@ -1368,7 +1368,7 @@ msgid "No subtitles available!"
 msgstr "Subtitrai nepateikiami!"
 
 msgid "Not enough disk space to start recording!"
-msgstr "Nepakanka vietos diske,  kad būtų galima įrašinėti!"
+msgstr "Nepakanka vietos diske, kad būtų galima įrašinėti!"
 
 msgid "No free DVB device to record!"
 msgstr "Nėra laisvų DVB įrenginių, kad būtų galima įrašinėti!"

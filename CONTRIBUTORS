@@ -3368,17 +3368,35 @@ Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently
  used sort mode of a menu
 
-Mario Fenneis <admin@mediastreambox.at>
- for translating OSD texts to the Hungarian language
-
 Clemens Brauers <vdr@admin-cb.de>
  for modifying runvdr.template to improve compatibility with the "bash" and "dash" shells
 
 Stefan Herdler <herdler@gmx.de>
  for fixing cMarks::GetNextBegin() and cMarks::GetNextEnd()
+ for reporting that pausing replay at the last editing mark actually paused one I-frame
+ too early
+ for reporting a bug in using the default sort mode in a video directory without a
+ ".sort" file
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
 
 Erik Oomen <oomen.e@gmail.com>
  for translating OSD texts to the Dutch language
+
+Magnus Sirwiö <sirwio@hotmail.com>
+ for translating OSD texts to the Swedish language
+
+Albert Danis <a.danis@gmx.de>
+ for developing and improving several formulas used in controlling positioners
+ for translating OSD texts to the Hungarian language
+ for fixing the German translation of "Zap timeout"
+ for unifying the German translations of "StreamId" and "T2SystemId"
+ for improving the German translations of "EPG bugfix level"", "StreamId" and
+ "T2SystemId"
+
+Tomasz Maciej Nowak <tmn505@gmail.com>
+ for translating OSD texts to the Polish language
+
+Gabriel Bonich <gbonich@gmail.com>
+ for translating OSD texts to the Spanish language

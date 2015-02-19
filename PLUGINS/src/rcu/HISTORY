@@ -24,3 +24,7 @@ VDR Plugin 'rcu' Revision History
 2014-01-01: Version 2.1.1
 
 - Avoiding unnecessary pkg-config warnings in plugin Makefiles.
+
+2015-02-19: Version 2.2.0
+
+- Official release.

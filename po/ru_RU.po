@@ -1,12 +1,12 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Vyacheslav Dikonov <sdiconov@mail.ru>, 2004, 2005
 # Oleg Roitburd <oroitburd@gmail.com>, 2005-2008, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2013-03-10 17:13+0100\n"
@@ -1433,7 +1433,7 @@ msgid "Index file regeneration complete"
 msgstr "Регенерация индексного файла окончена"
 
 msgid "Index file regeneration failed!"
-msgstr "Ошибка регенерация индексного файла "
+msgstr "Ошибка регенерация индексного файла"
 
 msgid "Can't shutdown - option '-s' not given!"
 msgstr "Выключение невозможно - не задан параметр '-s'!"

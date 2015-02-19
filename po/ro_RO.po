@@ -1,15 +1,15 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Paul Lacatus <paul@campina.iiruc.ro>, 2002
 # Lucian Muresan <lucianm@users.sourceforge.net>, 2004-2006, 2008, 2010-2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
-"PO-Revision-Date: 2015-02-09 00:23+0100\n"
+"PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
 "Language: ro\n"
@@ -1232,7 +1232,7 @@ msgid "Setup.Replay$Show remaining time"
 msgstr "Arată timpul rămas"
 
 msgid "Setup.Replay$Progress display time (s)"
-msgstr "Durata afișării indicatorului de progres (s) "
+msgstr "Durata afișării indicatorului de progres (s)"
 
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pauză la punerea marcajului de editare"
@@ -1256,13 +1256,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Strategie alternativă pentru săritul adaptiv al marcajelor"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Folosește tastele Anterior/Următor pentru săritul adaptiv"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Durata sărită cu tastele Verde/Galben (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Durata sărită cu tastele Verde/Galben la repetiție (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Identificator continuare"

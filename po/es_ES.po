@@ -1,16 +1,16 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Ruben Nunez Francisco <ruben.nunez@tang-it.com>, 2002, 2006
 # Luca Olivetti <luca@ventoso.org>, 2008, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
-"PO-Revision-Date: 2008-03-02 19:02+0100\n"
-"Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
+"PO-Revision-Date: 2015-02-19 23:00+0100\n"
+"Last-Translator: Gabriel Bonich <gbonich@gmail.com>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -18,10 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "*** Invalid Channel ***"
-msgstr "*** Canal no válido ***"
+msgstr "*** Canal no valido ***"
 
 msgid "CAM activated!"
-msgstr ""
+msgstr "CAM activada!"
 
 msgid "Channel not available!"
 msgstr "¡Canal no disponible!"
@@ -81,13 +81,13 @@ msgid "StreamId"
 msgstr "StreamId"
 
 msgid "Pilot"
-msgstr ""
+msgstr "Piloto"
 
 msgid "T2SystemId"
-msgstr ""
+msgstr "T2SystemId"
 
 msgid "SISO/MISO"
-msgstr ""
+msgstr "SISO/MISO"
 
 msgid "Starting EPG scan"
 msgstr "Iniciando la exploración de EPG"
@@ -577,10 +577,10 @@ msgid "Sid"
 msgstr "Sid"
 
 msgid "Nid"
-msgstr ""
+msgstr "Nid"
 
 msgid "Tid"
-msgstr ""
+msgstr "Tid"
 
 msgid "Channel settings are not unique!"
 msgstr "!Propiedades de canal duplicadas!"
@@ -707,7 +707,7 @@ msgid "What's on now?"
 msgstr "¿Qué hay ahora?"
 
 msgid "What's on next?"
-msgstr "¿Qué hay después?"
+msgstr "¿Quizá hay después?"
 
 msgid "Button$Next"
 msgstr "Después"
@@ -743,74 +743,74 @@ msgid "CAM not responding!"
 msgstr "¡CAM no responde!"
 
 msgid "Edit path"
-msgstr ""
+msgstr "Editar path"
 
 msgid "Folder"
-msgstr ""
+msgstr "Carpeta"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Esta carpeta esta en uso - no se pueden hacer cambios!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr ""
+msgstr "Mueve la carpeta entera y su contenido %d grabaciones"
 
 msgid "Error while moving folder!"
-msgstr ""
+msgstr "Error al mover la carpeta!"
 
 msgid "Edit recording"
-msgstr ""
+msgstr "Editar grabación"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr ""
+msgstr "Esta grabación esta en uso - no se pueden hacer cambios!"
 
 msgid "Button$Cancel cutting"
-msgstr ""
+msgstr "Cancelar corte"
 
 msgid "Button$Stop cutting"
-msgstr ""
+msgstr "Stop corte"
 
 msgid "Button$Cancel moving"
-msgstr ""
+msgstr "Cancelar mover"
 
 msgid "Button$Stop moving"
-msgstr ""
+msgstr "Stop mover"
 
 msgid "Button$Cancel copying"
-msgstr ""
+msgstr "Cancelar copiar"
 
 msgid "Button$Stop copying"
-msgstr ""
+msgstr "Stop copiar"
 
 msgid "Button$Cut"
-msgstr ""
+msgstr "Cortar"
 
 msgid "Button$Delete marks"
-msgstr ""
+msgstr "Eliminar marcas"
 
 msgid "Recording vanished!"
-msgstr ""
+msgstr "Grabación desaparecida"
 
 msgid "Edited version already exists - overwrite?"
-msgstr ""
+msgstr "Se está editando una versión - sobreescribir?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr ""
+msgstr "Error mientras la grabación está en cola!"
 
 msgid "Rename recording to folder name?"
-msgstr ""
+msgstr "Renombrar la grabación a la carpeta nombre?"
 
 msgid "Delete editing marks for this recording?"
-msgstr ""
+msgstr "Eliminar las marcas de edicón para esta grabación?"
 
 msgid "Error while deleting editing marks!"
-msgstr ""
+msgstr "Error mientras se borra las marcas de edición!"
 
 msgid "Error while changing priority/lifetime!"
-msgstr ""
+msgstr "Error mientras cambias prioridades/directo!"
 
 msgid "Error while changing folder/name!"
-msgstr ""
+msgstr "Error mientras cambias carpeta/nombre"
 
 msgid "Recording info"
 msgstr "Información de grabación"
@@ -825,7 +825,7 @@ msgid "Recordings"
 msgstr "Grabaciones"
 
 msgid "Commands"
-msgstr "Órdenes"
+msgstr "Òrdenes"
 
 msgid "Delete recording?"
 msgstr "¿Eliminar grabación?"
@@ -1080,31 +1080,31 @@ msgid "Setup.LNB$own"
 msgstr "propio"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr ""
+msgstr "Usar el posicionador"
 
 msgid "Setup.LNB$Site latitude (degrees)"
-msgstr ""
+msgstr "Latitud (grados)"
 
 msgid "South"
-msgstr ""
+msgstr "Sud"
 
 msgid "North"
-msgstr ""
+msgstr "Norte"
 
 msgid "Setup.LNB$Site longitude (degrees)"
-msgstr ""
+msgstr "Longitud (grados)"
 
 msgid "West"
-msgstr ""
+msgstr "Oeste"
 
 msgid "East"
-msgstr ""
+msgstr "Este"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr ""
+msgstr "Max. oscilación del posicionador ( grados)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr ""
+msgstr "Velocidad Posicionador (grados)"
 
 msgid "CAM reset"
 msgstr "Reset CAM"
@@ -1117,19 +1117,19 @@ msgstr "CAM preparado"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr ""
+msgstr " (activando)"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr ""
+msgstr "Cancelar activación"
 
 msgid "Button$Activate"
-msgstr ""
+msgstr "Activado"
 
 msgid "Button$Menu"
-msgstr "Menú"
+msgstr "Menu"
 
 msgid "Button$Reset"
 msgstr "Reiniciar"
@@ -1141,7 +1141,7 @@ msgid "Can't open CAM menu!"
 msgstr "¡No se puede abrir el menú CAM!"
 
 msgid "Can't activate CAM!"
-msgstr ""
+msgstr "No puedes activar CAM!"
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM en uso - ¿reiniciar?"
@@ -1237,31 +1237,31 @@ msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pausar reproducción al establecer marca"
 
 msgid "Setup.Replay$Pause replay when jumping to a mark"
-msgstr ""
+msgstr "Pausa de reproducción al saltar a una marca"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr ""
+msgstr "Saltar partes editadas"
 
 msgid "Setup.Replay$Pause replay at last mark"
-msgstr ""
+msgstr "Repetición Pausa en última marca"
 
 msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
-msgstr ""
+msgstr "Duración inicial para saltar adaptativo ( s )"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr ""
+msgstr "Cambiar el tiempo de espera para saltar adaptativo (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
-msgstr ""
+msgstr "Comportamiento alternativo para saltar adaptativo"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Use teclas Prev/Next para saltar de adaptación"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Saltar distancia con teclas verde/amarillo (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Saltar distancia con teclas verde/amarillo en la repetición (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de continuación"
@@ -1300,10 +1300,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Volumen inicial"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr ""
+msgstr "Volumen saltos"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr ""
+msgstr "Volumen lineal"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Primer canal después del último"
@@ -1491,7 +1491,7 @@ msgstr "REPRODUCIR"
 
 #, c-format
 msgid "Moving dish to %.1f..."
-msgstr ""
+msgstr "Mover a %.1f..."
 
 msgid "ST:TNG Panels"
 msgstr "Paneles ST:TNG"

@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Alberto Carraro <bertocar@tin.it>, 2001
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
@@ -9,10 +9,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
-"PO-Revision-Date: 2015-02-09 20:26+0100\n"
+"PO-Revision-Date: 2015-02-12 19:31+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -1122,7 +1122,7 @@ msgstr "La CAM è pronta"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
-msgstr "(attivazione)"
+msgstr " (attivazione)"
 
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
@@ -1260,13 +1260,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Comportamento alternativo per spostamenti adattivi"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr ""
+msgstr "Usa tasti Avanti/Indietro per spostamenti adattivi"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
-msgstr ""
+msgstr "Durata spostamento con tasti Verde/Giallo (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr ""
+msgstr "Durata spostamento con tasti Verde/Giallo in sequenza (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"

@@ -6,8 +6,9 @@
  *
  * For an explanation (in German) of the theory behind the calculations see
  * http://www.vdr-portal.de/board17-developer/board97-vdr-core/p1154305-grundlagen-und-winkelberechnungen-f%C3%BCr-h-h-diseqc-motor-antennenanlagen
+ * by Albert Danis.
  *
- * $Id: positioner.c 3.4 2013/10/30 09:56:34 kls Exp $
+ * $Id: positioner.c 3.5 2015/02/14 11:54:31 kls Exp $
  */
 
 #include "positioner.h"

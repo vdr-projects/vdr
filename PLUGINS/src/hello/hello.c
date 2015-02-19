@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 3.1 2014/01/05 10:56:14 kls Exp $
+ * $Id: hello.c 3.2 2015/02/17 13:12:26 kls Exp $
  */
 
 #include <getopt.h>
@@ -12,7 +12,7 @@
 #include <vdr/interface.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.1.1";
+static const char *VERSION        = "2.2.0";
 static const char *DESCRIPTION    = trNOOP("A friendly greeting");
 static const char *MAINMENUENTRY  = trNOOP("Hello");
 

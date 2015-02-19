@@ -1,11 +1,11 @@
 # VDR language source file.
-# Copyright (C) 2013 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Osama Alrawab <alrawab@hotmail.com>, 2010, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.0.0\n"
+"Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2015-02-10 13:40+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
@@ -30,7 +30,7 @@ msgid "Channel not available!"
 msgstr "القناة غير متاحة"
 
 msgid "Can't start Transfer Mode!"
-msgstr "تعذر  بدء طور النقل"
+msgstr "تعذر بدء طور النقل"
 
 msgid "off"
 msgstr "ايقاف"
@@ -93,7 +93,7 @@ msgid "SISO/MISO"
 msgstr ""
 
 msgid "Starting EPG scan"
-msgstr "EPG ا لبدء بالبحث على دليل القنوات الالكترونى "
+msgstr "EPG ا لبدء بالبحث على دليل القنوات الالكترونى"
 
 msgid "Content$Movie/Drama"
 msgstr "Movie/Drama"
@@ -348,7 +348,7 @@ msgid "LanguageCode$eng"
 msgstr "ara"
 
 msgid "Phase 1: Detecting RC code type"
-msgstr "التحقق من مفاتيح  وحدة التحكم"
+msgstr "التحقق من مفاتيح وحدة التحكم"
 
 msgid "Press any key on the RC unit"
 msgstr "الرجاء الضغط على اى زر فى وحدة التحكم"
@@ -514,10 +514,10 @@ msgid "Key$User4"
 msgstr "المستخدم 4"
 
 msgid "Key$User5"
-msgstr "المستخدم 5 "
+msgstr "المستخدم 5"
 
 msgid "Key$User6"
-msgstr "المستخدم 6 "
+msgstr "المستخدم 6"
 
 msgid "Key$User7"
 msgstr "المستخدم 7"
@@ -730,7 +730,7 @@ msgstr "%sجدولة"
 
 #, c-format
 msgid "This event - %s"
-msgstr " %sهذا الحدث"
+msgstr "%sهذا الحدث"
 
 msgid "This event - all channels"
 msgstr "هذا الحدث لكل القنوات"
@@ -858,10 +858,10 @@ msgid "Setup.OSD$Language"
 msgstr "اللغة"
 
 msgid "Setup.OSD$Skin"
-msgstr " الثوب"
+msgstr "الثوب"
 
 msgid "Setup.OSD$Theme"
-msgstr " الثيمة"
+msgstr "الثيمة"
 
 msgid "Setup.OSD$Left (%)"
 msgstr "Left (%)"
@@ -903,7 +903,7 @@ msgid "Setup.OSD$Fixed font size (%)"
 msgstr "Fixed font size (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr " موضع معلومات القناة"
+msgstr "موضع معلومات القناة"
 
 msgid "bottom"
 msgstr "اسفل"
@@ -963,7 +963,7 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "اﻻنتهاء من البحث على الدليل الالكترونى للقنوات"
 
 msgid "Setup.EPG$EPG bugfix level"
-msgstr " معدل اصلاح اخطاء الدليل الالكترونى"
+msgstr "معدل اصلاح اخطاء الدليل الالكترونى"
 
 msgid "Setup.EPG$EPG linger time (min)"
 msgstr "اقل مدة للدليل الالكترونى"
@@ -1025,7 +1025,7 @@ msgid "Setup.DVB$Standard compliance"
 msgstr "Standard compliance"
 
 msgid "Setup.DVB$Video format"
-msgstr "نوع الفيديو  "
+msgstr "نوع الفيديو"
 
 msgid "Setup.DVB$Video display format"
 msgstr "نوع عرض الفديو"
@@ -1064,7 +1064,7 @@ msgid "LNB"
 msgstr "الاقط"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr " DiSEqC استعمل"
+msgstr "DiSEqC استعمل"
 
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "التذبذب المحلى للاقط م هرتز"
@@ -1123,7 +1123,7 @@ msgid " (activating)"
 msgstr ""
 
 msgid "CAM"
-msgstr "الكامة "
+msgstr "الكامة"
 
 msgid "Button$Cancel activation"
 msgstr ""
@@ -1385,7 +1385,7 @@ msgstr "Delete timeshift recording?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
-msgstr "اقفز الى  "
+msgstr "اقفز الى "
 
 msgid "No editing marks defined!"
 msgstr "لاتوجد علامات تعديل معرفة"
@@ -1472,7 +1472,7 @@ msgid "Volume "
 msgstr "الصوت "
 
 msgid "Classic VDR"
-msgstr "VDR تقليدى  "
+msgstr "VDR تقليدى"
 
 msgid "DISK"
 msgstr "قرص"
@@ -1497,7 +1497,7 @@ msgid "Moving dish to %.1f..."
 msgstr ""
 
 msgid "ST:TNG Panels"
-msgstr "ST:TNG شاشة "
+msgstr "ST:TNG شاشة"
 
 #. TRANSLATORS: the first character of each weekday, beginning with monday
 msgid "MTWTFSS"
@@ -1538,7 +1538,7 @@ msgid "Recording started"
 msgstr "ابتداء التسجيل"
 
 msgid "VDR will shut down later - press Power to force"
-msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر  القفل لاتمام  عملية الاغلاق"
+msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر القفل لاتمام عملية الاغلاق"
 
 msgid "Press any key to cancel shutdown"
 msgstr "اضغط اى زر لالغاء اقفال البرنامج"
@@ -1557,7 +1557,7 @@ msgstr "اضغط اى زر لالغاء اعادة التشغيل"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "البرنامج سيقوم بالاغلاق بعد%s دقيقة "
+msgstr "البرنامج سيقوم بالاغلاق بعد%s دقيقة"
 
 msgid "Disk"
 msgstr "القرص الصلب"

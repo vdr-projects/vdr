@@ -102,3 +102,7 @@ VDR Plugin 'dvbhddevice' Revision History
 2015-02-11: Version 2.1.7
 
 - Adapted to the new return value of cOsd::RenderPixmaps().
+
+2015-02-19: Version 2.2.0
+
+- Official release.

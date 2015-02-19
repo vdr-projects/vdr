@@ -68,3 +68,7 @@ VDR Plugin 'osddemo' Revision History
 
 - Fixed flickering if subtitles are active while the OSD demo is running.
 - Fixed a possible crash in the OSD demo (reported by Christopher Reimer).
+
+2015-02-19: Version 2.2.0
+
+- Official release.
