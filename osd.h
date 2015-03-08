@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.6 2015/02/11 09:48:02 kls Exp $
+ * $Id: osd.h 4.1 2015/03/08 13:54:09 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -722,6 +722,7 @@ class cOsd {
 private:
   static int osdLeft, osdTop, osdWidth, osdHeight;
   static cVector<cOsd *> Osds;
+  static cSize maxPixmapSize;
   static cMutex mutex;
   bool isTrueColor;
   cBitmap *savedBitmap;
@@ -820,6 +821,8 @@ public:
        ///< in order to preset the bitmap's palette won't crash.
        ///< Use of this function outside of derived classes is deprecated and it
        ///< may be made 'protected' in a future version.
+  virtual const cSize &MaxPixmapSize(void) const;
+       ///< Returns the maximum possible size of a pixmap this OSD can create.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
        ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
        ///< The caller must not delete the returned object, it will be deleted when

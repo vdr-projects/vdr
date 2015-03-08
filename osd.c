@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.5 2015/02/11 09:48:02 kls Exp $
+ * $Id: osd.c 4.1 2015/03/08 13:54:47 kls Exp $
  */
 
 #include "osd.h"
@@ -1641,6 +1641,7 @@ int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
+cSize cOsd::maxPixmapSize(2048, 2048);
 cVector<cOsd *> cOsd::Osds;
 cMutex cOsd::mutex;
 
@@ -1703,6 +1704,11 @@ void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
 cBitmap *cOsd::GetBitmap(int Area)
 {
   return Area < numBitmaps ? (isTrueColor ? bitmaps[0] : bitmaps[Area]) : NULL;
+}
+
+const cSize &cOsd::MaxPixmapSize(void) const
+{
+  return maxPixmapSize;
 }
 
 cPixmap *cOsd::CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)

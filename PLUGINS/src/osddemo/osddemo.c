@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 3.4 2015/02/17 13:12:36 kls Exp $
+ * $Id: osddemo.c 4.1 2015/03/08 16:40:01 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.2.0";
+static const char *VERSION        = "2.3.1";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -427,16 +427,20 @@ void cTrueColorDemo::Action(void)
                        const int Size = SmlFont->Width(Text) + 10;
                        const int NumDots = 12;
                        const int AnimFrames = NumDots;
+                       int Rows = min(osd->MaxPixmapSize().Height() / Size, AnimFrames);
+                       int Cols = (AnimFrames + Rows - 1) / Rows;
                        // Temporarily using pixmap layer 0 to have the text alpha blended:
-                       AnimPixmap = osd->CreatePixmap(0, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size, Size * AnimFrames));
+                       AnimPixmap = osd->CreatePixmap(0, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size * Cols, Size * Rows));
                        if (AnimPixmap) {
                           AnimPixmap->SetAlpha(0);
                           AnimPixmap->Clear();
                           const int Diameter = Size / 5;
-                          int xc = Size / 2 - Diameter / 2;
                           for (int Frame = 0; Frame < AnimFrames; Frame++) {
-                              AnimPixmap->DrawEllipse(cRect(0, Frame * Size, Size, Size), 0xDDFFFFFF);
-                              int yc = Frame * Size + Size / 2 - Diameter / 2;
+                              int x0 = Frame / Rows * Size;
+                              int y0 = Frame % Rows * Size;
+                              AnimPixmap->DrawEllipse(cRect(x0, y0, Size, Size), 0xDDFFFFFF);
+                              int xc = x0 + Size / 2 - Diameter / 2;
+                              int yc = y0 + Size / 2 - Diameter / 2;
                               int Color = 0xFF;
                               int Delta = Color / NumDots / 3;
                               for (int a = 0; a < NumDots; a++) {
@@ -446,7 +450,7 @@ void cTrueColorDemo::Action(void)
                                   AnimPixmap->DrawEllipse(cRect(x, y, Diameter, Diameter), ArgbToColor(0xFF, Color, Color, Color));
                                   Color -= Delta;
                                   }
-                              AnimPixmap->DrawText(cPoint(0, Frame * Size), Text, clrBlack, clrTransparent, SmlFont, Size, Size, taCenter);
+                              AnimPixmap->DrawText(cPoint(x0, y0), Text, clrBlack, clrTransparent, SmlFont, Size, Size, taCenter);
                               }
                           AnimPixmap->SetLayer(3); // now setting the actual pixmap layer
                           FadeInPixmap = AnimPixmap;

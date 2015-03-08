@@ -8595,3 +8595,11 @@ Video Disk Recorder Revision History
 - Fixed leading/trailing/multiple blanks in the translation files.
 - Bumped all version numbers to 2.2.0.
 - Official release.
+
+2015-03-08: Version 2.3.1
+
+- The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
+  a cPixmap may have on the current OSD. The 'osddemo' example has been modified
+  accordingly. Plugin authors may want to use this function in case they use pixmaps
+  that are larger than the full OSD size. The default implementation sets this limit
+  to 2048x2048 pixel.
