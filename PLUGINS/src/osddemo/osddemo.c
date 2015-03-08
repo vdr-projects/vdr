@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 4.1 2015/03/08 16:40:01 kls Exp $
+ * $Id: osddemo.c 4.2 2015/03/08 16:42:01 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -210,7 +210,7 @@ cPixmap *cTrueColorDemo::CreateTextPixmap(const char *s, int Line, int Layer, tC
   if (Pixmap) {
      Pixmap->Clear();
      Pixmap->SetAlpha(0);
-     Pixmap->DrawText(cPoint(0, 0), s, ColorFg, ColorBg, Font);
+     Pixmap->DrawText(cPoint(0, 0), s, ColorFg, ColorBg, Font, w);
      }
   return Pixmap;
 }
