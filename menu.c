@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.48 2015/02/10 12:37:06 kls Exp $
+ * $Id: menu.c 4.1 2015/03/09 11:50:26 kls Exp $
  */
 
 #include "menu.h"
@@ -3507,6 +3507,7 @@ cMenuSetupCAMItem::cMenuSetupCAMItem(cCamSlot *CamSlot)
 
 bool cMenuSetupCAMItem::Changed(void)
 {
+  cString AssignedDevice("");
   const char *Activating = "";
   const char *CamName = camSlot->GetCamName();
   if (!CamName) {
@@ -3520,7 +3521,9 @@ bool cMenuSetupCAMItem::Changed(void)
   else if (camSlot->IsActivating())
      // TRANSLATORS: note the leading blank!
      Activating = tr(" (activating)");
-  cString buffer = cString::sprintf(" %d %s%s", camSlot->SlotNumber(), CamName, Activating);
+  if (cDevice *Device = camSlot->Device())
+     AssignedDevice = cString::sprintf(" %s %d", tr("@ device"), Device->CardIndex() + 1);
+  cString buffer = cString::sprintf(" %d %s%s%s", camSlot->SlotNumber(), CamName, *AssignedDevice, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
      return true;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-03-09 12:50+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1118,6 +1118,9 @@ msgstr "CAM准备"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
+msgstr ""
+
+msgid "@ device"
 msgstr ""
 
 msgid "CAM"

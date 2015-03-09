@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-03-09 12:50+0100\n"
 "PO-Revision-Date: 2015-02-13 18:14+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -1118,6 +1118,9 @@ msgstr "CAM готовий"
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
 msgstr " (активування)"
+
+msgid "@ device"
+msgstr ""
 
 msgid "CAM"
 msgstr "CAM (Умовний доступ)"

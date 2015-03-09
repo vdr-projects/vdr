@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-11 10:51+0100\n"
+"POT-Creation-Date: 2015-03-09 12:50+0100\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"
 "Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -1123,6 +1123,9 @@ msgstr "CAM gereed"
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
 msgstr " (Activeren)"
+
+msgid "@ device"
+msgstr ""
 
 msgid "CAM"
 msgstr "CAM"

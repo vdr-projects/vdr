@@ -3003,6 +3003,8 @@ Frank Neumann <fnu@yavdr.org>
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
  for fixing the German translation of "VDR will shut down in %s minutes"
  for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
+ for suggesting to make the Setup/CAM menu display which device an individual CAM
+ is currently assigned to
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
