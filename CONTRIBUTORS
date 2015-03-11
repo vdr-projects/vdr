@@ -3313,6 +3313,7 @@ Thomas Reufer <thomas@reufer.ch>
  skipping"
  for suggesting to change the return value of cOsd::RenderPixmaps() from cPixmapMemory
  to cPixmap
+ for adding detection of 24fps
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

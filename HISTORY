@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-03-09: Version 2.3.1
+2015-03-11: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8605,3 +8605,4 @@ Video Disk Recorder Revision History
   to 2048x2048 pixel.
 - The Setup/CAM menu now displays which device an individual CAM is currently
   assigned to (suggested by Frank Neumann).
+- Added detection of 24fps (thanks to Thomas Reufer).
