@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.1 2015/03/08 13:54:09 kls Exp $
+ * $Id: osd.h 4.2 2015/03/13 15:06:48 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -522,6 +522,8 @@ public:
        ///< intersects with the ViewPort will be visible on the OSD.
        ///< The drawing area of a newly created cPixmap is not initialized and may
        ///< contain random data.
+       ///< See cOsd::MaxPixmapSize() for information on the maximum size of pixmaps
+       ///< supported by the system.
   static void Lock(void) { mutex.Lock(); }
        ///< All public member functions of cPixmap set locks as necessary to make sure
        ///< they are thread-safe (unless noted otherwise). If several cPixmap member
