@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-03-12: Version 2.3.1
+2015-03-13: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8611,3 +8611,5 @@ Video Disk Recorder Revision History
   You can get the latest version of this plugin from the author's repository at
   https://bitbucket.org/powARman/dvbhddevice.
 - Added a section about Output Devices to the INSTALL file.
+- Fixed setting the source value of newly created channels, in case the NIT is
+  received from a different, but very close satellite position.

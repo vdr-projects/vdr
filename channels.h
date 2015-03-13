@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 3.3 2015/02/01 13:30:26 kls Exp $
+ * $Id: channels.h 4.1 2015/03/13 11:20:50 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -193,6 +193,7 @@ public:
   time_t Seen(void) { return seen; }
   void CopyTransponderData(const cChannel *Channel);
   bool SetTransponderData(int Source, int Frequency, int Srate, const char *Parameters, bool Quiet = false);
+  void SetSource(int Source);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetLcn(int Lcn);
   void SetName(const char *Name, const char *ShortName, const char *Provider);

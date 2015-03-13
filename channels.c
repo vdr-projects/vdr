@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.8 2015/02/01 13:47:05 kls Exp $
+ * $Id: channels.c 4.1 2015/03/13 11:34:28 kls Exp $
  */
 
 #include "channels.h"
@@ -227,6 +227,18 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
         }
      }
   return true;
+}
+
+void cChannel::SetSource(int Source)
+{
+  if (source != Source) {
+     if (Number()) {
+        dsyslog("changing source of channel %d (%s) from %s to %s", Number(), name, *cSource::ToString(source), *cSource::ToString(Source));
+        modification |= CHANNELMOD_TRANSP;
+        Channels.SetModified();
+        }
+     source = Source;
+     }
 }
 
 void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)

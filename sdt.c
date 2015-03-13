@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 3.4 2015/01/04 14:33:35 kls Exp $
+ * $Id: sdt.c 4.1 2015/03/13 11:39:42 kls Exp $
  */
 
 #include "sdt.h"
@@ -105,6 +105,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                         else if (*pn && Setup.UpdateChannels >= 4) {
                            channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           channel->SetSource(source); // in case this comes from a satellite with a slightly different position
                            patFilter->Trigger(SiSdtService.getServiceId());
                            }
                         }
