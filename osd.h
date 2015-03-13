@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.2 2015/03/13 15:06:48 kls Exp $
+ * $Id: osd.h 4.3 2015/03/13 15:07:53 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -510,8 +510,10 @@ public:
        ///< In order to allow devices that can handle only a limited number of layers,
        ///< the Layer parameter must be less than 8 (MAXPIXMAPLAYERS).
        ///< ViewPort defines the rectangle in which this pixmap will be rendered on
-       ///< the OSD. If no DrawPort is given, it defaults to the same size as the
-       ///< ViewPort, with its upper left corner set to (0, 0).
+       ///< the OSD. The coordinate (0, 0) corresponds to the upper left corner of the
+       ///< OSD. If no DrawPort is given, it defaults to the same size as the
+       ///< ViewPort, with its upper left corner set to (0, 0). The DrawPort's origin
+       ///< is relative to the ViewPort's origin.
        ///< All drawing operations will be executed relative to the origin of the
        ///< DrawPort rectangle, and will be clipped to the size of this rectangle.
        ///< The DrawPort may have a different size than the ViewPort. If it is smaller

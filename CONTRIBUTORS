@@ -3314,6 +3314,8 @@ Thomas Reufer <thomas@reufer.ch>
  for suggesting to change the return value of cOsd::RenderPixmaps() from cPixmapMemory
  to cPixmap
  for adding detection of 24fps
+ for suggesting to add some comment to cPixmap about the relation between OSD,
+ ViewPort and DrawPort
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

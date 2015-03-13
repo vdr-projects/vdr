@@ -8613,3 +8613,5 @@ Video Disk Recorder Revision History
 - Added a section about Output Devices to the INSTALL file.
 - Fixed setting the source value of newly created channels, in case the NIT is
   received from a different, but very close satellite position.
+- Added some comment to cPixmap about the relation between OSD, ViewPort and DrawPort
+  (suggested by Thomas Reufer).
