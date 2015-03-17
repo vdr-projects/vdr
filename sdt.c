@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 4.1 2015/03/13 11:39:42 kls Exp $
+ * $Id: sdt.c 4.3 2015/03/16 15:24:12 kls Exp $
  */
 
 #include "sdt.h"
@@ -12,6 +12,11 @@
 #include "config.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+
+// Set to 'true' for debug output:
+static bool DebugSdt = false;
+
+#define dbgsdt(a...) if (DebugSdt) fprintf(stderr, a)
 
 // --- cSdtFilter ------------------------------------------------------------
 
@@ -47,8 +52,11 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      return;
   if (!sectionSyncer.Sync(sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber()))
      return;
-  if (!Channels.Lock(true, 10))
+  if (!Channels.Lock(true, 10)) {
+     sectionSyncer.Reset(); // let's not miss any section of the SDT
      return;
+     }
+  dbgsdt("SDT: %2d %2d %2d %s %d\n", sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber(), *cSource::ToString(source), Transponder());
   SI::SDT::Service SiSdtService;
   for (SI::Loop::Iterator it; sdt.serviceLoop.getNext(SiSdtService, it); ) {
       cChannel *channel = Channels.GetByChannelID(tChannelID(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
@@ -104,6 +112,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            // channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
                         else if (*pn && Setup.UpdateChannels >= 4) {
+                           dbgsdt("    %5d %5d %5d %s/%s %d %s\n", sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId(), *cSource::ToString(Channel()->Source()), *cSource::ToString(source), Channel()->Transponder(), pn);
                            channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            channel->SetSource(source); // in case this comes from a satellite with a slightly different position
                            patFilter->Trigger(SiSdtService.getServiceId());
@@ -154,8 +163,11 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          }
       }
   if (sdt.getSectionNumber() == sdt.getLastSectionNumber()) {
-     if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
-        Channels.MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+     if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3) {
+        Channels.MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+        if (source != Source())
+           Channels.MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+        }
      }
   Channels.Unlock();
 }

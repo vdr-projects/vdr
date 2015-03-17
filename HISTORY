@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-03-13: Version 2.3.1
+2015-03-17: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8612,6 +8612,9 @@ Video Disk Recorder Revision History
   https://bitbucket.org/powARman/dvbhddevice.
 - Added a section about Output Devices to the INSTALL file.
 - Fixed setting the source value of newly created channels, in case the NIT is
-  received from a different, but very close satellite position.
+  received from a different, but very close satellite position (reported by Daniel
+  Ribeiro). The code for handling different NITs has been removed from nit.c, because
+  according to the DVB standard table id 0x40 carries only the NIT of the actual
+  network.
 - Added some comment to cPixmap about the relation between OSD, ViewPort and DrawPort
   (suggested by Thomas Reufer).

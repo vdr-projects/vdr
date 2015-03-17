@@ -3405,3 +3405,8 @@ Tomasz Maciej Nowak <tmn505@gmail.com>
 
 Gabriel Bonich <gbonich@gmail.com>
  for translating OSD texts to the Spanish language
+
+Daniel Ribeiro <drwyrm@gmail.com>
+ for reporting a problem with setting the source value of newly created channels, in
+ case the NIT is received from a different, but very close satellite position, and
+ for helping to debug this
