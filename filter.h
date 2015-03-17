@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 1.3 2004/01/11 13:31:59 kls Exp $
+ * $Id: filter.h 4.1 2015/03/17 15:00:08 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -16,10 +16,12 @@
 class cSectionSyncer {
 private:
   int lastVersion;
-  bool synced;
+  int thisVersion;
+  int nextNumber;
 public:
   cSectionSyncer(void);
   void Reset(void);
+  void Repeat(void);
   bool Sync(uchar Version, int Number, int LastNumber);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 1.4 2004/01/11 13:31:34 kls Exp $
+ * $Id: filter.c 4.1 2015/03/17 15:04:39 kls Exp $
  */
 
 #include "filter.h"
@@ -19,22 +19,31 @@ cSectionSyncer::cSectionSyncer(void)
 
 void cSectionSyncer::Reset(void)
 {
+  lastVersion = thisVersion = 0xFF;
+  nextNumber = 0;
+}
+
+void cSectionSyncer::Repeat(void)
+{
   lastVersion = 0xFF;
-  synced = false;
+  nextNumber--;
 }
 
 bool cSectionSyncer::Sync(uchar Version, int Number, int LastNumber)
 {
-  if (Version == lastVersion)
-     return false;
-  if (!synced) {
-     if (Number != 0)
-        return false; // sync on first section
-     synced = true;
+  if (Version != lastVersion) {
+     if (Version != thisVersion) {
+        thisVersion = Version;
+        nextNumber = 0;
+        }
+     if (Number == nextNumber) {
+        if (Number == LastNumber)
+           lastVersion = Version;
+        nextNumber++;
+        return true;
+        }
      }
-  if (Number == LastNumber)
-     lastVersion = Version;
-  return synced;
+  return false;
 }
 
 // --- cFilterData -----------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.1 2015/03/16 15:24:18 kls Exp $
+ * $Id: nit.c 4.2 2015/03/17 15:10:09 kls Exp $
  */
 
 #include "nit.h"
@@ -62,7 +62,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      dbgnit("NIT: %02X %2d %2d %2d %s %d %d '%s'\n", Tid, nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber(), *cSource::ToString(Source()), nit.getNetworkId(), Transponder(), NetworkName);
      }
   if (!Channels.Lock(true, 10)) {
-     sectionSyncer.Reset(); // let's not miss any section of the NIT
+     sectionSyncer.Repeat(); // let's not miss any section of the NIT
      return;
      }
   SI::NIT::TransportStream ts;

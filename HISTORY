@@ -8618,3 +8618,4 @@ Video Disk Recorder Revision History
   network.
 - Added some comment to cPixmap about the relation between OSD, ViewPort and DrawPort
   (suggested by Thomas Reufer).
+- Improved syncing on sections when parsing the NIT and SDT.

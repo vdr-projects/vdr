@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 4.3 2015/03/16 15:24:12 kls Exp $
+ * $Id: sdt.c 4.4 2015/03/17 15:09:54 kls Exp $
  */
 
 #include "sdt.h"
@@ -53,7 +53,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
   if (!sectionSyncer.Sync(sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber()))
      return;
   if (!Channels.Lock(true, 10)) {
-     sectionSyncer.Reset(); // let's not miss any section of the SDT
+     sectionSyncer.Repeat(); // let's not miss any section of the SDT
      return;
      }
   dbgsdt("SDT: %2d %2d %2d %s %d\n", sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber(), *cSource::ToString(source), Transponder());
