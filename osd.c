@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.1 2015/03/08 13:54:47 kls Exp $
+ * $Id: osd.c 4.2 2015/03/25 08:57:05 kls Exp $
  */
 
 #include "osd.h"
@@ -1842,7 +1842,10 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
         width = Areas[0].x2 - Areas[0].x1 + 1;
         height = Areas[0].y2 - Areas[0].y1 + 1;
         cPixmap *Pixmap = CreatePixmap(0, cRect(Areas[0].x1, Areas[0].y1, width, height));
-        Pixmap->Clear();
+        if (Pixmap)
+           Pixmap->Clear();
+        else
+           Result = oeOutOfMemory;
         bitmaps[numBitmaps++] = new cBitmap(10, 10, 8); // dummy bitmap for GetBitmap()
         }
      else {
