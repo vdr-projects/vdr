@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 3.28 2015/02/16 07:49:14 kls Exp $
+ * $Id: recording.c 4.1 2015/04/11 10:44:38 kls Exp $
  */
 
 #include "recording.h"
@@ -1367,7 +1367,7 @@ cRecordings Recordings;
 char *cRecordings::updateFileName = NULL;
 
 cRecordings::cRecordings(bool Deleted)
-:cThread("video directory scanner")
+:cThread("video directory scanner", true)
 {
   deleted = Deleted;
   initial = true;
@@ -1412,6 +1412,8 @@ bool cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
   cReadDir d(DirName);
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
+        if (!Foreground && cIoThrottle::Engaged())
+           cCondWait::SleepMs(100);
         cString buffer = AddDirectory(DirName, e->d_name);
         struct stat st;
         if (lstat(buffer, &st) == 0) {

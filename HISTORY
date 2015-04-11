@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-03-25: Version 2.3.1
+2015-04-11: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8620,3 +8620,5 @@ Video Disk Recorder Revision History
   (suggested by Thomas Reufer).
 - Improved syncing on sections when parsing the NIT and SDT.
 - Fixed scaling subtitles (their areas could sometimes extend outside the actual OSD).
+- Reduced the priority of the "video directory scanner" thread (suggested by Thomas
+  Reufer) and checking cIoThrottle::Engaged() when it is running.
