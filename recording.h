@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.8 2015/02/07 14:29:14 kls Exp $
+ * $Id: recording.h 4.1 2015/04/11 12:01:59 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -392,11 +392,12 @@ public:
        ///< recording.
   };
 
-#define RUC_BEFORERECORDING "before"
-#define RUC_STARTRECORDING  "started"
-#define RUC_AFTERRECORDING  "after"
-#define RUC_EDITEDRECORDING "edited"
-#define RUC_DELETERECORDING "deleted"
+#define RUC_BEFORERECORDING  "before"
+#define RUC_STARTRECORDING   "started"
+#define RUC_AFTERRECORDING   "after"
+#define RUC_EDITINGRECORDING "editing"
+#define RUC_EDITEDRECORDING  "edited"
+#define RUC_DELETERECORDING  "deleted"
 
 class cRecordingUserCommand {
 private:

@@ -8622,3 +8622,6 @@ Video Disk Recorder Revision History
 - Fixed scaling subtitles (their areas could sometimes extend outside the actual OSD).
 - Reduced the priority of the "video directory scanner" thread (suggested by Thomas
   Reufer) and checking cIoThrottle::Engaged() when it is running.
+- The script that gets called for recordings is now also called right before a
+  recording is edited, with the first parameter being "editing" (suggested by
+  Dieter Ferdinand).

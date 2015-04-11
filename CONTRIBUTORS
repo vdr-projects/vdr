@@ -3365,6 +3365,8 @@ Dieter Ferdinand <dieter.ferdinand@gmx.de>
  case replay was paused
  for reporting a problem with the system getting unresponsive when removing a huge
  number of files in the thread that removes deleted recordings
+ for suggesting to call the script that gets called for recordings also right before a
+ recording is edited
 
 Jasmin Jessich <jasmin@anw.at>
  for modifying the CAM API so that it is possible to implement CAMs that can be freely

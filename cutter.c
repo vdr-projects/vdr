@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 3.4 2013/10/02 13:18:02 kls Exp $
+ * $Id: cutter.c 4.1 2015/04/11 12:03:25 kls Exp $
  */
 
 #include "cutter.h"
@@ -675,6 +675,7 @@ bool cCutter::Start(void)
         editedVersionName = EditedFileName(originalVersionName);
         if (*editedVersionName) {
            if (strcmp(originalVersionName, editedVersionName) != 0) { // names must be different!
+              cRecordingUserCommand::InvokeCommand(RUC_EDITINGRECORDING, editedVersionName, originalVersionName);
               if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
                  Recording.WriteInfo(editedVersionName);
                  Recordings.AddByName(editedVersionName, false);
