@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 4.2 2015/03/08 16:42:01 kls Exp $
+ * $Id: osddemo.c 4.3 2015/04/12 09:35:21 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -87,6 +87,52 @@ void DrawSlopes(cOsd *Osd)
   DrawSlope(Osd, x1, y2, x2, y3, 5);
   DrawSlope(Osd, x2, y2, x3, y3, 6);
   DrawSlope(Osd, x3, y2, x4, y3, 7);
+  Osd->Flush();
+}
+
+// --- DrawImages ------------------------------------------------------------
+
+struct tOsdImageRef {
+  int image;
+  cSize size;
+  };
+
+#define NUMOSDIMAGES 16
+#define NUMOSDIMAGEVARIANTS 8
+
+void DrawImages(cOsd *Osd)
+{
+  // Create images:
+  cImage *images[NUMOSDIMAGEVARIANTS];
+  for (int i = 0; i < NUMOSDIMAGEVARIANTS; i++) {
+      images[i] = new cImage(cSize(
+        i == 0 || i == 1 ? Osd->MaxPixmapSize().Width() + 1 : rand() % Osd->Width(),
+        i == 0 || i == 2 ? Osd->MaxPixmapSize().Height() + 1 : rand() % Osd->Height()));
+      for (int x = 0; x < images[i]->Width(); x++) {
+          for (int y = 0; y < images[i]->Height(); y++) {
+              images[i]->SetPixel(cPoint(x, y),
+                (!x || !y || x == images[i]->Width() - 1 || y == images[i]->Height() - 1) ? clrWhite :
+                (x > images[i]->Width() / 2 ?
+                  (y > images[i]->Height() / 2 ? clrBlue : clrGreen) :
+                  (y > images[i]->Height() / 2 ? clrRed : clrYellow)));
+              }
+          }
+      }
+  // Store images:
+  tOsdImageRef osdImages[NUMOSDIMAGES];
+  for (int i = 0; i < NUMOSDIMAGES; i++) {
+      osdImages[i].image = cOsdProvider::StoreImage(*images[i % NUMOSDIMAGEVARIANTS]);
+      osdImages[i].size.Set(images[i % NUMOSDIMAGEVARIANTS]->Size());
+      }
+  // Delete images:
+  for (int i = 0; i < NUMOSDIMAGEVARIANTS; i++)
+      delete images[i];
+  // Draw images:
+  for (int i = 0; i < NUMOSDIMAGES; i++)
+      Osd->DrawImage(cPoint(rand() % (Osd->Width() + osdImages[i].size.Width()), rand() % (Osd->Height() + osdImages[i].size.Height())).Shifted(-osdImages[i].size.Width(), -osdImages[i].size.Height()), osdImages[i].image);
+  // Drop image references:
+  for (int i = 0; i < NUMOSDIMAGES; i++)
+      cOsdProvider::DropImage(osdImages[i].image);
   Osd->Flush();
 }
 
@@ -539,6 +585,10 @@ eOSState cTrueColorDemo::ProcessKey(eKeys Key)
        case k2:      Cancel(3);
                      SetArea();
                      DrawSlopes(osd);
+                     break;
+       case k3:      Cancel(3);
+                     SetArea();
+                     DrawImages(osd);
                      break;
        case kBack:
        case kOk:     return osEnd;

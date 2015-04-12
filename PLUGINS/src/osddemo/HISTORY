@@ -78,3 +78,4 @@ VDR Plugin 'osddemo' Revision History
 - Now using cOsd::MaxPixmapSize().
 - Fixed a vertical black line in the "TiledPixmaps" area on the rpihddevice OSD with
   1280x800 pixel (thanks to Thomas Reufer).
+- Added a demo case for storing images (thanks to Thomas Reufer).
