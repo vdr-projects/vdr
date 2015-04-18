@@ -3352,6 +3352,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  CAMs that need to receive the TS
  for suggesting to add the channel name to log messages that reference a channel
  for suggesting to provide a way of using no DVB devices at all
+ for suggesting that the -V and -h options should list the plugins in alphabetical order
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
