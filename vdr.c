@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 3.16 2015/02/10 14:13:12 kls Exp $
+ * $Id: vdr.c 4.1 2015/04/18 14:22:47 kls Exp $
  */
 
 #include <getopt.h>
@@ -301,7 +301,11 @@ int main(int argc, char *argv[])
                     break;
           case 'd': DaemonMode = true;
                     break;
-          case 'D': if (isnumber(optarg)) {
+          case 'D': if (*optarg == '-') {
+                       cDvbDevice::useDvbDevices = false;
+                       break;
+                       }
+                    if (isnumber(optarg)) {
                        int n = atoi(optarg);
                        if (0 <= n && n < MAXDEVICES) {
                           cDevice::SetUseDevice(n);
@@ -536,7 +540,9 @@ int main(int argc, char *argv[])
                "  -d,       --daemon       run in daemon mode\n"
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
-               "                           devices will be used)\n"
+               "                           devices will be used); if -D- is given, no DVB\n"
+               "                           devices will be used at all, independent of any\n"
+               "                           other -D options\n"
                "            --dirnames=PATH[,NAME[,ENC]]\n"
                "                           set the maximum directory path length to PATH\n"
                "                           (default: %d); if NAME is also given, it defines\n"

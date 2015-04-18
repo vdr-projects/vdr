@@ -8631,3 +8631,5 @@ Video Disk Recorder Revision History
   pressing '0', the default no longer applies to that folder. Repeating timers no
   longer write a ".sort" file into a recordings folder to have the recordings sorted
   by time.
+- The command line option -D now accepts the value '-' (as in -D-), which prevents
+  VDR from using any DVB devices (suggested by Dietmar Spingler).
