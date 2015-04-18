@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 4.1 2015/02/21 14:59:27 kls Exp $
+ * $Id: config.h 4.2 2015/04/18 13:13:15 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -301,6 +301,7 @@ public:
   int RecordingDirs;
   int FoldersInTimerMenu;
   int AlwaysSortFoldersFirst;
+  int DefaultSortModeRec;
   int NumberKeysForChars;
   int ColorKey0, ColorKey1, ColorKey2, ColorKey3;
   int VideoDisplayFormat;

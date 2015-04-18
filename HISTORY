@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-04-11: Version 2.3.1
+2015-04-18: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8625,3 +8625,9 @@ Video Disk Recorder Revision History
 - The script that gets called for recordings is now also called right before a
   recording is edited, with the first parameter being "editing" (suggested by
   Dieter Ferdinand).
+- The new setup option "OSD/Default sort mode for recordings" can be used to define
+  how recordings shall be sorted by default (either by time or by name, with "by time"
+  being the default). If a particular sort mode has been selected for a folder by
+  pressing '0', the default no longer applies to that folder. Repeating timers no
+  longer write a ".sort" file into a recordings folder to have the recordings sorted
+  by time.

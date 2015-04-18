@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-03-09 12:50+0100\n"
+"POT-Creation-Date: 2015-04-18 15:43+0200\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -849,6 +849,12 @@ msgstr "dependent de skin"
 msgid "always"
 msgstr "întotdeauna"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -935,6 +941,9 @@ msgstr "Directoare în meniul de timer-e"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Sortează întotdeauna directoarele la început"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Caractere pe tastele numerice"

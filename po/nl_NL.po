@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-03-09 12:50+0100\n"
+"POT-Creation-Date: 2015-04-18 15:43+0200\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"
 "Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -853,6 +853,12 @@ msgstr "skin afhankelijk"
 msgid "always"
 msgstr "altijd"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -939,6 +945,9 @@ msgstr "Mappen in timermenu"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Altijd mappen eerst sorteren"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummertoetsen voor karakters"

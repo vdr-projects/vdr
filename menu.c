@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.1 2015/03/09 11:50:26 kls Exp $
+ * $Id: menu.c 4.2 2015/04/18 13:20:41 kls Exp $
  */
 
 #include "menu.h"
@@ -3006,6 +3006,7 @@ void cMenuSetupBase::Store(void)
 class cMenuSetupOSD : public cMenuSetupBase {
 private:
   const char *useSmallFontTexts[3];
+  const char *recSortModeTexts[2];
   const char *keyColorTexts[4];
   int osdLanguageIndex;
   int numSkins;
@@ -3058,6 +3059,8 @@ void cMenuSetupOSD::Set(void)
   useSmallFontTexts[0] = tr("never");
   useSmallFontTexts[1] = tr("skin dependent");
   useSmallFontTexts[2] = tr("always");
+  recSortModeTexts[0] = tr("by name");
+  recSortModeTexts[1] = tr("by time");
   keyColorTexts[0] = tr("Key$Red");
   keyColorTexts[1] = tr("Key$Green");
   keyColorTexts[2] = tr("Key$Yellow");
@@ -3091,6 +3094,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Always sort folders first"), &data.AlwaysSortFoldersFirst));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Default sort mode for recordings"), &data.DefaultSortModeRec, 2, recSortModeTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Number keys for characters"), &data.NumberKeysForChars));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 0"),            &data.ColorKey0, 4, keyColorTexts));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 1"),            &data.ColorKey1, 4, keyColorTexts));
@@ -4811,20 +4815,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         Recordings.AddByName(fileName);
-        if (Timer && !Timer->IsSingleEvent()) {
-           char *Directory = strdup(fileName);
-           // going up two directory levels to get the series folder
-           if (char *p = strrchr(Directory, '/')) {
-              while (p > Directory && *--p != '/')
-                    ;
-              *p = 0;
-              if (!HasRecordingsSortMode(Directory)) {
-                 dsyslog("setting %s to be sorted by time", Directory);
-                 SetRecordingsSortMode(Directory, rsmTime);
-                 }
-              }
-           free(Directory);
-           }
         return;
         }
      else

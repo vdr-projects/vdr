@@ -654,6 +654,11 @@ Version 2.2
                          plain recordings. Set this option to "no" if you want folders
                          to be interspersed with recordings when sorted alphabetically.
 
+  Default sort mode for recordings = by time
+                         Controls whether recordings are sorted by time or by name.
+                         If a particular sort mode has been selected for a folder by
+                         pressing '0', the default no longer applies to that folder.
+
   Number keys for characters = yes
                          Controls whether the number keys can be used to enter
                          characters in a text input field. You may want to set this

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.1 2015/04/11 10:44:38 kls Exp $
+ * $Id: recording.c 4.2 2015/04/18 13:14:55 kls Exp $
  */
 
 #include "recording.h"
@@ -3020,7 +3020,7 @@ int ReadFrame(cUnbufferedFile *f, uchar *b, int Length, int Max)
 
 // --- Recordings Sort Mode --------------------------------------------------
 
-eRecordingsSortMode RecordingsSortMode = rsmName;
+eRecordingsSortMode RecordingsSortMode = rsmTime;
 
 bool HasRecordingsSortMode(const char *Directory)
 {
@@ -3029,7 +3029,7 @@ bool HasRecordingsSortMode(const char *Directory)
 
 void GetRecordingsSortMode(const char *Directory)
 {
-  RecordingsSortMode = rsmName;
+  RecordingsSortMode = eRecordingsSortMode(constrain(Setup.DefaultSortModeRec, 0, int(rsmTime)));
   if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "r")) {
      char buf[8];
      if (fgets(buf, sizeof(buf), f))
