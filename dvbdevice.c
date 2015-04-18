@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.1 2015/04/18 14:21:58 kls Exp $
+ * $Id: dvbdevice.c 4.2 2015/04/18 16:19:28 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1249,7 +1249,7 @@ bool cDvbDevice::Initialize(void)
   if (Found > 0) {
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
      if (Used != Found)
-        isyslog("using only %d DVB device%s", Used, Used > 1 ? "s" : "");
+        isyslog("using only %d DVB device%s", Used, Used != 1 ? "s" : "");
      }
   else
      isyslog("no DVB device found");
