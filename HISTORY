@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-04-18: Version 2.3.1
+2015-04-19: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8635,3 +8635,4 @@ Video Disk Recorder Revision History
   VDR from using any DVB devices (suggested by Dietmar Spingler).
 - The -V and -h options now list the plugins in alphabetical order (suggested by
   Dietmar Spingler).
+- Fixed a compiler warning in font.c.
