@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.3 2015/03/13 15:07:53 kls Exp $
+ * $Id: osd.h 4.4 2015/04/19 12:18:25 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -785,6 +785,18 @@ protected:
        ///< If there are no dirty pixmaps, or if this is not a true color OSD,
        ///< this function returns NULL.
        ///< The caller must call DestroyPixmap() for the returned pixmap after use.
+//#define DEPRECATED_GETBITMAP
+#ifdef DEPRECATED_GETBITMAP
+public:
+#endif
+  cBitmap *GetBitmap(int Area);
+       ///< Returns a pointer to the bitmap for the given Area, or NULL if no
+       ///< such bitmap exists.
+       ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
+       ///< is returned. This is done so that skins that call this function
+       ///< in order to preset the bitmap's palette won't crash.
+       ///< Use of this function outside of derived classes is deprecated and it
+       ///< may be made 'protected' in a future version.
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
@@ -817,14 +829,6 @@ public:
        ///< requested colors. By default the palette assumes there will be
        ///< 10 fixed colors and 10 color combinations.
        ///< If this is a true color OSD, this function does nothing.
-  cBitmap *GetBitmap(int Area);
-       ///< Returns a pointer to the bitmap for the given Area, or NULL if no
-       ///< such bitmap exists.
-       ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
-       ///< is returned. This is done so that skins that call this function
-       ///< in order to preset the bitmap's palette won't crash.
-       ///< Use of this function outside of derived classes is deprecated and it
-       ///< may be made 'protected' in a future version.
   virtual const cSize &MaxPixmapSize(void) const;
        ///< Returns the maximum possible size of a pixmap this OSD can create.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
