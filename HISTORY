@@ -8636,3 +8636,7 @@ Video Disk Recorder Revision History
 - The -V and -h options now list the plugins in alphabetical order (suggested by
   Dietmar Spingler).
 - Fixed a compiler warning in font.c.
+- Commented out the line
+  #define DEPRECATED_VIDEOSYSTEM
+  in device.h. If a plugin doesn't compile with this version of VDR, you can uncomment
+  this line as a quick workaround. In the long run the plugin will need to be adapted.
