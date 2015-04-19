@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.1 2015/04/18 14:22:47 kls Exp $
+ * $Id: vdr.c 4.2 2015/04/19 12:38:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -92,12 +92,12 @@
 
 static int LastSignal = 0;
 
-static bool SetUser(const char *UserName, bool UserDump)
+static bool SetUser(const char *User, bool UserDump)
 {
-  if (UserName) {
-     struct passwd *user = getpwnam(UserName);
+  if (User) {
+     struct passwd *user = isnumber(User) ? getpwuid(atoi(User)) : getpwnam(User);
      if (!user) {
-        fprintf(stderr, "vdr: unknown user: '%s'\n", UserName);
+        fprintf(stderr, "vdr: unknown user: '%s'\n", User);
         return false;
         }
      if (setgid(user->pw_gid) < 0) {
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
 
   if (VdrUser && geteuid() == 0) {
      StartedAsRoot = true;
-     if (strcmp(VdrUser, "root")) {
+     if (strcmp(VdrUser, "root") && strcmp(VdrUser, "0")) {
         if (!SetKeepCaps(true))
            return 2;
         if (!SetUser(VdrUser, UserDump))
@@ -592,7 +592,7 @@ int main(int argc, char *argv[])
                "                           (default: %s)\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
-               "                           root\n"
+               "                           root; USER can be a user name or a numerical id\n"
                "            --updindex=REC update index for recording REC and exit\n"
                "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 4.1 2015/04/18 14:25:07 kls Exp $
+.\" $Id: vdr.1 4.2 2015/04/19 12:39:13 kls Exp $
 .\"
 .TH vdr 1 "19 Feb 2015" "2.2" "Video Disk Recorder"
 .SH NAME
@@ -206,7 +206,7 @@ Run as user \fIuser\fR in case vdr was started as user 'root'.
 Starting vdr as 'root' is necessary if the system time shall
 be set from the transponder data, but for security reasons
 vdr can switch to a lesser privileged user id during normal
-operation.
+operation. \fIuser\fR can be a user name or a numerical id.
 .TP
 .BI \-\-updindex= rec
 Update the index file for the given recording.

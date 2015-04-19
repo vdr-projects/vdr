@@ -2842,6 +2842,7 @@ Derek Kelly <user.vdr@gmail.com>
  for reporting a missing template for DVBDIR in Make.config.template
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
+ for suggesting to make the -u option also accept a numerical user id
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()

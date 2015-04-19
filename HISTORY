@@ -8644,3 +8644,4 @@ Video Disk Recorder Revision History
   this version of VDR, you can uncomment the line
   //#define DEPRECATED_GETBITMAP
   in osd.h as a quick workaround. In the long run the plugin will need to be adapted.
+- The -u option now also accepts a numerical user id (suggested by Derek Kelly).
