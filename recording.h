@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.1 2015/04/11 12:01:59 kls Exp $
+ * $Id: recording.h 4.2 2015/04/28 09:26:02 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -227,7 +227,7 @@ private:
   void Refresh(bool Foreground = false);
   bool ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
 protected:
-  void Action(void);
+  virtual void Action(void);
 public:
   cRecordings(bool Deleted = false);
   virtual ~cRecordings();
