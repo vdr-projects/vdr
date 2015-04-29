@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.2 2015/04/19 12:38:12 kls Exp $
+ * $Id: vdr.c 4.3 2015/04/29 09:18:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -65,6 +65,7 @@
 #include "sourceparams.h"
 #include "sources.h"
 #include "status.h"
+#include "svdrp.h"
 #include "themes.h"
 #include "timers.h"
 #include "tools.h"
@@ -375,7 +376,7 @@ int main(int argc, char *argv[])
                     break;
           case 'g' | 0x100:
                     return GenerateIndex(optarg) ? 0 : 2;
-          case 'g': cSVDRP::SetGrabImageDir(*optarg != '-' ? optarg : NULL);
+          case 'g': SetSVDRPGrabImageDir(*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
                     break;
@@ -831,7 +832,7 @@ int main(int argc, char *argv[])
 
   // User interface:
 
-  Interface = new cInterface(SVDRPport);
+  Interface = new cInterface;
 
   // Default skins:
 
@@ -912,6 +913,10 @@ int main(int argc, char *argv[])
 #ifdef SDNOTIFY
   sd_notify(0, "READY=1\nSTATUS=Ready");
 #endif
+
+  // SVDRP:
+
+  StartSVDRPHandler(SVDRPport);
 
   // Main program loop:
 
@@ -1418,7 +1423,7 @@ int main(int argc, char *argv[])
         // Keep the recordings handler alive:
         RecordingsHandler.Active();
 
-        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && !Interface->HasSVDRPConnection() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
            // Shutdown:
@@ -1466,6 +1471,7 @@ Exit:
   signal(SIGPIPE, SIG_DFL);
   signal(SIGALRM, SIG_DFL);
 
+  StopSVDRPHandler();
   PluginManager.StopPlugins();
   cRecordControls::Shutdown();
   RecordingsHandler.DelAll();

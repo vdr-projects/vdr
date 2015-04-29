@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 3.1 2015/01/11 13:37:47 kls Exp $
+ * $Id: interface.c 4.1 2015/04/28 11:16:06 kls Exp $
  */
 
 #include "interface.h"
@@ -19,27 +19,19 @@
 
 cInterface *Interface = NULL;
 
-cInterface::cInterface(int SVDRPport)
+cInterface::cInterface(void)
 {
   interrupted = false;
-  SVDRP = NULL;
-  if (SVDRPport)
-     SVDRP = new cSVDRP(SVDRPport);
 }
 
 cInterface::~cInterface()
 {
-  delete SVDRP;
 }
 
 eKeys cInterface::GetKey(bool Wait)
 {
   if (!cRemote::HasKeys())
      Skins.Flush();
-  if (SVDRP) {
-     if (SVDRP->Process())
-        Wait = false;
-     }
   if (!cRemote::IsLearning())
      return cRemote::Get(Wait ? 1000 : 10);
   else

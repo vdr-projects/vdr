@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 3.6 2015/01/12 11:16:27 kls Exp $
+ * $Id: svdrp.c 4.1 2015/04/29 13:10:01 kls Exp $
  */
 
 #include "svdrp.h"
@@ -33,13 +33,31 @@
 #include "keys.h"
 #include "menu.h"
 #include "plugin.h"
+#include "recording.h"
 #include "remote.h"
 #include "skins.h"
+#include "thread.h"
 #include "timers.h"
 #include "tools.h"
 #include "videodir.h"
 
 // --- cSocket ---------------------------------------------------------------
+
+class cSocket {
+private:
+  int port;
+  int sock;
+  int queue;
+  cString lastAcceptedConnection;
+public:
+  cSocket(int Port, int Queue = 1);
+  ~cSocket();
+  bool Open(void);
+  void Close(void);
+  int Socket(void) const { return sock; }
+  int Accept(void);
+  const char *LastAcceptedConnection(void) const { return lastAcceptedConnection; }
+  };
 
 cSocket::cSocket(int Port, int Queue)
 {
@@ -100,6 +118,7 @@ bool cSocket::Open(void)
         LOG_ERROR;
         return false;
         }
+     isyslog("SVDRP listening on port %d/tcp", port);
      }
   return true;
 }
@@ -110,7 +129,7 @@ int cSocket::Accept(void)
      struct sockaddr_in clientname;
      uint size = sizeof(clientname);
      int newsock = accept(sock, (struct sockaddr *)&clientname, &size);
-     if (newsock > 0) {
+     if (newsock >= 0) {
         bool accepted = SVDRPhosts.Acceptable(clientname.sin_addr.s_addr);
         if (!accepted) {
            const char *s = "Access denied!\n";
@@ -119,7 +138,8 @@ int cSocket::Accept(void)
            close(newsock);
            newsock = -1;
            }
-        isyslog("connect from %s, port %hu - %s", inet_ntoa(clientname.sin_addr), ntohs(clientname.sin_port), accepted ? "accepted" : "DENIED");
+        lastAcceptedConnection = cString::sprintf("%s:%hu", inet_ntoa(clientname.sin_addr), ntohs(clientname.sin_port));
+        isyslog("SVDRP %s connection %s", *lastAcceptedConnection, accepted ? "accepted" : "DENIED");
         }
      else if (errno != EINTR && errno != EAGAIN)
         LOG_ERROR;
@@ -129,6 +149,19 @@ int cSocket::Accept(void)
 }
 
 // --- cPUTEhandler ----------------------------------------------------------
+
+class cPUTEhandler {
+private:
+  FILE *f;
+  int status;
+  const char *message;
+public:
+  cPUTEhandler(void);
+  ~cPUTEhandler();
+  bool Process(const char *s);
+  int Status(void) { return status; }
+  const char *Message(void) { return message; }
+  };
 
 cPUTEhandler::cPUTEhandler(void)
 {
@@ -385,17 +418,77 @@ const char *GetHelpPage(const char *Cmd, const char **p)
   return NULL;
 }
 
-char *cSVDRP::grabImageDir = NULL;
+static cString grabImageDir;
 
-cSVDRP::cSVDRP(int Port)
-:socket(Port)
+class cSVDRP {
+private:
+  int socket;
+  cString connection;
+  cFile file;
+  cRecordings recordings;
+  cPUTEhandler *PUTEhandler;
+  int numChars;
+  int length;
+  char *cmdLine;
+  time_t lastActivity;
+  void Close(bool SendReply = false, bool Timeout = false);
+  bool Send(const char *s, int length = -1);
+  void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
+  void PrintHelpTopics(const char **hp);
+  void CmdCHAN(const char *Option);
+  void CmdCLRE(const char *Option);
+  void CmdDELC(const char *Option);
+  void CmdDELR(const char *Option);
+  void CmdDELT(const char *Option);
+  void CmdEDIT(const char *Option);
+  void CmdGRAB(const char *Option);
+  void CmdHELP(const char *Option);
+  void CmdHITK(const char *Option);
+  void CmdLSTC(const char *Option);
+  void CmdLSTE(const char *Option);
+  void CmdLSTR(const char *Option);
+  void CmdLSTT(const char *Option);
+  void CmdMESG(const char *Option);
+  void CmdMODC(const char *Option);
+  void CmdMODT(const char *Option);
+  void CmdMOVC(const char *Option);
+  void CmdMOVR(const char *Option);
+  void CmdNEWC(const char *Option);
+  void CmdNEWT(const char *Option);
+  void CmdNEXT(const char *Option);
+  void CmdPLAY(const char *Option);
+  void CmdPLUG(const char *Option);
+  void CmdPUTE(const char *Option);
+  void CmdREMO(const char *Option);
+  void CmdSCAN(const char *Option);
+  void CmdSTAT(const char *Option);
+  void CmdUPDT(const char *Option);
+  void CmdUPDR(const char *Option);
+  void CmdVOLU(const char *Option);
+  void Execute(char *Cmd);
+public:
+  cSVDRP(int Socket, const char *Connection);
+  ~cSVDRP();
+  bool HasConnection(void) { return file.IsOpen(); }
+  bool Process(void);
+  };
+
+cSVDRP::cSVDRP(int Socket, const char *Connection)
 {
+  socket = Socket;
+  connection = Connection;
   PUTEhandler = NULL;
   numChars = 0;
   length = BUFSIZ;
   cmdLine = MALLOC(char, length);
-  lastActivity = 0;
-  isyslog("SVDRP listening on port %d", Port);
+  lastActivity = time(NULL);
+  if (file.Open(socket)) {
+     //TODO how can we get the *full* hostname?
+     char buffer[BUFSIZ];
+     gethostname(buffer, sizeof(buffer));
+     time_t now = time(NULL);
+     Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", buffer, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
+     }
 }
 
 cSVDRP::~cSVDRP()
@@ -413,10 +506,11 @@ void cSVDRP::Close(bool SendReply, bool Timeout)
         gethostname(buffer, sizeof(buffer));
         Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
         }
-     isyslog("closing SVDRP connection"); //TODO store IP#???
+     isyslog("SVDRP %s connection closed", *connection);
      file.Close();
      DELETENULL(PUTEhandler);
      }
+  close(socket);
 }
 
 bool cSVDRP::Send(const char *s, int length)
@@ -454,7 +548,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         }
      else {
         Reply(451, "Zero return code - looks like a programming error!");
-        esyslog("SVDRP: zero return code!");
+        esyslog("SVDRP %s zero return code!", *connection);
         }
      }
 }
@@ -641,7 +735,7 @@ void cSVDRP::CmdDELC(const char *Option)
               Channels.Del(channel);
               Channels.ReNumber();
               Channels.SetModified(true);
-              isyslog("channel %s deleted", Option);
+              isyslog("SVDRP %s channel %s deleted", *connection, Option);
               if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
                  if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
                     Channels.SwitchTo(CurrentChannel->Number());
@@ -714,7 +808,7 @@ void cSVDRP::CmdDELT(const char *Option)
            cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
            if (timer) {
               if (!timer->Recording()) {
-                 isyslog("deleting timer %s", *timer->ToDescr());
+                 isyslog("SVDRP %s deleting timer %s", *connection, *timer->ToDescr());
                  Timers.Del(timer);
                  Timers.SetModified();
                  Reply(250, "Timer \"%s\" deleted", Option);
@@ -831,7 +925,7 @@ void cSVDRP::CmdGRAB(const char *Option)
      // canonicalize the file name:
      char RealFileName[PATH_MAX];
      if (FileName) {
-        if (grabImageDir) {
+        if (*grabImageDir) {
            cString s(FileName);
            FileName = s;
            const char *slash = strrchr(FileName, '/');
@@ -868,7 +962,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
            if (fd >= 0) {
               if (safe_write(fd, Image, ImageSize) == ImageSize) {
-                 dsyslog("grabbed image to %s", FileName);
+                 dsyslog("SVDRP %s grabbed image to %s", *connection, FileName);
                  Reply(250, "Grabbed image %s", Option);
                  }
               else {
@@ -1195,7 +1289,7 @@ void cSVDRP::CmdLSTT(const char *Option)
 void cSVDRP::CmdMESG(const char *Option)
 {
   if (*Option) {
-     isyslog("SVDRP message: '%s'", Option);
+     isyslog("SVDRP %s message '%s'", *connection, Option);
      Skins.QueueMessage(mtInfo, Option);
      Reply(250, "Message queued");
      }
@@ -1219,7 +1313,7 @@ void cSVDRP::CmdMODC(const char *Option)
                     *channel = ch;
                     Channels.ReNumber();
                     Channels.SetModified(true);
-                    isyslog("modifed channel %d %s", channel->Number(), *channel->ToText());
+                    isyslog("SVDRP %s modifed channel %d %s", *connection, channel->Number(), *channel->ToText());
                     Reply(250, "%d %s", channel->Number(), *channel->ToText());
                     }
                  else
@@ -1262,7 +1356,7 @@ void cSVDRP::CmdMODT(const char *Option)
                  }
               *timer = t;
               Timers.SetModified();
-              isyslog("timer %s modified (%s)", *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
+              isyslog("SVDRP %s timer %s modified (%s)", *connection, *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
               Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
               }
            else
@@ -1306,7 +1400,7 @@ void cSVDRP::CmdMOVC(const char *Option)
                           else
                              cDevice::SetCurrentChannel(CurrentChannel);
                           }
-                       isyslog("channel %d moved to %d", FromNumber, ToNumber);
+                       isyslog("SVDRP %s channel %d moved to %d", *connection, FromNumber, ToNumber);
                        Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
                        }
                     else
@@ -1382,7 +1476,7 @@ void cSVDRP::CmdNEWC(const char *Option)
            Channels.Add(channel);
            Channels.ReNumber();
            Channels.SetModified(true);
-           isyslog("new channel %d %s", channel->Number(), *channel->ToText());
+           isyslog("SVDRP %s new channel %d %s", *connection, channel->Number(), *channel->ToText());
            Reply(250, "%d %s", channel->Number(), *channel->ToText());
            }
         else
@@ -1402,7 +1496,7 @@ void cSVDRP::CmdNEWT(const char *Option)
      if (timer->Parse(Option)) {
         Timers.Add(timer);
         Timers.SetModified();
-        isyslog("timer %s added", *timer->ToDescr());
+        isyslog("SVDRP %s timer %s added", *connection, *timer->ToDescr());
         Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
         return;
         }
@@ -1622,11 +1716,11 @@ void cSVDRP::CmdUPDT(const char *Option)
               t->Parse(Option);
               delete timer;
               timer = t;
-              isyslog("timer %s updated", *timer->ToDescr());
+              isyslog("SVDRP %s timer %s updated", *connection, *timer->ToDescr());
               }
            else {
               Timers.Add(timer);
-              isyslog("timer %s added", *timer->ToDescr());
+              isyslog("SVDRP %s timer %s added", *connection, *timer->ToDescr());
               }
            Timers.SetModified();
            Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
@@ -1729,19 +1823,7 @@ void cSVDRP::Execute(char *Cmd)
 
 bool cSVDRP::Process(void)
 {
-  bool NewConnection = !file.IsOpen();
-  bool SendGreeting = NewConnection;
-
-  if (file.IsOpen() || file.Open(socket.Accept())) {
-     if (SendGreeting) {
-        //TODO how can we get the *full* hostname?
-        char buffer[BUFSIZ];
-        gethostname(buffer, sizeof(buffer));
-        time_t now = time(NULL);
-        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", buffer, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
-        }
-     if (NewConnection)
-        lastActivity = time(NULL);
+  if (file.IsOpen()) {
      while (file.Ready(false)) {
            unsigned char c;
            int r = safe_read(file, &c, 1);
@@ -1781,7 +1863,7 @@ bool cSVDRP::Process(void)
                        cmdLine = NewBuffer;
                        }
                     else {
-                       esyslog("ERROR: out of memory");
+                       esyslog("SVDRP %s ERROR: out of memory", *connection);
                        Close();
                        break;
                        }
@@ -1792,23 +1874,87 @@ bool cSVDRP::Process(void)
               lastActivity = time(NULL);
               }
            else if (r <= 0) {
-              isyslog("lost connection to SVDRP client");
+              isyslog("SVDRP %s lost connection to client", *connection);
               Close();
               }
            }
      if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
-        isyslog("timeout on SVDRP connection");
+        isyslog("SVDRP %s timeout on connection", *connection);
         Close(true, true);
         }
-     return true;
      }
-  return false;
+  return file.IsOpen();
 }
 
-void cSVDRP::SetGrabImageDir(const char *GrabImageDir)
+void SetSVDRPGrabImageDir(const char *GrabImageDir)
 {
-  free(grabImageDir);
-  grabImageDir = GrabImageDir ? strdup(GrabImageDir) : NULL;
+  grabImageDir = GrabImageDir;
 }
 
-//TODO more than one connection???
+// --- cSVDRPHandler ---------------------------------------------------------
+
+class cSVDRPHandler : public cThread {
+private:
+  cSocket socket;
+  cVector<cSVDRP *> connections;
+  void ProcessConnections(void);
+protected:
+  virtual void Action(void);
+public:
+  cSVDRPHandler(int Port);
+  virtual ~cSVDRPHandler();
+  };
+
+cSVDRPHandler::cSVDRPHandler(int Port)
+:cThread("SVDRP handler", true)
+,socket(Port)
+{
+}
+
+cSVDRPHandler::~cSVDRPHandler()
+{
+  Cancel(3);
+}
+
+void cSVDRPHandler::ProcessConnections(void)
+{
+  for (int i = 0; i < connections.Size(); i++) {
+      if (connections[i]) {
+         if (!connections[i]->Process()) {
+            delete connections[i];
+            connections.Remove(i);
+            i--;
+            }
+         }
+      }
+}
+
+void cSVDRPHandler::Action(void)
+{
+  if (socket.Open()) {
+     while (Running()) {
+           cFile::AnyFileReady(socket.Socket(), 1000);
+           int NewSocket = socket.Accept();
+           if (NewSocket >= 0)
+              connections.Append(new cSVDRP(NewSocket, socket.LastAcceptedConnection()));
+           ProcessConnections();
+           }
+     socket.Close();
+     }
+}
+
+static cSVDRPHandler *SVDRPHandler = NULL;
+
+void StartSVDRPHandler(int Port)
+{
+  if (Port && !SVDRPHandler) {
+     SVDRPHandler = new cSVDRPHandler(Port);
+     SVDRPHandler->Start();
+     }
+}
+
+void StopSVDRPHandler(void)
+{
+  delete SVDRPHandler;
+  SVDRPHandler = NULL;
+}

@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-04-19: Version 2.3.1
+2015-04-29: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8645,3 +8645,15 @@ Video Disk Recorder Revision History
   //#define DEPRECATED_GETBITMAP
   in osd.h as a quick workaround. In the long run the plugin will need to be adapted.
 - The -u option now also accepts a numerical user id (suggested by Derek Kelly).
+- The SVDRP port now accepts multiple concurrent connections. You can now keep an
+  SVDRP connection open as long as you wish, without preventing others from
+  connecting. Note, though, that SVDRP connections still get closed automatically
+  if there has been no activity for 300 seconds (configurable via
+  "Setup/Miscellaneous/SVDRP timeout (s)").
+- The SVDRP log messages have been unified and now always contain the IP and port
+  number of the remote host.
+- SVDRP connections are now handled in a separate thread, which makes them more
+  responsive. Note that there is only one thread that handles all concurrent SVDRP
+  connections. That way each SVDRP command is guaranteed to be processed separately,
+  without interfering with any other SVDRP commands that might be issued at the same
+  time.
