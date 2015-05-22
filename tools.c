@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 3.4 2015/02/07 16:07:22 kls Exp $
+ * $Id: tools.c 4.1 2015/05/11 14:15:15 kls Exp $
  */
 
 #include "tools.h"
@@ -272,6 +272,28 @@ cString strescape(const char *s, const char *chars)
   if (t)
      *t = 0;
   return cString(s, t != NULL);
+}
+
+cString strgetval(const char *s, const char *name, char d)
+{
+  if (s && name) {
+     int l = strlen(name);
+     const char *t = s;
+     while (const char *p = strstr(t, name)) {
+           t = skipspace(p + l);
+           if (p == s || *(p - 1) <= ' ') {
+              if (*t == d) {
+                 t = skipspace(t + 1);
+                 const char *v = t;
+                 while (*t > ' ')
+                       t++;
+                 return cString(v, t);
+                 break;
+                 }
+              }
+           }
+     }
+  return NULL;
 }
 
 bool startswith(const char *s, const char *p)
@@ -1061,6 +1083,17 @@ cString &cString::operator=(const char *String)
   return *this;
 }
 
+cString &cString::Append(const char *String)
+{
+  int l1 = strlen(s);
+  int l2 = strlen(String);
+  char *p = (char *)realloc(s, l1 + l2 + 1);
+  if (p != s)
+     strcpy(p, s);
+  strcpy(p + l1, String);
+  return *this;
+}
+
 cString &cString::Truncate(int Index)
 {
   int l = strlen(s);
@@ -1438,6 +1471,19 @@ bool cPoller::Add(int FileHandle, bool Out)
      esyslog("ERROR: too many file handles in cPoller");
      }
   return false;
+}
+
+void cPoller::Del(int FileHandle, bool Out)
+{
+  if (FileHandle >= 0) {
+     for (int i = 0; i < numFileHandles; i++) {
+         if (pfd[i].fd == FileHandle && pfd[i].events == (Out ? POLLOUT : POLLIN)) {
+            if (i < numFileHandles - 1)
+               memmove(&pfd[i], &pfd[i + 1], (numFileHandles - i - 1) * sizeof(pollfd));
+            numFileHandles--;
+            }
+         }
+     }
 }
 
 bool cPoller::Poll(int TimeoutMs)

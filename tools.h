@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.7 2015/02/07 16:07:22 kls Exp $
+ * $Id: tools.h 4.1 2015/05/21 14:37:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -178,6 +178,7 @@ public:
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
   cString &operator=(const char *String);
+  cString &Append(const char *String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   cString &CompactChars(char c); ///< Compact any sequence of characters 'c' to a single character, and strip all of them from the beginning and end of this string.
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
@@ -209,6 +210,14 @@ char *stripspace(char *s);
 char *compactspace(char *s);
 char *compactchars(char *s, char c); ///< removes all occurrences of 'c' from the beginning an end of 's' and replaces sequences of multiple 'c's with a single 'c'.
 cString strescape(const char *s, const char *chars);
+cString strgetval(const char *s, const char *name, char d = '=');
+    ///< Returns the value part of a 'name=value' pair in s.
+    ///< name must either be at the beginning of s, or has to be preceded by white space.
+    ///< There may be any number of white space around the '=' sign. The value is
+    ///< everyting up to (and excluding) the next white space, or the end of s.
+    ///< If an other delimiter shall be used (like, e.g., ':'), it can be given
+    ///< as the third parameter.
+    ///< If name occurs more than once in s, only the first occurrence is taken.
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -356,12 +365,13 @@ public:
 
 class cPoller {
 private:
-  enum { MaxPollFiles = 16 };
+  enum { MaxPollFiles = 64 };
   pollfd pfd[MaxPollFiles];
   int numFileHandles;
 public:
   cPoller(int FileHandle = -1, bool Out = false);
   bool Add(int FileHandle, bool Out);
+  void Del(int FileHandle, bool Out);
   bool Poll(int TimeoutMs = 0);
   };
 

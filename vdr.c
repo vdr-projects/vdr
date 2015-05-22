@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.3 2015/04/29 09:18:54 kls Exp $
+ * $Id: vdr.c 4.4 2015/05/21 13:58:33 kls Exp $
  */
 
 #include <getopt.h>
@@ -916,7 +916,7 @@ int main(int argc, char *argv[])
 
   // SVDRP:
 
-  StartSVDRPHandler(SVDRPport);
+  StartSVDRPHandler(SVDRPport, DEFAULTSVDRPPORT);
 
   // Main program loop:
 
