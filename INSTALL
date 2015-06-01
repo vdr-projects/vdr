@@ -155,7 +155,7 @@ by default, so that users that have no need for this don't get any overhead.
 Workaround for providers not encoding their EPG data correctly
 --------------------------------------------------------------
 
-According to "ETSI EN 300 468" the default character set fo SI data is
+According to "ETSI EN 300 468" the default character set for SI data is
 ISO6937. But unfortunately some broadcasters actually use ISO-8859-9 or
 other encodings, but fail to correctly announce that.
 Users who want to set the default character set to something different can
