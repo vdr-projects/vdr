@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.1 2015/05/11 14:15:15 kls Exp $
+ * $Id: tools.c 4.2 2015/08/29 12:11:20 kls Exp $
  */
 
 #include "tools.h"
@@ -2044,17 +2044,72 @@ int cListObject::Index(void) const
   return i;
 }
 
+// --- cListGarbageCollector -------------------------------------------------
+
+#define LIST_GARBAGE_COLLECTOR_TIMEOUT 5 // seconds
+
+cListGarbageCollector ListGarbageCollector;
+
+cListGarbageCollector::cListGarbageCollector(void)
+{
+  objects = NULL;
+  lastPut = 0;
+}
+
+cListGarbageCollector::~cListGarbageCollector()
+{
+  if (objects)
+     esyslog("ERROR: ListGarbageCollector destroyed without prior Purge()!");
+}
+
+void cListGarbageCollector::Put(cListObject *Object)
+{
+  mutex.Lock();
+  Object->next = objects;
+  objects = Object;
+  lastPut = time(NULL);
+  mutex.Unlock();
+}
+
+void cListGarbageCollector::Purge(bool Force)
+{
+  mutex.Lock();
+  if (objects && (time(NULL) - lastPut > LIST_GARBAGE_COLLECTOR_TIMEOUT || Force)) {
+     // We make sure that any object stays in the garbage collector for at least
+     // LIST_GARBAGE_COLLECTOR_TIMEOUT seconds, to give objects that have pointers
+     // to them a chance to drop these references before the object is finally
+     // deleted.
+     while (cListObject *Object = objects) {
+           objects = Object->next;
+           delete Object;
+           }
+     }
+  mutex.Unlock();
+}
+
 // --- cListBase -------------------------------------------------------------
 
-cListBase::cListBase(void)
+cListBase::cListBase(const char *NeedsLocking)
+:stateLock(NeedsLocking)
 {
   objects = lastObject = NULL;
   count = 0;
+  needsLocking = NeedsLocking;
+  useGarbageCollector = needsLocking;
 }
 
 cListBase::~cListBase()
 {
   Clear();
+}
+
+bool cListBase::Lock(cStateKey &StateKey, bool Write, int TimeoutMs) const
+{
+  if (needsLocking)
+     return stateLock.Lock(StateKey, Write, TimeoutMs);
+  else
+     esyslog("ERROR: cListBase::Lock() called for a list that doesn't require locking");
+  return false;
 }
 
 void cListBase::Add(cListObject *Object, cListObject *After)
@@ -2096,8 +2151,12 @@ void cListBase::Del(cListObject *Object, bool DeleteObject)
   if (Object == lastObject)
      lastObject = Object->Prev();
   Object->Unlink();
-  if (DeleteObject)
-     delete Object;
+  if (DeleteObject) {
+     if (useGarbageCollector)
+        ListGarbageCollector.Put(Object);
+     else
+        delete Object;
+     }
   count--;
 }
 
@@ -2141,11 +2200,30 @@ void cListBase::Clear(void)
   count = 0;
 }
 
-cListObject *cListBase::Get(int Index) const
+bool cListBase::Contains(const cListObject *Object) const
+{
+  for (const cListObject *o = objects; o; o = o->Next()) {
+      if (o == Object)
+         return true;
+      }
+  return false;
+}
+
+void cListBase::SetExplicitModify(void)
+{
+  stateLock.SetExplicitModify();
+}
+
+void cListBase::SetModified(void)
+{
+  stateLock.IncState();
+}
+
+const cListObject *cListBase::Get(int Index) const
 {
   if (Index < 0)
      return NULL;
-  cListObject *object = objects;
+  const cListObject *object = objects;
   while (object && Index-- > 0)
         object = object->Next();
   return object;

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 3.6 2015/02/01 14:55:27 kls Exp $
+ * $Id: eit.c 4.1 2015/08/23 10:43:36 kls Exp $
  */
 
 #include "eit.h"
@@ -24,31 +24,53 @@
 
 class cEIT : public SI::EIT {
 public:
-  cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bool OnlyRunningStatus = false);
+  cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const u_char *Data);
   };
 
-cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bool OnlyRunningStatus)
+cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const u_char *Data)
 :SI::EIT(Data, false)
 {
   if (!CheckCRCAndParse())
+     return;
+  int HashId = Tid * getServiceId();
+  cSectionSyncerEntry *SectionSyncerEntry = SectionSyncerHash.Get(HashId);
+  if (!SectionSyncerEntry) {
+     SectionSyncerEntry = new cSectionSyncerEntry;
+     SectionSyncerHash.Add(SectionSyncerEntry, HashId);
+     }
+  bool Process = SectionSyncerEntry->Sync(getVersionNumber(), getSectionNumber(), getLastSectionNumber());
+  if (Tid != 0x4E && !Process) // we need to set the 'seen' tag to watch the running status of the present/following event
      return;
 
   time_t Now = time(NULL);
   if (Now < VALID_TIME)
      return; // we need the current time for handling PDC descriptors
 
-  if (!Channels.Lock(false, 10))
+  cStateKey ChannelsStateKey;
+  cChannels *Channels = cChannels::GetChannelsWrite(ChannelsStateKey, 10);
+  if (!Channels) {
+     SectionSyncerEntry->Repeat(); // let's not miss any section of the EIT
      return;
+     }
   tChannelID channelID(Source, getOriginalNetworkId(), getTransportStreamId(), getServiceId());
-  cChannel *channel = Channels.GetByChannelID(channelID, true);
-  if (!channel || EpgHandlers.IgnoreChannel(channel)) {
-     Channels.Unlock();
+  cChannel *Channel = Channels->GetByChannelID(channelID, true);
+  if (!Channel || EpgHandlers.IgnoreChannel(Channel)) {
+     ChannelsStateKey.Remove(false);
      return;
      }
 
-  EpgHandlers.BeginSegmentTransfer(channel, OnlyRunningStatus);
-  bool handledExternally = EpgHandlers.HandledExternally(channel);
-  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
+  cStateKey SchedulesStateKey;
+  cSchedules *Schedules = cSchedules::GetSchedulesWrite(SchedulesStateKey, 10);
+  if (!Schedules) {
+     SectionSyncerEntry->Repeat(); // let's not miss any section of the EIT
+     ChannelsStateKey.Remove(false);
+     return;
+     }
+
+  bool ChannelsModified = false;
+  EpgHandlers.BeginSegmentTransfer(Channel);
+  bool handledExternally = EpgHandlers.HandledExternally(Channel);
+  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(Channel, true);
 
   bool Empty = true;
   bool Modified = false;
@@ -74,8 +96,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
       cEvent *rEvent = NULL;
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), StartTime);
       if (!pEvent || handledExternally) {
-         if (OnlyRunningStatus)
-            continue;
          if (handledExternally && !EpgHandlers.IsUpdate(SiEitEvent.getEventId(), StartTime, Tid, getVersionNumber()))
             continue;
          // If we don't have that event yet, we create a new one.
@@ -94,14 +114,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          // The lower the table ID, the more "current" the information.
          if (Tid > TableID)
             continue;
-         // If the new event comes from the same table and has the same version number
-         // as the existing one, let's skip it to avoid unnecessary work.
-         // Unfortunately some stations (like, e.g. "Premiere") broadcast their EPG data on several transponders (like
-         // the actual Premiere transponder and the Sat.1/Pro7 transponder), but use different version numbers on
-         // each of them :-( So if one DVB card is tuned to the Premiere transponder, while an other one is tuned
-         // to the Sat.1/Pro7 transponder, events will keep toggling because of the bogus version numbers.
-         else if (Tid == TableID && pEvent->Version() == getVersionNumber())
-            continue;
          EpgHandlers.SetEventID(pEvent, SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
          EpgHandlers.SetStartTime(pEvent, StartTime);
          EpgHandlers.SetDuration(pEvent, Duration);
@@ -110,11 +122,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
          pEvent->SetTableID(Tid);
       if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
          if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
-            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
-         }
-      if (OnlyRunningStatus) {
-         pEvent->SetVersion(0xFF); // we have already changed the table id above, so set the version to an invalid value to make sure the next full run will be executed
-         continue; // do this before setting the version, so that the full update can be done later
+            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), Channel);
+         if (!Process)
+            continue;
          }
       pEvent->SetVersion(getVersionNumber());
 
@@ -206,7 +216,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                  break;
             case SI::TimeShiftedEventDescriptorTag: {
                  SI::TimeShiftedEventDescriptor *tsed = (SI::TimeShiftedEventDescriptor *)d;
-                 cSchedule *rSchedule = (cSchedule *)Schedules->GetSchedule(tChannelID(Source, channel->Nid(), channel->Tid(), tsed->getReferenceServiceId()));
+                 cSchedule *rSchedule = (cSchedule *)Schedules->GetSchedule(tChannelID(Source, Channel->Nid(), Channel->Tid(), tsed->getReferenceServiceId()));
                  if (!rSchedule)
                     break;
                  rEvent = (cEvent *)rSchedule->GetEvent(tsed->getReferenceEventId());
@@ -226,18 +236,18 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                        char linkName[ld->privateData.getLength() + 1];
                        strn0cpy(linkName, (const char *)ld->privateData.getData(), sizeof(linkName));
                        // TODO is there a standard way to determine the character set of this string?
-                       cChannel *link = Channels.GetByChannelID(linkID);
-                       if (link != channel) { // only link to other channels, not the same one
-                          //fprintf(stderr, "Linkage %s %4d %4d %5d %5d %5d %5d  %02X  '%s'\n", hit ? "*" : "", channel->Number(), link ? link->Number() : -1, SiEitEvent.getEventId(), ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId(), ld->getLinkageType(), linkName);//XXX
+                       cChannel *link = Channels->GetByChannelID(linkID);
+                       if (link != Channel) { // only link to other channels, not the same one
                           if (link) {
                              if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
-                                link->SetName(linkName, "", "");
+                                ChannelsModified |= link->SetName(linkName, "", "");
                              }
                           else if (Setup.UpdateChannels >= 4) {
-                             cChannel *transponder = channel;
-                             if (channel->Tid() != ld->getTransportStreamId())
-                                transponder = Channels.GetByTransponderID(linkID);
-                             link = Channels.NewChannel(transponder, linkName, "", "", ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
+                             cChannel *Transponder = Channel;
+                             if (Channel->Tid() != ld->getTransportStreamId())
+                                Transponder = Channels->GetByTransponderID(linkID);
+                             link = Channels->NewChannel(Transponder, linkName, "", "", ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
+                             ChannelsModified = true;
                              //XXX patFilter->Trigger();
                              }
                           if (link) {
@@ -247,7 +257,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
                              }
                           }
                        else
-                          channel->SetPortalName(linkName);
+                          ChannelsModified |= Channel->SetPortalName(linkName);
                        }
                     }
                  }
@@ -293,7 +303,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
 
       EpgHandlers.FixEpgBugs(pEvent);
       if (LinkChannels)
-         channel->SetLinkChannels(LinkChannels);
+         ChannelsModified |= Channel->SetLinkChannels(LinkChannels);
       Modified = true;
       EpgHandlers.HandleEvent(pEvent);
       if (handledExternally)
@@ -302,16 +312,17 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data, bo
   if (Tid == 0x4E) {
      if (Empty && getSectionNumber() == 0)
         // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
-        pSchedule->ClrRunningStatus(channel);
+        pSchedule->ClrRunningStatus(Channel);
      pSchedule->SetPresentSeen();
      }
-  if (Modified && !OnlyRunningStatus) {
+  if (Modified) {
      EpgHandlers.SortSchedule(pSchedule);
      EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
-     Schedules->SetModified(pSchedule);
+     pSchedule->SetModified();
      }
-  Channels.Unlock();
-  EpgHandlers.EndSegmentTransfer(Modified, OnlyRunningStatus);
+  SchedulesStateKey.Remove(Modified);
+  ChannelsStateKey.Remove(ChannelsModified);
+  EpgHandlers.EndSegmentTransfer(Modified);
 }
 
 // --- cTDT ------------------------------------------------------------------
@@ -372,6 +383,13 @@ cEitFilter::cEitFilter(void)
   Set(0x14, 0x70);        // TDT
 }
 
+void cEitFilter::SetStatus(bool On)
+{
+  cMutexLock MutexLock(&mutex);
+  cFilter::SetStatus(On);
+  sectionSyncerHash.Clear();
+}
+
 void cEitFilter::SetDisableUntil(time_t Time)
 {
   disableUntil = Time;
@@ -379,6 +397,7 @@ void cEitFilter::SetDisableUntil(time_t Time)
 
 void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
+  cMutexLock MutexLock(&mutex);
   if (disableUntil) {
      if (time(NULL) > disableUntil)
         disableUntil = 0;
@@ -387,22 +406,8 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      }
   switch (Pid) {
     case 0x12: {
-         if (Tid >= 0x4E && Tid <= 0x6F) {
-            cSchedulesLock SchedulesLock(true, 10);
-            cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
-            if (Schedules)
-               cEIT EIT(Schedules, Source(), Tid, Data);
-            else {
-               // If we don't get a write lock, let's at least get a read lock, so
-               // that we can set the running status and 'seen' timestamp (well, actually
-               // with a read lock we shouldn't be doing that, but it's only integers that
-               // get changed, so it should be ok)
-               cSchedulesLock SchedulesLock;
-               cSchedules *Schedules = (cSchedules *)cSchedules::Schedules(SchedulesLock);
-               if (Schedules)
-                  cEIT EIT(Schedules, Source(), Tid, Data, true);
-               }
-            }
+         if (Tid >= 0x4E && Tid <= 0x6F)
+            cEIT EIT(sectionSyncerHash, Source(), Tid, Data);
          }
          break;
     case 0x14: {

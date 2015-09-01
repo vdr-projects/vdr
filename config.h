@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 4.2 2015/04/18 13:13:15 kls Exp $
+ * $Id: config.h 4.3 2015/08/09 09:17:46 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -110,7 +110,7 @@ private:
     cList<T>::Clear();
   }
 public:
-  cConfig(void) { fileName = NULL; }
+  cConfig(const char *NeedsLocking = NULL): cList<T>(NeedsLocking) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
   bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
@@ -160,7 +160,7 @@ public:
        fprintf(stderr, "vdr: error while reading '%s'\n", fileName);
     return result;
   }
-  bool Save(void)
+  bool Save(void) const
   {
     bool result = true;
     T *l = (T *)this->First();

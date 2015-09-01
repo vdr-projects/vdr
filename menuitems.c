@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 3.3 2015/02/09 11:53:10 kls Exp $
+ * $Id: menuitems.c 4.1 2015/07/18 10:38:31 kls Exp $
  */
 
 #include "menuitems.h"
@@ -777,7 +777,7 @@ void cMenuEditStraItem::Set(void)
 // --- cMenuEditChanItem -----------------------------------------------------
 
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value, const char *NoneString)
-:cMenuEditIntItem(Name, Value, NoneString ? 0 : 1, Channels.MaxNumber())
+:cMenuEditIntItem(Name, Value, NoneString ? 0 : 1, cChannels::MaxNumber())
 {
   channelID = NULL;
   noneString = NoneString;
@@ -786,12 +786,13 @@ cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value, const char *N
 }
 
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, cString *ChannelID, const char *NoneString)
-:cMenuEditIntItem(Name, &dummyValue, NoneString ? 0 : 1, Channels.MaxNumber())
+:cMenuEditIntItem(Name, &dummyValue, NoneString ? 0 : 1, cChannels::MaxNumber())
 {
   channelID = ChannelID;
   noneString = NoneString;
-  cChannel *channel = Channels.GetByChannelID(tChannelID::FromString(*ChannelID));
-  dummyValue = channel ? channel->Number() : 0;
+  LOCK_CHANNELS_READ;
+  const cChannel *Channel = Channels->GetByChannelID(tChannelID::FromString(*ChannelID));
+  dummyValue = Channel ? Channel->Number() : 0;
   Set();
 }
 
@@ -799,11 +800,12 @@ void cMenuEditChanItem::Set(void)
 {
   if (*value > 0) {
      char buf[255];
-     cChannel *channel = Channels.GetByNumber(*value);
-     snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
+     LOCK_CHANNELS_READ;
+     const cChannel *Channel = Channels->GetByNumber(*value);
+     snprintf(buf, sizeof(buf), "%d %s", *value, Channel ? Channel->Name() : "");
      SetValue(buf);
      if (channelID)
-        *channelID = channel ? channel->GetChannelID().ToString() : "";
+        *channelID = Channel ? Channel->GetChannelID().ToString() : "";
      }
   else if (noneString) {
      SetValue(noneString);
@@ -822,13 +824,14 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                  {
-                   cChannel *channel = Channels.GetByNumber(*value + delta, delta);
-                   if (channel)
-                      *value = channel->Number();
+                   LOCK_CHANNELS_READ
+                   const cChannel *Channel = Channels->GetByNumber(*value + delta, delta);
+                   if (Channel)
+                      *value = Channel->Number();
                    else if (delta < 0 && noneString)
                       *value = 0;
                    if (channelID)
-                      *channelID = channel ? channel->GetChannelID().ToString() : "";
+                      *channelID = Channel ? Channel->GetChannelID().ToString() : "";
                    Set();
                  }
                  break;
@@ -845,13 +848,14 @@ cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
   number = 0;
   source = Source;
   transponder = Value;
-  cChannel *channel = Channels.First();
-  while (channel) {
-        if (!channel->GroupSep() && *source == channel->Source() && ISTRANSPONDER(channel->Transponder(), *Value)) {
-           number = channel->Number();
+  LOCK_CHANNELS_READ;
+  const cChannel *Channel = Channels->First();
+  while (Channel) {
+        if (!Channel->GroupSep() && *source == Channel->Source() && ISTRANSPONDER(Channel->Transponder(), *Value)) {
+           number = Channel->Number();
            break;
            }
-        channel = (cChannel *)channel->Next();
+        Channel = Channels->Next(Channel);
         }
   Set();
 }
@@ -859,10 +863,10 @@ cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
 eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
 {
   eOSState state = cMenuEditChanItem::ProcessKey(Key);
-  cChannel *channel = Channels.GetByNumber(number);
-  if (channel) {
-     *source = channel->Source();
-     *transponder = channel->Transponder();
+  LOCK_CHANNELS_READ
+  if (const cChannel *Channel = Channels->GetByNumber(number)) {
+     *source = Channel->Source();
+     *transponder = Channel->Transponder();
      }
   else {
      *source = 0;

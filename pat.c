@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 3.5 2015/01/04 13:14:01 kls Exp $
+ * $Id: pat.c 4.1 2015/08/17 08:46:55 kls Exp $
  */
 
 #include "pat.h"
@@ -99,8 +99,8 @@ cCaDescriptors::cCaDescriptors(int Source, int Transponder, int ServiceId, int P
 
 bool cCaDescriptors::operator== (const cCaDescriptors &arg) const
 {
-  cCaDescriptor *ca1 = caDescriptors.First();
-  cCaDescriptor *ca2 = arg.caDescriptors.First();
+  const cCaDescriptor *ca1 = caDescriptors.First();
+  const cCaDescriptor *ca2 = arg.caDescriptors.First();
   while (ca1 && ca2) {
         if (!(*ca1 == *ca2))
            return false;
@@ -396,11 +396,14 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         SwitchToNextPmtPid();
         return;
         }
-     if (!Channels.Lock(true, 10))
+     cStateKey StateKey;
+     cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
+     if (!Channels)
         return;
+     bool ChannelsModified = false;
      PmtVersionChanged(Pid, pmt.getTableIdExtension(), pmt.getVersionNumber(), true);
      SwitchToNextPmtPid();
-     cChannel *Channel = Channels.GetByServiceID(Source(), Transponder(), pmt.getServiceId());
+     cChannel *Channel = Channels->GetByServiceID(Source(), Transponder(), pmt.getServiceId());
      if (Channel) {
         SI::CaDescriptor *d;
         cCaDescriptors *CaDescriptors = new cCaDescriptors(Channel->Source(), Channel->Transponder(), Channel->Sid(), Pid);
@@ -629,13 +632,13 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                }
             }
         if (Setup.UpdateChannels >= 2) {
-           Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, Dtypes, DLangs, Spids, SLangs, Tpid);
-           Channel->SetCaIds(CaDescriptors->CaIds());
-           Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
+           ChannelsModified |= Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, Dtypes, DLangs, Spids, SLangs, Tpid);
+           ChannelsModified |= Channel->SetCaIds(CaDescriptors->CaIds());
+           ChannelsModified |= Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
            }
-        Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
+        ChannelsModified |= Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
         }
-     Channels.Unlock();
+     StateKey.Remove(ChannelsModified);
      }
   if (timer.TimedOut()) {
      if (pmtIndex >= 0)

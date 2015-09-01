@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 3.20 2015/01/30 12:11:30 kls Exp $
+ * $Id: device.c 4.1 2015/08/29 12:41:08 kls Exp $
  */
 
 #include "device.h"
@@ -722,20 +722,21 @@ bool cDevice::SwitchChannel(int Direction)
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
      int n = CurrentChannel() + Direction;
      int first = n;
-     cChannel *channel;
-     while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
+     LOCK_CHANNELS_READ;
+     const cChannel *Channel;
+     while ((Channel = Channels->GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
-           if (GetDevice(channel, LIVEPRIORITY, true, true))
+           if (GetDevice(Channel, LIVEPRIORITY, true, true))
               break;
-           n = channel->Number() + Direction;
+           n = Channel->Number() + Direction;
            }
-     if (channel) {
+     if (Channel) {
         int d = n - first;
         if (abs(d) == 1)
            dsyslog("skipped channel %d", first);
         else if (d)
            dsyslog("skipped channels %d..%d", first, n - sgn(d));
-        if (PrimaryDevice()->SwitchChannel(channel, true))
+        if (PrimaryDevice()->SwitchChannel(Channel, true))
            result = true;
         }
      else if (n != first)
@@ -777,7 +778,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         Result = scrNotAvailable;
      }
   else {
-     Channels.Lock(false);
      // Stop section handling:
      if (sectionHandler) {
         sectionHandler->SetStatus(false);
@@ -790,7 +790,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
-           patFilter->Trigger(Channel->Sid());
+           if (patFilter)
+              patFilter->Trigger(Channel->Sid());
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
@@ -800,7 +801,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         }
      else
         Result = scrFailed;
-     Channels.Unlock();
      }
 
   if (Result == scrOk) {
@@ -829,8 +829,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 void cDevice::ForceTransferMode(void)
 {
   if (!cTransferControl::ReceiverDevice()) {
-     cChannel *Channel = Channels.GetByNumber(CurrentChannel());
-     if (Channel)
+     LOCK_CHANNELS_READ;
+     if (const cChannel *Channel = Channels->GetByNumber(CurrentChannel()))
         SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
      }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.19 2015/02/02 14:04:10 kls Exp $
+ * $Id: ci.c 4.1 2015/07/18 09:57:42 kls Exp $
  */
 
 #include "ci.h"
@@ -1921,7 +1921,8 @@ void cCamSlot::StartActivation(void)
   cMutexLock MutexLock(&mutex);
   if (!caActivationReceiver) {
      if (cDevice *d = Device()) {
-        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+        LOCK_CHANNELS_READ;
+        if (const cChannel *Channel = Channels->GetByNumber(cDevice::CurrentChannel())) {
            caActivationReceiver = new cCaActivationReceiver(Channel, this);
            d->AttachReceiver(caActivationReceiver);
            dsyslog("CAM %d: activating on device %d with channel %d (%s)", SlotNumber(), d->DeviceNumber() + 1, Channel->Number(), Channel->Name());

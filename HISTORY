@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-04-29: Version 2.3.1
+2015-09-01: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8671,3 +8671,114 @@ Video Disk Recorder Revision History
   this VDR is connected to via SVDRP.
 - The new class cSVDRPCommand can be used to execute an SVDRP command on one of
   the servers this VDR is connected to, and retrieve the result.
+- The cTimer class now has a new member named 'remote', which holds the name of the
+  remote server this timer will record on. If this is NULL, it is a local timer.
+- Timers from other VDRs that are connected to this VDR via SVDRP are now
+  automatically fetched and stored in the global Timers list. In order for this
+  to work, all of the channels used by timers on the remote VDR must also be
+  defined on the local VDR (however, not necessarily in the same sequence).
+  Automatic channel syncing will be implemented later.
+- The main menu of the LCARS skin now displays a small rectangle on the left side
+  of a timer if this is a remote timer. The color of that rectangle changes if
+  the timer is currently recording on the remote VDR.
+- Accessing the global Timers list now has to be protected by proper locking,
+  because SVDRP commands are now executed in a separate thread.
+  The introduction of this locking mechanism required the following changes:
+  + The new classes cStateLock and cStateKey are used to implement locking
+    with quick detection of state changes.
+  + cConfig::cConfig() now has a parameter that indicates whether this list
+    requires locking.
+  + The global lists of Timers, Channels, Schedules and Recordings are no longer
+    static variables. They are now pointers that need to be retrieved through
+    a call to cTimers::GetTimersRead/Write(), cChannels::GetChannelsRead/Write(),
+    cSchedules::GetSchedulesRead/Write() and cRecordings::GetRecordingsRead/Write(),
+    respectively.
+  + References from/to link channels are now removed in cChannels::Del() rather
+    than cChannel::~cChannel(), to make sure the caller holds a proper lock.
+  + cChannel::HasTimer() has been removed. This information is now retrieved
+    via cSchedule::HasTimer().
+  + Several member functions of cChannel, cTimer, cMarks and cRecording have
+    been made 'const', and some of them are now available as both 'const' and
+    'non-const' versions.
+  + The cChannel::Set...() functions are now 'bool' and return true if they have
+    actually changed any of the channels's members.
+  + cChannels::SetModified() has been renamed to cChannels::SetModifiedByUser().
+  + cChannels::Modified() has been renamed to cChannels::ModifiedByUser(), and
+    now has a 'State' parameter that allows the caller to see whether a channel
+    has been modified since the last call to this function with the same State
+    variable.
+  + The macros CHANNELSMOD_NONE/_AUTO/_USER have been removed.
+  + cMarks now requires locking via cStateKey.
+  + cSortedTimers now requires a pointer to the list of timers.
+  + cEvent::HasTimer() no longer scans the list of timers to check whether an event
+    is referenced by a timer, but rather keeps score of how many timers reference
+    it. This was necessary in order to avoid having to lock the list of timers from
+    within a cEvent.
+  + The new class cListGarbageCollector is used to temporary store any objects deleted
+    from cLists that require locking. This allows pointers to such objects to be
+    dereferenced even if the objects are no longer part of the list.
+  + cListBase::Contains() can be used to check whether a particular object is still
+    contained in that list.
+  + Outdated events are no longer "phased out", but rather deleted right away and thus
+    taken care of by the new "garbage collector" of the list.
+  + Deleted cRecording objects are no longer kept in a list of "vanished" recordings,
+    but are rather taken care of by the new "garbage collector" of the list.
+  + cSchedules::ClearAll() has been removed. The functionality is now implemented
+    directly in cSVDRPServer::CmdCLRE().
+  + tEventID has been changed to u_int16_t in order to make room for the new member
+    numTimers in cEvent.
+  + cSchedule now has a member Modified(), which can be used with a State variable
+    to quickly determine whether this schedule has been modified since the last call
+    to this function with the same State variable.
+  + cSchedulesLock has been removed. Locking the list of schedules is now done via
+    the cList's new locking mechanism.
+  + The 'OnlyRunningStatus' parameters in cEpgHandler::BeginSegmentTransfer() and
+    cEpgHandler::EndSegmentTransfer() are now obsolete. They are still present in
+    the interface for backward compatibility, but may be removed in a future version.
+    Their value is always 'false'.
+  + The constant tcMod is no longer used in cStatus::TimerChange(). The definition is
+    still there for backward compatibility.
+  Plugins that access the global lists of Timers, Channels, Recordings or Schedules
+  will need to be adapted as follows:
+  + Instead of directly accessing the global variables Timers, Channels or Recordings,
+    they need to set up a cStateKey variable and call the proper getter function,
+    as in
+      cStateKey StateKey;
+      if (const cTimers *Timers = cTimers::GetTimersRead(StateKey)) {
+         // access the timers
+         StateKey.Remove();
+         }
+    and
+      cStateKey StateKey;
+      if (cTimers *Timers = cTimers::GetTimersWrite(StateKey)) {
+         // access the timers
+         StateKey.Remove();
+         }
+    See timers.h, thread.h and tools.h for details on this new locking mechanism.
+  + There are convenience macros for easily accessing these lists without having
+    to explicitly set up a cStateKey and calling its Remove() function. These macros
+    have the form LOCK_*_READ/WRITE (with '*' being TIMERS, CHANNELS, SCHEDULES or
+    RECORDINGS). Simply put such a macro before the point where you need to access
+    the respective list, and there will be a pointer named Timers, Channels, Schedules
+    or Recordings, respectively, which is valid until the end of the current block.
+  + If a plugin needs to access several of the global lists in parallel, locking must
+    always be done in the sequence Timers, Channels, Recordings, Schedules. This is
+    necessary to make sure that different threads that need to lock several lists at
+    the same time don't end up in a deadlock.
+  + Some pointer variables may need to be made 'const'. The compiler will tell you
+    about these.
+- cSectionSyncer has been improved to better handle missed sections.
+- Added a missing initialization of 'seen' in cChannel's copy constructor.
+- Background modifications of channels, timers and events are now displayed immediately
+  in the corresponding menus.
+- cEIT now checks the version of the tables before doing any processing, which saves
+  a lot of locking and processing.
+- If a timer is newly created with the Red button in the Schedule menu, and the timer
+  is presented to the user in the "Edit timer" menu because it will start immediately,
+  it now *must* be confirmed with "Ok" to set the timer. Otherwise the timer will not
+  be created.
+- Recordings and deleted recordings are now scanned in a single thread.
+- The new SVDRP command POLL is used by automatically established peer-to-peer
+  connections to trigger fetching remote timers.
+- You can now set DumpSVDRPDataTransfer in svdrp.c to true to have all SVDRP
+  communication printed to the console for debugging.
