@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-09-01: Version 2.3.1
+2015-09-05: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8782,3 +8782,5 @@ Video Disk Recorder Revision History
   connections to trigger fetching remote timers.
 - You can now set DumpSVDRPDataTransfer in svdrp.c to true to have all SVDRP
   communication printed to the console for debugging.
+- Added a missing 'const' to cReceiver::Receive(), to protect the given Data from
+  being modified.

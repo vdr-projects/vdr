@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.1 2015/08/29 12:41:08 kls Exp $
+ * $Id: device.c 4.2 2015/09/05 11:42:17 kls Exp $
  */
 
 #include "device.h"
@@ -24,7 +24,7 @@
 
 class cLiveSubtitle : public cReceiver {
 protected:
-  virtual void Receive(uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length);
 public:
   cLiveSubtitle(int SPid);
   virtual ~cLiveSubtitle();
@@ -40,7 +40,7 @@ cLiveSubtitle::~cLiveSubtitle()
   cReceiver::Detach();
 }
 
-void cLiveSubtitle::Receive(uchar *Data, int Length)
+void cLiveSubtitle::Receive(const uchar *Data, int Length)
 {
   if (cDevice::PrimaryDevice())
      cDevice::PrimaryDevice()->PlayTs(Data, Length);

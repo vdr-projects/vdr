@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 4.1 2015/08/03 10:23:35 kls Exp $
+ * $Id: recorder.c 4.2 2015/09/05 11:43:51 kls Exp $
  */
 
 #include "recorder.h"
@@ -106,7 +106,7 @@ void cRecorder::Activate(bool On)
      Cancel(3);
 }
 
-void cRecorder::Receive(uchar *Data, int Length)
+void cRecorder::Receive(const uchar *Data, int Length)
 {
   if (Running()) {
      int p = ringBuffer->Put(Data, Length);
