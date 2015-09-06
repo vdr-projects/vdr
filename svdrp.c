@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.4 2015/09/06 09:14:53 kls Exp $
+ * $Id: svdrp.c 4.5 2015/09/06 09:25:16 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2382,7 +2382,6 @@ bool cSVDRPServer::Process(void)
                        cmdLine[--numChars] = 0;
                  // make sure the string is terminated:
                  cmdLine[numChars] = 0;
-                 dbgsvdrp("< %s: %s\n", *connection, cmdLine);
                  // showtime!
                  Execute(cmdLine);
                  numChars = 0;
