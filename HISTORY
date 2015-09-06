@@ -8784,3 +8784,8 @@ Video Disk Recorder Revision History
   communication printed to the console for debugging.
 - Added a missing 'const' to cReceiver::Receive(), to protect the given Data from
   being modified.
+- The SVDRP commands that deal with timers (DELT, LSTT, MODT, NEWT, NEXT and UPDT)
+  as well as any log messages that refer to timers, now use a unique id for each
+  timer, which remains valid as long as this instance of VDR is running. This means
+  that timers are no longer continuously numbered from 1 to N in LSTT. There may be
+  gaps in the sequence, in case timers have been deleted.

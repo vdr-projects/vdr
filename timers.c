@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.1 2015/08/31 10:45:13 kls Exp $
+ * $Id: timers.c 4.2 2015/09/05 14:42:50 kls Exp $
  */
 
 #include "timers.h"
@@ -25,6 +25,7 @@
 
 cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
 {
+  id = 0;
   startTime = stopTime = 0;
   scheduleState = -1;
   deferred = 0;
@@ -82,6 +83,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
 
 cTimer::cTimer(const cEvent *Event)
 {
+  id = 0;
   startTime = stopTime = 0;
   scheduleState = -1;
   deferred = 0;
@@ -139,6 +141,7 @@ cTimer::~cTimer()
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
   if (&Timer != this) {
+     id           = Timer.id;
      uint OldFlags = flags & tfRecording;
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
@@ -189,7 +192,7 @@ cString cTimer::ToText(bool UseChannelID) const
 
 cString cTimer::ToDescr(void) const
 {
-  return cString::sprintf("%d%s%s (%d %04d-%04d %s'%s')", Index() + 1, remote ? "@" : "", remote ? remote : "", Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
+  return cString::sprintf("%d%s%s (%d %04d-%04d %s'%s')", Id(), remote ? "@" : "", remote ? remote : "", Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
 }
 
 int cTimer::TimeToInt(int t)
@@ -522,6 +525,11 @@ time_t cTimer::StopTime(void) const
 #define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and
 #define EPGLIMITAFTER    (1 * 3600) // after its stop time within which EPG events will be taken into consideration.
 
+void cTimer::SetId(int Id)
+{
+  id = Id;
+}
+
 bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
@@ -704,6 +712,7 @@ void cTimer::OnOff(void)
 // --- cTimers ---------------------------------------------------------------
 
 cTimers cTimers::timers;
+int cTimers::lastTimerId = 0;
 
 cTimers::cTimers(void)
 :cConfig<cTimer>("Timers")
@@ -717,12 +726,22 @@ bool cTimers::Load(const char *FileName)
   Timers->SetExplicitModify();
   if (timers.cConfig<cTimer>::Load(FileName)) {
      for (cTimer *ti = timers.First(); ti; ti = timers.Next(ti)) {
+         ti->SetId(++lastTimerId);
          ti->ClrFlags(tfRecording);
          Timers->SetModified();
          }
      return true;
      }
   return false;
+}
+
+const cTimer *cTimers::GetById(int Id) const
+{
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote() && ti->Id() == Id)
+         return ti;
+      }
+  return NULL;
 }
 
 cTimer *cTimers::GetTimer(cTimer *Timer)
@@ -804,6 +823,8 @@ cTimers *cTimers::GetTimersWrite(cStateKey &StateKey, int TimeoutMs)
 
 void cTimers::Add(cTimer *Timer, cTimer *After)
 {
+  if (!Timer->Remote())
+     Timer->SetId(++lastTimerId);
   cConfig<cTimer>::Add(Timer, After);
   cStatus::MsgTimerChange(Timer, tcAdd);
 }
@@ -868,11 +889,13 @@ bool cTimers::GetRemoteTimers(const char *ServerName)
             int Code = Cmd.Code(s);
             if (Code == 250) {
                if (const char *v = Cmd.Value(s)) {
+                  int Id = atoi(v);
                   while (*v && *v != ' ')
-                        v++; // skip number
+                        v++; // skip id
                   cTimer *Timer = new cTimer;
                   if (Timer->Parse(v)) {
                      Timer->SetRemote(ServerName);
+                     Timer->SetId(Id);
                      Add(Timer);
                      Result = true;
                      }

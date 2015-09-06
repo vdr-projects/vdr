@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.3 2015/09/01 10:34:34 kls Exp $
+ * $Id: svdrp.c 4.4 2015/09/06 09:14:53 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1226,7 +1226,7 @@ void cSVDRPServer::CmdDELC(const char *Option)
         Channels->SetExplicitModify();
         if (cChannel *Channel = Channels->GetByNumber(strtol(Option, NULL, 10))) {
            if (const cTimer *Timer = Timers->UsesChannel(Channel)) {
-              Reply(550, "Channel \"%s\" is in use by timer %d", Option, Timer->Index() + 1);
+              Reply(550, "Channel \"%s\" is in use by timer %s", Option, *Timer->ToDescr());
               return;
               }
            int CurrentChannelNr = cDevice::CurrentChannel();
@@ -1265,7 +1265,7 @@ static cString RecordingInUseMessage(int Reason, const char *RecordingId, cRecor
 {
   cRecordControl *rc;
   if ((Reason & ruTimer) != 0 && (rc = cRecordControls::GetRecordControl(Recording->FileName())) != NULL)
-     return cString::sprintf("Recording \"%s\" is in use by timer %d", RecordingId, rc->Timer()->Index() + 1);
+     return cString::sprintf("Recording \"%s\" is in use by timer %d", RecordingId, rc->Timer()->Id());
   else if ((Reason & ruReplay) != 0)
      return cString::sprintf("Recording \"%s\" is being replayed", RecordingId);
   else if ((Reason & ruCut) != 0)
@@ -1312,12 +1312,12 @@ void cSVDRPServer::CmdDELT(const char *Option)
      if (isnumber(Option)) {
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
-        cTimer *Timer = Timers->Get(strtol(Option, NULL, 10) - 1);
+        cTimer *Timer = Timers->GetById(strtol(Option, NULL, 10));
         if (Timer && !Timer->Remote()) {
            if (!Timer->Recording()) {
-              isyslog("SVDRP < %s deleting timer %s", *connection, *Timer->ToDescr());
               Timers->Del(Timer);
               Timers->SetModified();
+              isyslog("SVDRP < %s deleted timer %s", *connection, *Timer->ToDescr());
               Reply(250, "Timer \"%s\" deleted", Option);
               }
            else
@@ -1745,8 +1745,8 @@ void cSVDRPServer::CmdLSTR(const char *Option)
 
 void cSVDRPServer::CmdLSTT(const char *Option)
 {
-  int Number = 0;
-  bool Id = false;
+  int Id = 0;
+  bool UseChannelId = false;
   if (*Option) {
      char buf[strlen(Option) + 1];
      strcpy(buf, Option);
@@ -1755,9 +1755,9 @@ void cSVDRPServer::CmdLSTT(const char *Option)
      char *p = strtok_r(buf, delim, &strtok_next);
      while (p) {
            if (isnumber(p))
-              Number = strtol(p, NULL, 10);
+              Id = strtol(p, NULL, 10);
            else if (strcasecmp(p, "ID") == 0)
-              Id = true;
+              UseChannelId = true;
            else {
               Reply(501, "Unknown option: \"%s\"", p);
               return;
@@ -1766,11 +1766,11 @@ void cSVDRPServer::CmdLSTT(const char *Option)
            }
      }
   LOCK_TIMERS_READ;
-  if (Number) {
+  if (Id) {
      for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
          if (!Timer->Remote()) {
-            if (Timer->Index() + 1 == Number) {
-               Reply(250, "%d %s", Timer->Index() + 1, *Timer->ToText(Id));
+            if (Timer->Id() == Id) {
+               Reply(250, "%d %s", Timer->Id(), *Timer->ToText(UseChannelId));
                return;
                }
             }
@@ -1779,15 +1779,19 @@ void cSVDRPServer::CmdLSTT(const char *Option)
      return;
      }
   else {
-     cVector<const cTimer *> LocalTimers;
-     for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
-         if (!Timer->Remote())
-            LocalTimers.Append(Timer);
-         }
-     if (LocalTimers.Size()) {
-        for (int i = 0; i < LocalTimers.Size(); i++) {
-            const cTimer *Timer = LocalTimers[i];
-            Reply(i < LocalTimers.Size() - 1 ? -250 : 250, "%d %s", Timer->Index() + 1, *Timer->ToText(Id));
+     const cTimer *LastLocalTimer = Timers->Last();
+     while (LastLocalTimer) {
+           if (LastLocalTimer->Remote())
+              LastLocalTimer = Timers->Prev(LastLocalTimer);
+           else
+              break;
+           }
+     if (LastLocalTimer) {
+        for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
+            if (!Timer->Remote())
+               Reply(Timer != LastLocalTimer ? -250 : 250, "%d %s", Timer->Id(), *Timer->ToText(UseChannelId));
+            if (Timer == LastLocalTimer)
+               break;
             }
         return;
         }
@@ -1846,12 +1850,12 @@ void cSVDRPServer::CmdMODT(const char *Option)
 {
   if (*Option) {
      char *tail;
-     int n = strtol(Option, &tail, 10);
+     int Id = strtol(Option, &tail, 10);
      if (tail && tail != Option) {
         tail = skipspace(tail);
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
-        if (cTimer *Timer = Timers->Get(n - 1)) {
+        if (cTimer *Timer = Timers->GetById(Id)) {
            cTimer t = *Timer;
            if (strcasecmp(tail, "ON") == 0)
               t.SetFlags(tfActive);
@@ -1863,11 +1867,11 @@ void cSVDRPServer::CmdMODT(const char *Option)
               }
            *Timer = t;
            Timers->SetModified();
-           isyslog("SVDRP < %s timer %s modified (%s)", *connection, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
-           Reply(250, "%d %s", Timer->Index() + 1, *Timer->ToText());
+           isyslog("SVDRP < %s modified timer %s (%s)", *connection, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
+           Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
            }
         else
-           Reply(501, "Timer \"%d\" not defined", n);
+           Reply(501, "Timer \"%d\" not defined", Id);
         }
      else
         Reply(501, "Error in timer number");
@@ -2007,8 +2011,8 @@ void cSVDRPServer::CmdNEWT(const char *Option)
      if (Timer->Parse(Option)) {
         LOCK_TIMERS_WRITE;
         Timers->Add(Timer);
-        isyslog("SVDRP < %s timer %s added", *connection, *Timer->ToDescr());
-        Reply(250, "%d %s", Timer->Index() + 1, *Timer->ToText());
+        isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
+        Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
         return;
         }
      else
@@ -2024,13 +2028,13 @@ void cSVDRPServer::CmdNEXT(const char *Option)
   LOCK_TIMERS_READ;
   if (const cTimer *t = Timers->GetNextActiveTimer()) {
      time_t Start = t->StartTime();
-     int Number = t->Index() + 1;
+     int Id = t->Id();
      if (!*Option)
-        Reply(250, "%d %s", Number, *TimeToString(Start));
+        Reply(250, "%d %s", Id, *TimeToString(Start));
      else if (strcasecmp(Option, "ABS") == 0)
-        Reply(250, "%d %ld", Number, Start);
+        Reply(250, "%d %ld", Id, Start);
      else if (strcasecmp(Option, "REL") == 0)
-        Reply(250, "%d %ld", Number, Start - time(NULL));
+        Reply(250, "%d %ld", Id, Start - time(NULL));
      else
         Reply(501, "Unknown option: \"%s\"", Option);
      }
@@ -2261,13 +2265,13 @@ void cSVDRPServer::CmdUPDT(const char *Option)
            t->Parse(Option);
            delete Timer;
            Timer = t;
-           isyslog("SVDRP < %s timer %s updated", *connection, *Timer->ToDescr());
+           isyslog("SVDRP < %s updated timer %s", *connection, *Timer->ToDescr());
            }
         else {
            Timers->Add(Timer);
-           isyslog("SVDRP < %s timer %s added", *connection, *Timer->ToDescr());
+           isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
            }
-        Reply(250, "%d %s", Timer->Index() + 1, *Timer->ToText());
+        Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
         return;
         }
      else

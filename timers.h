@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.1 2015/08/31 10:42:53 kls Exp $
+ * $Id: timers.h 4.2 2015/09/05 13:51:33 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -27,6 +27,7 @@ enum eTimerMatch { tmNone, tmPartial, tmFull };
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
+  int id;
   mutable time_t startTime, stopTime;
   int scheduleState;
   mutable time_t deferred; ///< Matches(time_t, ...) will return false if the current time is before this value
@@ -50,6 +51,7 @@ public:
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   virtual int Compare(const cListObject &ListObject) const;
+  int Id(void) const { return id; }
   bool Recording(void) const { return HasFlags(tfRecording); }
   bool Pending(void) const { return pending; }
   bool InVpsMargin(void) const { return inVpsMargin; }
@@ -83,6 +85,7 @@ public:
   bool Expired(void) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
+  void SetId(int Id);
   bool SetEventFromSchedule(const cSchedules *Schedules);
   bool SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
@@ -112,6 +115,7 @@ public:
 class cTimers : public cConfig<cTimer> {
 private:
   static cTimers timers;
+  static int lastTimerId;
   time_t lastDeleteExpired;
 public:
   cTimers(void);
@@ -162,6 +166,8 @@ public:
       ///<    StateKey.Remove();
       ///<    }
   static bool Load(const char *FileName);
+  const cTimer *GetById(int Id) const;
+  cTimer *GetById(int Id) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id)); };
   cTimer *GetTimer(cTimer *Timer);
   const cTimer *GetMatch(time_t t) const;
   cTimer *GetMatch(time_t t) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(t)); };
