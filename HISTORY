@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-09-05: Version 2.3.1
+2015-09-06: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8789,3 +8789,5 @@ Video Disk Recorder Revision History
   timer, which remains valid as long as this instance of VDR is running. This means
   that timers are no longer continuously numbered from 1 to N in LSTT. There may be
   gaps in the sequence, in case timers have been deleted.
+- The Timers menu now displays the name of the remote VDR in front of the timer's
+  file name, if this is a remote timer.

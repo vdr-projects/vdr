@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.3 2015/08/31 13:36:05 kls Exp $
+ * $Id: menu.c 4.4 2015/09/06 09:28:24 kls Exp $
  */
 
 #include "menu.h"
@@ -1152,7 +1152,7 @@ void cMenuTimerItem::Set(void)
      File++;
   else
      File = timer->File();
-  SetText(cString::sprintf("%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
+  SetText(cString::sprintf("%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
                     *name,
@@ -1162,6 +1162,7 @@ void cMenuTimerItem::Set(void)
                     timer->Start() % 100,
                     timer->Stop() / 100,
                     timer->Stop() % 100,
+                    timer->Remote() ? *cString::sprintf("@%s: ", timer->Remote()) : "",
                     File));
 }
 
