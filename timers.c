@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.2 2015/09/05 14:42:50 kls Exp $
+ * $Id: timers.c 4.3 2015/09/08 10:01:02 kls Exp $
  */
 
 #include "timers.h"
@@ -939,9 +939,9 @@ bool cTimers::DelRemoteTimers(const char *ServerName)
 void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
 {
   if (ServerName) {
-     cSVDRPCommand Cmd(ServerName, cString::sprintf("POLL %s TIMERS", SVDRPHostName()));
+     cSVDRPCommand Cmd(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName));
      if (!Cmd.Execute())
-        esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", SVDRPHostName(), ServerName);
+        esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", Setup.SVDRPHostName, ServerName);
      }
   else {
      cStringList ServerNames;

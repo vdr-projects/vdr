@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.3 2015/09/01 10:34:09 kls Exp $
+ * $Id: svdrp.h 4.4 2015/09/06 12:39:24 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -57,10 +57,12 @@ enum eSvdrpFetchFlags {
   sffTimers = 0b0001,
   };
 
-const char *SVDRPHostName(void);
+void SetSVDRPPorts(int TcpPort, int UdpPort);
 void SetSVDRPGrabImageDir(const char *GrabImageDir);
-void StartSVDRPHandler(int TcpPort, int UdpPort);
-void StopSVDRPHandler(void);
+void StartSVDRPServerHandler(void);
+void StartSVDRPClientHandler(void);
+void StopSVDRPServerHandler(void);
+void StopSVDRPClientHandler(void);
 void SendSVDRPDiscover(const char *Address = NULL);
 bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag = sffNone);
      ///< Gets a list of all available VDRs this VDR is connected to via SVDRP,

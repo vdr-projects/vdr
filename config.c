@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.1 2015/04/18 13:09:31 kls Exp $
+ * $Id: config.c 4.2 2015/09/06 13:17:19 kls Exp $
  */
 
 #include "config.h"
@@ -412,6 +412,9 @@ cSetup::cSetup(void)
   EPGBugfixLevel = 3;
   EPGLinger = 0;
   SVDRPTimeout = 300;
+  SVDRPPeering = 0;
+  strn0cpy(SVDRPHostName, GetHostName(), sizeof(SVDRPHostName));
+  strcpy(SVDRPDefaultHost, "");
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
   RcRepeatDelay = 300;
@@ -635,6 +638,9 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
   else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+  else if (!strcasecmp(Name, "SVDRPPeering"))        SVDRPPeering       = atoi(Value);
+  else if (!strcasecmp(Name, "SVDRPHostName"))       strn0cpy(SVDRPHostName, Value, sizeof(SVDRPHostName));
+  else if (!strcasecmp(Name, "SVDRPdefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);
@@ -762,6 +768,8 @@ bool cSetup::Save(void)
   Store("EPGBugfixLevel",     EPGBugfixLevel);
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
+  Store("SVDRPPeering",       SVDRPPeering);
+  Store("SVDRPDefaultHost",   SVDRPDefaultHost);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
   Store("RcRepeatDelay",      RcRepeatDelay);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.4 2015/09/06 09:28:24 kls Exp $
+ * $Id: menu.c 4.5 2015/09/08 11:02:52 kls Exp $
  */
 
 #include "menu.h"
@@ -27,6 +27,7 @@
 #include "sourceparams.h"
 #include "sources.h"
 #include "status.h"
+#include "svdrp.h"
 #include "themes.h"
 #include "timers.h"
 #include "transfer.h"
@@ -3897,17 +3898,36 @@ void cMenuSetupReplay::Store(void)
 // --- cMenuSetupMisc --------------------------------------------------------
 
 class cMenuSetupMisc : public cMenuSetupBase {
+private:
+  cStringList svdrpServerNames;
+  void Set(void);
 public:
   cMenuSetupMisc(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
   SetMenuCategory(mcSetupMisc);
   SetSection(tr("Miscellaneous"));
+  Set();
+}
+
+void cMenuSetupMisc::Set(void)
+{
+  int current = Current();
+  Clear();
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
+  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering));
+  if (data.SVDRPPeering) {
+     Add(new cMenuEditStrItem( tr("Setup.Miscellaneous$SVDRP host name"), data.SVDRPHostName, sizeof(data.SVDRPHostName)));
+     if (GetSVDRPServerNames(&svdrpServerNames)) {
+        svdrpServerNames.Sort(true);
+        Add(new cMenuEditStrlItem(tr("Setup.Miscellaneous$SVDRP default host"), data.SVDRPDefaultHost, sizeof(data.SVDRPDefaultHost), &svdrpServerNames));
+        }
+     }
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Remote control repeat delay (ms)"), &data.RcRepeatDelay, 0));
@@ -3919,6 +3939,33 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
+  SetCurrent(Get(current));
+  Display();
+}
+
+eOSState cMenuSetupMisc::ProcessKey(eKeys Key)
+{
+  bool OldSVDRPPeering = data.SVDRPPeering;
+  bool ModifiedSVDRPSettings = false;
+  if (Key == kOk)
+     ModifiedSVDRPSettings = data.SVDRPPeering != Setup.SVDRPPeering | strcmp(data.SVDRPHostName, Setup.SVDRPHostName);
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+  if (data.SVDRPPeering != OldSVDRPPeering)
+     Set();
+  if (ModifiedSVDRPSettings) {
+     StopSVDRPClientHandler();
+     StopSVDRPServerHandler();
+     StartSVDRPServerHandler();
+     if (data.SVDRPPeering)
+        StartSVDRPClientHandler();
+     else {
+        LOCK_TIMERS_WRITE;
+        Timers->SetExplicitModify();
+        if (Timers->DelRemoteTimers())
+           Timers->SetModified();
+        }
+     }
+  return state;
 }
 
 // --- cMenuSetupPluginItem --------------------------------------------------

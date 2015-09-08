@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 4.1 2015/07/18 10:38:31 kls Exp $
+ * $Id: menuitems.c 4.2 2015/09/08 10:25:23 kls Exp $
  */
 
 #include "menuitems.h"
@@ -772,6 +772,26 @@ cMenuEditStraItem::cMenuEditStraItem(const char *Name, int *Value, int NumString
 void cMenuEditStraItem::Set(void)
 {
   SetValue(strings[*value]);
+}
+
+// --- cMenuEditStrlItem -----------------------------------------------------
+
+cMenuEditStrlItem::cMenuEditStrlItem(const char *Name, char *Value, int Length, const cStringList *Strings)
+:cMenuEditIntItem(Name, &index, 0, Strings->Size() - 1)
+{
+  strings = Strings;
+  value = Value;
+  length = Length;
+  index = strings->Find(value);
+  if (index < 0)
+     index = 0;
+  Set();
+}
+
+void cMenuEditStrlItem::Set(void)
+{
+  strn0cpy(value, strings->At(index), length);
+  SetValue(value);
 }
 
 // --- cMenuEditChanItem -----------------------------------------------------

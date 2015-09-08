@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.2 2015/08/29 12:11:20 kls Exp $
+ * $Id: tools.c 4.3 2015/09/06 10:47:05 kls Exp $
  */
 
 #include "tools.h"
@@ -1320,6 +1320,20 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
 
   Size = jcd.size;
   return jcd.mem;
+}
+
+// --- GetHostName -----------------------------------------------------------
+
+const char *GetHostName(void)
+{
+  static char buffer[HOST_NAME_MAX] = "";
+  if (!*buffer) {
+     if (gethostname(buffer, sizeof(buffer)) < 0) {
+        LOG_ERROR;
+        strcpy(buffer, "vdr");
+        }
+     }
+  return buffer;
 }
 
 // --- cBase64Encoder --------------------------------------------------------

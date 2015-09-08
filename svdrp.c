@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.5 2015/09/06 09:25:16 kls Exp $
+ * $Id: svdrp.c 4.6 2015/09/08 11:08:06 kls Exp $
  */
 
 #include "svdrp.h"
@@ -45,17 +45,8 @@ static bool DumpSVDRPDataTransfer = false;
 
 #define dbgsvdrp(a...) if (DumpSVDRPDataTransfer) fprintf(stderr, a)
 
-const char *SVDRPHostName(void)
-{
-  static char buffer[HOST_NAME_MAX] = "";
-  if (!*buffer) {
-     if (gethostname(buffer, sizeof(buffer)) < 0) {
-        LOG_ERROR;
-        strcpy(buffer, "vdr");
-        }
-     }
-  return buffer;
-}
+static int SVDRPTcpPort = 0;
+static int SVDRPUdpPort = 0;
 
 // --- cIpAddress ------------------------------------------------------------
 
@@ -375,7 +366,6 @@ cSVDRPClient::cSVDRPClient(const char *Address, int Port, const char *ServerName
      if (file.Open(socket.Socket())) {
         SVDRPClientPoller.Add(file, false);
         dsyslog("SVDRP > %s client created for '%s'", ipAddress.Connection(), *serverName);
-        SendSVDRPDiscover(Address);
         return;
         }
      }
@@ -510,8 +500,8 @@ bool cSVDRPClient::HasFetchFlag(eSvdrpFetchFlags Flag)
 class cSVDRPClientHandler : public cThread {
 private:
   cMutex mutex;
-  cSocket udpSocket;
   int tcpPort;
+  cSocket udpSocket;
   cVector<cSVDRPClient *> clientConnections;
   void HandleClientConnection(void);
   void ProcessConnections(void);
@@ -519,7 +509,7 @@ private:
 protected:
   virtual void Action(void);
 public:
-  cSVDRPClientHandler(int UdpPort, int TcpPort);
+  cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler();
   void SendDiscover(const char *Address = NULL);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response);
@@ -529,7 +519,7 @@ public:
 
 static cSVDRPClientHandler *SVDRPClientHandler = NULL;
 
-cSVDRPClientHandler::cSVDRPClientHandler(int UdpPort, int TcpPort)
+cSVDRPClientHandler::cSVDRPClientHandler(int TcpPort, int UdpPort)
 :cThread("SVDRP client handler", true)
 ,udpSocket(UdpPort, false)
 {
@@ -555,7 +545,7 @@ cSVDRPClient *cSVDRPClientHandler::GetClientForServer(const char *ServerName)
 void cSVDRPClientHandler::SendDiscover(const char *Address)
 {
   cMutexLock MutexLock(&mutex);
-  cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", SVDRPHostName(), tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout);
+  cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", Setup.SVDRPHostName, tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout);
   udpSocket.SendDgram(Dgram, udpSocket.Port(), Address);
 }
 
@@ -589,8 +579,11 @@ void cSVDRPClientHandler::HandleClientConnection(void)
            cString t = strgetval(NewDiscover, "timeout", ':');
            if (*t) {
               int Timeout = atoi(t);
-              if (Timeout > 10) // don't let it get too small
-                 clientConnections.Append(new cSVDRPClient(udpSocket.LastIpAddress()->Address(), Port, ServerName, Timeout));
+              if (Timeout > 10) { // don't let it get too small
+                 const char *Address = udpSocket.LastIpAddress()->Address();
+                 clientConnections.Append(new cSVDRPClient(Address, Port, ServerName, Timeout));
+                 SendDiscover(Address);
+                 }
               else
                  esyslog("SVDRP < %s ERROR: invalid timeout (%d)", udpSocket.LastIpAddress()->Connection(), Timeout);
               }
@@ -999,7 +992,7 @@ cSVDRPServer::cSVDRPServer(int Socket, const char *Connection)
   lastActivity = time(NULL);
   if (file.Open(socket)) {
      time_t now = time(NULL);
-     Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", SVDRPHostName(), VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
+     Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", Setup.SVDRPHostName, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
      SVDRPServerPoller.Add(file, false);
      }
   dsyslog("SVDRP < %s server created", *connection);
@@ -1016,7 +1009,7 @@ void cSVDRPServer::Close(bool SendReply, bool Timeout)
 {
   if (file.IsOpen()) {
      if (SendReply) {
-        Reply(221, "%s closing connection%s", SVDRPHostName(), Timeout ? " (timeout)" : "");
+        Reply(221, "%s closing connection%s", Setup.SVDRPHostName, Timeout ? " (timeout)" : "");
         }
      isyslog("SVDRP < %s connection closed", *connection);
      SVDRPServerPoller.Del(file, false);
@@ -2044,7 +2037,7 @@ void cSVDRPServer::CmdNEXT(const char *Option)
 
 void cSVDRPServer::CmdPING(const char *Option)
 {
-  Reply(250, "%s is alive", SVDRPHostName());
+  Reply(250, "%s is alive", Setup.SVDRPHostName);
 }
 
 void cSVDRPServer::CmdPLAY(const char *Option)
@@ -2434,6 +2427,12 @@ bool cSVDRPServer::Process(void)
   return file.IsOpen();
 }
 
+void SetSVDRPPorts(int TcpPort, int UdpPort)
+{
+  SVDRPTcpPort = TcpPort;
+  SVDRPUdpPort = UdpPort;
+}
+
 void SetSVDRPGrabImageDir(const char *GrabImageDir)
 {
   grabImageDir = GrabImageDir;
@@ -2519,25 +2518,35 @@ void cSVDRPServerHandler::Action(void)
 
 static cMutex SVDRPHandlerMutex;
 
-void StartSVDRPHandler(int TcpPort, int UdpPort)
+void StartSVDRPServerHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (TcpPort && !SVDRPServerHandler) {
-     SVDRPServerHandler = new cSVDRPServerHandler(TcpPort);
+  if (SVDRPTcpPort && !SVDRPServerHandler) {
+     SVDRPServerHandler = new cSVDRPServerHandler(SVDRPTcpPort);
      SVDRPServerHandler->Start();
      SVDRPServerHandler->WaitUntilReady();
      }
-  if (UdpPort && !SVDRPClientHandler) {
-     SVDRPClientHandler = new cSVDRPClientHandler(UdpPort, TcpPort);
+}
+
+void StartSVDRPClientHandler(void)
+{
+  cMutexLock MutexLock(&SVDRPHandlerMutex);
+  if (SVDRPTcpPort && SVDRPUdpPort && !SVDRPClientHandler) {
+     SVDRPClientHandler = new cSVDRPClientHandler(SVDRPTcpPort, SVDRPUdpPort);
      SVDRPClientHandler->Start();
      }
 }
 
-void StopSVDRPHandler(void)
+void StopSVDRPServerHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   delete SVDRPServerHandler;
   SVDRPServerHandler = NULL;
+}
+
+void StopSVDRPClientHandler(void)
+{
+  cMutexLock MutexLock(&SVDRPHandlerMutex);
   delete SVDRPClientHandler;
   SVDRPClientHandler = NULL;
 }

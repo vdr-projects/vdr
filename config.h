@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 4.3 2015/08/09 09:17:46 kls Exp $
+ * $Id: config.h 4.4 2015/09/06 09:50:13 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -288,6 +288,9 @@ public:
   int EPGBugfixLevel;
   int EPGLinger;
   int SVDRPTimeout;
+  int SVDRPPeering;
+  char SVDRPHostName[HOST_NAME_MAX];
+  char SVDRPDefaultHost[HOST_NAME_MAX];
   int ZapTimeout;
   int ChannelEntryTimeout;
   int RcRepeatDelay;

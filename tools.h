@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.2 2015/08/29 11:45:51 kls Exp $
+ * $Id: tools.h 4.3 2015/09/06 10:45:54 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -293,6 +293,8 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100
     ///< resulting image, where 100 is "best". The caller takes ownership of
     ///< the result and has to delete it once it is no longer needed.
     ///< The result may be NULL in case of an error.
+const char *GetHostName(void);
+    ///< Gets the host name of this machine.
 
 class cBase64Encoder {
 private:

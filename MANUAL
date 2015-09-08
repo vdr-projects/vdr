@@ -1071,6 +1071,15 @@ Version 2.2
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
 
+  SVDRP peering = no     Activates automatic connections between VDRs in the same
+                         network.
+
+  SVDRP host name        The name of this VDR, which is used when connecting VDRs
+                         via SVDRP. By default, the machine's host name is used.
+
+  SVDRP default host     The name of the VDR to be used by default when creating a
+                         new timer.
+
   Zap timeout = 3        The time (in seconds) until a channel counts as "previous"
                          for switching with '0'
 

@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-09-06: Version 2.3.1
+2015-09-08: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8791,3 +8791,7 @@ Video Disk Recorder Revision History
   gaps in the sequence, in case timers have been deleted.
 - The Timers menu now displays the name of the remote VDR in front of the timer's
   file name, if this is a remote timer.
+- The new options "Setup/Miscellaneous/SVDRP peering", ".../SVDRP host name" and
+  ".../SVDRP default host" can be used to configure automatic peering between VDRs
+  in the same network. Peering is disabled by default and can be enabled by setting
+  "SVDRP peering" to "yes".
