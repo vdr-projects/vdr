@@ -8814,3 +8814,5 @@ Video Disk Recorder Revision History
 - Skins can now implement cSkinDisplayMenu::MenuOrientation() to display horizontal
   menus (thanks to Stefan Braun).
 - Fixed a possible stack overflow in cListBase::Sort() (thanks to Oliver Endriss).
+- Changed the description of the --chartab option in the INSTALL file to refer to
+  "DVB SI table strings" instead of "EPG data".
