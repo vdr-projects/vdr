@@ -8610,6 +8610,8 @@ Video Disk Recorder Revision History
 - The dvbhddevice plugin is no longer part of the VDR source archive.
   You can get the latest version of this plugin from the author's repository at
   https://bitbucket.org/powARman/dvbhddevice.
+- The dvbsddevice and rcu plugins are no longer part of the VDR source archive.
+  You can get the latest versions of these plugins from ftp://ftp.tvdr.de/vdr/Plugins.
 - Added a section about Output Devices to the INSTALL file.
 - Fixed setting the source value of newly created channels, in case the NIT is
   received from a different, but very close satellite position (reported by Daniel
