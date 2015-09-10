@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.2 2015/09/05 13:51:33 kls Exp $
+ * $Id: timers.h 4.3 2015/09/09 10:40:24 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -67,6 +67,7 @@ public:
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
   const char *Remote(void) const { return remote; }
+  bool Local(void) const { return !remote; } // convenience
   time_t Deferred(void) const { return deferred; }
   cString ToText(bool UseChannelID = false) const;
   cString ToDescr(void) const;
@@ -166,6 +167,7 @@ public:
       ///<    StateKey.Remove();
       ///<    }
   static bool Load(const char *FileName);
+  static int NewTimerId(void);
   const cTimer *GetById(int Id) const;
   cTimer *GetById(int Id) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id)); };
   cTimer *GetTimer(cTimer *Timer);

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.6 2015/09/08 11:08:06 kls Exp $
+ * $Id: svdrp.c 4.7 2015/09/10 10:39:45 kls Exp $
  */
 
 #include "svdrp.h"
@@ -512,7 +512,7 @@ public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler();
   void SendDiscover(const char *Address = NULL);
-  bool Execute(const char *ServerName, const char *Command, cStringList *Response);
+  bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
   bool GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlags = sffNone);
   bool TriggerFetchingTimers(const char *ServerName);
   };
@@ -1305,16 +1305,13 @@ void cSVDRPServer::CmdDELT(const char *Option)
      if (isnumber(Option)) {
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
-        cTimer *Timer = Timers->GetById(strtol(Option, NULL, 10));
-        if (Timer && !Timer->Remote()) {
-           if (!Timer->Recording()) {
-              Timers->Del(Timer);
-              Timers->SetModified();
-              isyslog("SVDRP < %s deleted timer %s", *connection, *Timer->ToDescr());
-              Reply(250, "Timer \"%s\" deleted", Option);
-              }
-           else
-              Reply(550, "Timer \"%s\" is recording", Option);
+        if (cTimer *Timer = Timers->GetById(strtol(Option, NULL, 10))) {
+           if (Timer->Recording())
+              Timer->Skip();
+           Timers->Del(Timer);
+           Timers->SetModified();
+           isyslog("SVDRP < %s deleted timer %s", *connection, *Timer->ToDescr());
+           Reply(250, "Timer \"%s\" deleted", Option);
            }
         else
            Reply(501, "Timer \"%s\" not defined", Option);
@@ -2566,22 +2563,10 @@ bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
   return false;
 }
 
-// --- cSVDRPCommand ---------------------------------------------------------
-
-cSVDRPCommand::cSVDRPCommand(const char *ServerName, const char *Command)
-{
-  serverName = ServerName;
-  command = Command;
-}
-
-cSVDRPCommand::~cSVDRPCommand()
-{
-}
-
-bool cSVDRPCommand::Execute(void)
+bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *Response)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   if (SVDRPClientHandler)
-     return SVDRPClientHandler->Execute(serverName, command, &response);
+     return SVDRPClientHandler->Execute(ServerName, Command, Response);
   return false;
 }

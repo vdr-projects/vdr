@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.3 2015/08/29 14:42:53 kls Exp $
+ * $Id: recording.c 4.4 2015/09/09 10:21:58 kls Exp $
  */
 
 #include "recording.h"
@@ -2018,7 +2018,7 @@ cMark::~cMark()
 
 cString cMark::ToText(void)
 {
-  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), Comment() ? " " : "", Comment() ? Comment() : "");
+  return cString::sprintf("%s%s%s", *IndexToHMSF(position, true, framesPerSecond), Comment() ? " " : "", Comment() ? Comment() : "");
 }
 
 bool cMark::Parse(const char *s)
@@ -2037,7 +2037,7 @@ bool cMark::Parse(const char *s)
 
 bool cMark::Save(FILE *f)
 {
-  return fprintf(f, "%s", *ToText()) > 0;
+  return fprintf(f, "%s\n", *ToText()) > 0;
 }
 
 // --- cMarks ----------------------------------------------------------------

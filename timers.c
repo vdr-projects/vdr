@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.3 2015/09/08 10:01:02 kls Exp $
+ * $Id: timers.c 4.4 2015/09/09 10:42:18 kls Exp $
  */
 
 #include "timers.h"
@@ -33,7 +33,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
   flags = tfNone;
   *file = 0;
   aux = NULL;
-  remote = NULL;
+  remote = *Setup.SVDRPDefaultHost ? strdup(Setup.SVDRPDefaultHost) : NULL;
   event = NULL;
   if (Instant)
      SetFlags(tfActive | tfInstant);
@@ -91,7 +91,7 @@ cTimer::cTimer(const cEvent *Event)
   flags = tfActive;
   *file = 0;
   aux = NULL;
-  remote = NULL;
+  remote = *Setup.SVDRPDefaultHost ? strdup(Setup.SVDRPDefaultHost) : NULL;
   event = NULL;
   if (Event->Vps() && Setup.UseVps)
      SetFlags(tfVps);
@@ -185,7 +185,7 @@ int cTimer::Compare(const cListObject &ListObject) const
 cString cTimer::ToText(bool UseChannelID) const
 {
   strreplace(file, ':', '|');
-  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
+  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
   strreplace(file, '|', ':');
   return buffer;
 }
@@ -355,7 +355,7 @@ bool cTimer::Parse(const char *s)
 bool cTimer::Save(FILE *f)
 {
   if (!Remote())
-     return fprintf(f, "%s", *ToText(true)) > 0;
+     return fprintf(f, "%s\n", *ToText(true)) > 0;
   return true;
 }
 
@@ -726,13 +726,18 @@ bool cTimers::Load(const char *FileName)
   Timers->SetExplicitModify();
   if (timers.cConfig<cTimer>::Load(FileName)) {
      for (cTimer *ti = timers.First(); ti; ti = timers.Next(ti)) {
-         ti->SetId(++lastTimerId);
+         ti->SetId(NewTimerId());
          ti->ClrFlags(tfRecording);
          Timers->SetModified();
          }
      return true;
      }
   return false;
+}
+
+int cTimers::NewTimerId(void)
+{
+  return ++lastTimerId; // no need for locking, the caller must have a lock on the global Timers list
 }
 
 const cTimer *cTimers::GetById(int Id) const
@@ -824,7 +829,7 @@ cTimers *cTimers::GetTimersWrite(cStateKey &StateKey, int TimeoutMs)
 void cTimers::Add(cTimer *Timer, cTimer *After)
 {
   if (!Timer->Remote())
-     Timer->SetId(++lastTimerId);
+     Timer->SetId(NewTimerId());
   cConfig<cTimer>::Add(Timer, After);
   cStatus::MsgTimerChange(Timer, tcAdd);
 }
@@ -882,13 +887,13 @@ bool cTimers::GetRemoteTimers(const char *ServerName)
   bool Result = false;
   if (ServerName) {
      Result = DelRemoteTimers(ServerName);
-     cSVDRPCommand Cmd(ServerName, "LSTT ID");
-     if (Cmd.Execute()) {
-        const char *s;
-        for (int i = 0; s = Cmd.Response(i); i++) {
-            int Code = Cmd.Code(s);
+     cStringList Response;
+     if (ExecSVDRPCommand(ServerName, "LSTT ID", &Response)) {
+        for (int i = 0; i < Response.Size(); i++) {
+            const char *s = Response[i];
+            int Code = SVDRPCode(s);
             if (Code == 250) {
-               if (const char *v = Cmd.Value(s)) {
+               if (const char *v = SVDRPValue(s)) {
                   int Id = atoi(v);
                   while (*v && *v != ' ')
                         v++; // skip id
@@ -939,8 +944,7 @@ bool cTimers::DelRemoteTimers(const char *ServerName)
 void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
 {
   if (ServerName) {
-     cSVDRPCommand Cmd(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName));
-     if (!Cmd.Execute())
+     if (!ExecSVDRPCommand(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName)))
         esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", Setup.SVDRPHostName, ServerName);
      }
   else {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 4.2 2015/08/29 12:16:24 kls Exp $
+ * $Id: channels.c 4.3 2015/09/09 10:21:22 kls Exp $
  */
 
 #include "channels.h"
@@ -554,9 +554,9 @@ cString cChannel::ToText(const cChannel *Channel)
   cString buffer;
   if (Channel->groupSep) {
      if (Channel->number)
-        buffer = cString::sprintf(":@%d %s\n", Channel->number, FullName);
+        buffer = cString::sprintf(":@%d %s", Channel->number, FullName);
      else
-        buffer = cString::sprintf(":%s\n", FullName);
+        buffer = cString::sprintf(":%s", FullName);
      }
   else {
      char vpidbuf[32];
@@ -588,7 +588,7 @@ cString cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%s:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, tpidbuf, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%s:%s:%d:%d:%d:%d", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, tpidbuf, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -806,7 +806,7 @@ bool cChannel::Parse(const char *s)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, "%s", *ToText()) > 0;
+  return fprintf(f, "%s\n", *ToText()) > 0;
 }
 
 // --- cChannelSorter --------------------------------------------------------

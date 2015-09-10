@@ -498,6 +498,9 @@ Version 2.2
              the name of the recording.
   First day: The date of the first day when this timer shall start recording
              (only available for repeating timers).
+  Record on: The name of the remote VDR this timer shall record on (only available
+             if there are any remote VDRs connected to this VDR). If this field
+             is empty, the timer will record on the local VDR.
 
   A timer can also be programmed by pressing the "Red" key on the "Schedule",
   "Now", "Next" or "Event" menus.
