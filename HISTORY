@@ -8818,3 +8818,5 @@ Video Disk Recorder Revision History
 - Fixed a possible stack overflow in cListBase::Sort() (thanks to Oliver Endriss).
 - Changed the description of the --chartab option in the INSTALL file to refer to
   "DVB SI table strings" instead of "EPG data".
+- The width and height of the OSD are now limited to the actual maximum dimensions
+  of the output device, taking into account the top and left offset.

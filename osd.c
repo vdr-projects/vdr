@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.2 2015/03/25 08:57:05 kls Exp $
+ * $Id: osd.c 4.3 2015/09/10 14:12:06 kls Exp $
  */
 
 #include "osd.h"
@@ -2042,8 +2042,8 @@ void cOsdProvider::UpdateOsdSize(bool Force)
   if (Width != oldWidth || Height != oldHeight || !DoubleEqual(Aspect, oldAspect) || Force) {
      Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
      Setup.OSDTop = int(round(Height * Setup.OSDTopP));
-     Setup.OSDWidth = int(round(Width * Setup.OSDWidthP)) & ~0x07; // OSD width must be a multiple of 8
-     Setup.OSDHeight = int(round(Height * Setup.OSDHeightP));
+     Setup.OSDWidth = min(Width - Setup.OSDLeft, int(round(Width * Setup.OSDWidthP))) & ~0x07; // OSD width must be a multiple of 8
+     Setup.OSDHeight = min(Height - Setup.OSDTop, int(round(Height * Setup.OSDHeightP)));
      Setup.OSDAspect = Aspect;
      Setup.FontOsdSize = int(round(Height * Setup.FontOsdSizeP));
      Setup.FontFixSize = int(round(Height * Setup.FontFixSizeP));
