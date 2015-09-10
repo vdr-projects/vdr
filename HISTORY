@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-09-08: Version 2.3.1
+2015-09-10: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8808,3 +8808,4 @@ Video Disk Recorder Revision History
 - The SVDRP command DELT no longer checks whether the timer that shall be deleted
   is currently recording.
 - The character 0x0D is now stripped from EPG texts (reported by Janne Pänkälä).
+- The EPG scanner no longer moves the dish if there is a positioner.

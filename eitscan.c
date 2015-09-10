@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 4.1 2015/07/18 10:16:51 kls Exp $
+ * $Id: eitscan.c 4.2 2015/09/10 11:05:03 kls Exp $
  */
 
 #include "eitscan.h"
@@ -151,6 +151,10 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= CA_ENCRYPTED_MIN) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (Device->Priority() < 0) {
+                                  if (const cPositioner *Positioner = Device->Positioner()) {
+                                     if (Positioner->LastLongitude() != cSource::Position(Channel->Source()))
+                                        continue;
+                                     }
                                   bool MaySwitchTransponder = Device->MaySwitchTransponder(Channel);
                                   if (MaySwitchTransponder || Device->ProvidesTransponderExclusively(Channel) && now - lastActivity > Setup.EPGScanTimeout * 3600) {
                                      if (!MaySwitchTransponder) {
