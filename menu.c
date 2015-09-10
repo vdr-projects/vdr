@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.6 2015/09/10 10:34:45 kls Exp $
+ * $Id: menu.c 4.7 2015/09/10 13:29:30 kls Exp $
  */
 
 #include "menu.h"
@@ -3147,6 +3147,7 @@ eOSState cMenuRecordings::Sort(void)
   if (HasSubMenu())
      return osContinue;
   IncRecordingsSortMode(DirectoryName());
+  recordingsStateKey.Reset();
   Set(true);
   return osContinue;
 }
