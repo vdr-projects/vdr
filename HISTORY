@@ -8811,3 +8811,5 @@ Video Disk Recorder Revision History
 - The EPG scanner no longer moves the dish if there is a positioner.
 - The 'newplugin' script now creates the 'po' subdirectory for translations (thanks
   to Thomas Reufer).
+- Skins can now implement cSkinDisplayMenu::MenuOrientation() to display horizontal
+  menus (thanks to Stefan Braun).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 3.4 2015/01/15 10:45:47 kls Exp $
+ * $Id: skins.h 4.1 2015/09/10 11:19:48 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -129,6 +129,11 @@ enum eMenuSortMode {
   msmProvider
   };
 
+enum eMenuOrientation {
+  moVertical = 0,
+  moHorizontal
+  };
+
 class cSkinDisplayMenu : public cSkinDisplay {
        ///< This class implements the general purpose menu display, which is
        ///< used throughout the program to display information and let the
@@ -179,6 +184,10 @@ public:
        ///< Sets the mode by which the items in this menu are sorted.
        ///< This is purely informative and may be used by a skin to display the
        ///< current sort mode by means of some text or symbol.
+  virtual eMenuOrientation MenuOrientation(void) { return moVertical; }
+       ///< Asks the skin for the orientation of the displayed menu.
+       ///< If menu orientation is set to horizontal, the keys left/right
+       ///< and up/down are just toggled.
   virtual void Scroll(bool Up, bool Page);
        ///< If this menu contains a text area that can be scrolled, this function
        ///< will be called to actually scroll the text. Up indicates whether the

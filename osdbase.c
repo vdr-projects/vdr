@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 3.3 2015/01/15 10:11:11 kls Exp $
+ * $Id: osdbase.c 4.1 2015/09/10 11:23:07 kls Exp $
  */
 
 #include "osdbase.h"
@@ -87,6 +87,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   title = NULL;
   menuCategory = mcUnknown;
   menuSortMode = msmUnknown;
+  menuOrientation = moVertical;
   SetTitle(Title);
   SetCols(c0, c1, c2, c3, c4);
   first = 0;
@@ -231,6 +232,7 @@ void cOsdMenu::Display(void)
   if (menuCategory != displayMenu->MenuCategory())
      displayMenu->SetMenuCategory(menuCategory);
   displayMenu->SetMenuSortMode(menuSortMode);
+  menuOrientation = displayMenu->MenuOrientation();
   displayMenuItems = displayMenu->MaxItems();
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);
@@ -541,13 +543,13 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
     case k0:      return osUnknown;
     case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
     case kUp|k_Repeat:
-    case kUp:   CursorUp();   break;
+    case kUp:     if (menuOrientation == moHorizontal) PageUp();     else CursorUp(); break;
     case kDown|k_Repeat:
-    case kDown: CursorDown(); break;
+    case kDown:   if (menuOrientation == moHorizontal) PageDown();   else CursorDown(); break;
     case kLeft|k_Repeat:
-    case kLeft: PageUp(); break;
+    case kLeft:   if (menuOrientation == moHorizontal) CursorUp();   else PageUp(); break;
     case kRight|k_Repeat:
-    case kRight: PageDown(); break;
+    case kRight:  if (menuOrientation == moHorizontal) CursorDown(); else PageDown(); break;
     case kBack: return osBack;
     case kOk:   if (marked >= 0) {
                    SetStatus(NULL);

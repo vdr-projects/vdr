@@ -3265,6 +3265,7 @@ Stefan Braun <louis.braun@gmx.de>
  for suggesting to add the menu category mcRecordingEdit for marking menus that edit
  recording properties
  for suggesting to make cRecording::GetResume() public
+ for implementing the possibility for skins to display horizontal menus
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
