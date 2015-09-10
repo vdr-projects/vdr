@@ -8813,3 +8813,4 @@ Video Disk Recorder Revision History
   to Thomas Reufer).
 - Skins can now implement cSkinDisplayMenu::MenuOrientation() to display horizontal
   menus (thanks to Stefan Braun).
+- Fixed a possible stack overflow in cListBase::Sort() (thanks to Oliver Endriss).

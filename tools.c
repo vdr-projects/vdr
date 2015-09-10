@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.3 2015/09/06 10:47:05 kls Exp $
+ * $Id: tools.c 4.4 2015/09/10 13:17:55 kls Exp $
  */
 
 #include "tools.h"
@@ -2253,7 +2253,9 @@ static int CompareListObjects(const void *a, const void *b)
 void cListBase::Sort(void)
 {
   int n = Count();
-  cListObject *a[n];
+  cListObject **a = MALLOC(cListObject *, n);
+  if (a == NULL)
+     return;
   cListObject *object = objects;
   int i = 0;
   while (object && i < n) {
@@ -2267,6 +2269,7 @@ void cListBase::Sort(void)
       count--;
       Add(a[i]);
       }
+  free(a);
 }
 
 // --- cHashBase -------------------------------------------------------------
