@@ -8809,3 +8809,5 @@ Video Disk Recorder Revision History
   is currently recording.
 - The character 0x0D is now stripped from EPG texts (reported by Janne Pänkälä).
 - The EPG scanner no longer moves the dish if there is a positioner.
+- The 'newplugin' script now creates the 'po' subdirectory for translations (thanks
+  to Thomas Reufer).
