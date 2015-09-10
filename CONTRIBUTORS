@@ -3416,3 +3416,6 @@ Daniel Ribeiro <drwyrm@gmail.com>
  for reporting a problem with setting the source value of newly created channels, in
  case the NIT is received from a different, but very close satellite position, and
  for helping to debug this
+
+Janne Pänkälä <epankala@gmail.com>
+ for reporting that some broadcasters use the character 0x0D in EPG texts

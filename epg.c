@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.1 2015/08/23 10:39:59 kls Exp $
+ * $Id: epg.c 4.2 2015/09/10 10:58:19 kls Exp $
  */
 
 #include "epg.h"
@@ -661,7 +661,7 @@ static void StripControlCharacters(char *s)
            uchar *p = (uchar *)s;
            if (l == 2 && *p == 0xC2) // UTF-8 sequence
               p++;
-           if (*p == 0x86 || *p == 0x87) {
+           if (*p == 0x86 || *p == 0x87 || *p == 0x0D) {
               memmove(s, p + 1, len - l + 1); // we also copy the terminating 0!
               len -= l;
               l = 0;

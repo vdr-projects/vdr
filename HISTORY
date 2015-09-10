@@ -8807,3 +8807,4 @@ Video Disk Recorder Revision History
   between connected VDRs by simply selecting the desired machine in this field.
 - The SVDRP command DELT no longer checks whether the timer that shall be deleted
   is currently recording.
+- The character 0x0D is now stripped from EPG texts (reported by Janne Pänkälä).
