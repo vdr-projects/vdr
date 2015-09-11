@@ -8596,7 +8596,7 @@ Video Disk Recorder Revision History
 - Bumped all version numbers to 2.2.0.
 - Official release.
 
-2015-09-10: Version 2.3.1
+2015-09-11: Version 2.3.1
 
 - The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
   a cPixmap may have on the current OSD. The 'osddemo' example has been modified
@@ -8820,3 +8820,6 @@ Video Disk Recorder Revision History
   "DVB SI table strings" instead of "EPG data".
 - The width and height of the OSD are now limited to the actual maximum dimensions
   of the output device, taking into account the top and left offset.
+- The new setup option "Recording/Record key handling" can be used to define
+  what happens if the Record key on the remote control is pressed during
+  live tv (suggested by Dietmar Spingler).

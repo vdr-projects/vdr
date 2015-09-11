@@ -890,8 +890,13 @@ Version 2.2
                          means that this recording will never be deleted
                          automatically.
 
-  Pause priority = 10    The Priority and Lifetime values used when pausing live
-  Pause lifetime = 1     video.
+  Record key handling = 2
+                         Defines what happens if the Record key on the remote control
+                         is pressed during live tv.
+                         0 = no instant recording
+                         1 = confirm instant recording
+                         2 = record instantly
+                         The default is 2.
 
   Pause key handling = 2 Defines what happens if the Pause key on the remote control
                          is pressed during live tv.
@@ -899,6 +904,9 @@ Version 2.2
                          1 = confirm pause live video
                          2 = pause live video
                          The default is 2.
+
+  Pause priority = 10    The Priority and Lifetime values used when pausing live
+  Pause lifetime = 1     video.
 
   Use episode name = yes Repeating timers use the EPG's 'Episode name' information
                          to create recording file names in a hierarchical structure

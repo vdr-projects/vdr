@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.2 2015/09/06 13:17:19 kls Exp $
+ * $Id: config.c 4.3 2015/09/11 08:08:05 kls Exp $
  */
 
 #include "config.h"
@@ -421,6 +421,7 @@ cSetup::cSetup(void)
   RcRepeatDelta = 100;
   DefaultPriority = 50;
   DefaultLifetime = MAXLIFETIME;
+  RecordKeyHandling = 2;
   PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;
@@ -647,6 +648,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RcRepeatDelta"))       RcRepeatDelta      = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+  else if (!strcasecmp(Name, "RecordKeyHandling"))   RecordKeyHandling  = atoi(Value);
   else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
@@ -776,6 +778,7 @@ bool cSetup::Save(void)
   Store("RcRepeatDelta",      RcRepeatDelta);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
+  Store("RecordKeyHandling",  RecordKeyHandling);
   Store("PauseKeyHandling",   PauseKeyHandling);
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);

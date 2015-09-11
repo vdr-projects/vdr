@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 4.4 2015/09/06 09:50:13 kls Exp $
+ * $Id: config.h 4.5 2015/09/11 08:07:34 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -296,8 +296,9 @@ public:
   int RcRepeatDelay;
   int RcRepeatDelta;
   int DefaultPriority, DefaultLifetime;
-  int PausePriority, PauseLifetime;
+  int RecordKeyHandling;
   int PauseKeyHandling;
+  int PausePriority, PauseLifetime;
   int UseSubtitle;
   int UseVps;
   int VpsMargin;

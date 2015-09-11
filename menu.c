@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.7 2015/09/10 13:29:30 kls Exp $
+ * $Id: menu.c 4.8 2015/09/11 08:28:51 kls Exp $
  */
 
 #include "menu.h"
@@ -3910,6 +3910,7 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
 
 class cMenuSetupRecord : public cMenuSetupBase {
 private:
+  const char *recordKeyHandlingTexts[3];
   const char *pauseKeyHandlingTexts[3];
   const char *delTimeshiftRecTexts[3];
 public:
@@ -3919,6 +3920,9 @@ public:
 cMenuSetupRecord::cMenuSetupRecord(void)
 {
   SetMenuCategory(mcSetupRecord);
+  recordKeyHandlingTexts[0] = tr("no instant recording");
+  recordKeyHandlingTexts[1] = tr("confirm instant recording");
+  recordKeyHandlingTexts[2] = tr("record instantly");
   pauseKeyHandlingTexts[0] = tr("do not pause live video");
   pauseKeyHandlingTexts[1] = tr("confirm pause live video");
   pauseKeyHandlingTexts[2] = tr("pause live video");
@@ -3930,6 +3934,7 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditStraItem(tr("Setup.Recording$Record key handling"),       &data.RecordKeyHandling, 3, recordKeyHandlingTexts));
   Add(new cMenuEditStraItem(tr("Setup.Recording$Pause key handling"),        &data.PauseKeyHandling, 3, pauseKeyHandlingTexts));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause priority"),            &data.PausePriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause lifetime (d)"),        &data.PauseLifetime, 0, MAXLIFETIME));
@@ -4305,7 +4310,7 @@ bool cMenuMain::Update(bool Force)
         stopReplayItem = NULL;
         }
      // Color buttons:
-     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying || !Setup.PauseKeyHandling ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
+     SetHelp(!replaying && Setup.RecordKeyHandling ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying || !Setup.PauseKeyHandling ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
      result = true;
      }
 
@@ -4391,7 +4396,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     default: switch (Key) {
                case kRecord:
                case kRed:    if (!HadSubMenu)
-                                state = replaying ? osContinue : osRecord;
+                                state = replaying || !Setup.RecordKeyHandling ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
                                 cRemote::Put(kAudio, true);

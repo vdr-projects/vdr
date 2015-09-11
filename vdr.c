@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.6 2015/09/08 10:00:46 kls Exp $
+ * $Id: vdr.c 4.7 2015/09/11 08:02:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -1310,8 +1310,12 @@ int main(int argc, char *argv[])
           // Instant recording:
           case kRecord:
                if (!cControl::Control()) {
-                  if (cRecordControls::Start())
-                     Skins.QueueMessage(mtInfo, tr("Recording started"));
+                  if (Setup.RecordKeyHandling) {
+                     if (Setup.RecordKeyHandling > 1 || Interface->Confirm(tr("Start recording?"))) {
+                        if (cRecordControls::Start())
+                           Skins.QueueMessage(mtInfo, tr("Recording started"));
+                        }
+                     }
                   key = kNone; // nobody else needs to see this key
                   }
                break;
