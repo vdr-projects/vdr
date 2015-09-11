@@ -8823,3 +8823,5 @@ Video Disk Recorder Revision History
 - The new setup option "Recording/Record key handling" can be used to define
   what happens if the Record key on the remote control is pressed during
   live tv (suggested by Dietmar Spingler).
+- Empty adaptation field TS packets are now skipped when recording (thanks to
+  Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).

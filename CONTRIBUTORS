@@ -2966,6 +2966,7 @@ Christopher Reimer <vdr@creimer.net>
  for reporting a possible crash in the OSD demo
  for adding support for systemd
  for suggesting to replace VDR_CHARSET_OVERRIDE with a command line option
+ for making the recorder skip empty adaptation field TS packets
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3423,3 +3424,7 @@ Daniel Ribeiro <drwyrm@gmail.com>
 
 Janne Pänkälä <epankala@gmail.com>
  for reporting that some broadcasters use the character 0x0D in EPG texts
+
+Stefan Pöschel <basic.master@gmx.de>
+ for coding the AFFcleaner, parts of which were used to make the recorder skip empty
+ adaptation field TS packets
