@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-04-18 15:43+0200\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -660,6 +660,9 @@ msgstr "Eluiga"
 msgid "File"
 msgstr "Fail"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Kaust"
 
@@ -671,6 +674,12 @@ msgstr "Korduv"
 
 msgid "First day"
 msgstr "1. päev"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Kausta valik"
@@ -1160,6 +1169,15 @@ msgstr "CAM on kasutuses - taaskäivitada?"
 msgid "Can't reset CAM!"
 msgstr "CAM mooduli taaskäivitus ebaõnnestus!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "mitte peatada"
 
@@ -1189,6 +1207,9 @@ msgstr "Vaikimisi prioriteet"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Salvestuse eluiga (päevi)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Pausi klahvi käsitlemine"
@@ -1288,6 +1309,15 @@ msgstr "Min. kasutaja tegevusetus (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP ooteaeg (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Kanalivahetuse ooteaeg (s)"
@@ -1541,6 +1571,9 @@ msgstr "Salvestamine tulekul!"
 
 msgid "Pause live video?"
 msgstr "Peatada otseülekanne?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Salvestamine käivitatud"

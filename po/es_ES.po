@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-04-18 15:43+0200\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-19 23:00+0100\n"
 "Last-Translator: Gabriel Bonich <gbonich@gmail.com>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "Duración"
 msgid "File"
 msgstr "Fichero"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Carpeta"
 
@@ -672,6 +675,12 @@ msgstr "Periódico"
 
 msgid "First day"
 msgstr "Primer día"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Seleccionar carpeta"
@@ -1161,6 +1170,15 @@ msgstr "CAM en uso - ¿reiniciar?"
 msgid "Can't reset CAM!"
 msgstr "¡No se puede reiniciar CAM!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "no pausar emisión en directo"
 
@@ -1190,6 +1208,9 @@ msgstr "Prioridad por defecto"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Duración por defecto (días)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Gestión tecla de pausa"
@@ -1289,6 +1310,15 @@ msgstr "Tiempo mín. de inactividad (m)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Tiempo de espera de SVDRP (sg)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Considerar canal como visto (sg)"
@@ -1542,6 +1572,9 @@ msgstr "¡Grabación a punto de empezar!"
 
 msgid "Pause live video?"
 msgstr "¿Pausar emisión en directo?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Iniciando grabación"
