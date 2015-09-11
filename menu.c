@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.8 2015/09/11 08:28:51 kls Exp $
+ * $Id: menu.c 4.9 2015/09/11 08:38:11 kls Exp $
  */
 
 #include "menu.h"
@@ -1064,7 +1064,7 @@ eOSState cMenuEditTimer::SetFolder(void)
 
 static bool RemoteTimerError(const cTimer *Timer)
 {
-  Skins.Message(mtError, cString::sprintf(tr("Error while accessing remote timer %d@%s!"), Timer->Id(), Timer->Remote()));
+  Skins.Message(mtError, cString::sprintf("%s %d@%s!", tr("Error while accessing remote timer"), Timer->Id(), Timer->Remote()));
   return false; // convenience return code
 }
 
@@ -1334,7 +1334,7 @@ eOSState cMenuTimers::OnOff(void)
      if (Timer->Remote()) {
         cStringList Response;
         if (!ExecSVDRPCommand(Timer->Remote(), cString::sprintf("MODT %d %s", Timer->Id(), *Timer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
-           Skins.Message(mtError, cString::sprintf(tr("Error while accessing timer %d@%s!"), Timer->Id(), Timer->Remote()));
+           RemoteTimerError(Timer);
         }
      LOCK_SCHEDULES_READ;
      Timer->SetEventFromSchedule(Schedules);
@@ -1384,7 +1384,7 @@ eOSState cMenuTimers::Delete(void)
            if (Timer->Remote()) {
               cStringList Response;
               if (!ExecSVDRPCommand(Timer->Remote(), cString::sprintf("DELT %d", Timer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
-                 Skins.Message(mtError, cString::sprintf(tr("Error while accessing timer %d@%s!"), Timer->Id(), Timer->Remote()));
+                 RemoteTimerError(Timer);
               }
            Timers->Del(Timer);
            cOsdMenu::Del(Current());
