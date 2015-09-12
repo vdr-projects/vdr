@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 4.3 2015/09/11 11:18:40 kls Exp $
+ * $Id: recorder.c 4.4 2015/09/12 14:56:15 kls Exp $
  */
 
 #include "recorder.h"
@@ -109,7 +109,7 @@ void cRecorder::Activate(bool On)
 void cRecorder::Receive(const uchar *Data, int Length)
 {
   if (Running()) {
-     static uchar aff[TS_SIZE - 4] = { 0xB7, 0x00,
+     static const uchar aff[TS_SIZE - 4] = { 0xB7, 0x00,
        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
