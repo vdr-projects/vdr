@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.3 2015/09/11 08:08:05 kls Exp $
+ * $Id: config.c 4.4 2015/09/13 11:09:44 kls Exp $
  */
 
 #include "config.h"
@@ -771,6 +771,7 @@ bool cSetup::Save(void)
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("SVDRPPeering",       SVDRPPeering);
+  Store("SVDRPHostName",      SVDRPHostName);
   Store("SVDRPDefaultHost",   SVDRPDefaultHost);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
