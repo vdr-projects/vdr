@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.4 2015/09/09 10:42:18 kls Exp $
+ * $Id: timers.c 4.5 2015/09/13 13:10:24 kls Exp $
  */
 
 #include "timers.h"
@@ -33,7 +33,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
   flags = tfNone;
   *file = 0;
   aux = NULL;
-  remote = *Setup.SVDRPDefaultHost ? strdup(Setup.SVDRPDefaultHost) : NULL;
+  remote = NULL;
   event = NULL;
   if (Instant)
      SetFlags(tfActive | tfInstant);
@@ -91,7 +91,7 @@ cTimer::cTimer(const cEvent *Event)
   flags = tfActive;
   *file = 0;
   aux = NULL;
-  remote = *Setup.SVDRPDefaultHost ? strdup(Setup.SVDRPDefaultHost) : NULL;
+  remote = NULL;
   event = NULL;
   if (Event->Vps() && Setup.UseVps)
      SetFlags(tfVps);
@@ -142,14 +142,13 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 {
   if (&Timer != this) {
      id           = Timer.id;
-     uint OldFlags = flags & tfRecording;
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
      scheduleState = -1;
      deferred     = 0;
      pending      = Timer.pending;
      inVpsMargin  = Timer.inVpsMargin;
-     flags        = Timer.flags | OldFlags;
+     flags        = Timer.flags;
      channel      = Timer.channel;
      day          = Timer.day;
      weekdays     = Timer.weekdays;

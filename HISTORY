@@ -8804,6 +8804,8 @@ Video Disk Recorder Revision History
   because cTimer::ToText() is now also needed in a context where the terminating
   newline can't be used. Consequently, cChannel::ToText() and cMark::ToText() have
   been modified accordingly.
+- All timer related response strings from SVDRP commands now use the channel ID
+  instead of channel numbers.
 - The "Edit timer" menu now has a new parameter "Record on", which can be used to
   select the VDR on which this timer shall record. Timers can be freely moved
   between connected VDRs by simply selecting the desired machine in this field.

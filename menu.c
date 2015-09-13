@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.10 2015/09/13 10:39:02 kls Exp $
+ * $Id: menu.c 4.11 2015/09/13 13:54:27 kls Exp $
  */
 
 #include "menu.h"
@@ -1075,11 +1075,14 @@ bool cMenuEditTimer::HandleRemoteModifications(cTimer *OldTimer, cTimer *NewTime
      if (NewTimer->Local()) { // timer stays local, nothing to do
         }
      else { // timer is moved from local to remote
+        if (NewTimer->Recording())
+           NewTimer->SetRecording(false); // in case it was recording on the local machine
         if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
            return RemoteTimerError(NewTimer);
         int RemoteId = atoi(SVDRPValue(Response[0]));
         if (RemoteId <= 0)
            return RemoteTimerError(NewTimer);
+        cRecordControls::Stop(OldTimer);
         NewTimer->SetId(RemoteId);
         isyslog("moved timer %s to %d@%s", *OldTimer->ToDescr(), NewTimer->Id(), NewTimer->Remote());
         }
@@ -1090,6 +1093,8 @@ bool cMenuEditTimer::HandleRemoteModifications(cTimer *OldTimer, cTimer *NewTime
            return RemoteTimerError(OldTimer);
         }
      NewTimer->SetId(cTimers::NewTimerId());
+     if (NewTimer->Recording())
+        NewTimer->SetRecording(false); // in case it was recording on the remote machine
      isyslog("moved timer %d@%s to %s", OldTimer->Id(), OldTimer->Remote(), *NewTimer->ToDescr());
      }
   else if (strcmp(OldTimer->Remote(), NewTimer->Remote()) == 0) { // timer stays remote on same machine
@@ -1109,6 +1114,8 @@ bool cMenuEditTimer::HandleRemoteModifications(cTimer *OldTimer, cTimer *NewTime
         }
      }
   else { // timer is moved from one remote machine to an other
+     if (NewTimer->Recording())
+        NewTimer->SetRecording(false); // in case it was recording on the remote machine
      if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
         return RemoteTimerError(NewTimer);
      int RemoteId = atoi(SVDRPValue(Response[0]));
@@ -5244,6 +5251,19 @@ void cRecordControls::Stop(const char *InstantId)
                isyslog("deleting timer %s", *Timer->ToDescr());
                Timers->Del(Timer);
                }
+            break;
+            }
+         }
+      }
+}
+
+void cRecordControls::Stop(cTimer *Timer)
+{
+  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+      if (RecordControls[i]) {
+         if (RecordControls[i]->Timer() == Timer) {
+            DELETENULL(RecordControls[i]);
+            ChangeState();
             break;
             }
          }

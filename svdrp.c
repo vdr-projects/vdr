@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.7 2015/09/10 10:39:45 kls Exp $
+ * $Id: svdrp.c 4.8 2015/09/13 13:57:51 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1858,7 +1858,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
            *Timer = t;
            Timers->SetModified();
            isyslog("SVDRP < %s modified timer %s (%s)", *connection, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
-           Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
+           Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
            }
         else
            Reply(501, "Timer \"%d\" not defined", Id);
@@ -2002,7 +2002,7 @@ void cSVDRPServer::CmdNEWT(const char *Option)
         LOCK_TIMERS_WRITE;
         Timers->Add(Timer);
         isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
-        Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
+        Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
         return;
         }
      else
@@ -2261,7 +2261,7 @@ void cSVDRPServer::CmdUPDT(const char *Option)
            Timers->Add(Timer);
            isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
            }
-        Reply(250, "%d %s", Timer->Id(), *Timer->ToText());
+        Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
         return;
         }
      else
