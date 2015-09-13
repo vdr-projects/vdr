@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.9 2015/09/11 08:38:11 kls Exp $
+ * $Id: menu.c 4.10 2015/09/13 10:39:02 kls Exp $
  */
 
 #include "menu.h"
@@ -3108,7 +3108,7 @@ eOSState cMenuRecordings::Delete(void)
            }
         else
            Skins.Message(mtError, tr("Error while deleting recording!"));
-        recordingsStateKey.Remove(false);
+        recordingsStateKey.Remove();
         }
      }
   return osContinue;
