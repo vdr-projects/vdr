@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 3.4 2015/01/26 12:02:14 kls Exp $
+ * $Id: diseqc.c 4.0 2015/01/26 12:02:14 kls Exp $
  */
 
 #include "diseqc.h"

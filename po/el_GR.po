@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -660,6 +660,9 @@ msgstr "Διέρκεια Παραμονής"
 msgid "File"
 msgstr "Αρχείο"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr ""
 
@@ -671,6 +674,12 @@ msgstr ""
 
 msgid "First day"
 msgstr "Πρώτη μέρα"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr ""
@@ -847,6 +856,12 @@ msgstr "Εξαρτάτε από τήν επιφάνεια"
 msgid "always"
 msgstr "πάντα"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -932,6 +947,9 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr ""
 
 msgid "Setup.OSD$Always sort folders first"
+msgstr ""
+
+msgid "Setup.OSD$Default sort mode for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1118,6 +1136,9 @@ msgstr ""
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1148,6 +1169,15 @@ msgstr ""
 msgid "Can't reset CAM!"
 msgstr "Αδύνατη η επαναφορά στό CAM"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr ""
 
@@ -1177,6 +1207,9 @@ msgstr "Προκαθορισμένη προτεραιότητα"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Προκαθορισμένη διάρκεια παραμονής (Ημέρες)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr ""
@@ -1276,6 +1309,15 @@ msgstr "Ελάχιστος χρόνος αναμονής (λεπτά)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP διακοπή (δ)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Ζάπινγκ διακοπή (δ)"
@@ -1528,6 +1570,9 @@ msgid "Upcoming recording!"
 msgstr ""
 
 msgid "Pause live video?"
+msgstr ""
+
+msgid "Start recording?"
 msgstr ""
 
 msgid "Recording started"

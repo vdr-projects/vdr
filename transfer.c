@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 3.1 2013/08/22 12:33:02 kls Exp $
+ * $Id: transfer.c 4.1 2015/09/05 11:43:58 kls Exp $
  */
 
 #include "transfer.h"
@@ -38,7 +38,7 @@ void cTransfer::Activate(bool On)
 #define MAXRETRIES    20 // max. number of retries for a single TS packet
 #define RETRYWAIT      5 // time (in ms) between two retries
 
-void cTransfer::Receive(uchar *Data, int Length)
+void cTransfer::Receive(const uchar *Data, int Length)
 {
   if (cPlayer::IsAttached()) {
      // Transfer Mode means "live tv", so there's no point in doing any additional

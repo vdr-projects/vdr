@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.h 3.1 2013/10/05 11:34:55 kls Exp $
+ * $Id: cutter.h 4.0 2013/10/05 11:34:55 kls Exp $
  */
 
 #ifndef __CUTTER_H

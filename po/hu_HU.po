@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-01-30 13:14+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-13 09:36+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -665,6 +665,9 @@ msgstr "Élettartam"
 msgid "File"
 msgstr "Fájl"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Könyvtár"
 
@@ -676,6 +679,12 @@ msgstr "Ismétlődő"
 
 msgid "First day"
 msgstr "Első nap"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Könyvtár kiválasztása"
@@ -852,6 +861,12 @@ msgstr "Menü nézetétől függően"
 msgid "always"
 msgstr "mindig"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -938,6 +953,9 @@ msgstr "Könyvtárválasztás az időzítő menüben"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Könyvtárakat rendezd előre"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Betűk a számgombokon"
@@ -1123,6 +1141,9 @@ msgstr "CAM működik"
 msgid " (activating)"
 msgstr " (aktiválás)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1153,6 +1174,15 @@ msgstr "CAM használatban - valóban újraindítani?"
 msgid "Can't reset CAM!"
 msgstr "CAM újraindítása nem sikerült!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "élőkép leállítása tiltva"
 
@@ -1182,6 +1212,9 @@ msgstr "Alapértelmezett prioritás"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Alapértelmezett élettartam (n)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Szünet gomb működése"
@@ -1281,6 +1314,15 @@ msgstr "VDR leáll használat nélkül (p)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP szétkapcsol használat nélkül(mp)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Előző csatorna időkorlátja (mp)"
@@ -1534,6 +1576,9 @@ msgstr "Felvétel rögtön indul!"
 
 msgid "Pause live video?"
 msgstr "Megállítsam az élő képet?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Felvétel elindítva"

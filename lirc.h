@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: lirc.h 3.0 2006/01/27 16:00:19 kls Exp $
+ * $Id: lirc.h 4.0 2006/01/27 16:00:19 kls Exp $
  */
 
 #ifndef __LIRC_H

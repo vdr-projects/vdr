@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "Veljavnost"
 msgid "File"
 msgstr "Datoteka"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Direktorij"
 
@@ -672,6 +675,12 @@ msgstr "Ponavljajoèe"
 
 msgid "First day"
 msgstr "Prvi dan"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Izberi direkotrij"
@@ -848,6 +857,12 @@ msgstr "odvisno od preobleke"
 msgid "always"
 msgstr "vedno"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -933,6 +948,9 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr "Direktoriji v meniju urnika"
 
 msgid "Setup.OSD$Always sort folders first"
+msgstr ""
+
+msgid "Setup.OSD$Default sort mode for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1119,6 +1137,9 @@ msgstr "CAM pripravljen"
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM je v uporabi - zares resetiraj?"
 msgid "Can't reset CAM!"
 msgstr "Ne morem resetirati CAM-a!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "ne ustavi videa v ¾ivo"
 
@@ -1178,6 +1208,9 @@ msgstr "Privzeta prioriteta"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Privzeti ¾ivljenski èas (d)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Gumb za pavzo"
@@ -1277,6 +1310,15 @@ msgstr "Najmanj¹i èas neaktivnosti (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP èas neaktivnosti (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Èas ugla¹evanja (s)"
@@ -1530,6 +1572,9 @@ msgstr "Sledi snemanje!"
 
 msgid "Pause live video?"
 msgstr "Zaustavi video v ¾ivo"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Snemanje se je prièelo"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -664,6 +664,9 @@ msgstr "معدل البقاء"
 msgid "File"
 msgstr "ملف"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Folder"
 
@@ -675,6 +678,12 @@ msgstr "Repeating"
 
 msgid "First day"
 msgstr "اليوم الاول"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Select folder"
@@ -851,6 +860,12 @@ msgstr "متوقف على نوع الثوب"
 msgid "always"
 msgstr "دائما"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "عرص على الشاشة"
 
@@ -937,6 +952,9 @@ msgstr "Folders in timer menu"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "قم دائما بسرد المجلدات اولا"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Number keys for characters"
@@ -1122,6 +1140,9 @@ msgstr "الكامة جاهزة"
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "الكامة"
 
@@ -1152,6 +1173,15 @@ msgstr "الكامة مستخدمة الان هل تريد اعادة تشغيل
 msgid "Can't reset CAM!"
 msgstr "تعذر اعادة تشغيل الكامة"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "لا تقم بايقاف الفديو الحى"
 
@@ -1181,6 +1211,9 @@ msgstr "الاولويات الافتراضية"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "معدل البقاء باليوم"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Pause key handling"
@@ -1280,6 +1313,15 @@ msgstr "اقل مدة لعدم تفاعل المستخدم بالدقيقة"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP timeout (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap timeout (s)"
@@ -1533,6 +1575,9 @@ msgstr "التسجيل القادم"
 
 msgid "Pause live video?"
 msgstr "ايقاف الفديو الحى"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "ابتداء التسجيل"

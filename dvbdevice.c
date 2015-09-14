@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 3.14 2015/01/14 12:09:19 kls Exp $
+ * $Id: dvbdevice.c 4.2 2015/04/18 16:19:28 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1064,6 +1064,7 @@ cOsdItem *cDvbSourceParam::GetOsdItem(void)
 
 // --- cDvbDevice ------------------------------------------------------------
 
+bool cDvbDevice::useDvbDevices = true;
 int cDvbDevice::setTransferModeForDolbyDigital = 1;
 cMutex cDvbDevice::bondMutex;
 
@@ -1234,7 +1235,7 @@ bool cDvbDevice::Initialize(void)
             if (Exists(Adapter, Frontend)) {
                if (Found < MAXDEVICES) {
                   Found++;
-                  if (UseDevice(NextCardIndex())) {
+                  if (useDvbDevices && UseDevice(NextCardIndex())) {
                      if (Probe(Adapter, Frontend))
                         Used++;
                      }
@@ -1248,7 +1249,7 @@ bool cDvbDevice::Initialize(void)
   if (Found > 0) {
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
      if (Used != Found)
-        isyslog("using only %d DVB device%s", Used, Used > 1 ? "s" : "");
+        isyslog("using only %d DVB device%s", Used, Used != 1 ? "s" : "");
      }
   else
      isyslog("no DVB device found");

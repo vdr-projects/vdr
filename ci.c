@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.19 2015/02/02 13:57:39 kls Exp $
+ * $Id: ci.c 4.2 2015/09/05 11:45:19 kls Exp $
  */
 
 #include "ci.h"
@@ -125,8 +125,8 @@ protected:
 public:
   cCaPidReceiver(void);
   virtual ~cCaPidReceiver() { Detach(); }
-  virtual void Receive(uchar *Data, int Length);
-  bool HasCaPids(void) { return NumPids() - emmPids.Size() - 1 > 0; }
+  virtual void Receive(const uchar *Data, int Length);
+  bool HasCaPids(void) const { return NumPids() - emmPids.Size() - 1 > 0; }
   void Reset(void) { DelEmmPids(); catVersion = -1; }
   };
 
@@ -160,10 +160,10 @@ void cCaPidReceiver::Activate(bool On)
   catVersion = -1; // can be done independent of 'On'
 }
 
-void cCaPidReceiver::Receive(uchar *Data, int Length)
+void cCaPidReceiver::Receive(const uchar *Data, int Length)
 {
   if (TsPid(Data) == CATPID) {
-     uchar *p = NULL;
+     const uchar *p = NULL;
      if (TsPayloadStart(Data)) {
         if (Data[5] == SI::TableIdCAT) {
            length = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
@@ -251,7 +251,7 @@ private:
   time_t lastScrambledTime;
   int numTsPackets;
 protected:
-  virtual void Receive(uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length);
 public:
   cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot);
   virtual ~cCaActivationReceiver();
@@ -270,7 +270,7 @@ cCaActivationReceiver::~cCaActivationReceiver()
   Detach();
 }
 
-void cCaActivationReceiver::Receive(uchar *Data, int Length)
+void cCaActivationReceiver::Receive(const uchar *Data, int Length)
 {
   if (numTsPackets++ % TS_PACKET_FACTOR == 0) {
      time_t Now = time(NULL);
@@ -1921,7 +1921,8 @@ void cCamSlot::StartActivation(void)
   cMutexLock MutexLock(&mutex);
   if (!caActivationReceiver) {
      if (cDevice *d = Device()) {
-        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+        LOCK_CHANNELS_READ;
+        if (const cChannel *Channel = Channels->GetByNumber(cDevice::CurrentChannel())) {
            caActivationReceiver = new cCaActivationReceiver(Channel, this);
            d->AttachReceiver(caActivationReceiver);
            dsyslog("CAM %d: activating on device %d with channel %d (%s)", SlotNumber(), d->DeviceNumber() + 1, Channel->Number(), Channel->Name());

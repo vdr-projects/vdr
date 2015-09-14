@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -662,6 +662,9 @@ msgstr "Timp de păstrare"
 msgid "File"
 msgstr "Fişier"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Director"
 
@@ -673,6 +676,12 @@ msgstr "Repetitiv"
 
 msgid "First day"
 msgstr "Prima zi"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Selectează directorul"
@@ -849,6 +858,12 @@ msgstr "dependent de skin"
 msgid "always"
 msgstr "întotdeauna"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -935,6 +950,9 @@ msgstr "Directoare în meniul de timer-e"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Sortează întotdeauna directoarele la început"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Caractere pe tastele numerice"
@@ -1120,6 +1138,9 @@ msgstr "CAM pregătit"
 msgid " (activating)"
 msgstr " (activez)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1150,6 +1171,15 @@ msgstr "CAM-ul este in folosinţă - totuşi resetez?"
 msgid "Can't reset CAM!"
 msgstr "Nu pot reseta CAM"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "nu înregistra emisiunea"
 
@@ -1179,6 +1209,9 @@ msgstr "Prioritate implicită"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Timp de păstrare predefinit (zile)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Funcţia tastei 'pauză'"
@@ -1278,6 +1311,15 @@ msgstr "Durata minimă de inactivitate (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Timeout SVDRP (sec)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Interval zapping (s)"
@@ -1531,6 +1573,9 @@ msgstr "Urmează o înregistrare!"
 
 msgid "Pause live video?"
 msgstr "Înregistrez emisiunea?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "A început înregistrarea"

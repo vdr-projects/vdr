@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 3.0 2013/03/01 09:49:46 kls Exp $
+ * $Id: transfer.h 4.1 2015/09/05 11:43:08 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -19,7 +19,7 @@ private:
   cPatPmtGenerator patPmtGenerator;
 protected:
   virtual void Activate(bool On);
-  virtual void Receive(uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length);
 public:
   cTransfer(const cChannel *Channel);
   virtual ~cTransfer();

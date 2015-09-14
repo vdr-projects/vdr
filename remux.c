@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 3.9 2015/01/14 09:57:09 kls Exp $
+ * $Id: remux.c 4.1 2015/03/11 09:49:38 kls Exp $
  */
 
 #include "remux.h"
@@ -1552,7 +1552,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        uint32_t Delta = ptsValues[0] / Div;
                        // determine frame info:
                        if (isVideo) {
-                          if (abs(Delta - 3600) <= 1)
+                          if (Delta == 3753)
+                             framesPerSecond = 24.0 / 1.001;
+                          else if (abs(Delta - 3600) <= 1)
                              framesPerSecond = 25.0;
                           else if (Delta % 3003 == 0)
                              framesPerSecond = 30.0 / 1.001;

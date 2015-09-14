@@ -4,18 +4,18 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 3.1 2013/12/28 11:33:08 kls Exp $
+ * $Id: timers.c 4.5 2015/09/13 13:10:24 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
-#include "channels.h"
 #include "device.h"
 #include "i18n.h"
 #include "libsi/si.h"
 #include "recording.h"
 #include "remote.h"
 #include "status.h"
+#include "svdrp.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -23,19 +23,22 @@
 
 // --- cTimer ----------------------------------------------------------------
 
-cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
+cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
 {
+  id = 0;
   startTime = stopTime = 0;
-  lastSetEvent = 0;
+  scheduleState = -1;
   deferred = 0;
-  recording = pending = inVpsMargin = false;
+  pending = inVpsMargin = false;
   flags = tfNone;
   *file = 0;
   aux = NULL;
+  remote = NULL;
   event = NULL;
   if (Instant)
      SetFlags(tfActive | tfInstant);
-  channel = Channel ? Channel : Channels.GetByNumber(cDevice::CurrentChannel());
+  LOCK_CHANNELS_READ;
+  channel = Channel ? Channel : Channels->GetByNumber(cDevice::CurrentChannel());
   time_t t = time(NULL);
   struct tm tm_r;
   struct tm *now = localtime_r(&t, &tm_r);
@@ -44,27 +47,25 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
   start = now->tm_hour * 100 + now->tm_min;
   stop = 0;
   if (!Setup.InstantRecordTime && channel && (Instant || Pause)) {
-     cSchedulesLock SchedulesLock;
-     if (const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock)) {
-        if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {
-           if (const cEvent *Event = Schedule->GetPresentEvent()) {
-              time_t tstart = Event->StartTime();
-              time_t tstop = Event->EndTime();
-              if (Event->Vps() && Setup.UseVps) {
-                 SetFlags(tfVps);
-                 tstart = Event->Vps();
-                 }
-              else {
-                 tstop  += Setup.MarginStop * 60;
-                 tstart -= Setup.MarginStart * 60;
-                 }
-              day = SetTime(tstart, 0);
-              struct tm *time = localtime_r(&tstart, &tm_r);
-              start = time->tm_hour * 100 + time->tm_min;
-              time = localtime_r(&tstop, &tm_r);
-              stop = time->tm_hour * 100 + time->tm_min;
-              SetEvent(Event);
+     LOCK_SCHEDULES_READ;
+     if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {
+        if (const cEvent *Event = Schedule->GetPresentEvent()) {
+           time_t tstart = Event->StartTime();
+           time_t tstop = Event->EndTime();
+           if (Event->Vps() && Setup.UseVps) {
+              SetFlags(tfVps);
+              tstart = Event->Vps();
               }
+           else {
+              tstop  += Setup.MarginStop * 60;
+              tstart -= Setup.MarginStart * 60;
+              }
+           day = SetTime(tstart, 0);
+           struct tm *time = localtime_r(&tstart, &tm_r);
+           start = time->tm_hour * 100 + time->tm_min;
+           time = localtime_r(&tstop, &tm_r);
+           stop = time->tm_hour * 100 + time->tm_min;
+           SetEvent(Event);
            }
         }
      }
@@ -82,17 +83,20 @@ cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 
 cTimer::cTimer(const cEvent *Event)
 {
+  id = 0;
   startTime = stopTime = 0;
-  lastSetEvent = 0;
+  scheduleState = -1;
   deferred = 0;
-  recording = pending = inVpsMargin = false;
+  pending = inVpsMargin = false;
   flags = tfActive;
   *file = 0;
   aux = NULL;
+  remote = NULL;
   event = NULL;
   if (Event->Vps() && Setup.UseVps)
      SetFlags(tfVps);
-  channel = Channels.GetByChannelID(Event->ChannelID(), true);
+  LOCK_CHANNELS_READ;
+  channel = Channels->GetByChannelID(Event->ChannelID(), true);
   time_t tstart = (flags & tfVps) ? Event->Vps() : Event->StartTime();
   time_t tstop = tstart + Event->Duration();
   if (!(HasFlags(tfVps))) {
@@ -120,6 +124,7 @@ cTimer::cTimer(const cTimer &Timer)
 {
   channel = NULL;
   aux = NULL;
+  remote = NULL;
   event = NULL;
   flags = tfNone;
   *this = Timer;
@@ -127,21 +132,23 @@ cTimer::cTimer(const cTimer &Timer)
 
 cTimer::~cTimer()
 {
+  if (event)
+     event->DecNumTimers();
   free(aux);
+  free(remote);
 }
 
 cTimer& cTimer::operator= (const cTimer &Timer)
 {
   if (&Timer != this) {
-     uint OldFlags = flags & tfRecording;
+     id           = Timer.id;
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
-     lastSetEvent = 0;
-     deferred = 0;
-     recording    = Timer.recording;
+     scheduleState = -1;
+     deferred     = 0;
      pending      = Timer.pending;
      inVpsMargin  = Timer.inVpsMargin;
-     flags        = Timer.flags | OldFlags;
+     flags        = Timer.flags;
      channel      = Timer.channel;
      day          = Timer.day;
      weekdays     = Timer.weekdays;
@@ -152,7 +159,13 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      strncpy(file, Timer.file, sizeof(file));
      free(aux);
      aux = Timer.aux ? strdup(Timer.aux) : NULL;
-     event = NULL;
+     free(remote);
+     remote = Timer.remote ? strdup(Timer.remote) : NULL;
+     if (event)
+        event->DecNumTimers();
+     event = Timer.event;
+     if (event)
+        event->IncNumTimers();
      }
   return *this;
 }
@@ -171,14 +184,14 @@ int cTimer::Compare(const cListObject &ListObject) const
 cString cTimer::ToText(bool UseChannelID) const
 {
   strreplace(file, ':', '|');
-  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
+  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
   strreplace(file, '|', ':');
   return buffer;
 }
 
 cString cTimer::ToDescr(void) const
 {
-  return cString::sprintf("%d (%d %04d-%04d %s'%s')", Index() + 1, Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
+  return cString::sprintf("%d%s%s (%d %04d-%04d %s'%s')", Id(), remote ? "@" : "", remote ? remote : "", Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
 }
 
 int cTimer::TimeToInt(int t)
@@ -313,7 +326,6 @@ bool cTimer::Parse(const char *s)
      }
   bool result = false;
   if (8 <= sscanf(s, "%u :%m[^:]:%m[^:]:%d :%d :%d :%d :%m[^:\n]:%m[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &aux)) {
-     ClrFlags(tfRecording);
      if (aux && !*skipspace(aux)) {
         free(aux);
         aux = NULL;
@@ -322,10 +334,11 @@ bool cTimer::Parse(const char *s)
      result = ParseDay(daybuffer, day, weekdays);
      Utf8Strn0Cpy(file, filebuffer, sizeof(file));
      strreplace(file, '|', ':');
+     LOCK_CHANNELS_READ;
      if (isnumber(channelbuffer))
-        channel = Channels.GetByNumber(atoi(channelbuffer));
+        channel = Channels->GetByNumber(atoi(channelbuffer));
      else
-        channel = Channels.GetByChannelID(tChannelID::FromString(channelbuffer), true, true);
+        channel = Channels->GetByChannelID(tChannelID::FromString(channelbuffer), true, true);
      if (!channel) {
         esyslog("ERROR: channel %s not defined", channelbuffer);
         result = false;
@@ -340,7 +353,9 @@ bool cTimer::Parse(const char *s)
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, "%s", *ToText(true)) > 0;
+  if (!Remote())
+     return fprintf(f, "%s\n", *ToText(true)) > 0;
+  return true;
 }
 
 bool cTimer::IsSingleEvent(void) const
@@ -441,10 +456,8 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
            startTime = event->StartTime();
            stopTime = event->EndTime();
            if (!Margin) { // this is an actual check
-              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
-                 if (event->StartTime() > 0) // checks for "phased out" events
-                    return event->IsRunning(true);
-                 }
+              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
+                 return event->IsRunning(true);
               return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
               }
            }
@@ -511,27 +524,18 @@ time_t cTimer::StopTime(void) const
 #define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and
 #define EPGLIMITAFTER    (1 * 3600) // after its stop time within which EPG events will be taken into consideration.
 
-void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
+void cTimer::SetId(int Id)
 {
-  cSchedulesLock SchedulesLock;
-  if (!Schedules) {
-     lastSetEvent = 0; // forces setting the event, even if the schedule hasn't been modified
-     if (!(Schedules = cSchedules::Schedules(SchedulesLock)))
-        return;
-     }
+  id = Id;
+}
+
+bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
+{
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule && Schedule->Events()->First()) {
-     time_t now = time(NULL);
-     if (!lastSetEvent || Schedule->Modified() >= lastSetEvent) {
-        lastSetEvent = now;
+     if (Schedule->Modified(scheduleState)) {
         const cEvent *Event = NULL;
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
-           if (event && event->StartTime() > 0) { // checks for "phased out" events
-              if (Recording())
-                 return; // let the recording end first
-              if (now <= event->EndTime() || Matches(0, true))
-                 return; // stay with the old event until the timer has completely expired
-              }
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
@@ -566,30 +570,39 @@ void cTimer::SetEventFromSchedule(const cSchedules *Schedules)
                   }
                }
            }
-        SetEvent(Event);
+        return SetEvent(Event);
         }
      }
+  return false;
 }
 
-void cTimer::SetEvent(const cEvent *Event)
+bool cTimer::SetEvent(const cEvent *Event)
 {
-  if (event != Event) { //XXX TODO check event data, too???
-     if (Event)
+  if (event != Event) {
+     if (event)
+        event->DecNumTimers();
+     if (Event) {
         isyslog("timer %s set to event %s", *ToDescr(), *Event->ToDescr());
-     else
+        Event->IncNumTimers();
+        Event->Schedule()->Modified(scheduleState); // to get the current state
+        }
+     else {
         isyslog("timer %s set to no event", *ToDescr());
+        scheduleState = -1;
+        }
      event = Event;
+     return true;
      }
+  return false;
 }
 
 void cTimer::SetRecording(bool Recording)
 {
-  recording = Recording;
-  if (recording)
+  if (Recording)
      SetFlags(tfRecording);
   else
      ClrFlags(tfRecording);
-  isyslog("timer %s %s", *ToDescr(), recording ? "start" : "stop");
+  isyslog("timer %s %s", *ToDescr(), Recording ? "start" : "stop");
 }
 
 void cTimer::SetPending(bool Pending)
@@ -637,7 +650,13 @@ void cTimer::SetLifetime(int Lifetime)
 void cTimer::SetAux(const char *Aux)
 {
   free(aux);
-  aux = strdup(Aux);
+  aux = Aux ? strdup(Aux) : NULL;
+}
+
+void cTimer::SetRemote(const char *Remote)
+{
+  free(remote);
+  remote = Remote ? strdup(Remote) : NULL;
 }
 
 void cTimer::SetDeferred(int Seconds)
@@ -691,20 +710,49 @@ void cTimer::OnOff(void)
 
 // --- cTimers ---------------------------------------------------------------
 
-cTimers Timers;
+cTimers cTimers::timers;
+int cTimers::lastTimerId = 0;
 
 cTimers::cTimers(void)
+:cConfig<cTimer>("Timers")
 {
-  state = 0;
-  beingEdited = 0;;
-  lastSetEvents = 0;
   lastDeleteExpired = 0;
+}
+
+bool cTimers::Load(const char *FileName)
+{
+  LOCK_TIMERS_WRITE;
+  Timers->SetExplicitModify();
+  if (timers.cConfig<cTimer>::Load(FileName)) {
+     for (cTimer *ti = timers.First(); ti; ti = timers.Next(ti)) {
+         ti->SetId(NewTimerId());
+         ti->ClrFlags(tfRecording);
+         Timers->SetModified();
+         }
+     return true;
+     }
+  return false;
+}
+
+int cTimers::NewTimerId(void)
+{
+  return ++lastTimerId; // no need for locking, the caller must have a lock on the global Timers list
+}
+
+const cTimer *cTimers::GetById(int Id) const
+{
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote() && ti->Id() == Id)
+         return ti;
+      }
+  return NULL;
 }
 
 cTimer *cTimers::GetTimer(cTimer *Timer)
 {
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (ti->Channel() == Timer->Channel() &&
+      if (!ti->Remote() &&
+          ti->Channel() == Timer->Channel() &&
           (ti->WeekDays() && ti->WeekDays() == Timer->WeekDays() || !ti->WeekDays() && ti->Day() == Timer->Day()) &&
           ti->Start() == Timer->Start() &&
           ti->Stop() == Timer->Stop())
@@ -713,12 +761,12 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
   return NULL;
 }
 
-cTimer *cTimers::GetMatch(time_t t)
+const cTimer *cTimers::GetMatch(time_t t) const
 {
   static int LastPending = -1;
-  cTimer *t0 = NULL;
-  for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (!ti->Recording() && ti->Matches(t)) {
+  const cTimer *t0 = NULL;
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote() && !ti->Recording() && ti->Matches(t)) {
          if (ti->Pending()) {
             if (ti->Index() > LastPending) {
                LastPending = ti->Index();
@@ -736,11 +784,11 @@ cTimer *cTimers::GetMatch(time_t t)
   return t0;
 }
 
-cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match)
+const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
 {
-  cTimer *t = NULL;
+  const cTimer *t = NULL;
   eTimerMatch m = tmNone;
-  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
       eTimerMatch tm = ti->Matches(Event);
       if (tm > m) {
          t = ti;
@@ -754,25 +802,33 @@ cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match)
   return t;
 }
 
-cTimer *cTimers::GetNextActiveTimer(void)
+const cTimer *cTimers::GetNextActiveTimer(void) const
 {
-  cTimer *t0 = NULL;
-  for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      ti->Matches();
-      if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
-         t0 = ti;
+  const cTimer *t0 = NULL;
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote()) {
+         ti->Matches();
+         if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
+            t0 = ti;
+         }
       }
   return t0;
 }
 
-void cTimers::SetModified(void)
+const cTimers *cTimers::GetTimersRead(cStateKey &StateKey, int TimeoutMs)
 {
-  cStatus::MsgTimerChange(NULL, tcMod);
-  state++;
+  return timers.Lock(StateKey, false, TimeoutMs) ? &timers : NULL;
+}
+
+cTimers *cTimers::GetTimersWrite(cStateKey &StateKey, int TimeoutMs)
+{
+  return timers.Lock(StateKey, true, TimeoutMs) ? &timers : NULL;
 }
 
 void cTimers::Add(cTimer *Timer, cTimer *After)
 {
+  if (!Timer->Remote())
+     Timer->SetId(NewTimerId());
   cConfig<cTimer>::Add(Timer, After);
   cStatus::MsgTimerChange(Timer, tcAdd);
 }
@@ -789,46 +845,114 @@ void cTimers::Del(cTimer *Timer, bool DeleteObject)
   cConfig<cTimer>::Del(Timer, DeleteObject);
 }
 
-bool cTimers::Modified(int &State)
+const cTimer *cTimers::UsesChannel(const cChannel *Channel) const
 {
-  bool Result = state != State;
-  State = state;
-  return Result;
+  for (const cTimer *Timer = First(); Timer; Timer = Next(Timer)) {
+      if (Timer->Channel() == Channel)
+         return Timer;
+      }
+  return NULL;
 }
 
-void cTimers::SetEvents(void)
+bool cTimers::SetEvents(const cSchedules *Schedules)
 {
-  if (time(NULL) - lastSetEvents < 5)
-     return;
-  cSchedulesLock SchedulesLock(false, 100);
-  const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
-  if (Schedules) {
-     if (!lastSetEvents || Schedules->Modified() >= lastSetEvents) {
-        for (cTimer *ti = First(); ti; ti = Next(ti)) {
-            if (cRemote::HasKeys())
-               return; // react immediately on user input
-            ti->SetEventFromSchedule(Schedules);
-            }
-        }
-     }
-  lastSetEvents = time(NULL);
+  bool TimersModified = false;
+  for (cTimer *ti = First(); ti; ti = Next(ti))
+      TimersModified |= ti->SetEventFromSchedule(Schedules);
+  return TimersModified;
 }
 
-void cTimers::DeleteExpired(void)
+bool cTimers::DeleteExpired(void)
 {
   if (time(NULL) - lastDeleteExpired < 30)
-     return;
+     return false;
+  bool TimersModified = false;
   cTimer *ti = First();
   while (ti) {
         cTimer *next = Next(ti);
-        if (ti->Expired()) {
+        if (!ti->Remote() && ti->Expired()) {
            isyslog("deleting timer %s", *ti->ToDescr());
            Del(ti);
-           SetModified();
+           TimersModified = true;
            }
         ti = next;
         }
   lastDeleteExpired = time(NULL);
+  return TimersModified;
+}
+
+bool cTimers::GetRemoteTimers(const char *ServerName)
+{
+  bool Result = false;
+  if (ServerName) {
+     Result = DelRemoteTimers(ServerName);
+     cStringList Response;
+     if (ExecSVDRPCommand(ServerName, "LSTT ID", &Response)) {
+        for (int i = 0; i < Response.Size(); i++) {
+            const char *s = Response[i];
+            int Code = SVDRPCode(s);
+            if (Code == 250) {
+               if (const char *v = SVDRPValue(s)) {
+                  int Id = atoi(v);
+                  while (*v && *v != ' ')
+                        v++; // skip id
+                  cTimer *Timer = new cTimer;
+                  if (Timer->Parse(v)) {
+                     Timer->SetRemote(ServerName);
+                     Timer->SetId(Id);
+                     Add(Timer);
+                     Result = true;
+                     }
+                  else {
+                     esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
+                     delete Timer;
+                     }
+                  }
+               }
+            else if (Code != 550)
+               esyslog("ERROR: %s: %s", ServerName, s);
+            }
+        return Result;
+        }
+     }
+  else {
+     cStringList ServerNames;
+     if (GetSVDRPServerNames(&ServerNames, sffTimers)) {
+        for (int i = 0; i < ServerNames.Size(); i++)
+            Result |= GetRemoteTimers(ServerNames[i]);
+        }
+     }
+  return Result;
+}
+
+bool cTimers::DelRemoteTimers(const char *ServerName)
+{
+  bool Deleted = false;
+  cTimer *Timer = First();
+  while (Timer) {
+        cTimer *t = Next(Timer);
+        if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
+           Del(Timer);
+           Deleted = true;
+           }
+        Timer = t;
+        }
+  return Deleted;
+}
+
+void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
+{
+  if (ServerName) {
+     if (!ExecSVDRPCommand(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName)))
+        esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", Setup.SVDRPHostName, ServerName);
+     }
+  else {
+     cStringList ServerNames;
+     if (GetSVDRPServerNames(&ServerNames)) {
+        for (int i = 0; i < ServerNames.Size(); i++)
+            TriggerRemoteTimerPoll(ServerNames[i]);
+        }
+     }
 }
 
 // --- cSortedTimers ---------------------------------------------------------
@@ -838,10 +962,10 @@ static int CompareTimers(const void *a, const void *b)
   return (*(const cTimer **)a)->Compare(**(const cTimer **)b);
 }
 
-cSortedTimers::cSortedTimers(void)
-:cVector<const cTimer *>(Timers.Count())
+cSortedTimers::cSortedTimers(const cTimers *Timers)
+:cVector<const cTimer *>(Timers->Count())
 {
-  for (const cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
+  for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer))
       Append(Timer);
   Sort(CompareTimers);
 }

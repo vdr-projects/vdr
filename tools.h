@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 3.7 2015/02/07 15:12:26 kls Exp $
+ * $Id: tools.h 4.3 2015/09/06 10:45:54 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -26,6 +26,7 @@
 #include <syslog.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "thread.h"
 
 typedef unsigned char uchar;
 
@@ -178,6 +179,7 @@ public:
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
   cString &operator=(const char *String);
+  cString &Append(const char *String);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   cString &CompactChars(char c); ///< Compact any sequence of characters 'c' to a single character, and strip all of them from the beginning and end of this string.
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
@@ -209,6 +211,14 @@ char *stripspace(char *s);
 char *compactspace(char *s);
 char *compactchars(char *s, char c); ///< removes all occurrences of 'c' from the beginning an end of 's' and replaces sequences of multiple 'c's with a single 'c'.
 cString strescape(const char *s, const char *chars);
+cString strgetval(const char *s, const char *name, char d = '=');
+    ///< Returns the value part of a 'name=value' pair in s.
+    ///< name must either be at the beginning of s, or has to be preceded by white space.
+    ///< There may be any number of white space around the '=' sign. The value is
+    ///< everyting up to (and excluding) the next white space, or the end of s.
+    ///< If an other delimiter shall be used (like, e.g., ':'), it can be given
+    ///< as the third parameter.
+    ///< If name occurs more than once in s, only the first occurrence is taken.
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -283,6 +293,8 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100
     ///< resulting image, where 100 is "best". The caller takes ownership of
     ///< the result and has to delete it once it is no longer needed.
     ///< The result may be NULL in case of an error.
+const char *GetHostName(void);
+    ///< Gets the host name of this machine.
 
 class cBase64Encoder {
 private:
@@ -356,12 +368,13 @@ public:
 
 class cPoller {
 private:
-  enum { MaxPollFiles = 16 };
+  enum { MaxPollFiles = 64 };
   pollfd pfd[MaxPollFiles];
   int numFileHandles;
 public:
   cPoller(int FileHandle = -1, bool Out = false);
   bool Add(int FileHandle, bool Out);
+  void Del(int FileHandle, bool Out);
   bool Poll(int TimeoutMs = 0);
   };
 
@@ -452,6 +465,7 @@ public:
   };
 
 class cListObject {
+  friend class cListGarbageCollector;
 private:
   cListObject *prev, *next;
 public:
@@ -468,32 +482,151 @@ public:
   cListObject *Next(void) const { return next; }
   };
 
+class cListGarbageCollector {
+private:
+  cMutex mutex;
+  cListObject *objects;
+  time_t lastPut;
+public:
+  cListGarbageCollector(void);
+  ~cListGarbageCollector();
+  void Put(cListObject *Object);
+  void Purge(bool Force = false);
+  };
+
+extern cListGarbageCollector ListGarbageCollector;
+
 class cListBase {
 protected:
   cListObject *objects, *lastObject;
-  cListBase(void);
   int count;
+  mutable cStateLock stateLock;
+  const char *needsLocking;
+  bool useGarbageCollector;
+  cListBase(const char *NeedsLocking = NULL);
 public:
   virtual ~cListBase();
+  bool Lock(cStateKey &StateKey, bool Write = false, int TimeoutMs = 0) const;
+       ///< Tries to get a lock on this list and returns true if successful.
+       ///< By default a read lock is requested. Set Write to true to obtain
+       ///< a write lock. If TimeoutMs is not zero, it waits for the given
+       ///< number of milliseconds before giving up.
+       ///< If you need to lock more than one list at the same time, make sure
+       ///< you set TimeoutMs to a suitable value in all of the calls to
+       ///< Lock(), and be prepared to handle situations where you do not get all
+       ///< of the requested locks. In such cases you should release all the locks
+       ///< you have obtained so far and try again. StateKey.TimedOut() tells you
+       ///< whether the lock attempt failed due to a timeout or because the state
+       ///< of the lock hasn't changed since the previous locking attempt.
+       ///< To implicitly avoid deadlocks when locking more than one of the global
+       ///< lists of VDR at the same time, make sure you always lock Timers, Channels,
+       ///< Recordings and Schedules in this sequence.
+       ///< You may keep pointers to objects in this list, even after releasing
+       ///< the lock. However, you may only access such objects if you are
+       ///< holding a proper lock again. If an object has been deleted from the list
+       ///< while you did not hold a lock (for instance by an other thread), the
+       ///< object will still be there, but no longer within this list (it is then
+       ///< stored in the ListGarbageCollector). That way even if you access the object
+       ///< after it has been deleted, you won't cause a segfault. You can call the
+       ///< Contains() function to check whether an object you are holding a pointer
+       ///< to is still in the list. Note that the garbage collector is purged when
+       ///< the usual housekeeping is done.
+  void SetUseGarbageCollector(void) { useGarbageCollector = true; }
+  void SetExplicitModify(void);
+       ///< If you have obtained a write lock on this list, and you don't want it to
+       ///< be automatically marked as modified when the lock is released, a call to
+       ///< this function will disable this, and you can explicitly call SetModified()
+       ///< to have the list marked as modified.
+  void SetModified(void);
+       ///< Unconditionally marks this list as modified.
   void Add(cListObject *Object, cListObject *After = NULL);
   void Ins(cListObject *Object, cListObject *Before = NULL);
   void Del(cListObject *Object, bool DeleteObject = true);
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
   virtual void Clear(void);
-  cListObject *Get(int Index) const;
+  bool Contains(const cListObject *Object) const;
+       ///< If a pointer to an object contained in this list has been obtained while
+       ///< holding a lock, and that lock has been released, but the pointer is kept for
+       ///< later use (after obtaining a new lock), Contains() can be called with that
+       ///< pointer to make sure the object it points to is still part of this list
+       ///< (it may have been deleted or otherwise removed from the list after the lock
+       ///< during which the pointer was initially retrieved has been released).
+  const cListObject *Get(int Index) const;
+  cListObject *Get(int Index) { return const_cast<cListObject *>(static_cast<const cListBase *>(this)->Get(Index)); }
   int Count(void) const { return count; }
   void Sort(void);
   };
 
 template<class T> class cList : public cListBase {
 public:
-  T *Get(int Index) const { return (T *)cListBase::Get(Index); }
-  T *First(void) const { return (T *)objects; }
-  T *Last(void) const { return (T *)lastObject; }
-  T *Prev(const T *object) const { return (T *)object->cListObject::Prev(); } // need to call cListObject's members to
-  T *Next(const T *object) const { return (T *)object->cListObject::Next(); } // avoid ambiguities in case of a "list of lists"
+  cList(const char *NeedsLocking = NULL): cListBase(NeedsLocking) {}
+      ///< Sets up a new cList of the given type T. If NeedsLocking is given, the list
+      ///< and any of its elements may only be accessed if the caller holds a lock
+      ///< obtained by a call to Lock() (see cListBase::Lock() for details).
+      ///< NeedsLocking is used as both a boolean flag to enable locking, and as
+      ///< a name to identify this list in debug output. It must be a static string
+      ///< and should be no longer than 10 characters. The string will not be copied!
+  const T *Get(int Index) const { return (T *)cListBase::Get(Index); }
+      ///< Returns the list element at the given Index, or NULL if no such element
+      ///< exists.
+  const T *First(void) const { return (T *)objects; }
+      ///< Returns the first element in this list, or NULL if the list is empty.
+  const T *Last(void) const { return (T *)lastObject; }
+      ///< Returns the last element in this list, or NULL if the list is empty.
+  const T *Prev(const T *Object) const { return (T *)Object->cListObject::Prev(); } // need to call cListObject's members to
+      ///< Returns the element immediately before Object in this list, or NULL
+      ///< if Object is the first element in the list. Object must not be NULL!
+  const T *Next(const T *Object) const { return (T *)Object->cListObject::Next(); } // avoid ambiguities in case of a "list of lists"
+      ///< Returns the element immediately following Object in this list, or NULL
+      ///< if Object is the last element in the list. Object must not be NULL!
+  T *Get(int Index) { return const_cast<T *>(static_cast<const cList<T> *>(this)->Get(Index)); }
+      ///< Non-const version of Get().
+  T *First(void) { return const_cast<T *>(static_cast<const cList<T> *>(this)->First()); }
+      ///< Non-const version of First().
+  T *Last(void) { return const_cast<T *>(static_cast<const cList<T> *>(this)->Last()); }
+      ///< Non-const version of Last().
+  T *Prev(const T *Object) { return const_cast<T *>(static_cast<const cList<T> *>(this)->Prev(Object)); }
+      ///< Non-const version of Prev().
+  T *Next(const T *Object) { return const_cast<T *>(static_cast<const cList<T> *>(this)->Next(Object)); }
+      ///< Non-const version of Next().
   };
+
+// The DEF_LIST_LOCK macro defines a convenience class that can be used to obtain
+// a lock on a cList and make sure the lock is released when the current scope
+// is left:
+
+#define DEF_LIST_LOCK2(Class, Name) \
+class c##Name##Lock { \
+private: \
+  cStateKey stateKey; \
+  const c##Class *list; \
+public: \
+  c##Name##Lock(bool Write = false) \
+  { \
+    if (Write) \
+       list = c##Class::Get##Name##Write(stateKey); \
+    else \
+       list = c##Class::Get##Name##Read(stateKey); \
+  } \
+  ~c##Name##Lock() { stateKey.Remove(); } \
+  const c##Class *Name(void) const { return list; } \
+  c##Class *Name(void) { return const_cast<c##Class *>(list); } \
+  }
+#define DEF_LIST_LOCK(Class) DEF_LIST_LOCK2(Class, Class)
+
+// The USE_LIST_LOCK macro sets up a local variable of a class defined by
+// a suitable DEF_LIST_LOCK, and also a pointer to the provided list:
+
+#define USE_LIST_LOCK_READ2(Class, Name) \
+c##Name##Lock Name##Lock(false); \
+const c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+#define USE_LIST_LOCK_READ(Class) USE_LIST_LOCK_READ2(Class, Class)
+
+#define USE_LIST_LOCK_WRITE2(Class, Name) \
+c##Name##Lock Name##Lock(true); \
+c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+#define USE_LIST_LOCK_WRITE(Class) USE_LIST_LOCK_WRITE2(Class, Class)
 
 template<class T> class cVector {
   ///< cVector may only be used for *simple* types, like int or pointers - not for class objects that allocate additional memory!

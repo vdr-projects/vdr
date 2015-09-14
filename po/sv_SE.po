@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -665,6 +665,9 @@ msgstr "Livstid"
 msgid "File"
 msgstr "Filnamn"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Mapp"
 
@@ -676,6 +679,12 @@ msgstr "Repeterande"
 
 msgid "First day"
 msgstr "Första dag"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Välj mapp"
@@ -852,6 +861,12 @@ msgstr "skin-beroende"
 msgid "always"
 msgstr "alltid"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -938,6 +953,9 @@ msgstr "Visa mappar i timermenyn"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Sortera alltid mappar först"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Använd sifferknappar för bokstavsinmatning"
@@ -1123,6 +1141,9 @@ msgstr "CAM klar"
 msgid " (activating)"
 msgstr " (aktiverar)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1153,6 +1174,15 @@ msgstr "CAM upptagen, vill du verkligen återställa?"
 msgid "Can't reset CAM!"
 msgstr "Kan inte återställa CAM!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "pausa inte pågående program"
 
@@ -1182,6 +1212,9 @@ msgstr "Normal prioritet"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Normal livstid (dagar)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Hantering av pausknapp"
@@ -1281,6 +1314,15 @@ msgstr "Tidsgräns för användar-inaktivitet (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP-tidsgräns (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap-tidsgräns (s)"
@@ -1534,6 +1576,9 @@ msgstr "Snart börjar inspelning!"
 
 msgid "Pause live video?"
 msgstr "Pausa pågående program?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Inspelningen har startat"

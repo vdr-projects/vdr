@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: menu.h 3.0 2008/01/12 11:22:52 kls Exp $
+ * $Id: menu.h 4.0 2008/01/12 11:22:52 kls Exp $
  */
 
 #ifndef _MENU_H

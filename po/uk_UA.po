@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-13 18:14+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "Строк зберігання"
 msgid "File"
 msgstr "Файл"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Тека"
 
@@ -672,6 +675,12 @@ msgstr "Повтор"
 
 msgid "First day"
 msgstr "Перший день"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Вибрати теку"
@@ -848,6 +857,12 @@ msgstr "згідно зі стилем"
 msgid "always"
 msgstr "завжди"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "Меню"
 
@@ -934,6 +949,9 @@ msgstr "Теки в меню таймера"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Завжди сортувати теки першими"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Кількість клавіш для символів"
@@ -1119,6 +1137,9 @@ msgstr "CAM готовий"
 msgid " (activating)"
 msgstr " (активування)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM (Умовний доступ)"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM використовується - дійсно перезапуст
 msgid "Can't reset CAM!"
 msgstr "Помилка перезапуску CAM-модуля!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "не призупиняти перегляд"
 
@@ -1178,6 +1208,9 @@ msgstr "Пріоритет таймера по замовчуванню"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Строк зберігання запису по замовчуванню (дні)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Обробка клавіші відкладеного перегляду"
@@ -1277,6 +1310,15 @@ msgstr "Мін. час очікування вводу (хв)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Затримка обриву з'єднання SVDRP (сек)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Затримка переключання каналу (сек)"
@@ -1530,6 +1572,9 @@ msgstr "Запис скоро почнеться!"
 
 msgid "Pause live video?"
 msgstr "Призупинити перегляд?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Запис почався"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -664,6 +664,9 @@ msgstr "Elinikä"
 msgid "File"
 msgstr "Tiedosto"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Kansio"
 
@@ -675,6 +678,12 @@ msgstr "Toistuva"
 
 msgid "First day"
 msgstr "1. päivä"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Valitse kansio"
@@ -851,6 +860,12 @@ msgstr "ulkoasun mukaan"
 msgid "always"
 msgstr "aina"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
 
@@ -937,6 +952,9 @@ msgstr "Näytä kansiot ajastinvalikossa"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Näytä kansiot ensin"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"
@@ -1122,6 +1140,9 @@ msgstr "CAM valmis"
 msgid " (activating)"
 msgstr " (aktivoidaan)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1152,6 +1173,15 @@ msgstr "CA-moduuli käytössä - nollataanko?"
 msgid "Can't reset CAM!"
 msgstr "CA-moduulin nollaus epäonnistui!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "älä pysäytä lähetystä"
 
@@ -1181,6 +1211,9 @@ msgstr "Tallenteen oletusprioriteetti"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Tallenteen oletuselinikä (d)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Taukonäppäimen toiminta"
@@ -1280,6 +1313,15 @@ msgstr "Käyttäjätoiminnon odotusaika (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP-komennon odotusaika (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Kanavavalinnan odotusaika (s)"
@@ -1533,6 +1575,9 @@ msgstr "Tallennus on alkamassa!"
 
 msgid "Pause live video?"
 msgstr "Pysäytetäänkö lähetys?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Tallennus aloitettu"

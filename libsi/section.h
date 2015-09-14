@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.h 3.0 2012/02/26 13:58:26 kls Exp $
+ *   $Id: section.h 4.0 2012/02/26 13:58:26 kls Exp $
  *                                                                         *
  ***************************************************************************/
 

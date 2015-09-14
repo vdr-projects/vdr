@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 3.0 2006/02/18 11:17:50 kls Exp $
+ *   $Id: util.c 4.0 2006/02/18 11:17:50 kls Exp $
  *                                                                         *
  ***************************************************************************/
 

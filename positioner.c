@@ -8,7 +8,7 @@
  * http://www.vdr-portal.de/board17-developer/board97-vdr-core/p1154305-grundlagen-und-winkelberechnungen-f%C3%BCr-h-h-diseqc-motor-antennenanlagen
  * by Albert Danis.
  *
- * $Id: positioner.c 3.5 2015/02/14 11:54:31 kls Exp $
+ * $Id: positioner.c 4.0 2015/02/14 11:54:31 kls Exp $
  */
 
 #include "positioner.h"

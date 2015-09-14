@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 3.8 2015/02/06 09:47:30 kls Exp $
+ * $Id: menu.h 4.4 2015/09/13 14:17:56 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -72,10 +72,13 @@ public:
 
 class cMenuEditTimer : public cOsdMenu {
 private:
+  static const cTimer *addedTimer;
   cTimer *timer;
   cTimer data;
   int channel;
   bool addIfConfirmed;
+  cStringList svdrpServerNames;
+  char remote[HOST_NAME_MAX];
   cMenuEditStrItem *file;
   cMenuEditDateItem *day;
   cMenuEditDateItem *firstday;
@@ -86,13 +89,14 @@ public:
   cMenuEditTimer(cTimer *Timer, bool New = false);
   virtual ~cMenuEditTimer();
   virtual eOSState ProcessKey(eKeys Key);
+  static const cTimer *AddedTimer(void);
   };
 
 class cMenuEvent : public cOsdMenu {
 private:
   const cEvent *event;
 public:
-  cMenuEvent(const cEvent *Event, bool CanSwitch = false, bool Buttons = false);
+  cMenuEvent(const cTimers *Timers, const cChannels *Channels, const cEvent *Event, bool CanSwitch = false, bool Buttons = false);
   virtual void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
@@ -123,14 +127,14 @@ private:
   bool timeout;
   int osdState;
   const cPositioner *positioner;
-  cChannel *channel;
+  const cChannel *channel;
   const cEvent *lastPresent;
   const cEvent *lastFollowing;
   static cDisplayChannel *currentDisplayChannel;
   void DisplayChannel(void);
   void DisplayInfo(void);
   void Refresh(void);
-  cChannel *NextAvailableChannel(cChannel *Channel, int Direction);
+  const cChannel *NextAvailableChannel(const cChannel *Channel, int Direction);
 public:
   cDisplayChannel(int Number, bool Switched);
   cDisplayChannel(eKeys FirstKey);
@@ -205,7 +209,7 @@ class cMenuRecordings : public cOsdMenu {
 private:
   char *base;
   int level;
-  int recordingsState;
+  cStateKey recordingsStateKey;
   int helpKeys;
   const cRecordingFilter *filter;
   static cString path;
@@ -239,7 +243,7 @@ private:
   char *fileName;
   bool GetEvent(void);
 public:
-  cRecordControl(cDevice *Device, cTimer *Timer = NULL, bool Pause = false);
+  cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer = NULL, bool Pause = false);
   virtual ~cRecordControl();
   bool Process(time_t t);
   cDevice *Device(void) { return device; }
@@ -254,16 +258,18 @@ private:
   static cRecordControl *RecordControls[];
   static int state;
 public:
-  static bool Start(cTimer *Timer = NULL, bool Pause = false);
+  static bool Start(cTimers *Timers, cTimer *Timer, bool Pause = false);
+  static bool Start(bool Pause = false);
   static void Stop(const char *InstantId);
+  static void Stop(cTimer *Timer);
   static bool PauseLiveVideo(void);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
   static cRecordControl *GetRecordControl(const cTimer *Timer);
          ///< Returns the cRecordControl for the given Timer.
          ///< If there is no cRecordControl for Timer, NULL is returned.
-  static void Process(time_t t);
-  static void ChannelDataModified(cChannel *Channel);
+  static bool Process(cTimers *Timers, time_t t);
+  static void ChannelDataModified(const cChannel *Channel);
   static bool Active(void);
   static void Shutdown(void);
   static void ChangeState(void) { state++; }

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: entry.h 3.0 2008/01/06 12:30:50 kls Exp $
+ * $Id: entry.h 4.0 2008/01/06 12:30:50 kls Exp $
  */
 
 #ifndef _ENTRY_H

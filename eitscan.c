@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 3.0 2012/04/07 14:39:28 kls Exp $
+ * $Id: eitscan.c 4.2 2015/09/10 11:05:03 kls Exp $
  */
 
 #include "eitscan.h"
@@ -45,13 +45,13 @@ int cScanData::Compare(const cListObject &ListObject) const
 
 class cScanList : public cList<cScanData> {
 public:
-  void AddTransponders(cList<cChannel> *Channels);
+  void AddTransponders(const cList<cChannel> *Channels);
   void AddTransponder(const cChannel *Channel);
   };
 
-void cScanList::AddTransponders(cList<cChannel> *Channels)
+void cScanList::AddTransponders(const cList<cChannel> *Channels)
 {
-  for (cChannel *ch = Channels->First(); ch; ch = Channels->Next(ch))
+  for (const cChannel *ch = Channels->First(); ch; ch = Channels->Next(ch))
       AddTransponder(ch);
   Sort();
 }
@@ -118,7 +118,8 @@ void cEITScanner::ForceScan(void)
 void cEITScanner::Activity(void)
 {
   if (currentChannel) {
-     Channels.SwitchTo(currentChannel);
+     LOCK_CHANNELS_READ;
+     Channels->SwitchTo(currentChannel);
      currentChannel = 0;
      }
   lastActivity = time(NULL);
@@ -129,7 +130,8 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout || !lastActivity) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        if (Channels.Lock(false, 10)) {
+        cStateKey StateKey;
+        if (const cChannels *Channels = cChannels::GetChannelsRead(StateKey, 10)) {
            if (!scanList) {
               scanList = new cScanList;
               if (transponderList) {
@@ -137,7 +139,7 @@ void cEITScanner::Process(void)
                  delete transponderList;
                  transponderList = NULL;
                  }
-              scanList->AddTransponders(&Channels);
+              scanList->AddTransponders(Channels);
               }
            bool AnyDeviceSwitched = false;
            for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -149,6 +151,10 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= CA_ENCRYPTED_MIN) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (Device->Priority() < 0) {
+                                  if (const cPositioner *Positioner = Device->Positioner()) {
+                                     if (Positioner->LastLongitude() != cSource::Position(Channel->Source()))
+                                        continue;
+                                     }
                                   bool MaySwitchTransponder = Device->MaySwitchTransponder(Channel);
                                   if (MaySwitchTransponder || Device->ProvidesTransponderExclusively(Channel) && now - lastActivity > Setup.EPGScanTimeout * 3600) {
                                      if (!MaySwitchTransponder) {
@@ -177,7 +183,7 @@ void cEITScanner::Process(void)
               if (lastActivity == 0) // this was a triggered scan
                  Activity();
               }
-           Channels.Unlock();
+           StateKey.Remove();
            }
         lastScan = time(NULL);
         }

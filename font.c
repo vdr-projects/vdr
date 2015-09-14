@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 3.2 2014/01/07 12:19:45 kls Exp $
+ * $Id: font.c 4.1 2015/04/19 11:13:45 kls Exp $
  */
 
 #include "font.h"
@@ -140,7 +140,7 @@ cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
                if (!error) {
                   error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
                   if (!error) {
-                     if (face->glyph->bitmap.rows-face->glyph->bitmap_top > bottom)
+                     if (int(face->glyph->bitmap.rows-face->glyph->bitmap_top) > bottom)
                         bottom = face->glyph->bitmap.rows-face->glyph->bitmap_top;
                      }
                   else

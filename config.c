@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.10 2015/02/10 12:24:13 kls Exp $
+ * $Id: config.c 4.4 2015/09/13 11:09:44 kls Exp $
  */
 
 #include "config.h"
@@ -412,12 +412,16 @@ cSetup::cSetup(void)
   EPGBugfixLevel = 3;
   EPGLinger = 0;
   SVDRPTimeout = 300;
+  SVDRPPeering = 0;
+  strn0cpy(SVDRPHostName, GetHostName(), sizeof(SVDRPHostName));
+  strcpy(SVDRPDefaultHost, "");
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
   RcRepeatDelay = 300;
   RcRepeatDelta = 100;
   DefaultPriority = 50;
   DefaultLifetime = MAXLIFETIME;
+  RecordKeyHandling = 2;
   PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;
@@ -427,6 +431,7 @@ cSetup::cSetup(void)
   RecordingDirs = 1;
   FoldersInTimerMenu = 1;
   AlwaysSortFoldersFirst = 1;
+  DefaultSortModeRec = rsmTime;
   NumberKeysForChars = 1;
   ColorKey0 = 0;
   ColorKey1 = 1;
@@ -634,12 +639,16 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
   else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+  else if (!strcasecmp(Name, "SVDRPPeering"))        SVDRPPeering       = atoi(Value);
+  else if (!strcasecmp(Name, "SVDRPHostName"))       strn0cpy(SVDRPHostName, Value, sizeof(SVDRPHostName));
+  else if (!strcasecmp(Name, "SVDRPdefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelta"))       RcRepeatDelta      = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+  else if (!strcasecmp(Name, "RecordKeyHandling"))   RecordKeyHandling  = atoi(Value);
   else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
@@ -649,6 +658,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
   else if (!strcasecmp(Name, "AlwaysSortFoldersFirst")) AlwaysSortFoldersFirst = atoi(Value);
+  else if (!strcasecmp(Name, "DefaultSortModeRec"))  DefaultSortModeRec = atoi(Value);
   else if (!strcasecmp(Name, "NumberKeysForChars"))  NumberKeysForChars = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey0"))           ColorKey0          = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey1"))           ColorKey1          = atoi(Value);
@@ -760,12 +770,16 @@ bool cSetup::Save(void)
   Store("EPGBugfixLevel",     EPGBugfixLevel);
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
+  Store("SVDRPPeering",       SVDRPPeering);
+  Store("SVDRPHostName",      SVDRPHostName);
+  Store("SVDRPDefaultHost",   SVDRPDefaultHost);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
   Store("RcRepeatDelay",      RcRepeatDelay);
   Store("RcRepeatDelta",      RcRepeatDelta);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
+  Store("RecordKeyHandling",  RecordKeyHandling);
   Store("PauseKeyHandling",   PauseKeyHandling);
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);
@@ -775,6 +789,7 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("FoldersInTimerMenu", FoldersInTimerMenu);
   Store("AlwaysSortFoldersFirst", AlwaysSortFoldersFirst);
+  Store("DefaultSortModeRec", DefaultSortModeRec);
   Store("NumberKeysForChars", NumberKeysForChars);
   Store("ColorKey0",          ColorKey0);
   Store("ColorKey1",          ColorKey1);

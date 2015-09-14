@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 3.0 2013/02/16 15:20:37 kls Exp $
+ * $Id: ringbuffer.h 4.0 2013/02/16 15:20:37 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H

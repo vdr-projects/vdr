@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -660,6 +660,9 @@ msgstr "Ömrü"
 msgid "File"
 msgstr "Kütük"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr ""
 
@@ -671,6 +674,12 @@ msgstr ""
 
 msgid "First day"
 msgstr "Ýlk gün"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr ""
@@ -847,6 +856,12 @@ msgstr "yüzeye baðimli"
 msgid "always"
 msgstr "hep"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -932,6 +947,9 @@ msgid "Setup.OSD$Folders in timer menu"
 msgstr ""
 
 msgid "Setup.OSD$Always sort folders first"
+msgstr ""
+
+msgid "Setup.OSD$Default sort mode for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1118,6 +1136,9 @@ msgstr "CAM hazýr"
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1148,6 +1169,15 @@ msgstr "CAM kullanýlýyor - gerçekden sýfýrla?"
 msgid "Can't reset CAM!"
 msgstr "CAM sýfýrlanamadý!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr ""
 
@@ -1177,6 +1207,9 @@ msgstr "Olaðan priorite"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Olaðan çekim ömrü (gün)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr ""
@@ -1276,6 +1309,15 @@ msgstr "Minimum kullanýcý hareketsizliði (dak)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP zaman aþýmý (sn)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zaping zaman aþýmý (sn)"
@@ -1528,6 +1570,9 @@ msgid "Upcoming recording!"
 msgstr "Çekim yakýnda baþlýyor!"
 
 msgid "Pause live video?"
+msgstr ""
+
+msgid "Start recording?"
 msgstr ""
 
 msgid "Recording started"

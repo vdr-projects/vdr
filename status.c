@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 3.1 2014/01/25 10:47:39 kls Exp $
+ * $Id: status.c 4.0 2014/01/25 10:47:39 kls Exp $
  */
 
 #include "status.h"

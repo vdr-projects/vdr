@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.h 3.0 2012/10/07 11:11:43 kls Exp $
+ * $Id: themes.h 4.0 2012/10/07 11:11:43 kls Exp $
  */
 
 #ifndef __THEMES_H

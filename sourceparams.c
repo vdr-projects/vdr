@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sourceparams.c 3.1 2014/03/09 12:03:09 kls Exp $
+ * $Id: sourceparams.c 4.1 2015/08/02 11:56:39 kls Exp $
  */
 
 #include "sourceparams.h"
@@ -33,7 +33,7 @@ cSourceParam::cSourceParam(char Source, const char *Description)
 
 cSourceParams SourceParams;
 
-cSourceParam *cSourceParams::Get(char Source) const
+cSourceParam *cSourceParams::Get(char Source)
 {
   for (cSourceParam *sp = First(); sp; sp = Next(sp)) {
       if (sp->Source() == Source)

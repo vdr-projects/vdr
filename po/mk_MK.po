@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -661,6 +661,9 @@ msgstr "Траење"
 msgid "File"
 msgstr "Датотека"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Директориум"
 
@@ -672,6 +675,12 @@ msgstr "Периодичен"
 
 msgid "First day"
 msgstr "Прв ден"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Избери директориум"
@@ -848,6 +857,12 @@ msgstr "зависно од фасада"
 msgid "always"
 msgstr "секогаш"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -934,6 +949,9 @@ msgstr "Директориуми во менито за тајмер"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Секогаш сортирај прво папки"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Нумерички копчиња за букви"
@@ -1119,6 +1137,9 @@ msgstr "CAM спремен"
 msgid " (activating)"
 msgstr " (активирање)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM е во употреба - рестартирај?"
 msgid "Can't reset CAM!"
 msgstr "Неуспешно рестартирање на CAM-от!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "не паузирај пренос во живо"
 
@@ -1178,6 +1208,9 @@ msgstr "Зададен приоритет"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Стандардно веметраење (денови)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Подесување на копчето пауза"
@@ -1277,6 +1310,15 @@ msgstr "Минимум неактивност на корисникот (мин)
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP тајмаут (сек)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Зап тајмаут (сек)"
@@ -1530,6 +1572,9 @@ msgstr "Претстои снимање!"
 
 msgid "Pause live video?"
 msgstr "Паузирај пренос во живо?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Снимањето почна"

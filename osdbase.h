@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 3.2 2015/01/15 10:09:18 kls Exp $
+ * $Id: osdbase.h 4.1 2015/09/10 11:17:52 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -93,6 +93,7 @@ private:
   int first, current, marked;
   eMenuCategory menuCategory;
   eMenuSortMode menuSortMode;
+  eMenuOrientation menuOrientation;
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
   bool helpDisplayed;

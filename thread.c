@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 3.2 2013/12/29 15:26:33 kls Exp $
+ * $Id: thread.c 4.1 2015/08/29 14:43:03 kls Exp $
  */
 
 #include "thread.h"
@@ -20,6 +20,16 @@
 #include <sys/prctl.h>
 #include <unistd.h>
 #include "tools.h"
+
+#define ABORT { dsyslog("ABORT!"); abort(); } // use debugger to trace back the problem
+
+//#define DEBUG_LOCKING // uncomment this line to activate debug output for locking
+
+#ifdef DEBUG_LOCKING
+#define dbglocking(a...) fprintf(stderr, a)
+#else
+#define dbglocking(a...)
+#endif
 
 static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {
@@ -400,6 +410,132 @@ bool cThreadLock::Lock(cThread *Thread)
      locked = true;
      return true;
      }
+  return false;
+}
+
+// --- cStateLock ------------------------------------------------------------
+
+cStateLock::cStateLock(const char *Name)
+:rwLock(true)
+{
+  name = Name;
+  threadId = 0;
+  state = 0;
+  explicitModify = false;
+}
+
+bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
+{
+  dbglocking("%5d %-10s %10p   lock state = %d/%d write = %d timeout = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, Write, TimeoutMs);
+  StateKey.timedOut = false;
+  if (StateKey.stateLock) {
+     esyslog("ERROR: StateKey already in use in call to cStateLock::Lock() (tid=%d, lock=%s)", StateKey.stateLock->threadId, name);
+     ABORT;
+     return false;
+     }
+  if (rwLock.Lock(Write, TimeoutMs)) {
+     StateKey.stateLock = this;
+     if (Write) {
+        dbglocking("%5d %-10s %10p   locked write\n", cThread::ThreadId(), name, &StateKey);
+        threadId = cThread::ThreadId();
+        StateKey.write = true;
+        return true;
+        }
+     else if (state != StateKey.state) {
+        dbglocking("%5d %-10s %10p   locked read\n", cThread::ThreadId(), name, &StateKey);
+        return true;
+        }
+     else {
+        dbglocking("%5d %-10s %10p   state unchanged\n", cThread::ThreadId(), name, &StateKey);
+        StateKey.stateLock = NULL;
+        rwLock.Unlock();
+        }
+     }
+  else if (TimeoutMs) {
+     dbglocking("%5d %-10s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
+     StateKey.timedOut = true;
+     }
+  return false;
+}
+
+void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
+{
+  dbglocking("%5d %-10s %10p unlock state = %d/%d inc = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, IncState);
+  if (StateKey.stateLock != this) {
+     esyslog("ERROR: cStateLock::Unlock() called with an unused key (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  if (StateKey.write && threadId != cThread::ThreadId()) {
+     esyslog("ERROR: cStateLock::Unlock() called without holding a lock (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  if (StateKey.write && IncState && !explicitModify)
+     state++;
+  StateKey.state = state;
+  StateKey.write = false;
+  threadId = 0;
+  explicitModify = false;
+  rwLock.Unlock();
+}
+
+void cStateLock::IncState(void)
+{
+  if (threadId != cThread::ThreadId()) {
+     esyslog("ERROR: cStateLock::IncState() called without holding a lock (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     }
+  else
+     state++;
+}
+
+// --- cStateKey -------------------------------------------------------------
+
+cStateKey::cStateKey(bool IgnoreFirst)
+{
+  stateLock = NULL;
+  write = false;
+  state = 0;
+  if (!IgnoreFirst)
+     Reset();
+}
+
+cStateKey::~cStateKey()
+{
+  if (stateLock) {
+     esyslog("ERROR: cStateKey::~cStateKey() called without releasing the lock first (tid=%d, lock=%s, key=%p)", stateLock->threadId, stateLock->name, this);
+     ABORT;
+     }
+}
+
+void cStateKey::Reset(void)
+{
+  state = -1; // lock and key are initialized differently, to make the first check return true
+}
+
+void cStateKey::Remove(bool IncState)
+{
+  if (stateLock) {
+     stateLock->Unlock(*this, IncState);
+     stateLock = NULL;
+     }
+  else {
+     esyslog("ERROR: cStateKey::Remove() called without holding a lock (key=%p)", this);
+     ABORT;
+     }
+}
+
+bool cStateKey::StateChanged(void)
+{
+  if (!stateLock) {
+     esyslog("ERROR: cStateKey::StateChanged() called without holding a lock (tid=%d, key=%p)", cThread::ThreadId(), this);
+     ABORT;
+     }
+  else if (write)
+     return state != stateLock->state;
+  else
+     return true;
   return false;
 }
 

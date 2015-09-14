@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -662,6 +662,9 @@ msgstr "终生"
 msgid "File"
 msgstr "文件"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "文件夹"
 
@@ -673,6 +676,12 @@ msgstr "重复"
 
 msgid "First day"
 msgstr "第一天"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "选择文件夹"
@@ -849,6 +858,12 @@ msgstr "皮肤选择"
 msgid "always"
 msgstr "总是"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "系统菜单设置"
 
@@ -935,6 +950,9 @@ msgstr "定时器菜单中的文件夹"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "总是排序文件夹"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "数字键的字符"
@@ -1120,6 +1138,9 @@ msgstr "CAM准备"
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM设置"
 
@@ -1150,6 +1171,15 @@ msgstr "CAM正在使用-是否重启？"
 msgid "Can't reset CAM!"
 msgstr "不能重启CAM"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "取消暂停当前视频"
 
@@ -1179,6 +1209,9 @@ msgstr "默认优先"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "默认终身 (d)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "暂停关键的处理"
@@ -1278,6 +1311,15 @@ msgstr "Min. 使用者静止 (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP 超时 (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap 超时 (s)"
@@ -1531,6 +1573,9 @@ msgstr "准备录像！"
 
 msgid "Pause live video?"
 msgstr "是否暂停视频播放？"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "录像开始！"

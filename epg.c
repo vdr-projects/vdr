@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 3.3 2013/12/28 11:33:08 kls Exp $
+ * $Id: epg.c 4.2 2015/09/10 10:58:19 kls Exp $
  */
 
 #include "epg.h"
@@ -15,7 +15,6 @@
 #include <limits.h>
 #include <time.h>
 #include "libsi/si.h"
-#include "timers.h"
 
 #define RUNNINGSTATUSTIMEOUT 30 // seconds before the running status is considered unknown
 #define EPGDATAWRITEDELTA   600 // seconds between writing the epg.data file
@@ -111,9 +110,12 @@ tComponent *cComponents::GetComponent(int Index, uchar Stream, uchar Type)
 
 // --- cEvent ----------------------------------------------------------------
 
+cMutex cEvent::numTimersMutex;
+
 cEvent::cEvent(tEventID EventID)
 {
   schedule = NULL;
+  numTimers = 0;
   eventID = EventID;
   tableID = 0xFF; // actual table ids are 0x4E..0x60
   version = 0xFF; // actual version numbers are 0..31
@@ -170,9 +172,9 @@ void cEvent::SetVersion(uchar Version)
   version = Version;
 }
 
-void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
+void cEvent::SetRunningStatus(int RunningStatus, const cChannel *Channel)
 {
-  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && Channel->HasTimer())
+  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && schedule && schedule->HasTimer())
      isyslog("channel %d (%s) event %s status %d", Channel->Number(), Channel->Name(), *ToDescr(), RunningStatus);
   runningStatus = RunningStatus;
 }
@@ -243,13 +245,22 @@ cString cEvent::ToDescr(void) const
   return cString::sprintf("%s %s-%s %s'%s'", *GetDateString(), *GetTimeString(), *GetEndTimeString(), vpsbuf, Title());
 }
 
-bool cEvent::HasTimer(void) const
+void cEvent::IncNumTimers(void) const
 {
-  for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
-      if (t->Event() == this)
-         return true;
-      }
-  return false;
+  numTimersMutex.Lock();
+  numTimers++;
+  if (schedule)
+     schedule->IncNumTimers();
+  numTimersMutex.Unlock();
+}
+
+void cEvent::DecNumTimers(void) const
+{
+  numTimersMutex.Lock();
+  numTimers--;
+  if (schedule)
+     schedule->DecNumTimers();
+  numTimersMutex.Unlock();
 }
 
 bool cEvent::IsRunning(bool OrAboutToStart) const
@@ -605,9 +616,9 @@ void ReportEpgBugFixStats(bool Force)
             bool PrintedStats = false;
             char *q = buffer;
             *buffer = 0;
+            LOCK_CHANNELS_READ;
             for (int c = 0; c < p->n; c++) {
-                cChannel *channel = Channels.GetByChannelID(p->channelIDs[c], true);
-                if (channel) {
+                if (const cChannel *Channel = Channels->GetByChannelID(p->channelIDs[c], true)) {
                    if (!GotHits) {
                       dsyslog("=====================");
                       dsyslog("EPG bugfix statistics");
@@ -623,7 +634,7 @@ void ReportEpgBugFixStats(bool Force)
                       q += snprintf(q, sizeof(buffer) - (q - buffer), "%-3d %-4d", i, p->hits);
                       PrintedStats = true;
                       }
-                   q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
+                   q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, Channel->Name());
                    delim = ", ";
                    if (q - buffer > 80) {
                       q += snprintf(q, sizeof(buffer) - (q - buffer), "%s...", delim);
@@ -650,7 +661,7 @@ static void StripControlCharacters(char *s)
            uchar *p = (uchar *)s;
            if (l == 2 && *p == 0xC2) // UTF-8 sequence
               p++;
-           if (*p == 0x86 || *p == 0x87) {
+           if (*p == 0x86 || *p == 0x87 || *p == 0x0D) {
               memmove(s, p + 1, len - l + 1); // we also copy the terminating 0!
               len -= l;
               l = 0;
@@ -878,12 +889,30 @@ Final:
 
 // --- cSchedule -------------------------------------------------------------
 
+cMutex cSchedule::numTimersMutex;
+
 cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
+  events.SetUseGarbageCollector();
+  numTimers = 0;
   hasRunning = false;
   modified = 0;
   presentSeen = 0;
+}
+
+void cSchedule::IncNumTimers(void) const
+{
+  numTimersMutex.Lock();
+  numTimers++;
+  numTimersMutex.Unlock();
+}
+
+void cSchedule::DecNumTimers(void) const
+{
+  numTimersMutex.Lock();
+  numTimers--;
+  numTimersMutex.Unlock();
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)
@@ -897,8 +926,6 @@ cEvent *cSchedule::AddEvent(cEvent *Event)
 void cSchedule::DelEvent(cEvent *Event)
 {
   if (Event->schedule == this) {
-     if (hasRunning && Event->IsRunning())
-        ClrRunningStatus();
      UnhashEvent(Event);
      events.Del(Event);
      }
@@ -922,7 +949,7 @@ const cEvent *cSchedule::GetPresentEvent(void) const
 {
   const cEvent *pe = NULL;
   time_t now = time(NULL);
-  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+  for (const cEvent *p = events.First(); p; p = events.Next(p)) {
       if (p->StartTime() <= now)
          pe = p;
       else if (p->StartTime() > now + 3600)
@@ -962,7 +989,7 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
 {
   const cEvent *pe = NULL;
   time_t delta = INT_MAX;
-  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+  for (const cEvent *p = events.First(); p; p = events.Next(p)) {
       time_t dt = Time - p->StartTime();
       if (dt >= 0 && dt < delta && p->EndTime() >= Time) {
          delta = dt;
@@ -972,7 +999,7 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
   return pe;
 }
 
-void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
+void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, const cChannel *Channel)
 {
   hasRunning = false;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
@@ -987,6 +1014,7 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Cha
       if (p->RunningStatus() >= SI::RunningStatusPausing)
          hasRunning = true;
       }
+  SetPresentSeen();
 }
 
 void cSchedule::ClrRunningStatus(cChannel *Channel)
@@ -1019,32 +1047,29 @@ void cSchedule::Sort(void)
          p->SetRunningStatus(SI::RunningStatusNotRunning);
          }
      }
+  SetModified();
 }
 
 void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
 {
   if (SegmentStart > 0 && SegmentEnd > 0) {
-     for (cEvent *p = events.First(); p; p = events.Next(p)) {
-         if (p->EndTime() > SegmentStart) {
-            if (p->StartTime() < SegmentEnd) {
-               // The event overlaps with the given time segment.
-               if (p->TableID() > TableID || p->TableID() == TableID && p->Version() != Version) {
-                  // The segment overwrites all events from tables with higher ids, and
-                  // within the same table id all events must have the same version.
-                  // We can't delete the event right here because a timer might have
-                  // a pointer to it, so let's set its id and start time to 0 to have it
-                  // "phased out":
-                  if (hasRunning && p->IsRunning())
-                     ClrRunningStatus();
-                  UnhashEvent(p);
-                  p->eventID = 0;
-                  p->startTime = 0;
-                  }
-               }
-            else
-               break;
-            }
-         }
+     cEvent *p = events.First();
+     while (p) {
+           cEvent *n = events.Next(p);
+           if (p->EndTime() > SegmentStart) {
+              if (p->StartTime() < SegmentEnd) {
+                 // The event overlaps with the given time segment.
+                 if (p->TableID() > TableID || p->TableID() == TableID && p->Version() != Version) {
+                    // The segment overwrites all events from tables with higher ids, and
+                    // within the same table id all events must have the same version.
+                    DelEvent(p);
+                    }
+                 }
+              else
+                 break;
+              }
+           p = n;
+           }
      }
 }
 
@@ -1066,9 +1091,9 @@ void cSchedule::Cleanup(time_t Time)
 
 void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
 {
-  cChannel *channel = Channels.GetByChannelID(channelID, true);
-  if (channel) {
-     fprintf(f, "%sC %s %s\n", Prefix, *channel->GetChannelID().ToString(), channel->Name());
+  LOCK_CHANNELS_READ;
+  if (const cChannel *Channel = Channels->GetByChannelID(channelID, true)) {
+     fprintf(f, "%sC %s %s\n", Prefix, *Channel->GetChannelID().ToString(), Channel->Name());
      const cEvent *p;
      switch (DumpMode) {
        case dmAll: {
@@ -1111,12 +1136,10 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
               if (*s) {
                  tChannelID channelID = tChannelID::FromString(s);
                  if (channelID.Valid()) {
-                    cSchedule *p = Schedules->AddSchedule(channelID);
-                    if (p) {
+                    if (cSchedule *p = Schedules->AddSchedule(channelID)) {
                        if (!cEvent::Read(f, p))
                           return false;
                        p->Sort();
-                       Schedules->SetModified(p);
                        }
                     }
                  else {
@@ -1164,12 +1187,12 @@ void cEpgDataWriter::Perform(void)
 {
   cMutexLock MutexLock(&mutex); // to make sure fore- and background calls don't cause parellel dumps!
   {
-    cSchedulesLock SchedulesLock(true, 1000);
-    cSchedules *s = (cSchedules *)cSchedules::Schedules(SchedulesLock);
-    if (s) {
+    cStateKey StateKey;
+    if (cSchedules *Schedules = cSchedules::GetSchedulesWrite(StateKey, 1000)) {
        time_t now = time(NULL);
-       for (cSchedule *p = s->First(); p; p = s->Next(p))
+       for (cSchedule *p = Schedules->First(); p; p = Schedules->Next(p))
            p->Cleanup(now);
+       StateKey.Remove();
        }
   }
   if (dump)
@@ -1178,29 +1201,25 @@ void cEpgDataWriter::Perform(void)
 
 static cEpgDataWriter EpgDataWriter;
 
-// --- cSchedulesLock --------------------------------------------------------
-
-cSchedulesLock::cSchedulesLock(bool WriteLock, int TimeoutMs)
-{
-  locked = cSchedules::schedules.rwlock.Lock(WriteLock, TimeoutMs);
-}
-
-cSchedulesLock::~cSchedulesLock()
-{
-  if (locked)
-     cSchedules::schedules.rwlock.Unlock();
-}
-
 // --- cSchedules ------------------------------------------------------------
 
 cSchedules cSchedules::schedules;
 char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastDump = time(NULL);
-time_t cSchedules::modified = 0;
 
-const cSchedules *cSchedules::Schedules(cSchedulesLock &SchedulesLock)
+cSchedules::cSchedules(void)
+:cList<cSchedule>("Schedules")
 {
-  return SchedulesLock.Locked() ? &schedules : NULL;
+}
+
+const cSchedules *cSchedules::GetSchedulesRead(cStateKey &StateKey, int TimeoutMs)
+{
+  return schedules.Lock(StateKey, false, TimeoutMs) ? &schedules : NULL;
+}
+
+cSchedules *cSchedules::GetSchedulesWrite(cStateKey &StateKey, int TimeoutMs)
+{
+  return schedules.Lock(StateKey, true, TimeoutMs) ? &schedules : NULL;
 }
 
 void cSchedules::SetEpgDataFileName(const char *FileName)
@@ -1208,12 +1227,6 @@ void cSchedules::SetEpgDataFileName(const char *FileName)
   free(epgDataFileName);
   epgDataFileName = FileName ? strdup(FileName) : NULL;
   EpgDataWriter.SetDump(epgDataFileName != NULL);
-}
-
-void cSchedules::SetModified(cSchedule *Schedule)
-{
-  Schedule->SetModified();
-  modified = time(NULL);
 }
 
 void cSchedules::Cleanup(bool Force)
@@ -1232,83 +1245,59 @@ void cSchedules::Cleanup(bool Force)
 
 void cSchedules::ResetVersions(void)
 {
-  cSchedulesLock SchedulesLock(true);
-  cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
-  if (s) {
-     for (cSchedule *Schedule = s->First(); Schedule; Schedule = s->Next(Schedule))
-         Schedule->ResetVersions();
-     }
-}
-
-bool cSchedules::ClearAll(void)
-{
-  cSchedulesLock SchedulesLock(true, 1000);
-  cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
-  if (s) {
-     for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
-         Timer->SetEvent(NULL);
-     for (cSchedule *Schedule = s->First(); Schedule; Schedule = s->Next(Schedule))
-         Schedule->Cleanup(INT_MAX);
-     return true;
-     }
-  return false;
+  LOCK_SCHEDULES_WRITE;
+  for (cSchedule *Schedule = Schedules->First(); Schedule; Schedule = Schedules->Next(Schedule))
+      Schedule->ResetVersions();
 }
 
 bool cSchedules::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime)
 {
-  cSchedulesLock SchedulesLock;
-  cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
-  if (s) {
-     cSafeFile *sf = NULL;
-     if (!f) {
-        sf = new cSafeFile(epgDataFileName);
-        if (sf->Open())
-           f = *sf;
-        else {
-           LOG_ERROR;
-           delete sf;
-           return false;
-           }
-        }
-     for (cSchedule *p = s->First(); p; p = s->Next(p))
-         p->Dump(f, Prefix, DumpMode, AtTime);
-     if (sf) {
-        sf->Close();
+  cSafeFile *sf = NULL;
+  if (!f) {
+     sf = new cSafeFile(epgDataFileName);
+     if (sf->Open())
+        f = *sf;
+     else {
+        LOG_ERROR;
         delete sf;
+        return false;
         }
-     return true;
      }
-  return false;
+  LOCK_SCHEDULES_READ;
+  for (const cSchedule *p = Schedules->First(); p; p = Schedules->Next(p))
+      p->Dump(f, Prefix, DumpMode, AtTime);
+  if (sf) {
+     sf->Close();
+     delete sf;
+     }
+  return true;
 }
 
 bool cSchedules::Read(FILE *f)
 {
-  cSchedulesLock SchedulesLock(true, 1000);
-  cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
-  if (s) {
-     bool OwnFile = f == NULL;
-     if (OwnFile) {
-        if (epgDataFileName && access(epgDataFileName, R_OK) == 0) {
-           dsyslog("reading EPG data from %s", epgDataFileName);
-           if ((f = fopen(epgDataFileName, "r")) == NULL) {
-              LOG_ERROR;
-              return false;
-              }
-           }
-        else
+  bool OwnFile = f == NULL;
+  if (OwnFile) {
+     if (epgDataFileName && access(epgDataFileName, R_OK) == 0) {
+        dsyslog("reading EPG data from %s", epgDataFileName);
+        if ((f = fopen(epgDataFileName, "r")) == NULL) {
+           LOG_ERROR;
            return false;
+           }
         }
-     bool result = cSchedule::Read(f, s);
-     if (OwnFile)
-        fclose(f);
-     if (result) {
-        // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
-        for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel))
-            s->GetSchedule(Channel);
-        }
-     return result;
+     else
+        return false;
      }
-  return false;
+  LOCK_CHANNELS_WRITE;
+  LOCK_SCHEDULES_WRITE;
+  bool result = cSchedule::Read(f, Schedules);
+  if (OwnFile)
+     fclose(f);
+  if (result) {
+     // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
+     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel))
+         Schedules->GetSchedule(Channel);
+     }
+  return result;
 }
 
 cSchedule *cSchedules::AddSchedule(tChannelID ChannelID)
@@ -1318,9 +1307,6 @@ cSchedule *cSchedules::AddSchedule(tChannelID ChannelID)
   if (!p) {
      p = new cSchedule(ChannelID);
      Add(p);
-     cChannel *channel = Channels.GetByChannelID(ChannelID);
-     if (channel)
-        channel->schedule = p;
      }
   return p;
 }
@@ -1328,7 +1314,7 @@ cSchedule *cSchedules::AddSchedule(tChannelID ChannelID)
 const cSchedule *cSchedules::GetSchedule(tChannelID ChannelID) const
 {
   ChannelID.ClrRid();
-  for (cSchedule *p = First(); p; p = Next(p)) {
+  for (const cSchedule *p = First(); p; p = Next(p)) {
       if (p->ChannelID() == ChannelID)
          return p;
       }
@@ -1541,18 +1527,18 @@ void cEpgHandlers::DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t
   Schedule->DropOutdated(SegmentStart, SegmentEnd, TableID, Version);
 }
 
-void cEpgHandlers::BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus)
+void cEpgHandlers::BeginSegmentTransfer(const cChannel *Channel)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
-      if (eh->BeginSegmentTransfer(Channel, OnlyRunningStatus))
+      if (eh->BeginSegmentTransfer(Channel, false))
          return;
       }
 }
 
-void cEpgHandlers::EndSegmentTransfer(bool Modified, bool OnlyRunningStatus)
+void cEpgHandlers::EndSegmentTransfer(bool Modified)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
-      if (eh->EndSegmentTransfer(Modified, OnlyRunningStatus))
+      if (eh->EndSegmentTransfer(Modified, false))
          return;
       }
 }

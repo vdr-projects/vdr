@@ -6,7 +6,7 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.h 3.0 2006/04/17 12:48:55 kls Exp $
+ * $Id: spu.h 4.0 2006/04/17 12:48:55 kls Exp $
  */
 
 #ifndef __SPU_VDR_H

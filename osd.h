@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 3.6 2015/02/11 09:48:02 kls Exp $
+ * $Id: osd.h 4.4 2015/04/19 12:18:25 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -510,8 +510,10 @@ public:
        ///< In order to allow devices that can handle only a limited number of layers,
        ///< the Layer parameter must be less than 8 (MAXPIXMAPLAYERS).
        ///< ViewPort defines the rectangle in which this pixmap will be rendered on
-       ///< the OSD. If no DrawPort is given, it defaults to the same size as the
-       ///< ViewPort, with its upper left corner set to (0, 0).
+       ///< the OSD. The coordinate (0, 0) corresponds to the upper left corner of the
+       ///< OSD. If no DrawPort is given, it defaults to the same size as the
+       ///< ViewPort, with its upper left corner set to (0, 0). The DrawPort's origin
+       ///< is relative to the ViewPort's origin.
        ///< All drawing operations will be executed relative to the origin of the
        ///< DrawPort rectangle, and will be clipped to the size of this rectangle.
        ///< The DrawPort may have a different size than the ViewPort. If it is smaller
@@ -522,6 +524,8 @@ public:
        ///< intersects with the ViewPort will be visible on the OSD.
        ///< The drawing area of a newly created cPixmap is not initialized and may
        ///< contain random data.
+       ///< See cOsd::MaxPixmapSize() for information on the maximum size of pixmaps
+       ///< supported by the system.
   static void Lock(void) { mutex.Lock(); }
        ///< All public member functions of cPixmap set locks as necessary to make sure
        ///< they are thread-safe (unless noted otherwise). If several cPixmap member
@@ -722,6 +726,7 @@ class cOsd {
 private:
   static int osdLeft, osdTop, osdWidth, osdHeight;
   static cVector<cOsd *> Osds;
+  static cSize maxPixmapSize;
   static cMutex mutex;
   bool isTrueColor;
   cBitmap *savedBitmap;
@@ -780,6 +785,18 @@ protected:
        ///< If there are no dirty pixmaps, or if this is not a true color OSD,
        ///< this function returns NULL.
        ///< The caller must call DestroyPixmap() for the returned pixmap after use.
+//#define DEPRECATED_GETBITMAP
+#ifdef DEPRECATED_GETBITMAP
+public:
+#endif
+  cBitmap *GetBitmap(int Area);
+       ///< Returns a pointer to the bitmap for the given Area, or NULL if no
+       ///< such bitmap exists.
+       ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
+       ///< is returned. This is done so that skins that call this function
+       ///< in order to preset the bitmap's palette won't crash.
+       ///< Use of this function outside of derived classes is deprecated and it
+       ///< may be made 'protected' in a future version.
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
@@ -812,14 +829,8 @@ public:
        ///< requested colors. By default the palette assumes there will be
        ///< 10 fixed colors and 10 color combinations.
        ///< If this is a true color OSD, this function does nothing.
-  cBitmap *GetBitmap(int Area);
-       ///< Returns a pointer to the bitmap for the given Area, or NULL if no
-       ///< such bitmap exists.
-       ///< If this is a true color OSD, a pointer to a dummy bitmap with 8bpp
-       ///< is returned. This is done so that skins that call this function
-       ///< in order to preset the bitmap's palette won't crash.
-       ///< Use of this function outside of derived classes is deprecated and it
-       ///< may be made 'protected' in a future version.
+  virtual const cSize &MaxPixmapSize(void) const;
+       ///< Returns the maximum possible size of a pixmap this OSD can create.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
        ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
        ///< The caller must not delete the returned object, it will be deleted when

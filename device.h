@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 3.10 2015/01/12 14:39:09 kls Exp $
+ * $Id: device.h 4.1 2015/04/19 12:12:43 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -55,7 +55,7 @@ enum ePlayMode { pmNone,           // audio/video from decoder
                  // KNOWN TO YOUR PLAYER.
                };
 
-#define DEPRECATED_VIDEOSYSTEM
+//#define DEPRECATED_VIDEOSYSTEM
 #ifdef DEPRECATED_VIDEOSYSTEM
 enum eVideoSystem { vsPAL,
                     vsNTSC

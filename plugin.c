@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 3.0 2012/09/01 13:10:27 kls Exp $
+ * $Id: plugin.c 4.1 2015/04/18 14:51:20 kls Exp $
  */
 
 #include "plugin.h"
@@ -318,23 +318,23 @@ void cPluginManager::SetDirectory(const char *Directory)
 void cPluginManager::AddPlugin(const char *Args)
 {
   if (strcmp(Args, "*") == 0) {
-     cReadDir d(directory);
-     struct dirent *e;
-     while ((e = d.Next()) != NULL) {
-           if (strstr(e->d_name, LIBVDR_PREFIX) == e->d_name) {
-              char *p = strstr(e->d_name, SO_INDICATOR);
-              if (p) {
-                 *p = 0;
-                 p += strlen(SO_INDICATOR);
-                 if (strcmp(p, APIVERSION) == 0) {
-                    char *name = e->d_name + strlen(LIBVDR_PREFIX);
-                    if (strcmp(name, "*") != 0) { // let's not get into a loop!
-                       AddPlugin(e->d_name + strlen(LIBVDR_PREFIX));
-                       }
-                    }
-                 }
-              }
-           }
+     cFileNameList Files(directory);
+     for (int i = 0; i < Files.Size(); i++) {
+         char *FileName = Files.At(i);
+         if (strstr(FileName, LIBVDR_PREFIX) == FileName) {
+            char *p = strstr(FileName, SO_INDICATOR);
+            if (p) {
+               *p = 0;
+               p += strlen(SO_INDICATOR);
+               if (strcmp(p, APIVERSION) == 0) {
+                  char *name = FileName + strlen(LIBVDR_PREFIX);
+                  if (strcmp(name, "*") != 0) { // let's not get into a loop!
+                     AddPlugin(FileName + strlen(LIBVDR_PREFIX));
+                     }
+                  }
+               }
+            }
+         }
      return;
      }
   char *s = strdup(skipspace(Args));

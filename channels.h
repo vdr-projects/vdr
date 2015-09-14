@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 3.3 2015/02/01 13:30:26 kls Exp $
+ * $Id: channels.h 4.2 2015/08/17 09:39:48 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -27,10 +27,6 @@
 #define CHANNELMOD_TRANSP   0x20
 #define CHANNELMOD_LANGS    0x40
 #define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA | CHANNELMOD_TRANSP)
-
-#define CHANNELSMOD_NONE    0
-#define CHANNELSMOD_AUTO    1
-#define CHANNELSMOD_USER    2
 
 #define MAXAPIDS 32 // audio
 #define MAXDPIDS 16 // dolby (AC3 + DTS)
@@ -86,6 +82,7 @@ class cLinkChannels : public cList<cLinkChannel> {
   };
 
 class cSchedule;
+class cChannels;
 
 class cChannel : public cListObject {
   friend class cSchedules;
@@ -128,7 +125,7 @@ private:
   mutable cString nameSource;
   mutable cString shortNameSource;
   cString parameters;
-  int modification;
+  mutable int modification;
   time_t seen; // When this channel was last seen in the SDT of its transponder
   mutable const cSchedule *schedule;
   cLinkChannels *linkChannels;
@@ -188,65 +185,84 @@ public:
   bool IsTerr(void) const { return cSource::IsTerr(source); }
   bool IsSourceType(char Source) const { return cSource::IsType(source, Source); }
   tChannelID GetChannelID(void) const { return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid); }
-  bool HasTimer(void) const;
-  int Modification(int Mask = CHANNELMOD_ALL);
-  time_t Seen(void) { return seen; }
+  int Modification(int Mask = CHANNELMOD_ALL) const;
+  time_t Seen(void) const { return seen; }
   void CopyTransponderData(const cChannel *Channel);
   bool SetTransponderData(int Source, int Frequency, int Srate, const char *Parameters, bool Quiet = false);
-  void SetId(int Nid, int Tid, int Sid, int Rid = 0);
-  void SetLcn(int Lcn);
-  void SetName(const char *Name, const char *ShortName, const char *Provider);
-  void SetPortalName(const char *PortalName);
-  void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
-  void SetCaIds(const int *CaIds); // list must be zero-terminated
-  void SetCaDescriptors(int Level);
-  void SetLinkChannels(cLinkChannels *LinkChannels);
+  bool SetSource(int Source);
+  bool SetId(cChannels *Channels, int Nid, int Tid, int Sid, int Rid = 0);
+  bool SetLcn(int Lcn);
+  bool SetName(const char *Name, const char *ShortName, const char *Provider);
+  bool SetPortalName(const char *PortalName);
+  bool SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
+  bool SetCaIds(const int *CaIds); // list must be zero-terminated
+  bool SetCaDescriptors(int Level);
+  bool SetLinkChannels(cLinkChannels *LinkChannels);
   void SetRefChannel(cChannel *RefChannel);
-  void SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds);
+  bool SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds);
   void SetSeen(void);
+  void DelLinkChannel(cChannel *LinkChannel);
   };
 
-class cChannels : public cRwLock, public cConfig<cChannel> {
+class cChannels : public cConfig<cChannel> {
 private:
-  int maxNumber;
-  int maxChannelNameLength;
-  int maxShortChannelNameLength;
-  int modified;
-  int beingEdited;
+  static cChannels channels;
+  static int maxNumber;
+  static int maxChannelNameLength;
+  static int maxShortChannelNameLength;
+  int modifiedByUser;
   cHash<cChannel> channelsHashSid;
   void DeleteDuplicateChannels(void);
 public:
   cChannels(void);
-  bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
+  static const cChannels *GetChannelsRead(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of channels for read access.
+      ///< See cTimers::GetTimersRead() for details.
+  static cChannels *GetChannelsWrite(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of channels for write access.
+      ///< See cTimers::GetTimersWrite() for details.
+  static bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   void HashChannel(cChannel *Channel);
   void UnhashChannel(cChannel *Channel);
-  int GetNextGroup(int Idx);   // Get next channel group
-  int GetPrevGroup(int Idx);   // Get previous channel group
-  int GetNextNormal(int Idx);  // Get next normal channel (not group)
-  int GetPrevNormal(int Idx);  // Get previous normal channel (not group)
-  void ReNumber(void);         // Recalculate 'number' based on channel type
-  cChannel *GetByNumber(int Number, int SkipGap = 0);
-  cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID);
-  cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false, bool TryWithoutPolarization = false);
-  cChannel *GetByTransponderID(tChannelID ChannelID);
-  int BeingEdited(void) { return beingEdited; }
-  void IncBeingEdited(void) { beingEdited++; }
-  void DecBeingEdited(void) { beingEdited--; }
-  bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
-  bool SwitchTo(int Number);
-  int MaxNumber(void) { return maxNumber; }
-  int MaxChannelNameLength(void);
-  int MaxShortChannelNameLength(void);
-  void SetModified(bool ByUser = false);
-  int Modified(void);
-      ///< Returns 0 if no channels have been modified, 1 if an automatic
-      ///< modification has been made, and 2 if the user has made a modification.
-      ///< Calling this function resets the 'modified' flag to 0.
+  int GetNextGroup(int Idx) const;   ///< Get next channel group
+  int GetPrevGroup(int Idx) const;   ///< Get previous channel group
+  int GetNextNormal(int Idx) const;  ///< Get next normal channel (not group)
+  int GetPrevNormal(int Idx) const;  ///< Get previous normal channel (not group)
+  void ReNumber(void);               ///< Recalculate 'number' based on channel type
+  void Del(cChannel *Channel);       ///< Delete the given Channel from the list
+  const cChannel *GetByNumber(int Number, int SkipGap = 0) const;
+  cChannel *GetByNumber(int Number, int SkipGap = 0) { return const_cast<cChannel *>(static_cast<const cChannels *>(this)->GetByNumber(Number, SkipGap)); }
+  const cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID) const;
+  cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID) { return const_cast<cChannel *>(static_cast<const cChannels *>(this)->GetByServiceID(Source, Transponder, ServiceID)); }
+  const cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false, bool TryWithoutPolarization = false) const;
+  cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false, bool TryWithoutPolarization = false) { return const_cast<cChannel *>(static_cast<const cChannels *>(this)->GetByChannelID(ChannelID, TryWithoutRid, TryWithoutPolarization)); }
+  const cChannel *GetByTransponderID(tChannelID ChannelID) const;
+  cChannel *GetByTransponderID(tChannelID ChannelID) { return const_cast<cChannel *>(static_cast<const cChannels *>(this)->GetByTransponderID(ChannelID)); }
+  bool HasUniqueChannelID(const cChannel *NewChannel, const cChannel *OldChannel = NULL) const;
+  bool SwitchTo(int Number) const;
+  static int MaxNumber(void) { return maxNumber; }
+  static int MaxChannelNameLength(void);
+  static int MaxShortChannelNameLength(void);
+  void SetModifiedByUser(void);
+  bool ModifiedByUser(int &State) const;
+      ///< Returns true if the channels have been modified by the user since the last call
+      ///< to this function with the same State variable. State must be initialized with 0
+      ///< and will be set to the current value of the list's internal state variable upon
+      ///< return from this function.
   cChannel *NewChannel(const cChannel *Transponder, const char *Name, const char *ShortName, const char *Provider, int Nid, int Tid, int Sid, int Rid = 0);
-  void MarkObsoleteChannels(int Source, int Nid, int Tid);
+  bool MarkObsoleteChannels(int Source, int Nid, int Tid);
   };
 
-extern cChannels Channels;
+// Provide lock controlled access to the list:
+
+DEF_LIST_LOCK(Channels);
+
+// These macros provide a convenient way of locking the global channels list
+// and making sure the lock is released as soon as the current scope is left
+// (note that these macros wait forever to obtain the lock!):
+
+#define LOCK_CHANNELS_READ  USE_LIST_LOCK_READ(Channels)
+#define LOCK_CHANNELS_WRITE USE_LIST_LOCK_WRITE(Channels)
 
 cString ChannelString(const cChannel *Channel, int Number);
 

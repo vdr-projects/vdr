@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 3.1 2015/01/15 14:27:02 kls Exp $
+ * $Id: recorder.h 4.1 2015/09/05 11:46:23 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -35,7 +35,7 @@ protected:
        ///< member of the cReceiver class) from your own destructor in order
        ///< to properly get a call to Activate(false) when your object is
        ///< destroyed.
-  virtual void Receive(uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length);
   virtual void Action(void);
 public:
   cRecorder(const char *FileName, const cChannel *Channel, int Priority);

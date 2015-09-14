@@ -498,6 +498,9 @@ Version 2.2
              the name of the recording.
   First day: The date of the first day when this timer shall start recording
              (only available for repeating timers).
+  Record on: The name of the remote VDR this timer shall record on (only available
+             if there are any remote VDRs connected to this VDR). If this field
+             is empty, the timer will record on the local VDR.
 
   A timer can also be programmed by pressing the "Red" key on the "Schedule",
   "Now", "Next" or "Event" menus.
@@ -653,6 +656,11 @@ Version 2.2
                          In the "Recordings" menu folders are always listed before
                          plain recordings. Set this option to "no" if you want folders
                          to be interspersed with recordings when sorted alphabetically.
+
+  Default sort mode for recordings = by time
+                         Controls whether recordings are sorted by time or by name.
+                         If a particular sort mode has been selected for a folder by
+                         pressing '0', the default no longer applies to that folder.
 
   Number keys for characters = yes
                          Controls whether the number keys can be used to enter
@@ -882,8 +890,13 @@ Version 2.2
                          means that this recording will never be deleted
                          automatically.
 
-  Pause priority = 10    The Priority and Lifetime values used when pausing live
-  Pause lifetime = 1     video.
+  Record key handling = 2
+                         Defines what happens if the Record key on the remote control
+                         is pressed during live tv.
+                         0 = no instant recording
+                         1 = confirm instant recording
+                         2 = record instantly
+                         The default is 2.
 
   Pause key handling = 2 Defines what happens if the Pause key on the remote control
                          is pressed during live tv.
@@ -891,6 +904,9 @@ Version 2.2
                          1 = confirm pause live video
                          2 = pause live video
                          The default is 2.
+
+  Pause priority = 10    The Priority and Lifetime values used when pausing live
+  Pause lifetime = 1     video.
 
   Use episode name = yes Repeating timers use the EPG's 'Episode name' information
                          to create recording file names in a hierarchical structure
@@ -1065,6 +1081,15 @@ Version 2.2
   SVDRP timeout = 300    The time (in seconds) of inactivity on an open SVDRP
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
+
+  SVDRP peering = no     Activates automatic connections between VDRs in the same
+                         network.
+
+  SVDRP host name        The name of this VDR, which is used when connecting VDRs
+                         via SVDRP. By default, the machine's host name is used.
+
+  SVDRP default host     The name of the VDR to be used by default when creating a
+                         new timer.
 
   Zap timeout = 3        The time (in seconds) until a channel counts as "previous"
                          for switching with '0'

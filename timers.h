@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 3.0 2013/03/11 10:35:53 kls Exp $
+ * $Id: timers.h 4.3 2015/09/09 10:40:24 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -27,12 +27,13 @@ enum eTimerMatch { tmNone, tmPartial, tmFull };
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
+  int id;
   mutable time_t startTime, stopTime;
-  time_t lastSetEvent;
+  int scheduleState;
   mutable time_t deferred; ///< Matches(time_t, ...) will return false if the current time is before this value
-  bool recording, pending, inVpsMargin;
+  bool pending, inVpsMargin;
   uint flags;
-  cChannel *channel;
+  const cChannel *channel;
   mutable time_t day; ///< midnight of the day this timer shall hit, or of the first day it shall hit in case of a repeating timer
   int weekdays;       ///< bitmask, lowest bits: SSFTWTM  (the 'M' is the LSB)
   int start;
@@ -41,15 +42,17 @@ private:
   int lifetime;
   mutable char file[NAME_MAX * 2 + 1]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
   char *aux;
+  char *remote;
   const cEvent *event;
 public:
-  cTimer(bool Instant = false, bool Pause = false, cChannel *Channel = NULL);
+  cTimer(bool Instant = false, bool Pause = false, const cChannel *Channel = NULL);
   cTimer(const cEvent *Event);
   cTimer(const cTimer &Timer);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   virtual int Compare(const cListObject &ListObject) const;
-  bool Recording(void) const { return recording; }
+  int Id(void) const { return id; }
+  bool Recording(void) const { return HasFlags(tfRecording); }
   bool Pending(void) const { return pending; }
   bool InVpsMargin(void) const { return inVpsMargin; }
   uint Flags(void) const { return flags; }
@@ -63,6 +66,8 @@ public:
   const char *File(void) const { return file; }
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
+  const char *Remote(void) const { return remote; }
+  bool Local(void) const { return !remote; } // convenience
   time_t Deferred(void) const { return deferred; }
   cString ToText(bool UseChannelID = false) const;
   cString ToDescr(void) const;
@@ -81,8 +86,9 @@ public:
   bool Expired(void) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
-  void SetEventFromSchedule(const cSchedules *Schedules = NULL);
-  void SetEvent(const cEvent *Event);
+  void SetId(int Id);
+  bool SetEventFromSchedule(const cSchedules *Schedules);
+  bool SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
   void SetInVpsMargin(bool InVpsMargin);
@@ -93,6 +99,7 @@ public:
   void SetPriority(int Priority);
   void SetLifetime(int Lifetime);
   void SetAux(const char *Aux);
+  void SetRemote(const char *Remote);
   void SetDeferred(int Seconds);
   void SetFlags(uint Flags);
   void ClrFlags(uint Flags);
@@ -108,36 +115,104 @@ public:
 
 class cTimers : public cConfig<cTimer> {
 private:
-  int state;
-  int beingEdited;
-  time_t lastSetEvents;
+  static cTimers timers;
+  static int lastTimerId;
   time_t lastDeleteExpired;
 public:
   cTimers(void);
+  static const cTimers *GetTimersRead(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of timers for read access. If TimeoutMs is given,
+      ///< it will wait that long to get a write lock before giving up.
+      ///< Otherwise it will wait indefinitely. If no read lock can be
+      ///< obtained within the given timeout, NULL will be returned.
+      ///< The list is locked and a pointer to it is returned if the state
+      ///< of the list is different than the state of the given StateKey.
+      ///< If both states are equal, the list of timers has not been modified
+      ///< since the last call with the same StateKey, and NULL will be
+      ///< returned (and the list is not locked). After the returned list of
+      ///< timers is no longer needed, the StateKey's Remove() function must
+      ///< be called to release the list. The time between calling
+      ///< cTimers::GetTimersRead() and StateKey.Remove() should be as short
+      ///< as possible. After calling StateKey.Remove() the list returned from
+      ///< this call must not be accessed any more. If you need to access the
+      ///< timers again later, a new call to GetTimersRead() must be made.
+      ///< A typical code sequence would look like this:
+      ///< cStateKey StateKey;
+      ///< if (const cTimers *Timers = cTimers::GetTimersRead(StateKey)) {
+      ///<    // access the timers
+      ///<    StateKey.Remove();
+      ///<    }
+  static cTimers *GetTimersWrite(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of timers for write access. If TimeoutMs is given,
+      ///< it will wait that long to get a write lock before giving up.
+      ///< Otherwise it will wait indefinitely. If no write lock can be
+      ///< obtained within the given timeout, NULL will be returned.
+      ///< If a write lock can be obtained, the list of timers will be
+      ///< returned, regardless of the state values of the timers or the
+      ///< given StateKey. After the returned list of timers is no longer
+      ///< needed, the StateKey's Remove() function must be called to release
+      ///< the list. The time between calling cTimers::GetTimersWrite() and
+      ///< StateKey.Remove() should be as short as possible. After calling
+      ///< StateKey.Remove() the list returned from this call must not be
+      ///< accessed any more. If you need to access the timers again later,
+      ///< a new call to GetTimersWrite() must be made. The call
+      ///< to StateKey.Remove() will increment the state of the list of
+      ///< timers and will copy the new state value to the StateKey. You can
+      ///< suppress this by using 'false' as the parameter to the call, in
+      ///< which case the state values are left untouched.
+      ///< A typical code sequence would look like this:
+      ///< cStateKey StateKey;
+      ///< if (cTimers *Timers = cTimers::GetTimersWrite(StateKey)) {
+      ///<    // access the timers
+      ///<    StateKey.Remove();
+      ///<    }
+  static bool Load(const char *FileName);
+  static int NewTimerId(void);
+  const cTimer *GetById(int Id) const;
+  cTimer *GetById(int Id) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id)); };
   cTimer *GetTimer(cTimer *Timer);
-  cTimer *GetMatch(time_t t);
-  cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL);
-  cTimer *GetNextActiveTimer(void);
-  int BeingEdited(void) { return beingEdited; }
-  void IncBeingEdited(void) { beingEdited++; }
-  void DecBeingEdited(void) { if (!--beingEdited) lastSetEvents = 0; }
-  void SetModified(void);
-  bool Modified(int &State);
-      ///< Returns true if any of the timers have been modified, which
-      ///< is detected by State being different than the internal state.
-      ///< Upon return the internal state will be stored in State.
-  void SetEvents(void);
-  void DeleteExpired(void);
+  const cTimer *GetMatch(time_t t) const;
+  cTimer *GetMatch(time_t t) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(t)); };
+  const cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) const;
+  cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(Event, Match)); }
+  const cTimer *GetNextActiveTimer(void) const;
+  const cTimer *UsesChannel(const cChannel *Channel) const;
+  bool SetEvents(const cSchedules *Schedules);
+  bool DeleteExpired(void);
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);
   void Del(cTimer *Timer, bool DeleteObject = true);
+  bool GetRemoteTimers(const char *ServerName = NULL);
+      ///< Gets the timers from the given remote machine and adds them to this
+      ///< list. If no ServerName is given, all timers from all known remote
+      ///< machines will be fetched. This function calls DelRemoteTimers() with
+      ///< the given ServerName first.
+      ///< Returns true if any remote timers have been added or deleted
+  bool DelRemoteTimers(const char *ServerName = NULL);
+      ///< Deletes all timers of the given remote machine from this list (leaves
+      ///< them untouched on the remote machine). If no ServerName is given, the
+      ///< timers of all remote machines will be deleted from the list.
+      ///< Returns true if any remote timers have been deleted.
+  void TriggerRemoteTimerPoll(const char *ServerName = NULL);
+      ///< Sends an SVDRP POLL command to the given remote machine.
+      ///< If no ServerName is given, the POLL command will be sent to all
+      ///< known remote machines.
   };
 
-extern cTimers Timers;
+// Provide lock controlled access to the list:
+
+DEF_LIST_LOCK(Timers);
+
+// These macros provide a convenient way of locking the global timers list
+// and making sure the lock is released as soon as the current scope is left
+// (note that these macros wait forever to obtain the lock!):
+
+#define LOCK_TIMERS_READ  USE_LIST_LOCK_READ(Timers)
+#define LOCK_TIMERS_WRITE USE_LIST_LOCK_WRITE(Timers)
 
 class cSortedTimers : public cVector<const cTimer *> {
 public:
-  cSortedTimers(void);
+  cSortedTimers(const cTimers *Timers);
   };
 
 #endif //__TIMERS_H

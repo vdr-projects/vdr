@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.h 3.2 2013/10/11 09:37:48 kls Exp $
+ * $Id: videodir.h 4.1 2015/08/10 13:21:29 kls Exp $
  */
 
 #ifndef __VIDEODIR_H
@@ -15,6 +15,7 @@
 
 class cVideoDirectory {
 private:
+  static cMutex mutex;
   static cString name;
   static cVideoDirectory *current;
   static cVideoDirectory *Current(void);

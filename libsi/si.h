@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 3.4 2015/02/10 13:54:28 kls Exp $
+ *   $Id: si.h 4.0 2015/02/10 13:54:28 kls Exp $
  *                                                                         *
  ***************************************************************************/
 

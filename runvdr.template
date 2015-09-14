@@ -20,7 +20,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr.template 3.1 2015/02/05 10:28:53 kls Exp $
+# $Id: runvdr.template 4.0 2015/02/05 10:28:53 kls Exp $
 
 VDRPRG="./vdr"
 

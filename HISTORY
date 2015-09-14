@@ -8595,3 +8595,235 @@ Video Disk Recorder Revision History
 - Fixed leading/trailing/multiple blanks in the translation files.
 - Bumped all version numbers to 2.2.0.
 - Official release.
+
+2015-09-14: Version 2.3.1
+
+- The new function cOsd::MaxPixmapSize() can be called to determine the maximum size
+  a cPixmap may have on the current OSD. The 'osddemo' example has been modified
+  accordingly. Plugin authors may want to use this function in case they use pixmaps
+  that are larger than the full OSD size. The default implementation sets this limit
+  to 2048x2048 pixel.
+- The Setup/CAM menu now displays which device an individual CAM is currently
+  assigned to (suggested by Frank Neumann).
+- Added detection of 24fps (thanks to Thomas Reufer).
+- Added a note about the VDR User Counter and VDR's facebook page to the README file.
+- The dvbhddevice plugin is no longer part of the VDR source archive.
+  You can get the latest version of this plugin from the author's repository at
+  https://bitbucket.org/powARman/dvbhddevice.
+- The dvbsddevice and rcu plugins are no longer part of the VDR source archive.
+  You can get the latest versions of these plugins from ftp://ftp.tvdr.de/vdr/Plugins.
+- Added a section about Output Devices to the INSTALL file.
+- Fixed setting the source value of newly created channels, in case the NIT is
+  received from a different, but very close satellite position (reported by Daniel
+  Ribeiro). The code for handling different NITs has been removed from nit.c, because
+  according to the DVB standard table id 0x40 carries only the NIT of the actual
+  network.
+- Added some comment to cPixmap about the relation between OSD, ViewPort and DrawPort
+  (suggested by Thomas Reufer).
+- Improved syncing on sections when parsing the NIT and SDT.
+- Fixed scaling subtitles (their areas could sometimes extend outside the actual OSD).
+- Reduced the priority of the "video directory scanner" thread (suggested by Thomas
+  Reufer) and checking cIoThrottle::Engaged() when it is running.
+- The script that gets called for recordings is now also called right before a
+  recording is edited, with the first parameter being "editing" (suggested by
+  Dieter Ferdinand).
+- The new setup option "OSD/Default sort mode for recordings" can be used to define
+  how recordings shall be sorted by default (either by time or by name, with "by time"
+  being the default). If a particular sort mode has been selected for a folder by
+  pressing '0', the default no longer applies to that folder. Repeating timers no
+  longer write a ".sort" file into a recordings folder to have the recordings sorted
+  by time.
+- The command line option -D now accepts the value '-' (as in -D-), which prevents
+  VDR from using any DVB devices (suggested by Dietmar Spingler).
+- The -V and -h options now list the plugins in alphabetical order (suggested by
+  Dietmar Spingler).
+- Fixed a compiler warning in font.c.
+- Commented out the line
+  #define DEPRECATED_VIDEOSYSTEM
+  in device.h. If a plugin doesn't compile with this version of VDR, you can uncomment
+  this line as a quick workaround. In the long run the plugin will need to be adapted.
+- The function cOsd::GetBitmap() is now 'protected'. If a plugin doesn't compile with
+  this version of VDR, you can uncomment the line
+  //#define DEPRECATED_GETBITMAP
+  in osd.h as a quick workaround. In the long run the plugin will need to be adapted.
+- The -u option now also accepts a numerical user id (suggested by Derek Kelly).
+- The SVDRP port now accepts multiple concurrent connections. You can now keep an
+  SVDRP connection open as long as you wish, without preventing others from
+  connecting. Note, though, that SVDRP connections still get closed automatically
+  if there has been no activity for 300 seconds (configurable via
+  "Setup/Miscellaneous/SVDRP timeout (s)").
+- The SVDRP log messages have been unified and now always contain the IP and port
+  number of the remote host.
+- SVDRP connections are now handled in a separate "SVDRP server handler" thread,
+  which makes them more responsive. Note that there is only one thread that handles
+  all concurrent SVDRP connections. That way each SVDRP command is guaranteed to be
+  processed separately, without interfering with any other SVDRP commands that might
+  be issued at the same time. Plugins that implement SVDRP commands may need to take
+  care of proper locking if the commands access global data.
+- VDR now sends out a broadcast to port 6419/udp, which was assigned to 'svdrp-disc'
+  by the IANA. VDRs listening on that port will automatically initiate an SVDRP
+  connection to the broadcasting VDR, and in turn send out a broadcast to make
+  other VDRs connect to them. That way all VDRs within the local network will
+  have permanent "peer-to-peer" SVDRP connections between each other. The
+  configuration in the svdrphosts.conf file is taken into account when considering
+  whether or not to respond to an SVDRP discover broadcast.
+- The new SVDRP command PING is used by automatically established peer-to-peer
+  connections to keep them alive.
+- The new function GetSVDRPServerNames() can be used to get a list of all VDRs
+  this VDR is connected to via SVDRP.
+- The new function ExecSVDRPCommand() can be used to execute an SVDRP command on
+  one of the servers this VDR is connected to, and retrieve the result.
+  The helper functions SVDRPCode() and SVDRPValue() can be used to easily access
+  the codes and values returned by ExecSVDRPCommand().
+- The cTimer class now has a new member named 'remote', which holds the name of the
+  remote server this timer will record on. If this is NULL, it is a local timer.
+- Timers from other VDRs that are connected to this VDR via SVDRP are now
+  automatically fetched and stored in the global Timers list. In order for this
+  to work, all of the channels used by timers on the remote VDR must also be
+  defined on the local VDR (however, not necessarily in the same sequence).
+  Automatic channel syncing will be implemented later.
+- The main menu of the LCARS skin now displays a small rectangle on the left side
+  of a timer if this is a remote timer. The color of that rectangle changes if
+  the timer is currently recording on the remote VDR.
+- Accessing the global Timers list now has to be protected by proper locking,
+  because SVDRP commands are now executed in a separate thread.
+  The introduction of this locking mechanism required the following changes:
+  + The new classes cStateLock and cStateKey are used to implement locking
+    with quick detection of state changes.
+  + cConfig::cConfig() now has a parameter that indicates whether this list
+    requires locking.
+  + The global lists of Timers, Channels, Schedules and Recordings are no longer
+    static variables. They are now pointers that need to be retrieved through
+    a call to cTimers::GetTimersRead/Write(), cChannels::GetChannelsRead/Write(),
+    cSchedules::GetSchedulesRead/Write() and cRecordings::GetRecordingsRead/Write(),
+    respectively.
+  + References from/to link channels are now removed in cChannels::Del() rather
+    than cChannel::~cChannel(), to make sure the caller holds a proper lock.
+  + cChannel::HasTimer() has been removed. This information is now retrieved
+    via cSchedule::HasTimer().
+  + Several member functions of cChannel, cTimer, cMarks and cRecording have
+    been made 'const', and some of them are now available as both 'const' and
+    'non-const' versions.
+  + The cChannel::Set...() functions are now 'bool' and return true if they have
+    actually changed any of the channels's members.
+  + cChannels::SetModified() has been renamed to cChannels::SetModifiedByUser().
+  + cChannels::Modified() has been renamed to cChannels::ModifiedByUser(), and
+    now has a 'State' parameter that allows the caller to see whether a channel
+    has been modified since the last call to this function with the same State
+    variable.
+  + The macros CHANNELSMOD_NONE/_AUTO/_USER have been removed.
+  + cMarks now requires locking via cStateKey.
+  + cSortedTimers now requires a pointer to the list of timers.
+  + cEvent::HasTimer() no longer scans the list of timers to check whether an event
+    is referenced by a timer, but rather keeps score of how many timers reference
+    it. This was necessary in order to avoid having to lock the list of timers from
+    within a cEvent.
+  + The new class cListGarbageCollector is used to temporary store any objects deleted
+    from cLists that require locking. This allows pointers to such objects to be
+    dereferenced even if the objects are no longer part of the list.
+  + cListBase::Contains() can be used to check whether a particular object is still
+    contained in that list.
+  + Outdated events are no longer "phased out", but rather deleted right away and thus
+    taken care of by the new "garbage collector" of the list.
+  + Deleted cRecording objects are no longer kept in a list of "vanished" recordings,
+    but are rather taken care of by the new "garbage collector" of the list.
+  + cSchedules::ClearAll() has been removed. The functionality is now implemented
+    directly in cSVDRPServer::CmdCLRE().
+  + tEventID has been changed to u_int16_t in order to make room for the new member
+    numTimers in cEvent.
+  + cSchedule now has a member Modified(), which can be used with a State variable
+    to quickly determine whether this schedule has been modified since the last call
+    to this function with the same State variable.
+  + cSchedulesLock has been removed. Locking the list of schedules is now done via
+    the cList's new locking mechanism.
+  + The 'OnlyRunningStatus' parameters in cEpgHandler::BeginSegmentTransfer() and
+    cEpgHandler::EndSegmentTransfer() are now obsolete. They are still present in
+    the interface for backward compatibility, but may be removed in a future version.
+    Their value is always 'false'.
+  + The constant tcMod is no longer used in cStatus::TimerChange(). The definition is
+    still there for backward compatibility.
+  Plugins that access the global lists of Timers, Channels, Recordings or Schedules
+  will need to be adapted as follows:
+  + Instead of directly accessing the global variables Timers, Channels or Recordings,
+    they need to set up a cStateKey variable and call the proper getter function,
+    as in
+      cStateKey StateKey;
+      if (const cTimers *Timers = cTimers::GetTimersRead(StateKey)) {
+         // access the timers
+         StateKey.Remove();
+         }
+    and
+      cStateKey StateKey;
+      if (cTimers *Timers = cTimers::GetTimersWrite(StateKey)) {
+         // access the timers
+         StateKey.Remove();
+         }
+    See timers.h, thread.h and tools.h for details on this new locking mechanism.
+  + There are convenience macros for easily accessing these lists without having
+    to explicitly set up a cStateKey and calling its Remove() function. These macros
+    have the form LOCK_*_READ/WRITE (with '*' being TIMERS, CHANNELS, SCHEDULES or
+    RECORDINGS). Simply put such a macro before the point where you need to access
+    the respective list, and there will be a pointer named Timers, Channels, Schedules
+    or Recordings, respectively, which is valid until the end of the current block.
+  + If a plugin needs to access several of the global lists in parallel, locking must
+    always be done in the sequence Timers, Channels, Recordings, Schedules. This is
+    necessary to make sure that different threads that need to lock several lists at
+    the same time don't end up in a deadlock.
+  + Some pointer variables may need to be made 'const'. The compiler will tell you
+    about these.
+- cSectionSyncer has been improved to better handle missed sections.
+- Added a missing initialization of 'seen' in cChannel's copy constructor.
+- Background modifications of channels, timers and events are now displayed immediately
+  in the corresponding menus.
+- cEIT now checks the version of the tables before doing any processing, which saves
+  a lot of locking and processing.
+- If a timer is newly created with the Red button in the Schedule menu, and the timer
+  is presented to the user in the "Edit timer" menu because it will start immediately,
+  it now *must* be confirmed with "Ok" to set the timer. Otherwise the timer will not
+  be created.
+- Recordings and deleted recordings are now scanned in a single thread.
+- The new SVDRP command POLL is used by automatically established peer-to-peer
+  connections to trigger fetching remote timers.
+- You can now set DumpSVDRPDataTransfer in svdrp.c to true to have all SVDRP
+  communication printed to the console for debugging.
+- Added a missing 'const' to cReceiver::Receive(), to protect the given Data from
+  being modified.
+- The SVDRP commands that deal with timers (DELT, LSTT, MODT, NEWT, NEXT and UPDT)
+  as well as any log messages that refer to timers, now use a unique id for each
+  timer, which remains valid as long as this instance of VDR is running. This means
+  that timers are no longer continuously numbered from 1 to N in LSTT. There may be
+  gaps in the sequence, in case timers have been deleted.
+- The Timers menu now displays the name of the remote VDR in front of the timer's
+  file name, if this is a remote timer.
+- The new options "Setup/Miscellaneous/SVDRP peering", ".../SVDRP host name" and
+  ".../SVDRP default host" can be used to configure automatic peering between VDRs
+  in the same network. Peering is disabled by default and can be enabled by setting
+  "SVDRP peering" to "yes".
+- The function cTimer::ToText() no longer returns a newline character at the end of
+  the string. The newline is now added by the caller as necessary. This was changed
+  because cTimer::ToText() is now also needed in a context where the terminating
+  newline can't be used. Consequently, cChannel::ToText() and cMark::ToText() have
+  been modified accordingly.
+- All timer related response strings from SVDRP commands now use the channel ID
+  instead of channel numbers.
+- The "Edit timer" menu now has a new parameter "Record on", which can be used to
+  select the VDR on which this timer shall record. Timers can be freely moved
+  between connected VDRs by simply selecting the desired machine in this field.
+- The SVDRP command DELT no longer checks whether the timer that shall be deleted
+  is currently recording.
+- The character 0x0D is now stripped from EPG texts (reported by Janne Pänkälä).
+- The EPG scanner no longer moves the dish if there is a positioner.
+- The 'newplugin' script now creates the 'po' subdirectory for translations (thanks
+  to Thomas Reufer).
+- Skins can now implement cSkinDisplayMenu::MenuOrientation() to display horizontal
+  menus (thanks to Stefan Braun).
+- Fixed a possible stack overflow in cListBase::Sort() (thanks to Oliver Endriss).
+- Changed the description of the --chartab option in the INSTALL file to refer to
+  "DVB SI table strings" instead of "EPG data".
+- The width and height of the OSD are now limited to the actual maximum dimensions
+  of the output device, taking into account the top and left offset.
+- The new setup option "Recording/Record key handling" can be used to define
+  what happens if the Record key on the remote control is pressed during
+  live tv (suggested by Dietmar Spingler).
+- Empty adaptation field TS packets are now skipped when recording (thanks to
+  Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).

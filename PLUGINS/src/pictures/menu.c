@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: menu.c 3.0 2008/01/13 11:35:18 kls Exp $
+ * $Id: menu.c 4.1 2015/07/23 10:13:56 kls Exp $
  */
 
 #include "menu.h"
@@ -85,7 +85,7 @@ eOSState cPictureMenu::SelectItem(const char *Path, bool SlideShow)
   if (Item) {
      const cList<cPictureEntry> *l = pictureEntry->Entries();
      if (l) {
-        cPictureEntry *pe = l->Get(Current());
+        const cPictureEntry *pe = l->Get(Current());
         if (pe) {
            if (SlideShow) {
               cControl::Launch(new cPictureControl(pictures, pe, true));

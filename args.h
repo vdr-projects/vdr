@@ -6,7 +6,7 @@
  *
  * Original version written by Lars Hanisch <dvb@flensrocker.de>.
  *
- * $Id: args.h 1.1 2014/04/14 11:54:21 kls Exp $
+ * $Id: args.h 4.0 2014/04/14 11:54:21 kls Exp $
  */
 
 #ifndef __ARGS_H

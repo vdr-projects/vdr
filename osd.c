@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 3.5 2015/02/11 09:48:02 kls Exp $
+ * $Id: osd.c 4.3 2015/09/10 14:12:06 kls Exp $
  */
 
 #include "osd.h"
@@ -1641,6 +1641,7 @@ int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
+cSize cOsd::maxPixmapSize(2048, 2048);
 cVector<cOsd *> cOsd::Osds;
 cMutex cOsd::mutex;
 
@@ -1703,6 +1704,11 @@ void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
 cBitmap *cOsd::GetBitmap(int Area)
 {
   return Area < numBitmaps ? (isTrueColor ? bitmaps[0] : bitmaps[Area]) : NULL;
+}
+
+const cSize &cOsd::MaxPixmapSize(void) const
+{
+  return maxPixmapSize;
 }
 
 cPixmap *cOsd::CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort)
@@ -1836,7 +1842,10 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
         width = Areas[0].x2 - Areas[0].x1 + 1;
         height = Areas[0].y2 - Areas[0].y1 + 1;
         cPixmap *Pixmap = CreatePixmap(0, cRect(Areas[0].x1, Areas[0].y1, width, height));
-        Pixmap->Clear();
+        if (Pixmap)
+           Pixmap->Clear();
+        else
+           Result = oeOutOfMemory;
         bitmaps[numBitmaps++] = new cBitmap(10, 10, 8); // dummy bitmap for GetBitmap()
         }
      else {
@@ -2033,8 +2042,8 @@ void cOsdProvider::UpdateOsdSize(bool Force)
   if (Width != oldWidth || Height != oldHeight || !DoubleEqual(Aspect, oldAspect) || Force) {
      Setup.OSDLeft = int(round(Width * Setup.OSDLeftP));
      Setup.OSDTop = int(round(Height * Setup.OSDTopP));
-     Setup.OSDWidth = int(round(Width * Setup.OSDWidthP)) & ~0x07; // OSD width must be a multiple of 8
-     Setup.OSDHeight = int(round(Height * Setup.OSDHeightP));
+     Setup.OSDWidth = min(Width - Setup.OSDLeft, int(round(Width * Setup.OSDWidthP))) & ~0x07; // OSD width must be a multiple of 8
+     Setup.OSDHeight = min(Height - Setup.OSDTop, int(round(Height * Setup.OSDHeightP)));
      Setup.OSDAspect = Aspect;
      Setup.FontOsdSize = int(round(Height * Setup.FontOsdSizeP));
      Setup.FontFixSize = int(round(Height * Setup.FontFixSizeP));

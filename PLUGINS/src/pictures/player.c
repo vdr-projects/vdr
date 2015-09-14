@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 3.1 2014/02/08 12:48:12 kls Exp $
+ * $Id: player.c 4.0 2014/02/08 12:48:12 kls Exp $
  */
 
 #include "player.h"

@@ -4,15 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 3.8 2015/02/01 13:47:05 kls Exp $
+ * $Id: channels.c 4.3 2015/09/09 10:21:22 kls Exp $
  */
 
 #include "channels.h"
 #include <ctype.h>
 #include "device.h"
-#include "epg.h"
 #include "libsi/si.h"
-#include "timers.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -79,27 +77,13 @@ cChannel::cChannel(const cChannel &Channel)
   schedule     = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
+  seen         = 0;
   *this = Channel;
 }
 
 cChannel::~cChannel()
 {
-  delete linkChannels;
-  linkChannels = NULL; // more than one channel can link to this one, so we need the following loop
-  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
-      if (Channel->linkChannels) {
-         for (cLinkChannel *lc = Channel->linkChannels->First(); lc; lc = Channel->linkChannels->Next(lc)) {
-             if (lc->Channel() == this) {
-                Channel->linkChannels->Del(lc);
-                break;
-                }
-             }
-         if (Channel->linkChannels->Count() == 0) {
-            delete Channel->linkChannels;
-            Channel->linkChannels = NULL;
-            }
-         }
-      }
+  delete linkChannels; // any links from other channels pointing to this one have been deleted in cChannels::Del()
   free(name);
   free(shortName);
   free(provider);
@@ -167,16 +151,7 @@ int cChannel::Transponder(void) const
   return tf;
 }
 
-bool cChannel::HasTimer(void) const
-{
-  for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
-      if (Timer->Channel() == this)
-         return true;
-      }
-  return false;
-}
-
-int cChannel::Modification(int Mask)
+int cChannel::Modification(int Mask) const
 {
   int Result = modification & Mask;
   modification = CHANNELMOD_NONE;
@@ -223,41 +198,57 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      if (Number() && !Quiet) {
         dsyslog("changing transponder data of channel %d (%s) from %s to %s", Number(), name, *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
-        Channels.SetModified();
         }
+     return true;
      }
-  return true;
+  return false;
 }
 
-void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
+bool cChannel::SetSource(int Source)
+{
+  if (source != Source) {
+     if (Number()) {
+        dsyslog("changing source of channel %d (%s) from %s to %s", Number(), name, *cSource::ToString(source), *cSource::ToString(Source));
+        modification |= CHANNELMOD_TRANSP;
+        }
+     source = Source;
+     return true;
+     }
+  return false;
+}
+
+bool cChannel::SetId(cChannels *Channels, int Nid, int Tid, int Sid, int Rid)
 {
   if (nid != Nid || tid != Tid || sid != Sid || rid != Rid) {
-     if (Number()) {
+     if (Channels && Number()) {
         dsyslog("changing id of channel %d (%s) from %d-%d-%d-%d to %d-%d-%d-%d", Number(), name, nid, tid, sid, rid, Nid, Tid, Sid, Rid);
         modification |= CHANNELMOD_ID;
-        Channels.SetModified();
-        Channels.UnhashChannel(this);
+        Channels->UnhashChannel(this);
         }
      nid = Nid;
      tid = Tid;
      sid = Sid;
      rid = Rid;
-     if (Number())
-        Channels.HashChannel(this);
+     if (Channels)
+        Channels->HashChannel(this);
      schedule = NULL;
+     return true;
      }
+  return false;
 }
 
-void cChannel::SetLcn(int Lcn)
+bool cChannel::SetLcn(int Lcn)
 {
   if (lcn != Lcn) {
      if (Number())
         dsyslog("changing lcn of channel %d (%s) from %d to %d\n", Number(), name, lcn, Lcn);
      lcn = Lcn;
+     return true;
      }
+  return false;
 }
 
-void cChannel::SetName(const char *Name, const char *ShortName, const char *Provider)
+bool cChannel::SetName(const char *Name, const char *ShortName, const char *Provider)
 {
   if (!isempty(Name)) {
      bool nn = strcmp(name, Name) != 0;
@@ -267,7 +258,6 @@ void cChannel::SetName(const char *Name, const char *ShortName, const char *Prov
         if (Number()) {
            dsyslog("changing name of channel %d from '%s,%s;%s' to '%s,%s;%s'", Number(), name, shortName, provider, Name, ShortName, Provider);
            modification |= CHANNELMOD_NAME;
-           Channels.SetModified();
            }
         if (nn) {
            name = strcpyrealloc(name, Name);
@@ -279,20 +269,23 @@ void cChannel::SetName(const char *Name, const char *ShortName, const char *Prov
            }
         if (np)
            provider = strcpyrealloc(provider, Provider);
+        return true;
         }
      }
+  return false;
 }
 
-void cChannel::SetPortalName(const char *PortalName)
+bool cChannel::SetPortalName(const char *PortalName)
 {
   if (!isempty(PortalName) && strcmp(portalName, PortalName) != 0) {
      if (Number()) {
         dsyslog("changing portal name of channel %d (%s) from '%s' to '%s'", Number(), name, portalName, PortalName);
         modification |= CHANNELMOD_NAME;
-        Channels.SetModified();
         }
      portalName = strcpyrealloc(portalName, PortalName);
+     return true;
      }
+  return false;
 }
 
 #define STRDIFF 0x01
@@ -337,7 +330,7 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
+bool cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
   if (vpid != Vpid || ppid != Ppid || vtype != Vtype)
@@ -400,25 +393,33 @@ void cChannel::SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, c
      spids[MAXSPIDS] = 0;
      tpid = Tpid;
      modification |= mod;
-     if (Number())
-        Channels.SetModified();
+     return true;
      }
+  return false;
 }
 
-void cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds)
+bool cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *CompositionPageIds, uint16_t *AncillaryPageIds)
 {
+  bool Modified = false;
   if (SubtitlingTypes) {
-     for (int i = 0; i < MAXSPIDS; i++)
+     for (int i = 0; i < MAXSPIDS; i++) {
+         Modified = subtitlingTypes[i] != SubtitlingTypes[i];
          subtitlingTypes[i] = SubtitlingTypes[i];
+         }
      }
   if (CompositionPageIds) {
-     for (int i = 0; i < MAXSPIDS; i++)
+     for (int i = 0; i < MAXSPIDS; i++) {
+         Modified = compositionPageIds[i] != CompositionPageIds[i];
          compositionPageIds[i] = CompositionPageIds[i];
+         }
      }
   if (AncillaryPageIds) {
-     for (int i = 0; i < MAXSPIDS; i++)
+     for (int i = 0; i < MAXSPIDS; i++) {
+         Modified = ancillaryPageIds[i] != AncillaryPageIds[i];
          ancillaryPageIds[i] = AncillaryPageIds[i];
+         }
      }
+  return Modified;
 }
 
 void cChannel::SetSeen(void)
@@ -426,10 +427,26 @@ void cChannel::SetSeen(void)
   seen = time(NULL);
 }
 
-void cChannel::SetCaIds(const int *CaIds)
+void cChannel::DelLinkChannel(cChannel *LinkChannel)
+{
+  if (linkChannels) {
+     for (cLinkChannel *lc = linkChannels->First(); lc; lc = linkChannels->Next(lc)) {
+         if (lc->Channel() == LinkChannel) {
+            linkChannels->Del(lc);
+            break;
+            }
+         }
+     if (linkChannels->Count() == 0) {
+        delete linkChannels;
+        linkChannels = NULL;
+        }
+     }
+}
+
+bool cChannel::SetCaIds(const int *CaIds)
 {
   if (caids[0] && caids[0] <= CA_USER_MAX)
-     return; // special values will not be overwritten
+     return false; // special values will not be overwritten
   if (IntArraysDiffer(caids, CaIds)) {
      char OldCaIdsBuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
      char NewCaIdsBuf[MAXCAIDS * 5 + 10];
@@ -443,24 +460,26 @@ void cChannel::SetCaIds(const int *CaIds)
             break;
          }
      modification |= CHANNELMOD_CA;
-     Channels.SetModified();
+     return true;
      }
+  return false;
 }
 
-void cChannel::SetCaDescriptors(int Level)
+bool cChannel::SetCaDescriptors(int Level)
 {
   if (Level > 0) {
      modification |= CHANNELMOD_CA;
-     Channels.SetModified();
      if (Number() && Level > 1)
         dsyslog("changing ca descriptors of channel %d (%s)", Number(), name);
+     return true;
      }
+  return false;
 }
 
-void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
+bool cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
 {
   if (!linkChannels && !LinkChannels)
-     return;
+     return false;
   if (linkChannels && LinkChannels) {
      cLinkChannel *lca = linkChannels->First();
      cLinkChannel *lcb = LinkChannels->First();
@@ -474,7 +493,7 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
            }
      if (!lca && !lcb) {
         delete LinkChannels;
-        return; // linkage has not changed
+        return false; // linkage has not changed
         }
      }
   char buffer[((linkChannels ? linkChannels->Count() : 0) + (LinkChannels ? LinkChannels->Count() : 0)) * 6 + 256]; // 6: 5 digit channel number plus blank, 256: other texts (see below) plus reserve
@@ -502,6 +521,7 @@ void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
      q += sprintf(q, " none");
   if (Number())
      dsyslog("%s", buffer);
+  return true;
 }
 
 void cChannel::SetRefChannel(cChannel *RefChannel)
@@ -534,9 +554,9 @@ cString cChannel::ToText(const cChannel *Channel)
   cString buffer;
   if (Channel->groupSep) {
      if (Channel->number)
-        buffer = cString::sprintf(":@%d %s\n", Channel->number, FullName);
+        buffer = cString::sprintf(":@%d %s", Channel->number, FullName);
      else
-        buffer = cString::sprintf(":%s\n", FullName);
+        buffer = cString::sprintf(":%s", FullName);
      }
   else {
      char vpidbuf[32];
@@ -568,7 +588,7 @@ cString cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%s:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, tpidbuf, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     buffer = cString::sprintf("%s:%d:%s:%s:%d:%s:%s:%s:%s:%d:%d:%d:%d", FullName, Channel->frequency, *Channel->parameters, *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, tpidbuf, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -786,7 +806,7 @@ bool cChannel::Parse(const char *s)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, "%s", *ToText()) > 0;
+  return fprintf(f, "%s\n", *ToText()) > 0;
 }
 
 // --- cChannelSorter --------------------------------------------------------
@@ -807,40 +827,52 @@ public:
 
 // --- cChannels -------------------------------------------------------------
 
-cChannels Channels;
+cChannels cChannels::channels;
+int cChannels::maxNumber = 0;
+int cChannels::maxChannelNameLength = 0;
+int cChannels::maxShortChannelNameLength = 0;
 
 cChannels::cChannels(void)
+:cConfig<cChannel>("Channels")
 {
-  maxNumber = 0;
-  maxChannelNameLength = 0;
-  maxShortChannelNameLength = 0;
-  modified = CHANNELSMOD_NONE;
+  modifiedByUser = 0;
+}
+
+const cChannels *cChannels::GetChannelsRead(cStateKey &StateKey, int TimeoutMs)
+{
+  return channels.Lock(StateKey, false, TimeoutMs) ? &channels : NULL;
+}
+
+cChannels *cChannels::GetChannelsWrite(cStateKey &StateKey, int TimeoutMs)
+{
+  return channels.Lock(StateKey, true, TimeoutMs) ? &channels : NULL;
 }
 
 void cChannels::DeleteDuplicateChannels(void)
 {
   cList<cChannelSorter> ChannelSorter;
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep())
-         ChannelSorter.Add(new cChannelSorter(channel));
+  for (cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (!Channel->GroupSep())
+         ChannelSorter.Add(new cChannelSorter(Channel));
       }
   ChannelSorter.Sort();
   cChannelSorter *cs = ChannelSorter.First();
   while (cs) {
-        cChannelSorter *next = ChannelSorter.Next(cs);
-        if (next && cs->channelID == next->channelID) {
-           dsyslog("deleting duplicate channel %s", *next->channel->ToText());
-           Del(next->channel);
+        cChannelSorter *Next = ChannelSorter.Next(cs);
+        if (Next && cs->channelID == Next->channelID) {
+           dsyslog("deleting duplicate channel %s", *Next->channel->ToText());
+           Del(Next->channel);
            }
-        cs = next;
+        cs = Next;
         }
 }
 
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
 {
-  if (cConfig<cChannel>::Load(FileName, AllowComments, MustExist)) {
-     DeleteDuplicateChannels();
-     ReNumber();
+  LOCK_CHANNELS_WRITE;
+  if (channels.cConfig<cChannel>::Load(FileName, AllowComments, MustExist)) {
+     channels.DeleteDuplicateChannels();
+     channels.ReNumber();
      return true;
      }
   return false;
@@ -856,36 +888,36 @@ void cChannels::UnhashChannel(cChannel *Channel)
   channelsHashSid.Del(Channel, Channel->Sid());
 }
 
-int cChannels::GetNextGroup(int Idx)
+int cChannels::GetNextGroup(int Idx) const
 {
-  cChannel *channel = Get(++Idx);
-  while (channel && !(channel->GroupSep() && *channel->Name()))
-        channel = Get(++Idx);
-  return channel ? Idx : -1;
+  const cChannel *Channel = Get(++Idx);
+  while (Channel && !(Channel->GroupSep() && *Channel->Name()))
+        Channel = Get(++Idx);
+  return Channel ? Idx : -1;
 }
 
-int cChannels::GetPrevGroup(int Idx)
+int cChannels::GetPrevGroup(int Idx) const
 {
-  cChannel *channel = Get(--Idx);
-  while (channel && !(channel->GroupSep() && *channel->Name()))
-        channel = Get(--Idx);
-  return channel ? Idx : -1;
+  const cChannel *Channel = Get(--Idx);
+  while (Channel && !(Channel->GroupSep() && *Channel->Name()))
+        Channel = Get(--Idx);
+  return Channel ? Idx : -1;
 }
 
-int cChannels::GetNextNormal(int Idx)
+int cChannels::GetNextNormal(int Idx) const
 {
-  cChannel *channel = Get(++Idx);
-  while (channel && channel->GroupSep())
-        channel = Get(++Idx);
-  return channel ? Idx : -1;
+  const cChannel *Channel = Get(++Idx);
+  while (Channel && Channel->GroupSep())
+        Channel = Get(++Idx);
+  return Channel ? Idx : -1;
 }
 
-int cChannels::GetPrevNormal(int Idx)
+int cChannels::GetPrevNormal(int Idx) const
 {
-  cChannel *channel = Get(--Idx);
-  while (channel && channel->GroupSep())
-        channel = Get(--Idx);
-  return channel ? Idx : -1;
+  const cChannel *Channel = Get(--Idx);
+  while (Channel && Channel->GroupSep())
+        Channel = Get(--Idx);
+  return Channel ? Idx : -1;
 }
 
 void cChannels::ReNumber(void)
@@ -893,110 +925,120 @@ void cChannels::ReNumber(void)
   channelsHashSid.Clear();
   maxNumber = 0;
   int Number = 1;
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (channel->GroupSep()) {
-         if (channel->Number() > Number)
-            Number = channel->Number();
+  for (cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (Channel->GroupSep()) {
+         if (Channel->Number() > Number)
+            Number = Channel->Number();
          }
       else {
-         HashChannel(channel);
+         HashChannel(Channel);
          maxNumber = Number;
-         channel->SetNumber(Number++);
+         Channel->SetNumber(Number++);
          }
       }
 }
 
-cChannel *cChannels::GetByNumber(int Number, int SkipGap)
+void cChannels::Del(cChannel *Channel)
 {
-  cChannel *previous = NULL;
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep()) {
-         if (channel->Number() == Number)
-            return channel;
-         else if (SkipGap && channel->Number() > Number)
-            return SkipGap > 0 ? channel : previous;
-         previous = channel;
+  UnhashChannel(Channel);
+  for (cChannel *ch = First(); ch; ch = Next(ch))
+      ch->DelLinkChannel(Channel);
+  cList<cChannel>::Del(Channel);
+}
+
+const cChannel *cChannels::GetByNumber(int Number, int SkipGap) const
+{
+  const cChannel *Previous = NULL;
+  for (const cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (!Channel->GroupSep()) {
+         if (Channel->Number() == Number)
+            return Channel;
+         else if (SkipGap && Channel->Number() > Number)
+            return SkipGap > 0 ? Channel : Previous;
+         Previous = Channel;
          }
       }
   return NULL;
 }
 
-cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short ServiceID)
+const cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short ServiceID) const
 {
   cList<cHashObject> *list = channelsHashSid.GetList(ServiceID);
   if (list) {
      for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
-         cChannel *channel = (cChannel *)hobj->Object();
-         if (channel->Sid() == ServiceID && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder))
-            return channel;
+         cChannel *Channel = (cChannel *)hobj->Object();
+         if (Channel->Sid() == ServiceID && Channel->Source() == Source && ISTRANSPONDER(Channel->Transponder(), Transponder))
+            return Channel;
          }
      }
   return NULL;
 }
 
-cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bool TryWithoutPolarization)
+const cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bool TryWithoutPolarization) const
 {
   int sid = ChannelID.Sid();
   cList<cHashObject> *list = channelsHashSid.GetList(sid);
   if (list) {
      for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
-         cChannel *channel = (cChannel *)hobj->Object();
-         if (channel->Sid() == sid && channel->GetChannelID() == ChannelID)
-            return channel;
+         cChannel *Channel = (cChannel *)hobj->Object();
+         if (Channel->Sid() == sid && Channel->GetChannelID() == ChannelID)
+            return Channel;
          }
      if (TryWithoutRid) {
         ChannelID.ClrRid();
         for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
-            cChannel *channel = (cChannel *)hobj->Object();
-            if (channel->Sid() == sid && channel->GetChannelID().ClrRid() == ChannelID)
-               return channel;
+            cChannel *Channel = (cChannel *)hobj->Object();
+            if (Channel->Sid() == sid && Channel->GetChannelID().ClrRid() == ChannelID)
+               return Channel;
             }
         }
      if (TryWithoutPolarization) {
         ChannelID.ClrPolarization();
         for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
-            cChannel *channel = (cChannel *)hobj->Object();
-            if (channel->Sid() == sid && channel->GetChannelID().ClrPolarization() == ChannelID)
-               return channel;
+            cChannel *Channel = (cChannel *)hobj->Object();
+            if (Channel->Sid() == sid && Channel->GetChannelID().ClrPolarization() == ChannelID)
+               return Channel;
             }
         }
      }
   return NULL;
 }
-cChannel *cChannels::GetByTransponderID(tChannelID ChannelID)
+
+const cChannel *cChannels::GetByTransponderID(tChannelID ChannelID) const
 {
   int source = ChannelID.Source();
   int nid = ChannelID.Nid();
   int tid = ChannelID.Tid();
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (channel->Tid() == tid && channel->Nid() == nid && channel->Source() == source)
-         return channel;
+  for (const cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (Channel->Tid() == tid && Channel->Nid() == nid && Channel->Source() == source)
+         return Channel;
       }
   return NULL;
 }
 
-bool cChannels::HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel)
+bool cChannels::HasUniqueChannelID(const cChannel *NewChannel, const cChannel *OldChannel) const
 {
   tChannelID NewChannelID = NewChannel->GetChannelID();
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel != OldChannel && channel->GetChannelID() == NewChannelID)
+  for (const cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (!Channel->GroupSep() && Channel != OldChannel && Channel->GetChannelID() == NewChannelID)
          return false;
       }
   return true;
 }
 
-bool cChannels::SwitchTo(int Number)
+bool cChannels::SwitchTo(int Number) const
 {
-  cChannel *channel = GetByNumber(Number);
-  return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
+  const cChannel *Channel = GetByNumber(Number);
+  return Channel && cDevice::PrimaryDevice()->SwitchChannel(Channel, true);
 }
 
 int cChannels::MaxChannelNameLength(void)
 {
   if (!maxChannelNameLength) {
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep())
-            maxChannelNameLength = max(Utf8StrLen(channel->Name()), maxChannelNameLength);
+     LOCK_CHANNELS_READ;
+     for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
+         if (!Channel->GroupSep())
+            maxChannelNameLength = max(Utf8StrLen(Channel->Name()), maxChannelNameLength);
          }
      }
   return maxChannelNameLength;
@@ -1005,24 +1047,25 @@ int cChannels::MaxChannelNameLength(void)
 int cChannels::MaxShortChannelNameLength(void)
 {
   if (!maxShortChannelNameLength) {
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep())
-            maxShortChannelNameLength = max(Utf8StrLen(channel->ShortName(true)), maxShortChannelNameLength);
+     LOCK_CHANNELS_READ;
+     for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
+         if (!Channel->GroupSep())
+            maxShortChannelNameLength = max(Utf8StrLen(Channel->ShortName(true)), maxShortChannelNameLength);
          }
      }
   return maxShortChannelNameLength;
 }
 
-void cChannels::SetModified(bool ByUser)
+void cChannels::SetModifiedByUser(void)
 {
-  modified = ByUser ? CHANNELSMOD_USER : !modified ? CHANNELSMOD_AUTO : modified;
+  modifiedByUser++;
   maxChannelNameLength = maxShortChannelNameLength = 0;
 }
 
-int cChannels::Modified(void)
+bool cChannels::ModifiedByUser(int &State) const
 {
-  int Result = modified;
-  modified = CHANNELSMOD_NONE;
+  int Result = State != modifiedByUser;
+  State = modifiedByUser;
   return Result;
 }
 
@@ -1032,7 +1075,7 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
      dsyslog("creating new channel '%s,%s;%s' on %s transponder %d with id %d-%d-%d-%d", Name, ShortName, Provider, *cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
      cChannel *NewChannel = new cChannel;
      NewChannel->CopyTransponderData(Transponder);
-     NewChannel->SetId(Nid, Tid, Sid, Rid);
+     NewChannel->SetId(this, Nid, Tid, Sid, Rid);
      NewChannel->SetName(Name, ShortName, Provider);
      NewChannel->SetSeen();
      Add(NewChannel);
@@ -1045,17 +1088,19 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
 #define CHANNELMARKOBSOLETE "OBSOLETE"
 #define CHANNELTIMEOBSOLETE 3600 // seconds to wait before declaring a channel obsolete (in case it has actually been seen before)
 
-void cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
+bool cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
 {
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (time(NULL) - channel->Seen() > CHANNELTIMEOBSOLETE && channel->Source() == Source && channel->Nid() == Nid && channel->Tid() == Tid && channel->Rid() == 0) {
+  bool ChannelsModified = false;
+  for (cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
+      if (time(NULL) - Channel->Seen() > CHANNELTIMEOBSOLETE && Channel->Source() == Source && Channel->Nid() == Nid && Channel->Tid() == Tid && Channel->Rid() == 0) {
          bool OldShowChannelNamesWithSource = Setup.ShowChannelNamesWithSource;
          Setup.ShowChannelNamesWithSource = false;
-         if (!endswith(channel->Name(), CHANNELMARKOBSOLETE))
-            channel->SetName(cString::sprintf("%s %s", channel->Name(), CHANNELMARKOBSOLETE), channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, channel->Provider()));
+         if (!endswith(Channel->Name(), CHANNELMARKOBSOLETE))
+            ChannelsModified |= Channel->SetName(cString::sprintf("%s %s", Channel->Name(), CHANNELMARKOBSOLETE), Channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, Channel->Provider()));
          Setup.ShowChannelNamesWithSource = OldShowChannelNamesWithSource;
          }
       }
+  return ChannelsModified;
 }
 
 cString ChannelString(const cChannel *Channel, int Number)

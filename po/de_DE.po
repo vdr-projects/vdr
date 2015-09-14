@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "Lebensdauer"
 msgid "File"
 msgstr "Datei"
 
+msgid "Record on"
+msgstr "Aufnehmen auf"
+
 msgid "Button$Folder"
 msgstr "Verzeichnis"
 
@@ -672,6 +675,12 @@ msgstr "Wiederholend"
 
 msgid "First day"
 msgstr "Erster Tag"
+
+msgid "Error while accessing remote timer"
+msgstr "Fehler beim Ansprechen des fernen Timers"
+
+msgid "Timer has been deleted!"
+msgstr "Timer wurde gelöscht!"
 
 msgid "Select folder"
 msgstr "Verzeichnis wählen"
@@ -848,6 +857,12 @@ msgstr "je nach Oberfläche"
 msgid "always"
 msgstr "immer"
 
+msgid "by name"
+msgstr "nach Namen"
+
+msgid "by time"
+msgstr "nach Zeit"
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -934,6 +949,9 @@ msgstr "Verzeichnisse im Timer-Menü"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Verzeichnisse immer zuerst einsortieren"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr "Standard Sortierreihenfolge für Aufnahmen"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummerntasten für Zeichen"
@@ -1119,6 +1137,9 @@ msgstr "CAM bereit"
 msgid " (activating)"
 msgstr " (wird aktiviert)"
 
+msgid "@ device"
+msgstr "@ Empfänger"
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM wird benutzt - wirklich zurücksetzen?"
 msgid "Can't reset CAM!"
 msgstr "Zurücksetzen des CAM fehlgeschlagen!"
 
+msgid "no instant recording"
+msgstr "keine Sofortaufnahme"
+
+msgid "confirm instant recording"
+msgstr "Sofortaufnahme bestätigen"
+
+msgid "record instantly"
+msgstr "sofort aufnehmen"
+
 msgid "do not pause live video"
 msgstr "Live-Signal nicht anhalten"
 
@@ -1178,6 +1208,9 @@ msgstr "Default-Priorität"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Default-Lebensdauer (d)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr "Funktion der Aufnehmen-Taste"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Funktion der Pause-Taste"
@@ -1277,6 +1310,15 @@ msgstr "VDR ausschalten bei Inaktivität (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP trennen bei Inaktivität (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr "SVDRP Verbindung"
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr "SVDRP Maschinenname"
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr "SVDRP Standardmaschine"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Mindestzeit für vorherigen Kanal (s)"
@@ -1530,6 +1572,9 @@ msgstr "Aufnahme beginnt in Kürze!"
 
 msgid "Pause live video?"
 msgstr "Live-Signal anhalten?"
+
+msgid "Start recording?"
+msgstr "Aufnahme starten?"
 
 msgid "Recording started"
 msgstr "Aufzeichnung gestartet"

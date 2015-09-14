@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 3.4 2015/02/17 13:12:36 kls Exp $
+ * $Id: osddemo.c 4.3 2015/04/12 09:35:21 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.2.0";
+static const char *VERSION        = "2.3.1";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -87,6 +87,52 @@ void DrawSlopes(cOsd *Osd)
   DrawSlope(Osd, x1, y2, x2, y3, 5);
   DrawSlope(Osd, x2, y2, x3, y3, 6);
   DrawSlope(Osd, x3, y2, x4, y3, 7);
+  Osd->Flush();
+}
+
+// --- DrawImages ------------------------------------------------------------
+
+struct tOsdImageRef {
+  int image;
+  cSize size;
+  };
+
+#define NUMOSDIMAGES 16
+#define NUMOSDIMAGEVARIANTS 8
+
+void DrawImages(cOsd *Osd)
+{
+  // Create images:
+  cImage *images[NUMOSDIMAGEVARIANTS];
+  for (int i = 0; i < NUMOSDIMAGEVARIANTS; i++) {
+      images[i] = new cImage(cSize(
+        i == 0 || i == 1 ? Osd->MaxPixmapSize().Width() + 1 : rand() % Osd->Width(),
+        i == 0 || i == 2 ? Osd->MaxPixmapSize().Height() + 1 : rand() % Osd->Height()));
+      for (int x = 0; x < images[i]->Width(); x++) {
+          for (int y = 0; y < images[i]->Height(); y++) {
+              images[i]->SetPixel(cPoint(x, y),
+                (!x || !y || x == images[i]->Width() - 1 || y == images[i]->Height() - 1) ? clrWhite :
+                (x > images[i]->Width() / 2 ?
+                  (y > images[i]->Height() / 2 ? clrBlue : clrGreen) :
+                  (y > images[i]->Height() / 2 ? clrRed : clrYellow)));
+              }
+          }
+      }
+  // Store images:
+  tOsdImageRef osdImages[NUMOSDIMAGES];
+  for (int i = 0; i < NUMOSDIMAGES; i++) {
+      osdImages[i].image = cOsdProvider::StoreImage(*images[i % NUMOSDIMAGEVARIANTS]);
+      osdImages[i].size.Set(images[i % NUMOSDIMAGEVARIANTS]->Size());
+      }
+  // Delete images:
+  for (int i = 0; i < NUMOSDIMAGEVARIANTS; i++)
+      delete images[i];
+  // Draw images:
+  for (int i = 0; i < NUMOSDIMAGES; i++)
+      Osd->DrawImage(cPoint(rand() % (Osd->Width() + osdImages[i].size.Width()), rand() % (Osd->Height() + osdImages[i].size.Height())).Shifted(-osdImages[i].size.Width(), -osdImages[i].size.Height()), osdImages[i].image);
+  // Drop image references:
+  for (int i = 0; i < NUMOSDIMAGES; i++)
+      cOsdProvider::DropImage(osdImages[i].image);
   Osd->Flush();
 }
 
@@ -210,7 +256,7 @@ cPixmap *cTrueColorDemo::CreateTextPixmap(const char *s, int Line, int Layer, tC
   if (Pixmap) {
      Pixmap->Clear();
      Pixmap->SetAlpha(0);
-     Pixmap->DrawText(cPoint(0, 0), s, ColorFg, ColorBg, Font);
+     Pixmap->DrawText(cPoint(0, 0), s, ColorFg, ColorBg, Font, w);
      }
   return Pixmap;
 }
@@ -427,16 +473,20 @@ void cTrueColorDemo::Action(void)
                        const int Size = SmlFont->Width(Text) + 10;
                        const int NumDots = 12;
                        const int AnimFrames = NumDots;
+                       int Rows = min(osd->MaxPixmapSize().Height() / Size, AnimFrames);
+                       int Cols = (AnimFrames + Rows - 1) / Rows;
                        // Temporarily using pixmap layer 0 to have the text alpha blended:
-                       AnimPixmap = osd->CreatePixmap(0, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size, Size * AnimFrames));
+                       AnimPixmap = osd->CreatePixmap(0, cRect((osd->Width() - Size) / 2, StartLine, Size, Size), cRect(0, 0, Size * Cols, Size * Rows));
                        if (AnimPixmap) {
                           AnimPixmap->SetAlpha(0);
                           AnimPixmap->Clear();
                           const int Diameter = Size / 5;
-                          int xc = Size / 2 - Diameter / 2;
                           for (int Frame = 0; Frame < AnimFrames; Frame++) {
-                              AnimPixmap->DrawEllipse(cRect(0, Frame * Size, Size, Size), 0xDDFFFFFF);
-                              int yc = Frame * Size + Size / 2 - Diameter / 2;
+                              int x0 = Frame / Rows * Size;
+                              int y0 = Frame % Rows * Size;
+                              AnimPixmap->DrawEllipse(cRect(x0, y0, Size, Size), 0xDDFFFFFF);
+                              int xc = x0 + Size / 2 - Diameter / 2;
+                              int yc = y0 + Size / 2 - Diameter / 2;
                               int Color = 0xFF;
                               int Delta = Color / NumDots / 3;
                               for (int a = 0; a < NumDots; a++) {
@@ -446,7 +496,7 @@ void cTrueColorDemo::Action(void)
                                   AnimPixmap->DrawEllipse(cRect(x, y, Diameter, Diameter), ArgbToColor(0xFF, Color, Color, Color));
                                   Color -= Delta;
                                   }
-                              AnimPixmap->DrawText(cPoint(0, Frame * Size), Text, clrBlack, clrTransparent, SmlFont, Size, Size, taCenter);
+                              AnimPixmap->DrawText(cPoint(x0, y0), Text, clrBlack, clrTransparent, SmlFont, Size, Size, taCenter);
                               }
                           AnimPixmap->SetLayer(3); // now setting the actual pixmap layer
                           FadeInPixmap = AnimPixmap;
@@ -535,6 +585,10 @@ eOSState cTrueColorDemo::ProcessKey(eKeys Key)
        case k2:      Cancel(3);
                      SetArea();
                      DrawSlopes(osd);
+                     break;
+       case k3:      Cancel(3);
+                     SetArea();
+                     DrawImages(osd);
                      break;
        case kBack:
        case kOk:     return osEnd;

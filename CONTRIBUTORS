@@ -714,6 +714,7 @@ Oliver Endriss <o.endriss@gmx.de>
  to detect the frame type
  for suggesting to ignore channels with an RID that is not 0 when checking for obsolete
  channels
+ for fixing a possible stack overflow in cListBase::Sort()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -2842,6 +2843,7 @@ Derek Kelly <user.vdr@gmail.com>
  for reporting a missing template for DVBDIR in Make.config.template
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
+ for suggesting to make the -u option also accept a numerical user id
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -2964,6 +2966,7 @@ Christopher Reimer <vdr@creimer.net>
  for reporting a possible crash in the OSD demo
  for adding support for systemd
  for suggesting to replace VDR_CHARSET_OVERRIDE with a command line option
+ for making the recorder skip empty adaptation field TS packets
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3003,6 +3006,8 @@ Frank Neumann <fnu@yavdr.org>
  for reporting a problem with tuning timeouts when using SCR with multiple tuners
  for fixing the German translation of "VDR will shut down in %s minutes"
  for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
+ for suggesting to make the Setup/CAM menu display which device an individual CAM
+ is currently assigned to
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
@@ -3262,6 +3267,7 @@ Stefan Braun <louis.braun@gmx.de>
  for suggesting to add the menu category mcRecordingEdit for marking menus that edit
  recording properties
  for suggesting to make cRecording::GetResume() public
+ for implementing the possibility for skins to display horizontal menus
 
 Jochen Dolze <vdr@dolze.de>
  for changing cThread::SetIOPriority() from "best effort class" to "idle class" in order
@@ -3311,6 +3317,11 @@ Thomas Reufer <thomas@reufer.ch>
  skipping"
  for suggesting to change the return value of cOsd::RenderPixmaps() from cPixmapMemory
  to cPixmap
+ for adding detection of 24fps
+ for suggesting to add some comment to cPixmap about the relation between OSD,
+ ViewPort and DrawPort
+ for suggesting to reduce the priority of the "video directory scanner" thread
+ for making the 'newplugin' script create the 'po' subdirectory for translations
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
@@ -3345,6 +3356,9 @@ Dietmar Spingler <d_spingler@gmx.de>
  for reporting a problem that led to a fix with EMM pids not being properly reset for
  CAMs that need to receive the TS
  for suggesting to add the channel name to log messages that reference a channel
+ for suggesting to provide a way of using no DVB devices at all
+ for suggesting that the -V and -h options should list the plugins in alphabetical order
+ for suggesting to implement the setup option "Recording/Record key handling"
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
@@ -3359,6 +3373,8 @@ Dieter Ferdinand <dieter.ferdinand@gmx.de>
  case replay was paused
  for reporting a problem with the system getting unresponsive when removing a huge
  number of files in the thread that removes deleted recordings
+ for suggesting to call the script that gets called for recordings also right before a
+ recording is edited
 
 Jasmin Jessich <jasmin@anw.at>
  for modifying the CAM API so that it is possible to implement CAMs that can be freely
@@ -3400,3 +3416,15 @@ Tomasz Maciej Nowak <tmn505@gmail.com>
 
 Gabriel Bonich <gbonich@gmail.com>
  for translating OSD texts to the Spanish language
+
+Daniel Ribeiro <drwyrm@gmail.com>
+ for reporting a problem with setting the source value of newly created channels, in
+ case the NIT is received from a different, but very close satellite position, and
+ for helping to debug this
+
+Janne Pänkälä <epankala@gmail.com>
+ for reporting that some broadcasters use the character 0x0D in EPG texts
+
+Stefan Pöschel <basic.master@gmx.de>
+ for coding the AFFcleaner, parts of which were used to make the recorder skip empty
+ adaptation field TS packets

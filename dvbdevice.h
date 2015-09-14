@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 3.5 2014/03/16 10:38:31 kls Exp $
+ * $Id: dvbdevice.h 4.1 2015/04/18 13:57:27 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -174,6 +174,7 @@ private:
   static bool Probe(int Adapter, int Frontend);
          ///< Probes for existing DVB devices.
 public:
+  static bool useDvbDevices;
   static bool Initialize(void);
          ///< Initializes the DVB devices.
          ///< Must be called before accessing any DVB functions.

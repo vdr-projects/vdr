@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-11 10:51+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"
 "Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -666,6 +666,9 @@ msgstr "Bewaarduur"
 msgid "File"
 msgstr "Bestandnaam"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Map"
 
@@ -677,6 +680,12 @@ msgstr "Herhalen"
 
 msgid "First day"
 msgstr "Eerste dag"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Kies map"
@@ -853,6 +862,12 @@ msgstr "skin afhankelijk"
 msgid "always"
 msgstr "altijd"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -939,6 +954,9 @@ msgstr "Mappen in timermenu"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Altijd mappen eerst sorteren"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummertoetsen voor karakters"
@@ -1124,6 +1142,9 @@ msgstr "CAM gereed"
 msgid " (activating)"
 msgstr " (Activeren)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1154,6 +1175,15 @@ msgstr "CAM wordt gebruikt - werkelijk herstarten?"
 msgid "Can't reset CAM!"
 msgstr "Kan CAM niet herstarten!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "live video niet pauzeren"
 
@@ -1183,6 +1213,9 @@ msgstr "Standaard prioriteit"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Standaard levensduur (d)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Gedrag pauze toets"
@@ -1282,6 +1315,15 @@ msgstr "Minimum gebruikers inactiviteit (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP Timeout (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap timeout (s)"
@@ -1535,6 +1577,9 @@ msgstr "Opname start binnenkort!"
 
 msgid "Pause live video?"
 msgstr "Pauzeer live video?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Opname is gestart!"

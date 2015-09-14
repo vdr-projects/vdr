@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.h 3.0 2005/01/02 14:39:29 kls Exp $
+ * $Id: skinsttng.h 4.0 2005/01/02 14:39:29 kls Exp $
  */
 
 #ifndef __SKINSTTNG_H

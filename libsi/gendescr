@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: gendescr 3.0 2003/12/13 10:40:53 kls Exp $
+# $Id: gendescr 4.0 2003/12/13 10:40:53 kls Exp $
 
 print "Name (ohne ...Descriptor):";
 $name=<STDIN>;

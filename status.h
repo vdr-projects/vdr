@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 3.1 2014/01/25 10:47:39 kls Exp $
+ * $Id: status.h 4.1 2015/08/02 10:34:44 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -15,7 +15,7 @@
 #include "player.h"
 #include "tools.h"
 
-enum eTimerChange { tcMod, tcAdd, tcDel };
+enum eTimerChange { tcMod, tcAdd, tcDel }; // tcMod is obsolete and no longer used!
 
 class cTimer;
 
@@ -29,10 +29,7 @@ protected:
                // require a retune.
   virtual void TimerChange(const cTimer *Timer, eTimerChange Change) {}
                // Indicates a change in the timer settings.
-               // If Change is tcAdd or tcDel, Timer points to the timer that has
-               // been added or will be deleted, respectively. In case of tcMod,
-               // Timer is NULL; this indicates that some timer has been changed.
-               // Note that tcAdd and tcDel are always also followed by a tcMod.
+               // Timer points to the timer that has been added or will be deleted, respectively.
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView) {}
                // Indicates a channel switch on the given DVB device.
                // If ChannelNumber is 0, this is before the channel is being switched,

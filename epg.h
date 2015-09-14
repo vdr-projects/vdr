@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 3.1 2013/08/23 10:50:05 kls Exp $
+ * $Id: epg.h 4.1 2015/08/09 11:25:04 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -66,13 +66,15 @@ public:
 
 class cSchedule;
 
-typedef u_int32_t tEventID;
+typedef u_int16_t tEventID;
 
 class cEvent : public cListObject {
   friend class cSchedule;
 private:
+  static cMutex numTimersMutex; // Protects numTimers, because it might be accessed from parallel read locks
   // The sequence of these parameters is optimized for minimal memory waste!
   cSchedule *schedule;     // The Schedule this event belongs to
+  mutable u_int16_t numTimers;// The number of timers that use this event
   tEventID eventID;        // Event ID of this event
   uchar tableID;           // Table ID this event came from
   uchar version;           // Version number of section this event came from
@@ -109,7 +111,9 @@ public:
   time_t Vps(void) const { return vps; }
   time_t Seen(void) const { return seen; }
   bool SeenWithin(int Seconds) const { return time(NULL) - seen < Seconds; }
-  bool HasTimer(void) const;
+  void IncNumTimers(void) const;
+  void DecNumTimers(void) const;
+  bool HasTimer(void) const { return numTimers > 0; }
   bool IsRunning(bool OrAboutToStart = false) const;
   static const char *ContentToString(uchar Content);
   cString GetParentalRatingString(void) const;
@@ -120,7 +124,7 @@ public:
   void SetEventID(tEventID EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
-  void SetRunningStatus(int RunningStatus, cChannel *Channel = NULL);
+  void SetRunningStatus(int RunningStatus, const cChannel *Channel = NULL);
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
@@ -142,28 +146,33 @@ class cSchedules;
 
 class cSchedule : public cListObject  {
 private:
+  static cMutex numTimersMutex; // Protects numTimers, because it might be accessed from parallel read locks
   tChannelID channelID;
   cList<cEvent> events;
   cHash<cEvent> eventsHashID;
   cHash<cEvent> eventsHashStartTime;
+  mutable u_int16_t numTimers;// The number of timers that use this schedule
   bool hasRunning;
-  time_t modified;
+  int modified;
   time_t presentSeen;
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
-  time_t Modified(void) const { return modified; }
+  bool Modified(int &State) const { bool Result = State != modified; State = modified; return Result; }
   time_t PresentSeen(void) const { return presentSeen; }
   bool PresentSeenWithin(int Seconds) const { return time(NULL) - presentSeen < Seconds; }
-  void SetModified(void) { modified = time(NULL); }
+  void SetModified(void) { modified++; }
   void SetPresentSeen(void) { presentSeen = time(NULL); }
-  void SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel = NULL);
+  void SetRunningStatus(cEvent *Event, int RunningStatus, const cChannel *Channel = NULL);
   void ClrRunningStatus(cChannel *Channel = NULL);
   void ResetVersions(void);
   void Sort(void);
   void DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
   void Cleanup(time_t Time);
   void Cleanup(void);
+  void IncNumTimers(void) const;
+  void DecNumTimers(void) const;
+  bool HasTimer(void) const { return numTimers > 0; }
   cEvent *AddEvent(cEvent *Event);
   void DelEvent(cEvent *Event);
   void HashEvent(cEvent *Event);
@@ -177,41 +186,40 @@ public:
   static bool Read(FILE *f, cSchedules *Schedules);
   };
 
-class cSchedulesLock {
-private:
-  bool locked;
-public:
-  cSchedulesLock(bool WriteLock = false, int TimeoutMs = 0);
-  ~cSchedulesLock();
-  bool Locked(void) { return locked; }
-  };
-
 class cSchedules : public cList<cSchedule> {
   friend class cSchedule;
-  friend class cSchedulesLock;
 private:
-  cRwLock rwlock;
   static cSchedules schedules;
   static char *epgDataFileName;
   static time_t lastDump;
-  static time_t modified;
 public:
+  cSchedules(void);
+  static const cSchedules *GetSchedulesRead(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of schedules for read access.
+      ///< See cTimers::GetTimersRead() for details.
+  static cSchedules *GetSchedulesWrite(cStateKey &StateKey, int TimeoutMs = 0);
+      ///< Gets the list of schedules for write access.
+      ///< See cTimers::GetTimersWrite() for details.
   static void SetEpgDataFileName(const char *FileName);
-  static const cSchedules *Schedules(cSchedulesLock &SchedulesLock);
-         ///< Caller must provide a cSchedulesLock which has to survive the entire
-         ///< time the returned cSchedules is accessed. Once the cSchedules is no
-         ///< longer used, the cSchedulesLock must be destroyed.
-  static time_t Modified(void) { return modified; }
-  static void SetModified(cSchedule *Schedule);
   static void Cleanup(bool Force = false);
   static void ResetVersions(void);
-  static bool ClearAll(void);
   static bool Dump(FILE *f = NULL, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0);
   static bool Read(FILE *f = NULL);
   cSchedule *AddSchedule(tChannelID ChannelID);
   const cSchedule *GetSchedule(tChannelID ChannelID) const;
   const cSchedule *GetSchedule(const cChannel *Channel, bool AddIfMissing = false) const;
   };
+
+// Provide lock controlled access to the list:
+
+DEF_LIST_LOCK(Schedules);
+
+// These macros provide a convenient way of locking the global schedules list
+// and making sure the lock is released as soon as the current scope is left
+// (note that these macros wait forever to obtain the lock!):
+
+#define LOCK_SCHEDULES_READ  USE_LIST_LOCK_READ(Schedules);
+#define LOCK_SCHEDULES_WRITE USE_LIST_LOCK_WRITE(Schedules);
 
 class cEpgDataReader : public cThread {
 public:
@@ -273,12 +281,14 @@ public:
   virtual bool DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version) { return false; }
           ///< Takes a look at all EPG events between SegmentStart and SegmentEnd and
           ///< drops outdated events.
-  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus) { return false; }
+  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called directly after IgnoreChannel() before any other handler method is called.
           ///< Designed to give handlers the possibility to prepare a database transaction.
-  virtual bool EndSegmentTransfer(bool Modified, bool OnlyRunningStatus) { return false; }
+          ///< Dummy is for backward compatibility and may be removed in a future version.
+  virtual bool EndSegmentTransfer(bool Modified, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called after the segment data has been processed.
           ///< At this point handlers should close/commit/rollback any pending database transactions.
+          ///< Dummy is for backward compatibility and may be removed in a future version.
   };
 
 class cEpgHandlers : public cList<cEpgHandler> {
@@ -301,8 +311,8 @@ public:
   void HandleEvent(cEvent *Event);
   void SortSchedule(cSchedule *Schedule);
   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
-  void BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus);
-  void EndSegmentTransfer(bool Modified, bool OnlyRunningStatus);
+  void BeginSegmentTransfer(const cChannel *Channel);
+  void EndSegmentTransfer(bool Modified);
   };
 
 extern cEpgHandlers EpgHandlers;

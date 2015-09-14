@@ -38,7 +38,7 @@ Copyright &copy; 2015 Klaus Schmidinger<br>
 <a href="http://www.tvdr.de">www.tvdr.de</a>
 </div>
 <div class="center">
-<modified>Important modifications introduced since version 2.0 are marked like this.</modified>
+<modified>Important modifications introduced since version 2.2 are marked like this.</modified>
 </div>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
@@ -99,12 +99,12 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <li><a href="#Devices">Devices</a>
-<li><modified><a href="#Positioners">Positioners</a></modified>
+<li><a href="#Positioners">Positioners</a>
 <li><a href="#Audio">Audio</a>
 <li><a href="#Remote Control">Remote Control</a>
 <li><a href="#Conditional Access">Conditional Access</a>
 <li><a href="#Electronic Program Guide">Electronic Program Guide</a>
-<li><modified><a href="#The video directory">The video directory</a></modified>
+<li><a href="#The video directory">The video directory</a>
 </ul>
 </ul>
 
@@ -1161,6 +1161,12 @@ The returned string may consist of several lines, separated by the newline chara
 ('<tt>\n</tt>'). Each of these lines will be preceded with the <tt>ReplyCode</tt>
 when presenting them to the caller, and the continuation character ('<tt>-</tt>')
 will be set for all but the last one.
+<p>
+<modified>
+<b>The SVDRP functions are called from the separate "SVDRP server handler" thread.
+Therefore the plugin needs to take care of proper locking if it accesses any
+global data.</b>
+</modified>
 
 <hr><h2><a name="Loading plugins into VDR">Loading plugins into VDR</a></h2>
 
@@ -1877,7 +1883,7 @@ virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual int64_t GetSTC(void);
 virtual bool IsPlayingVideo(void) const;
 virtual bool HasIBPTrickSpeed(void);
-virtual void TrickSpeed(int Speed<modified>, bool Forward</modified>);
+virtual void TrickSpeed(int Speed, bool Forward);
 virtual void Clear(void);
 virtual void Play(void);
 virtual void Freeze(void);
@@ -2026,7 +2032,6 @@ new cMyDeviceHook;
 
 and shall not delete this object. It will be automatically deleted when the program ends.
 
-<div class="modified">
 <hr><h2><a name="Positioners">Positioners</a></h2>
 
 <div class="blurb">Now you see me - now you don't!</div><p>
@@ -2065,7 +2070,6 @@ You should create your derived positioner object in the
 Note that the object has to be created on the heap (using <tt>new</tt>),
 and you shall not delete it at any point (it will be deleted automatically
 when the program ends).
-</div modified>
 
 <hr><h2><a name="Audio">Audio</a></h2>
 
@@ -2301,7 +2305,6 @@ to signal VDR that no other EPG handlers shall be queried after this one.
 <p>
 See <tt>VDR/epg.h</tt> for details.
 
-<div class="modified">
 <hr><h2><a name="The video directory">The video directory</a></h2>
 
 <div class="blurb">Bits and pieces...</div><p>
@@ -2335,7 +2338,6 @@ You should create your derived video directory object in the
 Note that the object has to be created on the heap (using <tt>new</tt>),
 and you shall not delete it at any point (it will be deleted automatically
 when the program ends).
-</div modified>
 
 </body>
 </html>

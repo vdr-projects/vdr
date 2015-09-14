@@ -99,3 +99,7 @@ VDR Plugin 'pictures' Revision History
 2015-02-19: Version 2.2.0
 
 - Official release.
+
+2015-07.23: Version 2.3.1
+
+- Added a missing 'const'.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 3.1 2015/01/27 10:45:18 kls Exp $
+ * $Id: keys.h 4.0 2015/01/27 10:45:18 kls Exp $
  */
 
 #ifndef __KEYS_H

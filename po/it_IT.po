@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-12 19:31+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -666,6 +666,9 @@ msgstr "Scadenza"
 msgid "File"
 msgstr "Nome"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Cartella"
 
@@ -677,6 +680,12 @@ msgstr "Repliche"
 
 msgid "First day"
 msgstr "1° giorno"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Seleziona cartella"
@@ -853,6 +862,12 @@ msgstr "in base allo stile interfaccia"
 msgid "always"
 msgstr "sempre"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -939,6 +954,9 @@ msgstr "Cartelle nel menu timer"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Ordina sempre per prima le cartelle"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Tasti numerici per i caratteri"
@@ -1124,6 +1142,9 @@ msgstr "La CAM è pronta"
 msgid " (activating)"
 msgstr " (attivazione)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "Accesso condizionato CAM"
 
@@ -1154,6 +1175,15 @@ msgstr "La CAM è in uso - vuoi reimpostarla?"
 msgid "Can't reset CAM!"
 msgstr "Impossibile reimpostare il modulo CAM!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "non mettere in pausa il video dal vivo"
 
@@ -1183,6 +1213,9 @@ msgstr "Priorità predefinita"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Scadenza predefinita (gg)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Gestione tasto Pausa"
@@ -1282,6 +1315,15 @@ msgstr "Periodo min. inattività (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Scadenza SVDRP (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Scadenza Zapping (s)"
@@ -1535,6 +1577,9 @@ msgstr "Registrazione imminente!"
 
 msgid "Pause live video?"
 msgstr "Pausare video dal vivo?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Registrazione avviata"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sourceparams.h 3.0 2010/02/28 11:58:03 kls Exp $
+ * $Id: sourceparams.h 4.1 2015/08/02 11:56:25 kls Exp $
  */
 
 #ifndef __SOURCEPARAMS_H
@@ -45,7 +45,7 @@ public:
 
 class cSourceParams : public cList<cSourceParam> {
 public:
-  cSourceParam *Get(char Source) const;
+  cSourceParam *Get(char Source);
   };
 
 extern cSourceParams SourceParams;

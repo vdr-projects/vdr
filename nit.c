@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 3.5 2015/02/04 09:13:54 kls Exp $
+ * $Id: nit.c 4.3 2015/07/26 09:24:36 kls Exp $
  */
 
 #include "nit.h"
@@ -19,19 +19,22 @@
 #define DVB_SYSTEM_1 0 // see also dvbdevice.c
 #define DVB_SYSTEM_2 1
 
+#define MAXNETWORKNAME Utf8BufSize(256)
+
+// Set to 'true' for debug output:
+static bool DebugNit = false;
+
+#define dbgnit(a...) if (DebugNit) fprintf(stderr, a)
+
 cNitFilter::cNitFilter(cSdtFilter *SdtFilter)
 {
   sdtFilter = SdtFilter;
-  numNits = 0;
-  networkId = 0;
-  Set(0x10, 0x40);  // NIT
+  Set(0x10, SI::TableIdNIT);
 }
 
 void cNitFilter::SetStatus(bool On)
 {
   cFilter::SetStatus(On);
-  numNits = 0;
-  networkId = 0;
   sectionSyncer.Reset();
 }
 
@@ -40,63 +43,31 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
   SI::NIT nit(Data, false);
   if (!nit.CheckCRCAndParse())
      return;
-  // Some broadcasters send more than one NIT, with no apparent way of telling which
-  // one is the right one to use. This is an attempt to find the NIT that contains
-  // the transponder it was transmitted on and use only that one:
-  int ThisNIT = -1;
-  if (!networkId) {
-     for (int i = 0; i < numNits; i++) {
-         if (nits[i].networkId == nit.getNetworkId()) {
-            if (nit.getSectionNumber() == 0) {
-               // all NITs have passed by
-               for (int j = 0; j < numNits; j++) {
-                   if (nits[j].hasTransponder) {
-                      networkId = nits[j].networkId;
-                      //printf("taking NIT with network ID %d\n", networkId);
-                      //XXX what if more than one NIT contains this transponder???
-                      break;
-                      }
-                   }
-               if (!networkId) {
-                  //printf("none of the NITs contains transponder %d\n", Transponder());
-                  return;
-                  }
-               }
-            else {
-               ThisNIT = i;
-               break;
-               }
-            }
-         }
-     if (!networkId && ThisNIT < 0 && numNits < MAXNITS) {
-        if (nit.getSectionNumber() == 0) {
-           *nits[numNits].name = 0;
-           SI::Descriptor *d;
-           for (SI::Loop::Iterator it; (d = nit.commonDescriptors.getNext(it)); ) {
-               switch (d->getDescriptorTag()) {
-                 case SI::NetworkNameDescriptorTag: {
-                      SI::NetworkNameDescriptor *nnd = (SI::NetworkNameDescriptor *)d;
-                      nnd->name.getText(nits[numNits].name, MAXNETWORKNAME);
-                      }
-                      break;
-                 default: ;
-                 }
-               delete d;
-               }
-           nits[numNits].networkId = nit.getNetworkId();
-           nits[numNits].hasTransponder = false;
-           //printf("NIT[%d] %5d '%s'\n", numNits, nits[numNits].networkId, nits[numNits].name);
-           ThisNIT = numNits;
-           numNits++;
+  if (!sectionSyncer.Sync(nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber()))
+     return;
+  if (DebugNit) {
+     char NetworkName[MAXNETWORKNAME] = "";
+     SI::Descriptor *d;
+     for (SI::Loop::Iterator it; (d = nit.commonDescriptors.getNext(it)); ) {
+         switch (d->getDescriptorTag()) {
+           case SI::NetworkNameDescriptorTag: {
+                SI::NetworkNameDescriptor *nnd = (SI::NetworkNameDescriptor *)d;
+                nnd->name.getText(NetworkName, MAXNETWORKNAME);
+                }
+                break;
+           default: ;
            }
-        }
+         delete d;
+         }
+     dbgnit("NIT: %02X %2d %2d %2d %s %d %d '%s'\n", Tid, nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber(), *cSource::ToString(Source()), nit.getNetworkId(), Transponder(), NetworkName);
      }
-  else if (networkId != nit.getNetworkId())
-     return; // ignore all other NITs
-  else if (!sectionSyncer.Sync(nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber()))
+  cStateKey StateKey;
+  cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
+  if (!Channels) {
+     sectionSyncer.Repeat(); // let's not miss any section of the NIT
      return;
-  if (!Channels.Lock(true, 10))
-     return;
+     }
+  bool ChannelsModified = false;
   SI::NIT::TransportStream ts;
   for (SI::Loop::Iterator it; nit.transportStreamLoop.getNext(ts, it); ) {
       SI::Descriptor *d;
@@ -118,6 +89,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                   default: ;
                   }
                 Frequencies[n++] = f;
+                dbgnit("    Frequencies[%d] = %d\n", n - 1, f);
                 }
             }
          else
@@ -142,20 +114,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
                  dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
-                 if (ThisNIT >= 0) {
-                    for (int n = 0; n < NumFrequencies; n++) {
-                        if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], dtp.Polarization()), Transponder())) {
-                           nits[ThisNIT].hasTransponder = true;
-                           //printf("has transponder %d\n", Transponder());
-                           break;
-                           }
-                        }
-                    break;
-                    }
+                 dbgnit("    %s %d %c %d %d\n", *cSource::ToString(Source), Frequency, Polarizations[sd->getPolarization()], SymbolRate, cChannel::Transponder(Frequency, Polarizations[sd->getPolarization()]));
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
-                    for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                    for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
                            found = true;
@@ -168,7 +131,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
+                              ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('S')))
                               forceTransponderUpdate = true; // get us receiving this transponder
                            }
@@ -176,7 +139,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     if (!found || forceTransponderUpdate) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
-                           Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                           Channel->SetId(NULL, ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('S')))
                               EITScanner.AddTransponder(Channel);
                            else
@@ -184,18 +147,19 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 sdtFilter->Trigger(Source);
+                 if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder()))
+                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::S2SatelliteDeliverySystemDescriptorTag: {
                  if (Setup.UpdateChannels >= 5) {
-                    for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                    for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && cSource::IsSat(Channel->Source()) && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            SI::S2SatelliteDeliverySystemDescriptor *sd = (SI::S2SatelliteDeliverySystemDescriptor *)d;
                            cDvbTransponderParameters dtp(Channel->Parameters());
                            dtp.SetSystem(DVB_SYSTEM_2);
                            dtp.SetStreamId(sd->getInputStreamIdentifier());
-                           Channel->SetTransponderData(Channel->Source(), Channel->Frequency(), Channel->Srate(), dtp.ToString('S'));
+                           ChannelsModified |= Channel->SetTransponderData(Channel->Source(), Channel->Frequency(), Channel->Srate(), dtp.ToString('S'));
                            break;
                            }
                         }
@@ -213,20 +177,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256, QAM_AUTO };
                  dtp.SetModulation(Modulations[min(sd->getModulation(), 6)]);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
-                 if (ThisNIT >= 0) {
-                    for (int n = 0; n < NumFrequencies; n++) {
-                        if (ISTRANSPONDER(Frequencies[n] / 1000, Transponder())) {
-                           nits[ThisNIT].hasTransponder = true;
-                           //printf("has transponder %d\n", Transponder());
-                           break;
-                           }
-                        }
-                    break;
-                    }
+                 dbgnit("    %s %d %d %d %d\n", *cSource::ToString(Source), Frequency, CodeRates[sd->getFecInner()], Modulations[min(sd->getModulation(), 6)], SymbolRate);
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
-                    for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                    for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
                            found = true;
@@ -239,7 +194,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
+                              ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('C')))
                               forceTransponderUpdate = true; // get us receiving this transponder
                            }
@@ -247,7 +202,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     if (!found || forceTransponderUpdate) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
-                           Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                           Channel->SetId(NULL, ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('C')))
                               EITScanner.AddTransponder(Channel);
                            else
@@ -255,7 +210,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 sdtFilter->Trigger(Source);
+                 if (ISTRANSPONDER(Frequency / 1000, Transponder()))
+                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
@@ -277,20 +233,11 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetGuard(GuardIntervals[sd->getGuardInterval()]);
                  static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_AUTO };
                  dtp.SetTransmission(TransmissionModes[sd->getTransmissionMode()]);
-                 if (ThisNIT >= 0) {
-                    for (int n = 0; n < NumFrequencies; n++) {
-                        if (ISTRANSPONDER(Frequencies[n] / 1000000, Transponder())) {
-                           nits[ThisNIT].hasTransponder = true;
-                           //printf("has transponder %d\n", Transponder());
-                           break;
-                           }
-                        }
-                    break;
-                    }
+                 dbgnit("    %s %d %d %d %d %d %d %d %d\n", *cSource::ToString(Source), Frequency, Bandwidths[sd->getBandwidth()], Constellations[sd->getConstellation()], Hierarchies[sd->getHierarchy()], CodeRates[sd->getCodeRateHP()], CodeRates[sd->getCodeRateLP()], GuardIntervals[sd->getGuardInterval()], TransmissionModes[sd->getTransmissionMode()]);
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
-                    for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                    for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
                            found = true;
@@ -303,7 +250,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                   }
                               }
                            if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
-                              Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
+                              ChannelsModified |= Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
                            else if (strcmp(Channel->Parameters(), dtp.ToString('T')))
                               forceTransponderUpdate = true; // get us receiving this transponder
                            }
@@ -311,7 +258,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     if (!found || forceTransponderUpdate) {
                        for (int n = 0; n < NumFrequencies; n++) {
                            cChannel *Channel = new cChannel;
-                           Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                           Channel->SetId(NULL, ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
                            if (Channel->SetTransponderData(Source, Frequencies[n], 0, dtp.ToString('T')))
                               EITScanner.AddTransponder(Channel);
                            else
@@ -319,7 +266,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 sdtFilter->Trigger(Source);
+                 if (ISTRANSPONDER(Frequency / 1000000, Transponder()))
+                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::ExtensionDescriptorTag: {
@@ -327,7 +275,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  switch (sd->getExtensionDescriptorTag()) {
                    case SI::T2DeliverySystemDescriptorTag: {
                         if (Setup.UpdateChannels >= 5) {
-                           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                           for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                                int Source = cSource::FromData(cSource::stTerr);
                                if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                                   SI::T2DeliverySystemDescriptor *td = (SI::T2DeliverySystemDescriptor *)d;
@@ -347,7 +295,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      dtp.SetTransmission(T2TransmissionModes[td->getTransmissionMode()]);
                                      //TODO add parsing of frequencies
                                      }
-                                  Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
+                                  ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
                                   }
                                }
                            }
@@ -365,9 +313,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         int lcn = LogicalChannel.getLogicalChannelNumber();
                         int sid = LogicalChannel.getServiceId();
                         if (LogicalChannel.getVisibleServiceFlag()) {
-                           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                           for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                                if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                                  Channel->SetLcn(lcn);
+                                  ChannelsModified |= Channel->SetLcn(lcn);
                                   break;
                                   }
                                }
@@ -383,9 +331,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         int lcn = HdSimulcastLogicalChannel.getLogicalChannelNumber();
                         int sid = HdSimulcastLogicalChannel.getServiceId();
                         if (HdSimulcastLogicalChannel.getVisibleServiceFlag()) {
-                           for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                           for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                                if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
-                                  Channel->SetLcn(lcn);
+                                  ChannelsModified |= Channel->SetLcn(lcn);
                                   break;
                                   }
                                }
@@ -398,5 +346,5 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
           delete d;
           }
       }
-  Channels.Unlock();
+  StateKey.Remove(ChannelsModified);
 }

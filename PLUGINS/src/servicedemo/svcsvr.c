@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svcsvr.c 3.2 2015/02/17 13:13:09 kls Exp $
+ * $Id: svcsvr.c 4.0 2015/02/17 13:13:09 kls Exp $
  */
 
 #include <stdlib.h>

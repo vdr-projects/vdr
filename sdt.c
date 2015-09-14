@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 3.4 2015/01/04 14:33:35 kls Exp $
+ * $Id: sdt.c 4.5 2015/08/02 11:33:23 kls Exp $
  */
 
 #include "sdt.h"
@@ -12,6 +12,11 @@
 #include "config.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+
+// Set to 'true' for debug output:
+static bool DebugSdt = false;
+
+#define dbgsdt(a...) if (DebugSdt) fprintf(stderr, a)
 
 // --- cSdtFilter ------------------------------------------------------------
 
@@ -47,15 +52,21 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      return;
   if (!sectionSyncer.Sync(sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber()))
      return;
-  if (!Channels.Lock(true, 10))
+  cStateKey StateKey;
+  cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
+  if (!Channels) {
+     sectionSyncer.Repeat(); // let's not miss any section of the SDT
      return;
+     }
+  dbgsdt("SDT: %2d %2d %2d %s %d\n", sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber(), *cSource::ToString(source), Transponder());
+  bool ChannelsModified = false;
   SI::SDT::Service SiSdtService;
   for (SI::Loop::Iterator it; sdt.serviceLoop.getNext(SiSdtService, it); ) {
-      cChannel *channel = Channels.GetByChannelID(tChannelID(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
-      if (!channel)
-         channel = Channels.GetByChannelID(tChannelID(source, 0, Transponder(), SiSdtService.getServiceId()));
-      if (channel)
-         channel->SetSeen();
+      cChannel *Channel = Channels->GetByChannelID(tChannelID(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
+      if (!Channel)
+         Channel = Channels->GetByChannelID(tChannelID(source, 0, Transponder(), SiSdtService.getServiceId()));
+      if (Channel)
+         Channel->SetSeen();
 
       cLinkChannels *LinkChannels = NULL;
       SI::Descriptor *d;
@@ -93,18 +104,21 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                             }
                         sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
                         char *pp = compactspace(ProviderNameBuf);
-                        if (channel) {
-                           channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                        if (Channel) {
+                           ChannelsModified |= Channel->SetId(Channels, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
-                              channel->SetName(pn, ps, pp);
+                              ChannelsModified |= Channel->SetName(pn, ps, pp);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
                            // tv stations set this flag even for non-encrypted channels :-(
                            // The special value 0xFFFF was supposed to mean "unknown encryption"
                            // and would have been overwritten with real CA values later:
-                           // channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
+                           // Channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
                         else if (*pn && Setup.UpdateChannels >= 4) {
-                           channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           dbgsdt("    %5d %5d %5d %s/%s %d %s\n", sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId(), *cSource::ToString(this->Channel()->Source()), *cSource::ToString(source), this->Channel()->Transponder(), pn);
+                           Channel = Channels->NewChannel(this->Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           Channel->SetSource(source); // in case this comes from a satellite with a slightly different position
+                           ChannelsModified = true;
                            patFilter->Trigger(SiSdtService.getServiceId());
                            }
                         }
@@ -117,9 +131,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             /*
             case SI::CaIdentifierDescriptorTag: {
                  SI::CaIdentifierDescriptor *cid = (SI::CaIdentifierDescriptor *)d;
-                 if (channel) {
+                 if (Channel) {
                     for (SI::Loop::Iterator it; cid->identifiers.hasNext(it); )
-                        channel->SetCa(cid->identifiers.getNext(it));
+                        Channel->SetCa(Channels, cid->identifiers.getNext(it));
                     }
                  }
                  break;
@@ -128,15 +142,17 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::NVODReferenceDescriptor *nrd = (SI::NVODReferenceDescriptor *)d;
                  SI::NVODReferenceDescriptor::Service Service;
                  for (SI::Loop::Iterator it; nrd->serviceLoop.getNext(Service, it); ) {
-                     cChannel *link = Channels.GetByChannelID(tChannelID(source, Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
+                     cChannel *link = Channels->GetByChannelID(tChannelID(source, Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 4) {
-                        link = Channels.NewChannel(Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
+                        link = Channels->NewChannel(this->Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
                         patFilter->Trigger(Service.getServiceId());
+                        ChannelsModified = true;
                         }
                      if (link) {
                         if (!LinkChannels)
                            LinkChannels = new cLinkChannels;
                         LinkChannels->Add(new cLinkChannel(link));
+                        ChannelsModified = true;
                         }
                      }
                  }
@@ -146,15 +162,18 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
           delete d;
           }
       if (LinkChannels) {
-         if (channel)
-            channel->SetLinkChannels(LinkChannels);
+         if (Channel)
+            ChannelsModified |= Channel->SetLinkChannels(LinkChannels);
          else
             delete LinkChannels;
          }
       }
   if (sdt.getSectionNumber() == sdt.getLastSectionNumber()) {
-     if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3)
-        Channels.MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+     if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3) {
+        ChannelsModified |= Channels->MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+        if (source != Source())
+           ChannelsModified |= Channels->MarkObsoleteChannels(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
+        }
      }
-  Channels.Unlock();
+  StateKey.Remove(ChannelsModified);
 }

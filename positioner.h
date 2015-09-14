@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: positioner.h 3.3 2013/12/28 11:15:56 kls Exp $
+ * $Id: positioner.h 4.0 2013/12/28 11:15:56 kls Exp $
  */
 
 #ifndef __POSITIONER_H

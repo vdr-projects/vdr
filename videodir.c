@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 3.4 2013/10/11 09:38:07 kls Exp $
+ * $Id: videodir.c 4.1 2015/08/11 13:39:59 kls Exp $
  */
 
 #include "videodir.h"
@@ -19,24 +19,31 @@
 #include "recording.h"
 #include "tools.h"
 
+cMutex cVideoDirectory::mutex;
 cString cVideoDirectory::name;
 cVideoDirectory *cVideoDirectory::current = NULL;
 
 cVideoDirectory::cVideoDirectory(void)
 {
+  mutex.Lock();
   delete current;
   current = this;
+  mutex.Unlock();
 }
 
 cVideoDirectory::~cVideoDirectory()
 {
+  mutex.Lock();
   current = NULL;
+  mutex.Unlock();
 }
 
 cVideoDirectory *cVideoDirectory::Current(void)
 {
+  mutex.Lock();
   if (!current)
-     current = new cVideoDirectory;
+     new cVideoDirectory;
+  mutex.Unlock();
   return current;
 }
 
@@ -141,7 +148,8 @@ int cVideoDirectory::VideoDiskSpace(int *FreeMB, int *UsedMB)
 {
   int used = 0;
   int free = Current()->FreeMB(&used);
-  int deleted = DeletedRecordings.TotalFileSizeMB();
+  LOCK_DELETEDRECORDINGS_READ;
+  int deleted = DeletedRecordings->TotalFileSizeMB();
   if (deleted > used)
      deleted = used; // let's not get beyond 100%
   free += deleted;
@@ -202,7 +210,8 @@ bool cVideoDiskUsage::HasChanged(int &State)
      if (FreeMB != freeMB) {
         usedPercent = UsedPercent;
         freeMB = FreeMB;
-        double MBperMinute = Recordings.MBperMinute();
+        LOCK_RECORDINGS_READ;
+        double MBperMinute = Recordings->MBperMinute();
         if (MBperMinute <= 0)
            MBperMinute = MB_PER_MINUTE;
         freeMinutes = int(double(FreeMB) / MBperMinute);

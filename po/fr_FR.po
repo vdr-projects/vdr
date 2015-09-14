@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-11 11:02+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-18 20:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -671,6 +671,9 @@ msgstr "Durée de vie"
 msgid "File"
 msgstr "Fichier"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Dossier"
 
@@ -682,6 +685,12 @@ msgstr "Périodique"
 
 msgid "First day"
 msgstr "Premier jour"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Sélectionner le dossier"
@@ -858,6 +867,12 @@ msgstr "dépendant du skin"
 msgid "always"
 msgstr "toujours"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "Affichage à l'écran"
 
@@ -944,6 +959,9 @@ msgstr "Dossiers dans menu programmation"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Toujours trier les dossiers en premier"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Touches numériques pour caractères"
@@ -1129,6 +1147,9 @@ msgstr "CAM prêt"
 msgid " (activating)"
 msgstr " (activation en cours)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
 
@@ -1159,6 +1180,15 @@ msgstr "CAM en cours d'utilisation - confirmer réinitialisation ?"
 msgid "Can't reset CAM!"
 msgstr "Impossible de réinitialiser le CAM !"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "ne pas mettre en pause le direct"
 
@@ -1188,6 +1218,9 @@ msgstr "Priorité par défaut"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Durée de vie par défaut (j)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Fonction de la touche Pause"
@@ -1287,6 +1320,15 @@ msgstr "Inactivité de l'utilisateur (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Temps maxi SVDRP (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Prise en compte chaîne (s)"
@@ -1540,6 +1582,9 @@ msgstr "L'enregistrement va commencer !"
 
 msgid "Pause live video?"
 msgstr "Arrêter le direct ?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "L'enregistrement a commencé"

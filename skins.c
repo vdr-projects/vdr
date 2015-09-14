@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 3.1 2013/08/18 12:07:22 kls Exp $
+ * $Id: skins.c 4.0 2013/08/18 12:07:22 kls Exp $
  */
 
 #include "skins.h"

@@ -4,93 +4,49 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 3.2 2013/10/21 07:42:03 kls Exp $
+ * $Id: svdrp.h 4.5 2015/09/09 09:44:12 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
-#include "recording.h"
 #include "tools.h"
 
-class cSocket {
-private:
-  int port;
-  int sock;
-  int queue;
-  void Close(void);
-public:
-  cSocket(int Port, int Queue = 1);
-  ~cSocket();
-  bool Open(void);
-  int Accept(void);
+enum eSvdrpFetchFlags {
+  sffNone   = 0b0000,
+  sffTimers = 0b0001,
   };
 
-class cPUTEhandler {
-private:
-  FILE *f;
-  int status;
-  const char *message;
-public:
-  cPUTEhandler(void);
-  ~cPUTEhandler();
-  bool Process(const char *s);
-  int Status(void) { return status; }
-  const char *Message(void) { return message; }
-  };
-
-class cSVDRP {
-private:
-  cSocket socket;
-  cFile file;
-  cRecordings recordings;
-  cPUTEhandler *PUTEhandler;
-  int numChars;
-  int length;
-  char *cmdLine;
-  time_t lastActivity;
-  static char *grabImageDir;
-  void Close(bool SendReply = false, bool Timeout = false);
-  bool Send(const char *s, int length = -1);
-  void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
-  void PrintHelpTopics(const char **hp);
-  void CmdCHAN(const char *Option);
-  void CmdCLRE(const char *Option);
-  void CmdDELC(const char *Option);
-  void CmdDELR(const char *Option);
-  void CmdDELT(const char *Option);
-  void CmdEDIT(const char *Option);
-  void CmdGRAB(const char *Option);
-  void CmdHELP(const char *Option);
-  void CmdHITK(const char *Option);
-  void CmdLSTC(const char *Option);
-  void CmdLSTE(const char *Option);
-  void CmdLSTR(const char *Option);
-  void CmdLSTT(const char *Option);
-  void CmdMESG(const char *Option);
-  void CmdMODC(const char *Option);
-  void CmdMODT(const char *Option);
-  void CmdMOVC(const char *Option);
-  void CmdMOVR(const char *Option);
-  void CmdNEWC(const char *Option);
-  void CmdNEWT(const char *Option);
-  void CmdNEXT(const char *Option);
-  void CmdPLAY(const char *Option);
-  void CmdPLUG(const char *Option);
-  void CmdPUTE(const char *Option);
-  void CmdREMO(const char *Option);
-  void CmdSCAN(const char *Option);
-  void CmdSTAT(const char *Option);
-  void CmdUPDT(const char *Option);
-  void CmdUPDR(const char *Option);
-  void CmdVOLU(const char *Option);
-  void Execute(char *Cmd);
-public:
-  cSVDRP(int Port);
-  ~cSVDRP();
-  bool HasConnection(void) { return file.IsOpen(); }
-  bool Process(void);
-  static void SetGrabImageDir(const char *GrabImageDir);
-  };
+void SetSVDRPPorts(int TcpPort, int UdpPort);
+void SetSVDRPGrabImageDir(const char *GrabImageDir);
+void StartSVDRPServerHandler(void);
+void StartSVDRPClientHandler(void);
+void StopSVDRPServerHandler(void);
+void StopSVDRPClientHandler(void);
+void SendSVDRPDiscover(const char *Address = NULL);
+bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag = sffNone);
+     ///< Gets a list of all available VDRs this VDR is connected to via SVDRP,
+     ///< and stores it in the given ServerNames list. The list is cleared
+     ///< before getting the server names.
+     ///< If FetchFlag is given, only the server names for which the local
+     ///< client has this flag set will be returned, and the client's flag
+     ///< will be cleared.
+     ///< Returns true if the resulting list is not empty.
+bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *Response = NULL);
+     ///< Sends the given SVDRP Command string to the remote VDR identified
+     ///< by ServerName and collects all of the response strings in Response.
+     ///< If no Response parameter is given, the response from command execution
+     ///< is ignored.
+     ///< Returns true if the data exchange was successful. Whether or
+     ///< not the actual SVDRP command was successful depends on the
+     ///< resulting strings from the remote VDR, which can be accessed
+     ///< through Response. If Response is given, it will be cleared before
+     ///< the command is actually executed.
+inline int SVDRPCode(const char *s) { return s ? atoi(s) : 0; }
+     ///< Returns the value of the three digit reply code of the given
+     ///< SVDRP response string.
+inline const char *SVDRPValue(const char *s) { return s && s[0] && s[1] && s[2] && s[3] ? s + 4 : NULL; }
+     ///< Returns the actual value of the given SVDRP response string, skipping
+     ///< the three digit reply code and possible continuation line indicator.
 
 #endif //__SVDRP_H

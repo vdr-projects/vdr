@@ -94,6 +94,24 @@ vdr:123:respawn:/usr/local/bin/vdr --terminal=/dev/tty8 -w 60
 
 See the man page vdr(1) for complete information about all command line options.
 
+Output devices
+--------------
+
+VDR by itself doesn't produce any audio or video output. In order to watch
+live tv or recordings, you will need to use a plugin that supports the actual
+hardware in your system, for instance:
+
+Plugin:           Device:
+
+dvbsddevice       Full-Featured SD DVB cards (Fujitsu-Siemens Design)
+                  (comes with the VDR source)
+dvbhddevice       Full-featured HD DVB cards (Technotrend TT S2-6400)
+                  https://bitbucket.org/powARman/dvbhddevice
+rpihddevice       Raspberry Pi
+                  http://projects.vdr-developer.org/git/vdr-plugin-rpihddevice.git
+
+See http://linuxtv.org/vdrwiki/index.php/Output_devices for more.
+
 Standard compliance
 -------------------
 
@@ -134,10 +152,10 @@ displayed correctly. Since BiDi support adds some runtime overhead by requiring
 additional memory allocation and copying, this feature is not compiled in
 by default, so that users that have no need for this don't get any overhead.
 
-Workaround for providers not encoding their EPG data correctly
---------------------------------------------------------------
+Workaround for providers not encoding their DVB SI table strings correctly
+--------------------------------------------------------------------------
 
-According to "ETSI EN 300 468" the default character set fo SI data is
+According to "ETSI EN 300 468" the default character set for SI data is
 ISO6937. But unfortunately some broadcasters actually use ISO-8859-9 or
 other encodings, but fail to correctly announce that.
 Users who want to set the default character set to something different can
@@ -250,19 +268,20 @@ You can use the '-r' option to define a program or script that gets called
 before and after a recording is performed, and after an editing process
 has finished or a recording has been deleted.
 
-The program will be called with two or three (in case of "edited") string
-parameters. The first parameter is one of
+The program will be called with two or three (in case of "editing" and "edited")
+string parameters. The first parameter is one of
 
   before      if this is *before* a recording starts
   started     if this is after a recording has *started*
   after       if this is *after* a recording has finished
+  editing     if this is before *editing* a recording
   edited      if this is after a recording has been *edited*
   deleted     if this is after a recording has been *deleted*
 
 and the second parameter contains the full name of the recording's
 directory (which may not yet exists at that moment in the "before" case).
-In the "edited" case it will be the name of the edited version (second
-parameter) and the name of the source version (third parameter).
+In the "editing" and "edited" case it will be the name of the edited version
+(second parameter) and the name of the source version (third parameter).
 In the "deleted" case the extension of the directory name is ".del"
 instead of ".rec".
 
@@ -285,6 +304,10 @@ case "$1" in
             ;;
      after)
             echo "After recording $2"
+            ;;
+     editing)
+            echo "Editing recording $2"
+            echo "Source recording $3"
             ;;
      edited)
             echo "Edited recording $2"

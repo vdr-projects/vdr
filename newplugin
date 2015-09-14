@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 3.2 2014/01/01 13:29:54 kls Exp $
+# $Id: newplugin 4.1 2015/09/10 11:11:14 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -330,6 +330,7 @@ $PLUGINDIR = "$PLUGINS_SRC/$PLUGIN_NAME";
 die "The directory $PLUGINS_SRC doesn't exist!\n" unless (-d "$PLUGINS_SRC");
 die "A plugin named '$PLUGIN_NAME' already exists in $PLUGINS_SRC!\n" if (-e "$PLUGINDIR");
 mkdir("$PLUGINDIR") || die "$!";
+mkdir("$PLUGINDIR/po") || die "$!";
 
 CreateFile("README", $README);
 CreateFile("HISTORY", $HISTORY);

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 3.2 2015/02/17 13:12:26 kls Exp $
+ * $Id: hello.c 4.0 2015/02/17 13:12:26 kls Exp $
  */
 
 #include <getopt.h>

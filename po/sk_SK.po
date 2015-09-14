@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2015-02-17 18:59+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "®ivotnos»"
 msgid "File"
 msgstr "Súbor"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Zlo¾ka"
 
@@ -672,6 +675,12 @@ msgstr "s opakovaním"
 
 msgid "First day"
 msgstr "Odo dòa"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Vybra» zlo¾ku"
@@ -848,6 +857,12 @@ msgstr "podµa vzhµadu"
 msgid "always"
 msgstr "v¾dy"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD (Menu na obrazovke)"
 
@@ -934,6 +949,9 @@ msgstr "Zlo¾ky v menu plánovaèa"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Zlo¾ky v¾dy najprv usporiada»"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Písa» znaky èíselnými tlaèidlami"
@@ -1119,6 +1137,9 @@ msgstr "CAM pripravený"
 msgid " (activating)"
 msgstr " (aktivované)"
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM (modul podmieneného prístupu)"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM sa pou¾íva - naozaj re¹tartova»?"
 msgid "Can't reset CAM!"
 msgstr "CAM modul nejde re¹tartova»!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "nepozastavova» ¾ivé vysielanie"
 
@@ -1178,6 +1208,9 @@ msgstr "Predvolená priorita"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Predvolená ¾ivotnos»"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Chovanie klávesy pozastavenia"
@@ -1277,6 +1310,15 @@ msgstr "Vymedzi» u¾ívateµskú neèinnos» (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Èasový limit odpovede SVDRP (s)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "pamäta» predo¹lý kanál po ... (s)"
@@ -1530,6 +1572,9 @@ msgstr "Onedlho zaène nahrávanie!"
 
 msgid "Pause live video?"
 msgstr "Preru¹i» ¾ivé vysielanie?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Zaèalo nahrávanie"

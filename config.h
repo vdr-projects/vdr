@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 3.21 2015/02/13 15:39:08 kls Exp $
+ * $Id: config.h 4.5 2015/09/11 08:07:34 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "2.2.0"
-#define VDRVERSNUM   20200  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "2.3.1"
+#define VDRVERSNUM   20301  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.2.0"
-#define APIVERSNUM   20200  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "2.3.1"
+#define APIVERSNUM   20301  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -110,7 +110,7 @@ private:
     cList<T>::Clear();
   }
 public:
-  cConfig(void) { fileName = NULL; }
+  cConfig(const char *NeedsLocking = NULL): cList<T>(NeedsLocking) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
   bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
@@ -160,7 +160,7 @@ public:
        fprintf(stderr, "vdr: error while reading '%s'\n", fileName);
     return result;
   }
-  bool Save(void)
+  bool Save(void) const
   {
     bool result = true;
     T *l = (T *)this->First();
@@ -288,19 +288,24 @@ public:
   int EPGBugfixLevel;
   int EPGLinger;
   int SVDRPTimeout;
+  int SVDRPPeering;
+  char SVDRPHostName[HOST_NAME_MAX];
+  char SVDRPDefaultHost[HOST_NAME_MAX];
   int ZapTimeout;
   int ChannelEntryTimeout;
   int RcRepeatDelay;
   int RcRepeatDelta;
   int DefaultPriority, DefaultLifetime;
-  int PausePriority, PauseLifetime;
+  int RecordKeyHandling;
   int PauseKeyHandling;
+  int PausePriority, PauseLifetime;
   int UseSubtitle;
   int UseVps;
   int VpsMargin;
   int RecordingDirs;
   int FoldersInTimerMenu;
   int AlwaysSortFoldersFirst;
+  int DefaultSortModeRec;
   int NumberKeysForChars;
   int ColorKey0, ColorKey1, ColorKey2, ColorKey3;
   int VideoDisplayFormat;

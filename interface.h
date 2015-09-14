@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 3.0 2004/05/01 11:11:13 kls Exp $
+ * $Id: interface.h 4.1 2015/04/28 11:15:11 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -13,17 +13,14 @@
 #include "config.h"
 #include "remote.h"
 #include "skins.h"
-#include "svdrp.h"
 
 class cInterface {
 private:
   bool interrupted;
-  cSVDRP *SVDRP;
   bool QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu);
 public:
-  cInterface(int SVDRPport = 0);
+  cInterface(void);
   ~cInterface();
-  bool HasSVDRPConnection(void) { return SVDRP && SVDRP->HasConnection(); }
   void Interrupt(void) { interrupted = true; }
   eKeys GetKey(bool Wait = true);
   eKeys Wait(int Seconds = 0, bool KeepChar = false);

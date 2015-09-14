@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 3.1 2013/10/02 09:02:01 kls Exp $
+ * $Id: shutdown.c 4.1 2015/07/18 11:29:26 kls Exp $
  */
 
 #include "shutdown.h"
@@ -172,9 +172,10 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
         return false;
      }
 
-  cTimer *timer = Timers.GetNextActiveTimer();
-  time_t Next = timer ? timer->StartTime() : 0;
-  time_t Delta = timer ? Next - time(NULL) : 0;
+  LOCK_TIMERS_READ;
+  const cTimer *Timer = Timers->GetNextActiveTimer();
+  time_t Next = Timer ? Timer->StartTime() : 0;
+  time_t Delta = Timer ? Next - time(NULL) : 0;
 
   if (cRecordControls::Active() || (Next && Delta <= 0)) {
      // VPS recordings in timer end margin may cause Delta <= 0
@@ -215,9 +216,10 @@ bool cShutdownHandler::ConfirmRestart(bool Interactive)
         return false;
      }
 
-  cTimer *timer = Timers.GetNextActiveTimer();
-  time_t Next  = timer ? timer->StartTime() : 0;
-  time_t Delta = timer ? Next - time(NULL) : 0;
+  LOCK_TIMERS_READ;
+  const cTimer *Timer = Timers->GetNextActiveTimer();
+  time_t Next = Timer ? Timer->StartTime() : 0;
+  time_t Delta = Timer ? Next - time(NULL) : 0;
 
   if (cRecordControls::Active() || (Next && Delta <= 0)) {
      // VPS recordings in timer end margin may cause Delta <= 0
@@ -233,15 +235,16 @@ bool cShutdownHandler::ConfirmRestart(bool Interactive)
 
 bool cShutdownHandler::DoShutdown(bool Force)
 {
+  LOCK_TIMERS_READ;
   time_t Now = time(NULL);
-  cTimer *timer = Timers.GetNextActiveTimer();
+  const cTimer *Timer = Timers->GetNextActiveTimer();
   cPlugin *Plugin = cPluginManager::GetNextWakeupPlugin();
 
-  time_t Next = timer ? timer->StartTime() : 0;
+  time_t Next = Timer ? Timer->StartTime() : 0;
   time_t NextPlugin = Plugin ? Plugin->WakeupTime() : 0;
   if (NextPlugin && (!Next || Next > NextPlugin)) {
      Next = NextPlugin;
-     timer = NULL;
+     Timer = NULL;
      }
   time_t Delta = Next ? Next - Now : 0;
 
@@ -250,13 +253,13 @@ bool cShutdownHandler::DoShutdown(bool Force)
         return false;
      Delta = Setup.MinEventTimeout * 60;
      Next = Now + Delta;
-     timer = NULL;
+     Timer = NULL;
      dsyslog("reboot at %s", *TimeToString(Next));
      }
 
-  if (Next && timer) {
+  if (Next && Timer) {
      dsyslog("next timer event at %s", *TimeToString(Next));
-     CallShutdownCommand(Next, timer->Channel()->Number(), timer->File(), Force);
+     CallShutdownCommand(Next, Timer->Channel()->Number(), Timer->File(), Force);
      }
   else if (Next && Plugin) {
      CallShutdownCommand(Next, 0, Plugin->Name(), Force);

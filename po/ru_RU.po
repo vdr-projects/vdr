@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-02-10 13:40+0100\n"
+"POT-Creation-Date: 2015-09-11 10:38+0200\n"
 "PO-Revision-Date: 2013-03-10 17:13+0100\n"
 "Last-Translator: Oleg Roitburd <oroitburd@gmail.com>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -661,6 +661,9 @@ msgstr "Срок хранения"
 msgid "File"
 msgstr "Файл"
 
+msgid "Record on"
+msgstr ""
+
 msgid "Button$Folder"
 msgstr "Директория"
 
@@ -672,6 +675,12 @@ msgstr "Повтор"
 
 msgid "First day"
 msgstr "Первый день"
+
+msgid "Error while accessing remote timer"
+msgstr ""
+
+msgid "Timer has been deleted!"
+msgstr ""
 
 msgid "Select folder"
 msgstr "Выбор директории"
@@ -848,6 +857,12 @@ msgstr "согласно стиля"
 msgid "always"
 msgstr "всегда"
 
+msgid "by name"
+msgstr ""
+
+msgid "by time"
+msgstr ""
+
 msgid "OSD"
 msgstr "Меню"
 
@@ -934,6 +949,9 @@ msgstr "Директории в меню таймер"
 
 msgid "Setup.OSD$Always sort folders first"
 msgstr "Директории всегда в первую очередь сортировать"
+
+msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Количество кнопок для символов"
@@ -1119,6 +1137,9 @@ msgstr "CAM готов"
 msgid " (activating)"
 msgstr ""
 
+msgid "@ device"
+msgstr ""
+
 msgid "CAM"
 msgstr "Условный доступ"
 
@@ -1149,6 +1170,15 @@ msgstr "CAM используется - действительно перегрузить?"
 msgid "Can't reset CAM!"
 msgstr "Ошибка перезапуска CAM-модуля!"
 
+msgid "no instant recording"
+msgstr ""
+
+msgid "confirm instant recording"
+msgstr ""
+
+msgid "record instantly"
+msgstr ""
+
 msgid "do not pause live video"
 msgstr "не останавливать live video"
 
@@ -1178,6 +1208,9 @@ msgstr "Приоритет таймера по умолчанию"
 
 msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Срок хранения записи по умолчанию (д)"
+
+msgid "Setup.Recording$Record key handling"
+msgstr ""
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Функция кнопки пауза"
@@ -1277,6 +1310,15 @@ msgstr "Мин. время ожидания ввода (мин)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Задержка обрыва соед. SVDRP (сек)"
+
+msgid "Setup.Miscellaneous$SVDRP peering"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP host name"
+msgstr ""
+
+msgid "Setup.Miscellaneous$SVDRP default host"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Задержка переключения канала (сек)"
@@ -1530,6 +1572,9 @@ msgstr "Запись скоро начнется"
 
 msgid "Pause live video?"
 msgstr "Остановить live video?"
+
+msgid "Start recording?"
+msgstr ""
 
 msgid "Recording started"
 msgstr "Запись начата"
