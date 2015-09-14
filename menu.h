@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 4.3 2015/09/13 12:27:50 kls Exp $
+ * $Id: menu.h 4.4 2015/09/13 14:17:56 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -85,7 +85,6 @@ private:
   eOSState SetFolder(void);
   void SetFirstDayItem(void);
   void SetHelpKeys(void);
-  bool HandleRemoteModifications(cTimer *OldTimer, cTimer *NewTimer);
 public:
   cMenuEditTimer(cTimer *Timer, bool New = false);
   virtual ~cMenuEditTimer();
