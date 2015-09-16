@@ -8832,3 +8832,4 @@ Video Disk Recorder Revision History
 
 - Fixed a crash when deleting a recording (reported by Oliver Endriss).
 - Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
