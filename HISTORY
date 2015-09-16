@@ -8827,3 +8827,7 @@ Video Disk Recorder Revision History
   live tv (suggested by Dietmar Spingler).
 - Empty adaptation field TS packets are now skipped when recording (thanks to
   Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).
+
+2015-09-16: Version 2.3.2
+
+- Fixed a crash when deleting a recording (reported by Oliver Endriss).

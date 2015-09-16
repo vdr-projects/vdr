@@ -715,6 +715,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to ignore channels with an RID that is not 0 when checking for obsolete
  channels
  for fixing a possible stack overflow in cListBase::Sort()
+ for reporting a crash when deleting a recording
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
