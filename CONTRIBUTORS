@@ -3429,3 +3429,6 @@ Janne Pänkälä <epankala@gmail.com>
 Stefan Pöschel <basic.master@gmx.de>
  for coding the AFFcleaner, parts of which were used to make the recorder skip empty
  adaptation field TS packets
+
+Robert Hannebauer <vdr@hannebauer.org>
+ for fixing an overflow of PIDs in a receiver

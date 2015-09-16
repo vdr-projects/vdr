@@ -8831,3 +8831,4 @@ Video Disk Recorder Revision History
 2015-09-16: Version 2.3.2
 
 - Fixed a crash when deleting a recording (reported by Oliver Endriss).
+- Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
