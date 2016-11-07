@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.2 2015/04/18 16:19:28 kls Exp $
+ * $Id: dvbdevice.c 4.3 2016/11/07 13:55:58 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -201,21 +201,6 @@ int MapToDriver(int Value, const tDvbParameterMap *Map)
 
 cDvbTransponderParameters::cDvbTransponderParameters(const char *Parameters)
 {
-  polarization = 0;
-  inversion    = INVERSION_AUTO;
-  bandwidth    = 8000000;
-  coderateH    = FEC_AUTO;
-  coderateL    = FEC_AUTO;
-  modulation   = QPSK;
-  system       = DVB_SYSTEM_1;
-  transmission = TRANSMISSION_MODE_AUTO;
-  guard        = GUARD_INTERVAL_AUTO;
-  hierarchy    = HIERARCHY_AUTO;
-  rollOff      = ROLLOFF_AUTO;
-  streamId     = 0;
-  t2systemId   = 0;
-  sisoMiso     = 0;
-  pilot        = PILOT_AUTO;
   Parse(Parameters);
 }
 
@@ -266,6 +251,21 @@ const char *cDvbTransponderParameters::ParseParameter(const char *s, int &Value,
 
 bool cDvbTransponderParameters::Parse(const char *s)
 {
+  polarization = 0;
+  inversion    = INVERSION_AUTO;
+  bandwidth    = 8000000;
+  coderateH    = FEC_AUTO;
+  coderateL    = FEC_AUTO;
+  modulation   = QPSK;
+  system       = DVB_SYSTEM_1;
+  transmission = TRANSMISSION_MODE_AUTO;
+  guard        = GUARD_INTERVAL_AUTO;
+  hierarchy    = HIERARCHY_AUTO;
+  rollOff      = ROLLOFF_AUTO;
+  streamId     = 0;
+  t2systemId   = 0;
+  sisoMiso     = 0;
+  pilot        = PILOT_AUTO;
   while (s && *s) {
         switch (toupper(*s)) {
           case 'B': s = ParseParameter(s, bandwidth, BandwidthValues); break;
