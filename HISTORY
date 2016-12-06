@@ -8834,3 +8834,6 @@ Video Disk Recorder Revision History
 - Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed initializing device specific parameters in cDvbTransponderParameters.
+- The function SetCurrentChannel(const cChannel *Channel) is now deprecated and
+  may be removed in a future version. Use SetCurrentChannel(int ChannelNumber)
+  instead.
