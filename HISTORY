@@ -8828,7 +8828,7 @@ Video Disk Recorder Revision History
 - Empty adaptation field TS packets are now skipped when recording (thanks to
   Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).
 
-2016-11-07: Version 2.3.2
+2016-12-08: Version 2.3.2
 
 - Fixed a crash when deleting a recording (reported by Oliver Endriss).
 - Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
@@ -8837,3 +8837,5 @@ Video Disk Recorder Revision History
 - The function SetCurrentChannel(const cChannel *Channel) is now deprecated and
   may be removed in a future version. Use SetCurrentChannel(int ChannelNumber)
   instead.
+- The SVDRP command DELC now refuses to delete the very last channel in the list,
+  to avoid ending up with an empty channel list.

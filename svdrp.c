@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.9 2015/09/14 13:23:06 kls Exp $
+ * $Id: svdrp.c 4.10 2016/12/08 09:51:02 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1228,6 +1228,10 @@ void cSVDRPServer::CmdDELC(const char *Option)
               int n = Channels->GetNextNormal(CurrentChannel->Index());
               if (n < 0)
                  n = Channels->GetPrevNormal(CurrentChannel->Index());
+              if (n < 0) {
+                 Reply(501, "Can't delete channel \"%s\" - list would be empty", Option);
+                 return;
+                 }
               CurrentChannel = Channels->Get(n);
               CurrentChannelNr = 0; // triggers channel switch below
               }
