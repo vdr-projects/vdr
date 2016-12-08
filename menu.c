@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.14 2016/12/08 10:39:29 kls Exp $
+ * $Id: menu.c 4.15 2016/12/08 10:48:16 kls Exp $
  */
 
 #include "menu.h"
@@ -520,7 +520,7 @@ eOSState cMenuChannels::Delete(void)
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
               Channels->SwitchTo(CurrentChannel->Number());
            else
-              cDevice::SetCurrentChannel(CurrentChannel);
+              cDevice::SetCurrentChannel(CurrentChannel->Number());
            }
         }
      channelsStateKey.Remove(Deleted);
@@ -547,7 +547,7 @@ void cMenuChannels::Move(int From, int To)
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
               Channels->SwitchTo(CurrentChannel->Number());
            else
-              cDevice::SetCurrentChannel(CurrentChannel);
+              cDevice::SetCurrentChannel(CurrentChannel->Number());
            }
         }
      channelsStateKey.Remove();

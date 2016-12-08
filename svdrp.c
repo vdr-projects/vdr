@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.10 2016/12/08 09:51:02 kls Exp $
+ * $Id: svdrp.c 4.11 2016/12/08 10:48:53 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1244,7 +1244,7 @@ void cSVDRPServer::CmdDELC(const char *Option)
               if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
                  Channels->SwitchTo(CurrentChannel->Number());
               else
-                 cDevice::SetCurrentChannel(CurrentChannel);
+                 cDevice::SetCurrentChannel(CurrentChannel->Number());
               }
            Reply(250, "Channel \"%s\" deleted", Option);
            }
@@ -1903,7 +1903,7 @@ void cSVDRPServer::CmdMOVC(const char *Option)
                        if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
                           Channels->SwitchTo(CurrentChannel->Number());
                        else
-                          cDevice::SetCurrentChannel(CurrentChannel);
+                          cDevice::SetCurrentChannel(CurrentChannel->Number());
                        }
                     isyslog("SVDRP < %s channel %d moved to %d", *connection, FromNumber, ToNumber);
                     Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
