@@ -8839,3 +8839,7 @@ Video Disk Recorder Revision History
   instead.
 - The SVDRP command DELC now refuses to delete the very last channel in the list,
   to avoid ending up with an empty channel list.
+- The cRwLock class now allows nested read locks within a write lock from the
+  same thread. This fixes possible crashes when moving or deleting channels in
+  the menu or through SVDRP (as well as other operations that try to acquire a
+  read lock within a write lock).
