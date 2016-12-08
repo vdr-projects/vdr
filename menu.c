@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.13 2015/09/16 11:02:33 kls Exp $
+ * $Id: menu.c 4.14 2016/12/08 10:39:29 kls Exp $
  */
 
 #include "menu.h"
@@ -498,6 +498,7 @@ eOSState cMenuChannels::Delete(void)
      int DeletedChannel = Channel->Number();
      // Check if there is a timer using this channel:
      if (Timers->UsesChannel(Channel)) {
+        channelsStateKey.Remove(false);
         Skins.Message(mtError, tr("Channel is being used by a timer!"));
         return osContinue;
         }
