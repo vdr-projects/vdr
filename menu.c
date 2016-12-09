@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.15 2016/12/08 10:48:16 kls Exp $
+ * $Id: menu.c 4.16 2016/12/09 14:54:24 kls Exp $
  */
 
 #include "menu.h"
@@ -2954,10 +2954,9 @@ void cMenuRecordings::Set(bool Refresh)
      const char *CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
      cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey); // write access is necessary for sorting!
      cMenuRecordingItem *LastItem = NULL;
-     if (Refresh) {
-        if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
-           CurrentRecording = ri->Recording()->FileName();
-        }
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
+        CurrentRecording = ri->Recording()->FileName();
+     int current = Current();
      Clear();
      GetRecordingsSortMode(DirectoryName());
      Recordings->Sort();
@@ -2994,11 +2993,13 @@ void cMenuRecordings::Set(bool Refresh)
                LastDir->IncrementCounter(Recording->IsNew());
             }
          }
+     if (Current() < 0)
+        SetCurrent(Get(current)); // last resort, in case the recording was deleted
      SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
      recordingsStateKey.Remove(false); // sorting doesn't count as a real modification
+     if (Refresh)
+        Display();
      }
-  if (Refresh)
-     Display();
 }
 
 void cMenuRecordings::SetPath(const char *Path)
@@ -3172,8 +3173,6 @@ eOSState cMenuRecordings::Sort(void)
 
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
-  if (!HasSubMenu())
-     Set(); // react on any changes to the recordings list
   bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
@@ -3199,7 +3198,8 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
         return state; // closes all recording menus except for the top one
      Set(); // this is the top level menu, so we refresh it...
      Open(true); // ...and open any necessary submenus to show the new name
-     Display();
+     if (!HasSubMenu())
+        Display();
      path = NULL;
      fileName = NULL;
      }
@@ -3211,14 +3211,16 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
            ri->SetRecording(riSub->Recording());
         }
      }
-  if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
-     // the last recording in a subdirectory was deleted, so let's go back up
-     cOsdMenu::Del(Current());
-     if (!Count())
-        return osBack;
-     Display();
-     }
   if (!HasSubMenu()) {
+     if (HadSubMenu) {
+        if (Key == kYellow) {
+           // the last recording in a subdirectory was deleted, so let's go back up
+           cOsdMenu::Del(Current());
+           if (!Count())
+              return osBack;
+           }
+        }
+     Set(true);
      if (Key != kNone)
         SetHelpKeys();
      }
