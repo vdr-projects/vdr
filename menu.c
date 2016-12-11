@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.16 2016/12/09 14:54:24 kls Exp $
+ * $Id: menu.c 4.17 2016/12/11 12:43:55 kls Exp $
  */
 
 #include "menu.h"
@@ -3089,29 +3089,24 @@ eOSState cMenuRecordings::Delete(void)
            else
               return osContinue;
            }
-        cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey);
-        Recordings->SetExplicitModify();
-        cRecording *Recording = Recordings->GetByName(ri->Recording()->FileName());
-        if (!Recording) {
-           Skins.Message(mtWarning, tr("Recording vanished!"));
-           recordingsStateKey.Remove();
-           return osContinue;
-           }
-        cString FileName = Recording->FileName();
-        if (RecordingsHandler.GetUsage(FileName)) {
-           if (Interface->Confirm(tr("Recording is being edited - really delete?"))) {
-              RecordingsHandler.Del(FileName);
-              Recording = Recordings->GetByName(FileName); // RecordingsHandler.Del() might have deleted it if it was the edited version
-              // we continue with the code below even if Recording is NULL,
-              // in order to have the menu updated etc.
-              }
-           else {
-              recordingsStateKey.Remove();
-              return osContinue;
-              }
-           }
+        cString FileName;
+        {
+          LOCK_RECORDINGS_READ;
+          if (const cRecording *Recording = Recordings->GetByName(ri->Recording()->FileName())) {
+             FileName = Recording->FileName();
+             if (RecordingsHandler.GetUsage(FileName)) {
+                if (Interface->Confirm(tr("Recording is being edited - really delete?")))
+                   RecordingsHandler.Del(FileName);
+                else
+                   return osContinue;
+                }
+             }
+        }
         if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), FileName) == 0)
            cControl::Shutdown();
+        cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey);
+        Recordings->SetExplicitModify();
+        cRecording *Recording = Recordings->GetByName(FileName);
         if (!Recording || Recording->Delete()) {
            cReplayControl::ClearLastReplayed(FileName);
            Recordings->DelByName(FileName);
