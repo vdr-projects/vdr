@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.3 2015/09/06 10:45:54 kls Exp $
+ * $Id: tools.h 4.4 2016/12/13 12:13:46 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -609,7 +609,7 @@ public: \
     else \
        list = c##Class::Get##Name##Read(stateKey); \
   } \
-  ~c##Name##Lock() { stateKey.Remove(); } \
+  ~c##Name##Lock() { if (list) stateKey.Remove(); } \
   const c##Class *Name(void) const { return list; } \
   c##Class *Name(void) { return const_cast<c##Class *>(list); } \
   }

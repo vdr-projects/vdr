@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.17 2016/12/11 12:43:55 kls Exp $
+ * $Id: menu.c 4.18 2016/12/13 12:49:10 kls Exp $
  */
 
 #include "menu.h"
@@ -2687,14 +2687,15 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
   cRecordings *Recordings = cRecordings::GetRecordingsWrite(StateKey);
   cRecording *Recording = Recordings->GetByName(recording->FileName());
   if (!Recording) {
+     StateKey.Remove(false);
      Skins.Message(mtWarning, tr("Recording vanished!"));
      return osBack;
      }
   bool Modified = false;
   if (priority != recording->Priority() || lifetime != recording->Lifetime()) {
      if (!Recording->ChangePriorityLifetime(priority, lifetime)) {
-        Skins.Message(mtError, tr("Error while changing priority/lifetime!"));
         StateKey.Remove(Modified);
+        Skins.Message(mtError, tr("Error while changing priority/lifetime!"));
         return osContinue;
         }
      Modified = true;
@@ -2707,8 +2708,8 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
   NewName.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewName, Recording->Name())) {
      if (!Recording->ChangeName(NewName)) {
-        Skins.Message(mtError, tr("Error while changing folder/name!"));
         StateKey.Remove(Modified);
+        Skins.Message(mtError, tr("Error while changing folder/name!"));
         return osContinue;
         }
      Modified = true;
@@ -3095,13 +3096,12 @@ eOSState cMenuRecordings::Delete(void)
           if (const cRecording *Recording = Recordings->GetByName(ri->Recording()->FileName())) {
              FileName = Recording->FileName();
              if (RecordingsHandler.GetUsage(FileName)) {
-                if (Interface->Confirm(tr("Recording is being edited - really delete?")))
-                   RecordingsHandler.Del(FileName);
-                else
+                if (!Interface->Confirm(tr("Recording is being edited - really delete?")))
                    return osContinue;
                 }
              }
         }
+        RecordingsHandler.Del(FileName); // must do this w/o holding a lock, because the cleanup section in cDirCopier::Action() might request one!
         if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), FileName) == 0)
            cControl::Shutdown();
         cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey);

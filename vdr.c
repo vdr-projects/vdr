@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.7 2015/09/11 08:02:50 kls Exp $
+ * $Id: vdr.c 4.8 2016/12/13 13:13:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -1479,9 +1479,6 @@ int main(int argc, char *argv[])
            if (!ShutdownHandler.ConfirmShutdown(false))
               ShutdownHandler.countdown.Cancel();
            }
-
-        // Keep the recordings handler alive:
-        RecordingsHandler.Active();
 
         if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks

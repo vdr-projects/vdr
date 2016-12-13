@@ -8828,7 +8828,7 @@ Video Disk Recorder Revision History
 - Empty adaptation field TS packets are now skipped when recording (thanks to
   Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).
 
-2016-12-11: Version 2.3.2
+2016-12-13: Version 2.3.2
 
 - Fixed a crash when deleting a recording (reported by Oliver Endriss).
 - Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
@@ -8847,3 +8847,7 @@ Video Disk Recorder Revision History
 - Fixed setting the current item and counter values in the Recordings menu after
   deleting the last recording in a subfolder.
 - Fixed a crash when deleting a recording that is currently being replayed.
+- Fixed a crash when moving a recording to a folder on a different volume.
+  The cRecordingsHandler now performs its actual operations in a separate thread,
+  thus avoiding locking problems and reducing the time between subsequent
+  operations.
