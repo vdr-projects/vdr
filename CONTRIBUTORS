@@ -3323,6 +3323,8 @@ Thomas Reufer <thomas@reufer.ch>
  ViewPort and DrawPort
  for suggesting to reduce the priority of the "video directory scanner" thread
  for making the 'newplugin' script create the 'po' subdirectory for translations
+ for suggesting to add a note to the description of cFont::Size(), regarding possible
+ differences between it and cFont::Height()
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

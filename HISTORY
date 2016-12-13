@@ -8851,3 +8851,5 @@ Video Disk Recorder Revision History
   The cRecordingsHandler now performs its actual operations in a separate thread,
   thus avoiding locking problems and reducing the time between subsequent
   operations.
+- Added a note to the description of cFont::Size(), regarding possible differences
+  between it and cFont::Height() (suggested to Thomas Reufer).
