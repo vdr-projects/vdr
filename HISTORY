@@ -8859,3 +8859,5 @@ Video Disk Recorder Revision History
   to Thomas Reufer).
 - Improved handling frame numbers to have a smoother progress display during
   replay of recordings with B-frames (thanks to Thomas Reufer).
+- Fixed replaying recordings to their very end, if they don't end with an I-frame
+  (thanks to Thomas Reufer).
