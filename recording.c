@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.5 2016/12/13 13:39:09 kls Exp $
+ * $Id: recording.c 4.6 2016/12/22 12:58:20 kls Exp $
  */
 
 #include "recording.h"
@@ -2329,7 +2329,7 @@ void cIndexFileGenerator::Action(void)
                  Buffer.Del(Processed);
                  }
               }
-           else if (PatPmtParser.Vpid()) {
+           else if (PatPmtParser.Completed()) {
               // Step 2 - sync FrameDetector:
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
@@ -2351,9 +2351,9 @@ void cIndexFileGenerator::Action(void)
                        PatPmtParser.ParsePmt(p, TS_SIZE);
                     Length -= TS_SIZE;
                     p += TS_SIZE;
-                    if (PatPmtParser.Vpid()) {
-                       // Found Vpid, so rewind to sync FrameDetector:
-                       FrameDetector.SetPid(PatPmtParser.Vpid(), PatPmtParser.Vtype());
+                    if (PatPmtParser.Completed()) {
+                       // Found pid, so rewind to sync FrameDetector:
+                       FrameDetector.SetPid(PatPmtParser.Vpid() ? PatPmtParser.Vpid() : PatPmtParser.Apid(0), PatPmtParser.Vpid() ? PatPmtParser.Vtype() : PatPmtParser.Atype(0));
                        BufferChunks = IFG_BUFFER_SIZE;
                        Rewind = true;
                        break;

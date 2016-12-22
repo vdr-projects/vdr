@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.2 2016/12/22 11:45:52 kls Exp $
+ * $Id: remux.c 4.3 2016/12/22 12:58:20 kls Exp $
  */
 
 #include "remux.h"
@@ -603,6 +603,7 @@ cPatPmtParser::cPatPmtParser(bool UpdatePrimaryDevice)
 
 void cPatPmtParser::Reset(void)
 {
+  completed = false;
   pmtSize = 0;
   patVersion = pmtVersion = -1;
   pmtPids[0] = 0;
@@ -893,6 +894,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
             }
          }
      pmtVersion = Pmt.getVersionNumber();
+     completed = true;
      }
   else
      esyslog("ERROR: can't parse PMT");
@@ -1541,7 +1543,7 @@ void cFrameDetector::SetPid(int Pid, int Type)
      parser = new cH264Parser;
   else if (type == 0x24)
      parser = new cH265Parser;
-  else if (type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
+  else if (type == 0x03 || type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
      parser = new cAudioParser;
   else if (type != 0)
      esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
