@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.4 2016/12/22 14:23:50 kls Exp $
+ * $Id: timers.h 4.5 2016/12/22 14:30:33 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -122,7 +122,7 @@ public:
   cTimers(void);
   static const cTimers *GetTimersRead(cStateKey &StateKey, int TimeoutMs = 0);
       ///< Gets the list of timers for read access. If TimeoutMs is given,
-      ///< it will wait that long to get a write lock before giving up.
+      ///< it will wait that long to get a read lock before giving up.
       ///< Otherwise it will wait indefinitely. If no read lock can be
       ///< obtained within the given timeout, NULL will be returned.
       ///< The list is locked and a pointer to it is returned if the state

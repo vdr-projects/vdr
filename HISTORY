@@ -8872,3 +8872,5 @@ Video Disk Recorder Revision History
   (reported by Sergey Chernyavskiy).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Added a 'const' version of cTimers::GetTimer() (thanks to Lars Hanisch).
+- Fixed a typo in the description of cTimers::GetTimersRead() (thanks to Lars
+  Hanisch).
