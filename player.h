@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 4.1 2016/12/22 09:22:27 kls Exp $
+ * $Id: player.h 4.2 2016/12/22 10:38:11 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -57,6 +57,10 @@ public:
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return false; }
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
+  virtual bool GetFrameNumber(int &Current, int &Total) { return false; }
+       // Returns the current and total frame number. In contrast to GetIndex(),
+       // this function respects the chronological order of frames, which is
+       // different from its index for streams containing B frames (e.g. H264)
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return false; }
        // Returns the current replay mode (if applicable).
        // 'Play' tells whether we are playing or pausing, 'Forward' tells whether
@@ -100,6 +104,7 @@ public:
          ///< string. The default implementation returns an empty string.
   double FramesPerSecond(void) const { return player->FramesPerSecond(); }
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) const { return player->GetIndex(Current, Total, SnapToIFrame); }
+  bool GetFrameNumber(int &Current, int &Total) const { return player->GetFrameNumber(Current, Total); }
   bool GetReplayMode(bool &Play, bool &Forward, int &Speed) const { return player->GetReplayMode(Play, Forward, Speed); }
   static void Launch(cControl *Control);
   static void Attach(void);

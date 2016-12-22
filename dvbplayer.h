@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 4.1 2015/08/02 13:01:44 kls Exp $
+ * $Id: dvbplayer.h 4.2 2016/12/22 10:36:50 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H
@@ -50,6 +50,10 @@ public:
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
+  bool GetFrameNumber(int &Current, int &Total);
+       // Returns the current and total frame number. In contrast to GetIndex(),
+       // this function respects the chronological order of frames, which is
+       // different from its index for streams containing B frames (e.g. H264)
   bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
        // Returns the current replay mode (if applicable).
        // 'Play' tells whether we are playing or pausing, 'Forward' tells whether

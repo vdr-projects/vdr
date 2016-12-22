@@ -3328,6 +3328,8 @@ Thomas Reufer <thomas@reufer.ch>
  for making the cPlayer member functions FramesPerSecond, GetIndex and GetReplayMode
  'const'
  for fixing resuming replay at a given position, which was off by one frame
+ for improving handling frame numbers to have a smoother progress display during
+ replay of recordings with B-frames
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

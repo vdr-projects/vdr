@@ -8857,3 +8857,5 @@ Video Disk Recorder Revision History
   'const' (thanks to Thomas Reufer).
 - Fixed resuming replay at a given position, which was off by one frame (thanks
   to Thomas Reufer).
+- Improved handling frame numbers to have a smoother progress display during
+  replay of recordings with B-frames (thanks to Thomas Reufer).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.18 2016/12/13 12:49:10 kls Exp $
+ * $Id: menu.c 4.19 2016/12/22 11:00:13 kls Exp $
  */
 
 #include "menu.h"
@@ -5435,6 +5435,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   lastPlay = lastForward = false;
   lastSpeed = -2; // an invalid value
   timeoutShow = 0;
+  lastProgressUpdate = 0;
   timeSearchActive = false;
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
@@ -5583,41 +5584,43 @@ void cReplayControl::ShowMode(void)
 bool cReplayControl::ShowProgress(bool Initial)
 {
   int Current, Total;
-
-  if (GetIndex(Current, Total) && Total > 0) {
-     if (!visible) {
-        displayReplay = Skins.Current()->DisplayReplay(modeOnly);
-        displayReplay->SetMarks(&marks);
-        SetNeedsFastResponse(true);
-        visible = true;
-        }
-     if (Initial) {
-        if (*fileName) {
-           LOCK_RECORDINGS_READ;
-           if (const cRecording *Recording = Recordings->GetByName(fileName))
-              displayReplay->SetRecording(Recording);
+  if (Initial || time(NULL) - lastProgressUpdate >= 1) {
+     if (GetFrameNumber(Current, Total) && Total > 0) {
+        if (!visible) {
+           displayReplay = Skins.Current()->DisplayReplay(modeOnly);
+           displayReplay->SetMarks(&marks);
+           SetNeedsFastResponse(true);
+           visible = true;
            }
-        lastCurrent = lastTotal = -1;
-        }
-     if (Current != lastCurrent || Total != lastTotal) {
-        if (Setup.ShowRemainingTime || Total != lastTotal) {
-           int Index = Total;
-           if (Setup.ShowRemainingTime)
-              Index = Current - Index;
-           displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+        if (Initial) {
+           if (*fileName) {
+              LOCK_RECORDINGS_READ;
+              if (const cRecording *Recording = Recordings->GetByName(fileName))
+                 displayReplay->SetRecording(Recording);
+              }
+           lastCurrent = lastTotal = -1;
+           }
+        if (Current != lastCurrent || Total != lastTotal) {
+           time(&lastProgressUpdate);
+           if (Setup.ShowRemainingTime || Total != lastTotal) {
+              int Index = Total;
+              if (Setup.ShowRemainingTime)
+                 Index = Current - Index;
+              displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+              if (!Initial)
+                 displayReplay->Flush();
+              }
+           displayReplay->SetProgress(Current, Total);
            if (!Initial)
               displayReplay->Flush();
-           }
-        displayReplay->SetProgress(Current, Total);
-        if (!Initial)
+           displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
            displayReplay->Flush();
-        displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
-        displayReplay->Flush();
-        lastCurrent = Current;
+           lastCurrent = Current;
+           }
+        lastTotal = Total;
+        ShowMode();
+        return true;
         }
-     lastTotal = Total;
-     ShowMode();
-     return true;
      }
   return false;
 }
@@ -5858,6 +5861,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      return osEnd;
   if (Key == kNone && !marksModified)
      marks.Update();
+  if (Key != kNone)
+     lastProgressUpdate = 0;
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
