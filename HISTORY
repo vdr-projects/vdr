@@ -8828,7 +8828,7 @@ Video Disk Recorder Revision History
 - Empty adaptation field TS packets are now skipped when recording (thanks to
   Christopher Reimer, based on the "AFFcleaner" by Stefan Pöschel).
 
-2016-12-13: Version 2.3.2
+2016-12-22: Version 2.3.2
 
 - Fixed a crash when deleting a recording (reported by Oliver Endriss).
 - Fixed an overflow of PIDs in a receiver (thanks to Robert Hannebauer).
@@ -8853,3 +8853,5 @@ Video Disk Recorder Revision History
   operations.
 - Added a note to the description of cFont::Size(), regarding possible differences
   between it and cFont::Height() (suggested to Thomas Reufer).
+- Made the cPlayer member functions FramesPerSecond, GetIndex and GetReplayMode
+  'const' (thanks to Thomas Reufer).

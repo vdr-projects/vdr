@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 3.1 2013/12/25 13:25:02 kls Exp $
+ * $Id: player.h 4.1 2016/12/22 09:22:27 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -98,9 +98,9 @@ public:
          ///< skins as a last resort, in case they want to display the state of the
          ///< current player. The return value is expected to be a short, single line
          ///< string. The default implementation returns an empty string.
-  double FramesPerSecond(void) { return player->FramesPerSecond(); }
-  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return player->GetIndex(Current, Total, SnapToIFrame); }
-  bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return player->GetReplayMode(Play, Forward, Speed); }
+  double FramesPerSecond(void) const { return player->FramesPerSecond(); }
+  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) const { return player->GetIndex(Current, Total, SnapToIFrame); }
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed) const { return player->GetReplayMode(Play, Forward, Speed); }
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
