@@ -8870,3 +8870,4 @@ Video Disk Recorder Revision History
 - Added 'S58.5E Kazsat 3' to sources.conf (thanks to Aitugan Sarbassov).
 - Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
   (reported by Sergey Chernyavskiy).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
