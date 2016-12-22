@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 4.1 2015/08/06 13:09:19 kls Exp $
+ * $Id: dvbplayer.c 4.2 2016/12/22 09:40:30 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -433,6 +433,8 @@ void cDvbPlayer::Action(void)
         }
      StateKey.Remove();
      }
+  if (readIndex > 0) // will first be incremented in the loop!
+     --readIndex;
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;

@@ -8855,3 +8855,5 @@ Video Disk Recorder Revision History
   between it and cFont::Height() (suggested to Thomas Reufer).
 - Made the cPlayer member functions FramesPerSecond, GetIndex and GetReplayMode
   'const' (thanks to Thomas Reufer).
+- Fixed resuming replay at a given position, which was off by one frame (thanks
+  to Thomas Reufer).
