@@ -8871,3 +8871,4 @@ Video Disk Recorder Revision History
 - Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
   (reported by Sergey Chernyavskiy).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Added a 'const' version of cTimers::GetTimer() (thanks to Lars Hanisch).
