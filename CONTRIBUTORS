@@ -3449,3 +3449,6 @@ Robert Hannebauer <vdr@hannebauer.org>
 
 Aitugan Sarbassov <isarbassov@gmail.com>
  for adding 'S58.5E Kazsat 3' to sources.conf
+
+Sergey Chernyavskiy <glenvt18@gmail.com>
+ for reporting truncated date/time strings in the skins on multi-byte UTF-8

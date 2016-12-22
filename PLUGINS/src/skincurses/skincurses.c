@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.1 2016/12/22 12:50:20 kls Exp $
+ * $Id: skincurses.c 4.2 2016/12/22 14:09:09 kls Exp $
  */
 
 #include <ncurses.h>
@@ -408,8 +408,7 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
      return;
   int y = 2;
   cTextScroller ts;
-  char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
+  cString t = cString::sprintf("%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      cString buffer = cString::sprintf(" VPS: %s", *Event->GetVpsString());
