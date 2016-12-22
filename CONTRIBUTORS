@@ -3331,6 +3331,7 @@ Thomas Reufer <thomas@reufer.ch>
  for improving handling frame numbers to have a smoother progress display during
  replay of recordings with B-frames
  for fixing replaying recordings to their very end, if they don't end with an I-frame
+ for implementing a frame parser for H.265 (HEVC) recordings
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

@@ -8861,3 +8861,4 @@ Video Disk Recorder Revision History
   replay of recordings with B-frames (thanks to Thomas Reufer).
 - Fixed replaying recordings to their very end, if they don't end with an I-frame
   (thanks to Thomas Reufer).
+- Implemented a frame parser for H.265 (HEVC) recordings (thanks to Thomas Reufer).
