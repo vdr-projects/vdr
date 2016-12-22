@@ -8867,3 +8867,4 @@ Video Disk Recorder Revision History
 - Fixed regenerating the index of audio recordings (thanks to Thomas Reufer).
 - Fixed building VDR with systemd >= 230 (thanks to Ville Skyttä).
 - Sorted sources.conf by continous azimuth (thanks to Lucian Muresan).
+- Added 'S58.5E Kazsat 3' to sources.conf (thanks to Aitugan Sarbassov).
