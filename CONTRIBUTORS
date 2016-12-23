@@ -3458,3 +3458,4 @@ Aitugan Sarbassov <isarbassov@gmail.com>
 
 Sergey Chernyavskiy <glenvt18@gmail.com>
  for reporting truncated date/time strings in the skins on multi-byte UTF-8
+ for adding a short sleep to cTSBuffer::Action() to avoid high CPU usage
