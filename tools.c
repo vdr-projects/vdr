@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.4 2015/09/10 13:17:55 kls Exp $
+ * $Id: tools.c 4.5 2016/12/23 14:03:40 kls Exp $
  */
 
 #include "tools.h"
@@ -2270,6 +2270,44 @@ void cListBase::Sort(void)
       Add(a[i]);
       }
   free(a);
+}
+
+// --- cDynamicBuffer --------------------------------------------------------
+
+cDynamicBuffer::cDynamicBuffer(int InitialSize)
+{
+  initialSize = InitialSize;
+  buffer = NULL;
+  size = used = 0;
+}
+
+cDynamicBuffer::~cDynamicBuffer()
+{
+  free(buffer);
+}
+
+bool cDynamicBuffer::Realloc(int NewSize)
+{
+  if (size < NewSize) {
+     NewSize = max(NewSize, size ? size * 3 / 2 : initialSize); // increase size by at least 50%
+     if (uchar *NewBuffer = (uchar *)realloc(buffer, NewSize)) {
+        buffer = NewBuffer;
+        size = NewSize;
+        }
+     else {
+        esyslog("ERROR: out of memory");
+        return false;
+        }
+     }
+  return true;
+}
+
+void cDynamicBuffer::Append(const uchar *Data, int Length)
+{
+  if (Assert(used + Length)) {
+     memcpy(buffer + used, Data, Length);
+     used += Length;
+     }
 }
 
 // --- cHashBase -------------------------------------------------------------

@@ -2929,6 +2929,8 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing a memory leak in case of broken Extended Event Descriptors
  for adding a 'const' version of cTimers::GetTimer()
  for fixing a typo in the description of cTimers::GetTimersRead()
+ for suggesting to use dynamic buffering in handling CA descriptors to avoid a
+ possible buffer overflow
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
