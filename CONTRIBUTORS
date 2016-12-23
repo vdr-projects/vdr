@@ -3233,6 +3233,7 @@ Malte Forkel <malte.forkel@berlin.de>
 
 Marc Perrudin <vdr@ekass.net>
  for translating OSD texts to the French language
+ for adding support for the systemd watchdog
 
 Bernard Jaulin <bernard.jaulin@gmail.com>
  for translating OSD texts to the French language

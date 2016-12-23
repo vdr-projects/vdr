@@ -8878,3 +8878,4 @@ Video Disk Recorder Revision History
   Lars Hanisch).
 - Avoiding some duplicate code and unnecessary work in nit.c (thanks to Ville
   Skyttä).
+- Added support for the systemd watchdog (thanks to Marc Perrudin),
