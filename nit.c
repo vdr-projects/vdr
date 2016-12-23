@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.3 2015/07/26 09:24:36 kls Exp $
+ * $Id: nit.c 4.4 2016/12/23 14:16:59 kls Exp $
  */
 
 #include "nit.h"
@@ -114,7 +114,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
                  dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
-                 dbgnit("    %s %d %c %d %d\n", *cSource::ToString(Source), Frequency, Polarizations[sd->getPolarization()], SymbolRate, cChannel::Transponder(Frequency, Polarizations[sd->getPolarization()]));
+                 dbgnit("    %s %d %c %d %d\n", *cSource::ToString(Source), Frequency, dtp.Polarization(), SymbolRate, cChannel::Transponder(Frequency, dtp.Polarization()));
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
@@ -177,7 +177,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256, QAM_AUTO };
                  dtp.SetModulation(Modulations[min(sd->getModulation(), 6)]);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
-                 dbgnit("    %s %d %d %d %d\n", *cSource::ToString(Source), Frequency, CodeRates[sd->getFecInner()], Modulations[min(sd->getModulation(), 6)], SymbolRate);
+                 dbgnit("    %s %d %d %d %d\n", *cSource::ToString(Source), Frequency, dtp.CoderateH(), dtp.Modulation(), SymbolRate);
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
@@ -233,7 +233,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetGuard(GuardIntervals[sd->getGuardInterval()]);
                  static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_4K, TRANSMISSION_MODE_AUTO };
                  dtp.SetTransmission(TransmissionModes[sd->getTransmissionMode()]);
-                 dbgnit("    %s %d %d %d %d %d %d %d %d\n", *cSource::ToString(Source), Frequency, Bandwidths[sd->getBandwidth()], Constellations[sd->getConstellation()], Hierarchies[sd->getHierarchy()], CodeRates[sd->getCodeRateHP()], CodeRates[sd->getCodeRateLP()], GuardIntervals[sd->getGuardInterval()], TransmissionModes[sd->getTransmissionMode()]);
+                 dbgnit("    %s %d %d %d %d %d %d %d %d\n", *cSource::ToString(Source), Frequency, dtp.Bandwidth(), dtp.Modulation(), dtp.Hierarchy(), dtp.CoderateH(), dtp.CoderateL(), dtp.Guard(), dtp.Transmission());
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;
@@ -310,9 +310,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     SI::LogicalChannelDescriptor *lcd = (SI::LogicalChannelDescriptor *)d;
                     SI::LogicalChannelDescriptor::LogicalChannel LogicalChannel;
                     for (SI::Loop::Iterator it4; lcd->logicalChannelLoop.getNext(LogicalChannel, it4); ) {
-                        int lcn = LogicalChannel.getLogicalChannelNumber();
-                        int sid = LogicalChannel.getServiceId();
                         if (LogicalChannel.getVisibleServiceFlag()) {
+                           int lcn = LogicalChannel.getLogicalChannelNumber();
+                           int sid = LogicalChannel.getServiceId();
                            for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                                if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                                   ChannelsModified |= Channel->SetLcn(lcn);
@@ -328,9 +328,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     SI::HdSimulcastLogicalChannelDescriptor *lcd = (SI::HdSimulcastLogicalChannelDescriptor *)d;
                     SI::HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel HdSimulcastLogicalChannel;
                     for (SI::Loop::Iterator it4; lcd->hdSimulcastLogicalChannelLoop.getNext(HdSimulcastLogicalChannel, it4); ) {
-                        int lcn = HdSimulcastLogicalChannel.getLogicalChannelNumber();
-                        int sid = HdSimulcastLogicalChannel.getServiceId();
                         if (HdSimulcastLogicalChannel.getVisibleServiceFlag()) {
+                           int lcn = HdSimulcastLogicalChannel.getLogicalChannelNumber();
+                           int sid = HdSimulcastLogicalChannel.getServiceId();
                            for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                                if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                                   ChannelsModified |= Channel->SetLcn(lcn);

@@ -8876,3 +8876,5 @@ Video Disk Recorder Revision History
   Hanisch).
 - Fixed a possible buffer overflow in handling CA descriptors (suggested by
   Lars Hanisch).
+- Avoiding some duplicate code and unnecessary work in nit.c (thanks to Ville
+  Skyttä).

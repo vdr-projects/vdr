@@ -2065,6 +2065,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting a superfluous assignment in cPipe::Open()
  for avoiding unnecessary pkg-config warnings in plugin Makefiles
  for fixing building VDR with systemd >= 230
+ for avoiding some duplicate code and unnecessary work in nit.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
