@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.3 2015/09/09 10:40:24 kls Exp $
+ * $Id: timers.h 4.6 2016/12/23 09:49:31 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -122,7 +122,7 @@ public:
   cTimers(void);
   static const cTimers *GetTimersRead(cStateKey &StateKey, int TimeoutMs = 0);
       ///< Gets the list of timers for read access. If TimeoutMs is given,
-      ///< it will wait that long to get a write lock before giving up.
+      ///< it will wait that long to get a read lock before giving up.
       ///< Otherwise it will wait indefinitely. If no read lock can be
       ///< obtained within the given timeout, NULL will be returned.
       ///< The list is locked and a pointer to it is returned if the state
@@ -170,7 +170,8 @@ public:
   static int NewTimerId(void);
   const cTimer *GetById(int Id) const;
   cTimer *GetById(int Id) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id)); };
-  cTimer *GetTimer(cTimer *Timer);
+  const cTimer *GetTimer(const cTimer *Timer) const;
+  cTimer *GetTimer(const cTimer *Timer) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetTimer(Timer)); };
   const cTimer *GetMatch(time_t t) const;
   cTimer *GetMatch(time_t t) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(t)); };
   const cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) const;

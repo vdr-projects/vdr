@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.1 2015/03/11 09:49:38 kls Exp $
+ * $Id: remux.c 4.3 2016/12/22 12:58:20 kls Exp $
  */
 
 #include "remux.h"
@@ -603,6 +603,7 @@ cPatPmtParser::cPatPmtParser(bool UpdatePrimaryDevice)
 
 void cPatPmtParser::Reset(void)
 {
+  completed = false;
   pmtSize = 0;
   patVersion = pmtVersion = -1;
   pmtPids[0] = 0;
@@ -708,6 +709,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
            case 0x01: // STREAMTYPE_11172_VIDEO
            case 0x02: // STREAMTYPE_13818_VIDEO
            case 0x1B: // H.264
+           case 0x24: // H.265
                       vpid = stream.getPid();
                       vtype = stream.getStreamType();
                       ppid = Pmt.getPCRPid();
@@ -892,6 +894,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
             }
          }
      pmtVersion = Pmt.getVersionNumber();
+     completed = true;
      }
   else
      esyslog("ERROR: can't parse PMT");
@@ -1204,16 +1207,16 @@ private:
     nutSequenceParameterSet = 7,
     nutAccessUnitDelimiter  = 9,
     };
-  cTsPayload tsPayload;
   uchar byte; // holds the current byte value in case of bitwise access
   int bit; // the bit index into the current byte (-1 if we're not in bit reading mode)
   int zeroBytes; // the number of consecutive zero bytes (to detect 0x000003)
-  uint32_t scanner;
   // Identifiers written in '_' notation as in "ITU-T H.264":
   bool separate_colour_plane_flag;
   int log2_max_frame_num;
   bool frame_mbs_only_flag;
-  //
+protected:
+  cTsPayload tsPayload;
+  uint32_t scanner;
   bool gotAccessUnitDelimiter;
   bool gotSequenceParameterSet;
   uchar GetByte(bool Raw = false);
@@ -1430,6 +1433,81 @@ void cH264Parser::ParseSliceHeader(void)
      }
 }
 
+// --- cH265Parser -----------------------------------------------------------
+
+class cH265Parser : public cH264Parser {
+private:
+  enum eNalUnitType {
+    nutSliceSegmentTrailingN =  0,
+    nutSliceSegmentTrailingR =  1,
+    nutSliceSegmentTSAN      =  2,
+    nutSliceSegmentTSAR      =  3,
+    nutSliceSegmentSTSAN     =  4,
+    nutSliceSegmentSTSAR     =  5,
+    nutSliceSegmentRADLN     =  6,
+    nutSliceSegmentRADLR     =  7,
+    nutSliceSegmentRASLN     =  8,
+    nutSliceSegmentRASLR     =  9,
+    nutSliceSegmentBLAWLP    = 16,
+    nutSliceSegmentBLAWRADL  = 17,
+    nutSliceSegmentBLANLP    = 18,
+    nutSliceSegmentIDRWRADL  = 19,
+    nutSliceSegmentIDRNLP    = 20,
+    nutSliceSegmentCRANUT    = 21,
+    nutVideoParameterSet     = 32,
+    nutSequenceParameterSet  = 33,
+    nutPictureParameterSet   = 34,
+    nutAccessUnitDelimiter   = 35,
+    nutEndOfSequence         = 36,
+    nutEndOfBitstream        = 37,
+    nutFillerData            = 38,
+    nutPrefixSEI             = 39,
+    nutSuffixSEI             = 40,
+    nutNonVCLRes0            = 41,
+    nutNonVCLRes3            = 44,
+    nutUnspecified0          = 48,
+    nutUnspecified7          = 55,
+    };
+public:
+  cH265Parser(void);
+  virtual int Parse(const uchar *Data, int Length, int Pid);
+  };
+
+cH265Parser::cH265Parser(void)
+:cH264Parser()
+{
+}
+
+int cH265Parser::Parse(const uchar *Data, int Length, int Pid)
+{
+  newFrame = independentFrame = false;
+  tsPayload.Setup(const_cast<uchar *>(Data), Length, Pid);
+  if (TsPayloadStart(Data)) {
+     tsPayload.SkipPesHeader();
+     scanner = EMPTY_SCANNER;
+     }
+  for (;;) {
+      scanner = (scanner << 8) | GetByte(true);
+      if ((scanner & 0xFFFFFF00) == 0x00000100) { // NAL unit start
+         uchar NalUnitType = (scanner >> 1) & 0x3F;
+         GetByte(); // nuh_layer_id + nuh_temporal_id_plus1
+         if (NalUnitType <= nutSliceSegmentRASLR || (NalUnitType >= nutSliceSegmentBLAWLP && NalUnitType <= nutSliceSegmentCRANUT)) {
+            if (NalUnitType == nutSliceSegmentIDRWRADL || NalUnitType == nutSliceSegmentIDRNLP || NalUnitType == nutSliceSegmentCRANUT)
+               independentFrame = true;
+            if (GetBit()) { // first_slice_segment_in_pic_flag
+               newFrame = true;
+               tsPayload.Statistics();
+               }
+            break;
+            }
+         }
+      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+         || tsPayload.Eof()) // or if we're out of data
+         break;
+      }
+  return tsPayload.Used();
+}
+
 // --- cFrameDetector --------------------------------------------------------
 
 cFrameDetector::cFrameDetector(int Pid, int Type)
@@ -1456,14 +1534,16 @@ void cFrameDetector::SetPid(int Pid, int Type)
 {
   pid = Pid;
   type = Type;
-  isVideo = type == 0x01 || type == 0x02 || type == 0x1B; // MPEG 1, 2 or H.264
+  isVideo = type == 0x01 || type == 0x02 || type == 0x1B || type == 0x24; // MPEG 1, 2, H.264 or H.265
   delete parser;
   parser = NULL;
   if (type == 0x01 || type == 0x02)
      parser = new cMpeg2Parser;
   else if (type == 0x1B)
      parser = new cH264Parser;
-  else if (type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
+  else if (type == 0x24)
+     parser = new cH265Parser;
+  else if (type == 0x03 || type == 0x04 || type == 0x06) // MPEG audio or AC3 audio
      parser = new cAudioParser;
   else if (type != 0)
      esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);

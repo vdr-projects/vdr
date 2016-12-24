@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.0 2015/02/09 12:28:24 kls Exp $
+# $Id: Makefile 4.1 2016/12/22 13:18:32 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -95,9 +95,9 @@ DEFINES += -DBIDI
 LIBS += $(shell pkg-config --libs fribidi)
 endif
 ifdef SDNOTIFY
-INCLUDES += $(shell pkg-config --cflags libsystemd-daemon)
+INCLUDES += $(shell pkg-config --silence-errors --cflags libsystemd-daemon || pkg-config --cflags libsystemd)
 DEFINES += -DSDNOTIFY
-LIBS += $(shell pkg-config --libs libsystemd-daemon)
+LIBS += $(shell pkg-config --silence-errors --libs libsystemd-daemon || pkg-config --libs libsystemd)
 endif
 
 LIRC_DEVICE ?= /var/run/lirc/lircd

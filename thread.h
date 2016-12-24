@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 4.1 2015/08/17 13:06:24 kls Exp $
+ * $Id: thread.h 4.2 2016/12/08 09:11:24 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+typedef pid_t tThreadId;
 
 class cCondWait {
 private:
@@ -53,6 +55,8 @@ public:
 class cRwLock {
 private:
   pthread_rwlock_t rwlock;
+  int locked;
+  tThreadId writeLockThreadId;
 public:
   cRwLock(bool PreferWriter = false);
   ~cRwLock();
@@ -71,8 +75,6 @@ public:
   void Lock(void);
   void Unlock(void);
   };
-
-typedef pid_t tThreadId;
 
 class cThread {
   friend class cThreadLock;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.3 2015/09/06 10:45:54 kls Exp $
+ * $Id: tools.h 4.5 2016/12/23 13:56:35 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -609,7 +609,7 @@ public: \
     else \
        list = c##Class::Get##Name##Read(stateKey); \
   } \
-  ~c##Name##Lock() { stateKey.Remove(); } \
+  ~c##Name##Lock() { if (list) stateKey.Remove(); } \
   const c##Class *Name(void) const { return list; } \
   c##Class *Name(void) { return const_cast<c##Class *>(list); } \
   }
@@ -773,6 +773,26 @@ class cFileNameList : public cStringList {
 public:
   cFileNameList(const char *Directory = NULL, bool DirsOnly = false);
   bool Load(const char *Directory, bool DirsOnly = false);
+  };
+
+class cDynamicBuffer {
+private:
+  uchar *buffer;
+  int initialSize;
+  int size; // the total size of the buffer (bytes in memory)
+  int used; // the number of used bytes, starting at the beginning of the buffer
+  bool Realloc(int NewSize);
+  bool Assert(int NewSize) { return size < NewSize ? Realloc(NewSize) : true; } // inline for performance!
+public:
+  cDynamicBuffer(int InitialSize = 1024);
+  ~cDynamicBuffer();
+  void Append(const uchar *Data, int Length);
+  void Append(uchar Data) { if (Assert(used + 1)) buffer[used++] = Data; }
+  void Set(int Index, uchar Data) { if (Assert(Index + 1)) buffer[Index] = Data; }
+  uchar Get(int Index) { return Index < used ? buffer[Index] : 0; }
+  void Clear(void) { used = 0; }
+  uchar *Data(void) { return buffer; }
+  int Length(void) { return used; }
   };
 
 class cHashObject : public cListObject {

@@ -68,7 +68,7 @@ msgid "Transmission"
 msgstr "Transmissioon"
 
 msgid "Guard"
-msgstr "Kaitseintervall"
+msgstr "Kaitsevahemik"
 
 msgid "Hierarchy"
 msgstr "Hierarhia"
@@ -326,7 +326,7 @@ msgid "Content$Unpublished"
 msgstr "Avaldamata"
 
 msgid "Content$Live Broadcast"
-msgstr "Otseülekanne"
+msgstr "Telepilt"
 
 #, c-format
 msgid "ParentalRating$from %d"
@@ -477,7 +477,7 @@ msgid "Key$Subtitles"
 msgstr "Subtiitrid"
 
 msgid "Key$Schedule"
-msgstr "Kava"
+msgstr "Ajakava"
 
 msgid "Key$Channels"
 msgstr "Kanalid"
@@ -486,10 +486,10 @@ msgid "Key$Timers"
 msgstr "Taimerid"
 
 msgid "Key$Recordings"
-msgstr "Salvestused"
+msgstr "Salvestised"
 
 msgid "Key$Setup"
-msgstr "Sätted"
+msgstr "Seadistamine"
 
 msgid "Key$Commands"
 msgstr "Käsud"
@@ -528,7 +528,7 @@ msgid "Free To Air"
 msgstr "FTA"
 
 msgid "encrypted"
-msgstr "krüptitud"
+msgstr "kodeeritud"
 
 msgid "Edit channel"
 msgstr "Kanali muutmine"
@@ -588,16 +588,16 @@ msgid "Channels"
 msgstr "Kanalid"
 
 msgid "Button$Edit"
-msgstr "Muutmine"
+msgstr "Muuda"
 
 msgid "Button$New"
 msgstr "Uus"
 
 msgid "Button$Delete"
-msgstr "Kustutada"
+msgstr "Kustuta"
 
 msgid "Button$Mark"
-msgstr "Märkimine"
+msgstr "Märgi"
 
 msgid "Channel is being used by a timer!"
 msgstr "Kanal on taimeris kasutusel!"
@@ -606,7 +606,7 @@ msgid "Delete channel?"
 msgstr "Kustutada kanal?"
 
 msgid "Edit folder"
-msgstr "Kausta muutmine"
+msgstr "Muuda kausta"
 
 msgid "New folder"
 msgstr "Uus kaust"
@@ -622,7 +622,7 @@ msgid "Folder name must not contain '%c'!"
 msgstr "Kausta nimi ei saa sisaldada '%c' sümbolit!"
 
 msgid "Button$Open"
-msgstr "Avada"
+msgstr "Ava"
 
 msgid "Delete folder and all sub folders?"
 msgstr "Kustutada kaust ja kõik alamkaustad?"
@@ -631,7 +631,7 @@ msgid "Delete folder?"
 msgstr "Kustutada kaust?"
 
 msgid "Edit timer"
-msgstr "Taimeri redigeerimine"
+msgstr "Muuda taimer"
 
 msgid "Active"
 msgstr "Aktiivne"
@@ -661,13 +661,13 @@ msgid "File"
 msgstr "Fail"
 
 msgid "Record on"
-msgstr ""
+msgstr "Salvestamine"
 
 msgid "Button$Folder"
 msgstr "Kaust"
 
 msgid "Button$Single"
-msgstr "Üks kord"
+msgstr "Üksik"
 
 msgid "Button$Repeating"
 msgstr "Korduv"
@@ -676,13 +676,13 @@ msgid "First day"
 msgstr "1. päev"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Kaugtaimeri viga"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "Taimer kustutatud"
 
 msgid "Select folder"
-msgstr "Kausta valik"
+msgstr "Vali kaust"
 
 msgid "Timers"
 msgstr "Taimerid"
@@ -700,38 +700,38 @@ msgid "Timer still recording - really delete?"
 msgstr "Salvestus aktiivne - kas kustutada?"
 
 msgid "Event"
-msgstr "Saade"
+msgstr "Saateinfo"
 
 msgid "Button$Timer"
 msgstr "Taimer"
 
 msgid "Button$Record"
-msgstr "Salvestada"
+msgstr "Salvesta"
 
 msgid "Button$Switch"
 msgstr "Vali"
 
 msgid "What's on now?"
-msgstr "Hetkel eetris"
+msgstr "Hetkel"
 
 msgid "What's on next?"
-msgstr "Järgmisena eetris"
+msgstr "Järgmine"
 
 msgid "Button$Next"
-msgstr "Tulekul"
+msgstr "Järgmine"
 
 msgid "Button$Now"
 msgstr "Hetkel"
 
 msgid "Button$Schedule"
-msgstr "Kava"
+msgstr "Ajakava"
 
 msgid "Can't switch channel!"
 msgstr "Kanali vahetus ei ole võimalik!"
 
 #, c-format
 msgid "Schedule - %s"
-msgstr "Kava - %s"
+msgstr "Ajakava - %s"
 
 #, c-format
 msgid "This event - %s"
@@ -761,55 +761,55 @@ msgstr "Kaust on juba kasutusel - muutmine ei ole võimalik!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr "Teisaldada kaust mis sisaldab %d salvestust?"
+msgstr "Liigutada kaust mis sisaldab %d salvestist?"
 
 msgid "Error while moving folder!"
-msgstr "Kausta teisaldamise viga!"
+msgstr "Kausta liigutamise viga!"
 
 msgid "Edit recording"
-msgstr "Salvestuse redigeerimine"
+msgstr "Muuda salvestist"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr "Salvestus hetkel kasutusel - muutmine ei ole võimalik!"
+msgstr "Salvestis hetkel kasutusel - muutmine ei ole võimalik!"
 
 msgid "Button$Cancel cutting"
-msgstr "Lõikamise tühistamine"
+msgstr "Tühista lõikamine"
 
 msgid "Button$Stop cutting"
-msgstr "Lõikamise peatamine"
+msgstr "Peata lõikamine"
 
 msgid "Button$Cancel moving"
-msgstr "Teisaldamise tühistamine"
+msgstr "Tühista liigutamine"
 
 msgid "Button$Stop moving"
-msgstr "Teisaldamise peatamine"
+msgstr "Peata liigutamine"
 
 msgid "Button$Cancel copying"
-msgstr "Kopeerimise tühistamine"
+msgstr "Tühista kopeerimine"
 
 msgid "Button$Stop copying"
-msgstr "Kopeerimise peatamine"
+msgstr "Peata kopeerimine"
 
 msgid "Button$Cut"
 msgstr "Lõika"
 
 msgid "Button$Delete marks"
-msgstr "Markerite kustutamine"
+msgstr "Kustuta markerid"
 
 msgid "Recording vanished!"
-msgstr "Salvestus kadunud!"
+msgstr "Salvestis puudub!"
 
 msgid "Edited version already exists - overwrite?"
-msgstr "Redigeeritud versioon juba olemas - kirjutada üle?"
+msgstr "Muudetud versioon juba olemas - kirjutada üle?"
 
 msgid "Error while queueing recording for cutting!"
-msgstr "Salvestuse lisamine lõikamiseks ebaõnnestus!"
+msgstr "Salvestise lisamine lõikamiseks ebaõnnestus!"
 
 msgid "Rename recording to folder name?"
-msgstr "Nimetada salvestuse nimi kaustaks?"
+msgstr "Ümbernimetada kaust salvestise nimega?"
 
 msgid "Delete editing marks for this recording?"
-msgstr "Kustutada selle salvestuse markerid?"
+msgstr "Kustutada selle salvestise markerid?"
 
 msgid "Error while deleting editing marks!"
 msgstr "Markerite kustutamine ebaõnnestus!"
@@ -821,55 +821,55 @@ msgid "Error while changing folder/name!"
 msgstr "Kausta/nime muutmine ebaõnnestus!"
 
 msgid "Recording info"
-msgstr "Salvestuse info"
+msgstr "Salvestise info"
 
 msgid "Button$Play"
 msgstr "Start"
 
 msgid "Button$Rewind"
-msgstr "Algusesse"
+msgstr "Tagasikerimine"
 
 msgid "Recordings"
-msgstr "Salvestused"
+msgstr "Salvestised"
 
 msgid "Commands"
 msgstr "Käsud"
 
 msgid "Delete recording?"
-msgstr "Kustutada salvestus?"
+msgstr "Kustutada salvestis?"
 
 msgid "Recording is being edited - really delete?"
-msgstr "Salvestust on muudetud - kas kustutada?"
+msgstr "Salvestist on muudetud - kas kustutada?"
 
 msgid "Error while deleting recording!"
-msgstr "Salvestuse kustutamine ebaõnnestus!"
+msgstr "Salvestise kustutamine ebaõnnestus!"
 
 msgid "Recording commands"
 msgstr "Salvestuse käsud"
 
 msgid "never"
-msgstr "ealeski"
+msgstr "mitte kunagi"
 
 msgid "skin dependent"
-msgstr "kestast sõltuv"
+msgstr "kujundusest sõltuv"
 
 msgid "always"
 msgstr "alati"
 
 msgid "by name"
-msgstr ""
+msgstr "nime järgi"
 
 msgid "by time"
-msgstr ""
+msgstr "aja järgi"
 
 msgid "OSD"
-msgstr "Ekraanikuva"
+msgstr "OSD"
 
 msgid "Setup.OSD$Language"
 msgstr "Keel"
 
 msgid "Setup.OSD$Skin"
-msgstr "Kest"
+msgstr "Kujundus"
 
 msgid "Setup.OSD$Theme"
 msgstr "Teema"
@@ -893,7 +893,7 @@ msgid "Setup.OSD$Use small font"
 msgstr "Väikese fondi kasutus"
 
 msgid "Setup.OSD$Anti-alias"
-msgstr "Fondi sakitõrje"
+msgstr "Fondi silumine"
 
 msgid "Setup.OSD$Default font"
 msgstr "Vaikefont"
@@ -902,7 +902,7 @@ msgid "Setup.OSD$Small font"
 msgstr "Väike font"
 
 msgid "Setup.OSD$Fixed font"
-msgstr "Fikseeritud font"
+msgstr "Püsisammuga font"
 
 msgid "Setup.OSD$Default font size (%)"
 msgstr "Vaikefondi suurus (%)"
@@ -911,7 +911,7 @@ msgid "Setup.OSD$Small font size (%)"
 msgstr "Väikese fondi suurus (%)"
 
 msgid "Setup.OSD$Fixed font size (%)"
-msgstr "Fiks. fondi suurus (%)"
+msgstr "Püsisammuga fondi suurus (%)"
 
 msgid "Setup.OSD$Channel info position"
 msgstr "Kanaliinfo asukoht"
@@ -929,7 +929,7 @@ msgid "Setup.OSD$Info on channel switch"
 msgstr "Kanaliinfo kuvamine"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Kanaliinfo ajapiirang"
+msgstr "Kanaliinfo aegumine"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Lehekülje kerimine"
@@ -941,16 +941,16 @@ msgid "Setup.OSD$Menu key closes"
 msgstr "Sulgemine Menüü klahviga"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Kausta nime salvestamine"
+msgstr "Salvestise kaustade kuvamine"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Kaustad taimeri menüüs"
+msgstr "Kaustade kuvamine taimeri menüüs"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr "Sorteerida kaustad alati ette"
+msgstr "Järjesta kaustad alati ette"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Salvestiste vaikimisi järjestus"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Teksti sisestamine numbriklahvidega"
@@ -971,7 +971,7 @@ msgid "EPG"
 msgstr "EPG"
 
 msgid "Button$Scan"
-msgstr "Uuendada"
+msgstr "Uuenda"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "EPG skaneerimise viide (h)"
@@ -983,10 +983,10 @@ msgid "Setup.EPG$EPG linger time (min)"
 msgstr "Vana EPG viide (min)"
 
 msgid "Setup.EPG$Set system time"
-msgstr "Kella sünkroniseerimine"
+msgstr "Süsteemi aja sünkimine"
 
 msgid "Setup.EPG$Use time from transponder"
-msgstr "Sünkroniseerimise transponder"
+msgstr "Sünkimise transponder"
 
 #. TRANSLATORS: note the plural!
 msgid "Setup.EPG$Preferred languages"
@@ -1009,7 +1009,7 @@ msgid "no"
 msgstr "ei"
 
 msgid "names only"
-msgstr "nimed"
+msgstr "ainult nimed"
 
 msgid "PIDs only"
 msgstr "PID-id"
@@ -1097,7 +1097,7 @@ msgid "Setup.LNB$own"
 msgstr "oma"
 
 msgid "Setup.LNB$Use dish positioner"
-msgstr "Antenni positsioneerija kasutamine"
+msgstr "Ajami kasutamine"
 
 msgid "Setup.LNB$Site latitude (degrees)"
 msgstr "Asukoha laiuskraad (°)"
@@ -1118,32 +1118,32 @@ msgid "East"
 msgstr "itta (E)"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr "Positsioneerija pöördeulatus (°)"
+msgstr "Ajami pöördeulatus (°)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr "Positsioneerija kiirus (°/s)"
+msgstr "Ajami kiirus (°/s)"
 
 msgid "CAM reset"
 msgstr "CAM taaskäivitamine"
 
 msgid "CAM present"
-msgstr "CAM esitletud"
+msgstr "CAM saadaval"
 
 msgid "CAM ready"
-msgstr "CAM töövalmis"
+msgstr "CAM valmis"
 
 #. TRANSLATORS: note the leading blank!
 msgid " (activating)"
 msgstr " (aktiveerimine)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ seade"
 
 msgid "CAM"
 msgstr "CAM"
 
 msgid "Button$Cancel activation"
-msgstr "Aktiveerimise tühistamine"
+msgstr "Tühista aktiveerimine"
 
 msgid "Button$Activate"
 msgstr "Aktiveeri"
@@ -1152,7 +1152,7 @@ msgid "Button$Menu"
 msgstr "Menüü"
 
 msgid "Button$Reset"
-msgstr "Reset"
+msgstr "Lähtesta"
 
 msgid "Opening CAM menu..."
 msgstr "CAM-menüü avamine..."
@@ -1164,61 +1164,61 @@ msgid "Can't activate CAM!"
 msgstr "Ei saa CAM'i aktiveerida!"
 
 msgid "CAM is in use - really reset?"
-msgstr "CAM on kasutuses - taaskäivitada?"
+msgstr "CAM on kasutuses - lähtestada?"
 
 msgid "Can't reset CAM!"
-msgstr "CAM mooduli taaskäivitus ebaõnnestus!"
+msgstr "CAM mooduli lähtestamine ebaõnnestus!"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "kohene salvestus puudub"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "kinnita kohene salvestus"
 
 msgid "record instantly"
-msgstr ""
+msgstr "kohene salvestus"
 
 msgid "do not pause live video"
 msgstr "mitte peatada"
 
 msgid "confirm pause live video"
-msgstr "peatam. kinnitus"
+msgstr "peatamise kinnitus"
 
 msgid "pause live video"
-msgstr "peatada"
+msgstr "peata"
 
 msgid "confirm"
-msgstr "kinnitada"
+msgstr "kinnita"
 
 msgid "yes"
 msgstr "jah"
 
 msgid "Recording"
-msgstr "Salvestamine"
+msgstr "Salvestus"
 
 msgid "Setup.Recording$Margin at start (min)"
-msgstr "Salvestamise algusvaru (min)"
+msgstr "Salvestuse algusvaru (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
-msgstr "Salvestamise lõpuvaru (min)"
+msgstr "Salvestuse lõpuvaru (min)"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Vaikimisi prioriteet"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Salvestuse eluiga (päevi)"
+msgstr "Salvestuse eluiga (päevad)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Salvestuse klahvi käsitlus"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Pausi klahvi käsitlemine"
+msgstr "Pausi klahvi käsitlus"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pausi prioriteet"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Pausi eluiga (päevi)"
+msgstr "Pausi eluiga (päevad)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Episoodinime kasutamine"
@@ -1230,37 +1230,37 @@ msgid "Setup.Recording$VPS margin (s)"
 msgstr "VPS-i algusvaru (s)"
 
 msgid "Setup.Recording$Mark instant recording"
-msgstr "Kiirsalvestuse märgistamine"
+msgstr "Kohese salvestuse märgistamine"
 
 msgid "Setup.Recording$Name instant recording"
-msgstr "Kiirsalvestuse nimi"
+msgstr "Kohese salvestuse nimi"
 
 msgid "Setup.Recording$Instant rec. time (min)"
-msgstr "Kiirsalvestuse kestus (min)"
+msgstr "Kohese salvestuse kestus (min)"
 
 msgid "Setup.Recording$present event"
-msgstr "hetkesündmus"
+msgstr "käesolev saade"
 
 msgid "Setup.Recording$Max. video file size (MB)"
 msgstr "Maks. failisuurus (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Redigeeritud failide tükeldamine"
+msgstr "Tükelda muudetud faile"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "Ajanihke salvestuse kustutamine"
+msgstr "Kustuta ajanihke salvestisi"
 
 msgid "Replay"
 msgstr "Taasesitus"
 
 msgid "Setup.Replay$Multi speed mode"
-msgstr "Mitmikkiiruse režiim"
+msgstr "Mitme kiiruse režiim"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Korduse režiimi kuvamine"
 
 msgid "Setup.Replay$Show remaining time"
-msgstr "Järelejäänud aja kuvamine"
+msgstr "Kuva jäänud aega"
 
 msgid "Setup.Replay$Progress display time (s)"
 msgstr "Edenemiseriba kuvamise aeg (s)"
@@ -1272,7 +1272,7 @@ msgid "Setup.Replay$Pause replay when jumping to a mark"
 msgstr "Paus markerile siirdamisel"
 
 msgid "Setup.Replay$Skip edited parts"
-msgstr "Redigeeritud osade vahelejätmine"
+msgstr "Markeeritud osade vahelejätmine"
 
 msgid "Setup.Replay$Pause replay at last mark"
 msgstr "Paus viimasel markeril"
@@ -1281,7 +1281,7 @@ msgid "Setup.Replay$Initial duration for adaptive skipping (s)"
 msgstr "Adaptiivse hüppe pikkuse algväärtus (s)"
 
 msgid "Setup.Replay$Reset timeout for adaptive skipping (s)"
-msgstr "Adaptiivse hüppe lähtestamise viide (s)"
+msgstr "Adaptiivse hüppe lähtestamise aegumine (s)"
 
 msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Adaptiivse hüppe vaheldumise omadus"
@@ -1299,31 +1299,31 @@ msgid "Setup.Replay$Resume ID"
 msgstr "Taasesituse tunnus"
 
 msgid "Miscellaneous"
-msgstr "Muud sätted"
+msgstr "Muud seaded"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
-msgstr "Min. aeg saateni (min)"
+msgstr "Minimaalne aeg saateni (min)"
 
 msgid "Setup.Miscellaneous$Min. user inactivity (min)"
-msgstr "Min. kasutaja tegevusetus (min)"
+msgstr "Minimaalne kasutaja jõudeolek (min)"
 
 msgid "Setup.Miscellaneous$SVDRP timeout (s)"
-msgstr "SVDRP ooteaeg (s)"
+msgstr "SVDRP aegumine (s)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "SVDRP partnerlus"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "SVDRP hostinimi"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "SVDRP vaikehost"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
-msgstr "Kanalivahetuse ooteaeg (s)"
+msgstr "Kanalivahetuse aegumine (s)"
 
 msgid "Setup.Miscellaneous$Channel entry timeout (ms)"
-msgstr "Kanali sisestamise ajalimiit (ms)"
+msgstr "Kanali sisestamise aegumine (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delay (ms)"
 msgstr "Kaugjuhtimispuldi kordamise viide (ms)"
@@ -1356,30 +1356,30 @@ msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Hädaväljumine"
 
 msgid "Plugins"
-msgstr "Laiendusmoodulid"
+msgstr "Pluginad"
 
 msgid "This plugin has no setup parameters!"
-msgstr "Sellel laienudusmoodulil ei ole seadeid!"
+msgstr "Sellel pluginal seaded puuduvad!"
 
 msgid "Setup"
-msgstr "Sätted"
+msgstr "Seaded"
 
 msgid "Restart"
-msgstr "Restart"
+msgstr "Taaskäivita"
 
 msgid "Really restart?"
-msgstr "Restart?"
+msgstr "Taaskäivitada?"
 
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
-msgstr " Lõpetada salvestamine "
+msgstr " Lõpeta salvestamine "
 
 msgid "Schedule"
-msgstr "Kava"
+msgstr "Ajakava"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
-msgstr " Lõpetada taasesitus"
+msgstr " Lõpeta taasesitus"
 
 msgid "Button$Pause"
 msgstr "Paus"
@@ -1392,7 +1392,7 @@ msgstr "Jätkamine"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Cancel editing"
-msgstr " Tühistada töötlemine"
+msgstr " Tühista töötlemine"
 
 msgid "Stop recording?"
 msgstr "Lõpetada salvestamine?"
@@ -1416,7 +1416,7 @@ msgid "No free DVB device to record!"
 msgstr "Puudub vaba DVB seade salvestamiseks!"
 
 msgid "Pausing live video..."
-msgstr "Otseedastuse peatamine..."
+msgstr "Telepildi peatamine..."
 
 msgid "Delete timeshift recording?"
 msgstr "Kustutada ajanihke salvestust?"
@@ -1426,19 +1426,19 @@ msgid "Jump: "
 msgstr "Hüpe: "
 
 msgid "No editing marks defined!"
-msgstr "Redigeerimise markerid puuduvad!"
+msgstr "Muutmise markerid puuduvad!"
 
 msgid "No editing sequences defined!"
-msgstr "Redigeerimise järjestus määramata!"
+msgstr "Muutmise järjestus määramata!"
 
 msgid "Can't start editing process!"
-msgstr "Redigeerimise start ebaõnnestus!"
+msgstr "Muutmise start ebaõnnestus!"
 
 msgid "Editing process started"
-msgstr "Redigeerimine käivitatud"
+msgstr "Töötlemine käivitatud"
 
 msgid "Editing process already active!"
-msgstr "Redigeerimine juba aktiivne!"
+msgstr "Töötlemine juba aktiivne!"
 
 msgid "FileNameChars$ abcdefghijklmnopqrstuvwxyz0123456789-.,#~\\^$[]|()*+?{}/:%@&"
 msgstr " abcdefghijklmnopqrsšzžtuvwõäöüxy0123456789-.,#~\\^$[]|()*+?{}/:%@&"
@@ -1456,7 +1456,7 @@ msgid "Button$Insert"
 msgstr "Lisa (INS)"
 
 msgid "Plugin"
-msgstr "Laiendusmoodul"
+msgstr "Plugin"
 
 msgid "Up/Dn for new location - OK to move"
 msgstr "'Üles/Alla' uus asukoht - 'OK' kinnitus"
@@ -1494,16 +1494,16 @@ msgstr "lülitada välja?"
 
 #, c-format
 msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Laiendusmoodul %s ärkab %ld minuti pärast, jätkata?"
+msgstr "Plugin %s ärkab %ld minuti pärast, jätkata?"
 
 msgid "Editing - restart anyway?"
-msgstr "Töötlemine aktiivne - restart?"
+msgstr "Töötlemine aktiivne - taaskäivitada?"
 
 msgid "Recording - restart anyway?"
-msgstr "Salvestamine aktiivne - restart?"
+msgstr "Salvestamine aktiivne - taaskäivitada ikkagi?"
 
 msgid "restart anyway?"
-msgstr "restart?"
+msgstr "taaskäivitada ikkagi?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1525,7 +1525,7 @@ msgid "DEVICES"
 msgstr "SEADMED"
 
 msgid "LIVE"
-msgstr "LIVE"
+msgstr "TELEPILT"
 
 msgid "PLAY"
 msgstr "ESITUS"
@@ -1570,10 +1570,10 @@ msgid "Upcoming recording!"
 msgstr "Salvestamine tulekul!"
 
 msgid "Pause live video?"
-msgstr "Peatada otseülekanne?"
+msgstr "Peatada telepilt?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Käivitada salvestamine?"
 
 msgid "Recording started"
 msgstr "Salvestamine käivitatud"
@@ -1594,7 +1594,7 @@ msgid "Editing process finished"
 msgstr "Töötlemine lõpetatud"
 
 msgid "Press any key to cancel restart"
-msgstr "Restardi katkestamiseks vajuta suvalist klahvi"
+msgstr "Taaskäivitamise katkestamiseks vajuta suvalist klahvi"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"

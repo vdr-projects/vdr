@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.0 2015/02/17 13:13:17 kls Exp $
+ * $Id: skincurses.c 4.2 2016/12/22 14:09:09 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.2.0";
+static const char *VERSION        = "2.3.2";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -20,6 +20,7 @@ static const char *MAINMENUENTRY  = NULL;
 
 class cCursesFont : public cFont {
 public:
+  virtual int Width(void) const { return 1; }
   virtual int Width(uint c) const { return 1; }
   virtual int Width(const char *s) const { return s ? Utf8StrLen(s) : 0; }
   virtual int Height(void) const { return 1; }
@@ -407,8 +408,7 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
      return;
   int y = 2;
   cTextScroller ts;
-  char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
+  cString t = cString::sprintf("%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      cString buffer = cString::sprintf(" VPS: %s", *Event->GetVpsString());

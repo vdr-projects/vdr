@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 4.1 2015/04/19 11:13:45 kls Exp $
+ * $Id: font.c 4.2 2016/12/22 12:31:23 kls Exp $
  */
 
 #include "font.h"
@@ -100,6 +100,7 @@ class cFreetypeFont : public cFont {
 private:
   cString fontName;
   int size;
+  int width;
   int height;
   int bottom;
   FT_Library library; ///< Handle to library
@@ -114,6 +115,7 @@ public:
   virtual ~cFreetypeFont();
   virtual const char *FontName(void) const { return fontName; }
   virtual int Size(void) const { return size; }
+  virtual int Width(void) const { return width; }
   virtual int Width(uint c) const;
   virtual int Width(const char *s) const;
   virtual int Height(void) const { return height; }
@@ -125,6 +127,7 @@ cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
 {
   fontName = Name;
   size = CharHeight;
+  width = CharWidth;
   height = 0;
   bottom = 0;
   int error = FT_Init_FreeType(&library);
@@ -384,10 +387,12 @@ void cFreetypeFont::DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColo
 class cDummyFont : public cFont {
 private:
   int height;
+  int width;
 public:
-  cDummyFont(int CharHeight) { height = CharHeight; }
-  virtual int Width(uint c) const { return height; }
-  virtual int Width(const char *s) const { return height; }
+  cDummyFont(int CharHeight, int CharWidth) { height = CharHeight; width = CharWidth; }
+  virtual int Width(void) const { return width ? width : height; }
+  virtual int Width(uint c) const { return width ? width : height; }
+  virtual int Width(const char *s) const { return width ? width : height; }
   virtual int Height(void) const { return height; }
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
   virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {};
@@ -425,7 +430,7 @@ cFont *cFont::CreateFont(const char *Name, int CharHeight, int CharWidth)
   cString fn = GetFontFileName(Name);
   cFont *f = *fn ? new cFreetypeFont(fn, CharHeight, CharWidth) : NULL;
   if (!f || !f->Height())
-     f = new cDummyFont(CharHeight);
+     f = new cDummyFont(CharHeight, CharWidth);
   return f;
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.2 2015/09/05 11:45:19 kls Exp $
+ * $Id: ci.c 4.3 2016/12/23 14:00:45 kls Exp $
  */
 
 #include "ci.h"
@@ -756,9 +756,9 @@ class cCiCaPmt {
   friend class cCiConditionalAccessSupport;
 private:
   uint8_t cmdId;
-  int length;
   int esInfoLengthPos;
-  uint8_t capmt[2048]; ///< XXX is there a specified maximum?
+  cDynamicBuffer caDescriptors;
+  cDynamicBuffer capmt;
   int source;
   int transponder;
   int programNumber;
@@ -768,7 +768,7 @@ public:
   cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds);
   uint8_t CmdId(void) { return cmdId; }
   void SetListManagement(uint8_t ListManagement);
-  uint8_t ListManagement(void) { return capmt[0]; }
+  uint8_t ListManagement(void) { return capmt.Get(0); }
   void AddPid(int Pid, uint8_t StreamType);
   };
 
@@ -784,55 +784,46 @@ cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber
          caSystemIds[i] = CaSystemIds[i];
      }
   caSystemIds[i] = 0;
-  uint8_t caDescriptors[512];
-  int caDescriptorsLength = GetCaDescriptors(source, transponder, programNumber, caSystemIds, sizeof(caDescriptors), caDescriptors, 0);
-  length = 0;
-  capmt[length++] = CPLM_ONLY;
-  capmt[length++] = (ProgramNumber >> 8) & 0xFF;
-  capmt[length++] =  ProgramNumber       & 0xFF;
-  capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
-  esInfoLengthPos = length;
-  capmt[length++] = 0x00; // program_info_length H (at program level)
-  capmt[length++] = 0x00; // program_info_length L
-  AddCaDescriptors(caDescriptorsLength, caDescriptors);
+  GetCaDescriptors(source, transponder, programNumber, caSystemIds, caDescriptors, 0);
+  capmt.Append(CPLM_ONLY);
+  capmt.Append((ProgramNumber >> 8) & 0xFF);
+  capmt.Append( ProgramNumber       & 0xFF);
+  capmt.Append(0x01); // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
+  esInfoLengthPos = capmt.Length();
+  capmt.Append(0x00); // program_info_length H (at program level)
+  capmt.Append(0x00); // program_info_length L
+  AddCaDescriptors(caDescriptors.Length(), caDescriptors.Data());
 }
 
 void cCiCaPmt::SetListManagement(uint8_t ListManagement)
 {
-  capmt[0] = ListManagement;
+  capmt.Set(0, ListManagement);
 }
 
 void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
 {
   if (Pid) {
-     uint8_t caDescriptors[512];
-     int caDescriptorsLength = GetCaDescriptors(source, transponder, programNumber, caSystemIds, sizeof(caDescriptors), caDescriptors, Pid);
-     //XXX buffer overflow check???
-     capmt[length++] = StreamType;
-     capmt[length++] = (Pid >> 8) & 0xFF;
-     capmt[length++] =  Pid       & 0xFF;
-     esInfoLengthPos = length;
-     capmt[length++] = 0x00; // ES_info_length H (at ES level)
-     capmt[length++] = 0x00; // ES_info_length L
-     AddCaDescriptors(caDescriptorsLength, caDescriptors);
+     GetCaDescriptors(source, transponder, programNumber, caSystemIds, caDescriptors, Pid);
+     capmt.Append(StreamType);
+     capmt.Append((Pid >> 8) & 0xFF);
+     capmt.Append( Pid       & 0xFF);
+     esInfoLengthPos = capmt.Length();
+     capmt.Append(0x00); // ES_info_length H (at ES level)
+     capmt.Append(0x00); // ES_info_length L
+     AddCaDescriptors(caDescriptors.Length(), caDescriptors.Data());
      }
 }
 
 void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 {
   if (esInfoLengthPos) {
-     if (length + Length < int(sizeof(capmt))) {
-        if (Length || cmdId == CPCI_QUERY) {
-           capmt[length++] = cmdId;
-           memcpy(capmt + length, Data, Length);
-           length += Length;
-           int l = length - esInfoLengthPos - 2;
-           capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
-           capmt[esInfoLengthPos + 1] =  l       & 0xFF;
-           }
+     if (Length || cmdId == CPCI_QUERY) {
+        capmt.Append(cmdId);
+        capmt.Append(Data, Length);
+        int l = capmt.Length() - esInfoLengthPos - 2;
+        capmt.Set(esInfoLengthPos,     (l >> 8) & 0xFF);
+        capmt.Set(esInfoLengthPos + 1,  l       & 0xFF);
         }
-     else
-        esyslog("ERROR: buffer overflow in CA descriptor");
      esInfoLengthPos = 0;
      }
   else
@@ -995,7 +986,7 @@ void cCiConditionalAccessSupport::SendPMT(cCiCaPmt *CaPmt)
 {
   if (CaPmt && state >= 2) {
      dbgprotocol("Slot %d: ==> Ca Pmt (%d) %d %d\n", Tc()->CamSlot()->SlotNumber(), SessionId(), CaPmt->ListManagement(), CaPmt->CmdId());
-     SendData(AOT_CA_PMT, CaPmt->length, CaPmt->capmt);
+     SendData(AOT_CA_PMT, CaPmt->capmt.Length(), CaPmt->capmt.Data());
      state = 4; // sent ca pmt
      }
 }

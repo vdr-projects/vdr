@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.5 2015/09/13 13:10:24 kls Exp $
+ * $Id: timers.c 4.7 2016/12/23 09:48:39 kls Exp $
  */
 
 #include "timers.h"
@@ -748,9 +748,9 @@ const cTimer *cTimers::GetById(int Id) const
   return NULL;
 }
 
-cTimer *cTimers::GetTimer(cTimer *Timer)
+const cTimer *cTimers::GetTimer(const cTimer *Timer) const
 {
-  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
       if (!ti->Remote() &&
           ti->Channel() == Timer->Channel() &&
           (ti->WeekDays() && ti->WeekDays() == Timer->WeekDays() || !ti->WeekDays() && ti->Day() == Timer->Day()) &&

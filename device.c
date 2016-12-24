@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.2 2015/09/05 11:42:17 kls Exp $
+ * $Id: device.c 4.3 2016/12/23 14:43:44 kls Exp $
  */
 
 #include "device.h"
@@ -1768,6 +1768,7 @@ void cTSBuffer::Action(void)
                     break;
                     }
                  }
+              cCondWait::SleepMs(10); // avoids small chunks of data, which cause high CPU usage, esp. on ARM CPUs
               }
            }
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.3 2015/08/29 14:12:14 kls Exp $
+ * $Id: recording.h 4.4 2016/12/13 13:12:12 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -302,16 +302,18 @@ DEF_LIST_LOCK2(Recordings, DeletedRecordings);
 
 class cRecordingsHandlerEntry;
 
-class cRecordingsHandler {
+class cRecordingsHandler : public cThread {
 private:
   cMutex mutex;
   cList<cRecordingsHandlerEntry> operations;
   bool finished;
   bool error;
   cRecordingsHandlerEntry *Get(const char *FileName);
+protected:
+  virtual void Action(void);
 public:
   cRecordingsHandler(void);
-  ~cRecordingsHandler();
+  virtual ~cRecordingsHandler();
   bool Add(int Usage, const char *FileNameSrc, const char *FileNameDst = NULL);
        ///< Adds the given FileNameSrc to the recordings handler for (later)
        ///< processing. Usage can be either ruCut, ruMove or ruCopy. FileNameDst
@@ -329,12 +331,6 @@ public:
        ///< Deletes/terminates all operations.
   int GetUsage(const char *FileName);
        ///< Returns the usage type for the given FileName.
-  bool Active(void);
-       ///< Checks whether there is currently any operation running and starts
-       ///> the next one form the list if the previous one has finished.
-       ///< This function must be called regularly to trigger switching to the
-       ///< next operation in the list.
-       ///< Returns true if there are any operations in the list.
   bool Finished(bool &Error);
        ///< Returns true if all operations in the list have been finished.
        ///< If there have been any errors, Errors will be set to true.

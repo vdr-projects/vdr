@@ -715,6 +715,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to ignore channels with an RID that is not 0 when checking for obsolete
  channels
  for fixing a possible stack overflow in cListBase::Sort()
+ for reporting a crash when deleting a recording
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1844,6 +1845,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for exporting some libsi functions
  for suggesting to add functions to cDevice that allow derived output devices to
  implement scaling the video to a given size and location
+ fpr sorting sources.conf by continous azimuth
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -2062,6 +2064,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for reporting a possible NULL pointer dereference in cCiSession::SendData()
  for reporting a superfluous assignment in cPipe::Open()
  for avoiding unnecessary pkg-config warnings in plugin Makefiles
+ for fixing building VDR with systemd >= 230
+ for avoiding some duplicate code and unnecessary work in nit.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -2924,6 +2928,10 @@ Lars Hanisch <dvb@flensrocker.de>
  for making VDR read command line options from *.conf files in /etc/vdr/conf.d
  for adding a missing backslash to the help text of the SVDRP command MOVR
  for fixing a memory leak in case of broken Extended Event Descriptors
+ for adding a 'const' version of cTimers::GetTimer()
+ for fixing a typo in the description of cTimers::GetTimersRead()
+ for suggesting to use dynamic buffering in handling CA descriptors to avoid a
+ possible buffer overflow
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -3225,6 +3233,7 @@ Malte Forkel <malte.forkel@berlin.de>
 
 Marc Perrudin <vdr@ekass.net>
  for translating OSD texts to the French language
+ for adding support for the systemd watchdog
 
 Bernard Jaulin <bernard.jaulin@gmail.com>
  for translating OSD texts to the French language
@@ -3322,6 +3331,18 @@ Thomas Reufer <thomas@reufer.ch>
  ViewPort and DrawPort
  for suggesting to reduce the priority of the "video directory scanner" thread
  for making the 'newplugin' script create the 'po' subdirectory for translations
+ for suggesting to add a note to the description of cFont::Size(), regarding possible
+ differences between it and cFont::Height()
+ for making the cPlayer member functions FramesPerSecond, GetIndex and GetReplayMode
+ 'const'
+ for fixing resuming replay at a given position, which was off by one frame
+ for improving handling frame numbers to have a smoother progress display during
+ replay of recordings with B-frames
+ for fixing replaying recordings to their very end, if they don't end with an I-frame
+ for implementing a frame parser for H.265 (HEVC) recordings
+ for adding cFont::Width(void) to get the default character width and allow stretched
+ font drawing in high level OSDs
+ for fixing regenerating the index of audio recordings
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
@@ -3428,3 +3449,13 @@ Janne Pänkälä <epankala@gmail.com>
 Stefan Pöschel <basic.master@gmx.de>
  for coding the AFFcleaner, parts of which were used to make the recorder skip empty
  adaptation field TS packets
+
+Robert Hannebauer <vdr@hannebauer.org>
+ for fixing an overflow of PIDs in a receiver
+
+Aitugan Sarbassov <isarbassov@gmail.com>
+ for adding 'S58.5E Kazsat 3' to sources.conf
+
+Sergey Chernyavskiy <glenvt18@gmail.com>
+ for reporting truncated date/time strings in the skins on multi-byte UTF-8
+ for adding a short sleep to cTSBuffer::Action() to avoid high CPU usage

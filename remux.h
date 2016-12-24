@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.0 2014/03/22 14:58:24 kls Exp $
+ * $Id: remux.h 4.1 2016/12/22 13:09:54 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -361,6 +361,7 @@ private:
   uint16_t compositionPageIds[MAXSPIDS];
   uint16_t ancillaryPageIds[MAXSPIDS];
   bool updatePrimaryDevice;
+  bool completed;
 protected:
   int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
 public:
@@ -397,6 +398,8 @@ public:
   int Vtype(void) const { return vtype; }
        ///< Returns the video stream type as defined by the current PMT, or 0 if no video
        ///< stream type has been detected, yet.
+  bool Completed(void) { return completed; }
+       ///< Returns true if the PMT has been completely parsed.
   const int *Apids(void) const { return apids; }
   const int *Dpids(void) const { return dpids; }
   const int *Spids(void) const { return spids; }

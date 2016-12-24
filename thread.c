@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.1 2015/08/29 14:43:03 kls Exp $
+ * $Id: thread.c 4.2 2016/12/08 09:45:25 kls Exp $
  */
 
 #include "thread.h"
@@ -151,6 +151,8 @@ void cCondVar::Broadcast(void)
 
 cRwLock::cRwLock(bool PreferWriter)
 {
+  locked = 0;
+  writeLockThreadId = 0;
   pthread_rwlockattr_t attr;
   pthread_rwlockattr_init(&attr);
   pthread_rwlockattr_setkind_np(&attr, PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP);
@@ -170,8 +172,15 @@ bool cRwLock::Lock(bool Write, int TimeoutMs)
      if (!GetAbsTime(&abstime, TimeoutMs))
         TimeoutMs = 0;
      }
-  if (Write)
+  if (Write) {
      Result = TimeoutMs ? pthread_rwlock_timedwrlock(&rwlock, &abstime) : pthread_rwlock_wrlock(&rwlock);
+     if (Result == 0)
+        writeLockThreadId = cThread::ThreadId();
+     }
+  else if (writeLockThreadId == cThread::ThreadId()) {
+     locked++; // there can be any number of stacked read locks, so we keep track here
+     Result = 0; // aquiring a read lock while holding a write lock within the same thread is OK
+     }
   else
      Result = TimeoutMs ? pthread_rwlock_timedrdlock(&rwlock, &abstime) : pthread_rwlock_rdlock(&rwlock);
   return Result == 0;
@@ -179,6 +188,13 @@ bool cRwLock::Lock(bool Write, int TimeoutMs)
 
 void cRwLock::Unlock(void)
 {
+  if (writeLockThreadId == cThread::ThreadId()) { // this is the thread that obtained the initial write lock
+     if (locked) { // this is the unlock of a read lock within the write lock
+        locked--;
+        return;
+        }
+     }
+  writeLockThreadId = 0;
   pthread_rwlock_unlock(&rwlock);
 }
 
@@ -206,8 +222,8 @@ void cMutex::Lock(void)
 
 void cMutex::Unlock(void)
 {
- if (!--locked)
-    pthread_mutex_unlock(&mutex);
+  if (!--locked)
+     pthread_mutex_unlock(&mutex);
 }
 
 // --- cThread ---------------------------------------------------------------
@@ -474,9 +490,11 @@ void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
   if (StateKey.write && IncState && !explicitModify)
      state++;
   StateKey.state = state;
-  StateKey.write = false;
-  threadId = 0;
-  explicitModify = false;
+  if (StateKey.write) {
+     StateKey.write = false;
+     threadId = 0;
+     explicitModify = false;
+     }
   rwLock.Unlock();
 }
 

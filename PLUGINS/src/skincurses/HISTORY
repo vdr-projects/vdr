@@ -130,3 +130,10 @@ VDR Plugin 'skincurses' Revision History
 2015-02-19: Version 2.2.0
 
 - Official release.
+
+2016-12-22: Version 2.3.2
+
+- Added cFont::Width(void) to get the default character width and allow stretched
+  font drawing in high level OSDs (dummy for skincurses).
+- Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
+  (reported by Sergey Chernyavskiy).

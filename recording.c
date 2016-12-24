@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.4 2015/09/09 10:21:58 kls Exp $
+ * $Id: recording.c 4.6 2016/12/22 12:58:20 kls Exp $
  */
 
 #include "recording.h"
@@ -1701,7 +1701,7 @@ void cDirCopier::Action(void)
         int To = -1;
         size_t BufferSize = BUFSIZ;
         while (Running()) {
-              // Suspend cutting if we have severe throughput problems:
+              // Suspend copying if we have severe throughput problems:
               if (Throttled()) {
                  cCondWait::SleepMs(100);
                  continue;
@@ -1900,6 +1900,7 @@ bool cRecordingsHandlerEntry::Active(bool &Error)
 cRecordingsHandler RecordingsHandler;
 
 cRecordingsHandler::cRecordingsHandler(void)
+:cThread("recordings handler")
 {
   finished = true;
   error = false;
@@ -1907,6 +1908,23 @@ cRecordingsHandler::cRecordingsHandler(void)
 
 cRecordingsHandler::~cRecordingsHandler()
 {
+  Cancel(3);
+}
+
+void cRecordingsHandler::Action(void)
+{
+  while (Running()) {
+        {
+          cMutexLock MutexLock(&mutex);
+          while (cRecordingsHandlerEntry *r = operations.First()) {
+                if (!r->Active(error))
+                   operations.Del(r);
+                }
+          if (!operations.Count())
+             break;
+        }
+        cCondWait::SleepMs(100);
+        }
 }
 
 cRecordingsHandlerEntry *cRecordingsHandler::Get(const char *FileName)
@@ -1934,8 +1952,7 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
               Usage |= ruPending;
               operations.Add(new cRecordingsHandlerEntry(Usage, FileNameSrc, FileNameDst));
               finished = false;
-              Active(); // start it right away if possible
-              LOCK_RECORDINGS_WRITE; // to trigger a state change
+              Start();
               return true;
               }
            else
@@ -1955,17 +1972,17 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
 void cRecordingsHandler::Del(const char *FileName)
 {
   cMutexLock MutexLock(&mutex);
-  if (cRecordingsHandlerEntry *r = Get(FileName)) {
+  if (cRecordingsHandlerEntry *r = Get(FileName))
      operations.Del(r);
-     LOCK_RECORDINGS_WRITE; // to trigger a state change
-     }
 }
 
 void cRecordingsHandler::DelAll(void)
 {
-  cMutexLock MutexLock(&mutex);
-  operations.Clear();
-  LOCK_RECORDINGS_WRITE; // to trigger a state change
+  {
+    cMutexLock MutexLock(&mutex);
+    operations.Clear();
+  }
+  Cancel(3);
 }
 
 int cRecordingsHandler::GetUsage(const char *FileName)
@@ -1974,18 +1991,6 @@ int cRecordingsHandler::GetUsage(const char *FileName)
   if (cRecordingsHandlerEntry *r = Get(FileName))
      return r->Usage(FileName);
   return ruNone;
-}
-
-bool cRecordingsHandler::Active(void)
-{
-  cMutexLock MutexLock(&mutex);
-  while (cRecordingsHandlerEntry *r = operations.First()) {
-        if (r->Active(error))
-           return true;
-        else
-           operations.Del(r);
-        }
-  return false;
 }
 
 bool cRecordingsHandler::Finished(bool &Error)
@@ -2324,7 +2329,7 @@ void cIndexFileGenerator::Action(void)
                  Buffer.Del(Processed);
                  }
               }
-           else if (PatPmtParser.Vpid()) {
+           else if (PatPmtParser.Completed()) {
               // Step 2 - sync FrameDetector:
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
@@ -2346,9 +2351,9 @@ void cIndexFileGenerator::Action(void)
                        PatPmtParser.ParsePmt(p, TS_SIZE);
                     Length -= TS_SIZE;
                     p += TS_SIZE;
-                    if (PatPmtParser.Vpid()) {
-                       // Found Vpid, so rewind to sync FrameDetector:
-                       FrameDetector.SetPid(PatPmtParser.Vpid(), PatPmtParser.Vtype());
+                    if (PatPmtParser.Completed()) {
+                       // Found pid, so rewind to sync FrameDetector:
+                       FrameDetector.SetPid(PatPmtParser.Vpid() ? PatPmtParser.Vpid() : PatPmtParser.Apid(0), PatPmtParser.Vpid() ? PatPmtParser.Vtype() : PatPmtParser.Atype(0));
                        BufferChunks = IFG_BUFFER_SIZE;
                        Rewind = true;
                        break;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.1 2015/08/17 08:46:55 kls Exp $
+ * $Id: pat.c 4.3 2016/12/23 14:02:07 kls Exp $
  */
 
 #include "pat.h"
@@ -81,7 +81,7 @@ public:
   bool Is(cCaDescriptors * CaDescriptors);
   bool Empty(void) { return caDescriptors.Count() == 0; }
   void AddCaDescriptor(SI::CaDescriptor *d, int EsPid);
-  int GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar *Data, int EsPid);
+  void GetCaDescriptors(const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid);
   int GetCaPids(const int *CaSystemIds, int BufSize, int *Pids);
   const int GetPmtPid(void) { return pmtPid; };
   const int *CaIds(void) { return caIds; }
@@ -159,30 +159,20 @@ void cCaDescriptors::AddCaDescriptor(SI::CaDescriptor *d, int EsPid)
 // =0 - common CaDescriptor
 // <0 - all CaDescriptors regardless of type (old default)
 
-int cCaDescriptors::GetCaDescriptors(const int *CaSystemIds, int BufSize, uchar *Data, int EsPid)
+void cCaDescriptors::GetCaDescriptors(const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid)
 {
+  Buffer.Clear();
   if (!CaSystemIds || !*CaSystemIds)
-     return 0;
-  if (BufSize > 0 && Data) {
-     int length = 0;
-     for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
-         if (EsPid < 0 || d->EsPid() == EsPid) {
-            const int *caids = CaSystemIds;
-            do {
-               if (*caids == 0xFFFF || d->CaSystem() == *caids) {
-                  if (length + d->Length() <= BufSize) {
-                     memcpy(Data + length, d->Data(), d->Length());
-                     length += d->Length();
-                     }
-                  else
-                     return -1;
-                  }
-               } while (*++caids);
-            }
+     return;
+  for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
+      if (EsPid < 0 || d->EsPid() == EsPid) {
+         const int *caids = CaSystemIds;
+         do {
+            if (*caids == 0xFFFF || d->CaSystem() == *caids)
+               Buffer.Append(d->Data(), d->Length());
+            } while (*++caids);
          }
-     return length;
-     }
-  return -1;
+      }
 }
 
 int cCaDescriptors::GetCaPids(const int *CaSystemIds, int BufSize, int *Pids)
@@ -219,7 +209,7 @@ public:
       // Returns 0 if this is an already known descriptor,
       // 1 if it is an all new descriptor with actual contents,
       // and 2 if an existing descriptor was changed.
-  int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid);
+  void GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid);
   int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids);
   int GetPmtPid(int Source, int Transponder, int ServiceId);
   };
@@ -242,14 +232,15 @@ int cCaDescriptorHandler::AddCaDescriptors(cCaDescriptors *CaDescriptors)
   return CaDescriptors->Empty() ? 0 : 1;
 }
 
-int cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid)
+void cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid)
 {
   cMutexLock MutexLock(&mutex);
   for (cCaDescriptors *ca = First(); ca; ca = Next(ca)) {
-      if (ca->Is(Source, Transponder, ServiceId))
-         return ca->GetCaDescriptors(CaSystemIds, BufSize, Data, EsPid);
+      if (ca->Is(Source, Transponder, ServiceId)) {
+         ca->GetCaDescriptors(CaSystemIds, Buffer, EsPid);
+         break;
+         }
       }
-  return 0;
 }
 
 int cCaDescriptorHandler::GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids)
@@ -274,9 +265,9 @@ int cCaDescriptorHandler::GetPmtPid(int Source, int Transponder, int ServiceId)
 
 cCaDescriptorHandler CaDescriptorHandler;
 
-int GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, uchar *Data, int EsPid)
+void GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid)
 {
-  return CaDescriptorHandler.GetCaDescriptors(Source, Transponder, ServiceId, CaSystemIds, BufSize, Data, EsPid);
+  CaDescriptorHandler.GetCaDescriptors(Source, Transponder, ServiceId, CaSystemIds, Buffer, EsPid);
 }
 
 int GetCaPids(int Source, int Transponder, int ServiceId, const int *CaSystemIds, int BufSize, int *Pids)
@@ -439,6 +430,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
               case 1: // STREAMTYPE_11172_VIDEO
               case 2: // STREAMTYPE_13818_VIDEO
               case 0x1B: // H.264
+              case 0x24: // H.265
                       Vpid = esPid;
                       Ppid = pmt.getPCRPid();
                       Vtype = stream.getStreamType();

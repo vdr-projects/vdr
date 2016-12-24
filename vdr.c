@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.7 2015/09/11 08:02:50 kls Exp $
+ * $Id: vdr.c 4.9 2016/12/23 14:34:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -171,6 +171,9 @@ static void Watchdog(int signum)
   // Something terrible must have happened that prevented the 'alarm()' from
   // being called in time, so let's get out of here:
   esyslog("PANIC: watchdog timer expired - exiting!");
+#ifdef SDNOTIFY
+  sd_notify(0, "STOPPING=1\nSTATUS=PANIC");
+#endif
   exit(1);
 }
 
@@ -234,6 +237,10 @@ int main(int argc, char *argv[])
 #endif
 #if defined(VDR_USER)
   VdrUser = VDR_USER;
+#endif
+#ifdef SDNOTIFY
+  time_t SdWatchdog;
+  int SdWatchdogTimeout = 0;
 #endif
 
   cArgs *Args = NULL;
@@ -914,6 +921,16 @@ int main(int argc, char *argv[])
      }
 
 #ifdef SDNOTIFY
+  if (sd_watchdog_enabled(0, NULL) > 0) {
+     uint64_t timeout;
+     SdWatchdog = time(NULL);
+     sd_watchdog_enabled(0, &timeout);
+     SdWatchdogTimeout = (int)timeout/1000000;
+     dsyslog("SD_WATCHDOG enabled with timeout set to %d seconds", SdWatchdogTimeout);
+     }
+
+  // Startup notification:
+
   sd_notify(0, "READY=1\nSTATUS=Ready");
 #endif
 
@@ -976,6 +993,14 @@ int main(int argc, char *argv[])
               dsyslog("max. latency time %d seconds", MaxLatencyTime);
               }
            }
+#ifdef SDNOTIFY
+        // Ping systemd watchdog when half the timeout is elapsed:
+        if (SdWatchdogTimeout && (Now - SdWatchdog) * 2 > SdWatchdogTimeout) {
+           sd_notify(0, "WATCHDOG=1");
+           SdWatchdog = Now;
+           dsyslog("SD_WATCHDOG ping");
+           }
+#endif
         // Handle channel and timer modifications:
         {
           // Channels and timers need to be stored in a consistent manner,
@@ -1480,9 +1505,6 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        // Keep the recordings handler alive:
-        RecordingsHandler.Active();
-
         if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Handle housekeeping tasks
 
@@ -1568,5 +1590,11 @@ Exit:
      closelog();
   if (HasStdin)
      tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
+#ifdef SDNOTIFY
+  if (ShutdownHandler.GetExitCode() == 2)
+     sd_notify(0, "STOPPING=1\nSTATUS=Startup failed, exiting");
+  else
+     sd_notify(0, "STOPPING=1\nSTATUS=Exiting");
+#endif
   return ShutdownHandler.GetExitCode();
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.12 2015/09/14 13:22:49 kls Exp $
+ * $Id: menu.c 4.19 2016/12/22 11:00:13 kls Exp $
  */
 
 #include "menu.h"
@@ -498,6 +498,7 @@ eOSState cMenuChannels::Delete(void)
      int DeletedChannel = Channel->Number();
      // Check if there is a timer using this channel:
      if (Timers->UsesChannel(Channel)) {
+        channelsStateKey.Remove(false);
         Skins.Message(mtError, tr("Channel is being used by a timer!"));
         return osContinue;
         }
@@ -519,7 +520,7 @@ eOSState cMenuChannels::Delete(void)
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
               Channels->SwitchTo(CurrentChannel->Number());
            else
-              cDevice::SetCurrentChannel(CurrentChannel);
+              cDevice::SetCurrentChannel(CurrentChannel->Number());
            }
         }
      channelsStateKey.Remove(Deleted);
@@ -546,7 +547,7 @@ void cMenuChannels::Move(int From, int To)
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
               Channels->SwitchTo(CurrentChannel->Number());
            else
-              cDevice::SetCurrentChannel(CurrentChannel);
+              cDevice::SetCurrentChannel(CurrentChannel->Number());
            }
         }
      channelsStateKey.Remove();
@@ -2686,14 +2687,15 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
   cRecordings *Recordings = cRecordings::GetRecordingsWrite(StateKey);
   cRecording *Recording = Recordings->GetByName(recording->FileName());
   if (!Recording) {
+     StateKey.Remove(false);
      Skins.Message(mtWarning, tr("Recording vanished!"));
      return osBack;
      }
   bool Modified = false;
   if (priority != recording->Priority() || lifetime != recording->Lifetime()) {
      if (!Recording->ChangePriorityLifetime(priority, lifetime)) {
-        Skins.Message(mtError, tr("Error while changing priority/lifetime!"));
         StateKey.Remove(Modified);
+        Skins.Message(mtError, tr("Error while changing priority/lifetime!"));
         return osContinue;
         }
      Modified = true;
@@ -2706,8 +2708,8 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
   NewName.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewName, Recording->Name())) {
      if (!Recording->ChangeName(NewName)) {
-        Skins.Message(mtError, tr("Error while changing folder/name!"));
         StateKey.Remove(Modified);
+        Skins.Message(mtError, tr("Error while changing folder/name!"));
         return osContinue;
         }
      Modified = true;
@@ -2953,10 +2955,9 @@ void cMenuRecordings::Set(bool Refresh)
      const char *CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
      cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey); // write access is necessary for sorting!
      cMenuRecordingItem *LastItem = NULL;
-     if (Refresh) {
-        if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
-           CurrentRecording = ri->Recording()->FileName();
-        }
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
+        CurrentRecording = ri->Recording()->FileName();
+     int current = Current();
      Clear();
      GetRecordingsSortMode(DirectoryName());
      Recordings->Sort();
@@ -2993,11 +2994,13 @@ void cMenuRecordings::Set(bool Refresh)
                LastDir->IncrementCounter(Recording->IsNew());
             }
          }
+     if (Current() < 0)
+        SetCurrent(Get(current)); // last resort, in case the recording was deleted
      SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
      recordingsStateKey.Remove(false); // sorting doesn't count as a real modification
+     if (Refresh)
+        Display();
      }
-  if (Refresh)
-     Display();
 }
 
 void cMenuRecordings::SetPath(const char *Path)
@@ -3087,38 +3090,32 @@ eOSState cMenuRecordings::Delete(void)
            else
               return osContinue;
            }
-        cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey);
-        Recordings->SetExplicitModify();
-        cRecording *Recording = Recordings->GetByName(ri->Recording()->FileName());
-        if (!Recording) {
-           Skins.Message(mtWarning, tr("Recording vanished!"));
-           recordingsStateKey.Remove();
-           return osContinue;
-           }
-        cString FileName = Recording->FileName();
-        if (RecordingsHandler.GetUsage(FileName)) {
-           if (Interface->Confirm(tr("Recording is being edited - really delete?"))) {
-              RecordingsHandler.Del(FileName);
-              Recording = Recordings->GetByName(FileName); // RecordingsHandler.Del() might have deleted it if it was the edited version
-              // we continue with the code below even if Recording is NULL,
-              // in order to have the menu updated etc.
-              }
-           else {
-              recordingsStateKey.Remove();
-              return osContinue;
-              }
-           }
+        cString FileName;
+        {
+          LOCK_RECORDINGS_READ;
+          if (const cRecording *Recording = Recordings->GetByName(ri->Recording()->FileName())) {
+             FileName = Recording->FileName();
+             if (RecordingsHandler.GetUsage(FileName)) {
+                if (!Interface->Confirm(tr("Recording is being edited - really delete?")))
+                   return osContinue;
+                }
+             }
+        }
+        RecordingsHandler.Del(FileName); // must do this w/o holding a lock, because the cleanup section in cDirCopier::Action() might request one!
         if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), FileName) == 0)
            cControl::Shutdown();
+        cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey);
+        Recordings->SetExplicitModify();
+        cRecording *Recording = Recordings->GetByName(FileName);
         if (!Recording || Recording->Delete()) {
            cReplayControl::ClearLastReplayed(FileName);
            Recordings->DelByName(FileName);
            cOsdMenu::Del(Current());
            SetHelpKeys();
            cVideoDiskUsage::ForceCheck();
-           Display();
            Recordings->SetModified();
            recordingsStateKey.Remove();
+           Display();
            if (!Count())
               return osBack;
            return osUser2;
@@ -3171,8 +3168,6 @@ eOSState cMenuRecordings::Sort(void)
 
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
-  if (!HasSubMenu())
-     Set(); // react on any changes to the recordings list
   bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
@@ -3198,7 +3193,8 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
         return state; // closes all recording menus except for the top one
      Set(); // this is the top level menu, so we refresh it...
      Open(true); // ...and open any necessary submenus to show the new name
-     Display();
+     if (!HasSubMenu())
+        Display();
      path = NULL;
      fileName = NULL;
      }
@@ -3210,14 +3206,16 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
            ri->SetRecording(riSub->Recording());
         }
      }
-  if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
-     // the last recording in a subdirectory was deleted, so let's go back up
-     cOsdMenu::Del(Current());
-     if (!Count())
-        return osBack;
-     Display();
-     }
   if (!HasSubMenu()) {
+     if (HadSubMenu) {
+        if (Key == kYellow) {
+           // the last recording in a subdirectory was deleted, so let's go back up
+           cOsdMenu::Del(Current());
+           if (!Count())
+              return osBack;
+           }
+        }
+     Set(true);
      if (Key != kNone)
         SetHelpKeys();
      }
@@ -5437,6 +5435,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   lastPlay = lastForward = false;
   lastSpeed = -2; // an invalid value
   timeoutShow = 0;
+  lastProgressUpdate = 0;
   timeSearchActive = false;
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
@@ -5585,41 +5584,43 @@ void cReplayControl::ShowMode(void)
 bool cReplayControl::ShowProgress(bool Initial)
 {
   int Current, Total;
-
-  if (GetIndex(Current, Total) && Total > 0) {
-     if (!visible) {
-        displayReplay = Skins.Current()->DisplayReplay(modeOnly);
-        displayReplay->SetMarks(&marks);
-        SetNeedsFastResponse(true);
-        visible = true;
-        }
-     if (Initial) {
-        if (*fileName) {
-           LOCK_RECORDINGS_READ;
-           if (const cRecording *Recording = Recordings->GetByName(fileName))
-              displayReplay->SetRecording(Recording);
+  if (Initial || time(NULL) - lastProgressUpdate >= 1) {
+     if (GetFrameNumber(Current, Total) && Total > 0) {
+        if (!visible) {
+           displayReplay = Skins.Current()->DisplayReplay(modeOnly);
+           displayReplay->SetMarks(&marks);
+           SetNeedsFastResponse(true);
+           visible = true;
            }
-        lastCurrent = lastTotal = -1;
-        }
-     if (Current != lastCurrent || Total != lastTotal) {
-        if (Setup.ShowRemainingTime || Total != lastTotal) {
-           int Index = Total;
-           if (Setup.ShowRemainingTime)
-              Index = Current - Index;
-           displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+        if (Initial) {
+           if (*fileName) {
+              LOCK_RECORDINGS_READ;
+              if (const cRecording *Recording = Recordings->GetByName(fileName))
+                 displayReplay->SetRecording(Recording);
+              }
+           lastCurrent = lastTotal = -1;
+           }
+        if (Current != lastCurrent || Total != lastTotal) {
+           time(&lastProgressUpdate);
+           if (Setup.ShowRemainingTime || Total != lastTotal) {
+              int Index = Total;
+              if (Setup.ShowRemainingTime)
+                 Index = Current - Index;
+              displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+              if (!Initial)
+                 displayReplay->Flush();
+              }
+           displayReplay->SetProgress(Current, Total);
            if (!Initial)
               displayReplay->Flush();
-           }
-        displayReplay->SetProgress(Current, Total);
-        if (!Initial)
+           displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
            displayReplay->Flush();
-        displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
-        displayReplay->Flush();
-        lastCurrent = Current;
+           lastCurrent = Current;
+           }
+        lastTotal = Total;
+        ShowMode();
+        return true;
         }
-     lastTotal = Total;
-     ShowMode();
-     return true;
      }
   return false;
 }
@@ -5860,6 +5861,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      return osEnd;
   if (Key == kNone && !marksModified)
      marks.Update();
+  if (Key != kNone)
+     lastProgressUpdate = 0;
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
