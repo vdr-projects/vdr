@@ -8881,3 +8881,8 @@ Video Disk Recorder Revision History
 - Added support for the systemd watchdog (thanks to Marc Perrudin),
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
+
+2016-12-27: Version 2.3.3
+
+- Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
+
