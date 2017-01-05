@@ -8882,7 +8882,8 @@ Video Disk Recorder Revision History
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
 
-2017-01-01: Version 2.3.3
+2017-01-05: Version 2.3.3
 
 - Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
 - Fixed a possible deadlock in the recordings handler thread.
+- Updated the Russian OSD texts (thanks to Andrey Pridvorov).
