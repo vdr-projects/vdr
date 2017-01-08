@@ -2478,6 +2478,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  numbers use a decimal point
  for adding dependency on 'i18n' to 'install-i18n' in the VDR Makefile
  for adding a manual page for 'svdrpsend'
+ for adding a missing dependency to the Makefile to avoid error messages in the
+ clean-plugins target
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
