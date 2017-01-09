@@ -8896,3 +8896,5 @@ Video Disk Recorder Revision History
 - Fixed a flaw in handling timeouts for encrypted channels.
 - The mechanism of trying different CAMs when switching to an encrypted channel is
   now only triggered if there acually is more than one CAM in the system.
+- Fixed updating the elapsed/remaining time in the progress display during fast
+  forward/rewind.

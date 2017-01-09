@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.19 2016/12/22 11:00:13 kls Exp $
+ * $Id: menu.c 4.20 2017/01/09 14:45:50 kls Exp $
  */
 
 #include "menu.h"
@@ -5584,7 +5584,7 @@ void cReplayControl::ShowMode(void)
 bool cReplayControl::ShowProgress(bool Initial)
 {
   int Current, Total;
-  if (Initial || time(NULL) - lastProgressUpdate >= 1) {
+  if (Initial || lastSpeed != -1 || time(NULL) - lastProgressUpdate >= 1) {
      if (GetFrameNumber(Current, Total) && Total > 0) {
         if (!visible) {
            displayReplay = Skins.Current()->DisplayReplay(modeOnly);
