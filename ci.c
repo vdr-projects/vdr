@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.3 2016/12/23 14:00:45 kls Exp $
+ * $Id: ci.c 4.4 2017/01/09 12:51:05 kls Exp $
  */
 
 #include "ci.h"
@@ -13,6 +13,7 @@
 #include <malloc.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <time.h>
@@ -2317,6 +2318,7 @@ void cChannelCamRelation::ClrDecrypt(int CamSlotNumber)
 
 // --- cChannelCamRelations --------------------------------------------------
 
+#define MAX_CAM_NUMBER 32
 #define CHANNEL_CAM_RELATIONS_CLEANUP_INTERVAL 3600 // seconds between cleanups
 
 cChannelCamRelations ChannelCamRelations;
@@ -2413,4 +2415,61 @@ void cChannelCamRelations::ClrDecrypt(tChannelID ChannelID, int CamSlotNumber)
   cChannelCamRelation *ccr = GetEntry(ChannelID);
   if (ccr)
      ccr->ClrDecrypt(CamSlotNumber);
+}
+
+void cChannelCamRelations::Load(const char *FileName)
+{
+  cMutexLock MutexLock(&mutex);
+  fileName = FileName;
+  if (access(fileName, R_OK) == 0) {
+     dsyslog("loading %s", *fileName);
+     if (FILE *f = fopen(fileName, "r")) {
+        cReadLine ReadLine;
+        char *s;
+        while ((s = ReadLine.Read(f)) != NULL) {
+              if (char *p = strchr(s, ' ')) {
+                 *p = 0;
+                 if (*++p) {
+                    tChannelID ChannelID = tChannelID::FromString(s);
+                    if (ChannelID.Valid()) {
+                       char *q;
+                       char *strtok_next;
+                       while ((q = strtok_r(p, " ", &strtok_next)) != NULL) {
+                             int CamSlotNumber = atoi(q);
+                             if (CamSlotNumber >= 1 && CamSlotNumber <= MAX_CAM_NUMBER)
+                                SetDecrypt(ChannelID, CamSlotNumber);
+                             p = NULL;
+                             }
+                       }
+                    }
+                 }
+              }
+        fclose(f);
+        }
+     else
+        LOG_ERROR_STR(*fileName);
+     }
+}
+
+void cChannelCamRelations::Save(void)
+{
+  cMutexLock MutexLock(&mutex);
+  dsyslog("saving %s", *fileName);
+  cSafeFile f(fileName);
+  if (f.Open()) {
+     for (cChannelCamRelation *ccr = First(); ccr; ccr = Next(ccr)) {
+         if (ccr->ChannelID().Valid()) {
+            cString s;
+            for (int i = 1; i <= MAX_CAM_NUMBER; i++) {
+                if (ccr->CamDecrypt(i))
+                   s = cString::sprintf("%s%s%d", *s ? *s : "", *s ? " " : "", i);
+                }
+            if (*s)
+               fprintf(f, "%s %s\n", *ccr->ChannelID().ToString(), *s);
+            }
+         }
+     f.Close();
+     }
+  else
+     LOG_ERROR_STR(*fileName);
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.3 2016/12/23 14:43:44 kls Exp $
+ * $Id: device.c 4.4 2017/01/09 12:51:05 kls Exp $
  */
 
 #include "device.h"
@@ -90,6 +90,7 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
   startScrambleDetection = 0;
+  scramblingTimeout = 0;
 
   occupiedTimeout = 0;
 
@@ -1574,6 +1575,7 @@ bool cDevice::Receiving(bool Dummy) const
 
 void cDevice::Action(void)
 {
+  time_t LastScrambledPacket = 0;
   if (Running() && OpenDvr()) {
      while (Running()) {
            // Read data from the DVR device:
@@ -1590,15 +1592,16 @@ void cDevice::Action(void)
                     cs = CamSlot();
                     CamSlotNumber = cs ? cs->SlotNumber() : 0;
                     if (CamSlotNumber) {
-                       int t = time(NULL) - startScrambleDetection;
+                       if (LastScrambledPacket < startScrambleDetection)
+                          LastScrambledPacket = startScrambleDetection;
+                       time_t Now = time(NULL);
                        if (TsIsScrambled(b)) {
-                          if (t > TS_SCRAMBLING_TIMEOUT)
+                          LastScrambledPacket = Now;
+                          if (Now - startScrambleDetection > scramblingTimeout)
                              DetachReceivers = true;
                           }
-                       else if (t > TS_SCRAMBLING_TIME_OK) {
+                       if (Now - LastScrambledPacket > TS_SCRAMBLING_TIME_OK)
                           DescramblingOk = true;
-                          startScrambleDetection = 0;
-                          }
                        }
                     }
                  // Distribute the packet to all attached receivers:
@@ -1606,14 +1609,17 @@ void cDevice::Action(void)
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
                         if (DetachReceivers && cs && (!cs->IsActivating() || receiver[i]->Priority() >= LIVEPRIORITY)) {
-                           dsyslog("detaching receiver - won't decrypt channel %s with CAM %d", *receiver[i]->ChannelID().ToString(), CamSlotNumber);
+                           dsyslog("CAM %d: won't decrypt channel %s, detaching receiver", CamSlotNumber, *receiver[i]->ChannelID().ToString());
                            ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
                            Detach(receiver[i]);
                            }
                         else
                            receiver[i]->Receive(b, TS_SIZE);
-                        if (DescramblingOk)
+                        if (DescramblingOk) {
+                           dsyslog("CAM %d: decrypts channel %s", CamSlotNumber, *receiver[i]->ChannelID().ToString());
                            ChannelCamRelations.SetDecrypt(receiver[i]->ChannelID(), CamSlotNumber);
+                           startScrambleDetection = 0;
+                           }
                         }
                      }
                  Unlock();
@@ -1673,6 +1679,11 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
             startScrambleDetection = time(NULL);
+            scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
+            bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->SlotNumber());
+            if (KnownToDecrypt)
+               scramblingTimeout *= 10; // give it time to receive ECM/EMM
+            dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);
             }
          Start();
          return true;

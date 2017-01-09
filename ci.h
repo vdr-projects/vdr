@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.11 2015/01/31 14:36:41 kls Exp $
+ * $Id: ci.h 4.1 2017/01/09 12:51:05 kls Exp $
  */
 
 #ifndef __CI_H
@@ -310,6 +310,7 @@ class cChannelCamRelation;
 class cChannelCamRelations : public cList<cChannelCamRelation> {
 private:
   cMutex mutex;
+  cString fileName;
   cChannelCamRelation *GetEntry(tChannelID ChannelID);
   cChannelCamRelation *AddEntry(tChannelID ChannelID);
   time_t lastCleanup;
@@ -323,6 +324,8 @@ public:
   void SetDecrypt(tChannelID ChannelID, int CamSlotNumber);
   void ClrChecked(tChannelID ChannelID, int CamSlotNumber);
   void ClrDecrypt(tChannelID ChannelID, int CamSlotNumber);
+  void Load(const char *FileName);
+  void Save(void);
   };
 
 extern cChannelCamRelations ChannelCamRelations;

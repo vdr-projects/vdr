@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.9 2016/12/23 14:34:37 kls Exp $
+ * $Id: vdr.c 4.10 2017/01/09 13:22:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -878,6 +878,10 @@ int main(int argc, char *argv[])
   if (!cPositioner::GetPositioner()) // no plugin has created a positioner
      new cDiseqcPositioner;
 
+  // CAM data:
+
+  ChannelCamRelations.Load(AddDirectory(CacheDirectory, "cam.data"));
+
   // Channel:
 
   if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
@@ -1555,6 +1559,7 @@ Exit:
 
   StopSVDRPClientHandler();
   StopSVDRPServerHandler();
+  ChannelCamRelations.Save();
   PluginManager.StopPlugins();
   cRecordControls::Shutdown();
   RecordingsHandler.DelAll();
