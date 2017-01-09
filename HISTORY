@@ -8898,3 +8898,5 @@ Video Disk Recorder Revision History
   now only triggered if there acually is more than one CAM in the system.
 - Fixed updating the elapsed/remaining time in the progress display during fast
   forward/rewind.
+- Changed 'unsigned' to 'signed' in some places to avoid trouble with abs() in
+  gcc6+ (reported by Derek Kelly).

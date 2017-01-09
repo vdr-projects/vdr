@@ -2850,6 +2850,7 @@ Derek Kelly <user.vdr@gmail.com>
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
  for suggesting to make the -u option also accept a numerical user id
+ for reporting a problem with abs() in gcc6+ when called with an unsigned variable
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
