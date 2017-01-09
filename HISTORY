@@ -8894,4 +8894,5 @@ Video Disk Recorder Revision History
   by Dietmar Spingler). This speeds up switching to encrypted channels after
   newly starting VDR, in case there is more than one CAM in the system.
 - Fixed a flaw in handling timeouts for encrypted channels.
-  
+- The mechanism of trying different CAMs when switching to an encrypted channel is
+  now only triggered if there acually is more than one CAM in the system.

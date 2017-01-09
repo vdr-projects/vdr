@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.4 2017/01/09 12:51:05 kls Exp $
+ * $Id: device.c 4.5 2017/01/09 14:25:38 kls Exp $
  */
 
 #include "device.h"
@@ -1678,12 +1678,14 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
-            startScrambleDetection = time(NULL);
-            scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
-            bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->SlotNumber());
-            if (KnownToDecrypt)
-               scramblingTimeout *= 10; // give it time to receive ECM/EMM
-            dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);
+            if (CamSlots.Count() > 1) { // don't try different CAMs if there is only one
+               startScrambleDetection = time(NULL);
+               scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
+               bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->SlotNumber());
+               if (KnownToDecrypt)
+                  scramblingTimeout *= 10; // give it time to receive ECM/EMM
+               dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);
+               }
             }
          Start();
          return true;
