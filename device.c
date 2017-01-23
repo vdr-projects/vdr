@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.5 2017/01/09 14:25:38 kls Exp $
+ * $Id: device.c 4.6 2017/01/23 11:43:05 kls Exp $
  */
 
 #include "device.h"
@@ -252,7 +252,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
          SlotPriority[CamSlot->Index()] = MAXPRIORITY + 1; // assumes it can't be used
          if (CamSlot->ModuleStatus() == msReady) {
             if (CamSlot->ProvidesCa(Channel->Caids())) {
-               if (!ChannelCamRelations.CamChecked(Channel->GetChannelID(), CamSlot->SlotNumber())) {
+               if (!ChannelCamRelations.CamChecked(Channel->GetChannelID(), CamSlot->MasterSlotNumber())) {
                   SlotPriority[CamSlot->Index()] = CamSlot->Priority();
                   NumUsableSlots++;
                   }
@@ -300,7 +300,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
              imp <<= 1; imp |= (NumUsableSlots || InternalCamNeeded) ? 0 : device[i]->HasCi();                       // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
-             imp <<= 1; imp |= (NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
+             imp <<= 1; imp |= (NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlots.Get(j)->MasterSlotNumber()) : 0; // prefer CAMs that are known to decrypt this channel
              imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
              if (imp < Impact) {
                 // This device has less impact than any previous one, so we take it.
@@ -1590,7 +1590,7 @@ void cDevice::Action(void)
                  cCamSlot *cs = NULL;
                  if (startScrambleDetection) {
                     cs = CamSlot();
-                    CamSlotNumber = cs ? cs->SlotNumber() : 0;
+                    CamSlotNumber = cs ? cs->MasterSlotNumber() : 0;
                     if (CamSlotNumber) {
                        if (LastScrambledPacket < startScrambleDetection)
                           LastScrambledPacket = startScrambleDetection;
@@ -1678,10 +1678,10 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
-            if (CamSlots.Count() > 1) { // don't try different CAMs if there is only one
+            if (CamSlots.NumReadyMasterSlots() > 1) { // don't try different CAMs if there is only one
                startScrambleDetection = time(NULL);
                scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
-               bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->SlotNumber());
+               bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->MasterSlotNumber());
                if (KnownToDecrypt)
                   scramblingTimeout *= 10; // give it time to receive ECM/EMM
                dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);

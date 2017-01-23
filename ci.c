@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.4 2017/01/09 12:51:05 kls Exp $
+ * $Id: ci.c 4.5 2017/01/23 11:42:14 kls Exp $
  */
 
 #include "ci.h"
@@ -1731,11 +1731,12 @@ void cCiAdapter::Action(void)
 #define MODULE_CHECK_INTERVAL 500 // ms
 #define MODULE_RESET_TIMEOUT    2 // s
 
-cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
+cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData, cCamSlot *MasterSlot)
 {
   ciAdapter = CiAdapter;
+  masterSlot = MasterSlot;
   assignedDevice = NULL;
-  caPidReceiver = ReceiveCaPids ? new cCaPidReceiver : NULL;
+  caPidReceiver = WantsTsData ? new cCaPidReceiver : NULL;
   caActivationReceiver = NULL;
   slotIndex = -1;
   lastModuleStatus = msReset; // avoids initial reset log message
@@ -2227,10 +2228,21 @@ uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
 
 cCamSlots CamSlots;
 
+int cCamSlots::NumReadyMasterSlots(void)
+{
+  int n = 0;
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot->IsMasterSlot() && CamSlot->ModuleStatus() == msReady)
+         n++;
+      }
+  return n;
+}
+
 bool cCamSlots::WaitForAllCamSlotsReady(int Timeout)
 {
+  bool ready = true;
   for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
-      bool ready = true;
+      ready = true;
       for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
           if (!CamSlot->Ready()) {
              ready = false;
@@ -2238,9 +2250,11 @@ bool cCamSlots::WaitForAllCamSlotsReady(int Timeout)
              }
           }
       if (ready)
-         return true;
+         break;
       }
-  return false;
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
+      dsyslog("CAM %d: %sready, %s", CamSlot->SlotNumber(), CamSlot->Ready() ? "" : "not ", CamSlot->IsMasterSlot() ? *cString::sprintf("master (%s)", CamSlot->GetCamName() ? CamSlot->GetCamName() : "empty") : *cString::sprintf("slave of CAM %d", CamSlot->MasterSlotNumber()));
+  return ready;
 }
 
 // --- cChannelCamRelation ---------------------------------------------------

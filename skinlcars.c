@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.2 2016/12/22 14:05:56 kls Exp $
+ * $Id: skinlcars.c 4.3 2017/01/19 15:27:48 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -254,7 +254,7 @@ static bool DrawDeviceData(cOsd *Osd, const cDevice *Device, int x0, int y0, int
      LastDeviceType = DeviceType;
      // CAM:
      if (CamSlot) {
-        cString s = cString::sprintf("CAM %d", CamSlot->SlotNumber());
+        cString s = cString::sprintf("CAM %d", CamSlot->MasterSlotNumber());
         Osd->DrawText(x, y1 - TinyFont->Height(), s, ColorFg, ColorBg, TinyFont);
         xs = max(xs, x + TinyFont->Width(s));
         }

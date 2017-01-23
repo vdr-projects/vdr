@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.20 2017/01/09 14:45:50 kls Exp $
+ * $Id: menu.c 4.21 2017/01/23 12:01:48 kls Exp $
  */
 
 #include "menu.h"
@@ -3770,8 +3770,15 @@ bool cMenuSetupCAMItem::Changed(void)
   else if (camSlot->IsActivating())
      // TRANSLATORS: note the leading blank!
      Activating = tr(" (activating)");
-  if (cDevice *Device = camSlot->Device())
-     AssignedDevice = cString::sprintf(" %s %d", tr("@ device"), Device->CardIndex() + 1);
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot == camSlot || CamSlot->MasterSlot() == camSlot) {
+         if (cDevice *Device = CamSlot->Device()) {
+            if (!**AssignedDevice)
+               AssignedDevice = cString::sprintf(" %s", tr("@ device"));
+            AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, Device->CardIndex() + 1);
+            }
+         }
+      }
   cString buffer = cString::sprintf(" %d %s%s%s", camSlot->SlotNumber(), CamName, *AssignedDevice, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
@@ -3799,8 +3806,10 @@ cMenuSetupCAM::cMenuSetupCAM(void)
   SetSection(tr("CAM"));
   SetCols(15);
   SetHasHotkeys();
-  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
-      Add(new cMenuSetupCAMItem(CamSlot));
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot->IsMasterSlot()) // we only list master CAM slots
+         Add(new cMenuSetupCAMItem(CamSlot));
+      }
   SetHelpKeys();
 }
 

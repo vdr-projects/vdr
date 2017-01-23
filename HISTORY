@@ -8882,7 +8882,7 @@ Video Disk Recorder Revision History
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
 
-2017-01-09: Version 2.3.3
+2017-01-23: Version 2.3.3
 
 - Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
 - Fixed a possible deadlock in the recordings handler thread.
@@ -8900,3 +8900,13 @@ Video Disk Recorder Revision History
   forward/rewind.
 - Changed 'unsigned' to 'signed' in some places to avoid trouble with abs() in
   gcc6+ (reported by Derek Kelly).
+- CAMs that can handle multiple devices at the same time can now indicate this
+  by creating the first cCamSlot as usual, and every other cCamSlot by giving
+  it the first one as its "MasterSlot". To VDR this means that when searching
+  for a CAM that can decrypt a particular channel, it only needs to ask the
+  master CAM slot whether it is suitable for decrypting, and can skip all the
+  other slots belonging to the same master. This can greatly speed up channel
+  switching on systems with more than one CAM (that can handle multiple devices).
+- The LCARS skin now displays the master CAM's number when a device is tuned to
+  an encrypted channel.
+- The Setup/CAM menu now only displays master CAMs.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.1 2017/01/09 12:51:05 kls Exp $
+ * $Id: ci.h 4.2 2017/01/23 11:27:39 kls Exp $
  */
 
 #ifndef __CI_H
@@ -16,7 +16,7 @@
 #include "thread.h"
 #include "tools.h"
 
-#define MAX_CAM_SLOTS_PER_ADAPTER     8 // maximum possible value is 255
+#define MAX_CAM_SLOTS_PER_ADAPTER    16 // maximum possible value is 255 (same value as MAXDEVICES!)
 #define MAX_CONNECTIONS_PER_CAM_SLOT  8 // maximum possible value is 254
 #define CAM_READ_TIMEOUT  50 // ms
 
@@ -132,6 +132,7 @@ private:
   cMutex mutex;
   cCondVar processed;
   cCiAdapter *ciAdapter;
+  cCamSlot *masterSlot;
   cDevice *assignedDevice;
   cCaPidReceiver *caPidReceiver;
   cCaActivationReceiver *caActivationReceiver;
@@ -153,15 +154,28 @@ private:
   void Write(cTPDU *TPDU);
   cCiSession *GetSessionByResourceId(uint32_t ResourceId);
 public:
-  cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData = false);
+  cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData = false, cCamSlot *MasterSlot = NULL);
        ///< Creates a new CAM slot for the given CiAdapter.
        ///< The CiAdapter will take care of deleting the CAM slot,
        ///< so the caller must not delete it!
        ///< If WantsTsData is true, the device this CAM slot is assigned to will
        ///< call the Decrypt() function of this CAM slot, presenting it the complete
        ///< TS data stream of the encrypted programme, including the CA pids.
+       ///< If this CAM slot is basically the same as an other one, MasterSlot can
+       ///< be given to indicate this. This can be used for instance for CAM slots
+       ///< that can do MTD ("Multi Transponder Decryption"), where the first cCamSlot
+       ///< is created without giving a MasterSlot, and all others are given the first
+       ///< one as their MasterSlot. This can speed up the search for a suitable CAM
+       ///< when tuning to an encrypted channel, and it also makes the Setup/CAM menu
+       ///< clearer because only the master CAM slots will be shown there.
   virtual ~cCamSlot();
-  bool Assign(cDevice *Device, bool Query = false);
+  bool IsMasterSlot(void) { return !masterSlot; }
+       ///< Returns true if this CAM slot itself is a master slot (which means that
+       ///< it doesn't have pointer to another CAM slot that's its master).
+  cCamSlot *MasterSlot(void) { return masterSlot ? masterSlot : this; }
+       ///< Returns this CAM slot's master slot, or a pointer to itself if it is a
+       ///< master slot.
+  virtual bool Assign(cDevice *Device, bool Query = false);
        ///< Assigns this CAM slot to the given Device, if this is possible.
        ///< If Query is 'true', the CI adapter of this slot only checks whether
        ///< it can be assigned to the Device, but doesn't actually assign itself to it.
@@ -170,6 +184,10 @@ public:
        ///< device it was previously assigned to. The value of Query
        ///< is ignored in that case, and this function always returns
        ///< 'true'.
+       ///< If a derived class reimplements this function, it can return 'false'
+       ///< if this CAM can't be assigned to the given Device. If the CAM can be
+       ///< assigned to the Device, or if Device is NULL, it must call the base
+       ///< class function.
   cDevice *Device(void) { return assignedDevice; }
        ///< Returns the device this CAM slot is currently assigned to.
   bool WantsTsData(void) const { return caPidReceiver != NULL; }
@@ -180,6 +198,9 @@ public:
        ///< The first slot has an index of 0.
   int SlotNumber(void) { return slotNumber; }
        ///< Returns the number of this CAM slot within the whole system.
+       ///< The first slot has the number 1.
+  int MasterSlotNumber(void) { return masterSlot ? masterSlot->SlotNumber() : slotNumber; }
+       ///< Returns the number of this CAM's master slot within the whole system.
        ///< The first slot has the number 1.
   virtual bool Reset(void);
        ///< Resets the CAM in this slot.
@@ -295,6 +316,9 @@ public:
 
 class cCamSlots : public cList<cCamSlot> {
 public:
+  int NumReadyMasterSlots(void);
+       ///< Returns the number of master CAM slots in the system that are ready
+       ///< to decrypt.
   bool WaitForAllCamSlotsReady(int Timeout = 0);
        ///< Waits until all CAM slots have become ready, or the given Timeout
        ///< (seconds) has expired. While waiting, the Ready() function of each
