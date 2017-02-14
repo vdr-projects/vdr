@@ -8882,7 +8882,7 @@ Video Disk Recorder Revision History
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
 
-2017-01-23: Version 2.3.3
+2017-02-14: Version 2.3.3
 
 - Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
 - Fixed a possible deadlock in the recordings handler thread.
@@ -8910,3 +8910,5 @@ Video Disk Recorder Revision History
 - The LCARS skin now displays the master CAM's number when a device is tuned to
   an encrypted channel.
 - The Setup/CAM menu now only displays master CAMs.
+- Fixed setting the local machine's SVDRP host name (was overwritten if setup.conf
+  contained an empty string).
