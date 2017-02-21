@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.5 2017/01/23 11:42:14 kls Exp $
+ * $Id: ci.c 4.6 2017/02/21 14:17:07 kls Exp $
  */
 
 #include "ci.h"
@@ -121,8 +121,6 @@ private:
   int length;
   void AddEmmPid(int Pid);
   void DelEmmPids(void);
-protected:
-  virtual void Activate(bool On);
 public:
   cCaPidReceiver(void);
   virtual ~cCaPidReceiver() { Detach(); }
@@ -154,11 +152,6 @@ void cCaPidReceiver::DelEmmPids(void)
   for (int i = 0; i < emmPids.Size(); i++)
       DelPid(emmPids[i]);
   emmPids.Clear();
-}
-
-void cCaPidReceiver::Activate(bool On)
-{
-  catVersion = -1; // can be done independent of 'On'
 }
 
 void cCaPidReceiver::Receive(const uchar *Data, int Length)
@@ -208,10 +201,6 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
            }
         }
      if (p) {
-        int OldCatVersion = catVersion; // must preserve the current version number
-        cDevice *AttachedDevice = Device();
-        if (AttachedDevice)
-           AttachedDevice->Detach(this);
         DelEmmPids();
         for (int i = 0; i < length - 4; i++) { // -4 = checksum
             if (p[i] == 0x09) {
@@ -228,9 +217,6 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
                i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
                }
             }
-        if (AttachedDevice)
-           AttachedDevice->AttachReceiver(this);
-        catVersion = OldCatVersion;
         p = NULL;
         bufp = 0;
         length = 0;
@@ -1747,9 +1733,10 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData, cCamSlot *MasterSlot
       tc[i] = NULL;
   CamSlots.Add(this);
   slotNumber = Index() + 1;
-  if (ciAdapter)
+  if (ciAdapter) {
      ciAdapter->AddCamSlot(this);
-  Reset();
+     Reset();
+     }
 }
 
 cCamSlot::~cCamSlot()
@@ -1767,20 +1754,28 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
   cMutexLock MutexLock(&mutex);
   if (ciAdapter) {
      if (ciAdapter->Assign(Device, true)) {
-        if (!Device && assignedDevice)
+        if (!Device && assignedDevice) {
+           if (caPidReceiver)
+              assignedDevice->Detach(caPidReceiver);
            assignedDevice->SetCamSlot(NULL);
+           }
         if (!Query || !Device) {
            StopDecrypting();
            source = transponder = 0;
            if (ciAdapter->Assign(Device)) {
+              int OldDeviceNumber = assignedDevice ? assignedDevice->DeviceNumber() + 1 : 0;
               assignedDevice = Device;
               if (Device) {
                  Device->SetCamSlot(this);
-                 dsyslog("CAM %d: assigned to device %d", slotNumber, Device->DeviceNumber() + 1);
+                 if (caPidReceiver) {
+                    caPidReceiver->Reset();
+                    Device->AttachReceiver(caPidReceiver);
+                    }
+                 dsyslog("CAM %d: assigned to device %d", MasterSlotNumber(), Device->DeviceNumber() + 1);
                  }
               else {
                  CancelActivation();
-                 dsyslog("CAM %d: unassigned", slotNumber);
+                 dsyslog("CAM %d: unassigned from device %d", MasterSlotNumber(), OldDeviceNumber);
                  }
               }
            else
@@ -2014,10 +2009,6 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
      const int *CaSystemIds = cas->GetCaSystemIds();
      if (CaSystemIds && *CaSystemIds) {
         if (caProgramList.Count()) {
-           if (caPidReceiver && caPidReceiver->HasCaPids()) {
-              if (cDevice *d = Device())
-                 d->Detach(caPidReceiver);
-              }
            for (int Loop = 1; Loop <= 2; Loop++) {
                for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
                    if (p->modified || resendPmt) {
@@ -2048,20 +2039,11 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                       }
                    }
                }
-           if (caPidReceiver && caPidReceiver->HasCaPids()) {
-              if (cDevice *d = Device())
-                 d->AttachReceiver(caPidReceiver);
-              }
            resendPmt = false;
            }
         else {
            cCiCaPmt CaPmt(CmdId, 0, 0, 0, NULL);
            cas->SendPMT(&CaPmt);
-           if (caPidReceiver) {
-              if (cDevice *d = Device())
-                 d->Detach(caPidReceiver);
-              caPidReceiver->Reset();
-              }
            }
         }
      }

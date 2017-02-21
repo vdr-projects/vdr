@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.6 2017/01/23 11:43:05 kls Exp $
+ * $Id: device.c 4.7 2017/02/21 13:38:01 kls Exp $
  */
 
 #include "device.h"
@@ -451,6 +451,7 @@ void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
 
 bool cDevice::HasPid(int Pid) const
 {
+  cMutexLock MutexLock(&mutexPids);
   for (int i = 0; i < MAXPIDHANDLES; i++) {
       if (pidHandles[i].pid == Pid)
          return true;
@@ -460,6 +461,7 @@ bool cDevice::HasPid(int Pid) const
 
 bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 {
+  cMutexLock MutexLock(&mutexPids);
   if (Pid || PidType == ptPcr) {
      int n = -1;
      int a = -1;
@@ -524,6 +526,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 
 void cDevice::DelPid(int Pid, ePidType PidType)
 {
+  cMutexLock MutexLock(&mutexPids);
   if (Pid || PidType == ptPcr) {
      int n = -1;
      if (PidType == ptPcr)
@@ -559,6 +562,7 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
 void cDevice::DelLivePids(void)
 {
+  cMutexLock MutexLock(&mutexPids);
   for (int i = ptAudio; i < ptOther; i++) {
       if (pidHandles[i].pid)
          DelPid(pidHandles[i].pid, ePidType(i));
