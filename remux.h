@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.1 2016/12/22 13:09:54 kls Exp $
+ * $Id: remux.h 4.2 2017/02/27 16:11:57 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -81,6 +81,12 @@ inline bool TsError(const uchar *p)
 inline int TsPid(const uchar *p)
 {
   return (p[1] & TS_PID_MASK_HI) * 256 + p[2];
+}
+
+inline void TsSetPid(uchar *p, int Pid)
+{
+  p[1] = (p[1] & ~TS_PID_MASK_HI) | ((Pid >> 8) & TS_PID_MASK_HI);
+  p[2] = Pid & 0x00FF;
 }
 
 inline bool TsIsScrambled(const uchar *p)

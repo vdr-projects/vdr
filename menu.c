@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.21 2017/01/23 12:01:48 kls Exp $
+ * $Id: menu.c 4.22 2017/03/18 14:27:50 kls Exp $
  */
 
 #include "menu.h"
@@ -3770,15 +3770,18 @@ bool cMenuSetupCAMItem::Changed(void)
   else if (camSlot->IsActivating())
      // TRANSLATORS: note the leading blank!
      Activating = tr(" (activating)");
+  cVector<int> CardIndexes;
   for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
-      if (CamSlot == camSlot || CamSlot->MasterSlot() == camSlot) {
-         if (cDevice *Device = CamSlot->Device()) {
-            if (!**AssignedDevice)
-               AssignedDevice = cString::sprintf(" %s", tr("@ device"));
-            AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, Device->CardIndex() + 1);
-            }
-         }
+      if (CamSlot == camSlot || CamSlot->MasterSlot() == camSlot)
+         CamSlot->Devices(CardIndexes);
       }
+  if (CardIndexes.Size() > 0) {
+     AssignedDevice = cString::sprintf(" %s", tr("@ device"));
+     CardIndexes.Sort(CompareInts);
+     for (int i = 0; i < CardIndexes.Size(); i++)
+         AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, CardIndexes[i] + 1);
+     }
+
   cString buffer = cString::sprintf(" %d %s%s%s", camSlot->SlotNumber(), CamName, *AssignedDevice, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
@@ -3874,14 +3877,13 @@ eOSState cMenuSetupCAM::Activate(void)
                   if (cDevice *Device = cDevice::GetDevice(i)) {
                      if (Device->ProvidesChannel(Channel)) {
                         if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
-                           if (CamSlot->CanActivate()) {
-                              if (CamSlot->Assign(Device, true)) { // query
-                                 cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
-                                 if (CamSlot->Assign(Device)) {
-                                    if (Device->SwitchChannel(Channel, true)) {
-                                       CamSlot->StartActivation();
-                                       return osContinue;
-                                       }
+                           if (CamSlot->Assign(Device, true)) { // query
+                              cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
+                              CamSlot = CamSlot->MtdSpawn();
+                              if (CamSlot->Assign(Device)) {
+                                 if (Device->SwitchChannel(Channel, true)) {
+                                    CamSlot->StartActivation();
+                                    return osContinue;
                                     }
                                  }
                               }

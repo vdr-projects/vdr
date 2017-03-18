@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.2 2017/01/23 11:27:39 kls Exp $
+ * $Id: ci.h 4.3 2017/03/18 14:18:37 kls Exp $
  */
 
 #ifndef __CI_H
@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "channels.h"
+#include "ringbuffer.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -124,10 +125,23 @@ class cCiSession;
 class cCiCaProgramData;
 class cCaPidReceiver;
 class cCaActivationReceiver;
+class cMtdHandler;
+class cMtdMapper;
+class cMtdCamSlot;
+class cCiCaPmt;
+
+struct cCiCaPmtList {
+  cVector<cCiCaPmt *> caPmts;
+  ~cCiCaPmtList();
+  cCiCaPmt *Add(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const int *CaSystemIds);
+  void Del(cCiCaPmt *CaPmt);
+  };
 
 class cCamSlot : public cListObject {
   friend class cCiAdapter;
   friend class cCiTransportConnection;
+  friend class cCiConditionalAccessSupport;
+  friend class cMtdCamSlot;
 private:
   cMutex mutex;
   cCondVar processed;
@@ -146,13 +160,40 @@ private:
   int source;
   int transponder;
   cList<cCiCaProgramData> caProgramList;
-  const int *GetCaSystemIds(void);
-  void SendCaPmt(uint8_t CmdId);
+  bool mtdAvailable;
+  cMtdHandler *mtdHandler;
   void NewConnection(void);
   void DeleteAllConnections(void);
   void Process(cTPDU *TPDU = NULL);
   void Write(cTPDU *TPDU);
   cCiSession *GetSessionByResourceId(uint32_t ResourceId);
+  void MtdActivate(bool On);
+       ///< Activates (On == true) or deactivates (On == false) MTD.
+protected:
+  virtual const int *GetCaSystemIds(void);
+  virtual void SendCaPmt(uint8_t CmdId);
+  virtual bool RepliesToQuery(void);
+       ///< Returns true if the CAM in this slot replies to queries and thus
+       ///< supports MCD ("Multi Channel Decryption").
+  void BuildCaPmts(uint8_t CmdId, cCiCaPmtList &CaPmtList, cMtdMapper *MtdMapper = NULL);
+       ///< Generates all CA_PMTs with the given CmdId and stores them in the given CaPmtList.
+       ///< If MtdMapper is given, all SIDs and PIDs will be mapped accordingly.
+  void SendCaPmts(cCiCaPmtList &CaPmtList);
+       ///< Sends the given list of CA_PMTs to the CAM.
+  void MtdEnable(void);
+       ///< Enables MTD support for this CAM. Note that actual MTD operation also
+       ///< requires a CAM that supports MCD ("Multi Channel Decryption").
+  int MtdPutData(uchar *Data, int Count);
+       ///< Sends at most Count bytes of the given Data to the individual MTD CAM slots
+       ///< that are using this CAM.
+       ///< Returns the number of bytes actually processed.
+public:
+  bool McdAvailable(void) { return RepliesToQuery(); }
+       ///< Returns true if this CAM supports MCD ("Multi Channel Decyption").
+  bool MtdAvailable(void) { return mtdAvailable; }
+       ///< Returns true if this CAM supports MTD ("Multi Transponder Decryption").
+  bool MtdActive(void) { return mtdHandler != NULL; }
+       ///< Returns true if MTD is currently active.
 public:
   cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData = false, cCamSlot *MasterSlot = NULL);
        ///< Creates a new CAM slot for the given CiAdapter.
@@ -175,6 +216,13 @@ public:
   cCamSlot *MasterSlot(void) { return masterSlot ? masterSlot : this; }
        ///< Returns this CAM slot's master slot, or a pointer to itself if it is a
        ///< master slot.
+  cCamSlot *MtdSpawn(void);
+       ///< If this CAM slot can do MTD ("Multi Transponder Decryption"),
+       ///< a call to this function returns a cMtdCamSlot with this CAM slot
+       ///< as its master. Otherwise a pointer to this object is returned, which
+       ///< means that MTD is not supported.
+  void TriggerResendPmt(void) { resendPmt = true; }
+       ///< Tells this CAM slot to resend the list of CA_PMTs to the CAM.
   virtual bool Assign(cDevice *Device, bool Query = false);
        ///< Assigns this CAM slot to the given Device, if this is possible.
        ///< If Query is 'true', the CI adapter of this slot only checks whether
@@ -190,6 +238,10 @@ public:
        ///< class function.
   cDevice *Device(void) { return assignedDevice; }
        ///< Returns the device this CAM slot is currently assigned to.
+  bool Devices(cVector<int> &CardIndexes);
+       ///< Adds the card indexes of any devices that currently use this CAM to
+       ///< the given CardIndexes. This can be more than one in case of MTD.
+       ///< Returns true if the array is not empty.
   bool WantsTsData(void) const { return caPidReceiver != NULL; }
        ///< Returns true if this CAM slot wants to receive the TS data through
        ///< its Decrypt() function.
@@ -308,7 +360,8 @@ public:
        ///< the CAM's control). If no decrypted TS packet is currently available, NULL
        ///< shall be returned. If no data from Data can currently be processed, Count
        ///< shall be set to 0 and the same Data pointer will be offered in the next
-       ///< call to Decrypt().
+       ///< call to Decrypt(). See mtd.h for further requirements if this CAM can
+       ///< do MTD ("Multi Transponder Decryption").
        ///< A derived class that implements this function will also need
        ///< to set the WantsTsData parameter in the call to the base class
        ///< constructor to true in order to receive the TS data.
