@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.2 2017/03/19 13:33:53 kls Exp $
+ * $Id: mtd.c 1.3 2017/03/19 14:20:22 kls Exp $
  */
 
 #include "mtd.h"
@@ -59,24 +59,30 @@ cMtdCamSlot *cMtdHandler::GetMtdCamSlot(cCamSlot *MasterSlot)
 
 int cMtdHandler::Put(const uchar *Data, int Count)
 {
-  // TODO maybe handle more than one TS packet?
-  if (Count > TS_SIZE)
-     Count = TS_SIZE;
-  else if (Count < TS_SIZE)
-     return 0;
-  int Pid = TsPid(Data);
-  if (Pid == CATPID)
-     return Count; // this is the original CAT with mapped PIDs
+  int Used = 0;
+  while (Count >= TS_SIZE) {
+        int Pid = TsPid(Data);
+        if (Pid != CATPID) { // the original CAT with mapped PIDs must be skipped here!
 #ifdef KEEPPIDS
-  int Index = 0;
+           int Index = 0;
 #else
-  int Index = (Pid >> UNIQ_PID_SHIFT) - 1;
+           int Index = (Pid >> UNIQ_PID_SHIFT) - 1;
 #endif // KEEPPIDS
-  if (Index >= 0 && Index < camSlots.Size())
-     return camSlots[Index]->PutData(Data, Count);
-  else
-     esyslog("ERROR: invalid MTD number (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
-  return Count; // no such buffer - let's just drop the data so nothing stacks up
+           if (Index >= 0 && Index < camSlots.Size()) {
+              int w = camSlots[Index]->PutData(Data, TS_SIZE);
+              if (w == 0)
+                 break;
+              else if (w != TS_SIZE)
+                 esyslog("ERROR: incomplete MTD packet written (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
+              }
+           else
+              esyslog("ERROR: invalid MTD number (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
+           }
+        Data += TS_SIZE;
+        Count -= TS_SIZE;
+        Used += TS_SIZE;
+        }
+  return Used;
 }
 
 int cMtdHandler::Priority(void)
