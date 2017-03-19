@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.3 2017/03/18 14:18:37 kls Exp $
+ * $Id: ci.h 4.4 2017/03/19 10:48:14 kls Exp $
  */
 
 #ifndef __CI_H
@@ -185,7 +185,7 @@ protected:
        ///< requires a CAM that supports MCD ("Multi Channel Decryption").
   int MtdPutData(uchar *Data, int Count);
        ///< Sends at most Count bytes of the given Data to the individual MTD CAM slots
-       ///< that are using this CAM.
+       ///< that are using this CAM. Data must point to the beginning of a TS packet.
        ///< Returns the number of bytes actually processed.
 public:
   bool McdAvailable(void) { return RepliesToQuery(); }

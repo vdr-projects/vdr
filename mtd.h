@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.1 2017/03/17 16:06:34 kls Exp $
+ * $Id: mtd.h 1.2 2017/03/19 10:48:52 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -124,6 +124,7 @@ public:
   int Put(const uchar *Data, int Count);
       ///< Puts at most Count bytes of Data into the CAM slot which's index is
       ///< derived from the PID of the TS packets.
+      ///< Data must point to the beginning of a TS packet.
       ///< Returns the number of bytes actually stored.
   int Priority(void);
       ///< Returns the maximum priority of any of the active MTD CAM slots.
