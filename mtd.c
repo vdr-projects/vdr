@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.1 2017/03/18 14:31:34 kls Exp $
+ * $Id: mtd.c 1.2 2017/03/19 13:33:53 kls Exp $
  */
 
 #include "mtd.h"
@@ -223,6 +223,7 @@ cMtdCamSlot::cMtdCamSlot(cCamSlot *MasterSlot, int Index)
   mtdBuffer = new cRingBufferLinear(MTD_BUFFER_SIZE, TS_SIZE, true, "MTD buffer");
   mtdMapper = new cMtdMapper(Index + 1, MasterSlot->SlotNumber());
   delivered = false;
+  clearBuffer = false;
   ciAdapter = MasterSlot->ciAdapter; // we don't pass the CI adapter in the constructor, to prevent this one from being inserted into CamSlots
 }
 
@@ -271,7 +272,7 @@ void cMtdCamSlot::StopDecrypting(void)
 {
   cCamSlot::StopDecrypting();
   mtdMapper->Clear();
-  //XXX mtdBuffer->Clear(); //XXX would require locking?
+  clearBuffer = true;
 }
 
 bool cMtdCamSlot::IsDecrypting(void)
@@ -296,6 +297,10 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
   if (delivered) {
      mtdBuffer->Del(TS_SIZE);
      delivered = false;
+     }
+  if (clearBuffer) {
+     mtdBuffer->Clear();
+     clearBuffer = false;
      }
   // Receive data from buffer:
   int c = 0;

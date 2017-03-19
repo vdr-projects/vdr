@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.2 2017/03/19 10:48:52 kls Exp $
+ * $Id: mtd.h 1.3 2017/03/19 13:32:48 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -154,6 +154,7 @@ private:
   cMtdMapper *mtdMapper;
   cRingBufferLinear *mtdBuffer;
   bool delivered;
+  bool clearBuffer;
 protected:
   virtual const int *GetCaSystemIds(void);
   virtual void SendCaPmt(uint8_t CmdId);
