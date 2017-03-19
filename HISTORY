@@ -8882,7 +8882,7 @@ Video Disk Recorder Revision History
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
 
-2017-03-18: Version 2.3.3
+2017-03-19: Version 2.3.3
 
 - Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
 - Fixed a possible deadlock in the recordings handler thread.
@@ -8918,3 +8918,5 @@ Video Disk Recorder Revision History
   that is capable of decrypting more than one channel ("Multi Channel Decryption")
   to decrypt channels from different transponders. See the remarks in mtd.h on
   what a derived cCamSlot class needs to do in order to activate MTD.
+- The function cRingBufferLinear::Clear() can now be called safely from the
+  reading thread, without additional locking.

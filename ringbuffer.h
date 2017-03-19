@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 4.1 2016/12/22 10:26:13 kls Exp $
+ * $Id: ringbuffer.h 4.2 2017/03/19 13:11:39 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -80,6 +80,8 @@ public:
   virtual int Free(void) { return Size() - Available() - 1 - margin; }
   virtual void Clear(void);
     ///< Immediately clears the ring buffer.
+    ///< This function may safely be called from the reading thread without additional
+    ///< locking. If called from the writing thread, proper locking must be used.
   int Read(int FileHandle, int Max = 0);
     ///< Reads at most Max bytes from FileHandle and stores them in the
     ///< ring buffer. If Max is 0, reads as many bytes as possible.
