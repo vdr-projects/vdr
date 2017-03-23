@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.3 2017/03/19 13:32:48 kls Exp $
+ * $Id: mtd.h 1.4 2017/03/23 12:48:22 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -166,10 +166,9 @@ public:
   cMtdMapper *MtdMapper(void) { return mtdMapper; }
   virtual bool RepliesToQuery(void);
   virtual bool ProvidesCa(const int *CaSystemIds);
-  virtual bool CanDecrypt(const cChannel *Channel);
+  virtual bool CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper = NULL);
   virtual void StartDecrypting(void);
   virtual void StopDecrypting(void);
-  virtual bool IsDecrypting(void);
   virtual uchar *Decrypt(uchar *Data, int &Count);
   int PutData(const uchar *Data, int Count);
   int PutCat(const uchar *Data, int Count);

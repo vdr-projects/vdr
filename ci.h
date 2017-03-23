@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.4 2017/03/19 10:48:14 kls Exp $
+ * $Id: ci.h 4.5 2017/03/23 14:23:33 kls Exp $
  */
 
 #ifndef __CI_H
@@ -314,7 +314,7 @@ public:
        ///< If the source or transponder of the channel are different than
        ///< what was given in a previous call to AddChannel(), any previously
        ///< added PIDs will be cleared.
-  virtual bool CanDecrypt(const cChannel *Channel);
+  virtual bool CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper = NULL);
        ///< Returns true if there is a CAM in this slot that is able to decrypt
        ///< the given Channel (or at least claims to be able to do so).
        ///< Since the QUERY/REPLY mechanism for CAMs is pretty unreliable (some
@@ -325,11 +325,18 @@ public:
        ///< to the initial QUERY will perform this check at all. CAMs that never
        ///< replied to the initial QUERY are assumed not to be able to handle
        ///< more than one channel at a time.
+       ///< If MtdMapper is given, all SIDs and PIDs will be mapped accordingly.
   virtual void StartDecrypting(void);
-       ///< Triggers sending all currently active CA_PMT entries to the CAM,
-       ///< so that it will start decrypting.
+       ///< Sends all CA_PMT entries to the CAM that have been modified since the
+       ///< last call to this function. This includes CA_PMTs that have been
+       ///< added or activated, as well as ones that have been deactivated.
+       ///< StartDecrypting() will be called whenever a PID is activated or
+       ///< deactivated.
   virtual void StopDecrypting(void);
        ///< Clears the list of CA_PMT entries and tells the CAM to stop decrypting.
+       ///< Note that this function is only called when there are no more PIDs for
+       ///< the CAM to decrypt. There is no symmetry between StartDecrypting() and
+       ///< StopDecrypting().
   virtual bool IsDecrypting(void);
        ///< Returns true if the CAM in this slot is currently used for decrypting.
   virtual uchar *Decrypt(uchar *Data, int &Count);

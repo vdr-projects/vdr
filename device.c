@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.8 2017/03/18 15:45:53 kls Exp $
+ * $Id: device.c 4.9 2017/03/23 14:19:59 kls Exp $
  */
 
 #include "device.h"
@@ -320,8 +320,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (!NumUsableSlots)
          break; // no CAM necessary, so just one loop over the devices
       }
-  if (d && !Query) {
-     if (NeedsDetachReceivers)
+  if (d) {
+     if (!Query && NeedsDetachReceivers)
         d->DetachAllReceivers();
      if (s) {
         // Some of the following statements could probably be combined, but let's keep them
@@ -333,9 +333,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
                  }
               else {
                  // device d has a CAM slot, but it's not the right one
-                 d->CamSlot()->Assign(NULL);
-                 s = s->MtdSpawn();
-                 s->Assign(d);
+                 if (!Query) {
+                    d->CamSlot()->Assign(NULL);
+                    s = s->MtdSpawn();
+                    s->Assign(d);
+                    }
                  }
               }
            else {
@@ -343,9 +345,10 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
                  if (s->Device() != d) {
                     // CAM slot s is currently assigned to a different device than d
                     if (Priority > s->Priority()) {
-                       s->Device()->DetachAllReceivers();
-                       d->CamSlot()->Assign(NULL);
-                       s->Assign(d);
+                       if (!Query) {
+                          d->CamSlot()->Assign(NULL);
+                          s->Assign(d);
+                          }
                        }
                     else {
                        d = NULL;
@@ -359,8 +362,10 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
               else {
                  if (s != d->CamSlot()) {
                     // device d has a CAM slot, but it's not the right one
-                    d->CamSlot()->Assign(NULL);
-                    s->Assign(d);
+                    if (!Query) {
+                       d->CamSlot()->Assign(NULL);
+                       s->Assign(d);
+                       }
                     }
                  else {
                     // device d already has a proper CAM slot, so nothing to do here
@@ -372,16 +377,20 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
            // device d has no CAM slot, ...
            if (s->MtdActive()) {
               // ... so we assign s with MTD support
-              s = s->MtdSpawn();
-              s->Assign(d);
+              if (!Query) {
+                 s = s->MtdSpawn();
+                 s->Assign(d);
+                 }
               }
            else {
               // CAM slot s has no MTD support ...
               if (s->Device()) {
                  // ... but it is assigned to a different device, so we reassign it to d
                  if (Priority > s->Priority()) {
-                    s->Device()->DetachAllReceivers();
-                    s->Assign(d);
+                    if (!Query) {
+                       s->Device()->DetachAllReceivers();
+                       s->Assign(d);
+                       }
                     }
                  else {
                     d = NULL;
@@ -390,7 +399,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
                  }
               else {
                  // ... and is not assigned to any device, so we just assign it to d
-                 s->Assign(d);
+                 if (!Query)
+                    s->Assign(d);
                  }
               }
            }

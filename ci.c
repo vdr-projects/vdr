@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.7 2017/03/18 15:20:27 kls Exp $
+ * $Id: ci.c 4.8 2017/03/23 14:30:56 kls Exp $
  */
 
 #include "ci.h"
@@ -2205,6 +2205,8 @@ void cCamSlot::BuildCaPmts(uint8_t CmdId, cCiCaPmtList &CaPmtList, cMtdMapper *M
                }
             }
         }
+     else if (CmdId == CPCI_NOT_SELECTED)
+        CaPmtList.Add(CmdId, 0, 0, 0, NULL);
      }
 }
 
@@ -2343,7 +2345,7 @@ void cCamSlot::AddChannel(const cChannel *Channel)
 
 #define QUERY_REPLY_WAIT  100 // ms to wait between checks for a reply
 
-bool cCamSlot::CanDecrypt(const cChannel *Channel)
+bool cCamSlot::CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper)
 {
   if (Channel->Ca() < CA_ENCRYPTED_MIN)
      return true; // channel not encrypted
@@ -2361,6 +2363,8 @@ bool cCamSlot::CanDecrypt(const cChannel *Channel)
          CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
      for (const int *Spid = Channel->Spids(); *Spid; Spid++)
          CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE);
+     if (MtdMapper)
+        CaPmt.MtdMapPids(MtdMapper);
      cas->SendPMT(&CaPmt);
      cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
      do {
@@ -2385,7 +2389,11 @@ void cCamSlot::StartDecrypting(void)
 void cCamSlot::StopDecrypting(void)
 {
   cMutexLock MutexLock(&mutex);
-  caProgramList.Clear();
+  if (caProgramList.Count()) {
+     caProgramList.Clear();
+     if (!dynamic_cast<cMtdCamSlot *>(this))
+        SendCaPmt(CPCI_NOT_SELECTED);
+     }
 }
 
 bool cCamSlot::IsDecrypting(void)

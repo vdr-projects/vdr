@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.3 2017/03/19 14:20:22 kls Exp $
+ * $Id: mtd.c 1.4 2017/03/23 14:34:53 kls Exp $
  */
 
 #include "mtd.h"
@@ -262,10 +262,9 @@ bool cMtdCamSlot::ProvidesCa(const int *CaSystemIds)
   return MasterSlot()->ProvidesCa(CaSystemIds);
 }
 
-bool cMtdCamSlot::CanDecrypt(const cChannel *Channel)
+bool cMtdCamSlot::CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper)
 {
-  //TODO PID mapping?
-  return MasterSlot()->CanDecrypt(Channel);
+  return MasterSlot()->CanDecrypt(Channel, mtdMapper);
 }
 
 void cMtdCamSlot::StartDecrypting(void)
@@ -277,13 +276,10 @@ void cMtdCamSlot::StartDecrypting(void)
 void cMtdCamSlot::StopDecrypting(void)
 {
   cCamSlot::StopDecrypting();
+  if (!MasterSlot()->IsDecrypting())
+     MasterSlot()->StopDecrypting();
   mtdMapper->Clear();
   clearBuffer = true;
-}
-
-bool cMtdCamSlot::IsDecrypting(void)
-{
-  return cCamSlot::IsDecrypting();
 }
 
 uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
