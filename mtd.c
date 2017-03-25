@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.4 2017/03/23 14:34:53 kls Exp $
+ * $Id: mtd.c 1.5 2017/03/25 14:09:31 kls Exp $
  */
 
 #include "mtd.h"
@@ -235,6 +235,7 @@ cMtdCamSlot::cMtdCamSlot(cCamSlot *MasterSlot, int Index)
 
 cMtdCamSlot::~cMtdCamSlot()
 {
+  Assign(NULL);
   delete mtdMapper;
   delete mtdBuffer;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.8 2017/03/23 14:30:56 kls Exp $
+ * $Id: ci.c 4.9 2017/03/25 14:09:23 kls Exp $
  */
 
 #include "ci.h"
@@ -1854,8 +1854,7 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool WantsTsData, cCamSlot *MasterSlot
 
 cCamSlot::~cCamSlot()
 {
-  if (assignedDevice)
-     assignedDevice->SetCamSlot(NULL);
+  Assign(NULL);
   delete caPidReceiver;
   delete caActivationReceiver;
   CamSlots.Del(this, false);
