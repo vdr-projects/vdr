@@ -8882,7 +8882,7 @@ Video Disk Recorder Revision History
 - Added a short sleep to cTSBuffer::Action() to avoid high CPU usage (thanks to
   Sergey Chernyavskiy).
 
-2017-03-19: Version 2.3.3
+2017-03-25: Version 2.3.3
 
 - Added 'S3W ABS-3A' to sources.conf (thanks to Frank Richter).
 - Fixed a possible deadlock in the recordings handler thread.
@@ -8920,3 +8920,5 @@ Video Disk Recorder Revision History
   what a derived cCamSlot class needs to do in order to activate MTD.
 - The function cRingBufferLinear::Clear() can now be called safely from the
   reading thread, without additional locking.
+- Now stopping any ongoing recordings before stopping the plugins, to avoid
+  a crash when stopping VDR while recording.
