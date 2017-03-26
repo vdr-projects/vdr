@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.4 2017/03/23 12:48:22 kls Exp $
+ * $Id: mtd.h 1.5 2017/03/25 14:47:03 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -151,10 +151,10 @@ void MtdMapPid(uchar *p, cMtdMapper *MtdMapper);
 
 class cMtdCamSlot : public cCamSlot {
 private:
+  cMutex mutex;
   cMtdMapper *mtdMapper;
   cRingBufferLinear *mtdBuffer;
   bool delivered;
-  bool clearBuffer;
 protected:
   virtual const int *GetCaSystemIds(void);
   virtual void SendCaPmt(uint8_t CmdId);

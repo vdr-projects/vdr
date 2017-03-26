@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.5 2017/03/25 14:09:31 kls Exp $
+ * $Id: mtd.c 1.6 2017/03/26 13:01:32 kls Exp $
  */
 
 #include "mtd.h"
@@ -229,7 +229,6 @@ cMtdCamSlot::cMtdCamSlot(cCamSlot *MasterSlot, int Index)
   mtdBuffer = new cRingBufferLinear(MTD_BUFFER_SIZE, TS_SIZE, true, "MTD buffer");
   mtdMapper = new cMtdMapper(Index + 1, MasterSlot->SlotNumber());
   delivered = false;
-  clearBuffer = false;
   ciAdapter = MasterSlot->ciAdapter; // we don't pass the CI adapter in the constructor, to prevent this one from being inserted into CamSlots
 }
 
@@ -279,8 +278,10 @@ void cMtdCamSlot::StopDecrypting(void)
   cCamSlot::StopDecrypting();
   if (!MasterSlot()->IsDecrypting())
      MasterSlot()->StopDecrypting();
+  cMutexLock MutexLock(&mutex);
   mtdMapper->Clear();
-  clearBuffer = true;
+  mtdBuffer->Clear();
+  delivered = false;
 }
 
 uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
@@ -297,18 +298,19 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
   else
      Count = 0;
   // Drop delivered data from previous call:
+  cMutexLock MutexLock(&mutex);
   if (delivered) {
      mtdBuffer->Del(TS_SIZE);
      delivered = false;
-     }
-  if (clearBuffer) {
-     mtdBuffer->Clear();
-     clearBuffer = false;
      }
   // Receive data from buffer:
   int c = 0;
   uchar *d = mtdBuffer->Get(c);
   if (d) {
+     if (int Skipped = TS_SYNC(d, c)) {
+        mtdBuffer->Del(Skipped);
+        return NULL;
+        }
      if (c >= TS_SIZE) {
         TsSetPid(d, mtdMapper->UniqToRealPid(TsPid(d)));
         delivered = true;
@@ -321,6 +323,13 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
 
 int cMtdCamSlot::PutData(const uchar *Data, int Count)
 {
+  cMutexLock MutexLock(&mutex);
+  int Free = mtdBuffer->Free();
+  Free -= Free % TS_SIZE;
+  if (Free < TS_SIZE)
+     return 0;
+  if (Free < Count)
+     Count = Free;
   return mtdBuffer->Put(Data, Count);
 }
 

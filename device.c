@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.9 2017/03/23 14:19:59 kls Exp $
+ * $Id: device.c 4.10 2017/03/26 11:35:38 kls Exp $
  */
 
 #include "device.h"
@@ -1570,13 +1570,8 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
      }
   else {
      while (Length >= TS_SIZE) {
-           if (Data[0] != TS_SYNC_BYTE) {
-              int Skipped = 1;
-              while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
-                    Skipped++;
-              esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
+           if (int Skipped = TS_SYNC(Data, Length))
               return Played + Skipped;
-              }
            int Pid = TsPid(Data);
            if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
               int PayloadOffset = TsPayloadOffset(Data);
