@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.7 2017/03/27 08:35:29 kls Exp $
+ * $Id: mtd.c 1.8 2017/03/27 09:09:37 kls Exp $
  */
 
 #include "mtd.h"
@@ -61,6 +61,8 @@ int cMtdHandler::Put(const uchar *Data, int Count)
 {
   int Used = 0;
   while (Count >= TS_SIZE) {
+        if (int Skipped = TS_SYNC(Data, Count))
+           return Used + Skipped;
         int Pid = TsPid(Data);
         if (Pid != CATPID) { // the original CAT with mapped PIDs must be skipped here!
 #ifdef KEEPPIDS
