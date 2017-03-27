@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.10 2017/03/26 11:35:38 kls Exp $
+ * $Id: device.c 4.11 2017/03/27 14:02:54 kls Exp $
  */
 
 #include "device.h"
@@ -1692,7 +1692,7 @@ void cDevice::Action(void)
                            }
                         else
                            receiver[i]->Receive(b, TS_SIZE);
-                        if (DescramblingOk) {
+                        if (DescramblingOk && receiver[i]->ChannelID().Valid()) {
                            dsyslog("CAM %d: decrypts channel %s", CamSlotNumber, *receiver[i]->ChannelID().ToString());
                            ChannelCamRelations.SetDecrypt(receiver[i]->ChannelID(), CamSlotNumber);
                            startScrambleDetection = 0;
