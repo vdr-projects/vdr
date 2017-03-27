@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.8 2017/03/27 09:09:37 kls Exp $
+ * $Id: mtd.c 1.9 2017/03/27 14:26:04 kls Exp $
  */
 
 #include "mtd.h"
@@ -77,7 +77,7 @@ int cMtdHandler::Put(const uchar *Data, int Count)
               else if (w != TS_SIZE)
                  esyslog("ERROR: incomplete MTD packet written (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
               }
-           else
+           else if (Index >= 0) // we silently ignore Index -1 (i.e. MTD number 0), since there are several hundred empty TS packets when switching to an encrypted channel for the first time since startup
               esyslog("ERROR: invalid MTD number (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
            }
         Data += TS_SIZE;
