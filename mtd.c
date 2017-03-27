@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.6 2017/03/26 13:01:32 kls Exp $
+ * $Id: mtd.c 1.7 2017/03/27 08:35:29 kls Exp $
  */
 
 #include "mtd.h"
@@ -278,7 +278,7 @@ void cMtdCamSlot::StopDecrypting(void)
   cCamSlot::StopDecrypting();
   if (!MasterSlot()->IsDecrypting())
      MasterSlot()->StopDecrypting();
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(&clearMutex);
   mtdMapper->Clear();
   mtdBuffer->Clear();
   delivered = false;
@@ -298,7 +298,7 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
   else
      Count = 0;
   // Drop delivered data from previous call:
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(&clearMutex);
   if (delivered) {
      mtdBuffer->Del(TS_SIZE);
      delivered = false;
@@ -323,7 +323,6 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
 
 int cMtdCamSlot::PutData(const uchar *Data, int Count)
 {
-  cMutexLock MutexLock(&mutex);
   int Free = mtdBuffer->Free();
   Free -= Free % TS_SIZE;
   if (Free < TS_SIZE)
