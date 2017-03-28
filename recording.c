@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.6 2016/12/22 12:58:20 kls Exp $
+ * $Id: recording.c 4.7 2017/01/01 17:52:51 kls Exp $
  */
 
 #include "recording.h"
@@ -1914,16 +1914,20 @@ cRecordingsHandler::~cRecordingsHandler()
 void cRecordingsHandler::Action(void)
 {
   while (Running()) {
+        bool Sleep = false;
         {
           cMutexLock MutexLock(&mutex);
-          while (cRecordingsHandlerEntry *r = operations.First()) {
-                if (!r->Active(error))
-                   operations.Del(r);
-                }
-          if (!operations.Count())
+          if (cRecordingsHandlerEntry *r = operations.First()) {
+             if (!r->Active(error))
+                operations.Del(r);
+             else
+                Sleep = true;
+             }
+          else
              break;
         }
-        cCondWait::SleepMs(100);
+        if (Sleep)
+           cCondWait::SleepMs(100);
         }
 }
 

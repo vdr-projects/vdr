@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 4.1 2015/09/16 11:19:47 kls Exp $
+ * $Id: receiver.c 4.2 2017/02/21 10:59:27 kls Exp $
  */
 
 #include "receiver.h"
@@ -38,8 +38,11 @@ bool cReceiver::AddPid(int Pid)
 {
   if (Pid) {
      if (numPids < MAXRECEIVEPIDS) {
-        if (!WantsPid(Pid))
+        if (!WantsPid(Pid)) {
            pids[numPids++] = Pid;
+           if (device)
+              device->AddPid(Pid);
+           }
         }
      else {
         dsyslog("too many PIDs in cReceiver (Pid = %d)", Pid);
@@ -87,6 +90,8 @@ void cReceiver::DelPid(int Pid)
             for ( ; i < numPids; i++) // we also copy the terminating 0!
                 pids[i] = pids[i + 1];
             numPids--;
+            if (device)
+               device->DelPid(Pid);
             return;
             }
          }

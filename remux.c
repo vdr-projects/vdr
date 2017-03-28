@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.3 2016/12/22 12:58:20 kls Exp $
+ * $Id: remux.c 4.5 2017/03/26 13:07:01 kls Exp $
  */
 
 #include "remux.h"
@@ -142,6 +142,19 @@ void TsSetPcr(uchar *p, int64_t Pcr)
         p[11] =  e;
         }
      }
+}
+
+int TsSync(const uchar *Data, int Length, const char *File, const char *Function, int Line)
+{
+  int Skipped = 0;
+  while (Length > 0 && (*Data != TS_SYNC_BYTE || Length > TS_SIZE && Data[TS_SIZE] != TS_SYNC_BYTE)) {
+        Data++;
+        Length--;
+        Skipped++;
+        }
+  if (Skipped && File && Function && Line)
+     esyslog("ERROR: skipped %d bytes to sync on start of TS packet at %s/%s(%d)", Skipped, File, Function, Line);
+  return Skipped;
 }
 
 int64_t TsGetPts(const uchar *p, int l)
@@ -1557,13 +1570,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
   newFrame = independentFrame = false;
   while (Length >= MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE) { // makes sure we are looking at enough data, in case the frame type is not stored in the first TS packet
         // Sync on TS packet borders:
-        if (Data[0] != TS_SYNC_BYTE) {
-           int Skipped = 1;
-           while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
-                 Skipped++;
-           esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
+        if (int Skipped = TS_SYNC(Data, Length))
            return Processed + Skipped;
-           }
         // Handle one TS packet:
         int Handled = TS_SIZE;
         if (TsHasPayload(Data) && !TsIsScrambled(Data)) {
@@ -1629,7 +1637,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                           Div += parser->IFrameTemporalReferenceOffset();
                        if (Div <= 0)
                           Div = 1;
-                       uint32_t Delta = ptsValues[0] / Div;
+                       int Delta = ptsValues[0] / Div;
                        // determine frame info:
                        if (isVideo) {
                           if (Delta == 3753)

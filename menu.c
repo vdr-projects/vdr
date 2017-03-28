@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.19 2016/12/22 11:00:13 kls Exp $
+ * $Id: menu.c 4.22 2017/03/18 14:27:50 kls Exp $
  */
 
 #include "menu.h"
@@ -3770,8 +3770,18 @@ bool cMenuSetupCAMItem::Changed(void)
   else if (camSlot->IsActivating())
      // TRANSLATORS: note the leading blank!
      Activating = tr(" (activating)");
-  if (cDevice *Device = camSlot->Device())
-     AssignedDevice = cString::sprintf(" %s %d", tr("@ device"), Device->CardIndex() + 1);
+  cVector<int> CardIndexes;
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot == camSlot || CamSlot->MasterSlot() == camSlot)
+         CamSlot->Devices(CardIndexes);
+      }
+  if (CardIndexes.Size() > 0) {
+     AssignedDevice = cString::sprintf(" %s", tr("@ device"));
+     CardIndexes.Sort(CompareInts);
+     for (int i = 0; i < CardIndexes.Size(); i++)
+         AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, CardIndexes[i] + 1);
+     }
+
   cString buffer = cString::sprintf(" %d %s%s%s", camSlot->SlotNumber(), CamName, *AssignedDevice, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
@@ -3799,8 +3809,10 @@ cMenuSetupCAM::cMenuSetupCAM(void)
   SetSection(tr("CAM"));
   SetCols(15);
   SetHasHotkeys();
-  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
-      Add(new cMenuSetupCAMItem(CamSlot));
+  for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
+      if (CamSlot->IsMasterSlot()) // we only list master CAM slots
+         Add(new cMenuSetupCAMItem(CamSlot));
+      }
   SetHelpKeys();
 }
 
@@ -3865,14 +3877,13 @@ eOSState cMenuSetupCAM::Activate(void)
                   if (cDevice *Device = cDevice::GetDevice(i)) {
                      if (Device->ProvidesChannel(Channel)) {
                         if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
-                           if (CamSlot->CanActivate()) {
-                              if (CamSlot->Assign(Device, true)) { // query
-                                 cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
-                                 if (CamSlot->Assign(Device)) {
-                                    if (Device->SwitchChannel(Channel, true)) {
-                                       CamSlot->StartActivation();
-                                       return osContinue;
-                                       }
+                           if (CamSlot->Assign(Device, true)) { // query
+                              cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
+                              CamSlot = CamSlot->MtdSpawn();
+                              if (CamSlot->Assign(Device)) {
+                                 if (Device->SwitchChannel(Channel, true)) {
+                                    CamSlot->StartActivation();
+                                    return osContinue;
                                     }
                                  }
                               }
@@ -5584,7 +5595,7 @@ void cReplayControl::ShowMode(void)
 bool cReplayControl::ShowProgress(bool Initial)
 {
   int Current, Total;
-  if (Initial || time(NULL) - lastProgressUpdate >= 1) {
+  if (Initial || lastSpeed != -1 || time(NULL) - lastProgressUpdate >= 1) {
      if (GetFrameNumber(Current, Total) && Total > 0) {
         if (!visible) {
            displayReplay = Skins.Current()->DisplayReplay(modeOnly);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.3 2016/12/23 14:43:44 kls Exp $
+ * $Id: device.c 4.11 2017/03/27 14:02:54 kls Exp $
  */
 
 #include "device.h"
@@ -90,6 +90,7 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
   startScrambleDetection = 0;
+  scramblingTimeout = 0;
 
   occupiedTimeout = 0;
 
@@ -251,7 +252,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
          SlotPriority[CamSlot->Index()] = MAXPRIORITY + 1; // assumes it can't be used
          if (CamSlot->ModuleStatus() == msReady) {
             if (CamSlot->ProvidesCa(Channel->Caids())) {
-               if (!ChannelCamRelations.CamChecked(Channel->GetChannelID(), CamSlot->SlotNumber())) {
+               if (!ChannelCamRelations.CamChecked(Channel->GetChannelID(), CamSlot->MasterSlotNumber())) {
                   SlotPriority[CamSlot->Index()] = CamSlot->Priority();
                   NumUsableSlots++;
                   }
@@ -280,8 +281,13 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              continue; // CAM slot can't be used with this device
           bool ndr;
           if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
-             if (NumUsableSlots && !HasInternalCam && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
-                ndr = true; // using a different CAM slot requires detaching receivers
+             if (NumUsableSlots && !HasInternalCam) {
+                if (cCamSlot *csi = device[i]->CamSlot()) {
+                   cCamSlot *csj = CamSlots.Get(j);
+                   if ((csj->MtdActive() ? csi->MasterSlot() : csi) != csj)
+                      ndr = true; // using a different CAM slot requires detaching receivers
+                   }
+                }
              // Put together an integer number that reflects the "impact" using
              // this device would have on the overall system. Each condition is represented
              // by one bit in the number (or several bits, if the condition is actually
@@ -299,7 +305,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
              imp <<= 1; imp |= (NumUsableSlots || InternalCamNeeded) ? 0 : device[i]->HasCi();                       // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
-             imp <<= 1; imp |= (NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
+             imp <<= 1; imp |= (NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlots.Get(j)->MasterSlotNumber()) : 0; // prefer CAMs that are known to decrypt this channel
              imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
              if (imp < Impact) {
                 // This device has less impact than any previous one, so we take it.
@@ -314,16 +320,89 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (!NumUsableSlots)
          break; // no CAM necessary, so just one loop over the devices
       }
-  if (d && !Query) {
-     if (NeedsDetachReceivers)
+  if (d) {
+     if (!Query && NeedsDetachReceivers)
         d->DetachAllReceivers();
      if (s) {
-        if (s->Device() != d) {
-           if (s->Device())
-              s->Device()->DetachAllReceivers();
-           if (d->CamSlot())
-              d->CamSlot()->Assign(NULL);
-           s->Assign(d);
+        // Some of the following statements could probably be combined, but let's keep them
+        // explicit so we can clearly see every single aspect of the decisions made here.
+        if (d->CamSlot()) {
+           if (s->MtdActive()) {
+              if (s == d->CamSlot()->MasterSlot()) {
+                 // device d already has a proper CAM slot, so nothing to do here
+                 }
+              else {
+                 // device d has a CAM slot, but it's not the right one
+                 if (!Query) {
+                    d->CamSlot()->Assign(NULL);
+                    s = s->MtdSpawn();
+                    s->Assign(d);
+                    }
+                 }
+              }
+           else {
+              if (s->Device()) {
+                 if (s->Device() != d) {
+                    // CAM slot s is currently assigned to a different device than d
+                    if (Priority > s->Priority()) {
+                       if (!Query) {
+                          d->CamSlot()->Assign(NULL);
+                          s->Assign(d);
+                          }
+                       }
+                    else {
+                       d = NULL;
+                       s = NULL;
+                       }
+                    }
+                 else {
+                    // device d already has a proper CAM slot, so nothing to do here
+                    }
+                 }
+              else {
+                 if (s != d->CamSlot()) {
+                    // device d has a CAM slot, but it's not the right one
+                    if (!Query) {
+                       d->CamSlot()->Assign(NULL);
+                       s->Assign(d);
+                       }
+                    }
+                 else {
+                    // device d already has a proper CAM slot, so nothing to do here
+                    }
+                 }
+              }
+           }
+        else {
+           // device d has no CAM slot, ...
+           if (s->MtdActive()) {
+              // ... so we assign s with MTD support
+              if (!Query) {
+                 s = s->MtdSpawn();
+                 s->Assign(d);
+                 }
+              }
+           else {
+              // CAM slot s has no MTD support ...
+              if (s->Device()) {
+                 // ... but it is assigned to a different device, so we reassign it to d
+                 if (Priority > s->Priority()) {
+                    if (!Query) {
+                       s->Device()->DetachAllReceivers();
+                       s->Assign(d);
+                       }
+                    }
+                 else {
+                    d = NULL;
+                    s = NULL;
+                    }
+                 }
+              else {
+                 // ... and is not assigned to any device, so we just assign it to d
+                 if (!Query)
+                    s->Assign(d);
+                 }
+              }
            }
         }
      else if (d->CamSlot() && !d->CamSlot()->IsDecrypting())
@@ -450,6 +529,7 @@ void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
 
 bool cDevice::HasPid(int Pid) const
 {
+  cMutexLock MutexLock(&mutexPids);
   for (int i = 0; i < MAXPIDHANDLES; i++) {
       if (pidHandles[i].pid == Pid)
          return true;
@@ -459,6 +539,7 @@ bool cDevice::HasPid(int Pid) const
 
 bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 {
+  cMutexLock MutexLock(&mutexPids);
   if (Pid || PidType == ptPcr) {
      int n = -1;
      int a = -1;
@@ -523,6 +604,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 
 void cDevice::DelPid(int Pid, ePidType PidType)
 {
+  cMutexLock MutexLock(&mutexPids);
   if (Pid || PidType == ptPcr) {
      int n = -1;
      if (PidType == ptPcr)
@@ -558,6 +640,7 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
 void cDevice::DelLivePids(void)
 {
+  cMutexLock MutexLock(&mutexPids);
   for (int i = ptAudio; i < ptOther; i++) {
       if (pidHandles[i].pid)
          DelPid(pidHandles[i].pid, ePidType(i));
@@ -1487,13 +1570,8 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
      }
   else {
      while (Length >= TS_SIZE) {
-           if (Data[0] != TS_SYNC_BYTE) {
-              int Skipped = 1;
-              while (Skipped < Length && (Data[Skipped] != TS_SYNC_BYTE || Length - Skipped > TS_SIZE && Data[Skipped + TS_SIZE] != TS_SYNC_BYTE))
-                    Skipped++;
-              esyslog("ERROR: skipped %d bytes to sync on start of TS packet", Skipped);
+           if (int Skipped = TS_SYNC(Data, Length))
               return Played + Skipped;
-              }
            int Pid = TsPid(Data);
            if (TsHasPayload(Data)) { // silently ignore TS packets w/o payload
               int PayloadOffset = TsPayloadOffset(Data);
@@ -1574,6 +1652,7 @@ bool cDevice::Receiving(bool Dummy) const
 
 void cDevice::Action(void)
 {
+  time_t LastScrambledPacket = 0;
   if (Running() && OpenDvr()) {
      while (Running()) {
            // Read data from the DVR device:
@@ -1588,17 +1667,18 @@ void cDevice::Action(void)
                  cCamSlot *cs = NULL;
                  if (startScrambleDetection) {
                     cs = CamSlot();
-                    CamSlotNumber = cs ? cs->SlotNumber() : 0;
+                    CamSlotNumber = cs ? cs->MasterSlotNumber() : 0;
                     if (CamSlotNumber) {
-                       int t = time(NULL) - startScrambleDetection;
+                       if (LastScrambledPacket < startScrambleDetection)
+                          LastScrambledPacket = startScrambleDetection;
+                       time_t Now = time(NULL);
                        if (TsIsScrambled(b)) {
-                          if (t > TS_SCRAMBLING_TIMEOUT)
+                          LastScrambledPacket = Now;
+                          if (Now - startScrambleDetection > scramblingTimeout)
                              DetachReceivers = true;
                           }
-                       else if (t > TS_SCRAMBLING_TIME_OK) {
+                       if (Now - LastScrambledPacket > TS_SCRAMBLING_TIME_OK)
                           DescramblingOk = true;
-                          startScrambleDetection = 0;
-                          }
                        }
                     }
                  // Distribute the packet to all attached receivers:
@@ -1606,14 +1686,17 @@ void cDevice::Action(void)
                  for (int i = 0; i < MAXRECEIVERS; i++) {
                      if (receiver[i] && receiver[i]->WantsPid(Pid)) {
                         if (DetachReceivers && cs && (!cs->IsActivating() || receiver[i]->Priority() >= LIVEPRIORITY)) {
-                           dsyslog("detaching receiver - won't decrypt channel %s with CAM %d", *receiver[i]->ChannelID().ToString(), CamSlotNumber);
+                           dsyslog("CAM %d: won't decrypt channel %s, detaching receiver", CamSlotNumber, *receiver[i]->ChannelID().ToString());
                            ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
                            Detach(receiver[i]);
                            }
                         else
                            receiver[i]->Receive(b, TS_SIZE);
-                        if (DescramblingOk)
+                        if (DescramblingOk && receiver[i]->ChannelID().Valid()) {
+                           dsyslog("CAM %d: decrypts channel %s", CamSlotNumber, *receiver[i]->ChannelID().ToString());
                            ChannelCamRelations.SetDecrypt(receiver[i]->ChannelID(), CamSlotNumber);
+                           startScrambleDetection = 0;
+                           }
                         }
                      }
                  Unlock();
@@ -1672,7 +1755,14 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
-            startScrambleDetection = time(NULL);
+            if (CamSlots.NumReadyMasterSlots() > 1) { // don't try different CAMs if there is only one
+               startScrambleDetection = time(NULL);
+               scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
+               bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->MasterSlotNumber());
+               if (KnownToDecrypt)
+                  scramblingTimeout *= 10; // give it time to receive ECM/EMM
+               dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);
+               }
             }
          Start();
          return true;

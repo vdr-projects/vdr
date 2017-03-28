@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.1 2016/12/22 13:09:54 kls Exp $
+ * $Id: remux.h 4.3 2017/03/26 13:06:37 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -83,6 +83,12 @@ inline int TsPid(const uchar *p)
   return (p[1] & TS_PID_MASK_HI) * 256 + p[2];
 }
 
+inline void TsSetPid(uchar *p, int Pid)
+{
+  p[1] = (p[1] & ~TS_PID_MASK_HI) | ((Pid >> 8) & TS_PID_MASK_HI);
+  p[2] = Pid & 0x00FF;
+}
+
 inline bool TsIsScrambled(const uchar *p)
 {
   return p[3] & TS_SCRAMBLING_CONTROL;
@@ -137,6 +143,15 @@ inline int64_t TsGetPcr(const uchar *p)
 
 void TsHidePayload(uchar *p);
 void TsSetPcr(uchar *p, int64_t Pcr);
+
+// Helper macro and function to quickly check whether Data points to the beginning
+// of a TS packet. The return value is the number of bytes that need to be skipped
+// to synchronize on the next TS packet (zero if already sync'd). TsSync() can be
+// called directly, the macro just performs the initial check inline and adds some
+// debug information for logging.
+
+#define TS_SYNC(Data, Length) (*Data == TS_SYNC_BYTE ? 0 : TsSync(Data, Length, __FILE__, __FUNCTION__, __LINE__))
+int TsSync(const uchar *Data, int Length, const char *File = NULL, const char *Function = NULL, int Line = 0);
 
 // The following functions all take a pointer to a sequence of complete TS packets.
 

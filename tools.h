@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.5 2016/12/23 13:56:35 kls Exp $
+ * $Id: tools.h 4.6 2017/03/16 16:04:43 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -242,6 +242,17 @@ cString dtoa(double d, const char *Format = "%f");
     ///< the decimal point, independent of the currently selected locale.
     ///< If Format is given, it will be used instead of the default.
 cString itoa(int n);
+inline uint16_t Peek13(const uchar *p)
+{
+  uint16_t v = uint16_t(*p++ & 0x1F) << 8;
+  return v + (*p & 0xFF);
+}
+inline void Poke13(uchar *p, uint16_t v)
+{
+  v |= uint16_t(*p & ~0x1F) << 8;
+  *p++ = v >> 8;
+  *p = v & 0xFF;
+}
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
     ///< Checks whether the given files are on the same file system. If either of the
@@ -743,6 +754,11 @@ public:
     qsort(data, size, sizeof(T), Compare);
   }
   };
+
+inline int CompareInts(const void *a, const void *b)
+{
+  return *(const int *)a > *(const int *)b;
+}
 
 inline int CompareStrings(const void *a, const void *b)
 {

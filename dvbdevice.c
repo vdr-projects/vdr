@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.3 2016/11/07 13:55:58 kls Exp $
+ * $Id: dvbdevice.c 4.4 2017/01/09 15:11:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -329,7 +329,7 @@ private:
   void ClearEventQueue(void) const;
   bool GetFrontendStatus(fe_status_t &Status) const;
   cPositioner *GetPositioner(void);
-  void ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency);
+  void ExecuteDiseqc(const cDiseqc *Diseqc, int *Frequency);
   void ResetToneAndVoltage(void);
   bool SetFrontend(void);
   virtual void Action(void);
@@ -696,7 +696,7 @@ cPositioner *cDvbTuner::GetPositioner(void)
   return positioner;
 }
 
-void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, unsigned int *Frequency)
+void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, int *Frequency)
 {
   if (!lnbPowerTurnedOn) {
      CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
@@ -806,7 +806,7 @@ bool cDvbTuner::SetFrontend(void)
 
   SETCMD(DTV_DELIVERY_SYSTEM, frontendType);
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
-     unsigned int frequency = channel.Frequency();
+     int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
         if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
@@ -829,7 +829,7 @@ bool cDvbTuner::SetFrontend(void)
         }
      else {
         int tone = SEC_TONE_OFF;
-        if (frequency < (unsigned int)Setup.LnbSLOF) {
+        if (frequency < Setup.LnbSLOF) {
            frequency -= Setup.LnbFrequLo;
            tone = SEC_TONE_OFF;
            }

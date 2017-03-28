@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 4.0 2013/06/12 11:52:17 kls Exp $
+ * $Id: diseqc.h 4.1 2017/01/09 15:11:19 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -86,7 +86,7 @@ private:
   mutable int scrBank;
   char *commands;
   bool parsing;
-  uint SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes) const;
+  int SetScrFrequency(int SatFrequency, const cScr *Scr, uint8_t *Codes) const;
   int SetScrPin(const cScr *Scr, uint8_t *Codes) const;
   const char *Wait(const char *s) const;
   const char *GetPosition(const char *s) const;
@@ -96,7 +96,7 @@ public:
   cDiseqc(void);
   ~cDiseqc();
   bool Parse(const char *s);
-  eDiseqcActions Execute(const char **CurrentAction, uchar *Codes, uint8_t *MaxCodes, const cScr *Scr, uint *Frequency) const;
+  eDiseqcActions Execute(const char **CurrentAction, uchar *Codes, uint8_t *MaxCodes, const cScr *Scr, int *Frequency) const;
       ///< Parses the DiSEqC commands and returns the appropriate action code
       ///< with every call. CurrentAction must be the address of a character pointer,
       ///< which is initialized to NULL. This pointer is used internally while parsing

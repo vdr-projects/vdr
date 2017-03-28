@@ -2478,6 +2478,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  numbers use a decimal point
  for adding dependency on 'i18n' to 'install-i18n' in the VDR Makefile
  for adding a manual page for 'svdrpsend'
+ for adding a missing dependency to the Makefile to avoid error messages in the
+ clean-plugins target
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
@@ -2848,6 +2850,7 @@ Derek Kelly <user.vdr@gmail.com>
  for suggesting to add ARGSDIR to the ONEDIR section of Make.config.template
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
  for suggesting to make the -u option also accept a numerical user id
+ for reporting a problem with abs() in gcc6+ when called with an unsigned variable
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -3170,6 +3173,7 @@ Oliver Schinagl <oliver@schinagl.nl>
 Andrey Pridvorov <ua0lnj@bk.ru>
  for reporting a problem with detecting frames in H.264 video, and pointing towards
  a better way of doing it
+ for updating the Russian OSD texts
 
 Jens Vogel <jens.vogel@akjv.de>
  for suggesting to make cPatPmtParser::ParsePmt() also recognize stream type 0x81
@@ -3380,6 +3384,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to provide a way of using no DVB devices at all
  for suggesting that the -V and -h options should list the plugins in alphabetical order
  for suggesting to implement the setup option "Recording/Record key handling"
+ for suggesting to cache the channel/CAM relations in the file 'cam.data'
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
@@ -3400,6 +3405,8 @@ Dieter Ferdinand <dieter.ferdinand@gmx.de>
 Jasmin Jessich <jasmin@anw.at>
  for modifying the CAM API so that it is possible to implement CAMs that can be freely
  assigned to any devices
+ for writing the ddci2 plugin and for valuable input and help with testing and
+ debugging MTD support
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently
@@ -3459,3 +3466,6 @@ Aitugan Sarbassov <isarbassov@gmail.com>
 Sergey Chernyavskiy <glenvt18@gmail.com>
  for reporting truncated date/time strings in the skins on multi-byte UTF-8
  for adding a short sleep to cTSBuffer::Action() to avoid high CPU usage
+
+Frank Richter <kulpstur@t-online.de>
+ for adding 'S3W ABS-3A' to sources.conf

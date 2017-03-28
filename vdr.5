@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.0 2015/02/17 13:43:53 kls Exp $
+.\" $Id: vdr.5 4.1 2017/01/09 13:35:08 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -899,6 +899,20 @@ Note that the \fBevent id\fR that comes from the DVB data stream is actually
 just 16 bit wide. The internal representation in VDR allows for 32 bit to
 be used, so that external tools can generate EPG data that is guaranteed
 not to collide with the ids of existing data.
+.SS CAM DATA
+The file \fIcam.data\fR contains information about which CAM in the system can
+decrypt a particular channel.
+Each line in this file contains a channel id, followed by one or more (blank
+separated) numbers, indicating the CAMs that have successfully decrypted this
+channel earlier.
+
+When tuning to an encrypted channel, this information is used to select the
+proper CAM for decrypting this channel. This channel/CAM relationship is not
+hardcoded, though. If a given channel can't be decrypted with a CAM listed
+in this file, other CAMs will be tried just as well. The main purpose of this
+file is to speed up channel switching in systems with more than one CAM.
+
+This file will be read at program startup and saved when the program ends.
 .SS COMMANDLINE OPTIONS
 If started without any options, vdr tries to read any files in the directory
 /etc/vdr/conf.d with names that do not begin with a '.' and that end with '.conf'.

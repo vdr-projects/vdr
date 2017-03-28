@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 4.0 2015/01/26 12:02:14 kls Exp $
+ * $Id: diseqc.c 4.1 2017/01/09 15:10:40 kls Exp $
  */
 
 #include "diseqc.h"
@@ -253,10 +253,10 @@ bool cDiseqc::Parse(const char *s)
   return result;
 }
 
-uint cDiseqc::SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes) const
+int cDiseqc::SetScrFrequency(int SatFrequency, const cScr *Scr, uint8_t *Codes) const
 {
   if ((Codes[0] & 0xF0) == 0x70 ) { // EN50607 aka JESS
-     uint t = SatFrequency == 0 ? 0 : (SatFrequency - 100);
+     int t = SatFrequency == 0 ? 0 : (SatFrequency - 100);
      if (t < 2048 && Scr->Channel() >= 0 && Scr->Channel() < 32) {
         Codes[1] = t >> 8 | Scr->Channel() << 3;
         Codes[2] = t;
@@ -266,7 +266,7 @@ uint cDiseqc::SetScrFrequency(uint SatFrequency, const cScr *Scr, uint8_t *Codes
         }
      }
   else { // EN50494 aka Unicable
-     uint t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350; // '+ 2' together with '/ 4' results in rounding!
+     int t = SatFrequency == 0 ? 0 : (SatFrequency + Scr->UserBand() + 2) / 4 - 350; // '+ 2' together with '/ 4' results in rounding!
      if (t < 1024 && Scr->Channel() >= 0 && Scr->Channel() < 8) {
         Codes[3] = t >> 8 | (t == 0 ? 0 : scrBank << 2) | Scr->Channel() << 5;
         Codes[4] = t;
@@ -399,7 +399,7 @@ const char *cDiseqc::GetCodes(const char *s, uchar *Codes, uint8_t *MaxCodes) co
   return NULL;
 }
 
-cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction, uchar *Codes, uint8_t *MaxCodes, const cScr *Scr, uint *Frequency) const
+cDiseqc::eDiseqcActions cDiseqc::Execute(const char **CurrentAction, uchar *Codes, uint8_t *MaxCodes, const cScr *Scr, int *Frequency) const
 {
   if (!*CurrentAction)
      *CurrentAction = commands;

@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 4.1 2016/12/22 10:26:13 kls Exp $
+ * $Id: ringbuffer.c 4.2 2017/03/19 12:43:36 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -216,9 +216,10 @@ int cRingBufferLinear::Available(void)
 
 void cRingBufferLinear::Clear(void)
 {
-  tail = head = margin;
+  int Head = head;
+  tail = Head;
 #ifdef DEBUGRINGBUFFERS
-  lastHead = head;
+  lastHead = Head;
   lastTail = tail;
   lastPut = lastGet = -1;
 #endif
