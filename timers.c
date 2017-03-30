@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.7 2016/12/23 09:48:39 kls Exp $
+ * $Id: timers.c 4.8 2017/03/30 15:08:11 kls Exp $
  */
 
 #include "timers.h"
@@ -953,6 +953,72 @@ void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
             TriggerRemoteTimerPoll(ServerNames[i]);
         }
      }
+}
+
+static bool RemoteTimerError(const cTimer *Timer, cString *Msg)
+{
+  if (Msg)
+     *Msg = cString::sprintf("%s %d@%s!", tr("Error while accessing remote timer"), Timer->Id(), Timer->Remote());
+  return false; // convenience return code
+}
+
+bool HandleRemoteTimerModifications(cTimer *NewTimer, cTimer *OldTimer, cString *Msg)
+{
+  cStringList Response;
+  if (!NewTimer) {
+     if (OldTimer) { // timer shall be deleted from remote machine
+        if (OldTimer->Remote() && OldTimer->Id()) {
+           if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("DELT %d", OldTimer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
+              return RemoteTimerError(OldTimer, Msg);
+           }
+        isyslog("deleted timer %s", *OldTimer->ToDescr());
+        }
+     }
+  else if (!OldTimer || OldTimer->Local() || !OldTimer->Id()) {
+     if (NewTimer->Local()) { // timer stays local, nothing to do
+        if (OldTimer && OldTimer->Id())
+           isyslog("modified timer %s", *NewTimer->ToDescr());
+        else
+           isyslog("added timer %s", *NewTimer->ToDescr());
+        }
+     else { // timer is new, or moved from local to remote
+        if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
+           return RemoteTimerError(NewTimer, Msg);
+        int RemoteId = atoi(SVDRPValue(Response[0]));
+        if (RemoteId <= 0)
+           return RemoteTimerError(NewTimer, Msg);
+        NewTimer->SetId(RemoteId);
+        if (OldTimer && OldTimer->Id()) {
+           isyslog("moved timer %d to %s", OldTimer->Id(), *NewTimer->ToDescr());
+           }
+        else
+           isyslog("added timer %s", *NewTimer->ToDescr());
+        }
+     }
+  else if (NewTimer->Local()) { // timer is moved from remote to local
+     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("DELT %d", OldTimer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
+        return RemoteTimerError(OldTimer, Msg);
+     NewTimer->SetId(cTimers::NewTimerId());
+     NewTimer->ClrFlags(tfRecording); // in case it was recording on the remote machine
+     isyslog("moved timer %d@%s to %s", OldTimer->Id(), OldTimer->Remote(), *NewTimer->ToDescr());
+     }
+  else if (strcmp(OldTimer->Remote(), NewTimer->Remote()) == 0) { // timer stays remote on same machine
+     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("MODT %d %s", OldTimer->Id(), *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
+        return RemoteTimerError(NewTimer, Msg);
+     isyslog("modified timer %s", *NewTimer->ToDescr());
+     }
+  else { // timer is moved from one remote machine to an other
+     if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
+        return RemoteTimerError(NewTimer, Msg);
+     int RemoteId = atoi(SVDRPValue(Response[0]));
+     if (RemoteId <= 0)
+        return RemoteTimerError(NewTimer, Msg);
+     NewTimer->SetId(RemoteId);
+     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("DELT %d", OldTimer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
+        return RemoteTimerError(OldTimer, Msg);
+     isyslog("moved timer %d@%s to %s", OldTimer->Id(), OldTimer->Remote(), *NewTimer->ToDescr());
+     }
+  return true;
 }
 
 // --- cSortedTimers ---------------------------------------------------------

@@ -8924,3 +8924,9 @@ Video Disk Recorder Revision History
   reading thread, without additional locking.
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
+
+2017-03-30: Version 2.3.4
+
+- The functionality of HandleRemoteModifications(), which synchronizes changes to
+  timers between peer VDR machines, has been moved to timers.[ch] and renamed to
+  HandleRemoteTimerModifications(). It now also handles deleting remote timers.
