@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.1 2015/08/09 11:25:04 kls Exp $
+ * $Id: epg.h 4.2 2017/03/31 15:24:35 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -284,6 +284,9 @@ public:
   virtual bool BeginSegmentTransfer(const cChannel *Channel, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called directly after IgnoreChannel() before any other handler method is called.
           ///< Designed to give handlers the possibility to prepare a database transaction.
+          ///< If any EPG handler returns false in this function, it is assumed that
+          ///< the EPG for the given Channel has to be handled later due to some transaction problems,
+          ///> therefore the processing will aborted.
           ///< Dummy is for backward compatibility and may be removed in a future version.
   virtual bool EndSegmentTransfer(bool Modified, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called after the segment data has been processed.
@@ -311,7 +314,7 @@ public:
   void HandleEvent(cEvent *Event);
   void SortSchedule(cSchedule *Schedule);
   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
-  void BeginSegmentTransfer(const cChannel *Channel);
+  bool BeginSegmentTransfer(const cChannel *Channel);
   void EndSegmentTransfer(bool Modified);
   };
 

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.1 2015/08/23 10:43:36 kls Exp $
+ * $Id: eit.c 4.2 2017/03/31 15:16:46 kls Exp $
  */
 
 #include "eit.h"
@@ -67,8 +67,13 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
      return;
      }
 
+  if (!EpgHandlers.BeginSegmentTransfer(Channel)) {
+     SchedulesStateKey.Remove(false);
+     ChannelsStateKey.Remove(false);
+     return;
+     }
+
   bool ChannelsModified = false;
-  EpgHandlers.BeginSegmentTransfer(Channel);
   bool handledExternally = EpgHandlers.HandledExternally(Channel);
   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(Channel, true);
 
