@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.2 2017/03/31 15:24:35 kls Exp $
+ * $Id: epg.h 4.3 2017/04/01 12:27:28 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -66,7 +66,7 @@ public:
 
 class cSchedule;
 
-typedef u_int16_t tEventID;
+typedef u_int32_t tEventID;
 
 class cEvent : public cListObject {
   friend class cSchedule;
@@ -84,9 +84,9 @@ private:
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
   cComponents *components; // The stream components of this event
-  uchar contents[MaxEventContents]; // Contents of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
+  uchar contents[MaxEventContents]; // Contents of this event
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
 public:

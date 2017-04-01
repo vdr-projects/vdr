@@ -8925,10 +8925,15 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-03-31: Version 2.3.4
+2017-04-01: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
   HandleRemoteTimerModifications(). It now also handles deleting remote timers.
 - The function cEpgHandlers::BeginSegmentTransfer() is now boolean (thanks to
   Jörg Wendel). See the description in epg.h for the meaning of the return value.
+- Changed tEventID back to u_int32_t (suggested by Jörg Wendel). The change to
+  u_int16_t in version 2.3.1 was ill-conceived, because the description of the
+  "event id" in vdr.5 explicitly mentioned this parameter to be 32 bit in size!
+  The members of cEvent have been slightly rearranged to minimize the memory
+  requirements on both 32 and 64 bit systems.
