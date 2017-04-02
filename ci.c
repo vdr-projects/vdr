@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.9 2017/03/25 14:09:23 kls Exp $
+ * $Id: ci.c 4.10 2017/04/02 10:02:13 kls Exp $
  */
 
 #include "ci.h"
@@ -2663,6 +2663,13 @@ void cChannelCamRelations::Load(const char *FileName)
 void cChannelCamRelations::Save(void)
 {
   cMutexLock MutexLock(&mutex);
+  struct stat st;
+  if (stat(fileName, &st) == 0) {
+     if ((st.st_mode & S_IWUSR) == 0) {
+        dsyslog("not saving %s (file is read-only)", *fileName);
+        return;
+        }
+     }
   dsyslog("saving %s", *fileName);
   cSafeFile f(fileName);
   if (f.Open()) {
