@@ -8944,3 +8944,7 @@ Video Disk Recorder Revision History
   store auxiliary information with an event (thanks to Jörg Wendel). This string
   has no meaning whatsoever to VDR itself, and it will not be written into the
   info file of a recording that is made for such an event.
+- Added some guidelines and recommendations to the 'Logging' section of PLUGINS.html.
+  The most important being: implement a command line option to control the level
+  of logging (in particular allow turning off logging completely!) and never print
+  anything to stdout or stderr (unless one of the listed exceptions applies).

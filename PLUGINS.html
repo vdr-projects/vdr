@@ -583,6 +583,30 @@ esyslog("pluginname: error #%d has occurred", ErrorNumber);
 
 Note that the log messages will be given as provided, the plugin's name will not
 automatically be added, so make sure your log messages are obvious enough.
+<p>
+<modified>
+Only use the above logging functions for occasional log messages. Do not use
+them unconditionally for frequent messages that produce long sequences of lines
+in the log file every few seconds. That might make it hard to work on other plugins
+or the core VDR code, watching their log entries while they are permanently
+interspersed with unrelated stuff.<br>
+<br>
+The recommended behavior for a plugin that does logging is to implement a command
+line option that controls the level of log messages, preferably '-l N, --log=N',
+where 'N' is in the range 0...3, with 0 meaning no logging whatsoever, 1 log only
+errors, 2 log errors and informational messages, and 3 also log debug information.<br>
+<br>
+If a plugin can output extensive data for special debugging purposes (either to
+the log file or stdout/stderr), this should be enabled by setting proper switches
+in one of its source files (see for example how the communication between VDR and
+CAMs can be monitored in VDR/ci.c).<br>
+<br>
+Under no circumstances must a plugin print anything to stdout or stderr during
+normal operation! The only exceptions being special debug information as described
+above, fatal error messages that will cause VDR to abort, or if it is the sole
+purpose of the plugin to display something on stdout, like for instance the
+<i>skincurses</i> plugin, which displays the OSD at the console.
+</modified>
 
 <hr><h2><a name="Main menu entry">Main menu entry</a></h2>
 
