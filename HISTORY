@@ -8938,3 +8938,5 @@ Video Disk Recorder Revision History
   The members of cEvent have been slightly rearranged to minimize the memory
   requirements on both 32 and 64 bit systems.
 - The file 'cam.data' is no longer written if it is read-only.
+- Detecting whether a particular CAM actually decrypts a given channel is now
+  done separately for each receiver.

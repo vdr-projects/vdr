@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.4 2017/02/21 13:23:24 kls Exp $
+ * $Id: device.h 4.5 2017/04/02 10:08:49 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -426,8 +426,6 @@ public:
 // Common Interface facilities:
 
 private:
-  time_t startScrambleDetection;
-  int scramblingTimeout;
   cCamSlot *camSlot;
 public:
   virtual bool HasCi(void);
