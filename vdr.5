@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.1 2017/01/09 13:35:08 kls Exp $
+.\" $Id: vdr.5 4.2 2017/04/02 11:41:51 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -845,19 +845,20 @@ The first character of each line defines what kind of data this line contains.
 
 The following tag characters are defined:
 .TS
-tab (@);
+tab (|);
 l l.
-\fBC\fR@<channel id> <channel name>
-\fBE\fR@<event id> <start time> <duration> <table id> <version>
-\fBT\fR@<title>
-\fBS\fR@<short text>
-\fBD\fR@<description>
-\fBG\fR@<genre> <genre>...
-\fBR\fR@<parental rating>
-\fBX\fR@<stream> <type> <language> <descr>
-\fBV\fR@<vps time>
-\fBe\fR@
-\fBc\fR@
+\fBC\fR|<channel id> <channel name>
+\fBE\fR|<event id> <start time> <duration> <table id> <version>
+\fBT\fR|<title>
+\fBS\fR|<short text>
+\fBD\fR|<description>
+\fBG\fR|<genre> <genre>...
+\fBR\fR|<parental rating>
+\fBX\fR|<stream> <type> <language> <descr>
+\fBV\fR|<vps time>
+\fB@\fR|<auxiliary data>
+\fBe\fR|
+\fBc\fR|
 .TE
 
 Lowercase characters mark the end of a sequence that was started by the
@@ -869,7 +870,6 @@ should at least have a \fBT\fR entry).
 
 There may be several \fBX\fR tags, depending on the number of tracks (video, audio etc.)
 the event provides.
-
 .TS
 tab (@);
 l l.
@@ -890,6 +890,7 @@ l l.
 <language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component
 <vps time>     @is the Video Programming Service time of this event
+<auxiliary data>@is an arbitrary string that can be used by external applications to store data; newline characters will be replaced with '|' when writing the \fIepg.data\fR file.
 .TE
 
 This file will be read at program startup in order to restore the results of
@@ -899,6 +900,10 @@ Note that the \fBevent id\fR that comes from the DVB data stream is actually
 just 16 bit wide. The internal representation in VDR allows for 32 bit to
 be used, so that external tools can generate EPG data that is guaranteed
 not to collide with the ids of existing data.
+
+The \fBauxiliary data\fR can be used for plugin specific purposes and has no meaning
+whatsoever to VDR itself. It will \fBnot\fR be written into the \fIinfo\fR file of
+a recording that is made for such an event.
 .SS CAM DATA
 The file \fIcam.data\fR contains information about which CAM in the system can
 decrypt a particular channel.

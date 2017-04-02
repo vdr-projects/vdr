@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.3 2017/04/01 12:27:28 kls Exp $
+ * $Id: epg.h 4.4 2017/04/02 11:22:21 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -89,6 +89,7 @@ private:
   uchar contents[MaxEventContents]; // Contents of this event
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
+  char *aux;               // Auxiliary data, for use with plugins
 public:
   cEvent(tEventID EventID);
   ~cEvent();
@@ -111,6 +112,7 @@ public:
   time_t Vps(void) const { return vps; }
   time_t Seen(void) const { return seen; }
   bool SeenWithin(int Seconds) const { return time(NULL) - seen < Seconds; }
+  const char *Aux(void) const { return aux; }
   void IncNumTimers(void) const;
   void DecNumTimers(void) const;
   bool HasTimer(void) const { return numTimers > 0; }
@@ -135,6 +137,7 @@ public:
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
   void SetSeen(void);
+  void SetAux(const char *Aux);
   cString ToDescr(void) const;
   void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
   bool Parse(char *s);

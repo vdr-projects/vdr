@@ -8940,3 +8940,7 @@ Video Disk Recorder Revision History
 - The file 'cam.data' is no longer written if it is read-only.
 - Detecting whether a particular CAM actually decrypts a given channel is now
   done separately for each receiver.
+- The cEvent class now has a new member 'aux', in which external applications can
+  store auxiliary information with an event (thanks to Jörg Wendel). This string
+  has no meaning whatsoever to VDR itself, and it will not be written into the
+  info file of a recording that is made for such an event.
