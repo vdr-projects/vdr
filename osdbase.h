@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 4.1 2015/09/10 11:17:52 kls Exp $
+ * $Id: osdbase.h 4.2 2017/04/03 12:02:16 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -87,6 +87,7 @@ class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
 private:
   static cSkinDisplayMenu *displayMenu;
   static int displayMenuCount;
+  static int osdState;
   int displayMenuItems;
   char *title;
   int cols[cSkinDisplayMenu::MaxTabs];

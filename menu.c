@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.23 2017/03/30 15:15:03 kls Exp $
+ * $Id: menu.c 4.24 2017/04/03 12:26:23 kls Exp $
  */
 
 #include "menu.h"
@@ -3347,10 +3347,8 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
   int oldOsdLanguageIndex = osdLanguageIndex;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
-  if (ModifiedAppearance) {
+  if (ModifiedAppearance)
      cOsdProvider::UpdateOsdSize(true);
-     SetDisplayMenu();
-     }
 
   if (osdLanguageIndex != oldOsdLanguageIndex || skinIndex != oldSkinIndex) {
      strn0cpy(data.OSDLanguage, I18nLocale(osdLanguageIndex), sizeof(data.OSDLanguage));
@@ -4107,7 +4105,6 @@ eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
         Store();
         // Reinitialize OSD and skin, in case any plugin setup change has an influence on these:
         cOsdProvider::UpdateOsdSize(true);
-        SetDisplayMenu();
         Display();
         }
      }

@@ -8951,3 +8951,5 @@ Video Disk Recorder Revision History
 - Added a note to the "Pausing live video" section of the MANUAL, stating that
   the timer for paused live video will always record on the local VDR, even if
   an "SVDRP default host" has been set for normal timer recordings.
+- cOsdMenu::Display() now checks whether the OSD size has changed and if so calls
+  SetDisplayMenu().
