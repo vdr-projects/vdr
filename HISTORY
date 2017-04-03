@@ -8925,7 +8925,7 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-04-02: Version 2.3.4
+2017-04-03: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
@@ -8948,3 +8948,6 @@ Video Disk Recorder Revision History
   The most important being: implement a command line option to control the level
   of logging (in particular allow turning off logging completely!) and never print
   anything to stdout or stderr (unless one of the listed exceptions applies).
+- Added a note to the "Pausing live video" section of the MANUAL, stating that
+  the timer for paused live video will always record on the local VDR, even if
+  an "SVDRP default host" has been set for normal timer recordings.
