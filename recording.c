@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.7 2017/01/01 17:52:51 kls Exp $
+ * $Id: recording.c 4.8 2017/04/03 13:34:30 kls Exp $
  */
 
 #include "recording.h"
@@ -753,6 +753,7 @@ char *LimitNameLengths(char *s, int PathMax, int NameMax)
 
 cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 {
+  id = 0;
   resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
   sortBufferName = sortBufferTime = NULL;
@@ -808,6 +809,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 
 cRecording::cRecording(const char *FileName)
 {
+  id = 0;
   resume = RESUME_NOT_INITIALIZED;
   fileSizeMB = -1; // unknown
   channel = -1;
@@ -998,6 +1000,11 @@ void cRecording::ClearSortName(void)
   free(sortBufferName);
   free(sortBufferTime);
   sortBufferName = sortBufferTime = NULL;
+}
+
+void cRecording::SetId(int Id)
+{
+  id = Id;
 }
 
 int cRecording::GetResume(void) const
@@ -1456,6 +1463,7 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
 
 cRecordings cRecordings::recordings;
 cRecordings cRecordings::deletedRecordings(true);
+int cRecordings::lastRecordingId = 0;
 char *cRecordings::updateFileName = NULL;
 cVideoDirectoryScannerThread *cRecordings::videoDirectoryScannerThread = NULL;
 time_t cRecordings::lastUpdate = 0;
@@ -1507,6 +1515,15 @@ void cRecordings::Update(bool Wait)
      }
 }
 
+const cRecording *cRecordings::GetById(int Id) const
+{
+  for (const cRecording *Recording = First(); Recording; Recording = Next(Recording)) {
+      if (Recording->Id() == Id)
+         return Recording;
+      }
+  return NULL;
+}
+
 const cRecording *cRecordings::GetByName(const char *FileName) const
 {
   if (FileName) {
@@ -1516,6 +1533,12 @@ const cRecording *cRecordings::GetByName(const char *FileName) const
          }
      }
   return NULL;
+}
+
+void cRecordings::Add(cRecording *Recording)
+{
+  Recording->SetId(++lastRecordingId);
+  cList<cRecording>::Add(Recording);
 }
 
 void cRecordings::AddByName(const char *FileName, bool TriggerUpdate)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.4 2016/12/13 13:12:12 kls Exp $
+ * $Id: recording.h 4.5 2017/04/03 13:31:16 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -97,6 +97,7 @@ public:
 class cRecording : public cListObject {
   friend class cRecordings;
 private:
+  int id;
   mutable int resume;
   mutable char *titleBuffer;
   mutable char *sortBufferName;
@@ -116,6 +117,7 @@ private:
   static char *StripEpisodeName(char *s, bool Strip);
   char *SortName(void) const;
   void ClearSortName(void);
+  void SetId(int Id); // should only be set by cRecordings
   time_t start;
   int priority;
   int lifetime;
@@ -124,6 +126,7 @@ public:
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
   virtual ~cRecording();
+  int Id(void) const { return id; }
   time_t Start(void) const { return start; }
   int Priority(void) const { return priority; }
   int Lifetime(void) const { return lifetime; }
@@ -222,6 +225,7 @@ class cRecordings : public cList<cRecording> {
 private:
   static cRecordings recordings;
   static cRecordings deletedRecordings;
+  static int lastRecordingId;
   static char *updateFileName;
   static time_t lastUpdate;
   static cVideoDirectoryScannerThread *videoDirectoryScannerThread;
@@ -254,8 +258,11 @@ public:
   static bool NeedsUpdate(void);
   void ResetResume(const char *ResumeFileName = NULL);
   void ClearSortNames(void);
+  const cRecording *GetById(int Id) const;
+  cRecording *GetById(int Id) { return const_cast<cRecording *>(static_cast<const cRecordings *>(this)->GetById(Id)); };
   const cRecording *GetByName(const char *FileName) const;
   cRecording *GetByName(const char *FileName) { return const_cast<cRecording *>(static_cast<const cRecordings *>(this)->GetByName(FileName)); }
+  void Add(cRecording *Recording);
   void AddByName(const char *FileName, bool TriggerUpdate = true);
   void DelByName(const char *FileName);
   void UpdateByName(const char *FileName);

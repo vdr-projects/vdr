@@ -8953,3 +8953,9 @@ Video Disk Recorder Revision History
   an "SVDRP default host" has been set for normal timer recordings.
 - cOsdMenu::Display() now checks whether the OSD size has changed and if so calls
   SetDisplayMenu().
+- The SVDRP commands that deal with recordings (DELR, EDIT, LSTR, MOVR, and PLAY)
+  now use a unique id for each recording, which remains valid as long as this
+  instance of VDR is running. This means that recordings are no longer continuously
+  numbered from 1 to N in LSTR. There may be gaps in the sequence, in case recordings
+  have been deleted, and they are not necessarily listed in numeric order.
+  Thanks to Sergey Chernyavskiy.

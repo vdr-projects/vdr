@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.11 2016/12/08 10:48:53 kls Exp $
+ * $Id: svdrp.c 4.12 2017/04/03 13:56:52 kls Exp $
  */
 
 #include "svdrp.h"
@@ -723,18 +723,19 @@ const char *HelpPages[] = {
   "    interfere with data from the broadcasters.",
   "DELC <number>\n"
   "    Delete channel.",
-  "DELR <number>\n"
-  "    Delete the recording with the given number. Before a recording can be\n"
-  "    deleted, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers. The numbers don't change during subsequent DELR\n"
-  "    commands. CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
+  "DELR <id>\n"
+  "    Delete the recording with the given id. Before a recording can be\n"
+  "    deleted, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids. The ids are unique and don't change while this\n"
+  "    instance of VDR is running.\n"
+  "    CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
   "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
   "DELT <number>\n"
   "    Delete timer.",
-  "EDIT <number>\n"
-  "    Edit the recording with the given number. Before a recording can be\n"
-  "    edited, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers.",
+  "EDIT <id>\n"
+  "    Edit the recording with the given id. Before a recording can be\n"
+  "    edited, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids.",
   "GRAB <filename> [ <quality> [ <sizex> <sizey> ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
   "    be stored as JPEG or PNM, depending on the given file name extension.\n"
@@ -764,11 +765,13 @@ const char *HelpPages[] = {
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
   "    events at the given time (which must be in time_t form).",
-  "LSTR [ <number> [ path ] ]\n"
+  "LSTR [ <id> [ path ] ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
   "    the information for the given recording is listed. If a recording\n"
-  "    number and the keyword 'path' is given, the actual file name of that\n"
-  "    recording's directory is listed.",
+  "    id and the keyword 'path' is given, the actual file name of that\n"
+  "    recording's directory is listed.\n"
+  "    Note that the ids of the recordings are not necessarily given in\n"
+  "    numeric order.",
   "LSTT [ <number> ] [ id ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed. If the keyword 'id' is given, the\n"
@@ -787,10 +790,10 @@ const char *HelpPages[] = {
   "    used to easily activate or deactivate a timer.",
   "MOVC <number> <to>\n"
   "    Move a channel to a new position.",
-  "MOVR <number> <new name>\n"
-  "    Move the recording with the given number. Before a recording can be\n"
-  "    moved, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers. The numbers don't change during subsequent MOVR\n"
+  "MOVR <id> <new name>\n"
+  "    Move the recording with the given id. Before a recording can be\n"
+  "    moved, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids. The ids don't change during subsequent MOVR\n"
   "    commands.\n",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
@@ -812,10 +815,10 @@ const char *HelpPages[] = {
   "    Used by peer-to-peer connections between VDRs to keep the connection\n"
   "    from timing out. May be used at any time and simply returns a line of\n"
   "    the form '<hostname> is alive'.",
-  "PLAY <number> [ begin | <position> ]\n"
-  "    Play the recording with the given number. Before a recording can be\n"
-  "    played, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers.\n"
+  "PLAY <id> [ begin | <position> ]\n"
+  "    Play the recording with the given id. Before a recording can be\n"
+  "    played, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids.\n"
   "    The keyword 'begin' plays the recording from its very beginning, while\n"
   "    a <position> (given as hh:mm:ss[.ff] or framenumber) starts at that\n"
   "    position. If neither 'begin' nor a <position> are given, replay is resumed\n"
@@ -1280,7 +1283,7 @@ void cSVDRPServer::CmdDELR(const char *Option)
      if (isnumber(Option)) {
         LOCK_RECORDINGS_WRITE;
         Recordings->SetExplicitModify();
-        if (cRecording *Recording = Recordings->Get(strtol(Option, NULL, 10) - 1)) {
+        if (cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            if (int RecordingInUse = Recording->IsInUse())
               Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, Recording));
            else {
@@ -1707,7 +1710,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
            p = strtok_r(NULL, delim, &strtok_next);
            }
      if (Number) {
-        if (const cRecording *Recording = Recordings->Get(strtol(Option, NULL, 10) - 1)) {
+        if (const cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            FILE *f = fdopen(file, "w");
            if (f) {
               if (Path)
@@ -1729,7 +1732,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
   else if (Recordings->Count()) {
      const cRecording *Recording = Recordings->First();
      while (Recording) {
-           Reply(Recording == Recordings->Last() ? 250 : -250, "%d %s", Recording->Index() + 1, Recording->Title(' ', true));
+           Reply(Recording == Recordings->Last() ? 250 : -250, "%d %s", Recording->Id(), Recording->Title(' ', true));
            Recording = Recordings->Next(Recording);
            }
      }
@@ -1940,7 +1943,7 @@ void cSVDRPServer::CmdMOVR(const char *Option)
      if (isnumber(num)) {
         LOCK_RECORDINGS_WRITE;
         Recordings->SetExplicitModify();
-        if (cRecording *Recording = Recordings->Get(strtol(num, NULL, 10) - 1)) {
+        if (cRecording *Recording = Recordings->GetById(strtol(num, NULL, 10))) {
            if (int RecordingInUse = Recording->IsInUse())
               Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, Recording));
            else {
