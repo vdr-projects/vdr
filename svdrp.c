@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.12 2017/04/03 13:56:52 kls Exp $
+ * $Id: svdrp.c 4.13 2017/04/03 14:31:13 kls Exp $
  */
 
 #include "svdrp.h"
@@ -730,8 +730,9 @@ const char *HelpPages[] = {
   "    instance of VDR is running.\n"
   "    CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
   "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
-  "DELT <number>\n"
-  "    Delete timer.",
+  "DELT <id>\n"
+  "    Delete the timer with the given id. If this timer is currently recording,\n"
+  "    the recording will be stopped without any warning.",
   "EDIT <id>\n"
   "    Edit the recording with the given id. Before a recording can be\n"
   "    edited, an LSTR command should have been executed in order to retrieve\n"
@@ -772,19 +773,19 @@ const char *HelpPages[] = {
   "    recording's directory is listed.\n"
   "    Note that the ids of the recordings are not necessarily given in\n"
   "    numeric order.",
-  "LSTT [ <number> ] [ id ]\n"
+  "LSTT [ <id> ] [ id ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
-  "    only the given timer is listed. If the keyword 'id' is given, the\n"
-  "    channels will be listed with their unique channel ids instead of\n"
-  "    their numbers. This command lists only the timers that are defined\n"
-  "    locally on this VDR, not any remote timers from other VDRs.",
+  "    only the timer with the given id is listed. If the keyword 'id' is\n"
+  "    given, the channels will be listed with their unique channel ids\n"
+  "    instead of their numbers. This command lists only the timers that are\n"
+  "    defined locally on this VDR, not any remote timers from other VDRs.",
   "MESG <message>\n"
   "    Displays the given message on the OSD. The message will be queued\n"
   "    and displayed whenever this is suitable.\n",
   "MODC <number> <settings>\n"
   "    Modify a channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
-  "MODT <number> on | off | <settings>\n"
+  "MODT <id> on | off | <settings>\n"
   "    Modify a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. The special keywords 'on' and 'off' can be\n"
   "    used to easily activate or deactivate a timer.",
@@ -809,7 +810,7 @@ const char *HelpPages[] = {
   "    number of seconds from now until the event. If the absolute time given\n"
   "    is smaller than the current time, or if the relative time is less than\n"
   "    zero, this means that the timer is currently recording and has started\n"
-  "    at the given time. The first value in the resulting line is the number\n"
+  "    at the given time. The first value in the resulting line is the id\n"
   "    of the timer.",
   "PING\n"
   "    Used by peer-to-peer connections between VDRs to keep the connection\n"

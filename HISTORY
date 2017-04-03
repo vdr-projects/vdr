@@ -8959,3 +8959,5 @@ Video Disk Recorder Revision History
   numbered from 1 to N in LSTR. There may be gaps in the sequence, in case recordings
   have been deleted, and they are not necessarily listed in numeric order.
   Thanks to Sergey Chernyavskiy.
+- Changed 'number' to 'id' in the help texts of SVDRP commands that deal with
+  timers.
