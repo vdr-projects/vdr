@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.15 2017/04/04 11:01:10 kls Exp $
+ * $Id: svdrp.c 4.16 2017/04/04 11:09:14 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1301,10 +1301,10 @@ void cSVDRPServer::CmdDELR(const char *Option)
            Reply(550, "Recording \"%s\" not found", Option);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", Option);
+        Reply(501, "Error in recording id \"%s\"", Option);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdDELT(const char *Option)
@@ -1351,10 +1351,10 @@ void cSVDRPServer::CmdEDIT(const char *Option)
            Reply(550, "Recording \"%s\" not found", Option);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", Option);
+        Reply(501, "Error in recording id \"%s\"", Option);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdGRAB(const char *Option)
@@ -1698,7 +1698,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
               if (isnumber(p))
                  Number = strtol(p, NULL, 10);
               else {
-                 Reply(501, "Error in recording number \"%s\"", Option);
+                 Reply(501, "Error in recording id \"%s\"", Option);
                  return;
                  }
               }
@@ -1872,7 +1872,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
            Reply(501, "Timer \"%d\" not defined", Id);
         }
      else
-        Reply(501, "Error in timer number");
+        Reply(501, "Error in timer id");
      }
   else
      Reply(501, "Missing timer settings");
@@ -1968,11 +1968,11 @@ void cSVDRPServer::CmdMOVR(const char *Option)
            Reply(550, "Recording \"%s\" not found", num);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", num);
+        Reply(501, "Error in recording id \"%s\"", num);
      free(opt);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdNEWC(const char *Option)
@@ -2091,11 +2091,11 @@ void cSVDRPServer::CmdPLAY(const char *Option)
            }
         }
      else
-        Reply(501, "Error in recording number \"%s\"", num);
+        Reply(501, "Error in recording id \"%s\"", num);
      free(opt);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdPLUG(const char *Option)
