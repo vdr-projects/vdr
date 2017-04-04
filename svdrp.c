@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.14 2017/04/04 09:39:36 kls Exp $
+ * $Id: svdrp.c 4.15 2017/04/04 11:01:10 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2057,29 +2057,38 @@ void cSVDRPServer::CmdPLAY(const char *Option)
      char c = *option;
      *option = 0;
      if (isnumber(num)) {
-        LOCK_RECORDINGS_READ;
-        if (const cRecording *Recording = Recordings->GetById(strtol(num, NULL, 10))) {
-           if (c)
-              option = skipspace(++option);
-           cReplayControl::SetRecording(NULL);
-           cControl::Shutdown();
-           if (*option) {
-              int pos = 0;
-              if (strcasecmp(option, "BEGIN") != 0)
-                 pos = HMSFToIndex(option, Recording->FramesPerSecond());
-              cResumeFile Resume(Recording->FileName(), Recording->IsPesRecording());
-              if (pos <= 0)
-                 Resume.Delete();
-              else
-                 Resume.Save(pos);
+        cStateKey StateKey;
+        if (const cRecordings *Recordings = cRecordings::GetRecordingsRead(StateKey)) {
+           if (const cRecording *Recording = Recordings->GetById(strtol(num, NULL, 10))) {
+              cString FileName = Recording->FileName();
+              cString Title = Recording->Title();
+              int FramesPerSecond = Recording->FramesPerSecond();
+              bool IsPesRecording = Recording->IsPesRecording();
+              StateKey.Remove(); // must give up the lock for the call to cControl::Shutdown()
+              if (c)
+                 option = skipspace(++option);
+              cReplayControl::SetRecording(NULL);
+              cControl::Shutdown();
+              if (*option) {
+                 int pos = 0;
+                 if (strcasecmp(option, "BEGIN") != 0)
+                    pos = HMSFToIndex(option, FramesPerSecond);
+                 cResumeFile Resume(FileName, IsPesRecording);
+                 if (pos <= 0)
+                    Resume.Delete();
+                 else
+                    Resume.Save(pos);
+                 }
+              cReplayControl::SetRecording(FileName);
+              cControl::Launch(new cReplayControl);
+              cControl::Attach();
+              Reply(250, "Playing recording \"%s\" [%s]", num, *Title);
               }
-           cReplayControl::SetRecording(Recording->FileName());
-           cControl::Launch(new cReplayControl);
-           cControl::Attach();
-           Reply(250, "Playing recording \"%s\" [%s]", num, Recording->Title());
+           else {
+              StateKey.Remove();
+              Reply(550, "Recording \"%s\" not found", num);
+              }
            }
-        else
-           Reply(550, "Recording \"%s\" not found", num);
         }
      else
         Reply(501, "Error in recording number \"%s\"", num);

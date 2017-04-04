@@ -8961,3 +8961,5 @@ Video Disk Recorder Revision History
   Thanks to Sergey Chernyavskiy.
 - Changed 'number' to 'id' in the help texts of SVDRP commands that deal with
   timers.
+- Fixed a deadlock in the SVDRP command PLAY in case there is currently a
+  recording being replayed.
