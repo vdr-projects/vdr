@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.4 2017/01/09 15:11:39 kls Exp $
+ * $Id: dvbdevice.c 4.5 2017/04/06 17:02:35 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -557,9 +557,63 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 //#define DEBUG_SIGNALSTRENGTH
 //#define DEBUG_SIGNALQUALITY
 
+#define MAXFRONTENDCMDS 16
+#define SETCMD(c, d) { Props[CmdSeq.num].cmd = (c);\
+                       Props[CmdSeq.num].u.data = (d);\
+                       if (CmdSeq.num++ > MAXFRONTENDCMDS) {\
+                          esyslog("ERROR: too many tuning commands on frontend %d/%d", adapter, frontend);\
+                          return false;\
+                          }\
+                     }
+
+int dB1000toPercent(int dB1000, int Low, int High)
+{
+  // Convert the given value, which is in 1/1000 dBm, to a percentage in the
+  // range 0..100. Anything below Low is considered 0%, and anything above
+  // High counts as 100%.
+  if (dB1000 < Low)
+     return 0;
+  if (dB1000 > High)
+     return 100;
+  // return 100 - 100 * (High - dB1000) / (High - Low); // linear conversion
+  // return 100 - 100 * sqr(dB1000 - High) / sqr(Low - High); // quadratic conversion, see https://www.adriangranados.com/blog/dbm-to-percent-conversion
+  double v = 10.0 * (dB1000 - High) / (Low - High); // avoids the sqr() function
+  return 100 - v * v;
+}
+
 int cDvbTuner::GetSignalStrength(void) const
 {
   ClearEventQueue();
+  // Try DVB API 5:
+  for (int i = 0; i < 1; i++) { // just a trick to break out with 'continue' ;-)
+      dtv_property Props[MAXFRONTENDCMDS];
+      dtv_properties CmdSeq;
+      memset(&Props, 0, sizeof(Props));
+      memset(&CmdSeq, 0, sizeof(CmdSeq));
+      CmdSeq.props = Props;
+      SETCMD(DTV_STAT_SIGNAL_STRENGTH, 0);
+      if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+         esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
+         return -1;
+         }
+      int Signal = 0;;
+      if (Props[0].u.st.len > 0) {
+         switch (Props[0].u.st.stat[0].scale) {
+           case FE_SCALE_DECIBEL:  Signal = dB1000toPercent(Props[0].u.st.stat[0].svalue, -95000, -20000); // TODO use different values for DVB-S, -T, -C?
+                                   break;
+           case FE_SCALE_RELATIVE: Signal = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
+                                   break;
+           default: ;
+           }
+#ifdef DEBUG_SIGNALSTRENGTH
+         fprintf(stderr, "FE %d/%d: API5 %d %08X %.1f S = %d\n", adapter, frontend, Props[0].u.st.stat[0].scale, int(Props[0].u.st.stat[0].svalue), int(Props[0].u.st.stat[0].svalue) / 1000.0, Signal);
+#endif
+         }
+      else
+         continue;
+      return Signal;
+      }
+  // Fall back to DVB API 3:
   uint16_t Signal;
   while (1) {
         if (ioctl(fd_frontend, FE_READ_SIGNAL_STRENGTH, &Signal) != -1)
@@ -579,7 +633,7 @@ int cDvbTuner::GetSignalStrength(void) const
   if (s > 100)
      s = 100;
 #ifdef DEBUG_SIGNALSTRENGTH
-  fprintf(stderr, "FE %d/%d: %08X S = %04X %04X %3d%%\n", adapter, frontend, subsystemId, MaxSignal, Signal, s);
+  fprintf(stderr, "FE %d/%d: API3 %08X S = %04X %04X %3d%%\n", adapter, frontend, subsystemId, MaxSignal, Signal, s);
 #endif
   return s;
 }
@@ -588,6 +642,36 @@ int cDvbTuner::GetSignalStrength(void) const
 
 int cDvbTuner::GetSignalQuality(void) const
 {
+  // Try DVB API 5:
+  for (int i = 0; i < 1; i++) { // just a trick to break out with 'continue' ;-)
+      dtv_property Props[MAXFRONTENDCMDS];
+      dtv_properties CmdSeq;
+      memset(&Props, 0, sizeof(Props));
+      memset(&CmdSeq, 0, sizeof(CmdSeq));
+      CmdSeq.props = Props;
+      SETCMD(DTV_STAT_CNR, 0);
+      if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+         esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
+         return -1;
+         }
+      int Cnr = 0;;
+      if (Props[0].u.st.len > 0) {
+         switch (Props[0].u.st.stat[0].scale) {
+           case FE_SCALE_DECIBEL:  Cnr = dB1000toPercent(Props[0].u.st.stat[0].svalue, 5000, 20000); // TODO use different values for DVB-S, -T, -C?
+                                   break;
+           case FE_SCALE_RELATIVE: Cnr = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
+                                   break;
+           default: ;
+           }
+#ifdef DEBUG_SIGNALQUALITY
+         fprintf(stderr, "FE %d/%d: API5 %d %08X %.1f Q = %d\n", adapter, frontend, Props[0].u.st.stat[0].scale, int(Props[0].u.st.stat[0].svalue), int(Props[0].u.st.stat[0].svalue) / 1000.0, Cnr);
+#endif
+         }
+      else
+         continue;
+      return Cnr;
+      }
+  // Fall back to DVB API 3:
   fe_status_t Status;
   if (GetFrontendStatus(Status)) {
      // Actually one would expect these checks to be done from FE_HAS_SIGNAL to FE_HAS_LOCK, but some drivers (like the stb0899) are broken, so FE_HAS_LOCK is the only one that (hopefully) is generally reliable...
@@ -673,7 +757,7 @@ int cDvbTuner::GetSignalQuality(void) const
      if (q > 100)
         q = 100;
 #ifdef DEBUG_SIGNALQUALITY
-     fprintf(stderr, "FE %d/%d: %08X Q = %04X %04X %d %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasSnr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
+     fprintf(stderr, "FE %d/%d: API3 %08X Q = %04X %04X %d %5d %5d %3d%%\n", adapter, frontend, subsystemId, MaxSnr, Snr, HasSnr, HasBer ? int(Ber) : -1, HasUnc ? int(Unc) : -1, q);
 #endif
      return q;
      }
@@ -777,19 +861,11 @@ static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTranspon
 
 bool cDvbTuner::SetFrontend(void)
 {
-#define MAXFRONTENDCMDS 16
-#define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
-                       Frontend[CmdSeq.num].u.data = (d);\
-                       if (CmdSeq.num++ > MAXFRONTENDCMDS) {\
-                          esyslog("ERROR: too many tuning commands on frontend %d/%d", adapter, frontend);\
-                          return false;\
-                          }\
-                     }
-  dtv_property Frontend[MAXFRONTENDCMDS];
-  memset(&Frontend, 0, sizeof(Frontend));
+  dtv_property Props[MAXFRONTENDCMDS];
+  memset(&Props, 0, sizeof(Props));
   dtv_properties CmdSeq;
   memset(&CmdSeq, 0, sizeof(CmdSeq));
-  CmdSeq.props = Frontend;
+  CmdSeq.props = Props;
   SETCMD(DTV_CLEAR, 0);
   if (ioctl(fd_frontend, FE_SET_PROPERTY, &CmdSeq) < 0) {
      esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
@@ -1263,36 +1339,36 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
      LOG_ERROR;
      return false;
      }
-  dtv_property Frontend[1];
+  dtv_property Props[1];
   dtv_properties CmdSeq;
   // Determine the version of the running DVB API:
   if (!DvbApiVersion) {
-     memset(&Frontend, 0, sizeof(Frontend));
+     memset(&Props, 0, sizeof(Props));
      memset(&CmdSeq, 0, sizeof(CmdSeq));
-     CmdSeq.props = Frontend;
+     CmdSeq.props = Props;
      SETCMD(DTV_API_VERSION, 0);
      if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
         LOG_ERROR;
         return false;
         }
-     DvbApiVersion = Frontend[0].u.data;
+     DvbApiVersion = Props[0].u.data;
      isyslog("DVB API version is 0x%04X (VDR was built with 0x%04X)", DvbApiVersion, DVBAPIVERSION);
      }
   // Determine the types of delivery systems this device provides:
   bool LegacyMode = true;
   if (DvbApiVersion >= 0x0505) {
-     memset(&Frontend, 0, sizeof(Frontend));
+     memset(&Props, 0, sizeof(Props));
      memset(&CmdSeq, 0, sizeof(CmdSeq));
-     CmdSeq.props = Frontend;
+     CmdSeq.props = Props;
      SETCMD(DTV_ENUM_DELSYS, 0);
      int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
      if (Result == 0) {
-        for (uint i = 0; i < Frontend[0].u.buffer.len; i++) {
+        for (uint i = 0; i < Props[0].u.buffer.len; i++) {
             if (numDeliverySystems >= MAXDELIVERYSYSTEMS) {
                esyslog("ERROR: too many delivery systems on frontend %d/%d", adapter, frontend);
                break;
                }
-            deliverySystems[numDeliverySystems++] = Frontend[0].u.buffer.data[i];
+            deliverySystems[numDeliverySystems++] = Props[0].u.buffer.data[i];
             }
         LegacyMode = false;
         }

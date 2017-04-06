@@ -8925,7 +8925,7 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-04-03: Version 2.3.4
+2017-04-06: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
@@ -8963,3 +8963,5 @@ Video Disk Recorder Revision History
   timers.
 - Fixed a deadlock in the SVDRP command PLAY in case there is currently a
   recording being replayed.
+- Signal strength and quality (CNR) are now determined via DVB API 5 (if available).
+  Fallback is the old DVB API 3 method.
