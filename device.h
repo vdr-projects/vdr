@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.6 2017/04/14 09:59:20 kls Exp $
+ * $Id: device.h 4.7 2017/04/15 09:41:34 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -840,7 +840,7 @@ class cTSBuffer : public cThread {
 private:
   int f;
   int cardIndex;
-  bool delivered;
+  int delivered;
   cRingBufferLinear *ringBuffer;
   virtual void Action(void);
 public:

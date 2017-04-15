@@ -8972,3 +8972,9 @@ Video Disk Recorder Revision History
   plugins that implement a derived cDevice need to call Decrypt() in their
   GetTSPacket() function even if the incoming buffer is currently empty (see
   cDvbDevice::GetTSPacket()).
+- cTSBuffer::Skip() no longer immediately deletes the given number of bytes from the
+  TS buffer, but rather stores the number for later deletion in the next call to
+  Get(). This is necessary because in cDvbDevice::GetTSPacket() tsBuffer->Skip()
+  is called, but the actual TS packet returned (pointed to by Data) may well be
+  (and typically is, unless the CAM copies the data) in the area of the buffer that
+  would be deleted by Skip().

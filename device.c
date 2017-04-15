@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.13 2017/04/14 09:38:42 kls Exp $
+ * $Id: device.c 4.14 2017/04/15 09:44:50 kls Exp $
  */
 
 #include "device.h"
@@ -1824,7 +1824,7 @@ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
   SetDescription("device %d TS buffer", CardIndex);
   f = File;
   cardIndex = CardIndex;
-  delivered = false;
+  delivered = 0;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
   ringBuffer->SetIoThrottle();
@@ -1864,8 +1864,8 @@ uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
 {
   int Count = 0;
   if (delivered) {
-     ringBuffer->Del(TS_SIZE);
-     delivered = false;
+     ringBuffer->Del(delivered);
+     delivered = 0;
      }
   if (CheckAvailable && ringBuffer->Available() < TS_SIZE)
      return NULL;
@@ -1882,7 +1882,7 @@ uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
         esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", Count, cardIndex);
         return NULL;
         }
-     delivered = true;
+     delivered = TS_SIZE;
      if (Available)
         *Available = Count;
      return p;
@@ -1892,6 +1892,5 @@ uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
 
 void cTSBuffer::Skip(int Count)
 {
-  ringBuffer->Del(Count);
-  delivered = false;
+  delivered = Count;
 }
