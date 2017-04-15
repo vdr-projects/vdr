@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.10 2017/04/02 10:02:13 kls Exp $
+ * $Id: ci.c 4.11 2017/04/11 16:45:55 kls Exp $
  */
 
 #include "ci.h"
@@ -2415,7 +2415,8 @@ bool cCamSlot::IsDecrypting(void)
 
 uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
 {
-  Count = TS_SIZE;
+  if (Data)
+     Count = TS_SIZE;
   return Data;
 }
 

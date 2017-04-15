@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.12 2017/04/02 10:08:49 kls Exp $
+ * $Id: device.c 4.13 2017/04/14 09:38:42 kls Exp $
  */
 
 #include "device.h"
@@ -1860,13 +1860,15 @@ void cTSBuffer::Action(void)
      }
 }
 
-uchar *cTSBuffer::Get(int *Available)
+uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
 {
   int Count = 0;
   if (delivered) {
      ringBuffer->Del(TS_SIZE);
      delivered = false;
      }
+  if (CheckAvailable && ringBuffer->Available() < TS_SIZE)
+     return NULL;
   uchar *p = ringBuffer->Get(Count);
   if (p && Count >= TS_SIZE) {
      if (*p != TS_SYNC_BYTE) {

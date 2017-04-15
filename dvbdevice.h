@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 4.1 2015/04/18 13:57:27 kls Exp $
+ * $Id: dvbdevice.h 4.2 2017/04/14 09:31:29 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -187,6 +187,7 @@ private:
   int numDeliverySystems;
   int numModulations;
   int fd_dvr, fd_ca;
+  bool checkTsBuffer;
   static cMutex bondMutex;
   cDvbDevice *bondedDevice;
   mutable bool needsDetachBondedReceivers;

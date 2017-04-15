@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.5 2017/04/06 17:02:35 kls Exp $
+ * $Id: dvbdevice.c 4.6 2017/04/14 10:05:15 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1187,6 +1187,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
   if (fd_ca >= 0)
      ciAdapter = cDvbCiAdapter::CreateCiAdapter(this, fd_ca);
+  checkTsBuffer = false;
 
   // The DVR device (will be opened and closed as needed):
 
@@ -1763,11 +1764,12 @@ bool cDvbDevice::GetTSPacket(uchar *&Data)
      if (cCamSlot *cs = CamSlot()) {
         if (cs->WantsTsData()) {
            int Available;
-           Data = tsBuffer->Get(&Available);
-           if (Data) {
-              Data = cs->Decrypt(Data, Available);
-              tsBuffer->Skip(Available);
-              }
+           Data = tsBuffer->Get(&Available, checkTsBuffer);
+           if (!Data)
+              Available = 0;
+           Data = cs->Decrypt(Data, Available);
+           tsBuffer->Skip(Available);
+           checkTsBuffer = Data != NULL;
            return true;
            }
         }
