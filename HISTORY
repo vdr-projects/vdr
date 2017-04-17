@@ -8925,7 +8925,7 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-04-15: Version 2.3.4
+2017-04-17: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
@@ -8978,3 +8978,7 @@ Video Disk Recorder Revision History
   is called, but the actual TS packet returned (pointed to by Data) may well be
   (and typically is, unless the CAM copies the data) in the area of the buffer that
   would be deleted by Skip().
+- The new function cDevice::SignalStats() (if implemented by an actual device) returns
+  statistics about the currently received signal.
+- If DVB API 5 signal statistics are available for a cDvbDevice, it now logs them
+  whenever the tuner acquires a lock (suggested by Dietmar Spingler).

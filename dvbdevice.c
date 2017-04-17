@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.6 2017/04/14 10:05:15 kls Exp $
+ * $Id: dvbdevice.c 4.7 2017/04/17 15:02:44 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -346,6 +346,7 @@ public:
   void SetChannel(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
   const cPositioner *Positioner(void) const { return positioner; }
+  bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL) const;
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
   };
@@ -554,6 +555,7 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
   return false;
 }
 
+//#define DEBUG_SIGNALSTATS
 //#define DEBUG_SIGNALSTRENGTH
 //#define DEBUG_SIGNALQUALITY
 
@@ -565,6 +567,101 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
                           return false;\
                           }\
                      }
+
+bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+{
+  ClearEventQueue();
+  dtv_property Props[MAXFRONTENDCMDS];
+  dtv_properties CmdSeq;
+  memset(&Props, 0, sizeof(Props));
+  memset(&CmdSeq, 0, sizeof(CmdSeq));
+  CmdSeq.props = Props;
+  if (Strength)   SETCMD(DTV_STAT_SIGNAL_STRENGTH, 0);
+  if (Cnr)        SETCMD(DTV_STAT_CNR, 0);
+  if (BerPre)   { SETCMD(DTV_STAT_PRE_ERROR_BIT_COUNT, 0);
+                  SETCMD(DTV_STAT_PRE_TOTAL_BIT_COUNT, 0); }
+  if (BerPost)  { SETCMD(DTV_STAT_POST_ERROR_BIT_COUNT, 0);
+                  SETCMD(DTV_STAT_POST_TOTAL_BIT_COUNT, 0); }
+  if (Per)      { SETCMD(DTV_STAT_ERROR_BLOCK_COUNT, 0);
+                  SETCMD(DTV_STAT_TOTAL_BLOCK_COUNT, 0); }
+  if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
+     return false;
+     }
+  Valid = DTV_STAT_VALID_NONE;
+  int i = 0;
+  if (Strength) {
+     if (Props[i].u.st.len > 0) {
+        switch (Props[i].u.st.stat[0].scale) {
+          case FE_SCALE_DECIBEL:  *Strength = double(Props[i].u.st.stat[0].svalue) / 1000;
+                                  Valid |= DTV_STAT_VALID_STRENGTH;
+                                  break;
+          default: ;
+          }
+        }
+     i++;
+     }
+  if (Cnr) {
+     if (Props[i].u.st.len > 0) {
+        switch (Props[i].u.st.stat[0].scale) {
+          case FE_SCALE_DECIBEL:  *Cnr = double(Props[i].u.st.stat[0].svalue) / 1000;
+                                  Valid |= DTV_STAT_VALID_CNR;
+                                  break;
+          default: ;
+          }
+        }
+     i++;
+     }
+  if (BerPre) {
+     if (Props[i].u.st.len > 0 && Props[i + 1].u.st.len > 0) {
+        if (Props[i].u.st.stat[0].scale == FE_SCALE_COUNTER && Props[i + 1].u.st.stat[0].scale == FE_SCALE_COUNTER) {
+           uint64_t ebc = Props[i].u.st.stat[0].uvalue; // error bit count
+           uint64_t tbc = Props[i + 1].u.st.stat[0].uvalue; // total bit count
+           if (tbc > 0) {
+              *BerPre = double(ebc) / tbc;
+              Valid |= DTV_STAT_VALID_BERPRE;
+              }
+           }
+        }
+     i += 2;
+     }
+  if (BerPost) {
+     if (Props[i].u.st.len > 0 && Props[i + 1].u.st.len > 0) {
+        if (Props[i].u.st.stat[0].scale == FE_SCALE_COUNTER && Props[i + 1].u.st.stat[0].scale == FE_SCALE_COUNTER) {
+           uint64_t ebc = Props[i].u.st.stat[0].uvalue; // error bit count
+           uint64_t tbc = Props[i + 1].u.st.stat[0].uvalue; // total bit count
+           if (tbc > 0) {
+              *BerPost = double(ebc) / tbc;
+              Valid |= DTV_STAT_VALID_BERPOST;
+              }
+           }
+        }
+     i += 2;
+     }
+  if (Per) {
+     if (Props[i].u.st.len > 0 && Props[i + 1].u.st.len > 0) {
+        if (Props[i].u.st.stat[0].scale == FE_SCALE_COUNTER && Props[i + 1].u.st.stat[0].scale == FE_SCALE_COUNTER) {
+           uint64_t ebc = Props[i].u.st.stat[0].uvalue; // error block count
+           uint64_t tbc = Props[i + 1].u.st.stat[0].uvalue; // total block count
+           if (tbc > 0) {
+              *Per = double(ebc) / tbc;
+              Valid |= DTV_STAT_VALID_PER;
+              }
+           }
+        }
+     i += 2;
+     }
+#ifdef DEBUG_SIGNALSTATS
+  fprintf(stderr, "FE %d/%d: API5 %04X", adapter, frontend, Valid);
+  if ((Valid & DTV_STAT_VALID_STRENGTH) != 0) fprintf(stderr, " STR=%1.1fdBm",  *Strength);
+  if ((Valid & DTV_STAT_VALID_CNR)      != 0) fprintf(stderr, " CNR=%1.1fdB",   *Cnr);
+  if ((Valid & DTV_STAT_VALID_BERPRE)   != 0) fprintf(stderr, " BERPRE=%1.1e",  *BerPre);
+  if ((Valid & DTV_STAT_VALID_BERPOST)  != 0) fprintf(stderr, " BERPOST=%1.1e", *BerPost);
+  if ((Valid & DTV_STAT_VALID_PER)      != 0) fprintf(stderr, " PER=%1.1e",     *Per);
+  fprintf(stderr, "\n");
+#endif
+  return Valid != DTV_STAT_VALID_NONE;
+}
 
 int dB1000toPercent(int dB1000, int Low, int High)
 {
@@ -1057,6 +1154,18 @@ void cDvbTuner::Action(void)
                   if (LostLock) {
                      isyslog("frontend %d/%d regained lock on channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                      LostLock = false;
+                     }
+                  if (tunerStatus == tsTuned) {
+                     if (SysLogLevel >= 3) {
+                        int Valid;
+                        double Strength, Cnr;
+                        if (GetSignalStats(Valid, &Strength, &Cnr)) {
+                           cString s = cString::sprintf("frontend %d/%d locked with signal", adapter, frontend);
+                           if ((Valid & DTV_STAT_VALID_STRENGTH) != 0) s = cString::sprintf("%s STR=%1.1fdBm", *s, Strength);
+                           if ((Valid & DTV_STAT_VALID_CNR)      != 0) s = cString::sprintf("%s CNR=%1.1fdB", *s, Cnr);
+                           dsyslog("%s", *s);
+                           }
+                        }
                      }
                   tunerStatus = tsLocked;
                   locked.Broadcast();
@@ -1695,6 +1804,11 @@ int cDvbDevice::NumProvidedSystems(void) const
 const cPositioner *cDvbDevice::Positioner(void) const
 {
   return dvbTuner ? dvbTuner->Positioner() : NULL;
+}
+
+bool cDvbDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+{
+  return dvbTuner ? dvbTuner->GetSignalStats(Valid, Strength, Cnr, BerPre, BerPost, Per) : false;
 }
 
 int cDvbDevice::SignalStrength(void) const
