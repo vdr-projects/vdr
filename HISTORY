@@ -8980,6 +8980,4 @@ Video Disk Recorder Revision History
   would be deleted by Skip().
 - The new function cDevice::SignalStats() (if implemented by an actual device) returns
   statistics about the currently received signal.
-- If DVB API 5 signal statistics are available for a cDvbDevice, it now logs them
-  whenever the tuner acquires a lock (suggested by Dietmar Spingler).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

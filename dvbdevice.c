@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.7 2017/04/17 15:02:44 kls Exp $
+ * $Id: dvbdevice.c 4.8 2017/04/18 13:11:07 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1154,18 +1154,6 @@ void cDvbTuner::Action(void)
                   if (LostLock) {
                      isyslog("frontend %d/%d regained lock on channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                      LostLock = false;
-                     }
-                  if (tunerStatus == tsTuned) {
-                     if (SysLogLevel >= 3) {
-                        int Valid;
-                        double Strength, Cnr;
-                        if (GetSignalStats(Valid, &Strength, &Cnr)) {
-                           cString s = cString::sprintf("frontend %d/%d locked with signal", adapter, frontend);
-                           if ((Valid & DTV_STAT_VALID_STRENGTH) != 0) s = cString::sprintf("%s STR=%1.1fdBm", *s, Strength);
-                           if ((Valid & DTV_STAT_VALID_CNR)      != 0) s = cString::sprintf("%s CNR=%1.1fdB", *s, Cnr);
-                           dsyslog("%s", *s);
-                           }
-                        }
                      }
                   tunerStatus = tsLocked;
                   locked.Broadcast();
