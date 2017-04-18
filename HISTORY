@@ -8925,7 +8925,7 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-04-17: Version 2.3.4
+2017-04-18: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
@@ -8982,3 +8982,4 @@ Video Disk Recorder Revision History
   statistics about the currently received signal.
 - If DVB API 5 signal statistics are available for a cDvbDevice, it now logs them
   whenever the tuner acquires a lock (suggested by Dietmar Spingler).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

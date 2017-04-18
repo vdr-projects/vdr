@@ -665,7 +665,7 @@ msgid "File"
 msgstr "Tiedosto"
 
 msgid "Record on"
-msgstr ""
+msgstr "Tallennin"
 
 msgid "Button$Folder"
 msgstr "Kansio"
@@ -680,10 +680,10 @@ msgid "First day"
 msgstr "1. päivä"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Etäajastimen hakeminen epäonnistui"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "Ajastin on poistettu!"
 
 msgid "Select folder"
 msgstr "Valitse kansio"
@@ -861,10 +861,10 @@ msgid "always"
 msgstr "aina"
 
 msgid "by name"
-msgstr ""
+msgstr "nimen mukaan"
 
 msgid "by time"
-msgstr ""
+msgstr "ajan mukaan"
 
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
@@ -954,7 +954,7 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Näytä kansiot ensin"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Järjestä tallenteet oletuksena"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"
@@ -1141,7 +1141,7 @@ msgid " (activating)"
 msgstr " (aktivoidaan)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ laite"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1174,13 +1174,13 @@ msgid "Can't reset CAM!"
 msgstr "CA-moduulin nollaus epäonnistui!"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "ei pikatallennusta"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "varmista pikatallennus"
 
 msgid "record instantly"
-msgstr ""
+msgstr "pikatallennus"
 
 msgid "do not pause live video"
 msgstr "älä pysäytä lähetystä"
@@ -1213,7 +1213,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Tallenteen oletuselinikä (d)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Tallennusnäppäimen toiminta"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Taukonäppäimen toiminta"
@@ -1315,13 +1315,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP-komennon odotusaika (s)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "Käytä SVDRP-vertaisverkkoa"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "SVDRP-palvelimen nimi"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "SVDRP-oletuspalvelin"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Kanavavalinnan odotusaika (s)"
@@ -1577,7 +1577,7 @@ msgid "Pause live video?"
 msgstr "Pysäytetäänkö lähetys?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Aloitetaanko tallennus?"
 
 msgid "Recording started"
 msgstr "Tallennus aloitettu"
