@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.8 2017/04/18 13:11:07 kls Exp $
+ * $Id: dvbdevice.c 4.9 2017/04/20 14:42:35 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -309,6 +309,9 @@ private:
   int tuneTimeout;
   int lockTimeout;
   time_t lastTimeoutReport;
+  mutable uint32_t lastUncValue;
+  mutable uint32_t lastUncDelta;
+  mutable time_t lastUncChange;
   cChannel channel;
   const cDiseqc *lastDiseqc;
   int diseqcOffset;
@@ -364,6 +367,9 @@ cDvbTuner::cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int
   tuneTimeout = 0;
   lockTimeout = 0;
   lastTimeoutReport = 0;
+  lastUncValue = 0;
+  lastUncDelta = 0;
+  lastUncChange = 0;
   lastDiseqc = NULL;
   diseqcOffset = 0;
   lastSource = 0;
@@ -818,8 +824,35 @@ int cDvbTuner::GetSignalQuality(void) const
 #endif
      uint32_t Unc;
      while (1) {
-           if (ioctl(fd_frontend, FE_READ_UNCORRECTED_BLOCKS, &Unc) != -1)
+           if (ioctl(fd_frontend, FE_READ_UNCORRECTED_BLOCKS, &Unc) != -1) {
+              if (Unc != lastUncValue) {
+#ifdef DEBUG_SIGNALQUALITY
+                 fprintf(stderr, "FE %d/%d: API3 UNC = %u %u %u\n", adapter, frontend, Unc, lastUncValue, lastUncDelta);
+#endif
+                 lastUncDelta = (Unc >= lastUncValue) ? Unc - lastUncValue : lastUncValue - Unc;
+                 lastUncValue = Unc;
+                 lastUncChange = time(NULL);
+                 }
+              // The number of uncorrected blocks is a counter, which is normally
+              // at a constant value and only increases if there are new uncorrected
+              // blocks. So a change in the Unc value indicates reduced signal quality.
+              // Whenever the Unc counter changes, we take the delta between the old
+              // and new value into account for calculating the overall signal quality.
+              // The impact of Unc is considered for 2 seconds, and after that it is
+              // bisected with every passing second in order to phase it out. Otherwise
+              // once one or more uncorrected blocks occur, the signal quality would
+              // be considered low even if there haven't been any more uncorrected bocks
+              // for quite a while.
+              Unc = lastUncDelta;
+              int t = time(NULL) - lastUncChange - 2;
+              if (t > 0)
+                 Unc >>= min(t, 32);
+#ifdef DEBUG_SIGNALQUALITY
+              if (Unc > 0)
+                 fprintf(stderr, "FE %d/%d: API3 UNC = %u\n", adapter, frontend, Unc);
+#endif
               break;
+              }
            if (errno != EINTR) {
               Unc = 0;
 #ifdef DEBUG_SIGNALQUALITY

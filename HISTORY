@@ -8983,3 +8983,5 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed displaying remote timers in the main menu of skin LCARS.
 - Fixed editing a remote timer immediately after it has been created.
+- Fixed handling the uncorrected block counter for DVB API 3 devices when calculating
+  signal quality.
