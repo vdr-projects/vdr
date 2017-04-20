@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.3 2017/01/19 15:27:48 kls Exp $
+ * $Id: skinlcars.c 4.4 2017/04/20 08:46:42 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1270,6 +1270,8 @@ void cSkinLCARSDisplayMenu::DrawTimers(void)
                            FreeDeviceSlots.Append(y);
                            y += lineHeight + Gap;
                            }
+                        else
+                           continue;
                         }
                      else if (cRecordControl *RecordControl = cRecordControls::GetRecordControl(Timer)) {
                         if (!Device || Device == RecordControl->Device()) {
