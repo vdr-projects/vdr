@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.24 2017/04/03 12:26:23 kls Exp $
+ * $Id: menu.c 4.25 2017/04/20 09:15:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1088,8 +1088,12 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
        case kOk:     if (timer) {
                         LOCK_TIMERS_WRITE;
                         if (!addIfConfirmed && !Timers->Contains(timer)) {
-                           Skins.Message(mtWarning, tr("Timer has been deleted!"));
-                           break;
+                           if (cTimer *t = Timers->GetById(timer->Id(), timer->Remote()))
+                              timer = t;
+                           else {
+                              Skins.Message(mtWarning, tr("Timer has been deleted!"));
+                              break;
+                              }
                            }
                         LOCK_CHANNELS_READ;
                         if (const cChannel *Channel = Channels->GetByNumber(channel))

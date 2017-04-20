@@ -8982,3 +8982,4 @@ Video Disk Recorder Revision History
   statistics about the currently received signal.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed displaying remote timers in the main menu of skin LCARS.
+- Fixed editing a remote timer immediately after it has been created.

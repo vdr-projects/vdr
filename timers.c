@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.8 2017/03/30 15:08:11 kls Exp $
+ * $Id: timers.c 4.9 2017/04/20 09:15:06 kls Exp $
  */
 
 #include "timers.h"
@@ -739,11 +739,13 @@ int cTimers::NewTimerId(void)
   return ++lastTimerId; // no need for locking, the caller must have a lock on the global Timers list
 }
 
-const cTimer *cTimers::GetById(int Id) const
+const cTimer *cTimers::GetById(int Id, const char *Remote) const
 {
   for (const cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (!ti->Remote() && ti->Id() == Id)
-         return ti;
+      if (ti->Id() == Id) {
+         if (!Remote && !ti->Remote() || Remote && ti->Remote() && strcmp(Remote, ti->Remote()) == 0)
+            return ti;
+         }
       }
   return NULL;
 }

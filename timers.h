@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.7 2017/03/30 15:22:36 kls Exp $
+ * $Id: timers.h 4.8 2017/04/20 09:09:45 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -168,8 +168,8 @@ public:
       ///<    }
   static bool Load(const char *FileName);
   static int NewTimerId(void);
-  const cTimer *GetById(int Id) const;
-  cTimer *GetById(int Id) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id)); };
+  const cTimer *GetById(int Id, const char *Remote = NULL) const;
+  cTimer *GetById(int Id, const char *Remote = NULL) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetById(Id, Remote)); };
   const cTimer *GetTimer(const cTimer *Timer) const;
   cTimer *GetTimer(const cTimer *Timer) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetTimer(Timer)); };
   const cTimer *GetMatch(time_t t) const;
