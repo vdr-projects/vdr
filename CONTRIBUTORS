@@ -3390,6 +3390,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to cache the channel/CAM relations in the file 'cam.data'
  for suggesting to log signal statistics whenever the tuner of a cDvbDevice acquires
  a lock, and DVB API 5 signal statistics are available
+ for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()

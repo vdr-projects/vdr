@@ -8925,7 +8925,7 @@ Video Disk Recorder Revision History
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
 
-2017-04-20: Version 2.3.4
+2017-04-22: Version 2.3.4
 
 - The functionality of HandleRemoteModifications(), which synchronizes changes to
   timers between peer VDR machines, has been moved to timers.[ch] and renamed to
@@ -8985,3 +8985,7 @@ Video Disk Recorder Revision History
 - Fixed editing a remote timer immediately after it has been created.
 - Fixed handling the uncorrected block counter for DVB API 3 devices when calculating
   signal quality.
+- The SVDRP command LSTC can now list the channels with channel ids if the option
+  ':ids' is given (suggested by Dietmar Spingler).
+- If 0 is given as the channel number in the SVDRP command LSTC, the data of the
+  current channel is listed.

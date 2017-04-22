@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.16 2017/04/04 11:09:14 kls Exp $
+ * $Id: svdrp.c 4.17 2017/04/22 11:57:31 kls Exp $
  */
 
 #include "svdrp.h"
@@ -754,12 +754,14 @@ const char *HelpPages[] = {
   "    valid key names is given. If more than one key is given, they are\n"
   "    entered into the remote control queue in the given sequence. There\n"
   "    can be up to 31 keys.",
-  "LSTC [ :groups | <number> | <name> | <id> ]\n"
+  "LSTC [ :ids ] [ :groups | <number> | <name> | <id> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.\n"
   "    If ':groups' is given, all channels are listed including group\n"
-  "    separators. The channel number of a group separator is always 0.",
+  "    separators. The channel number of a group separator is always 0.\n"
+  "    With ':ids' the channel ids are listed following the channel numbers.\n"
+  "    The special number 0 can be given to list the current channel.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
   "    listed. If a channel is given (either by number or by channel ID),\n"
@@ -1564,11 +1566,17 @@ void cSVDRPServer::CmdHITK(const char *Option)
 void cSVDRPServer::CmdLSTC(const char *Option)
 {
   LOCK_CHANNELS_READ;
+  bool WithChannelIds = startswith(Option, ":ids") && (Option[4] == ' ' || Option[4] == 0);
+  if (WithChannelIds)
+     Option = skipspace(Option + 4);
   bool WithGroupSeps = strcasecmp(Option, ":groups") == 0;
   if (*Option && !WithGroupSeps) {
      if (isnumber(Option)) {
-        if (const cChannel *Channel = Channels->GetByNumber(strtol(Option, NULL, 10)))
-           Reply(250, "%d %s", Channel->Number(), *Channel->ToText());
+        int n = strtol(Option, NULL, 10);
+        if (n == 0)
+           n = cDevice::CurrentChannel();
+        if (const cChannel *Channel = Channels->GetByNumber(n))
+           Reply(250, "%d%s%s %s", Channel->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -1576,17 +1584,17 @@ void cSVDRPServer::CmdLSTC(const char *Option)
         const cChannel *Next = Channels->GetByChannelID(tChannelID::FromString(Option));
         if (!Next) {
            for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
-              if (!Channel->GroupSep()) {
-                 if (strcasestr(Channel->Name(), Option)) {
-                    if (Next)
-                       Reply(-250, "%d %s", Next->Number(), *Next->ToText());
-                    Next = Channel;
-                    }
-                 }
-              }
+               if (!Channel->GroupSep()) {
+                  if (strcasestr(Channel->Name(), Option)) {
+                     if (Next)
+                        Reply(-250, "%d%s%s %s", Next->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Next->GetChannelID().ToString() : "", *Next->ToText());
+                     Next = Channel;
+                     }
+                  }
+               }
            }
         if (Next)
-           Reply(250, "%d %s", Next->Number(), *Next->ToText());
+           Reply(250, "%d%s%s %s", Next->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Next->GetChannelID().ToString() : "", *Next->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -1594,9 +1602,9 @@ void cSVDRPServer::CmdLSTC(const char *Option)
   else if (cChannels::MaxNumber() >= 1) {
      for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
          if (WithGroupSeps)
-            Reply(Channel->Next() ? -250: 250, "%d %s", Channel->GroupSep() ? 0 : Channel->Number(), *Channel->ToText());
+            Reply(Channel->Next() ? -250: 250, "%d%s%s %s", Channel->GroupSep() ? 0 : Channel->Number(), (WithChannelIds && !Channel->GroupSep()) ? " " : "", (WithChannelIds && !Channel->GroupSep()) ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
          else if (!Channel->GroupSep())
-            Reply(Channel->Number() < cChannels::MaxNumber() ? -250 : 250, "%d %s", Channel->Number(), *Channel->ToText());
+            Reply(Channel->Number() < cChannels::MaxNumber() ? -250 : 250, "%d%s%s %s", Channel->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
          }
      }
   else
