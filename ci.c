@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.11 2017/04/11 16:45:55 kls Exp $
+ * $Id: ci.c 4.12 2017/04/24 09:05:49 kls Exp $
  */
 
 #include "ci.h"
@@ -1968,9 +1968,10 @@ void cCamSlot::Process(cTPDU *TPDU)
           case msNone:
                dbgprotocol("Slot %d: no module present\n", slotNumber);
                isyslog("CAM %d: no module present", slotNumber);
-               MtdActivate(false);
+               StopDecrypting();
                DeleteAllConnections();
                CancelActivation();
+               MtdActivate(false);
                break;
           case msReset:
                dbgprotocol("Slot %d: module reset\n", slotNumber);
