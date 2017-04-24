@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.5 2017/03/26 13:07:01 kls Exp $
+ * $Id: remux.c 4.6 2017/04/24 14:59:39 kls Exp $
  */
 
 #include "remux.h"
@@ -502,7 +502,7 @@ void cPatPmtGenerator::GeneratePat(void)
   p[i++] = pmtPid & 0xFF; // program number lo
   p[i++] = 0xE0 | (pmtPid >> 8); // dummy (3), PMT pid hi (5)
   p[i++] = pmtPid & 0xFF; // PMT pid lo
-  pat[SectionLength] = i - SectionLength - 1 + 4; // -2 = SectionLength storage, +4 = length of CRC
+  pat[SectionLength] = i - SectionLength - 1 + 4; // -1 = SectionLength storage, +4 = length of CRC
   MakeCRC(pat + i, pat + PayloadStart, i - PayloadStart);
   IncVersion(patVersion);
 }
