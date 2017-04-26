@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.12 2017/04/24 09:05:49 kls Exp $
+ * $Id: ci.c 4.13 2017/04/26 09:18:26 kls Exp $
  */
 
 #include "ci.h"
@@ -1971,7 +1971,10 @@ void cCamSlot::Process(cTPDU *TPDU)
                StopDecrypting();
                DeleteAllConnections();
                CancelActivation();
-               MtdActivate(false);
+               if (mtdHandler)
+                  mtdHandler->UnAssignAll();
+               else
+                  Assign(NULL);
                break;
           case msReset:
                dbgprotocol("Slot %d: module reset\n", slotNumber);
