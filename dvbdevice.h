@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 4.1 2015/04/18 13:57:27 kls Exp $
+ * $Id: dvbdevice.h 4.3 2017/04/17 14:44:43 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -187,6 +187,7 @@ private:
   int numDeliverySystems;
   int numModulations;
   int fd_dvr, fd_ca;
+  bool checkTsBuffer;
   static cMutex bondMutex;
   cDvbDevice *bondedDevice;
   mutable bool needsDetachBondedReceivers;
@@ -243,6 +244,7 @@ public:
   virtual bool ProvidesEIT(void) const;
   virtual int NumProvidedSystems(void) const;
   virtual const cPositioner *Positioner(void) const;
+  virtual bool SignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL) const;
   virtual int SignalStrength(void) const;
   virtual int SignalQuality(void) const;
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;

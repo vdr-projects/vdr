@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.6 2017/03/27 08:30:00 kls Exp $
+ * $Id: mtd.h 1.7 2017/04/26 09:17:08 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -140,6 +140,8 @@ public:
       ///< Adds the card indexes of the devices of any active MTD CAM slots to
       ///< the given CardIndexes.
       ///< Returns true if the array is not empty.
+  void UnAssignAll(void);
+      ///< Unassigns all MTD CAM slots from their devices.
   };
 
 #define MTD_DONT_CALL(v) dsyslog("PROGRAMMING ERROR (%s,%d): DON'T CALL %s", __FILE__, __LINE__, __FUNCTION__); return v;

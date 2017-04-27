@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.5 2017/03/23 14:23:33 kls Exp $
+ * $Id: ci.h 4.6 2017/04/10 09:17:56 kls Exp $
  */
 
 #ifndef __CI_H
@@ -345,7 +345,12 @@ public:
        ///< in hardware, it can implement this function to be given access
        ///< to the data in the device's TS buffer. Data points to a buffer
        ///< of Count bytes of TS data. The first byte in Data is guaranteed
-       ///< to be a TS_SYNC_BYTE.
+       ///< to be a TS_SYNC_BYTE, and Count is at least TS_SIZE.
+       ///< Note that Decrypt() may be called with Data == NULL! This is necessary
+       ///< to allow CAMs that copy the incoming data into a separate buffer to
+       ///< return previously received and decrypted TS packets. If Data is NULL,
+       ///< Count is 0 and must not be modified, and the return value shall point to the
+       ///< next available decrypted TS packet (if any).
        ///< There are three possible ways a CAM can handle decryption:
        ///< 1. If the full TS data is physically routed through the CAM in hardware,
        ///< there is no need to reimplement this function.

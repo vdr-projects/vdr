@@ -8924,3 +8924,69 @@ Video Disk Recorder Revision History
   reading thread, without additional locking.
 - Now stopping any ongoing recordings before stopping the plugins, to avoid
   a crash when stopping VDR while recording.
+
+2017-04-27: Version 2.3.4
+
+- The functionality of HandleRemoteModifications(), which synchronizes changes to
+  timers between peer VDR machines, has been moved to timers.[ch] and renamed to
+  HandleRemoteTimerModifications(). It now also handles deleting remote timers.
+- The function cEpgHandlers::BeginSegmentTransfer() is now boolean (thanks to
+  Jörg Wendel). See the description in epg.h for the meaning of the return value.
+- Changed tEventID back to u_int32_t (suggested by Jörg Wendel). The change to
+  u_int16_t in version 2.3.1 was ill-conceived, because the description of the
+  "event id" in vdr.5 explicitly mentioned this parameter to be 32 bit in size!
+  The members of cEvent have been slightly rearranged to minimize the memory
+  requirements on both 32 and 64 bit systems.
+- The file 'cam.data' is no longer written if it is read-only.
+- Detecting whether a particular CAM actually decrypts a given channel is now
+  done separately for each receiver.
+- The cEvent class now has a new member 'aux', in which external applications can
+  store auxiliary information with an event (thanks to Jörg Wendel). This string
+  has no meaning whatsoever to VDR itself, and it will not be written into the
+  info file of a recording that is made for such an event.
+- Added some guidelines and recommendations to the 'Logging' section of PLUGINS.html.
+  The most important being: implement a command line option to control the level
+  of logging (in particular allow turning off logging completely!) and never print
+  anything to stdout or stderr (unless one of the listed exceptions applies).
+- Added a note to the "Pausing live video" section of the MANUAL, stating that
+  the timer for paused live video will always record on the local VDR, even if
+  an "SVDRP default host" has been set for normal timer recordings.
+- cOsdMenu::Display() now checks whether the OSD size has changed and if so calls
+  SetDisplayMenu().
+- The SVDRP commands that deal with recordings (DELR, EDIT, LSTR, MOVR, and PLAY)
+  now use a unique id for each recording, which remains valid as long as this
+  instance of VDR is running. This means that recordings are no longer continuously
+  numbered from 1 to N in LSTR. There may be gaps in the sequence, in case recordings
+  have been deleted, and they are not necessarily listed in numeric order.
+  Thanks to Sergey Chernyavskiy.
+- Changed 'number' to 'id' in the help texts of SVDRP commands that deal with
+  timers.
+- Fixed a deadlock in the SVDRP command PLAY in case there is currently a
+  recording being replayed.
+- Signal strength and quality (CNR) are now determined via DVB API 5 (if available).
+  Fallback is the old DVB API 3 method.
+- The function cCamSlot::Decrypt() can now also be called with Data == NULL.
+  This is necessary to allow CAMs that copy the incoming data into a separate buffer
+  to return previously received and decrypted TS packets. See ci.h for details.
+  Plugins that implement a derived cCamSlot need to properly handle this case, and
+  plugins that implement a derived cDevice need to call Decrypt() in their
+  GetTSPacket() function even if the incoming buffer is currently empty (see
+  cDvbDevice::GetTSPacket()).
+- cTSBuffer::Skip() no longer immediately deletes the given number of bytes from the
+  TS buffer, but rather stores the number for later deletion in the next call to
+  Get(). This is necessary because in cDvbDevice::GetTSPacket() tsBuffer->Skip()
+  is called, but the actual TS packet returned (pointed to by Data) may well be
+  (and typically is, unless the CAM copies the data) in the area of the buffer that
+  would be deleted by Skip().
+- The new function cDevice::SignalStats() (if implemented by an actual device) returns
+  statistics about the currently received signal.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed displaying remote timers in the main menu of skin LCARS.
+- Fixed editing a remote timer immediately after it has been created.
+- Fixed handling the uncorrected block counter for DVB API 3 devices when calculating
+  signal quality.
+- The SVDRP command LSTC can now list the channels with channel ids if the option
+  ':ids' is given (suggested by Dietmar Spingler).
+- If 0 is given as the channel number in the SVDRP command LSTC, the data of the
+  current channel is listed.
+- Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.

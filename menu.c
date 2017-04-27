@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.22 2017/03/18 14:27:50 kls Exp $
+ * $Id: menu.c 4.25 2017/04/20 09:15:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1071,52 +1071,10 @@ static bool RemoteTimerError(const cTimer *Timer)
 
 static bool HandleRemoteModifications(cTimer *NewTimer, cTimer *OldTimer = NULL)
 {
-  cStringList Response;
-  if (!OldTimer || OldTimer->Local() || !OldTimer->Id()) {
-     if (NewTimer->Local()) { // timer stays local, nothing to do
-        if (OldTimer && OldTimer->Id())
-           isyslog("modified timer %s", *NewTimer->ToDescr());
-        else
-           isyslog("added timer %s", *NewTimer->ToDescr());
-        }
-     else { // timer is new, or moved from local to remote
-        if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
-           return RemoteTimerError(NewTimer);
-        int RemoteId = atoi(SVDRPValue(Response[0]));
-        if (RemoteId <= 0)
-           return RemoteTimerError(NewTimer);
-        NewTimer->SetId(RemoteId);
-        if (OldTimer && OldTimer->Id()) {
-           if (OldTimer->Recording())
-              cRecordControls::Stop(OldTimer);
-           isyslog("moved timer %d to %s", OldTimer->Id(), *NewTimer->ToDescr());
-           }
-        else
-           isyslog("added timer %s", *NewTimer->ToDescr());
-        }
-     }
-  else if (NewTimer->Local()) { // timer is moved from remote to local
-     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("DELT %d", OldTimer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
-        return RemoteTimerError(OldTimer);
-     NewTimer->SetId(cTimers::NewTimerId());
-     NewTimer->ClrFlags(tfRecording); // in case it was recording on the remote machine
-     isyslog("moved timer %d@%s to %s", OldTimer->Id(), OldTimer->Remote(), *NewTimer->ToDescr());
-     }
-  else if (strcmp(OldTimer->Remote(), NewTimer->Remote()) == 0) { // timer stays remote on same machine
-     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("MODT %d %s", OldTimer->Id(), *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
-        return RemoteTimerError(NewTimer);
-     isyslog("modified timer %s", *NewTimer->ToDescr());
-     }
-  else { // timer is moved from one remote machine to an other
-     if (!ExecSVDRPCommand(NewTimer->Remote(), cString::sprintf("NEWT %s", *NewTimer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
-        return RemoteTimerError(NewTimer);
-     int RemoteId = atoi(SVDRPValue(Response[0]));
-     if (RemoteId <= 0)
-        return RemoteTimerError(NewTimer);
-     NewTimer->SetId(RemoteId);
-     if (!ExecSVDRPCommand(OldTimer->Remote(), cString::sprintf("DELT %d", OldTimer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
-        return RemoteTimerError(OldTimer);
-     isyslog("moved timer %d@%s to %s", OldTimer->Id(), OldTimer->Remote(), *NewTimer->ToDescr());
+  cString ErrorMessage;
+  if (!HandleRemoteTimerModifications(NewTimer, OldTimer, &ErrorMessage)) {
+     Skins.Message(mtError, ErrorMessage);
+     return false;
      }
   return true;
 }
@@ -1130,8 +1088,12 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
        case kOk:     if (timer) {
                         LOCK_TIMERS_WRITE;
                         if (!addIfConfirmed && !Timers->Contains(timer)) {
-                           Skins.Message(mtWarning, tr("Timer has been deleted!"));
-                           break;
+                           if (cTimer *t = Timers->GetById(timer->Id(), timer->Remote()))
+                              timer = t;
+                           else {
+                              Skins.Message(mtWarning, tr("Timer has been deleted!"));
+                              break;
+                              }
                            }
                         LOCK_CHANNELS_READ;
                         if (const cChannel *Channel = Channels->GetByNumber(channel))
@@ -1157,6 +1119,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                         else {
                            if (!HandleRemoteModifications(&data, timer))
                               return osContinue;
+                           if (timer->Local() && timer->Recording() && data.Remote())
+                              cRecordControls::Stop(timer);
                            *timer = data;
                            }
                         LOCK_SCHEDULES_READ;
@@ -1387,15 +1351,13 @@ eOSState cMenuTimers::Delete(void)
               Timer = NULL;
            }
         if (Timer) {
-           if (Timer->Remote()) {
-              cStringList Response;
-              if (!ExecSVDRPCommand(Timer->Remote(), cString::sprintf("DELT %d", Timer->Id()), &Response) || SVDRPCode(Response[0]) != 250)
-                 RemoteTimerError(Timer);
+           if (!HandleRemoteModifications(NULL, Timer)) {
+              timersStateKey.Remove();
+              return osContinue;
               }
            Timers->Del(Timer);
            cOsdMenu::Del(Current());
            Display();
-           isyslog("deleted timer %s", *Timer->ToDescr());
            }
         }
      }
@@ -3389,10 +3351,8 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
   int oldOsdLanguageIndex = osdLanguageIndex;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
-  if (ModifiedAppearance) {
+  if (ModifiedAppearance)
      cOsdProvider::UpdateOsdSize(true);
-     SetDisplayMenu();
-     }
 
   if (osdLanguageIndex != oldOsdLanguageIndex || skinIndex != oldSkinIndex) {
      strn0cpy(data.OSDLanguage, I18nLocale(osdLanguageIndex), sizeof(data.OSDLanguage));
@@ -4149,7 +4109,6 @@ eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
         Store();
         // Reinitialize OSD and skin, in case any plugin setup change has an influence on these:
         cOsdProvider::UpdateOsdSize(true);
-        SetDisplayMenu();
         Display();
         }
      }

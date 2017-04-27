@@ -264,7 +264,7 @@ Version 2.2
 
 * Pausing live video
 
-  If you want to pause the live programme you are just watching, simple press
+  If you want to pause the live programme you are just watching, simply press
   "Menu/Yellow" or "Pause" on your remote control. VDR will start an instant
   recording of the current channel (just as if you had pressed "Menu/Red" or
   "Record") and immediately begin replaying that recording. Replay will be
@@ -276,6 +276,9 @@ Version 2.2
   in the "Setup/Recording" menu. Recording time will be the same as for
   any other instant recording, so by default it will record 3 hours (which
   should be enough for any normal broadcast).
+  Note that the timer that is created for recording the paused live video will
+  always record on the local VDR, even if an "SVDRP default host" has been
+  set for normal timer recordings.
 
 * Replaying a Recording
 

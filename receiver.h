@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 4.1 2015/09/05 11:42:47 kls Exp $
+ * $Id: receiver.h 4.2 2017/04/01 15:55:27 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -22,6 +22,9 @@ private:
   int priority;
   int pids[MAXRECEIVEPIDS];
   int numPids;
+  time_t lastScrambledPacket;
+  time_t startScrambleDetection;
+  int scramblingTimeout;
   bool WantsPid(int Pid);
 protected:
   cDevice *Device(void) { return device; }

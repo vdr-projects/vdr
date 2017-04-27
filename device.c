@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.11 2017/03/27 14:02:54 kls Exp $
+ * $Id: device.c 4.15 2017/04/17 14:47:42 kls Exp $
  */
 
 #include "device.h"
@@ -89,8 +89,6 @@ cDevice::cDevice(void)
   nitFilter = NULL;
 
   camSlot = NULL;
-  startScrambleDetection = 0;
-  scramblingTimeout = 0;
 
   occupiedTimeout = 0;
 
@@ -253,7 +251,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
          if (CamSlot->ModuleStatus() == msReady) {
             if (CamSlot->ProvidesCa(Channel->Caids())) {
                if (!ChannelCamRelations.CamChecked(Channel->GetChannelID(), CamSlot->MasterSlotNumber())) {
-                  SlotPriority[CamSlot->Index()] = CamSlot->Priority();
+                  SlotPriority[CamSlot->Index()] = CamSlot->MtdActive() ? IDLEPRIORITY : CamSlot->Priority(); // we don't need to take the priority into account here for MTD CAM slots, because they can be used with several devices in parallel
                   NumUsableSlots++;
                   }
                }
@@ -749,6 +747,11 @@ int cDevice::NumProvidedSystems(void) const
 const cPositioner *cDevice::Positioner(void) const
 {
   return NULL;
+}
+
+bool cDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+{
+  return false;
 }
 
 int cDevice::SignalStrength(void) const
@@ -1652,50 +1655,47 @@ bool cDevice::Receiving(bool Dummy) const
 
 void cDevice::Action(void)
 {
-  time_t LastScrambledPacket = 0;
   if (Running() && OpenDvr()) {
      while (Running()) {
            // Read data from the DVR device:
            uchar *b = NULL;
            if (GetTSPacket(b)) {
               if (b) {
-                 int Pid = TsPid(b);
-                 // Check whether the TS packets are scrambled:
-                 bool DetachReceivers = false;
-                 bool DescramblingOk = false;
-                 int CamSlotNumber = 0;
-                 cCamSlot *cs = NULL;
-                 if (startScrambleDetection) {
-                    cs = CamSlot();
-                    CamSlotNumber = cs ? cs->MasterSlotNumber() : 0;
-                    if (CamSlotNumber) {
-                       if (LastScrambledPacket < startScrambleDetection)
-                          LastScrambledPacket = startScrambleDetection;
-                       time_t Now = time(NULL);
-                       if (TsIsScrambled(b)) {
-                          LastScrambledPacket = Now;
-                          if (Now - startScrambleDetection > scramblingTimeout)
-                             DetachReceivers = true;
-                          }
-                       if (Now - LastScrambledPacket > TS_SCRAMBLING_TIME_OK)
-                          DescramblingOk = true;
-                       }
-                    }
                  // Distribute the packet to all attached receivers:
                  Lock();
+                 int Pid = TsPid(b);
+                 bool IsScrambled = TsIsScrambled(b);
                  for (int i = 0; i < MAXRECEIVERS; i++) {
-                     if (receiver[i] && receiver[i]->WantsPid(Pid)) {
-                        if (DetachReceivers && cs && (!cs->IsActivating() || receiver[i]->Priority() >= LIVEPRIORITY)) {
-                           dsyslog("CAM %d: won't decrypt channel %s, detaching receiver", CamSlotNumber, *receiver[i]->ChannelID().ToString());
-                           ChannelCamRelations.SetChecked(receiver[i]->ChannelID(), CamSlotNumber);
-                           Detach(receiver[i]);
-                           }
-                        else
-                           receiver[i]->Receive(b, TS_SIZE);
-                        if (DescramblingOk && receiver[i]->ChannelID().Valid()) {
-                           dsyslog("CAM %d: decrypts channel %s", CamSlotNumber, *receiver[i]->ChannelID().ToString());
-                           ChannelCamRelations.SetDecrypt(receiver[i]->ChannelID(), CamSlotNumber);
-                           startScrambleDetection = 0;
+                     cReceiver *Receiver = receiver[i];
+                     if (Receiver && Receiver->WantsPid(Pid)) {
+                        Receiver->Receive(b, TS_SIZE);
+                        // Check whether the TS packet is scrambled:
+                        if (Receiver->startScrambleDetection) {
+                           if (cCamSlot *cs = CamSlot()) {
+                              int CamSlotNumber = cs->MasterSlotNumber();
+                              if (Receiver->lastScrambledPacket < Receiver->startScrambleDetection)
+                                 Receiver->lastScrambledPacket = Receiver->startScrambleDetection;
+                              time_t Now = time(NULL);
+                              if (IsScrambled) {
+                                 Receiver->lastScrambledPacket = Now;
+                                 if (Now - Receiver->startScrambleDetection > Receiver->scramblingTimeout) {
+                                    if (!cs->IsActivating() || Receiver->Priority() >= LIVEPRIORITY) {
+                                       if (Receiver->ChannelID().Valid()) {
+                                          dsyslog("CAM %d: won't decrypt channel %s, detaching receiver", CamSlotNumber, *Receiver->ChannelID().ToString());
+                                          ChannelCamRelations.SetChecked(Receiver->ChannelID(), CamSlotNumber);
+                                          }
+                                       Detach(Receiver);
+                                       }
+                                    }
+                                 }
+                              else if (Now - Receiver->lastScrambledPacket > TS_SCRAMBLING_TIME_OK) {
+                                 if (Receiver->ChannelID().Valid()) {
+                                    dsyslog("CAM %d: decrypts channel %s", CamSlotNumber, *Receiver->ChannelID().ToString());
+                                    ChannelCamRelations.SetDecrypt(Receiver->ChannelID(), CamSlotNumber);
+                                    }
+                                 Receiver->startScrambleDetection = 0;
+                                 }
+                              }
                            }
                         }
                      }
@@ -1756,12 +1756,13 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
             if (CamSlots.NumReadyMasterSlots() > 1) { // don't try different CAMs if there is only one
-               startScrambleDetection = time(NULL);
-               scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
+               Receiver->startScrambleDetection = time(NULL);
+               Receiver->scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
                bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->MasterSlotNumber());
                if (KnownToDecrypt)
-                  scramblingTimeout *= 10; // give it time to receive ECM/EMM
-               dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->SlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), scramblingTimeout);
+                  Receiver->scramblingTimeout *= 10; // give it time to receive ECM/EMM
+               if (Receiver->ChannelID().Valid())
+                  dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->MasterSlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), Receiver->scramblingTimeout);
                }
             }
          Start();
@@ -1828,7 +1829,7 @@ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
   SetDescription("device %d TS buffer", CardIndex);
   f = File;
   cardIndex = CardIndex;
-  delivered = false;
+  delivered = 0;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
   ringBuffer->SetIoThrottle();
@@ -1864,13 +1865,15 @@ void cTSBuffer::Action(void)
      }
 }
 
-uchar *cTSBuffer::Get(int *Available)
+uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
 {
   int Count = 0;
   if (delivered) {
-     ringBuffer->Del(TS_SIZE);
-     delivered = false;
+     ringBuffer->Del(delivered);
+     delivered = 0;
      }
+  if (CheckAvailable && ringBuffer->Available() < TS_SIZE)
+     return NULL;
   uchar *p = ringBuffer->Get(Count);
   if (p && Count >= TS_SIZE) {
      if (*p != TS_SYNC_BYTE) {
@@ -1884,7 +1887,7 @@ uchar *cTSBuffer::Get(int *Available)
         esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", Count, cardIndex);
         return NULL;
         }
-     delivered = true;
+     delivered = TS_SIZE;
      if (Available)
         *Available = Count;
      return p;
@@ -1894,6 +1897,5 @@ uchar *cTSBuffer::Get(int *Available)
 
 void cTSBuffer::Skip(int Count)
 {
-  ringBuffer->Del(Count);
-  delivered = false;
+  delivered = Count;
 }

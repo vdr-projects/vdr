@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.11 2017/03/25 14:20:30 kls Exp $
+ * $Id: vdr.c 4.12 2017/04/03 12:35:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -986,6 +986,11 @@ int main(int argc, char *argv[])
           static time_t lastOsdSizeUpdate = 0;
           if (Now != lastOsdSizeUpdate) { // once per second
              cOsdProvider::UpdateOsdSize();
+             static int OsdState = 0;
+             if (cOsdProvider::OsdSizeChanged(OsdState)) {
+                if (cOsdMenu *OsdMenu = dynamic_cast<cOsdMenu *>(Menu))
+                   OsdMenu->Display();
+                }
              lastOsdSizeUpdate = Now;
              }
         }

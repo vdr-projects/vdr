@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.1 2015/08/09 11:25:04 kls Exp $
+ * $Id: epg.h 4.4 2017/04/02 11:22:21 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -66,7 +66,7 @@ public:
 
 class cSchedule;
 
-typedef u_int16_t tEventID;
+typedef u_int32_t tEventID;
 
 class cEvent : public cListObject {
   friend class cSchedule;
@@ -84,11 +84,12 @@ private:
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
   cComponents *components; // The stream components of this event
-  uchar contents[MaxEventContents]; // Contents of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
+  uchar contents[MaxEventContents]; // Contents of this event
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
+  char *aux;               // Auxiliary data, for use with plugins
 public:
   cEvent(tEventID EventID);
   ~cEvent();
@@ -111,6 +112,7 @@ public:
   time_t Vps(void) const { return vps; }
   time_t Seen(void) const { return seen; }
   bool SeenWithin(int Seconds) const { return time(NULL) - seen < Seconds; }
+  const char *Aux(void) const { return aux; }
   void IncNumTimers(void) const;
   void DecNumTimers(void) const;
   bool HasTimer(void) const { return numTimers > 0; }
@@ -135,6 +137,7 @@ public:
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
   void SetSeen(void);
+  void SetAux(const char *Aux);
   cString ToDescr(void) const;
   void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
   bool Parse(char *s);
@@ -284,6 +287,9 @@ public:
   virtual bool BeginSegmentTransfer(const cChannel *Channel, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called directly after IgnoreChannel() before any other handler method is called.
           ///< Designed to give handlers the possibility to prepare a database transaction.
+          ///< If any EPG handler returns false in this function, it is assumed that
+          ///< the EPG for the given Channel has to be handled later due to some transaction problems,
+          ///> therefore the processing will aborted.
           ///< Dummy is for backward compatibility and may be removed in a future version.
   virtual bool EndSegmentTransfer(bool Modified, bool Dummy) { return false; } // TODO remove obsolete Dummy
           ///< Called after the segment data has been processed.
@@ -311,7 +317,7 @@ public:
   void HandleEvent(cEvent *Event);
   void SortSchedule(cSchedule *Schedule);
   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
-  void BeginSegmentTransfer(const cChannel *Channel);
+  bool BeginSegmentTransfer(const cChannel *Channel);
   void EndSegmentTransfer(bool Modified);
   };
 

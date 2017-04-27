@@ -2618,6 +2618,9 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for adding HandledExternally() to the EPG handler interface
  for adding IsUpdate() to the EPG handler interface
  for adding Begin/EndSegmentTransfer() to the EPG handler interface
+ for making cEpgHandlers::BeginSegmentTransfer() boolean
+ for suggesting to change tEventID back to u_int32_t
+ for adding the 'aux' member to cEvent
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -3385,6 +3388,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting that the -V and -h options should list the plugins in alphabetical order
  for suggesting to implement the setup option "Recording/Record key handling"
  for suggesting to cache the channel/CAM relations in the file 'cam.data'
+ for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
@@ -3466,6 +3470,8 @@ Aitugan Sarbassov <isarbassov@gmail.com>
 Sergey Chernyavskiy <glenvt18@gmail.com>
  for reporting truncated date/time strings in the skins on multi-byte UTF-8
  for adding a short sleep to cTSBuffer::Action() to avoid high CPU usage
+ for making the SVDRP commands that deal with recordings use a unique id for each
+ recording
 
 Frank Richter <kulpstur@t-online.de>
  for adding 'S3W ABS-3A' to sources.conf

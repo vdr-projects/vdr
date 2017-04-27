@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.11 2016/12/08 10:48:53 kls Exp $
+ * $Id: svdrp.c 4.17 2017/04/22 11:57:31 kls Exp $
  */
 
 #include "svdrp.h"
@@ -723,18 +723,20 @@ const char *HelpPages[] = {
   "    interfere with data from the broadcasters.",
   "DELC <number>\n"
   "    Delete channel.",
-  "DELR <number>\n"
-  "    Delete the recording with the given number. Before a recording can be\n"
-  "    deleted, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers. The numbers don't change during subsequent DELR\n"
-  "    commands. CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
+  "DELR <id>\n"
+  "    Delete the recording with the given id. Before a recording can be\n"
+  "    deleted, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids. The ids are unique and don't change while this\n"
+  "    instance of VDR is running.\n"
+  "    CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
   "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
-  "DELT <number>\n"
-  "    Delete timer.",
-  "EDIT <number>\n"
-  "    Edit the recording with the given number. Before a recording can be\n"
-  "    edited, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers.",
+  "DELT <id>\n"
+  "    Delete the timer with the given id. If this timer is currently recording,\n"
+  "    the recording will be stopped without any warning.",
+  "EDIT <id>\n"
+  "    Edit the recording with the given id. Before a recording can be\n"
+  "    edited, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids.",
   "GRAB <filename> [ <quality> [ <sizex> <sizey> ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
   "    be stored as JPEG or PNM, depending on the given file name extension.\n"
@@ -752,45 +754,49 @@ const char *HelpPages[] = {
   "    valid key names is given. If more than one key is given, they are\n"
   "    entered into the remote control queue in the given sequence. There\n"
   "    can be up to 31 keys.",
-  "LSTC [ :groups | <number> | <name> | <id> ]\n"
+  "LSTC [ :ids ] [ :groups | <number> | <name> | <id> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.\n"
   "    If ':groups' is given, all channels are listed including group\n"
-  "    separators. The channel number of a group separator is always 0.",
+  "    separators. The channel number of a group separator is always 0.\n"
+  "    With ':ids' the channel ids are listed following the channel numbers.\n"
+  "    The special number 0 can be given to list the current channel.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
   "    listed. If a channel is given (either by number or by channel ID),\n"
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
   "    events at the given time (which must be in time_t form).",
-  "LSTR [ <number> [ path ] ]\n"
+  "LSTR [ <id> [ path ] ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
   "    the information for the given recording is listed. If a recording\n"
-  "    number and the keyword 'path' is given, the actual file name of that\n"
-  "    recording's directory is listed.",
-  "LSTT [ <number> ] [ id ]\n"
+  "    id and the keyword 'path' is given, the actual file name of that\n"
+  "    recording's directory is listed.\n"
+  "    Note that the ids of the recordings are not necessarily given in\n"
+  "    numeric order.",
+  "LSTT [ <id> ] [ id ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
-  "    only the given timer is listed. If the keyword 'id' is given, the\n"
-  "    channels will be listed with their unique channel ids instead of\n"
-  "    their numbers. This command lists only the timers that are defined\n"
-  "    locally on this VDR, not any remote timers from other VDRs.",
+  "    only the timer with the given id is listed. If the keyword 'id' is\n"
+  "    given, the channels will be listed with their unique channel ids\n"
+  "    instead of their numbers. This command lists only the timers that are\n"
+  "    defined locally on this VDR, not any remote timers from other VDRs.",
   "MESG <message>\n"
   "    Displays the given message on the OSD. The message will be queued\n"
   "    and displayed whenever this is suitable.\n",
   "MODC <number> <settings>\n"
   "    Modify a channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
-  "MODT <number> on | off | <settings>\n"
+  "MODT <id> on | off | <settings>\n"
   "    Modify a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. The special keywords 'on' and 'off' can be\n"
   "    used to easily activate or deactivate a timer.",
   "MOVC <number> <to>\n"
   "    Move a channel to a new position.",
-  "MOVR <number> <new name>\n"
-  "    Move the recording with the given number. Before a recording can be\n"
-  "    moved, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers. The numbers don't change during subsequent MOVR\n"
+  "MOVR <id> <new name>\n"
+  "    Move the recording with the given id. Before a recording can be\n"
+  "    moved, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids. The ids don't change during subsequent MOVR\n"
   "    commands.\n",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
@@ -806,16 +812,16 @@ const char *HelpPages[] = {
   "    number of seconds from now until the event. If the absolute time given\n"
   "    is smaller than the current time, or if the relative time is less than\n"
   "    zero, this means that the timer is currently recording and has started\n"
-  "    at the given time. The first value in the resulting line is the number\n"
+  "    at the given time. The first value in the resulting line is the id\n"
   "    of the timer.",
   "PING\n"
   "    Used by peer-to-peer connections between VDRs to keep the connection\n"
   "    from timing out. May be used at any time and simply returns a line of\n"
   "    the form '<hostname> is alive'.",
-  "PLAY <number> [ begin | <position> ]\n"
-  "    Play the recording with the given number. Before a recording can be\n"
-  "    played, an LSTR command must have been executed in order to retrieve\n"
-  "    the recording numbers.\n"
+  "PLAY <id> [ begin | <position> ]\n"
+  "    Play the recording with the given id. Before a recording can be\n"
+  "    played, an LSTR command should have been executed in order to retrieve\n"
+  "    the recording ids.\n"
   "    The keyword 'begin' plays the recording from its very beginning, while\n"
   "    a <position> (given as hh:mm:ss[.ff] or framenumber) starts at that\n"
   "    position. If neither 'begin' nor a <position> are given, replay is resumed\n"
@@ -1280,7 +1286,7 @@ void cSVDRPServer::CmdDELR(const char *Option)
      if (isnumber(Option)) {
         LOCK_RECORDINGS_WRITE;
         Recordings->SetExplicitModify();
-        if (cRecording *Recording = Recordings->Get(strtol(Option, NULL, 10) - 1)) {
+        if (cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            if (int RecordingInUse = Recording->IsInUse())
               Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, Recording));
            else {
@@ -1297,10 +1303,10 @@ void cSVDRPServer::CmdDELR(const char *Option)
            Reply(550, "Recording \"%s\" not found", Option);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", Option);
+        Reply(501, "Error in recording id \"%s\"", Option);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdDELT(const char *Option)
@@ -1332,7 +1338,7 @@ void cSVDRPServer::CmdEDIT(const char *Option)
   if (*Option) {
      if (isnumber(Option)) {
         LOCK_RECORDINGS_READ;
-        if (const cRecording *Recording = Recordings->Get(strtol(Option, NULL, 10) - 1)) {
+        if (const cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            cMarks Marks;
            if (Marks.Load(Recording->FileName(), Recording->FramesPerSecond(), Recording->IsPesRecording()) && Marks.Count()) {
               if (RecordingsHandler.Add(ruCut, Recording->FileName()))
@@ -1347,10 +1353,10 @@ void cSVDRPServer::CmdEDIT(const char *Option)
            Reply(550, "Recording \"%s\" not found", Option);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", Option);
+        Reply(501, "Error in recording id \"%s\"", Option);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdGRAB(const char *Option)
@@ -1560,11 +1566,17 @@ void cSVDRPServer::CmdHITK(const char *Option)
 void cSVDRPServer::CmdLSTC(const char *Option)
 {
   LOCK_CHANNELS_READ;
+  bool WithChannelIds = startswith(Option, ":ids") && (Option[4] == ' ' || Option[4] == 0);
+  if (WithChannelIds)
+     Option = skipspace(Option + 4);
   bool WithGroupSeps = strcasecmp(Option, ":groups") == 0;
   if (*Option && !WithGroupSeps) {
      if (isnumber(Option)) {
-        if (const cChannel *Channel = Channels->GetByNumber(strtol(Option, NULL, 10)))
-           Reply(250, "%d %s", Channel->Number(), *Channel->ToText());
+        int n = strtol(Option, NULL, 10);
+        if (n == 0)
+           n = cDevice::CurrentChannel();
+        if (const cChannel *Channel = Channels->GetByNumber(n))
+           Reply(250, "%d%s%s %s", Channel->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -1572,17 +1584,17 @@ void cSVDRPServer::CmdLSTC(const char *Option)
         const cChannel *Next = Channels->GetByChannelID(tChannelID::FromString(Option));
         if (!Next) {
            for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
-              if (!Channel->GroupSep()) {
-                 if (strcasestr(Channel->Name(), Option)) {
-                    if (Next)
-                       Reply(-250, "%d %s", Next->Number(), *Next->ToText());
-                    Next = Channel;
-                    }
-                 }
-              }
+               if (!Channel->GroupSep()) {
+                  if (strcasestr(Channel->Name(), Option)) {
+                     if (Next)
+                        Reply(-250, "%d%s%s %s", Next->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Next->GetChannelID().ToString() : "", *Next->ToText());
+                     Next = Channel;
+                     }
+                  }
+               }
            }
         if (Next)
-           Reply(250, "%d %s", Next->Number(), *Next->ToText());
+           Reply(250, "%d%s%s %s", Next->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Next->GetChannelID().ToString() : "", *Next->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -1590,9 +1602,9 @@ void cSVDRPServer::CmdLSTC(const char *Option)
   else if (cChannels::MaxNumber() >= 1) {
      for (const cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
          if (WithGroupSeps)
-            Reply(Channel->Next() ? -250: 250, "%d %s", Channel->GroupSep() ? 0 : Channel->Number(), *Channel->ToText());
+            Reply(Channel->Next() ? -250: 250, "%d%s%s %s", Channel->GroupSep() ? 0 : Channel->Number(), (WithChannelIds && !Channel->GroupSep()) ? " " : "", (WithChannelIds && !Channel->GroupSep()) ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
          else if (!Channel->GroupSep())
-            Reply(Channel->Number() < cChannels::MaxNumber() ? -250 : 250, "%d %s", Channel->Number(), *Channel->ToText());
+            Reply(Channel->Number() < cChannels::MaxNumber() ? -250 : 250, "%d%s%s %s", Channel->Number(), WithChannelIds ? " " : "", WithChannelIds ? *Channel->GetChannelID().ToString() : "", *Channel->ToText());
          }
      }
   else
@@ -1694,7 +1706,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
               if (isnumber(p))
                  Number = strtol(p, NULL, 10);
               else {
-                 Reply(501, "Error in recording number \"%s\"", Option);
+                 Reply(501, "Error in recording id \"%s\"", Option);
                  return;
                  }
               }
@@ -1707,7 +1719,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
            p = strtok_r(NULL, delim, &strtok_next);
            }
      if (Number) {
-        if (const cRecording *Recording = Recordings->Get(strtol(Option, NULL, 10) - 1)) {
+        if (const cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            FILE *f = fdopen(file, "w");
            if (f) {
               if (Path)
@@ -1729,7 +1741,7 @@ void cSVDRPServer::CmdLSTR(const char *Option)
   else if (Recordings->Count()) {
      const cRecording *Recording = Recordings->First();
      while (Recording) {
-           Reply(Recording == Recordings->Last() ? 250 : -250, "%d %s", Recording->Index() + 1, Recording->Title(' ', true));
+           Reply(Recording == Recordings->Last() ? 250 : -250, "%d %s", Recording->Id(), Recording->Title(' ', true));
            Recording = Recordings->Next(Recording);
            }
      }
@@ -1868,7 +1880,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
            Reply(501, "Timer \"%d\" not defined", Id);
         }
      else
-        Reply(501, "Error in timer number");
+        Reply(501, "Error in timer id");
      }
   else
      Reply(501, "Missing timer settings");
@@ -1940,7 +1952,7 @@ void cSVDRPServer::CmdMOVR(const char *Option)
      if (isnumber(num)) {
         LOCK_RECORDINGS_WRITE;
         Recordings->SetExplicitModify();
-        if (cRecording *Recording = Recordings->Get(strtol(num, NULL, 10) - 1)) {
+        if (cRecording *Recording = Recordings->GetById(strtol(num, NULL, 10))) {
            if (int RecordingInUse = Recording->IsInUse())
               Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, Recording));
            else {
@@ -1964,11 +1976,11 @@ void cSVDRPServer::CmdMOVR(const char *Option)
            Reply(550, "Recording \"%s\" not found", num);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", num);
+        Reply(501, "Error in recording id \"%s\"", num);
      free(opt);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdNEWC(const char *Option)
@@ -2053,36 +2065,45 @@ void cSVDRPServer::CmdPLAY(const char *Option)
      char c = *option;
      *option = 0;
      if (isnumber(num)) {
-        LOCK_RECORDINGS_READ;
-        if (const cRecording *Recording = Recordings->Get(strtol(num, NULL, 10) - 1)) {
-           if (c)
-              option = skipspace(++option);
-           cReplayControl::SetRecording(NULL);
-           cControl::Shutdown();
-           if (*option) {
-              int pos = 0;
-              if (strcasecmp(option, "BEGIN") != 0)
-                 pos = HMSFToIndex(option, Recording->FramesPerSecond());
-              cResumeFile Resume(Recording->FileName(), Recording->IsPesRecording());
-              if (pos <= 0)
-                 Resume.Delete();
-              else
-                 Resume.Save(pos);
+        cStateKey StateKey;
+        if (const cRecordings *Recordings = cRecordings::GetRecordingsRead(StateKey)) {
+           if (const cRecording *Recording = Recordings->GetById(strtol(num, NULL, 10))) {
+              cString FileName = Recording->FileName();
+              cString Title = Recording->Title();
+              int FramesPerSecond = Recording->FramesPerSecond();
+              bool IsPesRecording = Recording->IsPesRecording();
+              StateKey.Remove(); // must give up the lock for the call to cControl::Shutdown()
+              if (c)
+                 option = skipspace(++option);
+              cReplayControl::SetRecording(NULL);
+              cControl::Shutdown();
+              if (*option) {
+                 int pos = 0;
+                 if (strcasecmp(option, "BEGIN") != 0)
+                    pos = HMSFToIndex(option, FramesPerSecond);
+                 cResumeFile Resume(FileName, IsPesRecording);
+                 if (pos <= 0)
+                    Resume.Delete();
+                 else
+                    Resume.Save(pos);
+                 }
+              cReplayControl::SetRecording(FileName);
+              cControl::Launch(new cReplayControl);
+              cControl::Attach();
+              Reply(250, "Playing recording \"%s\" [%s]", num, *Title);
               }
-           cReplayControl::SetRecording(Recording->FileName());
-           cControl::Launch(new cReplayControl);
-           cControl::Attach();
-           Reply(250, "Playing recording \"%s\" [%s]", num, Recording->Title());
+           else {
+              StateKey.Remove();
+              Reply(550, "Recording \"%s\" not found", num);
+              }
            }
-        else
-           Reply(550, "Recording \"%s\" not found", num);
         }
      else
-        Reply(501, "Error in recording number \"%s\"", num);
+        Reply(501, "Error in recording id \"%s\"", num);
      free(opt);
      }
   else
-     Reply(501, "Missing recording number");
+     Reply(501, "Missing recording id");
 }
 
 void cSVDRPServer::CmdPLUG(const char *Option)

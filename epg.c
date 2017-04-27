@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.2 2015/09/10 10:58:19 kls Exp $
+ * $Id: epg.c 4.4 2017/04/02 11:34:15 kls Exp $
  */
 
 #include "epg.h"
@@ -129,6 +129,7 @@ cEvent::cEvent(tEventID EventID)
   startTime = 0;
   duration = 0;
   vps = 0;
+  aux = NULL;
   SetSeen();
 }
 
@@ -137,6 +138,7 @@ cEvent::~cEvent()
   free(title);
   free(shortText);
   free(description);
+  free(aux);
   delete components;
 }
 
@@ -235,6 +237,12 @@ void cEvent::SetVps(time_t Vps)
 void cEvent::SetSeen(void)
 {
   seen = time(NULL);
+}
+
+void cEvent::SetAux(const char *Aux)
+{
+  free(aux);
+  aux = Aux ? strdup(Aux) : NULL;
 }
 
 cString cEvent::ToDescr(void) const
@@ -469,6 +477,11 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
         }
      if (vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
+     if (!InfoOnly && !isempty(aux)) {
+        strreplace(aux, '\n', '|');
+        fprintf(f, "%s@ %s\n", Prefix, aux);
+        strreplace(aux, '|', '\n');
+        }
      if (!InfoOnly)
         fprintf(f, "%se\n", Prefix);
      }
@@ -506,6 +519,9 @@ bool cEvent::Parse(char *s)
               components->SetComponent(components->NumComponents(), t);
               break;
     case 'V': SetVps(atoi(t));
+              break;
+    case '@': strreplace(t, '|', '\n');
+              SetAux(t);
               break;
     default:  esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
               return false;
@@ -1527,12 +1543,13 @@ void cEpgHandlers::DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t
   Schedule->DropOutdated(SegmentStart, SegmentEnd, TableID, Version);
 }
 
-void cEpgHandlers::BeginSegmentTransfer(const cChannel *Channel)
+bool cEpgHandlers::BeginSegmentTransfer(const cChannel *Channel)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
-      if (eh->BeginSegmentTransfer(Channel, false))
-         return;
+      if (!eh->BeginSegmentTransfer(Channel, false))
+         return false;
       }
+  return true;
 }
 
 void cEpgHandlers::EndSegmentTransfer(bool Modified)

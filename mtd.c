@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.9 2017/03/27 14:26:04 kls Exp $
+ * $Id: mtd.c 1.10 2017/04/26 08:33:54 kls Exp $
  */
 
 #include "mtd.h"
@@ -134,6 +134,12 @@ bool cMtdHandler::Devices(cVector<int> &CardIndexes)
   for (int i = 0; i < camSlots.Size(); i++)
       camSlots[i]->Devices(CardIndexes);
   return CardIndexes.Size() > 0;
+}
+
+void cMtdHandler::UnAssignAll(void)
+{
+  for (int i = 0; i < camSlots.Size(); i++)
+      camSlots[i]->Assign(NULL);
 }
 
 // --- cMtdMapper ------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 4.1 2015/09/10 11:23:07 kls Exp $
+ * $Id: osdbase.c 4.2 2017/04/03 12:30:52 kls Exp $
  */
 
 #include "osdbase.h"
@@ -77,6 +77,7 @@ void cOsdObject::Show(void)
 
 cSkinDisplayMenu *cOsdMenu::displayMenu = NULL;
 int cOsdMenu::displayMenuCount = 0;
+int cOsdMenu::osdState = 0;
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
@@ -96,8 +97,10 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   helpRed = helpGreen = helpYellow = helpBlue = NULL;
   helpDisplayed = false;
   status = NULL;
-  if (!displayMenuCount++)
+  if (!displayMenuCount++) {
+     cOsdProvider::OsdSizeChanged(osdState); // to get the current state
      SetDisplayMenu();
+     }
 }
 
 cOsdMenu::~cOsdMenu()
@@ -226,6 +229,8 @@ void cOsdMenu::Display(void)
      subMenu->Display();
      return;
      }
+  if (cOsdProvider::OsdSizeChanged(osdState))
+     SetDisplayMenu();
   displayMenu->SetMessage(mtStatus, NULL);
   displayMenu->Clear();
   cStatus::MsgOsdClear();
