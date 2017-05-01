@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.13 2017/04/26 09:18:26 kls Exp $
+ * $Id: ci.c 4.14 2017/05/01 09:26:12 kls Exp $
  */
 
 #include "ci.h"
@@ -2422,6 +2422,17 @@ uchar *cCamSlot::Decrypt(uchar *Data, int &Count)
   if (Data)
      Count = TS_SIZE;
   return Data;
+}
+
+bool cCamSlot::Inject(uchar *Data, int Count)
+{
+  return true;
+}
+
+void cCamSlot::InjectEit(int Sid)
+{
+  cEitGenerator Eit(Sid);
+  Inject(Eit.Data(), Eit.Length());
 }
 
 // --- cCamSlots -------------------------------------------------------------

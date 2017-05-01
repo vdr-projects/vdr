@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.6 2017/04/10 09:17:56 kls Exp $
+ * $Id: ci.h 4.7 2017/05/01 09:21:22 kls Exp $
  */
 
 #ifndef __CI_H
@@ -377,6 +377,17 @@ public:
        ///< A derived class that implements this function will also need
        ///< to set the WantsTsData parameter in the call to the base class
        ///< constructor to true in order to receive the TS data.
+  virtual bool Inject(uchar *Data, int Count);
+       ///< Sends all Count bytes of the given Data to the CAM, and returns true
+       ///< if this was possible. If the data can't be sent to the CAM completely,
+       ///< nothing shall be sent and the return value shall be false.
+       ///< No decrypted packet is returned by this function.
+  virtual void InjectEit(int Sid);
+       ///< Injects a generated EIT with a "present event" for the given Sid into
+       ///< the TS data stream sent to the CAM. This only applies to CAM slots that
+       ///< have WantsTsData set to true in their constructor.
+       ///< The default implementation sends an EIT with the minimum event
+       ///< necessary to disable the CAMs parental rating prompt.
   };
 
 class cCamSlots : public cList<cCamSlot> {

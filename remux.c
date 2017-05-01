@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.6 2017/04/24 14:59:39 kls Exp $
+ * $Id: remux.c 4.7 2017/04/29 12:25:09 kls Exp $
  */
 
 #include "remux.h"
@@ -938,6 +938,93 @@ bool cPatPmtParser::GetVersions(int &PatVersion, int &PmtVersion) const
   PatVersion = patVersion;
   PmtVersion = pmtVersion;
   return patVersion >= 0 && pmtVersion >= 0;
+}
+
+// --- cEitGenerator ---------------------------------------------------------
+
+cEitGenerator::cEitGenerator(int Sid)
+{
+  counter = 0;
+  version = 0;
+  if (Sid)
+     Generate(Sid);
+}
+
+uint16_t cEitGenerator::YMDtoMJD(int Y, int M, int D)
+{
+  int L = (M < 3) ? 1 : 0;
+  return 14956 + D + int((Y - L) * 365.25) + int((M + 1 + L * 12) * 30.6001);
+}
+
+uchar *cEitGenerator::AddParentalRatingDescriptor(uchar *p, uchar ParentalRating)
+{
+  *p++ = SI::ParentalRatingDescriptorTag;
+  *p++ = 0x04; // descriptor length
+  *p++ = 'D';  // country code
+  *p++ = 'E';
+  *p++ = 'U';
+  *p++ = ParentalRating;
+  return p;
+}
+
+uchar *cEitGenerator::Generate(int Sid)
+{
+  uchar *PayloadStart;
+  uchar *SectionStart;
+  uchar *DescriptorsStart;
+  memset(eit, 0xFF, sizeof(eit));
+  struct tm tm_r;
+  time_t t = time(NULL) - 3600; // let's have the event start one hour in the past
+  tm *tm = localtime_r(&t, &tm_r);
+  uint16_t MJD = YMDtoMJD(tm->tm_year, tm->tm_mon + 1, tm->tm_mday);
+  uchar *p = eit;
+  // TS header:
+  *p++ = TS_SYNC_BYTE;
+  *p++ = TS_PAYLOAD_START;
+  *p++ = EITPID;
+  *p++ = 0x10 | (counter++ & 0x0F); // continuity counter
+  *p++ = 0x00; // pointer field (payload unit start indicator is set)
+  // payload:
+  PayloadStart = p;
+  *p++ = 0x4E; // TID present/following event on this transponder
+  *p++ = 0xF0;
+  *p++ = 0x00; // section length
+  SectionStart = p;
+  *p++ = Sid >> 8;
+  *p++ = Sid & 0xFF;
+  *p++ = 0xC1 | (version << 1);
+  *p++ = 0x00; // section number
+  *p++ = 0x00; // last section number
+  *p++ = 0x00; // transport stream id
+  *p++ = 0x00; // ...
+  *p++ = 0x00; // original network id
+  *p++ = 0x00; // ...
+  *p++ = 0x00; // segment last section number
+  *p++ = 0x4E; // last table id
+  *p++ = 0x00; // event id
+  *p++ = 0x01; // ...
+  *p++ = MJD >> 8; // start time
+  *p++ = MJD & 0xFF;  // ...
+  *p++ = tm->tm_hour; // ...
+  *p++ = tm->tm_min;  // ...
+  *p++ = tm->tm_sec;  // ...
+  *p++ = 0x24; // duration (one day, should cover everything)
+  *p++ = 0x00; // ...
+  *p++ = 0x00; // ...
+  *p++ = 0x90; // running status, free/CA mode
+  *p++ = 0x00; // descriptors loop length
+  DescriptorsStart = p;
+  p = AddParentalRatingDescriptor(p);
+  // fill in lengths:
+  *(SectionStart - 1) = p - SectionStart + 4; // +4 = length of CRC
+  *(DescriptorsStart - 1) = p - DescriptorsStart;
+  // checksum
+  int crc = SI::CRC32::crc32((char *)PayloadStart, p - PayloadStart, 0xFFFFFFFF);
+  *p++ = crc >> 24;
+  *p++ = crc >> 16;
+  *p++ = crc >> 8;
+  *p++ = crc;
+  return eit;
 }
 
 // --- cTsToPes --------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.15 2017/04/17 14:47:42 kls Exp $
+ * $Id: device.c 4.16 2017/05/01 09:24:49 kls Exp $
  */
 
 #include "device.h"
@@ -1652,6 +1652,7 @@ bool cDevice::Receiving(bool Dummy) const
 
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
 #define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
+#define EIT_INJECTION_TIME       10 // seconds for which to inject EIT event
 
 void cDevice::Action(void)
 {
@@ -1696,6 +1697,18 @@ void cDevice::Action(void)
                                  Receiver->startScrambleDetection = 0;
                                  }
                               }
+                           }
+                        // Inject EIT event to avoid the CAMs parental rating prompt:
+                        if (Receiver->startEitInjection) {
+                           time_t Now = time(NULL);
+                           if (cCamSlot *cs = CamSlot()) {
+                              if (Now != Receiver->lastEitInjection) { // once per second
+                                 cs->InjectEit(Receiver->ChannelID().Sid());
+                                 Receiver->lastEitInjection = Now;
+                                 }
+                              }
+                           if (Now - Receiver->startEitInjection > EIT_INJECTION_TIME)
+                              Receiver->startEitInjection = 0;
                            }
                         }
                      }
@@ -1755,6 +1768,10 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
+            if (camSlot->WantsTsData()) {
+               Receiver->lastEitInjection = 0;
+               Receiver->startEitInjection = time(NULL);
+               }
             if (CamSlots.NumReadyMasterSlots() > 1) { // don't try different CAMs if there is only one
                Receiver->startScrambleDetection = time(NULL);
                Receiver->scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
