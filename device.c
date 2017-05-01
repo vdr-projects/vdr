@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.16 2017/05/01 09:24:49 kls Exp $
+ * $Id: device.c 4.17 2017/05/01 13:00:57 kls Exp $
  */
 
 #include "device.h"
@@ -782,7 +782,7 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
-     isyslog("switching to channel %d (%s)", Channel->Number(), Channel->Name());
+     isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
      }
   for (int i = 3; i--;) {

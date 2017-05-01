@@ -8997,3 +8997,5 @@ Video Disk Recorder Revision History
   the current SID, in order to avoid any parental rating dialogs.
 - Fixed handling UNC values (the shift operator behaves unexpected for shift values
   larger than the size of the variable).
+- Log messages about switching channels now include the channel ID (suggested by
+  Dietmar Spingler).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.25 2017/04/20 09:15:49 kls Exp $
+ * $Id: menu.c 4.26 2017/05/01 13:01:00 kls Exp $
  */
 
 #include "menu.h"
@@ -5185,7 +5185,7 @@ bool cRecordControls::Start(cTimers *Timers, cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(Channel, Priority, false);
      if (device) {
-        dsyslog("switching device %d to channel %d (%s)", device->DeviceNumber() + 1, Channel->Number(), Channel->Name());
+        dsyslog("switching device %d to channel %d %s (%s)", device->DeviceNumber() + 1, Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
         if (!device->SwitchChannel(Channel, false)) {
            ShutdownHandler.RequestEmergencyExit();
            return false;

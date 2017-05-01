@@ -3389,6 +3389,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to implement the setup option "Recording/Record key handling"
  for suggesting to cache the channel/CAM relations in the file 'cam.data'
  for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
+ for suggesting to include the channel ID in log messages about switching channels
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
