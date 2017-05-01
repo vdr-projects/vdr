@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.9 2017/04/20 14:42:35 kls Exp $
+ * $Id: dvbdevice.c 4.10 2017/05/01 12:48:55 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -844,13 +844,16 @@ int cDvbTuner::GetSignalQuality(void) const
               // be considered low even if there haven't been any more uncorrected bocks
               // for quite a while.
               Unc = lastUncDelta;
-              int t = time(NULL) - lastUncChange - 2;
-              if (t > 0)
-                 Unc >>= min(t, 32);
+              if (Unc > 0) {
+                 int t = time(NULL) - lastUncChange - 2;
+                 if (t > 0)
+                    Unc >>= min(t, int(sizeof(Unc) * 8 - 1));
+                 if (Unc == 0)
+                    lastUncDelta = 0;
 #ifdef DEBUG_SIGNALQUALITY
-              if (Unc > 0)
                  fprintf(stderr, "FE %d/%d: API3 UNC = %u\n", adapter, frontend, Unc);
 #endif
+                 }
               break;
               }
            if (errno != EINTR) {

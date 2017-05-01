@@ -8995,3 +8995,5 @@ Video Disk Recorder Revision History
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
+- Fixed handling UNC values (the shift operator behaves unexpected for shift values
+  larger than the size of the variable).
