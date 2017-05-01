@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.7 2017/05/01 09:21:22 kls Exp $
+ * $Id: ci.h 4.8 2017/05/01 16:26:34 kls Exp $
  */
 
 #ifndef __CI_H
@@ -382,6 +382,7 @@ public:
        ///< if this was possible. If the data can't be sent to the CAM completely,
        ///< nothing shall be sent and the return value shall be false.
        ///< No decrypted packet is returned by this function.
+       ///< Data is guaranteed to point to one or more complete TS packets.
   virtual void InjectEit(int Sid);
        ///< Injects a generated EIT with a "present event" for the given Sid into
        ///< the TS data stream sent to the CAM. This only applies to CAM slots that
