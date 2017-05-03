@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-01: Version 2.3.5
+2017-05-03: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -8999,3 +8999,5 @@ Video Disk Recorder Revision History
   larger than the size of the variable).
 - Log messages about switching channels now include the channel ID (suggested by
   Dietmar Spingler).
+- Events in the EIT that end before the EPG linger time are now ignored in the incoming
+  data stream, because they would just be deleted in the next schedules cleanup anyway.
