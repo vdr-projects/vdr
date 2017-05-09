@@ -3022,6 +3022,8 @@ Frank Neumann <fnu@yavdr.org>
  for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
  for suggesting to make the Setup/CAM menu display which device an individual CAM
  is currently assigned to
+ for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
+ in derived classes that don't implement this function
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in

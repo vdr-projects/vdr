@@ -9012,3 +9012,6 @@ Video Disk Recorder Revision History
 - When selecting a device/CAM combination for live viewing, CAMs that are known to decrypt
   the requested channel are now given a higher priority than prefering the primary device
   (reported by Christian Winkler).
+- Changed the default return value of cEpgHandler::BeginSegmentTransfer() to true, to
+  avoid problems with derived classes that don't implement this function (reported by
+  Frank Neumann).
