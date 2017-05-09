@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.5 2016/12/23 14:03:40 kls Exp $
+ * $Id: tools.c 4.6 2017/05/09 08:32:54 kls Exp $
  */
 
 #include "tools.h"
@@ -2312,9 +2312,10 @@ void cDynamicBuffer::Append(const uchar *Data, int Length)
 
 // --- cHashBase -------------------------------------------------------------
 
-cHashBase::cHashBase(int Size)
+cHashBase::cHashBase(int Size, bool OwnObjects)
 {
   size = Size;
+  ownObjects = OwnObjects;
   hashTable = (cList<cHashObject>**)calloc(size, sizeof(cList<cHashObject>*));
 }
 
@@ -2348,6 +2349,13 @@ void cHashBase::Del(cListObject *Object, unsigned int Id)
 void cHashBase::Clear(void)
 {
   for (int i = 0; i < size; i++) {
+      if (ownObjects) {
+         cList<cHashObject> *list = hashTable[i];
+         if (list) {
+            for (cHashObject *hob = list->First(); hob; hob = list->Next(hob))
+                delete hob->object;
+            }
+         }
       delete hashTable[i];
       hashTable[i] = NULL;
       }

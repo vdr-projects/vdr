@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.6 2017/03/16 16:04:43 kls Exp $
+ * $Id: tools.h 4.7 2017/05/09 08:33:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -825,9 +825,14 @@ class cHashBase {
 private:
   cList<cHashObject> **hashTable;
   int size;
+  bool ownObjects;
   unsigned int hashfn(unsigned int Id) const { return Id % size; }
 protected:
-  cHashBase(int Size);
+  cHashBase(int Size, bool OwnObjects);
+       ///< Creates a new hash of the given Size. If OwnObjects is true, the
+       ///< hash takes ownership of the objects given in the calls to Add(),
+       ///< and deletes them when Clear() is called or the hash is destroyed
+       ///< (unless the object has been removed from the hash by calling Del()).
 public:
   virtual ~cHashBase();
   void Add(cListObject *Object, unsigned int Id);
@@ -841,7 +846,7 @@ public:
 
 template<class T> class cHash : public cHashBase {
 public:
-  cHash(int Size = HASHSIZE) : cHashBase(Size) {}
+  cHash(int Size = HASHSIZE, bool OwnObjects = false) : cHashBase(Size, OwnObjects) {}
   T *Get(unsigned int Id) const { return (T *)cHashBase::Get(Id); }
 };
 

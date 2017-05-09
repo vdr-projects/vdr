@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-03: Version 2.3.5
+2017-05-09: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -9001,3 +9001,9 @@ Video Disk Recorder Revision History
   Dietmar Spingler).
 - Events in the EIT that end before the EPG linger time are now ignored in the incoming
   data stream, because they would just be deleted in the next schedules cleanup anyway.
+- The constructor of cHash (via cHashBase) now has an additional parameter (OwnObjects)
+  which, if set to true, makes the hash take ownership of the hashed objects, so that
+  they are deleted when the hash is cleared or destroyed.
+- Fixed a memory leak in cSectionSyncerHash. The cSectionSyncerEntry objects put into
+  the hash were never explicitly deleted. Now the cSectionSyncerHash takes ownership of
+  these objects.
