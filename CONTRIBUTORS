@@ -3377,6 +3377,9 @@ Tony Houghton <h@realh.co.uk>
 Christian Winkler <winkler_chr@yahoo.de>
  for reporting a problem with transfer mode on full featured DVB cards for encrypted
  channels that have no audio pid
+ for reporting a problem when selecting a device/CAM combination for live viewing, if
+ the CAM that is known to decrypt the requested channel can not be assigned to the
+ primary device
 
 Dietmar Spingler <d_spingler@gmx.de>
  for reporting a problem that led to a fix in detaching receivers from devices in case

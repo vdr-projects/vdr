@@ -9009,3 +9009,6 @@ Video Disk Recorder Revision History
   these objects.
 - cListObject now implements a private copy constructor and assignment operator, to keep
   derived objects from calling them implicitly.
+- When selecting a device/CAM combination for live viewing, CAMs that are known to decrypt
+  the requested channel are now given a higher priority than prefering the primary device
+  (reported by Christian Winkler).

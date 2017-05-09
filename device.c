@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.17 2017/05/01 13:00:57 kls Exp $
+ * $Id: device.c 4.18 2017/05/09 09:03:14 kls Exp $
  */
 
 #include "device.h"
@@ -293,6 +293,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              // to their individual severity, where the one listed first will make the most
              // difference, because it results in the most significant bit of the result.
              uint32_t imp = 0;
+             imp <<= 1; imp |= (LiveView && NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlots.Get(j)->MasterSlotNumber()) || ndr : 0; // prefer CAMs that are known to decrypt this channel for live viewing, if we don't need to detach existing receivers
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
