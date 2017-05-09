@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.12 2017/05/09 09:44:10 kls Exp $
+ * $Id: dvbdevice.c 4.13 2017/05/09 11:50:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -349,7 +349,7 @@ public:
   void SetChannel(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
   const cPositioner *Positioner(void) const { return positioner; }
-  bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL) const;
+  bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const;
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
   };
@@ -574,14 +574,29 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
                           }\
                      }
 
-bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
   ClearEventQueue();
+  fe_status_t FeStatus;
   dtv_property Props[MAXFRONTENDCMDS];
   dtv_properties CmdSeq;
   memset(&Props, 0, sizeof(Props));
   memset(&CmdSeq, 0, sizeof(CmdSeq));
   CmdSeq.props = Props;
+  Valid = DTV_STAT_VALID_NONE;
+  if (ioctl(fd_frontend, FE_READ_STATUS, &FeStatus) != 0) {
+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
+     return false;
+     }
+  if (Status) {
+     *Status = DTV_STAT_HAS_NONE;
+     if (FeStatus & FE_HAS_SIGNAL)  *Status |= DTV_STAT_HAS_SIGNAL;
+     if (FeStatus & FE_HAS_CARRIER) *Status |= DTV_STAT_HAS_CARRIER;
+     if (FeStatus & FE_HAS_VITERBI) *Status |= DTV_STAT_HAS_VITERBI;
+     if (FeStatus & FE_HAS_SYNC)    *Status |= DTV_STAT_HAS_SYNC;
+     if (FeStatus & FE_HAS_LOCK)    *Status |= DTV_STAT_HAS_LOCK;
+     Valid |= DTV_STAT_VALID_STATUS;
+     }
   if (Strength)   SETCMD(DTV_STAT_SIGNAL_STRENGTH, 0);
   if (Cnr)        SETCMD(DTV_STAT_CNR, 0);
   if (BerPre)   { SETCMD(DTV_STAT_PRE_ERROR_BIT_COUNT, 0);
@@ -594,7 +609,6 @@ bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double
      esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
      return false;
      }
-  Valid = DTV_STAT_VALID_NONE;
   int i = 0;
   if (Strength) {
      if (Props[i].u.st.len > 0) {
@@ -659,6 +673,7 @@ bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double
      }
 #ifdef DEBUG_SIGNALSTATS
   fprintf(stderr, "FE %d/%d: API5 %04X", adapter, frontend, Valid);
+  if ((Valid & DTV_STAT_VALID_STATUS)   != 0) fprintf(stderr, " STAT=%04X",     *Status);
   if ((Valid & DTV_STAT_VALID_STRENGTH) != 0) fprintf(stderr, " STR=%1.1fdBm",  *Strength);
   if ((Valid & DTV_STAT_VALID_CNR)      != 0) fprintf(stderr, " CNR=%1.1fdB",   *Cnr);
   if ((Valid & DTV_STAT_VALID_BERPRE)   != 0) fprintf(stderr, " BERPRE=%1.1e",  *BerPre);
@@ -1841,9 +1856,9 @@ const cPositioner *cDvbDevice::Positioner(void) const
   return dvbTuner ? dvbTuner->Positioner() : NULL;
 }
 
-bool cDvbDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDvbDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
-  return dvbTuner ? dvbTuner->GetSignalStats(Valid, Strength, Cnr, BerPre, BerPost, Per) : false;
+  return dvbTuner ? dvbTuner->GetSignalStats(Valid, Strength, Cnr, BerPre, BerPost, Per, Status) : false;
 }
 
 int cDvbDevice::SignalStrength(void) const

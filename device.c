@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.18 2017/05/09 09:03:14 kls Exp $
+ * $Id: device.c 4.19 2017/05/09 11:24:47 kls Exp $
  */
 
 #include "device.h"
@@ -750,7 +750,7 @@ const cPositioner *cDevice::Positioner(void) const
   return NULL;
 }
 
-bool cDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
   return false;
 }

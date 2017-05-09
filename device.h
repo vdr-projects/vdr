@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.8 2017/04/17 14:46:57 kls Exp $
+ * $Id: device.h 4.9 2017/05/09 11:24:47 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -112,6 +112,14 @@ public:
 #define DTV_STAT_VALID_BERPRE    0x0004
 #define DTV_STAT_VALID_BERPOST   0x0008
 #define DTV_STAT_VALID_PER       0x0010
+#define DTV_STAT_VALID_STATUS    0x0020
+
+#define DTV_STAT_HAS_NONE        0x0000
+#define DTV_STAT_HAS_SIGNAL      0x0001
+#define DTV_STAT_HAS_CARRIER     0x0002
+#define DTV_STAT_HAS_VITERBI     0x0004
+#define DTV_STAT_HAS_SYNC        0x0008
+#define DTV_STAT_HAS_LOCK        0x0010
 
 class cDevice : public cThread {
   friend class cLiveSubtitle;
@@ -291,13 +299,14 @@ public:
          ///< move the satellite dish to the requested position (only applies to DVB-S
          ///< devices). If no positioner is involved, or this is not a DVB-S device,
          ///< NULL will be returned.
-  virtual bool SignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL) const;
+  virtual bool SignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const;
          ///< Returns statistics about the currently received signal (if available).
          ///< Strength is the signal strength in dBm (typical range -100dBm...0dBm).
          ///< Cnr is the carrier to noise ratio in dB (typical range 0dB...40dB).
          ///< BerPre is the bit error rate before the forward error correction (FEC).
          ///< BerPost is the bit error rate after the forward error correction (FEC).
          ///< Per is the block error rate after the forward error correction (FEC).
+         ///< Status is the masked frontend status (signal/carrier/viterbi/sync/lock).
          ///< Typical range for BerPre, BerPost and Per is 0...1.
          ///< If any of the given pointers is not NULL, the value of the respective signal
          ///< statistic is returned in it. Upon return, Valid holds a combination of
