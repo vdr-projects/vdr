@@ -9007,3 +9007,5 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in cSectionSyncerHash. The cSectionSyncerEntry objects put into
   the hash were never explicitly deleted. Now the cSectionSyncerHash takes ownership of
   these objects.
+- cListObject now implements a private copy constructor and assignment operator, to keep
+  derived objects from calling them implicitly.

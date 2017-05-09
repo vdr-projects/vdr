@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.7 2017/05/09 08:33:37 kls Exp $
+ * $Id: tools.h 4.8 2017/05/09 08:37:23 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -479,6 +479,8 @@ class cListObject {
   friend class cListGarbageCollector;
 private:
   cListObject *prev, *next;
+  cListObject(const cListObject &ListObject) { abort(); } // no copy constructor!
+  cListObject& operator= (const cListObject &ListObject) { abort(); return *this; } // no assignment operator!
 public:
   cListObject(void);
   virtual ~cListObject();
