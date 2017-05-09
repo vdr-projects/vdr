@@ -9017,3 +9017,5 @@ Video Disk Recorder Revision History
   Frank Neumann).
 - Fixed selecting delivery system names in case of undefined indexes (thanks to Jasmin
   Jessich).
+- Changed the legacy delivery system name "DMBTH" to "DTMB", and added names for
+  DVBC_ANNEX_C and DVBC2.

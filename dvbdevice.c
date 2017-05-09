@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.11 2017/05/09 09:42:40 kls Exp $
+ * $Id: dvbdevice.c 4.12 2017/05/09 09:44:10 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1291,11 +1291,13 @@ const char *DeliverySystemNames[] = {
   "ISDBC",
   "ATSC",
   "ATSCMH",
-  "DMBTH",
+  "DTMB",
   "CMMB",
   "DAB",
   "DVB-T2",
   "TURBO",
+  "DVB-C",
+  "DVB-C2",
   NULL
   };
 
