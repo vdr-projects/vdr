@@ -9021,3 +9021,4 @@ Video Disk Recorder Revision History
   DVBC_ANNEX_C and DVBC2.
 - Added a Status parameter to the interface of cDevice::SignalStats() and
   cDvbDevice::SignalStats() (thanks to Rolf Ahrenberg).
+- Fixed handling line numbers in error messages when reading EPG data.

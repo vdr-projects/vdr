@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.5 2017/05/09 09:16:29 kls Exp $
+ * $Id: epg.h 4.6 2017/05/09 12:15:14 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -141,7 +141,7 @@ public:
   cString ToDescr(void) const;
   void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
   bool Parse(char *s);
-  static bool Read(FILE *f, cSchedule *Schedule);
+  static bool Read(FILE *f, cSchedule *Schedule, int &Line);
   void FixEpgBugs(void);
   };
 
