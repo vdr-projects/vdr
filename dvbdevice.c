@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.10 2017/05/01 12:48:55 kls Exp $
+ * $Id: dvbdevice.c 4.11 2017/05/09 09:42:40 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1299,6 +1299,15 @@ const char *DeliverySystemNames[] = {
   NULL
   };
 
+static const int DeliverySystemNamesMax = sizeof(DeliverySystemNames) / sizeof(DeliverySystemNames[0]) - 2; // -1 to get the maximum allowed index & -1 for the NULL => -2
+
+static const char *GetDeliverySystemName(int Index)
+{
+  if (Index > DeliverySystemNamesMax)
+     Index = 0;
+  return DeliverySystemNames[Index];
+};
+
 cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 {
   adapter = Adapter;
@@ -1396,9 +1405,9 @@ cString cDvbDevice::DeviceType(void) const
 {
   if (dvbTuner) {
      if (dvbTuner->FrontendType() != SYS_UNDEFINED)
-        return DeliverySystemNames[dvbTuner->FrontendType()];
+        return GetDeliverySystemName(dvbTuner->FrontendType());
      if (numDeliverySystems)
-        return DeliverySystemNames[deliverySystems[0]]; // to have some reasonable default
+        return GetDeliverySystemName(deliverySystems[0]); // to have some reasonable default
      }
   return "";
 }
@@ -1529,7 +1538,7 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
   if (numDeliverySystems > 0) {
      cString ds("");
      for (int i = 0; i < numDeliverySystems; i++)
-         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", DeliverySystemNames[deliverySystems[i]]);
+         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", GetDeliverySystemName(deliverySystems[i]));
      cString ms("");
      if (frontendInfo.caps & FE_CAN_QPSK)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QPSK, ModulationValues)); }
      if (frontendInfo.caps & FE_CAN_QAM_16)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_16, ModulationValues)); }

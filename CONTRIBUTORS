@@ -3417,6 +3417,7 @@ Jasmin Jessich <jasmin@anw.at>
  assigned to any devices
  for writing the ddci2 plugin and for valuable input and help with testing and
  debugging MTD support
+ for fixing selecting delivery system names in case of undefined indexes
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

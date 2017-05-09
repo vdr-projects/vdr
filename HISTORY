@@ -9015,3 +9015,5 @@ Video Disk Recorder Revision History
 - Changed the default return value of cEpgHandler::BeginSegmentTransfer() to true, to
   avoid problems with derived classes that don't implement this function (reported by
   Frank Neumann).
+- Fixed selecting delivery system names in case of undefined indexes (thanks to Jasmin
+  Jessich).
