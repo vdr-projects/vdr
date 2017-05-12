@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-09: Version 2.3.5
+2017-05-12: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -9022,3 +9022,5 @@ Video Disk Recorder Revision History
 - Added a Status parameter to the interface of cDevice::SignalStats() and
   cDvbDevice::SignalStats() (thanks to Rolf Ahrenberg).
 - Fixed handling line numbers in error messages when reading EPG data.
+- Added handling RI_HOST_CONTROL to the CI protocol (no actual processing, but its
+  presence is required by some CAMs).

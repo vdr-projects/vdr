@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.14 2017/05/01 09:26:12 kls Exp $
+ * $Id: ci.c 4.15 2017/05/12 09:13:10 kls Exp $
  */
 
 #include "ci.h"
@@ -631,6 +631,7 @@ void cCiResourceManager::Process(int Length, const uint8_t *Data)
             uint32_t resources[] = { htonl(RI_RESOURCE_MANAGER),
                                      htonl(RI_APPLICATION_INFORMATION),
                                      htonl(RI_CONDITIONAL_ACCESS_SUPPORT),
+                                     htonl(RI_HOST_CONTROL),
                                      htonl(RI_DATE_TIME),
                                      htonl(RI_MMI)
                                    };
@@ -1077,6 +1078,39 @@ void cCiConditionalAccessSupport::SendPMT(cCiCaPmt *CaPmt)
      dbgprotocol("Slot %d: ==> Ca Pmt (%d) %d %d\n", Tc()->CamSlot()->SlotNumber(), SessionId(), CaPmt->ListManagement(), CaPmt->CmdId());
      SendData(AOT_CA_PMT, CaPmt->capmt.Length(), CaPmt->capmt.Data());
      state = 4; // sent ca pmt
+     }
+}
+
+// --- cCiHostControl --------------------------------------------------------
+
+class cCiHostControl : public cCiSession {
+public:
+  cCiHostControl(uint16_t SessionId, cCiTransportConnection *Tc);
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  };
+
+cCiHostControl::cCiHostControl(uint16_t SessionId, cCiTransportConnection* Tc)
+:cCiSession(SessionId, RI_HOST_CONTROL, Tc)
+{
+  dbgprotocol("Slot %d: new Host Control (session id %d)\n", Tc->CamSlot()->SlotNumber(), SessionId);
+}
+
+void cCiHostControl::Process(int Length, const uint8_t* Data)
+{
+  if (Data) {
+     int Tag = GetTag(Length, &Data);
+     switch (Tag) {
+       case AOT_TUNE:
+            dbgprotocol("Slot %d: <== Host Control Tune (%d)\n", Tc()->CamSlot()->SlotNumber(), SessionId());
+            break;
+       case AOT_REPLACE:
+            dbgprotocol("Slot %d: <== Host Control Replace (%d)\n", Tc()->CamSlot()->SlotNumber(), SessionId());
+            break;
+       case AOT_CLEAR_REPLACE:
+            dbgprotocol("Slot %d: <== Host Control Clear Replace (%d)\n", Tc()->CamSlot()->SlotNumber(), SessionId());
+            break;
+       default: esyslog("ERROR: CAM %d: Host Control: unknown tag %06X", Tc()->CamSlot()->SlotNumber(), Tag);
+       }
      }
 }
 
@@ -1578,9 +1612,9 @@ void cCiTransportConnection::OpenSession(int Length, const uint8_t *Data)
                  case RI_RESOURCE_MANAGER:           sessions[i] = new cCiResourceManager(i, this); break;
                  case RI_APPLICATION_INFORMATION:    sessions[i] = new cCiApplicationInformation(i, this); break;
                  case RI_CONDITIONAL_ACCESS_SUPPORT: sessions[i] = new cCiConditionalAccessSupport(i, this); break;
+                 case RI_HOST_CONTROL:               sessions[i] = new cCiHostControl(i, this); break;
                  case RI_DATE_TIME:                  sessions[i] = new cCiDateTime(i, this); break;
                  case RI_MMI:                        sessions[i] = new cCiMMI(i, this); break;
-                 case RI_HOST_CONTROL:               // not implemented
                  default: esyslog("ERROR: CAM %d: unknown resource identifier: %08X (%d/%d)", camSlot->SlotNumber(), ResourceId, camSlot->SlotIndex(), tcid);
                  }
                if (sessions[i])
