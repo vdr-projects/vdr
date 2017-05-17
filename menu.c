@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.26 2017/05/01 13:01:00 kls Exp $
+ * $Id: menu.c 4.27 2017/05/17 09:15:51 kls Exp $
  */
 
 #include "menu.h"
@@ -2243,7 +2243,7 @@ void cMenuCam::Set(void)
      SetHasHotkeys(ciMenu->Selectable());
      GenerateTitle(ciMenu->TitleText());
      dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->TitleText());
-     if (*ciMenu->SubTitleText()) {
+     if (!isempty(ciMenu->SubTitleText())) {
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->SubTitleText());
         AddMultiLineItem(ciMenu->SubTitleText());
         offset = Count();
@@ -2252,7 +2252,7 @@ void cMenuCam::Set(void)
          Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
          dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->Entry(i));
          }
-     if (*ciMenu->BottomText()) {
+     if (!isempty(ciMenu->BottomText())) {
         AddMultiLineItem(ciMenu->BottomText());
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->BottomText());
         }
