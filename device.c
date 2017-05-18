@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.21 2017/05/18 09:16:41 kls Exp $
+ * $Id: device.c 4.22 2017/05/18 09:27:55 kls Exp $
  */
 
 #include "device.h"
@@ -1654,7 +1654,7 @@ bool cDevice::Receiving(bool Dummy) const
 }
 
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
-#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
+#define TS_SCRAMBLING_TIME_OK     3 // seconds before a Channel/CAM combination is marked as known to decrypt
 #define EIT_INJECTION_TIME       10 // seconds for which to inject EIT event
 
 void cDevice::Action(void)

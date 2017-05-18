@@ -9028,3 +9028,5 @@ Video Disk Recorder Revision History
 - Extended the CI API to allow plugins to implement additional CAM resources.
 - Fixed a race between SVDRP CHAN and cDevice::HasProgramme() (reported by Dietmar
   Spingler).
+- Reduced the time before a CAM is marked as known to decrypt a particular channel to
+  3 seconds.
