@@ -9025,3 +9025,4 @@ Video Disk Recorder Revision History
 - Added handling RI_HOST_CONTROL to the CI protocol (no actual processing, but its
   presence is required by some CAMs).
 - Fixed a crash in case the bottom text of a CAM menu is empty.
+- Extended the CI API to allow plugins to implement additional CAM resources.

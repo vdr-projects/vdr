@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.19 2017/05/09 11:24:47 kls Exp $
+ * $Id: device.c 4.20 2017/05/18 09:05:46 kls Exp $
  */
 
 #include "device.h"
@@ -1665,6 +1665,9 @@ void cDevice::Action(void)
               if (b) {
                  // Distribute the packet to all attached receivers:
                  Lock();
+                 cCamSlot *cs = CamSlot();
+                 if (cs)
+                    cs->TsPostProcess(b);
                  int Pid = TsPid(b);
                  bool IsScrambled = TsIsScrambled(b);
                  for (int i = 0; i < MAXRECEIVERS; i++) {
@@ -1673,7 +1676,7 @@ void cDevice::Action(void)
                         Receiver->Receive(b, TS_SIZE);
                         // Check whether the TS packet is scrambled:
                         if (Receiver->startScrambleDetection) {
-                           if (cCamSlot *cs = CamSlot()) {
+                           if (cs) {
                               int CamSlotNumber = cs->MasterSlotNumber();
                               if (Receiver->lastScrambledPacket < Receiver->startScrambleDetection)
                                  Receiver->lastScrambledPacket = Receiver->startScrambleDetection;
