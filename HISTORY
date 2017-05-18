@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-17: Version 2.3.5
+2017-05-18: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -9026,3 +9026,5 @@ Video Disk Recorder Revision History
   presence is required by some CAMs).
 - Fixed a crash in case the bottom text of a CAM menu is empty.
 - Extended the CI API to allow plugins to implement additional CAM resources.
+- Fixed a race between SVDRP CHAN and cDevice::HasProgramme() (reported by Dietmar
+  Spingler).

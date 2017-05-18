@@ -3397,6 +3397,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to cache the channel/CAM relations in the file 'cam.data'
  for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
  for suggesting to include the channel ID in log messages about switching channels
+ for reporting a problem with the SVDRP command CHAN while the channel display is open
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()

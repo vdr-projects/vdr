@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.20 2017/05/18 09:05:46 kls Exp $
+ * $Id: device.c 4.21 2017/05/18 09:16:41 kls Exp $
  */
 
 #include "device.h"
@@ -834,6 +834,7 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
+  cMutexLock MutexLock(&mutexReceiver); // to avoid a race between SVDRP CHAN and HasProgramme()
   cStatus::MsgChannelSwitch(this, 0, LiveView);
 
   if (LiveView) {
@@ -946,6 +947,7 @@ bool cDevice::HasLock(int TimeoutMs) const
 
 bool cDevice::HasProgramme(void) const
 {
+  cMutexLock MutexLock(&mutexReceiver); // to avoid a race between SVDRP CHAN and HasProgramme()
   return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
 
