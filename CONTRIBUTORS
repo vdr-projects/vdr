@@ -2829,6 +2829,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing loading the setup.conf file in case a parameter contains the '#' character
  for reporting that the "Resume" button in the main menu was active even if the
  respective recording did not exist
+ for fixing a double deletion of a cTimer in case HandleRemoteModifications() returned
+ false
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

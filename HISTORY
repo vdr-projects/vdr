@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-18: Version 2.3.5
+2017-05-20: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -9030,3 +9030,8 @@ Video Disk Recorder Revision History
   Spingler).
 - Reduced the time before a CAM is marked as known to decrypt a particular channel to
   3 seconds.
+- When the connection to a peer VDR is terminated, any remote timers of that peer
+  are no longer shown on the local VDR.
+- No longer setting a new timer's remote host name if "SVDRP peering" is turned off.
+- Fixed a double deletion of a cTimer in case HandleRemoteModifications() returned
+  false (thanks to Johann Friedrichs).

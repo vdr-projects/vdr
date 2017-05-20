@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.27 2017/05/17 09:15:51 kls Exp $
+ * $Id: menu.c 4.28 2017/05/20 13:00:21 kls Exp $
  */
 
 #include "menu.h"
@@ -1328,7 +1328,7 @@ eOSState cMenuTimers::New(void)
   if (HasSubMenu())
      return osContinue;
   cTimer *Timer = new cTimer;
-  if (*Setup.SVDRPDefaultHost)
+  if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
      Timer->SetRemote(Setup.SVDRPDefaultHost);
   return AddSubMenu(new cMenuEditTimer(Timer, true));
 }
@@ -1660,7 +1660,7 @@ eOSState cMenuWhatsOn::Record(void)
              return AddSubMenu(new cMenuEditTimer(Timer));
           }
        cTimer *Timer = new cTimer(item->event);
-       if (*Setup.SVDRPDefaultHost)
+       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
           Timer->SetRemote(Setup.SVDRPDefaultHost);
        if (cTimer *t = Timers->GetTimer(Timer)) {
           delete Timer;
@@ -1674,7 +1674,6 @@ eOSState cMenuWhatsOn::Record(void)
        if (!HandleRemoteModifications(Timer)) {
           // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
           Timers->Del(Timer);
-          delete Timer;
           }
      }
      if (HasSubMenu())
@@ -1944,7 +1943,7 @@ eOSState cMenuSchedule::Record(void)
              return AddSubMenu(new cMenuEditTimer(Timer));
           }
        cTimer *Timer = new cTimer(item->event);
-       if (*Setup.SVDRPDefaultHost)
+       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
           Timer->SetRemote(Setup.SVDRPDefaultHost);
        if (cTimer *t = Timers->GetTimer(Timer)) {
           delete Timer;
@@ -1958,7 +1957,6 @@ eOSState cMenuSchedule::Record(void)
        if (!HandleRemoteModifications(Timer)) {
           // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
           Timers->Del(Timer);
-          delete Timer;
           }
      }
      if (HasSubMenu())
