@@ -9042,3 +9042,4 @@ Video Disk Recorder Revision History
   VDR's tools.h, you can insert
   #define VDR_NO_STL_PROTOTYPES
   before including tools.h.
+- Removed TsGetContinuityCounter() from remux.h, using TsContinuityCounter() instead.

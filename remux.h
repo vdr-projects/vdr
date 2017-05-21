@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.4 2017/04/29 11:56:21 kls Exp $
+ * $Id: remux.h 4.5 2017/05/21 09:44:52 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -95,7 +95,7 @@ inline bool TsIsScrambled(const uchar *p)
   return p[3] & TS_SCRAMBLING_CONTROL;
 }
 
-inline uchar TsGetContinuityCounter(const uchar *p)
+inline uchar TsContinuityCounter(const uchar *p)
 {
   return p[3] & TS_CONT_CNT_MASK;
 }
@@ -119,11 +119,6 @@ inline int TsGetPayload(const uchar **p)
      return TS_SIZE - o;
      }
   return 0;
-}
-
-inline int TsContinuityCounter(const uchar *p)
-{
-  return p[3] & TS_CONT_CNT_MASK;
 }
 
 inline int64_t TsGetPcr(const uchar *p)
