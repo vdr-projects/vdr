@@ -9043,3 +9043,6 @@ Video Disk Recorder Revision History
   #define VDR_NO_STL_PROTOTYPES
   before including tools.h.
 - Removed TsGetContinuityCounter() from remux.h, using TsContinuityCounter() instead.
+- Fixed setting the local machine's SVDRP host name (was overwritten if setup.conf
+  contained an empty string). The SVDRP host name is now only written to setup.conf
+  if it differs from the system's host name.
