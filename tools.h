@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.8 2017/05/09 08:37:23 kls Exp $
+ * $Id: tools.h 4.9 2017/05/21 09:33:12 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,7 +51,10 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
-#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
+#ifdef __STL_CONFIG_H // this used to work with older versions of STL, but they removed this macro in newer versions
+#define VDR_NO_STL_PROTOTYPES
+#endif
+#ifndef VDR_NO_STL_PROTOTYPES // in case some plugin needs to use the STL
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
