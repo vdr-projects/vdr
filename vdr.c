@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.13 2017/05/01 13:00:51 kls Exp $
+ * $Id: vdr.c 4.14 2017/05/21 12:31:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -1282,7 +1282,6 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
-               key = kNone; // nobody else needs to see these keys
                break;
           // Volume control:
           case kVolUp|k_Repeat:

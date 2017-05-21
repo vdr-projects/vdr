@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.28 2017/05/20 13:00:21 kls Exp $
+ * $Id: menu.c 4.29 2017/05/21 13:18:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1691,7 +1691,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
-     switch (Key) {
+     switch (int(Key)) {
        case kRecord:
        case kRed:    return Record();
        case kYellow: state = osBack;
@@ -1706,6 +1706,20 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      break;
        case kBlue:   if (canSwitch)
                         return Switch();
+                     break;
+       case kChanUp|k_Repeat:
+       case kChanUp:
+       case kChanDn|k_Repeat:
+       case kChanDn: if (!HasSubMenu()) {
+                        for (cOsdItem *item = First(); item; item = Next(item)) {
+                            if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
+                               SetCurrent(item);
+                               Display();
+                               SetHelpKeys();
+                               break;
+                               }
+                            }
+                        }
                      break;
        case kInfo:
        case kOk:     if (Count()) {
@@ -1993,7 +2007,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
-     switch (Key) {
+     switch (int(Key)) {
        case k0:      return Number();
        case kRecord:
        case kRed:    return Record();
@@ -2022,6 +2036,15 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                      }
        case kBlue:   if (canSwitch)
                         return Switch();
+                     break;
+       case kChanUp|k_Repeat:
+       case kChanUp:
+       case kChanDn|k_Repeat:
+       case kChanDn: if (!HasSubMenu()) {
+                        LOCK_CHANNELS_READ;
+                        if (const cChannel *Channel = Channels->GetByNumber(cDevice::CurrentChannel()))
+                           Set(Channel, true);
+                        }
                      break;
        case kInfo:
        case kOk:     if (Count()) {

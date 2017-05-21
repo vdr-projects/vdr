@@ -9046,3 +9046,5 @@ Video Disk Recorder Revision History
 - Fixed setting the local machine's SVDRP host name (was overwritten if setup.conf
   contained an empty string). The SVDRP host name is now only written to setup.conf
   if it differs from the system's host name.
+- If the Channel+/- keys are pressed while in the Schedules menu, the menu is now
+  switched to the EPG of the new current channel.
