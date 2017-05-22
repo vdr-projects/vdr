@@ -3423,7 +3423,7 @@ Jasmin Jessich <jasmin@anw.at>
  for writing the ddci2 plugin and for valuable input and help with testing and
  debugging MTD support
  for fixing selecting delivery system names in case of undefined indexes
- for adding the macro VDR_NO_STL_PROTOTYPES to tools.h
+ for fixing detecting the inclusion of STL header files in tools.h
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

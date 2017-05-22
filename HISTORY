@@ -9035,13 +9035,6 @@ Video Disk Recorder Revision History
 - No longer setting a new timer's remote host name if "SVDRP peering" is turned off.
 - Fixed a double deletion of a cTimer in case HandleRemoteModifications() returned
   false (thanks to Johann Friedrichs).
-- Added the macro VDR_NO_STL_PROTOTYPES to tools.h (thanks to Jasmin Jessich). For
-  some reason the STL developers decided to remove the macro __STL_CONFIG_H, so VDR
-  can no longer automatically determine whether an STL header file has been included.
-  If you use the STL and get error messages regarding template functions defined in
-  VDR's tools.h, you can insert
-  #define VDR_NO_STL_PROTOTYPES
-  before including tools.h.
 - Removed TsGetContinuityCounter() from remux.h, using TsContinuityCounter() instead.
 - Fixed setting the local machine's SVDRP host name (was overwritten if setup.conf
   contained an empty string). The SVDRP host name is now only written to setup.conf
@@ -9060,3 +9053,5 @@ Video Disk Recorder Revision History
   the respective commands with an '@' and inserting '@echo XX $@' (where XX is one
   of the character combinations listed above) before the command.
   The newplugin script has also been modified accordingly.
+- Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
+  Jessich).
