@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 3.1 2015/02/09 12:28:24 kls Exp $
+# $Id: Makefile 4.1 2017/05/22 15:33:20 kls Exp $
 
 ### The archiver options:
 
@@ -18,7 +18,8 @@ OBJS = util.o si.o section.o descriptor.o
 ### Implicit rules:
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+	@echo CC libsi/$@
+	@$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
 
 ### Dependencies:
 
@@ -35,7 +36,8 @@ all: libsi.a
 	@:
 
 libsi.a : $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS)
+	@echo AR libsi/$@
+	@$(AR) $(ARFLAGS) $@ $(OBJS)
 
 clean:
 	@-rm -f $(OBJS) $(DEPFILE) *.a *.so *.tgz core* *~

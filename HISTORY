@@ -8991,7 +8991,7 @@ Video Disk Recorder Revision History
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
 
-2017-05-21: Version 2.3.5
+2017-05-22: Version 2.3.5
 
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
@@ -9048,3 +9048,15 @@ Video Disk Recorder Revision History
   if it differs from the system's host name.
 - If the Channel+/- keys are pressed while in the Schedules menu, the menu is now
   switched to the EPG of the new current channel.
+- The Makefiles have been modified so that during the build process they no longer
+  display the actual (lengthy) commands, but rather just the name of the file that
+  is being built, as in
+  CC vdr.o
+  The first two characters indicate the kind of operation (CC=compile, LD=link,
+  AR=archive, MO=msgfmt, GT=xgettext, PO=msgmerge, IN=install).
+  This way it is much easier to spot error messages and warnings, since they are not
+  buried under tons of text.
+  Plugin authors should modify their makefiles accordingly, by simply preceeding
+  the respective commands with an '@' and inserting '@echo XX $@' (where XX is one
+  of the character combinations listed above) before the command.
+  The newplugin script has also been modified accordingly.
