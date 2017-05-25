@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.6 2017/03/16 16:04:43 kls Exp $
+ * $Id: tools.h 4.10 2017/05/22 11:07:04 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,10 +51,14 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
-#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
+#ifndef _STL_ALGOBASE_H // in case some plugin needs to use the STL
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+#endif
+#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
+#endif
+#ifndef _MOVE_H // in case some plugin needs to use the STL
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
 
@@ -479,6 +483,8 @@ class cListObject {
   friend class cListGarbageCollector;
 private:
   cListObject *prev, *next;
+  cListObject(const cListObject &ListObject) { abort(); } // no copy constructor!
+  cListObject& operator= (const cListObject &ListObject) { abort(); return *this; } // no assignment operator!
 public:
   cListObject(void);
   virtual ~cListObject();
@@ -825,9 +831,14 @@ class cHashBase {
 private:
   cList<cHashObject> **hashTable;
   int size;
+  bool ownObjects;
   unsigned int hashfn(unsigned int Id) const { return Id % size; }
 protected:
-  cHashBase(int Size);
+  cHashBase(int Size, bool OwnObjects);
+       ///< Creates a new hash of the given Size. If OwnObjects is true, the
+       ///< hash takes ownership of the objects given in the calls to Add(),
+       ///< and deletes them when Clear() is called or the hash is destroyed
+       ///< (unless the object has been removed from the hash by calling Del()).
 public:
   virtual ~cHashBase();
   void Add(cListObject *Object, unsigned int Id);
@@ -841,7 +852,7 @@ public:
 
 template<class T> class cHash : public cHashBase {
 public:
-  cHash(int Size = HASHSIZE) : cHashBase(Size) {}
+  cHash(int Size = HASHSIZE, bool OwnObjects = false) : cHashBase(Size, OwnObjects) {}
   T *Get(unsigned int Id) const { return (T *)cHashBase::Get(Id); }
 };
 

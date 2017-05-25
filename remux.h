@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.3 2017/03/26 13:06:37 kls Exp $
+ * $Id: remux.h 4.5 2017/05/21 09:44:52 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -51,6 +51,7 @@ public:
 
 #define PATPID 0x0000 // PAT PID (constant 0)
 #define CATPID 0x0001 // CAT PID (constant 1)
+#define EITPID 0x0012 // EIT PID (constant 18)
 #define MAXPID 0x2000 // for arrays that use a PID as the index
 
 #define PTSTICKS  90000 // number of PTS ticks per second
@@ -94,7 +95,7 @@ inline bool TsIsScrambled(const uchar *p)
   return p[3] & TS_SCRAMBLING_CONTROL;
 }
 
-inline uchar TsGetContinuityCounter(const uchar *p)
+inline uchar TsContinuityCounter(const uchar *p)
 {
   return p[3] & TS_CONT_CNT_MASK;
 }
@@ -118,11 +119,6 @@ inline int TsGetPayload(const uchar **p)
      return TS_SIZE - o;
      }
   return 0;
-}
-
-inline int TsContinuityCounter(const uchar *p)
-{
-  return p[3] & TS_CONT_CNT_MASK;
 }
 
 inline int64_t TsGetPcr(const uchar *p)
@@ -429,6 +425,22 @@ public:
   uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
   uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
   uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
+  };
+
+// EIT Generator:
+
+class cEitGenerator {
+private:
+  uchar eit[TS_SIZE];
+  int counter;
+  int version;
+  uint16_t YMDtoMJD(int Y, int M, int D);
+  uchar *AddParentalRatingDescriptor(uchar *p, uchar ParentalRating = 0);
+public:
+  cEitGenerator(int Sid = 0);
+  uchar *Generate(int Sid);
+  uchar *Data(void) { return eit; }
+  int Length(void) { return sizeof(eit); }
   };
 
 // TS to PES converter:

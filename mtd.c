@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.10 2017/04/26 08:33:54 kls Exp $
+ * $Id: mtd.c 1.11 2017/05/01 09:19:52 kls Exp $
  */
 
 #include "mtd.h"
@@ -64,22 +64,20 @@ int cMtdHandler::Put(const uchar *Data, int Count)
         if (int Skipped = TS_SYNC(Data, Count))
            return Used + Skipped;
         int Pid = TsPid(Data);
-        if (Pid != CATPID) { // the original CAT with mapped PIDs must be skipped here!
 #ifdef KEEPPIDS
-           int Index = 0;
+        int Index = 0;
 #else
-           int Index = (Pid >> UNIQ_PID_SHIFT) - 1;
+        int Index = (Pid >> UNIQ_PID_SHIFT) - 1;
 #endif // KEEPPIDS
-           if (Index >= 0 && Index < camSlots.Size()) {
-              int w = camSlots[Index]->PutData(Data, TS_SIZE);
-              if (w == 0)
-                 break;
-              else if (w != TS_SIZE)
-                 esyslog("ERROR: incomplete MTD packet written (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
-              }
-           else if (Index >= 0) // we silently ignore Index -1 (i.e. MTD number 0), since there are several hundred empty TS packets when switching to an encrypted channel for the first time since startup
-              esyslog("ERROR: invalid MTD number (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
+        if (Index >= 0 && Index < camSlots.Size()) {
+           int w = camSlots[Index]->PutData(Data, TS_SIZE);
+           if (w == 0)
+              break;
+           else if (w != TS_SIZE)
+              esyslog("ERROR: incomplete MTD packet written (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
            }
+        else if (Index >= 0) // anything with Index -1 (i.e. MTD number 0) is either garbage or an actual CAT or EIT, which need not be returned to the device
+           esyslog("ERROR: invalid MTD number (%d) in PID %d (%04X)", Index + 1, Pid, Pid);
         Data += TS_SIZE;
         Count -= TS_SIZE;
         Used += TS_SIZE;
@@ -327,6 +325,11 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
         d = NULL;
      }
   return d;
+}
+
+void cMtdCamSlot::InjectEit(int Sid)
+{
+  MasterSlot()->InjectEit(mtdMapper->RealToUniqSid(Sid));
 }
 
 int cMtdCamSlot::PutData(const uchar *Data, int Count)

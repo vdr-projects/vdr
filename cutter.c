@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 4.2 2015/08/09 12:24:28 kls Exp $
+ * $Id: cutter.c 4.3 2017/05/21 09:45:06 kls Exp $
  */
 
 #include "cutter.h"
@@ -500,7 +500,7 @@ bool cCuttingThread::FixFrame(uchar *Data, int &Length, bool Independent, int In
          TsSetContinuityCounter(p, counter[Pid]);
          }
       else
-         counter[Pid] = TsGetContinuityCounter(p); // collect initial counters
+         counter[Pid] = TsContinuityCounter(p); // collect initial counters
       // Adjust PTS:
       int64_t Pts = TsGetPts(p, TS_SIZE);
       if (Pts >= 0) {

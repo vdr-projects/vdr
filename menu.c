@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.25 2017/04/20 09:15:49 kls Exp $
+ * $Id: menu.c 4.29 2017/05/21 13:18:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1328,7 +1328,7 @@ eOSState cMenuTimers::New(void)
   if (HasSubMenu())
      return osContinue;
   cTimer *Timer = new cTimer;
-  if (*Setup.SVDRPDefaultHost)
+  if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
      Timer->SetRemote(Setup.SVDRPDefaultHost);
   return AddSubMenu(new cMenuEditTimer(Timer, true));
 }
@@ -1660,7 +1660,7 @@ eOSState cMenuWhatsOn::Record(void)
              return AddSubMenu(new cMenuEditTimer(Timer));
           }
        cTimer *Timer = new cTimer(item->event);
-       if (*Setup.SVDRPDefaultHost)
+       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
           Timer->SetRemote(Setup.SVDRPDefaultHost);
        if (cTimer *t = Timers->GetTimer(Timer)) {
           delete Timer;
@@ -1674,7 +1674,6 @@ eOSState cMenuWhatsOn::Record(void)
        if (!HandleRemoteModifications(Timer)) {
           // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
           Timers->Del(Timer);
-          delete Timer;
           }
      }
      if (HasSubMenu())
@@ -1692,7 +1691,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
-     switch (Key) {
+     switch (int(Key)) {
        case kRecord:
        case kRed:    return Record();
        case kYellow: state = osBack;
@@ -1707,6 +1706,20 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      break;
        case kBlue:   if (canSwitch)
                         return Switch();
+                     break;
+       case kChanUp|k_Repeat:
+       case kChanUp:
+       case kChanDn|k_Repeat:
+       case kChanDn: if (!HasSubMenu()) {
+                        for (cOsdItem *item = First(); item; item = Next(item)) {
+                            if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
+                               SetCurrent(item);
+                               Display();
+                               SetHelpKeys();
+                               break;
+                               }
+                            }
+                        }
                      break;
        case kInfo:
        case kOk:     if (Count()) {
@@ -1944,7 +1957,7 @@ eOSState cMenuSchedule::Record(void)
              return AddSubMenu(new cMenuEditTimer(Timer));
           }
        cTimer *Timer = new cTimer(item->event);
-       if (*Setup.SVDRPDefaultHost)
+       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
           Timer->SetRemote(Setup.SVDRPDefaultHost);
        if (cTimer *t = Timers->GetTimer(Timer)) {
           delete Timer;
@@ -1958,7 +1971,6 @@ eOSState cMenuSchedule::Record(void)
        if (!HandleRemoteModifications(Timer)) {
           // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
           Timers->Del(Timer);
-          delete Timer;
           }
      }
      if (HasSubMenu())
@@ -1995,7 +2007,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
-     switch (Key) {
+     switch (int(Key)) {
        case k0:      return Number();
        case kRecord:
        case kRed:    return Record();
@@ -2024,6 +2036,15 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                      }
        case kBlue:   if (canSwitch)
                         return Switch();
+                     break;
+       case kChanUp|k_Repeat:
+       case kChanUp:
+       case kChanDn|k_Repeat:
+       case kChanDn: if (!HasSubMenu()) {
+                        LOCK_CHANNELS_READ;
+                        if (const cChannel *Channel = Channels->GetByNumber(cDevice::CurrentChannel()))
+                           Set(Channel, true);
+                        }
                      break;
        case kInfo:
        case kOk:     if (Count()) {
@@ -2243,7 +2264,7 @@ void cMenuCam::Set(void)
      SetHasHotkeys(ciMenu->Selectable());
      GenerateTitle(ciMenu->TitleText());
      dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->TitleText());
-     if (*ciMenu->SubTitleText()) {
+     if (!isempty(ciMenu->SubTitleText())) {
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->SubTitleText());
         AddMultiLineItem(ciMenu->SubTitleText());
         offset = Count();
@@ -2252,7 +2273,7 @@ void cMenuCam::Set(void)
          Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
          dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->Entry(i));
          }
-     if (*ciMenu->BottomText()) {
+     if (!isempty(ciMenu->BottomText())) {
         AddMultiLineItem(ciMenu->BottomText());
         dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciMenu->BottomText());
         }
@@ -5185,7 +5206,7 @@ bool cRecordControls::Start(cTimers *Timers, cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(Channel, Priority, false);
      if (device) {
-        dsyslog("switching device %d to channel %d (%s)", device->DeviceNumber() + 1, Channel->Number(), Channel->Name());
+        dsyslog("switching device %d to channel %d %s (%s)", device->DeviceNumber() + 1, Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
         if (!device->SwitchChannel(Channel, false)) {
            ShutdownHandler.RequestEmergencyExit();
            return false;

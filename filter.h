@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 4.2 2015/07/25 10:03:44 kls Exp $
+ * $Id: filter.h 4.3 2017/05/07 15:18:48 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -38,6 +38,7 @@ public:
   bool sticky;
   cFilterData(void);
   cFilterData(u_short Pid, u_char Tid, u_char Mask, bool Sticky);
+  cFilterData& operator= (const cFilterData &FilterData);
   bool Is(u_short Pid, u_char Tid, u_char Mask);
   bool Matches(u_short Pid, u_char Tid);
   };

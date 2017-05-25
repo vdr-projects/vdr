@@ -1199,6 +1199,8 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for the "binary skip" patch
  for adding support for LCN (Logical Channel Numbers)
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
+ for adding a Status parameter to the interface of cDevice::SignalStats() and
+ cDvbDevice::SignalStats()
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2827,6 +2829,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing loading the setup.conf file in case a parameter contains the '#' character
  for reporting that the "Resume" button in the main menu was active even if the
  respective recording did not exist
+ for fixing a double deletion of a cTimer in case HandleRemoteModifications() returned
+ false
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3022,6 +3026,8 @@ Frank Neumann <fnu@yavdr.org>
  for adding support for "Satellite Channel Routing" (SCR) according to EN50607 ("JESS")
  for suggesting to make the Setup/CAM menu display which device an individual CAM
  is currently assigned to
+ for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
+ in derived classes that don't implement this function
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
@@ -3377,6 +3383,9 @@ Tony Houghton <h@realh.co.uk>
 Christian Winkler <winkler_chr@yahoo.de>
  for reporting a problem with transfer mode on full featured DVB cards for encrypted
  channels that have no audio pid
+ for reporting a problem when selecting a device/CAM combination for live viewing, if
+ the CAM that is known to decrypt the requested channel can not be assigned to the
+ primary device
 
 Dietmar Spingler <d_spingler@gmx.de>
  for reporting a problem that led to a fix in detaching receivers from devices in case
@@ -3389,6 +3398,8 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to implement the setup option "Recording/Record key handling"
  for suggesting to cache the channel/CAM relations in the file 'cam.data'
  for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
+ for suggesting to include the channel ID in log messages about switching channels
+ for reporting a problem with the SVDRP command CHAN while the channel display is open
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
@@ -3411,6 +3422,8 @@ Jasmin Jessich <jasmin@anw.at>
  assigned to any devices
  for writing the ddci2 plugin and for valuable input and help with testing and
  debugging MTD support
+ for fixing selecting delivery system names in case of undefined indexes
+ for fixing detecting the inclusion of STL header files in tools.h
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

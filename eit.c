@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.2 2017/03/31 15:16:46 kls Exp $
+ * $Id: eit.c 4.3 2017/05/03 08:58:41 kls Exp $
  */
 
 #include "eit.h"
@@ -79,6 +79,7 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
 
   bool Empty = true;
   bool Modified = false;
+  time_t LingerLimit = Now - Setup.EPGLinger * 60;
   time_t SegmentStart = 0;
   time_t SegmentEnd = 0;
   struct tm t = { 0 };
@@ -92,6 +93,9 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
       int Duration = SiEitEvent.getDuration();
       // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
       if (StartTime == 0 || StartTime > 0 && Duration == 0)
+         continue;
+      // Ignore events that ended before the "EPG linger time":
+      if (StartTime + Duration < LingerLimit)
          continue;
       Empty = false;
       if (!SegmentStart)

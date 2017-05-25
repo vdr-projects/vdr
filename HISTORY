@@ -8990,3 +8990,68 @@ Video Disk Recorder Revision History
 - If 0 is given as the channel number in the SVDRP command LSTC, the data of the
   current channel is listed.
 - Fixed a possible crash when pulling the CAM while decrypting a channel with MTD.
+
+2017-05-25: Version 2.3.5
+
+- CAMs are now sent a generated EIT packet that contains a single 'present event' for
+  the current SID, in order to avoid any parental rating dialogs.
+- Fixed handling UNC values (the shift operator behaves unexpected for shift values
+  larger than the size of the variable).
+- Log messages about switching channels now include the channel ID (suggested by
+  Dietmar Spingler).
+- Events in the EIT that end before the EPG linger time are now ignored in the incoming
+  data stream, because they would just be deleted in the next schedules cleanup anyway.
+- The constructor of cHash (via cHashBase) now has an additional parameter (OwnObjects)
+  which, if set to true, makes the hash take ownership of the hashed objects, so that
+  they are deleted when the hash is cleared or destroyed.
+- Fixed a memory leak in cSectionSyncerHash. The cSectionSyncerEntry objects put into
+  the hash were never explicitly deleted. Now the cSectionSyncerHash takes ownership of
+  these objects.
+- cListObject now implements a private copy constructor and assignment operator, to keep
+  derived objects from calling them implicitly.
+- When selecting a device/CAM combination for live viewing, CAMs that are known to decrypt
+  the requested channel are now given a higher priority than prefering the primary device
+  (reported by Christian Winkler).
+- Changed the default return value of cEpgHandler::BeginSegmentTransfer() to true, to
+  avoid problems with derived classes that don't implement this function (reported by
+  Frank Neumann).
+- Fixed selecting delivery system names in case of undefined indexes (thanks to Jasmin
+  Jessich).
+- Changed the legacy delivery system name "DMBTH" to "DTMB", and added names for
+  DVBC_ANNEX_C and DVBC2.
+- Added a Status parameter to the interface of cDevice::SignalStats() and
+  cDvbDevice::SignalStats() (thanks to Rolf Ahrenberg).
+- Fixed handling line numbers in error messages when reading EPG data.
+- Added handling RI_HOST_CONTROL to the CI protocol (no actual processing, but its
+  presence is required by some CAMs).
+- Fixed a crash in case the bottom text of a CAM menu is empty.
+- Extended the CI API to allow plugins to implement additional CAM resources.
+- Fixed a race between SVDRP CHAN and cDevice::HasProgramme() (reported by Dietmar
+  Spingler).
+- Reduced the time before a CAM is marked as known to decrypt a particular channel to
+  3 seconds.
+- When the connection to a peer VDR is terminated, any remote timers of that peer
+  are no longer shown on the local VDR.
+- No longer setting a new timer's remote host name if "SVDRP peering" is turned off.
+- Fixed a double deletion of a cTimer in case HandleRemoteModifications() returned
+  false (thanks to Johann Friedrichs).
+- Removed TsGetContinuityCounter() from remux.h, using TsContinuityCounter() instead.
+- Fixed setting the local machine's SVDRP host name (was overwritten if setup.conf
+  contained an empty string). The SVDRP host name is now only written to setup.conf
+  if it differs from the system's host name.
+- If the Channel+/- keys are pressed while in the Schedules menu, the menu is now
+  switched to the EPG of the new current channel.
+- The Makefiles have been modified so that during the build process they no longer
+  display the actual (lengthy) commands, but rather just the name of the file that
+  is being built, as in
+  CC vdr.o
+  The first two characters indicate the kind of operation (CC=compile, LD=link,
+  AR=archive, MO=msgfmt, GT=xgettext, PO=msgmerge, IN=install).
+  This way it is much easier to spot error messages and warnings, since they are not
+  buried under tons of text.
+  Plugin authors should modify their makefiles accordingly, by simply preceeding
+  the respective commands with an '@' and inserting '@echo XX $@' (where XX is one
+  of the character combinations listed above) before the command.
+  The newplugin script has also been modified accordingly.
+- Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
+  Jessich).

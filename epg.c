@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.4 2017/04/02 11:34:15 kls Exp $
+ * $Id: epg.c 4.6 2017/05/09 12:16:36 kls Exp $
  */
 
 #include "epg.h"
@@ -529,15 +529,14 @@ bool cEvent::Parse(char *s)
   return true;
 }
 
-bool cEvent::Read(FILE *f, cSchedule *Schedule)
+bool cEvent::Read(FILE *f, cSchedule *Schedule, int &Line)
 {
   if (Schedule) {
      cEvent *Event = NULL;
      char *s;
-     int line = 0;
      cReadLine ReadLine;
      while ((s = ReadLine.Read(f)) != NULL) {
-           line++;
+           Line++;
            char *t = skipspace(s + 1);
            switch (*s) {
              case 'E': if (!Event) {
@@ -573,7 +572,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
              case 'c': // to keep things simple we react on 'c' here
                        return true;
              default:  if (Event && !Event->Parse(s)) {
-                          esyslog("ERROR: EPG data problem in line %d", line);
+                          esyslog("ERROR: EPG data problem in line %d", Line);
                           return false;
                           }
              }
@@ -1098,7 +1097,7 @@ void cSchedule::Cleanup(time_t Time)
 {
   cEvent *Event;
   while ((Event = events.First()) != NULL) {
-        if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) // adding one hour for safety
+        if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 < Time)
            DelEvent(Event);
         else
            break;
@@ -1141,9 +1140,11 @@ void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtT
 bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 {
   if (Schedules) {
+     int Line = 0;
      cReadLine ReadLine;
      char *s;
      while ((s = ReadLine.Read(f)) != NULL) {
+           Line++;
            if (*s == 'C') {
               s = skipspace(s + 1);
               char *p = strchr(s, ' ');
@@ -1153,7 +1154,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                  tChannelID channelID = tChannelID::FromString(s);
                  if (channelID.Valid()) {
                     if (cSchedule *p = Schedules->AddSchedule(channelID)) {
-                       if (!cEvent::Read(f, p))
+                       if (!cEvent::Read(f, p, Line))
                           return false;
                        p->Sort();
                        }
@@ -1165,7 +1166,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                  }
               }
            else {
-              esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
+              esyslog("ERROR: unexpected tag in line %d while reading EPG data: %s", Line, s);
               return false;
               }
            }

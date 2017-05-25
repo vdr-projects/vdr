@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.12 2017/04/03 12:35:37 kls Exp $
+ * $Id: vdr.c 4.14 2017/05/21 12:31:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -1151,7 +1151,7 @@ int main(int argc, char *argv[])
                        if (!Device->IsTunedToTransponder(Timer->Channel())) {
                           if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                              cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
-                          dsyslog("switching device %d to channel %d (%s)", Device->DeviceNumber() + 1, Timer->Channel()->Number(), Timer->Channel()->Name());
+                          dsyslog("switching device %d to channel %d %s (%s)", Device->DeviceNumber() + 1, Timer->Channel()->Number(), *Timer->Channel()->GetChannelID().ToString(), Timer->Channel()->Name());
                           if (Device->SwitchChannel(Timer->Channel(), false))
                              Device->SetOccupied(TIMERDEVICETIMEOUT);
                           }
@@ -1282,7 +1282,6 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
-               key = kNone; // nobody else needs to see these keys
                break;
           // Volume control:
           case kVolUp|k_Repeat:

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.4 2017/04/02 11:22:21 kls Exp $
+ * $Id: epg.h 4.6 2017/05/09 12:15:14 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -141,7 +141,7 @@ public:
   cString ToDescr(void) const;
   void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
   bool Parse(char *s);
-  static bool Read(FILE *f, cSchedule *Schedule);
+  static bool Read(FILE *f, cSchedule *Schedule, int &Line);
   void FixEpgBugs(void);
   };
 
@@ -284,7 +284,7 @@ public:
   virtual bool DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version) { return false; }
           ///< Takes a look at all EPG events between SegmentStart and SegmentEnd and
           ///< drops outdated events.
-  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool Dummy) { return false; } // TODO remove obsolete Dummy
+  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool Dummy) { return true; } // TODO remove obsolete Dummy
           ///< Called directly after IgnoreChannel() before any other handler method is called.
           ///< Designed to give handlers the possibility to prepare a database transaction.
           ///< If any EPG handler returns false in this function, it is assumed that

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 4.3 2017/04/01 15:55:38 kls Exp $
+ * $Id: receiver.c 4.4 2017/05/01 08:49:20 kls Exp $
  */
 
 #include "receiver.h"
@@ -19,6 +19,8 @@ cReceiver::cReceiver(const cChannel *Channel, int Priority)
   lastScrambledPacket = 0;
   startScrambleDetection = 0;
   scramblingTimeout = 0;
+  startEitInjection = 0;
+  lastEitInjection = 0;
   SetPids(Channel);
 }
 

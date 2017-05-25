@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.7 2017/04/26 09:17:08 kls Exp $
+ * $Id: mtd.h 1.8 2017/05/01 09:19:21 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -172,6 +172,7 @@ public:
   virtual void StartDecrypting(void);
   virtual void StopDecrypting(void);
   virtual uchar *Decrypt(uchar *Data, int &Count);
+  virtual void InjectEit(int Sid);
   int PutData(const uchar *Data, int Count);
   int PutCat(const uchar *Data, int Count);
   // The following functions shall not be called for a cMtdCamSlot:

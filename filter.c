@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 4.2 2015/07/25 10:59:57 kls Exp $
+ * $Id: filter.c 4.3 2017/05/07 15:20:45 kls Exp $
  */
 
 #include "filter.h"
@@ -69,6 +69,15 @@ cFilterData::cFilterData(u_short Pid, u_char Tid, u_char Mask, bool Sticky)
   tid = Tid;
   mask = Mask;
   sticky = Sticky;
+}
+
+cFilterData& cFilterData::operator= (const cFilterData &FilterData)
+{
+  pid = FilterData.pid;
+  tid = FilterData.tid;
+  mask = FilterData.mask;
+  sticky = FilterData.sticky;
+  return *this;
 }
 
 bool cFilterData::Is(u_short Pid, u_char Tid, u_char Mask)

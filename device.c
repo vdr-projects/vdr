@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.15 2017/04/17 14:47:42 kls Exp $
+ * $Id: device.c 4.22 2017/05/18 09:27:55 kls Exp $
  */
 
 #include "device.h"
@@ -293,6 +293,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              // to their individual severity, where the one listed first will make the most
              // difference, because it results in the most significant bit of the result.
              uint32_t imp = 0;
+             imp <<= 1; imp |= (LiveView && NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlots.Get(j)->MasterSlotNumber()) || ndr : 0; // prefer CAMs that are known to decrypt this channel for live viewing, if we don't need to detach existing receivers
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
@@ -749,7 +750,7 @@ const cPositioner *cDevice::Positioner(void) const
   return NULL;
 }
 
-bool cDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
   return false;
 }
@@ -782,7 +783,7 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
-     isyslog("switching to channel %d (%s)", Channel->Number(), Channel->Name());
+     isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
      }
   for (int i = 3; i--;) {
@@ -833,6 +834,7 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
+  cMutexLock MutexLock(&mutexReceiver); // to avoid a race between SVDRP CHAN and HasProgramme()
   cStatus::MsgChannelSwitch(this, 0, LiveView);
 
   if (LiveView) {
@@ -945,6 +947,7 @@ bool cDevice::HasLock(int TimeoutMs) const
 
 bool cDevice::HasProgramme(void) const
 {
+  cMutexLock MutexLock(&mutexReceiver); // to avoid a race between SVDRP CHAN and HasProgramme()
   return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
 
@@ -1651,7 +1654,8 @@ bool cDevice::Receiving(bool Dummy) const
 }
 
 #define TS_SCRAMBLING_TIMEOUT     3 // seconds to wait until a TS becomes unscrambled
-#define TS_SCRAMBLING_TIME_OK    10 // seconds before a Channel/CAM combination is marked as known to decrypt
+#define TS_SCRAMBLING_TIME_OK     3 // seconds before a Channel/CAM combination is marked as known to decrypt
+#define EIT_INJECTION_TIME       10 // seconds for which to inject EIT event
 
 void cDevice::Action(void)
 {
@@ -1663,6 +1667,9 @@ void cDevice::Action(void)
               if (b) {
                  // Distribute the packet to all attached receivers:
                  Lock();
+                 cCamSlot *cs = CamSlot();
+                 if (cs)
+                    cs->TsPostProcess(b);
                  int Pid = TsPid(b);
                  bool IsScrambled = TsIsScrambled(b);
                  for (int i = 0; i < MAXRECEIVERS; i++) {
@@ -1671,7 +1678,7 @@ void cDevice::Action(void)
                         Receiver->Receive(b, TS_SIZE);
                         // Check whether the TS packet is scrambled:
                         if (Receiver->startScrambleDetection) {
-                           if (cCamSlot *cs = CamSlot()) {
+                           if (cs) {
                               int CamSlotNumber = cs->MasterSlotNumber();
                               if (Receiver->lastScrambledPacket < Receiver->startScrambleDetection)
                                  Receiver->lastScrambledPacket = Receiver->startScrambleDetection;
@@ -1696,6 +1703,18 @@ void cDevice::Action(void)
                                  Receiver->startScrambleDetection = 0;
                                  }
                               }
+                           }
+                        // Inject EIT event to avoid the CAMs parental rating prompt:
+                        if (Receiver->startEitInjection) {
+                           time_t Now = time(NULL);
+                           if (cCamSlot *cs = CamSlot()) {
+                              if (Now != Receiver->lastEitInjection) { // once per second
+                                 cs->InjectEit(Receiver->ChannelID().Sid());
+                                 Receiver->lastEitInjection = Now;
+                                 }
+                              }
+                           if (Now - Receiver->startEitInjection > EIT_INJECTION_TIME)
+                              Receiver->startEitInjection = 0;
                            }
                         }
                      }
@@ -1755,6 +1774,10 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
+            if (camSlot->WantsTsData()) {
+               Receiver->lastEitInjection = 0;
+               Receiver->startEitInjection = time(NULL);
+               }
             if (CamSlots.NumReadyMasterSlots() > 1) { // don't try different CAMs if there is only one
                Receiver->startScrambleDetection = time(NULL);
                Receiver->scramblingTimeout = TS_SCRAMBLING_TIMEOUT;

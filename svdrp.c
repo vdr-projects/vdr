@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.17 2017/04/22 11:57:31 kls Exp $
+ * $Id: svdrp.c 4.18 2017/05/18 15:51:24 kls Exp $
  */
 
 #include "svdrp.h"
@@ -384,6 +384,8 @@ void cSVDRPClient::Close(void)
      SVDRPClientPoller.Del(file, false);
      file.Close();
      socket.Close();
+     LOCK_TIMERS_WRITE;
+     Timers->DelRemoteTimers(serverName);
      }
 }
 

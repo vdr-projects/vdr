@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 4.2 2017/04/01 15:55:27 kls Exp $
+ * $Id: receiver.h 4.3 2017/05/01 08:48:34 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -25,6 +25,8 @@ private:
   time_t lastScrambledPacket;
   time_t startScrambleDetection;
   int scramblingTimeout;
+  time_t startEitInjection;
+  time_t lastEitInjection;
   bool WantsPid(int Pid);
 protected:
   cDevice *Device(void) { return device; }

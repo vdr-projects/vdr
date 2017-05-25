@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.9 2017/04/20 14:42:35 kls Exp $
+ * $Id: dvbdevice.c 4.13 2017/05/09 11:50:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -349,7 +349,7 @@ public:
   void SetChannel(const cChannel *Channel);
   bool Locked(int TimeoutMs = 0);
   const cPositioner *Positioner(void) const { return positioner; }
-  bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL) const;
+  bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const;
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
   };
@@ -574,14 +574,29 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
                           }\
                      }
 
-bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
   ClearEventQueue();
+  fe_status_t FeStatus;
   dtv_property Props[MAXFRONTENDCMDS];
   dtv_properties CmdSeq;
   memset(&Props, 0, sizeof(Props));
   memset(&CmdSeq, 0, sizeof(CmdSeq));
   CmdSeq.props = Props;
+  Valid = DTV_STAT_VALID_NONE;
+  if (ioctl(fd_frontend, FE_READ_STATUS, &FeStatus) != 0) {
+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
+     return false;
+     }
+  if (Status) {
+     *Status = DTV_STAT_HAS_NONE;
+     if (FeStatus & FE_HAS_SIGNAL)  *Status |= DTV_STAT_HAS_SIGNAL;
+     if (FeStatus & FE_HAS_CARRIER) *Status |= DTV_STAT_HAS_CARRIER;
+     if (FeStatus & FE_HAS_VITERBI) *Status |= DTV_STAT_HAS_VITERBI;
+     if (FeStatus & FE_HAS_SYNC)    *Status |= DTV_STAT_HAS_SYNC;
+     if (FeStatus & FE_HAS_LOCK)    *Status |= DTV_STAT_HAS_LOCK;
+     Valid |= DTV_STAT_VALID_STATUS;
+     }
   if (Strength)   SETCMD(DTV_STAT_SIGNAL_STRENGTH, 0);
   if (Cnr)        SETCMD(DTV_STAT_CNR, 0);
   if (BerPre)   { SETCMD(DTV_STAT_PRE_ERROR_BIT_COUNT, 0);
@@ -594,7 +609,6 @@ bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double
      esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
      return false;
      }
-  Valid = DTV_STAT_VALID_NONE;
   int i = 0;
   if (Strength) {
      if (Props[i].u.st.len > 0) {
@@ -659,6 +673,7 @@ bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double
      }
 #ifdef DEBUG_SIGNALSTATS
   fprintf(stderr, "FE %d/%d: API5 %04X", adapter, frontend, Valid);
+  if ((Valid & DTV_STAT_VALID_STATUS)   != 0) fprintf(stderr, " STAT=%04X",     *Status);
   if ((Valid & DTV_STAT_VALID_STRENGTH) != 0) fprintf(stderr, " STR=%1.1fdBm",  *Strength);
   if ((Valid & DTV_STAT_VALID_CNR)      != 0) fprintf(stderr, " CNR=%1.1fdB",   *Cnr);
   if ((Valid & DTV_STAT_VALID_BERPRE)   != 0) fprintf(stderr, " BERPRE=%1.1e",  *BerPre);
@@ -844,13 +859,16 @@ int cDvbTuner::GetSignalQuality(void) const
               // be considered low even if there haven't been any more uncorrected bocks
               // for quite a while.
               Unc = lastUncDelta;
-              int t = time(NULL) - lastUncChange - 2;
-              if (t > 0)
-                 Unc >>= min(t, 32);
+              if (Unc > 0) {
+                 int t = time(NULL) - lastUncChange - 2;
+                 if (t > 0)
+                    Unc >>= min(t, int(sizeof(Unc) * 8 - 1));
+                 if (Unc == 0)
+                    lastUncDelta = 0;
 #ifdef DEBUG_SIGNALQUALITY
-              if (Unc > 0)
                  fprintf(stderr, "FE %d/%d: API3 UNC = %u\n", adapter, frontend, Unc);
 #endif
+                 }
               break;
               }
            if (errno != EINTR) {
@@ -1288,13 +1306,24 @@ const char *DeliverySystemNames[] = {
   "ISDBC",
   "ATSC",
   "ATSCMH",
-  "DMBTH",
+  "DTMB",
   "CMMB",
   "DAB",
   "DVB-T2",
   "TURBO",
+  "DVB-C",
+  "DVB-C2",
   NULL
   };
+
+static const int DeliverySystemNamesMax = sizeof(DeliverySystemNames) / sizeof(DeliverySystemNames[0]) - 2; // -1 to get the maximum allowed index & -1 for the NULL => -2
+
+static const char *GetDeliverySystemName(int Index)
+{
+  if (Index > DeliverySystemNamesMax)
+     Index = 0;
+  return DeliverySystemNames[Index];
+};
 
 cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 {
@@ -1393,9 +1422,9 @@ cString cDvbDevice::DeviceType(void) const
 {
   if (dvbTuner) {
      if (dvbTuner->FrontendType() != SYS_UNDEFINED)
-        return DeliverySystemNames[dvbTuner->FrontendType()];
+        return GetDeliverySystemName(dvbTuner->FrontendType());
      if (numDeliverySystems)
-        return DeliverySystemNames[deliverySystems[0]]; // to have some reasonable default
+        return GetDeliverySystemName(deliverySystems[0]); // to have some reasonable default
      }
   return "";
 }
@@ -1526,7 +1555,7 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
   if (numDeliverySystems > 0) {
      cString ds("");
      for (int i = 0; i < numDeliverySystems; i++)
-         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", DeliverySystemNames[deliverySystems[i]]);
+         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", GetDeliverySystemName(deliverySystems[i]));
      cString ms("");
      if (frontendInfo.caps & FE_CAN_QPSK)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QPSK, ModulationValues)); }
      if (frontendInfo.caps & FE_CAN_QAM_16)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_16, ModulationValues)); }
@@ -1827,9 +1856,9 @@ const cPositioner *cDvbDevice::Positioner(void) const
   return dvbTuner ? dvbTuner->Positioner() : NULL;
 }
 
-bool cDvbDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per) const
+bool cDvbDevice::SignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
-  return dvbTuner ? dvbTuner->GetSignalStats(Valid, Strength, Cnr, BerPre, BerPost, Per) : false;
+  return dvbTuner ? dvbTuner->GetSignalStats(Valid, Strength, Cnr, BerPre, BerPost, Per, Status) : false;
 }
 
 int cDvbDevice::SignalStrength(void) const

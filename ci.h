@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.6 2017/04/10 09:17:56 kls Exp $
+ * $Id: ci.h 4.9 2017/05/16 07:42:45 kls Exp $
  */
 
 #ifndef __CI_H
@@ -20,6 +20,99 @@
 #define MAX_CAM_SLOTS_PER_ADAPTER    16 // maximum possible value is 255 (same value as MAXDEVICES!)
 #define MAX_CONNECTIONS_PER_CAM_SLOT  8 // maximum possible value is 254
 #define CAM_READ_TIMEOUT  50 // ms
+
+class cCiTransportConnection;
+class cCamSlot;
+
+// VDR's Common Interface functions implement only the features that are absolutely
+// necessary to control a CAM. If a plugin wants to implement additional functionality
+// (i.e. "resources"), it can do so by deriving from cCiResourceHandler, cCiSession
+// and (if necessary) from cCiApplicationInformation.
+
+class cCiSession {
+private:
+  uint16_t sessionId;
+  uint32_t resourceId;
+  cCiTransportConnection *tc;
+protected:
+  void SetTsPostProcessor(void);
+       ///< If this cCiSession implements the TsPostProcess() function, it shall call
+       ///< SetTsPostProcessor() to register itself as the TS post processor.
+  void SetResourceId(uint32_t Id);
+       ///< If this is a class that has been derived from an existing cCiSession class,
+       ///< but implements a different resource id, it shall call SetResourceId() with
+       ///< that Id.
+  int GetTag(int &Length, const uint8_t **Data);
+  const uint8_t *GetData(const uint8_t *Data, int &Length);
+  void SendData(int Tag, int Length = 0, const uint8_t *Data = NULL);
+  cCiTransportConnection *Tc(void) { return tc; }
+public:
+  cCiSession(uint16_t SessionId, uint32_t ResourceId, cCiTransportConnection *Tc);
+  virtual ~cCiSession();
+  uint16_t SessionId(void) { return sessionId; }
+  uint32_t ResourceId(void) { return resourceId; }
+  cCamSlot *CamSlot(void);
+  virtual bool HasUserIO(void) { return false; }
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual bool TsPostProcess(uint8_t *TsPacket) { return false; }
+       ///< If this cCiSession needs to do additional processing on TS packets (after
+       ///< the CAM has done the decryption), it shall implement TsPostProcess() and
+       ///< do whatever operations are necessary on the given TsPacket. This function
+       ///< is called once for each TS packet, and any and all operations must be
+       ///< finished upon return.
+       ///< A derived cCiSession that implements this function must call
+       ///< SetTsPostProcessor() to make it actually get called.
+       ///< Returns true if the TsPacket was in any way modified.
+  };
+
+class cCiApplicationInformation : public cCiSession {
+protected:
+  int state;
+  uint8_t applicationType;
+  uint16_t applicationManufacturer;
+  uint16_t manufacturerCode;
+  char *menuString;
+public:
+  cCiApplicationInformation(uint16_t SessionId, cCiTransportConnection *Tc);
+  virtual ~cCiApplicationInformation();
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  bool EnterMenu(void);
+  const char *GetMenuString(void) { return menuString; }
+  };
+
+class cCiResourceHandler : public cListObject {
+public:
+  cCiResourceHandler(void);
+       ///< Creates a new resource handler, through which the available resources
+       ///< can be provides. A resource handler shall be allocated on the heap and
+       ///< registered with the global CiResourceHandlers, as in
+       ///< CiResourceHandlers.Register(new cMyResourceHandler);
+       ///< It will be automatically deleted at the end of the program.
+  virtual ~cCiResourceHandler();
+  virtual const uint32_t *ResourceIds(void) const = 0;
+       ///< Returns a pointer to an array of resource identifiers, where the
+       ///< last value is zero.
+  virtual cCiSession *GetNewCiSession(uint32_t ResourceId, uint16_t SessionId, cCiTransportConnection *Tc) = 0;
+       ///< Returns a new cCiSession, according to the given ResourceId.
+  };
+
+class cCiResourceHandlers : public cList<cCiResourceHandler> {
+private:
+  cVector<uint32_t> resourceIds;
+public:
+  cCiResourceHandlers(void);
+       ///< Creates the default list of resourceIds.
+  void Register(cCiResourceHandler *ResourceHandler);
+       ///< Adds the given ResourceHandler to the list of resource handlers and
+       ///< appends its ResourceIds to the global resourceIds.
+       ///< A plugin that implements additional CAM capabilities must call
+       ///< this function to register its resources.
+  const uint32_t *Ids(void) { return &resourceIds[0]; }
+  int NumIds(void) { return resourceIds.Size(); }
+  cCiSession *GetNewCiSession(uint32_t ResourceId, uint16_t SessionId, cCiTransportConnection *Tc);
+  };
+
+extern cCiResourceHandlers CiResourceHandlers;
 
 class cCiMMI;
 
@@ -73,7 +166,6 @@ public:
   };
 
 class cDevice;
-class cCamSlot;
 
 enum eModuleStatus { msNone, msReset, msPresent, msReady };
 
@@ -377,6 +469,24 @@ public:
        ///< A derived class that implements this function will also need
        ///< to set the WantsTsData parameter in the call to the base class
        ///< constructor to true in order to receive the TS data.
+  virtual bool TsPostProcess(uchar *Data);
+       ///< If there is a cCiSession that needs to do additional processing on TS packets
+       ///< (after the CAM has done the decryption), this function will call its
+       ///< TsPostProcess() function to have it do whatever operations are necessary on
+       ///< the given TsPacket.
+       ///< Returns true if the TsPacket was in any way modified.
+  virtual bool Inject(uchar *Data, int Count);
+       ///< Sends all Count bytes of the given Data to the CAM, and returns true
+       ///< if this was possible. If the data can't be sent to the CAM completely,
+       ///< nothing shall be sent and the return value shall be false.
+       ///< No decrypted packet is returned by this function.
+       ///< Data is guaranteed to point to one or more complete TS packets.
+  virtual void InjectEit(int Sid);
+       ///< Injects a generated EIT with a "present event" for the given Sid into
+       ///< the TS data stream sent to the CAM. This only applies to CAM slots that
+       ///< have WantsTsData set to true in their constructor.
+       ///< The default implementation sends an EIT with the minimum event
+       ///< necessary to disable the CAMs parental rating prompt.
   };
 
 class cCamSlots : public cList<cCamSlot> {
