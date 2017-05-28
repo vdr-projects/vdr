@@ -9055,3 +9055,11 @@ Video Disk Recorder Revision History
   The newplugin script has also been modified accordingly.
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
+
+2017-05-28: Version 2.3.6
+
+- Added debug output for checking the correct sequence of locking global lists
+  (with help and suggestions from Jasmin Jessich). To activate this, define the
+  macro DEBUG_LOCKSEQ in thread.c. At the first occurrence of an invalid locking
+  sequence, the 20 most recent locks will be printed to stderr, followed by a
+  backtrace that led to the call in question.

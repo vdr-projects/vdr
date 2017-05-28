@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.2 2016/12/08 10:18:32 kls Exp $
+ * $Id: thread.c 4.3 2017/05/28 12:41:03 kls Exp $
  */
 
 #include "thread.h"
@@ -24,6 +24,7 @@
 #define ABORT { dsyslog("ABORT!"); abort(); } // use debugger to trace back the problem
 
 //#define DEBUG_LOCKING // uncomment this line to activate debug output for locking
+//#define DEBUG_LOCKSEQ // uncomment this line to activate debug output for locking sequence
 
 #ifdef DEBUG_LOCKING
 #define dbglocking(a...) fprintf(stderr, a)
@@ -431,6 +432,163 @@ bool cThreadLock::Lock(cThread *Thread)
 
 // --- cStateLock ------------------------------------------------------------
 
+#ifdef DEBUG_LOCKSEQ
+#include <cxxabi.h>
+#include <execinfo.h>
+static cVector<tThreadId> StateLockThreadIds;
+static cVector<int> StateLockFlags;
+static cMutex StateLockMutex;
+#define SLL_SIZE     20 // the number of log entries
+#define SLL_LENGTH  256 // the maximum length of log entries
+#define SLL_DELIM   '#' // delimiter for caller info
+static char StateLockLog[SLL_SIZE][SLL_LENGTH] = { 0 };
+static int StateLockLogIndex = 0;
+static bool DumpStateLocks = true;
+#define BT_BUF_SIZE 100
+
+static cString Demangle(char *s, char *Prefix = NULL)
+{
+  char *Module = s;
+  char *Function = NULL;
+  //char *Offset = NULL;
+  char *Address = NULL;
+  // separate the string:
+  for (char *q = Module; *q; q++) {
+      if (*q == '(') {
+         *q = 0;
+         Function = q + 1;
+         }
+      else if (*q == '+') {
+         *q = 0;
+         //Offset = q + 1;
+         }
+      else if (*q == ')')
+         *q = 0;
+      else if (*q == '[')
+         Address = q + 1;
+      else if (*q == ']') {
+         *q = 0;
+         break;
+         }
+      }
+  // demangle the function name:
+  int status;
+  char *r = abi::__cxa_demangle(Function, NULL, 0, &status);
+  if (r)
+     Function = r;
+  cString d = cString::sprintf("%s %s %s", Prefix ? Prefix : "", Module, Function);
+  // determine the file name and line number:
+  cString cmd = cString::sprintf("addr2line --exe=%s --functions --demangle --basename %s", Module, Address);
+  cPipe p;
+  if (p.Open(cmd, "r")) {
+     int n = 0;
+     cReadLine rl;
+     while (char *l = rl.Read(p)) {
+           if (n == 0) {
+              if (!isempty(Function) && strcmp(l, Function))
+                 d = cString::sprintf("%s calling %s", *d, l);
+              }
+           else
+              d = cString::sprintf("%s at %s", *d, l);
+           n++;
+           }
+     p.Close();
+     }
+  free(r);
+  return d;
+}
+
+static void BackTrace(void)
+{
+  void *b[BT_BUF_SIZE];
+  int n = backtrace(b, BT_BUF_SIZE);
+  if (char **s = backtrace_symbols(b, n)) {
+     for (int i = 5; i < n; i++)
+         fprintf(stderr, "%s\n", *Demangle(s[i]));
+     free(s);
+     }
+}
+
+static void BackTraceCaller(int Level, char *t, int l)
+{
+  void *b[BT_BUF_SIZE];
+  int n = backtrace(b, BT_BUF_SIZE);
+  if (char **s = backtrace_symbols(b, n)) {
+     strn0cpy(t, s[Level], l);
+     free(s);
+     }
+}
+
+static void DumpStateLockLog(tThreadId ThreadId, const char *Name)
+{
+  if (!DumpStateLocks)
+     return;
+  DumpStateLocks = false;
+  for (int i = 0; i < SLL_SIZE; i++) {
+      char *s = StateLockLog[StateLockLogIndex];
+      if (*s) {
+         if (char *Delim = strchr(s, SLL_DELIM)) {
+            *Delim = 0;
+            fprintf(stderr, "%s\n", *Demangle(Delim + 1, s));
+            }
+         }
+      if (++StateLockLogIndex >= SLL_SIZE)
+         StateLockLogIndex = 0;
+      }
+  fprintf(stderr, "%5d invalid lock sequence: %-12s\n", ThreadId, Name);
+  fprintf(stderr, "full backtrace:\n");
+  BackTrace();
+}
+
+static void CheckStateLockLevel(const char *Name, bool Lock, bool Write = false)
+{
+  if (Name) {
+     int n = *Name - '0';
+     if (1 <= n && n <= 9) {
+        int b = 1 << (n - 1);
+        cMutexLock MutexLock(&StateLockMutex);
+        tThreadId ThreadId = cThread::ThreadId();
+        int Index = StateLockThreadIds.IndexOf(ThreadId);
+        if (Index < 0) {
+           if (Lock) {
+              Index = StateLockThreadIds.Size();
+              StateLockThreadIds.Append(ThreadId);
+              StateLockFlags.Append(0);
+              }
+           else
+              return;
+           }
+        char *p = StateLockLog[StateLockLogIndex];
+        char *q = p;
+        q += sprintf(q, "%5d", ThreadId);
+        for (int i = 0; i <= 9; i++) {
+            char c = '-';
+            if (StateLockFlags[Index] & (1 << i))
+               c = '*';
+            if (i == n - 1)
+               c = Lock ? Write ? 'W' : 'R' : '-';
+            q += sprintf(q, "  %c", c);
+            }
+        q += sprintf(q, " %c%c", Lock ? 'L' : 'U', SLL_DELIM);
+        BackTraceCaller(Lock ? 5 : 3, q, SLL_LENGTH - (q - p));
+        if (++StateLockLogIndex >= SLL_SIZE)
+           StateLockLogIndex = 0;
+        if (Lock) {
+           if ((StateLockFlags[Index] & ~b) < b)
+              StateLockFlags[Index] |= b;
+           else if ((StateLockFlags[Index] & b) == 0)
+              DumpStateLockLog(ThreadId, Name);
+           }
+        else
+           StateLockFlags[Index] &= ~b;
+        }
+     }
+}
+#define dbglockseq(n, l, w) CheckStateLockLevel(n, l, w)
+#else
+#define dbglockseq(n, l, w)
+#endif // DEBUG_LOCKSEQ
+
 cStateLock::cStateLock(const char *Name)
 :rwLock(true)
 {
@@ -442,7 +600,7 @@ cStateLock::cStateLock(const char *Name)
 
 bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
 {
-  dbglocking("%5d %-10s %10p   lock state = %d/%d write = %d timeout = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, Write, TimeoutMs);
+  dbglocking("%5d %-12s %10p   lock state = %d/%d write = %d timeout = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, Write, TimeoutMs);
   StateKey.timedOut = false;
   if (StateKey.stateLock) {
      esyslog("ERROR: StateKey already in use in call to cStateLock::Lock() (tid=%d, lock=%s)", StateKey.stateLock->threadId, name);
@@ -450,25 +608,27 @@ bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
      return false;
      }
   if (rwLock.Lock(Write, TimeoutMs)) {
+     dbglockseq(name, true, Write);
      StateKey.stateLock = this;
      if (Write) {
-        dbglocking("%5d %-10s %10p   locked write\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   locked write\n", cThread::ThreadId(), name, &StateKey);
         threadId = cThread::ThreadId();
         StateKey.write = true;
         return true;
         }
      else if (state != StateKey.state) {
-        dbglocking("%5d %-10s %10p   locked read\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   locked read\n", cThread::ThreadId(), name, &StateKey);
         return true;
         }
      else {
-        dbglocking("%5d %-10s %10p   state unchanged\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   state unchanged\n", cThread::ThreadId(), name, &StateKey);
         StateKey.stateLock = NULL;
+        dbglockseq(name, false, false);
         rwLock.Unlock();
         }
      }
   else if (TimeoutMs) {
-     dbglocking("%5d %-10s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
+     dbglocking("%5d %-12s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
      StateKey.timedOut = true;
      }
   return false;
@@ -476,7 +636,7 @@ bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
 
 void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
 {
-  dbglocking("%5d %-10s %10p unlock state = %d/%d inc = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, IncState);
+  dbglocking("%5d %-12s %10p unlock state = %d/%d inc = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, IncState);
   if (StateKey.stateLock != this) {
      esyslog("ERROR: cStateLock::Unlock() called with an unused key (tid=%d, lock=%s)", threadId, name);
      ABORT;
@@ -495,6 +655,7 @@ void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
      threadId = 0;
      explicitModify = false;
      }
+  dbglockseq(name, false, false);
   rwLock.Unlock();
 }
 

@@ -3424,6 +3424,8 @@ Jasmin Jessich <jasmin@anw.at>
  debugging MTD support
  for fixing selecting delivery system names in case of undefined indexes
  for fixing detecting the inclusion of STL header files in tools.h
+ for help and suggestions when implementing debug output for checking the correct
+ sequence of locking global lists
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

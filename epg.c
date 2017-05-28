@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.6 2017/05/09 12:16:36 kls Exp $
+ * $Id: epg.c 4.7 2017/05/28 11:30:32 kls Exp $
  */
 
 #include "epg.h"
@@ -1225,7 +1225,7 @@ char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastDump = time(NULL);
 
 cSchedules::cSchedules(void)
-:cList<cSchedule>("Schedules")
+:cList<cSchedule>("5 Schedules")
 {
 }
 

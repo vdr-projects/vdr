@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.8 2017/04/03 13:34:30 kls Exp $
+ * $Id: recording.c 4.9 2017/05/27 15:46:57 kls Exp $
  */
 
 #include "recording.h"
@@ -1469,7 +1469,7 @@ cVideoDirectoryScannerThread *cRecordings::videoDirectoryScannerThread = NULL;
 time_t cRecordings::lastUpdate = 0;
 
 cRecordings::cRecordings(bool Deleted)
-:cList<cRecording>(Deleted ? "DelRecs" : "Recordings")
+:cList<cRecording>(Deleted ? "4 DelRecs" : "3 Recordings")
 {
 }
 

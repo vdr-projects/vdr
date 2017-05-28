@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 4.3 2015/09/09 10:21:22 kls Exp $
+ * $Id: channels.c 4.4 2017/05/26 15:43:54 kls Exp $
  */
 
 #include "channels.h"
@@ -833,7 +833,7 @@ int cChannels::maxChannelNameLength = 0;
 int cChannels::maxShortChannelNameLength = 0;
 
 cChannels::cChannels(void)
-:cConfig<cChannel>("Channels")
+:cConfig<cChannel>("2 Channels")
 {
   modifiedByUser = 0;
 }
