@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.6 2017/05/09 12:15:14 kls Exp $
+ * $Id: epg.h 4.7 2017/05/28 12:59:20 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -185,7 +185,7 @@ public:
   const cEvent *GetFollowingEvent(void) const;
   const cEvent *GetEvent(tEventID EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
-  void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
+  void Dump(const cChannels *Channels, FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);
   };
 

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.18 2017/05/18 15:51:24 kls Exp $
+ * $Id: svdrp.c 4.19 2017/05/28 13:05:23 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1615,6 +1615,7 @@ void cSVDRPServer::CmdLSTC(const char *Option)
 
 void cSVDRPServer::CmdLSTE(const char *Option)
 {
+  LOCK_CHANNELS_READ;
   LOCK_SCHEDULES_READ;
   const cSchedule* Schedule = NULL;
   eDumpMode DumpMode = dmAll;
@@ -1646,7 +1647,6 @@ void cSVDRPServer::CmdLSTE(const char *Option)
                  }
               }
            else if (!Schedule) {
-              LOCK_CHANNELS_READ;
               const cChannel* Channel = NULL;
               if (isnumber(p))
                  Channel = Channels->GetByNumber(strtol(Option, NULL, 10));
@@ -1676,7 +1676,7 @@ void cSVDRPServer::CmdLSTE(const char *Option)
      FILE *f = fdopen(fd, "w");
      if (f) {
         if (Schedule)
-           Schedule->Dump(f, "215-", DumpMode, AtTime);
+           Schedule->Dump(Channels, f, "215-", DumpMode, AtTime);
         else
            Schedules->Dump(f, "215-", DumpMode, AtTime);
         fflush(f);
