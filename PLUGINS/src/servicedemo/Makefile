@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 4.1 2017/05/22 15:31:59 kls Exp $
+# $Id: Makefile 4.2 2017/05/29 08:31:07 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -59,7 +59,7 @@ all: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 
 %.o: %.c
 	@echo CC $@
-	@$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
+	$(Q)$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 ### Dependencies:
 
@@ -74,11 +74,11 @@ $(DEPFILE): Makefile
 
 libvdr-$(PLUGIN1).so: $(PLUGIN1).o
 	@echo LD $@
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN1).o -o $@
+	$(Q)$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN1).o -o $@
 
 libvdr-$(PLUGIN2).so: $(PLUGIN2).o
 	@echo LD $@
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
+	$(Q)$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(PLUGIN2).o -o $@
 
 install-lib: libvdr-$(PLUGIN1).so libvdr-$(PLUGIN2).so
 	install -D libvdr-$(PLUGIN1).so $(DESTDIR)$(LIBDIR)/libvdr-$(PLUGIN1).so.$(APIVERSION)

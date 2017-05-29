@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.4 2017/05/22 15:33:30 kls Exp $
+# $Id: Makefile 4.5 2017/05/29 08:48:42 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -51,6 +51,15 @@ DOXYFILE  = Doxyfile
 # User configuration
 
 -include Make.config
+
+# Output control
+
+ifdef VERBOSE
+Q =
+else
+Q = @
+endif
+export Q
 
 # Mandatory compiler flags:
 
@@ -122,7 +131,7 @@ all: vdr i18n plugins
 
 %.o: %.c
 	@echo CC $@
-	@$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
+	$(Q)$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 # Dependencies:
 
@@ -137,7 +146,7 @@ $(DEPFILE): Makefile
 
 vdr: $(OBJS) $(SILIB)
 	@echo LD $@
-	@$(CXX) $(CXXFLAGS) -rdynamic $(LDFLAGS) $(OBJS) $(LIBS) $(SILIB) -o vdr
+	$(Q)$(CXX) $(CXXFLAGS) -rdynamic $(LDFLAGS) $(OBJS) $(LIBS) $(SILIB) -o vdr
 
 # The libsi library:
 
@@ -180,20 +189,20 @@ I18Npot   = $(PODIR)/vdr.pot
 
 %.mo: %.po
 	@echo MO $@
-	@msgfmt -c -o $@ $<
+	$(Q)msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
 	@echo GT $@
-	@xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ `ls $^`
+	$(Q)xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ `ls $^`
 
 %.po: $(I18Npot)
 	@echo PO $@
-	@msgmerge -U --no-wrap --no-location --backup=none -q -N $@ $<
+	$(Q)msgmerge -U --no-wrap --no-location --backup=none -q -N $@ $<
 	@touch $@
 
 $(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr.mo: $(PODIR)/%.mo
 	@echo IN $@
-	@install -D -m644 $< $@
+	$(Q)install -D -m644 $< $@
 
 .PHONY: i18n
 i18n: $(I18Nmsgs)

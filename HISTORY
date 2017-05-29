@@ -9056,7 +9056,7 @@ Video Disk Recorder Revision History
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
 
-2017-05-28: Version 2.3.6
+2017-05-29: Version 2.3.6
 
 - Added debug output for checking the correct sequence of locking global lists
   (with help and suggestions from Jasmin Jessich). To activate this, define the
@@ -9065,3 +9065,16 @@ Video Disk Recorder Revision History
   backtrace that led to the call in question.
 - Fixed the locking sequence when dumping EPG data.
 - Fixed the locking sequence when starting a recording.
+- The Makefiles now use the macro $(Q) instead of a plain '@' in front of their
+  commands, so that verbosity can be controlled by the user (suggested by Jasmin
+  Jessich). Add VERBOSE=1 to the 'make' call in the VDR source directory to see the
+  actual commands that are executed.
+  Plugin authors should modify their makefiles accordingly, by simply preceeding
+  the respective commands with '$(Q)' and inserting '@echo XX $@' (where XX is one
+  of the character combinations listed in the release note for version 2.3.5) before
+  the command.
+  The newplugin script has also been modified accordingly.
+  Note that if you build a plugin directly in the plugin's own source directory,
+  the $(Q) macro won't be defined and commands will be displayed. You can add
+  Q=@ to the make call to have it less verbose (provided the plugin's Makefile
+  was modified as described above).
