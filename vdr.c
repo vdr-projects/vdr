@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.15 2017/05/29 11:10:46 kls Exp $
+ * $Id: vdr.c 4.16 2017/05/29 11:30:27 kls Exp $
  */
 
 #include <getopt.h>
@@ -1274,8 +1274,10 @@ int main(int argc, char *argv[])
           case kChanUp:
           case kChanDn|k_Repeat:
           case kChanDn:
-               if (!Interact)
+               if (!Interact) {
                   Menu = new cDisplayChannel(NORMALKEY(key));
+                  continue;
+                  }
                else if (cDisplayChannel::IsOpen() || cControl::Control()) {
                   Interact->ProcessKey(key);
                   continue;

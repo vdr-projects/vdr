@@ -9079,3 +9079,5 @@ Video Disk Recorder Revision History
   Q=@ to the make call to have it less verbose (provided the plugin's Makefile
   was modified as described above).
 - Added clearing CiResourceHandlers before shutting down the plugin manager.
+- Fixed a double channel switch when pressing the Channel+/- keys while no menu
+  or channel display is open.
