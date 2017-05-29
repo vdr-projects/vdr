@@ -9078,3 +9078,4 @@ Video Disk Recorder Revision History
   the $(Q) macro won't be defined and commands will be displayed. You can add
   Q=@ to the make call to have it less verbose (provided the plugin's Makefile
   was modified as described above).
+- Added clearing CiResourceHandlers before shutting down the plugin manager.

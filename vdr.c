@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.14 2017/05/21 12:31:37 kls Exp $
+ * $Id: vdr.c 4.15 2017/05/29 11:10:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -1585,6 +1585,7 @@ Exit:
   cVideoDirectory::Destroy();
   EpgHandlers.Clear();
   cSchedules::Cleanup(true);
+  CiResourceHandlers.Clear();
   ListGarbageCollector.Purge(true);
   PluginManager.Shutdown(true);
   ReportEpgBugFixStats(true);
