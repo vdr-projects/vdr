@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.29 2017/05/21 13:18:26 kls Exp $
+ * $Id: menu.c 4.30 2017/05/28 21:14:20 kls Exp $
  */
 
 #include "menu.h"
@@ -5056,7 +5056,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
   Timers->SetModified();
   // We're going to work with an event here, so we need to prevent
   // others from modifying any EPG data:
-  LOCK_SCHEDULES_READ;
+  cStateKey SchedulesStateKey;
+  cSchedules::GetSchedulesRead(SchedulesStateKey);
 
   event = NULL;
   fileName = NULL;
@@ -5092,6 +5093,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
            cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
+     SchedulesStateKey.Remove();
      return;
      }
 
@@ -5105,6 +5107,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
+        SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
         Recordings->AddByName(fileName);
         return;
@@ -5118,6 +5121,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
      Timers->Del(timer);
      timer = NULL;
      }
+  SchedulesStateKey.Remove();
 }
 
 cRecordControl::~cRecordControl()

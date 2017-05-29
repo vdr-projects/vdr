@@ -9064,3 +9064,4 @@ Video Disk Recorder Revision History
   sequence, the 20 most recent locks will be printed to stderr, followed by a
   backtrace that led to the call in question.
 - Fixed the locking sequence when dumping EPG data.
+- Fixed the locking sequence when starting a recording.
