@@ -9084,3 +9084,6 @@ Video Disk Recorder Revision History
 - Fixed generating k_Release key events for LIRC remote controls (due to the short
   timeout another normal key was sometimes put into the queue after the generated
   release). Also removed some code redundancy and added some buffer checks.
+- Now using a separate mutex to fix the race between SVDRP CHAN and
+  cDevice::HasProgramme(), because the previous fix caused a deadlock (reported by
+  Derek Kelly).
