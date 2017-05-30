@@ -9056,7 +9056,7 @@ Video Disk Recorder Revision History
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
 
-2017-05-29: Version 2.3.6
+2017-05-30: Version 2.3.6
 
 - Added debug output for checking the correct sequence of locking global lists
   (with help and suggestions from Jasmin Jessich). To activate this, define the
@@ -9081,3 +9081,6 @@ Video Disk Recorder Revision History
 - Added clearing CiResourceHandlers before shutting down the plugin manager.
 - Fixed a double channel switch when pressing the Channel+/- keys while no menu
   or channel display is open.
+- Fixed generating k_Release key events for LIRC remote controls (due to the short
+  timeout another normal key was sometimes put into the queue after the generated
+  release). Also removed some code redundancy and added some buffer checks.
