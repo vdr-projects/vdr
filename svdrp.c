@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.19 2017/05/28 13:05:23 kls Exp $
+ * $Id: svdrp.c 4.20 2017/05/31 14:02:17 kls Exp $
  */
 
 #include "svdrp.h"
@@ -385,7 +385,8 @@ void cSVDRPClient::Close(void)
      file.Close();
      socket.Close();
      LOCK_TIMERS_WRITE;
-     Timers->DelRemoteTimers(serverName);
+     if (Timers)
+        Timers->DelRemoteTimers(serverName);
      }
 }
 
@@ -463,6 +464,7 @@ bool cSVDRPClient::Process(cStringList *Response)
             else if (r <= 0) {
                isyslog("SVDRP < %s lost connection to remote server '%s'", ipAddress.Connection(), *serverName);
                Close();
+               return false;
                }
             }
          else if (!Response)

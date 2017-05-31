@@ -9056,7 +9056,7 @@ Video Disk Recorder Revision History
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
 
-2017-05-30: Version 2.3.6
+2017-05-31: Version 2.3.6
 
 - Added debug output for checking the correct sequence of locking global lists
   (with help and suggestions from Jasmin Jessich). To activate this, define the
@@ -9087,3 +9087,5 @@ Video Disk Recorder Revision History
 - Now using a separate mutex to fix the race between SVDRP CHAN and
   cDevice::HasProgramme(), because the previous fix caused a deadlock (reported by
   Derek Kelly).
+- Fixed a possible crash in case the SVDRP connection to a peer VDR is terminated
+  while getting remote timers.
