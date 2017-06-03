@@ -9099,3 +9099,4 @@ Video Disk Recorder Revision History
   Derek Kelly).
 - Fixed a possible crash in case the SVDRP connection to a peer VDR is terminated
   while getting remote timers.
+- Fixed the locking sequence when creating a new timer from the Schedules menu.
