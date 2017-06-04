@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.9 2017/04/20 09:15:06 kls Exp $
+ * $Id: timers.c 4.10 2017/05/26 15:43:38 kls Exp $
  */
 
 #include "timers.h"
@@ -714,7 +714,7 @@ cTimers cTimers::timers;
 int cTimers::lastTimerId = 0;
 
 cTimers::cTimers(void)
-:cConfig<cTimer>("Timers")
+:cConfig<cTimer>("1 Timers")
 {
   lastDeleteExpired = 0;
 }

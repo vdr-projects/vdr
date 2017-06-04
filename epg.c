@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.6 2017/05/09 12:16:36 kls Exp $
+ * $Id: epg.c 4.8 2017/05/28 13:08:09 kls Exp $
  */
 
 #include "epg.h"
@@ -1104,9 +1104,8 @@ void cSchedule::Cleanup(time_t Time)
         }
 }
 
-void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
+void cSchedule::Dump(const cChannels *Channels, FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
 {
-  LOCK_CHANNELS_READ;
   if (const cChannel *Channel = Channels->GetByChannelID(channelID, true)) {
      fprintf(f, "%sC %s %s\n", Prefix, *Channel->GetChannelID().ToString(), Channel->Name());
      const cEvent *p;
@@ -1225,7 +1224,7 @@ char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastDump = time(NULL);
 
 cSchedules::cSchedules(void)
-:cList<cSchedule>("Schedules")
+:cList<cSchedule>("5 Schedules")
 {
 }
 
@@ -1280,9 +1279,10 @@ bool cSchedules::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t At
         return false;
         }
      }
+  LOCK_CHANNELS_READ;
   LOCK_SCHEDULES_READ;
   for (const cSchedule *p = Schedules->First(); p; p = Schedules->Next(p))
-      p->Dump(f, Prefix, DumpMode, AtTime);
+      p->Dump(Channels, f, Prefix, DumpMode, AtTime);
   if (sf) {
      sf->Close();
      delete sf;

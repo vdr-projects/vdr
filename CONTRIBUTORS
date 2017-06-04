@@ -2858,6 +2858,8 @@ Derek Kelly <user.vdr@gmail.com>
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
  for suggesting to make the -u option also accept a numerical user id
  for reporting a problem with abs() in gcc6+ when called with an unsigned variable
+ for reporting a deadlock after the fix for a race between SVDRP CHAN and
+ cDevice::HasProgramme()
 
 Marcel Unbehaun <frostworks@gmx.de>
  for adding cRecordingInfo::GetEvent()
@@ -3424,6 +3426,11 @@ Jasmin Jessich <jasmin@anw.at>
  debugging MTD support
  for fixing selecting delivery system names in case of undefined indexes
  for fixing detecting the inclusion of STL header files in tools.h
+ for help and suggestions when implementing debug output for checking the correct
+ sequence of locking global lists
+ for suggesting to use $(Q) to control Makefile verbosity
+ for adding handling DEBUG to the Make.config.template file, in order to control
+ code optimization
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

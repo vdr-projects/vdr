@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 4.2 2016/12/08 09:11:24 kls Exp $
+ * $Id: thread.h 4.3 2017/05/31 11:39:11 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -289,6 +289,37 @@ public:
   operator FILE* () { return f; }
   bool Open(const char *Command, const char *Mode);
   int Close(void);
+  };
+
+// cBackTrace can be used for debugging.
+
+class cStringList;
+class cString;
+
+class cBackTrace {
+public:
+  static cString Demangle(char *s);
+         ///< Demangles the function name in the given string and returns the converted
+         ///< version of s. s must be one of the strings returned by a call to
+         ///< BackTrace() or GetCaller().
+         ///< Note that this function works on the given string by inserting '\0'
+         ///< characters to separate the individual parts. Therefore the string
+         ///< will be modified upon return.
+  static void BackTrace(cStringList &StringList, int Level = 0, bool Mangled = false);
+         ///< Produces a backtrace and stores it in the given StringList.
+         ///< If Level is given, only calls up to the given value are listed.
+         ///< If Mangled is true, the raw backtrace will be returned and you can use
+         ///< Demangle() to make the function names readable.
+  static void BackTrace(FILE *f = NULL, int Level = 0, bool Mangled = false);
+         ///< Produces a backtrace beginning at the given Level, and
+         ///< writes it to the given file. If no file is given, the backtrace is
+         ///< written to the logfile. If Mangled is true, the raw backtrace will
+         ///< be printed/logged.
+  static cString GetCaller(int Level = 0, bool Mangled = false);
+         ///< Returns the caller at the given Level (or the immediate caller,
+         ///< if Level is 0).
+         ///< If Mangled is true, the raw backtrace will be returned and you can use
+         ///< Demangle() to make the function name readable.
   };
 
 // SystemExec() implements a 'system()' call that closes all unnecessary file

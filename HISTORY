@@ -9055,3 +9055,50 @@ Video Disk Recorder Revision History
   The newplugin script has also been modified accordingly.
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
+
+2017-06-04: Version 2.3.6
+
+- Added backtrace functions for debugging (see cBackTrace in thread.h).
+- Added checking the correct sequence of locking global lists (with help and
+  suggestions from Jasmin Jessich). At the first occurrence of an invalid locking
+  sequence, the 20 most recent locks will be written to the log file, followed by a
+  backtrace that led to the call in question. This code can be activated by defining
+  the macro DEBUG_LOCKSEQ in thread.c (which is on by default).
+  When debugging an actual invalid locking sequence, you can additionally define
+  the macro DEBUG_LOCKCALL in thread.c, which will add information about the caller
+  of each lock. Note that this may cause some stress on the CPU, therefore it is off
+  by default.
+- The file Make.config.template now reacts on DEBUG=1 in the 'make' command line,
+  and disables code optimizations by setting -O0 (thanks to Jasmin Jessich).
+  This can be helpful when backtracing highly optimized code. You may want to
+  'make distclean' before running 'make' with a modified setting of DEBUG, to make
+  sure all object files are newly compiled.
+- Fixed the locking sequence when dumping EPG data.
+- Fixed the locking sequence when starting a recording.
+- The Makefiles now use the macro $(Q) instead of a plain '@' in front of their
+  commands, so that verbosity can be controlled by the user (suggested by Jasmin
+  Jessich). Add VERBOSE=1 to the 'make' call in the VDR source directory to see the
+  actual commands that are executed.
+  Plugin authors should modify their makefiles accordingly, by simply preceeding
+  the respective commands with '$(Q)' and inserting '@echo XX $@' (where XX is one
+  of the character combinations listed in the release note for version 2.3.5) before
+  the command.
+  The newplugin script has also been modified accordingly.
+  Note that if you build a plugin directly in the plugin's own source directory,
+  the $(Q) macro won't be defined and commands will be displayed. You can add
+  Q=@ to the make call to have it less verbose (provided the plugin's Makefile
+  was modified as described above).
+- Added clearing CiResourceHandlers before shutting down the plugin manager.
+- Fixed a double channel switch when pressing the Channel+/- keys while no menu
+  or channel display is open.
+- Fixed generating k_Release key events for LIRC remote controls (due to the short
+  timeout another normal key was sometimes put into the queue after the generated
+  release). Also removed some code redundancy and added some buffer checks.
+- Now using a separate mutex to fix the race between SVDRP CHAN and
+  cDevice::HasProgramme(), because the previous fix caused a deadlock (reported by
+  Derek Kelly).
+- Fixed a possible crash in case the SVDRP connection to a peer VDR is terminated
+  while getting remote timers.
+- Fixed the locking sequence when creating a new timer from the Schedules menu.
+- Fixed the locking sequence when switching between 'Now', 'Next' and 'Schedule'
+  in the Schedules menu.

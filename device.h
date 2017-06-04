@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.9 2017/05/09 11:24:47 kls Exp $
+ * $Id: device.h 4.10 2017/05/30 11:06:11 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -257,6 +257,7 @@ public:
 // Channel facilities
 
 private:
+  mutable cMutex mutexChannel;
   time_t occupiedTimeout;
 protected:
   static int currentChannel;

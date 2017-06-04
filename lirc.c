@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 4.0 2013/10/29 12:32:12 kls Exp $
+ * $Id: lirc.c 4.1 2017/05/30 11:02:17 kls Exp $
  */
 
 #include "lirc.h"
@@ -20,7 +20,7 @@ cLircRemote::cLircRemote(const char *DeviceName)
 ,cThread("LIRC remote control")
 {
   addr.sun_family = AF_UNIX;
-  strcpy(addr.sun_path, DeviceName);
+  strn0cpy(addr.sun_path, DeviceName, sizeof(addr.sun_path));
   if (!Connect())
      f = -1;
   Start();
@@ -94,12 +94,12 @@ void cLircRemote::Action(void)
               }
            int Delta = ThisTime.Elapsed(); // the time between two subsequent LIRC events
            ThisTime.Set();
-           if (count == 0) {
+           if (count == 0) { // new key pressed
               if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < (uint)Setup.RcRepeatDelay)
                  continue; // skip keys coming in too fast
               if (repeat)
-                 Put(LastKeyName, false, true);
-              strcpy(LastKeyName, KeyName);
+                 Put(LastKeyName, false, true); // generated release for previous repeated key
+              strn0cpy(LastKeyName, KeyName, sizeof(LastKeyName));
               pressed = true;
               repeat = false;
               FirstTime.Set();
@@ -112,21 +112,16 @@ void cLircRemote::Action(void)
            else {
               pressed = true;
               repeat = true;
-              timeout = Delta * 10 / 9;
+              timeout = Delta * 3 / 2;
               }
            if (pressed) {
               LastTime.Set();
               Put(KeyName, repeat);
               }
            }
-        else if (pressed && repeat) { // the last one was a repeat, so let's generate a release
-           Put(LastKeyName, false, true);
-           pressed = false;
-           repeat = false;
-           *LastKeyName = 0;
-           timeout = -1;
-           }
         else {
+           if (pressed && repeat) // the last one was a repeat, so let's generate a release
+              Put(LastKeyName, false, true);
            pressed = false;
            repeat = false;
            *LastKeyName = 0;

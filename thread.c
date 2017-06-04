@@ -4,26 +4,31 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.2 2016/12/08 09:45:25 kls Exp $
+ * $Id: thread.c 4.4 2017/06/03 12:43:22 kls Exp $
  */
 
 #include "thread.h"
+#include <cxxabi.h>
+#include <dlfcn.h>
 #include <errno.h>
+#include <execinfo.h>
 #include <linux/unistd.h>
 #include <malloc.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/wait.h>
-#include <sys/prctl.h>
 #include <unistd.h>
 #include "tools.h"
 
-#define ABORT { dsyslog("ABORT!"); abort(); } // use debugger to trace back the problem
+#define ABORT { dsyslog("ABORT!"); cBackTrace::BackTrace(); abort(); }
 
-//#define DEBUG_LOCKING // uncomment this line to activate debug output for locking
+//#define DEBUG_LOCKING  // uncomment this line to activate debug output for locking
+#define DEBUG_LOCKSEQ  // uncomment this line to activate debug output for invalid locking sequence
+//#define DEBUG_LOCKCALL // uncomment this line to activate caller information with DEBUG_LOCKSEQ (WARNING: expensive operation, use only when actually debugging the locking sequence!)
 
 #ifdef DEBUG_LOCKING
 #define dbglocking(a...) fprintf(stderr, a)
@@ -429,6 +434,249 @@ bool cThreadLock::Lock(cThread *Thread)
   return false;
 }
 
+// --- cBackTrace ------------------------------------------------------------
+
+#define BT_BUF_SIZE 100
+
+cString cBackTrace::Demangle(char *s)
+{
+  char *Module = s;
+  char *Function = NULL;
+  char *Offset = NULL;
+  char *Address = NULL;
+  // separate the string:
+  for (char *q = Module; *q; q++) {
+      if (*q == '(') {
+         *q = 0;
+         Function = q + 1;
+         }
+      else if (*q == '+') {
+         *q = 0;
+         Offset = q + 1;
+         }
+      else if (*q == ')')
+         *q = 0;
+      else if (*q == '[')
+         Address = q + 1;
+      else if (*q == ']') {
+         *q = 0;
+         break;
+         }
+      }
+  // demangle the function name:
+  char *DemangledFunction = NULL;
+  if (Function) {
+     int status;
+     DemangledFunction = abi::__cxa_demangle(Function, NULL, 0, &status);
+     if (DemangledFunction)
+        Function = DemangledFunction;
+     if (!*Function)
+        Function = NULL;
+     }
+  cString d = cString::sprintf("%s%s%s", Module, Function ? " " : "", Function ? Function : "");
+  // convert string address to numbers:
+  unsigned long long addr = Address ? strtoull(Address, NULL, 0) : 0;
+  unsigned long long offs = Offset ? strtoull(Offset, NULL, 0) : 0;
+  // for shared libraries we need get the offset inside the library:
+  if (Function) {
+     // check whether the module name ends with ".so*":
+     char *e = Module;
+     char *p = NULL;
+     while (e = strstr(e, ".so"))
+           p = e++;
+     if (p && !strchr(p, '/')) {
+        Dl_info dlinfo;
+        if (dladdr(reinterpret_cast<void*>(addr), &dlinfo)) {
+           if ((strcmp(Module, dlinfo.dli_fname) == 0) && dlinfo.dli_fbase) {
+              unsigned long long base = reinterpret_cast<unsigned long long>(dlinfo.dli_fbase);
+              addr -= base;
+              addr &= 0x0FFFFFFFF; // to make it work on both 32 and 64 bit systems
+              }
+           }
+        }
+     }
+  // determine the file name and line number:
+  cString cmd = cString::sprintf("addr2line --functions --demangle --inlines --basename --exe=%s 0x%llx", Module, Function ? addr : offs);
+  cPipe p;
+  if (p.Open(cmd, "r")) {
+     int n = 0;
+     cReadLine rl;
+     while (char *l = rl.Read(p)) {
+           if (n == 0) {
+              if (Function && strcmp(l, Function))
+                 d = cString::sprintf("%s calling %s", *d, l);
+              }
+           else
+              d = cString::sprintf("%s at %s", *d, l);
+           n++;
+           }
+     p.Close();
+     }
+  free(DemangledFunction);
+  return d;
+}
+
+void cBackTrace::BackTrace(cStringList &StringList, int Level, bool Mangled)
+{
+  void *b[BT_BUF_SIZE];
+  int n = backtrace(b, BT_BUF_SIZE);
+  if (char **s = backtrace_symbols(b, n)) {
+     for (int i = max(Level, 0) + 1; i < n; i++) // 1 is the call to this function itself
+         StringList.Append(strdup(Mangled ? s[i] : *Demangle(s[i])));
+     free(s);
+     }
+}
+
+void cBackTrace::BackTrace(FILE *f, int Level, bool Mangled)
+{
+  cStringList sl;
+  BackTrace(sl, Level + 1, Mangled); // 1 is the call to this function itself
+  for (int i = 0; i < sl.Size(); i++) {
+      if (f)
+         fprintf(f, "%s\n", sl[i]);
+      else
+         dsyslog("%s", sl[i]);
+      }
+}
+
+cString cBackTrace::GetCaller(int Level, bool Mangled)
+{
+  cString Caller;
+  Level = max(Level, 0) + 1; // 1 is the call to this function itself
+  void *b[BT_BUF_SIZE];
+  int n = backtrace(b, BT_BUF_SIZE);
+  if (char **s = backtrace_symbols(b, n)) {
+     if (Level < n)
+        Caller = Mangled ? s[Level] : *Demangle(s[Level]);
+     free(s);
+     }
+  return Caller;
+}
+
+// --- cStateLockLog ---------------------------------------------------------
+
+#ifdef DEBUG_LOCKSEQ
+#define SLL_SIZE     20 // the number of log entries
+#define SLL_LENGTH  256 // the maximum length of log entries
+#define SLL_MAX_LIST  9 // max. number of lists to log
+#define SLL_WRITE_FLAG 0x80000000
+
+class cStateLockLog {
+private:
+  cMutex mutex;
+  cVector<tThreadId> threadIds;
+  cVector<int> flags;
+  tThreadId logThreadIds[SLL_SIZE];
+  int logFlags[SLL_SIZE];
+  char logCaller[SLL_SIZE][SLL_LENGTH];
+  int logIndex;
+  bool dumped;
+  void Dump(const char *Name, tThreadId ThreadId);
+public:
+  cStateLockLog(void);
+  void Check(const char *Name, bool Lock, bool Write = false);
+  };
+
+cStateLockLog::cStateLockLog(void)
+{
+  memset(logThreadIds, 0, sizeof(logThreadIds));
+  memset(logFlags, 0, sizeof(logFlags));
+  memset(logCaller, 0, sizeof(logCaller));
+  logIndex = 0;
+  dumped = false;
+}
+
+void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
+{
+  dsyslog("--- begin invalid lock sequence report");
+  int LastFlags = 0;
+  for (int i = 0; i < SLL_SIZE; i++) {
+      if (tThreadId tid = logThreadIds[logIndex]) {
+         char msg[SLL_LENGTH];
+         char *q = msg;
+         q += sprintf(q, "%5d", tid);
+         int Flags = logFlags[logIndex];
+         bool Write = Flags & SLL_WRITE_FLAG;
+         Flags &= ~SLL_WRITE_FLAG;
+         int Changed = LastFlags ^ Flags;
+         LastFlags = Flags;
+         bool Lock = (Flags & Changed) != 0;
+         for (int i = 0; i <= SLL_MAX_LIST; i++) {
+             char c = '-';
+             int b = 1 << i;
+             if ((Flags & b) != 0)
+                c = '*';
+             if ((Changed & b) != 0)
+                c = Lock ? Write ? 'W' : 'R' : '-';
+             q += sprintf(q, "  %c", c);
+             }
+         q += sprintf(q, "  %c", Lock ? 'L' : 'U');
+         if (*logCaller[logIndex]) {
+            *q++ = ' ';
+            strn0cpy(q, *cBackTrace::Demangle(logCaller[logIndex]), sizeof(msg) - (q - msg));
+            }
+         dsyslog("%s", msg);
+         }
+      if (++logIndex >= SLL_SIZE)
+         logIndex = 0;
+      }
+  dsyslog("%5d invalid lock sequence: %s", ThreadId, Name);
+  dsyslog("full backtrace:");
+  cBackTrace::BackTrace(NULL, 2);
+  dsyslog("--- end invalid lock sequence report");
+  fprintf(stderr, "invalid lock sequence at %s\n", *DayDateTime(time(NULL)));
+}
+
+void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
+{
+  if (!dumped && Name) {
+     int n = *Name - '0';
+     if (1 <= n && n <= SLL_MAX_LIST) {
+        int b = 1 << (n - 1);
+        cMutexLock MutexLock(&mutex);
+        tThreadId ThreadId = cThread::ThreadId();
+        int Index = threadIds.IndexOf(ThreadId);
+        if (Index < 0) {
+           if (Lock) {
+              Index = threadIds.Size();
+              threadIds.Append(ThreadId);
+              flags.Append(0);
+              }
+           else
+              return;
+           }
+        bool DoDump = false;
+        if (Lock) {
+           if ((flags[Index] & ~b) < b) // thread holds only "smaller" locks -> OK
+              ;
+           else if ((flags[Index] & b) == 0) // thread already holds "bigger" locks, so it may only re-lock one that it already has!
+              DoDump = true;
+           flags[Index] |= b;
+           }
+        else
+           flags[Index] &= ~b;
+        logThreadIds[logIndex] = ThreadId;
+        logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0);
+#ifdef DEBUG_LOCKCALL
+        strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 5 : 3, true), SLL_LENGTH);
+#endif
+        if (++logIndex >= SLL_SIZE)
+           logIndex = 0;
+        if (DoDump) {
+           Dump(Name, ThreadId);
+           dumped = true;
+           }
+        }
+     }
+}
+
+static cStateLockLog StateLockLog;
+
+#define dbglockseq(n, l, w) StateLockLog.Check(n, l, w)
+#else
+#define dbglockseq(n, l, w)
+#endif // DEBUG_LOCKSEQ
+
 // --- cStateLock ------------------------------------------------------------
 
 cStateLock::cStateLock(const char *Name)
@@ -442,7 +690,7 @@ cStateLock::cStateLock(const char *Name)
 
 bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
 {
-  dbglocking("%5d %-10s %10p   lock state = %d/%d write = %d timeout = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, Write, TimeoutMs);
+  dbglocking("%5d %-12s %10p   lock state = %d/%d write = %d timeout = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, Write, TimeoutMs);
   StateKey.timedOut = false;
   if (StateKey.stateLock) {
      esyslog("ERROR: StateKey already in use in call to cStateLock::Lock() (tid=%d, lock=%s)", StateKey.stateLock->threadId, name);
@@ -450,25 +698,27 @@ bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
      return false;
      }
   if (rwLock.Lock(Write, TimeoutMs)) {
+     dbglockseq(name, true, Write);
      StateKey.stateLock = this;
      if (Write) {
-        dbglocking("%5d %-10s %10p   locked write\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   locked write\n", cThread::ThreadId(), name, &StateKey);
         threadId = cThread::ThreadId();
         StateKey.write = true;
         return true;
         }
      else if (state != StateKey.state) {
-        dbglocking("%5d %-10s %10p   locked read\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   locked read\n", cThread::ThreadId(), name, &StateKey);
         return true;
         }
      else {
-        dbglocking("%5d %-10s %10p   state unchanged\n", cThread::ThreadId(), name, &StateKey);
+        dbglocking("%5d %-12s %10p   state unchanged\n", cThread::ThreadId(), name, &StateKey);
         StateKey.stateLock = NULL;
+        dbglockseq(name, false, false);
         rwLock.Unlock();
         }
      }
   else if (TimeoutMs) {
-     dbglocking("%5d %-10s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
+     dbglocking("%5d %-12s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
      StateKey.timedOut = true;
      }
   return false;
@@ -476,7 +726,7 @@ bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
 
 void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
 {
-  dbglocking("%5d %-10s %10p unlock state = %d/%d inc = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, IncState);
+  dbglocking("%5d %-12s %10p unlock state = %d/%d inc = %d\n", cThread::ThreadId(), name, &StateKey, state, StateKey.state, IncState);
   if (StateKey.stateLock != this) {
      esyslog("ERROR: cStateLock::Unlock() called with an unused key (tid=%d, lock=%s)", threadId, name);
      ABORT;
@@ -495,6 +745,7 @@ void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
      threadId = 0;
      explicitModify = false;
      }
+  dbglockseq(name, false, false);
   rwLock.Unlock();
 }
 

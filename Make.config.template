@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 4.0 2015/02/09 09:58:45 kls Exp $
+# $Id: Make.config.template 4.1 2017/06/02 09:29:54 kls Exp $
 
 ### The C compiler and options:
 
@@ -15,6 +15,12 @@ CFLAGS   = -g -O3 -Wall
 
 CXX      = g++
 CXXFLAGS = -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
+
+# Use 'make DEBUG=1 ...' to build a debug version of VDR and plugins:
+ifdef DEBUG
+CFLAGS   += -O0
+CXXFLAGS += -O0
+endif
 
 # Use 'make M32=1 ...' to build a 32-bit version of VDR on a 64-bit machine:
 ifdef M32

@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 4.1 2017/05/22 15:33:20 kls Exp $
+# $Id: Makefile 4.2 2017/05/29 08:33:15 kls Exp $
 
 ### The archiver options:
 
@@ -37,7 +37,7 @@ all: libsi.a
 
 libsi.a : $(OBJS)
 	@echo AR libsi/$@
-	@$(AR) $(ARFLAGS) $@ $(OBJS)
+	$(Q)$(AR) $(ARFLAGS) $@ $(OBJS)
 
 clean:
 	@-rm -f $(OBJS) $(DEPFILE) *.a *.so *.tgz core* *~

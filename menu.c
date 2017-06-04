@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.29 2017/05/21 13:18:26 kls Exp $
+ * $Id: menu.c 4.32 2017/06/04 09:30:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1550,7 +1550,7 @@ private:
   static int currentChannel;
   static const cEvent *scheduleEvent;
   bool Update(void);
-  void SetHelpKeys(void);
+  void SetHelpKeys(const cChannels *Channels);
 public:
   cMenuWhatsOn(const cTimers *Timers, const cChannels *Channels, const cSchedules *Schedules, bool Now, int CurrentChannelNr);
   static int CurrentChannel(void) { return currentChannel; }
@@ -1579,7 +1579,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cTimers *Timers, const cChannels *Channels, con
       }
   currentChannel = CurrentChannelNr;
   Display();
-  SetHelpKeys();
+  SetHelpKeys(Channels);
 }
 
 bool cMenuWhatsOn::Update(void)
@@ -1595,7 +1595,7 @@ bool cMenuWhatsOn::Update(void)
   return result;
 }
 
-void cMenuWhatsOn::SetHelpKeys(void)
+void cMenuWhatsOn::SetHelpKeys(const cChannels *Channels)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   canSwitch = false;
@@ -1609,7 +1609,6 @@ void cMenuWhatsOn::SetHelpKeys(void)
         NewHelpKeys |= 0x04; // "Next"
      else
         NewHelpKeys |= 0x08; // "Now"
-     LOCK_CHANNELS_READ;
      if (const cChannel *Channel = Channels->GetByChannelID(item->event->ChannelID(), true)) {
         if (Channel->Number() != cDevice::CurrentChannel()) {
            NewHelpKeys |= 0x10; // "Switch"
@@ -1651,8 +1650,8 @@ eOSState cMenuWhatsOn::Switch(void)
 eOSState cMenuWhatsOn::Record(void)
 {
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
-     {
        LOCK_TIMERS_WRITE;
+       LOCK_CHANNELS_READ;
        LOCK_SCHEDULES_READ;
        Timers->SetExplicitModify();
        if (item->timerMatch == tmFull) {
@@ -1675,12 +1674,11 @@ eOSState cMenuWhatsOn::Record(void)
           // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
           Timers->Del(Timer);
           }
-     }
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
         Display();
-     SetHelpKeys();
+     SetHelpKeys(Channels);
      }
   return osContinue;
 }
@@ -1715,7 +1713,8 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                             if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
                                SetCurrent(item);
                                Display();
-                               SetHelpKeys();
+                               LOCK_CHANNELS_READ;
+                               SetHelpKeys(Channels);
                                break;
                                }
                             }
@@ -1734,8 +1733,10 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
   else if (!HasSubMenu()) {
      if (HadSubMenu && Update())
         Display();
-     if (Key != kNone)
-        SetHelpKeys();
+     if (Key != kNone) {
+        LOCK_CHANNELS_READ;
+        SetHelpKeys(Channels);
+        }
      }
   return state;
 }
@@ -1750,7 +1751,7 @@ private:
   bool now, next;
   bool canSwitch;
   int helpKeys;
-  void Set(const cChannel *Channel = NULL, bool Force = false);
+  void Set(const cTimers *Timers, const cChannels *Channels, const cChannel *Channel = NULL, bool Force = false);
   eOSState Number(void);
   eOSState Record(void);
   eOSState Switch(void);
@@ -1776,7 +1777,9 @@ cMenuSchedule::cMenuSchedule(void)
   helpKeys = 0;
   cMenuScheduleItem::SetSortMode(cMenuScheduleItem::ssmAllThis);
   cMenuWhatsOn::SetCurrentChannel(cDevice::CurrentChannel());
-  Set(NULL, true);
+  LOCK_TIMERS_READ;
+  LOCK_CHANNELS_READ;
+  Set(Timers, Channels, NULL, true);
 }
 
 cMenuSchedule::~cMenuSchedule()
@@ -1784,14 +1787,12 @@ cMenuSchedule::~cMenuSchedule()
   cMenuWhatsOn::ScheduleEvent(); // makes sure any posted data is cleared
 }
 
-void cMenuSchedule::Set(const cChannel *Channel, bool Force)
+void cMenuSchedule::Set(const cTimers *Timers, const cChannels *Channels, const cChannel *Channel, bool Force)
 {
   if (Force) {
      schedulesStateKey.Reset();
      scheduleState = -1;
      }
-  LOCK_TIMERS_READ;
-  LOCK_CHANNELS_READ;
   if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(schedulesStateKey)) {
      cMenuScheduleItem *CurrentItem = (cMenuScheduleItem *)Get(Current());
      const cEvent *Event = NULL;
@@ -1941,7 +1942,9 @@ void cMenuSchedule::SetHelpKeys(void)
 eOSState cMenuSchedule::Number(void)
 {
   cMenuScheduleItem::IncSortMode();
-  Set(NULL, true);
+  LOCK_TIMERS_READ;
+  LOCK_CHANNELS_READ;
+  Set(Timers, Channels, NULL, true);
   return osContinue;
 }
 
@@ -1950,6 +1953,7 @@ eOSState cMenuSchedule::Record(void)
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
      {
        LOCK_TIMERS_WRITE;
+       LOCK_CHANNELS_READ;
        LOCK_SCHEDULES_READ;
        Timers->SetExplicitModify();
        if (item->timerMatch == tmFull) {
@@ -2001,8 +2005,11 @@ eOSState cMenuSchedule::Switch(void)
 
 eOSState cMenuSchedule::ProcessKey(eKeys Key)
 {
-  if (!HasSubMenu())
-     Set(); // react on any changes to the schedules list
+  if (!HasSubMenu()) {
+     LOCK_TIMERS_READ;
+     LOCK_CHANNELS_READ;
+     Set(Timers, Channels); // react on any changes to the schedules list
+     }
   bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
@@ -2041,9 +2048,10 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        case kChanUp:
        case kChanDn|k_Repeat:
        case kChanDn: if (!HasSubMenu()) {
+                        LOCK_TIMERS_READ;
                         LOCK_CHANNELS_READ;
                         if (const cChannel *Channel = Channels->GetByNumber(cDevice::CurrentChannel()))
-                           Set(Channel, true);
+                           Set(Timers, Channels, Channel, true);
                         }
                      break;
        case kInfo:
@@ -2060,10 +2068,11 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
   else if (!HasSubMenu()) {
      now = next = false;
      if (const cEvent *ei = cMenuWhatsOn::ScheduleEvent()) {
+        LOCK_TIMERS_READ;
         LOCK_CHANNELS_READ;
         if (const cChannel *Channel = Channels->GetByChannelID(ei->ChannelID(), true)) {
            cMenuScheduleItem::SetSortMode(cMenuScheduleItem::ssmAllThis);
-           Set(Channel, true);
+           Set(Timers, Channels, Channel, true);
            }
         }
      else if (HadSubMenu && Update())
@@ -5056,7 +5065,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
   Timers->SetModified();
   // We're going to work with an event here, so we need to prevent
   // others from modifying any EPG data:
-  LOCK_SCHEDULES_READ;
+  cStateKey SchedulesStateKey;
+  cSchedules::GetSchedulesRead(SchedulesStateKey);
 
   event = NULL;
   fileName = NULL;
@@ -5092,6 +5102,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
            cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
+     SchedulesStateKey.Remove();
      return;
      }
 
@@ -5105,6 +5116,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
+        SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
         Recordings->AddByName(fileName);
         return;
@@ -5118,6 +5130,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
      Timers->Del(timer);
      timer = NULL;
      }
+  SchedulesStateKey.Remove();
 }
 
 cRecordControl::~cRecordControl()
