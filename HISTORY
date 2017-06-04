@@ -9056,7 +9056,7 @@ Video Disk Recorder Revision History
 - Fixed detecting the inclusion of STL header files in tools.h (thanks to Jasmin
   Jessich).
 
-2017-05-31: Version 2.3.6
+2017-06-04: Version 2.3.6
 
 - Added backtrace functions for debugging (see cBackTrace in thread.h).
 - Added checking the correct sequence of locking global lists (with help and
@@ -9100,3 +9100,5 @@ Video Disk Recorder Revision History
 - Fixed a possible crash in case the SVDRP connection to a peer VDR is terminated
   while getting remote timers.
 - Fixed the locking sequence when creating a new timer from the Schedules menu.
+- Fixed the locking sequence when switching between 'Now', 'Next' and 'Schedule'
+  in the Schedules menu.
