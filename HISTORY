@@ -9102,3 +9102,8 @@ Video Disk Recorder Revision History
 - Fixed the locking sequence when creating a new timer from the Schedules menu.
 - Fixed the locking sequence when switching between 'Now', 'Next' and 'Schedule'
   in the Schedules menu.
+
+2017-06-06: Version 2.3.7
+
+- Fixed false positives when checking the locking sequence, in case of nested locks
+  within the same thread.

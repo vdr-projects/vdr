@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.4 2017/06/03 12:43:22 kls Exp $
+ * $Id: thread.c 4.5 2017/06/06 09:11:03 kls Exp $
  */
 
 #include "thread.h"
@@ -568,6 +568,7 @@ private:
   cVector<int> flags;
   tThreadId logThreadIds[SLL_SIZE];
   int logFlags[SLL_SIZE];
+  uint8_t logCounter[SLL_SIZE][SLL_MAX_LIST];
   char logCaller[SLL_SIZE][SLL_LENGTH];
   int logIndex;
   bool dumped;
@@ -581,6 +582,7 @@ cStateLockLog::cStateLockLog(void)
 {
   memset(logThreadIds, 0, sizeof(logThreadIds));
   memset(logFlags, 0, sizeof(logFlags));
+  memset(logCounter, 0, sizeof(logCounter));
   memset(logCaller, 0, sizeof(logCaller));
   logIndex = 0;
   dumped = false;
@@ -630,9 +632,9 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
 void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
 {
   if (!dumped && Name) {
-     int n = *Name - '0';
-     if (1 <= n && n <= SLL_MAX_LIST) {
-        int b = 1 << (n - 1);
+     int n = *Name - '0' - 1;
+     if (0 < n && n < SLL_MAX_LIST) {
+        int b = 1 << n;
         cMutexLock MutexLock(&mutex);
         tThreadId ThreadId = cThread::ThreadId();
         int Index = threadIds.IndexOf(ThreadId);
@@ -651,9 +653,10 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
               ;
            else if ((flags[Index] & b) == 0) // thread already holds "bigger" locks, so it may only re-lock one that it already has!
               DoDump = true;
+           logCounter[Index][n]++;
            flags[Index] |= b;
            }
-        else
+        else if (--logCounter[Index][n] == 0)
            flags[Index] &= ~b;
         logThreadIds[logIndex] = ThreadId;
         logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0);
