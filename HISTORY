@@ -9107,3 +9107,4 @@ Video Disk Recorder Revision History
 
 - Fixed false positives when checking the locking sequence, in case of nested locks
   within the same thread.
+- Fixed uninitialized variable SdWatchdog in vdr.c (reported by Frank Neumann).

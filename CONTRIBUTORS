@@ -3030,6 +3030,7 @@ Frank Neumann <fnu@yavdr.org>
  is currently assigned to
  for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
  in derived classes that don't implement this function
+ for reporting uninitialized variable SdWatchdog in vdr.c
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in

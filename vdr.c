@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.16 2017/05/29 11:30:27 kls Exp $
+ * $Id: vdr.c 4.17 2017/06/06 10:53:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
   VdrUser = VDR_USER;
 #endif
 #ifdef SDNOTIFY
-  time_t SdWatchdog;
+  time_t SdWatchdog = 0;
   int SdWatchdogTimeout = 0;
 #endif
 
