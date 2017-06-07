@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.32 2017/06/04 09:30:56 kls Exp $
+ * $Id: menu.c 4.33 2017/06/07 15:36:52 kls Exp $
  */
 
 #include "menu.h"
@@ -5061,6 +5061,7 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, bool Pause)
 {
+  const char *LastReplayed = cReplayControl::LastReplayed(); // must do this before locking schedules!
   // Whatever happens here, the timers will be modified in some way...
   Timers->SetModified();
   // We're going to work with an event here, so we need to prevent
@@ -5098,7 +5099,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         }
      else {
         Timers->Del(timer);
-        if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+        if (!LastReplayed) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
@@ -5114,7 +5115,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
      if (device->AttachReceiver(recorder)) {
         Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
-        if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+        if (!Timer && !LastReplayed) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
