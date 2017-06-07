@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.5 2017/06/06 09:11:03 kls Exp $
+ * $Id: thread.c 4.6 2017/06/07 12:31:31 kls Exp $
  */
 
 #include "thread.h"
@@ -633,7 +633,7 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
 {
   if (!dumped && Name) {
      int n = *Name - '0' - 1;
-     if (0 < n && n < SLL_MAX_LIST) {
+     if (0 <= n && n < SLL_MAX_LIST) {
         int b = 1 << n;
         cMutexLock MutexLock(&mutex);
         tThreadId ThreadId = cThread::ThreadId();
@@ -661,7 +661,7 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
         logThreadIds[logIndex] = ThreadId;
         logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0);
 #ifdef DEBUG_LOCKCALL
-        strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 5 : 3, true), SLL_LENGTH);
+        strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 3 : 5, true), SLL_LENGTH);
 #endif
         if (++logIndex >= SLL_SIZE)
            logIndex = 0;
