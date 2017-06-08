@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.6 2017/06/07 12:31:31 kls Exp $
+ * $Id: thread.c 4.7 2017/06/08 08:22:10 kls Exp $
  */
 
 #include "thread.h"
@@ -560,6 +560,7 @@ cString cBackTrace::GetCaller(int Level, bool Mangled)
 #define SLL_LENGTH  256 // the maximum length of log entries
 #define SLL_MAX_LIST  9 // max. number of lists to log
 #define SLL_WRITE_FLAG 0x80000000
+#define SLL_LOCK_FLAG  0x40000000
 
 class cStateLockLog {
 private:
@@ -599,10 +600,10 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
          q += sprintf(q, "%5d", tid);
          int Flags = logFlags[logIndex];
          bool Write = Flags & SLL_WRITE_FLAG;
-         Flags &= ~SLL_WRITE_FLAG;
+         bool Lock = Flags & SLL_LOCK_FLAG;
+         Flags &= ~(SLL_WRITE_FLAG | SLL_LOCK_FLAG);
          int Changed = LastFlags ^ Flags;
          LastFlags = Flags;
-         bool Lock = (Flags & Changed) != 0;
          for (int i = 0; i <= SLL_MAX_LIST; i++) {
              char c = '-';
              int b = 1 << i;
@@ -659,7 +660,7 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
         else if (--logCounter[Index][n] == 0)
            flags[Index] &= ~b;
         logThreadIds[logIndex] = ThreadId;
-        logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0);
+        logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0) | (Lock ? SLL_LOCK_FLAG : 0);
 #ifdef DEBUG_LOCKCALL
         strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 3 : 5, true), SLL_LENGTH);
 #endif

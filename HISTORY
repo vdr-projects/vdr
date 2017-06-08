@@ -9103,9 +9103,10 @@ Video Disk Recorder Revision History
 - Fixed the locking sequence when switching between 'Now', 'Next' and 'Schedule'
   in the Schedules menu.
 
-2017-06-06: Version 2.3.7
+2017-06-08: Version 2.3.7
 
 - Fixed false positives when checking the locking sequence, in case of nested locks
   within the same thread.
 - Fixed uninitialized variable SdWatchdog in vdr.c (reported by Frank Neumann).
 - Fixed the locking sequence when starting an instant recording.
+- Fixed L(ock) and U(nlock) indicators in cStateLockLog.
