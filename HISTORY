@@ -9110,3 +9110,5 @@ Video Disk Recorder Revision History
 - Fixed uninitialized variable SdWatchdog in vdr.c (reported by Frank Neumann).
 - Fixed the locking sequence when starting an instant recording.
 - Fixed L(ock) and U(nlock) indicators in cStateLockLog.
+- Increased SLL_LENGTH in thread.c to better handle long caller lines, and enclosed
+  logCaller with DEBUG_LOCKCALL to preserve memory in normal operation.

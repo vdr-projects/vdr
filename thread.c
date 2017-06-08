@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.7 2017/06/08 08:22:10 kls Exp $
+ * $Id: thread.c 4.8 2017/06/08 08:27:32 kls Exp $
  */
 
 #include "thread.h"
@@ -557,7 +557,7 @@ cString cBackTrace::GetCaller(int Level, bool Mangled)
 
 #ifdef DEBUG_LOCKSEQ
 #define SLL_SIZE     20 // the number of log entries
-#define SLL_LENGTH  256 // the maximum length of log entries
+#define SLL_LENGTH  512 // the maximum length of log entries
 #define SLL_MAX_LIST  9 // max. number of lists to log
 #define SLL_WRITE_FLAG 0x80000000
 #define SLL_LOCK_FLAG  0x40000000
@@ -570,7 +570,9 @@ private:
   tThreadId logThreadIds[SLL_SIZE];
   int logFlags[SLL_SIZE];
   uint8_t logCounter[SLL_SIZE][SLL_MAX_LIST];
+#ifdef DEBUG_LOCKCALL
   char logCaller[SLL_SIZE][SLL_LENGTH];
+#endif
   int logIndex;
   bool dumped;
   void Dump(const char *Name, tThreadId ThreadId);
@@ -584,7 +586,9 @@ cStateLockLog::cStateLockLog(void)
   memset(logThreadIds, 0, sizeof(logThreadIds));
   memset(logFlags, 0, sizeof(logFlags));
   memset(logCounter, 0, sizeof(logCounter));
+#ifdef DEBUG_LOCKCALL
   memset(logCaller, 0, sizeof(logCaller));
+#endif
   logIndex = 0;
   dumped = false;
 }
@@ -614,10 +618,12 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
              q += sprintf(q, "  %c", c);
              }
          q += sprintf(q, "  %c", Lock ? 'L' : 'U');
+#ifdef DEBUG_LOCKCALL
          if (*logCaller[logIndex]) {
             *q++ = ' ';
             strn0cpy(q, *cBackTrace::Demangle(logCaller[logIndex]), sizeof(msg) - (q - msg));
             }
+#endif
          dsyslog("%s", msg);
          }
       if (++logIndex >= SLL_SIZE)
