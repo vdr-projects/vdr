@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.8 2017/06/08 08:27:32 kls Exp $
+ * $Id: thread.c 4.9 2017/06/09 08:27:22 kls Exp $
  */
 
 #include "thread.h"
@@ -614,7 +614,7 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
              if ((Flags & b) != 0)
                 c = '*';
              if ((Changed & b) != 0)
-                c = Lock ? Write ? 'W' : 'R' : '-';
+                c = Lock ? Write ? 'W' : 'R' : 'U';
              q += sprintf(q, "  %c", c);
              }
          q += sprintf(q, "  %c", Lock ? 'L' : 'U');
