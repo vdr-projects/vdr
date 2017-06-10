@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.9 2017/05/18 09:05:46 kls Exp $
+ * $Id: ci.h 4.10 2017/06/10 11:53:39 kls Exp $
  */
 
 #ifndef __CI_H
@@ -528,5 +528,7 @@ public:
   };
 
 extern cChannelCamRelations ChannelCamRelations;
+
+bool CamResponsesLoad(const char *FileName, bool AllowComments = false, bool MustExist = false);
 
 #endif //__CI_H

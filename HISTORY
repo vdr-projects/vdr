@@ -9113,3 +9113,6 @@ Video Disk Recorder Revision History
 - Increased SLL_LENGTH in thread.c to better handle long caller lines, and enclosed
   logCaller with DEBUG_LOCKCALL to preserve memory in normal operation.
 - Fixed a typo in CAMMENURETYTIMEOUT and added logging CAM enquiries.
+- The new configuration file 'camresponses.conf' can be used to define automatic
+  responses to CAM menus, for instance to avoid annyoing popup messages or entering
+  the parental rating PIN. See vdr.5 for details.

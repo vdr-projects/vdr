@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.17 2017/06/06 10:53:44 kls Exp $
+ * $Id: vdr.c 4.18 2017/06/10 11:53:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -763,6 +763,7 @@ int main(int argc, char *argv[])
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
   KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
   Folders.Load(AddDirectory(ConfigDirectory, "folders.conf"));
+  CamResponsesLoad(AddDirectory(ConfigDirectory, "camresponses.conf"), true);
 
   if (!*cFont::GetFontFileName(Setup.FontOsd)) {
      const char *msg = "no fonts available - OSD will not show any text!";
