@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-09-11 10:38+0200\n"
+"POT-Creation-Date: 2017-06-10 17:19+0200\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -1298,6 +1298,12 @@ msgstr "Дистанца на скокање со Зелено/Жолто коп
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"
+
+msgid "type"
+msgstr ""
+
+msgid "full"
+msgstr ""
 
 msgid "Miscellaneous"
 msgstr "Разно"

@@ -9116,3 +9116,6 @@ Video Disk Recorder Revision History
 - The new configuration file 'camresponses.conf' can be used to define automatic
   responses to CAM menus, for instance to avoid annyoing popup messages or entering
   the parental rating PIN. See vdr.5 for details.
+- The option "Setup/Miscellaneous/Show channel names with source" can now be set to
+  "type" or "full" to show either the type or the full name of the source (thanks to
+  Martin Wache).

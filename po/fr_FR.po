@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2015-09-11 10:38+0200\n"
+"POT-Creation-Date: 2017-06-10 17:19+0200\n"
 "PO-Revision-Date: 2015-02-18 20:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -1308,6 +1308,12 @@ msgstr "Durée du saut pour les touches Verte/Jaune en répétition (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID résumé"
+
+msgid "type"
+msgstr ""
+
+msgid "full"
+msgstr ""
 
 msgid "Miscellaneous"
 msgstr "Divers"

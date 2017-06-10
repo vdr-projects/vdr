@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 4.4 2017/05/26 15:43:54 kls Exp $
+ * $Id: channels.c 4.5 2017/06/10 15:08:56 kls Exp $
  */
 
 #include "channels.h"
@@ -98,6 +98,7 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   portalName = strcpyrealloc(portalName, Channel.portalName);
   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
   nameSource = NULL; // these will be recalculated automatically
+  nameSourceMode = 0;
   shortNameSource = NULL;
   parameters = Channel.parameters;
   return *this;
@@ -106,8 +107,12 @@ cChannel& cChannel::operator= (const cChannel &Channel)
 const char *cChannel::Name(void) const
 {
   if (Setup.ShowChannelNamesWithSource && !groupSep) {
-     if (isempty(nameSource))
-        nameSource = cString::sprintf("%s (%c)", name, cSource::ToChar(source));
+     if (isempty(nameSource) || nameSourceMode != Setup.ShowChannelNamesWithSource) {
+        if (Setup.ShowChannelNamesWithSource == 1)
+           nameSource = cString::sprintf("%s (%c)", name, cSource::ToChar(source));
+        else
+           nameSource = cString::sprintf("%s (%s)", name, *cSource::ToString(source));
+        }
      return nameSource;
      }
   return name;
@@ -194,6 +199,7 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      parameters = Parameters;
      schedule = NULL;
      nameSource = NULL;
+     nameSourceMode = 0;
      shortNameSource = NULL;
      if (Number() && !Quiet) {
         dsyslog("changing transponder data of channel %d (%s) from %s to %s", Number(), name, *OldTransponderData, *TransponderDataToString());
@@ -262,6 +268,7 @@ bool cChannel::SetName(const char *Name, const char *ShortName, const char *Prov
         if (nn) {
            name = strcpyrealloc(name, Name);
            nameSource = NULL;
+           nameSourceMode = 0;
            }
         if (ns) {
            shortName = strcpyrealloc(shortName, ShortName);
@@ -792,6 +799,7 @@ bool cChannel::Parse(const char *s)
         free(caidbuf);
         free(namebuf);
         nameSource = NULL;
+        nameSourceMode = 0;
         shortNameSource = NULL;
         if (!GetChannelID().Valid()) {
            esyslog("ERROR: channel data results in invalid ID!");
@@ -1093,8 +1101,8 @@ bool cChannels::MarkObsoleteChannels(int Source, int Nid, int Tid)
   bool ChannelsModified = false;
   for (cChannel *Channel = First(); Channel; Channel = Next(Channel)) {
       if (time(NULL) - Channel->Seen() > CHANNELTIMEOBSOLETE && Channel->Source() == Source && Channel->Nid() == Nid && Channel->Tid() == Tid && Channel->Rid() == 0) {
-         bool OldShowChannelNamesWithSource = Setup.ShowChannelNamesWithSource;
-         Setup.ShowChannelNamesWithSource = false;
+         int OldShowChannelNamesWithSource = Setup.ShowChannelNamesWithSource;
+         Setup.ShowChannelNamesWithSource = 0;
          if (!endswith(Channel->Name(), CHANNELMARKOBSOLETE))
             ChannelsModified |= Channel->SetName(cString::sprintf("%s %s", Channel->Name(), CHANNELMARKOBSOLETE), Channel->ShortName(), cString::sprintf("%s %s", CHANNELMARKOBSOLETE, Channel->Provider()));
          Setup.ShowChannelNamesWithSource = OldShowChannelNamesWithSource;

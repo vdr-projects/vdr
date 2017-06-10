@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.34 2017/06/10 09:52:14 kls Exp $
+ * $Id: menu.c 4.35 2017/06/10 15:13:00 kls Exp $
  */
 
 #include "menu.h"
@@ -4010,6 +4010,7 @@ void cMenuSetupReplay::Store(void)
 
 class cMenuSetupMisc : public cMenuSetupBase {
 private:
+  const char *showChannelNamesWithSourceTexts[3];
   cStringList svdrpServerNames;
   void Set(void);
 public:
@@ -4020,6 +4021,9 @@ public:
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
   SetMenuCategory(mcSetupMisc);
+  showChannelNamesWithSourceTexts[0] = tr("off");
+  showChannelNamesWithSourceTexts[1] = tr("type");
+  showChannelNamesWithSourceTexts[2] = tr("full");
   SetSection(tr("Miscellaneous"));
   Set();
 }
@@ -4049,7 +4053,7 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume steps"),               &data.VolumeSteps, 5, 255));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume linearize"),           &data.VolumeLinearize, -20, 20));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
-  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource));
+  Add(new cMenuEditStraItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource, 3, showChannelNamesWithSourceTexts));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
   SetCurrent(Get(current));
   Display();
