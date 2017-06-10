@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.35 2017/06/10 15:13:00 kls Exp $
+ * $Id: menu.c 4.36 2017/06/10 15:53:20 kls Exp $
  */
 
 #include "menu.h"
@@ -327,13 +327,15 @@ void cMenuChannelItem::Set(void)
 {
   cString buffer;
   if (!channel->GroupSep()) {
+     const char *X = *channel->Caids() >= CA_ENCRYPTED_MIN ? "X" : "";
+     const char *R = !channel->Vpid() && (*channel->Apids() || *channel->Dpids()) ? "R" : "";
      if (sortMode == csmProvider)
-        buffer = cString::sprintf("%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
+        buffer = cString::sprintf("%d\t%s%s\t%s - %s", channel->Number(), X, R, channel->Provider(), channel->Name());
      else
-        buffer = cString::sprintf("%d\t%s", channel->Number(), channel->Name());
+        buffer = cString::sprintf("%d\t%s%s\t%s", channel->Number(), X, R, channel->Name());
      }
   else
-     buffer = cString::sprintf("---\t%s ----------------------------------------------------------------", channel->Name());
+     buffer = cString::sprintf("\t\t%s ----------------------------------------------------------------", channel->Name());
   SetText(buffer);
 }
 
@@ -369,7 +371,7 @@ public:
   };
 
 cMenuChannels::cMenuChannels(void)
-:cOsdMenu(tr("Channels"), CHNUMWIDTH)
+:cOsdMenu(tr("Channels"), CHNUMWIDTH, 3)
 {
   SetMenuCategory(mcChannel);
   number = 0;

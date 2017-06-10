@@ -9119,3 +9119,5 @@ Video Disk Recorder Revision History
 - The option "Setup/Miscellaneous/Show channel names with source" can now be set to
   "type" or "full" to show either the type or the full name of the source (thanks to
   Martin Wache).
+- The "Channels" menu now indicates whether a channel is encrypted ('X') or a radio
+  channel ('R') (thanks to Martin Wache).
