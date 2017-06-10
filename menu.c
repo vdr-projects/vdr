@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.33 2017/06/07 15:36:52 kls Exp $
+ * $Id: menu.c 4.34 2017/06/10 09:52:14 kls Exp $
  */
 
 #include "menu.h"
@@ -43,7 +43,7 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 #define MAXWAITFORCAMMENU  10 // seconds to wait for the CAM menu to open
-#define CAMMENURETYTIMEOUT  3 // seconds after which opening the CAM menu is retried
+#define CAMMENURETRYTIMEOUT 3 // seconds after which opening the CAM menu is retried
 #define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
@@ -2294,8 +2294,10 @@ void cMenuCam::Set(void)
      free(input);
      input = MALLOC(char, Length + 1);
      *input = 0;
+     dsyslog("CAM %d: Enquiry ------------------", camSlot->SlotNumber());
      GenerateTitle();
      Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
+     dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciEnquiry->Text());
      Add(new cOsdItem("", osUnknown, false));
      Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
      }
@@ -3836,7 +3838,7 @@ eOSState cMenuSetupCAM::Menu(void)
         while (time(NULL) - t0 <= MAXWAITFORCAMMENU) {
               if (item->CamSlot()->HasUserIO())
                  break;
-              if (time(NULL) - t1 >= CAMMENURETYTIMEOUT) {
+              if (time(NULL) - t1 >= CAMMENURETRYTIMEOUT) {
                  dsyslog("CAM %d: retrying to enter CAM menu...", item->CamSlot()->SlotNumber());
                  item->CamSlot()->EnterMenu();
                  t1 = time(NULL);
