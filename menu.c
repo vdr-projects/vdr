@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.36 2017/06/10 15:53:20 kls Exp $
+ * $Id: menu.c 4.37 2017/06/10 19:19:51 kls Exp $
  */
 
 #include "menu.h"
@@ -335,7 +335,7 @@ void cMenuChannelItem::Set(void)
         buffer = cString::sprintf("%d\t%s%s\t%s", channel->Number(), X, R, channel->Name());
      }
   else
-     buffer = cString::sprintf("\t\t%s ----------------------------------------------------------------", channel->Name());
+     buffer = cString::sprintf("\t\t%s", channel->Name());
   SetText(buffer);
 }
 
