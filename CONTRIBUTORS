@@ -2835,6 +2835,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  respective recording did not exist
  for fixing a double deletion of a cTimer in case HandleRemoteModifications() returned
  false
+ for reporting an invalid lock sequence in the epgsearch plugin, which turned out to
+ be an abandoned member of class cSchedulesLock
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.10 2017/05/22 20:21:08 kls Exp $
+ * $Id: tools.h 4.11 2017/06/11 08:52:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -614,19 +614,19 @@ public:
 // is left:
 
 #define DEF_LIST_LOCK2(Class, Name) \
-class c##Name##Lock { \
+class c##Name##_Lock { \
 private: \
   cStateKey stateKey; \
   const c##Class *list; \
 public: \
-  c##Name##Lock(bool Write = false) \
+  c##Name##_Lock(bool Write = false) \
   { \
     if (Write) \
        list = c##Class::Get##Name##Write(stateKey); \
     else \
        list = c##Class::Get##Name##Read(stateKey); \
   } \
-  ~c##Name##Lock() { if (list) stateKey.Remove(); } \
+  ~c##Name##_Lock() { if (list) stateKey.Remove(); } \
   const c##Class *Name(void) const { return list; } \
   c##Class *Name(void) { return const_cast<c##Class *>(list); } \
   }
@@ -636,13 +636,13 @@ public: \
 // a suitable DEF_LIST_LOCK, and also a pointer to the provided list:
 
 #define USE_LIST_LOCK_READ2(Class, Name) \
-c##Name##Lock Name##Lock(false); \
-const c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+c##Name##_Lock Name##_Lock(false); \
+const c##Class *Name __attribute__((unused)) = Name##_Lock.Name();
 #define USE_LIST_LOCK_READ(Class) USE_LIST_LOCK_READ2(Class, Class)
 
 #define USE_LIST_LOCK_WRITE2(Class, Name) \
-c##Name##Lock Name##Lock(true); \
-c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+c##Name##_Lock Name##_Lock(true); \
+c##Class *Name __attribute__((unused)) = Name##_Lock.Name();
 #define USE_LIST_LOCK_WRITE(Class) USE_LIST_LOCK_WRITE2(Class, Class)
 
 template<class T> class cVector {
