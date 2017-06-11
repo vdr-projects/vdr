@@ -2115,6 +2115,10 @@ Martin Wache <M.Wache@gmx.net>
  device, which avoids a busy loop on very fast machines
  for fixing a possible crash when loading an invalid XPM file
  for suggesting to speed up anti-aliased font rendering by caching the blend indexes
+ for extending the option "Setup/Miscellaneous/Show channel names with source" to
+ "type" or "full"
+ for making the "Channels" menu indicates whether a channel is encrypted or a radio
+ channel
 
 Matthias Lenk <matthias.lenk@amd.com>
  for reporting an out-of-bounds memory access with audio language ids
@@ -2831,6 +2835,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  respective recording did not exist
  for fixing a double deletion of a cTimer in case HandleRemoteModifications() returned
  false
+ for reporting an invalid lock sequence in the epgsearch plugin, which turned out to
+ be an abandoned member of class cSchedulesLock
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3030,6 +3036,7 @@ Frank Neumann <fnu@yavdr.org>
  is currently assigned to
  for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
  in derived classes that don't implement this function
+ for reporting uninitialized variable SdWatchdog in vdr.c
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in

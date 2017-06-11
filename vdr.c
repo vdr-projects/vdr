@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.16 2017/05/29 11:30:27 kls Exp $
+ * $Id: vdr.c 4.18 2017/06/08 16:10:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
   VdrUser = VDR_USER;
 #endif
 #ifdef SDNOTIFY
-  time_t SdWatchdog;
+  time_t SdWatchdog = 0;
   int SdWatchdogTimeout = 0;
 #endif
 
@@ -763,6 +763,7 @@ int main(int argc, char *argv[])
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
   KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
   Folders.Load(AddDirectory(ConfigDirectory, "folders.conf"));
+  CamResponsesLoad(AddDirectory(ConfigDirectory, "camresponses.conf"), true);
 
   if (!*cFont::GetFontFileName(Setup.FontOsd)) {
      const char *msg = "no fonts available - OSD will not show any text!";

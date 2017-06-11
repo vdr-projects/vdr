@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.10 2017/05/22 11:07:04 kls Exp $
+ * $Id: tools.h 4.12 2017/06/11 10:00:49 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,15 +51,18 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
-#ifndef _STL_ALGOBASE_H // in case some plugin needs to use the STL
+// In case some plugin needs to use the STL and gets an error message regarding one
+// of these functions, you can #define DISABLE_TEMPLATES_COLLIDING_WITH_STL before
+// including tools.h.
+#if !defined(__STL_CONFIG_H) // for old versions of the STL
+#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_STL_ALGOBASE_H)
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 #endif
-#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
-#endif
-#ifndef _MOVE_H // in case some plugin needs to use the STL
+#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_MOVE_H)
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
+#endif
 #endif
 
 template<class T> inline T constrain(T v, T l, T h) { return v < l ? l : v > h ? h : v; }
@@ -614,19 +617,19 @@ public:
 // is left:
 
 #define DEF_LIST_LOCK2(Class, Name) \
-class c##Name##Lock { \
+class c##Name##_Lock { \
 private: \
   cStateKey stateKey; \
   const c##Class *list; \
 public: \
-  c##Name##Lock(bool Write = false) \
+  c##Name##_Lock(bool Write = false) \
   { \
     if (Write) \
        list = c##Class::Get##Name##Write(stateKey); \
     else \
        list = c##Class::Get##Name##Read(stateKey); \
   } \
-  ~c##Name##Lock() { if (list) stateKey.Remove(); } \
+  ~c##Name##_Lock() { if (list) stateKey.Remove(); } \
   const c##Class *Name(void) const { return list; } \
   c##Class *Name(void) { return const_cast<c##Class *>(list); } \
   }
@@ -636,13 +639,13 @@ public: \
 // a suitable DEF_LIST_LOCK, and also a pointer to the provided list:
 
 #define USE_LIST_LOCK_READ2(Class, Name) \
-c##Name##Lock Name##Lock(false); \
-const c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+c##Name##_Lock Name##_Lock(false); \
+const c##Class *Name __attribute__((unused)) = Name##_Lock.Name();
 #define USE_LIST_LOCK_READ(Class) USE_LIST_LOCK_READ2(Class, Class)
 
 #define USE_LIST_LOCK_WRITE2(Class, Name) \
-c##Name##Lock Name##Lock(true); \
-c##Class *Name __attribute__((unused)) = Name##Lock.Name();
+c##Name##_Lock Name##_Lock(true); \
+c##Class *Name __attribute__((unused)) = Name##_Lock.Name();
 #define USE_LIST_LOCK_WRITE(Class) USE_LIST_LOCK_WRITE2(Class, Class)
 
 template<class T> class cVector {

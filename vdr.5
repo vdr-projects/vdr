@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.2 2017/04/02 11:41:51 kls Exp $
+.\" $Id: vdr.5 4.3 2017/06/10 11:47:27 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -918,6 +918,45 @@ in this file, other CAMs will be tried just as well. The main purpose of this
 file is to speed up channel switching in systems with more than one CAM.
 
 This file will be read at program startup and saved when the program ends.
+.SS CAM AUTO RESPONSE
+If your CAM keeps popping up annoying messages or you want to make sure VDR
+can record programmes with parental rating without having to enter the PIN
+(in case you can't turn that off in your CAM), you can set up auto responses
+in the file \fIcamresponses.conf\fR.
+
+Each line in this file specifies one rule to apply to texts received from
+the CAM. If the CAM's menu text matches the text in one of these rules,
+the given action is taken and sent to the CAM as an automatic response,
+without any menu appearing on the screen. The first match wins.
+
+The format of these rules is:
+
+nr text action
+
+where
+.TS
+tab (@);
+l l.
+nr       @is the number of the CAM this action applies to (0 = all CAMs)
+text     @is the text in the CAM menu to react on (must be quoted with '"' if it contains blanks, escape '"' with '\\')
+action   @is the action to take if the given text is encountered
+.TE
+
+Possible actions are:
+.TS
+tab (@);
+l l.
+DISCARD  @simply discard the menu (equivalent to pressing 'Back' on the RC)
+CONFIRM  @confirm the menu (equivalent to pressing 'OK' without selecting a particular item)
+SELECT   @select the menu item containing the text (equivalent to positioning the cursor on the item and pressing 'OK')
+<number> @the given number is sent to the CAM as if it were tyed in by the user (provided this is an input field).
+.TE
+
+Note that the text given in a rule must match exactly, including any leading or
+trailing blanks. If in doubt, you can get the exact text from the log file.
+Action keywords are case insensitive.
+
+Everything following (and including) a '#' character is considered to be comment.
 .SS COMMANDLINE OPTIONS
 If started without any options, vdr tries to read any files in the directory
 /etc/vdr/conf.d with names that do not begin with a '.' and that end with '.conf'.

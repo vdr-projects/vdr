@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.16 2017/05/18 09:05:46 kls Exp $
+ * $Id: ci.c 4.17 2017/06/10 10:57:31 kls Exp $
  */
 
 #include "ci.h"
@@ -78,17 +78,18 @@ static char *CopyString(int Length, const uint8_t *Data)
 ///< Copies the string at Data.
 ///< Returns a pointer to a newly allocated string.
 {
-  // Some CAMs send funny characters at the beginning of strings.
-  // Let's just skip them:
-  while (Length > 0 && (*Data == ' ' || *Data == 0x05 || *Data == 0x96 || *Data == 0x97)) {
+  char *s = MALLOC(char, Length + 1);
+  char *p = s;
+  while (Length > 0) {
+        char c = *Data;
+        if (isprint(c)) // some CAMs send funny characters in their strings, let's just skip them
+           *p++ = c;
+        else if (c == 0x8A) // the character 0x8A is used as newline, so let's put a real '\n' in there
+           *p++ = '\n';
         Length--;
         Data++;
         }
-  char *s = MALLOC(char, Length + 1);
-  strncpy(s, (char *)Data, Length);
-  s[Length] = 0;
-  // The character 0x8A is used as newline, so let's put a real '\n' in there:
-  strreplace(s, 0x8A, '\n');
+  *p = 0;
   return s;
 }
 
@@ -288,6 +289,137 @@ void cCaActivationReceiver::Receive(const uchar *Data, int Length)
            }
         }
      }
+}
+
+// --- cCamResponse ----------------------------------------------------------
+
+// CAM Response Actions:
+
+#define CRA_NONE      0
+#define CRA_DISCARD  -1
+#define CRA_CONFIRM  -2
+#define CRA_SELECT   -3
+
+class cCamResponse : public cListObject {
+private:
+  int camNumber;
+  char *text;
+  int action;
+public:
+  cCamResponse(void);
+  ~cCamResponse();
+  bool Parse(const char *s);
+  int Matches(int CamNumber, const char *Text) const;
+  };
+
+cCamResponse::cCamResponse(void)
+{
+  camNumber = -1;
+  text = NULL;
+  action = CRA_NONE;
+}
+
+cCamResponse::~cCamResponse()
+{
+  free(text);
+}
+
+bool cCamResponse::Parse(const char *s)
+{
+  // Number:
+  s = skipspace(s);
+  if (*s == '*') {
+     camNumber = 0; // all CAMs
+     s++;
+     }
+  else {
+     char *e;
+     camNumber = strtol(s, &e, 10);
+     if (e == s || camNumber <= 0)
+        return false;
+     s = e;
+     }
+  // Text:
+  s = skipspace(s);
+  char *t = const_cast<char *>(s); // might have to modify it
+  char *q = NULL; // holds a copy in case of backslashes
+  bool InQuotes = false;
+  while (*t) {
+        if (*t == '"') {
+           if (t == s) { // opening quotes
+              InQuotes = true;
+              s++;
+              }
+           else if (InQuotes) // closing quotes
+              break;
+           }
+        else if (*t == '\\') {
+           if (!q) { // need to make a copy in order to strip backslashes
+              q = strdup(s);
+              t = q + (t - s);
+              s = q;
+              }
+           memmove(t, t + 1, strlen(t));
+           }
+        else if (*t == ' ') {
+           if (!InQuotes)
+              break;
+           }
+        t++;
+        }
+  free(text); // just for safety
+  text = NULL;
+  if (t != s) {
+     text = strndup(s, t - s);
+     s = t + 1;
+     }
+  free(q);
+  if (!text)
+     return false;
+  // Action:
+  s = skipspace(s);
+  if      (strcasecmp(s, "DISCARD") == 0) action = CRA_DISCARD;
+  else if (strcasecmp(s, "CONFIRM") == 0) action = CRA_CONFIRM;
+  else if (strcasecmp(s, "SELECT")  == 0) action = CRA_SELECT;
+  else if (isnumber(s))                   action = atoi(s);
+  else
+     return false;
+  return true;
+}
+
+int cCamResponse::Matches(int CamNumber, const char *Text) const
+{
+  if (!camNumber || camNumber == CamNumber) {
+     if (strcmp(text, Text) == 0)
+        return action;
+     }
+  return CRA_NONE;
+}
+
+// --- cCamResponses  --------------------------------------------------------
+
+class cCamResponses : public cConfig<cCamResponse> {
+public:
+  int GetMatch(int CamNumber, const char *Text) const;
+  };
+
+int cCamResponses::GetMatch(int CamNumber, const char *Text) const
+{
+  for (const cCamResponse *cr = First(); cr; cr = Next(cr)) {
+      int Action = cr->Matches(CamNumber, Text);
+      if (Action != CRA_NONE) {
+         dsyslog("CAM %d: auto response %4d to '%s'\n", CamNumber, Action, Text);
+         return Action;
+         }
+      }
+  return CRA_NONE;
+}
+
+cCamResponses CamResponses;
+
+bool CamResponsesLoad(const char *FileName, bool AllowComments, bool MustExist)
+{
+  return CamResponses.Load(FileName, AllowComments, MustExist);
 }
 
 // --- cTPDU -----------------------------------------------------------------
@@ -1292,15 +1424,41 @@ void cCiMMI::Process(int Length, const uint8_t *Data)
                if (l > 0) menu->titleText = GetText(l, &d);
                if (l > 0) menu->subTitleText = GetText(l, &d);
                if (l > 0) menu->bottomText = GetText(l, &d);
+               int Action = CRA_NONE;
+               int Select = -1;
+               int Item = 0;
                while (l > 0) {
                      char *s = GetText(l, &d);
                      if (s) {
                         if (!menu->AddEntry(s))
                            free(s);
+                        else if (Action == CRA_NONE) {
+                           Action = CamResponses.GetMatch(CamSlot()->SlotNumber(), s);
+                           if (Action == CRA_SELECT)
+                              Select = Item;
+                           }
                         }
                      else
                         break;
+                     Item++;
                      }
+               if (Action != CRA_NONE) {
+                  delete menu;
+                  menu = NULL;
+                  cCondWait::SleepMs(100);
+                  if (Action == CRA_DISCARD) {
+                     SendCloseMMI();
+                     dsyslog("CAM %d: DISCARD", CamSlot()->SlotNumber());
+                     }
+                  else if (Action == CRA_CONFIRM) {
+                     SendMenuAnswer(1);
+                     dsyslog("CAM %d: CONFIRM", CamSlot()->SlotNumber());
+                     }
+                  else if (Action == CRA_SELECT) {
+                     SendMenuAnswer(Select + 1);
+                     dsyslog("CAM %d: SELECT %d", CamSlot()->SlotNumber(), Select + 1);
+                     }
+                  }
                }
             }
             break;
@@ -1319,6 +1477,19 @@ void cCiMMI::Process(int Length, const uint8_t *Data)
                l--;
                // I really wonder why there is no text length field here...
                enquiry->text = CopyString(l, d);
+               int Action = CamResponses.GetMatch(CamSlot()->SlotNumber(), enquiry->text);
+               if (Action > CRA_NONE) {
+                  char s[enquiry->expectedLength * 2];
+                  snprintf(s, sizeof(s), "%d", Action);
+                  if (int(strlen(s)) == enquiry->expectedLength) {
+                     delete enquiry;
+                     enquiry = NULL;
+                     SendAnswer(s);
+                     dsyslog("CAM %d: PIN", CamSlot()->SlotNumber());
+                     }
+                  else
+                     esyslog("CAM %d: ERROR: unexpected PIN length %d, expected %d", CamSlot()->SlotNumber(), int(strlen(s)), enquiry->expectedLength);
+                  }
                }
             }
             break;
@@ -1449,6 +1620,7 @@ void cCiMenu::Abort(void)
 cCiEnquiry::cCiEnquiry(cCiMMI *MMI)
 {
   mmi = MMI;
+  mutex = NULL;
   text = NULL;
   blind = false;
   expectedLength = 0;

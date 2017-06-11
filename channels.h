@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 4.2 2015/08/17 09:39:48 kls Exp $
+ * $Id: channels.h 4.3 2017/06/10 15:06:40 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -123,6 +123,7 @@ private:
   bool groupSep;
   int __EndData__;
   mutable cString nameSource;
+  mutable int nameSourceMode;
   mutable cString shortNameSource;
   cString parameters;
   mutable int modification;

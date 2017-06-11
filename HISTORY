@@ -9102,3 +9102,30 @@ Video Disk Recorder Revision History
 - Fixed the locking sequence when creating a new timer from the Schedules menu.
 - Fixed the locking sequence when switching between 'Now', 'Next' and 'Schedule'
   in the Schedules menu.
+
+2017-06-11: Version 2.3.7
+
+- Fixed false positives when checking the locking sequence, in case of nested locks
+  within the same thread.
+- Fixed uninitialized variable SdWatchdog in vdr.c (reported by Frank Neumann).
+- Fixed the locking sequence when starting an instant recording.
+- Fixed L(ock) and U(nlock) indicators in cStateLockLog.
+- Increased SLL_LENGTH in thread.c to better handle long caller lines, and enclosed
+  logCaller with DEBUG_LOCKCALL to preserve memory in normal operation.
+- Fixed a typo in CAMMENURETYTIMEOUT and added logging CAM enquiries.
+- The new configuration file 'camresponses.conf' can be used to define automatic
+  responses to CAM menus, for instance to avoid annyoing popup messages or entering
+  the parental rating PIN. See vdr.5 for details.
+- The option "Setup/Miscellaneous/Show channel names with source" can now be set to
+  "type" or "full" to show either the type or the full name of the source (thanks to
+  Martin Wache).
+- The "Channels" menu now indicates whether a channel is encrypted ('X') or a radio
+  channel ('R') (thanks to Martin Wache).
+- Changed ##Lock to ##_Lock in the DEF_LIST_LOCK and USE_LIST_LOCK macros defined
+  in tools.h, so that there is no cSchedulesLock any more. The epgsearch plugin still
+  had an abandoned member of class cSchedulesLock, which, as a side effect, caused an
+  invalid lock sequence to be flagged (reported by Johann Friedrichs). In order to
+  have the compiler report such things, these macros have been changed.
+- Introduced the new macro DISABLE_TEMPLATES_COLLIDING_WITH_STL, which can be defined
+  before including tools.h in case some plugin needs to use the STL and gets error
+  messages regarding one of the template functions defined in tools.h.

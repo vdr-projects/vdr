@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.4 2017/06/03 12:43:22 kls Exp $
+ * $Id: thread.c 4.9 2017/06/09 08:27:22 kls Exp $
  */
 
 #include "thread.h"
@@ -557,9 +557,10 @@ cString cBackTrace::GetCaller(int Level, bool Mangled)
 
 #ifdef DEBUG_LOCKSEQ
 #define SLL_SIZE     20 // the number of log entries
-#define SLL_LENGTH  256 // the maximum length of log entries
+#define SLL_LENGTH  512 // the maximum length of log entries
 #define SLL_MAX_LIST  9 // max. number of lists to log
 #define SLL_WRITE_FLAG 0x80000000
+#define SLL_LOCK_FLAG  0x40000000
 
 class cStateLockLog {
 private:
@@ -568,7 +569,10 @@ private:
   cVector<int> flags;
   tThreadId logThreadIds[SLL_SIZE];
   int logFlags[SLL_SIZE];
+  uint8_t logCounter[SLL_SIZE][SLL_MAX_LIST];
+#ifdef DEBUG_LOCKCALL
   char logCaller[SLL_SIZE][SLL_LENGTH];
+#endif
   int logIndex;
   bool dumped;
   void Dump(const char *Name, tThreadId ThreadId);
@@ -581,7 +585,10 @@ cStateLockLog::cStateLockLog(void)
 {
   memset(logThreadIds, 0, sizeof(logThreadIds));
   memset(logFlags, 0, sizeof(logFlags));
+  memset(logCounter, 0, sizeof(logCounter));
+#ifdef DEBUG_LOCKCALL
   memset(logCaller, 0, sizeof(logCaller));
+#endif
   logIndex = 0;
   dumped = false;
 }
@@ -597,24 +604,26 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
          q += sprintf(q, "%5d", tid);
          int Flags = logFlags[logIndex];
          bool Write = Flags & SLL_WRITE_FLAG;
-         Flags &= ~SLL_WRITE_FLAG;
+         bool Lock = Flags & SLL_LOCK_FLAG;
+         Flags &= ~(SLL_WRITE_FLAG | SLL_LOCK_FLAG);
          int Changed = LastFlags ^ Flags;
          LastFlags = Flags;
-         bool Lock = (Flags & Changed) != 0;
          for (int i = 0; i <= SLL_MAX_LIST; i++) {
              char c = '-';
              int b = 1 << i;
              if ((Flags & b) != 0)
                 c = '*';
              if ((Changed & b) != 0)
-                c = Lock ? Write ? 'W' : 'R' : '-';
+                c = Lock ? Write ? 'W' : 'R' : 'U';
              q += sprintf(q, "  %c", c);
              }
          q += sprintf(q, "  %c", Lock ? 'L' : 'U');
+#ifdef DEBUG_LOCKCALL
          if (*logCaller[logIndex]) {
             *q++ = ' ';
             strn0cpy(q, *cBackTrace::Demangle(logCaller[logIndex]), sizeof(msg) - (q - msg));
             }
+#endif
          dsyslog("%s", msg);
          }
       if (++logIndex >= SLL_SIZE)
@@ -630,9 +639,9 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
 void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
 {
   if (!dumped && Name) {
-     int n = *Name - '0';
-     if (1 <= n && n <= SLL_MAX_LIST) {
-        int b = 1 << (n - 1);
+     int n = *Name - '0' - 1;
+     if (0 <= n && n < SLL_MAX_LIST) {
+        int b = 1 << n;
         cMutexLock MutexLock(&mutex);
         tThreadId ThreadId = cThread::ThreadId();
         int Index = threadIds.IndexOf(ThreadId);
@@ -651,14 +660,15 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
               ;
            else if ((flags[Index] & b) == 0) // thread already holds "bigger" locks, so it may only re-lock one that it already has!
               DoDump = true;
+           logCounter[Index][n]++;
            flags[Index] |= b;
            }
-        else
+        else if (--logCounter[Index][n] == 0)
            flags[Index] &= ~b;
         logThreadIds[logIndex] = ThreadId;
-        logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0);
+        logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0) | (Lock ? SLL_LOCK_FLAG : 0);
 #ifdef DEBUG_LOCKCALL
-        strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 5 : 3, true), SLL_LENGTH);
+        strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 3 : 5, true), SLL_LENGTH);
 #endif
         if (++logIndex >= SLL_SIZE)
            logIndex = 0;

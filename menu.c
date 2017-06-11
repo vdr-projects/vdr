@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.32 2017/06/04 09:30:56 kls Exp $
+ * $Id: menu.c 4.37 2017/06/10 19:19:51 kls Exp $
  */
 
 #include "menu.h"
@@ -43,7 +43,7 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 #define MAXWAITFORCAMMENU  10 // seconds to wait for the CAM menu to open
-#define CAMMENURETYTIMEOUT  3 // seconds after which opening the CAM menu is retried
+#define CAMMENURETRYTIMEOUT 3 // seconds after which opening the CAM menu is retried
 #define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
@@ -327,13 +327,15 @@ void cMenuChannelItem::Set(void)
 {
   cString buffer;
   if (!channel->GroupSep()) {
+     const char *X = *channel->Caids() >= CA_ENCRYPTED_MIN ? "X" : "";
+     const char *R = !channel->Vpid() && (*channel->Apids() || *channel->Dpids()) ? "R" : "";
      if (sortMode == csmProvider)
-        buffer = cString::sprintf("%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
+        buffer = cString::sprintf("%d\t%s%s\t%s - %s", channel->Number(), X, R, channel->Provider(), channel->Name());
      else
-        buffer = cString::sprintf("%d\t%s", channel->Number(), channel->Name());
+        buffer = cString::sprintf("%d\t%s%s\t%s", channel->Number(), X, R, channel->Name());
      }
   else
-     buffer = cString::sprintf("---\t%s ----------------------------------------------------------------", channel->Name());
+     buffer = cString::sprintf("\t\t%s", channel->Name());
   SetText(buffer);
 }
 
@@ -369,7 +371,7 @@ public:
   };
 
 cMenuChannels::cMenuChannels(void)
-:cOsdMenu(tr("Channels"), CHNUMWIDTH)
+:cOsdMenu(tr("Channels"), CHNUMWIDTH, 3)
 {
   SetMenuCategory(mcChannel);
   number = 0;
@@ -2294,8 +2296,10 @@ void cMenuCam::Set(void)
      free(input);
      input = MALLOC(char, Length + 1);
      *input = 0;
+     dsyslog("CAM %d: Enquiry ------------------", camSlot->SlotNumber());
      GenerateTitle();
      Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
+     dsyslog("CAM %d: '%s'", camSlot->SlotNumber(), ciEnquiry->Text());
      Add(new cOsdItem("", osUnknown, false));
      Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
      }
@@ -3836,7 +3840,7 @@ eOSState cMenuSetupCAM::Menu(void)
         while (time(NULL) - t0 <= MAXWAITFORCAMMENU) {
               if (item->CamSlot()->HasUserIO())
                  break;
-              if (time(NULL) - t1 >= CAMMENURETYTIMEOUT) {
+              if (time(NULL) - t1 >= CAMMENURETRYTIMEOUT) {
                  dsyslog("CAM %d: retrying to enter CAM menu...", item->CamSlot()->SlotNumber());
                  item->CamSlot()->EnterMenu();
                  t1 = time(NULL);
@@ -4008,6 +4012,7 @@ void cMenuSetupReplay::Store(void)
 
 class cMenuSetupMisc : public cMenuSetupBase {
 private:
+  const char *showChannelNamesWithSourceTexts[3];
   cStringList svdrpServerNames;
   void Set(void);
 public:
@@ -4018,6 +4023,9 @@ public:
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
   SetMenuCategory(mcSetupMisc);
+  showChannelNamesWithSourceTexts[0] = tr("off");
+  showChannelNamesWithSourceTexts[1] = tr("type");
+  showChannelNamesWithSourceTexts[2] = tr("full");
   SetSection(tr("Miscellaneous"));
   Set();
 }
@@ -4047,7 +4055,7 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume steps"),               &data.VolumeSteps, 5, 255));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume linearize"),           &data.VolumeLinearize, -20, 20));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
-  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource));
+  Add(new cMenuEditStraItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource, 3, showChannelNamesWithSourceTexts));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
   SetCurrent(Get(current));
   Display();
@@ -5061,6 +5069,7 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, bool Pause)
 {
+  const char *LastReplayed = cReplayControl::LastReplayed(); // must do this before locking schedules!
   // Whatever happens here, the timers will be modified in some way...
   Timers->SetModified();
   // We're going to work with an event here, so we need to prevent
@@ -5098,7 +5107,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         }
      else {
         Timers->Del(timer);
-        if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+        if (!LastReplayed) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         }
      timer = NULL;
@@ -5114,7 +5123,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
      if (device->AttachReceiver(recorder)) {
         Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
-        if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+        if (!Timer && !LastReplayed) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;

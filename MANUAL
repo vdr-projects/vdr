@@ -1143,10 +1143,11 @@ Version 2.2
                          wrap around the beginning or end of the channel list if
                          this parameter is set to 'yes'.
 
-  Show channel names with source = no
+  Show channel names with source = off
                          If this option is turned on, channel names will be displayed
-                         with the source appended to them, as in "ZDF (S)", where
-                         'S' stands for "Satellite".
+                         with the source appended to them, as in "ZDF (S)" (if the
+                         option is set to "type), or "ZDF (S19.2E)" (if it is set to
+                         "full"), where 'S' stands for "Satellite".
 
   Emergency exit = yes   If, for some reason, a recording fails because the video
                          data stream is broken, or the CAM doesn't decrypt etc.,
