@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.11 2017/06/11 08:52:06 kls Exp $
+ * $Id: tools.h 4.12 2017/06/11 10:00:49 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,15 +51,18 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
-#ifndef _STL_ALGOBASE_H // in case some plugin needs to use the STL
+// In case some plugin needs to use the STL and gets an error message regarding one
+// of these functions, you can #define DISABLE_TEMPLATES_COLLIDING_WITH_STL before
+// including tools.h.
+#if !defined(__STL_CONFIG_H) // for old versions of the STL
+#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_STL_ALGOBASE_H)
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 #endif
-#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
-#endif
-#ifndef _MOVE_H // in case some plugin needs to use the STL
+#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_MOVE_H)
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
+#endif
 #endif
 
 template<class T> inline T constrain(T v, T l, T h) { return v < l ? l : v > h ? h : v; }
