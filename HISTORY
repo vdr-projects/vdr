@@ -9129,3 +9129,7 @@ Video Disk Recorder Revision History
 - Introduced the new macro DISABLE_TEMPLATES_COLLIDING_WITH_STL, which can be defined
   before including tools.h in case some plugin needs to use the STL and gets error
   messages regarding one of the template functions defined in tools.h.
+
+2017-06-12: Version 2.3.8
+
+- Updated links in the INSTALL file (thanks to Chris Mayo).

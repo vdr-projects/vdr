@@ -104,13 +104,13 @@ hardware in your system, for instance:
 Plugin:           Device:
 
 dvbsddevice       Full-Featured SD DVB cards (Fujitsu-Siemens Design)
-                  (comes with the VDR source)
+                  ftp://ftp.tvdr.de/vdr/Plugins
 dvbhddevice       Full-featured HD DVB cards (Technotrend TT S2-6400)
                   https://bitbucket.org/powARman/dvbhddevice
 rpihddevice       Raspberry Pi
-                  http://projects.vdr-developer.org/git/vdr-plugin-rpihddevice.git
+                  https://projects.vdr-developer.org/git/vdr-plugin-rpihddevice.git
 
-See http://linuxtv.org/vdrwiki/index.php/Output_devices for more.
+See https://linuxtv.org/vdrwiki/index.php/Output_devices for more.
 
 Standard compliance
 -------------------
