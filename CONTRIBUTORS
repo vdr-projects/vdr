@@ -3503,3 +3503,7 @@ Sergey Chernyavskiy <glenvt18@gmail.com>
 
 Frank Richter <kulpstur@t-online.de>
  for adding 'S3W ABS-3A' to sources.conf
+
+Daniel Scheller <d.scheller@gmx.net>
+ for reporting a problem with detecting whether a CAM replies to queries, which didn't
+ work on some systems since the implementation of RI_HOST_CONTROL

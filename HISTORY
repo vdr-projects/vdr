@@ -9130,6 +9130,8 @@ Video Disk Recorder Revision History
   before including tools.h in case some plugin needs to use the STL and gets error
   messages regarding one of the template functions defined in tools.h.
 
-2017-06-12: Version 2.3.8
+2017-06-19: Version 2.3.8
 
 - Updated links in the INSTALL file (thanks to Chris Mayo).
+- Fixed detecting whether a CAM replies to queries, which didn't work on some systems
+  since the implementation of RI_HOST_CONTROL (reported by Daniel Scheller).
