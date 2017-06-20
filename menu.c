@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.37 2017/06/10 19:19:51 kls Exp $
+ * $Id: menu.c 4.38 2017/06/20 15:02:39 kls Exp $
  */
 
 #include "menu.h"
@@ -1652,30 +1652,30 @@ eOSState cMenuWhatsOn::Switch(void)
 eOSState cMenuWhatsOn::Record(void)
 {
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
-       LOCK_TIMERS_WRITE;
-       LOCK_CHANNELS_READ;
-       LOCK_SCHEDULES_READ;
-       Timers->SetExplicitModify();
-       if (item->timerMatch == tmFull) {
-          if (cTimer *Timer = Timers->GetMatch(item->event))
-             return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       cTimer *Timer = new cTimer(item->event);
-       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
-          Timer->SetRemote(Setup.SVDRPDefaultHost);
-       if (cTimer *t = Timers->GetTimer(Timer)) {
-          delete Timer;
-          Timer = t;
-          return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       if (Timer->Matches(0, false, NEWTIMERLIMIT))
-          return AddSubMenu(new cMenuEditTimer(Timer, true));
-       Timers->Add(Timer);
-       Timers->SetModified();
-       if (!HandleRemoteModifications(Timer)) {
-          // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
-          Timers->Del(Timer);
-          }
+     LOCK_TIMERS_WRITE;
+     LOCK_CHANNELS_READ;
+     LOCK_SCHEDULES_READ;
+     Timers->SetExplicitModify();
+     if (item->timerMatch == tmFull) {
+        if (cTimer *Timer = Timers->GetMatch(item->event))
+           return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     cTimer *Timer = new cTimer(item->event);
+     if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
+        Timer->SetRemote(Setup.SVDRPDefaultHost);
+     if (cTimer *t = Timers->GetTimer(Timer)) {
+        delete Timer;
+        Timer = t;
+        return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+        return AddSubMenu(new cMenuEditTimer(Timer, true));
+     Timers->Add(Timer);
+     Timers->SetModified();
+     if (!HandleRemoteModifications(Timer)) {
+        // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
+        Timers->Del(Timer);
+        }
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
