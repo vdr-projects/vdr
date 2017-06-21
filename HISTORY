@@ -9135,3 +9135,6 @@ Video Disk Recorder Revision History
 - Updated links in the INSTALL file (thanks to Chris Mayo).
 - Fixed detecting whether a CAM replies to queries, which didn't work on some systems
   since the implementation of RI_HOST_CONTROL (reported by Daniel Scheller).
+- Added some missing locks when calling functions from cStatus or cSkin*, and added
+  some text to status.h and skins.h, explaining the locking situation when such
+  functions are called.

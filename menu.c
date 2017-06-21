@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.38 2017/06/20 15:02:39 kls Exp $
+ * $Id: menu.c 4.39 2017/06/21 09:19:59 kls Exp $
  */
 
 #include "menu.h"
@@ -1714,7 +1714,10 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                         for (cOsdItem *item = First(); item; item = Next(item)) {
                             if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
                                SetCurrent(item);
-                               Display();
+                               {
+                                 LOCK_SCHEDULES_READ;
+                                 Display();
+                               }
                                LOCK_CHANNELS_READ;
                                SetHelpKeys(Channels);
                                break;
@@ -1733,8 +1736,10 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        }
      }
   else if (!HasSubMenu()) {
-     if (HadSubMenu && Update())
+     if (HadSubMenu && Update()) {
+        LOCK_SCHEDULES_READ;
         Display();
+        }
      if (Key != kNone) {
         LOCK_CHANNELS_READ;
         SetHelpKeys(Channels);
@@ -1953,32 +1958,30 @@ eOSState cMenuSchedule::Number(void)
 eOSState cMenuSchedule::Record(void)
 {
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
-     {
-       LOCK_TIMERS_WRITE;
-       LOCK_CHANNELS_READ;
-       LOCK_SCHEDULES_READ;
-       Timers->SetExplicitModify();
-       if (item->timerMatch == tmFull) {
-          if (cTimer *Timer = Timers->GetMatch(item->event))
-             return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       cTimer *Timer = new cTimer(item->event);
-       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
-          Timer->SetRemote(Setup.SVDRPDefaultHost);
-       if (cTimer *t = Timers->GetTimer(Timer)) {
-          delete Timer;
-          Timer = t;
-          return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       if (Timer->Matches(0, false, NEWTIMERLIMIT))
-          return AddSubMenu(new cMenuEditTimer(Timer, true));
-       Timers->Add(Timer);
-       Timers->SetModified();
-       if (!HandleRemoteModifications(Timer)) {
-          // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
-          Timers->Del(Timer);
-          }
-     }
+     LOCK_TIMERS_WRITE;
+     LOCK_CHANNELS_READ;
+     LOCK_SCHEDULES_READ;
+     Timers->SetExplicitModify();
+     if (item->timerMatch == tmFull) {
+        if (cTimer *Timer = Timers->GetMatch(item->event))
+           return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     cTimer *Timer = new cTimer(item->event);
+     if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
+        Timer->SetRemote(Setup.SVDRPDefaultHost);
+     if (cTimer *t = Timers->GetTimer(Timer)) {
+        delete Timer;
+        Timer = t;
+        return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+        return AddSubMenu(new cMenuEditTimer(Timer, true));
+     Timers->Add(Timer);
+     Timers->SetModified();
+     if (!HandleRemoteModifications(Timer)) {
+        // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
+        Timers->Del(Timer);
+        }
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
@@ -2077,8 +2080,10 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            Set(Timers, Channels, Channel, true);
            }
         }
-     else if (HadSubMenu && Update())
+     else if (HadSubMenu && Update()) {
+        LOCK_SCHEDULES_READ;
         Display();
+        }
      if (Key != kNone)
         SetHelpKeys();
      }
@@ -3189,8 +3194,10 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
         return state; // closes all recording menus except for the top one
      Set(); // this is the top level menu, so we refresh it...
      Open(true); // ...and open any necessary submenus to show the new name
-     if (!HasSubMenu())
+     if (!HasSubMenu()) {
+        LOCK_RECORDINGS_READ;
         Display();
+        }
      path = NULL;
      fileName = NULL;
      }
