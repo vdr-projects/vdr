@@ -9139,3 +9139,4 @@ Video Disk Recorder Revision History
   some text to status.h and skins.h, explaining the locking situation when such
   functions are called.
 - Fixed a possible crash in cStateLockLog.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
