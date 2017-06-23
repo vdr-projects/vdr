@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.4 2017/04/20 08:46:42 kls Exp $
+ * $Id: skinlcars.c 4.5 2017/06/23 15:52:03 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1551,7 +1551,7 @@ void cSkinLCARSDisplayMenu::SetTitle(const char *Title)
 {
   if (MenuCategory() != mcMain) {
      const cFont *font = cFont::GetFont(fontOsd);
-     int w = font->Width(Title);
+     int w = min(font->Width(Title), xa07 - xa06 - Gap);
      osd->DrawRectangle(xa06, yt00, xa07 - w - Gap - 1, yt01 - 1, frameColor);
      osd->DrawText(xa07 - w - Gap, yt00, Title, Theme.Color(clrMenuTitle), Theme.Color(clrBackground), font, w + Gap, yt01 - yt00, taRight);
      }

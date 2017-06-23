@@ -9142,3 +9142,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Now skipping a leading '/' in AddDirectory(), to avoid double slashes (reported by
   Chris Mayo).
+- Fixed drawing very long menu titles in the LCARS skin (reported by Matthias Senzel).
