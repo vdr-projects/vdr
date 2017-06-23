@@ -3103,6 +3103,7 @@ Chris Mayo <aklhfex@gmail.com>
  for reporting a problem with detecting frames on radio channels
  for fixing the link to "svdrpsend (1)" in the vdr.1 man page
  for updating links in the INSTALL file
+ for reporting double slashes in file names processed with AddDirectory()
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs

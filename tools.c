@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.6 2017/05/09 08:32:54 kls Exp $
+ * $Id: tools.c 4.7 2017/06/23 09:39:45 kls Exp $
  */
 
 #include "tools.h"
@@ -371,6 +371,8 @@ bool StrInArray(const char *a[], const char *s)
 
 cString AddDirectory(const char *DirName, const char *FileName)
 {
+  if (*FileName == '/')
+     FileName++;
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
 }
 
