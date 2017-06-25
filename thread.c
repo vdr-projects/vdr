@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.10 2017/06/22 15:10:42 kls Exp $
+ * $Id: thread.c 4.11 2017/06/25 12:08:16 kls Exp $
  */
 
 #include "thread.h"
@@ -634,6 +634,7 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
   dsyslog("full backtrace:");
   cBackTrace::BackTrace(NULL, 2);
   dsyslog("--- end invalid lock sequence report");
+  dsyslog("--- THERE WILL BE NO FURTHER REPORTS UNTIL VDR IS RESTARTED!");
   fprintf(stderr, "invalid lock sequence at %s\n", *DayDateTime(time(NULL)));
 }
 

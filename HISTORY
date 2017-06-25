@@ -9154,3 +9154,5 @@ Video Disk Recorder Revision History
   so plugin authors should switch to the new one.
 - Now using readdir() instead of readdir_r(), if GLIBC version 2.24 or newer is used
   (suggested by Frank Neumann).
+- Added a note to the log, indicating that no further invalid lock sequences will be
+  reported until VDR is restarted.
