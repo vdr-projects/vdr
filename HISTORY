@@ -9156,3 +9156,7 @@ Video Disk Recorder Revision History
   (suggested by Frank Neumann).
 - Added a note to the log, indicating that no further invalid lock sequences will be
   reported until VDR is restarted.
+- Whenever a change is made to the recordings in the video directory, the SVDRP command
+  UPDR is now sent to all peer VDRs, so that they will update their recordings list.
+  This is especially useful if one VDR mounts the video directory of an other one into
+  a subdirectory.

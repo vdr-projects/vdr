@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.20 2017/05/31 14:02:17 kls Exp $
+ * $Id: svdrp.c 4.21 2017/06/25 12:31:13 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2599,4 +2599,16 @@ bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *
   if (SVDRPClientHandler)
      return SVDRPClientHandler->Execute(ServerName, Command, Response);
   return false;
+}
+
+void BroadcastSVDRPCommand(const char *Command)
+{
+  cMutexLock MutexLock(&SVDRPHandlerMutex);
+  cStringList ServerNames;
+  if (SVDRPClientHandler) {
+     if (SVDRPClientHandler->GetServerNames(&ServerNames)) {
+        for (int i = 0; i < ServerNames.Size(); i++)
+            ExecSVDRPCommand(ServerNames[i], Command);
+        }
+     }
 }
