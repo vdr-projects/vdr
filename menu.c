@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.39 2017/06/21 09:19:59 kls Exp $
+ * $Id: menu.c 4.40 2017/06/25 10:02:09 kls Exp $
  */
 
 #include "menu.h"
@@ -1477,6 +1477,7 @@ public:
   const cChannel *channel;
   bool withDate;
   eTimerMatch timerMatch;
+  bool timerActive;
   cMenuScheduleItem(const cTimers *Timers, const cEvent *Event, const cChannel *Channel = NULL, bool WithDate = false);
   static void SetSortMode(eScheduleSortMode SortMode) { sortMode = SortMode; }
   static void IncSortMode(void) { sortMode = eScheduleSortMode((sortMode == ssmAllAll) ? ssmAllThis : sortMode + 1); }
@@ -1494,6 +1495,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cTimers *Timers, const cEvent *Event,
   channel = Channel;
   withDate = WithDate;
   timerMatch = tmNone;
+  timerActive = false;
   Update(Timers, true);
 }
 
@@ -1508,15 +1510,17 @@ int cMenuScheduleItem::Compare(const cListObject &ListObject) const
   return r;
 }
 
-static const char *TimerMatchChars = " tT";
+static const char *TimerMatchChars = " tT iI";
 
 bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 {
   eTimerMatch OldTimerMatch = timerMatch;
-  Timers->GetMatch(event, &timerMatch);
-  if (Force || timerMatch != OldTimerMatch) {
+  bool OldTimerActive = timerActive;
+  const cTimer *Timer = Timers->GetMatch(event, &timerMatch);
+  timerActive = Timer && Timer->HasFlags(tfActive);
+  if (Force || timerMatch != OldTimerMatch || timerActive != OldTimerActive) {
      cString buffer;
-     char t = TimerMatchChars[timerMatch];
+     char t = TimerMatchChars[timerMatch + (timerActive ? 0 : 3)];
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
      char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      const char *csn = channel ? channel->ShortName(true) : NULL;
@@ -1535,7 +1539,7 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 
 void cMenuScheduleItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
-  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch))
+  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch, timerActive))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
 

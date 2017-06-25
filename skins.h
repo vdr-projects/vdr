@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 4.3 2017/06/23 09:08:40 kls Exp $
+ * $Id: skins.h 4.4 2017/06/25 10:02:09 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -233,16 +233,24 @@ public:
        ///< this function will be first called for the old current item
        ///< with Current set to false, and then for the new current item
        ///< with Current set to true.
-  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch) { return false; }
+  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch, bool TimerActive) { return false; }
        ///< Sets the item at the given Index to Event. See SetItem() for more information.
        ///< If a derived skin class implements this function, it can display an Event item
        ///< in a more elaborate way than just a simple line of text.
        ///< If Channel is not NULL, the channel's name and/or number shall be displayed.
        ///< If WithDate is true, the date of the Event shall be displayed (in addition to the time).
        ///< TimerMatch tells how much of this event will be recorded by a timer.
+       ///< TimerActive tells whether the timer that will record this event is active.
        ///< If the skin displays the Event item in its own way, it shall return true.
        ///< The default implementation does nothing and returns false, which results in
        ///< a call to SetItem() with a proper text.
+#define DEPRECATED_SKIN_SETITEMEVENT
+#ifdef DEPRECATED_SKIN_SETITEMEVENT
+  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch) { return SetItemEvent(Event, Index, Current, Selectable, Channel, WithDate, TimerMatch, true); }
+       ///< This function is here for comaptibility with older plugins and may be removed
+       ///< in a future version. Use the above version of SetItemEvent() with the TimerActive
+       ///< parameter instead.
+#endif
   virtual bool SetItemTimer(const cTimer *Timer, int Index, bool Current, bool Selectable) { return false; }
        ///< Sets the item at the given Index to Timer. See SetItem() for more information.
        ///< If a derived skin class implements this function, it can display a Timer item

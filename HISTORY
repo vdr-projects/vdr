@@ -9130,7 +9130,7 @@ Video Disk Recorder Revision History
   before including tools.h in case some plugin needs to use the STL and gets error
   messages regarding one of the template functions defined in tools.h.
 
-2017-06-23: Version 2.3.8
+2017-06-25: Version 2.3.8
 
 - Updated links in the INSTALL file (thanks to Chris Mayo).
 - Fixed detecting whether a CAM replies to queries, which didn't work on some systems
@@ -9143,3 +9143,12 @@ Video Disk Recorder Revision History
 - Now skipping a leading '/' in AddDirectory(), to avoid double slashes (reported by
   Chris Mayo).
 - Fixed drawing very long menu titles in the LCARS skin (reported by Matthias Senzel).
+- Timers are now linked to EPG events even if they are inactive. By default Events that
+  are linked to inactive timers are marked with 'I' and 'i', depending on whether the
+  timer would record the entire Event or only part of it.
+  The function cSkinDisplayMenu::SetItemEvent() now has an additional parameter named
+  TimerActive, which indicates whether the timer that would record this event (if any)
+  is active. A plugin may react on this when displaying a menu line for an event.
+  The old version of cSkinDisplayMenu::SetItemEvent() (without the TimerActive parameter)
+  is still there for backwards compatibility. It may be removed in a future version,
+  so plugin authors should switch to the new one.
