@@ -9152,3 +9152,5 @@ Video Disk Recorder Revision History
   The old version of cSkinDisplayMenu::SetItemEvent() (without the TimerActive parameter)
   is still there for backwards compatibility. It may be removed in a future version,
   so plugin authors should switch to the new one.
+- Now using readdir() instead of readdir_r(), if GLIBC version 2.24 or newer is used
+  (suggested by Frank Neumann).

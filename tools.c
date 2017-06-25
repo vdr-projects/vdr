@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.7 2017/06/23 09:39:45 kls Exp $
+ * $Id: tools.c 4.8 2017/06/25 11:45:39 kls Exp $
  */
 
 #include "tools.h"
@@ -1528,7 +1528,11 @@ cReadDir::~cReadDir()
 struct dirent *cReadDir::Next(void)
 {
   if (directory) {
+#if !__GLIBC_PREREQ(2, 24) // readdir_r() is deprecated as of GLIBC 2.24
      while (readdir_r(directory, &u.d, &result) == 0 && result) {
+#else
+     while ((result = readdir(directory)) != NULL) {
+#endif
            if (strcmp(result->d_name, ".") && strcmp(result->d_name, ".."))
               return result;
            }

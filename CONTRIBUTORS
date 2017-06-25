@@ -3037,6 +3037,8 @@ Frank Neumann <fnu@yavdr.org>
  for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
  in derived classes that don't implement this function
  for reporting uninitialized variable SdWatchdog in vdr.c
+ for suggesting to use readdir() instead of readdir_r(), if GLIBC version 2.24 or
+ newer is used
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
