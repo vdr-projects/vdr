@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-10 17:19+0200\n"
+"POT-Creation-Date: 2017-06-30 11:46+0200\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1301,6 +1301,12 @@ msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "رقم المواصلة"
+
+msgid "any hosts"
+msgstr ""
+
+msgid "only default host"
+msgstr ""
 
 msgid "type"
 msgstr ""

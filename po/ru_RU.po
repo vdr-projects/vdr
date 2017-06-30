@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-10 17:19+0200\n"
+"POT-Creation-Date: 2017-06-30 11:46+0200\n"
 "PO-Revision-Date: 2016-12-27 17:13+0100\n"
 "Last-Translator: Pridvorov Andrey <ua0lnj@bk.ru>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -1298,6 +1298,12 @@ msgstr "Пропуск интервала Зелёный/Жёлтый в пов�
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID воспроизведения"
+
+msgid "any hosts"
+msgstr ""
+
+msgid "only default host"
+msgstr ""
 
 msgid "type"
 msgstr ""

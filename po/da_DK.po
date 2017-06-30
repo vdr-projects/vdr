@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-10 17:19+0200\n"
+"POT-Creation-Date: 2017-06-30 11:46+0200\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -1297,6 +1297,12 @@ msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Genoptagelses ID"
+
+msgid "any hosts"
+msgstr ""
+
+msgid "only default host"
+msgstr ""
 
 msgid "type"
 msgstr ""

@@ -9130,7 +9130,7 @@ Video Disk Recorder Revision History
   before including tools.h in case some plugin needs to use the STL and gets error
   messages regarding one of the template functions defined in tools.h.
 
-2017-06-25: Version 2.3.8
+2017-06-30: Version 2.3.8
 
 - Updated links in the INSTALL file (thanks to Chris Mayo).
 - Fixed detecting whether a CAM replies to queries, which didn't work on some systems
@@ -9160,3 +9160,4 @@ Video Disk Recorder Revision History
   UPDR is now sent to all peer VDRs, so that they will update their recordings list.
   This is especially useful if one VDR mounts the video directory of an other one into
   a subdirectory.
+- SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).

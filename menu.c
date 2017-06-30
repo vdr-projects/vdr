@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.40 2017/06/25 10:02:09 kls Exp $
+ * $Id: menu.c 4.41 2017/06/30 09:49:39 kls Exp $
  */
 
 #include "menu.h"
@@ -4023,6 +4023,7 @@ void cMenuSetupReplay::Store(void)
 
 class cMenuSetupMisc : public cMenuSetupBase {
 private:
+  const char *svdrpPeeringModeTexts[3];
   const char *showChannelNamesWithSourceTexts[3];
   cStringList svdrpServerNames;
   void Set(void);
@@ -4034,6 +4035,9 @@ public:
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
   SetMenuCategory(mcSetupMisc);
+  svdrpPeeringModeTexts[0] = tr("off");
+  svdrpPeeringModeTexts[1] = tr("any hosts");
+  svdrpPeeringModeTexts[2] = tr("only default host");
   showChannelNamesWithSourceTexts[0] = tr("off");
   showChannelNamesWithSourceTexts[1] = tr("type");
   showChannelNamesWithSourceTexts[2] = tr("full");
@@ -4048,7 +4052,7 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
-  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering));
+  Add(new cMenuEditStraItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering, 3, svdrpPeeringModeTexts));
   if (data.SVDRPPeering) {
      Add(new cMenuEditStrItem( tr("Setup.Miscellaneous$SVDRP host name"), data.SVDRPHostName, sizeof(data.SVDRPHostName)));
      if (GetSVDRPServerNames(&svdrpServerNames)) {

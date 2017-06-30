@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-10 17:19+0200\n"
+"POT-Creation-Date: 2017-06-30 11:46+0200\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1302,6 +1302,12 @@ msgstr "Tid för hopp med Grön/Gul knapp vid återuppspelning (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Återupptagnings-ID"
+
+msgid "any hosts"
+msgstr ""
+
+msgid "only default host"
+msgstr ""
 
 msgid "type"
 msgstr ""

@@ -4,13 +4,19 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.6 2017/06/25 12:27:57 kls Exp $
+ * $Id: svdrp.h 4.7 2017/06/30 09:49:39 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
 #include "tools.h"
+
+enum eSvdrpPeerModes {
+  spmOff  = 0,
+  spmAny  = 1,
+  spmOnly = 2,
+  };
 
 enum eSvdrpFetchFlags {
   sffNone   = 0b0000,

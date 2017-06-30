@@ -1085,8 +1085,16 @@ Version 2.2
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
 
-  SVDRP peering = no     Activates automatic connections between VDRs in the same
-                         network.
+  SVDRP peering = off    Activates automatic connections between VDRs in the same
+                         network. If set to "any hosts" this VDR will establish
+                         connections with any available hosts. If set to "only
+                         default host" this VDR will only connect to the VDR with
+                         the name defined in "SVDRP default host". If no default
+                         host has been defined, the behavior is the same as with
+                         "any hosts". To switch from "off" to "only default host",
+                         you may need to select "any hosts" first and confirm the
+                         dialog by pressing "Ok" in order to be able to select a
+                         default host.
 
   SVDRP host name        The name of this VDR, which is used when connecting VDRs
                          via SVDRP. By default, the machine's host name is used.
