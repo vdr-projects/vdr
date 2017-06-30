@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 4.1 2015/08/02 10:34:44 kls Exp $
+ * $Id: status.h 4.3 2017/06/23 09:08:24 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -14,6 +14,19 @@
 #include "device.h"
 #include "player.h"
 #include "tools.h"
+
+// Several member functions of the following classes are called with a pointer to
+// an object from a global list (cTimer, cChannel, cRecording or cEvent). In these
+// cases the core VDR code holds a lock on the respective list. While in general a
+// plugin should only work with the objects and data that is explicitly given to it
+// in the function call, the called function may itself set a read lock (not a write
+// lock!) on this list, because read locks can be nested. It may also set read locks
+// (not write locks!) on higher order lists.
+// For instance, a function that is called with a cChannel may lock cRecordings and/or
+// cSchedules (which contains cEvent objects), but not cTimers. If a plugin needs to
+// set locks of its own (on mutexes defined inside the plugin code), it shall do so
+// after setting any locks on VDR's global lists, and it shall always set these
+// locks in the same sequence, to avoid deadlocks.
 
 enum eTimerChange { tcMod, tcAdd, tcDel }; // tcMod is obsolete and no longer used!
 

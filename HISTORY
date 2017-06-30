@@ -9129,3 +9129,35 @@ Video Disk Recorder Revision History
 - Introduced the new macro DISABLE_TEMPLATES_COLLIDING_WITH_STL, which can be defined
   before including tools.h in case some plugin needs to use the STL and gets error
   messages regarding one of the template functions defined in tools.h.
+
+2017-06-30: Version 2.3.8
+
+- Updated links in the INSTALL file (thanks to Chris Mayo).
+- Fixed detecting whether a CAM replies to queries, which didn't work on some systems
+  since the implementation of RI_HOST_CONTROL (reported by Daniel Scheller).
+- Added some missing locks when calling functions from cStatus or cSkin*, and added
+  some text to status.h and skins.h, explaining the locking situation when such
+  functions are called.
+- Fixed a possible crash in cStateLockLog.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Now skipping a leading '/' in AddDirectory(), to avoid double slashes (reported by
+  Chris Mayo).
+- Fixed drawing very long menu titles in the LCARS skin (reported by Matthias Senzel).
+- Timers are now linked to EPG events even if they are inactive. By default Events that
+  are linked to inactive timers are marked with 'I' and 'i', depending on whether the
+  timer would record the entire Event or only part of it.
+  The function cSkinDisplayMenu::SetItemEvent() now has an additional parameter named
+  TimerActive, which indicates whether the timer that would record this event (if any)
+  is active. A plugin may react on this when displaying a menu line for an event.
+  The old version of cSkinDisplayMenu::SetItemEvent() (without the TimerActive parameter)
+  is still there for backwards compatibility. It may be removed in a future version,
+  so plugin authors should switch to the new one.
+- Now using readdir() instead of readdir_r(), if GLIBC version 2.24 or newer is used
+  (suggested by Frank Neumann).
+- Added a note to the log, indicating that no further invalid lock sequences will be
+  reported until VDR is restarted.
+- Whenever a change is made to the recordings in the video directory, the SVDRP command
+  UPDR is now sent to all peer VDRs, so that they will update their recordings list.
+  This is especially useful if one VDR mounts the video directory of an other one into
+  a subdirectory.
+- SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).

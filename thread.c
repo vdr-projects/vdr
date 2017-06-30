@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.9 2017/06/09 08:27:22 kls Exp $
+ * $Id: thread.c 4.11 2017/06/25 12:08:16 kls Exp $
  */
 
 #include "thread.h"
@@ -558,6 +558,7 @@ cString cBackTrace::GetCaller(int Level, bool Mangled)
 #ifdef DEBUG_LOCKSEQ
 #define SLL_SIZE     20 // the number of log entries
 #define SLL_LENGTH  512 // the maximum length of log entries
+#define SLL_THREADS  20 // the maximum number of threads holding locks at the same time (typically well below 10)
 #define SLL_MAX_LIST  9 // max. number of lists to log
 #define SLL_WRITE_FLAG 0x80000000
 #define SLL_LOCK_FLAG  0x40000000
@@ -569,7 +570,7 @@ private:
   cVector<int> flags;
   tThreadId logThreadIds[SLL_SIZE];
   int logFlags[SLL_SIZE];
-  uint8_t logCounter[SLL_SIZE][SLL_MAX_LIST];
+  uint8_t logCounter[SLL_THREADS][SLL_MAX_LIST];
 #ifdef DEBUG_LOCKCALL
   char logCaller[SLL_SIZE][SLL_LENGTH];
 #endif
@@ -633,6 +634,7 @@ void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
   dsyslog("full backtrace:");
   cBackTrace::BackTrace(NULL, 2);
   dsyslog("--- end invalid lock sequence report");
+  dsyslog("--- THERE WILL BE NO FURTHER REPORTS UNTIL VDR IS RESTARTED!");
   fprintf(stderr, "invalid lock sequence at %s\n", *DayDateTime(time(NULL)));
 }
 
@@ -644,15 +646,32 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
         int b = 1 << n;
         cMutexLock MutexLock(&mutex);
         tThreadId ThreadId = cThread::ThreadId();
-        int Index = threadIds.IndexOf(ThreadId);
+        int Index = -1;
+        int AvailableIndex = -1;
+        for (int i = 0; i < threadIds.Size(); i++) {
+            if (ThreadId == threadIds[i]) {
+               Index = i;
+               break;
+               }
+            if (threadIds[i] == 0)
+               AvailableIndex = i;
+            }
         if (Index < 0) {
-           if (Lock) {
+           if (AvailableIndex < 0) {
               Index = threadIds.Size();
               threadIds.Append(ThreadId);
               flags.Append(0);
               }
-           else
-              return;
+           else {
+              Index = AvailableIndex;
+              threadIds[Index] = ThreadId;
+              }
+           }
+        if (Index >= SLL_THREADS) {
+           // should never happen!
+           esyslog("ERROR: too many threads holding list locks at the same time - stopped logging locks!");
+           dumped = true;
+           return;
            }
         bool DoDump = false;
         if (Lock) {
@@ -667,6 +686,8 @@ void cStateLockLog::Check(const char *Name, bool Lock, bool Write)
            flags[Index] &= ~b;
         logThreadIds[logIndex] = ThreadId;
         logFlags[logIndex] = flags[Index] | (Write ? SLL_WRITE_FLAG : 0) | (Lock ? SLL_LOCK_FLAG : 0);
+        if (flags[Index] == 0)
+           threadIds[Index] = 0;
 #ifdef DEBUG_LOCKCALL
         strn0cpy(logCaller[logIndex], cBackTrace::GetCaller(Lock ? 3 : 5, true), SLL_LENGTH);
 #endif

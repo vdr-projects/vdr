@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.17 2017/06/10 10:57:31 kls Exp $
+ * $Id: ci.c 4.18 2017/06/19 12:13:38 kls Exp $
  */
 
 #include "ci.h"
@@ -1041,8 +1041,9 @@ void cCiCaPmt::MtdMapPids(cMtdMapper *MtdMapper)
 
 #define CA_ENABLE(x) (((x) & CA_ENABLE_FLAG) ? (x) & ~CA_ENABLE_FLAG : 0)
 
-#define QUERY_WAIT_TIME      1000 // ms to wait before sending a query
+#define QUERY_WAIT_TIME       500 // ms to wait before sending a query
 #define QUERY_REPLY_TIMEOUT  2000 // ms to wait for a reply to a query
+#define QUERY_RETRIES           6 // max. number of retries to check if there is a reply to a query
 
 class cCiConditionalAccessSupport : public cCiSession {
 private:
@@ -1051,6 +1052,7 @@ private:
   int caSystemIds[MAXCASYSTEMIDS + 1]; // list is zero terminated!
   bool repliesToQuery;
   cTimeMs timer;
+  int numRetries;
 public:
   cCiConditionalAccessSupport(uint16_t SessionId, cCiTransportConnection *Tc);
   virtual void Process(int Length = 0, const uint8_t *Data = NULL);
@@ -1069,6 +1071,7 @@ cCiConditionalAccessSupport::cCiConditionalAccessSupport(uint16_t SessionId, cCi
   state = 0; // inactive
   caSystemIds[numCaSystemIds = 0] = 0;
   repliesToQuery = false;
+  numRetries = 0;
 }
 
 void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
@@ -1098,7 +1101,8 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
             caSystemIds[numCaSystemIds] = 0;
             dbgprotocol("\n");
             if (state == 1) {
-               timer.Set(QUERY_WAIT_TIME); // WORKAROUND: Alphacrypt 3.09 doesn't reply to QUERY immediately after reset
+               timer.Set(0);
+               numRetries = QUERY_RETRIES;
                state = 2; // got ca info
                }
             dsyslog("CAM %d: system ids:%s", CamSlot()->SlotNumber(), *Ids ? *Ids : " none");
@@ -1171,15 +1175,17 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
      SendData(AOT_CA_INFO_ENQ);
      state = 1; // enquired ca info
      }
-  else if (state == 2 && timer.TimedOut()) {
-     cCiCaPmt CaPmt(CPCI_QUERY, 0, 0, 0, NULL);
-     SendPMT(&CaPmt);
-     timer.Set(QUERY_REPLY_TIMEOUT);
-     state = 3; // waiting for reply
-     }
-  else if (state == 3 && timer.TimedOut()) {
-     dsyslog("CAM %d: doesn't reply to QUERY - only a single channel can be decrypted", CamSlot()->SlotNumber());
-     state = 4; // normal operation
+  else if ((state == 2 || state == 3) && timer.TimedOut()) {
+     if (numRetries-- > 0) {
+        cCiCaPmt CaPmt(CPCI_QUERY, 0, 0, 0, NULL);
+        SendPMT(&CaPmt);
+        timer.Set(QUERY_WAIT_TIME);
+        state = 3; // waiting for reply
+        }
+     else {
+        dsyslog("CAM %d: doesn't reply to QUERY - only a single channel can be decrypted", CamSlot()->SlotNumber());
+        state = 4; // normal operation
+        }
      }
 }
 

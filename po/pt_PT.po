@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-10 17:19+0200\n"
+"POT-Creation-Date: 2017-06-30 11:46+0200\n"
 "PO-Revision-Date: 2010-03-28 22:49+0100\n"
 "Last-Translator: Cris Silva <hudokkow@gmail.com>\n"
 "Language-Team: Portuguese <vdr@linuxtv.org>\n"
@@ -1298,6 +1298,12 @@ msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de resumo"
+
+msgid "any hosts"
+msgstr ""
+
+msgid "only default host"
+msgstr ""
 
 msgid "type"
 msgstr ""

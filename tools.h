@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.12 2017/06/11 10:00:49 kls Exp $
+ * $Id: tools.h 4.13 2017/06/25 11:45:38 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -400,10 +400,12 @@ class cReadDir {
 private:
   DIR *directory;
   struct dirent *result;
+#if !__GLIBC_PREREQ(2, 24) // readdir_r() is deprecated as of GLIBC 2.24
   union { // according to "The GNU C Library Reference Manual"
     struct dirent d;
     char b[offsetof(struct dirent, d_name) + NAME_MAX + 1];
     } u;
+#endif
 public:
   cReadDir(const char *Directory);
   ~cReadDir();

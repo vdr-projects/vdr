@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.20 2017/05/31 14:02:17 kls Exp $
+ * $Id: svdrp.c 4.22 2017/06/30 09:49:39 kls Exp $
  */
 
 #include "svdrp.h"
@@ -549,7 +549,7 @@ cSVDRPClient *cSVDRPClientHandler::GetClientForServer(const char *ServerName)
 void cSVDRPClientHandler::SendDiscover(const char *Address)
 {
   cMutexLock MutexLock(&mutex);
-  cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", Setup.SVDRPHostName, tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout);
+  cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d%s", Setup.SVDRPHostName, tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout, (Setup.SVDRPPeering == spmOnly && *Setup.SVDRPDefaultHost) ? *cString::sprintf(" host:%s", Setup.SVDRPDefaultHost) : "");
   udpSocket.SendDgram(Dgram, udpSocket.Port(), Address);
 }
 
@@ -580,6 +580,11 @@ void cSVDRPClientHandler::HandleClientConnection(void)
             }
         cString ServerName = strgetval(NewDiscover, "name", ':');
         if (*ServerName) {
+           if (Setup.SVDRPPeering == spmOnly && strcmp(ServerName, Setup.SVDRPDefaultHost) != 0)
+              return; // we only want to peer with the default host, but this isn't the default host
+           cString HostName = strgetval(NewDiscover, "host", ':');
+           if (*HostName && strcmp(HostName, Setup.SVDRPHostName) != 0)
+              return; // the remote VDR requests a specific host, but it's not us
            cString t = strgetval(NewDiscover, "timeout", ':');
            if (*t) {
               int Timeout = atoi(t);
@@ -2599,4 +2604,16 @@ bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *
   if (SVDRPClientHandler)
      return SVDRPClientHandler->Execute(ServerName, Command, Response);
   return false;
+}
+
+void BroadcastSVDRPCommand(const char *Command)
+{
+  cMutexLock MutexLock(&SVDRPHandlerMutex);
+  cStringList ServerNames;
+  if (SVDRPClientHandler) {
+     if (SVDRPClientHandler->GetServerNames(&ServerNames)) {
+        for (int i = 0; i < ServerNames.Size(); i++)
+            ExecSVDRPCommand(ServerNames[i], Command);
+        }
+     }
 }

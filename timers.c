@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.10 2017/05/26 15:43:38 kls Exp $
+ * $Id: timers.c 4.11 2017/06/25 10:02:09 kls Exp $
  */
 
 #include "timers.h"
@@ -476,7 +476,7 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
   // To make sure a VPS timer can be distinguished from a plain 100% overlap,
   // it gets an additional 100 added, and a VPS event that is actually running
   // gets 200 added to the FULLMATCH.
-  if (HasFlags(tfActive) && channel->GetChannelID() == Event->ChannelID()) {
+  if (channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
      int overlap = 0;

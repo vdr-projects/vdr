@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.37 2017/06/10 19:19:51 kls Exp $
+ * $Id: menu.c 4.41 2017/06/30 09:49:39 kls Exp $
  */
 
 #include "menu.h"
@@ -1477,6 +1477,7 @@ public:
   const cChannel *channel;
   bool withDate;
   eTimerMatch timerMatch;
+  bool timerActive;
   cMenuScheduleItem(const cTimers *Timers, const cEvent *Event, const cChannel *Channel = NULL, bool WithDate = false);
   static void SetSortMode(eScheduleSortMode SortMode) { sortMode = SortMode; }
   static void IncSortMode(void) { sortMode = eScheduleSortMode((sortMode == ssmAllAll) ? ssmAllThis : sortMode + 1); }
@@ -1494,6 +1495,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cTimers *Timers, const cEvent *Event,
   channel = Channel;
   withDate = WithDate;
   timerMatch = tmNone;
+  timerActive = false;
   Update(Timers, true);
 }
 
@@ -1508,15 +1510,17 @@ int cMenuScheduleItem::Compare(const cListObject &ListObject) const
   return r;
 }
 
-static const char *TimerMatchChars = " tT";
+static const char *TimerMatchChars = " tT iI";
 
 bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 {
   eTimerMatch OldTimerMatch = timerMatch;
-  Timers->GetMatch(event, &timerMatch);
-  if (Force || timerMatch != OldTimerMatch) {
+  bool OldTimerActive = timerActive;
+  const cTimer *Timer = Timers->GetMatch(event, &timerMatch);
+  timerActive = Timer && Timer->HasFlags(tfActive);
+  if (Force || timerMatch != OldTimerMatch || timerActive != OldTimerActive) {
      cString buffer;
-     char t = TimerMatchChars[timerMatch];
+     char t = TimerMatchChars[timerMatch + (timerActive ? 0 : 3)];
      char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
      char r = event->SeenWithin(30) && event->IsRunning() ? '*' : ' ';
      const char *csn = channel ? channel->ShortName(true) : NULL;
@@ -1535,7 +1539,7 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 
 void cMenuScheduleItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
-  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch))
+  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch, timerActive))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
 
@@ -1652,30 +1656,30 @@ eOSState cMenuWhatsOn::Switch(void)
 eOSState cMenuWhatsOn::Record(void)
 {
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
-       LOCK_TIMERS_WRITE;
-       LOCK_CHANNELS_READ;
-       LOCK_SCHEDULES_READ;
-       Timers->SetExplicitModify();
-       if (item->timerMatch == tmFull) {
-          if (cTimer *Timer = Timers->GetMatch(item->event))
-             return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       cTimer *Timer = new cTimer(item->event);
-       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
-          Timer->SetRemote(Setup.SVDRPDefaultHost);
-       if (cTimer *t = Timers->GetTimer(Timer)) {
-          delete Timer;
-          Timer = t;
-          return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       if (Timer->Matches(0, false, NEWTIMERLIMIT))
-          return AddSubMenu(new cMenuEditTimer(Timer, true));
-       Timers->Add(Timer);
-       Timers->SetModified();
-       if (!HandleRemoteModifications(Timer)) {
-          // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
-          Timers->Del(Timer);
-          }
+     LOCK_TIMERS_WRITE;
+     LOCK_CHANNELS_READ;
+     LOCK_SCHEDULES_READ;
+     Timers->SetExplicitModify();
+     if (item->timerMatch == tmFull) {
+        if (cTimer *Timer = Timers->GetMatch(item->event))
+           return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     cTimer *Timer = new cTimer(item->event);
+     if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
+        Timer->SetRemote(Setup.SVDRPDefaultHost);
+     if (cTimer *t = Timers->GetTimer(Timer)) {
+        delete Timer;
+        Timer = t;
+        return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+        return AddSubMenu(new cMenuEditTimer(Timer, true));
+     Timers->Add(Timer);
+     Timers->SetModified();
+     if (!HandleRemoteModifications(Timer)) {
+        // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
+        Timers->Del(Timer);
+        }
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
@@ -1714,7 +1718,10 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                         for (cOsdItem *item = First(); item; item = Next(item)) {
                             if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
                                SetCurrent(item);
-                               Display();
+                               {
+                                 LOCK_SCHEDULES_READ;
+                                 Display();
+                               }
                                LOCK_CHANNELS_READ;
                                SetHelpKeys(Channels);
                                break;
@@ -1733,8 +1740,10 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        }
      }
   else if (!HasSubMenu()) {
-     if (HadSubMenu && Update())
+     if (HadSubMenu && Update()) {
+        LOCK_SCHEDULES_READ;
         Display();
+        }
      if (Key != kNone) {
         LOCK_CHANNELS_READ;
         SetHelpKeys(Channels);
@@ -1953,32 +1962,30 @@ eOSState cMenuSchedule::Number(void)
 eOSState cMenuSchedule::Record(void)
 {
   if (cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current())) {
-     {
-       LOCK_TIMERS_WRITE;
-       LOCK_CHANNELS_READ;
-       LOCK_SCHEDULES_READ;
-       Timers->SetExplicitModify();
-       if (item->timerMatch == tmFull) {
-          if (cTimer *Timer = Timers->GetMatch(item->event))
-             return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       cTimer *Timer = new cTimer(item->event);
-       if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
-          Timer->SetRemote(Setup.SVDRPDefaultHost);
-       if (cTimer *t = Timers->GetTimer(Timer)) {
-          delete Timer;
-          Timer = t;
-          return AddSubMenu(new cMenuEditTimer(Timer));
-          }
-       if (Timer->Matches(0, false, NEWTIMERLIMIT))
-          return AddSubMenu(new cMenuEditTimer(Timer, true));
-       Timers->Add(Timer);
-       Timers->SetModified();
-       if (!HandleRemoteModifications(Timer)) {
-          // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
-          Timers->Del(Timer);
-          }
-     }
+     LOCK_TIMERS_WRITE;
+     LOCK_CHANNELS_READ;
+     LOCK_SCHEDULES_READ;
+     Timers->SetExplicitModify();
+     if (item->timerMatch == tmFull) {
+        if (cTimer *Timer = Timers->GetMatch(item->event))
+           return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     cTimer *Timer = new cTimer(item->event);
+     if (Setup.SVDRPPeering && *Setup.SVDRPDefaultHost)
+        Timer->SetRemote(Setup.SVDRPDefaultHost);
+     if (cTimer *t = Timers->GetTimer(Timer)) {
+        delete Timer;
+        Timer = t;
+        return AddSubMenu(new cMenuEditTimer(Timer));
+        }
+     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+        return AddSubMenu(new cMenuEditTimer(Timer, true));
+     Timers->Add(Timer);
+     Timers->SetModified();
+     if (!HandleRemoteModifications(Timer)) {
+        // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
+        Timers->Del(Timer);
+        }
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
@@ -2077,8 +2084,10 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            Set(Timers, Channels, Channel, true);
            }
         }
-     else if (HadSubMenu && Update())
+     else if (HadSubMenu && Update()) {
+        LOCK_SCHEDULES_READ;
         Display();
+        }
      if (Key != kNone)
         SetHelpKeys();
      }
@@ -3189,8 +3198,10 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
         return state; // closes all recording menus except for the top one
      Set(); // this is the top level menu, so we refresh it...
      Open(true); // ...and open any necessary submenus to show the new name
-     if (!HasSubMenu())
+     if (!HasSubMenu()) {
+        LOCK_RECORDINGS_READ;
         Display();
+        }
      path = NULL;
      fileName = NULL;
      }
@@ -4012,6 +4023,7 @@ void cMenuSetupReplay::Store(void)
 
 class cMenuSetupMisc : public cMenuSetupBase {
 private:
+  const char *svdrpPeeringModeTexts[3];
   const char *showChannelNamesWithSourceTexts[3];
   cStringList svdrpServerNames;
   void Set(void);
@@ -4023,6 +4035,9 @@ public:
 cMenuSetupMisc::cMenuSetupMisc(void)
 {
   SetMenuCategory(mcSetupMisc);
+  svdrpPeeringModeTexts[0] = tr("off");
+  svdrpPeeringModeTexts[1] = tr("any hosts");
+  svdrpPeeringModeTexts[2] = tr("only default host");
   showChannelNamesWithSourceTexts[0] = tr("off");
   showChannelNamesWithSourceTexts[1] = tr("type");
   showChannelNamesWithSourceTexts[2] = tr("full");
@@ -4037,7 +4052,7 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
-  Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering));
+  Add(new cMenuEditStraItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering, 3, svdrpPeeringModeTexts));
   if (data.SVDRPPeering) {
      Add(new cMenuEditStrItem( tr("Setup.Miscellaneous$SVDRP host name"), data.SVDRPHostName, sizeof(data.SVDRPHostName)));
      if (GetSVDRPServerNames(&svdrpServerNames)) {

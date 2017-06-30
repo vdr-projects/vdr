@@ -4,13 +4,19 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.5 2015/09/09 09:44:12 kls Exp $
+ * $Id: svdrp.h 4.7 2017/06/30 09:49:39 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
 #include "tools.h"
+
+enum eSvdrpPeerModes {
+  spmOff  = 0,
+  spmAny  = 1,
+  spmOnly = 2,
+  };
 
 enum eSvdrpFetchFlags {
   sffNone   = 0b0000,
@@ -42,6 +48,8 @@ bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *
      ///< resulting strings from the remote VDR, which can be accessed
      ///< through Response. If Response is given, it will be cleared before
      ///< the command is actually executed.
+void BroadcastSVDRPCommand(const char *Command);
+     ///< Sends the given SVDRP Command string to all remote VDRs.
 inline int SVDRPCode(const char *s) { return s ? atoi(s) : 0; }
      ///< Returns the value of the three digit reply code of the given
      ///< SVDRP response string.

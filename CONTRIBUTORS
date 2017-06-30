@@ -2117,7 +2117,7 @@ Martin Wache <M.Wache@gmx.net>
  for suggesting to speed up anti-aliased font rendering by caching the blend indexes
  for extending the option "Setup/Miscellaneous/Show channel names with source" to
  "type" or "full"
- for making the "Channels" menu indicates whether a channel is encrypted or a radio
+ for making the "Channels" menu indicate whether a channel is encrypted or a radio
  channel
 
 Matthias Lenk <matthias.lenk@amd.com>
@@ -3037,6 +3037,8 @@ Frank Neumann <fnu@yavdr.org>
  for reporting a problem with the default return value of cEpgHandler::BeginSegmentTransfer()
  in derived classes that don't implement this function
  for reporting uninitialized variable SdWatchdog in vdr.c
+ for suggesting to use readdir() instead of readdir_r(), if GLIBC version 2.24 or
+ newer is used
 
 Gerald Dachs <vdr@dachsweb.de>
  for reporting a problem with checking for minimum line length of 21 characters in
@@ -3102,6 +3104,8 @@ Frank Niederwipper <f.niederwipper@gmail.com>
 Chris Mayo <aklhfex@gmail.com>
  for reporting a problem with detecting frames on radio channels
  for fixing the link to "svdrpsend (1)" in the vdr.1 man page
+ for updating links in the INSTALL file
+ for reporting double slashes in file names processed with AddDirectory()
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
@@ -3272,6 +3276,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for reporting a bug in switching channels in the Schedule menu after going through
  various Now and Schedule menus for different channels
  for the "jumpingseconds" patch
+ for reporting a bug in drawing very long menu titles in the LCARS skin
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3502,3 +3507,7 @@ Sergey Chernyavskiy <glenvt18@gmail.com>
 
 Frank Richter <kulpstur@t-online.de>
  for adding 'S3W ABS-3A' to sources.conf
+
+Daniel Scheller <d.scheller@gmx.net>
+ for reporting a problem with detecting whether a CAM replies to queries, which didn't
+ work on some systems since the implementation of RI_HOST_CONTROL

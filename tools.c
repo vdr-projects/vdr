@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.6 2017/05/09 08:32:54 kls Exp $
+ * $Id: tools.c 4.8 2017/06/25 11:45:39 kls Exp $
  */
 
 #include "tools.h"
@@ -371,6 +371,8 @@ bool StrInArray(const char *a[], const char *s)
 
 cString AddDirectory(const char *DirName, const char *FileName)
 {
+  if (*FileName == '/')
+     FileName++;
   return cString::sprintf("%s/%s", DirName && *DirName ? DirName : ".", FileName);
 }
 
@@ -1526,7 +1528,11 @@ cReadDir::~cReadDir()
 struct dirent *cReadDir::Next(void)
 {
   if (directory) {
+#if !__GLIBC_PREREQ(2, 24) // readdir_r() is deprecated as of GLIBC 2.24
      while (readdir_r(directory, &u.d, &result) == 0 && result) {
+#else
+     while ((result = readdir(directory)) != NULL) {
+#endif
            if (strcmp(result->d_name, ".") && strcmp(result->d_name, ".."))
               return result;
            }
