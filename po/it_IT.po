@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2017-06-30 11:46+0200\n"
-"PO-Revision-Date: 2017-06-23 00:00+0100\n"
+"PO-Revision-Date: 2017-07-02 23:49+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -1305,16 +1305,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"
 
 msgid "any hosts"
-msgstr ""
+msgstr "qualsiasi sistema"
 
 msgid "only default host"
-msgstr ""
+msgstr "solo sistema predefinito"
 
 msgid "type"
 msgstr "tipo"
 
 msgid "full"
-msgstr "completo"
+msgstr "tutto"
 
 msgid "Miscellaneous"
 msgstr "Generici"

@@ -9161,3 +9161,7 @@ Video Disk Recorder Revision History
   This is especially useful if one VDR mounts the video directory of an other one into
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
+
+2017-07-24: Version 2.3.9
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
