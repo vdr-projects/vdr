@@ -1303,16 +1303,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
 
 msgid "any hosts"
-msgstr ""
+msgstr "mihin tahansa palvelimeen"
 
 msgid "only default host"
-msgstr ""
+msgstr "vain oletuspalvelimeen"
 
 msgid "type"
-msgstr ""
+msgstr "tyyppi"
 
 msgid "full"
-msgstr ""
+msgstr "kokonaan"
 
 msgid "Miscellaneous"
 msgstr "Sekalaiset"
