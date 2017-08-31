@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.23 2017/05/30 11:06:11 kls Exp $
+ * $Id: device.c 4.24 2017/08/31 11:34:54 kls Exp $
  */
 
 #include "device.h"
@@ -1823,7 +1823,7 @@ void cDevice::Detach(cReceiver *Receiver)
         }
      }
   if (!receiversLeft)
-     Cancel(-1);
+     Cancel(3);
 }
 
 void cDevice::DetachAll(int Pid)

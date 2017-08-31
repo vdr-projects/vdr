@@ -3277,6 +3277,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  various Now and Schedule menus for different channels
  for the "jumpingseconds" patch
  for reporting a bug in drawing very long menu titles in the LCARS skin
+ for reporting and helping to debug a crash when stopping VDR
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
