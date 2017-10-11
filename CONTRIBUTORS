@@ -2837,6 +2837,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  false
  for reporting an invalid lock sequence in the epgsearch plugin, which turned out to
  be an abandoned member of class cSchedulesLock
+ for fixing handling VPS events outside the LingerLimit, which could cause recordings to
+ stop prematurely
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

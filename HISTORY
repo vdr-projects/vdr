@@ -9162,9 +9162,11 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-08-31: Version 2.3.9
+2017-10-11: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed a possible crash when stopping VDR (thanks to Matthias Senzel for reporting and
   helping to debug this one).
+- Fixed handling VPS events outside the LingerLimit, which could cause recordings to
+  stop prematurely (thanks to Johann Friedrichs).
