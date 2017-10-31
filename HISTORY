@@ -9174,3 +9174,5 @@ Video Disk Recorder Revision History
   of low disk space.
 - Now making sure that AssertFreeDiskSpace() is called with the maximum timer
   priority in case there are several timers recording with different priorities.
+- The MTD mapper now avoids immediately reusing unique PIDs when switching channels,
+  to prevent possible problems with old data in buffers (thanks to Onur Sentürk).
