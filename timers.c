@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.11 2017/06/25 10:02:09 kls Exp $
+ * $Id: timers.c 4.12 2017/10/31 09:41:31 kls Exp $
  */
 
 #include "timers.h"
@@ -802,6 +802,16 @@ const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
   if (Match)
      *Match = m;
   return t;
+}
+
+int cTimers::GetMaxPriority(void) const
+{
+  int n = 0;
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote() && ti->Recording())
+         n = max(n, ti->Priority());
+      }
+  return n;
 }
 
 const cTimer *cTimers::GetNextActiveTimer(void) const

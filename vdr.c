@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.18 2017/06/10 11:53:39 kls Exp $
+ * $Id: vdr.c 4.19 2017/10/31 09:46:22 kls Exp $
  */
 
 #include <getopt.h>
@@ -1171,6 +1171,8 @@ int main(int argc, char *argv[])
           // Trigger remote timer polls:
           if (TriggerRemoteTimerPoll)
              Timers->TriggerRemoteTimerPoll();
+          // Make sure there is enough free disk space for ongoing recordings:
+          AssertFreeDiskSpace(Timers->GetMaxPriority());
           TimersStateKey.Remove(TimersModified);
         }
         // Recordings:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.41 2017/06/30 09:49:39 kls Exp $
+ * $Id: menu.c 4.42 2017/10/31 09:42:07 kls Exp $
  */
 
 #include "menu.h"
@@ -5208,7 +5208,6 @@ bool cRecordControl::Process(time_t t)
         timer->SetPending(false);
      return false;
      }
-  AssertFreeDiskSpace(timer->Priority());
   return true;
 }
 
