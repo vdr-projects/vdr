@@ -9186,3 +9186,5 @@ Video Disk Recorder Revision History
   'DEPRECATED_VDR_CHARSET_OVERRIDE=1' when compiling in order to restore this
   functionality. However, it is recommended to use the command line option --chartab
   instead.
+- The timeout for the channel display is now reset whenever the channel or EPG data
+  changes.

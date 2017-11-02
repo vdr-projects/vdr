@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.42 2017/10/31 09:42:07 kls Exp $
+ * $Id: menu.c 4.43 2017/11/02 15:26:42 kls Exp $
  */
 
 #include "menu.h"
@@ -4563,6 +4563,7 @@ void cDisplayChannel::DisplayChannel(void)
   displayChannel->SetChannel(channel, number);
   cStatus::MsgOsdChannel(ChannelString(channel, number));
   lastPresent = lastFollowing = NULL;
+  lastTime.Set();
 }
 
 void cDisplayChannel::DisplayInfo(void)
@@ -4578,6 +4579,7 @@ void cDisplayChannel::DisplayInfo(void)
            cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
            lastPresent = Present;
            lastFollowing = Following;
+           lastTime.Set();
            }
         }
      }
