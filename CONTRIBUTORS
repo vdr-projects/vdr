@@ -3446,6 +3446,9 @@ Jasmin Jessich <jasmin@anw.at>
  for suggesting to use $(Q) to control Makefile verbosity
  for adding handling DEBUG to the Make.config.template file, in order to control
  code optimization
+ for suggesting to change the macros used to control deprecated code or functions
+ to numeric values (0 and 1), so that they can be controlled at compile time, without
+ having to edit the actual source code
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently

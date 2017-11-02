@@ -9178,3 +9178,11 @@ Video Disk Recorder Revision History
   to prevent possible problems with old data in buffers (thanks to Onur Sentürk).
 - The function cDevice::GetVideoSystem() (which has been deprecated since version 2.1.6)
   has been finally removed.
+- The macros used to control deprecated code or functions have been changed to hold
+  numeric values (0 and 1), so that they can be controlled at compile time, without
+  having to edit the actual source code (suggested by Jasmin Jessich).
+- The default for DEPRECATED_VDR_CHARSET_OVERRIDE has been set to 0, which means VDR
+  no longer reacts on the environment variable VDR_CHARSET_OVERRIDE. You can add
+  'DEPRECATED_VDR_CHARSET_OVERRIDE=1' when compiling in order to restore this
+  functionality. However, it is recommended to use the command line option --chartab
+  instead.
