@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-10-31: Version 2.3.9
+2017-11-02: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9176,3 +9176,5 @@ Video Disk Recorder Revision History
   priority in case there are several timers recording with different priorities.
 - The MTD mapper now avoids immediately reusing unique PIDs when switching channels,
   to prevent possible problems with old data in buffers (thanks to Onur Sentürk).
+- The function cDevice::GetVideoSystem() (which has been deprecated since version 2.1.6)
+  has been finally removed.
