@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 4.2 2017/04/03 12:02:16 kls Exp $
+ * $Id: osdbase.h 4.3 2017/11/07 15:31:24 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -92,6 +92,7 @@ private:
   char *title;
   int cols[cSkinDisplayMenu::MaxTabs];
   int first, current, marked;
+  int lastOffset;;
   eMenuCategory menuCategory;
   eMenuSortMode menuSortMode;
   eMenuOrientation menuOrientation;
