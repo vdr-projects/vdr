@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-11-07: Version 2.3.9
+2017-11-08: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9190,3 +9190,4 @@ Video Disk Recorder Revision History
   changes.
 - OSD menus now try to keep the offset of the list cursor at a constant position on
   the screen, even if the list is modified while being displayed.
+- The LCARS skin's main menu now reacts to changes of the current channel's name.
