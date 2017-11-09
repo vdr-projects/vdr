@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.20 2017/11/02 14:59:50 kls Exp $
+ * $Id: vdr.c 4.21 2017/11/09 16:15:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -732,6 +732,7 @@ int main(int argc, char *argv[])
   bool InhibitEpgScan = false;
   bool IsInfoMenu = false;
   cSkin *CurrentSkin = NULL;
+  int OldPrimaryDVB = 0;
 
   // Load plugins:
 
@@ -834,6 +835,7 @@ int main(int argc, char *argv[])
            }
         }
      }
+  OldPrimaryDVB = Setup.PrimaryDVB;
 
   // Check for timers in automatic start time window:
 
@@ -1426,12 +1428,6 @@ int main(int argc, char *argv[])
                             DELETE_MENU;
                             cControl::Shutdown();
                             break;
-             case osSwitchDvb:
-                            DELETE_MENU;
-                            cControl::Shutdown();
-                            Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
-                            cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
-                            break;
              case osPlugin: DELETE_MENU;
                             Menu = cMenuMain::PluginOsdObject();
                             if (Menu)
@@ -1505,6 +1501,17 @@ int main(int argc, char *argv[])
               else
                  Skins.Message(mtInfo, tr("Editing process finished"));
               }
+           }
+
+        // Change primary device:
+        int NewPrimaryDVB = Setup.PrimaryDVB;
+        if (NewPrimaryDVB != OldPrimaryDVB) {
+           DELETE_MENU;
+           cControl::Shutdown();
+           Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
+           cOsdProvider::Shutdown();
+           cDevice::SetPrimaryDevice(NewPrimaryDVB);
+           OldPrimaryDVB = NewPrimaryDVB;
            }
 
         // SIGHUP shall cause a restart:

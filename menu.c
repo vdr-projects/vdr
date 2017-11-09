@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.43 2017/11/02 15:26:42 kls Exp $
+ * $Id: menu.c 4.44 2017/11/09 14:56:38 kls Exp $
  */
 
 #include "menu.h"
@@ -3587,7 +3587,6 @@ void cMenuSetupDVB::Setup(void)
 
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 {
-  int oldPrimaryDVB = ::Setup.PrimaryDVB;
   int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
   bool newVideoFormat = data.VideoFormat;
@@ -3650,8 +3649,6 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
        }
      }
   if (state == osBack && Key == kOk) {
-     if (::Setup.PrimaryDVB != oldPrimaryDVB)
-        state = osSwitchDvb;
      if (::Setup.VideoDisplayFormat != oldVideoDisplayFormat)
         cDevice::PrimaryDevice()->SetVideoDisplayFormat(eVideoDisplayFormat(::Setup.VideoDisplayFormat));
      if (::Setup.VideoFormat != oldVideoFormat)

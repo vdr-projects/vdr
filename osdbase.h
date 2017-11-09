@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 4.3 2017/11/07 15:31:24 kls Exp $
+ * $Id: osdbase.h 4.4 2017/11/09 14:57:48 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -30,7 +30,6 @@ enum eOSState { osUnknown,
                 osStopRecord,
                 osStopReplay,
                 osCancelEdit,
-                osSwitchDvb,
                 osBack,
                 osEnd,
                 os_User, // the following values can be used locally

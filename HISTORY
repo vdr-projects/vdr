@@ -9194,3 +9194,5 @@ Video Disk Recorder Revision History
 - If an event in the Schedules menu is marked with a 'T' or 'I' and the user presses the
   Red button to edit the timer, local timers are now preferred over remote timers
   in case there is more than one timer that will record that event.
+- Switching the primary device is no longer done via osSwitchDvb (which has been
+  removed), but rather by the main program loop reacting to changes in Setup.PrimaryDVB.
