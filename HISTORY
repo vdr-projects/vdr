@@ -9198,3 +9198,4 @@ Video Disk Recorder Revision History
   removed), but rather by the main program loop reacting to changes in Setup.PrimaryDVB.
 - The new SVDRP commands 'LSTD' and 'PRIM' can be used to list all available devices
   and to switch the primary device (thanks to Thomas Reufer).
+- Added some comments regarding font height (thanks to Thomas Reufer).
