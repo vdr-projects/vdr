@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.22 2017/06/30 09:49:39 kls Exp $
+ * $Id: svdrp.c 4.23 2017/11/11 12:04:17 kls Exp $
  */
 
 #include "svdrp.h"
@@ -771,6 +771,10 @@ const char *HelpPages[] = {
   "    separators. The channel number of a group separator is always 0.\n"
   "    With ':ids' the channel ids are listed following the channel numbers.\n"
   "    The special number 0 can be given to list the current channel.",
+  "LSTD\n"
+  "    List all available devices. Each device is listed with its name and\n"
+  "    whether it is currently the primary device ('P') or it implements a\n"
+  "    decoder ('D') and can be used as output device.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
   "    listed. If a channel is given (either by number or by channel ID),\n"
@@ -851,6 +855,10 @@ const char *HelpPages[] = {
   "    Used by peer-to-peer connections between VDRs to inform other machines\n"
   "    about changes to timers. The receiving VDR shall use LSTT to query the\n"
   "    remote machine's timers and update its list of timers accordingly.\n",
+  "PRIM [ <number> ]\n"
+  "    Make the device with the given number the primary device.\n"
+  "    Without option it returns the currently active primary device in the same\n"
+  "    format as used by the LSTD command.",
   "PUTE [ file ]\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
@@ -964,6 +972,7 @@ private:
   void CmdHELP(const char *Option);
   void CmdHITK(const char *Option);
   void CmdLSTC(const char *Option);
+  void CmdLSTD(const char *Option);
   void CmdLSTE(const char *Option);
   void CmdLSTR(const char *Option);
   void CmdLSTT(const char *Option);
@@ -979,6 +988,7 @@ private:
   void CmdPLAY(const char *Option);
   void CmdPLUG(const char *Option);
   void CmdPOLL(const char *Option);
+  void CmdPRIM(const char *Option);
   void CmdPUTE(const char *Option);
   void CmdREMO(const char *Option);
   void CmdSCAN(const char *Option);
@@ -1620,6 +1630,18 @@ void cSVDRPServer::CmdLSTC(const char *Option)
      Reply(550, "No channels defined");
 }
 
+void cSVDRPServer::CmdLSTD(const char *Option)
+{
+  if (cDevice::NumDevices()) {
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         if (const cDevice *d = cDevice::GetDevice(i))
+            Reply(d->DeviceNumber() + 1 == cDevice::NumDevices() ? 250 : -250, "%d [%s%s] %s", d->DeviceNumber() + 1, d->HasDecoder() ? "D" : "-", d->DeviceNumber() + 1 == Setup.PrimaryDVB ? "P" : "-", *d->DeviceName());
+         }
+     }
+  else
+     Reply(550, "No devices found");
+}
+
 void cSVDRPServer::CmdLSTE(const char *Option)
 {
   LOCK_CHANNELS_READ;
@@ -2216,6 +2238,32 @@ void cSVDRPServer::CmdPOLL(const char *Option)
      Reply(501, "Missing parameters");
 }
 
+void cSVDRPServer::CmdPRIM(const char *Option)
+{
+  int n = -1;
+  if (*Option) {
+     if (isnumber(Option)) {
+        int o = strtol(Option, NULL, 10);
+        if (o > 0 && o <= cDevice::NumDevices())
+           n = o;
+        else
+           Reply(501, "Invalid device number \"%s\"", Option);
+        }
+     else
+        Reply(501, "Invalid parameter \"%s\"", Option);
+     if (n >= 0) {
+        Setup.PrimaryDVB = n;
+        Reply(250, "Primary device set to %d", n);
+        }
+     }
+  else {
+    if (const cDevice *d = cDevice::PrimaryDevice())
+       Reply(250, "%d [%s%s] %s", d->DeviceNumber() + 1, d->HasDecoder() ? "D" : "-", d->DeviceNumber() + 1 == Setup.PrimaryDVB ? "P" : "-", *d->DeviceName());
+    else
+       Reply(501, "Failed to get primary device");
+    }
+}
+
 void cSVDRPServer::CmdPUTE(const char *Option)
 {
   if (*Option) {
@@ -2368,6 +2416,7 @@ void cSVDRPServer::Execute(char *Cmd)
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTD"))  CmdLSTD(s);
   else if (CMD("LSTE"))  CmdLSTE(s);
   else if (CMD("LSTR"))  CmdLSTR(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
@@ -2383,6 +2432,7 @@ void cSVDRPServer::Execute(char *Cmd)
   else if (CMD("PLAY"))  CmdPLAY(s);
   else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("POLL"))  CmdPOLL(s);
+  else if (CMD("PRIM"))  CmdPRIM(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("REMO"))  CmdREMO(s);
   else if (CMD("SCAN"))  CmdSCAN(s);

@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-11-09: Version 2.3.9
+2017-11-11: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9196,3 +9196,5 @@ Video Disk Recorder Revision History
   in case there is more than one timer that will record that event.
 - Switching the primary device is no longer done via osSwitchDvb (which has been
   removed), but rather by the main program loop reacting to changes in Setup.PrimaryDVB.
+- The new SVDRP commands 'LSTD' and 'PRIM' can be used to list all available devices
+  and to switch the primary device (thanks to Thomas Reufer).
