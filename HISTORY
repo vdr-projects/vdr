@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-11-11: Version 2.3.9
+2017-11-12: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9199,3 +9199,5 @@ Video Disk Recorder Revision History
 - The new SVDRP commands 'LSTD' and 'PRIM' can be used to list all available devices
   and to switch the primary device (thanks to Thomas Reufer).
 - Added some comments regarding font height (thanks to Thomas Reufer).
+- Fixed handling timers during the change from DST to winter time (thanks to Johann
+  Friedrichs).

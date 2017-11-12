@@ -2839,6 +2839,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  be an abandoned member of class cSchedulesLock
  for fixing handling VPS events outside the LingerLimit, which could cause recordings to
  stop prematurely
+ for fixing handling timers during the change from DST to winter time
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

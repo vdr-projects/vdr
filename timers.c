@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.13 2017/11/09 12:10:46 kls Exp $
+ * $Id: timers.c 4.14 2017/11/12 13:01:22 kls Exp $
  */
 
 #include "timers.h"
@@ -419,20 +419,25 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
      t = time(NULL);
 
   int begin  = TimeToInt(start); // seconds from midnight
-  int length = TimeToInt(stop) - begin;
-  if (length < 0)
-     length += SECSINDAY;
+  int end    = TimeToInt(stop);
+  int length = end - begin;
 
   if (IsSingleEvent()) {
-     startTime = SetTime(day, begin);
-     stopTime = startTime + length;
+     time_t t0 = day;
+     startTime = SetTime(t0, begin);
+     if (length < 0)
+        t0 = IncDay(day, 1);
+     stopTime  = SetTime(t0, end);
      }
   else {
+     time_t d = day ? max(day, t) : t;
      for (int i = -1; i <= 7; i++) {
-         time_t t0 = IncDay(day ? max(day, t) : t, i);
+         time_t t0 = IncDay(d, i);
          if (DayMatches(t0)) {
             time_t a = SetTime(t0, begin);
-            time_t b = a + length;
+            if (length < 0)
+               t0 = IncDay(d, i + 1);
+            time_t b = SetTime(t0, end);
             if ((!day || a >= day) && t < b) {
                startTime = a;
                stopTime = b;
