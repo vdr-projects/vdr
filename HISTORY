@@ -9205,3 +9205,6 @@ Video Disk Recorder Revision History
   cControl::player to NULL in cDvbPlayerControl::Stop() to avoid a possible crash
   with plugins that retrieve player information after a replay has been stopped, but
   before the replay control has been destroyed (thanks to Johann Friedrich).
+- Now calling Hide() and cStatus::MsgReplaying(..., false) from cReplayControl::Stop(),
+  to inform plugins about an ending replay session before the replay control gets
+  destroyed.

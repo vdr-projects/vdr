@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.44 2017/11/09 14:56:38 kls Exp $
+ * $Id: menu.c 4.45 2017/11/26 15:07:00 kls Exp $
  */
 
 #include "menu.h"
@@ -5476,8 +5476,6 @@ cReplayControl::cReplayControl(bool PauseLive)
 cReplayControl::~cReplayControl()
 {
   cDevice::PrimaryDevice()->SetKeepTracks(false);
-  Hide();
-  cStatus::MsgReplaying(this, NULL, fileName, false);
   Stop();
   if (currentReplayControl == this)
      currentReplayControl = NULL;
@@ -5485,6 +5483,8 @@ cReplayControl::~cReplayControl()
 
 void cReplayControl::Stop(void)
 {
+  Hide();
+  cStatus::MsgReplaying(this, NULL, fileName, false);
   if (Setup.DelTimeshiftRec && *fileName) {
      cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
      if (rc && rc->InstantId()) {
@@ -5940,8 +5940,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    SkipSeconds(Setup.SkipSecondsRepeat); break;
     case kYellow:  SkipSeconds(Setup.SkipSeconds); break;
     case kStop:
-    case kBlue:    Hide();
-                   Stop();
+    case kBlue:    Stop();
                    return osEnd;
     default: {
       DoShowMode = false;
@@ -5985,8 +5984,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    Hide();
-                           Stop();
+            case kBack:    Stop();
                            return osRecordings;
             default:       return osUnknown;
             }
