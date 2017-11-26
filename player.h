@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 4.2 2016/12/22 10:38:11 kls Exp $
+ * $Id: player.h 4.3 2017/11/26 14:29:12 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -102,10 +102,10 @@ public:
          ///< skins as a last resort, in case they want to display the state of the
          ///< current player. The return value is expected to be a short, single line
          ///< string. The default implementation returns an empty string.
-  double FramesPerSecond(void) const { return player->FramesPerSecond(); }
-  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) const { return player->GetIndex(Current, Total, SnapToIFrame); }
-  bool GetFrameNumber(int &Current, int &Total) const { return player->GetFrameNumber(Current, Total); }
-  bool GetReplayMode(bool &Play, bool &Forward, int &Speed) const { return player->GetReplayMode(Play, Forward, Speed); }
+  double FramesPerSecond(void) const { return player ? player->FramesPerSecond() : DEFAULTFRAMESPERSECOND; }
+  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) const { return player ? player->GetIndex(Current, Total, SnapToIFrame) : false; }
+  bool GetFrameNumber(int &Current, int &Total) const { return player ? player->GetFrameNumber(Current, Total) : false; }
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed) const { return player ? player->GetReplayMode(Play, Forward, Speed) : false; }
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
