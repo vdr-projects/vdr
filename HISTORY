@@ -9210,3 +9210,5 @@ Video Disk Recorder Revision History
   destroyed.
 - Fixed a possible crash when moving a recording between different volumes (reported by
   Matthias Senzel).
+- Fixed positioning the cursor in the Recordings menu when moving a recording between
+  different volumes.

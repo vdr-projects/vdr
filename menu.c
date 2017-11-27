@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.45 2017/11/26 15:07:00 kls Exp $
+ * $Id: menu.c 4.46 2017/11/27 15:19:07 kls Exp $
  */
 
 #include "menu.h"
@@ -2960,8 +2960,10 @@ void cMenuRecordings::Set(bool Refresh)
      const char *CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
      cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey); // write access is necessary for sorting!
      cMenuRecordingItem *LastItem = NULL;
-     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
-        CurrentRecording = ri->Recording()->FileName();
+     if (!CurrentRecording) {
+        if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
+           CurrentRecording = ri->Recording()->FileName();
+        }
      int current = Current();
      Clear();
      GetRecordingsSortMode(DirectoryName());
