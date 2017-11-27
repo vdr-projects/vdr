@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.10 2017/06/25 12:31:46 kls Exp $
+ * $Id: recording.c 4.11 2017/11/27 13:58:34 kls Exp $
  */
 
 #include "recording.h"
@@ -1725,6 +1725,7 @@ void cDirCopier::Action(void)
         int From = -1;
         int To = -1;
         size_t BufferSize = BUFSIZ;
+        uchar *Buffer = NULL;
         while (Running()) {
               // Suspend copying if we have severe throughput problems:
               if (Throttled()) {
@@ -1734,8 +1735,11 @@ void cDirCopier::Action(void)
               // Copy all files in the source directory to the destination directory:
               if (e) {
                  // We're currently copying a file:
-                 uchar Buffer[BufferSize];
-                 size_t Read = safe_read(From, Buffer, sizeof(Buffer));
+                 if (!Buffer) {
+                    esyslog("ERROR: no buffer");
+                    break;
+                    }
+                 size_t Read = safe_read(From, Buffer, BufferSize);
                  if (Read > 0) {
                     size_t Written = safe_write(To, Buffer, Read);
                     if (Written != Read) {
@@ -1784,7 +1788,14 @@ void cDirCopier::Action(void)
                     break;
                     }
                  dsyslog("copying file '%s' to '%s'", *FileNameSrc, *FileNameDst);
-                 BufferSize = max(size_t(st.st_blksize * 10), size_t(BUFSIZ));
+                 if (!Buffer) {
+                    BufferSize = max(size_t(st.st_blksize * 10), size_t(BUFSIZ));
+                    Buffer = MALLOC(uchar, BufferSize);
+                    if (!Buffer) {
+                       esyslog("ERROR: out of memory");
+                       break;
+                       }
+                    }
                  if (access(FileNameDst, F_OK) == 0) {
                     esyslog("ERROR: destination file '%s' already exists", *FileNameDst);
                     break;
@@ -1801,11 +1812,13 @@ void cDirCopier::Action(void)
                  }
               else {
                  // We're done:
+                 free(Buffer);
                  dsyslog("done copying directory '%s' to '%s'", *dirNameSrc, *dirNameDst);
                  error = false;
                  return;
                  }
               }
+        free(Buffer);
         close(From); // just to be absolutely sure
         close(To);
         esyslog("ERROR: copying directory '%s' to '%s' ended prematurely", *dirNameSrc, *dirNameDst);

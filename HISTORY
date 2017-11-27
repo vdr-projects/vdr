@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-11-26: Version 2.3.9
+2017-11-27: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9208,3 +9208,5 @@ Video Disk Recorder Revision History
 - Now calling Hide() and cStatus::MsgReplaying(..., false) from cReplayControl::Stop(),
   to inform plugins about an ending replay session before the replay control gets
   destroyed.
+- Fixed a possible crash when moving a recording between different volumes (reported by
+  Matthias Senzel).
