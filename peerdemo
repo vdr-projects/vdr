@@ -1,0 +1,108 @@
+#!/usr/bin/perl
+
+# VDR SVDRP Peer Demo
+#
+# (C) 2017 by Klaus Schmidinger <Klaus.Schmidinger@tvdr.de>
+
+use Getopt::Std;
+use IO::Socket;
+use IO::Select;
+
+$Usage = qq{
+Usage: $0 options
+
+Options: -c       communicate with peer VDR
+         -v       be verbose
+};
+
+die $Usage if (!getopts("cv"));
+
+$Communicate = $opt_c || 0;
+$Verbose     = $opt_v || 0;
+
+$SvdrpPort = 6419;
+$MyName = "peerdemo";
+
+# Open TCP and UDP sockets:
+
+$TcpSocket = new IO::Socket::INET(Listen => 5, LocalPort => $SvdrpPort, Proto => "tcp", ReusePort => 1) || die "$!";
+$UdpSocket = new IO::Socket::INET(             LocalPort => $SvdrpPort, Proto => "udp", ReusePort => 1) || die "$!";
+$SvdrpSelect = new IO::Select($TcpSocket);
+setsockopt($UdpSocket, SOL_SOCKET, SO_RCVTIMEO, pack('L!L!', 0, 1000)); # 1ms timeout on UDP socket
+
+# Send UDP broadcast:
+
+$BcastSocket = new IO::Socket::INET(PeerAddr => '255.255.255.255', PeerPort => $SvdrpPort, Proto => "udp", Broadcast => 1) || die "$!";
+$BcastMsg = "SVDRP:discover name:$MyName port:6419 vdrversion:20309 apiversion:20309 timeout:300";
+Log('>', $BcastSocket, $BcastMsg);
+print($BcastSocket $BcastMsg);
+$BcastSocket->close();
+
+# Listen on UDP and TCP socket:
+
+while (1) {
+      if ($UdpSocket->recv($Request, 1024)) {
+         if ($SkippedFirstUdpPacket++) { # the first one is the one we sent, so skip it
+            Log('<', $UdpSocket, $Request);
+            $Request .= " "; # for easier parsing
+            my $Name       = Extract($Request, "name");
+            my $Port       = Extract($Request, "port");
+            my $VdrVersion = Extract($Request, "vdrversion");
+            my $ApiVersion = Extract($Request, "apiversion");
+            my $Timeout    = Extract($Request, "timeout");
+            my $PeerHost   = $UdpSocket->peerhost();
+            print("found VDR '$Name' at $PeerHost with SVDRP port '$Port'\n");
+            }
+         }
+      if (my @Ready = $SvdrpSelect->can_read(0.01)) {
+         for my $fh (@Ready) {
+             if ($fh == $TcpSocket) {
+                # accept connection:
+                my $new = $TcpSocket->accept();
+                Log('<', $new, "incoming TCP connection");
+                # send mandatory response to simulate an SVDRP host:
+                my $Prompt = "220 $MyName SVDRP VideoDiskRecorder 2.3.9; Wed Nov 29 17:00:29 2017; ISO-8859-1";
+                Log('>', $new, $Prompt);
+                print($new $Prompt);
+                if ($Communicate) {
+                   # add incoming connection to select:
+                   $SvdrpSelect->add($new);
+                   }
+                else {
+                   # close connection:
+                   $new->close;
+                   }
+                }
+             else {
+                # process connection:
+                my $Request;
+                if ($fh->recv($Request, 1024)) {
+                   Log('<', $fh, $Request);
+                   if ($Request =~ /^LSTT/) {
+                      my $Response = "550 No timers defined";
+                      Log('>', $fh, $Response);
+                      print($fh "$Response\n");
+                      }
+                   }
+                # close connection:
+                $SvdrpSelect->remove($fh);
+                $fh->close;
+                }
+             }
+         }
+      }
+
+# Tools:
+
+sub Extract
+{
+  my ($s, $n) = @_;
+  return ($s =~ / $n:([^ ]*) /)[0];
+}
+
+sub Log
+{
+  return unless ($Verbose);
+  my ($Dir, $Socket, $Msg) = @_;
+  printf("SVDRP %s [%s:%s] %s\n", $Dir, $Socket->peerhost(), $Socket->peerport(), $Msg);
+}
