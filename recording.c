@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.11 2017/11/27 13:58:34 kls Exp $
+ * $Id: recording.c 4.12 2017/12/04 13:03:11 kls Exp $
  */
 
 #include "recording.h"
@@ -1857,7 +1857,7 @@ public:
   int Usage(const char *FileName = NULL) const;
   const char *FileNameSrc(void) const { return fileNameSrc; }
   const char *FileNameDst(void) const { return fileNameDst; }
-  bool Active(bool &Error);
+  bool Active(cRecordings *Recordings, bool &Error);
   };
 
 cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst)
@@ -1887,7 +1887,7 @@ int cRecordingsHandlerEntry::Usage(const char *FileName) const
   return u;
 }
 
-bool cRecordingsHandlerEntry::Active(bool &Error)
+bool cRecordingsHandlerEntry::Active(cRecordings *Recordings, bool &Error)
 {
   bool CopierFinishedOk = false;
   // First test whether there is an ongoing operation:
@@ -1917,18 +1917,18 @@ bool cRecordingsHandlerEntry::Active(bool &Error)
         copier->Start();
         }
      ClearPending();
-     LOCK_RECORDINGS_WRITE; // to trigger a state change
+     Recordings->SetModified(); // to trigger a state change
      return true;
      }
   // Clean up:
   if (CopierFinishedOk && (Usage() & ruMove) != 0) {
      cRecording Recording(FileNameSrc());
      if (Recording.Delete()) {
-        LOCK_RECORDINGS_WRITE;
         Recordings->DelByName(Recording.FileName());
+        Recordings->SetModified(); // to trigger a state change
         }
      }
-  LOCK_RECORDINGS_WRITE; // to trigger a state change
+  Recordings->SetModified(); // to trigger a state change
   Recordings->TouchUpdate();
   return false;
 }
@@ -1954,9 +1954,11 @@ void cRecordingsHandler::Action(void)
   while (Running()) {
         bool Sleep = false;
         {
+          LOCK_RECORDINGS_WRITE;
+          Recordings->SetExplicitModify();
           cMutexLock MutexLock(&mutex);
           if (cRecordingsHandlerEntry *r = operations.First()) {
-             if (!r->Active(error))
+             if (!r->Active(Recordings, error))
                 operations.Del(r);
              else
                 Sleep = true;

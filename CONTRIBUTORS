@@ -3284,6 +3284,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for reporting a bug in drawing very long menu titles in the LCARS skin
  for reporting and helping to debug a crash when stopping VDR
  for reporting a crash when moving a recording between different volumes
+ for reporting a deadlock when moving a folder containing several recordings between
+ different volumes
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
