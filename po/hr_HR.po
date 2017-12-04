@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian <vdr@linuxtv.org>\n"
@@ -1598,14 +1598,14 @@ msgstr "VDR æe se iskljuèiti kasnije - pritisnite Power za prisilno iskljuèenje"
 msgid "Press any key to cancel shutdown"
 msgstr "Pritisnite tipku za prekid iskljuèivanja"
 
-msgid "Switching primary DVB..."
-msgstr "Prebacivanje primarnog DVB ureðaja..."
-
 msgid "Editing process failed!"
 msgstr "Rezanje neuspje¹no!"
 
 msgid "Editing process finished"
 msgstr "Rezanje zavr¹eno"
+
+msgid "Switching primary DVB..."
+msgstr "Prebacivanje primarnog DVB ureðaja..."
 
 msgid "Press any key to cancel restart"
 msgstr "Pritisnite jednu tipku za poni¹tenje ponovnog podizanja"

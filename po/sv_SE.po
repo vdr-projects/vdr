@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1601,14 +1601,14 @@ msgstr "VDR kommer att stängas av senare - tryck på/av för att stänga av nu"
 msgid "Press any key to cancel shutdown"
 msgstr "Tryck valfri knapp för att återkalla avstängningen"
 
-msgid "Switching primary DVB..."
-msgstr "Byter primär DVB enhet..."
-
 msgid "Editing process failed!"
 msgstr "Redigeringsprocessen misslyckades"
 
 msgid "Editing process finished"
 msgstr "Redigering avslutad"
+
+msgid "Switching primary DVB..."
+msgstr "Byter primär DVB enhet..."
 
 msgid "Press any key to cancel restart"
 msgstr "Tryck valfri knapp för att avbryta omstart"

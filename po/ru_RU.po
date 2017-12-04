@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2016-12-27 17:13+0100\n"
 "Last-Translator: Pridvorov Andrey <ua0lnj@bk.ru>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -1597,14 +1597,14 @@ msgstr "VDR выключится позже - нажмите Питание дл
 msgid "Press any key to cancel shutdown"
 msgstr "Нажмите любую кнопку чтобы отменить выключение"
 
-msgid "Switching primary DVB..."
-msgstr "Смена основного DVB-устройства..."
-
 msgid "Editing process failed!"
 msgstr "Ошибка во время монтажа записи!"
 
 msgid "Editing process finished"
 msgstr "Монтаж окончен"
+
+msgid "Switching primary DVB..."
+msgstr "Смена основного DVB-устройства..."
 
 msgid "Press any key to cancel restart"
 msgstr "Нажмите любую кнопку для отмены перезагрузки"

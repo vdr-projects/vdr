@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2017-07-02 23:49+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -1602,14 +1602,14 @@ msgstr "VDR si spegnerà più tardi - premi Power per forzare"
 msgid "Press any key to cancel shutdown"
 msgstr "Premi un tasto per annullare lo spegnimento"
 
-msgid "Switching primary DVB..."
-msgstr "Cambio della scheda DVB primaria..."
-
 msgid "Editing process failed!"
 msgstr "Processo di modifica fallito!"
 
 msgid "Editing process finished"
 msgstr "Processo di modifica terminato"
+
+msgid "Switching primary DVB..."
+msgstr "Cambio della scheda DVB primaria..."
 
 msgid "Press any key to cancel restart"
 msgstr "Premi un tasto per annullare il riavvio"

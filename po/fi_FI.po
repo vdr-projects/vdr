@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -1600,14 +1600,14 @@ msgstr "VDR sammuu myöhemmin - pakota virtanäppäimellä"
 msgid "Press any key to cancel shutdown"
 msgstr "Peru sammutus painamalla mitä tahansa näppäintä"
 
-msgid "Switching primary DVB..."
-msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
-
 msgid "Editing process failed!"
 msgstr "Muokkaus epäonnistui!"
 
 msgid "Editing process finished"
 msgstr "Muokkaus valmis"
+
+msgid "Switching primary DVB..."
+msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
 
 msgid "Press any key to cancel restart"
 msgstr "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä"

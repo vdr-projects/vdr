@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2015-02-11 14:02+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -1596,14 +1596,14 @@ msgstr "VDR išsijungs vėliau - paspauskite Power mygtuką kad padarytumėte ta
 msgid "Press any key to cancel shutdown"
 msgstr "Paspauskit bet kurį mygtuką kad sustabdytumėte sistemos išjungimą"
 
-msgid "Switching primary DVB..."
-msgstr "Sukeičiamas pirminis DVB įrenginys..."
-
 msgid "Editing process failed!"
 msgstr "Koregavimas nepavyko!"
 
 msgid "Editing process finished"
 msgstr "Koregavimas baigtas"
+
+msgid "Switching primary DVB..."
+msgstr "Sukeičiamas pirminis DVB įrenginys..."
 
 msgid "Press any key to cancel restart"
 msgstr "Paspauskit bet kurį mygtuką kad sustabdytumėte perkrovimą"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -1596,14 +1596,14 @@ msgstr "VDR daha sonra kapanacak - zorlamak için Kapat'a bas"
 msgid "Press any key to cancel shutdown"
 msgstr "Kapatmayý iptal etmek için herhangi bir tuþa bas"
 
-msgid "Switching primary DVB..."
-msgstr "Primer DVB arayüzü deðiþtiriliyor..."
-
 msgid "Editing process failed!"
 msgstr "Kesim baþarýsýz!"
 
 msgid "Editing process finished"
 msgstr "Kesim bitti"
+
+msgid "Switching primary DVB..."
+msgstr "Primer DVB arayüzü deðiþtiriliyor..."
 
 msgid "Press any key to cancel restart"
 msgstr "Yeniden baþlatmayý iptal etmek için herhangi bir tuþa bas"

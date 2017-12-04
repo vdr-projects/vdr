@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2015-02-13 09:36+0200\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
@@ -1601,14 +1601,14 @@ msgstr "VDR később fog leállni - Kikapcs gombbal kényszerített leállítás
 msgid "Press any key to cancel shutdown"
 msgstr "Nyomj egy gombot a leállás megszakításához"
 
-msgid "Switching primary DVB..."
-msgstr "Elsődleges DVB eszköz váltása folyamatban..."
-
 msgid "Editing process failed!"
 msgstr "Vágás sikertelen!"
 
 msgid "Editing process finished"
 msgstr "Vágás befejezve"
+
+msgid "Switching primary DVB..."
+msgstr "Elsődleges DVB eszköz váltása folyamatban..."
 
 msgid "Press any key to cancel restart"
 msgstr "Nyomj egy gombot az újraindítás megszakításához"

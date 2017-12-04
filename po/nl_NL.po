@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"
 "Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -1602,14 +1602,14 @@ msgstr "VDR zal later uitschakelen - Druk 'Power' om te forceren"
 msgid "Press any key to cancel shutdown"
 msgstr "Druk een toets om shutdown af te breken"
 
-msgid "Switching primary DVB..."
-msgstr "Eerste DVB-kaart wordt omgeschakeld..."
-
 msgid "Editing process failed!"
 msgstr "Bewerken is mislukt!"
 
 msgid "Editing process finished"
 msgstr "Bewerken is klaar"
+
+msgid "Switching primary DVB..."
+msgstr "Eerste DVB-kaart wordt omgeschakeld..."
 
 msgid "Press any key to cancel restart"
 msgstr "Druk een willekeurige toets om herstarten af te breken"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1600,14 +1600,14 @@ msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر ا
 msgid "Press any key to cancel shutdown"
 msgstr "اضغط اى زر لالغاء اقفال البرنامج"
 
-msgid "Switching primary DVB..."
-msgstr "تم الانتقال لكرت الستالايت الافتراضى"
-
 msgid "Editing process failed!"
 msgstr "تم فشل عملية التعديل"
 
 msgid "Editing process finished"
 msgstr "تم الانتهاء من التعديل"
+
+msgid "Switching primary DVB..."
+msgstr "تم الانتقال لكرت الستالايت الافتراضى"
 
 msgid "Press any key to cancel restart"
 msgstr "اضغط اى زر لالغاء اعادة التشغيل"

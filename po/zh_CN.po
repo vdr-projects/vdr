@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2017-12-04 13:11+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1598,14 +1598,14 @@ msgstr "VDR即将关闭 - 按电源强制关闭！"
 msgid "Press any key to cancel shutdown"
 msgstr "按下任何键即可取消关机"
 
-msgid "Switching primary DVB..."
-msgstr "切换主要的DVB设备."
-
 msgid "Editing process failed!"
 msgstr "编辑过程失败"
 
 msgid "Editing process finished"
 msgstr "编辑过程完毕"
+
+msgid "Switching primary DVB..."
+msgstr "切换主要的DVB设备."
 
 msgid "Press any key to cancel restart"
 msgstr "请按任意键重启"
