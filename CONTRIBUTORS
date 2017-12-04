@@ -3425,6 +3425,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
  for suggesting to include the channel ID in log messages about switching channels
  for reporting a problem with the SVDRP command CHAN while the channel display is open
+ for suggesting to automatically close the CAM menu when the current channel is switched
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()

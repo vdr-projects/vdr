@@ -9217,3 +9217,5 @@ Video Disk Recorder Revision History
   different volumes (reported by Matthias Senzel).
 - Fixed positioning to the current item when changing the sort mode in the Recordings
   menu, in case there is a LastReplayed recording.
+- The CAM menu is now automatically closed when the current channel is switched
+  (suggested by Dietmar Spingler).

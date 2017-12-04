@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.47 2017/12/04 14:50:59 kls Exp $
+ * $Id: menu.c 4.48 2017/12/04 15:25:57 kls Exp $
  */
 
 #include "menu.h"
@@ -3798,6 +3798,7 @@ bool cMenuSetupCAMItem::Changed(void)
 
 class cMenuSetupCAM : public cMenuSetupBase {
 private:
+  int currentChannel;
   const char *activationHelp;
   eOSState Menu(void);
   eOSState Reset(void);
@@ -3810,6 +3811,7 @@ public:
 
 cMenuSetupCAM::cMenuSetupCAM(void)
 {
+  currentChannel = cDevice::CurrentChannel();
   activationHelp = NULL;
   SetMenuCategory(mcSetupCam);
   SetSection(tr("CAM"));
@@ -3935,6 +3937,8 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
          }
      SetHelpKeys();
      }
+  if (currentChannel != cDevice::CurrentChannel())
+     state = osEnd;
   return state;
 }
 
