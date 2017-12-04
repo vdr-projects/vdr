@@ -9215,3 +9215,5 @@ Video Disk Recorder Revision History
 - Added a note to PLUGINS.html about writing log messages in English.
 - Fixed a deadlock when moving a folder containing several recordings between
   different volumes (reported by Matthias Senzel).
+- Fixed positioning to the current item when changing the sort mode in the Recordings
+  menu, in case there is a LastReplayed recording.

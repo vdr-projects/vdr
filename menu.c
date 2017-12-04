@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.46 2017/11/27 15:19:07 kls Exp $
+ * $Id: menu.c 4.47 2017/12/04 14:50:59 kls Exp $
  */
 
 #include "menu.h"
@@ -2858,10 +2858,10 @@ public:
   cMenuRecordingItem(const cRecording *Recording, int Level);
   ~cMenuRecordingItem();
   void IncrementCounter(bool New);
-  const char *Name(void) { return name; }
-  int Level(void) { return level; }
-  const cRecording *Recording(void) { return recording; }
-  bool IsDirectory(void) { return name != NULL; }
+  const char *Name(void) const { return name; }
+  int Level(void) const { return level; }
+  const cRecording *Recording(void) const { return recording; }
+  bool IsDirectory(void) const { return name != NULL; }
   void SetRecording(const cRecording *Recording) { recording = Recording; }
   virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
   };
@@ -3167,6 +3167,8 @@ eOSState cMenuRecordings::Sort(void)
 {
   if (HasSubMenu())
      return osContinue;
+  if (const cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
+     SetRecording(ri->Recording()->FileName()); // makes sure the Recordings menu will reposition to the current recording
   IncRecordingsSortMode(DirectoryName());
   recordingsStateKey.Reset();
   Set(true);
