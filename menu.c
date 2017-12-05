@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.48 2017/12/04 15:25:57 kls Exp $
+ * $Id: menu.c 4.49 2017/12/05 16:39:57 kls Exp $
  */
 
 #include "menu.h"
@@ -2479,11 +2479,15 @@ eOSState cMenuPathEdit::ApplyChanges(void)
   cString NewPath = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
   NewPath.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewPath, path)) {
-     LOCK_RECORDINGS_WRITE;
-     Recordings->SetExplicitModify();
-     int NumRecordings = Recordings->GetNumRecordingsInPath(path);
+     int NumRecordings = 0;
+     {
+       LOCK_RECORDINGS_READ;
+       NumRecordings = Recordings->GetNumRecordingsInPath(path);
+     }
      if (NumRecordings > 1 && !Interface->Confirm(cString::sprintf(tr("Move entire folder containing %d recordings?"), NumRecordings)))
         return osContinue;
+     LOCK_RECORDINGS_WRITE;
+     Recordings->SetExplicitModify();
      if (!Recordings->MoveRecordings(path, NewPath)) {
         Skins.Message(mtError, tr("Error while moving folder!"));
         return osContinue;
