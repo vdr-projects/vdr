@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 4.1 2015/09/05 11:43:08 kls Exp $
+ * $Id: transfer.h 4.2 2017/12/07 14:56:22 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -16,6 +16,8 @@
 
 class cTransfer : public cReceiver, public cPlayer {
 private:
+  time_t lastErrorReport;
+  int numLostPackets;
   cPatPmtGenerator patPmtGenerator;
 protected:
   virtual void Activate(bool On);

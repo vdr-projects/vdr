@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-12-05: Version 2.3.9
+2017-12-07: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9221,3 +9221,5 @@ Video Disk Recorder Revision History
   (suggested by Dietmar Spingler).
 - Fixed a lengthy write lock on the Recordings list in case of moving a folder with
   more than one recording (thanks to Matthias Senzel).
+- If TS packets are not accepted by the output device in Transfer Mode, this is now
+  reported only once per minute in the log file.

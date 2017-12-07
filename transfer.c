@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 4.1 2015/09/05 11:43:58 kls Exp $
+ * $Id: transfer.c 4.2 2017/12/07 15:00:33 kls Exp $
  */
 
 #include "transfer.h"
@@ -14,6 +14,8 @@
 cTransfer::cTransfer(const cChannel *Channel)
 :cReceiver(Channel, TRANSFERPRIORITY)
 {
+  lastErrorReport = 0;
+  numLostPackets = 0;
   patPmtGenerator.SetChannel(Channel);
 }
 
@@ -37,6 +39,7 @@ void cTransfer::Activate(bool On)
 
 #define MAXRETRIES    20 // max. number of retries for a single TS packet
 #define RETRYWAIT      5 // time (in ms) between two retries
+#define ERRORDELTA    60 // seconds before reporting lost TS packets again
 
 void cTransfer::Receive(const uchar *Data, int Length)
 {
@@ -51,7 +54,12 @@ void cTransfer::Receive(const uchar *Data, int Length)
          cCondWait::SleepMs(RETRYWAIT);
          }
      DeviceClear();
-     esyslog("ERROR: TS packet not accepted in Transfer Mode");
+     numLostPackets++;
+     if (time(NULL) - lastErrorReport > ERRORDELTA) {
+        esyslog("ERROR: %d TS packet(s) not accepted in Transfer Mode", numLostPackets);
+        numLostPackets = 0;
+        lastErrorReport = time(NULL);
+        }
      }
 }
 
