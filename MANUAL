@@ -665,6 +665,13 @@ Version 2.2
                          If a particular sort mode has been selected for a folder by
                          pressing '0', the default no longer applies to that folder.
 
+  Sorting direction for recordings = ascending
+                         When recordings are sorted "by time", they appear in ascending
+                         order (i.e. "oldest" to "newest"). If this parameter is set to
+                         "descending", they will be presented "newest" to "oldest.
+                         Note that in the latter case, if "Always sort folders first"
+                         is "yes", folders will appear in reverse alphabetical order.
+
   Number keys for characters = yes
                          Controls whether the number keys can be used to enter
                          characters in a text input field. You may want to set this

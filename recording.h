@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.5 2017/04/03 13:31:16 kls Exp $
+ * $Id: recording.h 4.6 2017/12/09 14:11:16 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -526,6 +526,7 @@ bool GenerateIndex(const char *FileName, bool Update = false);
        ///< complete, and will be updated if it isn't. Otherwise an existing index
        ///< file will be removed before a new one is generated.
 
+enum eRecordingsSortDir { rsdAscending, rsdDescending };
 enum eRecordingsSortMode { rsmName, rsmTime };
 extern eRecordingsSortMode RecordingsSortMode;
 bool HasRecordingsSortMode(const char *Directory);

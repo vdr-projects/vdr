@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-04 13:11+0100\n"
+"POT-Creation-Date: 2017-12-09 15:25+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -866,6 +866,12 @@ msgstr "nimen mukaan"
 msgid "by time"
 msgstr "ajan mukaan"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
 
@@ -955,6 +961,9 @@ msgstr "Näytä kansiot ensin"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Järjestä tallenteet oletuksena"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"

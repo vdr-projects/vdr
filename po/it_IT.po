@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-04 13:11+0100\n"
+"POT-Creation-Date: 2017-12-09 15:25+0100\n"
 "PO-Revision-Date: 2017-07-02 23:49+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -868,6 +868,12 @@ msgstr "per nome"
 msgid "by time"
 msgstr "per ora"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -957,6 +963,9 @@ msgstr "Ordina sempre per prima le cartelle"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Modalità ordinamento predefinito per registrazioni"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Tasti numerici per i caratteri"

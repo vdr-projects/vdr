@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.49 2017/12/05 16:39:57 kls Exp $
+ * $Id: menu.c 4.50 2017/12/09 14:14:46 kls Exp $
  */
 
 #include "menu.h"
@@ -3265,6 +3265,7 @@ class cMenuSetupOSD : public cMenuSetupBase {
 private:
   const char *useSmallFontTexts[3];
   const char *recSortModeTexts[2];
+  const char *recSortDirTexts[2];
   const char *keyColorTexts[4];
   int osdLanguageIndex;
   int numSkins;
@@ -3319,6 +3320,8 @@ void cMenuSetupOSD::Set(void)
   useSmallFontTexts[2] = tr("always");
   recSortModeTexts[0] = tr("by name");
   recSortModeTexts[1] = tr("by time");
+  recSortDirTexts[0] = tr("ascending");
+  recSortDirTexts[1] = tr("descending");
   keyColorTexts[0] = tr("Key$Red");
   keyColorTexts[1] = tr("Key$Green");
   keyColorTexts[2] = tr("Key$Yellow");
@@ -3353,6 +3356,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Folders in timer menu"),  &data.FoldersInTimerMenu));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Always sort folders first"), &data.AlwaysSortFoldersFirst));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Default sort mode for recordings"), &data.DefaultSortModeRec, 2, recSortModeTexts));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Sorting direction for recordings"), &data.RecSortingDirection, 2, recSortDirTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Number keys for characters"), &data.NumberKeysForChars));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 0"),            &data.ColorKey0, 4, keyColorTexts));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Color key 1"),            &data.ColorKey1, 4, keyColorTexts));
@@ -3394,7 +3398,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         ModifiedAppearance = true;
      if (strcmp(data.FontFix, Setup.FontFix) || !DoubleEqual(data.FontFixSizeP, Setup.FontFixSizeP))
         ModifiedAppearance = true;
-     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst || data.RecordingDirs != Setup.RecordingDirs) {
+     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst || data.RecordingDirs != Setup.RecordingDirs || data.RecSortingDirection != Setup.RecSortingDirection) {
         LOCK_RECORDINGS_WRITE;
         Recordings->ClearSortNames();
         }

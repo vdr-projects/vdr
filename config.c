@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.6 2017/05/21 10:25:26 kls Exp $
+ * $Id: config.c 4.7 2017/12/09 14:17:02 kls Exp $
  */
 
 #include "config.h"
@@ -432,6 +432,7 @@ cSetup::cSetup(void)
   FoldersInTimerMenu = 1;
   AlwaysSortFoldersFirst = 1;
   DefaultSortModeRec = rsmTime;
+  RecSortingDirection = rsdAscending;
   NumberKeysForChars = 1;
   ColorKey0 = 0;
   ColorKey1 = 1;
@@ -658,6 +659,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
   else if (!strcasecmp(Name, "AlwaysSortFoldersFirst")) AlwaysSortFoldersFirst = atoi(Value);
+  else if (!strcasecmp(Name, "RecSortingDirection")) RecSortingDirection= atoi(Value);
   else if (!strcasecmp(Name, "DefaultSortModeRec"))  DefaultSortModeRec = atoi(Value);
   else if (!strcasecmp(Name, "NumberKeysForChars"))  NumberKeysForChars = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey0"))           ColorKey0          = atoi(Value);
@@ -789,6 +791,7 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("FoldersInTimerMenu", FoldersInTimerMenu);
   Store("AlwaysSortFoldersFirst", AlwaysSortFoldersFirst);
+  Store("RecSortingDirection",RecSortingDirection);
   Store("DefaultSortModeRec", DefaultSortModeRec);
   Store("NumberKeysForChars", NumberKeysForChars);
   Store("ColorKey0",          ColorKey0);
