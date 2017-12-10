@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.50 2017/12/09 14:14:46 kls Exp $
+ * $Id: menu.c 4.51 2017/12/10 12:50:23 kls Exp $
  */
 
 #include "menu.h"
@@ -2877,8 +2877,13 @@ cMenuRecordingItem::cMenuRecordingItem(const cRecording *Recording, int Level)
   name = NULL;
   totalEntries = newEntries = 0;
   SetText(Recording->Title('\t', true, Level));
-  if (*Text() == '\t')
+  if (*Text() == '\t') // this is a folder
      name = strdup(Text() + 2); // 'Text() + 2' to skip the two '\t'
+  else { // this is an actual recording
+     int Usage = Recording->IsInUse();
+     if ((Usage & ruDst) != 0 && (Usage & (ruMove | ruCopy)) != 0)
+        SetSelectable(false);
+     }
 }
 
 cMenuRecordingItem::~cMenuRecordingItem()

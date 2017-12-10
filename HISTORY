@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-12-09: Version 2.3.9
+2017-12-10: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9226,4 +9226,6 @@ Video Disk Recorder Revision History
 - The new setup option "OSD/Sorting direction for recordings" can be used to switch
   the sequence in which recordings are presented in the "Recordings" menu between
   ascending (oldest first) and descendeng (newest first) (thanks to Matthias Senzel).
- 
+- When moving recordings between volumes, the "Recordings" menu now displays those items
+  that have not yet been moved completely as non-selectable. This avoids situations
+  where trying to play such a recording might fail.
