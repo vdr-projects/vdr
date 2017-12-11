@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.6 2017/12/09 14:11:16 kls Exp $
+ * $Id: recording.h 4.7 2017/12/11 12:56:57 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -38,6 +38,7 @@ enum eRecordingUsage {
   ruDst      = 0x0040, // the recording is the destination of a cut, move or copy process
   //
   ruPending  = 0x0080, // the recording is pending a cut, move or copy process
+  ruCanceled = 0x8000, // the operation has been canceled, waiting for cleanup
   };
 
 void RemoveDeletedRecordings(void);

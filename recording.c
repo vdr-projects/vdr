@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.13 2017/12/09 14:24:35 kls Exp $
+ * $Id: recording.c 4.14 2017/12/11 13:35:14 kls Exp $
  */
 
 #include "recording.h"
@@ -1682,7 +1682,6 @@ private:
 public:
   cDirCopier(const char *DirNameSrc, const char *DirNameDst);
   virtual ~cDirCopier();
-  void Stop(void);
   bool Error(void) { return error; }
   };
 
@@ -1697,7 +1696,7 @@ cDirCopier::cDirCopier(const char *DirNameSrc, const char *DirNameDst)
 
 cDirCopier::~cDirCopier()
 {
-  Stop();
+  Cancel(3);
 }
 
 bool cDirCopier::Throttled(void)
@@ -1833,17 +1832,6 @@ void cDirCopier::Action(void)
      esyslog("ERROR: can't access '%s'", *dirNameDst);
 }
 
-void cDirCopier::Stop(void)
-{
-  Cancel(3);
-  if (error) {
-     cVideoDirectory::RemoveVideoFile(dirNameDst);
-     LOCK_RECORDINGS_WRITE;
-     Recordings->AddByName(dirNameSrc);
-     Recordings->DelByName(dirNameDst);
-     }
-}
-
 // --- cRecordingsHandlerEntry -----------------------------------------------
 
 class cRecordingsHandlerEntry : public cListObject {
@@ -1853,14 +1841,18 @@ private:
   cString fileNameDst;
   cCutter *cutter;
   cDirCopier *copier;
+  bool error;
   void ClearPending(void) { usage &= ~ruPending; }
 public:
   cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst);
   ~cRecordingsHandlerEntry();
   int Usage(const char *FileName = NULL) const;
+  bool Error(void) const { return error; }
+  void SetCanceled(void) { usage |= ruCanceled; }
   const char *FileNameSrc(void) const { return fileNameSrc; }
   const char *FileNameDst(void) const { return fileNameDst; }
-  bool Active(cRecordings *Recordings, bool &Error);
+  bool Active(cRecordings *Recordings);
+  void Cleanup(cRecordings *Recordings);
   };
 
 cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst)
@@ -1870,6 +1862,7 @@ cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileName
   fileNameDst = FileNameDst;
   cutter = NULL;
   copier = NULL;
+  error = false;
 }
 
 cRecordingsHandlerEntry::~cRecordingsHandlerEntry()
@@ -1890,22 +1883,22 @@ int cRecordingsHandlerEntry::Usage(const char *FileName) const
   return u;
 }
 
-bool cRecordingsHandlerEntry::Active(cRecordings *Recordings, bool &Error)
+bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
 {
-  bool CopierFinishedOk = false;
+  if ((usage & ruCanceled) != 0)
+     return false;
   // First test whether there is an ongoing operation:
   if (cutter) {
      if (cutter->Active())
         return true;
-     Error |= cutter->Error();
+     error = cutter->Error();
      delete cutter;
      cutter = NULL;
      }
   else if (copier) {
      if (copier->Active())
         return true;
-     Error |= copier->Error();
-     CopierFinishedOk = !copier->Error();
+     error = copier->Error();
      delete copier;
      copier = NULL;
      }
@@ -1923,17 +1916,32 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings, bool &Error)
      Recordings->SetModified(); // to trigger a state change
      return true;
      }
-  // Clean up:
-  if (CopierFinishedOk && (Usage() & ruMove) != 0) {
+  // We're done:
+  if (!error && (usage & ruMove) != 0) {
      cRecording Recording(FileNameSrc());
-     if (Recording.Delete()) {
+     if (Recording.Delete())
         Recordings->DelByName(Recording.FileName());
-        Recordings->SetModified(); // to trigger a state change
-        }
      }
   Recordings->SetModified(); // to trigger a state change
   Recordings->TouchUpdate();
   return false;
+}
+
+void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
+{
+  if ((usage & (ruMove | ruCopy)) // this was a move/copy operation...
+     && ((usage & ruPending)      // ...which had not yet started...
+        || copier                 // ...or not yet finished...
+        || error)) {              // ...or finished with error
+     if (copier) {
+        delete copier;
+        copier = NULL;
+        }
+     cVideoDirectory::RemoveVideoFile(fileNameDst);
+     if ((usage & ruMove) != 0)
+        Recordings->AddByName(fileNameSrc);
+     Recordings->DelByName(fileNameDst);
+     }
 }
 
 // --- cRecordingsHandler ----------------------------------------------------
@@ -1961,8 +1969,11 @@ void cRecordingsHandler::Action(void)
           Recordings->SetExplicitModify();
           cMutexLock MutexLock(&mutex);
           if (cRecordingsHandlerEntry *r = operations.First()) {
-             if (!r->Active(Recordings, error))
+             if (!r->Active(Recordings)) {
+                error |= r->Error();
+                r->Cleanup(Recordings);
                 operations.Del(r);
+                }
              else
                 Sleep = true;
              }
@@ -1978,6 +1989,8 @@ cRecordingsHandlerEntry *cRecordingsHandler::Get(const char *FileName)
 {
   if (FileName && *FileName) {
      for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r)) {
+         if ((r->Usage() & ruCanceled) != 0)
+            continue;
          if (strcmp(FileName, r->FileNameSrc()) == 0 || strcmp(FileName, r->FileNameDst()) == 0)
             return r;
          }
@@ -2020,16 +2033,14 @@ void cRecordingsHandler::Del(const char *FileName)
 {
   cMutexLock MutexLock(&mutex);
   if (cRecordingsHandlerEntry *r = Get(FileName))
-     operations.Del(r);
+     r->SetCanceled();
 }
 
 void cRecordingsHandler::DelAll(void)
 {
-  {
-    cMutexLock MutexLock(&mutex);
-    operations.Clear();
-  }
-  Cancel(3);
+  cMutexLock MutexLock(&mutex);
+  for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r))
+      r->SetCanceled();
 }
 
 int cRecordingsHandler::GetUsage(const char *FileName)
