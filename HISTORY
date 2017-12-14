@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-12-11: Version 2.3.9
+2017-12-14: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9230,3 +9230,7 @@ Video Disk Recorder Revision History
   that have not yet been moved completely as non-selectable. This avoids situations
   where trying to play such a recording might fail.
 - Fixed canceling moving a folder with several recordings between volumes.
+- When moving a recording to a different folder, the cursor is no longer placed on the
+  new location of the recording, but rather stays in the original folder (suggested by
+  Matthias Senzel). If the original folder got empty by moving away the last recording
+  it contained, the cursor is moved up until a non empty folder is found.

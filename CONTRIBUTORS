@@ -3289,6 +3289,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for fixing a lengthy write lock on the Recordings list in case of moving a folder with
  more than one recording
  for implementing the parameter "OSD/Sorting direction for recordings"
+ for suggesting to stay in the original folder when moving a recording to a different
+ folder
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language

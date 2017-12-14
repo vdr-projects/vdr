@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.51 2017/12/10 12:50:23 kls Exp $
+ * $Id: menu.c 4.52 2017/12/14 10:32:41 kls Exp $
  */
 
 #include "menu.h"
@@ -2407,9 +2407,15 @@ bool CamMenuActive(void)
 
 // --- cMenuPathEdit ---------------------------------------------------------
 
+#define osUserRecRenamed osUser1
+#define osUserRecMoved   osUser2
+#define osUserRecRemoved osUser3
+#define osUserRecEmpty   osUser4
+
 class cMenuPathEdit : public cOsdMenu {
 private:
   cString path;
+  cString oldFolder;
   char folder[PATH_MAX];
   char name[NAME_MAX];
   cMenuEditStrItem *folderItem;
@@ -2441,6 +2447,7 @@ cMenuPathEdit::cMenuPathEdit(const char *Path)
     LOCK_RECORDINGS_READ;
     pathIsInUse = Recordings->PathIsInUse(path);
   }
+  oldFolder = folder;
   cOsdItem *p;
   Add(p = folderItem = new cMenuEditStrItem(tr("Folder"), folder, sizeof(folder)));
   p->SetSelectable(!pathIsInUse);
@@ -2492,9 +2499,10 @@ eOSState cMenuPathEdit::ApplyChanges(void)
         Skins.Message(mtError, tr("Error while moving folder!"));
         return osContinue;
         }
-     cMenuRecordings::SetPath(NewPath); // makes sure the Recordings menu will reposition to the new path
      Recordings->SetModified();
-     return osUser1;
+     if (strcmp(folder, oldFolder))
+        return osUserRecMoved;
+     return osUserRecRenamed;
      }
   return osBack;
 }
@@ -2713,6 +2721,7 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
      *name = ' '; // name must not be empty!
      name[1] = 0;
      }
+  cString OldFolder = Recording->Folder();
   cString NewName = *folder ? cString::sprintf("%s%c%s", folder, FOLDERDELIMCHAR, name) : name;
   NewName.CompactChars(FOLDERDELIMCHAR);
   if (strcmp(NewName, Recording->Name())) {
@@ -2724,10 +2733,12 @@ eOSState cMenuRecordingEdit::ApplyChanges(void)
      Modified = true;
      }
   if (Modified) {
-     cMenuRecordings::SetRecording(Recording->FileName()); // makes sure the Recordings menu will reposition to the renamed recording
+     eOSState  state = osUserRecRenamed;
+     if (strcmp(Recording->Folder(), OldFolder))
+        state = osUserRecMoved;
      Recordings->TouchUpdate();
      StateKey.Remove(Modified);
-     return osUser1;
+     return state;
      }
   StateKey.Remove(Modified);
   return osBack;
@@ -3133,8 +3144,8 @@ eOSState cMenuRecordings::Delete(void)
            recordingsStateKey.Remove();
            Display();
            if (!Count())
-              return osBack;
-           return osUser2;
+              return osUserRecEmpty;
+           return osUserRecRemoved;
            }
         else
            Skins.Message(mtError, tr("Error while deleting recording!"));
@@ -3186,7 +3197,6 @@ eOSState cMenuRecordings::Sort(void)
 
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
-  bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -3204,37 +3214,46 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        default: break;
        }
      }
-  else if (state == osUser1) {
-     // a recording or path was renamed, so let's refresh the menu
-     CloseSubMenu(false);
-     if (base)
-        return state; // closes all recording menus except for the top one
-     Set(); // this is the top level menu, so we refresh it...
-     Open(true); // ...and open any necessary submenus to show the new name
-     if (!HasSubMenu()) {
-        LOCK_RECORDINGS_READ;
-        Display();
-        }
+  else if (state == osUserRecRenamed) {
+     // a recording was renamed (within the same folder), so let's refresh the menu
+     CloseSubMenu(false); // this is the cMenuRecordingEdit/cMenuPathEdit
      path = NULL;
      fileName = NULL;
+     state = osContinue;
      }
-  else if (state == osUser2) {
-     // a recording in a sub folder was deleted, so update the current item
-     cOsdMenu *m = HasSubMenu() ? SubMenu() : this;
-     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
-        if (cMenuRecordingItem *riSub = (cMenuRecordingItem *)m->Get(m->Current()))
-           ri->SetRecording(riSub->Recording());
-        }
+  else if (state == osUserRecMoved) {
+     // a recording was moved to a different folder, so let's delete the old item
+     CloseSubMenu(false); // this is the cMenuRecordingEdit/cMenuPathEdit
+     path = NULL;
+     fileName = NULL;
+     cOsdMenu::Del(Current());
+     Set(); // the recording might have been moved into a new subfolder of this folder
+     if (!Count())
+        return osUserRecEmpty;
+     Display();
+     state = osUserRecRemoved;
      }
-  if (!HasSubMenu()) {
-     if (HadSubMenu) {
-        if (Key == kYellow) {
-           // the last recording in a subdirectory was deleted, so let's go back up
-           cOsdMenu::Del(Current());
-           if (!Count())
-              return osBack;
+  else if (state == osUserRecRemoved) {
+     // a recording was removed from a sub folder, so update the current item
+     if (cOsdMenu *m = SubMenu()) {
+        if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+           if (cMenuRecordingItem *riSub = (cMenuRecordingItem *)m->Get(m->Current()))
+              ri->SetRecording(riSub->Recording());
            }
         }
+     // no state change here, this report goes upstream!
+     }
+  else if (state == osUserRecEmpty) {
+     // a subfolder became empty, so let's go back up
+     CloseSubMenu(false); // this is the now empty submenu
+     cOsdMenu::Del(Current()); // the menu entry of the now empty subfolder
+     Set(); // in case a recording was moved into a new subfolder of this folder
+     if (base && !Count()) // base: don't go up beyond the top level Recordings menu
+        return state;
+     Display();
+     state = osContinue;
+     }
+  if (!HasSubMenu()) {
      Set(true);
      if (Key != kNone)
         SetHelpKeys();
