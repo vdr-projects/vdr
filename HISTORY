@@ -9234,3 +9234,5 @@ Video Disk Recorder Revision History
   new location of the recording, but rather stays in the original folder (suggested by
   Matthias Senzel). If the original folder got empty by moving away the last recording
   it contained, the cursor is moved up until a non empty folder is found.
+- Moved adding the name of the edited recording into the cutting thread, to avoid a
+  problem with locking the Recordings list (reported by Matthias Senzel).

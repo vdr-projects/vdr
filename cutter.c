@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 4.3 2017/05/21 09:45:06 kls Exp $
+ * $Id: cutter.c 4.4 2017/12/14 14:09:46 kls Exp $
  */
 
 #include "cutter.h"
@@ -222,6 +222,7 @@ void cMpeg2Fixer::AdjTref(int TrefOffset)
 
 class cCuttingThread : public cThread {
 private:
+  cString editedVersionName; // we add the edited version's name to Recordings only after the cutting process has successfully started, so we need to store that name here
   const char *error;
   bool isPesRecording;
   double framesPerSecond;
@@ -286,6 +287,7 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
   if (fromMarks.Load(FromFileName, framesPerSecond, isPesRecording) && fromMarks.Count()) {
      numSequences = fromMarks.GetNumSequences();
      if (numSequences > 0) {
+        editedVersionName = ToFileName;
         fromFileName = new cFileName(FromFileName, false, true, isPesRecording);
         toFileName = new cFileName(ToFileName, true, true, isPesRecording);
         fromIndex = new cIndexFile(FromFileName, false, isPesRecording);
@@ -603,6 +605,10 @@ void cCuttingThread::Action(void)
      toFile = toFileName->Open();
      if (!fromFile || !toFile)
         return;
+     {
+       LOCK_RECORDINGS_WRITE;
+       Recordings->AddByName(editedVersionName, false);
+     }
      int LastEndIndex = -1;
      while (BeginMark && Running()) {
            // Suspend cutting if we have severe throughput problems:
@@ -677,8 +683,6 @@ bool cCutter::Start(void)
               cRecordingUserCommand::InvokeCommand(RUC_EDITINGRECORDING, editedVersionName, originalVersionName);
               if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
                  Recording.WriteInfo(editedVersionName);
-                 LOCK_RECORDINGS_WRITE;
-                 Recordings->AddByName(editedVersionName, false);
                  cuttingThread = new cCuttingThread(originalVersionName, editedVersionName);
                  return true;
                  }
