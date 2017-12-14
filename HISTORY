@@ -9236,3 +9236,6 @@ Video Disk Recorder Revision History
   it contained, the cursor is moved up until a non empty folder is found.
 - Moved adding the name of the edited recording into the cutting thread, to avoid a
   problem with locking the Recordings list (reported by Matthias Senzel).
+- Changed the log message ""ERROR: copying directory '%s' to '%s' ended prematurely" from
+  "error" to "info", because any actual error would have already been reported before this
+  (suggested by Matthias Senzel).

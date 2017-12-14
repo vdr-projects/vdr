@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.14 2017/12/11 13:35:14 kls Exp $
+ * $Id: recording.c 4.15 2017/12/14 15:14:59 kls Exp $
  */
 
 #include "recording.h"
@@ -1823,7 +1823,7 @@ void cDirCopier::Action(void)
         free(Buffer);
         close(From); // just to be absolutely sure
         close(To);
-        esyslog("ERROR: copying directory '%s' to '%s' ended prematurely", *dirNameSrc, *dirNameDst);
+        isyslog("copying directory '%s' to '%s' ended prematurely", *dirNameSrc, *dirNameDst);
         }
      else
         esyslog("ERROR: can't open '%s'", *dirNameSrc);
