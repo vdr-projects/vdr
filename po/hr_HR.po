@@ -613,9 +613,6 @@ msgstr ""
 msgid "New folder"
 msgstr ""
 
-msgid "Sub folder"
-msgstr ""
-
 msgid "Folder name already exists!"
 msgstr ""
 

@@ -612,9 +612,6 @@ msgstr "Uredi direktorij"
 msgid "New folder"
 msgstr "Nov direktorij"
 
-msgid "Sub folder"
-msgstr "Pod direktorij"
-
 msgid "Folder name already exists!"
 msgstr "Ime direktorija ¾e obstaja"
 

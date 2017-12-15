@@ -614,9 +614,6 @@ msgstr "Edutuj katalog"
 msgid "New folder"
 msgstr "Nowy katalog"
 
-msgid "Sub folder"
-msgstr "Podkatalog"
-
 msgid "Folder name already exists!"
 msgstr "Taka nazwa katalogu juz istnieje"
 

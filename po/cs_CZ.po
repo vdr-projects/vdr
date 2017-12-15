@@ -614,9 +614,6 @@ msgstr "Změna složky"
 msgid "New folder"
 msgstr "Nová složka"
 
-msgid "Sub folder"
-msgstr "Podsložka"
-
 msgid "Folder name already exists!"
 msgstr "Složka již existuje!"
 

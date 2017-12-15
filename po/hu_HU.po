@@ -616,9 +616,6 @@ msgstr "Könyvtár szerkesztése"
 msgid "New folder"
 msgstr "Új könyvtár"
 
-msgid "Sub folder"
-msgstr "Alkönyvtár"
-
 msgid "Folder name already exists!"
 msgstr "Ez a könyvtárnév már létezik!"
 

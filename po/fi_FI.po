@@ -615,9 +615,6 @@ msgstr "Muokkaa kansiota"
 msgid "New folder"
 msgstr "Uusi kansio"
 
-msgid "Sub folder"
-msgstr "Alikansio"
-
 msgid "Folder name already exists!"
 msgstr "Kansio on jo olemassa!"
 

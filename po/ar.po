@@ -615,9 +615,6 @@ msgstr "تحرير مجلد"
 msgid "New folder"
 msgstr "مجلد جديد"
 
-msgid "Sub folder"
-msgstr "مجلد فرعى"
-
 msgid "Folder name already exists!"
 msgstr "المجلد موجود بالفعل"
 

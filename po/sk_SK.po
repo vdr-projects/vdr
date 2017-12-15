@@ -612,9 +612,6 @@ msgstr "Upravi» zlo¾ku"
 msgid "New folder"
 msgstr "Nový zlo¾ka"
 
-msgid "Sub folder"
-msgstr "Pod zlo¾ka"
-
 msgid "Folder name already exists!"
 msgstr "Názov zlo¾ky u¾ existuje!"
 

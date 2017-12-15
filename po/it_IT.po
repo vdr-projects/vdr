@@ -617,9 +617,6 @@ msgstr "Modifica cartella"
 msgid "New folder"
 msgstr "Nuova cartella"
 
-msgid "Sub folder"
-msgstr "Sotto cartella"
-
 msgid "Folder name already exists!"
 msgstr "Nome cartella già esistente!"
 

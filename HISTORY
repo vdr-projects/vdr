@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-12-14: Version 2.3.9
+2017-12-15: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9239,3 +9239,5 @@ Video Disk Recorder Revision History
 - Changed the log message ""ERROR: copying directory '%s' to '%s' ended prematurely" from
   "error" to "info", because any actual error would have already been reported before this
   (suggested by Matthias Senzel).
+- When selecting a folder for a recording or timer, it is now possible to open a folder
+  even if it doesn't contain any subfolders (suggested by Matthias Senzel).

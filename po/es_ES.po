@@ -612,9 +612,6 @@ msgstr "Modificar carpeta"
 msgid "New folder"
 msgstr "Nueva carpeta"
 
-msgid "Sub folder"
-msgstr "Sub carpeta"
-
 msgid "Folder name already exists!"
 msgstr "¡La carpeta ya existe!"
 

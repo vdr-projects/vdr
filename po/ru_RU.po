@@ -612,9 +612,6 @@ msgstr "Редакция директории"
 msgid "New folder"
 msgstr "Новая директория"
 
-msgid "Sub folder"
-msgstr "поддиректория"
-
 msgid "Folder name already exists!"
 msgstr "Директория уже существует!"
 

@@ -617,9 +617,6 @@ msgstr "Bewerk map"
 msgid "New folder"
 msgstr "Nieuwe map"
 
-msgid "Sub folder"
-msgstr "Submap"
-
 msgid "Folder name already exists!"
 msgstr "Map bestaat al"
 

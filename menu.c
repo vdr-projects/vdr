@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.52 2017/12/14 10:32:41 kls Exp $
+ * $Id: menu.c 4.53 2017/12/15 13:27:20 kls Exp $
  */
 
 #include "menu.h"
@@ -656,6 +656,7 @@ class cMenuFolderItem : public cOsdItem {
 private:
   cNestedItem *folder;
 public:
+  virtual void Set(void);
   cMenuFolderItem(cNestedItem *Folder);
   cNestedItem *Folder(void) { return folder; }
   };
@@ -664,8 +665,15 @@ cMenuFolderItem::cMenuFolderItem(cNestedItem *Folder)
 :cOsdItem(Folder->Text())
 {
   folder = Folder;
-  if (folder->SubItems())
+  Set();
+}
+
+void cMenuFolderItem::Set(void)
+{
+  if (folder->SubItems() && folder->SubItems()->Count())
      SetText(cString::sprintf("%s...", folder->Text()));
+  else
+     SetText(folder->Text());
 }
 
 // --- cMenuEditFolder -------------------------------------------------------
@@ -675,7 +683,6 @@ private:
   cList<cNestedItem> *list;
   cNestedItem *folder;
   char name[PATH_MAX];
-  int subFolder;
   eOSState Confirm(void);
 public:
   cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNestedItem *Folder = NULL);
@@ -689,13 +696,10 @@ cMenuEditFolder::cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNes
   SetMenuCategory(mcFolder);
   list = List;
   folder = Folder;
-  if (folder) {
+  if (folder)
      strn0cpy(name, folder->Text(), sizeof(name));
-     subFolder = folder->SubItems() != NULL;
-     }
   else {
      *name = 0;
-     subFolder = 0;
      cRemote::Put(kRight, true); // go right into string editing mode
      }
   if (!isempty(Dir)) {
@@ -704,7 +708,6 @@ cMenuEditFolder::cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNes
      Add(DirItem);
      }
   Add(new cMenuEditStrItem( tr("Name"), name, sizeof(name)));
-  Add(new cMenuEditBoolItem(tr("Sub folder"), &subFolder));
 }
 
 cString cMenuEditFolder::GetFolder(void)
@@ -728,12 +731,10 @@ eOSState cMenuEditFolder::Confirm(void)
         return osContinue;
         }
      }
-  if (folder) {
+  if (folder)
      folder->SetText(name);
-     folder->SetSubItems(subFolder);
-     }
   else
-     list->Add(folder = new cNestedItem(name, subFolder));
+     list->Add(folder = new cNestedItem(name));
   return osEnd;
 }
 
@@ -791,12 +792,8 @@ void cMenuFolder::SetHelpKeys(void)
   if (HasSubMenu())
      return;
   int NewHelpKeys = 0;
-  if (firstFolder) {
-     if (cMenuFolderItem *Folder = (cMenuFolderItem *)Get(Current())) {
-        if (Folder->Folder()->SubItems())
-           NewHelpKeys = 1;
-        }
-     }
+  if (firstFolder)
+     NewHelpKeys = 1;
   if (NewHelpKeys != helpKeys) {
      helpKeys = NewHelpKeys;
      SetHelp(NewHelpKeys > 0 ? tr("Button$Open") : NULL, tr("Button$New"), firstFolder ? tr("Button$Delete") : NULL, firstFolder ? tr("Button$Edit") : NULL);
@@ -885,8 +882,10 @@ eOSState cMenuFolder::Select(bool Open)
   if (firstFolder) {
      cMenuFolderItem *Folder = (cMenuFolderItem *)Get(Current());
      if (Folder) {
-        if (Open && Folder->Folder()->SubItems())
+        if (Open) {
+           Folder->Folder()->SetSubItems(true);
            return AddSubMenu(new cMenuFolder(Title(), Folder->Folder()->SubItems(), nestedItemList, !isempty(dir) ? *cString::sprintf("%s%c%s", *dir, FOLDERDELIMCHAR, Folder->Folder()->Text()) : Folder->Folder()->Text()));
+           }
         else
            return osEnd;
         }

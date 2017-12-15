@@ -622,9 +622,6 @@ msgstr "Modifier le dossier"
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-msgid "Sub folder"
-msgstr "Sous-dossier"
-
 msgid "Folder name already exists!"
 msgstr "Ce nom de dossier existe déjà !"
 

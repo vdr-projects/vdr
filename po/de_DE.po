@@ -612,9 +612,6 @@ msgstr "Verzeichnis editieren"
 msgid "New folder"
 msgstr "Neues Verzeichnis"
 
-msgid "Sub folder"
-msgstr "Unterverzeichnis"
-
 msgid "Folder name already exists!"
 msgstr "Verzeichnisname existiert bereits!"
 

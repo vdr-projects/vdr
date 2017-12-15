@@ -613,9 +613,6 @@ msgstr "编辑文件夹"
 msgid "New folder"
 msgstr "新文件夹"
 
-msgid "Sub folder"
-msgstr "子文件夹"
-
 msgid "Folder name already exists!"
 msgstr "文件夹名称已经存在！"
 

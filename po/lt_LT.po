@@ -611,9 +611,6 @@ msgstr "Koreguoti katalogą"
 msgid "New folder"
 msgstr "Naujas katalogas"
 
-msgid "Sub folder"
-msgstr "Pakatalogis"
-
 msgid "Folder name already exists!"
 msgstr "Toks katalogo vardas jau egzistuoja!"
 

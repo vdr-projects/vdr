@@ -612,9 +612,6 @@ msgstr "Уреди директориум"
 msgid "New folder"
 msgstr "Нов директориум"
 
-msgid "Sub folder"
-msgstr "Поддиректориум"
-
 msgid "Folder name already exists!"
 msgstr "Името веќе постои"
 

@@ -612,9 +612,6 @@ msgstr "Редагувати теку"
 msgid "New folder"
 msgstr "Нова тека"
 
-msgid "Sub folder"
-msgstr "Підтека"
-
 msgid "Folder name already exists!"
 msgstr "Назва теки вже існує!"
 

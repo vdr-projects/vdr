@@ -611,9 +611,6 @@ msgstr "Muuda kausta"
 msgid "New folder"
 msgstr "Uus kaust"
 
-msgid "Sub folder"
-msgstr "Uus alamkaust"
-
 msgid "Folder name already exists!"
 msgstr "Sellenimeline kaust juba olemas!"
 

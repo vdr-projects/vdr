@@ -616,9 +616,6 @@ msgstr "Redigera mapp"
 msgid "New folder"
 msgstr "Ny mapp"
 
-msgid "Sub folder"
-msgstr "Undermapp"
-
 msgid "Folder name already exists!"
 msgstr "Mappnamnet finns redan!"
 

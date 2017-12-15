@@ -612,9 +612,6 @@ msgstr "Editar pasta"
 msgid "New folder"
 msgstr "Nova pasta"
 
-msgid "Sub folder"
-msgstr "Subpasta"
-
 msgid "Folder name already exists!"
 msgstr "Nome da pasta já existe!"
 
