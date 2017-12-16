@@ -9241,3 +9241,4 @@ Video Disk Recorder Revision History
   (suggested by Matthias Senzel).
 - When selecting a folder for a recording or timer, it is now possible to open a folder
   even if it doesn't contain any subfolders (suggested by Matthias Senzel).
+- Fixed a possible deadlock when detaching a receiver from a device.

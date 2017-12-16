@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.24 2017/08/31 11:34:54 kls Exp $
+ * $Id: device.c 4.25 2017/12/16 13:13:13 kls Exp $
  */
 
 #include "device.h"
@@ -1673,6 +1673,7 @@ void cDevice::Action(void)
                  int Pid = TsPid(b);
                  bool IsScrambled = TsIsScrambled(b);
                  for (int i = 0; i < MAXRECEIVERS; i++) {
+                     cMutexLock MutexLock(&mutexReceiver);
                      cReceiver *Receiver = receiver[i];
                      if (Receiver && Receiver->WantsPid(Pid)) {
                         Receiver->Receive(b, TS_SIZE);
@@ -1768,10 +1769,8 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
                 }
              }
          Receiver->Activate(true);
-         Lock();
          Receiver->device = this;
          receiver[i] = Receiver;
-         Unlock();
          if (camSlot && Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
             camSlot->StartDecrypting();
             if (camSlot->WantsTsData()) {
@@ -1801,13 +1800,11 @@ void cDevice::Detach(cReceiver *Receiver)
   if (!Receiver || Receiver->device != this)
      return;
   bool receiversLeft = false;
-  cMutexLock MutexLock(&mutexReceiver);
+  mutexReceiver.Lock();
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] == Receiver) {
-         Lock();
          receiver[i] = NULL;
          Receiver->device = NULL;
-         Unlock();
          Receiver->Activate(false);
          for (int n = 0; n < Receiver->numPids; n++)
              DelPid(Receiver->pids[n]);
@@ -1815,6 +1812,7 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
+  mutexReceiver.Unlock();
   if (camSlot) {
      if (Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
         camSlot->StartDecrypting();
