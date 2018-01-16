@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.16 2018/01/16 11:09:26 kls Exp $
+ * $Id: recording.c 4.17 2018/01/16 14:07:04 kls Exp $
  */
 
 #include "recording.h"
@@ -1908,6 +1908,7 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
   // Now check if there is something to start:
   if ((Usage() & ruPending) != 0) {
      if ((Usage() & ruCut) != 0) {
+        Recordings->AddByName(FileNameDst(), false);
         cutter = new cCutter(FileNameSrc());
         cutter->Start();
         }
@@ -1932,6 +1933,14 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
 
 void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
 {
+  if ((usage & ruCut)) {          // this was a cut operation...
+     if (cutter) {                // ...which had not yet ended
+        delete cutter;
+        cutter = NULL;
+        }
+     cVideoDirectory::RemoveVideoFile(fileNameDst);
+     Recordings->DelByName(fileNameDst);
+     }
   if ((usage & (ruMove | ruCopy)) // this was a move/copy operation...
      && ((usage & ruPending)      // ...which had not yet started...
         || copier                 // ...or not yet finished...

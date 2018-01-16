@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 4.4 2017/12/14 14:09:46 kls Exp $
+ * $Id: cutter.c 4.5 2018/01/16 14:09:14 kls Exp $
  */
 
 #include "cutter.h"
@@ -222,7 +222,6 @@ void cMpeg2Fixer::AdjTref(int TrefOffset)
 
 class cCuttingThread : public cThread {
 private:
-  cString editedVersionName; // we add the edited version's name to Recordings only after the cutting process has successfully started, so we need to store that name here
   const char *error;
   bool isPesRecording;
   double framesPerSecond;
@@ -287,7 +286,6 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
   if (fromMarks.Load(FromFileName, framesPerSecond, isPesRecording) && fromMarks.Count()) {
      numSequences = fromMarks.GetNumSequences();
      if (numSequences > 0) {
-        editedVersionName = ToFileName;
         fromFileName = new cFileName(FromFileName, false, true, isPesRecording);
         toFileName = new cFileName(ToFileName, true, true, isPesRecording);
         fromIndex = new cIndexFile(FromFileName, false, isPesRecording);
@@ -605,10 +603,6 @@ void cCuttingThread::Action(void)
      toFile = toFileName->Open();
      if (!fromFile || !toFile)
         return;
-     {
-       LOCK_RECORDINGS_WRITE;
-       Recordings->AddByName(editedVersionName, false);
-     }
      int LastEndIndex = -1;
      while (BeginMark && Running()) {
            // Suspend cutting if we have severe throughput problems:
@@ -707,8 +701,6 @@ void cCutter::Stop(void)
      if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), editedVersionName) == 0)
         cControl::Shutdown();
      cVideoDirectory::RemoveVideoFile(editedVersionName);
-     LOCK_RECORDINGS_WRITE;
-     Recordings->DelByName(editedVersionName);
      }
 }
 

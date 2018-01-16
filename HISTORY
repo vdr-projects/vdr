@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2017-12-15: Version 2.3.9
+2018-01-16: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9234,11 +9234,11 @@ Video Disk Recorder Revision History
   new location of the recording, but rather stays in the original folder (suggested by
   Matthias Senzel). If the original folder got empty by moving away the last recording
   it contained, the cursor is moved up until a non empty folder is found.
-- Moved adding the name of the edited recording into the cutting thread, to avoid a
-  problem with locking the Recordings list (reported by Matthias Senzel).
 - Changed the log message ""ERROR: copying directory '%s' to '%s' ended prematurely" from
   "error" to "info", because any actual error would have already been reported before this
   (suggested by Matthias Senzel).
 - When selecting a folder for a recording or timer, it is now possible to open a folder
   even if it doesn't contain any subfolders (suggested by Matthias Senzel).
 - Fixed a possible deadlock when detaching a receiver from a device.
+- Moved any locking from cutter.c into recording.c, to avoid a problem with locking
+  the Recordings list (reported by Matthias Senzel).
