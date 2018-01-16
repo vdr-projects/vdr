@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.3 2017/06/10 11:53:39 kls Exp $
+.\" $Id: vdr.5 4.4 2018/01/16 15:21:36 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -522,23 +522,18 @@ frequency of the given channel, and pin is an optional pin number (0-255). The
 actual values are device specific and can be found in the SCR device's manual.
 
 Examples:
-
+.PP
+.EX
 0 1284
-.br
 1 1400
-.br
 2 1516
-.br
 3 1632
-.br
 4 1748
-.br
 5 1864
-.br
 6 1980
-.br
 7 2096
-
+.EE
+.PP
 By default it is assumed that the SCR configurations apply to all devices, and
 each device will pick one. If you have several SCR sat cables connected to one
 VDR machine, or if you want to explicitly assign the SCR channels to your devices,
@@ -596,35 +591,24 @@ defines a sub folder (i.e. a folder that contains other folders), and a line
 consisting of only '}' ends the definition of a sub folder.
 
 Example:
-
+.PP
+.EX
 Daily {
-.br
   News
-.br
   Soaps
-.br
   }
-.br
 Archive {
-.br
   Movies
-.br
   Sports
-.br
   Sci-Fi {
-.br
     Star Trek
-.br
     U.F.O.
-.br
     }
-.br
   }
-.br
 Comedy
-.br
 Science
-
+.EE
+.PP
 Note that these folder definitions are only used to set the file name under which
 a timer will store its recording. Changing these definitions in any way has no
 effect on existing timers or recordings.
@@ -647,9 +631,9 @@ Everything following (and including) a '#' character is considered to be comment
 
 You can have nested layers of command menus by surrounding a sequence of
 commands with '{'...'}' and giving it a title, as in
-
+.PP
+.EX
 My Commands {
-.br
   First list {
     Do something: some command
     Do something else: another command
@@ -658,9 +642,9 @@ My Commands {
     Even more: yet another command
     So much more: and yet another one
     }
-.br
   }
-
+.EE
+.PP
 Command lists can be nested to any depth.
 
 By default the menu entries in the "Commands" menu will be numbered '1'...'9'
@@ -675,15 +659,14 @@ In order to avoid error messages to the console, every command should have
 \fIstdout\fR will be displayed in a result window, with \fBtitle\fR as its title.
 
 Examples:
-
+.PP
+.EX
 Check for new mail?: /usr/local/bin/checkmail 2>&1
-.br
 CPU status: /usr/local/bin/cpustatus 2>&1
-.br
 Disk space: df \-h | grep '/video' | awk '{ print 100 \- $5 "% free"; }'
-.br
 Calendar: date;echo;cal
-
+.EE
+.PP
 Note that the commands 'checkmail' and 'cpustatus' are only \fBexamples\fR!
 Don't send emails to the author asking where to find these ;\-)
 .br
@@ -713,14 +696,13 @@ the \fBIP-Address\fR is 0.0.0.0, because this will give access to any host
 Everything following (and including) a '#' character is considered to be comment.
 
 Examples:
-
+.PP
+.EX
 127.0.0.1        # always accept localhost
-.br
 192.168.100.0/24 # any host on the local net
-.br
 204.152.189.113  # a specific host
-.br
 0.0.0.0/0        # any host on any net (\fBUSE WITH CARE!\fR)
+.EE
 .SS SETUP
 The file \fIsetup.conf\fR contains the basic configuration options for \fBvdr\fR.
 Each line contains one option in the format "Name = Value".
@@ -961,20 +943,16 @@ Everything following (and including) a '#' character is considered to be comment
 If started without any options, vdr tries to read any files in the directory
 /etc/vdr/conf.d with names that do not begin with a '.' and that end with '.conf'.
 These files are read in alphabetical order. The format of these files is
-
+.PP
+.EX
 # comment
-.br
 [name]
-.br
 -a
-.br
 -b 123
-.br
 --long
-.br
 --longarg=123
-.br
-
+.EE
+.PP
 Any lines that begin with '#' as the first non-whitespace character are considered
 comments and are ignored.
 A command line option file consists of one or more sections, indicated by '[name]',

@@ -3111,6 +3111,7 @@ Chris Mayo <aklhfex@gmail.com>
  for fixing the link to "svdrpsend (1)" in the vdr.1 man page
  for updating links in the INSTALL file
  for reporting double slashes in file names processed with AddDirectory()
+ for using the 'example' macro in vdr.5
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs

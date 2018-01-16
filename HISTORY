@@ -9242,3 +9242,4 @@ Video Disk Recorder Revision History
 - Fixed a possible deadlock when detaching a receiver from a device.
 - Moved any locking from cutter.c into recording.c, to avoid a problem with locking
   the Recordings list (reported by Matthias Senzel).
+- Now using the 'example' macro in vdr.5 (thanks to Chris Mayo).
