@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.15 2017/12/14 15:14:59 kls Exp $
+ * $Id: recording.c 4.16 2018/01/16 11:09:26 kls Exp $
  */
 
 #include "recording.h"
@@ -1237,7 +1237,10 @@ bool cRecording::ChangeName(const char *NewName)
      free(name);
      name = strdup(NewName);
      cString NewFileName = FileName();
-     if (!(MakeDirs(NewFileName, true) && cVideoDirectory::MoveVideoFile(OldFileName, NewFileName))) {
+     bool Exists = access(NewFileName, F_OK) == 0;
+     if (Exists)
+        esyslog("ERROR: recording '%s' already exists", NewName);
+     if (Exists || !(MakeDirs(NewFileName, true) && cVideoDirectory::MoveVideoFile(OldFileName, NewFileName))) {
         free(name);
         name = strdup(OldName);
         free(fileName);
