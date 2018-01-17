@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.53 2017/12/15 13:27:20 kls Exp $
+ * $Id: menu.c 4.54 2018/01/17 10:21:29 kls Exp $
  */
 
 #include "menu.h"
@@ -2492,13 +2492,18 @@ eOSState cMenuPathEdit::ApplyChanges(void)
      }
      if (NumRecordings > 1 && !Interface->Confirm(cString::sprintf(tr("Move entire folder containing %d recordings?"), NumRecordings)))
         return osContinue;
-     LOCK_RECORDINGS_WRITE;
-     Recordings->SetExplicitModify();
-     if (!Recordings->MoveRecordings(path, NewPath)) {
+     bool Error = false;
+     {
+       LOCK_RECORDINGS_WRITE;
+       Recordings->SetExplicitModify();
+       Error = !Recordings->MoveRecordings(path, NewPath);
+       if (!Error)
+          Recordings->SetModified();
+     }
+     if (Error) {
         Skins.Message(mtError, tr("Error while moving folder!"));
         return osContinue;
         }
-     Recordings->SetModified();
      if (strcmp(folder, oldFolder))
         return osUserRecMoved;
      return osUserRecRenamed;
@@ -5541,17 +5546,22 @@ void cReplayControl::Stop(void)
                    }
               }
               cDvbPlayerControl::Stop();
-              LOCK_RECORDINGS_WRITE;
-              Recordings->SetExplicitModify();
-              if (cRecording *Recording = Recordings->GetByName(fileName)) {
-                 if (Recording->Delete()) {
-                    Recordings->DelByName(fileName);
-                    ClearLastReplayed(fileName);
-                    Recordings->SetModified();
-                    }
-                 else
-                    Skins.Message(mtError, tr("Error while deleting recording!"));
-                 }
+              bool Error = false;
+              {
+                LOCK_RECORDINGS_WRITE;
+                Recordings->SetExplicitModify();
+                if (cRecording *Recording = Recordings->GetByName(fileName)) {
+                   if (Recording->Delete()) {
+                      Recordings->DelByName(fileName);
+                      ClearLastReplayed(fileName);
+                      Recordings->SetModified();
+                      }
+                   else
+                      Error = true;
+                   }
+              }
+              if (Error)
+                 Skins.Message(mtError, tr("Error while deleting recording!"));
               return;
               }
            }

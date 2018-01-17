@@ -3297,6 +3297,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  prematurely" from "error" to "info"
  for suggesting to allow opening a folder when selecting a folder for a recording or
  timer, even if it doesn't contain any subfolders
+ for reporting a possible locking problem in cMenuPathEdit::ApplyChanges() when the
+ lock is held while the error message is displayed
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language

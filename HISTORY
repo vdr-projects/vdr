@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-01-16: Version 2.3.9
+2018-01-17: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9243,3 +9243,5 @@ Video Disk Recorder Revision History
 - Moved any locking from cutter.c into recording.c, to avoid a problem with locking
   the Recordings list (reported by Matthias Senzel).
 - Now using the 'example' macro in vdr.5 (thanks to Chris Mayo).
+- Now unlocking the Recordings list before displaying an error message in
+  cMenuPathEdit::ApplyChanges() and cReplayControl::Stop() (reported by Matthias Senzel).
