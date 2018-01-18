@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 4.5 2018/01/16 14:09:14 kls Exp $
+ * $Id: cutter.c 4.6 2018/01/18 12:19:31 kls Exp $
  */
 
 #include "cutter.h"
@@ -700,7 +700,6 @@ void cCutter::Stop(void)
         esyslog("ERROR: '%s' during editing process", Error);
      if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), editedVersionName) == 0)
         cControl::Shutdown();
-     cVideoDirectory::RemoveVideoFile(editedVersionName);
      }
 }
 
