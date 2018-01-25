@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.13 2017/05/09 11:50:38 kls Exp $
+ * $Id: dvbdevice.c 4.14 2018/01/25 15:09:17 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -714,7 +714,7 @@ int cDvbTuner::GetSignalStrength(void) const
          esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
          return -1;
          }
-      int Signal = 0;;
+      int Signal = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
            case FE_SCALE_DECIBEL:  Signal = dB1000toPercent(Props[0].u.st.stat[0].svalue, -95000, -20000); // TODO use different values for DVB-S, -T, -C?
@@ -772,7 +772,7 @@ int cDvbTuner::GetSignalQuality(void) const
          esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
          return -1;
          }
-      int Cnr = 0;;
+      int Cnr = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
            case FE_SCALE_DECIBEL:  Cnr = dB1000toPercent(Props[0].u.st.stat[0].svalue, 5000, 20000); // TODO use different values for DVB-S, -T, -C?

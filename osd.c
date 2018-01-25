@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.3 2015/09/10 14:12:06 kls Exp $
+ * $Id: osd.c 4.4 2018/01/25 15:09:09 kls Exp $
  */
 
 #include "osd.h"
@@ -1183,7 +1183,7 @@ void cPixmap::DrawPixmap(const cPixmap *Pixmap, const cRect &Dirty)
            t0.Shift(-Pixmap->DrawPort().Width(), 0);
      while (t0.Y() > Pixmap->ViewPort().Top())
            t0.Shift(0, -Pixmap->DrawPort().Height());
-     cPoint t = t0;;
+     cPoint t = t0;
      while (t.Y() <= Pixmap->ViewPort().Bottom()) {
            while (t.X() <= Pixmap->ViewPort().Right()) {
                  cRect Source = Pixmap->DrawPort(); // assume the entire pixmap needs to be rendered
