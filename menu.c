@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.54 2018/01/17 10:21:29 kls Exp $
+ * $Id: menu.c 4.55 2018/01/26 14:34:31 kls Exp $
  */
 
 #include "menu.h"
@@ -4122,7 +4122,7 @@ eOSState cMenuSetupMisc::ProcessKey(eKeys Key)
   bool OldSVDRPPeering = data.SVDRPPeering;
   bool ModifiedSVDRPSettings = false;
   if (Key == kOk)
-     ModifiedSVDRPSettings = data.SVDRPPeering != Setup.SVDRPPeering | strcmp(data.SVDRPHostName, Setup.SVDRPHostName);
+     ModifiedSVDRPSettings = data.SVDRPPeering != Setup.SVDRPPeering || strcmp(data.SVDRPHostName, Setup.SVDRPHostName);
   eOSState state = cMenuSetupBase::ProcessKey(Key);
   if (data.SVDRPPeering != OldSVDRPPeering)
      Set();
