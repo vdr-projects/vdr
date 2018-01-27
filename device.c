@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.25 2017/12/16 13:13:13 kls Exp $
+ * $Id: device.c 4.26 2018/01/27 14:45:08 kls Exp $
  */
 
 #include "device.h"
@@ -120,6 +120,7 @@ cDevice::~cDevice()
   delete dvbSubtitleConverter;
   if (this == primaryDevice)
      primaryDevice = NULL;
+  Cancel(3);
 }
 
 bool cDevice::WaitForAllDevicesReady(int Timeout)
@@ -1821,7 +1822,7 @@ void cDevice::Detach(cReceiver *Receiver)
         }
      }
   if (!receiversLeft)
-     Cancel(3);
+     Cancel(-1);
 }
 
 void cDevice::DetachAll(int Pid)
