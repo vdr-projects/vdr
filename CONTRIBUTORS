@@ -2628,6 +2628,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for suggesting to change tEventID back to u_int32_t
  for adding the 'aux' member to cEvent
  for reporting a possible deadlock when quickly zapping through encrypted channels
+ for a patch that was used to implement cStatus::MarksModified()
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems

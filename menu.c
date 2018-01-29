@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.55 2018/01/26 14:34:31 kls Exp $
+ * $Id: menu.c 4.56 2018/01/29 13:59:58 kls Exp $
  */
 
 #include "menu.h"
@@ -2694,8 +2694,15 @@ eOSState cMenuRecordingEdit::RemoveName(void)
 eOSState cMenuRecordingEdit::DeleteMarks(void)
 {
   if (buttonDeleteMarks && Interface->Confirm(tr("Delete editing marks for this recording?"))) {
-     if (cMarks::DeleteMarksFile(recording))
+     if (cMarks::DeleteMarksFile(recording)) {
         SetHelpKeys();
+        if (cControl *Control = cControl::Control(true)) {
+           if (const cRecording *Recording = Control->GetRecording()) {
+              if (strcmp(recording->FileName(), Recording->FileName()) == 0)
+                 cStatus::MsgMarksModified(NULL);
+              }
+           }
+        }
      else
         Skins.Message(mtError, tr("Error while deleting editing marks!"));
      }
@@ -5811,6 +5818,7 @@ void cReplayControl::MarkToggle(void)
      StateKey.Remove();
      ShowTimed(2);
      marksModified = true;
+     cStatus::MsgMarksModified(&marks);
      }
 }
 
@@ -5870,6 +5878,7 @@ void cReplayControl::MarkMove(int Frames, bool MarkRequired)
         m->SetPosition(p);
         Goto(m->Position(), true);
         marksModified = true;
+        cStatus::MsgMarksModified(&marks);
         }
      else if (!MarkRequired)
         Goto(SkipFrames(Frames), !Play);

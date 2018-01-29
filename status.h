@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 4.3 2017/06/23 09:08:24 kls Exp $
+ * $Id: status.h 4.4 2018/01/29 13:42:17 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -59,6 +59,11 @@ protected:
                // a name, Name can be a string that identifies the player type (like, e.g., "DVD").
                // The full file name of the recording is given in FileName, which may be NULL in case there is no
                // actual file involved. If On is false, Name may be NULL.
+  virtual void MarksModified(const cMarks *Marks) {}
+               // If the editing marks of the recording that is currently being played
+               // are modified in any way, this function is called with the list of
+               // Marks. If Marks is NULL, the editing marks for the currently played
+               // recording have been deleted entirely.
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
                // absolutely or relative to the current volume.
@@ -103,6 +108,7 @@ public:
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
   static void MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On);
   static void MsgReplaying(const cControl *Control, const char *Name, const char *FileName, bool On);
+  static void MsgMarksModified(const cMarks* Marks);
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgSetAudioTrack(int Index, const char * const *Tracks);
   static void MsgSetAudioChannel(int AudioChannel);
