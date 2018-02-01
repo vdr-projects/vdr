@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.56 2018/01/29 13:59:58 kls Exp $
+ * $Id: menu.c 4.57 2018/02/01 15:48:54 kls Exp $
  */
 
 #include "menu.h"
@@ -2699,7 +2699,7 @@ eOSState cMenuRecordingEdit::DeleteMarks(void)
         if (cControl *Control = cControl::Control(true)) {
            if (const cRecording *Recording = Control->GetRecording()) {
               if (strcmp(recording->FileName(), Recording->FileName()) == 0)
-                 cStatus::MsgMarksModified(NULL);
+                 Control->ClearEditingMarks();
               }
            }
         }
@@ -5576,6 +5576,16 @@ void cReplayControl::Stop(void)
      }
   cDvbPlayerControl::Stop();
   cMenuRecordings::SetRecording(NULL); // make sure opening the Recordings menu navigates to the last replayed recording
+}
+
+void cReplayControl::ClearEditingMarks(void)
+{
+  cStateKey StateKey;
+  marks.Lock(StateKey);
+  while (cMark *m = marks.First())
+        marks.Del(m);
+  StateKey.Remove();
+  cStatus::MsgMarksModified(NULL);
 }
 
 void cReplayControl::SetRecording(const char *FileName)

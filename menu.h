@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 4.5 2016/12/22 10:55:36 kls Exp $
+ * $Id: menu.h 4.6 2018/02/01 15:35:48 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -326,6 +326,7 @@ public:
   virtual void Show(void);
   virtual void Hide(void);
   bool Visible(void) { return visible; }
+  virtual void ClearEditingMarks(void);
   static void SetRecording(const char *FileName);
   static const char *NowReplaying(void);
   static const char *LastReplayed(void);
