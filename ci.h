@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.10 2017/06/10 11:53:39 kls Exp $
+ * $Id: ci.h 4.11 2018/02/03 12:19:44 kls Exp $
  */
 
 #ifndef __CI_H
@@ -304,7 +304,7 @@ public:
   virtual ~cCamSlot();
   bool IsMasterSlot(void) { return !masterSlot; }
        ///< Returns true if this CAM slot itself is a master slot (which means that
-       ///< it doesn't have pointer to another CAM slot that's its master).
+       ///< it doesn't have a pointer to another CAM slot that's its master).
   cCamSlot *MasterSlot(void) { return masterSlot ? masterSlot : this; }
        ///< Returns this CAM slot's master slot, or a pointer to itself if it is a
        ///< master slot.

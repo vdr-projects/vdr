@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.19 2018/01/28 11:14:40 kls Exp $
+ * $Id: ci.c 4.20 2018/02/03 12:55:03 kls Exp $
  */
 
 #include "ci.h"
@@ -306,7 +306,7 @@ void cCaActivationReceiver::Receive(const uchar *Data, int Length)
      if (TsIsScrambled(Data))
         lastScrambledTime = Now;
      else if (Now - lastScrambledTime > UNSCRAMBLE_TIME) {
-        dsyslog("CAM %d: activated!", camSlot->SlotNumber());
+        dsyslog("CAM %d: activated!", camSlot->MasterSlotNumber());
         Skins.QueueMessage(mtInfo, tr("CAM activated!"));
         cDevice *d = Device();
         Detach();
@@ -1138,10 +1138,12 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
        case AOT_CA_PMT_REPLY: {
             dbgprotocol("Slot %d: <== Ca Pmt Reply (%d)", CamSlot()->SlotNumber(), SessionId());
             if (!repliesToQuery) {
-               dsyslog("CAM %d: replies to QUERY - multi channel decryption (MCD) possible", CamSlot()->SlotNumber());
+               if (CamSlot()->IsMasterSlot())
+                  dsyslog("CAM %d: replies to QUERY - multi channel decryption (MCD) possible", CamSlot()->SlotNumber());
                repliesToQuery = true;
                if (CamSlot()->MtdAvailable()) {
-                  dsyslog("CAM %d: supports multi transponder decryption (MTD)", CamSlot()->SlotNumber());
+                  if (CamSlot()->IsMasterSlot())
+                     dsyslog("CAM %d: supports multi transponder decryption (MTD)", CamSlot()->SlotNumber());
                   CamSlot()->MtdActivate(true);
                   }
                }
