@@ -9254,3 +9254,5 @@ Video Disk Recorder Revision History
   deleted via the Info/Edit menu of the currently played recording (the progress
   display still displayed them).
 - Limited some CAM related log messages to the actual master CAM, if any.
+- The Perl script 'peerdemo' shows how one can find all the VDRs in the local network
+  using the peer connection mechanism.
