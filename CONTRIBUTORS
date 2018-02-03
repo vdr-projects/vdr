@@ -1847,7 +1847,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for exporting some libsi functions
  for suggesting to add functions to cDevice that allow derived output devices to
  implement scaling the video to a given size and location
- fpr sorting sources.conf by continous azimuth
+ for sorting sources.conf by continuous azimuth
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem

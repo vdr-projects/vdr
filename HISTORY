@@ -8866,7 +8866,7 @@ Video Disk Recorder Revision History
   font drawing in high level OSDs (thanks to Thomas Reufer).
 - Fixed regenerating the index of audio recordings (thanks to Thomas Reufer).
 - Fixed building VDR with systemd >= 230 (thanks to Ville Skyttä).
-- Sorted sources.conf by continous azimuth (thanks to Lucian Muresan).
+- Sorted sources.conf by continuous azimuth (thanks to Lucian Muresan).
 - Added 'S58.5E Kazsat 3' to sources.conf (thanks to Aitugan Sarbassov).
 - Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
   (reported by Sergey Chernyavskiy).
