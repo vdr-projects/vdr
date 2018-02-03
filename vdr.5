@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.4 2018/01/16 15:21:36 kls Exp $
+.\" $Id: vdr.5 4.5 2018/02/03 13:56:27 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -900,6 +900,7 @@ in this file, other CAMs will be tried just as well. The main purpose of this
 file is to speed up channel switching in systems with more than one CAM.
 
 This file will be read at program startup and saved when the program ends.
+If the file is read-only, it will not be overwritten.
 .SS CAM AUTO RESPONSE
 If your CAM keeps popping up annoying messages or you want to make sure VDR
 can record programmes with parental rating without having to enter the PIN
