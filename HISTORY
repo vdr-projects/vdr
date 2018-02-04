@@ -9256,3 +9256,4 @@ Video Disk Recorder Revision History
 - Limited some CAM related log messages to the actual master CAM, if any.
 - The Perl script 'peerdemo' shows how one can find all the VDRs in the local network
   using the peer connection mechanism.
+- Added the UPDATE-2.4.0 file.
