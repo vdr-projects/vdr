@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.23 2017/11/11 12:04:17 kls Exp $
+ * $Id: svdrp.c 4.24 2018/02/05 14:52:27 kls Exp $
  */
 
 #include "svdrp.h"
@@ -425,11 +425,8 @@ bool cSVDRPClient::Process(cStringList *Response)
                   // make sure the string is terminated:
                   input[numChars] = 0;
                   dbgsvdrp("< %s: %s\n", *serverName, input);
-                  if (Response) {
+                  if (Response)
                      Response->Append(strdup(input));
-                     if (numChars >= 4 && input[3] != '-') // no more lines will follow
-                        break;
-                     }
                   else {
                      switch (atoi(input)) {
                        case 220: if (numChars > 4) {
@@ -448,6 +445,8 @@ bool cSVDRPClient::Process(cStringList *Response)
                                  break;
                        }
                      }
+                  if (numChars >= 4 && input[3] != '-') // no more lines will follow
+                     break;
                   numChars = 0;
                   }
                else {
@@ -467,12 +466,12 @@ bool cSVDRPClient::Process(cStringList *Response)
                return false;
                }
             }
-         else if (!Response)
-            break;
          else if (Timeout.TimedOut()) {
             esyslog("SVDRP < %s timeout while waiting for response from '%s'", ipAddress.Connection(), *serverName);
             return false;
             }
+         else if (!Response && numChars == 0)
+            break; // we read all or nothing!
          }
      if (pingTime.TimedOut())
         Execute("PING");

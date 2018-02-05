@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-02-03: Version 2.3.9
+2018-02-05: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9257,3 +9257,5 @@ Video Disk Recorder Revision History
 - The Perl script 'peerdemo' shows how one can find all the VDRs in the local network
   using the peer connection mechanism.
 - Added the UPDATE-2.4.0 file.
+- Making sure cSVDRPClient::Process() reads the entire reply once it started reading,
+  even if no Response parameter is given.
