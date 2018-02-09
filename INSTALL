@@ -73,15 +73,14 @@ port ("Simple Video Disk Recorder Protocol"). By default, it listens
 on port 6419 (use the --port=PORT option to change this). For details
 about the SVDRP syntax see the source file 'svdrp.c'.
 
-WARNING: DUE TO THE OPEN SVDRP PORT THIS PROGRAM MAY CONSTITUTE A
-=======  POTENTIAL SECURITY HAZARD! IF YOU ARE NOT RUNNING VDR IN
-         A CONTROLLED ENVIRONMENT, YOU MAY WANT TO DISABLE SVDRP
-         BY USING '--port=0'!
-
 The file 'svdrphosts.conf' can be used to define which hosts are allowed
 to access the SVDRP port. By default only localhost (127.0.0.1) is granted
 access. If you want to give other hosts access to your SVDRP port you need to
 add their IP numbers to 'svdrphosts.conf'.
+
+You can disable SVDRP access entirely by either running VDR with '--port=0',
+or by removing all entries (including 127.0.0.1 for the localhost) from
+'svdrphosts.conf'.
 
 If the program shall run as a daemon, use the --daemon option. This
 will completely detach it from the terminal and will continue as a
