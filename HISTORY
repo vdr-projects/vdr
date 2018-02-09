@@ -9261,3 +9261,4 @@ Video Disk Recorder Revision History
   even if no Response parameter is given.
 - Replaced the warning regarding the open SVDRP port in the INSTALL file with a remark
   about using svdrphosts.conf to completely disable SVDRP access.
+- Added a note about the fixed UDP port for SVDRP discovery to vdr.1.
