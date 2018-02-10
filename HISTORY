@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-02-09: Version 2.3.9
+2018-02-10: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9262,3 +9262,5 @@ Video Disk Recorder Revision History
 - Replaced the warning regarding the open SVDRP port in the INSTALL file with a remark
   about using svdrphosts.conf to completely disable SVDRP access.
 - Added a note about the fixed UDP port for SVDRP discovery to vdr.1.
+- Fixed updating the Timers menu after turning a local timer on/off with the Red
+  button.

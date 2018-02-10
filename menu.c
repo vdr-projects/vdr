@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.57 2018/02/01 15:48:54 kls Exp $
+ * $Id: menu.c 4.58 2018/02/10 10:51:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1295,7 +1295,8 @@ eOSState cMenuTimers::OnOff(void)
 {
   if (HasSubMenu())
      return osContinue;
-  cTimers::GetTimersWrite(timersStateKey);
+  cStateKey StateKey;
+  cTimers::GetTimersWrite(StateKey);
   cTimer *Timer = GetTimer();
   if (Timer) {
      Timer->OnOff();
@@ -1313,7 +1314,7 @@ eOSState cMenuTimers::OnOff(void)
      else
         isyslog("%sactivated timer %s", Timer->HasFlags(tfActive) ? "" : "de", *Timer->ToDescr());
      }
-  timersStateKey.Remove(Timer != NULL);
+  StateKey.Remove(Timer != NULL);
   return osContinue;
 }
 
