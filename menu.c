@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.59 2018/02/10 12:32:52 kls Exp $
+ * $Id: menu.c 4.60 2018/02/10 12:45:36 kls Exp $
  */
 
 #include "menu.h"
@@ -1399,7 +1399,11 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
   if (const cTimer *Timer = cMenuEditTimer::AddedTimer()) {
      // a newly created timer was confirmed with Ok and the proper item needs to be added:
      LOCK_TIMERS_READ;
-     Add(new cMenuTimerItem(Timer), true);
+     cMenuTimerItem *CurrentItem = new cMenuTimerItem(Timer);
+     Add(CurrentItem, true);
+     Sort();
+     SetCurrent(CurrentItem);
+     SetHelpKeys();
      Display();
      }
   if (Key != kNone)

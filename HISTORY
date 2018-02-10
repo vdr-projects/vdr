@@ -9266,3 +9266,6 @@ Video Disk Recorder Revision History
   button.
 - Fixed keeping the cursor position in the Recordings menu in case a timer starts
   recording while the menu is open.
+- When a timer is newly created in the Timers menu, it now immediately appears at the
+  correct position in the list, rather than first being added at the end and then
+  jumping to the proper offset.
