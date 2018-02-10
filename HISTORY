@@ -9264,3 +9264,5 @@ Video Disk Recorder Revision History
 - Added a note about the fixed UDP port for SVDRP discovery to vdr.1.
 - Fixed updating the Timers menu after turning a local timer on/off with the Red
   button.
+- Fixed keeping the cursor position in the Recordings menu in case a timer starts
+  recording while the menu is open.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.58 2018/02/10 10:51:49 kls Exp $
+ * $Id: menu.c 4.59 2018/02/10 12:32:52 kls Exp $
  */
 
 #include "menu.h"
@@ -2989,17 +2989,17 @@ void cMenuRecordings::Set(bool Refresh)
 {
   if (cRecordings::GetRecordingsRead(recordingsStateKey)) {
      recordingsStateKey.Remove();
-     const char *CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
      cRecordings *Recordings = cRecordings::GetRecordingsWrite(recordingsStateKey); // write access is necessary for sorting!
-     cMenuRecordingItem *LastItem = NULL;
-     if (!CurrentRecording) {
-        if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
-           CurrentRecording = ri->Recording()->FileName();
-        }
+     const char *CurrentRecording = NULL;
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current()))
+        CurrentRecording = ri->Recording()->FileName();
+     if (!CurrentRecording)
+        CurrentRecording = *fileName ? *fileName : cReplayControl::LastReplayed();
      int current = Current();
      Clear();
      GetRecordingsSortMode(DirectoryName());
      Recordings->Sort();
+     cMenuRecordingItem *LastItem = NULL;
      for (const cRecording *Recording = Recordings->First(); Recording; Recording = Recordings->Next(Recording)) {
          if ((!filter || filter->Filter(Recording)) && (!base || (strstr(Recording->Name(), base) == Recording->Name() && Recording->Name()[strlen(base)] == FOLDERDELIMCHAR))) {
             cMenuRecordingItem *Item = new cMenuRecordingItem(Recording, level);
