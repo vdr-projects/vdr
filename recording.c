@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.18 2018/01/18 10:13:29 kls Exp $
+ * $Id: recording.c 4.19 2018/02/10 13:24:04 kls Exp $
  */
 
 #include "recording.h"
@@ -1908,9 +1908,9 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
   // Now check if there is something to start:
   if ((Usage() & ruPending) != 0) {
      if ((Usage() & ruCut) != 0) {
-        Recordings->AddByName(FileNameDst(), false);
         cutter = new cCutter(FileNameSrc());
         cutter->Start();
+        Recordings->AddByName(FileNameDst(), false);
         }
      else if ((Usage() & (ruMove | ruCopy)) != 0) {
         copier = new cDirCopier(FileNameSrc(), FileNameDst());

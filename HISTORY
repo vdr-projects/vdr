@@ -9269,3 +9269,4 @@ Video Disk Recorder Revision History
 - When a timer is newly created in the Timers menu, it now immediately appears at the
   correct position in the list, rather than first being added at the end and then
   jumping to the proper offset.
+- Fixed getting the info of a newly edited recording (reported by Matthias Senzel).
