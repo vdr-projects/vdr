@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-02-12: Version 2.3.9
+2018-02-13: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9271,3 +9271,7 @@ Video Disk Recorder Revision History
   jumping to the proper offset.
 - Fixed getting the info of a newly edited recording (reported by Matthias Senzel).
 - Improved calculating signal strength and quality (thanks to Helmut Binder).
+- While a timer is recording, the file '.timer' in the recording directory now contains
+  the full id of the timer that is currently recording into this directory. This is used
+  to determine whether a timer is still recording on a remote VDR when deleting a recording
+  from the Recordings menu.

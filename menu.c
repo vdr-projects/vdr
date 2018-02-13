@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.60 2018/02/10 12:45:36 kls Exp $
+ * $Id: menu.c 4.61 2018/02/13 09:25:43 kls Exp $
  */
 
 #include "menu.h"
@@ -3111,6 +3111,56 @@ eOSState cMenuRecordings::Rewind(void)
   return osContinue;
 }
 
+static bool TimerStillRecording(const char *FileName)
+{
+  if (cRecordControl *rc = cRecordControls::GetRecordControl(FileName)) {
+     // local timer
+     if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+        LOCK_TIMERS_WRITE;
+        if (cTimer *Timer = rc->Timer()) {
+           Timer->Skip();
+           cRecordControls::Process(Timers, time(NULL));
+           if (Timer->IsSingleEvent()) {
+              Timers->Del(Timer);
+              isyslog("deleted timer %s", *Timer->ToDescr());
+              }
+           }
+        }
+     else
+        return true; // user didn't confirm deletion
+     }
+  else {
+     // remote timer
+     cString TimerId = GetRecordingTimerId(FileName);
+     if (*TimerId) {
+        int Id;
+        char *RemoteBuf = NULL;
+        cString Remote;
+        if (2 == sscanf(TimerId, "%d@%m[^ \n]", &Id, &RemoteBuf)) {
+           Remote = RemoteBuf;
+           free(RemoteBuf);
+           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+              LOCK_TIMERS_WRITE;
+              if (cTimer *Timer = Timers->GetById(Id, Remote)) {
+                 Timer->Skip();
+                 if (Timer->IsSingleEvent()) {
+                    if (HandleRemoteModifications(NULL, Timer))
+                       Timers->Del(Timer);
+                    else
+                       return true; // error while deleting remote timer
+                    }
+                 else if (!HandleRemoteModifications(Timer))
+                    return true; // error while modifying remote timer
+                 }
+              }
+           else
+              return true; // user didn't confirm deletion
+           }
+        }
+     }
+  return false;
+}
+
 eOSState cMenuRecordings::Delete(void)
 {
   if (HasSubMenu() || Count() == 0)
@@ -3118,21 +3168,8 @@ eOSState cMenuRecordings::Delete(void)
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
      if (Interface->Confirm(tr("Delete recording?"))) {
-        if (cRecordControl *rc = cRecordControls::GetRecordControl(ri->Recording()->FileName())) {
-           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
-              if (cTimer *Timer = rc->Timer()) {
-                 LOCK_TIMERS_WRITE;
-                 Timer->Skip();
-                 cRecordControls::Process(Timers, time(NULL));
-                 if (Timer->IsSingleEvent()) {
-                    Timers->Del(Timer);
-                    isyslog("deleted timer %s", *Timer->ToDescr());
-                    }
-                 }
-              }
-           else
-              return osContinue;
-           }
+        if (TimerStillRecording(ri->Recording()->FileName()))
+           return osContinue;
         cString FileName;
         {
           LOCK_RECORDINGS_READ;
@@ -5198,6 +5235,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
         Recordings->AddByName(fileName);
+        SetRecordingTimerId(fileName, cString::sprintf("%d@%s", Timer->Id(), Setup.SVDRPHostName));
         return;
         }
      else
@@ -5250,6 +5288,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
      DELETENULL(recorder);
      timer->SetRecording(false);
      timer = NULL;
+     SetRecordingTimerId(fileName, NULL);
      cStatus::MsgRecording(device, NULL, fileName, false);
      if (ExecuteUserCommand)
         cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);

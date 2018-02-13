@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.19 2018/02/10 13:24:04 kls Exp $
+ * $Id: recording.c 4.20 2018/02/13 08:44:19 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,7 @@
 #define MARKSFILESUFFIX   "/marks"
 
 #define SORTMODEFILE      ".sort"
+#define TIMERRECFILE      ".timer"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -117,7 +118,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
          r = DeletedRecordings->Next(r);
          }
      if (deleted) {
-        const char *IgnoreFiles[] = { SORTMODEFILE, NULL };
+        const char *IgnoreFiles[] = { SORTMODEFILE, TIMERRECFILE, NULL };
         cVideoDirectory::RemoveEmptyVideoDirectories(IgnoreFiles);
         }
      }
@@ -3121,4 +3122,39 @@ void IncRecordingsSortMode(const char *Directory)
   if (RecordingsSortMode > rsmTime)
      RecordingsSortMode = eRecordingsSortMode(0);
   SetRecordingsSortMode(Directory, RecordingsSortMode);
+}
+
+// --- Recording Timer Indicator ---------------------------------------------
+
+void SetRecordingTimerId(const char *Directory, const char *TimerId)
+{
+  cString FileName = AddDirectory(Directory, TIMERRECFILE);
+  if (TimerId) {
+     dsyslog("writing timer id '%s' to %s", TimerId, *FileName);
+     if (FILE *f = fopen(FileName, "w")) {
+        fprintf(f, "%s\n", TimerId);
+        fclose(f);
+        }
+     else
+        LOG_ERROR_STR(*FileName);
+     }
+  else {
+     dsyslog("removing %s", *FileName);
+     unlink(FileName);
+     }
+}
+
+cString GetRecordingTimerId(const char *Directory)
+{
+  cString FileName = AddDirectory(Directory, TIMERRECFILE);
+  const char *Id = NULL;
+  if (FILE *f = fopen(FileName, "r")) {
+     char buf[HOST_NAME_MAX + 10]; // +10 for numeric timer id and '@'
+     if (fgets(buf, sizeof(buf), f)) {
+        stripspace(buf);
+        Id = buf;
+        }
+     fclose(f);
+     }
+  return Id;
 }

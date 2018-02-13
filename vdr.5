@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.5 2018/02/03 13:56:27 kls Exp $
+.\" $Id: vdr.5 4.6 2018/02/13 09:33:41 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -821,6 +821,15 @@ closer).
 \fBCURRENT RESTRICTIONS:\fR
 
 -\ the comment is currently not used by VDR
+.SS RECORDING TIMER
+The file \fI.timer\fR (if present in a recording directory) contains
+the full id of the timer that is currently recording into this directory.
+Timer ids are of the form
+
+\fBid@hostname\fR
+
+where \fBid\fR is the timer's numerical id on the VDR with the name \fBhostname\fR.
+This file is created when the timer starts recording, and is deleted when it ends.
 .SS EPG DATA
 The file \fIepg.data\fR contains the EPG data in an easily parsable format.
 The first character of each line defines what kind of data this line contains.

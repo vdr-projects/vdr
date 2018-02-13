@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.7 2017/12/11 12:56:57 kls Exp $
+ * $Id: recording.h 4.8 2018/02/13 08:44:19 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -534,5 +534,8 @@ bool HasRecordingsSortMode(const char *Directory);
 void GetRecordingsSortMode(const char *Directory);
 void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode);
 void IncRecordingsSortMode(const char *Directory);
+
+void SetRecordingTimerId(const char *Directory, const char *TimerId);
+cString GetRecordingTimerId(const char *Directory);
 
 #endif //__RECORDING_H
