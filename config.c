@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.7 2017/12/09 14:17:02 kls Exp $
+ * $Id: config.c 4.8 2018/02/15 14:40:36 kls Exp $
  */
 
 #include "config.h"
@@ -642,7 +642,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPPeering"))        SVDRPPeering       = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPHostName"))     { if (*Value) strn0cpy(SVDRPHostName, Value, sizeof(SVDRPHostName)); }
-  else if (!strcasecmp(Name, "SVDRPdefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
+  else if (!strcasecmp(Name, "SVDRPDefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);

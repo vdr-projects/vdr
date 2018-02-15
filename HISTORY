@@ -9277,3 +9277,4 @@ Video Disk Recorder Revision History
   from the Recordings menu.
 - Fixed handling SVDRP peering for more than one instance of VDR on the same machine, and
   improved logging and debug output.
+- Fixed case inconsistency with SVDRPDefaultHost in config.c.
