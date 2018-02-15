@@ -9278,3 +9278,4 @@ Video Disk Recorder Revision History
 - Fixed handling SVDRP peering for more than one instance of VDR on the same machine, and
   improved logging and debug output.
 - Fixed case inconsistency with SVDRPDefaultHost in config.c.
+- Added a section about the '.sort' file to vdr.5.

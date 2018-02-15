@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.6 2018/02/13 09:33:41 kls Exp $
+.\" $Id: vdr.5 4.7 2018/02/15 16:00:42 kls Exp $
 .\"
 .TH vdr 5 "19 Feb 2015" "2.2" "Video Disk Recorder Files"
 .SH NAME
@@ -821,6 +821,17 @@ closer).
 \fBCURRENT RESTRICTIONS:\fR
 
 -\ the comment is currently not used by VDR
+.SS SORT MODE
+The file \fI.sort\fR (if present in a directory) contains an integer number
+defining the mode by which this directory shall be sorted when presented in a menu.
+
+The following values are defined:
+.TS
+tab (@);
+l l.
+\fB0\fR@sort by name
+\fB1\fR@sort by time
+.TE
 .SS RECORDING TIMER
 The file \fI.timer\fR (if present in a recording directory) contains
 the full id of the timer that is currently recording into this directory.
