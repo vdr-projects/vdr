@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.15 2018/02/12 14:05:22 kls Exp $
+ * $Id: dvbdevice.c 4.16 2018/02/15 15:37:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -749,18 +749,37 @@ int StrengthToSSI(const cChannel *Channel, int Strength, int FeModulation, int F
               (prel <  35) ? (prel - 20) * 2 / 3 + 90 :  // 90% - 100%
               100;
 #ifdef DEBUG_SIGNALSTRENGTH
-        fprintf(stderr, "SSI: STR:%d, Pref:%d, Prel:%d, ssi:%d%%(sys:%d, mod:%d, fec:%d)\n", Strength, pref, prel, ssi, dtp.System(), mod, fec);
+        fprintf(stderr, "SSI-T: STR:%d, Pref:%d, Prel:%d, ssi:%d%%(sys:%d, mod:%d, fec:%d)\n", Strength, pref, prel, ssi, dtp.System(), mod, fec);
 #endif
         }
      }
-  else if (Channel->IsCable())
-     ssi = dB1000toPercent(Strength, -95000, -20000); // defaults
+  else if (Channel->IsCable()) { // ! COMPLETELY UNTESTED !
+     // Formula: pref(dB) = -174.0 + NoiseFigure + SymRef + CnRef
+     // NoiseFigure = 6.5 dB;               -> Tuner specific - range: 3.5 .. 9.0 dB
+     // SymRef = 10*log(6900000) = 68.5 dB; -> for Symbolrate of 6900 kSym/sec (TV: 6900, 6750 or 6111 kSym/sec)
+     // ==> pref(dB) = -174.0 + 6.5 + 68.5 + CnRef[modulation]{20,23,26,29,32}; (+/- 3 dB tuner specific)
+     if (mod == QAM_AUTO) mod = QAM_256;
+     //                Q16  Q32  Q64 Q128 Q256
+     int pref = REF_C1(-79, -76, -73, -70, -67);
+     if (pref) {
+        int prel = (Strength / 1000) - pref;
+        ssi = (prel < -15) ? 0 :
+              (prel <   0) ? (prel + 15) * 2 / 3 :       //  0% -  10%
+              (prel <  20) ? prel * 4 + 10 :             // 10% -  90%
+              (prel <  35) ? (prel - 20) * 2 / 3 + 90 :  // 90% - 100%
+              100;
+#ifdef DEBUG_SIGNALSTRENGTH
+        fprintf(stderr, "SSI-C: STR:%d, Pref:%d, Prel:%d, ssi:%d%%(mod:%d)\n", Strength, pref, prel, ssi, mod);
+#endif
+        }
+     }
   else if (Channel->IsSat())
      ssi = dB1000toPercent(Strength, -95000, -20000); // defaults
   return ssi;
 }
 
-#define IGNORE_BER 0
+// Due to missing values or the different meanings of the reported error rate, ber_sqi is currently not taken into account
+#define IGNORE_BER 1
 #define BER_ERROR_FREE (1000*1000*1000) // 1/10^-9
 
 int SignalToSQI(const cChannel *Channel, int Signal, int Ber, int FeModulation, int FeCoderateH, int FeFec)
@@ -835,7 +854,7 @@ int SignalToSQI(const cChannel *Channel, int Signal, int Ber, int FeModulation, 
         }
      }
   else if (Channel->IsCable()) { // ! COMPLETELY UNTESTED !
-     if (mod == QAM_AUTO) mod = QAM_64;
+     if (mod == QAM_AUTO) mod = QAM_256;
          // 0.1 dB      Q16  Q32  Q64 Q128 Q256
      int cnref = REF_C1(200, 230, 260, 290, 320); // minimum for BER<10^-4
      if (cnref) {
