@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.7 2017/06/30 09:49:39 kls Exp $
+ * $Id: svdrp.h 4.8 2018/02/19 12:36:35 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -29,7 +29,6 @@ void StartSVDRPServerHandler(void);
 void StartSVDRPClientHandler(void);
 void StopSVDRPServerHandler(void);
 void StopSVDRPClientHandler(void);
-void SendSVDRPDiscover(const char *Address = NULL);
 bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag = sffNone);
      ///< Gets a list of all available VDRs this VDR is connected to via SVDRP,
      ///< and stores it in the given ServerNames list. The list is cleared
