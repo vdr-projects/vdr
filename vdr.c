@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.21 2017/11/09 16:15:34 kls Exp $
+ * $Id: vdr.c 4.22 2018/02/25 13:07:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -1081,25 +1081,18 @@ int main(int argc, char *argv[])
         {
           // Timers and Recordings:
           bool TimersModified = false;
-          bool TriggerRemoteTimerPoll = false;
           static cStateKey TimersStateKey(true);
-          if (cTimers::GetTimersRead(TimersStateKey)) {
-             TriggerRemoteTimerPoll = true;
+          if (cTimers::GetTimersRead(TimersStateKey))
              TimersStateKey.Remove();
-             }
           cTimers *Timers = cTimers::GetTimersWrite(TimersStateKey);
-          // Get remote timers:
-          TimersModified |= Timers->GetRemoteTimers();
           // Assign events to timers:
           static cStateKey SchedulesStateKey;
           if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey))
              TimersModified |= Timers->SetEvents(Schedules);
           // Must do all following calls with the exact same time!
           // Process ongoing recordings:
-          if (cRecordControls::Process(Timers, Now)) {
+          if (cRecordControls::Process(Timers, Now))
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
-             }
           // Must keep the lock on the schedules until after processing the record
           // controls, in order to avoid short interrupts in case the current event
           // is replaced by a new one (which some broadcasters do, instead of just
@@ -1113,7 +1106,6 @@ int main(int argc, char *argv[])
              else
                 LastTimerChannel = Timer->Channel()->Number();
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
              }
           // Make sure timers "see" their channel early enough:
           static time_t LastTimerCheck = 0;
@@ -1168,13 +1160,8 @@ int main(int argc, char *argv[])
              LastTimerCheck = Now;
              }
           // Delete expired timers:
-          if (Timers->DeleteExpired()) {
+          if (Timers->DeleteExpired())
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
-             }
-          // Trigger remote timer polls:
-          if (TriggerRemoteTimerPoll)
-             Timers->TriggerRemoteTimerPoll();
           // Make sure there is enough free disk space for ongoing recordings:
           AssertFreeDiskSpace(Timers->GetMaxPriority());
           TimersStateKey.Remove(TimersModified);

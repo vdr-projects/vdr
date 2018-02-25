@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.14 2017/11/12 13:01:22 kls Exp $
+ * $Id: timers.c 4.15 2018/02/25 13:05:03 kls Exp $
  */
 
 #include "timers.h"
@@ -898,78 +898,48 @@ bool cTimers::DeleteExpired(void)
   return TimersModified;
 }
 
-bool cTimers::GetRemoteTimers(const char *ServerName)
+bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *RemoteTimers)
 {
+  //TODO handle only new/deleted/modified timers?
   bool Result = false;
-  if (ServerName) {
-     Result = DelRemoteTimers(ServerName);
-     cStringList Response;
-     if (ExecSVDRPCommand(ServerName, "LSTT ID", &Response)) {
-        for (int i = 0; i < Response.Size(); i++) {
-            const char *s = Response[i];
-            int Code = SVDRPCode(s);
-            if (Code == 250) {
-               if (const char *v = SVDRPValue(s)) {
-                  int Id = atoi(v);
-                  while (*v && *v != ' ')
-                        v++; // skip id
-                  cTimer *Timer = new cTimer;
-                  if (Timer->Parse(v)) {
-                     Timer->SetRemote(ServerName);
-                     Timer->SetId(Id);
-                     Add(Timer);
-                     Result = true;
-                     }
-                  else {
-                     esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
-                     delete Timer;
-                     }
-                  }
-               }
-            else if (Code != 550)
-               esyslog("ERROR: %s: %s", ServerName, s);
-            }
-        return Result;
-        }
-     }
-  else {
-     cStringList ServerNames;
-     if (GetSVDRPServerNames(&ServerNames, sffTimers)) {
-        for (int i = 0; i < ServerNames.Size(); i++)
-            Result |= GetRemoteTimers(ServerNames[i]);
-        }
-     }
-  return Result;
-}
-
-bool cTimers::DelRemoteTimers(const char *ServerName)
-{
-  bool Deleted = false;
+  // Delete old remote timers:
   cTimer *Timer = First();
   while (Timer) {
         cTimer *t = Next(Timer);
         if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
            Del(Timer);
-           Deleted = true;
+           Result = true;
            }
         Timer = t;
         }
-  return Deleted;
-}
-
-void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
-{
-  if (ServerName) {
-     if (!ExecSVDRPCommand(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName)))
-        esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", Setup.SVDRPHostName, ServerName);
+  // Add new remote timers:
+  if (ServerName && RemoteTimers) {
+     for (int i = 0; i < RemoteTimers->Size(); i++) {
+         const char *s = (*RemoteTimers)[i];
+         int Code = SVDRPCode(s);
+         if (Code == 250) {
+            if (const char *v = SVDRPValue(s)) {
+               int Id = atoi(v);
+               while (*v && *v != ' ')
+                     v++; // skip id
+               cTimer *Timer = new cTimer;
+               if (Timer->Parse(v)) {
+                  Timer->SetRemote(ServerName);
+                  Timer->SetId(Id);
+                  Add(Timer);
+                  Result = true;
+                  }
+               else {
+                  esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
+                  delete Timer;
+                  }
+               }
+            }
+         else if (Code != 550)
+            esyslog("ERROR: %s: %s", ServerName, s);
+         }
      }
-  else {
-     cStringList ServerNames;
-     if (GetSVDRPServerNames(&ServerNames)) {
-        for (int i = 0; i < ServerNames.Size(); i++)
-            TriggerRemoteTimerPoll(ServerNames[i]);
-        }
-     }
+  return Result;
 }
 
 static bool RemoteTimerError(const cTimer *Timer, cString *Msg)

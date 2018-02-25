@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-02-20: Version 2.3.9
+2018-02-25: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9283,3 +9283,4 @@ Video Disk Recorder Revision History
   SVDRP command CONN instead of using the UDP port with the server's address.
   This change requires that all VDRs that shall take part in a peer-to-peer network need
   to be updated to this version.
+- Moved handling remote timers into cSVDRPClientHandler::ProcessConnections().

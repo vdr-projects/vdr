@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.27 2018/02/20 13:28:04 kls Exp $
+ * $Id: svdrp.c 4.28 2018/02/25 13:26:17 kls Exp $
  */
 
 #include "svdrp.h"
@@ -317,6 +317,7 @@ private:
   cFile file;
   int fetchFlags;
   bool connected;
+  bool Send(const char *Command);
   void Close(void);
 public:
   cSVDRPClient(const char *Address, int Port, const char *ServerName, int Timeout);
@@ -324,12 +325,12 @@ public:
   const char *ServerName(void) const { return serverName; }
   const char *Connection(void) const { return serverIpAddress.Connection(); }
   bool HasAddress(const char *Address, int Port) const;
-  bool Send(const char *Command);
   bool Process(cStringList *Response = NULL);
   bool Execute(const char *Command, cStringList *Response = NULL);
   bool Connected(void) const { return connected; }
   void SetFetchFlag(eSvdrpFetchFlags Flag);
   bool HasFetchFlag(eSvdrpFetchFlags Flag);
+  bool GetRemoteTimers(cStringList &Response);
   };
 
 static cPoller SVDRPClientPoller;
@@ -365,9 +366,6 @@ void cSVDRPClient::Close(void)
      SVDRPClientPoller.Del(file, false);
      file.Close();
      socket.Close();
-     LOCK_TIMERS_WRITE;
-     if (Timers)
-        Timers->DelRemoteTimers(serverName);
      }
 }
 
@@ -483,6 +481,14 @@ bool cSVDRPClient::HasFetchFlag(eSvdrpFetchFlags Flag)
   return Result;
 }
 
+bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
+{
+  if (HasFetchFlag(sffTimers))
+     return Execute("LSTT ID", &Response);
+  return false;
+}
+
+
 // --- cSVDRPServerParams ----------------------------------------------------
 
 class cSVDRPServerParams {
@@ -554,20 +560,21 @@ private:
   cMutex mutex;
   int tcpPort;
   cSocket udpSocket;
+  cStateKey timersStateKey;
   cVector<cSVDRPClient *> clientConnections;
+  void SendDiscover(void);
   void HandleClientConnection(void);
   void ProcessConnections(void);
+  cSVDRPClient *GetClientForServer(const char *ServerName);
 protected:
   virtual void Action(void);
 public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler();
-  void SendDiscover(void);
   void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
   bool GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlags = sffNone);
   bool TriggerFetchingTimers(const char *ServerName);
-  cSVDRPClient *GetClientForServer(const char *ServerName);
   };
 
 static cSVDRPClientHandler *SVDRPClientHandler = NULL;
@@ -575,6 +582,7 @@ static cSVDRPClientHandler *SVDRPClientHandler = NULL;
 cSVDRPClientHandler::cSVDRPClientHandler(int TcpPort, int UdpPort)
 :cThread("SVDRP client handler", true)
 ,udpSocket(UdpPort, false)
+,timersStateKey(true)
 {
   tcpPort = TcpPort;
 }
@@ -588,7 +596,6 @@ cSVDRPClientHandler::~cSVDRPClientHandler()
 
 cSVDRPClient *cSVDRPClientHandler::GetClientForServer(const char *ServerName)
 {
-  cMutexLock MutexLock(&mutex);
   for (int i = 0; i < clientConnections.Size(); i++) {
       if (strcmp(clientConnections[i]->ServerName(), ServerName) == 0)
          return clientConnections[i];
@@ -598,17 +605,36 @@ cSVDRPClient *cSVDRPClientHandler::GetClientForServer(const char *ServerName)
 
 void cSVDRPClientHandler::SendDiscover(void)
 {
-  cMutexLock MutexLock(&mutex);
   cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d%s", Setup.SVDRPHostName, tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout, (Setup.SVDRPPeering == spmOnly && *Setup.SVDRPDefaultHost) ? *cString::sprintf(" host:%s", Setup.SVDRPDefaultHost) : "");
   udpSocket.SendDgram(Dgram, udpSocket.Port());
 }
 
 void cSVDRPClientHandler::ProcessConnections(void)
 {
-  cMutexLock MutexLock(&mutex);
+  cString PollTimersCmd;
+  if (cTimers::GetTimersRead(timersStateKey)) {
+     PollTimersCmd = cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName);
+     timersStateKey.Remove();
+     }
   for (int i = 0; i < clientConnections.Size(); i++) {
-      if (!clientConnections[i]->Process()) {
-         delete clientConnections[i];
+      cSVDRPClient *Client = clientConnections[i];
+      if (Client->Process()) {
+         cStringList RemoteTimers;
+         if (Client->GetRemoteTimers(RemoteTimers)) {
+            cTimers *Timers = cTimers::GetTimersWrite(timersStateKey);
+            bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), &RemoteTimers);
+            timersStateKey.Remove(TimersModified);
+            }
+         if (*PollTimersCmd) {
+            if (!Client->Execute(PollTimersCmd))
+               esyslog("ERROR: can't send '%s' to '%s'", *PollTimersCmd, Client->ServerName());
+            }
+         }
+      else {
+         cTimers *Timers = cTimers::GetTimersWrite(timersStateKey);
+         bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), NULL);
+         timersStateKey.Remove(TimersModified);
+         delete Client;
          clientConnections.Remove(i);
          i--;
          }
@@ -617,11 +643,10 @@ void cSVDRPClientHandler::ProcessConnections(void)
 
 void cSVDRPClientHandler::AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress)
 {
+  cMutexLock MutexLock(&mutex);
   for (int i = 0; i < clientConnections.Size(); i++) {
-      if (clientConnections[i]->HasAddress(IpAddress, ServerParams.Port())) {
-         dsyslog("SVDRP %s < %s connection to '%s' already exists", Setup.SVDRPHostName, clientConnections[i]->Connection(), clientConnections[i]->ServerName());
+      if (clientConnections[i]->HasAddress(IpAddress, ServerParams.Port()))
          return;
-         }
       }
   if (Setup.SVDRPPeering == spmOnly && strcmp(ServerParams.Name(), Setup.SVDRPDefaultHost) != 0)
      return; // we only want to peer with the default host, but this isn't the default host
@@ -1294,8 +1319,7 @@ void cSVDRPServer::CmdCONN(const char *Option)
         if (ServerParams.Ok()) {
            clientName = ServerParams.Name();
            Reply(250, "OK"); // must finish this transaction before creating the new client
-           if (!SVDRPClientHandler->GetClientForServer(ServerParams.Name()))
-              SVDRPClientHandler->AddClient(ServerParams, clientIpAddress.Address());
+           SVDRPClientHandler->AddClient(ServerParams, clientIpAddress.Address());
            }
         else
            Reply(501, "Error in server parameters: %s", ServerParams.Error());
@@ -2601,7 +2625,6 @@ void SetSVDRPGrabImageDir(const char *GrabImageDir)
 
 class cSVDRPServerHandler : public cThread {
 private:
-  cMutex mutex;
   bool ready;
   cSocket tcpSocket;
   cVector<cSVDRPServer *> serverConnections;
@@ -2613,7 +2636,6 @@ public:
   cSVDRPServerHandler(int TcpPort);
   virtual ~cSVDRPServerHandler();
   void WaitUntilReady(void);
-  cSVDRPServer *GetServerForClient(const char *ClientName);
   };
 
 static cSVDRPServerHandler *SVDRPServerHandler = NULL;
@@ -2641,7 +2663,6 @@ void cSVDRPServerHandler::WaitUntilReady(void)
 
 void cSVDRPServerHandler::ProcessConnections(void)
 {
-  cMutexLock MutexLock(&mutex);
   for (int i = 0; i < serverConnections.Size(); i++) {
       if (!serverConnections[i]->Process()) {
          delete serverConnections[i];
@@ -2665,23 +2686,12 @@ void cSVDRPServerHandler::Action(void)
      ready = true;
      while (Running()) {
            SVDRPServerPoller.Poll(1000);
-           cMutexLock MutexLock(&mutex);
            HandleServerConnection();
            ProcessConnections();
            }
      SVDRPServerPoller.Del(tcpSocket.Socket(), false);
      tcpSocket.Close();
      }
-}
-
-cSVDRPServer *cSVDRPServerHandler::GetServerForClient(const char *ClientName)
-{
-  cMutexLock MutexLock(&mutex);
-  for (int i = 0; i < serverConnections.Size(); i++) {
-      if (serverConnections[i]->ClientName() && strcmp(serverConnections[i]->ClientName(), ClientName) == 0)
-         return serverConnections[i];
-      }
-  return NULL;
 }
 
 // --- SVDRP Handler ---------------------------------------------------------

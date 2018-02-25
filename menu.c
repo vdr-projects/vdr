@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.61 2018/02/13 09:25:43 kls Exp $
+ * $Id: menu.c 4.62 2018/02/25 13:07:09 kls Exp $
  */
 
 #include "menu.h"
@@ -4184,7 +4184,7 @@ eOSState cMenuSetupMisc::ProcessKey(eKeys Key)
      else {
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
-        if (Timers->DelRemoteTimers())
+        if (Timers->StoreRemoteTimers(NULL, NULL))
            Timers->SetModified();
         }
      }

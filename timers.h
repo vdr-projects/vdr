@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.9 2017/10/31 09:47:14 kls Exp $
+ * $Id: timers.h 4.10 2018/02/25 12:54:55 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -185,21 +185,12 @@ public:
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);
   void Del(cTimer *Timer, bool DeleteObject = true);
-  bool GetRemoteTimers(const char *ServerName = NULL);
-      ///< Gets the timers from the given remote machine and adds them to this
-      ///< list. If no ServerName is given, all timers from all known remote
-      ///< machines will be fetched. This function calls DelRemoteTimers() with
-      ///< the given ServerName first.
+  bool StoreRemoteTimers(const char *ServerName = NULL, const cStringList *RemoteTimers = NULL);
+      ///< Stores the given list of RemoteTimers, which come from the VDR ServerName, in
+      ///< this list. If no ServerName is given, all remote timers from all peer machines
+      ///< will be removed from this list. If no RemoteTimers are given, only the remote
+      ///< timers from ServerName will be removed from this list.
       ///< Returns true if any remote timers have been added or deleted
-  bool DelRemoteTimers(const char *ServerName = NULL);
-      ///< Deletes all timers of the given remote machine from this list (leaves
-      ///< them untouched on the remote machine). If no ServerName is given, the
-      ///< timers of all remote machines will be deleted from the list.
-      ///< Returns true if any remote timers have been deleted.
-  void TriggerRemoteTimerPoll(const char *ServerName = NULL);
-      ///< Sends an SVDRP POLL command to the given remote machine.
-      ///< If no ServerName is given, the POLL command will be sent to all
-      ///< known remote machines.
   };
 
 bool HandleRemoteTimerModifications(cTimer *NewTimer, cTimer *OldTimer = NULL, cString *Msg = NULL);
