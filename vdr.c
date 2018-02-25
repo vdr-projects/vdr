@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.22 2018/02/25 13:07:09 kls Exp $
+ * $Id: vdr.c 4.23 2018/02/25 13:45:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -946,9 +946,7 @@ int main(int argc, char *argv[])
   // SVDRP:
 
   SetSVDRPPorts(SVDRPport, DEFAULTSVDRPPORT);
-  StartSVDRPServerHandler();
-  if (Setup.SVDRPPeering)
-     StartSVDRPClientHandler();
+  StartSVDRPHandler();
 
   // Main program loop:
 
@@ -1562,8 +1560,7 @@ Exit:
   signal(SIGPIPE, SIG_DFL);
   signal(SIGALRM, SIG_DFL);
 
-  StopSVDRPClientHandler();
-  StopSVDRPServerHandler();
+  StopSVDRPHandler();
   ChannelCamRelations.Save();
   cRecordControls::Shutdown();
   PluginManager.StopPlugins();

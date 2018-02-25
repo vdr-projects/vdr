@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.28 2018/02/25 13:26:17 kls Exp $
+ * $Id: svdrp.c 4.29 2018/02/25 13:44:54 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2698,37 +2698,29 @@ void cSVDRPServerHandler::Action(void)
 
 static cMutex SVDRPHandlerMutex;
 
-void StartSVDRPServerHandler(void)
+void StartSVDRPHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPTcpPort && !SVDRPServerHandler) {
-     SVDRPServerHandler = new cSVDRPServerHandler(SVDRPTcpPort);
-     SVDRPServerHandler->Start();
-     SVDRPServerHandler->WaitUntilReady();
+  if (SVDRPTcpPort) {
+     if (!SVDRPServerHandler) {
+        SVDRPServerHandler = new cSVDRPServerHandler(SVDRPTcpPort);
+        SVDRPServerHandler->Start();
+        SVDRPServerHandler->WaitUntilReady();
+        }
+     if (Setup.SVDRPPeering && SVDRPUdpPort && !SVDRPClientHandler) {
+        SVDRPClientHandler = new cSVDRPClientHandler(SVDRPTcpPort, SVDRPUdpPort);
+        SVDRPClientHandler->Start();
+        }
      }
 }
 
-void StartSVDRPClientHandler(void)
-{
-  cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPTcpPort && SVDRPUdpPort && !SVDRPClientHandler) {
-     SVDRPClientHandler = new cSVDRPClientHandler(SVDRPTcpPort, SVDRPUdpPort);
-     SVDRPClientHandler->Start();
-     }
-}
-
-void StopSVDRPServerHandler(void)
-{
-  cMutexLock MutexLock(&SVDRPHandlerMutex);
-  delete SVDRPServerHandler;
-  SVDRPServerHandler = NULL;
-}
-
-void StopSVDRPClientHandler(void)
+void StopSVDRPHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   delete SVDRPClientHandler;
   SVDRPClientHandler = NULL;
+  delete SVDRPServerHandler;
+  SVDRPServerHandler = NULL;
 }
 
 bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.63 2018/02/25 13:28:19 kls Exp $
+ * $Id: menu.c 4.64 2018/02/25 13:54:57 kls Exp $
  */
 
 #include "menu.h"
@@ -4176,17 +4176,14 @@ eOSState cMenuSetupMisc::ProcessKey(eKeys Key)
   if (data.SVDRPPeering != OldSVDRPPeering)
      Set();
   if (ModifiedSVDRPSettings) {
-     StopSVDRPClientHandler();
-     StopSVDRPServerHandler();
-     StartSVDRPServerHandler();
-     if (data.SVDRPPeering)
-        StartSVDRPClientHandler();
-     else {
-        LOCK_TIMERS_WRITE;
-        Timers->SetExplicitModify();
-        if (Timers->StoreRemoteTimers(NULL, NULL))
-           Timers->SetModified();
-        }
+     StopSVDRPHandler();
+     {
+       LOCK_TIMERS_WRITE;
+       Timers->SetExplicitModify();
+       if (Timers->StoreRemoteTimers(NULL, NULL))
+          Timers->SetModified();
+     }
+     StartSVDRPHandler();
      }
   return state;
 }

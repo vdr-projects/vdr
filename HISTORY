@@ -9284,3 +9284,4 @@ Video Disk Recorder Revision History
   This change requires that all VDRs that shall take part in a peer-to-peer network need
   to be updated to this version.
 - Moved handling remote timers into cSVDRPClientHandler::ProcessConnections().
+- Combined Start/StopSVDRPServer/ClientHandler() into Start/StopSVDRPHandler().
