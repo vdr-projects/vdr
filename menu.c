@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.62 2018/02/25 13:07:09 kls Exp $
+ * $Id: menu.c 4.63 2018/02/25 13:28:19 kls Exp $
  */
 
 #include "menu.h"
@@ -5235,7 +5235,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
         SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
         Recordings->AddByName(fileName);
-        SetRecordingTimerId(fileName, cString::sprintf("%d@%s", Timer->Id(), Setup.SVDRPHostName));
+        SetRecordingTimerId(fileName, cString::sprintf("%d@%s", timer->Id(), Setup.SVDRPHostName));
         return;
         }
      else
