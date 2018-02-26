@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.29 2018/02/25 13:44:54 kls Exp $
+ * $Id: svdrp.c 4.30 2018/02/26 15:42:15 kls Exp $
  */
 
 #include "svdrp.h"
@@ -571,6 +571,8 @@ protected:
 public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler();
+  void Lock(void) { mutex.Lock(); }
+  void Unlock(void) { mutex.Unlock(); }
   void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
   bool GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlags = sffNone);
@@ -2725,18 +2727,26 @@ void StopSVDRPHandler(void)
 
 bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
 {
+  bool Result = false;
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPClientHandler)
-     return SVDRPClientHandler->GetServerNames(ServerNames, FetchFlag);
-  return false;
+  if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
+     Result = SVDRPClientHandler->GetServerNames(ServerNames, FetchFlag);
+     SVDRPClientHandler->Unlock();
+     }
+  return Result;
 }
 
 bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *Response)
 {
+  bool Result = false;
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPClientHandler)
-     return SVDRPClientHandler->Execute(ServerName, Command, Response);
-  return false;
+  if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
+     Result = SVDRPClientHandler->Execute(ServerName, Command, Response);
+     SVDRPClientHandler->Unlock();
+     }
+  return Result;
 }
 
 void BroadcastSVDRPCommand(const char *Command)
@@ -2744,9 +2754,11 @@ void BroadcastSVDRPCommand(const char *Command)
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   cStringList ServerNames;
   if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
      if (SVDRPClientHandler->GetServerNames(&ServerNames)) {
         for (int i = 0; i < ServerNames.Size(); i++)
             ExecSVDRPCommand(ServerNames[i], Command);
         }
+     SVDRPClientHandler->Unlock();
      }
 }
