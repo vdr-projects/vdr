@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-02-25: Version 2.3.9
+2018-02-27: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9285,3 +9285,4 @@ Video Disk Recorder Revision History
   to be updated to this version.
 - Moved handling remote timers into cSVDRPClientHandler::ProcessConnections().
 - Combined Start/StopSVDRPServer/ClientHandler() into Start/StopSVDRPHandler().
+- Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
