@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.14 2018/02/28 10:06:47 kls Exp $
+ * $Id: tools.h 4.15 2018/02/28 10:13:40 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -774,7 +774,7 @@ public:
 
 inline int CompareInts(const void *a, const void *b)
 {
-  return *(const int *)a > *(const int *)b;
+  return *(const int *)a - *(const int *)b;
 }
 
 inline int CompareStrings(const void *a, const void *b)

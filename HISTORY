@@ -9288,3 +9288,4 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
 - When remote timers are fetched from a peer VDR, we no longer blindly delete and re-add
   them, but rather compare them and make only the minimum necessary changes.
+- Fixed the CompareInts() function.
