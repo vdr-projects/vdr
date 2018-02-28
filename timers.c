@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.15 2018/02/25 13:05:03 kls Exp $
+ * $Id: timers.c 4.16 2018/02/28 10:05:52 kls Exp $
  */
 
 #include "timers.h"
@@ -900,45 +900,102 @@ bool cTimers::DeleteExpired(void)
 
 bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *RemoteTimers)
 {
-  //TODO handle only new/deleted/modified timers?
   bool Result = false;
-  // Delete old remote timers:
-  cTimer *Timer = First();
-  while (Timer) {
-        cTimer *t = Next(Timer);
-        if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
-           Del(Timer);
-           Result = true;
+  if (!ServerName || !RemoteTimers || RemoteTimers->Size() == 0) {
+     // Remove remote timers from this list:
+     cTimer *Timer = First();
+     while (Timer) {
+           cTimer *t = Next(Timer);
+           if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
+              Del(Timer);
+              Result = true;
+              }
+           Timer = t;
            }
-        Timer = t;
-        }
-  // Add new remote timers:
-  if (ServerName && RemoteTimers) {
-     for (int i = 0; i < RemoteTimers->Size(); i++) {
-         const char *s = (*RemoteTimers)[i];
-         int Code = SVDRPCode(s);
-         if (Code == 250) {
-            if (const char *v = SVDRPValue(s)) {
-               int Id = atoi(v);
-               while (*v && *v != ' ')
-                     v++; // skip id
-               cTimer *Timer = new cTimer;
-               if (Timer->Parse(v)) {
-                  Timer->SetRemote(ServerName);
-                  Timer->SetId(Id);
-                  Add(Timer);
+     return Result;
+     }
+  // Collect all locally stored remote timers from ServerName:
+  cStringList tl;
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (ti->Remote() && strcmp(ti->Remote(), ServerName) == 0)
+         tl.Append(strdup(cString::sprintf("%d %s", ti->Id(), *ti->ToText(true))));
+      }
+  tl.SortNumerically(); // RemoteTimers is also sorted numerically!
+  // Compare the two lists and react accordingly:
+  int il = 0; // index into the local ("left") list of remote timers
+  int ir = 0; // index into the remote ("right") list of timers
+  int sl = tl.Size();
+  int sr = RemoteTimers->Size();
+  for (;;) {
+      int AddTimer = 0;
+      int DelTimer = 0;
+      if (il < sl) { // still have left entries
+         int nl = atoi(tl[il]);
+         if (ir < sr) { // still have right entries
+            // Compare timers:
+            int nr = atoi((*RemoteTimers)[ir]);
+            if (nl == nr) // same timer id
+               AddTimer = DelTimer = nl;
+            else if (nl < nr) // left entry not in right list
+               DelTimer = nl;
+            else // right entry not in left list
+               AddTimer = nr;
+            }
+         else // processed all right entries
+            DelTimer = nl;
+         }
+      else if (ir < sr) // still have right entries
+         AddTimer = atoi((*RemoteTimers)[ir]);
+      else // processed all left and right entries
+         break;
+      if (AddTimer && DelTimer) {
+         if (strcmp(tl[il], (*RemoteTimers)[ir]) != 0) {
+            // Overwrite timer:
+            char *v = (*RemoteTimers)[ir];
+            while (*v && *v != ' ')
+                  v++; // skip id
+            if (cTimer *l = GetById(DelTimer, ServerName)) {
+               cTimer r;
+               if (r.Parse(v)) {
+                  r.SetRemote(ServerName);
+                  r.SetId(AddTimer);
+                  *l = r;
                   Result = true;
                   }
-               else {
+               else
                   esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
-                  delete Timer;
-                  }
                }
             }
-         else if (Code != 550)
-            esyslog("ERROR: %s: %s", ServerName, s);
+         else // identical timer, nothing to do
+            ;
+         il++;
+         ir++;
          }
-     }
+      else if (AddTimer) {
+         char *v = (*RemoteTimers)[ir];
+         while (*v && *v != ' ')
+               v++; // skip id
+         cTimer *Timer = new cTimer;
+         if (Timer->Parse(v)) {
+            Timer->SetRemote(ServerName);
+            Timer->SetId(AddTimer);
+            Add(Timer);
+            Result = true;
+            }
+         else {
+            esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
+            delete Timer;
+            }
+         ir++;
+         }
+      else if (DelTimer) {
+         if (cTimer *t = GetById(DelTimer, ServerName)) {
+            Del(t);
+            Result = true;
+            }
+         il++;
+         }
+      }
   return Result;
 }
 

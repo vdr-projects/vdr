@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.13 2017/06/25 11:45:38 kls Exp $
+ * $Id: tools.h 4.14 2018/02/28 10:06:47 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -226,6 +226,12 @@ cString strgetval(const char *s, const char *name, char d = '=');
     ///< If an other delimiter shall be used (like, e.g., ':'), it can be given
     ///< as the third parameter.
     ///< If name occurs more than once in s, only the first occurrence is taken.
+char *strshift(char *s, int n);
+    ///< Shifts the given string to the left by the given number of bytes, thus
+    ///< removing the first n bytes from s.
+    ///< If n is greater than the length of s, the resulting string will be empty.
+    ///< If n is <= 0 s will be unchanged.
+    ///< Returns s.
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -781,6 +787,12 @@ inline int CompareStringsIgnoreCase(const void *a, const void *b)
   return strcasecmp(*(const char **)a, *(const char **)b);
 }
 
+inline int CompareStringsNumerically(const void *a, const void *b)
+{
+  int d = atoi(*(const char **)a) - atoi(*(const char **)b);
+  return d ? d : CompareStrings(a, b);
+}
+
 class cStringList : public cVector<char *> {
 public:
   cStringList(int Allocated = 10): cVector<char *>(Allocated) {}
@@ -792,6 +804,10 @@ public:
        cVector<char *>::Sort(CompareStringsIgnoreCase);
     else
        cVector<char *>::Sort(CompareStrings);
+  }
+  void SortNumerically(void)
+  {
+    cVector<char *>::Sort(CompareStringsNumerically);
   }
   virtual void Clear(void);
   };

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.8 2017/06/25 11:45:39 kls Exp $
+ * $Id: tools.c 4.9 2018/02/27 10:09:21 kls Exp $
  */
 
 #include "tools.h"
@@ -294,6 +294,18 @@ cString strgetval(const char *s, const char *name, char d)
            }
      }
   return NULL;
+}
+
+char *strshift(char *s, int n)
+{
+  if (s && n > 0) {
+     int l = strlen(s);
+     if (n < l)
+        memmove(s, s + n, l - n + 1); // we also copy the terminating 0!
+     else
+        *s = 0;
+     }
+  return s;
 }
 
 bool startswith(const char *s, const char *p)

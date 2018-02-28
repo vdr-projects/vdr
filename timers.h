@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.10 2018/02/25 12:54:55 kls Exp $
+ * $Id: timers.h 4.11 2018/02/27 13:57:26 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -190,7 +190,9 @@ public:
       ///< this list. If no ServerName is given, all remote timers from all peer machines
       ///< will be removed from this list. If no RemoteTimers are given, only the remote
       ///< timers from ServerName will be removed from this list.
-      ///< Returns true if any remote timers have been added or deleted
+      ///< The given list of RemoteTimers must be sorted numerically (by a call to its
+      ///< SortNumerically() function).
+      ///< Returns true if any remote timers have been added, deleted or modified.
   };
 
 bool HandleRemoteTimerModifications(cTimer *NewTimer, cTimer *OldTimer = NULL, cString *Msg = NULL);

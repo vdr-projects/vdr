@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.30 2018/02/26 15:42:15 kls Exp $
+ * $Id: svdrp.c 4.31 2018/02/28 10:04:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -483,8 +483,23 @@ bool cSVDRPClient::HasFetchFlag(eSvdrpFetchFlags Flag)
 
 bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
 {
-  if (HasFetchFlag(sffTimers))
-     return Execute("LSTT ID", &Response);
+  if (HasFetchFlag(sffTimers)) {
+     if (Execute("LSTT ID", &Response)) {
+        for (int i = 0; i < Response.Size(); i++) {
+            char *s = Response[i];
+            int Code = SVDRPCode(s);
+            if (Code == 250)
+               strshift(s, 4);
+            else {
+               if (Code != 550)
+                  esyslog("ERROR: %s: %s", ServerName(), s);
+               return false;
+               }
+            }
+        Response.SortNumerically();
+        return true;
+        }
+     }
   return false;
 }
 
