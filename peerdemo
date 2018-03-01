@@ -75,7 +75,7 @@ while (1) {
                 my $Request = "";
                 $fh->recv($Request, 1024);
                 chomp($Request);
-                Log('<', $fh, $Request);
+                Log('<', $fh, $Request) if ($Request);
                 if ($Request =~ /^CONN/) {
                    Reply($fh, "250 OK");
                    ReportVDR($Request, $fh->peerhost());
@@ -89,8 +89,9 @@ while (1) {
                 elsif ($Request =~ /^PING/) {
                    Reply($fh, "250 $Name is alive");
                    }
-                elsif ($Request =~ /^QUIT/) {
+                elsif ($Request =~ /^QUIT/ || !$Request) {
                    # close connection:
+                   Log('<', $fh, "connection closed");
                    $SvdrpSelect->remove($fh);
                    $fh->close;
                    }
