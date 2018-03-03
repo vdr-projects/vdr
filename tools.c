@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.9 2018/02/27 10:09:21 kls Exp $
+ * $Id: tools.c 4.10 2018/03/03 19:35:31 kls Exp $
  */
 
 #include "tools.h"
@@ -1774,7 +1774,12 @@ bool cSafeFile::Close(void)
 
 // --- cUnbufferedFile -------------------------------------------------------
 
-#define USE_FADVISE
+#ifndef USE_FADVISE_READ
+#define USE_FADVISE_READ 0
+#endif
+#ifndef USE_FADVISE_WRITE
+#define USE_FADVISE_WRITE 1
+#endif
 
 #define WRITE_BUFFER KILOBYTE(800)
 
@@ -1793,7 +1798,7 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
   Close();
   fd = open(FileName, Flags, Mode);
   curpos = 0;
-#ifdef USE_FADVISE
+#if USE_FADVISE_READ || USE_FADVISE_WRITE
   begin = lastpos = ahead = 0;
   cachedstart = 0;
   cachedend = 0;
@@ -1809,7 +1814,7 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
 int cUnbufferedFile::Close(void)
 {
   if (fd >= 0) {
-#ifdef USE_FADVISE
+#if USE_FADVISE_READ || USE_FADVISE_WRITE
      if (totwritten)    // if we wrote anything make sure the data has hit the disk before
         fdatasync(fd);  // calling fadvise, as this is our last chance to un-cache it.
      posix_fadvise(fd, 0, 0, POSIX_FADV_DONTNEED);
@@ -1852,7 +1857,7 @@ off_t cUnbufferedFile::Seek(off_t Offset, int Whence)
 ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 {
   if (fd >= 0) {
-#ifdef USE_FADVISE
+#if USE_FADVISE_READ
      off_t jumped = curpos-lastpos; // nonzero means we're not at the last offset
      if ((cachedstart < cachedend) && (curpos < cachedstart || curpos > cachedend)) {
         // current position is outside the cached window -- invalidate it.
@@ -1865,7 +1870,7 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
      ssize_t bytesRead = safe_read(fd, Data, Size);
      if (bytesRead > 0) {
         curpos += bytesRead;
-#ifdef USE_FADVISE
+#if USE_FADVISE_READ
         cachedend = max(cachedend, curpos);
 
         // Read ahead:
@@ -1887,7 +1892,7 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
            ahead = curpos; // jumped -> we really don't want any readahead, otherwise e.g. fast-rewind gets in trouble.
 #endif
         }
-#ifdef USE_FADVISE
+#if USE_FADVISE_READ
      if (cachedstart < cachedend) {
         if (curpos - cachedstart > READCHUNK * 2) {
            // current position has moved forward enough, shrink tail window.
@@ -1911,7 +1916,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
 {
   if (fd >=0) {
      ssize_t bytesWritten = safe_write(fd, Data, Size);
-#ifdef USE_FADVISE
+#if USE_FADVISE_WRITE
      if (bytesWritten > 0) {
         begin = min(begin, curpos);
         curpos += bytesWritten;

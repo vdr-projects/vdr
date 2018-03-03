@@ -1,6 +1,3 @@
-PRELIMINARY VERSION!
-====================
-
 This is a summary of the changes in VDR 2.4.0 since the last stable
 version 2.2.0. It only contains things that are of actual importance
 to the user and doesn't mention the many fixes and improvements that
@@ -440,3 +437,7 @@ Misc:
   'DEPRECATED_VDR_CHARSET_OVERRIDE=1' when compiling in order to restore this
   functionality. However, it is recommended to use the command line option --chartab
   instead.
+- Disabled the use of posix_fadvise() when reading (i.e. replaying), since it caused
+  stuttering replay in fast forward and fast rewind mode in case the video directory
+  is mounted via NFS. You can re-enable it by setting the macro USE_FADVISE_READ to 1
+  in tools.c.
