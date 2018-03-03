@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.64 2018/02/25 13:54:57 kls Exp $
+ * $Id: menu.c 4.65 2018/03/03 12:55:57 kls Exp $
  */
 
 #include "menu.h"
@@ -3142,6 +3142,7 @@ static bool TimerStillRecording(const char *FileName)
            if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
               LOCK_TIMERS_WRITE;
               if (cTimer *Timer = Timers->GetById(Id, Remote)) {
+                 cTimer OldTimer = *Timer;
                  Timer->Skip();
                  if (Timer->IsSingleEvent()) {
                     if (HandleRemoteModifications(NULL, Timer))
@@ -3149,7 +3150,7 @@ static bool TimerStillRecording(const char *FileName)
                     else
                        return true; // error while deleting remote timer
                     }
-                 else if (!HandleRemoteModifications(Timer))
+                 else if (!HandleRemoteModifications(Timer, &OldTimer))
                     return true; // error while modifying remote timer
                  }
               }
