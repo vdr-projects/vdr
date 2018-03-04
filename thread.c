@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.12 2018/03/04 11:23:09 kls Exp $
+ * $Id: thread.c 4.13 2018/03/04 13:17:04 kls Exp $
  */
 
 #include "thread.h"
@@ -877,7 +877,6 @@ bool cStateKey::StateChanged(void)
      return state != stateLock->state;
   else
      return true;
-  return false;
 }
 
 // --- cIoThrottle -----------------------------------------------------------

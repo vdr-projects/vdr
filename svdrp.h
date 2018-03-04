@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.9 2018/02/25 13:38:59 kls Exp $
+ * $Id: svdrp.h 4.10 2018/03/04 12:26:17 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
+#include "thread.h"
 #include "tools.h"
 
 enum eSvdrpPeerModes {
@@ -22,6 +23,10 @@ enum eSvdrpFetchFlags {
   sffNone   = 0b0000,
   sffTimers = 0b0001,
   };
+
+extern cStateKey StateKeySVDRPRemoteTimersPoll;
+     ///< Controls whether a change to the local list of timers needs to result in
+     ///< sending a POLL to the remote clients.
 
 void SetSVDRPPorts(int TcpPort, int UdpPort);
 void SetSVDRPGrabImageDir(const char *GrabImageDir);

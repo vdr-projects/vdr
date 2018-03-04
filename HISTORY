@@ -9295,3 +9295,4 @@ Video Disk Recorder Revision History
   in tools.c.
 - Modified cStateLock's SetExplicitModify() and IncState() (changed to SetModified()) to
   allow for the introduction of syncing a separate cStateKey to a cStateLock.
+- Assigning events to timers no longer triggers sending a POLL to all peer VDRs.

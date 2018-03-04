@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.23 2018/02/25 13:45:24 kls Exp $
+ * $Id: vdr.c 4.24 2018/03/04 14:00:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -1078,25 +1078,28 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         {
           // Timers and Recordings:
-          bool TimersModified = false;
-          static cStateKey TimersStateKey(true);
-          if (cTimers::GetTimersRead(TimersStateKey))
-             TimersStateKey.Remove();
+          static cStateKey TimersStateKey;
           cTimers *Timers = cTimers::GetTimersWrite(TimersStateKey);
-          // Assign events to timers:
-          static cStateKey SchedulesStateKey;
-          if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey))
-             TimersModified |= Timers->SetEvents(Schedules);
+          {
+            // Assign events to timers:
+            static cStateKey SchedulesStateKey;
+            if (TimersStateKey.StateChanged())
+               SchedulesStateKey.Reset(); // we assign events if either the Timers or the Schedules have changed
+            bool TimersModified = false;
+            if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey)) {
+               Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
+               if (Timers->SetEvents(Schedules))
+                  TimersModified = true;
+               SchedulesStateKey.Remove();
+               }
+            TimersStateKey.Remove(TimersModified); // we need to remove the key here, so that syncing StateKeySVDRPRemoteTimersPoll takes effect!
+          }
           // Must do all following calls with the exact same time!
           // Process ongoing recordings:
+          Timers = cTimers::GetTimersWrite(TimersStateKey);
+          bool TimersModified = false;
           if (cRecordControls::Process(Timers, Now))
              TimersModified = true;
-          // Must keep the lock on the schedules until after processing the record
-          // controls, in order to avoid short interrupts in case the current event
-          // is replaced by a new one (which some broadcasters do, instead of just
-          // modifying the current event's data):
-          if (SchedulesStateKey.InLock())
-             SchedulesStateKey.Remove();
           // Start new recordings:
           if (cTimer *Timer = Timers->GetMatch(Now)) {
              if (!cRecordControls::Start(Timers, Timer))

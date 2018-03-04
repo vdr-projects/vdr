@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.15 2018/02/28 10:13:40 kls Exp $
+ * $Id: tools.h 4.16 2018/03/04 14:06:36 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -559,6 +559,11 @@ public:
        ///< Contains() function to check whether an object you are holding a pointer
        ///< to is still in the list. Note that the garbage collector is purged when
        ///< the usual housekeeping is done.
+  void SetSyncStateKey(cStateKey &StateKey) { stateLock.SetSyncStateKey(StateKey); }
+       ///< When making changes to this list (while holding a write lock) that shall
+       ///< not affect some other code that reacts to such changes, this function can
+       ///< be called with the StateKey used by that other code.
+       ///< See cStateLock::SetSyncStateKey() for details.
   void SetUseGarbageCollector(void) { useGarbageCollector = true; }
   void SetExplicitModify(void);
        ///< If you have obtained a write lock on this list, and you don't want it to

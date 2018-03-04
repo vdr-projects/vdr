@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.32 2018/03/01 14:45:57 kls Exp $
+ * $Id: svdrp.c 4.33 2018/03/04 14:15:07 kls Exp $
  */
 
 #include "svdrp.h"
@@ -37,7 +37,6 @@
 #include "recording.h"
 #include "remote.h"
 #include "skins.h"
-#include "thread.h"
 #include "timers.h"
 #include "videodir.h"
 
@@ -568,12 +567,13 @@ cSVDRPServerParams::cSVDRPServerParams(const char *Params)
 
 // --- cSVDRPClientHandler ---------------------------------------------------
 
+cStateKey StateKeySVDRPRemoteTimersPoll(true);
+
 class cSVDRPClientHandler : public cThread {
 private:
   cMutex mutex;
   int tcpPort;
   cSocket udpSocket;
-  cStateKey timersStateKey;
   cVector<cSVDRPClient *> clientConnections;
   void SendDiscover(void);
   void HandleClientConnection(void);
@@ -597,7 +597,6 @@ static cSVDRPClientHandler *SVDRPClientHandler = NULL;
 cSVDRPClientHandler::cSVDRPClientHandler(int TcpPort, int UdpPort)
 :cThread("SVDRP client handler", true)
 ,udpSocket(UdpPort, false)
-,timersStateKey(true)
 {
   tcpPort = TcpPort;
 }
@@ -627,11 +626,11 @@ void cSVDRPClientHandler::SendDiscover(void)
 void cSVDRPClientHandler::ProcessConnections(void)
 {
   cString PollTimersCmd;
-  if (cTimers::GetTimersRead(timersStateKey, 100)) {
+  if (cTimers::GetTimersRead(StateKeySVDRPRemoteTimersPoll, 100)) {
      PollTimersCmd = cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName);
-     timersStateKey.Remove();
+     StateKeySVDRPRemoteTimersPoll.Remove();
      }
-  else if (timersStateKey.TimedOut())
+  else if (StateKeySVDRPRemoteTimersPoll.TimedOut())
      return; // try again next time
   for (int i = 0; i < clientConnections.Size(); i++) {
       cSVDRPClient *Client = clientConnections[i];
@@ -639,9 +638,9 @@ void cSVDRPClientHandler::ProcessConnections(void)
          if (Client->HasFetchFlag(sffTimers)) {
             cStringList RemoteTimers;
             if (Client->GetRemoteTimers(RemoteTimers)) {
-               if (cTimers *Timers = cTimers::GetTimersWrite(timersStateKey, 100)) {
+               if (cTimers *Timers = cTimers::GetTimersWrite(StateKeySVDRPRemoteTimersPoll, 100)) {
                   bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), &RemoteTimers);
-                  timersStateKey.Remove(TimersModified);
+                  StateKeySVDRPRemoteTimersPoll.Remove(TimersModified);
                   }
                else
                   Client->SetFetchFlag(sffTimers); // try again next time
@@ -653,9 +652,9 @@ void cSVDRPClientHandler::ProcessConnections(void)
             }
          }
       else {
-         cTimers *Timers = cTimers::GetTimersWrite(timersStateKey);
+         cTimers *Timers = cTimers::GetTimersWrite(StateKeySVDRPRemoteTimersPoll);
          bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), NULL);
-         timersStateKey.Remove(TimersModified);
+         StateKeySVDRPRemoteTimersPoll.Remove(TimersModified);
          delete Client;
          clientConnections.Remove(i);
          i--;
