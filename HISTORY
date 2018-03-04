@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-03-03: Version 2.3.9
+2018-03-04: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9293,3 +9293,5 @@ Video Disk Recorder Revision History
   stuttering replay in fast forward and fast rewind mode in case the video directory
   is mounted via NFS. You can re-enable it by setting the macro USE_FADVISE_READ to 1
   in tools.c.
+- Modified cStateLock's SetExplicitModify() and IncState() (changed to SetModified()) to
+  allow for the introduction of syncing a separate cStateKey to a cStateLock.

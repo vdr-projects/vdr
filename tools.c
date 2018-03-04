@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.10 2018/03/03 19:35:31 kls Exp $
+ * $Id: tools.c 4.11 2018/03/04 10:28:04 kls Exp $
  */
 
 #include "tools.h"
@@ -2253,7 +2253,7 @@ void cListBase::SetExplicitModify(void)
 
 void cListBase::SetModified(void)
 {
-  stateLock.IncState();
+  stateLock.SetModified();
 }
 
 const cListObject *cListBase::Get(int Index) const
