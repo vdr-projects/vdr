@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.13 2018/03/04 13:17:04 kls Exp $
+ * $Id: thread.c 4.14 2018/03/05 22:38:10 kls Exp $
  */
 
 #include "thread.h"
@@ -775,6 +775,7 @@ void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
      state++;
      }
   StateKey.state = state;
+  StateKey.stateLock = NULL;
   if (StateKey.write) {
      StateKey.write = false;
      threadId = 0;
@@ -857,10 +858,8 @@ void cStateKey::Reset(void)
 
 void cStateKey::Remove(bool IncState)
 {
-  if (stateLock) {
+  if (stateLock)
      stateLock->Unlock(*this, IncState);
-     stateLock = NULL;
-     }
   else {
      esyslog("ERROR: cStateKey::Remove() called without holding a lock (key=%p)", this);
      ABORT;

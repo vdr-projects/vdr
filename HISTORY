@@ -9298,3 +9298,5 @@ Video Disk Recorder Revision History
 - Assigning events to timers no longer triggers sending a POLL to all peer VDRs.
 - When making modifications to remote timers, the local VDR no longer sends a POLL to
   all remote VDRs.
+- Fixed removing a cStateKey from a cStateLock (setting StateKey.stateLock = NULL was
+  done too late, after the lock had already been released).
