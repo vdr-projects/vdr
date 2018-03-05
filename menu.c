@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.65 2018/03/03 12:55:57 kls Exp $
+ * $Id: menu.c 4.66 2018/03/05 15:37:23 kls Exp $
  */
 
 #include "menu.h"
@@ -1122,6 +1122,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                               return osContinue;
                            if (timer->Local() && timer->Recording() && data.Remote())
                               cRecordControls::Stop(timer);
+                           if (timer->Remote() && data.Remote())
+                              Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
                            *timer = data;
                            }
                         LOCK_SCHEDULES_READ;
@@ -1296,11 +1298,12 @@ eOSState cMenuTimers::OnOff(void)
   if (HasSubMenu())
      return osContinue;
   cStateKey StateKey;
-  cTimers::GetTimersWrite(StateKey);
+  cTimers *Timers = cTimers::GetTimersWrite(StateKey);
   cTimer *Timer = GetTimer();
   if (Timer) {
      Timer->OnOff();
      if (Timer->Remote()) {
+        Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
         cStringList Response;
         if (!ExecSVDRPCommand(Timer->Remote(), cString::sprintf("MODT %d %s", Timer->Id(), *Timer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
            RemoteTimerError(Timer);
@@ -1357,6 +1360,8 @@ eOSState cMenuTimers::Delete(void)
               timersStateKey.Remove();
               return osContinue;
               }
+           if (Timer->Remote())
+              Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
            Timers->Del(Timer);
            cOsdMenu::Del(Current());
            Display();
@@ -1684,6 +1689,8 @@ eOSState cMenuWhatsOn::Record(void)
         // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
         Timers->Del(Timer);
         }
+     else if (Timer->Remote())
+        Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
@@ -1990,6 +1997,8 @@ eOSState cMenuSchedule::Record(void)
         // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
         Timers->Del(Timer);
         }
+     else if (Timer->Remote())
+        Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
      if (Update())
@@ -3144,6 +3153,7 @@ static bool TimerStillRecording(const char *FileName)
               if (cTimer *Timer = Timers->GetById(Id, Remote)) {
                  cTimer OldTimer = *Timer;
                  Timer->Skip();
+                 Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
                  if (Timer->IsSingleEvent()) {
                     if (HandleRemoteModifications(NULL, Timer))
                        Timers->Del(Timer);
