@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.66 2018/03/05 15:37:23 kls Exp $
+ * $Id: menu.c 4.67 2018/03/08 17:02:56 kls Exp $
  */
 
 #include "menu.h"
@@ -5233,17 +5233,17 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   isyslog("record %s", fileName);
   if (MakeDirs(fileName, true)) {
+     Recording.WriteInfo(); // we write this *before* attaching the recorder to the device, to make sure the info file is present when the recorder needs to update the fps value!
      const cChannel *ch = timer->Channel();
      recorder = new cRecorder(fileName, ch, timer->Priority());
      if (device->AttachReceiver(recorder)) {
-        Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
         if (!Timer && !LastReplayed) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName);
         SchedulesStateKey.Remove();
         LOCK_RECORDINGS_WRITE;
-        Recordings->AddByName(fileName);
         SetRecordingTimerId(fileName, cString::sprintf("%d@%s", timer->Id(), Setup.SVDRPHostName));
+        Recordings->AddByName(fileName);
         return;
         }
      else

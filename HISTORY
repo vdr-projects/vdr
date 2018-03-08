@@ -9300,3 +9300,5 @@ Video Disk Recorder Revision History
   all remote VDRs.
 - Fixed removing a cStateKey from a cStateLock (setting StateKey.stateLock = NULL was
   done too late, after the lock had already been released).
+- Now writing the info file before attaching the recorder to the device, to make sure it
+  is present when the recorder needs to update the fps value.
