@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-18 20:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -737,6 +737,9 @@ msgstr "Programme"
 msgid "Can't switch channel!"
 msgstr "Impossible de changer de chaîne !"
 
+msgid "Schedule"
+msgstr "Programme"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Programme - %s"
@@ -1402,9 +1405,6 @@ msgstr "Confirmer le redémarrage ?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Arrêter l'enregistrement "
-
-msgid "Schedule"
-msgstr "Programme"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

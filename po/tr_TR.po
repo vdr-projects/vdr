@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -726,6 +726,9 @@ msgstr "Program"
 msgid "Can't switch channel!"
 msgstr "Kanala deðiþtirelemiyor!"
 
+msgid "Schedule"
+msgstr "Program"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Program - %s"
@@ -1391,9 +1394,6 @@ msgstr "Gerçekten yeniden baþlat?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Çekimi bitir "
-
-msgid "Schedule"
-msgstr "Program"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

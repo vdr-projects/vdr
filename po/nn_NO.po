@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
 "Language-Team: Norwegian Nynorsk <vdr@linuxtv.org>\n"
@@ -727,6 +727,9 @@ msgstr "Programmer"
 msgid "Can't switch channel!"
 msgstr "Ikke mulig å skifte kanal!"
 
+msgid "Schedule"
+msgstr "Programmer"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Program Guide - %s"
@@ -1392,9 +1395,6 @@ msgstr "Vil du virkelig starte på nytt?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Stopp opptak fra "
-
-msgid "Schedule"
-msgstr "Programmer"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

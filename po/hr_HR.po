@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian <vdr@linuxtv.org>\n"
@@ -728,6 +728,9 @@ msgstr "Raspored"
 msgid "Can't switch channel!"
 msgstr "Nemoguæe prebaciti program!"
 
+msgid "Schedule"
+msgstr "Raspored"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Raspored - %s"
@@ -1393,9 +1396,6 @@ msgstr "Zaista ponovo pokrenuti?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Prekini snimanje "
-
-msgid "Schedule"
-msgstr "Raspored"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

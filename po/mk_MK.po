@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -727,6 +727,9 @@ msgstr "Распоред"
 msgid "Can't switch channel!"
 msgstr "Невозможно е да се смени канал!"
 
+msgid "Schedule"
+msgstr "Распоред"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Распоред - %s"
@@ -1392,9 +1395,6 @@ msgstr "Рестартирање?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Запри снимање "
-
-msgid "Schedule"
-msgstr "Распоред"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

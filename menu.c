@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.67 2018/03/08 17:02:56 kls Exp $
+ * $Id: menu.c 4.68 2018/03/09 15:02:29 kls Exp $
  */
 
 #include "menu.h"
@@ -1790,7 +1790,7 @@ public:
   };
 
 cMenuSchedule::cMenuSchedule(void)
-:cOsdMenu("")
+:cOsdMenu(tr("Schedule"))
 {
   SetMenuCategory(mcSchedule);
   scheduleState = -1;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -728,6 +728,9 @@ msgstr "任务列表"
 msgid "Can't switch channel!"
 msgstr "不能切换频道"
 
+msgid "Schedule"
+msgstr "任务列表"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "任务列表 - %s"
@@ -1393,9 +1396,6 @@ msgstr "是否重启？"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " 是否停止录像? "
-
-msgid "Schedule"
-msgstr "任务列表"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

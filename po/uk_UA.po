@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-13 18:14+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -727,6 +727,9 @@ msgstr "Програма"
 msgid "Can't switch channel!"
 msgstr "Неможливо перемкнути канал!"
 
+msgid "Schedule"
+msgstr "Телегід"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Програма - %s"
@@ -1392,9 +1395,6 @@ msgstr "Дійсно перезапустити?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Зупинити запис "
-
-msgid "Schedule"
-msgstr "Телегід"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

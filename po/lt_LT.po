@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-11 14:02+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -726,6 +726,9 @@ msgstr "Programa"
 msgid "Can't switch channel!"
 msgstr "Negali perjunti kanalo!"
 
+msgid "Schedule"
+msgstr "Programa"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Programa - %s"
@@ -1391,9 +1394,6 @@ msgstr "Tikrai perkrauti?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Sustabdyti įrašinėjimą "
-
-msgid "Schedule"
-msgstr "Programa"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

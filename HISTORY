@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-03-05: Version 2.3.9
+2018-03-09: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9302,3 +9302,4 @@ Video Disk Recorder Revision History
   done too late, after the lock had already been released).
 - Now writing the info file before attaching the recorder to the device, to make sure it
   is present when the recorder needs to update the fps value.
+- Making sure the Schedules menu has a proper title, even if it is empty.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-12-09 15:25+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -728,6 +728,9 @@ msgstr "Program"
 msgid "Can't switch channel!"
 msgstr "Nu pot comuta canalul!"
 
+msgid "Schedule"
+msgstr "Program (EPG)"
+
 #, c-format
 msgid "Schedule - %s"
 msgstr "Programul canalului %s"
@@ -1393,9 +1396,6 @@ msgstr "Sigur repornesc?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Opreşte înregistrarea "
-
-msgid "Schedule"
-msgstr "Program (EPG)"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
