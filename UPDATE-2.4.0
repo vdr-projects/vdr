@@ -369,10 +369,6 @@ SVDRP:
   ':ids' is given.
 - If 0 is given as the channel number in the SVDRP command LSTC, the data of the
   current channel is listed.
-- Whenever a change is made to the recordings in the video directory, the SVDRP command
-  UPDR is now sent to all peer VDRs, so that they will update their recordings list.
-  This is especially useful if one VDR mounts the video directory of an other one into
-  a subdirectory.
 - The new SVDRP commands 'LSTD' and 'PRIM' can be used to list all available devices
   and to switch the primary device.
 

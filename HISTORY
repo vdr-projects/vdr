@@ -9303,3 +9303,6 @@ Video Disk Recorder Revision History
 - Now writing the info file before attaching the recorder to the device, to make sure it
   is present when the recorder needs to update the fps value.
 - Making sure the Schedules menu has a proper title, even if it is empty.
+- Removed sending the SVDRP command UPDR to peer VDRs whenever a change is made to the
+  recordings in the video directory (which was introduced in version 2.3.8), because it
+  triggered re-reading the video directory too fast.

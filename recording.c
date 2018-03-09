@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.20 2018/02/13 08:44:19 kls Exp $
+ * $Id: recording.c 4.21 2018/03/09 15:30:52 kls Exp $
  */
 
 #include "recording.h"
@@ -1501,7 +1501,6 @@ void cRecordings::TouchUpdate(void)
   TouchFile(UpdateFileName());
   if (!needsUpdate)
      lastUpdate = time(NULL); // make sure we don't trigger ourselves
-  BroadcastSVDRPCommand("UPDR");
 }
 
 bool cRecordings::NeedsUpdate(void)
