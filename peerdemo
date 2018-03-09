@@ -76,20 +76,20 @@ while (1) {
                 $fh->recv($Request, 1024);
                 chomp($Request);
                 Log('<', $fh, $Request) if ($Request);
-                if ($Request =~ /^CONN/) {
+                if ($Request =~ /^CONN/i) {
                    Reply($fh, "250 OK");
                    ReportVDR($Request, $fh->peerhost());
                    }
-                elsif ($Request =~ /^LSTT/) {
+                elsif ($Request =~ /^LSTT/i) {
                    Reply($fh, "550 No timers defined");
                    }
-                elsif ($Request =~ /^POLL/) {
+                elsif ($Request =~ /^POLL/i) {
                    Reply($fh, "250 OK");
                    }
-                elsif ($Request =~ /^PING/) {
+                elsif ($Request =~ /^PING/i) {
                    Reply($fh, "250 $Name is alive");
                    }
-                elsif ($Request =~ /^QUIT/ || !$Request) {
+                elsif ($Request =~ /^QUIT/i || !$Request) {
                    # close connection:
                    Log('<', $fh, "connection closed");
                    $SvdrpSelect->remove($fh);
