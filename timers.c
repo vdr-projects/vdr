@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.16 2018/02/28 10:05:52 kls Exp $
+ * $Id: timers.c 4.17 2018/03/11 13:03:23 kls Exp $
  */
 
 #include "timers.h"
@@ -485,9 +485,16 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
      bool UseVps = HasFlags(tfVps) && Event->Vps();
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
      int overlap = 0;
-     if (UseVps)
-        overlap = (startTime == Event->Vps()) ? FULLMATCH + (Event->IsRunning() ? 200 : 100) : 0;
-     if (!overlap) {
+     if (UseVps) {
+        if (startTime == Event->Vps()) {
+           overlap = FULLMATCH;
+           if (Event->IsRunning())
+              overlap += 200;
+           else if (Event->RunningStatus() != SI::RunningStatusNotRunning)
+              overlap += 100;
+           }
+        }
+     else {
         if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
            overlap = FULLMATCH;
         else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
@@ -498,8 +505,6 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
      startTime = stopTime = 0;
      if (Overlap)
         *Overlap = overlap;
-     if (UseVps)
-        return overlap > FULLMATCH ? tmFull : tmNone;
      return overlap >= FULLMATCH ? tmFull : overlap > 0 ? tmPartial : tmNone;
      }
   return tmNone;
@@ -509,7 +514,10 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL) && (!HasFlags(tfVps) || !event || !event->Vps());
+  return IsSingleEvent()
+      && !Recording()
+      && StopTime() + EXPIRELATENCY <= time(NULL)
+      && (!HasFlags(tfVps) || !event || !event->Vps() || event->EndTime() + EXPIRELATENCY <= time(NULL));
 }
 
 time_t cTimer::StartTime(void) const
@@ -543,12 +551,12 @@ bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-               if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
+               if (e->StartTime()) {
                   int overlap = 0;
-                  Matches(e, &overlap);
-                  if (overlap > FULLMATCH) {
+                  if (Matches(e, &overlap) == tmFull) {
                      Event = e;
-                     break; // take the first matching event
+                     if (overlap > FULLMATCH)
+                        break; // take the first matching event
                      }
                   }
                }

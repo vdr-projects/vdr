@@ -200,6 +200,7 @@ Timers:
   The old version of cSkinDisplayMenu::SetItemEvent() (without the TimerActive
   parameter) is still there for backwards compatibility. It may be removed in a future
   version, so plugin authors should switch to the new one.
+- Improved handling VPS timers to better react to EPG changes during an ongoing recording.
 
 Plugins:
 

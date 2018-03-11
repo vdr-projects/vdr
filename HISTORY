@@ -9162,7 +9162,7 @@ Video Disk Recorder Revision History
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
 
-2018-03-09: Version 2.3.9
+2018-03-11: Version 2.3.9
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -9306,3 +9306,4 @@ Video Disk Recorder Revision History
 - Removed sending the SVDRP command UPDR to peer VDRs whenever a change is made to the
   recordings in the video directory (which was introduced in version 2.3.8), because it
   triggered re-reading the video directory too fast.
+- Improved handling VPS timers to better react to EPG changes during an ongoing recording.
