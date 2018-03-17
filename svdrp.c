@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.34 2018/03/17 10:06:54 kls Exp $
+ * $Id: svdrp.c 4.35 2018/03/17 13:00:19 kls Exp $
  */
 
 #include "svdrp.h"
@@ -946,10 +946,11 @@ const char *HelpPages[] = {
   "    If 'help' is followed by a command, the detailed help for that command is\n"
   "    given. The keyword 'main' initiates a call to the main menu function of the\n"
   "    given plugin.\n",
-  "POLL timers\n"
+  "POLL <name> timers\n"
   "    Used by peer-to-peer connections between VDRs to inform other machines\n"
   "    about changes to timers. The receiving VDR shall use LSTT to query the\n"
-  "    remote machine's timers and update its list of timers accordingly.\n",
+  "    remote machine with the given name about its timers and update its list\n"
+  "    of timers accordingly.\n",
   "PRIM [ <number> ]\n"
   "    Make the device with the given number the primary device.\n"
   "    Without option it returns the currently active primary device in the same\n"
