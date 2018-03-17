@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.21 2018/03/09 15:30:52 kls Exp $
+ * $Id: recording.c 4.22 2018/03/17 10:56:13 kls Exp $
  */
 
 #include "recording.h"
@@ -2190,8 +2190,8 @@ void cMarks::Align(void)
   cIndexFile IndexFile(recordingFileName, false, isPesRecording);
   for (cMark *m = First(); m; m = Next(m)) {
       int p = IndexFile.GetClosestIFrame(m->Position());
-      if (int d = m->Position() - p) {
-         isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), d, abs(d) > 1 ? "s" : "");
+      if (m->Position() - p) {
+         //isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), m->Position() - p, abs(m->Position() - p) > 1 ? "s" : "");
          m->SetPosition(p);
          }
       }
