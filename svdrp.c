@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.33 2018/03/04 14:15:07 kls Exp $
+ * $Id: svdrp.c 4.34 2018/03/17 10:06:54 kls Exp $
  */
 
 #include "svdrp.h"
@@ -46,6 +46,13 @@ static bool DumpSVDRPDataTransfer = false;
 
 static int SVDRPTcpPort = 0;
 static int SVDRPUdpPort = 0;
+
+enum eSvdrpFetchFlags {
+  sffNone   = 0b00000000,
+  sffConn   = 0b00000001,
+  sffPing   = 0b00000010,
+  sffTimers = 0b00000100,
+  };
 
 // --- cIpAddress ------------------------------------------------------------
 
@@ -327,8 +334,8 @@ public:
   bool Process(cStringList *Response = NULL);
   bool Execute(const char *Command, cStringList *Response = NULL);
   bool Connected(void) const { return connected; }
-  void SetFetchFlag(eSvdrpFetchFlags Flag);
-  bool HasFetchFlag(eSvdrpFetchFlags Flag);
+  void SetFetchFlag(int Flag);
+  bool HasFetchFlag(int Flag);
   bool GetRemoteTimers(cStringList &Response);
   };
 
@@ -415,8 +422,7 @@ bool cSVDRPClient::Process(cStringList *Response)
                                           serverName = n;
                                           dsyslog("SVDRP %s < %s remote server name is '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
                                           }
-                                       Execute(cString::sprintf("CONN name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", Setup.SVDRPHostName, SVDRPTcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout));
-                                       SetFetchFlag(sffTimers);
+                                       SetFetchFlag(sffConn | sffTimers);
                                        connected = true;
                                        }
                                     }
@@ -456,7 +462,7 @@ bool cSVDRPClient::Process(cStringList *Response)
             break; // we read all or nothing!
          }
      if (pingTime.TimedOut())
-        Execute("PING");
+        SetFetchFlag(sffPing);
      }
   return file.IsOpen();
 }
@@ -468,12 +474,12 @@ bool cSVDRPClient::Execute(const char *Command, cStringList *Response)
   return Send(Command) && Process(Response);
 }
 
-void cSVDRPClient::SetFetchFlag(eSvdrpFetchFlags Flags)
+void cSVDRPClient::SetFetchFlag(int Flags)
 {
   fetchFlags |= Flags;
 }
 
-bool cSVDRPClient::HasFetchFlag(eSvdrpFetchFlags Flag)
+bool cSVDRPClient::HasFetchFlag(int Flag)
 {
   bool Result = (fetchFlags & Flag);
   fetchFlags &= ~Flag;
@@ -588,7 +594,7 @@ public:
   void Unlock(void) { mutex.Unlock(); }
   void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
-  bool GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlags = sffNone);
+  bool GetServerNames(cStringList *ServerNames);
   bool TriggerFetchingTimers(const char *ServerName);
   };
 
@@ -635,6 +641,10 @@ void cSVDRPClientHandler::ProcessConnections(void)
   for (int i = 0; i < clientConnections.Size(); i++) {
       cSVDRPClient *Client = clientConnections[i];
       if (Client->Process()) {
+         if (Client->HasFetchFlag(sffConn))
+            Client->Execute(cString::sprintf("CONN name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", Setup.SVDRPHostName, SVDRPTcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout));
+         if (Client->HasFetchFlag(sffPing))
+            Client->Execute("PING");
          if (Client->HasFetchFlag(sffTimers)) {
             cStringList RemoteTimers;
             if (Client->GetRemoteTimers(RemoteTimers)) {
@@ -712,16 +722,14 @@ bool cSVDRPClientHandler::Execute(const char *ServerName, const char *Command, c
   return false;
 }
 
-bool cSVDRPClientHandler::GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
+bool cSVDRPClientHandler::GetServerNames(cStringList *ServerNames)
 {
   cMutexLock MutexLock(&mutex);
   ServerNames->Clear();
   for (int i = 0; i < clientConnections.Size(); i++) {
       cSVDRPClient *Client = clientConnections[i];
-      if (Client->Connected()) {
-         if (FetchFlag == sffNone || Client->HasFetchFlag(FetchFlag))
-            ServerNames->Append(strdup(Client->ServerName()));
-         }
+      if (Client->Connected())
+         ServerNames->Append(strdup(Client->ServerName()));
       }
   return ServerNames->Size() > 0;
 }
@@ -2744,13 +2752,13 @@ void StopSVDRPHandler(void)
   SVDRPServerHandler = NULL;
 }
 
-bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
+bool GetSVDRPServerNames(cStringList *ServerNames)
 {
   bool Result = false;
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   if (SVDRPClientHandler) {
      SVDRPClientHandler->Lock();
-     Result = SVDRPClientHandler->GetServerNames(ServerNames, FetchFlag);
+     Result = SVDRPClientHandler->GetServerNames(ServerNames);
      SVDRPClientHandler->Unlock();
      }
   return Result;

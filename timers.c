@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.17 2018/03/11 13:03:23 kls Exp $
+ * $Id: timers.c 4.18 2018/03/17 10:07:19 kls Exp $
  */
 
 #include "timers.h"
@@ -952,8 +952,14 @@ bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *Remot
          else // processed all right entries
             DelTimer = nl;
          }
-      else if (ir < sr) // still have right entries
+      else if (ir < sr) { // still have right entries
          AddTimer = atoi((*RemoteTimers)[ir]);
+         if (!AddTimer) {
+            esyslog("ERROR: %s: error in timer settings: %s", ServerName, (*RemoteTimers)[ir]);
+            ir++;
+            continue; // let's see if we can process the rest
+            }
+         }
       else // processed all left and right entries
          break;
       if (AddTimer && DelTimer) {
@@ -971,7 +977,7 @@ bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *Remot
                   Result = true;
                   }
                else
-                  esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
+                  esyslog("ERROR: %d@%s: error in timer settings: %s", DelTimer, ServerName, v);
                }
             }
          else // identical timer, nothing to do
@@ -1002,6 +1008,10 @@ bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *Remot
             Result = true;
             }
          il++;
+         }
+      else {
+         esyslog("ERROR: oops while storing remote timers!");
+         break; // let's not get stuck here!
          }
       }
   return Result;

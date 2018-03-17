@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 4.10 2018/03/04 12:26:17 kls Exp $
+ * $Id: svdrp.h 4.11 2018/03/15 16:30:29 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -19,11 +19,6 @@ enum eSvdrpPeerModes {
   spmOnly = 2,
   };
 
-enum eSvdrpFetchFlags {
-  sffNone   = 0b0000,
-  sffTimers = 0b0001,
-  };
-
 extern cStateKey StateKeySVDRPRemoteTimersPoll;
      ///< Controls whether a change to the local list of timers needs to result in
      ///< sending a POLL to the remote clients.
@@ -32,13 +27,10 @@ void SetSVDRPPorts(int TcpPort, int UdpPort);
 void SetSVDRPGrabImageDir(const char *GrabImageDir);
 void StartSVDRPHandler(void);
 void StopSVDRPHandler(void);
-bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag = sffNone);
+bool GetSVDRPServerNames(cStringList *ServerNames);
      ///< Gets a list of all available VDRs this VDR is connected to via SVDRP,
      ///< and stores it in the given ServerNames list. The list is cleared
      ///< before getting the server names.
-     ///< If FetchFlag is given, only the server names for which the local
-     ///< client has this flag set will be returned, and the client's flag
-     ///< will be cleared.
      ///< Returns true if the resulting list is not empty.
 bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *Response = NULL);
      ///< Sends the given SVDRP Command string to the remote VDR identified
