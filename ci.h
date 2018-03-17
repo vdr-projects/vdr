@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.11 2018/02/03 12:19:44 kls Exp $
+ * $Id: ci.h 4.12 2018/03/17 12:17:37 kls Exp $
  */
 
 #ifndef __CI_H
@@ -402,7 +402,7 @@ public:
        ///< call to AddPid()) to Active. A later call to StartDecrypting() will
        ///< send the full list of currently active CA_PMT entries to the CAM.
   virtual void AddChannel(const cChannel *Channel);
-       ///< Adds all PIDs if the given Channel to the current list of PIDs.
+       ///< Adds all PIDs of the given Channel to the current list of PIDs.
        ///< If the source or transponder of the channel are different than
        ///< what was given in a previous call to AddChannel(), any previously
        ///< added PIDs will be cleared.
