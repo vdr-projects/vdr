@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.35 2018/03/17 13:00:19 kls Exp $
+ * $Id: svdrp.c 4.36 2018/03/18 10:43:53 kls Exp $
  */
 
 #include "svdrp.h"
@@ -318,6 +318,8 @@ private:
   cIpAddress serverIpAddress;
   cSocket socket;
   cString serverName;
+  int length;
+  char *input;
   int timeout;
   cTimeMs pingTime;
   cFile file;
@@ -346,6 +348,8 @@ cSVDRPClient::cSVDRPClient(const char *Address, int Port, const char *ServerName
 ,socket(Port, true)
 {
   serverName = ServerName;
+  length = BUFSIZ;
+  input = MALLOC(char, length);
   timeout = Timeout * 1000 * 9 / 10; // ping after 90% of timeout
   pingTime.Set(timeout);
   fetchFlags = sffNone;
@@ -363,6 +367,7 @@ cSVDRPClient::cSVDRPClient(const char *Address, int Port, const char *ServerName
 cSVDRPClient::~cSVDRPClient()
 {
   Close();
+  free(input);
   dsyslog("SVDRP %s > %s client destroyed for '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
 }
 
@@ -394,7 +399,6 @@ bool cSVDRPClient::Send(const char *Command)
 bool cSVDRPClient::Process(cStringList *Response)
 {
   if (file.IsOpen()) {
-     char input[BUFSIZ];
      int numChars = 0;
 #define SVDRPResonseTimeout 5000 // ms
      cTimeMs Timeout(SVDRPResonseTimeout);
@@ -438,10 +442,17 @@ bool cSVDRPClient::Process(cStringList *Response)
                   numChars = 0;
                   }
                else {
-                  if (numChars >= int(sizeof(input))) {
-                     esyslog("SVDRP %s < %s ERROR: out of memory", Setup.SVDRPHostName, serverIpAddress.Connection());
-                     Close();
-                     break;
+                  if (numChars >= length - 1) {
+                     int NewLength = length + BUFSIZ;
+                     if (char *NewBuffer = (char *)realloc(input, NewLength)) {
+                        length = NewLength;
+                        input = NewBuffer;
+                        }
+                     else {
+                        esyslog("SVDRP %s < %s ERROR: out of memory", Setup.SVDRPHostName, serverIpAddress.Connection());
+                        Close();
+                        break;
+                        }
                      }
                   input[numChars++] = c;
                   input[numChars] = 0;
