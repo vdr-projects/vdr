@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.4 2016/12/23 14:16:59 kls Exp $
+ * $Id: nit.c 4.5 2018/03/18 10:52:21 kls Exp $
  */
 
 #include "nit.h"
@@ -120,6 +120,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     bool forceTransponderUpdate = false;
                     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                           // Preserve parameters set separately in S2SatelliteDeliverySystemDescriptor:
+                           cDvbTransponderParameters dtpc(Channel->Parameters());
+                           dtp.SetStreamId(dtpc.StreamId());
+                           //
                            int transponder = Channel->Transponder();
                            found = true;
                            if (!ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), transponder)) {
@@ -157,8 +161,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         if (!Channel->GroupSep() && cSource::IsSat(Channel->Source()) && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            SI::S2SatelliteDeliverySystemDescriptor *sd = (SI::S2SatelliteDeliverySystemDescriptor *)d;
                            cDvbTransponderParameters dtp(Channel->Parameters());
-                           dtp.SetSystem(DVB_SYSTEM_2);
                            dtp.SetStreamId(sd->getInputStreamIdentifier());
+                           dbgnit("    stream id = %d\n", dtp.StreamId());
                            ChannelsModified |= Channel->SetTransponderData(Channel->Source(), Channel->Frequency(), Channel->Srate(), dtp.ToString('S'));
                            break;
                            }
@@ -239,6 +243,16 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     bool forceTransponderUpdate = false;
                     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
+                           // Preserve parameters set separately in T2DeliverySystemDescripto:
+                           cDvbTransponderParameters dtpc(Channel->Parameters());
+                           dtp.SetSystem(dtpc.System());
+                           dtp.SetStreamId(dtpc.StreamId());
+                           dtp.SetT2SystemId(dtp.T2SystemId());
+                           dtp.SetSisoMiso(dtpc.SisoMiso());
+                           dtp.SetBandwidth(dtpc.Bandwidth());
+                           dtp.SetGuard(dtpc.Guard());
+                           dtp.SetTransmission(dtpc.Transmission());
+                           //
                            int transponder = Channel->Transponder();
                            found = true;
                            if (!ISTRANSPONDER(Frequency / 1000000, transponder)) {
@@ -295,6 +309,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      dtp.SetTransmission(T2TransmissionModes[td->getTransmissionMode()]);
                                      //TODO add parsing of frequencies
                                      }
+                                  dbgnit("    stream id = %d\n", dtp.StreamId());
                                   ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('T'));
                                   }
                                }
